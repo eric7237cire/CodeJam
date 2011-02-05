@@ -3,128 +3,10 @@
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="refresh" content="172795">
   
   <title>Dashboard - Round 1A 2008 - Google Code Jam</title>
-  <link rel="stylesheet" type="text/css" href="./Dashboard - Round 1A 2008 - Google Code Jam_files/base.css">
-  <link rel="stylesheet" type="text/css" href="./Dashboard - Round 1A 2008 - Google Code Jam_files/dashboard.css">
   
-  <script type="text/javascript" src="./Dashboard - Round 1A 2008 - Google Code Jam_files/Dashboard.js"></script>
-  
-  <script type="text/javascript"><!--
-    /**
-     * Initializes GCJ.problems and GCJ.io from Django parameters.
-     * Also initializes the two user specific variables GCJ.isQualified and
-     * GCJ.lastClarSeenTime.
-     * This is the first function called once from GCJ.main().
-     */
-    GCJ.initContestVariables = function () {
-      // Convert Django's 'contest' to 'GCJ.contest'.
-      GCJ.contest.id = "32016";
-      GCJ.contest.name = "Round 1A 2008";
-      GCJ.contest.version = 0;
-      
-        GCJ.contest.version = 8;
-      
-      GCJ.contest.start_int = 1217034000;
-      GCJ.base_url = '/codejam/contest';
-
-      GCJ.isQualified = 0;
-      GCJ.isLoggedIn = 0;
-      GCJ.hasAnalysis = 1;
-      // Convert Django's 'problems' to JS 'GCJ.problems'.
-      
-        GCJ.problems.push({
-            "id": "24484",
-            "key": "agxjb2RlamFtLXByb2RyEAsSCHByb2JsZW1zGKS_AQw",
-            "name": "Minimum Scalar Product",
-            "type": "default"
-        });
-      
-        GCJ.problems.push({
-            "id": "24482",
-            "key": "agxjb2RlamFtLXByb2RyEAsSCHByb2JsZW1zGKK_AQw",
-            "name": "Milkshakes",
-            "type": "default"
-        });
-      
-        GCJ.problems.push({
-            "id": "24483",
-            "key": "agxjb2RlamFtLXByb2RyEAsSCHByb2JsZW1zGKO_AQw",
-            "name": "Numbers",
-            "type": "default"
-        });
-      
-
-  
-      // Convert Django's 'all_io' to JS 'GCJ.io'.
-      var io;
-      
-        io = new Array();
-        stat = new Array();
-        
-          io.push({
-              "difficulty": 0,
-              "points": 5,
-              "attempts": 0,
-              "secsSolved": -1,
-              "secsPassed": -1
-          });
-        
-          io.push({
-              "difficulty": 1,
-              "points": 10,
-              "attempts": 0,
-              "secsSolved": -1,
-              "secsPassed": -1
-          });
-        
-        GCJ.io.push(io);
-      
-        io = new Array();
-        stat = new Array();
-        
-          io.push({
-              "difficulty": 0,
-              "points": 10,
-              "attempts": 0,
-              "secsSolved": -1,
-              "secsPassed": -1
-          });
-        
-          io.push({
-              "difficulty": 1,
-              "points": 25,
-              "attempts": 0,
-              "secsSolved": -1,
-              "secsPassed": -1
-          });
-        
-        GCJ.io.push(io);
-      
-        io = new Array();
-        stat = new Array();
-        
-          io.push({
-              "difficulty": 0,
-              "points": 15,
-              "attempts": 0,
-              "secsSolved": -1,
-              "secsPassed": -1
-          });
-        
-          io.push({
-              "difficulty": 1,
-              "points": 35,
-              "attempts": 0,
-              "secsSolved": -1,
-              "secsPassed": -1
-          });
-        
-        GCJ.io.push(io);
-      
-    };
-  //--></script>
 </head>
 
-<body onload="GCJ.main()">
+<body onload="">
 <div id="logo-div">
   <a href="http://code.google.com/codejam/">
     <img src="./Dashboard - Round 1A 2008 - Google Code Jam_files/logo_image1.gif" id="logo" alt="Google Code Jam">
@@ -782,7 +664,7 @@ More information:
 </p>
 </div>
       
-      <div id="dsb-problem-analysis-div2" class="dsb-problem-content-div" style="display:none"><p>
+      <div id="dsb-problem-analysis-div2" class="dsb-problem-content-div" ><p>
 This problem with a simple statement was in fact one of the hardest in Round 1. The input restrictions for the small input were chosen so that straightforward solutions in Java or Python, which have arbitrary-precision numbers, would fail. The trick was calculating √5 to a large enough precision and not using the default double value. It turned out that using the Windows calculator or the UNIX <code>bc</code> tool was enough to solve the small tests as well.
 </p>
 <p>

@@ -76,9 +76,36 @@ int b_power(int p)
     return (p % 4 == 0) ? 625 : 125;
   }
 }
- 
+
+typedef long long LONG_t;
 
 void do_test_case(int test_case, ifstream& input)
+{
+  int N;
+  input >> N;
+  
+  //initialize to (3 + sqrt(5) ) ^ 0, represented as integer_part * radical_coeff * sqrt(5)
+  LONG_t integer_part = 1;
+  LONG_t radical_coeff = 0;
+  
+  for (int i=1; i<=N; ++i)
+  {
+    LONG_t new_integer_part = 3*integer_part + 5 * radical_coeff;
+    LONG_t new_radical_coeff = integer_part + 3 * radical_coeff;    
+    
+    integer_part = new_integer_part % 1000;
+    radical_coeff = new_radical_coeff % 1000;
+  }
+#if 0  
+  printf("%lld + %lld * sqrt(5) \n", integer_part, radical_coeff);
+  printf("2 * X^n - 1 = %lld\n", 2*integer_part-1);
+#endif
+
+  printf("Case #%d: %03lld\n", test_case+1, (2*integer_part-1) % 1000 );
+}
+
+
+void do_test_case_not_working(int test_case, ifstream& input)
 {
   int N;
   input >> N;
@@ -111,11 +138,11 @@ void do_test_case(int test_case, ifstream& input)
       }
         
       
-#if 0
-  long long debug_term = power(a, a_exp) * b_power(b_exp);
-      printf("A ^ %d * B ^ %d = %lld * %d\n", a_exp, b_exp,
-        power(a, a_exp), b_power(b_exp));
-      printf("Adding term %lld ; %lld * %lld\n", term, debug_term, co_eff);
+#if 1
+      //printf("A ^ %d * B ^ %d = %lld * %d\n", a_exp, b_exp, power(a, a_exp), b_power(b_exp));
+      printf("Adding term %lld * (co_eff) %lld ; %lld \n", term, co_eff, co_eff % 8);
+      //printf("Adding term %lld\n", (term % 1000 * (co_eff % 1000)) % 1000);
+      //printf("Adding term %lld\n", (term % 1000 * (co_eff % 8)) % 1000);
 #endif
       
       value += term % 1000 * (co_eff % 1000);
@@ -129,6 +156,9 @@ void do_test_case(int test_case, ifstream& input)
     co_eff *= (N-i);
     co_eff /= (i+1);
     
+    if (b_exp >= 6) {
+      //co_eff %= 8;
+    }
 
     //co_eff %= 1000;
     
