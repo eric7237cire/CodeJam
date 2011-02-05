@@ -4,9 +4,20 @@
 #include <algorithm>
 #include <limits>
 
+#include <stdio.h>
+#include <time.h>
+
 using namespace std;
 
+double diffclock(clock_t clock1,clock_t clock2)
+{
+	double diffticks=clock1-clock2;
+	double diffms=(diffticks*1000)/CLOCKS_PER_SEC;
+	return diffms;
+} 
+
 void do_test_case(int test_case, ifstream& input);
+#define SHOW_TIME 1
 
 int main(int argc, char** args)
 {
@@ -20,12 +31,20 @@ int main(int argc, char** args)
   
   int T;
   input >> T;
-  
+
+#if SHOW_TIME 
+  clock_t begin_g=clock();
+#endif
+	
   for (int test_case = 0; test_case < T; ++test_case) 
   {
     do_test_case(test_case, input);  
   }
-
+  
+#if SHOW_TIME
+  clock_t end_g=clock();
+  cout << "Time elapsed: " << double(diffclock(end_g,begin_g)) << " ms"<< endl;
+#endif
 }
 
 
@@ -114,12 +133,11 @@ void do_test_case(int test_case, ifstream& input)
       Node* set_to_merge = sets[interval_p - A];
       LONG_t set_to_merge_idx = interval_p;
       
-      interval_p += prime;
-      for(; interval_p <= B; interval_p += prime)
+      for(int i=interval_p - A + prime; i < sets.size(); i += prime)
       {
-        merge(sets[interval_p - A], set_to_merge);
+        merge(sets[i], set_to_merge);
 #if DEBUG_OUTPUT
-        printf("Merging sets  %lld with %lld\n", set_to_merge_idx, interval_p);
+        printf("Merging sets  %lld with %d\n", set_to_merge_idx, i);
 #endif
       }
       
