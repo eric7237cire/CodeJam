@@ -62,6 +62,21 @@ long long power(int base, int p)
   return sum;
 }
 
+//base is 5 ; only care about < 1000
+int b_power(int p)
+{
+  switch (p) {
+  case 0:
+    return 1;
+  case 2:
+    return 5;
+  case 4:
+    return 25;
+  default:
+    return (p % 4 == 0) ? 625 : 125;
+  }
+}
+ 
 
 void do_test_case(int test_case, ifstream& input)
 {
@@ -83,10 +98,13 @@ void do_test_case(int test_case, ifstream& input)
     
     if (b_exp % 2 == 0) {
       
-      long long term = power(a, a_exp) * power(b2, b_exp / 2);
-      //printf("A ^ %d * B ^ %d = %lld * %lld\n", a_exp, b_exp, power(a, a_exp), power(b2, b_exp / 2));
-      //printf("Adding term %lld * %lld\n", term, co_eff);
-      //term *= co_eff;
+      long long term = power(a, a_exp) * b_power(b_exp);
+      /*
+      printf("A ^ %d * B ^ %d = %lld * %d\n", a_exp, b_exp,
+        power(a, a_exp), b_power(b_exp));
+      printf("Adding term %lld * %lld\n", term, co_eff);
+      */
+      
       value += (term % 1000) * (co_eff % 1000);
       value %= 1000;
     }
