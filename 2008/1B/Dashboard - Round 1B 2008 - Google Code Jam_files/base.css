@@ -1,0 +1,470 @@
+/* Copyright 2007 Google Inc. */
+/* All Rights Reserved.       */
+
+body {
+  background-color: white;
+  color: black;
+  font-family: Arial, sans-serif;
+  font-size: small;
+  margin: 3px 8px;
+  min-width: 970px;
+  width:expression(document.body.clientWidth < 950? "950px": "auto" );
+}
+
+img {
+  border: 0;
+}
+
+table {
+  border-collapse: collapse;
+  font-size: small;
+}
+
+th, td {
+  padding: 0;
+  vertical-align: top;
+  text-align: left;
+}
+
+a:link {
+  color: #0000cc;
+}
+
+a:active {
+  color: #cc0000;
+}
+
+a:visited {
+  color: #551a8b;
+}
+
+h1 {
+  font-size: x-large;
+  margin-top: 0px;
+}
+
+h2 {
+  font-size: large;
+}
+
+h3 {
+  font-size: medium;
+}
+
+h4 {
+  font-size: small;
+}
+
+form {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 0.25em;
+}
+
+pre, code {
+  color: #007000;
+  font-family: "bogus font here", monospace;
+  font-size: 100%;
+}
+
+pre {
+  border: 1px solid silver;
+  background-color: #f5f5f5;
+  padding: 0.5em;
+  overflow: auto;
+  margin: 2em;
+}
+
+pre ins {
+  color: #cc0000;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.newmark {
+  color: red;
+  font-size: 80%;
+  vertical-align: top;
+}
+
+/* "Selected" links */
+
+a.selected, .selected a, .selected {
+  color: black;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a.selected:visited, .selected a:visited {
+  color: black;
+}
+
+
+/* Header */
+
+#gaia {
+  text-align: right;
+}
+
+#header {
+  height: 60px;
+  margin-bottom: 11px;
+  position: relative;
+}
+
+#logo-div {
+  position: absolute;
+  top: 1em;
+  left: 0;
+  padding: 0 0 0 0.7em;
+  z-index: 100;
+}
+
+#logo {
+  padding: 10px;
+  border: 0;
+}
+
+#logo-padder {
+  padding-top: 1.3em;
+}
+
+#title {
+  border-top: 1px solid #3366cc;
+  background-color: #e5ecf9;
+  font-size: large;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin-top: 5px;
+}
+
+#title, #breadcrumbs {
+  margin-left: 160px;
+  padding-left: 3px;
+}
+
+#breadcrumbs {
+  margin-top: 3px;
+}
+
+
+/* Side panel section */
+
+#side {
+  width: 167px;
+  margin-bottom: 3em;
+  float: left;
+}
+
+
+/* Menu */
+
+#menu ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  margin-bottom: 1em;
+}
+
+#menu ul ul {
+  margin-left: 10px;
+  margin-bottom: 0;
+}
+
+#menu li {
+  margin-top: 4px;
+}
+
+#menu h4 {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 1em;
+}
+
+
+/* Search box */
+
+#search {
+  margin-top: 2em;
+}
+
+#search .header {
+  font-weight: bold;
+  font-size: 90%;
+  margin-bottom: 1px;
+}
+
+#search .button {
+  margin-top: 1px;
+}
+
+#search .input input {
+  width: 125px;
+}
+
+
+/* Body */
+
+#body {
+  border-left: 1px dotted silver;
+  margin-left: 169px;
+  margin-right: 25px;
+  padding-left: 18px;
+  padding-bottom: 25px;
+}
+
+
+/* Footer */
+
+#footer {
+  text-align: center;
+  width: 100%;
+  border-top: 1px solid #ccc;
+  padding: 10px 0;
+  font-size: 90%;
+}
+
+
+/* Download links */
+
+div.download {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+div.download a {
+  border: 1px solid #3366cc;
+  background-color: #e5ecf9;
+  padding: 0.5em;
+  position: relative;
+  font-weight: bold;
+}
+
+
+/* Terms of Service form */
+
+.termsagree {
+  margin-top: 1em;
+  margin-bottom: 1em;
+  background-color: #e5ecf9;
+  padding: 0.5em;
+}
+
+.termsagree .button {
+  padding-top: 0.5em;
+}
+
+.termsagree .text {
+  font-weight: bold;
+}
+
+.termsagree .text .printable {
+  font-weight: normal;
+}
+
+.termsagree .text, .termsagree .button {
+  padding-left: 5px;
+}
+
+
+/* Print styles */
+
+@media print {
+  .noprint {
+    display: none;
+  }
+
+  #header, #side, #gaia {
+    display: none;
+  }
+
+  #body {
+    margin: 0;
+    border: 0;
+    padding: 0;
+  }
+}
+
+#copyright {
+  margin-right: 0.8em;
+}
+
+#guser {
+  font-size:13px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 2px 10px 7px 0;
+  z-index: 100;
+}
+
+#welcome-bar {
+  margin: 1.5em 0 0 12em;
+  padding: 0.5em;
+  font-size: 120%;
+  font-weight: bold;
+  color: #447dbe;
+  border-top: 1px solid #ccc;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.gray {
+  color: gray;
+}
+
+/**
+ * -------------------------------------------------------
+ * Left-right split for dashboard and scoreboard
+ * -------------------------------------------------------
+ */
+
+span.hDivider {
+  padding-left: 0.7em;
+}
+
+.v-divider {
+  height: 0.7em;
+}
+
+div.dynamic-link {
+  padding: 0.3em 0.4em 0.3em 0.8em;
+  margin-bottom: 0.2em;
+  font-size: 95%;
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+  -moz-border-radius-bottomleft: 0.401em;
+  -moz-border-radius-topleft: 0.401em;
+}
+
+div.dynamic-link a:visited {
+  color: blue;
+}
+
+/**
+ * -------------------------------------------------------
+ * Style of the common layout with the nav panel.
+ * -------------------------------------------------------
+ */
+
+#common-body div {
+}
+
+#common-nav-div {
+  clear: none;
+  float: left;
+  height: 100%;
+}
+
+#common-nav-wrapper {
+  width: 16em;
+  border-right: 1px solid #c9edcc;
+  overflow: hidden;
+}
+
+#common-nav-wrapper div {
+  display: block;
+}
+
+.common-nav-section-title {
+  padding: 0.5em 0.5em;
+  width: 100%;
+  color: #333;
+}
+
+.common-nav-links > div {
+  padding: 0.5em 1em;
+  width: 100%;
+  font-weight: bold;
+}
+
+.common-nav-links > .active-link:link {
+  color: #191970;
+}
+.common-nav-links > .active-link:visited {
+  color: #191970;
+}
+.common-nav-links > .active-link:hover {
+  color: #000080;
+  background-color: #ffe;
+}
+
+.common-nav-links > .current-link {
+  color: #000080;
+  background-color: #c9edcc;
+}
+
+#index-moreinfo > div {
+  padding: 0.2em 0.5em;
+}
+
+#common-content-div {
+  margin-left: 17em;
+  margin-right: 0;
+}
+
+#common-content-div > div {
+  position: relative;
+  padding: 2em;
+  width: 90%;
+  max-width: 800px;
+}
+
+#index-moreinfo .active-link,
+#index-moreinfo a {
+  color: navy;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#index-moreinfo .current-link {
+  background-color: #c9edcc;
+}
+
+#index-moreinfo > div {
+  width: 100%;
+  background: url("../../static/bg_red_arrow.gif") no-repeat 5px 5px;
+  padding-left: 20px;
+}
+
+#common-nav-links {
+   -moz-user-select: none;
+   -khtml-user-select: none;
+   user-select: none;
+}
+
+/**
+ * -------------------------------------------------------
+ * Style of the past contests page tables.
+ * -------------------------------------------------------
+ */
+
+table.schedule {
+  border: 1px solid black;
+}
+
+.schedule .desc {
+  font-weight: bold;
+  width: 17em;
+}
+.schedule .date {
+  width: 8em;
+}
+.schedule .duration {
+  width: 8em;
+}
+.schedule .links {
+  text-align: center;
+  width: 6em;
+  border-left: 0;
+  border-right: 0;
+}
