@@ -99,11 +99,11 @@ void do_test_case(int test_case, ifstream& input)
     if (b_exp % 2 == 0) {
       
       long long term = power(a, a_exp) * b_power(b_exp);
-      /*
+#if true
       printf("A ^ %d * B ^ %d = %lld * %d\n", a_exp, b_exp,
         power(a, a_exp), b_power(b_exp));
       printf("Adding term %lld * %lld\n", term, co_eff);
-      */
+#endif
       
       value += (term % 1000) * (co_eff % 1000);
       value %= 1000;
