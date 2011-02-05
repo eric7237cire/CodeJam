@@ -88,6 +88,12 @@ void do_test_case(int test_case, ifstream& input)
   LONG_t integer_part = 1;
   LONG_t radical_coeff = 0;
   
+  //17 same as 117, so pattern repeats
+  
+  if (N > 117) {
+    N = 17 + (N - 17) % 100;
+  }
+  
   for (int i=1; i<=N; ++i)
   {
     LONG_t new_integer_part = 3*integer_part + 5 * radical_coeff;
@@ -95,6 +101,12 @@ void do_test_case(int test_case, ifstream& input)
     
     integer_part = new_integer_part % 1000;
     radical_coeff = new_radical_coeff % 1000;
+    
+#if 0  
+  //printf("%d: %lld + %lld * sqrt(5) \n", i, integer_part, radical_coeff);
+  printf("%d: %lld\n", i, integer_part, radical_coeff);  
+#endif
+
   }
 #if 0  
   printf("%lld + %lld * sqrt(5) \n", integer_part, radical_coeff);
