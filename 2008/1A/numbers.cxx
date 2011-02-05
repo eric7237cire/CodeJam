@@ -62,6 +62,7 @@ long long power(int base, int p)
   return sum;
 }
 
+
 void do_test_case(int test_case, ifstream& input)
 {
   int N;
@@ -75,25 +76,31 @@ void do_test_case(int test_case, ifstream& input)
   const int b2 = 5;
   
   int value = 0;
+  long long co_eff = 1;
   
   for (int i=0; i <= N; ++i) {
     //printf("%d choose %d = %d\n", N, i, n_choose_k(N, i));
     
     if (b_exp % 2 == 0) {
-      long long co_eff = n_choose_k(N, i);
+      
       long long term = power(a, a_exp) * power(b2, b_exp / 2);
-      printf("A ^ %d * B ^ %d = %lld * %lld\n", a_exp, b_exp, power(a, a_exp), power(b2, b_exp / 2));
-      printf("Adding term %lld * %lld\n", term, co_eff);
+      //printf("A ^ %d * B ^ %d = %lld * %lld\n", a_exp, b_exp, power(a, a_exp), power(b2, b_exp / 2));
+      //printf("Adding term %lld * %lld\n", term, co_eff);
       //term *= co_eff;
       value += (term % 1000) * (co_eff % 1000);
       value %= 1000;
     }
     
+    
+    co_eff *= (N-i);
+    co_eff /= (i+1);
+    //co_eff %= 1000;
+    
     a_exp--;
     b_exp++;
   }
   
-  cout << numeric_limits<long long>::max() << endl;
+  //cout << numeric_limits<long long>::max() << endl;
   printf("Case #%d: %03d\n", test_case+1, abs( (2*value - 1) % 1000 ) );
   
   
