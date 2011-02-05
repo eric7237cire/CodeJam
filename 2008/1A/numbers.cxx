@@ -98,19 +98,32 @@ void do_test_case(int test_case, ifstream& input)
     
     if (b_exp % 2 == 0) {
       
-      long long term = power(a, a_exp) * b_power(b_exp);
-#if 1
+      long long term = b_power(b_exp);
+      
+      //shortcut
+      if (b_exp >= 6) 
+      {
+        if (a_exp % 2 != 0) {
+          term = (term == 625 ) ? 875 : 375;
+        }
+      } else {
+        term *= power(a, a_exp);
+      }
+        
+      
+#if 0
+  long long debug_term = power(a, a_exp) * b_power(b_exp);
       printf("A ^ %d * B ^ %d = %lld * %d\n", a_exp, b_exp,
         power(a, a_exp), b_power(b_exp));
-      printf("Adding term %lld * %lld\n", term, co_eff);
+      printf("Adding term %lld ; %lld * %lld\n", term, debug_term, co_eff);
 #endif
       
-      value += (term % 1000) * (co_eff % 1000);
+      value += term % 1000 * (co_eff % 1000);
       value %= 1000;
     }
     
 
-#if 1
+#if 0
     printf("Coeff %lld * %d / %d\n", co_eff, N-i, i+1);
 #endif    
     co_eff *= (N-i);
