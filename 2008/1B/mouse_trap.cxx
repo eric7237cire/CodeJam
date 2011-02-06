@@ -18,8 +18,11 @@ double diffclock(clock_t clock1,clock_t clock2)
 } 
 
 void do_test_case(int test_case, ifstream& input);
-#define SHOW_TIME 0
+
+#define SHOW_TIME 1
 #define DEBUG_OUTPUT 0
+#undef assert
+#define assert(x) ((void)0)
 
 #if SHOW_TIME
 #define SHOW_TIME_BEGIN(A) clock_t begin_##A=clock();
@@ -31,6 +34,7 @@ void do_test_case(int test_case, ifstream& input);
 
 int main(int argc, char** args)
 {
+  assert(false);
   if (argc < 2) {
     cerr << "Usage: <exe> input_file" << endl;
     return -1;
@@ -111,6 +115,20 @@ public:
     
   }
   
+  void deleteChildren() 
+  {
+    
+    if (left_child) {
+      left_child->deleteChildren();
+      delete left_child;
+    }
+    
+    if (right_child) {
+      right_child->deleteChildren();
+      delete right_child;
+    }
+  }
+  
   void mark() {
     --count;
     assert(count >= 0);
@@ -119,20 +137,21 @@ public:
     }
   }
   
+  static Bucket* root;
+  static int max_pos;
+  
   //returns position reached
-  static int advance(Bucket* root, int cur_pos, int steps_needed, const int max_pos)
+  static int advance(int cur_pos, int steps_needed)
   {
-    //first find bucket whose left == cur_pos
     Bucket* curBucket = root;
     
-    assert (steps_needed > 0); //|| root->child_list[cur_pos]->count == 0);
+    assert (steps_needed > 0); 
     
     int first_next_pos = cur_pos + 1;
     if (first_next_pos > max_pos) {
       first_next_pos = 0;
     }
-    
-    
+        
     //printf("Begin advance %d - %d; count=%d, cur_pos=%d, steps_needed=%d\n", curBucket->from, curBucket->to, curBucket->count, cur_pos, steps_needed);
     while(first_next_pos != curBucket->from) {
       //printf("%d - %d; count=%d, steps_needed=%d\n", curBucket->from, curBucket->to, curBucket->count, steps_needed);
@@ -150,7 +169,7 @@ public:
       
       if (curBucket->count == 0) {
         //advance to the end
-        int retVal = advance(root, curBucket->to, steps_needed, max_pos);
+        int retVal = advance(curBucket->to, steps_needed);
         assert(retVal != curBucket->to);
         //printf("Returning %d\n", retVal);
         return retVal;
@@ -166,7 +185,7 @@ public:
       //curBucket or a child contains the position we want
       
       while(curBucket->size > 1) {
-        if (curBucket->left_child->count >= steps_needed && curBucket->left_child->count > 0) {
+        if (curBucket->left_child->count >= steps_needed) {
           //left child
           curBucket = curBucket->left_child;
         } else {
@@ -179,25 +198,10 @@ public:
       assert(curBucket->size == 1);
       //printf("Returning from in bucket %d\n", curBucket->from);
       return curBucket->from;
-    } else {
-      //inc cur pos
-      /*
-      cur_pos = curBucket->to + 1;
-      if (cur_pos > max_pos) {
-        cur_pos = 0;
-      }*/
-      assert(curBucket->count > 0);
-      
-      steps_needed = steps_needed - curBucket->count;
-      
-      
+    } else {      
+      assert(curBucket->count > 0);      
       assert(steps_needed >=  0);
-      int retVal = advance(root, curBucket->to, steps_needed, max_pos);
-      if (retVal == curBucket->to) {
-        //printf("%d - %d; count=%d, steps_needed=%d, curPos=%d, max_pos=%d, cur_pos count=%d, bucket_count=%d\n", curBucket->from, curBucket->to, curBucket->count, steps_needed, cur_pos, max_pos, root->child_list[cur_pos]->count, root->count);
-        //throw 3;
-      }
-      return retVal;
+      return advance(curBucket->to, steps_needed - curBucket->count);      
     }
         
     
@@ -208,13 +212,15 @@ public:
   }
 };
 
+Bucket* Bucket::root;
+int Bucket::max_pos;
 
 void do_test_case(int test_case, ifstream& input)
 {
   int K, n;
   input >> K >> n;
   
-  typedef vector<unsigned> Vec_UINT_t; 
+  typedef vector<int> Vec_UINT_t; 
   Vec_UINT_t indices(n, 0);
   
   for( Vec_UINT_t::iterator it = indices.begin(); it != indices.end(); ++it) 
@@ -225,6 +231,8 @@ void do_test_case(int test_case, ifstream& input)
   Vec_UINT_t deck(K, 0);
   vector<Bucket*> buckets(K, static_cast<Bucket*>(0));
   Bucket rootBucket(0, K-1, buckets);
+  Bucket::root = &rootBucket;
+  Bucket::max_pos = K-1;
   rootBucket.create_tree();
   int cur_pos = 0;  
   deck[0] = 1;
@@ -232,26 +240,14 @@ void do_test_case(int test_case, ifstream& input)
   
   for(int k=2; k<=K; ++k) 
   {
-    #if DEBUG_OUTPUT
-    //printf("handling k=%d\n", k);
-    #endif
-    int steps = 0;
     assert(rootBucket.getCount() == K-k + 1);
-    int steps_needed = 0;
-    if ( k % rootBucket.getCount() == 0) {
-      steps_needed = rootBucket.getCount();
-    } else {
-      steps_needed = k % rootBucket.getCount();
-    }
-    //int steps_needed = k % rootBucket.getCount();
-    //cout << rootBucket.getCount() << endl;
-    //assert(steps_needed > 0);
-    //printf("cur_pos=%d, Starting Bucket\n", cur_pos);
-    //printf("k=%d, cur_pos=%d, steps_needed=%d, bucket_count=%d\n", k, cur_pos, steps_needed, rootBucket.getCount());
-    cur_pos = Bucket::advance(&rootBucket, cur_pos, steps_needed, K-1);
     
-    //assert(bucketCurPos == cur_pos);
-    //printf("Done Advance, main loop. k=%d, cur_pos=%d, steps_needed=%d, bucket_count=%d\n", k, cur_pos, steps_needed, rootBucket.getCount());
+    int steps_needed = ( k % rootBucket.getCount() == 0) ?
+        rootBucket.getCount() : 
+        k % rootBucket.getCount();
+    
+    cur_pos = Bucket::advance(cur_pos, steps_needed);
+    
     assert(buckets[cur_pos] != 0);
     assert(deck[cur_pos] == 0);
     buckets[cur_pos]->mark();
@@ -270,6 +266,8 @@ void do_test_case(int test_case, ifstream& input)
   }
   
   printf("\n");
+  
+  rootBucket.deleteChildren();
     
 }
   
