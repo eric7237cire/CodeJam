@@ -70,7 +70,10 @@ public:
     
   }
   
-  
+  void reset() {
+    parent = this;
+    rank = 0;
+  }
 };
 
 Node* find_root(Node* x)
@@ -78,7 +81,8 @@ Node* find_root(Node* x)
   if (x->parent == x) {
     return x;
   } else {
-    return find_root(x->parent);
+    x->parent = find_root(x->parent);
+    return x->parent;
   }
 }
 
@@ -101,7 +105,8 @@ void merge(Node* a, Node* b)
     
 }
   
-
+vector<Node *> sets;
+vector<bool> primes;
 
 void do_test_case(int test_case, ifstream& input)
 {
@@ -111,30 +116,40 @@ void do_test_case(int test_case, ifstream& input)
   //First step, find  P <= primes <= interval
   LONG_t lower_bound_primes = P;
   unsigned upper_bound_primes = B-A;
+  
+  const int interval_size = B-A+1;
 
 SHOW_TIME_BEGIN(primes) 
+
+  if (primes.size() < upper_bound_primes) {
+    primes.resize(0);
+    primes.resize(upper_bound_primes, true);
     
-  vector<bool> primes(upper_bound_primes, true);
-  
-  for(int i=2; i<primes.size(); ) {
-    for(int j=i+i; j<primes.size(); j+=i) {
-      primes[j] = false;
-    }
-    
-    for(i=i+1 ; i < primes.size() && primes[i] == false; ++i) {
+    for(int i=2; i<primes.size(); ) {
+      for(int j=i+i; j<primes.size(); j+=i) {
+        primes[j] = false;
+      }
       
+      for(i=i+1 ; i < primes.size() && primes[i] == false; ++i) {
+        
+      }
+      
+      //cout << "I is " << i << endl;
+      //++i;
     }
-    
-    //cout << "I is " << i << endl;
-    //++i;
   }
   
 SHOW_TIME_END(primes)
 
 SHOW_TIME_BEGIN(create_sets)
-  vector<Node *> sets;
-  for(LONG_t interval_p = A; interval_p <= B; ++interval_p) {
-    sets.push_back(new Node());
+  sets.resize(interval_size, NULL);
+  
+  for(int i = 0; i<interval_size; ++i) {
+    if (sets[i] == NULL) {
+      sets[i] = new Node();
+    } else {
+      sets[i]->reset();
+    }
   }
 SHOW_TIME_END(create_sets)
 
@@ -158,19 +173,18 @@ SHOW_TIME_BEGIN(main_sieve)
   ++cycle;  
 #endif
       
-      int aModPrime = A % prime;
-      LONG_t interval_p = (aModPrime == 0) ? A : A + prime - aModPrime;
+      const int aModPrime = A % prime;
+      const LONG_t interval_p = (aModPrime == 0) ? A : A + prime - aModPrime;
       
       //printf("First hit in interval %lld\n", interval_p);
       
       Node* set_to_merge = sets[interval_p - A];
-      LONG_t set_to_merge_idx = interval_p;
-      
-      for(int i=interval_p - A + prime; i < sets.size(); i += prime)
+            
+      for(int i=interval_p - A + prime; i < interval_size; i += prime)
       {
         merge(sets[i], set_to_merge);
 #if DEBUG_OUTPUT
-        printf("Merging sets  %lld with %d\n", set_to_merge_idx, i);
+        printf("Merging sets  %lld with %d\n", interval_p, i);
 #endif
       }
 
@@ -200,7 +214,7 @@ SHOW_TIME_BEGIN(last_count)
       ++set_count;
     }
     
-    delete(sets[i]);
+    //delete(sets[i]);
   }
   
 SHOW_TIME_END(last_count)
