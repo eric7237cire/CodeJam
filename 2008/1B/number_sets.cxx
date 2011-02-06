@@ -17,7 +17,16 @@ double diffclock(clock_t clock1,clock_t clock2)
 } 
 
 void do_test_case(int test_case, ifstream& input);
-#define SHOW_TIME 1
+#define SHOW_TIME 0
+#define DEBUG_OUTPUT 0
+
+#if SHOW_TIME
+#define SHOW_TIME_BEGIN(A) clock_t begin_##A=clock();
+#define SHOW_TIME_END(A) clock_t end_##A=clock(); cout << "Time elapsed: " #A << " " << double(diffclock(end_##A,begin_##A)) << " ms"<< endl;
+#else
+#define SHOW_TIME_BEGIN(A) 
+#define SHOW_TIME_END(A) 
+#endif
 
 int main(int argc, char** args)
 {
@@ -54,9 +63,9 @@ struct Node
 {
 public:
   Node* parent;
-  LONG_t value;
+  int rank;
   
-  Node(LONG_t value) : parent(this), value(value)
+  Node() : parent(this), rank(0)
   {
     
   }
@@ -79,11 +88,20 @@ void merge(Node* a, Node* b)
 {
   Node* a_root = find_root(a);
   Node* b_root = find_root(b);
+  
+  if (a_root->rank > b_root->rank) {
+    b_root->parent = a_root;
+  } else if (a_root != b_root) {
+    a_root->parent = b_root;   
+    if (a_root->rank == b_root->rank) {
+      b_root->rank += 1;
+    }
+  }
 
-  a_root->parent = b_root;  
+    
 }
   
-#define DEBUG_OUTPUT 0
+
 
 void do_test_case(int test_case, ifstream& input)
 {
@@ -93,7 +111,9 @@ void do_test_case(int test_case, ifstream& input)
   //First step, find  P <= primes <= interval
   LONG_t lower_bound_primes = P;
   unsigned upper_bound_primes = B-A;
-  
+
+SHOW_TIME_BEGIN(primes) 
+    
   vector<bool> primes(upper_bound_primes, true);
   
   for(int i=2; i<primes.size(); ) {
@@ -109,24 +129,37 @@ void do_test_case(int test_case, ifstream& input)
     //++i;
   }
   
+SHOW_TIME_END(primes)
+
+SHOW_TIME_BEGIN(create_sets)
   vector<Node *> sets;
   for(LONG_t interval_p = A; interval_p <= B; ++interval_p) {
-    sets.push_back(new Node(interval_p));
+    sets.push_back(new Node());
   }
-  
+SHOW_TIME_END(create_sets)
+
+#if SHOW_TIME 
+  int cycle = 0;
+  const int print_interval = 200;
+  clock_t begin_pmain=clock();
+#endif
+
+SHOW_TIME_BEGIN(main_sieve)
   for(int prime=P; prime<primes.size(); ++prime) {
     if (primes[prime]) {
 #if DEBUG_OUTPUT
       printf("Prime %d\n", prime);
 #endif
-      LONG_t interval_p = A;
-      //find 1st divisible
-      for( ;interval_p <= B; interval_p += 1)
-      {
-        if (interval_p % prime == 0) {
-          break;
-        }
-      }
+
+#if SHOW_TIME 
+  if (cycle == 0) {
+    begin_pmain=clock();
+  }
+  ++cycle;  
+#endif
+      
+      int aModPrime = A % prime;
+      LONG_t interval_p = (aModPrime == 0) ? A : A + prime - aModPrime;
       
       //printf("First hit in interval %lld\n", interval_p);
       
@@ -140,10 +173,21 @@ void do_test_case(int test_case, ifstream& input)
         printf("Merging sets  %lld with %d\n", set_to_merge_idx, i);
 #endif
       }
-      
+
+#if SHOW_TIME
+if (cycle == print_interval) {
+  cycle = 0;
+  clock_t end_pmain=clock();
+  cout << "Time elapsed.  Cur prime (" << prime << ") primes: (" << print_interval << ") : " << double(diffclock(end_pmain,begin_pmain)) << " ms"<< endl;
+}
+#endif
+
     }
   }
-  
+
+SHOW_TIME_END(main_sieve)
+
+SHOW_TIME_BEGIN(last_count)
   //vector<bool> visited(sets.size(), false);
   LONG_t set_count = 0;
   
@@ -155,8 +199,11 @@ void do_test_case(int test_case, ifstream& input)
 #endif
       ++set_count;
     }
+    
+    delete(sets[i]);
   }
   
+SHOW_TIME_END(last_count)
   //printf("A=%lld B=%lld P=%lld\n", A, B, P);
   
   //cout << numeric_limits<long long>::max() << endl;

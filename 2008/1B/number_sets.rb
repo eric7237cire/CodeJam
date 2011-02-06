@@ -1,6 +1,6 @@
 #DEBUG_OUTPUT = ARGV.size == 0
 DEBUG_OUTPUT = false
-PRINT_TIME = false
+PRINT_TIME = true
 
 require 'set'
 
