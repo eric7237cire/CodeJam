@@ -1,0 +1,1038 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0057)http://code.google.com/codejam/contest/dashboard?c=32015# -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="refresh" content="172795">
+  
+  <title>Dashboard - Round 1C 2008 - Google Code Jam</title>
+  <link rel="stylesheet" type="text/css" href="./Dashboard - Round 1C 2008 - Google Code Jam_files/base.css">
+  <link rel="stylesheet" type="text/css" href="./Dashboard - Round 1C 2008 - Google Code Jam_files/dashboard.css">
+  
+  <script type="text/javascript" src="./Dashboard - Round 1C 2008 - Google Code Jam_files/Dashboard.js"></script>
+  
+  <script type="text/javascript"><!--
+    /**
+     * Initializes GCJ.problems and GCJ.io from Django parameters.
+     * Also initializes the two user specific variables GCJ.isQualified and
+     * GCJ.lastClarSeenTime.
+     * This is the first function called once from GCJ.main().
+     */
+    GCJ.initContestVariables = function () {
+      // Convert Django's 'contest' to 'GCJ.contest'.
+      GCJ.contest.id = "32015";
+      GCJ.contest.name = "Round 1C 2008";
+      GCJ.contest.version = 0;
+      
+        GCJ.contest.version = 9;
+      
+      GCJ.contest.start_int = 1217149200;
+      GCJ.base_url = '/codejam/contest';
+
+      GCJ.isQualified = 0;
+      GCJ.isLoggedIn = 0;
+      GCJ.hasAnalysis = 1;
+      // Convert Django's 'problems' to JS 'GCJ.problems'.
+      
+        GCJ.problems.push({
+            "id": "24486",
+            "key": "agxjb2RlamFtLXByb2RyEAsSCHByb2JsZW1zGKa_AQw",
+            "name": "Text Messaging Outrage",
+            "type": "default"
+        });
+      
+        GCJ.problems.push({
+            "id": "24487",
+            "key": "agxjb2RlamFtLXByb2RyEAsSCHByb2JsZW1zGKe_AQw",
+            "name": "Ugly Numbers",
+            "type": "default"
+        });
+      
+        GCJ.problems.push({
+            "id": "24488",
+            "key": "agxjb2RlamFtLXByb2RyEAsSCHByb2JsZW1zGKi_AQw",
+            "name": "Increasing Speed Limits",
+            "type": "default"
+        });
+      
+
+  
+      // Convert Django's 'all_io' to JS 'GCJ.io'.
+      var io;
+      
+        io = new Array();
+        stat = new Array();
+        
+          io.push({
+              "difficulty": 0,
+              "points": 5,
+              "attempts": 0,
+              "secsSolved": -1,
+              "secsPassed": -1
+          });
+        
+          io.push({
+              "difficulty": 1,
+              "points": 10,
+              "attempts": 0,
+              "secsSolved": -1,
+              "secsPassed": -1
+          });
+        
+        GCJ.io.push(io);
+      
+        io = new Array();
+        stat = new Array();
+        
+          io.push({
+              "difficulty": 0,
+              "points": 10,
+              "attempts": 0,
+              "secsSolved": -1,
+              "secsPassed": -1
+          });
+        
+          io.push({
+              "difficulty": 1,
+              "points": 25,
+              "attempts": 0,
+              "secsSolved": -1,
+              "secsPassed": -1
+          });
+        
+        GCJ.io.push(io);
+      
+        io = new Array();
+        stat = new Array();
+        
+          io.push({
+              "difficulty": 0,
+              "points": 15,
+              "attempts": 0,
+              "secsSolved": -1,
+              "secsPassed": -1
+          });
+        
+          io.push({
+              "difficulty": 1,
+              "points": 35,
+              "attempts": 0,
+              "secsSolved": -1,
+              "secsPassed": -1
+          });
+        
+        GCJ.io.push(io);
+      
+    };
+  //--></script>
+</head>
+
+<body onload="GCJ.main()">
+<div id="logo-div">
+  <a href="http://code.google.com/codejam/">
+    <img src="./Dashboard - Round 1C 2008 - Google Code Jam_files/logo_image0.gif" id="logo" alt="Google Code Jam">
+  </a>
+</div>
+
+<div>
+
+
+<div style="display: none;">
+  <form id="csrf-form-GetInputFile"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="ZWM2YWI5ZDVjNWM3ODZjZDg2MGUyNTViMWI5YmYzZmZ8fEdldElucHV0RmlsZXwxMjk3MDI3OTMyMTAxMjQ1"></div>
+    <input type="hidden" name="cmd" value="GetInputFile">
+  </form>
+  <form id="csrf-form-GetProblemText"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="NTFjZGExZjdjNTYyMDkzMDY3YmQ1OTg3MmNiNGE4NjB8fEdldFByb2JsZW1UZXh0fDEyOTcwMjc5MzIxMDE0Mjc="></div>
+    <input type="hidden" name="cmd" value="GetProblemText">
+  </form>
+  <form id="csrf-form-GetContestAnalysis"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="NDZhZGYyYWI0MjA4NWRkMTdjZGIxMGIxMTU5NzBkZjV8fEdldENvbnRlc3RBbmFseXNpc3wxMjk3MDI3OTMyMTAxNTky"></div>
+    <input type="hidden" name="cmd" value="GetContestAnalysis">
+  </form>
+  <form id="csrf-form-SubmitAnswer"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="ODM5N2ZiM2YwYWI0NWQzOTQ2ZWRlZDk0MjdkN2VkZTJ8fFN1Ym1pdEFuc3dlcnwxMjk3MDI3OTMyMTAxNzcy"></div>
+    <input type="hidden" name="cmd" value="SubmitAnswer">
+  </form>
+  <form id="csrf-form-AskClarification"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="YjhiM2MxNzE5ZjRjN2U2OWFhMWZmYzMzZGQzNGIzNGV8fEFza0NsYXJpZmljYXRpb258MTI5NzAyNzkzMjEwMTk3Nw=="></div>
+    <input type="hidden" name="cmd" value="AskClarification">
+  </form>
+  <form id="csrf-form-GetUserStatus"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="NmViMjc5YWNiNThiY2E4MzdhOTU1MjIyNDk5MTkzMDJ8fEdldFVzZXJTdGF0dXN8MTI5NzAyNzkzMjEwMjE0MA=="></div>
+    <input type="hidden" name="cmd" value="GetUserStatus">
+  </form>
+  <form id="csrf-form-GetClarifications"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="NzkzMzc1ODMyZDFhNjg1MzI3ZTZmM2I4NzYwYmYwYzV8fEdldENsYXJpZmljYXRpb25zfDEyOTcwMjc5MzIxMDIyOTE="></div>
+    <input type="hidden" name="cmd" value="GetClarifications">
+  </form>
+  <form id="csrf-form-GetSubmissionInfo"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="OGU0N2VmNmJjNTU0Y2VmNDI1MGIxMTYzYzRjNWQ2ZTZ8fEdldFN1Ym1pc3Npb25JbmZvfDEyOTcwMjc5MzIxMDI0NDI="></div>
+    <input type="hidden" name="cmd" value="GetSubmissionInfo">
+  </form>
+  <form id="csrf-form-GetScoreboardTops"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="NjBkZDlhYjQxNjNmY2ZkYjMwN2EwZmE4Y2ZhZjIzOWV8fEdldFNjb3JlYm9hcmRUb3BzfDEyOTcwMjc5MzIxMDI1OTg="></div>
+    <input type="hidden" name="cmd" value="GetScoreboardTops">
+  </form>
+  <form id="csrf-form-SetClarificationLastSeenTime"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="N2FhYzM1ZGFhOTQ2Y2E2OTY3ZTE3MTIwYWM3ZjYzYTJ8fFNldENsYXJpZmljYXRpb25MYXN0U2VlblRpbWV8MTI5NzAyNzkzMjEwMjc0OQ=="></div>
+    <input type="hidden" name="cmd" value="SetClarificationLastSeenTime">
+  </form>
+  <form id="csrf-form-GetInput"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="YTY5ZDllNmMzM2M4YjIwMmU4NGEzOTVkMmQ3Y2JhYmN8fEdldElucHV0fDEyOTcwMjc5MzIxMDI4OTY="></div>
+    <input type="hidden" name="cmd" value="GetInput">
+  </form>
+  <form id="csrf-form-GetOutput"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="YjlmZTkzMTg2NDNiNzNjYzcyZmE0NjFjMDUxZWZkZDV8fEdldE91dHB1dHwxMjk3MDI3OTMyMTAzMDUx"></div>
+    <input type="hidden" name="cmd" value="GetOutput">
+  </form>
+  <form id="csrf-form-GetSource"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="OWIxNTM2ZDcxMDUxZDY1Y2ExODIyNWFjM2Q5YzE0MmN8fEdldFNvdXJjZXwxMjk3MDI3OTMyMTAzMTkw"></div>
+    <input type="hidden" name="cmd" value="GetSource">
+  </form>
+  <form id="csrf-form-GetInitialValues"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="M2QzMTZhMjQyMzQ1NTgyNzEwZTI1NWM1NDY4NDhmNGN8fEdldEluaXRpYWxWYWx1ZXN8MTI5NzAyNzkzMjEwMzMzMg=="></div>
+    <input type="hidden" name="cmd" value="GetInitialValues">
+  </form>
+</div>
+
+
+<div id="dsb-page-body" style="display: block; ">
+
+<div id="left-panel">
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <!-- Problem Selection Panel -->
+  <div id="dsb-contest-title">Round 1C 2008</div>
+  <hr class="dsb-hr">
+  <div>
+    
+    <div id="dsb-problem-tab0" class="dsb-problem-tab-open">
+      <div id="dsb-problem-title0" class="dynamic-link">
+        A. Text Messaging Outrage
+      </div>
+    </div>
+    
+    <div id="dsb-problem-tab1" class="dsb-problem-tab-close">
+      <div id="dsb-problem-title1" class="dynamic-link">
+        B. Ugly Numbers
+      </div>
+    </div>
+    
+    <div id="dsb-problem-tab2" class="dsb-problem-tab-close">
+      <div id="dsb-problem-title2" class="dynamic-link">
+        C. Increasing Speed Limits
+      </div>
+    </div>
+    
+  </div>
+  <hr class="dsb-hr">
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div id="dsb-analysis-button" class="dsb-anal-tab-close" style="display: block; ">
+    <div class="dynamic-link">
+       <div id="dsb-analysis-tab">
+         Contest Analysis
+       </div>
+    </div>
+  </div>
+  <div id="dsb-ask-question-button" class="dsb-clar-tab-close">
+    <div class="dynamic-link">
+       <div id="dsb-ask-question-tab" class="dsb-has-new-question-tab">Questions asked (4)</div>
+    </div>
+  </div>
+  <div id="dsb-submissions-button" class="dsb-submissions-tab-close" style="display: none; ">
+    <div class="dynamic-link">
+      <div id="dsb-submissions-tab">
+        View my submissions
+      </div>
+    </div>
+  </div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div class="dsb-mini-tab-wrapper">
+  <div id="dsb-status-div">
+    <div id="dsb-status-header-div" onmouseover="this.style.cursor=&#39;pointer&#39;" onclick="GCJ.toggleStatusPanelVisibility();">
+      <img id="dsb-status-panel-button" src="./Dashboard - Round 1C 2008 - Google Code Jam_files/minus.gif">
+      &nbsp; Submissions
+    </div>
+    <div id="dsb-status-tab" style="display: block; ">
+    
+      <div id="problemStatusWrapper0" class="problemStatusWrapper">
+        <div class="dsb-status-problem-title">Text Messaging Outrage</div>
+        
+        <!-- Input Stats -->
+        <table class="problemStatus">
+        <tbody>
+          <tr class="inputSetStatus">
+            <td id="inputName0_0" class="inputName">5pt</td>
+            <td class="status">
+              <div id="selfStat0_0" class="dsb-mini-status-non-highlight">No submissions</div>
+              <div id="globalStat0_0" class="globalStat" style="display: block; "><b>2204/2255 users</b>  correct (98%)</div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        
+        <!-- Input Stats -->
+        <table class="problemStatus">
+        <tbody>
+          <tr class="inputSetStatus">
+            <td id="inputName0_1" class="inputName">10pt</td>
+            <td class="status">
+              <div id="selfStat0_1" class="dsb-mini-status-non-highlight">No submissions</div>
+              <div id="globalStat0_1" class="globalStat" style="display: block; "><b>1402/2194 users</b>  correct (64%)</div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        
+      </div>
+    
+      <div id="problemStatusWrapper1" class="problemStatusWrapper">
+        <div class="dsb-status-problem-title">Ugly Numbers</div>
+        
+        <!-- Input Stats -->
+        <table class="problemStatus">
+        <tbody>
+          <tr class="inputSetStatus">
+            <td id="inputName1_0" class="inputName">10pt</td>
+            <td class="status">
+              <div id="selfStat1_0" class="dsb-mini-status-non-highlight">No submissions</div>
+              <div id="globalStat1_0" class="globalStat" style="display: block; "><b>554/1040 users</b>  correct (53%)</div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        
+        <!-- Input Stats -->
+        <table class="problemStatus">
+        <tbody>
+          <tr class="inputSetStatus">
+            <td id="inputName1_1" class="inputName">25pt</td>
+            <td class="status">
+              <div id="selfStat1_1" class="dsb-mini-status-non-highlight">No submissions</div>
+              <div id="globalStat1_1" class="globalStat" style="display: block; "><b>82/318 users</b>  correct (26%)</div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        
+      </div>
+    
+      <div id="problemStatusWrapper2" class="problemStatusWrapper">
+        <div class="dsb-status-problem-title">Increasing Speed Limits</div>
+        
+        <!-- Input Stats -->
+        <table class="problemStatus">
+        <tbody>
+          <tr class="inputSetStatus">
+            <td id="inputName2_0" class="inputName">15pt</td>
+            <td class="status">
+              <div id="selfStat2_0" class="dsb-mini-status-non-highlight">No submissions</div>
+              <div id="globalStat2_0" class="globalStat" style="display: block; "><b>398/716 users</b>  correct (56%)</div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        
+        <!-- Input Stats -->
+        <table class="problemStatus">
+        <tbody>
+          <tr class="inputSetStatus">
+            <td id="inputName2_1" class="inputName">35pt</td>
+            <td class="status">
+              <div id="selfStat2_1" class="dsb-mini-status-non-highlight">No submissions</div>
+              <div id="globalStat2_1" class="globalStat" style="display: block; "><b>49/312 users</b>  correct (16%)</div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        
+      </div>
+    
+    </div>
+  </div>
+  </div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <!-- Mini Scoreboard -->
+  <div class="dsb-mini-tab-wrapper">
+    <div id="dsb-scoreboard-div">
+      <div id="dsb-scoreboard-header-div" onmouseover="this.style.cursor=&#39;pointer&#39;" onclick="GCJ.toggleVisibility(
+              &#39;dsb-scoreboard-table&#39;,
+              &#39;dsb-scoreboard-panel-button&#39;,
+              &#39;/codejam/contest/static/minus.gif&#39;,
+              &#39;/codejam/contest/static/plus.gif&#39;)">
+          <img id="dsb-scoreboard-panel-button" src="./Dashboard - Round 1C 2008 - Google Code Jam_files/minus.gif">
+          &nbsp; Top Scores
+      </div>
+      <div id="dsb-scoreboard-table-wrap"><table id="dsb-scoreboard-table" style="display: block; "><tbody><tr class="dsb-scoreboard-row-even" id="sbRow_0" style="display: block; "><td class="dsb-name-td" id="sbName_0">austrin</td><td class="dsb-score-td" id="sbScore_0">100</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_1" style="display: block; "><td class="dsb-name-td" id="sbName_1">Baltazar</td><td class="dsb-score-td" id="sbScore_1">100</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_2" style="display: block; "><td class="dsb-name-td" id="sbName_2">vepifanov</td><td class="dsb-score-td" id="sbScore_2">100</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_3" style="display: block; "><td class="dsb-name-td" id="sbName_3">elizarov</td><td class="dsb-score-td" id="sbScore_3">100</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_4" style="display: block; "><td class="dsb-name-td" id="sbName_4">xhl.kogitsune</td><td class="dsb-score-td" id="sbScore_4">100</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_5" style="display: block; "><td class="dsb-name-td" id="sbName_5">JediKnight</td><td class="dsb-score-td" id="sbScore_5">100</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_6" style="display: block; "><td class="dsb-name-td" id="sbName_6">SergeiRogulenko</td><td class="dsb-score-td" id="sbScore_6">100</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_7" style="display: block; "><td class="dsb-name-td" id="sbName_7">Vasyl</td><td class="dsb-score-td" id="sbScore_7">100</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_8" style="display: block; "><td class="dsb-name-td" id="sbName_8">slex</td><td class="dsb-score-td" id="sbScore_8">100</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_9" style="display: block; "><td class="dsb-name-td" id="sbName_9">frankyym</td><td class="dsb-score-td" id="sbScore_9">100</td></tr></tbody></table></div>
+      <div class="dsb-mini-tab-link">
+        <a target="new" href="http://code.google.com/codejam/contest/scoreboard?c=32015">
+          Full scoreboard
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="right-panel">
+  <div id="dsb-status-msg-wrapper" class="dsb-status-msg-wrapper">
+    <div id="dsb-status-msg" class="dsb-status-msg">
+      <span id="dsb-status-msg-text"></span>
+      <span id="dsb-view-it-link">View it.</span>
+    </div>
+  </div>
+
+  <div id="dsb-contest-title-bar">
+  <div id="dsb-rank-etc">
+    <div id="dsb-time-remaining">Practice Mode</div>
+    <div id="dsb-current-rank-div" style="display: none; ">
+      Rank: <span id="dsb-current-rank-span"></span>
+    </div>
+    <div id="dsb-current-score-div" style="display: none; ">
+      Score: <span id="dsb-current-score-span"></span>
+    </div>
+  </div>
+  
+    <a target="new" href="http://code.google.com/codejam/contest/scoreboard?c=32015">
+      Contest scoreboard</a> |
+    <a href="https://www.google.com/accounts/ServiceLogin?service=ah&continue=http://code.google.com/_ah/login%3Fcontinue%3Dhttp://code.google.com/codejam/contest/dashboard%253Fc%253D32015&ltmpl=&sig=d7365afcdac83f415943557fef5f86be">Sign in</a>
+  
+  </div>
+
+  <!-- Problem Statement -->
+  <div id="main-panel-border" class="dsb-blue-border">
+  <div id="dsb-border-inner">
+    <!-- Problem Statement Title -->
+    <div id="dsb-problem-title-div"><span style="color:#666">Problem A.</span> Text Messaging Outrage</div>
+
+    
+    <div id="dsb-problem-page0" class="dsb-content-pages" style="display: block; ">
+      <!-- Problem Input File Selection -->
+      <div class="dsb-input-panel-text"><span style="color: #666666;">In the practice contest, you may try as many times as you want. Read the quick-start guide <a href="http://code.google.com/codejam/contest/%7B%7B%20splash_page%20%7D%7D/quickstart.html" target="_blank">here.</a></span></div>
+      <table><tbody id="dsb-input-form-table0"><tr><td class="dsb-input-table-description">Small input<br>5 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap0-0" class=""><div id="dsb-input-wrapper0-0" class="dsb-input-wrapper" style="display: inline; "><button class="dsb-input-start-button" id="dsb-input-start-button0-0" style="display: inline; ">Solve A-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain0-0" style="display: none; "><img class="dsb-input-link-img" src="./Dashboard - Round 1C 2008 - Google Code Jam_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text0-0">Download A-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption0-0" style="display: none; "></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption0-0" style="display: none; ">Your submission was received. You can still <span class="dsb-input-link-text">resubmit</span> for <span id="dsb-resubmit-timer0-0"></span> minutes.<br> Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div0-0" style="display: none; "><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_0"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> A-small-practice.in.</div><form id="submit-formio_timer_0" action="http://code.google.com/codejam/contest/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="ODM5N2ZiM2YwYWI0NWQzOTQ2ZWRlZDk0MjdkN2VkZTJ8fFN1Ym1pdEFuc3dlcnwxMjk3MDI3OTMyMTAxNzcy"><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_0" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source file(s):&nbsp;&nbsp;</td><td><div id="source-filesio_timer_0"><div id="input-file-divio_timer_0-0"><span id="source-fileio_timer_0-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_0-0" class="dsb-submit-form-links" style="visibility: hidden; ">remove</span></div></div><span id="add-source-fileio_timer_0" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_0" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_0" type="button" value="Hide"></div><div id="source-file-namesio_timer_0"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="contest" value="32015"><input type="hidden" name="problem" value="24486"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_0" value="1"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>10 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap0-1" class=""><div id="dsb-input-wrapper0-1" class="dsb-input-wrapper" style="display: inline; "><button class="dsb-input-start-button" id="dsb-input-start-button0-1" style="display: inline; ">Solve A-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain0-1" style="display: none; "><img class="dsb-input-link-img" src="./Dashboard - Round 1C 2008 - Google Code Jam_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text0-1">Download A-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption0-1" style="display: none; "></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption0-1" style="display: none; ">Your submission was received. You can still <span class="dsb-input-link-text">resubmit</span> for <span id="dsb-resubmit-timer0-1"></span> minutes.<br> Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div0-1" style="display: none; "><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_1"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining<br>time-frame. Only your last submission will count.</div><form id="submit-formio_timer_1" action="http://code.google.com/codejam/contest/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="ODM5N2ZiM2YwYWI0NWQzOTQ2ZWRlZDk0MjdkN2VkZTJ8fFN1Ym1pdEFuc3dlcnwxMjk3MDI3OTMyMTAxNzcy"><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_1" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source file(s):&nbsp;&nbsp;</td><td><div id="source-filesio_timer_1"><div id="input-file-divio_timer_1-0"><span id="source-fileio_timer_1-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_1-0" class="dsb-submit-form-links" style="visibility: hidden; ">remove</span></div></div><span id="add-source-fileio_timer_1" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_1" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_1" type="button" value="Hide"></div><div id="source-file-namesio_timer_1"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="contest" value="32015"><input type="hidden" name="problem" value="24486"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_1" value="1"></form></div></div></div></td></tr></tbody></table>
+      <!-- Problem Statement -->
+      <div id="dsb-problem-content-div0" class="dsb-problem-content-div" style="width: 40em; "><p class="problem-item">The story</p>
+<p>
+Professor Loony, a dear friend of mine, stormed into my office. His face was red and he looked very angry. The first thing that came out of his mouth was "Damn those phone manufacturers. I was trying to send a text message, and it took me more than ten minutes to type a one-line message." I tried to calm him down. "But what is wrong? Why did it take you so long?" He continued, "Don't you see?! Their  placement of the letters is so messed up? Why is 's' the 4th letter on its key? and 'e'? Why is it not the first letter on its key? I have to press '7' FOUR times to type an 's'? This is lunacy!"
+</p>
+<p>
+"Calm down, my friend," I said, "This scheme has been in use for so long, even before text messaging was invented. They had to keep it that way."
+</p>
+<p>
+"That's not an excuse," his face growing redder and redder. "It is time to change all this. It was a stupid idea to start with. And while we are at it, how come they only put letters on 8 keys? Why not use all 12? And why do they have to be consecutive?"
+</p>
+<p>
+"Umm... I... don't... know," I replied.
+</p>
+<p>
+"Ok, that's it. Those people are clearly incompetent. I am sure someone can come up with a better scheme."
+</p>
+<p>
+He was one of <i>those</i> people, I could see. People who complain about the problem, but never actually try to solve it. 
+</p>
+<p>
+In this problem, you are required to come up with the best letter placement of keys to minimize the number of key presses required to type a message. You will be given the number of keys, the maximum number of letters we can put on every key, the total number of letters in the alphabet, and the frequency of every letter in the message.  Letters can be placed anywhere on the keys and in any order. Each letter can only appear on one key. Also, the alphabet can have more than 26 letters (it is not English).
+</p>
+<p>
+For reference, the current phone keypad looks like this<br>
+</p><pre>key 2: abc
+key 3: def
+key 4: ghi
+key 5: jkl
+key 6: mno
+key 7: pqrs
+key 8: tuv
+key 9: wxyz
+</pre>
+The first press of a key types the first letter. Each subsequent press advances to the next letter. For example, to type the word "snow", you need to press "7" four times, followed by "6" twice, followed by "6" three times, followed by "9" once. The total number of key presses is 10.
+<p></p>
+
+<p class="problem-item">Input</p>
+<p>
+The first line in the input file contains the number of test cases <b>N</b>. This is followed by <b>N</b> cases. Each case consists of two lines. On the first line we have the maximum number of letters to place on a key (<b>P</b>), the number of keys available (<b>K</b>) and the
+number of letters in our alphabet (<b>L</b>) all separated by single spaces.
+The second line has <b>L</b> non-negative integers. Each number represents the frequency of a certain letter. The first number is how many times the first letter is used, the second number is how many times the second letter is used, and so on.
+</p>
+
+<p class="problem-item">Output</p>
+<p>
+For each case, you should output the following
+</p><pre>Case #x: [minimum number of keypad presses]
+</pre>
+indicating the number of keypad presses to type the message for the optimal layout.<p></p>
+
+<p class="problem-item">Limits</p>
+<p>
+<b>P</b> * <b>K</b> ≥ <b>L</b> <br>
+0 ≤ The frequency of each letter ≤ 1&nbsp;000&nbsp;000
+</p>
+<p class="problem-item">Small dataset</p>
+<p>
+1 ≤ <b>N</b> ≤ 10<br>
+1 ≤ <b>P</b> ≤ 10<br>
+1 ≤ <b>K</b> ≤ 12<br>
+1 ≤ <b>L</b> ≤ 100<br>
+</p>
+<p class="problem-item">Large dataset</p>
+<p>
+1 ≤ <b>N</b> ≤ 100<br>
+1 ≤ <b>P</b> ≤ 1&nbsp;000<br>
+1 ≤ <b>K</b> ≤ 1&nbsp;000<br>
+1 ≤ <b>L</b> ≤ 1&nbsp;000<br>
+</p>
+
+<p class="problem-item">Sample</p>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="problem-item-gray">Input</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr><td>
+<code>
+2<br>
+3 2 6<br>
+8 2 5 2 4 9<br>
+3 9 26<br>
+1 1 1 100 100 1 1 1 1 1 1 1 1 1 1 1 1 10 11 11 11 11 1 1 1 100<br>
+<br>
+</code>
+</td></tr>
+<tr><td>
+<br>
+<span class="problem-item-gray">Output</span>
+<br>&nbsp;
+</td></tr>
+<tr><td>
+<code>
+Case #1: 47<br>
+Case #2: 397<br>
+<br>
+</code>
+</td></tr>
+</tbody></table>
+</div>
+
+</div>
+    </div>
+    
+    <div id="dsb-problem-page1" class="dsb-content-pages">
+      <!-- Problem Input File Selection -->
+      <div class="dsb-input-panel-text"><span style="color: #666666;">In the practice contest, you may try as many times as you want. Read the quick-start guide <a href="http://code.google.com/codejam/contest/%7B%7B%20splash_page%20%7D%7D/quickstart.html" target="_blank">here.</a></span></div>
+      <table><tbody id="dsb-input-form-table1"><tr><td class="dsb-input-table-description">Small input<br>10 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap1-0" class=""><div id="dsb-input-wrapper1-0" class="dsb-input-wrapper" style="display: inline; "><button class="dsb-input-start-button" id="dsb-input-start-button1-0" style="display: inline; ">Solve B-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain1-0" style="display: none; "><img class="dsb-input-link-img" src="./Dashboard - Round 1C 2008 - Google Code Jam_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text1-0">Download B-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption1-0" style="display: none; "></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption1-0" style="display: none; ">Your submission was received. You can still <span class="dsb-input-link-text">resubmit</span> for <span id="dsb-resubmit-timer1-0"></span> minutes.<br> Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div1-0" style="display: none; "><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_2"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> B-small-practice.in.</div><form id="submit-formio_timer_2" action="http://code.google.com/codejam/contest/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="ODM5N2ZiM2YwYWI0NWQzOTQ2ZWRlZDk0MjdkN2VkZTJ8fFN1Ym1pdEFuc3dlcnwxMjk3MDI3OTMyMTAxNzcy"><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_2" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source file(s):&nbsp;&nbsp;</td><td><div id="source-filesio_timer_2"><div id="input-file-divio_timer_2-0"><span id="source-fileio_timer_2-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_2-0" class="dsb-submit-form-links" style="visibility: hidden; ">remove</span></div></div><span id="add-source-fileio_timer_2" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_2" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_2" type="button" value="Hide"></div><div id="source-file-namesio_timer_2"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="contest" value="32015"><input type="hidden" name="problem" value="24487"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_2" value="1"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>25 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap1-1" class=""><div id="dsb-input-wrapper1-1" class="dsb-input-wrapper" style="display: inline; "><button class="dsb-input-start-button" id="dsb-input-start-button1-1" style="display: inline; ">Solve B-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain1-1" style="display: none; "><img class="dsb-input-link-img" src="./Dashboard - Round 1C 2008 - Google Code Jam_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text1-1">Download B-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption1-1" style="display: none; "></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption1-1" style="display: none; ">Your submission was received. You can still <span class="dsb-input-link-text">resubmit</span> for <span id="dsb-resubmit-timer1-1"></span> minutes.<br> Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div1-1" style="display: none; "><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_3"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining<br>time-frame. Only your last submission will count.</div><form id="submit-formio_timer_3" action="http://code.google.com/codejam/contest/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="ODM5N2ZiM2YwYWI0NWQzOTQ2ZWRlZDk0MjdkN2VkZTJ8fFN1Ym1pdEFuc3dlcnwxMjk3MDI3OTMyMTAxNzcy"><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_3" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source file(s):&nbsp;&nbsp;</td><td><div id="source-filesio_timer_3"><div id="input-file-divio_timer_3-0"><span id="source-fileio_timer_3-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_3-0" class="dsb-submit-form-links" style="visibility: hidden; ">remove</span></div></div><span id="add-source-fileio_timer_3" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_3" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_3" type="button" value="Hide"></div><div id="source-file-namesio_timer_3"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="contest" value="32015"><input type="hidden" name="problem" value="24487"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_3" value="1"></form></div></div></div></td></tr></tbody></table>
+      <!-- Problem Statement -->
+      <div id="dsb-problem-content-div1" class="dsb-problem-content-div" style="width: 40em; "><p class="problem-item">Problem</p>
+
+<p>
+Once upon a time in a strange situation, people called a number <i>ugly</i> if it was divisible by any of the one-digit primes (2, 3, 5 or 7). Thus, 14 is ugly, but 13 is fine. 39 is ugly, but 121 is not. Note that 0 is ugly. Also note that negative numbers can also be ugly; -14 and -39 are examples of such numbers.
+</p>
+
+<p>
+One day on your free time, you are gazing at a string of digits, something like:<br>
+</p><pre>123456
+</pre>
+You are amused by how many possibilities there are if you are allowed to insert <i>plus</i> or <i>minus</i> signs between the digits. For example you can make
+<pre>1 + 234 - 5 + 6 = 236
+</pre>
+which is ugly. Or
+<pre>123 + 4 - 56 = 71
+</pre>
+which is not ugly.
+<p></p>
+
+<p>
+It is easy to count the number of different ways you can play with the digits: Between each two adjacent digits you may choose put a plus sign, a minus sign, or nothing. Therefore, if you start with D digits there are 3<sup>D-1</sup> expressions you can make.
+</p>
+<p>
+Note that it is fine to have leading zeros for a number. If the string is "01023", then "01023", "0+1-02+3" and "01-023" are legal expressions.
+</p>
+
+<p>
+Your task is simple: Among the 3<sup>D-1</sup> expressions, count how many of them evaluate to an ugly number.
+</p>
+
+<p class="problem-item">Input</p>
+<p>
+The first line of the input file contains the number of cases, <b>N</b>. Each test case will be a single line containing a non-empty string of decimal digits.
+</p>
+
+<p class="problem-item">Output</p>
+<p>
+For each test case, you should output a line <br>
+</p><pre>Case #<b>X</b>: <b>Y</b></pre> 
+where <b>X</b> is the case number, starting from 1, and <b>Y</b> is the number of expressions that evaluate to an ugly number.
+
+<p class="problem-item">Limits</p>
+<p>
+0 &lt;= <b>N</b> &lt;= 100.
+</p>
+<p>
+The string in each test case will be non-empty and will contain only characters '0' through '9'.
+</p>
+
+<p class="problem-item">Small dataset</p>
+<p>
+Each string is no more than 13 characters long.
+</p>
+<p class="problem-item">Large dataset</p>
+<p>
+Each string is no more than 40 characters long.
+</p>
+
+<p class="problem-item">Sample</p>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="problem-item-gray">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="problem-item-gray">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+4<br>
+1<br>
+9<br>
+011<br>
+12345<br>
+<br>
+</code>
+</td>
+<td>
+<code>
+Case #1: 0<br>
+Case #2: 1<br>
+Case #3: 6<br>
+Case #4: 64<br>
+<br>
+</code>
+</td></tr></tbody></table>
+</div>
+</div>
+    </div>
+    
+    <div id="dsb-problem-page2" class="dsb-content-pages">
+      <!-- Problem Input File Selection -->
+      <div class="dsb-input-panel-text"><span style="color: #666666;">In the practice contest, you may try as many times as you want. Read the quick-start guide <a href="http://code.google.com/codejam/contest/%7B%7B%20splash_page%20%7D%7D/quickstart.html" target="_blank">here.</a></span></div>
+      <table><tbody id="dsb-input-form-table2"><tr><td class="dsb-input-table-description">Small input<br>15 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap2-0" class=""><div id="dsb-input-wrapper2-0" class="dsb-input-wrapper" style="display: inline; "><button class="dsb-input-start-button" id="dsb-input-start-button2-0" style="display: inline; ">Solve C-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain2-0" style="display: none; "><img class="dsb-input-link-img" src="./Dashboard - Round 1C 2008 - Google Code Jam_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text2-0">Download C-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption2-0" style="display: none; "></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption2-0" style="display: none; ">Your submission was received. You can still <span class="dsb-input-link-text">resubmit</span> for <span id="dsb-resubmit-timer2-0"></span> minutes.<br> Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div2-0" style="display: none; "><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_4"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> C-small-practice.in.</div><form id="submit-formio_timer_4" action="http://code.google.com/codejam/contest/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="ODM5N2ZiM2YwYWI0NWQzOTQ2ZWRlZDk0MjdkN2VkZTJ8fFN1Ym1pdEFuc3dlcnwxMjk3MDI3OTMyMTAxNzcy"><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_4" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source file(s):&nbsp;&nbsp;</td><td><div id="source-filesio_timer_4"><div id="input-file-divio_timer_4-0"><span id="source-fileio_timer_4-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_4-0" class="dsb-submit-form-links" style="visibility: hidden; ">remove</span></div></div><span id="add-source-fileio_timer_4" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_4" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_4" type="button" value="Hide"></div><div id="source-file-namesio_timer_4"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="contest" value="32015"><input type="hidden" name="problem" value="24488"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_4" value="1"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>35 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap2-1" class=""><div id="dsb-input-wrapper2-1" class="dsb-input-wrapper" style="display: inline; "><button class="dsb-input-start-button" id="dsb-input-start-button2-1" style="display: inline; ">Solve C-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain2-1" style="display: none; "><img class="dsb-input-link-img" src="./Dashboard - Round 1C 2008 - Google Code Jam_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text2-1">Download C-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption2-1" style="display: none; "></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption2-1" style="display: none; ">Your submission was received. You can still <span class="dsb-input-link-text">resubmit</span> for <span id="dsb-resubmit-timer2-1"></span> minutes.<br> Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div2-1" style="display: none; "><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_5"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining<br>time-frame. Only your last submission will count.</div><form id="submit-formio_timer_5" action="http://code.google.com/codejam/contest/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="ODM5N2ZiM2YwYWI0NWQzOTQ2ZWRlZDk0MjdkN2VkZTJ8fFN1Ym1pdEFuc3dlcnwxMjk3MDI3OTMyMTAxNzcy"><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_5" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source file(s):&nbsp;&nbsp;</td><td><div id="source-filesio_timer_5"><div id="input-file-divio_timer_5-0"><span id="source-fileio_timer_5-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_5-0" class="dsb-submit-form-links" style="visibility: hidden; ">remove</span></div></div><span id="add-source-fileio_timer_5" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_5" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_5" type="button" value="Hide"></div><div id="source-file-namesio_timer_5"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="contest" value="32015"><input type="hidden" name="problem" value="24488"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_5" value="1"></form></div></div></div></td></tr></tbody></table>
+      <!-- Problem Statement -->
+      <div id="dsb-problem-content-div2" class="dsb-problem-content-div" style="width: 40em; "><p class="problem-item">Problem</p>
+<p>You were driving along a highway when you got caught by the road police for speeding. It turns out that they've been following you, and they were amazed by the fact that you were accelerating the whole time without using the brakes! And now you desperately need an excuse to explain that.</p>
+<p>You've decided that it would be reasonable to say "all the speed limit signs I saw were in increasing order, that's why I've been accelerating". The police officer laughs in reply, and tells you all the signs that are placed along the segment of highway you drove, and says that's unlikely that you were so lucky just to see some part of these signs that were in increasing order.</p>
+<p>Now you need to estimate that likelihood, or, in other words, find out how many different subsequences of the given sequence are strictly increasing. The empty subsequence does not count since that would imply you didn't look at any speed limits signs at all!
+</p><p>For example, (1, 2, 5) is an increasing subsequence of (1, 4, 2, 3, 5, 5), and we count it twice because there are two ways to select (1, 2, 5) from the list.
+</p><p class="problem-item">Input</p>
+<p>The first line of input gives the number of cases, <b>N</b>.
+<b>N</b> test cases follow. The first line of each case contains <b>n</b>, <b>m</b>, <b>X</b>, <b>Y</b> and <b>Z</b> each separated by a space.  <b>n</b> will be the length of the sequence of speed limits. <b>m</b> will be the length of the generating array A. The next <b>m</b> lines will contain the <b>m</b> elements of A, one integer per line (from A[0] to A[<b>m</b>-1]).
+</p>
+<p>
+Using A, <b>X</b>, <b>Y</b> and <b>Z</b>, the following pseudocode will <i>print</i> the speed limit sequence in order.  mod indicates the remainder operation.
+<code></code></p><pre><code>for i = 0 to n-1
+  <i>print</i> A[i mod <b>m</b>]
+  A[i mod <b>m</b>] = (<b>X</b> * A[i mod <b>m</b>] + <b>Y</b> * (i + 1)) mod <b>Z</b>
+</code></pre>
+<p></p>
+<p>
+Note: The way that the input is generated has nothing to do with the intended solution and exists solely to keep the size of the input files low.
+</p>
+<p class="problem-item">Output</p>
+<p>
+For each test case you should output one line containing "Case #<b>T</b>: <b>S</b>" (quotes for clarity) where <b>T</b> is the number of the test case and <b>S</b> is the number of non-empty increasing subsequences mod 1<sub>&nbsp;</sub>000<sub>&nbsp;</sub>000<sub>&nbsp;</sub>007.
+</p>
+<p class="problem-item">Limits</p>
+<p>
+1 ≤ <b>N</b> ≤ 20<br>
+1 ≤ <b>m</b> ≤ 100<br>
+0 ≤ <b>X</b> ≤ 10<sup>9</sup><br>
+0 ≤ <b>Y</b> ≤ 10<sup>9</sup><br>
+1 ≤ <b>Z</b> ≤ 10<sup>9</sup><br>
+0 ≤ <b>A[i]</b> &lt; <b>Z</b><br>
+</p>
+<p class="problem-item">Small dataset</p>
+<p>
+1 ≤ <b>m</b> ≤ <b>n</b> ≤ 1000
+</p>
+<p class="problem-item">Large dataset</p>
+<p>
+1 ≤ <b>m</b> ≤ <b>n</b> ≤ 500&nbsp;000
+</p>
+
+<p class="problem-item">Sample</p>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="problem-item-gray">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="problem-item-gray">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+2<br>
+5 5 0 0 5<br>
+1<br>
+2<br>
+1<br>
+2<br>
+3<br>
+6 2 2 1000000000 6<br>
+1<br>
+2<br>
+<br>
+</code>
+</td><td>
+<code>
+Case #1: 15<br>
+Case #2: 13<br>
+<br>
+</code>
+</td></tr></tbody></table>
+</div>
+
+The sequence of speed limit signs for case 2 should be 1, 2, 0, 0, 0, 4.</div>
+    </div>
+    
+
+    <div id="dsb-analysis-page" class="dsb-content-pages">
+    
+      <div id="dsb-analysis-selections">
+        <span id="dsb-analysis-selection-p3" class="dsb-analysis-selected">Overview</span>
+        
+        &nbsp; | &nbsp;
+        <span id="dsb-analysis-selection-p0" class="dsb-analysis-not-selected">
+          Problem A</span>
+        
+        &nbsp; | &nbsp;
+        <span id="dsb-analysis-selection-p1" class="dsb-analysis-not-selected">
+          Problem B</span>
+        
+        &nbsp; | &nbsp;
+        <span id="dsb-analysis-selection-p2" class="dsb-analysis-not-selected">
+          Problem C</span>
+        
+      </div>
+      <div id="dsb-problem-analysis-div3" class="dsb-problem-content-div"><p>
+In this last sub-round of Google Code Jam 2008 Round 1, 2240 contestants solved at least one dataset, 17 among them got the perfect score of 100 points.
+</p>
+<p>
+The first problem was the easiest one among the 9 Round 1 problems. It is interesting to note that there were contestants from the first page of the scoreboard who solved all of the datasets, except for A-large.
+</p>
+<p>
+In the second problem, dynamic programming, a common topic in programming contests, made its first appearance in this tournament. We intended this to be an easy dynamic programming problem with a little trick in number theory. From the scoreboard we can tell that this is not a trivial problem.
+</p>
+<p>
+The last problem, with a nice story, can be regarded as an exercise in data structures. In fact, the small dataset can be solved using standard dynamic programming. For the large dataset, one needs a way to speed it up. In this analysis we introduce an implementation that uses a binary indexed tree.
+</p>
+
+<br>
+<hr>
+<p class="problem-item">Credits</p>
+<p>Problem A. <i>Text Messaging Outrage</i> Written by Mohamed Eldawy. Prepared by Marius Andrei</p>
+<p>Problem B. <i>Ugly Numbers</i> Written and prepared Xiaomin Chen.</p>
+<p>Problem C. <i>Increasing Speed Limits</i> Written by Petr Mitrichev. Prepared by Mark Gordon.</p>
+<p>Contest analysis presented by Cosmin Negruseri, Xiaomin Chen, and Mark Gordon.</p>
+</div>
+      
+      <div id="dsb-problem-analysis-div0" class="dsb-problem-content-div" style="display:none"><p>
+This was the one of the easiest problems of Round 1. We simply need to fill the cell phone keyboard greedily. We put the <b>K</b> most frequent letters in the first positions of the <b>K</b> keys, the next <b>K</b> most frequent letters in the second positions, and so on. Any optimal solution will have this structure because if it does not, then it can be improved by swapping a more frequent character from a higher indexed position of some key with a less frequent character from a lower indexed position, thus decreasing the number of key presses.
+</p>
+<p>
+Here is code that implements this solution:
+</p><pre>long long A[1000];
+
+int main() {
+  int N;
+  cin &gt;&gt; N;
+  for(int t = 1; t &lt;= N; t++) {
+    long long result = 0;
+    int P, K, L;
+    cin &gt;&gt; P &gt;&gt; K &gt;&gt; L;
+    for(int i = 0; i &lt; L; i++) cin &gt;&gt; A[i];
+    sort(A, A+L);
+    reverse(A, A+L);
+
+    for(int i = 0; i &lt; L; i++)
+      result += (1 + i / K) * A[i];
+
+    cout &lt;&lt; "Case #" &lt;&lt; t &lt;&lt; ": " &lt;&lt; result &lt;&lt; endl;
+  }
+}
+</pre>
+<p></p></div>
+      
+      <div id="dsb-problem-analysis-div1" class="dsb-problem-content-div" style="display:none"><p>
+As the problem clearly states, there are 3<sup>D-1</sup> ways you need to consider. When <b>D</b> is no larger than 13, as it is in the small dataset, one may simply generate all the possible combinations and calculate each of them. However, with <b>D</b> as large as 40, brute force is clearly too slow.
+</p>
+<p>
+As you might expect from a programming contest, the magic term is <a href="http://en.wikipedia.org/wiki/Dynamic_programming" target="_blank">dynamic programming</a>. This is the first problem in Google Code Jam 2008 that falls into the standard dynamic programming (DP) category; and one can be assured that there are more to come.
+</p>
+<p>
+As in any DP problem, the first task is to structure the problem in a good way so there are not too many numbers to compute, and each number can be computed easily from previous ones. If you observe the solutions of the top scorers in this sub-round, you will see, although their algorithms vary to some degre, they all contain the following magic number<br>
+</p><pre>2 · 3 · 5 · 7 = 210.
+</pre>
+Let us say we have two numbers, x and y, knowing the ugliness of x and y is not enough to decide whether <nobr>x + y</nobr> and <nobr>x - y</nobr> are ugly. On the other hand, we do not need the exact value of x and y. Knowing <nobr>x % 210</nobr> and <nobr>y % 210</nobr> is enough for us to decide if, say, <nobr>x + y</nobr> is ugly or not.
+<p></p>
+<p>
+For those who prefer mathematical terms, we are using the <a href="http://en.wikipedia.org/wiki/Chinese_remainder_theorem" target="_blank">Chinese remainder theorem</a>. Our problem can be viewed as arithmetics on the cyclic group <nobr>(Z<sub>210</sub>, +)</nobr>.
+</p>
+So, let us outline the most central step of our dynamic programming solution.
+We want to compute<br>
+<pre>dyn[i][x] := number of ways we get an expression evaluating 
+          to x (mod 210) if we only consider the first i
+          characters of the string. (*)
+</pre>
+So, we have only 40·210 numbers to consider. For each dyn[i][x], we try all possible positions for inserting the last '+' or '-' sign. If the last sign was a '+' before position j (j&lt;i), and the number formed by digits from position j to position i is d, then we want to know <nobr>dyn[j-1][(x-d)%210]</nobr>. On the other hand, if the sign inserted was a '-', then we want to look at <nobr>dyn[j-1][(x+d)%210]</nobr>.
+<p></p>
+<p>
+Here is a masterful implementation from our own Derek Kisman. His complete C++ solution follows the idea above, with a little twist and some nice programming tricks.<br>
+</p><pre>#define MOD (2*3*5*7)
+string s;
+long long dyn[41][MOD];
+
+main() {
+  int N, prob=1;
+  for (cin &gt;&gt; N; N--;) {
+    cin &gt;&gt; s;
+    memset(dyn, 0, sizeof(dyn));
+    dyn[0][0] = 1;
+    for (int i = 0; i &lt; s.size(); i++)
+    for (int sgn = (i==0) ? 1 : -1; sgn &lt;= 1; sgn += 2) {
+      int cur = 0;
+      for (int j = i; j &lt; s.size(); j++) {
+        cur = (cur*10 + s[j]-'0')%MOD;
+        for (int x = 0; x &lt; MOD; x++)
+          dyn[j+1][(x+sgn*cur+MOD)%MOD] += dyn[i][x];
+      }
+    }
+    long long ret = 0;
+    for (int x = 0; x &lt; MOD; x++)
+      if (x%2 == 0 || x%3 == 0 || x%5 == 0 || x%7 == 0)
+        ret += dyn[s.size()][x];
+    cout &lt;&lt; "Case #" &lt;&lt; prob++ &lt;&lt; ": " &lt;&lt; ret &lt;&lt; endl;
+  }
+}
+</pre>
+<p></p>
+
+<p class="problem-item">
+More information:
+</p>
+<p>
+<a href="http://www.google.com/search?q=dynamic+programming" target="_blank">Dynamic programming</a> - 
+<a href="http://www.google.com/search?q=chinese+remainder+theorem" target="_blank">Chinese remainder theorem</a>
+</p>
+</div>
+      
+      <div id="dsb-problem-analysis-div2" class="dsb-problem-content-div" style="display:none"><p>
+This was the hard problem for round 1C, with 398 people solving the small i/o set and 49 people solving the large i/o set during the contest.
+</p>
+
+<p>
+The problem asks us to count the number of strictly increasing subsequences of the original sequence.  This lends itself nicely to a dynamic programming solution for the small input.
+</p>
+
+<p>
+Let f(x) be the number of strictly increasing subsequences that start with node x and S[x] be the value of the sequence at position x.  At any node x we can either end the subsequence at x or connect it to any of the following nodes that are strictly greater than node x.  Therefore, you could do something like this to find out how many strictly increasing subsequences start at each index.
+</p>
+
+<p></p><pre><code>
+f(x) = 1
+for i = n to 1
+  f(i) = 1
+  for j = i + 1 to n
+    if S[i] &lt; S[j]
+      f(i) = f(i) + f(j)
+</code></pre><p></p>
+
+<p>
+After doing that, solving the original problem is just a matter of summing the number of ways you make a strictly increasing subsequence starting at each position.
+</p>
+
+<p>
+The key to solving the large i/o set is to realize we can make the inner loop run much faster.  What we really want to do is sum all of the previous f(j)s for which <nobr>S[j] &gt; S[i]</nobr>.  This is a classic tree problem.  There are a number of tree data structures you could use including a binary indexed tree, a segment tree, or a binary search tree, to name a few, that will allow you to solve the problem in O(n log n) time per case.
+</p>
+
+<p>
+The first two types of trees are fairly easy to implement although they add a complication since they use an amount of memory proportional to the maximum value in the sequence.  Fortunately this can be worked around by normalizing S to contain only values between 0 and n-1 without changing the the <nobr>S[i] &lt; S[j]</nobr> property for any i and j.  This can be done by transforming S[i] to be the first occurrence of S[i] in a sorted list of S.
+</p>
+
+<p>
+Here is an implementation of these ideas in C++.
+</p>
+
+<p></p><pre><code>
+#define MAXN (1&lt;&lt;20)
+int sum_bit[MAXN];
+
+int sum_bit_get(int x)
+{
+  int ret = 0;
+  for(int i = x | MAXN; i &lt; 2 * MAXN; i += i &amp; -i)
+    ret = (ret + sum_bit[i ^ MAXN]) % 1000000007;
+  return ret;
+}
+
+void sum_bit_add(int x, int v)
+{
+  for(int i = x | MAXN; i; i &amp;= i - 1)
+    sum_bit[i ^ MAXN] = (sum_bit[i ^ MAXN] + v) % 1000000007;
+}
+
+int S[1000000];
+int S2[1000000];
+
+int main()
+{
+  int T; cin &gt;&gt; T;
+  long long X, Y, Z, A[100];
+  for(int t = 1; t &lt;= T; t++) {
+    int n, m; cin &gt;&gt; n &gt;&gt; m &gt;&gt; X &gt;&gt; Y &gt;&gt; Z;
+    for(int i = 0; i &lt; m; i++) cin &gt;&gt; A[i];
+
+    // Generate S
+    for(int i = 0; i &lt; n; i++) {
+      S[i] = A[i % m];
+      A[i % m] = (X * A[i % m] + Y * (i + 1)) % Z;
+    }
+
+    // Normalize S
+    memcpy(S2, S, sizeof(S));
+    sort(S2, S2+n);
+    for(int i = 0; i &lt; n; i++)
+      S[i] = lower_bound(S2, S2+n, S[i]) - S2;
+
+    // Calculate f(i) and sum them in to result.
+    int result = 0;
+    memset(sum_bit, 0, sizeof(sum_bit));
+    for(int i = n - 1; i &gt;= 0; i--) {
+      int add = 1 + sum_bit_get(S[i] + 1);
+      sum_bit_add(S[i], add);
+      result = (result + add) % 1000000007;
+    }
+    
+    cout &lt;&lt; "Case #" &lt;&lt; t &lt;&lt; ": " &lt;&lt; result &lt;&lt; endl;
+  }
+  return 0;
+}
+</code></pre><p></p>
+
+<p>
+In addition to trees, there was a "hacker's" <nobr>O(n √n)</nobr> solution.  The idea behind it is similar to the idea mentioned in solution 1 of the Mousetrap editorial (from Round 1B) where, in addition to maintaining the value at each position, we maintain sums for ranges of length √N.  These tables can be maintained in constant time and take √n time to query.
+</p>
+
+More Information:<br>
+<p>
+<a href="http://www.google.com/search?q=binary+indexed+tree" target="_blank">Binary Indexed Tree</a>
+</p></div>
+      
+    
+    </div>
+
+    <div id="dsb-clarification-page" class="dsb-content-pages">
+      <!-- The clarifications table -->
+      <div id="clarTableDiv" class="clarTableWrapper"></div><div>
+        <table id="dsb-clarification-table" style="display: block; ">
+          <colgroup span="9">
+            <col width="16%"><col width="2%">
+            <col width="10%"><col width="2%">
+            <col width="28%"><col width="2%">
+            <col width="10%"><col width="2%">
+            <col width="28%">
+          </colgroup>
+          <thead>
+            <tr>
+            <th>Category</th><th>&nbsp;</th>
+            <th class="clarTimeColumn">Asked</th><th>&nbsp;</th>
+            <th>Question</th><th>&nbsp;</th>
+            <th class="clarTimeColumn">Answered</th><th>&nbsp;</th>
+            <th>Answer</th>
+            </tr>
+          </thead>
+          <tbody id="dsb-clarification-tbody"><tr class="dsb-clar-tr dsb-clar-tr-announcement"><td class="clarProbTd">[Unknown]<br><span style="color: #666">Announcement</span></td><td></td><td class="clarTimeColumn">1:01:43</td><td></td><td><i>Is one value considered a strictly increasing sequence?</i></td><td></td><td class="clarTimeColumn" style="color: red; ">1:04:21</td><td></td><td><i>Yes. Strictly increasing sequences can have length one or larger.</i></td></tr><tr class="dsb-clar-tr dsb-clar-tr-announcement"><td class="clarProbTd">[Unknown]<br><span style="color: #666">Announcement</span></td><td></td><td class="clarTimeColumn">42:49</td><td></td><td><i>Is it allowed to put a minus at the beginning of the digits?</i></td><td></td><td class="clarTimeColumn" style="color: red; ">49:43</td><td></td><td><i>No.</i></td></tr><tr class="dsb-clar-tr dsb-clar-tr-announcement"><td class="clarProbTd">[Unknown]<br><span style="color: #666">Announcement</span></td><td></td><td class="clarTimeColumn">24:39</td><td></td><td><i>How is it possible that there is no solution as long as P*K &gt;= L (How can it be impossible?)</i></td><td></td><td class="clarTimeColumn" style="color: red; ">29:52</td><td></td><td><i>We have removed the "impossible" part from the output section.</i></td></tr><tr class="dsb-clar-tr dsb-clar-tr-announcement"><td class="clarProbTd">[General]<br><span style="color: #666">Announcement</span></td><td></td><td class="clarTimeColumn">7:06</td><td></td><td><i>What message are we computing optimal number of presses for Problem A?</i></td><td></td><td class="clarTimeColumn" style="color: red; ">9:26</td><td></td><td><i>Please read the problem statement more carefully.</i></td></tr></tbody>
+        </table>
+      </div>
+      <div id="dsb-submit-clarification" style="display: none; ">
+        <!-- The link to ask a clarification -->
+        <div style="padding: 0.5em 0 0.3em 0;">
+          <b>Ask a question:</b>
+        </div>
+        <!-- The form for asking clarification -->
+        <div>
+          <form onsubmit="return GCJ.submitClarification(this);"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="OGI0MGMyZGViNmY5NTExOTg5ODU4MDdlNWMzMTg2NzR8fHwxMjk3MDI3OTMyMTA0Mzk2"></div>
+            <div><textarea rows="5" cols="60" name="q"></textarea></div>
+            <div style="padding-top: 0.3em">
+            <select name="problem">
+              <option value="_" selected="">[General]</option>
+              
+              <option value="24486">Text Messaging Outrage</option>
+              
+              <option value="24487">Ugly Numbers</option>
+              
+              <option value="24488">Increasing Speed Limits</option>
+              
+            </select>
+            &nbsp;
+            <input id="dsb-submit-clarification-button" type="submit" value="Ask">
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- Too many pending clarifications -->
+      <div id="dsb-cannot-ask-question-text" style="font-weight: bold; padding-top: 0,5em; padding-right: 0px; padding-bottom: 0,3em; padding-left: 0px; display: block; ">You cannot ask questions at this time. Please email us at codejam@google.com.</div>
+
+    </div>
+
+    <div id="dsb-submissions-page" class="dsb-content-pages">
+      <div id="dsb-submissions-status" class="dsb-sub-status-msg">
+        You have 0 submissions.
+      </div>
+      <table id="dsb-submissions-table" class="dsb-sub-main-table" style="display:none">
+      <thead>
+        <tr id="dsb-sub-main-table-header">
+          <th class="dsb-sub-row-id-width">ID</th>
+          <th class="dsb-sub-name-width">Problem</th>
+          <th class="dsb-sub-difficulty-width">Difficulty</th>
+          <th class="dsb-sub-input-width">Input</th>
+          <th class="dsb-sub-output-width">Output</th>
+          <th class="dsb-sub-source-width">Solution</th>
+          <th class="dsb-sub-status-width">Status</th>
+          <th class="dsb-sub-time-width">Time</th>
+        </tr>
+      </thead>
+      <tbody id="dsb-submissions-rows">
+      </tbody>
+      </table>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+</div>
+
+<div id="dsb-loading-message-div" style="display: none; ">Google Code Jam loading...</div>
+
+<div style="height: 3em; clear: both;"></div>
+
+<div id="footer">
+  
+  <span id="copyright">© 2008-2011 Google</span>
+  <a href="http://www.google.com/">Google Home</a> -
+  <a href="http://code.google.com/codejam/terms.html">Terms and Conditions</a><br><br>
+  <a href="http://code.google.com/appengine"><img src="./Dashboard - Round 1C 2008 - Google Code Jam_files/appengine-noborder-120x30.gif"></a>
+  
+</div>
+
+<div style="height: 1em">&nbsp;</div>
+
+<script type="text/javascript">
+GCJ.initHistory();
+</script><input type="text" name="history_state0" id="history_state0" style="display:none">
+
+
+
+</div></body></html>
