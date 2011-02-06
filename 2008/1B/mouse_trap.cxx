@@ -125,7 +125,7 @@ public:
     //first find bucket whose left == cur_pos
     Bucket* curBucket = root;
     
-    assert (steps_needed > 0 || root->child_list[cur_pos]->count == 0);
+    assert (steps_needed > 0); //|| root->child_list[cur_pos]->count == 0);
     
     int first_next_pos = cur_pos + 1;
     if (first_next_pos > max_pos) {
@@ -237,9 +237,15 @@ void do_test_case(int test_case, ifstream& input)
     #endif
     int steps = 0;
     assert(rootBucket.getCount() == K-k + 1);
-    int steps_needed = ( (k % rootBucket.getCount()) != 0) ? (k % rootBucket.getCount()) : k;
+    int steps_needed = 0;
+    if ( k % rootBucket.getCount() == 0) {
+      steps_needed = rootBucket.getCount();
+    } else {
+      steps_needed = k % rootBucket.getCount();
+    }
     //int steps_needed = k % rootBucket.getCount();
-    
+    //cout << rootBucket.getCount() << endl;
+    //assert(steps_needed > 0);
     //printf("cur_pos=%d, Starting Bucket\n", cur_pos);
     //printf("k=%d, cur_pos=%d, steps_needed=%d, bucket_count=%d\n", k, cur_pos, steps_needed, rootBucket.getCount());
     cur_pos = Bucket::advance(&rootBucket, cur_pos, steps_needed, K-1);
