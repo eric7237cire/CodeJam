@@ -125,11 +125,13 @@ public:
     //first find bucket whose left == cur_pos
     Bucket* curBucket = root;
     
-    //assert (root->child_list[cur_pos]->count == 0);
+    assert (steps_needed > 0 || root->child_list[cur_pos]->count == 0);
+    
     int first_next_pos = cur_pos + 1;
     if (first_next_pos > max_pos) {
       first_next_pos = 0;
     }
+    
     
     //printf("Begin advance %d - %d; count=%d, cur_pos=%d, steps_needed=%d\n", curBucket->from, curBucket->to, curBucket->count, cur_pos, steps_needed);
     while(first_next_pos != curBucket->from) {
@@ -164,13 +166,13 @@ public:
       //curBucket or a child contains the position we want
       
       while(curBucket->size > 1) {
-        if (curBucket->left_child->count < steps_needed) {
+        if (curBucket->left_child->count >= steps_needed && curBucket->left_child->count > 0) {
+          //left child
+          curBucket = curBucket->left_child;
+        } else {
           //right child has target cur_pos
           steps_needed -= curBucket->left_child->count;
           curBucket = curBucket->right_child;
-        } else {
-          //left child
-          curBucket = curBucket->left_child;
         }
       }
       
@@ -184,13 +186,17 @@ public:
       if (cur_pos > max_pos) {
         cur_pos = 0;
       }*/
-      assert(curBucket->count >= 0);
+      assert(curBucket->count > 0);
+      
       steps_needed = steps_needed - curBucket->count;
       
-      //printf("%d - %d; count=%d, steps_needed=%d, curPos=%d, max_pos=%d, cur_pos count=%d\n", curBucket->from, curBucket->to, curBucket->count, steps_needed, cur_pos, max_pos, root->child_list[cur_pos]->count);
+      
       assert(steps_needed >=  0);
       int retVal = advance(root, curBucket->to, steps_needed, max_pos);
-      
+      if (retVal == curBucket->to) {
+        //printf("%d - %d; count=%d, steps_needed=%d, curPos=%d, max_pos=%d, cur_pos count=%d, bucket_count=%d\n", curBucket->from, curBucket->to, curBucket->count, steps_needed, cur_pos, max_pos, root->child_list[cur_pos]->count, root->count);
+        //throw 3;
+      }
       return retVal;
     }
         
@@ -231,13 +237,15 @@ void do_test_case(int test_case, ifstream& input)
     #endif
     int steps = 0;
     assert(rootBucket.getCount() == K-k + 1);
-    int steps_needed = k % rootBucket.getCount() != 0 ? k % rootBucket.getCount() : k;
+    int steps_needed = ( (k % rootBucket.getCount()) != 0) ? (k % rootBucket.getCount()) : k;
+    //int steps_needed = k % rootBucket.getCount();
     
     //printf("cur_pos=%d, Starting Bucket\n", cur_pos);
-    cur_pos = Bucket::advance(&rootBucket, cur_pos, steps_needed, K-1);
-    //printf("k=%d, cur_pos=%d, steps_needed=%d, bucket_count=%d, bucketCurPos=%d\n", k, cur_pos, steps_needed, rootBucket.getCount(), bucketCurPos);
-    //assert(bucketCurPos == cur_pos);
     //printf("k=%d, cur_pos=%d, steps_needed=%d, bucket_count=%d\n", k, cur_pos, steps_needed, rootBucket.getCount());
+    cur_pos = Bucket::advance(&rootBucket, cur_pos, steps_needed, K-1);
+    
+    //assert(bucketCurPos == cur_pos);
+    //printf("Done Advance, main loop. k=%d, cur_pos=%d, steps_needed=%d, bucket_count=%d\n", k, cur_pos, steps_needed, rootBucket.getCount());
     assert(buckets[cur_pos] != 0);
     assert(deck[cur_pos] == 0);
     buckets[cur_pos]->mark();
