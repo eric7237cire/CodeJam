@@ -1,0 +1,4 @@
+# ignore generated html files,
+*.exe
+# except foo.html which is maintained by hand
+!foo.html
