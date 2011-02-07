@@ -1,7 +1,7 @@
 testCases = STDIN.gets.to_i
 
 class Coordinate
-  attr_accessor :x, :y
+  attr_accessor :x, :y 
 
   #lets us use just <=> to define rest of operators  
   include Comparable
@@ -127,13 +127,15 @@ for testCase in 1..testCases
   proc { |array| array.each_index do |idx|  
     #puts "#{idx} #{array.length} #{array[idx].y} "
     print squareState[array[idx]].to_s(16)
-    puts if idx == array.length - 1 || (idx < (array.length - 2) && array[idx+1].y < array[idx].y)              
+    puts if idx == (array.length - 1) || ( (idx <= array.length - 2) && (array[idx+1].y < array[idx].y) )              
   end }.call(squareState.keys.sort)
      
 #  squareState.keys.sort.each do |coord|
 #    puts "" if coord.y != previtem.y 
 #    previtem = coord
 #    #puts "#{coord} is #{squareState[coord].to_s(16)}"
-#    print squareState[coord].to_s(16)#  end
+#    print squareState[coord].to_s(16)
+#  end
 #  puts
-    end
+    
+end
