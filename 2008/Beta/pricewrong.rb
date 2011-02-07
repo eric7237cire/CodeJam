@@ -78,4 +78,4 @@ end
 
 endTime = Time.new.to_f
 
-puts "Time taken #{endTime-startTime}"
+#puts "Time taken #{endTime-startTime}"

@@ -156,6 +156,6 @@ int main(int argc, char** args)
 
   }
 
-  cout<< "Time taken " << ( ( std::clock() - start ) / (double)CLOCKS_PER_SEC ) <<'\n';
+  //cout<< "Time taken " << ( ( std::clock() - start ) / (double)CLOCKS_PER_SEC ) <<'\n';
 
 }
