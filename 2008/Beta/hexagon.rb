@@ -222,7 +222,8 @@ testCases = input.readline.to_i
 OUTPUT=false
 HOUTPUT = false
 
+#Enable for testing
 processTestCases(input, testCases)
 
 endTime = Time.new.to_f
-puts "Total time %.6f" % (endTime - startTime)
+#puts "Total time %.6f" % (endTime - startTime)

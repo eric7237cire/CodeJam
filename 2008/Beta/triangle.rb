@@ -18,6 +18,7 @@ end
 
 def lawCosines(a, b, c)
 	#c2 = a2 + b2 – 2ab cos C
+	puts a, b, c
 	Math.acos (c ** 2 - a ** 2 - b ** 2) / (-2 * a * b) 
 end
 

@@ -1,6 +1,7 @@
 require 'set'
 
-DEBUG_OUTPUT = true
+DEBUG_OUTPUT = false
+TEST = false 
 
 MAX_NODES = 1000
 
@@ -43,7 +44,8 @@ class EqualityGraph
 				eq_match.add_edge_if_possible(xIdx, yIdx + MAX_NODES) if isEdge(xIdx, yIdx + MAX_NODES)
 			end
 			
-		end			end
+		end		
+	end
 	
 	def generateLabelFunctions()
 		@x_vertices = Set.new
@@ -569,7 +571,7 @@ weights = [
 		 
 		 #findMinimum(weights) 
 
-TEST = !DEBUG_OUTPUT
+
 
 if TEST
 	
