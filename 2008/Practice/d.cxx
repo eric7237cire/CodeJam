@@ -12,6 +12,11 @@
 #include <sstream>
 #include <ctime>
 
+#include <stdio.h>
+#include <time.h>
+#include <assert.h>
+
+
 #define int64 long long
 #define ii pair<int,int>
 #define vi vector<int>

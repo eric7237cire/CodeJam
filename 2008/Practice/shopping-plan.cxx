@@ -409,6 +409,7 @@ int main(int argc, char** args)
   }
 
   double totalTimeSec = ( std::clock() - start ) / (double)CLOCKS_PER_SEC ;
+  /*
   cout<< "Time taken " << ( ( std::clock() - start ) / (double)CLOCKS_PER_SEC ) <<'\n';
   printf("AddQ calls: %d\n", numAddQCalls);
   printf("PopQ calls: %d\n", numPopQCalls);
@@ -420,7 +421,7 @@ int main(int argc, char** args)
 
   std::cout << "cost per addq " << (1000.0 * totalTimeSec / numAddQCalls) << " ms " << endl;
   std::cout << "cost per addq " << (1E6 * totalTimeSec / numAddQCalls) << " ns " << endl;
-    
+    */
   return 0;
 
   //all total calls: 88,175,062

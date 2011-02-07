@@ -8,6 +8,7 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/tuple/tuple.hpp>
 #include <cmath>
+#include <stdio.h>
 
 using namespace std;
 using namespace boost;
