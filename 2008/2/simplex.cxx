@@ -136,12 +136,13 @@ public:
     data[cons_num][num_non_basic_variables + cons_num] = 1;
   }
   
-  void do_step()
+  //returns true if optimal
+  bool do_step()
   {
     //find most negative value
     VecDouble& z_row = *data.rbegin();
     
-    double min_value = numeric_limits<double>::max();
+    double min_value = 0;
     int pivot_col_idx = -1;
     
     for(int i = 0; i < num_basic_variables; ++i) 
@@ -150,6 +151,10 @@ public:
         pivot_col_idx = i;
         min_value = z_row[i];
       }
+    }
+    
+    if (pivot_col_idx == -1) {
+      return true;
     }
     
     assert(pivot_col_idx >= 0);
@@ -236,6 +241,17 @@ int main(int argc, char** args)
   simplex.add_constraint(2, c1, 90);
   
   simplex.print(); 	
+  
+  simplex.do_step();
+  simplex.print();
+  
+  return;
+  
+  simplex.do_step();
+  simplex.print();
+  
+  simplex.do_step();
+  simplex.print();
   
   simplex.do_step();
   simplex.print();
