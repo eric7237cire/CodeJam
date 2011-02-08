@@ -8,6 +8,7 @@
 #include <time.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <cmath>
 
 #include "boost/bind.hpp"
 
@@ -136,6 +137,27 @@ public:
     data[cons_num][num_non_basic_variables + cons_num] = 1;
   }
   
+  void print_current_solution()
+  {
+    printf("(");
+    VecDouble& z_row = *data.rbegin();
+    for (int c=0; c<z_row.size() - 1; ++c) {
+      if (z_row[c] == 0) {
+        for(int r=0; r<num_basic_variables; ++r) {
+          if (data[r][c] == 1) {
+            printf("%f ", *data[r].rbegin());
+            break;
+          }
+        }
+      } else {
+        printf("0, ");        
+      }
+    }
+    
+    printf(")\n");
+      
+  }
+  
   //returns true if optimal
   bool do_step()
   {
@@ -168,7 +190,7 @@ public:
     {
       //b[i] (end of row) / value in pivot column 
       double ratio = *data[r].rbegin() / data[r][pivot_col_idx]; 
-      if( ratio < min_ratio ) {
+      if( ratio < min_ratio && ratio > 0 ) {
         pivot_row_idx = r;
         min_ratio = ratio;
       }
@@ -245,13 +267,19 @@ int main(int argc, char** args)
   simplex.do_step();
   simplex.print();
   
-  return;
+  cout << "Step2 \n\n";
   
   simplex.do_step();
   simplex.print();
   
+  
+  
   simplex.do_step();
   simplex.print();
+  
+  simplex.print_current_solution();
+  
+  return 1;
   
   simplex.do_step();
   simplex.print();
