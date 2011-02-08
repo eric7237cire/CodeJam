@@ -62,55 +62,57 @@ void do_test_case(int test_case, ifstream& input)
   int N, M, A;
   input >> N >> M >> A;
     
-  for (int x1=0; x1<=N; ++x1)
-  {
-    for(int y1=0; y1<=M; ++y1)
-    {
-      for (int x2=0; x2<=N; ++x2)
-      {
-        for(int y2=0; y2<=M; ++y2)
-        {
-          if (A == abs( x1*y2 - x2 * y1 ) )
-          {
-            //printf("Case #%d: Xmax %d Ymax %d tar %d\n", test_case+1, N, M, A);
-            printf("Case #%d: 0 0 %d %d %d %d\n", test_case+1, x1,y1,x2,y2);
-            return;
-            //throw 3;
-          }
-          
-        }
-      }
-    }
+  int narrow = min<int>(N, M);
+  int wide = max<int>(N, M);
+  
+  if (wide * narrow < A) {
+    printf("Case #%d: IMPOSSIBLE\n", test_case+1);
+    return;
   }
   
-  /*
-  for (int x1=0; x1<=N; ++x1)
-  {
-    for(int y1=0; y1<=M; ++y1)
-    {
-      for (int x2=0; x2<=N; ++x2)
-      {
-        for(int y2=0; y2<=M; ++y2)
-        {
-          for (int x3=0; x3<=N; ++x3)
-          {
-            for(int y3=0; y3<=M; ++y3)
-            {
-              if (A == abs( (x1-x3)*(y2-y1) - (x1 - x2)*(y3 - y1) ) )
-              {
-                printf("Case #%d: Xmax %d Ymax %d tar %d\n", test_case+1, N, M, A);
-                printf("Case #%d: %d %d %d %d %d %d\n", test_case+1, x1,y1,x2,y2,x3,y3);
-                return;
-                //throw 3;
-              }
-            }
-          }
-        }
-      }
-    }
-  }*/
+  int n1 = A / wide;
+  int w2 = wide;
+  int w1, n2;
+
+  if (A%wide == 0) {
+    w1 = 0;
+    n2 = 0;
+  } else {
+    ++n1;
+    n2 = 1;
+    w1 = n1*w2 - A;
+    
+  }
   
-  printf("Case #%d: IMPOSSIBLE\n", test_case+1);
+  //          printf("Case #%d: Xmax %d Ymax %d tar %d\n", test_case+1, N, M, A);
+  //          printf("Case #%d: 0 0 %d %d %d %d\n", test_case+1, x1,y1,x2,y2);
+  if (wide == M) {
+    printf("Case #%d: 0 0 %d %d %d %d\n", test_case+1, n1, w1, n2, w2);
+    assert(w1 >= 0);
+    assert(w1 <= M);
+    assert(w2 >= 0);
+    assert(w2 <= M);
+    assert(n1 >= 0);
+    assert(n1 <= N);
+    assert(n2 >= 0);
+    assert(n2 <= N);
+    
+  } else {
+    assert(w1 >= 0);
+    assert(w1 <= N);
+    assert(w2 >= 0);
+    assert(w2 <= N);
+    assert(n1 >= 0);
+    assert(n1 <= M);
+    assert(n2 >= 0);
+    assert(n2 <= M);
+    printf("Case #%d: 0 0 %d %d %d %d\n", test_case+1, w1, n1, w2, n2);
+  }
+          //cout << abs(x1 * y2 - x2 * y1) << endl;
+            
+  assert(A == abs(n1 * w2 - n2 * w1) );
+    
+  return;
     
 }
   
