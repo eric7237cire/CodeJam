@@ -194,7 +194,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       
       if (tally != *row.rbegin()) {
         printf("False match, row %d, values: ", r);
-        for(unsigned int c = 0; c < row.length() - 1; ++c)
+        for(unsigned int c = 0; c < row.size() - 1; ++c)
         {
           printf("%f ", row[c]);
         }

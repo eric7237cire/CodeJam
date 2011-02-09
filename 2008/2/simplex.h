@@ -21,7 +21,7 @@ protected:
   bool finding_max;
   int rows;
   int cols;
-  int cur_constraint;
+  unsigned int cur_constraint;
   MatrixDouble data;
 
 public:
