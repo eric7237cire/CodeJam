@@ -181,7 +181,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
   
   bool Simplex::verify_equations(const VecDouble& verify_vals)
   {
-    for(unsigned int r = 0; r < data.size(); ++r)
+    for(unsigned int r = 0; r < data.size() - 1; ++r)
     {
       
       VecDouble& row = data[r];
@@ -289,7 +289,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     
     for(unsigned int i = 0; i < z_row.size() - 1; ++i) 
     {
-      printf("Checking solved, col=%d, value=%f, min_value=%f\n", i, z_row[i], min_value);
+      //printf("Checking solved, col=%d, value=%f, min_value=%f\n", i, z_row[i], min_value);
       if (z_row[i] < min_value) {
         pivot_col_idx = i;
         min_value = z_row[i];
@@ -360,6 +360,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       return true;
     }
     
+    last_chosen_pivot_col = pivot_col_idx;
     assert(pivot_col_idx >= 0);
     printf("Pivot col=%f, position=%d\n", min_value, pivot_col_idx);
     

@@ -23,6 +23,7 @@ protected:
   int cols;
   unsigned int cur_constraint;
   MatrixDouble data;
+  unsigned int last_chosen_pivot_col;
 
 public:
   Simplex(int num_non_basic_variables, int num_basic_variables);

@@ -114,7 +114,7 @@ void do_test_case(int test_case, ifstream& input)
     simplex.do_step();
     simplex.print();
     assert(simplex.verify_equations(verify_vals));
-    if (steps > 100) {
+    if (steps > 1000) {
       cout << "TOO FAR" << endl;
       throw 5;
     }
