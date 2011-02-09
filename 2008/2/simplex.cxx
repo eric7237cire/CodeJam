@@ -179,6 +179,32 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     add_constraint(cur_constraint++, z, d);
   }
   
+  bool Simplex::verify_equations(const VecDouble& verify_vals)
+  {
+    for(unsigned int r = 0; r < data.size(); ++r)
+    {
+      
+      VecDouble& row = data[r];
+      double tally = 0;
+      assert(row.size() == verify_vals.size() + 1);
+      for(unsigned int c = 0; c < row.size() - 1; ++c)
+      {
+        tally += row[c] * verify_vals[c];
+      }
+      
+      if (tally != *row.rbegin()) {
+        printf("False match, row %d, values: ", r);
+        for(unsigned int c = 0; c < row.length() - 1; ++c)
+        {
+          printf("%f ", row[c]);
+        }
+        printf("\n");
+        return false;
+      }
+    }
+    
+    return true;
+  }
   
   //a[1][0]*x[0] + a[1][1]*x[1] + s[1] == b[1]  
   void Simplex::add_constraint(unsigned int cons_num, const VecDouble& co_eff, double b)

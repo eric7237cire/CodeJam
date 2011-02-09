@@ -41,6 +41,7 @@ public:
   void add_constraint_gte(const VecDouble& co_eff, double b);
   
   void print_current_solution();
+  bool verify_equations(const VecDouble& vars);
   
   //s[i]
   double getBasicVar(int i);

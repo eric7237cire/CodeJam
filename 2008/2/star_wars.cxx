@@ -76,6 +76,12 @@ void do_test_case(int test_case, ifstream& input)
   
   simplex.set_eq_to_minimize(min_eq);
   
+  VecDouble verify_vals;
+  verify_vals.push_back(2);
+  verify_vals.push_back(2);
+  verify_vals.push_back(0);
+  verify_vals.push_back(1);
+  
   for (unsigned int i = 0; i < N; ++i) {
     int x, y, z, ship_power;
     input >> x >> y >> z >> ship_power;
@@ -88,11 +94,12 @@ void do_test_case(int test_case, ifstream& input)
       constraint.push_back(x_sign);
       constraint.push_back(y_sign);
       constraint.push_back(z_sign);
-      constraint.push_back(ship_power);
+      constraint.push_back(-ship_power);
       int d = x_sign * x + y_sign * y + z_sign * z;
-      printf("\n, %.0fx + %.0fy + %.0fz + %.0fm >= %d", constraint[0], constraint[1], constraint[2], constraint[3], d);  
+      printf("\n, %.0fx + %.0fy + %.0fz + %.0fm >= %d", constraint[0], constraint[1], constraint[2], constraint[3], d);
+      verify_vals.push_back(d - x_sign * verify_vals[0] - y_sign * verify_vals[1] - z_sign * verify_vals[2] + ship_power * verify_vals[3]);      
       //add x_ms + y_ms + z_ms + ship_power*MSP >= x_s + y_s + z_s
-      simplex.add_constraint(i*8 + signs, constraint, -x_sign * x + -y_sign * y + -z_sign * z);
+      simplex.add_constraint_lte(constraint, d);
     }
   }
   
@@ -100,11 +107,13 @@ void do_test_case(int test_case, ifstream& input)
   
   simplex.print();
   int steps = 0;
+  assert(simplex.verify_equations(verify_vals));
   while(!simplex.solved()) {
  // printf("Case #%d: 0 0 %d %d %d %d\n", test_case+1, w1, n1, w2, n2);
     printf("Step: %d \n", ++steps);
     simplex.do_step();
     simplex.print();
+    assert(simplex.verify_equations(verify_vals));
     if (steps > 100) {
       cout << "TOO FAR" << endl;
       throw 5;
