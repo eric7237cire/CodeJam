@@ -70,7 +70,7 @@ double round(double r, unsigned int prec) {
 //s[i] >= 0
 
 Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) : 
-  num_non_basic_variables(num_non_basic_variables), num_basic_variables(num_basic_variables)
+  num_non_basic_variables(num_non_basic_variables), num_basic_variables(num_basic_variables), cur_constraint(0)
   {
     rows = num_basic_variables + 1;
     cols = num_non_basic_variables + num_basic_variables + 1;
@@ -117,6 +117,22 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     printf("\n");
     print_current_solution();
   }
+  
+  void Simplex::set_eq_to_minimize(const VecDouble& z)
+  {
+    VecDouble z_neg(z.size());
+    
+    transform(z.begin(), z.end(), z_neg.begin(), negate<double>());
+    set_z(z_neg);
+    
+    finding_max = false;
+  }
+  
+  void Simplex::set_eq_to_maximize(const VecDouble& z)
+  {
+    set_z(z);
+    finding_max = true;
+  }
 
   //z = z[0] * x_0 + z[1] * x_1 + ...
   void Simplex::set_z(const VecDouble& z)
@@ -128,6 +144,41 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     transform(z.begin(), z.end(), z_row.begin(), negate<double>());
     assert(z_row.size() == num_non_basic_variables + num_basic_variables + 1);
   }
+  
+  void Simplex::add_constraint_lte(const VecDouble& z, double d)
+  {
+    if (d < 0) {
+      VecDouble z_neg(z.size());
+      
+      transform(z.begin(), z.end(), z_neg.begin(), negate<double>());
+      add_constraint_gte(z_neg, -d);
+      return;
+    }
+    
+    
+    
+    add_constraint(cur_constraint++, z, d);
+  }
+  
+  void Simplex::add_constraint_gte(const VecDouble& z, double d)
+  {
+    if (d < 0) {
+      VecDouble z_neg(z.size());
+      
+      transform(z.begin(), z.end(), z_neg.begin(), negate<double>());
+      add_constraint_lte(z_neg, -d);
+      return;
+    }
+    
+    //if (finding_max == false) {
+      //set d to negative to switch s value
+      //all problems are max problems
+      d = -d;      
+    //}
+    
+    add_constraint(cur_constraint++, z, d);
+  }
+  
   
   //a[1][0]*x[0] + a[1][1]*x[1] + s[1] == b[1]  
   void Simplex::add_constraint(unsigned int cons_num, const VecDouble& co_eff, double b)
@@ -240,6 +291,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
   //returns true if optimal
   bool Simplex::do_step()
   {
+    assert(cur_constraint == num_basic_variables);
     //find most negative value
     VecDouble& z_row = *data.rbegin();
     
@@ -386,7 +438,8 @@ int simplex_test()
  
   Simplex simplex(2, 3);
   VecDouble z;
-  
+  VecDouble c1;
+  int steps = 0;
   
   MinSimplex minplex(2, 3);
   

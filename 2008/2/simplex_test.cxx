@@ -53,19 +53,19 @@ BOOST_AUTO_TEST_CASE(test_simple_max_1)
   c1.push_back(-1);
   c1.push_back(1);
   
-  simplex.add_constraint(0, c1, 11);
+  simplex.add_constraint_lte(c1, 11);
   
   c1.resize(0);
   c1.push_back(1);
   c1.push_back(1);
   
-  simplex.add_constraint(1, c1, 27);
+  simplex.add_constraint_lte(c1, 27);
   
   c1.resize(0);
   c1.push_back(2);
   c1.push_back(5);
   
-  simplex.add_constraint(2, c1, 90);
+  simplex.add_constraint_lte(c1, 90);
   
   int steps = 0;
   simplex.print();
@@ -76,10 +76,11 @@ BOOST_AUTO_TEST_CASE(test_simple_max_1)
     ++steps;
   }
   
+  //BOOST_uCHECK
   //BOOST_REQUIRE(steps == 2);
-  BOOST_CHECK(steps == 3);
-  BOOST_CHECK(simplex.getVar(0) == 15);
-  BOOST_CHECK(simplex.getVar(1) == 12);
+  BOOST_REQUIRE(steps == 3);
+  BOOST_REQUIRE(simplex.getVar(0) == 15);
+  BOOST_REQUIRE(simplex.getVar(1) == 12);
 }
 
 BOOST_AUTO_TEST_CASE(test_simple_max_2)
@@ -91,25 +92,25 @@ BOOST_AUTO_TEST_CASE(test_simple_max_2)
   z.push_back(2);
   z.push_back(-1);
   z.push_back(2);
-  simplex.set_z(z);
+  simplex.set_eq_to_maximize(z);
   
   c1.resize(0);
   c1.push_back(2);
   c1.push_back(1);
   c1.push_back(0);
-  simplex.add_constraint(0, c1, 10);
+  simplex.add_constraint_lte(c1, 10);
   
   c1.resize(0);
   c1.push_back(1);
   c1.push_back(2);
   c1.push_back(-2);
-  simplex.add_constraint(1, c1, 20);
+  simplex.add_constraint_lte(c1, 20);
   
   c1.resize(0);
   c1.push_back(0);
   c1.push_back(1);
   c1.push_back(2);
-  simplex.add_constraint(2, c1, 5);
+  simplex.add_constraint_lte(c1, 5);
   
   int steps = 0;
   simplex.print();
@@ -120,10 +121,10 @@ BOOST_AUTO_TEST_CASE(test_simple_max_2)
     simplex.print();
   }
   
-  BOOST_CHECK(steps == 2);
-  BOOST_CHECK(simplex.getVar(0) == 5);
-  BOOST_CHECK(simplex.getVar(1) == 0);
-  BOOST_CHECK(simplex.getVar(2) == 2.5);
+  BOOST_REQUIRE(steps == 2);
+  BOOST_REQUIRE(simplex.getVar(0) == 5);
+  BOOST_REQUIRE(simplex.getVar(1) == 0);
+  BOOST_REQUIRE(simplex.getVar(2) == 2.5);
   
   cout << "Maximize P = 2x - y + 2z subject to 2x + y <= 10, x + 2y -2z <= 20, y + 2z <= 5" << endl;
   cout << "Optimal Solution: p = 15; x = 5, y = 0, z = 2.5" << endl;
@@ -140,27 +141,25 @@ BOOST_AUTO_TEST_CASE(test_simple_min)
   Simplex minplex = Simplex(2, 3);
   
   z.resize(0);
-  //these are negative instead
-  z.push_back(-.12);
-  z.push_back(-.15);
-  minplex.set_z(z);
+  z.push_back(.12);
+  z.push_back(.15);
+  minplex.set_eq_to_minimize(z);
 
   c1.resize(0);
   c1.push_back(60);
   c1.push_back(60);
-  //>= and switched to <= by multiplying by -1 as that changes the sign of
-  //the slack variable
-  minplex.add_constraint(0, c1, -300);
+  
+  minplex.add_constraint_gte(c1, 300);
   
   c1.resize(0);
   c1.push_back(12);
   c1.push_back(6);
-  minplex.add_constraint(1, c1, -36);
+  minplex.add_constraint_gte(c1, 36);
   
   c1.resize(0);
   c1.push_back(10);
   c1.push_back(30);
-  minplex.add_constraint(2, c1, -90);
+  minplex.add_constraint_gte(c1, 90);
     
   
   
@@ -176,8 +175,8 @@ BOOST_AUTO_TEST_CASE(test_simple_min)
   cout << "Optimal Solution: w = 0.66; x = 3, y = 2" << endl;
   minplex.print_current_solution();
   
-  BOOST_CHECK(minplex.getVar(0) == 3);
-  BOOST_CHECK(minplex.getVar(1) == 2);
+  BOOST_REQUIRE(minplex.getVar(0) == 3);
+  BOOST_REQUIRE(minplex.getVar(1) == 2);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -35,12 +35,8 @@ void do_test_case(int test_case, ifstream& input);
 #define SHOW_TIME_END(A) 
 #endif
 
-int simplex_test();
-
 int main(int argc, char** args)
 {
-  simplex_test();
-  return 3;
   if (argc < 2) {
     cerr << "Usage: <exe> input_file" << endl;
     return -1;
@@ -66,10 +62,10 @@ int main(int argc, char** args)
 void do_test_case(int test_case, ifstream& input)
 {
   
-  int N;
+  unsigned int N;
   input >> N;
     
-  MinSimplex simplex(4, 8*N);
+  Simplex simplex(4, 8*N);
   
   //minimize w = 0x + 0y + 0z + mother_ship_power(MSP)
   VecDouble min_eq;
@@ -78,7 +74,7 @@ void do_test_case(int test_case, ifstream& input)
   min_eq.push_back(0);
   min_eq.push_back(1);
   
-  simplex.set_z(min_eq);
+  simplex.set_eq_to_minimize(min_eq);
   
   for (unsigned int i = 0; i < N; ++i) {
     int x, y, z, ship_power;
@@ -109,6 +105,10 @@ void do_test_case(int test_case, ifstream& input)
     printf("Step: %d \n", ++steps);
     simplex.do_step();
     simplex.print();
+    if (steps > 100) {
+      cout << "TOO FAR" << endl;
+      throw 5;
+    }
   }
   
   throw 3;

@@ -18,8 +18,10 @@ protected:
   unsigned int num_non_basic_variables;
   unsigned int num_basic_variables; // slack variables
   
+  bool finding_max;
   int rows;
   int cols;
+  int cur_constraint;
   MatrixDouble data;
 
 public:
@@ -29,8 +31,14 @@ public:
   //z = z[0] * x_0 + z[1] * x_1 + ...
   void set_z(const VecDouble& z);
   
+  void set_eq_to_minimize(const VecDouble& z);
+  void set_eq_to_maximize(const VecDouble& z);
+  
   //a[1][0]*x[0] + a[1][1]*x[1] + s[1] == b[1]  
   void add_constraint(unsigned int cons_num, const VecDouble& co_eff, double b);
+  
+  void add_constraint_lte(const VecDouble& co_eff, double b);
+  void add_constraint_gte(const VecDouble& co_eff, double b);
   
   void print_current_solution();
   
