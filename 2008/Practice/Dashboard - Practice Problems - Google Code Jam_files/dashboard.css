@@ -17,7 +17,7 @@ form {
   position: relative;
   clear: both;
   margin: 0 0 0.5em 0;
-  display: none;
+  /*display: none;*/
 }
 
 table, th, tr, td {
@@ -30,7 +30,7 @@ table, th, tr, td {
 }
 
 div.main {
-  display: none;  /* Don't show initially */
+  /*display: none;   Don't show initially */
 }
 
 
