@@ -66,11 +66,17 @@ BOOST_AUTO_TEST_CASE(test_non_mixed_max_1)
   
   simplex.add_constraint_lte(c1, 90);
   
+  simplex.initial_simplex_tableau();
+  
+  simplex.print();
+  
+  BOOST_REQUIRE(simplex.is_feasible());
+  
   int steps = 0;
   simplex.print();
   while (!simplex.solved()) {
      	
-    simplex.do_step();
+    BOOST_REQUIRE(simplex.do_step());
     simplex.print();
     ++steps;
   }
@@ -116,7 +122,7 @@ BOOST_AUTO_TEST_CASE(test_simple_max_2)
   
   while(!simplex.solved()) {
     printf("Step: %d \n", ++steps);
-    simplex.do_step();
+    BOOST_REQUIRE(simplex.do_step());
     simplex.print();
   }
   
@@ -137,45 +143,57 @@ BOOST_AUTO_TEST_CASE(test_simple_min)
   
   VecDouble z;
   VecDouble c1;
-  Simplex minplex = Simplex(2, 3);
+  Simplex simplex = Simplex(2, 3);
   
   z.resize(0);
   z.push_back(.12);
   z.push_back(.15);
-  minplex.set_eq_to_minimize(z);
+  simplex.set_eq_to_minimize(z);
 
   c1.resize(0);
   c1.push_back(60);
   c1.push_back(60);
   
-  minplex.add_constraint_gte(c1, 300);
+  simplex.add_constraint_gte(c1, 300);
   
   c1.resize(0);
   c1.push_back(12);
   c1.push_back(6);
-  minplex.add_constraint_gte(c1, 36);
+  simplex.add_constraint_gte(c1, 36);
   
   c1.resize(0);
   c1.push_back(10);
   c1.push_back(30);
-  minplex.add_constraint_gte(c1, 90);
+  simplex.add_constraint_gte(c1, 90);
     
   
   
-  minplex.print();
+  simplex.print();
+  
+  simplex.initial_simplex_tableau();
+  
+  simplex.print();
+  
+  BOOST_REQUIRE(simplex.is_feasible());
+  
   int steps = 0;
-  while(!minplex.solved()) {
+  while(!simplex.solved()) {
     printf("Step: %d \n", ++steps);
-    minplex.do_step();
-    minplex.print();
+    bool step_worked = simplex.do_step();
+    BOOST_REQUIRE(step_worked);
+    if (!step_worked) {
+      break;
+    }
+    
+    simplex.print();
   }
   
   cout << "Minimize W = .12x + .15y subject to 60x+60y >= 300, 12x+6y >= 36, 10x + 30y >= 90" << endl;
   cout << "Optimal Solution: w = 0.66; x = 3, y = 2" << endl;
-  minplex.print_current_solution();
+  simplex.print_current_solution();
   
-  BOOST_REQUIRE(minplex.getVar(0) == 3);
-  BOOST_REQUIRE(minplex.getVar(1) == 2);
+  BOOST_REQUIRE(simplex.getVar(0) == 3);
+  BOOST_REQUIRE(simplex.getVar(1) == 2);
 }
 
 
@@ -217,14 +235,21 @@ BOOST_AUTO_TEST_CASE(test_mixed_max_1)
   verify_vals.push_back(50 - 36 - 14);
   verify_vals.push_back(36 - 36);
   verify_vals.push_back(14 - 10);
+  
+  simplex.initial_simplex_tableau();
+  
+  simplex.print();
+  
+  BOOST_REQUIRE(simplex.is_feasible());
+  
   int steps = 0;
   simplex.print();
-  BOOST_REQUIRE(simplex.verify_equations(verify_vals));
+  //BOOST_REQUIRE(simplex.verify_equations(verify_vals));
   while (!simplex.solved()) {
      	
-    simplex.do_step();
+    BOOST_REQUIRE(simplex.do_step());
     simplex.print();
-    BOOST_REQUIRE(simplex.verify_equations(verify_vals));
+    //BOOST_REQUIRE(simplex.verify_equations(verify_vals));
     ++steps;
   }
   
@@ -268,10 +293,12 @@ BOOST_AUTO_TEST_CASE(test_mixed_max_2)
   
   int steps = 0;
   simplex.print();
+  
+  simplex.initial_simplex_tableau();
   //BOOST_CHECK(simplex.verify_equations(verify_vals));
   while (!simplex.solved()) {
      	
-    simplex.do_step();
+    BOOST_REQUIRE(simplex.do_step());
     simplex.print();
     //BOOST_CHECK(simplex.verify_equations(verify_vals));
     ++steps;
@@ -315,12 +342,18 @@ BOOST_AUTO_TEST_CASE(test_mixed_min_1)
   
   simplex.add_constraint_gte(c1, 6);
   
+  simplex.initial_simplex_tableau();
+  
+  simplex.print();
+  
+  BOOST_REQUIRE(simplex.is_feasible());
+  
   int steps = 0;
   simplex.print();
   //BOOST_CHECK(simplex.verify_equations(verify_vals));
   while (!simplex.solved()) {
-     	
-    simplex.do_step();
+    printf("Step %d\n", steps); 	
+    BOOST_REQUIRE(simplex.do_step());
     simplex.print();
     //BOOST_CHECK(simplex.verify_equations(verify_vals));
     ++steps;
@@ -332,6 +365,71 @@ BOOST_AUTO_TEST_CASE(test_mixed_min_1)
   BOOST_REQUIRE(simplex.getVar(1) == 0);
   BOOST_REQUIRE(simplex.getVar(2) == 2);
 }
+
+BOOST_AUTO_TEST_CASE(test_mixed_max_3)
+{
+  cout << "test_mixed_max_3" << endl;
+  cout << "test_mixed_max_3" << endl;
+  cout << "test_mixed_max_3" << endl;
+  cout << "test_mixed_max_3" << endl;
+  cout << "test_mixed_max_3" << endl;
+  cout << "test_mixed_max_3" << endl;
+  cout << "test_mixed_max_3" << endl;
+  cout << "test_mixed_max_3" << endl;
+  cout << "test_mixed_max_3" << endl;
+  cout << "test_mixed_max_3" << endl;
+  cout << "test_mixed_max_3" << endl;
+  cout << "test_mixed_max_3" << endl;
+  
+  Simplex simplex(2, 2);
+  VecDouble z;
+  z.push_back(2);
+  z.push_back(1);
+  simplex.set_eq_to_maximize(z);
+  
+  VecDouble c1;
+  c1.push_back(1);
+  c1.push_back(1);
+  
+  simplex.add_constraint_lte(c1, 10);
+  
+  c1.resize(0);
+  c1.push_back(-1);
+  c1.push_back(1);
+  
+  simplex.add_constraint_gte(c1, 2);
+  
+  simplex.print();
+  
+  BOOST_REQUIRE(!simplex.is_feasible());
+  
+  simplex.print();
+  
+  simplex.initial_simplex_tableau();
+  
+  simplex.print();
+  
+  BOOST_REQUIRE(simplex.is_feasible());
+  
+  int steps = 0;
+  simplex.print();
+  //BOOST_CHECK(simplex.verify_equations(verify_vals));
+  while (!simplex.solved()) {
+     	
+    simplex.do_step();
+    simplex.print();
+    //BOOST_REQUIRE(simplex.is_feasible());
+    //BOOST_CHECK(simplex.verify_equations(verify_vals));
+    ++steps;
+  }
+  
+  //BOOST_uCHECK
+  //BOOST_REQUIRE(steps == 2);
+  BOOST_REQUIRE(simplex.getVar(0) == 4);
+  BOOST_REQUIRE(simplex.getVar(1) == 6);
+  
+}
+
 
 BOOST_AUTO_TEST_SUITE_END()
 

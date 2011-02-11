@@ -11,12 +11,17 @@
 #include <cmath>
 
 #include "boost/bind.hpp"
+#include <boost/numeric/conversion/bounds.hpp>
+#include <boost/limits.hpp>
 
 #include "simplex.h"
 
 using namespace std;
 
 namespace {
+  
+  double M = 100000;
+  
 double diffclock(clock_t clock1,clock_t clock2)
 {
 	double diffticks=clock1-clock2;
@@ -70,7 +75,12 @@ double round(double r, unsigned int prec) {
 //s[i] >= 0
 
 Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) : 
-  num_non_basic_variables(num_non_basic_variables), num_basic_variables(num_basic_variables), cur_constraint(0)
+  num_non_basic_variables(num_non_basic_variables), 
+  num_basic_variables(num_basic_variables),
+  num_artificial_variables(0),
+  cur_constraint(0),
+  last_max(boost::numeric::bounds<double>::lowest()),
+  initial_simplex_tableau_called(false)
   {
     rows = num_basic_variables + 1;
     cols = num_non_basic_variables + num_basic_variables + 1;
@@ -97,14 +107,18 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       printf("s_%d ", i);
     }
     
+    for(unsigned int i = 1; i <= num_artificial_variables; ++i) 
+    {
+      printf("a_%d ", i);
+    }
+    
     printf("  b\n");
     
     for(MatrixDouble::iterator it = data.begin(); it != data.end(); ++it)
     {
       VecDouble& row = *it;
       for(VecDouble::iterator col_it = row.begin(); col_it != row.end(); ++col_it)
-      {
-        
+      {        
         if (*col_it == 0) {
           printf("0 ");
         } else {
@@ -212,14 +226,36 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     assert(cons_num >= 0);
     assert(cons_num < num_basic_variables);
     assert(data.size() == num_basic_variables + 1);
-    assert(data[cons_num].size() == num_basic_variables + num_non_basic_variables + 1);
+    assert(data[cons_num].size() == num_basic_variables + num_non_basic_variables + num_artificial_variables + 1);
     
     copy(co_eff.begin(), co_eff.end(), data[cons_num].begin());
     
     *data[cons_num].rbegin() = abs(b);
     
     //slack variable
-    data[cons_num][num_non_basic_variables + cons_num] = b >= 0 ? 1 : -1;
+    if (b < 0) {
+      const unsigned int slack_column = num_non_basic_variables + cons_num; 
+      data[cons_num][slack_column] = -1;
+      ++num_artificial_variables;
+      for(unsigned int r=0; r<data.size(); ++r)
+      {
+        unsigned int new_size = num_artificial_variables+num_basic_variables+num_non_basic_variables + 1;
+        assert(data[r].size() == new_size - 1);
+        data[r].resize(new_size);
+        *data[r].rbegin() = *(data[r].rbegin() + 1); //copy d
+        *(data[r].rbegin() + 1) = 0;
+      }
+      
+      const unsigned int artificial_column = num_non_basic_variables + num_basic_variables + num_artificial_variables - 1;
+      
+      basic_to_artificial.insert(make_pair(slack_column, artificial_column));
+      
+      // add artificial variable
+      data[cons_num][artificial_column] = 1; 
+      (*data.rbegin())[artificial_column] = M;
+    } else {
+      data[cons_num][num_non_basic_variables + cons_num] = 1;
+    }
   }
   
   //s[i]
@@ -277,6 +313,99 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       
   }
   
+  bool Simplex::initial_simplex_tableau()
+  {
+    initial_simplex_tableau_called = true;
+    if (is_feasible())
+    {
+      return true;
+    }
+    
+    unsigned int cur_artificial_variable = num_basic_variables + num_non_basic_variables;
+    
+    VecDouble& z_row = *data.rbegin();
+    
+    for (unsigned int c=0; c<z_row.size() - 1; ++c) {
+      if (z_row[c] == 0) {
+        for(unsigned int r=0; r<num_basic_variables; ++r) {
+          if (data[r][c] < 0) {
+            //surplus variable
+            eliminate_neg_s_variable(c, r, cur_artificial_variable++);
+            
+          }
+        }
+      }
+    }
+    
+    assert(cur_artificial_variable == z_row.size() - 1);
+    
+    return true;
+      
+  }
+  
+  bool Simplex::eliminate_neg_s_variable(unsigned int s_col, unsigned int s_row, unsigned int a_col)
+  {
+    printf("eliminate_neg_s_variable s_col=%d, s_row=%d, a_col=%d\n", s_col, s_row, a_col);
+    VecDouble& z_row = *data.rbegin();
+    
+    assert(z_row[a_col] == M);
+    assert(z_row.size() == data[s_row].size());
+    
+    transform(z_row.begin(), z_row.end(),
+      data[s_row].begin(), 
+      data.rbegin()->begin(),
+      boost::bind(plus<double>(), _1,
+        boost::bind(multiplies<double>(), _2, -M)));
+          
+   
+    return true;
+  }
+  
+  //initially
+  bool Simplex::is_feasible()
+  {
+    //VecDouble& last_row = *data.rbegin();
+    
+    //all basic variables must be > 0 and have only 1 non_zero element
+    for(unsigned int b_var = num_non_basic_variables; b_var < num_non_basic_variables + num_basic_variables; ++b_var)
+    {
+      bool found_non_zero = false;
+      unsigned int non_zero_row = 0;
+      
+      
+      unsigned int basic_col = b_var;
+      
+      map<unsigned int, unsigned int>::const_iterator b_to_a_it = basic_to_artificial.find(basic_col);
+      if (b_to_a_it != basic_to_artificial.end()) {
+        basic_col = b_to_a_it->second;
+        assert(basic_col >= num_basic_variables+num_non_basic_variables);
+        assert(basic_col < num_basic_variables+num_non_basic_variables+num_artificial_variables);
+        assert(num_artificial_variables > 0);
+      }
+      
+      for(unsigned int r=0; r<data.size(); ++r)
+      {
+        if (data[r][basic_col] != 0) {
+          if (found_non_zero) {
+            return false;
+          }
+          found_non_zero = true;
+          non_zero_row = r;
+          //break;
+        }
+      }
+      
+      assert(data[non_zero_row][basic_col] != 0);
+      if (data[non_zero_row][basic_col] < 0)
+      {
+        return false;
+      }
+      
+    }
+    
+    return true;
+  }
+  
   bool Simplex::solved()
   {
     //find most negative value
@@ -285,7 +414,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     double min_value = 0;
     int pivot_col_idx = -1;
     
-    assert(z_row.size() == num_basic_variables + num_non_basic_variables + 1);
+    assert(z_row.size() == num_basic_variables + num_non_basic_variables + num_artificial_variables + 1);
     
     for(unsigned int i = 0; i < z_row.size() - 1; ++i) 
     {
@@ -318,35 +447,23 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
   bool Simplex::do_step()
   {
     assert(cur_constraint == num_basic_variables);
+    assert(initial_simplex_tableau_called || num_artificial_variables == 0);
+    
     //find most negative value
     VecDouble& z_row = *data.rbegin();
     
     double min_value = 0;
     int pivot_col_idx = -1;
   
-    bool neg_surplus_variable = false;
+    //assert(is_feasible());
     
-    for (unsigned int c=0; c<z_row.size() - 1; ++c) {
-      if (z_row[c] == 0) {
-        for(unsigned int r=0; r<num_basic_variables; ++r) {
-          if (data[r][c] == -1) {
-            //surplus variable
-            neg_surplus_variable = true;
-            break;
-          }
-        }
-      } else {
-        printf("0, ");        
-      }
-      
-      if (neg_surplus_variable) {
-        break;
-      }
+    cout << "is feasible? " << endl;
+    if (!is_feasible()) {
+      cout << " retu false \n" << endl;
+      //return false;
     }
     
-    if (neg_surplus_variable) {
-      min_value = numeric_limits<double>::max();
-    }
+    cout << "is feasible? YES " << endl;
     
     for(unsigned int i = 0; i < num_non_basic_variables + num_basic_variables; ++i) 
     {
@@ -357,7 +474,8 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     }
     
     if (pivot_col_idx == -1) {
-      return true;
+      cout << "ret pivot col index false" << endl;
+      return false;
     }
     
     last_chosen_pivot_col = pivot_col_idx;
@@ -414,7 +532,13 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
           boost::bind(std::multiplies<double>(), multiple, _2)));
     }
     
-    return false;
+    double z_value = *z_row.rbegin();
+    cout << z_value << " is the current val " << endl;
+    cout << last_max << " is the current max " << endl;
+    assert(z_value > last_max);
+    last_max = z_value;
+    
+    return true;
   }
 
 

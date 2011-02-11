@@ -2,6 +2,7 @@
 #define SIMPLEX_H
 
 #include <vector>
+#include <map>
 
 using namespace std;
 
@@ -17,6 +18,7 @@ class Simplex
 protected:
   unsigned int num_non_basic_variables;
   unsigned int num_basic_variables; // slack variables
+  unsigned int num_artificial_variables;
   
   bool finding_max;
   int rows;
@@ -24,7 +26,11 @@ protected:
   unsigned int cur_constraint;
   MatrixDouble data;
   unsigned int last_chosen_pivot_col;
+  double last_max;
+  bool initial_simplex_tableau_called;
 
+  map<unsigned int, unsigned int> basic_to_artificial;    
+  
 public:
   Simplex(int num_non_basic_variables, int num_basic_variables);
   void print();
@@ -34,6 +40,10 @@ public:
   
   void set_eq_to_minimize(const VecDouble& z);
   void set_eq_to_maximize(const VecDouble& z);
+  
+  bool is_feasible();
+  bool initial_simplex_tableau();
+  bool eliminate_neg_s_variable(unsigned int s_col, unsigned int s_row, unsigned int a_col);
   
   //a[1][0]*x[0] + a[1][1]*x[1] + s[1] == b[1]  
   void add_constraint(unsigned int cons_num, const VecDouble& co_eff, double b);
