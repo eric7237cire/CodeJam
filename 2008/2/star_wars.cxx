@@ -106,7 +106,9 @@ void do_test_case(int test_case, ifstream& input)
       //int d = x_sign * x + y_sign * y + z_sign * z;
       int d = x_sign * x + y_sign * y;
       //printf("\n, %.0fx + %.0fy + %.0fz + %.0fm >= %d", constraint[0], constraint[1], constraint[2], constraint[3], d);
-      printf("\n, %.0fx + %.0fy + %.0fm >= %d", constraint[0], constraint[1], constraint[2], d);
+      
+      //printf("\n, %.0fx + %.0fy + %.0fm >= %d", constraint[0], constraint[1], constraint[2], d);
+      
       //verify_vals.push_back(d - x_sign * verify_vals[0] - y_sign * verify_vals[1] - z_sign * verify_vals[2] + ship_power * verify_vals[3]);
       verify_vals.push_back(d - x_sign * verify_vals[0] - y_sign * verify_vals[1] + ship_power * verify_vals[2]);      
       //add x_ms + y_ms + z_ms + ship_power*MSP >= x_s + y_s + z_s
@@ -118,25 +120,26 @@ void do_test_case(int test_case, ifstream& input)
   
   simplex.print();
   int steps = 0;
-  assert(simplex.verify_equations(verify_vals));
+  //assert(simplex.verify_equations(verify_vals));
   cout << "Verify vals: " << endl;
   PrintVector(verify_vals);
   PrintVector(verify_vals);
+  simplex.initial_simplex_tableau();
   //throw 3;
   
   while(!simplex.solved()) {
  // printf("Case #%d: 0 0 %d %d %d %d\n", test_case+1, w1, n1, w2, n2);
     printf("Step: %d \n", ++steps);
-    simplex.do_step();
+    bool step = simplex.do_step();
     simplex.print();
     assert(simplex.verify_equations(verify_vals));
-    if (steps > 10) {
+    if (steps > 20) {
       cout << "TOO FAR" << endl;
       throw 5;
     }
   }
   
-  throw 3;
+  //throw 3;
   return;
     
 }

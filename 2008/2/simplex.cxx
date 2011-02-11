@@ -200,8 +200,8 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       
       VecDouble& row = data[r];
       double tally = 0;
-      assert(row.size() == verify_vals.size() + 1);
-      for(unsigned int c = 0; c < row.size() - 1; ++c)
+      assert(row.size() >= verify_vals.size() + 1);
+      for(unsigned int c = 0; c < verify_vals.size(); ++c)
       {
         tally += row[c] * verify_vals[c];
       }
@@ -247,7 +247,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       }
       
       const unsigned int artificial_column = num_non_basic_variables + num_basic_variables + num_artificial_variables - 1;
-      
+      printf("sc = %d, ac = %d\n", slack_column, artificial_column);
       basic_to_artificial.insert(make_pair(slack_column, artificial_column));
       
       // add artificial variable
@@ -325,7 +325,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     
     VecDouble& z_row = *data.rbegin();
     
-    for (unsigned int c=0; c<z_row.size() - 1; ++c) {
+    for (unsigned int c=num_non_basic_variables; c<num_non_basic_variables+num_basic_variables; ++c) {
       if (z_row[c] == 0) {
         for(unsigned int r=0; r<num_basic_variables; ++r) {
           if (data[r][c] < 0) {
@@ -345,7 +345,9 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
   
   bool Simplex::eliminate_neg_s_variable(unsigned int s_col, unsigned int s_row, unsigned int a_col)
   {
+    
     printf("eliminate_neg_s_variable s_col=%d, s_row=%d, a_col=%d\n", s_col, s_row, a_col);
+    print();
     VecDouble& z_row = *data.rbegin();
     
     assert(z_row[a_col] == M);
@@ -357,7 +359,9 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       boost::bind(plus<double>(), _1,
         boost::bind(multiplies<double>(), _2, -M)));
           
-   
+    print();
+    
+    assert(z_row[a_col] == 0);
     return true;
   }
   
@@ -419,28 +423,12 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     for(unsigned int i = 0; i < z_row.size() - 1; ++i) 
     {
       //printf("Checking solved, col=%d, value=%f, min_value=%f\n", i, z_row[i], min_value);
-      if (z_row[i] < min_value) {
-        pivot_col_idx = i;
-        min_value = z_row[i];
+      if (z_row[i] < 0) {
+        return false;
       }
     }
     
-    for (unsigned int c=0; c<z_row.size() - 1; ++c) {
-      if (z_row[c] == 0) {
-        for(unsigned int r=0; r<num_basic_variables; ++r) {
-          if (data[r][c] == -1) {
-            //surplus variable
-            return false;
-          }
-        }
-      }
-      
-    }
-    
-    if (pivot_col_idx == -1) {
-      return true;
-    }
-    return false;
+    return true;
   }
   
   //returns true if optimal
@@ -465,7 +453,9 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     
     cout << "is feasible? YES " << endl;
     
-    for(unsigned int i = 0; i < num_non_basic_variables + num_basic_variables; ++i) 
+    assert(z_row.size() == num_non_basic_variables + num_basic_variables + num_artificial_variables + 1);
+    
+    for(unsigned int i = 0; i < z_row.size() - 1; ++i) 
     {
       if (z_row[i] < min_value && z_row[i] != 0) { //not sure about the !=0
         pivot_col_idx = i;
@@ -482,19 +472,22 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     assert(pivot_col_idx >= 0);
     printf("Pivot col=%f, position=%d\n", min_value, pivot_col_idx);
     
-    double min_ratio = numeric_limits<double>::max();
+    double min_ratio = boost::numeric::bounds<double>::highest();
     
     unsigned int pivot_row_idx = 10000;
     bool found_pivot_row = false;
     
     for(unsigned int r = 0; r < num_basic_variables; ++r)
     {
-      //b[i] (end of row) / value in pivot column 
-      double ratio = *data[r].rbegin() / data[r][pivot_col_idx]; 
-      if( ratio < min_ratio && ratio > 0 ) {
-        pivot_row_idx = r;
-        min_ratio = ratio;
-        found_pivot_row = true;
+      if (data[r][pivot_col_idx] > 0) {
+        //b[i] (end of row) / value in pivot column 
+        double ratio = *data[r].rbegin() / data[r][pivot_col_idx];
+        assert(ratio >= 0);
+        if( ratio < min_ratio ) {
+          pivot_row_idx = r;
+          min_ratio = ratio;
+          found_pivot_row = true;
+        }
       }
     }
     
@@ -535,7 +528,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     double z_value = *z_row.rbegin();
     cout << z_value << " is the current val " << endl;
     cout << last_max << " is the current max " << endl;
-    assert(z_value > last_max);
+    assert(z_value >= last_max);
     last_max = z_value;
     
     return true;
