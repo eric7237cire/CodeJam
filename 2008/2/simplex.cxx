@@ -45,6 +45,16 @@ namespace {
   
   void myprintf(const char* pMsg, ...)
   {
+    #if 1
+    va_list arg;
+    va_start(arg, pMsg);
+    vprintf(pMsg, arg);
+    va_end(arg);
+     #endif 
+  }
+  
+  void trace(const char* pMsg, ...)
+  {
     #if 0
     va_list arg;
     va_start(arg, pMsg);
@@ -219,6 +229,8 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
         printf("\n");
         return false;
       }
+      
+      printf("row %d, tally: %f\n ", r, tally);
     }
     
     return true;
@@ -263,14 +275,14 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
   }
   
   //s[i]
-  double Simplex::getBasicVar(int i)
+  double Simplex::getBasicVar(unsigned int i)
   {
     return getVar(i + num_non_basic_variables);    
   }
   
   
   //x[i]
-  double Simplex::getVar(int i)
+  double Simplex::getVar(unsigned int i)
   {
     VecDouble& z_row = *data.rbegin();
     
@@ -368,6 +380,72 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     return true;
   }
   
+  bool Simplex::reduce()
+  {
+    //blow away any artifical variables
+    for(unsigned int r = 0; r<data.size(); ++r) {
+      VecDouble& row = data[r];
+      unsigned int new_row_size = num_basic_variables+num_non_basic_variables+1;
+      row[new_row_size - 1] = *row.rbegin();
+      row.resize(new_row_size);
+    }
+    print();
+    
+    unsigned int i = 0;
+    unsigned int j = 0;
+    const unsigned int m = data.size() - 1;
+    const unsigned int n = num_basic_variables + num_non_basic_variables;
+    
+    while (i <= m && j <= n) 
+    {
+      //Find pivot in column j, starting in row i:
+      unsigned int maxi = i;
+      for( unsigned int k = i + 1; k <= m; ++k) 
+      {
+        if ( abs(data[k][j]) > abs(data[maxi][j]) ) {
+          maxi = k;
+        }          
+      }
+      
+      if (data[maxi][j] != 0)
+      {
+        VecDouble i_row = data[i];
+        VecDouble maxi_row = data[maxi];
+        data[i] = maxi_row;
+        data[maxi] = i_row;
+        
+        //Now A[i,j] will contain the old value of A[maxi,j].
+        assert(equal(data[i].begin(), data[i].end(), maxi_row.begin()));
+    
+        //divide each entry in row i by A[i,j]
+        transform(data[i].begin(), data[i].end(), data[i].begin(), boost::bind(divides<double>(), _1, data[i][j]));
+        
+        //Now A[i,j] will have the value 1.
+        assert(data[i][j] == 1);
+        for(unsigned int u = i+1; u <= m; ++u) 
+        {
+          //subtract A[u,j] * row i from row u
+          transform(data[u].begin(), data[u].end(), //input1 b-e 
+            data[i].begin(), //input2
+            data[u].begin(), //output
+            boost::bind(minus<double>(), 
+              boost::bind(multiplies<double>(), data[u][j], _2),
+              _1)); 
+            
+          //Now A[u,j] will be 0, since A[u,j] - A[i,j] * A[u,j] = A[u,j] - 1 * A[u,j] = 0.
+          assert(data[u][j] == 0);
+        }
+        
+        ++i;
+      }
+    ++j;
+    }
+    
+    
+  
+    return true;
+  }
+  
   //initially
   bool Simplex::is_feasible()
   {
@@ -419,6 +497,14 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     VecDouble& z_row = *data.rbegin();
     
     assert(z_row.size() == num_basic_variables + num_non_basic_variables + num_artificial_variables + 1);
+    
+    for(unsigned int i = 0; i < num_basic_variables+num_non_basic_variables; ++i) 
+    {
+      //printf("Checking solved, col=%d, value=%f, min_value=%f\n", i, z_row[i], min_value);
+      if (z_row[i] != 0) {
+       // return false;
+      }
+    }
     
     for(unsigned int i = 0; i < z_row.size() - 1; ++i) 
     {
@@ -508,13 +594,18 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       
       VecDouble& row = data[r];
       VecDouble& pivot_row = data[pivot_row_idx];
-      
+      printf("end of row %d was %f\n", r, *row.rbegin());
       double multiple = -row[pivot_col_idx];
       //printf("Multiple is %f\n", multiple);
       
       transform(row.begin(), row.end(), pivot_row.begin(), row.begin(),
         boost::bind(std::plus<double>(), _1,
           boost::bind(std::multiplies<double>(), multiple, _2)));
+    
+      //fix double inaccuracy
+      //*row.rbegin() = round(*row.rbegin(), 12); 
+      printf("end of row %d is %f\n", r, *row.rbegin());
+      assert(r == data.size() - 1 || *row.rbegin() >= 0);
     }
     
     double z_value = *z_row.rbegin();

@@ -54,11 +54,14 @@ public:
   void print_current_solution();
   bool verify_equations(const VecDouble& vars);
   
+  //find value of all variables
+  bool reduce();
+  
   //s[i]
-  double getBasicVar(int i);
+  double getBasicVar(unsigned int i);
   
   //x[i]
-  double getVar(int i);
+  double getVar(unsigned int i);
   
   bool solved();
   

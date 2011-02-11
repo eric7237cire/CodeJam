@@ -6,7 +6,17 @@ LIBS =
 OBJ_FILES = star_wars.o simplex.o
 INSTALL_DIR = /usr/bin
 
+CXX_FILES = $(wildcard *.cxx)
+
 all : star_wars.exe boolean_tree.exe triangle_area.exe test_simplex.exe
+
+#.depend: depend
+
+include .depend
+
+depend: $(CXX_FILES)
+				rm -f ./.depend
+				$(CC) $(CFLAGS) -MM $^>>./.depend;
 
 clean :
 	rm $(EXEC_NAME) $(OBJ_FILES)
