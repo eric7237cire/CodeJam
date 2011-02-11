@@ -9,6 +9,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <cmath>
+#include <stdarg.h>
 
 #include "boost/bind.hpp"
 #include <boost/numeric/conversion/bounds.hpp>
@@ -22,41 +23,44 @@ namespace {
   
   double M = 100000;
   
-double diffclock(clock_t clock1,clock_t clock2)
-{
-	double diffticks=clock1-clock2;
-	double diffms=(diffticks*1000)/CLOCKS_PER_SEC;
-	return diffms;
-} 
+  double diffclock(clock_t clock1,clock_t clock2)
+  {
+    double diffticks=clock1-clock2;
+    double diffms=(diffticks*1000)/CLOCKS_PER_SEC;
+    return diffms;
+  } 
+  
+  double round(double r) {
+      return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
+  }
+  
+  double round(double r, unsigned int prec) {
+      int power = 1;
+      for (unsigned int i = 1; i <= prec; ++i) {
+        power *= 10;
+      }
+      
+      return round(r*prec) / prec;
+  }
+  
+  void myprintf(const char* pMsg, ...)
+  {
+    #if 0
+    va_list arg;
+    va_start(arg, pMsg);
+    vprintf(pMsg, arg);
+    va_end(arg);
+     #endif 
+  }
 
-double round(double r) {
-    return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
+
 }
 
-double round(double r, unsigned int prec) {
-    int power = 1;
-    for (unsigned int i = 1; i <= prec; ++i) {
-      power *= 10;
-    }
-    
-    return round(r*prec) / prec;
-}
+#define printf myprintf
 
-
-}
-
-#define SHOW_TIME 0
-#define DEBUG_OUTPUT 0
 //#undef assert
 //#define assert(x) ((void)0)
 
-#if SHOW_TIME
-#define SHOW_TIME_BEGIN(A) clock_t begin_##A=clock();
-#define SHOW_TIME_END(A) clock_t end_##A=clock(); cout << "Time elapsed: " #A << " " << double(diffclock(end_##A,begin_##A)) << " ms"<< endl;
-#else
-#define SHOW_TIME_BEGIN(A) 
-#define SHOW_TIME_END(A) 
-#endif
 
 
 //Maximize z = 4x + 6y subject to -x + y <= 11, x + y <= 27, 2x + 5y <= 90
@@ -271,12 +275,11 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     VecDouble& z_row = *data.rbegin();
     
     if (z_row[i] == 0) {
-      for(unsigned int r=0; r<num_basic_variables; ++r) {
+      for(unsigned int r=0; r<data.size() - 1; ++r) {
         if (data[r][i] == 1) {
-          cout << (*data[r].rbegin()) << endl;
-          return round(*data[r].rbegin(), 2);            
+          return round(*data[r].rbegin(), 6);            
         } else if (data[r][i] == -1) {
-          return round(-*data[r].rbegin(), 2);            
+          return round(-*data[r].rbegin(), 6);            
         }
       }
     } else {
@@ -415,9 +418,6 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     //find most negative value
     VecDouble& z_row = *data.rbegin();
     
-    double min_value = 0;
-    int pivot_col_idx = -1;
-    
     assert(z_row.size() == num_basic_variables + num_non_basic_variables + num_artificial_variables + 1);
     
     for(unsigned int i = 0; i < z_row.size() - 1; ++i) 
@@ -445,14 +445,6 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
   
     //assert(is_feasible());
     
-    cout << "is feasible? " << endl;
-    if (!is_feasible()) {
-      cout << " retu false \n" << endl;
-      //return false;
-    }
-    
-    cout << "is feasible? YES " << endl;
-    
     assert(z_row.size() == num_non_basic_variables + num_basic_variables + num_artificial_variables + 1);
     
     for(unsigned int i = 0; i < z_row.size() - 1; ++i) 
@@ -464,7 +456,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     }
     
     if (pivot_col_idx == -1) {
-      cout << "ret pivot col index false" << endl;
+      printf("ret pivot col index false\n");
       return false;
     }
     
@@ -526,8 +518,8 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     }
     
     double z_value = *z_row.rbegin();
-    cout << z_value << " is the current val " << endl;
-    cout << last_max << " is the current max " << endl;
+    printf("%f is the current val\n", z_value);
+    printf("%f is the current max\n", last_max);
     assert(z_value >= last_max);
     last_max = z_value;
     
@@ -578,8 +570,6 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
 int simplex_test()
 {
   
-  SHOW_TIME_BEGIN(g) 
- 
   Simplex simplex(2, 3);
   VecDouble z;
   VecDouble c1;
@@ -623,9 +613,6 @@ int simplex_test()
   
   return 1;
   
-  
-  
-  SHOW_TIME_END(g)
 }
 
   
