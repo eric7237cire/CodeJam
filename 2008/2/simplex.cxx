@@ -19,6 +19,16 @@
 
 using namespace std;
 
+void PrintVector(const VecDouble& vec)
+{
+  for(VecDouble::const_iterator it = vec.begin(); it != vec.end(); ++it)
+  {
+    printf("%.2f ", *it);
+  }
+  printf("\n");
+}
+
+
 double round(double r) {
     return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
 }
@@ -56,7 +66,7 @@ namespace {
   
   
   #define ERROR 1
-  #define INFO 0
+  #define INFO 1
   #define DEBUG 0
   #define TRACE 0
   
@@ -402,6 +412,8 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     print();
     #endif
     
+    assert(data[s_row][s_col] < 0);
+    
     VecDouble& z_row = *data.rbegin();
     
     assert(z_row[a_col] == M);
@@ -418,6 +430,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     #endif
     
     assert(z_row[a_col] == 0);
+    //assert(data[s_row][s_col] > 0);
     return true;
   }
   
@@ -602,6 +615,11 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     assert(cur_constraint == num_basic_variables);
     assert(initial_simplex_tableau_called || num_artificial_variables == 0);
     
+    #if DEBUG
+    printf("STEP\n\n");
+    print();
+    #endif
+    
     //find most negative value
     VecDouble& z_row = *data.rbegin();
     
@@ -642,7 +660,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     
     for(unsigned int r = 0; r < num_basic_variables; ++r)
     {
-      if (data[r][pivot_col_idx] > 0) {
+      if (data[r][pivot_col_idx] > zero_threshold) {
         //b[i] (end of row) / value in pivot column 
         double ratio = *data[r].rbegin() / data[r][pivot_col_idx];
         assert(ratio >= 0);
@@ -668,13 +686,24 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     //divide pivot row by pivot column
     
     double pivot = data[pivot_row_idx][pivot_col_idx];
+    trace("Pivot is %f\n", pivot);
     
     VecDouble& pivot_row = data[pivot_row_idx];
+    
+    #if TRACE
+    printf("Pivot row %d was: ", pivot_row_idx);
+    PrintVector(pivot_row);
+    #endif
     
     for(VecDouble::iterator it = pivot_row.begin(); it != pivot_row.end(); ++it)
     {
       (*it) = (*it) / pivot;
     }
+    
+    #if TRACE
+    printf("Pivot row %d is: ", pivot_row_idx);
+    PrintVector(pivot_row);
+    #endif
     
     //print();
     
@@ -686,17 +715,27 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       
       VecDouble& row = data[r];
       VecDouble& pivot_row = data[pivot_row_idx];
-      trace("end of row %d was %f\n", r, *row.rbegin());
+      //trace("end of row %d was %f\n", r, *row.rbegin());
       double multiple = -row[pivot_col_idx];
-      //trace("Multiple is %f\n", multiple);
+      trace("Multiple is %f\n", multiple);
       
+      #if TRACE
+      printf("Row %d was: ", r);
+      PrintVector(data[r]);
+      
+      #endif
       transform(row.begin(), row.end(), pivot_row.begin(), row.begin(),
         boost::bind(std::plus<double>(), _1,
           boost::bind(std::multiplies<double>(), multiple, _2)));
     
+      #if TRACE
+      printf("Row %d is now: ", r);
+      PrintVector(data[r]);
+      #endif
+      
       //fix double inaccuracy
       //*row.rbegin() = round(*row.rbegin(), 12); 
-      trace("end of row %d is %f\n", r, *row.rbegin());
+      //trace("end of row %d is %f\n", r, *row.rbegin());
       if (*row.rbegin() < 0 && *row.rbegin() >= -zero_threshold) {
         *row.rbegin() = 0;
       }

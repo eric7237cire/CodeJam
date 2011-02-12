@@ -58,14 +58,6 @@ int main(int argc, char** args)
   SHOW_TIME_END(g)
 }
 
-void PrintVector(const VecDouble& vec)
-{
-  for(VecDouble::const_iterator it = vec.begin(); it != vec.end(); ++it)
-  {
-    printf("%.2f ", *it);
-  }
-  printf("\n");
-}
 
 void do_test_case(int test_case, ifstream& input)
 {
@@ -135,7 +127,7 @@ void do_test_case(int test_case, ifstream& input)
   
   //simplex.reduce();
   //simplex.print();
-  simplex.print_current_solution();
+  //simplex.print_current_solution();
   //assert(simplex.verify_equations(verify_values));
   
   printf("Case #%d: %f\n", test_case+1, simplex.getVar(3));

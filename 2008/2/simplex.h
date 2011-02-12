@@ -13,6 +13,7 @@ typedef vector<double> VecDouble;
 typedef vector<VecDouble> MatrixDouble;
 
 double round(double r, unsigned int prec);
+void PrintVector(const VecDouble& vec);
 
 class Simplex
 {
