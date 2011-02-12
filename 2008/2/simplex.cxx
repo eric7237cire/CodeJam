@@ -65,7 +65,7 @@ namespace {
   
   
   
-  #define ERROR 0
+  #define ERROR 1
   #define INFO 0
   #define DEBUG 0
   #define TRACE 0
@@ -142,7 +142,8 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
   cur_constraint(0),
   last_max(boost::numeric::bounds<double>::lowest()),
   initial_simplex_tableau_called(false),
-  b_solved(false)
+  b_solved(false),
+  pivot_col_idx(0)
   {
     rows = num_basic_variables + 1;
     cols = num_non_basic_variables + num_basic_variables + 1;
@@ -218,6 +219,15 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     assert(z_row.size() == num_non_basic_variables + num_basic_variables + 1);
     transform(z.begin(), z.end(), z_row.begin(), negate<double>());
     assert(z_row.size() == num_non_basic_variables + num_basic_variables + 1);
+    
+    double min_value = 0;
+    for(unsigned int i = 0; i < z_row.size() - 1; ++i) 
+    {
+      if (z_row[i] < min_value && z_row[i] != 0) { 
+        pivot_col_idx = i;
+        min_value = z_row[i];
+      }
+    }
   }
   
   void Simplex::add_constraint_lte(const VecDouble& z, double d)
@@ -602,33 +612,17 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     //find most negative value
     VecDouble& z_row = *data.rbegin();
     
-    double min_value = 0;
-    int pivot_col_idx = -1;
     const double zero_threshold = 0.00000001;
   
     assert(z_row.size() == num_non_basic_variables + num_basic_variables + num_artificial_variables + 1);
     info("rows %d, cols %d\n", data.size(), data[0].size());
-    
-    for(unsigned int i = 0; i < z_row.size() - 1; ++i) 
-    {
-      if (z_row[i] < min_value && z_row[i] != 0) { 
-        pivot_col_idx = i;
-        min_value = z_row[i];
-      }
-    }
-    
-    if (pivot_col_idx == -1) {
-      trace("ret pivot col index false\n");
-      return false;
-    }
-    
-    last_chosen_pivot_col = pivot_col_idx;
-    assert(pivot_col_idx >= 0);
-    debug("Pivot col=%f, position=%d\n", min_value, pivot_col_idx);
+            
+    assert(pivot_col_idx < 10000000);
+    debug("Pivot col=%d\n", pivot_col_idx);
     
     double min_ratio = boost::numeric::bounds<double>::highest();
     
-    unsigned int pivot_row_idx = 10000;
+    unsigned int pivot_row_idx = 0;
     bool found_pivot_row = false;
     
     for(unsigned int r = 0; r < data.size() - 1; ++r)
@@ -723,47 +717,41 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     }
     
     b_solved = true;
-    unsigned int r = data.size() - 1;
-    {
+    
+    double min_value = 0;
+    
+    //trace("end of row %d was %f\n", r, *row.rbegin());
+    const double multiple = -z_row[pivot_col_idx];
+    trace("Multiple is %f, piv_col %d\n", multiple, pivot_col_idx);
+    
+    pivot_col_idx = boost::numeric::bounds<unsigned int>::highest();
+    
+    
+    for(unsigned int c=0; c<z_row.size(); ++c) {
+      z_row[c] = z_row[c] + multiple * pivot_row[c];
       
-      VecDouble& row = data[r];
-      VecDouble& pivot_row = data[pivot_row_idx];
-      //trace("end of row %d was %f\n", r, *row.rbegin());
-      const double multiple = -row[pivot_col_idx];
-      trace("Multiple is %f\n", multiple);
-      
-      #if TRACE
-      printf("Row %d was: ", r);
-      PrintVector(data[r]);      
-      #endif
-      
-      for(unsigned int c=0; c<row.size(); ++c) {
-        row[c] = row[c] + multiple * pivot_row[c];
-        if (row[c] < 0 && c < row.size() - 1) {
-          b_solved = false;
-        }
+      if (z_row[c] < min_value && c < z_row.size() - 1) {
+        b_solved = false;
+        pivot_col_idx = c;
+        min_value = z_row[c];
       }
-      
-      #if TRACE
-      printf("Row %d is now: ", r);
-      PrintVector(data[r]);
-      #endif
-      
-      //fix double inaccuracy
-      //*row.rbegin() = round(*row.rbegin(), 12); 
-      //trace("end of row %d is %f\n", r, *row.rbegin());
-      if (*row.rbegin() < 0 && *row.rbegin() >= -zero_threshold) {
-        *row.rbegin() = 0;
-      }
-      assert(r == data.size() - 1 || *row.rbegin() >= 0);
-      
-      #if ERROR
-      if (r != data.size() - 1 && !(*row.rbegin() >= 0)) {
-        error("end of row %d is %f\n", r, *row.rbegin());  
-      }
-      #endif
       
     }
+    
+    assert(b_solved || pivot_col_idx < boost::numeric::bounds<unsigned int>::highest());
+    
+    #if TRACE
+    printf("Row %d is now: ", r);
+    PrintVector(data[r]);
+    #endif
+    
+    //fix double inaccuracy
+    //*z_row.rbegin() = round(*z_row.rbegin(), 12); 
+    //trace("end of z_row %d is %f\n", r, *z_row.rbegin());
+    if (*z_row.rbegin() < 0 && *z_row.rbegin() >= -zero_threshold) {
+      *z_row.rbegin() = 0;
+    }
+    debug("Next Pivot col=%f, position=%d\n", min_value, pivot_col_idx);
     
     #if ERROR
     double z_value = *z_row.rbegin();

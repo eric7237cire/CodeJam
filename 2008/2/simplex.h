@@ -27,12 +27,13 @@ protected:
   int cols;
   unsigned int cur_constraint;
   MatrixDouble data;
-  unsigned int last_chosen_pivot_col;
+  
   double last_max;
   bool initial_simplex_tableau_called;
 
   bool b_solved;
-  
+  unsigned int pivot_col_idx; 
+    
   map<unsigned int, unsigned int> basic_to_artificial;    
   
 public:
