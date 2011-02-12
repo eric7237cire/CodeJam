@@ -12,6 +12,7 @@ typedef vector<VecInt> MatrixInt;
 typedef vector<double> VecDouble;
 typedef vector<VecDouble> MatrixDouble;
 
+double round(double r, unsigned int prec);
 
 class Simplex
 {

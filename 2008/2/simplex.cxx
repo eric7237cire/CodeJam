@@ -19,9 +19,29 @@
 
 using namespace std;
 
+double round(double r) {
+    return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
+}
+
+double round(double r, unsigned int prec) {
+      int power = 1;
+      for (unsigned int i = 1; i <= prec; ++i) {
+        power *= 10;
+      }
+      /*printf("%f\n", r);
+      cout << prec << endl;
+      cout << power << endl;
+      cout << round(r*prec) << endl;
+      cout << prec << endl;
+      assert(round(r*power) == static_cast<long long>(round(r*power)));
+      printf("%f\n", round(r*power));
+      printf("%f\n", round(r*power) / power);*/
+      return round(r*power) / power;
+  }
+
 namespace {
   
-  double M = 100000;
+  double M = 1000000;
   
   double diffclock(clock_t clock1,clock_t clock2)
   {
@@ -30,22 +50,39 @@ namespace {
     return diffms;
   } 
   
-  double round(double r) {
-      return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
-  }
   
-  double round(double r, unsigned int prec) {
-      int power = 1;
-      for (unsigned int i = 1; i <= prec; ++i) {
-        power *= 10;
-      }
-      
-      return round(r*prec) / prec;
-  }
   
-  void myprintf(const char* pMsg, ...)
+  
+  
+  
+  #define ERROR 1
+  #define INFO 0
+  #define DEBUG 0
+  #define TRACE 0
+  
+  void error(const char* pMsg, ...)
   {
-    #if 1
+    #if ERROR
+    va_list arg;
+    va_start(arg, pMsg);
+    vprintf(pMsg, arg);
+    va_end(arg);
+     #endif 
+  }
+  
+  void info(const char* pMsg, ...)
+  {
+    #if INFO
+    va_list arg;
+    va_start(arg, pMsg);
+    vprintf(pMsg, arg);
+    va_end(arg);
+     #endif 
+  }
+  
+  void debug(const char* pMsg, ...)
+  {
+    #if DEBUG
     va_list arg;
     va_start(arg, pMsg);
     vprintf(pMsg, arg);
@@ -55,7 +92,7 @@ namespace {
   
   void trace(const char* pMsg, ...)
   {
-    #if 0
+    #if TRACE
     va_list arg;
     va_start(arg, pMsg);
     vprintf(pMsg, arg);
@@ -66,7 +103,7 @@ namespace {
 
 }
 
-#define printf myprintf
+//#define printf trace
 
 //#undef assert
 //#define assert(x) ((void)0)
@@ -106,7 +143,6 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     }
       
   }
-  
   
   
   void Simplex::print()
@@ -221,16 +257,16 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       }
       
       if (tally != *row.rbegin()) {
-        printf("False match, row %d, values: ", r);
+        trace("False match, row %d, values: ", r);
         for(unsigned int c = 0; c < row.size() - 1; ++c)
         {
-          printf("%f ", row[c]);
+          trace("%f ", row[c]);
         }
-        printf("\n");
+        trace("\n");
         return false;
       }
       
-      printf("row %d, tally: %f\n ", r, tally);
+      trace("row %d, tally: %f\n ", r, tally);
     }
     
     return true;
@@ -263,7 +299,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       }
       
       const unsigned int artificial_column = num_non_basic_variables + num_basic_variables + num_artificial_variables - 1;
-      printf("sc = %d, ac = %d\n", slack_column, artificial_column);
+      trace("sc = %d, ac = %d\n", slack_column, artificial_column);
       basic_to_artificial.insert(make_pair(slack_column, artificial_column));
       
       // add artificial variable
@@ -306,6 +342,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
   
   void Simplex::print_current_solution()
   {
+    
     printf("(");
     VecDouble& z_row = *data.rbegin();
     for (unsigned int c=0; c<z_row.size() - 1; ++c) {
@@ -360,9 +397,11 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
   
   bool Simplex::eliminate_neg_s_variable(unsigned int s_col, unsigned int s_row, unsigned int a_col)
   {
-    
+    #if TRACE
     printf("eliminate_neg_s_variable s_col=%d, s_row=%d, a_col=%d\n", s_col, s_row, a_col);
     print();
+    #endif
+    
     VecDouble& z_row = *data.rbegin();
     
     assert(z_row[a_col] == M);
@@ -374,7 +413,9 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       boost::bind(plus<double>(), _1,
         boost::bind(multiplies<double>(), _2, -M)));
           
+    #if TRACE
     print();
+    #endif
     
     assert(z_row[a_col] == 0);
     return true;
@@ -393,7 +434,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     
     unsigned int i = 0;
     unsigned int j = 0;
-    const unsigned int m = data.size() - 1;
+    const unsigned int m = data.size() - 2;
     const unsigned int n = num_basic_variables + num_non_basic_variables;
     
     while (i <= m && j <= n) 
@@ -420,10 +461,20 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
         //divide each entry in row i by A[i,j]
         transform(data[i].begin(), data[i].end(), data[i].begin(), boost::bind(divides<double>(), _1, data[i][j]));
         
+        cout << "After row switch\n";
+        print();
+        
         //Now A[i,j] will have the value 1.
         assert(data[i][j] == 1);
         for(unsigned int u = i+1; u <= m; ++u) 
         {
+          if (u == i) {
+            continue;
+          }
+          if (data[u][j] == 0) {
+            continue;
+          }
+          trace("Row %d, multiplier %f\n", u, data[u][j]);
           //subtract A[u,j] * row i from row u
           transform(data[u].begin(), data[u].end(), //input1 b-e 
             data[i].begin(), //input2
@@ -431,7 +482,34 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
             boost::bind(minus<double>(), 
               boost::bind(multiplies<double>(), data[u][j], _2),
               _1)); 
-            
+        
+          
+          //Now A[u,j] will be 0, since A[u,j] - A[i,j] * A[u,j] = A[u,j] - 1 * A[u,j] = 0.
+          assert(data[u][j] == 0);
+        }
+        assert(data[i][j] == 1);
+        
+        print();
+        
+        for(unsigned int u = 0; u < i; ++u) 
+        {
+          trace("u=%d, j=%d, i=%d, m=%d\n", u, j, i, m);
+          if (data[u][j] == 0) {
+            continue;
+          }
+          if (u==i) {
+            continue;
+          }
+          trace("Row %d, multiplier rr %f\n", u, data[u][j]);
+          //subtract A[u] = row i * A[u][j] + row u
+          transform(data[u].begin(), data[u].end(), //input1 b-e 
+            data[i].begin(), //input2
+            data[u].begin(), //output
+            boost::bind(plus<double>(), 
+              boost::bind(multiplies<double>(), -data[u][j], _2),
+              _1)); 
+        
+          
           //Now A[u,j] will be 0, since A[u,j] - A[i,j] * A[u,j] = A[u,j] - 1 * A[u,j] = 0.
           assert(data[u][j] == 0);
         }
@@ -495,12 +573,13 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
   {
     //find most negative value
     VecDouble& z_row = *data.rbegin();
+    const double threshold = 0.00000001;
     
     assert(z_row.size() == num_basic_variables + num_non_basic_variables + num_artificial_variables + 1);
     
     for(unsigned int i = 0; i < num_basic_variables+num_non_basic_variables; ++i) 
     {
-      //printf("Checking solved, col=%d, value=%f, min_value=%f\n", i, z_row[i], min_value);
+      //trace("Checking solved, col=%d, value=%f, min_value=%f\n", i, z_row[i], min_value);
       if (z_row[i] != 0) {
        // return false;
       }
@@ -508,8 +587,8 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     
     for(unsigned int i = 0; i < z_row.size() - 1; ++i) 
     {
-      //printf("Checking solved, col=%d, value=%f, min_value=%f\n", i, z_row[i], min_value);
-      if (z_row[i] < 0) {
+      //trace("Checking solved, col=%d, value=%f, min_value=%f\n", i, z_row[i], min_value);
+      if (z_row[i] < 0 && abs(z_row[i]) > threshold) {
         return false;
       }
     }
@@ -528,6 +607,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     
     double min_value = 0;
     int pivot_col_idx = -1;
+    double zero_threshold = 0.00000001;
   
     //assert(is_feasible());
     
@@ -535,6 +615,11 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     
     for(unsigned int i = 0; i < z_row.size() - 1; ++i) 
     {
+      if (z_row[i] != 0 && abs(z_row[i]) < zero_threshold) {
+        //info("Setting row %i; %f to 0\n", i, z_row[i]);
+        //continue;
+      }
+      
       if (z_row[i] < min_value && z_row[i] != 0) { //not sure about the !=0
         pivot_col_idx = i;
         min_value = z_row[i];
@@ -542,13 +627,13 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     }
     
     if (pivot_col_idx == -1) {
-      printf("ret pivot col index false\n");
+      trace("ret pivot col index false\n");
       return false;
     }
     
     last_chosen_pivot_col = pivot_col_idx;
     assert(pivot_col_idx >= 0);
-    printf("Pivot col=%f, position=%d\n", min_value, pivot_col_idx);
+    debug("Pivot col=%f, position=%d\n", min_value, pivot_col_idx);
     
     double min_ratio = boost::numeric::bounds<double>::highest();
     
@@ -569,7 +654,14 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       }
     }
     
-    printf("Pivot row min ration=%f, position=%d\n", min_ratio, pivot_row_idx);
+    debug("Pivot row min ratio=%f, position=%d\n", min_ratio, pivot_row_idx);
+    
+    #if ERROR
+    if (!found_pivot_row) {
+      error("Could not find pivot row\n");
+      print();
+    }
+    #endif
     
     assert(found_pivot_row);
     assert(pivot_row_idx <= num_basic_variables);
@@ -594,9 +686,9 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       
       VecDouble& row = data[r];
       VecDouble& pivot_row = data[pivot_row_idx];
-      printf("end of row %d was %f\n", r, *row.rbegin());
+      trace("end of row %d was %f\n", r, *row.rbegin());
       double multiple = -row[pivot_col_idx];
-      //printf("Multiple is %f\n", multiple);
+      //trace("Multiple is %f\n", multiple);
       
       transform(row.begin(), row.end(), pivot_row.begin(), row.begin(),
         boost::bind(std::plus<double>(), _1,
@@ -604,13 +696,20 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     
       //fix double inaccuracy
       //*row.rbegin() = round(*row.rbegin(), 12); 
-      printf("end of row %d is %f\n", r, *row.rbegin());
+      trace("end of row %d is %f\n", r, *row.rbegin());
+      if (*row.rbegin() < 0 && *row.rbegin() >= -zero_threshold) {
+        *row.rbegin() = 0;
+      }
       assert(r == data.size() - 1 || *row.rbegin() >= 0);
+      if (r != data.size() - 1 && !(*row.rbegin() >= 0)) {
+        error("end of row %d is %f\n", r, *row.rbegin());  
+      }
+      //assert(r == data.size() - 1 || ( *row.rbegin() >= -zero_threshold) );
     }
     
     double z_value = *z_row.rbegin();
-    printf("%f is the current val\n", z_value);
-    printf("%f is the current max\n", last_max);
+    trace("%f is the current val\n", z_value);
+    trace("%f is the current max\n", last_max);
     assert(z_value >= last_max);
     last_max = z_value;
     
@@ -693,7 +792,7 @@ int simplex_test()
   minplex.print();
   steps = 0;
   while(!minplex.solved()) {
-    printf("Step: %d \n", ++steps);
+    trace("Step: %d \n", ++steps);
     minplex.do_step();
     minplex.print();
   }

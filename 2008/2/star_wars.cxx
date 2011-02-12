@@ -77,10 +77,10 @@ void do_test_case(int test_case, ifstream& input)
   
   //minimize w = 0x + 0y + 0z + mother_ship_power(MSP)
   VecDouble min_eq;
-  min_eq.push_back(0);
-  min_eq.push_back(0);
-  min_eq.push_back(0);
-  min_eq.push_back(1);
+  min_eq.push_back(-1);
+  min_eq.push_back(-1);
+  min_eq.push_back(-1);
+  min_eq.push_back(2000);
   
   simplex.set_eq_to_minimize(min_eq);
   
@@ -113,7 +113,7 @@ void do_test_case(int test_case, ifstream& input)
   }
   
   
-  simplex.print();
+  //simplex.print();
   int steps = 0;
   //assert(simplex.verify_equations(verify_values));
   simplex.initial_simplex_tableau();
@@ -122,19 +122,21 @@ void do_test_case(int test_case, ifstream& input)
   //throw 3;
   
   while(!simplex.solved()) {
- 
+    ++steps;
     //printf("Step: %d \n", ++steps);
     simplex.do_step();
-    simplex.print();
+    //simplex.print();
     //assert(simplex.verify_equations(verify_values));
-    if (steps > 20) {
+    if (steps > 2000) {
       cout << "TOO FAR" << endl;
       throw 5;
     }
   }
   
-  simplex.reduce();
-  simplex.print();
+  //simplex.reduce();
+  //simplex.print();
+  simplex.print_current_solution();
+  //assert(simplex.verify_equations(verify_values));
   
   printf("Case #%d: %f\n", test_case+1, simplex.getVar(3));
    

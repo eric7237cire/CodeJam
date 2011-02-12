@@ -22,12 +22,12 @@ using boost::unit_test_framework::test_case;
 
 using namespace std;
 
-class SimplexTestFixture
+class SimplexTestFixture : public Simplex
 {
    public:
 
    // constructor
-   SimplexTestFixture()
+   SimplexTestFixture() : Simplex(3, 3)
    {
    }
 
@@ -430,6 +430,75 @@ BOOST_AUTO_TEST_CASE(test_mixed_max_3)
   
 }
 
+BOOST_AUTO_TEST_CASE(test_reduce_1)
+{
+  num_basic_variables = 3;
+  num_non_basic_variables = 0;
+  num_artificial_variables = 0;
+  
+  data.resize(4);
+  data[0].resize(0);
+  data[1].resize(0);
+  data[2].resize(0);
+  data[3].resize(0);
+  
+
+  data[0].push_back(2);
+  data[0].push_back(1);
+  data[0].push_back(0);
+  data[0].push_back(7);  
+
+  data[1].push_back(4);
+  data[1].push_back(0);
+  data[1].push_back(2);
+  data[1].push_back(16);  
+  
+  data[2].push_back(1);
+  data[2].push_back(3);
+  data[2].push_back(4);
+  data[2].push_back(27);
+  
+  //eq row
+  data[3].push_back(1);
+  data[3].push_back(3);
+  data[3].push_back(4);
+  data[3].push_back(27);
+  
+  
+  print();
+  
+  reduce();
+  
+  print();
+  
+  BOOST_CHECK(data[0][0] == 1);
+  BOOST_CHECK(data[1][1] == 1);
+  BOOST_CHECK(data[2][2] == 1);
+  
+  BOOST_CHECK(data[3][0] == 1);
+  BOOST_CHECK(data[3][1] == 3);
+  BOOST_CHECK(data[3][2] == 4);
+  BOOST_CHECK(data[3][3] == 27);
+  
+  
+  BOOST_CHECK(data[0][3] == 2);
+  BOOST_CHECK(data[1][3] == 3);
+  BOOST_CHECK(data[2][3] == 4);
+}
+
+BOOST_AUTO_TEST_CASE(test_round)
+{
+  double tol = 0.000000001;
+  double f = 14.2216767372;
+  
+  BOOST_CHECK(abs(round(f, 1) - 14.2) < tol);
+  BOOST_CHECK(abs(round(f, 2) - 14.22) < tol);
+  BOOST_CHECK(abs(round(f, 3) - 14.222) < tol);
+  BOOST_CHECK(abs(round(f, 4) - 14.2217) < tol);
+  BOOST_CHECK(abs(round(f, 5) - 14.22168) < tol);
+  BOOST_CHECK(abs(round(f, 6) - 14.221677) < tol);
+  
+}
 
 BOOST_AUTO_TEST_SUITE_END()
 
