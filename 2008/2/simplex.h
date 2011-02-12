@@ -31,6 +31,8 @@ protected:
   double last_max;
   bool initial_simplex_tableau_called;
 
+  bool b_solved;
+  
   map<unsigned int, unsigned int> basic_to_artificial;    
   
 public:

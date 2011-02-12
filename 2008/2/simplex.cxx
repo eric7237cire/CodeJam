@@ -141,7 +141,8 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
   num_artificial_variables(0),
   cur_constraint(0),
   last_max(boost::numeric::bounds<double>::lowest()),
-  initial_simplex_tableau_called(false)
+  initial_simplex_tableau_called(false),
+  b_solved(false)
   {
     rows = num_basic_variables + 1;
     cols = num_non_basic_variables + num_basic_variables + 1;
@@ -584,21 +585,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
   
   bool Simplex::solved()
   {
-    //find most negative value
-    VecDouble& z_row = *data.rbegin();
-    
-    assert(z_row.size() == num_basic_variables + num_non_basic_variables + num_artificial_variables + 1);
-    
-    for(unsigned int i = 0; i < z_row.size() - 1; ++i) 
-    {
-      //trace("Checking solved, col=%d, value=%f, min_value=%f\n", i, z_row[i], min_value);
-      if (z_row[i] < 0) 
-      {
-        return false;
-      }
-    }
-    
-    return true;
+    return b_solved;    
   }
   
   //returns true if optimal
@@ -693,7 +680,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     
     //print();
     
-    for(unsigned int r = 0; r < data.size(); ++r)
+    for(unsigned int r = 0; r < data.size() - 1; ++r)
     {
       if (r == pivot_row_idx) {
         continue;
@@ -707,13 +694,56 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       
       #if TRACE
       printf("Row %d was: ", r);
-      PrintVector(data[r]);
-      
+      PrintVector(data[r]);      
       #endif
+      
       transform(row.begin(), row.end(), pivot_row.begin(), row.begin(),
         boost::bind(std::plus<double>(), _1,
           boost::bind(std::multiplies<double>(), multiple, _2)));
     
+      #if TRACE
+      printf("Row %d is now: ", r);
+      PrintVector(data[r]);
+      #endif
+      
+      //fix double inaccuracy
+      //*row.rbegin() = round(*row.rbegin(), 12); 
+      //trace("end of row %d is %f\n", r, *row.rbegin());
+      if (*row.rbegin() < 0 && *row.rbegin() >= -zero_threshold) {
+        *row.rbegin() = 0;
+      }
+      assert(r == data.size() - 1 || *row.rbegin() >= 0);
+      
+      #if ERROR
+      if (r != data.size() - 1 && !(*row.rbegin() >= 0)) {
+        error("end of row %d is %f\n", r, *row.rbegin());  
+      }
+      #endif
+      
+    }
+    
+    b_solved = true;
+    unsigned int r = data.size() - 1;
+    {
+      
+      VecDouble& row = data[r];
+      VecDouble& pivot_row = data[pivot_row_idx];
+      //trace("end of row %d was %f\n", r, *row.rbegin());
+      const double multiple = -row[pivot_col_idx];
+      trace("Multiple is %f\n", multiple);
+      
+      #if TRACE
+      printf("Row %d was: ", r);
+      PrintVector(data[r]);      
+      #endif
+      
+      for(unsigned int c=0; c<row.size(); ++c) {
+        row[c] = row[c] + multiple * pivot_row[c];
+        if (row[c] < 0 && c < row.size() - 1) {
+          b_solved = false;
+        }
+      }
+      
       #if TRACE
       printf("Row %d is now: ", r);
       PrintVector(data[r]);
