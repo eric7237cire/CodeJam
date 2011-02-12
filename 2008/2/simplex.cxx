@@ -65,8 +65,8 @@ namespace {
   
   
   
-  #define ERROR 1
-  #define INFO 1
+  #define ERROR 0
+  #define INFO 0
   #define DEBUG 0
   #define TRACE 0
   
@@ -586,22 +586,14 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
   {
     //find most negative value
     VecDouble& z_row = *data.rbegin();
-    const double threshold = 0.00000001;
     
     assert(z_row.size() == num_basic_variables + num_non_basic_variables + num_artificial_variables + 1);
-    
-    for(unsigned int i = 0; i < num_basic_variables+num_non_basic_variables; ++i) 
-    {
-      //trace("Checking solved, col=%d, value=%f, min_value=%f\n", i, z_row[i], min_value);
-      if (z_row[i] != 0) {
-       // return false;
-      }
-    }
     
     for(unsigned int i = 0; i < z_row.size() - 1; ++i) 
     {
       //trace("Checking solved, col=%d, value=%f, min_value=%f\n", i, z_row[i], min_value);
-      if (z_row[i] < 0 && abs(z_row[i]) > threshold) {
+      if (z_row[i] < 0) 
+      {
         return false;
       }
     }
@@ -625,20 +617,14 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     
     double min_value = 0;
     int pivot_col_idx = -1;
-    double zero_threshold = 0.00000001;
+    const double zero_threshold = 0.00000001;
   
-    //assert(is_feasible());
-    
     assert(z_row.size() == num_non_basic_variables + num_basic_variables + num_artificial_variables + 1);
+    info("rows %d, cols %d\n", data.size(), data[0].size());
     
     for(unsigned int i = 0; i < z_row.size() - 1; ++i) 
     {
-      if (z_row[i] != 0 && abs(z_row[i]) < zero_threshold) {
-        //info("Setting row %i; %f to 0\n", i, z_row[i]);
-        //continue;
-      }
-      
-      if (z_row[i] < min_value && z_row[i] != 0) { //not sure about the !=0
+      if (z_row[i] < min_value && z_row[i] != 0) { 
         pivot_col_idx = i;
         min_value = z_row[i];
       }
@@ -658,7 +644,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     unsigned int pivot_row_idx = 10000;
     bool found_pivot_row = false;
     
-    for(unsigned int r = 0; r < num_basic_variables; ++r)
+    for(unsigned int r = 0; r < data.size() - 1; ++r)
     {
       if (data[r][pivot_col_idx] > zero_threshold) {
         //b[i] (end of row) / value in pivot column 
@@ -716,7 +702,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       VecDouble& row = data[r];
       VecDouble& pivot_row = data[pivot_row_idx];
       //trace("end of row %d was %f\n", r, *row.rbegin());
-      double multiple = -row[pivot_col_idx];
+      const double multiple = -row[pivot_col_idx];
       trace("Multiple is %f\n", multiple);
       
       #if TRACE
@@ -740,17 +726,22 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
         *row.rbegin() = 0;
       }
       assert(r == data.size() - 1 || *row.rbegin() >= 0);
+      
+      #if ERROR
       if (r != data.size() - 1 && !(*row.rbegin() >= 0)) {
         error("end of row %d is %f\n", r, *row.rbegin());  
       }
-      //assert(r == data.size() - 1 || ( *row.rbegin() >= -zero_threshold) );
+      #endif
+      
     }
     
+    #if ERROR
     double z_value = *z_row.rbegin();
     trace("%f is the current val\n", z_value);
     trace("%f is the current max\n", last_max);
     assert(z_value >= last_max);
     last_max = z_value;
+    #endif
     
     return true;
   }

@@ -22,7 +22,7 @@ double diffclock(clock_t clock1,clock_t clock2)
 
 void do_test_case(int test_case, ifstream& input);
 
-#define SHOW_TIME 0
+#define SHOW_TIME 1
 #define DEBUG_OUTPUT 0
 //#undef assert
 //#define assert(x) ((void)0)
@@ -76,13 +76,6 @@ void do_test_case(int test_case, ifstream& input)
   
   simplex.set_eq_to_minimize(min_eq);
   
-  VecDouble verify_values;
-  verify_values.push_back(1.5);
-  verify_values.push_back(2);
-  verify_values.push_back(0);
-  verify_values.push_back(3.5);
-  
-  
   for (unsigned int i = 0; i < N; ++i) {
     int x, y, z, ship_power;
     input >> x >> y >> z >> ship_power;
@@ -97,8 +90,6 @@ void do_test_case(int test_case, ifstream& input)
       constraint.push_back(z_sign);
       constraint.push_back(-ship_power);
       int d = x_sign * x + y_sign * y + z_sign * z;
-      verify_values.push_back(d - verify_values[0] * constraint[0] - verify_values[1] * constraint[1] - verify_values[2] * constraint[2] - verify_values[3] * constraint[3]);
-      //int d = x_sign * x + y_sign * y;
       //add x_ms + y_ms + z_ms + ship_power*MSP >= x_s + y_s + z_s
       simplex.add_constraint_lte(constraint, d);
     }
@@ -109,13 +100,10 @@ void do_test_case(int test_case, ifstream& input)
   int steps = 0;
   //assert(simplex.verify_equations(verify_values));
   simplex.initial_simplex_tableau();
-  //throw 3;
-  //PrintVector(verify_values);
-  //throw 3;
   
   while(!simplex.solved()) {
     ++steps;
-    //printf("Step: %d \n", ++steps);
+    //printf("Step: %d \n", steps);
     simplex.do_step();
     //simplex.print();
     //assert(simplex.verify_equations(verify_values));
@@ -129,7 +117,7 @@ void do_test_case(int test_case, ifstream& input)
   //simplex.print();
   //simplex.print_current_solution();
   //assert(simplex.verify_equations(verify_values));
-  
+  printf("Steps: %d\n", steps);
   printf("Case #%d: %f\n", test_case+1, simplex.getVar(3));
    
   //printf("Case #%d: (x,y,z) = (%f, %f, %f), power = %f\n", test_case+1, simplex.getVar(0), simplex.getVar(1), simplex.getVar(2), simplex.getVar(3));

@@ -1,5 +1,6 @@
 CC = g++
-CFLAGS = -Wall -g
+CFLAGS = -Wall -O3
+OLD = -g
 EXEC_NAME = star_wars.exe boolean_tree.exe triangle_area.exe
 INCLUDES =
 LIBS =
