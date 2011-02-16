@@ -4,7 +4,7 @@ OLD = -g
 EXEC_NAME = star_wars.exe boolean_tree.exe triangle_area.exe
 INCLUDES =
 LIBS =
-OBJ_FILES = star_wars.o simplex.o
+OBJ_FILES = star_wars.o simplex.o util.o
 INSTALL_DIR = /usr/bin
 
 CXX_FILES = $(wildcard *.cxx)
@@ -28,11 +28,11 @@ boolean_tree.exe : boolean_tree.cxx
 triangle_area.exe : triangle_area.cxx
 	$(CC) -o $@ $<
 
-star_wars.exe : star_wars.o simplex.o
-	$(CC) -o $@ $< simplex.o $(LIBS)
+star_wars.exe : star_wars.o simplex.o util.o
+	$(CC) -o $@ $< simplex.o util.o $(LIBS)
 	
-test_simplex.exe : simplex_test.o simplex.o
-	$(CC) -static -o $@ $< simplex.o -lboost_unit_test_framework
+test_simplex.exe : simplex_test.o simplex.o util.o
+	$(CC) -static -o $@ $< simplex.o util.o -lboost_unit_test_framework
 	
 %.o: %.cxx
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<

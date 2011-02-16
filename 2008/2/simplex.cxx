@@ -9,7 +9,8 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <cmath>
-#include <stdarg.h>
+
+#include "util.h" 
 
 #include "boost/bind.hpp"
 #include <boost/numeric/conversion/bounds.hpp>
@@ -51,7 +52,7 @@ double round(double r, unsigned int prec) {
 
 namespace {
   
-  double M = 1000000;
+  double M = 1000000000;
   
   double diffclock(clock_t clock1,clock_t clock2)
   {
@@ -60,51 +61,6 @@ namespace {
     return diffms;
   } 
   
-  #define ERROR 1
-  #define INFO 1
-  #define DEBUG 0
-  #define TRACE 0
-  
-  void error(const char* pMsg, ...)
-  {
-    #if ERROR
-    va_list arg;
-    va_start(arg, pMsg);
-    vprintf(pMsg, arg);
-    va_end(arg);
-     #endif 
-  }
-  
-  void info(const char* pMsg, ...)
-  {
-    #if INFO
-    va_list arg;
-    va_start(arg, pMsg);
-    vprintf(pMsg, arg);
-    va_end(arg);
-     #endif 
-  }
-  
-  void debug(const char* pMsg, ...)
-  {
-    #if DEBUG
-    va_list arg;
-    va_start(arg, pMsg);
-    vprintf(pMsg, arg);
-    va_end(arg);
-     #endif 
-  }
-  
-  void trace(const char* pMsg, ...)
-  {
-    #if TRACE
-    va_list arg;
-    va_start(arg, pMsg);
-    vprintf(pMsg, arg);
-    va_end(arg);
-     #endif 
-  }
-
 
 }
 
@@ -145,7 +101,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     data.resize(rows);
     unsigned int size =  8*rows*cols;
     info("Size is %d, %d\n", rows, cols);
-    if (size > 30000000) {
+    if (size > 20000000) {
       cout << "Size is " << rows << " " << cols << endl;
       cout << "Size is " << 8*rows*cols << endl;
       throw 3;

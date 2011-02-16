@@ -8,6 +8,10 @@
 #include <time.h>
 #include <assert.h>
 #include <stdlib.h>
+#include <boost/numeric/conversion/bounds.hpp>
+#include <boost/limits.hpp>
+#include <cmath>
+#include "util.h" 
 
 #include "simplex.h"
 
@@ -52,7 +56,11 @@ int main(int argc, char** args)
   	
   for (int test_case = 0; test_case < T; ++test_case) 
   {
-    do_test_case(test_case, input);  
+    try {
+      do_test_case(test_case, input);
+    } catch(...) {
+      error("Error exception caught\n"); 
+    }
   }
   
   SHOW_TIME_END(g)
@@ -65,25 +73,101 @@ void do_test_case(int test_case, ifstream& input)
   unsigned int N;
   input >> N;
     
-  Simplex simplex(4, 8*N);
+  
+  
+  int inputData[1000][4];
+  double averages[3] = {0, 0, 0};
+  
+  for (unsigned int i = 0; i < N; ++i) {
+    int x, y, z, ship_power;
+    input >> x >> y >> z >> ship_power;
+    inputData[i][0] = x;
+    inputData[i][1] = y;
+    inputData[i][2] = z;
+    inputData[i][3] = ship_power;
+    
+    averages[0] += x;
+    averages[1] += y;
+    averages[2] += z;
+  }
+  
+  for(int i=0; i<3; ++i) {
+    averages[i] /= N;
+  }
+  
+  double max_cost = boost::numeric::bounds<double>::lowest();
+  unsigned int furthest_ship = boost::numeric::bounds<unsigned int>::highest();
+  
+  for (unsigned int i = 0; i < N; ++i) {
+    double cost = 0;
+    for(unsigned int comp = 0; comp < 3; ++comp) {
+      cost += abs(averages[comp] - inputData[i][comp]) / inputData[i][3];
+    }
+    if (cost > max_cost) {
+      max_cost = cost;
+      furthest_ship = i;
+    }
+       
+  }
+  
+  info("Furthest ship index %d\n", furthest_ship);
+  info("Starting mother ship pos %f %f %f\n", averages[0], averages[1], averages[2]);
+  info("Furthest ship %d %d %d, power=%d\n", inputData[furthest_ship][0], inputData[furthest_ship][1], inputData[furthest_ship][2], inputData[furthest_ship][3]);
   
   //minimize w = 0x + 0y + 0z + mother_ship_power(MSP)
   VecDouble min_eq;
   min_eq.push_back(-1);
   min_eq.push_back(-1);
   min_eq.push_back(-1);
-  min_eq.push_back(2000);
+  min_eq.push_back(20000);
   
-  simplex.set_eq_to_minimize(min_eq);
+  
+  vector<VecDouble> constraints;
+  vector<double> d_vals;
   
   for (unsigned int i = 0; i < N; ++i) {
     int x, y, z, ship_power;
-    input >> x >> y >> z >> ship_power;
+    x = inputData[i][0];
+    y = inputData[i][1];
+    z = inputData[i][2];
+    ship_power = inputData[i][3];
+    
     VecDouble constraint;
     for(unsigned signs = 0; signs <= 7; ++signs) {
       int x_sign = (signs & 1) ? 1 : -1;
       int y_sign = (signs & 2) ? 1 : -1;
       int z_sign = (signs & 4) ? 1 : -1;
+      
+      if (x > averages[0] && x > inputData[furthest_ship][0] && x_sign == 1) {
+        info("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
+        continue;
+      }
+      
+      if (y > averages[1] && y > inputData[furthest_ship][1] && y_sign == 1) {
+        info("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
+        continue;
+      }
+      
+      if (z > averages[2] && z > inputData[furthest_ship][2] && z_sign == 1) {
+        info("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
+        continue;
+      }
+      
+      if (x < averages[0] && x < inputData[furthest_ship][0] && x_sign == -1) {
+        info("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
+        continue;
+      }
+      
+      if (y < averages[1] && y < inputData[furthest_ship][1] && y_sign == -1) {
+        info("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
+        continue;
+      }
+      
+      if (z < averages[2] && z < inputData[furthest_ship][2] && z_sign == -1) {
+        info("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
+        continue;
+      }
+      
       constraint.resize(0);
       constraint.push_back(x_sign);
       constraint.push_back(y_sign);
@@ -91,9 +175,19 @@ void do_test_case(int test_case, ifstream& input)
       constraint.push_back(-ship_power);
       int d = x_sign * x + y_sign * y + z_sign * z;
       //add x_ms + y_ms + z_ms + ship_power*MSP >= x_s + y_s + z_s
-      simplex.add_constraint_lte(constraint, d);
+      
+      constraints.push_back(constraint);
+      d_vals.push_back(d);
     }
   }
+  
+  Simplex simplex(4, constraints.size());
+  simplex.set_eq_to_minimize(min_eq);
+  
+  for (unsigned int i=0; i < constraints.size(); ++i) {
+    simplex.add_constraint_lte(constraints[i], d_vals[i]);
+  }
+  
   
   
   //simplex.print();
@@ -104,7 +198,7 @@ void do_test_case(int test_case, ifstream& input)
   while(!simplex.solved()) {
     ++steps;
     if (steps % 10 == 0) {
-      printf("Step: %d \n", steps);
+      info("Step: %d \n", steps);
     }
     simplex.do_step();
     //simplex.print();
@@ -117,9 +211,11 @@ void do_test_case(int test_case, ifstream& input)
   
   //simplex.reduce();
   //simplex.print();
-  //simplex.print_current_solution();
+  #if INFO
+    simplex.print_current_solution();
+  #endif
   //assert(simplex.verify_equations(verify_values));
-  printf("Steps: %d\n", steps);
+  info("Steps: %d\n", steps);
   printf("Case #%d: %f\n", test_case+1, simplex.getVar(3));
    
   //printf("Case #%d: (x,y,z) = (%f, %f, %f), power = %f\n", test_case+1, simplex.getVar(0), simplex.getVar(1), simplex.getVar(2), simplex.getVar(3));

@@ -1,5 +1,6 @@
 boolean_tree.o: boolean_tree.cxx
-simplex.o: simplex.cxx simplex.h
+simplex.o: simplex.cxx util.h simplex.h
 simplex_test.o: simplex_test.cxx simplex.h
-star_wars.o: star_wars.cxx simplex.h
+star_wars.o: star_wars.cxx util.h simplex.h
 triangle_area.o: triangle_area.cxx
+util.o: util.cxx util.h
