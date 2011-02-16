@@ -22,9 +22,6 @@ protected:
   unsigned int num_basic_variables; // slack variables
   unsigned int num_artificial_variables;
   
-  bool finding_max;
-  int rows;
-  int cols;
   unsigned int cur_constraint;
   MatrixDouble data;
   

@@ -60,13 +60,8 @@ namespace {
     return diffms;
   } 
   
-  
-  
-  
-  
-  
   #define ERROR 1
-  #define INFO 0
+  #define INFO 1
   #define DEBUG 0
   #define TRACE 0
   
@@ -145,10 +140,16 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
   b_solved(false),
   pivot_col_idx(0)
   {
-    rows = num_basic_variables + 1;
-    cols = num_non_basic_variables + num_basic_variables + 1;
+    unsigned int rows = num_basic_variables + 1;
+    unsigned int cols = num_non_basic_variables + num_basic_variables + 1;
     data.resize(rows);
-    
+    unsigned int size =  8*rows*cols;
+    info("Size is %d, %d\n", rows, cols);
+    if (size > 30000000) {
+      cout << "Size is " << rows << " " << cols << endl;
+      cout << "Size is " << 8*rows*cols << endl;
+      throw 3;
+    }
     for(MatrixDouble::iterator it = data.begin(); it != data.end(); ++it)
     {
       (*it).resize(cols, 0);
@@ -200,14 +201,11 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     
     transform(z.begin(), z.end(), z_neg.begin(), negate<double>());
     set_z(z_neg);
-    
-    finding_max = false;
   }
   
   void Simplex::set_eq_to_maximize(const VecDouble& z)
   {
     set_z(z);
-    finding_max = true;
   }
 
   //z = z[0] * x_0 + z[1] * x_1 + ...
@@ -255,11 +253,9 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
       return;
     }
     
-    //if (finding_max == false) {
-      //set d to negative to switch s value
-      //all problems are max problems
-      d = -d;      
-    //}
+    //set d to negative to switch s value
+    //all problems are max problems
+    d = -d;      
     
     add_constraint(cur_constraint++, z, d);
   }
@@ -615,7 +611,7 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     const double zero_threshold = 0.00000001;
   
     assert(z_row.size() == num_non_basic_variables + num_basic_variables + num_artificial_variables + 1);
-    info("rows %d, cols %d\n", data.size(), data[0].size());
+    debug("rows %d, cols %d\n", data.size(), data[0].size());
             
     assert(pivot_col_idx < 10000000);
     debug("Pivot col=%d\n", pivot_col_idx);
@@ -740,10 +736,6 @@ Simplex::Simplex(int num_non_basic_variables, int num_basic_variables) :
     
     assert(b_solved || pivot_col_idx < boost::numeric::bounds<unsigned int>::highest());
     
-    #if TRACE
-    printf("Row %d is now: ", r);
-    PrintVector(data[r]);
-    #endif
     
     //fix double inaccuracy
     //*z_row.rbegin() = round(*z_row.rbegin(), 12); 

@@ -103,7 +103,9 @@ void do_test_case(int test_case, ifstream& input)
   
   while(!simplex.solved()) {
     ++steps;
-    //printf("Step: %d \n", steps);
+    if (steps % 10 == 0) {
+      printf("Step: %d \n", steps);
+    }
     simplex.do_step();
     //simplex.print();
     //assert(simplex.verify_equations(verify_values));
