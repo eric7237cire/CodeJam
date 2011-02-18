@@ -5,7 +5,6 @@
 #include <limits>
 
 #include <stdio.h>
-#include <time.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <boost/numeric/conversion/bounds.hpp>
@@ -17,27 +16,7 @@
 
 using namespace std;
 
-double diffclock(clock_t clock1,clock_t clock2)
-{
-	double diffticks=clock1-clock2;
-	double diffms=(diffticks*1000)/CLOCKS_PER_SEC;
-	return diffms;
-} 
-
 void do_test_case(int test_case, ifstream& input);
-
-#define SHOW_TIME 0
-#define DEBUG_OUTPUT 0
-//#undef assert
-//#define assert(x) ((void)0)
-
-#if SHOW_TIME
-#define SHOW_TIME_BEGIN(A) clock_t begin_##A=clock();
-#define SHOW_TIME_END(A) clock_t end_##A=clock(); cout << "Time elapsed: " #A << " " << double(diffclock(end_##A,begin_##A)) << " ms"<< endl;
-#else
-#define SHOW_TIME_BEGIN(A) 
-#define SHOW_TIME_END(A) 
-#endif
 
 int main(int argc, char** args)
 {
