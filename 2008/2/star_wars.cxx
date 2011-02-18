@@ -66,25 +66,17 @@ int main(int argc, char** args)
   SHOW_TIME_END(g)
 }
 
-
-void do_test_case(int test_case, ifstream& input)
+void find_mother_ship_min(const int inputData[1000][4], const vector<int>& selectedShips, double mother_ship[4])
 {
-  
-  unsigned int N;
-  input >> N;
-    
-  
-  
-  int inputData[1000][4];
   double averages[3] = {0, 0, 0};
   
-  for (unsigned int i = 0; i < N; ++i) {
+  for (unsigned int sn = 0; sn < selectedShips.size(); ++sn) {
+    unsigned int i = selectedShips[sn]; 
     int x, y, z, ship_power;
-    input >> x >> y >> z >> ship_power;
-    inputData[i][0] = x;
-    inputData[i][1] = y;
-    inputData[i][2] = z;
-    inputData[i][3] = ship_power;
+    x = inputData[i][0];
+    y = inputData[i][1];
+    z = inputData[i][2];
+    ship_power = inputData[i][3];
     
     averages[0] += x;
     averages[1] += y;
@@ -92,14 +84,15 @@ void do_test_case(int test_case, ifstream& input)
   }
   
   for(int i=0; i<3; ++i) {
-    averages[i] /= N;
+    averages[i] /= selectedShips.size();
   }
   
   double max_cost = boost::numeric::bounds<double>::lowest();
   unsigned int furthest_ship = boost::numeric::bounds<unsigned int>::highest();
   
-  for (unsigned int i = 0; i < N; ++i) {
+  for (unsigned int sn = 0; sn < selectedShips.size(); ++sn) {
     double cost = 0;
+    unsigned int i = selectedShips[sn]; 
     for(unsigned int comp = 0; comp < 3; ++comp) {
       cost += abs(averages[comp] - inputData[i][comp]) / inputData[i][3];
     }
@@ -125,7 +118,8 @@ void do_test_case(int test_case, ifstream& input)
   vector<VecDouble> constraints;
   vector<double> d_vals;
   
-  for (unsigned int i = 0; i < N; ++i) {
+  for (unsigned int sn = 0; sn < selectedShips.size(); ++sn) {
+    unsigned int i = selectedShips[sn];
     int x, y, z, ship_power;
     x = inputData[i][0];
     y = inputData[i][1];
@@ -139,32 +133,32 @@ void do_test_case(int test_case, ifstream& input)
       int z_sign = (signs & 4) ? 1 : -1;
       
       if (x > averages[0] && x > inputData[furthest_ship][0] && x_sign == 1) {
-        info("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
+        debug("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
         continue;
       }
       
       if (y > averages[1] && y > inputData[furthest_ship][1] && y_sign == 1) {
-        info("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
+        debug("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
         continue;
       }
       
       if (z > averages[2] && z > inputData[furthest_ship][2] && z_sign == 1) {
-        info("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
+        debug("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
         continue;
       }
       
       if (x < averages[0] && x < inputData[furthest_ship][0] && x_sign == -1) {
-        info("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
+        debug("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
         continue;
       }
       
       if (y < averages[1] && y < inputData[furthest_ship][1] && y_sign == -1) {
-        info("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
+        debug("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
         continue;
       }
       
       if (z < averages[2] && z < inputData[furthest_ship][2] && z_sign == -1) {
-        info("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
+        debug("Skipping constraint.  x val = %d, x_sign = %d, aveg x = %f, furthest_x = %d\n", x, x_sign, averages[0], inputData[furthest_ship][0]);
         continue;
       }
       
@@ -197,7 +191,7 @@ void do_test_case(int test_case, ifstream& input)
   
   while(!simplex.solved()) {
     ++steps;
-    if (steps % 10 == 0) {
+    if (steps % 40 == 0) {
       info("Step: %d \n", steps);
     }
     simplex.do_step();
@@ -215,8 +209,133 @@ void do_test_case(int test_case, ifstream& input)
     simplex.print_current_solution();
   #endif
   //assert(simplex.verify_equations(verify_values));
+  for (unsigned int i=0; i<4; ++i) {
+    mother_ship[i] = simplex.getVar(i);
+  }
   info("Steps: %d\n", steps);
-  printf("Case #%d: %f\n", test_case+1, simplex.getVar(3));
+}
+
+double calculate_power(const int inputData[1000][4], unsigned int i, const double mother_ship[4])
+{
+  int x, y, z, ship_power;
+  x = inputData[i][0];
+  y = inputData[i][1];
+  z = inputData[i][2];
+  ship_power = inputData[i][3];
+  
+  double power_req = abs(x-mother_ship[0]) / ship_power + 
+  abs(y-mother_ship[1]) / ship_power + 
+  abs(z-mother_ship[2]) / ship_power ;
+  
+  return power_req;
+}
+
+struct SortFuncObj
+{
+  const int (*inputData)[4];
+  const double* mother_ship;
+  
+  int operator()(const int& lhs, const int& rhs)
+  {
+    
+    double power_req = calculate_power(inputData, lhs, mother_ship);
+    
+    double power_req2 = calculate_power(inputData, rhs, mother_ship);
+    
+    return power_req > power_req2;
+  }
+};
+
+unsigned int find_unreached_ships(const int inputData[1000][4], vector<int>& selectedShips, const unsigned int start, const unsigned int stop, const double mother_ship[4])
+{
+  const unsigned int LIMIT = 10;
+  
+  SortFuncObj s;
+  s.inputData = inputData;
+  s.mother_ship = mother_ship;
+  unsigned int stopped_at = stop+1;
+  const unsigned int sel_ships = selectedShips.size();
+  
+  for(unsigned int i = start; i <= stop; ++i)
+  {
+    int x, y, z, ship_power;
+    x = inputData[i][0];
+    y = inputData[i][1];
+    z = inputData[i][2];
+    ship_power = inputData[i][3];
+    
+    double power_req = abs(x-mother_ship[0]) / ship_power + 
+    abs(y-mother_ship[1]) / ship_power + 
+    abs(z-mother_ship[2]) / ship_power ;
+    
+    if (power_req > mother_ship[3]) {
+      selectedShips.push_back(i);
+      info("Adding ship %d power_req %f  ms power %f\n", i, power_req, mother_ship[3]);
+      if (selectedShips.size() > LIMIT + sel_ships) {
+        stopped_at = i+1;
+        break;
+      }
+    } else {
+      //info("Skipping ship %d power_req %f  ms power %f\n", i, power_req, mother_ship[3]);
+    }
+  }
+  
+  sort(selectedShips.begin(), selectedShips.end(), s);
+  
+  assert(calculate_power(inputData, selectedShips[0], mother_ship) >= calculate_power(inputData, selectedShips[selectedShips.size() - 1], mother_ship));
+  
+  
+  if (selectedShips.size() > LIMIT) {
+    //selectedShips.resize(LIMIT);
+  }
+  
+  return stopped_at;
+}
+
+void do_test_case(int test_case, ifstream& input)
+{
+  
+  unsigned int N;
+  input >> N;
+  
+  int inputData[1000][4];
+  vector<int> selectedShips;
+  
+  for (unsigned int i = 0; i < N; ++i) {
+    int x, y, z, ship_power;
+    input >> x >> y >> z >> ship_power;
+    inputData[i][0] = x;
+    inputData[i][1] = y;
+    inputData[i][2] = z;
+    inputData[i][3] = ship_power;
+    if (i < 10) {
+      selectedShips.push_back(i);
+    }
+  }
+  
+  double mother_ship[4];
+  unsigned int iter = 0;
+  unsigned int stop = 0;
+  while (stop < N) {
+    info("test\n");
+    find_mother_ship_min(inputData, selectedShips, mother_ship);
+    
+    stop = find_unreached_ships(inputData, selectedShips, 0, N-1, mother_ship);
+    info("Stopped at %d with mother ship %f %f %f, %f\n", stop, mother_ship[0], mother_ship[1], mother_ship[2], mother_ship[3]);
+    ++iter;
+    info("After iteration %d stop is %d of %d\n", iter, stop, N);
+    if (stop >= N) {
+     // break;
+    }
+    if (iter > 50) {
+      error("Too many iters\n");
+      throw 3;
+    }
+  }
+  
+  find_mother_ship_min(inputData, selectedShips, mother_ship);
+  
+  printf("Case #%d: %f\n", test_case+1, mother_ship[3]);
    
   //printf("Case #%d: (x,y,z) = (%f, %f, %f), power = %f\n", test_case+1, simplex.getVar(0), simplex.getVar(1), simplex.getVar(2), simplex.getVar(3));
     
