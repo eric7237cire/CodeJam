@@ -26,7 +26,7 @@ double diffclock(clock_t clock1,clock_t clock2)
 
 void do_test_case(int test_case, ifstream& input);
 
-#define SHOW_TIME 1
+#define SHOW_TIME 0
 #define DEBUG_OUTPUT 0
 //#undef assert
 //#define assert(x) ((void)0)
