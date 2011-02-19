@@ -1,4 +1,5 @@
 boolean_tree.o: boolean_tree.cxx
+perm_rle.o: perm_rle.cxx util.h
 simplex.o: simplex.cxx util.h simplex.h
 simplex_test.o: simplex_test.cxx simplex.h
 star_wars.o: star_wars.cxx util.h simplex.h

@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall 
+CFLAGS = -Wall -g
 OLD = -g -O3
 EXEC_NAME = star_wars.exe boolean_tree.exe triangle_area.exe
 INCLUDES =
@@ -9,7 +9,8 @@ INSTALL_DIR = /usr/bin
 
 CXX_FILES = $(wildcard *.cxx)
 
-all : star_wars.exe boolean_tree.exe triangle_area.exe test_simplex.exe perm_rle.exe
+all : perm_rle.exe test_util.exe
+all2 : star_wars.exe boolean_tree.exe triangle_area.exe test_simplex.exe perm_rle.exe
 
 #.depend: depend
 
@@ -36,6 +37,9 @@ star_wars.exe : star_wars.o simplex.o util.o
 	
 test_simplex.exe : simplex_test.o simplex.o util.o
 	$(CC) -static -o $@ $< simplex.o util.o -lboost_unit_test_framework
+	
+test_util.exe : util_test.o util.o
+	$(CC) -static -o $@ $< util.o -lboost_unit_test_framework
 	
 %.o: %.cxx
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<

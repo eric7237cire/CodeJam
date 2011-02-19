@@ -5,11 +5,11 @@
 #define UTIL_H
 
 #define ERROR 1
-#define INFO 0 
-#define DEBUG 0
+#define INFO 1
+#define DEBUG 1
 #define TRACE 0
     
-#define SHOW_TIME 0
+#define SHOW_TIME 1
 #define DEBUG_OUTPUT 0
 //#undef assert
 //#define assert(x) ((void)0)
@@ -22,6 +22,8 @@
 #define SHOW_TIME_END(A) 
 #endif
 
+
+unsigned int SetBit(unsigned int anInt, unsigned int pos);
 
 double diffclock(clock_t clock1,clock_t clock2);
 

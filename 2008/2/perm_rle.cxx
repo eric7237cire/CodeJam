@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <limits>
 #include <string>
-
+#include <bitset>
 #include <stdio.h>
 #include <time.h>
 #include <assert.h>
@@ -81,9 +81,105 @@ string perm_string(const string& str, const vector<unsigned int>& perm)
   return ret;
 }
 
-void do_test_case(int test_case, ifstream& input)
+const unsigned int MAX_K = 4;
+const unsigned int MAX_LETTER = 3;
+
+class LetterCounter
 {
- 
+  vector<unsigned int> counts;
+  unsigned int k;
+  
+  /*
+  String s = a b c c
+  counts[0, 'a'] = 0001
+  counts[1, 'b'] = 0010
+  counts[2, 'c'] = 1100
+  
+  */
+public:
+  LetterCounter(const string& s) : counts(MAX_LETTER, 0), k(s.size()) 
+  {
+    for(unsigned int i=0; i<k; ++i) 
+    {
+      unsigned int charVal = s[i] - 'a' + 1;
+      counts[charVal-1] = SetBit(counts[charVal-1], i+1);   
+    }
+  }
+  
+  unsigned int operator[](unsigned int idx) const
+  {
+    return counts[idx]; 
+  }
+  
+  bitset<MAX_K> getCounts(unsigned int idx) const
+  {
+    return bitset<MAX_K>(counts[idx]); 
+  }
+};
+
+typedef vector<unsigned int> VectorUI;
+
+class Graph
+{
+  //connections[node i][node j] = weight
+  vector<VectorUI> connections;
+
+public:  
+  Graph() : connections(MAX_K) {
+    for(unsigned int i=0; i<MAX_K; ++i) {
+      connections[i] = VectorUI(MAX_K, 0);
+    }
+  }
+  
+  void addCounts(const LetterCounter& lc) 
+  {
+    for(unsigned int ch = 0; ch < MAX_LETTER; ++ch) 
+    {
+      trace("Processing character %d\n", ch);
+      bitset<MAX_K> counts = lc.getCounts(ch);
+      vector<unsigned int> pos_hits;
+      for(unsigned int pos = 0; pos < MAX_K; ++pos)
+      {
+        trace("Processing position %d\n", pos);
+        if (counts[pos]) {
+          trace("Hit! %d\n", pos);
+          pos_hits.push_back( pos );          
+        }
+      }
+
+      
+      for(unsigned int i=0; i<pos_hits.size(); ++i) {
+        for(unsigned int j=i+1; j<pos_hits.size(); ++j) {
+          unsigned int pos1 = pos_hits[i];
+          unsigned int pos2 = pos_hits[j];
+          if (pos1==pos2) {
+            continue;
+          }
+          trace("Adding connection %d %d\n", pos1, pos2);
+          trace("Connections are %d %d\n", connections[pos2][pos1], connections[pos1][pos2]);
+          
+          connections[pos1][pos2] += 1;
+          connections[pos2][pos1] += 1;
+          
+          trace("Connections are %d %d\n", connections[pos2][pos1], connections[pos1][pos2]); 
+        }
+      }
+    }
+  }
+  
+  unsigned int getEdgeWeight(unsigned int fromNode, unsigned int toNode)
+  {
+    assert(fromNode >=0 && fromNode < MAX_K);
+    assert(toNode >= 0 && toNode < MAX_K);
+    debug("connections[%d][%d] = %d\n", fromNode, toNode, connections[fromNode][toNode]);
+    return connections[fromNode][toNode];
+  }
+  
+  
+};
+
+void test() 
+{
   assert(compute_rle("aabcaaaa") == 4);
   
   vector<unsigned int> p;
@@ -93,6 +189,40 @@ void do_test_case(int test_case, ifstream& input)
   p.push_back(1);
   info(perm_string("abcabcabcabc", p).c_str());
   assert(perm_string("abcabcabcabc", p) == string("aacbbbacccba"));
+  
+  LetterCounter lc = LetterCounter("abcc");
+  assert(lc[0] == 1);
+  assert(lc[1] == 2);
+  assert(lc[2] == 12);
+  
+  Graph g;
+  
+  LetterCounter lc2 = LetterCounter("baba");
+  LetterCounter lc3 = LetterCounter("cacb");
+  
+  g.addCounts(lc);
+  debug("Adding counts 2\n");
+  g.addCounts(lc2);
+  debug("Adding counts 3\n");
+  g.addCounts(lc3);
+  
+  assert(lc.getCounts(0).to_string() == "0001");
+  
+  assert(lc2.getCounts(0).to_string() == "1010");
+  assert(lc2.getCounts(1).to_string() == "0101");
+  assert(lc2.getCounts(2).to_string() == "0000");
+  
+  assert(g.getEdgeWeight(0, 0) == 0);
+  assert(g.getEdgeWeight(3, 1) == 1);
+  assert(g.getEdgeWeight(0, 2) == 2);
+  assert(g.getEdgeWeight(2, 0) == 2);
+  assert(g.getEdgeWeight(2, 3) == 1);
+}
+
+void do_test_case(int test_case, ifstream& input)
+{
+ 
+  test();
   
   unsigned int k;
   input >> k;
