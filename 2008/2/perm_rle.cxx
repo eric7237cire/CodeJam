@@ -178,6 +178,36 @@ public:
   
 };
 
+class DP 
+{
+  unsigned int m[MAX_K][MAX_K][1 << MAX_K];
+  
+  const Graph& graph;
+  
+  DP() {
+    info("Memsetting m %d\n", sizeof(m));
+    memset(m, 0, sizeof(m));
+  }
+  
+  unsigned int distance(unsigned int startNode, unsigned int endNode, unsigned int visited)
+  {
+    /*
+    f(0, 1, 0001)
+    f(2, 1, 0101)
+    f(3, 1, 1101)    
+    */
+    
+    bitset<MAX_K> visitedBits(visitedBits);    
+    debug("Start Node: %d, End Node: %d, visited: %s\n", startNode, endNode, visitedBits.to_string());
+    
+    return 37;
+    
+    
+    
+  }
+  
+};
+
 void test() 
 {
   assert(compute_rle("aabcaaaa") == 4);
@@ -218,6 +248,8 @@ void test()
   assert(g.getEdgeWeight(2, 0) == 2);
   assert(g.getEdgeWeight(2, 3) == 1);
 }
+
+
 
 void do_test_case(int test_case, ifstream& input)
 {
