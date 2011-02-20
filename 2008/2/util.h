@@ -6,7 +6,7 @@
 
 #define ERROR 1
 #define INFO 1
-#define DEBUG 1
+#define DEBUG 0
 #define TRACE 0
     
 #define SHOW_TIME 1
