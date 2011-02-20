@@ -40,7 +40,9 @@ int main(int argc, char** args)
   for (int test_case = 0; test_case < T; ++test_case) 
   {
     try {
+      //SHOW_TIME_BEGIN(test_case)
       do_test_case(test_case, input);
+      //SHOW_TIME_END(test_case)
     } catch(...) {
       error("Error exception caught\n"); 
     }
@@ -83,7 +85,7 @@ string perm_string(const string& str, const vector<unsigned int>& perm)
   return ret;
 }
 
-const unsigned int MAX_K = 12;
+const unsigned int MAX_K = 16;
 const unsigned int MAX_LETTER = 26;
 
 class LetterCounter
@@ -245,23 +247,55 @@ public:
 
 class DP 
 {
-  unsigned int m[MAX_K][MAX_K][1 << MAX_K];
+public:
+  typedef int(* M_ARRAY) [MAX_K][MAX_K][1 << MAX_K];
+  typedef int(& M_ARRAY_REF) [MAX_K][MAX_K][1 << MAX_K];
+  static M_ARRAY m_p;
   
   const Graph& graph;
   
   unsigned int stop;
+  unsigned int cache_hits;
   unsigned const int k;
   
+  
 public:
-  DP(const Graph& graph, unsigned int k) : graph(graph), stop(0), k(k) {
-    info("Memsetting m %d %d %d\n", sizeof(m), sizeof(unsigned int), (1 << 3));
-    memset(m, 0, sizeof(m));
+  
+  ~DP() {
+    //delete [] m_p;
   }
   
-  unsigned int distance(unsigned int startNode, unsigned int endNode, unsigned int visited) 
+  DP(const Graph& graph, unsigned int k) : graph(graph), stop(0), cache_hits(0), k(k) {
+    info("Memsetting m %d %d %d\n", sizeof(M_ARRAY_REF), sizeof(unsigned int), (1 << 3));
+    
+    if (!m_p) {
+      m_p = (M_ARRAY) new int[MAX_K][MAX_K][1 << MAX_K];
+    }
+    
+    M_ARRAY_REF m = *m_p;
+    
+    memset(m_p, -1, sizeof(M_ARRAY_REF));
+    
+    assert(m[0][0][0] == -1);
+    assert(m[MAX_K-1][MAX_K-1][0] == -1);
+  }
+  
+  unsigned int distance(const unsigned int startNode, const unsigned int endNode, const unsigned int visited) 
   {
+    M_ARRAY_REF m = *m_p;
+    int cached_value = m[startNode][endNode][visited];
+    
+    if (cached_value >= 0) {
+      ++cache_hits;
+      debug("CACHE RETURN Start Node: %d, End Node: %d, Visited: %d, returning %d\n", startNode, endNode, visited, cached_value);
+      return cached_value;
+    }
+    
     ++stop;
-    if (stop > 6000) {
+    if (stop % 10000 == 0) {
+      info("Distance, %d uncached iterations, cached: %d\n", stop, cache_hits);
+    }
+    if (stop > 1000000) {
       throw 3;
     }
     /*
@@ -292,9 +326,11 @@ public:
     if (needToVisitBits.count() == k) {
       unsigned int ret = graph.getEdgeWeight(startNode, endNode);
       debug("END %d + %d\n", ret, boundaryBonus);
-      
+      m[startNode][endNode][visited] = ret+boundaryBonus;
       return ret+boundaryBonus;  
     }
+  
+    bool foundEdge = false;
     
     for(unsigned int pos = 0; pos < k; ++pos)
     {
@@ -303,16 +339,45 @@ public:
         nextVisited.set(pos, 1);
         
         debug("Calling distance with nextVisited, pos %d: %s %d\n", pos, nextVisited.to_string().c_str(), static_cast<unsigned int>( nextVisited.to_ulong() ));
+        unsigned int edge_weight = graph.getEdgeWeight(startNode, pos);
         
-        unsigned int weight = boundaryBonus + graph.getEdgeWeight(startNode, pos) +
-          distance(pos, endNode, static_cast<unsigned int>( nextVisited.to_ulong() ));
+        unsigned int weight = boundaryBonus + edge_weight;
+        
+        if (edge_weight > 0) 
+        {
+          weight += distance(pos, endNode, static_cast<unsigned int>( nextVisited.to_ulong() ));
+          foundEdge = true;
+        }
+        
         if (weight > max_weight) {
           max_weight = weight;
         }
       }
     }
     
+    if (!foundEdge) {
+      for(unsigned int pos = 0; pos < k; ++pos)
+      {
+        if (needToVisitBits.test(pos) == false) {
+          bitset<MAX_K> nextVisited(visitedBits);
+          nextVisited.set(pos, 1);
+          
+          debug("Calling distance with nextVisited, pos %d: %s %d\n", pos, nextVisited.to_string().c_str(), static_cast<unsigned int>( nextVisited.to_ulong() ));
+          unsigned int edge_weight = graph.getEdgeWeight(startNode, pos);
+          
+          unsigned int weight = boundaryBonus + edge_weight;
+          
+          weight += distance(pos, endNode, static_cast<unsigned int>( nextVisited.to_ulong() ));
+          
+          if (weight > max_weight) {
+            max_weight = weight;
+          }
+        }
+      }
+    }
+    
     debug("RETURN Start Node: %d, End Node: %d, Visited: %s, returning %d\n", startNode, endNode, visitedBits.to_string().c_str(), max_weight);
+    m[startNode][endNode][visited] = max_weight;
     return max_weight;
     
     
@@ -320,6 +385,8 @@ public:
   }
   
 };
+
+DP::M_ARRAY DP::m_p = NULL;
 
 void test() 
 {
@@ -449,7 +516,7 @@ void do_test_case(int test_case, ifstream& input)
       
   printf("Case #%d: %d\n", test_case+1, min_rle_length);
   
-  
+  #if 0
   vector<unsigned int> perm(k);
   for(unsigned int i=0; i<k; ++i) {
     perm[i] = i;
@@ -475,6 +542,7 @@ void do_test_case(int test_case, ifstream& input)
   } while ( next_permutation (perm.begin(), perm.end()) );
   
    printf("Case #%d: %d\n", test_case+1, lowest_size);
+   #endif
    
   return;
     
