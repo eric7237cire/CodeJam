@@ -286,18 +286,21 @@ public:
     int cached_value = m[startNode][endNode][visited];
     
     if (cached_value >= 0) {
+      #if DEBUG
       ++cache_hits;
       debug("CACHE RETURN Start Node: %d, End Node: %d, Visited: %d, returning %d\n", startNode, endNode, visited, cached_value);
+      #end
       return cached_value;
     }
-    
+    #if INFO
     ++stop;
-    if (stop % 10000 == 0) {
+    if (stop % 50000 == 0) {
       info("Distance, %d uncached iterations, cached: %d\n", stop, cache_hits);
     }
-    if (stop > 1000000) {
+    if (stop > 9000000) {
       throw 3;
     }
+    #endif
     /*
     f(0, 1, 0001)
     f(2, 1, 0101)

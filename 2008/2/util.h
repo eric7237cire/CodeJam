@@ -5,7 +5,7 @@
 #define UTIL_H
 
 #define ERROR 1
-#define INFO 1
+#define INFO 0
 #define DEBUG 0
 #define TRACE 0
     
