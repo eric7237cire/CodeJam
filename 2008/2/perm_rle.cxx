@@ -251,7 +251,7 @@ public:
   typedef int(* M_ARRAY) [MAX_K][MAX_K][1 << MAX_K];
   typedef int(& M_ARRAY_REF) [MAX_K][MAX_K][1 << MAX_K];
   static M_ARRAY m_p;
-  
+  static M_ARRAY_REF m;
   const Graph& graph;
   
   unsigned int stop;
@@ -272,24 +272,74 @@ public:
       m_p = (M_ARRAY) new int[MAX_K][MAX_K][1 << MAX_K];
     }
     
-    M_ARRAY_REF m = *m_p;
-    
+    //M_ARRAY_REF m = *m_p;
+    //m = *m_p;
     memset(m_p, -1, sizeof(M_ARRAY_REF));
     
     assert(m[0][0][0] == -1);
     assert(m[MAX_K-1][MAX_K-1][0] == -1);
   }
   
-  unsigned int distance(const unsigned int startNode, const unsigned int endNode, const unsigned int visited) 
+  unsigned int distance(const unsigned int startNode, const unsigned int endNode, bitset<MAX_K> visitedBits) 
   {
-    M_ARRAY_REF m = *m_p;
+    
+    const unsigned int visited = visitedBits.to_ulong();
     int cached_value = m[startNode][endNode][visited];
     
     if (cached_value >= 0) {
-      #if DEBUG
+      #if INFO
       ++cache_hits;
-      debug("CACHE RETURN Start Node: %d, End Node: %d, Visited: %d, returning %d\n", startNode, endNode, visited, cached_value);
-      #end
+      //debug("CACHE RETURN Start Node: %d, End Node: %d, Visited: %d, returning %d\n", startNode, endNode, visitedBits.to_ulong(), cached_value);
+      #endif
+      return cached_value;
+    }
+    
+    int boundaryBonus = graph.getBoundaryBonus(startNode, endNode);
+    
+    visitedBits.set(startNode, 1);    
+    visitedBits.set(endNode, 1);
+    
+    debug("Start Node: %d, End Node: %d, visited: %s\n", startNode, endNode, visitedBits.to_string().c_str());
+    unsigned int max_weight = 0;
+    
+    if (visitedBits.count() == k) {
+      unsigned int ret = graph.getEdgeWeight(startNode, endNode);
+      debug("END %d + %d\n", ret, boundaryBonus);
+      m[startNode][endNode][visited] = ret+boundaryBonus;
+      return ret+boundaryBonus;  
+    }
+  
+    for(unsigned int pos = 0; pos < k; ++pos)
+    {
+      if (visitedBits.test(pos) == false) {
+        //bitset<MAX_K> nextVisited(visitedBits);
+        //nextVisited.set(pos, 1);
+        
+        //debug("Calling distance with nextVisited, pos %d: %s %d\n", pos, nextVisited.to_string().c_str(), static_cast<unsigned int>( nextVisited.to_ulong() ));
+        
+        const unsigned int weight = boundaryBonus + graph.getEdgeWeight(startNode, pos) + distance_nested(pos, endNode, visitedBits );
+        
+        if (weight > max_weight) {
+          max_weight = weight;
+        }
+      }
+    }
+        
+    debug("RETURN Start Node: %d, End Node: %d, Visited: %s, returning %d\n", startNode, endNode, visitedBits.to_string().c_str(), max_weight);
+    m[startNode][endNode][visited] = max_weight;
+    return max_weight;
+  }
+  
+  unsigned int distance_nested(const unsigned int startNode, const unsigned int endNode, bitset<MAX_K> visitedBits) 
+  {
+    const unsigned int visited = visitedBits.to_ulong();
+    int cached_value = m[startNode][endNode][visited];
+    
+    if (cached_value >= 0) {
+      #if INFO
+      ++cache_hits;
+      //debug("CACHE RETURN Start Node: %d, End Node: %d, Visited: %d, returning %d\n", startNode, endNode, visitedBits.to_ulong(), cached_value);
+      #endif
       return cached_value;
     }
     #if INFO
@@ -307,89 +357,46 @@ public:
     f(3, 1, 1101)    
     */
     
-    int boundaryBonus = 0;
-    
-    
-    bitset<MAX_K> visitedBits(visited);
-    
-    if (visitedBits.none()) {
-      boundaryBonus = graph.getBoundaryBonus(startNode, endNode);
-    }
-    
-    debug("Start Node: %d, End Node: %d, visited: %d %s\n", startNode, endNode, visited, visitedBits.to_string().c_str());
+    //debug("Start Node: %d, End Node: %d, visited: %d %s\n", startNode, endNode, visited, visitedBits.to_string().c_str());
     
     visitedBits.set(startNode, 1);
     
-    bitset<MAX_K> needToVisitBits(visitedBits);
-    needToVisitBits.set(endNode, 1);
+    //debug("Start Node: %d, End Node: %d, visited: %s, needToVisitBits: %s\n", startNode, endNode, visitedBits.to_string().c_str(), needToVisitBits.to_string().c_str());
     
-    debug("Start Node: %d, End Node: %d, visited: %s, needToVisitBits: %s\n", startNode, endNode, visitedBits.to_string().c_str(), needToVisitBits.to_string().c_str());
-    unsigned int max_weight = 0;
     
-    if (needToVisitBits.count() == k) {
+    if (visitedBits.to_ulong() == (1 << k) - 1) {
       unsigned int ret = graph.getEdgeWeight(startNode, endNode);
-      debug("END %d + %d\n", ret, boundaryBonus);
-      m[startNode][endNode][visited] = ret+boundaryBonus;
-      return ret+boundaryBonus;  
+      debug("END %d\n", ret);
+      m[startNode][endNode][visited] = ret;
+      return ret;  
     }
   
-    bool foundEdge = false;
-    
+    unsigned int max_weight = 0;
     for(unsigned int pos = 0; pos < k; ++pos)
     {
-      if (needToVisitBits.test(pos) == false) {
-        bitset<MAX_K> nextVisited(visitedBits);
-        nextVisited.set(pos, 1);
+      if (visitedBits.test(pos) == false) {
+        //bitset<MAX_K> nextVisited(visitedBits);
+        //nextVisited.set(pos, 1);
         
-        debug("Calling distance with nextVisited, pos %d: %s %d\n", pos, nextVisited.to_string().c_str(), static_cast<unsigned int>( nextVisited.to_ulong() ));
-        unsigned int edge_weight = graph.getEdgeWeight(startNode, pos);
+        //debug("Calling distance with nextVisited, pos %d: %s %d\n", pos, nextVisited.to_string().c_str(), static_cast<unsigned int>( nextVisited.to_ulong() ));
         
-        unsigned int weight = boundaryBonus + edge_weight;
-        
-        if (edge_weight > 0) 
-        {
-          weight += distance(pos, endNode, static_cast<unsigned int>( nextVisited.to_ulong() ));
-          foundEdge = true;
-        }
+        const unsigned int weight = graph.getEdgeWeight(startNode, pos) + distance_nested(pos, endNode, visitedBits );
         
         if (weight > max_weight) {
           max_weight = weight;
         }
       }
     }
-    
-    if (!foundEdge) {
-      for(unsigned int pos = 0; pos < k; ++pos)
-      {
-        if (needToVisitBits.test(pos) == false) {
-          bitset<MAX_K> nextVisited(visitedBits);
-          nextVisited.set(pos, 1);
-          
-          debug("Calling distance with nextVisited, pos %d: %s %d\n", pos, nextVisited.to_string().c_str(), static_cast<unsigned int>( nextVisited.to_ulong() ));
-          unsigned int edge_weight = graph.getEdgeWeight(startNode, pos);
-          
-          unsigned int weight = boundaryBonus + edge_weight;
-          
-          weight += distance(pos, endNode, static_cast<unsigned int>( nextVisited.to_ulong() ));
-          
-          if (weight > max_weight) {
-            max_weight = weight;
-          }
-        }
-      }
-    }
-    
+        
     debug("RETURN Start Node: %d, End Node: %d, Visited: %s, returning %d\n", startNode, endNode, visitedBits.to_string().c_str(), max_weight);
     m[startNode][endNode][visited] = max_weight;
     return max_weight;
-    
-    
-    
   }
   
 };
 
-DP::M_ARRAY DP::m_p = NULL;
+DP::M_ARRAY DP::m_p = (M_ARRAY) new int[MAX_K][MAX_K][1 << MAX_K];
+DP::M_ARRAY_REF DP::m = *DP::m_p;
 
 void test() 
 {
@@ -508,6 +515,7 @@ void do_test_case(int test_case, ifstream& input)
       if(i==j) {
         continue;
       }
+      
       unsigned int pathLength = dp.distance(i, j, 0);
       if (pathLength > max_reduction) {
         max_reduction = pathLength;

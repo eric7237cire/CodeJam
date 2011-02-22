@@ -30,7 +30,7 @@ triangle_area.exe : triangle_area.cxx
 	$(CC) -o $@ $<
 
 perm_rle.exe : perm_rle.o util.o
-	$(CC) -o $@ $< util.o $(LIBS)
+	$(CC) $(CFLAGS) -o $@ $< util.o $(LIBS)
 		
 star_wars.exe : star_wars.o simplex.o util.o
 	$(CC) -o $@ $< simplex.o util.o $(LIBS)
