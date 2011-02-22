@@ -248,8 +248,8 @@ public:
 class DP 
 {
 public:
-  typedef int(* M_ARRAY) [MAX_K][MAX_K][1 << MAX_K];
-  typedef int(& M_ARRAY_REF) [MAX_K][MAX_K][1 << MAX_K];
+  typedef int(* M_ARRAY) [MAX_K][1 << MAX_K];
+  typedef int(& M_ARRAY_REF) [MAX_K][1 << MAX_K];
   static M_ARRAY m_p;
   static M_ARRAY_REF m;
   const Graph& graph;
@@ -257,7 +257,9 @@ public:
   unsigned int stop;
   unsigned int cache_hits;
   unsigned const int k;
+  unsigned int endNode;
   
+  unsigned int powers_2[MAX_K+1];
   
 public:
   
@@ -265,26 +267,40 @@ public:
     //delete [] m_p;
   }
   
+  void reset_cache() {
+    memset(m_p, -1, sizeof(M_ARRAY_REF));
+  }
+  
   DP(const Graph& graph, unsigned int k) : graph(graph), stop(0), cache_hits(0), k(k) {
     info("Memsetting m %d %d %d\n", sizeof(M_ARRAY_REF), sizeof(unsigned int), (1 << 3));
     
     if (!m_p) {
-      m_p = (M_ARRAY) new int[MAX_K][MAX_K][1 << MAX_K];
+      m_p = (M_ARRAY) new int[MAX_K][1 << MAX_K];
     }
     
-    //M_ARRAY_REF m = *m_p;
-    //m = *m_p;
-    memset(m_p, -1, sizeof(M_ARRAY_REF));
+    reset_cache();
     
-    assert(m[0][0][0] == -1);
-    assert(m[MAX_K-1][MAX_K-1][0] == -1);
+    assert(m[0][0] == -1);
+    assert(m[MAX_K-1][0] == -1);
+    
+    unsigned int pow2 = 1;
+    for (unsigned int i=0; i<=MAX_K; ++i) {
+       powers_2[i] = pow2;
+       pow2 <<= 1;
+    }
+    
+    assert(powers_2[0] == 1 );
+    assert(powers_2[1] == 2 );
+    
+    assert(powers_2[15] == 1 << 15);
+    assert(powers_2[k] == 1U << k);
   }
   
-  unsigned int distance(const unsigned int startNode, const unsigned int endNode, bitset<MAX_K> visitedBits) 
+  unsigned int distance(const unsigned int startNode, bitset<MAX_K> visitedBits) 
   {
     
     const unsigned int visited = visitedBits.to_ulong();
-    int cached_value = m[startNode][endNode][visited];
+    int cached_value = m[startNode][visited];
     
     if (cached_value >= 0) {
       #if INFO
@@ -305,7 +321,7 @@ public:
     if (visitedBits.count() == k) {
       unsigned int ret = graph.getEdgeWeight(startNode, endNode);
       debug("END %d + %d\n", ret, boundaryBonus);
-      m[startNode][endNode][visited] = ret+boundaryBonus;
+      m[startNode][visited] = ret+boundaryBonus;
       return ret+boundaryBonus;  
     }
   
@@ -317,7 +333,7 @@ public:
         
         //debug("Calling distance with nextVisited, pos %d: %s %d\n", pos, nextVisited.to_string().c_str(), static_cast<unsigned int>( nextVisited.to_ulong() ));
         
-        const unsigned int weight = boundaryBonus + graph.getEdgeWeight(startNode, pos) + distance_nested(pos, endNode, visitedBits );
+        const unsigned int weight = boundaryBonus + graph.getEdgeWeight(startNode, pos) + distance_nested(pos, static_cast<unsigned int>(visitedBits.to_ulong()) );
         
         if (weight > max_weight) {
           max_weight = weight;
@@ -326,29 +342,32 @@ public:
     }
         
     debug("RETURN Start Node: %d, End Node: %d, Visited: %s, returning %d\n", startNode, endNode, visitedBits.to_string().c_str(), max_weight);
-    m[startNode][endNode][visited] = max_weight;
+    m[startNode][visited] = max_weight;
     return max_weight;
   }
   
-  unsigned int distance_nested(const unsigned int startNode, const unsigned int endNode, bitset<MAX_K> visitedBits) 
+  unsigned int distance_nested(const unsigned int startNode, unsigned int visited) 
   {
-    const unsigned int visited = visitedBits.to_ulong();
-    int cached_value = m[startNode][endNode][visited];
+    int cached_value = m[startNode][visited];
     
     if (cached_value >= 0) {
       #if INFO
       ++cache_hits;
       //debug("CACHE RETURN Start Node: %d, End Node: %d, Visited: %d, returning %d\n", startNode, endNode, visitedBits.to_ulong(), cached_value);
       #endif
+      //throw 2;
       return cached_value;
     }
+    
+    info("Cache miss Start Node: %d, End Node: %d, Visited: %d\n", startNode, endNode, visited);
+    
     #if INFO
     ++stop;
-    if (stop % 50000 == 0) {
+    if (stop % 500000 == 0) {
       info("Distance, %d uncached iterations, cached: %d\n", stop, cache_hits);
     }
     if (stop > 9000000) {
-      throw 3;
+      //throw 3;
     }
     #endif
     /*
@@ -358,44 +377,52 @@ public:
     */
     
     //debug("Start Node: %d, End Node: %d, visited: %d %s\n", startNode, endNode, visited, visitedBits.to_string().c_str());
-    
-    visitedBits.set(startNode, 1);
+    bitset<MAX_K> visitedBits(visited);
+    visited |= powers_2[startNode];
+    visitedBits.set(startNode);
+    assert(static_cast<unsigned int>(visitedBits.to_ulong()) == visited);
     
     //debug("Start Node: %d, End Node: %d, visited: %s, needToVisitBits: %s\n", startNode, endNode, visitedBits.to_string().c_str(), needToVisitBits.to_string().c_str());
     
     
-    if (visitedBits.to_ulong() == (1 << k) - 1) {
+    if (visited == powers_2[k] - 1) {
+      //info(" %d  %d  %d \n", static_cast<unsigned int>(visitedBits.to_ulong()), (1 << k) -1, k);
+      assert(static_cast<unsigned int>(visitedBits.to_ulong()) == (1U << k) - 1);
       unsigned int ret = graph.getEdgeWeight(startNode, endNode);
       debug("END %d\n", ret);
-      m[startNode][endNode][visited] = ret;
+      m[startNode][visited] = ret;
       return ret;  
     }
   
     unsigned int max_weight = 0;
     for(unsigned int pos = 0; pos < k; ++pos)
     {
-      if (visitedBits.test(pos) == false) {
+      if ( (visited & powers_2[pos]) == 0) {
+        assert(visitedBits.test(pos) == false);
         //bitset<MAX_K> nextVisited(visitedBits);
         //nextVisited.set(pos, 1);
+        unsigned int next_visited = (visited | powers_2[pos]);
         
         //debug("Calling distance with nextVisited, pos %d: %s %d\n", pos, nextVisited.to_string().c_str(), static_cast<unsigned int>( nextVisited.to_ulong() ));
         
-        const unsigned int weight = graph.getEdgeWeight(startNode, pos) + distance_nested(pos, endNode, visitedBits );
+        const unsigned int weight = graph.getEdgeWeight(startNode, pos) + distance_nested(pos, next_visited );
         
         if (weight > max_weight) {
           max_weight = weight;
         }
+      } else {
+        assert(visitedBits.test(pos) == true);
       }
     }
         
-    debug("RETURN Start Node: %d, End Node: %d, Visited: %s, returning %d\n", startNode, endNode, visitedBits.to_string().c_str(), max_weight);
-    m[startNode][endNode][visited] = max_weight;
+    info("RETURN Start Node: %d, End Node: %d, Visited: %d, returning %d\n", startNode, endNode, visited, max_weight);
+    m[startNode][visited] = max_weight;
     return max_weight;
   }
   
 };
 
-DP::M_ARRAY DP::m_p = (M_ARRAY) new int[MAX_K][MAX_K][1 << MAX_K];
+DP::M_ARRAY DP::m_p = (M_ARRAY) new int[MAX_K][1 << MAX_K];
 DP::M_ARRAY_REF DP::m = *DP::m_p;
 
 void test() 
@@ -452,8 +479,8 @@ void test()
   
   {
   DP dp(g, 4);
-  
-  assert(dp.distance(1, 0, 0) == 5);
+  dp.endNode = 0;
+  assert(dp.distance(1, 0) == 5);
   }
   
   
@@ -465,9 +492,9 @@ void test()
   
   info("Testing #2\n");
   DP dp2(g2, 5);
-  
-  assert(dp2.distance(0, 4, 0) == 2);
-  assert(dp2.distance(1, 4, 0) == 1);
+  dp2.endNode = 4;
+  assert(dp2.distance(0, 0) == 2);
+  assert(dp2.distance(1, 0) == 1);
   }
 }
 
@@ -510,13 +537,15 @@ void do_test_case(int test_case, ifstream& input)
   DP dp(g, k);
   
   unsigned int max_reduction = 0;
-  for(unsigned int i=0; i<k; ++i) {
+  for(unsigned int end_point=0; end_point<k; ++end_point) {
+    dp.reset_cache();
+    dp.endNode = end_point;
     for(unsigned int j=0; j<k; ++j) {
-      if(i==j) {
+      if(end_point==j) {
         continue;
       }
       
-      unsigned int pathLength = dp.distance(i, j, 0);
+      unsigned int pathLength = dp.distance(j, 0);
       if (pathLength > max_reduction) {
         max_reduction = pathLength;
       }
