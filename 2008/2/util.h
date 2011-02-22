@@ -11,8 +11,8 @@
     
 #define SHOW_TIME 1
 #define DEBUG_OUTPUT 0
-//#undef assert
-//#define assert(x) ((void)0)
+#undef assert
+#define assert(x) ((void)0)
 
 #if SHOW_TIME
 #define SHOW_TIME_BEGIN(A) clock_t begin_##A=clock();

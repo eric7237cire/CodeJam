@@ -366,9 +366,6 @@ public:
     if (stop % 500000 == 0) {
       info("Distance, %d uncached iterations, cached: %d\n", stop, cache_hits);
     }
-    if (stop > 9000000) {
-      //throw 3;
-    }
     #endif
     /*
     f(0, 1, 0001)
@@ -377,9 +374,7 @@ public:
     */
     
     //debug("Start Node: %d, End Node: %d, visited: %d %s\n", startNode, endNode, visited, visitedBits.to_string().c_str());
-    bitset<MAX_K> visitedBits(visited);
     visited |= powers_2[startNode];
-    visitedBits.set(startNode);
     assert(static_cast<unsigned int>(visitedBits.to_ulong()) == visited);
     
     //debug("Start Node: %d, End Node: %d, visited: %s, needToVisitBits: %s\n", startNode, endNode, visitedBits.to_string().c_str(), needToVisitBits.to_string().c_str());
@@ -387,7 +382,7 @@ public:
     
     if (visited == powers_2[k] - 1) {
       //info(" %d  %d  %d \n", static_cast<unsigned int>(visitedBits.to_ulong()), (1 << k) -1, k);
-      assert(static_cast<unsigned int>(visitedBits.to_ulong()) == (1U << k) - 1);
+      //assert(static_cast<unsigned int>(visitedBits.to_ulong()) == (1U << k) - 1);
       unsigned int ret = graph.getEdgeWeight(startNode, endNode);
       debug("END %d\n", ret);
       m[startNode][visited] = ret;
@@ -410,8 +405,6 @@ public:
         if (weight > max_weight) {
           max_weight = weight;
         }
-      } else {
-        assert(visitedBits.test(pos) == true);
       }
     }
         
