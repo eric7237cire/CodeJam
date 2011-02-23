@@ -1,0 +1,1528 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0057)http://code.google.com/codejam/contest/dashboard?c=32002# -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="refresh" content="172795">
+  
+  <title>
+    Dashboard - Round 3 2008 - Google Code Jam
+  </title>
+  <link rel="stylesheet" type="text/css" href="./Dashboard - Round 3 2008 - Google Code Jam_files/base.css">
+  <link rel="stylesheet" type="text/css" href="./Dashboard - Round 3 2008 - Google Code Jam_files/dashboard.css">
+  
+  <script type="text/javascript" async="" src="./Dashboard - Round 3 2008 - Google Code Jam_files/ga.js"></script><script type="text/javascript" src="./Dashboard - Round 3 2008 - Google Code Jam_files/Dashboard.js"></script>
+  <script type="text/javascript" src="./Dashboard - Round 3 2008 - Google Code Jam_files/message_en.js"></script>
+  
+  <script type="text/javascript"><!--
+    /**
+     * Initializes GCJ.problems and GCJ.io from Django parameters.
+     * Also initializes the two user specific variables GCJ.isQualified and
+     * GCJ.lastClarSeenTime.
+     * This is the first function called once from GCJ.main().
+     */
+    GCJ.initContestVariables = function () {
+      // Convert Django's 'contest' to 'GCJ.contest'.
+      GCJ.contest.id = "32002";
+      GCJ.contest.name = "Round 3 2008";
+      GCJ.contest.version = 0;
+      
+        GCJ.contest.version = 11;
+      
+      GCJ.contest.start_int = 1218297600;
+      GCJ.base_url = '/codejam/contest';
+
+      GCJ.isQualified = 0;
+      GCJ.isLoggedIn = 0;
+      GCJ.hasAnalysis = 1;
+      // Convert Django's 'problems' to JS 'GCJ.problems'.
+      
+        GCJ.problems.push({
+            "id": "24444",
+            "key": "agxjb2RlamFtLXByb2RyEAsSCHByb2JsZW1zGPy-AQw",
+            "name": "How Big Are the Pockets?",
+            "type": "default"
+        });
+      
+        GCJ.problems.push({
+            "id": "24443",
+            "key": "agxjb2RlamFtLXByb2RyEAsSCHByb2JsZW1zGPu-AQw",
+            "name": "Portal",
+            "type": "default"
+        });
+      
+        GCJ.problems.push({
+            "id": "24446",
+            "key": "agxjb2RlamFtLXByb2RyEAsSCHByb2JsZW1zGP6-AQw",
+            "name": "No Cheating",
+            "type": "default"
+        });
+      
+        GCJ.problems.push({
+            "id": "24445",
+            "key": "agxjb2RlamFtLXByb2RyEAsSCHByb2JsZW1zGP2-AQw",
+            "name": "Endless Knight",
+            "type": "default"
+        });
+      
+
+  
+      // Convert Django's 'all_io' to JS 'GCJ.io'.
+      var io;
+      
+        io = new Array();
+        stat = new Array();
+        
+          io.push({
+              "difficulty": 0,
+              "points": 5,
+              "attempts": 0,
+              "secsSolved": -1,
+              "secsPassed": -1
+          });
+        
+          io.push({
+              "difficulty": 1,
+              "points": 15,
+              "attempts": 0,
+              "secsSolved": -1,
+              "secsPassed": -1
+          });
+        
+        GCJ.io.push(io);
+      
+        io = new Array();
+        stat = new Array();
+        
+          io.push({
+              "difficulty": 0,
+              "points": 10,
+              "attempts": 0,
+              "secsSolved": -1,
+              "secsPassed": -1
+          });
+        
+          io.push({
+              "difficulty": 1,
+              "points": 15,
+              "attempts": 0,
+              "secsSolved": -1,
+              "secsPassed": -1
+          });
+        
+        GCJ.io.push(io);
+      
+        io = new Array();
+        stat = new Array();
+        
+          io.push({
+              "difficulty": 0,
+              "points": 10,
+              "attempts": 0,
+              "secsSolved": -1,
+              "secsPassed": -1
+          });
+        
+          io.push({
+              "difficulty": 1,
+              "points": 20,
+              "attempts": 0,
+              "secsSolved": -1,
+              "secsPassed": -1
+          });
+        
+        GCJ.io.push(io);
+      
+        io = new Array();
+        stat = new Array();
+        
+          io.push({
+              "difficulty": 0,
+              "points": 5,
+              "attempts": 0,
+              "secsSolved": -1,
+              "secsPassed": -1
+          });
+        
+          io.push({
+              "difficulty": 1,
+              "points": 20,
+              "attempts": 0,
+              "secsSolved": -1,
+              "secsPassed": -1
+          });
+        
+        GCJ.io.push(io);
+      
+    };
+
+    /**
+     * Returns the current splash page.
+     */
+    GCJ.getSplashPage = function () {
+      return "/codejam";
+    };
+  //--></script>
+</head>
+
+<body onload="GCJ.main()">
+<div id="logo-div">
+  <a href="http://code.google.com/codejam/">
+    <img src="./Dashboard - Round 3 2008 - Google Code Jam_files/logo_image0.gif" id="logo" alt="Google Code Jam">
+  </a>
+</div>
+
+<div>
+
+
+<div style="display: none;">
+  <form id="csrf-form-GetInputFile"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="OTg0YWRhMzI0YTBhMDllZDQ2Y2U5NDUwNTgzNmQzMWF8fEdldElucHV0RmlsZXwxMjk4NDkwMzA0NTQ1Njk0"></div>
+    <input type="hidden" name="cmd" value="GetInputFile">
+  </form>
+  <form id="csrf-form-GetProblemText"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="Y2EwNzViOWFjYjM0YTJkNmJmZDg1YjQ0YTZhODAyOTJ8fEdldFByb2JsZW1UZXh0fDEyOTg0OTAzMDQ1NDU5Njg="></div>
+    <input type="hidden" name="cmd" value="GetProblemText">
+  </form>
+  <form id="csrf-form-GetContestAnalysis"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="MzE0NjI3NDJhZTVmOWZiOWMxNzdkOTE4NWY4ZGQyMDh8fEdldENvbnRlc3RBbmFseXNpc3wxMjk4NDkwMzA0NTQ2MjAy"></div>
+    <input type="hidden" name="cmd" value="GetContestAnalysis">
+  </form>
+  <form id="csrf-form-SubmitAnswer"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="ODhkYzNiOGE3NWJhZWY0ZTYzNzM2NGVjNDhjZDU5Yjl8fFN1Ym1pdEFuc3dlcnwxMjk4NDkwMzA0NTQ2NDM0"></div>
+    <input type="hidden" name="cmd" value="SubmitAnswer">
+  </form>
+  <form id="csrf-form-AskClarification"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="YTk0MTkzMWNhZGY2NWVkZWFkNjIzODg0MTIxYWYxYWV8fEFza0NsYXJpZmljYXRpb258MTI5ODQ5MDMwNDU0NjY2OA=="></div>
+    <input type="hidden" name="cmd" value="AskClarification">
+  </form>
+  <form id="csrf-form-GetUserStatus"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="ZGNkZDY1ZWE4OWQ2MjEzZGFmZDg5YWZiNDRiZTk3YjN8fEdldFVzZXJTdGF0dXN8MTI5ODQ5MDMwNDU0NjkyMA=="></div>
+    <input type="hidden" name="cmd" value="GetUserStatus">
+  </form>
+  <form id="csrf-form-GetClarifications"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="YjZjYjU3NmUzNmI1N2JhNWIwNWYwOTM0YjQ0ZmU3YWR8fEdldENsYXJpZmljYXRpb25zfDEyOTg0OTAzMDQ1NDcxNTk="></div>
+    <input type="hidden" name="cmd" value="GetClarifications">
+  </form>
+  <form id="csrf-form-GetSubmissionInfo"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="MDYwN2MzNjFlMDFiNDRjMjZiYjUzNjRkYTE0ZTQ4ODR8fEdldFN1Ym1pc3Npb25JbmZvfDEyOTg0OTAzMDQ1NDc0MDM="></div>
+    <input type="hidden" name="cmd" value="GetSubmissionInfo">
+  </form>
+  <form id="csrf-form-GetScoreboardTops"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="NmNhYTlkNjNiY2RlYThiZDVhZGZkNmJhMzU2MjBlYzJ8fEdldFNjb3JlYm9hcmRUb3BzfDEyOTg0OTAzMDQ1NDc2NDA="></div>
+    <input type="hidden" name="cmd" value="GetScoreboardTops">
+  </form>
+  <form id="csrf-form-SetClarificationLastSeenTime"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="Nzg1ZmU1NWIzYTk3YjliMTJkZGI4MTQwYWNhZmNmM2J8fFNldENsYXJpZmljYXRpb25MYXN0U2VlblRpbWV8MTI5ODQ5MDMwNDU0Nzg4Nw=="></div>
+    <input type="hidden" name="cmd" value="SetClarificationLastSeenTime">
+  </form>
+  <form id="csrf-form-GetInput"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="YjNlODU2MjMyZDllMjk0MzU5ZmIyMjAwNTA2MzliNTR8fEdldElucHV0fDEyOTg0OTAzMDQ1NDgxMDM="></div>
+    <input type="hidden" name="cmd" value="GetInput">
+  </form>
+  <form id="csrf-form-GetOutput"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="YjEzYTU0ZTA4NmU4ODcwNjQ0ZGQwNGEzNTlhNWI0MGV8fEdldE91dHB1dHwxMjk4NDkwMzA0NTQ4MzI5"></div>
+    <input type="hidden" name="cmd" value="GetOutput">
+  </form>
+  <form id="csrf-form-GetSource"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="YjM2ZmQ2YzgxMzRmMzhiNGZmN2I2NjUyMzIwMDUxODN8fEdldFNvdXJjZXwxMjk4NDkwMzA0NTQ4NTY3"></div>
+    <input type="hidden" name="cmd" value="GetSource">
+  </form>
+  <form id="csrf-form-GetInitialValues"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="M2YwZmU5NGJlMDZmOGVlNDhlMDc3OWZkNTI3ODYyNjN8fEdldEluaXRpYWxWYWx1ZXN8MTI5ODQ5MDMwNDU0ODc4OQ=="></div>
+    <input type="hidden" name="cmd" value="GetInitialValues">
+  </form>
+</div>
+
+
+<div id="dsb-page-body" style="display: block; ">
+
+<div id="left-panel">
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <!-- Problem Selection Panel -->
+  <div id="dsb-contest-title">Round 3 2008</div>
+  <hr class="dsb-hr">
+  <div>
+    
+    <div id="dsb-problem-tab0" class="dsb-problem-tab-open">
+      <div id="dsb-problem-title0" class="dynamic-link">
+        A. How Big Are the Pockets?
+      </div>
+    </div>
+    
+    <div id="dsb-problem-tab1" class="dsb-problem-tab-close">
+      <div id="dsb-problem-title1" class="dynamic-link">
+        B. Portal
+      </div>
+    </div>
+    
+    <div id="dsb-problem-tab2" class="dsb-problem-tab-close">
+      <div id="dsb-problem-title2" class="dynamic-link">
+        C. No Cheating
+      </div>
+    </div>
+    
+    <div id="dsb-problem-tab3" class="dsb-problem-tab-close">
+      <div id="dsb-problem-title3" class="dynamic-link">
+        D. Endless Knight
+      </div>
+    </div>
+    
+  </div>
+  <hr class="dsb-hr">
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div id="dsb-analysis-button" class="dsb-anal-tab-close" style="display: block; ">
+    <div class="dynamic-link">
+       <div id="dsb-analysis-tab">
+         Contest Analysis
+       </div>
+    </div>
+  </div>
+  <div id="dsb-ask-question-button" class="dsb-clar-tab-close">
+    <div class="dynamic-link">
+       <div id="dsb-ask-question-tab" class="dsb-has-new-question-tab">Questions asked (1)</div>
+    </div>
+  </div>
+  <div id="dsb-submissions-button" class="dsb-submissions-tab-close" style="display: none; ">
+    <div class="dynamic-link">
+      <div id="dsb-submissions-tab">
+        View my submissions
+      </div>
+    </div>
+  </div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div class="dsb-mini-tab-wrapper">
+  <div id="dsb-status-div">
+    <div id="dsb-status-header-div" onmouseover="this.style.cursor=&#39;pointer&#39;" onclick="GCJ.toggleStatusPanelVisibility();">
+      <img id="dsb-status-panel-button" src="./Dashboard - Round 3 2008 - Google Code Jam_files/minus.gif">
+      &nbsp; Submissions
+    </div>
+    <div id="dsb-status-tab" style="display: block; ">
+    
+      <div id="problemStatusWrapper0" class="problemStatusWrapper">
+        <div class="dsb-status-problem-title">How Big Are the Pockets?</div>
+        
+        <!-- Input Stats -->
+        <table class="problemStatus">
+        <tbody>
+          <tr class="inputSetStatus">
+            <td id="inputName0_0" class="inputName">5pt</td>
+            <td class="status">
+              <div id="selfStat0_0" class="dsb-mini-status-non-highlight">No submissions</div>
+              <div id="globalStat0_0" class="globalStat" style="display: block; "><b>311/426 users</b> correct (73%)</div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        
+        <!-- Input Stats -->
+        <table class="problemStatus">
+        <tbody>
+          <tr class="inputSetStatus">
+            <td id="inputName0_1" class="inputName">15pt</td>
+            <td class="status">
+              <div id="selfStat0_1" class="dsb-mini-status-non-highlight">No submissions</div>
+              <div id="globalStat0_1" class="globalStat" style="display: block; "><b>195/249 users</b> correct (78%)</div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        
+      </div>
+    
+      <div id="problemStatusWrapper1" class="problemStatusWrapper">
+        <div class="dsb-status-problem-title">Portal</div>
+        
+        <!-- Input Stats -->
+        <table class="problemStatus">
+        <tbody>
+          <tr class="inputSetStatus">
+            <td id="inputName1_0" class="inputName">10pt</td>
+            <td class="status">
+              <div id="selfStat1_0" class="dsb-mini-status-non-highlight">No submissions</div>
+              <div id="globalStat1_0" class="globalStat" style="display: block; "><b>159/207 users</b> correct (77%)</div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        
+        <!-- Input Stats -->
+        <table class="problemStatus">
+        <tbody>
+          <tr class="inputSetStatus">
+            <td id="inputName1_1" class="inputName">15pt</td>
+            <td class="status">
+              <div id="selfStat1_1" class="dsb-mini-status-non-highlight">No submissions</div>
+              <div id="globalStat1_1" class="globalStat" style="display: block; "><b>123/163 users</b> correct (75%)</div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        
+      </div>
+    
+      <div id="problemStatusWrapper2" class="problemStatusWrapper">
+        <div class="dsb-status-problem-title">No Cheating</div>
+        
+        <!-- Input Stats -->
+        <table class="problemStatus">
+        <tbody>
+          <tr class="inputSetStatus">
+            <td id="inputName2_0" class="inputName">10pt</td>
+            <td class="status">
+              <div id="selfStat2_0" class="dsb-mini-status-non-highlight">No submissions</div>
+              <div id="globalStat2_0" class="globalStat" style="display: block; "><b>510/637 users</b> correct (80%)</div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        
+        <!-- Input Stats -->
+        <table class="problemStatus">
+        <tbody>
+          <tr class="inputSetStatus">
+            <td id="inputName2_1" class="inputName">20pt</td>
+            <td class="status">
+              <div id="selfStat2_1" class="dsb-mini-status-non-highlight">No submissions</div>
+              <div id="globalStat2_1" class="globalStat" style="display: block; "><b>68/114 users</b> correct (60%)</div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        
+      </div>
+    
+      <div id="problemStatusWrapper3" class="problemStatusWrapper">
+        <div class="dsb-status-problem-title">Endless Knight</div>
+        
+        <!-- Input Stats -->
+        <table class="problemStatus">
+        <tbody>
+          <tr class="inputSetStatus">
+            <td id="inputName3_0" class="inputName">5pt</td>
+            <td class="status">
+              <div id="selfStat3_0" class="dsb-mini-status-non-highlight">No submissions</div>
+              <div id="globalStat3_0" class="globalStat" style="display: block; "><b>845/879 users</b> correct (96%)</div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        
+        <!-- Input Stats -->
+        <table class="problemStatus">
+        <tbody>
+          <tr class="inputSetStatus">
+            <td id="inputName3_1" class="inputName">20pt</td>
+            <td class="status">
+              <div id="selfStat3_1" class="dsb-mini-status-non-highlight">No submissions</div>
+              <div id="globalStat3_1" class="globalStat" style="display: block; "><b>32/173 users</b> correct (18%)</div>
+            </td>
+          </tr>
+        </tbody>
+        </table>
+        
+      </div>
+    
+    </div>
+  </div>
+  </div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <!-- Mini Scoreboard -->
+  <div class="dsb-mini-tab-wrapper">
+    <div id="dsb-scoreboard-div">
+      <div id="dsb-scoreboard-header-div" onmouseover="this.style.cursor=&#39;pointer&#39;" onclick="GCJ.toggleVisibility(
+              &#39;dsb-scoreboard-table&#39;,
+              &#39;dsb-scoreboard-panel-button&#39;,
+              &#39;/codejam/contest/static/minus.gif&#39;,
+              &#39;/codejam/contest/static/plus.gif&#39;)">
+          <img id="dsb-scoreboard-panel-button" src="./Dashboard - Round 3 2008 - Google Code Jam_files/minus.gif">
+          &nbsp; Top Scores
+      </div>
+      <div id="dsb-scoreboard-table-wrap"><table id="dsb-scoreboard-table" style="display: block; "><tbody><tr class="dsb-scoreboard-row-even" id="sbRow_0" style="display: block; "><td class="dsb-name-td" id="sbName_0">bmerry</td><td class="dsb-score-td" id="sbScore_0">100</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_1" style="display: block; "><td class="dsb-name-td" id="sbName_1">yuhch123</td><td class="dsb-score-td" id="sbScore_1">100</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_2" style="display: block; "><td class="dsb-name-td" id="sbName_2">halyavin</td><td class="dsb-score-td" id="sbScore_2">85</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_3" style="display: block; "><td class="dsb-name-td" id="sbName_3">wata</td><td class="dsb-score-td" id="sbScore_3">80</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_4" style="display: block; "><td class="dsb-name-td" id="sbName_4">iwi</td><td class="dsb-score-td" id="sbScore_4">80</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_5" style="display: block; "><td class="dsb-name-td" id="sbName_5">Ahyangyi</td><td class="dsb-score-td" id="sbScore_5">80</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_6" style="display: block; "><td class="dsb-name-td" id="sbName_6">tourist</td><td class="dsb-score-td" id="sbScore_6">80</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_7" style="display: block; "><td class="dsb-name-td" id="sbName_7">gawry</td><td class="dsb-score-td" id="sbScore_7">80</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_8" style="display: block; "><td class="dsb-name-td" id="sbName_8">vlad89</td><td class="dsb-score-td" id="sbScore_8">80</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_9" style="display: block; "><td class="dsb-name-td" id="sbName_9">neal.wu</td><td class="dsb-score-td" id="sbScore_9">80</td></tr></tbody></table></div>
+      <div class="dsb-mini-tab-link">
+        <a target="new" href="http://code.google.com/codejam/contest/scoreboard?c=32002">
+          Full scoreboard
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="right-panel">
+  <div id="dsb-status-msg-wrapper" class="dsb-status-msg-wrapper">
+    <div id="dsb-status-msg" class="dsb-status-msg">
+      <span id="dsb-status-msg-text"></span>
+      <span id="dsb-view-it-link">View it.</span>
+    </div>
+  </div>
+
+  <div id="dsb-contest-title-bar">
+  <div id="dsb-rank-etc">
+    <div id="dsb-time-remaining">Practice Mode</div>
+    <div id="dsb-current-rank-div" style="display: none; ">
+      Rank: <span id="dsb-current-rank-span"></span>
+    </div>
+    <div id="dsb-current-score-div" style="display: none; ">
+      Score: <span id="dsb-current-score-span"></span>
+    </div>
+  </div>
+  
+    <a target="new" href="http://code.google.com/codejam/contest/scoreboard?c=32002">
+      Contest scoreboard</a> |
+    <a href="https://www.google.com/accounts/ServiceLogin?service=ah&continue=http://code.google.com/_ah/login%3Fcontinue%3Dhttp://code.google.com/codejam/contest/dashboard%253Fc%253D32002&ltmpl=&sig=4a48402936f3c4bb1f16b29dc910c26b">Sign in</a>
+  
+  </div>
+
+  <!-- Problem Statement -->
+  <div id="main-panel-border" class="dsb-blue-border">
+  <div id="dsb-border-inner">
+    <!-- Problem Statement Title -->
+    <div id="dsb-problem-title-div"><span style="color:#666">Problem A.</span> How Big Are the Pockets?</div>
+
+    
+    <div id="dsb-problem-page0" class="dsb-content-pages" style="display: block; ">
+      <!-- Problem Input File Selection -->
+      <div class="dsb-input-panel-text"><span style="color: #666666;">In the practice contest, you may try as many times as you want. Read the quick-start guide <a href="http://code.google.com/codejam/quickstart.html" target="_blank">here</a>.</span></div>
+      <table><tbody id="dsb-input-form-table0"><tr><td class="dsb-input-table-description">Small input<br>5 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap0-0" class=""><div id="dsb-input-wrapper0-0" class="dsb-input-wrapper" style="display: inline; "><button class="dsb-input-start-button" id="dsb-input-start-button0-0" style="display: inline; ">Solve A-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain0-0" style="display: none; "><img class="dsb-input-link-img" src="./Dashboard - Round 3 2008 - Google Code Jam_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text0-0">Download A-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption0-0" style="display: none; "></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption0-0" style="display: none; ">Your submission was received. You can still <span class="dsb-input-link-text">resubmit</span> for <span id="dsb-resubmit-timer0-0"></span> minutes.<br> Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div0-0" style="display: none; "><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_0"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> A-small-practice.in.</div><form id="submit-formio_timer_0" action="http://code.google.com/codejam/contest/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="ODhkYzNiOGE3NWJhZWY0ZTYzNzM2NGVjNDhjZDU5Yjl8fFN1Ym1pdEFuc3dlcnwxMjk4NDkwMzA0NTQ2NDM0"><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_0" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source file(s):&nbsp;&nbsp;</td><td><div id="source-filesio_timer_0"><div id="input-file-divio_timer_0-0"><span id="source-fileio_timer_0-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_0-0" class="dsb-submit-form-links" style="visibility: hidden; ">remove</span></div></div><span id="add-source-fileio_timer_0" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_0" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_0" type="button" value="Hide"></div><div id="source-file-namesio_timer_0"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="contest" value="32002"><input type="hidden" name="problem" value="24444"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_0" value="1"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>15 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap0-1" class=""><div id="dsb-input-wrapper0-1" class="dsb-input-wrapper" style="display: inline; "><button class="dsb-input-start-button" id="dsb-input-start-button0-1" style="display: inline; ">Solve A-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain0-1" style="display: none; "><img class="dsb-input-link-img" src="./Dashboard - Round 3 2008 - Google Code Jam_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text0-1">Download A-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption0-1" style="display: none; "></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption0-1" style="display: none; ">Your submission was received. You can still <span class="dsb-input-link-text">resubmit</span> for <span id="dsb-resubmit-timer0-1"></span> minutes.<br> Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div0-1" style="display: none; "><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_1"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_1" action="http://code.google.com/codejam/contest/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="ODhkYzNiOGE3NWJhZWY0ZTYzNzM2NGVjNDhjZDU5Yjl8fFN1Ym1pdEFuc3dlcnwxMjk4NDkwMzA0NTQ2NDM0"><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_1" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source file(s):&nbsp;&nbsp;</td><td><div id="source-filesio_timer_1"><div id="input-file-divio_timer_1-0"><span id="source-fileio_timer_1-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_1-0" class="dsb-submit-form-links" style="visibility: hidden; ">remove</span></div></div><span id="add-source-fileio_timer_1" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_1" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_1" type="button" value="Hide"></div><div id="source-file-namesio_timer_1"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="contest" value="32002"><input type="hidden" name="problem" value="24444"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_1" value="1"></form></div></div></div></td></tr></tbody></table>
+      <!-- Problem Statement -->
+      <div id="dsb-problem-content-div0" class="dsb-problem-content-div" style="width: 40em; "><p class="problem-item">Problem</p>
+<p>
+Professor Polygonovich, an honest citizen of Flatland, likes to take random walks along integer points in the plane. He starts from the origin in the morning, facing north. There are three types of actions he makes:
+</p>
+<ul>
+<li>'F': move forward one unit of length.</li>
+<li>'L': turn left 90 degrees.</li>
+<li>'R': turn right 90 degrees.</li>
+</ul>
+<p>
+At the end of the day (yes, it is a long walk!), he returns to the origin. He never visits the same point twice except for the origin, so his path encloses a polygon. In the following picture the interior of the polygon is colored blue (ignore the points x, y, z, and w for now; they will be explained soon): <br>
+</p>
+
+<p>
+<img src="./Dashboard - Round 3 2008 - Google Code Jam_files/saved_resource">
+</p>
+
+<p>
+Notice that as long as Professor Polygonovich makes more than 4 turns, the polygon is not convex. So there are pockets in it.</p>
+<p>
+<b>Warning!</b> To make your task more difficult, our definition of <i>pockets</i> might be different from what you may have heard before.
+</p>
+
+<p>
+The gray area below indicates pockets of the polygon.
+</p>
+
+<p>
+<img src="./Dashboard - Round 3 2008 - Google Code Jam_files/saved_resource(1)">
+</p>
+
+<p>
+Formally, a point <b>p</b> is said to be in a pocket if it is not inside the polygon, and at least one of the following two conditions holds.<br>
+</p><ul>
+<li>There are boundary points directly both east and west of <b>p</b>; or
+</li><li>There are boundary points directly both north and south of <b>p</b>.
+</li></ul>
+Boundary points are the points traversed by Mr. Poligonovich on his walk (these include all points, not just those with integer coordinates).
+<p></p>
+<p>
+Consider again the first picture from above. Point <b>x</b> satisfies the first condition; <b>y</b> satisfies both; <b>z</b> satisfies the second one. All three points are in pockets. The point <b>w</b> is not in a pocket.
+</p>
+<p>
+Given Polygonovich's walk, your job is to find the total area of the pockets.
+</p>
+
+<p class="problem-item">Input</p>
+<p>
+The first line of input gives the number of cases, <b>N</b>. <b>N</b> test cases follow.
+</p>
+
+<p>
+Each test case has the description of one walk of Professor Polygonovich. It starts with an integer <b>L</b>. Following are <b>L</b> "<b>S</b> <b>T</b>" pairs, where <b>S</b> is a string consisting of 'L', 'R', and 'F' characters, and <b>T</b> is an integer indicating how many times <b>S</b> is repeated.
+</p>
+
+<p>In other words, the input for one test case looks like this:</p>
+<pre>S<sub>1</sub> T<sub>1</sub> S<sub>2</sub> T<sub>2</sub> ... S<sub>L</sub> T<sub>L</sub>
+</pre>
+<p>The actions taken are the concatenation of T<sub>1</sub> copies of S<sub>1</sub>, followed by T<sub>2</sub> copies of S<sub>2</sub>, and so on.</p>
+
+<p>
+The "<b>S</b> <b>T</b>" pairs for a single test case may not all be on the same line, but the strings <b>S</b> will not be split across multiple lines. The second example below demonstrates this.
+</p>
+
+<p class="problem-item">Output</p>
+<p>
+For each test case, output one line containing "Case #<b>X</b>: <b>Y</b>", where <b>X</b> is the 1-based case number, and <b>Y</b> is the total area of all pockets.
+</p>
+
+<p class="problem-item">Limits</p>
+<p>
+1 ≤ <b>N</b> ≤ 100<br>
+1 ≤ <b>T</b> (bounded from above by constraints in the problem statement, "Small dataset" and "Large dataset" sections)<br>
+The path, when concatenated from the input strings, will not have two consecutive direction changes (that is, there will be no 'LL', 'RR', 'LR', nor 'RL' in the concatenated path). There will be at least one 'F' in the path.<br>
+The path described will not intersect itself, except at the end, and it will end back at the origin.
+</p>
+
+<p class="problem-item">Small dataset</p>
+<p>
+1 ≤ <b>L</b> ≤ 100<br>
+The length of each string <b>S</b> will be between 1 and 16, inclusive.<br>
+The professor will not visit any point with a coordinate bigger than 100 in absolute value.
+</p>
+
+<p class="problem-item">Large dataset</p>
+<p>
+1 ≤ <b>L</b> ≤ 1000<br>
+The length of each string <b>S</b> will be between 1 and 32, inclusive.<br>
+The professor will not visit any point with a coordinate bigger than 3000 in absolute value.
+</p>
+
+<p class="problem-item">Sample</p>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="problem-item-gray">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="problem-item-gray">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+2<br>
+1<br>
+FFFR 4<br>
+9<br>
+F 6 R 1 F 4 RFF 2 LFF 1<br>
+LFFFR 1 F 2 R 1 F 5<br>
+<br>
+</code>
+</td>
+<td>
+<code>
+Case #1: 0<br>
+Case #2: 4<br>
+<br>
+</code>
+</td></tr></tbody></table>
+</div>
+
+<p>
+The following picture illustrates the two sample test cases.
+<br>
+<br>
+<img src="./Dashboard - Round 3 2008 - Google Code Jam_files/saved_resource(2)">
+<br>
+<br>
+</p>
+</div>
+    </div>
+    
+    <div id="dsb-problem-page1" class="dsb-content-pages">
+      <!-- Problem Input File Selection -->
+      <div class="dsb-input-panel-text"><span style="color: #666666;">In the practice contest, you may try as many times as you want. Read the quick-start guide <a href="http://code.google.com/codejam/quickstart.html" target="_blank">here</a>.</span></div>
+      <table><tbody id="dsb-input-form-table1"><tr><td class="dsb-input-table-description">Small input<br>10 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap1-0" class=""><div id="dsb-input-wrapper1-0" class="dsb-input-wrapper" style="display: inline; "><button class="dsb-input-start-button" id="dsb-input-start-button1-0" style="display: inline; ">Solve B-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain1-0" style="display: none; "><img class="dsb-input-link-img" src="./Dashboard - Round 3 2008 - Google Code Jam_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text1-0">Download B-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption1-0" style="display: none; "></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption1-0" style="display: none; ">Your submission was received. You can still <span class="dsb-input-link-text">resubmit</span> for <span id="dsb-resubmit-timer1-0"></span> minutes.<br> Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div1-0" style="display: none; "><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_2"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> B-small-practice.in.</div><form id="submit-formio_timer_2" action="http://code.google.com/codejam/contest/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="ODhkYzNiOGE3NWJhZWY0ZTYzNzM2NGVjNDhjZDU5Yjl8fFN1Ym1pdEFuc3dlcnwxMjk4NDkwMzA0NTQ2NDM0"><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_2" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source file(s):&nbsp;&nbsp;</td><td><div id="source-filesio_timer_2"><div id="input-file-divio_timer_2-0"><span id="source-fileio_timer_2-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_2-0" class="dsb-submit-form-links" style="visibility: hidden; ">remove</span></div></div><span id="add-source-fileio_timer_2" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_2" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_2" type="button" value="Hide"></div><div id="source-file-namesio_timer_2"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="contest" value="32002"><input type="hidden" name="problem" value="24443"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_2" value="1"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>15 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap1-1" class=""><div id="dsb-input-wrapper1-1" class="dsb-input-wrapper" style="display: inline; "><button class="dsb-input-start-button" id="dsb-input-start-button1-1" style="display: inline; ">Solve B-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain1-1" style="display: none; "><img class="dsb-input-link-img" src="./Dashboard - Round 3 2008 - Google Code Jam_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text1-1">Download B-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption1-1" style="display: none; "></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption1-1" style="display: none; ">Your submission was received. You can still <span class="dsb-input-link-text">resubmit</span> for <span id="dsb-resubmit-timer1-1"></span> minutes.<br> Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div1-1" style="display: none; "><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_3"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_3" action="http://code.google.com/codejam/contest/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="ODhkYzNiOGE3NWJhZWY0ZTYzNzM2NGVjNDhjZDU5Yjl8fFN1Ym1pdEFuc3dlcnwxMjk4NDkwMzA0NTQ2NDM0"><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_3" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source file(s):&nbsp;&nbsp;</td><td><div id="source-filesio_timer_3"><div id="input-file-divio_timer_3-0"><span id="source-fileio_timer_3-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_3-0" class="dsb-submit-form-links" style="visibility: hidden; ">remove</span></div></div><span id="add-source-fileio_timer_3" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_3" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_3" type="button" value="Hide"></div><div id="source-file-namesio_timer_3"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="contest" value="32002"><input type="hidden" name="problem" value="24443"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_3" value="1"></form></div></div></div></td></tr></tbody></table>
+      <!-- Problem Statement -->
+      <div id="dsb-problem-content-div1" class="dsb-problem-content-div" style="width: 40em; "><p class="problem-item">Problem</p>
+
+<p>
+Portal<sup>TM</sup> is a first-person puzzle/platform game developed and published by Valve Software. The idea of the game was to create two portals on walls and then jump through one portal and come out the other. This problem has a similar idea but it does not assume you have played Portal.
+</p>
+
+<p>
+For this problem you find yourself in a <b>R</b> by <b>C</b> grid. Additionally there is a delicious cake somewhere else in the grid. You're very hungry and wish to arrive at the cake with as few moves as possible. You can move north, south, east or west to an empty cell. Additionally, you have the ability to create portals on walls.
+</p>
+
+<p>
+To help you get to the cake you have a portal gun which can shoot two types of portals, a yellow portal and a blue portal. A portal is created by shooting your portal gun either north, south, east or west. This emits a ball of energy that creates a portal on the first wall it hits. Note that for this problem shooting the portal gun does not count as a move. If you fire your portal gun at the cake, the energy ball will go right through it.
+</p>
+
+<p>
+After creating a yellow portal and a blue portal, you can move through the yellow portal to arrive at the blue portal or vice versa.  Using these portals you may be able to reach the cake even faster! You can only use portals after you create both a yellow and a blue portal.
+</p>
+
+<p>
+Consider the following grid:<br>
+<img src="./Dashboard - Round 3 2008 - Google Code Jam_files/saved_resource(3)"><br>
+Gray cells represent walls, white cells represent empty cells, and the red circle indicates your position.
+</p>
+
+<p>
+Suppose you shoot a blue portal east. The portal is created on the first wall it hits, resulting in:<br>
+<img src="./Dashboard - Round 3 2008 - Google Code Jam_files/saved_resource(4)">
+</p>
+
+<p>
+Now suppose you shoot a yellow portal south:<br>
+<img src="./Dashboard - Round 3 2008 - Google Code Jam_files/saved_resource(5)"><br>
+</p>
+
+<p>
+Next you move south once:<br>
+<img src="./Dashboard - Round 3 2008 - Google Code Jam_files/saved_resource(6)"><br>
+</p>
+
+<p>
+Now comes the interesting part. If you move south one more time you go through the yellow portal to the blue portal:<br>
+<img src="./Dashboard - Round 3 2008 - Google Code Jam_files/saved_resource(7)"><br>
+</p>
+
+<p>
+There can only be one yellow portal and one blue portal at any time. For example if you attempt to create a blue portal to the west the other blue portal will disappear:<br>
+<img src="./Dashboard - Round 3 2008 - Google Code Jam_files/saved_resource(8)"><br>
+A portal disappears only when another portal of the same color is fired.
+</p>
+
+<p>
+Note that the portals are created on one side of the wall. If a wall has a portal on its east side you must move into the wall from the east to go through the portal.  Otherwise you'll be moving into a wall, which is improbable.
+</p>
+
+<p>
+Finally, you may not put two portals on top of each other.  If you try to fire a portal at a side of a wall that already has a portal, the second portal will fail to form.
+</p>
+
+<p>
+Given the maze, your initial position, and the cake's position, you want to find the minimum number of moves needed to reach the cake if it is possible.  Remember that shooting the portal gun does not count as a move.
+</p>
+
+<p class="problem-item">Input</p>
+<p>The first line of input gives the number of cases, <b>N</b>. <b>N</b> test cases follow.</p>
+
+<p>
+The first line of each test case will contain the integers <b>R</b> and <b>C</b> separated by a space.  <b>R</b> lines follow containing <b>C</b> characters each, representing the map:
+</p>
+<ul>
+<li><code>.</code> indicates an empty cell;</li>
+<li><code>#</code> indicates a wall;</li>
+<li><code>O</code> indicates your starting position; and</li>
+<li><code>X</code> indicates the cake's position.</li>
+</ul>
+<p>
+There will be exactly one <code>O</code> and one <code>X</code> character per case.
+</p>
+<p>
+Cells outside of the grid are all walls and you may use them to create portals.
+</p>
+
+<p class="problem-item">Output</p>
+<p>
+For each test case you should output one line containing "Case #<b>X</b>: <b>Y</b>" (quotes for clarity) where <b>X</b> is the number of the test case and <b>Y</b> is the minimum number of moves needed to reach the cake or "THE CAKE IS A LIE" (quotes for clarity) if the cake cannot be reached.
+</p>
+
+<p class="problem-item">Limits</p>
+
+<p class="problem-item">Small dataset</p>
+<b>N</b> = 200<br>
+1 &lt;= <b>R</b>, <b>C</b> &lt;= 8<br>
+
+<p class="problem-item">Large dataset</p>
+<b>N</b> = 50<br>
+1 &lt;= <b>R</b>, <b>C</b> &lt;= 15<br>
+
+<p class="problem-item">Sample</p>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="problem-item-gray">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="problem-item-gray">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+3<br>
+4 7<br>
+.O..##.<br>
+.#.....<br>
+.#.####<br>
+.#...X.<br>
+5 5<br>
+O....<br>
+.....<br>
+.....<br>
+.....<br>
+....X<br>
+1 3<br>
+O#X<br>
+<br>
+</code>
+</td><td>
+<code>
+Case #1: 4<br>
+Case #2: 2<br>
+Case #3: THE CAKE IS A LIE<br>
+<br>
+</code>
+</td></tr></tbody></table>
+</div>
+
+<p>
+Here is the sequence of moves for the first case (note that shooting the portal gun does not count as a move):
+</p><ol>
+<li>Move one step east.</li>
+<li>Shoot a blue portal north.</li>
+<li>Shoot a yellow portal south.</li>
+<li>Move one step north through the blue portal.</li>
+<li>Shoot a blue portal east.</li>
+<li>Move one step south through the yellow portal.</li>
+<li>Move one step west.</li>
+<li>Eat your delicious and moist cake.</li>
+</ol>
+<p></p>
+
+<p>
+Portal<sup>TM</sup> is a trademark of Valve Inc. Valve Inc. does not endorse and has no involvement with Google Code Jam.
+</p></div>
+    </div>
+    
+    <div id="dsb-problem-page2" class="dsb-content-pages">
+      <!-- Problem Input File Selection -->
+      <div class="dsb-input-panel-text"><span style="color: #666666;">In the practice contest, you may try as many times as you want. Read the quick-start guide <a href="http://code.google.com/codejam/quickstart.html" target="_blank">here</a>.</span></div>
+      <table><tbody id="dsb-input-form-table2"><tr><td class="dsb-input-table-description">Small input<br>10 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap2-0" class=""><div id="dsb-input-wrapper2-0" class="dsb-input-wrapper" style="display: inline; "><button class="dsb-input-start-button" id="dsb-input-start-button2-0" style="display: inline; ">Solve C-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain2-0" style="display: none; "><img class="dsb-input-link-img" src="./Dashboard - Round 3 2008 - Google Code Jam_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text2-0">Download C-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption2-0" style="display: none; "></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption2-0" style="display: none; ">Your submission was received. You can still <span class="dsb-input-link-text">resubmit</span> for <span id="dsb-resubmit-timer2-0"></span> minutes.<br> Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div2-0" style="display: none; "><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_4"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> C-small-practice.in.</div><form id="submit-formio_timer_4" action="http://code.google.com/codejam/contest/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="ODhkYzNiOGE3NWJhZWY0ZTYzNzM2NGVjNDhjZDU5Yjl8fFN1Ym1pdEFuc3dlcnwxMjk4NDkwMzA0NTQ2NDM0"><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_4" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source file(s):&nbsp;&nbsp;</td><td><div id="source-filesio_timer_4"><div id="input-file-divio_timer_4-0"><span id="source-fileio_timer_4-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_4-0" class="dsb-submit-form-links" style="visibility: hidden; ">remove</span></div></div><span id="add-source-fileio_timer_4" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_4" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_4" type="button" value="Hide"></div><div id="source-file-namesio_timer_4"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="contest" value="32002"><input type="hidden" name="problem" value="24446"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_4" value="1"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>20 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap2-1" class=""><div id="dsb-input-wrapper2-1" class="dsb-input-wrapper" style="display: inline; "><button class="dsb-input-start-button" id="dsb-input-start-button2-1" style="display: inline; ">Solve C-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain2-1" style="display: none; "><img class="dsb-input-link-img" src="./Dashboard - Round 3 2008 - Google Code Jam_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text2-1">Download C-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption2-1" style="display: none; "></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption2-1" style="display: none; ">Your submission was received. You can still <span class="dsb-input-link-text">resubmit</span> for <span id="dsb-resubmit-timer2-1"></span> minutes.<br> Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div2-1" style="display: none; "><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_5"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_5" action="http://code.google.com/codejam/contest/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="ODhkYzNiOGE3NWJhZWY0ZTYzNzM2NGVjNDhjZDU5Yjl8fFN1Ym1pdEFuc3dlcnwxMjk4NDkwMzA0NTQ2NDM0"><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_5" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source file(s):&nbsp;&nbsp;</td><td><div id="source-filesio_timer_5"><div id="input-file-divio_timer_5-0"><span id="source-fileio_timer_5-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_5-0" class="dsb-submit-form-links" style="visibility: hidden; ">remove</span></div></div><span id="add-source-fileio_timer_5" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_5" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_5" type="button" value="Hide"></div><div id="source-file-namesio_timer_5"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="contest" value="32002"><input type="hidden" name="problem" value="24446"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_5" value="1"></form></div></div></div></td></tr></tbody></table>
+      <!-- Problem Statement -->
+      <div id="dsb-problem-content-div2" class="dsb-problem-content-div" style="width: 40em; "><p class="problem-item">Problem</p>
+<p>
+A local high school is going to hold a final exam in a big classroom.
+However, some students in this school are always trying to see each other's answer sheet during exams!
+</p>
+<p>
+The classroom can be regarded as a rectangle of <b>M</b> rows by <b>N</b> columns of unit squares, where each unit square represents a seat.
+</p>
+<p>
+The school principal decided to set the following rule to prevent cheating:<br>
+Assume a student is able to see his left, right, upper-left, and upper-right neighbors' answer sheets.  The assignment of seats must guarantee that nobody's answer sheet can be seen by any other student.
+<br><br><br>
+<img src="./Dashboard - Round 3 2008 - Google Code Jam_files/saved_resource(9)">
+<br><br><br>
+As in this picture, it will not be a good idea to seat anyone in A, C, D, or E because the boy in the back row would be able to see their answer sheets. However, if there is a girl sitting in B, he will not be able to see her answer sheet.</p>
+
+<p>Some seats in the classroom are broken, and we cannot put a student in a broken seat.</p>
+
+<p>The principal asked you to answer the following question: What is the maximum number of students that can be placed in the classroom so that no one can cheat?
+</p>
+
+<p class="problem-item">Input</p>
+<p>The first line of input gives the number of cases, <b>C</b>.
+<b>C</b> test cases follow. Each case consists of two parts.</p>
+<p>The first part is a single line with two integers <b>M</b> and <b>N</b>: The height and width of the rectangular classroom.
+</p>
+
+<p>The second part will be exactly <b>M</b> lines, with exactly <b>N</b> characters in each of these lines. Each character is either a '.' (the seat is not broken) or 'x' (the seat is broken, lowercase x).
+</p>
+
+<p class="problem-item">Output</p>
+<p>For each test case, output one line containing "Case #<b>X</b>: <b>Y</b>", where <b>X</b> is the case number, starting from 1, and <b>Y</b> is the maximum possible number of students that can take the exam in the classroom.</p>
+
+<p class="problem-item">Limits</p>
+<p><b>C</b> = 20</p>
+
+<p class="problem-item">Small dataset</p>
+<p>
+1 ≤ <b>M</b> ≤ 10<br>
+1 ≤ <b>N</b> ≤ 10
+</p>
+
+<p class="problem-item">Large dataset</p>
+<p>
+1 ≤ <b>M</b> ≤ 80<br>
+1 ≤ <b>N</b> ≤ 80
+</p>
+
+<p class="problem-item">Sample</p>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="problem-item-gray">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="problem-item-gray">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+4<br>
+2 3<br>
+...<br>
+...<br>
+2 3<br>
+x.x<br>
+xxx<br>
+2 3<br>
+x.x<br>
+x.x<br>
+10 10<br>
+....x.....<br>
+..........<br>
+..........<br>
+..x.......<br>
+..........<br>
+x...x.x...<br>
+.........x<br>
+...x......<br>
+........x.<br>
+.x...x....<br>
+<br>
+</code>
+</td><td>
+<code>
+Case #1: 4<br>
+Case #2: 1<br>
+Case #3: 2<br>
+Case #4: 46<br>
+<br>
+</code>
+</td></tr></tbody></table>
+</div>
+</div>
+    </div>
+    
+    <div id="dsb-problem-page3" class="dsb-content-pages">
+      <!-- Problem Input File Selection -->
+      <div class="dsb-input-panel-text"><span style="color: #666666;">In the practice contest, you may try as many times as you want. Read the quick-start guide <a href="http://code.google.com/codejam/quickstart.html" target="_blank">here</a>.</span></div>
+      <table><tbody id="dsb-input-form-table3"><tr><td class="dsb-input-table-description">Small input<br>5 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap3-0" class=""><div id="dsb-input-wrapper3-0" class="dsb-input-wrapper" style="display: inline; "><button class="dsb-input-start-button" id="dsb-input-start-button3-0" style="display: inline; ">Solve D-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain3-0" style="display: none; "><img class="dsb-input-link-img" src="./Dashboard - Round 3 2008 - Google Code Jam_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text3-0">Download D-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption3-0" style="display: none; "></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption3-0" style="display: none; ">Your submission was received. You can still <span class="dsb-input-link-text">resubmit</span> for <span id="dsb-resubmit-timer3-0"></span> minutes.<br> Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div3-0" style="display: none; "><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_6"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> D-small-practice.in.</div><form id="submit-formio_timer_6" action="http://code.google.com/codejam/contest/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="ODhkYzNiOGE3NWJhZWY0ZTYzNzM2NGVjNDhjZDU5Yjl8fFN1Ym1pdEFuc3dlcnwxMjk4NDkwMzA0NTQ2NDM0"><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_6" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source file(s):&nbsp;&nbsp;</td><td><div id="source-filesio_timer_6"><div id="input-file-divio_timer_6-0"><span id="source-fileio_timer_6-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_6-0" class="dsb-submit-form-links" style="visibility: hidden; ">remove</span></div></div><span id="add-source-fileio_timer_6" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_6" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_6" type="button" value="Hide"></div><div id="source-file-namesio_timer_6"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="contest" value="32002"><input type="hidden" name="problem" value="24445"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_6" value="1"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>20 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap3-1" class=""><div id="dsb-input-wrapper3-1" class="dsb-input-wrapper" style="display: inline; "><button class="dsb-input-start-button" id="dsb-input-start-button3-1" style="display: inline; ">Solve D-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain3-1" style="display: none; "><img class="dsb-input-link-img" src="./Dashboard - Round 3 2008 - Google Code Jam_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text3-1">Download D-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption3-1" style="display: none; "></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption3-1" style="display: none; ">Your submission was received. You can still <span class="dsb-input-link-text">resubmit</span> for <span id="dsb-resubmit-timer3-1"></span> minutes.<br> Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div3-1" style="display: none; "><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_7"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_7" action="http://code.google.com/codejam/contest/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="ODhkYzNiOGE3NWJhZWY0ZTYzNzM2NGVjNDhjZDU5Yjl8fFN1Ym1pdEFuc3dlcnwxMjk4NDkwMzA0NTQ2NDM0"><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_7" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source file(s):&nbsp;&nbsp;</td><td><div id="source-filesio_timer_7"><div id="input-file-divio_timer_7-0"><span id="source-fileio_timer_7-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_7-0" class="dsb-submit-form-links" style="visibility: hidden; ">remove</span></div></div><span id="add-source-fileio_timer_7" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_7" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_7" type="button" value="Hide"></div><div id="source-file-namesio_timer_7"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="contest" value="32002"><input type="hidden" name="problem" value="24445"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_7" value="1"></form></div></div></div></td></tr></tbody></table>
+      <!-- Problem Statement -->
+      <div id="dsb-problem-content-div3" class="dsb-problem-content-div" style="width: 40em; "><p class="problem-item">Problem</p>
+
+<p>In the game of chess, there is a piece called the knight.  A knight is special -- instead of moving in a straight line like other pieces, it jumps in an "L" shape. Specifically, a knight can jump from square (r1, c1) to (r2, c2) if and only if <nobr>(r1 - r2)</nobr><sup>2</sup> + <nobr>(c1 - c2)</nobr><sup>2</sup> = 5.</p>
+
+<p>
+In this problem, one of our knights is going to undertake a chivalrous quest of moving from the top-left corner (the (1, 1) square) to the bottom-right corner (the (<b>H</b>, <b>W</b>) square) on a gigantic board. The chessboard is of height <b>H</b> and width <b>W</b>.
+</p>
+<p>
+Here are some restrictions you need to know.
+</p>
+<ul>
+<li>The knight is so straightforward and ardent that he is only willing to move towards the right <i>and</i> the bottom. In other words, in each step he only moves to a square with a bigger row number and a bigger column number. Note that, this might mean that there is no way to achieve his goal, for example, on a 3 by 10 board.</li>
+<li>There are <b>R</b> squares on the chessboard that contain rocks with evil power. Your knight may not land on any of such squares, although flying over them during a jump is allowed.</li>
+</ul>
+<p>Your task is to find the number of unique ways for the knight to move from the top-left corner to the bottom-right corner, under the above restrictions. It should be clear that sometimes the answer is huge. You are asked to output the remainder of the answer when divided by 10007, a prime number.</p>
+
+<p class="problem-item">Input</p>
+<p>
+Input begins with a line containing a single integer, <b>N</b>.  <b>N</b> test cases follow.
+</p>
+<p>
+The first line of each test case contains 3 integers,  <b>H</b>, <b>W</b>, and  <b>R</b>.  The next <b>R</b> lines each contain 2 integers each, <b>r</b> and <b>c</b>, the row and column numbers of one rock.  You may assume that (1, 1) and (<b>H</b>, <b>W</b>) never contain rocks and that no two rocks are at the same position.</p>
+
+<p class="problem-item">Output</p>
+<p>
+For each test case, output a single line of output, prefixed by "Case #<b>X</b>: ", where <b>X</b> is the 1-based case number, followed by a single integer indicating the number of ways of reaching the goal, modulo 10007.</p>
+
+<p class="problem-item">Limits</p>
+<p>
+1 ≤ <b>N</b> ≤ 100<br>
+0 ≤ <b>R</b> ≤ 10
+</p>
+
+<p class="problem-item">Small dataset</p>
+<p>
+1 ≤ <b>W</b> ≤ 100<br>
+1 ≤ <b>H</b> ≤ 100<br>
+1 ≤ <b>r</b> ≤ H<br>
+1 ≤ <b>c</b> ≤ W<br>
+</p>
+
+<p class="problem-item">Large dataset</p>
+<p>
+1 ≤ <b>W</b> ≤ 10<sup>8</sup><br>
+1 ≤ <b>H</b> ≤ 10<sup>8</sup><br>
+1 ≤ <b>r</b> ≤ H<br>
+1 ≤ <b>c</b> ≤ W<br>
+</p>
+
+<p class="problem-item">Sample</p>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="problem-item-gray">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="problem-item-gray">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+5<br>
+1 1 0<br>
+4 4 1<br>
+2 1<br>
+3 3 0<br>
+7 10 2<br>
+1 2<br>
+7 1<br>
+4 4 1<br>
+3 2<br>
+</code>
+</td><td>
+<code>
+Case #1: 1<br>
+Case #2: 2<br>
+Case #3: 0<br>
+Case #4: 5<br>
+Case #5: 1<br>
+</code>
+</td></tr></tbody></table>
+</div>
+</div>
+    </div>
+    
+
+    <div id="dsb-analysis-page" class="dsb-content-pages">
+    
+      <div id="dsb-analysis-selections">
+        <span id="dsb-analysis-selection-p4" class="dsb-analysis-selected">Overview</span>
+        
+        &nbsp; | &nbsp;
+        <span id="dsb-analysis-selection-p0" class="dsb-analysis-not-selected">
+          Problem A</span>
+        
+        &nbsp; | &nbsp;
+        <span id="dsb-analysis-selection-p1" class="dsb-analysis-not-selected">
+          Problem B</span>
+        
+        &nbsp; | &nbsp;
+        <span id="dsb-analysis-selection-p2" class="dsb-analysis-not-selected">
+          Problem C</span>
+        
+        &nbsp; | &nbsp;
+        <span id="dsb-analysis-selection-p3" class="dsb-analysis-not-selected">
+          Problem D</span>
+        
+      </div>
+      <div id="dsb-problem-analysis-div4" class="dsb-problem-content-div"><p>
+The last online round of Google Code Jam 2008 turned out to be an exciting feast of dynamic programming, plane geometry, discrete geometry, basic graph search, bipartite matching, combinatorics and number theory -- all in the time span of two hours. The problems got more challenging, and the contest more and more exciting.</p>
+<p>
+Before the game, our own Tomek Czajka took a look at the problems and made some amazing conjectures about the contest statistics. One of them was that the first person would complete all the problems in 100 minutes. This conjecture was proved by <b>bmerry</b> in a very nice way. All the problems were finished at the 98th minute. In addition, <b>bmerry</b> add 4 minutes of penalty for a wrong submission. The only other player with a perfect score was <b>yuhch123</b>, a Chinese high school student, with a correct submission in the last 5 minutes of the contest.
+</p>
+<p>
+In 3rd position was <b>halyavin</b>, seemingly only seconds away from the last submission. In the last 5 minutes, many contestants (including 13 of the top 20) submitted something correct.
+</p>
+
+<br>
+<hr>
+<p class="problem-item">Credits</p>
+<p>Problem A. <i>How Big Are the Pockets?</i> Written and prepared by Xiaomin Chen.</p>
+<p>Problem B. <i>Portal</i> Written by Mohamed Eldawy. Prepared by Frank Chu and Mark Gordon.</p>
+<p>Problem C. <i>No Cheating</i> Written by Yintao Yu. Prepared by Mark Gordon and Yintao Yu.</p>
+<p>Problem D. <i>Endless Knight</i> Written by Junbin Teng. Prepared Xiaomin Chen.</p>
+<p>Contest analysis presented by Xiaomin Chen and Cosmin Negruseri.</p>
+</div>
+      
+      <div id="dsb-problem-analysis-div0" class="dsb-problem-content-div" style="display:none"><p class="problem-item">(i). Computing the area of the polygon</p>
+<p>
+As Polygonovich walks, the interior of the polygon either always stays on his right side, or always on his left side. This is by no means a trivial fact. The polygon can be so complicated that given a poriton of the walk in the middle, one has no way to decide whether the left side is the interior, or the right side is. Let us accept this fact and assume the former case -- his right hand always touches the interior of the polygon.
+</p>
+<p>
+Fix a vertical bar of unit width, observe the interaction between P, Polygonovich's walk, and B, the vertical bar.
+</p><ul>
+<li>P crosses B an even number of times. Because the walk is closed, and any time Polygonovich crosses from the left to the right, the next time he must cross in the other direction. From top down, we label them as the 1st crossing, the 2nd one, and so on.</li>
+<li>Furthermore, look down at B from high above. In the beginning, it is outside the polygon. Every time it encounters an edge of P, it changes from being outside the polygon to being inside and vice versa. So, a unit square on B is inside the polygon if and only if it is between some <nobr>(2k-1)-st</nobr> crossing and <nobr>(2k)-th</nobr> crossing.</li>
+<li>Note that if the polygon is always on the right-hand side, then we know that the <nobr>(2k-1)-st</nobr> crossing is always from left to right, and the <nobr>(2k)-th</nobr><nobr> one is from right to left.</nobr></li><nobr>
+</nobr></ul><nobr>
+Given any unit square U, we can decide whether it is in the polygon by counting the number of left-to-right crossings vertically above U, minus the number of right-to-left crossings above U. We can have a little counter inside U, and each time there is a left-to-right crossing above U, we increase the counter by 1; and for the right-to-left crossings, decrease the counter by 1. 
+<p></p>
+After these mental exercises, we make the final jump back to the interaction between P and B. We may imagine a bounding box outside the polygon so that there are finitely many counters, and we now consider the area, it is nothing other than the summation of all the counters. To compute the area, we do the following.
+<blockquote>
+Set A = 0 in the beginning. Walk along P, for each horizontal edge from left to right at height h, we increment A by h. This is the effect of this edge on all the counters for the unit squares below. And for each edge from right to left at height h, we decrement A by h.
+</blockquote>
+All the time we assume the interior is always on the right hand side. In the opposite case, the highest edge on each bar will be a right-to-left cross, and all of the reasoning above is similar with only a difference in signs. So if we ever find that A is negative at the end, we can negate it and get the right area.
+<p></p>
+<p>
+We note that this is just a special case of the simple algorithm for computing polygon areas in general. However, isn't the pictures nice, in the special form of integer grids and axis-parallel edges? 
+</p>
+
+<p class="problem-item">(ii). Computing the area of the polygon plus the pockets</p>
+</nobr><p><nobr>
+The polygon plus the pockets gives staircases in four (NE, NW, SE, SW) directions. A formal proof would be tedious. A picture with a good example should suffice.
+<br><br><br>
+<img src="./Dashboard - Round 3 2008 - Google Code Jam_files/saved_resource(10)">
+<br><br><br>
+As in the picture, let A be any one of the topmost edges, C be the bottommost edge, B the right-most, and D the left-most one. We have 4 staircases: one from A to B, one from B to C, one from C to D, and one from D to A. Theoretically speaking, these are formed by the maximal points with respect to four directions, and each of these staircases can be computed in </nobr><nobr><b>m</b>log<b>m</b></nobr> time, where <b>m</b> is the number of points on the polygon.
+In this problem, we use the guarantee that there are at most 6000 vertical strips. For each vertical strip x, define
+</p><blockquote>
+t(x) := the topmost polygon edge to cross the strip.<br>
+b(x) := the bottommost polygon edge to cross the strip.<br>
+H(x) := the topmost polygon edge or pocket on that strip.<br>
+L(x) := the bottommost polygon edge or pocket on that strip.
+</blockquote>
+For x between A and B, H(x) is the maximum t(x') for all x' between x and B. We may compute H(x) as follows<br>
+<pre>H(x) = t(x) for the last strip
+for x = (the second last strip) down to A
+  H(x) = max(H(x+1), t(x))
+</pre>
+The values on the other staircases can be computed in the same manner.
+<p></p>
+<p>
+On strip x, the polygon plus pockets are the unit squares between L(x) and H(x). So we can sum <nobr>H(x) - L(x)</nobr> over all the 6000 possible strips and get the area of the polygon with pockets.
+</p>
+
+<p class="problem-item">(iii). Solve our problem</p>
+<p>
+(ii) minus (i).
+</p>
+</div>
+      
+      <div id="dsb-problem-analysis-div1" class="dsb-problem-content-div" style="display:none"><p>
+The challenge in this problem was mainly coding a bug-free solution. It was pretty obvious that solving it involved using a shortest path algorithm. And as you can see, even some people in the top 20 skipped this problem to go for other ones, which were more difficult to figure out, but easier to code.
+</p>
+<p>
+Let's look at <b>bmerry</b>'s solution, because it is very readable, and he was the winner of this round. Then I will continue with some other, more efficient solutions.</p>
+<p>
+A state of the game corresponds to the position of the player in the maze and the positions of the two portals, if they exist. This solution considers the map of the maze indexed from 1 so the values (0, 0) for the coordinates of the portals mean that the portals do not exist.
+</p>
+<p>
+At each step, the player can create a new portal, move one step North, South, East or West or, if he is currently near a portal, and another portal exists, travel from one portal to the other one. The first type of move can be made instantaneously while the second and third types take one turn.
+</p>
+<p>
+One optimization step is to find, for each cell, the positions of the portals that can be created from that cell, since you don't want to take O(R + C) every time you need to find the possible moves from a state.
+</p>
+<p>
+If each move took exactly one turn, then the classic breadth-first search algorithm could provide us with the answer, but in this graph with two types of weights for the edges it seems like we need Dijkstra's shortest path algorithm. In fact, we can still use an algorithm very similar to breadth first search. The tweak is that instead of adding a new state of the same cost with the current state at the end of the state queue, we add it at the beginning. This way the states will be expanded in the order of their costs, which is exactly what Dijkstra's algorithm does. The complexity of this algorithm is <nobr>O((R*C)<sup>3</sup>)</nobr> instead of <nobr>O((R*C)<sup>3</sup> log (R*C))</nobr>, which is the cost of Dijkstra's shortest path algorithm.
+</p>
+<p class="problem-item">Code</p>
+<p>
+Here is <b>bmerry</b>'s code, modified slightly and with some additional comments.
+</p> 
+<pre>struct state {
+    int r;
+    int c;
+    // portal rows
+    int pr[2];
+    // portal columns
+    int pc[2];
+};
+
+#define ADDR(state) state.r][state.c] \
+                   [state.pr[0]][state.pc[0]] \
+                   [state.pr[1]][state.pc[1]
+
+static unsigned char prio[16][16][16][16][16][16];
+
+static const int dr[4] = {-1, 0, 1, 0};
+static const int dc[4] = {0, -1, 0, 1};
+
+int main() {
+    int cases;
+    cin &gt;&gt; cases;
+    for (int cas = 0; cas &lt; cases; cas++) {
+        cin &gt;&gt; R &gt;&gt; C;
+        grid.clear();
+        grid.resize(R + 2);
+
+        state start;
+        memset(&amp;start, 0, sizeof(start));
+        grid[0] = string(C + 2, '#');
+        grid[R + 1] = grid[0];
+        for (int i = 1; i &lt;= R; i++) {
+            string line;
+            cin &gt;&gt; line;
+            grid[i] = "#" + line + "#";
+            if (grid[i].find("O") != string::npos) {
+                start.r = i;
+                start.c = grid[i].find("O");
+                grid[i][start.c] = '.';
+            }
+        }
+
+        memset(prio, 255, sizeof(prio));
+        prio[ADDR(start)] = 0;
+        deque&lt;state&gt; q;
+        q.push_back(start);
+        int ans = -1;
+        while (!q.empty()) {
+            state cur = q.front();
+            unsigned char pri = prio[ADDR(cur)];
+            if (grid[cur.r][cur.c] == 'X') {
+                ans = pri;
+                break;
+            }
+            q.pop_front();
+
+            for (int d = 0; d &lt; 4; d++) {
+                int hr = cur.r;
+                int hc = cur.c;
+                do {
+                    hr += dr[d];
+                    hc += dc[d];
+                } while (grid[hr][hc] != '#');
+                hr -= dr[d];
+                hc -= dc[d];
+
+                // adding a new portal
+                for (int p = 0; p &lt; 2; p++) {
+                    state nxt = cur;
+                    nxt.pr[p] = hr;
+                    nxt.pc[p] = hc;
+                    if (prio[ADDR(nxt)] &gt; pri) {
+                        prio[ADDR(nxt)] = pri;
+                        // We push the state at the
+                        // front since adding a portal
+                        // is instantaneous.
+                        q.push_front(nxt);
+                    }
+                }
+            }
+
+            for (int d = 0; d &lt; 4; d++) {
+                state nxt = cur;
+                nxt.r += dr[d];
+                nxt.c += dc[d];
+                if (grid[nxt.r][nxt.c] != '#') {
+                    if (prio[ADDR(nxt)] &gt; pri + 1) {
+                        prio[ADDR(nxt)] = pri + 1;
+                        q.push_back(nxt);
+                    }
+                }
+            }
+            if (cur.pr[0] &gt; 0 &amp;&amp; cur.pr[1] &gt; 0)
+                for (int p = 0; p &lt; 2; p++)
+                    if (cur.pr[p] == cur.r &amp;&amp;
+                       cur.pc[p] == cur.c) {
+                        state nxt = cur;
+                        nxt.r = cur.pr[1 - p];
+                        nxt.c = cur.pc[1 - p];
+                        if (prio[ADDR(nxt)] &gt; pri + 1) {
+                            prio[ADDR(nxt)] = pri + 1;
+                            q.push_back(nxt);
+                        }
+                    }
+        }
+
+        printf("Case #%d: ", cas + 1);
+        if (ans == -1)
+            printf("THE CAKE IS A LIE\n");
+        else
+            printf("%d\n", ans);
+    }
+    return 0;
+}
+</pre>
+
+<p>
+The restrictions on the inputs in the problem are small enough so that this solution passes all the tests. There are other, more efficient solutions which we thought of.
+</p>
+<p class="problem-item">Other solutions</p>
+<p>
+It does not make sense to create the starting portal before actually being able to jump through it. This way we can improve the previous solution and get the complexity down to O((R*C)<sup>2</sup>).
+</p>
+<p>
+As we have just seen, premature portal creation is the root of complexity, so let's think now of the destination portal. Once we have created a destination portal, we need to move as quickly as possible to the nearest wall, create a starting portal, walk through it and arrive at the destination. So what we can do is just keep R*C  states and move from one to another by either going North, West, South or East or do a teleport move which takes a few turns. We can compute in O(R*C) how much time each teleport move takes by doing a breadth first search starting from all the cells in the maze where a portal can be created. Now we can use Dijkstra's algorithm to find the shortest path. The final algorithm can have either <nobr>O(R*C log (R*C))</nobr> complexity, or if we use the fact that the teleport edges have the cost at most R * C, by using a array of lists in Dijkstra's algorithm instead of a priority queue, we can get the complexity of the solution down to <nobr>O(R * C)</nobr>.
+</p><p>
+
+</p><p>
+</p><p class="problem-item">More Information</p>
+<a href="http://www.google.com/search?hl=en&q=Dijkstra%27s+algorithm&btnG=Search" target="_blank">Dijkstra's algorithm</a> - <a href="http://www.google.com/search?hl=en&q=Breadth+First+Search&btnG=Search" target="_blank">Breadth First Search</a>
+<p></p></div>
+      
+      <div id="dsb-problem-analysis-div2" class="dsb-problem-content-div" style="display:none"><p>
+Programming contests have certainly changed over the years. Nowadays, dynamic programming is a trivial matter to many, and bipartite matching is no longer a secret idea. More than half of the contestants solved the small datasets of this problem, and 77 passed the large tests.
+</p>
+<p class="problem-item">Small dataset</p>
+<p>
+The small tests can be solved using dynamic programming. The main idea is to do this row by row.
+</p><p>
+The naive dynamic programming has states (R1, r), where r is the row number and R1 is the possible configurations of the current row. In order to compute the value of (R1, r), (the maximum number of students who can be put in the first r rows, with the r-th row identical to R1), one can loop through all of the possible values of R2 and use the value of (R2, r-1).
+</p><p>
+A more sophisticated approach also goes row by row, but in each row, we do it by squares. The states are (S, r, c), where (r, c) is the current position, and S is the bitmap for up to n positions before (r, c). These are all the squares to the left on the same row, and all the squares from the <nobr>(c-1)-st</nobr> to the last on the last row. In this way, each value of (S, r, c) can be computed in constant time.
+</p><p>
+One may estimate the number of states to be <nobr>O(M N 2<sup>N</sup>)</nobr>. But actually the number of states is much smaller. It is not hard to see, with the restriction that no two horizontally adjacent seats can be both occupied, that the number of states S is <nobr>O(F<sub>N</sub>)</nobr>, the N-th Fibonacci number. This means that the dynamic programming solution can even handle a classroom of size about 35 by 35.
+</p>
+
+<p class="problem-item">Large dataset</p>
+<p>
+Well, but universities do have very large classrooms. The large dataset has tests with 80 rows and 80 columns.
+</p>
+<p>
+The key idea is to see through the puzzle and notice that this is a standard graph problem. Let each square be a node. What the problem requires is to pick a set of nodes, such that some pairs of nodes cannot be picked together. Let us draw an edge between each such pair of nodes. This is the well-known problem of finding a maximum independent set of the graph. While the general independent set problem is NP-hard, we do know that the problem is tractable on bipartite graphs. A-ha! The graph is indeed bipartite, because all of the edges are between a square in odd-numbered columns and squares in even-numbered columns.
+</p>
+<p>
+We can easily find the <a href="http://www.google.com/search?hl=en&q=maximum+matching&btnG=Google+Search" target="_blank">maximum matching</a> on bipartite graphs. Let's see how a maximum matching can help us solve the problem. Let's assume that the size of the matching is <i>X</i>, and the number of nodes in the graph is <i>N</i>. Notice that the the maximum independent set cannot contain more than <nobr><i>N</i> - <i>X</i></nobr> nodes, because that would mean you will have two nodes that share an edge of the maximum matching in this set.
+</p>
+<p>
+In general, we have the following relations between the important graph parameters. For a graph <nobr>G = (V, E)</nobr>, let α(G) be the size of the maximum independent set, m(G) be the size of a maximum matching, μ(G) be the size of a minimum vertex cover,
+</p><ul>
+<li>The complement of an independent set is a vertex cover, and vice versa. So <nobr>α(G) + μ(G) = |V|.</nobr></li>
+<li>To cover all the edges, we need one vertex from any edge of a matching. So <nobr>μ(G) ≥ m(G)</nobr>.</li>
+<li>If G is bipartite, then <nobr>μ(G) = m(G)</nobr>. Equivalently, <nobr>α(G) + m(G) = |V|</nobr>.</li>
+</ul>
+The last fact can be proved directly, or as a consequence of Hall's theorem, or as an application of the powerful max-flow-min-cut theorem. Below we provide a constructive proof that suits to our problem.
+<p></p>
+<p class="problem-item">Proof</p>
+<p>
+We will prove that <nobr><i>N</i> - <i>X</i></nobr> is smaller than or equal to the size of the maximum independent set. Let's have a maximum matching <i>M</i> and a set <i>S</i> which contains all the nodes that are not in <i>M</i>. Now let's add to <i>S</i> all the nodes from <i>M</i> which are on the left side of the bipartite graph. <i>S</i> is of size <nobr><i>N</i> - <i>X</i></nobr>. If <i>S</i> is not an independent set, then it has a node <i>u</i> from <i>M</i> and another one <i>v</i> that doesn't belong to <i>M</i>, such that <nobr>(<i>u</i>, <i>v</i>)</nobr> is an edge. To fix this problem we remove <i>u</i> from <i>S</i> and add node <i>u'</i> to <i>S</i> where <nobr>(<i>u</i>, <i>u'</i>)</nobr> is an edge from the matching. If this operation caused a problem with another node in the matching, then we can remove that node and add it's match, and so on. This repeated procedure is guaranteed to finish since we only delete nodes from the left side of the graph and add nodes from the right side. There will be no problem caused by the nodes on the right side of the graph and nodes outside the matching because that would mean that we can find an alternating path, and the maximum matching is not the largest possible.</p>
+<p>
+We have proved that in any bipartite graph, the size of the maximum independent set equals the size of the graph minus the size of the maximum matching.
+</p>
+<p class="problem-item">Code</p>
+<p>We believe that many contestants have the standard bipartite matching algorithm prepared. You may download many nice samples from the scoreboard. Below we show a sample solution which keeps the bipartite graph only in mind, and actually runs the matching algorithm on the board itself. From the judges:
+</p><pre>int C, N, M;
+string bd[100];
+
+int nbx[100][100], nby[100][100], v[100][100];
+int T=0;
+
+bool dfs(int a, int b) {
+  if (a&lt;0) return true;
+  if(v[a][b]==T) return false;
+  v[a][b]=T;
+  for (int i=a-1;i&lt;=a+1;i++)
+    for (int j=b-1;j&lt;=b+1;j+=2)
+      if (i&gt;=0 &amp;&amp; i&lt;M &amp;&amp; j&gt;=0 &amp;&amp; j&lt;N &amp;&amp; bd[i][j]=='.') {
+        if (dfs(nbx[i][j], nby[i][j])) {
+          nbx[i][j]=a; nby[i][j]=b;
+          nbx[a][b]=i; nby[a][b]=j;
+          return true;
+        }
+      }
+  return false;
+}
+
+int play() {
+  memset(nbx,-1,sizeof(nbx));
+  memset(nby,-1,sizeof(nby));
+  memset(v, -1, sizeof(v)); T=-1;
+  int rst=0;
+  for(int i=0;i&lt;M;i++) for(int j=0;j&lt;N;j++) {
+    if (bd[i][j]=='.') {
+      rst++;
+      if (j%2) {
+        T++;
+        if (dfs(i,j)) rst--;
+      }
+    }
+  }
+  return rst;
+}
+
+int main() {
+  cin&gt;&gt;C;
+  for (int i=1; i&lt;=C; i++) {
+    cin&gt;&gt;M&gt;&gt;N;
+    for (int r=0;r&lt;M;r++) cin&gt;&gt;bd[r];
+    cout&lt;&lt;"Case #"&lt;&lt;i&lt;&lt;": "&lt;&lt;play()&lt;&lt;endl;
+  }
+  return 0;
+}
+
+</pre>
+<p></p>
+<p class="problem-item">More Information</p>
+<a href="http://www.google.com/search?hl=en&q=maximum+independent+set&btnG=Search" target="_blank">Maximum independent set</a> -
+<a href="http://www.google.com/search?hl=en&q=Bipartite+Matching&btnG=Search" target="_blank">Bipartite Matching</a> 
+<p></p></div>
+      
+      <div id="dsb-problem-analysis-div3" class="dsb-problem-content-div" style="display:none"><p>
+The small dataset can be solved by simple, two-dimensional dynamic programming. In fact, this is obviously the easiest dataset most of the contestants found in this round, with 884 correct submissions. Quite on the contrary, the large dataset turns out to be the most difficulty for this round, solved by only 32 contestants.
+</p>
+<p>
+Below we outline three tricks one may use in this problem.
+</p>
+
+<p class="problem-item">Section A. A nice simplification</p>
+<p>
+Most people are familiar with lattice walks from (0, 0) to (m, n), where each step one can either increase row by 1 or increase column by 1. The total number of such walks is the binomial number (m+n) choose n. One simple reason is that the set of paths is bijective to the ways you choose m steps for vertical moves among the (m+n) steps.
+</p><p>
+If there are no rocks, one can see that the situation in this problem is quite similar. In fact, they are essentially the same. After a nice transformation of the input, we can forget about the knight and focus on the normal lattice walks.
+</p><p>
+In our problem, the two kinds of moves the knight can make correspond to the vectors <nobr>u = (1, 2)</nobr> and <nobr>v = (2, 1)</nobr>. The set of reachable positions forms a lattice with u, v as the basis. To find the coordinate of <nobr>(r, c)</nobr> in the new system is a matter of linear transformation between two bases. In our problem, it is as simple as
+</p><blockquote>
+r' (2, 1) + c' (1, 2) = (r, c) - (1, 1).
+</blockquote>
+Solving, we get r+c = 2 mod 3, and 
+<blockquote>
+r' = r - 1 - (r+c-2)/3, and c' = c - 1 - (r+c-2)/3.
+</blockquote>
+We illustrate using the following picture.
+<br><br><br>
+<img src="./Dashboard - Round 3 2008 - Google Code Jam_files/saved_resource(11)">
+<br><br><br>
+When reading the input, we can transform the points to the new system, and throw away any points that are not reachable. Assume the destination is reachable, otherwise we can simply output 0. We can also disregard any rock with row number or column number that exceeds the destination. In short, we are now in a rectangular lattice in the new coordinate system.
+<p></p>
+
+<p class="problem-item">Section B. A key idea</p>
+<p>
+Notice that there is an important restriction in our problem: there are at most 10 rocks. The key idea to our solution -- although other solutions are possible as well -- is the inclusion-exclusion principle.
+</p>
+<p>
+Let S be any subset of rocks (including the empty set). Define f(S) to be the number of ways we can walk from the origin to destination and hitting every rock in S, and possibly hitting some other rocks.
+</p><blockquote>
+Number of paths that do not hit any rock = Σ<sub>S</sub> f(S) (-1)<sup>|S|</sup>.
+</blockquote>
+<p></p>
+<p><i> Also note:</i> we refer to the Round 1C problem Ugly Numbers. There we needed to consider the multiples of 2, 3, 5, and 7. Some solutions can be viewed as an application of the inclusion-exclusion principle, although this is not necessary for solving that problem.
+</p>
+
+<p class="problem-item">Section C. N choose K mod 10007?</p>
+<p>
+Now we need to calculate f(S) for any S. Let's sort rocks in S from left to right, and for rocks on the same column, pick the higher one first. It should be clear that if some later rock is higher than some earlier ones, then f(S) = 0 -- there is no way to hit all the rocks in S.<br>
+Otherwise, the sorted set S forms a chain from the top-left corner to the lower-right corner
+</p><blockquote>
+(0, 0) =: (r<sub>0</sub>, c<sub>0</sub>) → (r<sub>1</sub>, c<sub>1</sub>) → ... → (r<sub>k+1</sub>, c<sub>k+1</sub>) := destination
+</blockquote>
+We can view any path hitting all the k rocks as (k+1) stages. f(S) is the product of the number of ways we can do each stage. (This is another important counting principle. It is so important and obvious that usually people don't call it by name. But it does have a name -- the multiplication rule.)
+<p></p>
+<p>
+Now, we are back to the classical problem in the beginning of this analysis. Let <nobr>m = (r<sub>i</sub> - r<sub>i-1</sub>)</nobr> and <nobr>n = (c<sub>i</sub> - c<sub>i-1</sub>)</nobr>, the number of ways we can do the i-th stage is exactly (m+n) choose n.
+</p>
+<p>
+So, is this the end of the story? Not yet. Many contestants failed this problem because it is tricky to compute A choose B mod 10007 quickly and correctly. In this problem, both A and B can be on the order of 10<sup>8</sup>. To compute A choose B mod P for a prime number P, one needs some tricks. There are many clever ways you can find, like pre-computing N! for all N, pre-computing the inverse of each number mod P, utilizing the periodicity of the numbers in factorials.<br>
+What we want to introduce below is a nice theorem that is not as well known as it should be. It removes all the worries about the multiples of P. It is not a difficult theorem, but looks very cute and especially useful for this problem.</p>
+<p>
+<i>Lucas' Theorem:</i> Suppose (n<sub>t</sub>n<sub>t-1</sub>...n<sub>0</sub>) and (k<sub>t</sub>k<sub>t-1</sub>...k<sub>0</sub>) are the representation of n and k in base P, where P is a prime number. Then (n choose k) is the product of (n<sub>i</sub> choose k<sub>i</sub>) in Z<sub>P</sub>.
+</p><p>
+The following is the choose function from <b>Reid</b>'s beautiful Haskel code.
+</p><pre>choose :: Int -&gt; Int -&gt; Int10007
+choose n k | k &gt; n = 0
+choose n k | n &lt; 10007 = 
+  product [ (fromIntegral i) :: Int10007 |  i &lt;- [n-k+1..n] ]
+  / product [ (fromIntegral i) :: Int10007 | i &lt;- [1..k] ]
+choose n k = choose qn qk * choose rn rk
+  where (qn, rn) = n `divMod` 10007
+        (qk, rk) = k `divMod` 10007
+</pre>
+<p></p>
+
+<p class="problem-item">More information</p>
+<p>
+<a href="http://www.google.com/search?q=inclusion+exclusion+principle" target="_blank">The inclusion-exclusion principle</a> - 
+<a href="http://www.google.com/search?q=lucas+theorem" target="_blank">Lucas' Theorem</a> - <a href="http://www.google.com/search?hl=en&q=staircase+walk&btnG=Google+Search" target="_blank">Staircase walk</a><br>
+For the study of lattice points, we refer to any standard text in Discrete Geometry.
+</p></div>
+      
+    
+    </div>
+
+    <div id="dsb-clarification-page" class="dsb-content-pages">
+      <!-- The clarifications table -->
+      <div id="clarTableDiv" class="clarTableWrapper"></div><div>
+        <table id="dsb-clarification-table" style="display: block; ">
+          <colgroup span="9">
+            <col width="16%"><col width="2%">
+            <col width="10%"><col width="2%">
+            <col width="28%"><col width="2%">
+            <col width="10%"><col width="2%">
+            <col width="28%">
+          </colgroup>
+          <thead>
+            <tr>
+            <th>Category</th><th>&nbsp;</th>
+            <th class="clarTimeColumn">Asked</th><th>&nbsp;</th>
+            <th>Question</th><th>&nbsp;</th>
+            <th class="clarTimeColumn">Answered</th><th>&nbsp;</th>
+            <th>Answer</th>
+            </tr>
+          </thead>
+          <tbody id="dsb-clarification-tbody"><tr class="dsb-clar-tr dsb-clar-tr-announcement"><td class="clarProbTd">[Unknown]<br><span style="color: #666">Announcement</span></td><td></td><td class="clarTimeColumn">1:07:26</td><td></td><td><i>Can we rotate the orientation of the class? I mean, students looking to the right (or left).</i></td><td></td><td class="clarTimeColumn" style="color: red; ">1:13:04</td><td></td><td><i>The students are always facing north (up).</i></td></tr></tbody>
+        </table>
+      </div>
+      <div id="dsb-submit-clarification" style="display: none; ">
+        <!-- The link to ask a clarification -->
+        <div style="padding: 0.5em 0 0.3em 0;">
+          <b>Ask a question:</b>
+        </div>
+        <!-- The form for asking clarification -->
+        <div>
+          <form onsubmit="return GCJ.submitClarification(this);"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="YWJjZDg5ZmU5NTRjMDBmMWE1YTg4ZWI0YzQyZmE2YTR8fHwxMjk4NDkwMzA0NTUwNTc2"></div>
+            <div><textarea rows="5" cols="60" name="q"></textarea></div>
+            <div style="padding-top: 0.3em">
+            <select name="problem">
+              <option value="_" selected="">[General]</option>
+              
+              <option value="24444">How Big Are the Pockets?</option>
+              
+              <option value="24443">Portal</option>
+              
+              <option value="24446">No Cheating</option>
+              
+              <option value="24445">Endless Knight</option>
+              
+            </select>
+            &nbsp;
+            <input id="dsb-submit-clarification-button" type="submit" value="Ask">
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- Too many pending clarifications -->
+      <div id="dsb-cannot-ask-question-text" style="font-weight: bold; padding-top: 0.5em; padding-right: 0px; padding-bottom: 0.3em; padding-left: 0px; display: block; ">You cannot ask questions at this time. Please email us at codejam@google.com.</div>
+
+    </div>
+
+    <div id="dsb-submissions-page" class="dsb-content-pages">
+      <div id="dsb-submissions-status" class="dsb-sub-status-msg">
+        You have 0 submissions.
+      </div>
+      <table id="dsb-submissions-table" class="dsb-sub-main-table" style="display:none">
+      <thead>
+        <tr id="dsb-sub-main-table-header">
+          <th class="dsb-sub-row-id-width">ID</th>
+          <th class="dsb-sub-name-width">Problem</th>
+          <th class="dsb-sub-difficulty-width">Difficulty</th>
+          <th class="dsb-sub-input-width">Input</th>
+          <th class="dsb-sub-output-width">Output</th>
+          <th class="dsb-sub-source-width">Solution</th>
+          <th class="dsb-sub-status-width">Status</th>
+          <th class="dsb-sub-time-width">Time</th>
+        </tr>
+      </thead>
+      <tbody id="dsb-submissions-rows">
+      </tbody>
+      </table>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+</div>
+
+<div id="dsb-loading-message-div" style="display: none; ">Google Code Jam loading...</div>
+
+<div style="height: 3em; clear: both;"></div>
+
+<div id="footer">
+  
+  <span id="copyright">© 2008-2011 Google</span>
+  <a href="http://www.google.com/">Google Home</a> -
+  <a href="http://code.google.com/codejam/terms.html">Terms and Conditions</a><br><br>
+  <a href="http://code.google.com/appengine"><img src="./Dashboard - Round 3 2008 - Google Code Jam_files/appengine-noborder-120x30.gif"></a>
+  
+</div>
+
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-21302427-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script');
+    ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+<div style="height: 1em">&nbsp;</div>
+
+<script type="text/javascript">
+GCJ.initHistory();
+</script><input type="text" name="history_state0" id="history_state0" style="display:none">
+
+
+
+</div></body></html>
