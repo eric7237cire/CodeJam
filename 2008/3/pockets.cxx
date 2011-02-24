@@ -77,7 +77,7 @@ int compare_x(const Segment& s1, const Segment& s2) {
   return s1.first.first < s2.first.first;  
 }
 
-const int LIMIT = 100;
+const int LIMIT = 3000;
 
 /*
 
