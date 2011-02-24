@@ -1,0 +1,3 @@
+pockets.o: pockets.cxx util.h
+util.o: util.cxx util.h
+util_test.o: util_test.cxx util.h
