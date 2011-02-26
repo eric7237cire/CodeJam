@@ -192,16 +192,12 @@ class Node
 {
 public:
   
-  Position yellowPortal;
-  Position bluePortal;
   unsigned int row;
   unsigned int col;
   unsigned int depth;
-  bool portalNode;
-  bool isBluePortal;
   NodePtr parent;
   
-  Node() : depth(0), portalNode(false), isBluePortal(false) {
+  Node() : depth(0) {
   }
   
   bool samePosition(const Node& rhs) {
@@ -215,54 +211,17 @@ public:
     ret.parent.reset(new Node(curNode));
     ret.row = new_row;
     ret.col = new_col;
-    ret.yellowPortal = curNode.yellowPortal;
-    ret.bluePortal = curNode.bluePortal;
-    ret.portalNode = false;
     return ret;
   }
   
-  static Node createNode(const Node& curNode, const Position& newYellowPortal, const Position& newBluePortal, bool isBluePortal)
-  {
-    Node ret;
-    
-    //Shooting portals costs nothing
-    ret.depth = curNode.depth;
-    ret.parent.reset(new Node(curNode));
-    ret.row = curNode.row;
-    ret.col = curNode.col;
-    ret.yellowPortal = newYellowPortal;
-    ret.bluePortal = newBluePortal;
-    ret.portalNode = true;
-    ret.isBluePortal = isBluePortal;
-    return ret;
-  }
-  
-  bool hasTwoOrMorePortalParents() const {
-    NodePtr par = parent;
-    if (!par) {
-      return false;
-    }/*
-    NodePtr grandPar = par->parent;
-    if (!grandPar) {
-      return false;
-    }*/
-    if (par->portalNode && portalNode) {
-      return true;
-    }
-    return false;
-  }
   
   int operator<(const Node& rhs) const {
     if (row != rhs.row) {
       return row < rhs.row;
     }
-    if (col != rhs.col) {
-      return col < rhs.col;
-    }
-    if (yellowPortal != rhs.yellowPortal) {
-      return yellowPortal < rhs.yellowPortal;
-    }
-    return bluePortal < rhs.bluePortal;
+    return col < rhs.col;
+    
+  
   }
   
   void printPath(ostream& os) const
@@ -279,10 +238,8 @@ public:
 };
 
 ostream& operator<<( ostream& os, const Node& rhs)  {
-  os << "Depth: " << rhs.depth << " Row: " << rhs.row << " Col: " << rhs.col << " Blue portal: " << rhs.bluePortal << " Yellow portal: " << rhs.yellowPortal << " portal fired: " << rhs.portalNode;
-  if (rhs.portalNode) {
-    os << " " << (rhs.isBluePortal ? 'B' : 'Y');
-  }
+  os << "Depth: " << rhs.depth << " Row: " << rhs.row << " Col: " << rhs.col ;
+  
   return os;
 }
 
@@ -378,35 +335,6 @@ public:
       break;  
     }
     
-    if (curNode.bluePortal.valid && curNode.yellowPortal.valid) {
-      if (curNode.bluePortal.row == new_row && curNode.bluePortal.col == new_col) {
-        TRI_LOG_STR_DEBUG("Walking through blue portal");
-        TRI_LOG_DEBUG(curNode.bluePortal);
-        TRI_LOG_DEBUG(curNode.yellowPortal);
-        curNode.yellowPortal.getOutputRowCol(new_row, new_col);
-        TRI_LOG_DEBUG(new_row);
-        TRI_LOG_DEBUG(new_col);
-        assert(new_row >= 1);
-        assert(new_row <= rows);
-        assert(new_col >= 1);
-        assert(new_col <= cols);
-      } else 
-      if (curNode.yellowPortal.row == new_row && curNode.yellowPortal.col == new_col) {
-        //Grid& grid = *this;
-        TRI_LOG_DEBUG(*this);
-        TRI_LOG_STR_DEBUG("Walking through yellow portal");
-        TRI_LOG_DEBUG(curNode.yellowPortal);
-        TRI_LOG_DEBUG(curNode.bluePortal);
-        curNode.bluePortal.getOutputRowCol(new_row, new_col);
-        TRI_LOG_DEBUG(new_row);
-        TRI_LOG_DEBUG(new_col);
-        assert(new_row >= 1);
-        assert(new_row <= rows);
-        assert(new_col >= 1);
-        assert(new_col <= cols);
-      }
-      
-    }
     
     if(new_row < 1 || new_row > rows || new_col < 1 || new_col > cols) {
       return false;
@@ -423,7 +351,7 @@ public:
   }
   
   
-  PortalsFired canFirePortal(const Node& curNode, Direction dir, Position& newYellowPortal, Position& newBluePortal) const
+  PortalsFired canFirePortal(const Node& curNode, Direction dir, Position& newBluePortal) const
   {
     unsigned int cur_row = curNode.row;
     unsigned int cur_col = curNode.col;
@@ -460,11 +388,6 @@ public:
       cur_col += delta_col;
     }
     
-    if (!foundWall) {
-      //cur_row += delta_row;
-      //cur_col += delta_col;
-    }
-    
     //cur_row / cur_col is now where the portal is
     
     Position newPortal;
@@ -473,33 +396,7 @@ public:
     newPortal.dir = opposite(dir);
     newPortal.valid = true;
     
-    if (curNode.bluePortal == newPortal || curNode.yellowPortal == newPortal) {
-      return NO_PORTALS;
-    }
-      
-    if (!curNode.bluePortal.valid) {
-      //use the blue first
-      newBluePortal = newPortal;
-      return BLUE;
-    }
-    
-    if (!curNode.yellowPortal.valid ) {
-      //use the blue first
-      newYellowPortal = newPortal;
-      return YELLOW;
-    }
-    
-    if (curNode.portalNode) {
-      if (curNode.isBluePortal) {
-        newYellowPortal = newPortal;
-        return YELLOW;
-      }
-      newBluePortal = newPortal;
-      return BLUE;
-    }
-    
     newBluePortal = newPortal;
-    newYellowPortal = newPortal;
     return BOTH_PORTALS;
     
   }
@@ -587,34 +484,21 @@ void generateNodes(const Node& curNode, deque<Node>& nodes, set<Node>& possibleN
   
   for(int dirIdx = 0; dirIdx < 4; ++dirIdx) {
     Direction dir = directions[dirIdx];
-    Position newYellowPortal, newBluePortal;
-    newYellowPortal = curNode.yellowPortal;
-    newBluePortal = curNode.bluePortal;
-    PortalsFired pf = grid.canFirePortal(curNode, dir, newYellowPortal, newBluePortal); 
+    Position newBluePortal;
+    PortalsFired pf = grid.canFirePortal(curNode, dir, newBluePortal); 
     if (pf != NO_PORTALS) {
       Node newNode;
       unsigned int new_row, new_col;
-      if (pf == BOTH_PORTALS || pf == YELLOW) {
-        TRI_LOG_STR_DEBUG("Firing both portals");
-        newYellowPortal.getOutputRowCol(new_row, new_col);
-        newNode = Node::createNode(curNode, new_row, new_col);
-        if (isNextToWall) {
-          addNode(newNode, nodes, visited);
-        } else if (pf != BOTH_PORTALS) {
-          possibleNodes.insert(newNode); 
-        }
-      } 
       
-      if (pf == BOTH_PORTALS || pf == BLUE) {
-        newBluePortal.getOutputRowCol(new_row, new_col);
-        newNode = Node::createNode(curNode, new_row, new_col);          
-     
-        if (isNextToWall) {
-          addNode(newNode, nodes, visited);
-        } else  if (pf != BOTH_PORTALS) {
-          possibleNodes.insert(newNode); 
-        }
-      } 
+      newBluePortal.getOutputRowCol(new_row, new_col);
+      newNode = Node::createNode(curNode, new_row, new_col);          
+   
+      if (isNextToWall) {
+        addNode(newNode, nodes, visited);
+      } else {
+        possibleNodes.insert(newNode); 
+      }
+       
     }
   }
   
