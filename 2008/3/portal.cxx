@@ -23,7 +23,8 @@
 
 using namespace std;
 
-#if 0
+#define INFO 1
+#if INFO
 #define TRI_LOG_STR_INFO TRI_LOG_STR
 #define TRI_LOG_INFO TRI_LOG
 #else
@@ -59,9 +60,9 @@ int main(int argc, char** args)
   for (int test_case = 0; test_case < T; ++test_case) 
   {
     try {
-      //SHOW_TIME_BEGIN(test_case)
+      SHOW_TIME_BEGIN(test_case)
       do_test_case(test_case, input);
-      //SHOW_TIME_END(test_case)
+      SHOW_TIME_END(test_case)
     } catch(...) {
       error("Error exception caught\n"); 
     }
@@ -195,9 +196,11 @@ public:
   unsigned int row;
   unsigned int col;
   unsigned int depth;
+  bool portalNode;
+  bool isBluePortal;
   NodePtr parent;
   
-  Node() : depth(0) {
+  Node() : depth(0), portalNode(false), isBluePortal(false) {
   }
   
   bool samePosition(const Node& rhs) {
@@ -213,10 +216,11 @@ public:
     ret.col = new_col;
     ret.yellowPortal = curNode.yellowPortal;
     ret.bluePortal = curNode.bluePortal;
+    ret.portalNode = false;
     return ret;
   }
   
-  static Node createNode(const Node& curNode, const Position& newYellowPortal, const Position& newBluePortal)
+  static Node createNode(const Node& curNode, const Position& newYellowPortal, const Position& newBluePortal, bool isBluePortal)
   {
     Node ret;
     
@@ -227,7 +231,24 @@ public:
     ret.col = curNode.col;
     ret.yellowPortal = newYellowPortal;
     ret.bluePortal = newBluePortal;
+    ret.portalNode = true;
+    ret.isBluePortal = isBluePortal;
     return ret;
+  }
+  
+  bool hasTwoOrMorePortalParents() const {
+    NodePtr par = parent;
+    if (!par) {
+      return false;
+    }/*
+    NodePtr grandPar = par->parent;
+    if (!grandPar) {
+      return false;
+    }*/
+    if (par->portalNode && portalNode) {
+      return true;
+    }
+    return false;
   }
   
   int operator<(const Node& rhs) const {
@@ -257,7 +278,10 @@ public:
 };
 
 ostream& operator<<( ostream& os, const Node& rhs)  {
-  os << "Depth: " << rhs.depth << " Row: " << rhs.row << " Col: " << rhs.col << " Blue portal: " << rhs.bluePortal << " Yellow portal: " << rhs.yellowPortal;
+  os << "Depth: " << rhs.depth << " Row: " << rhs.row << " Col: " << rhs.col << " Blue portal: " << rhs.bluePortal << " Yellow portal: " << rhs.yellowPortal << " portal fired: " << rhs.portalNode;
+  if (rhs.portalNode) {
+    os << " " << (rhs.isBluePortal ? 'B' : 'Y');
+  }
   return os;
 }
 
@@ -458,10 +482,19 @@ public:
       return BLUE;
     }
     
-    if (!curNode.yellowPortal.valid) {
+    if (!curNode.yellowPortal.valid ) {
       //use the blue first
       newYellowPortal = newPortal;
       return YELLOW;
+    }
+    
+    if (curNode.portalNode) {
+      if (curNode.isBluePortal) {
+        newYellowPortal = newPortal;
+        return YELLOW;
+      }
+      newBluePortal = newPortal;
+      return BLUE;
     }
     
     newBluePortal = newPortal;
@@ -492,50 +525,42 @@ ostream& operator<<(ostream& os, const Grid& grid)
   return os;    
 }
 
+void addNode(const Node& newNode, deque<Node>& nodes, const set<Node>& visited)
+{
+  if (visited.find(newNode) == visited.end()) {
+    TRI_LOG_STR_DEBUG("Pushing portal Node");
+    TRI_LOG_DEBUG(newNode);
+    nodes.push_front(newNode); 
+  } else {
+    TRI_LOG_STR_DEBUG("Portal Node is used");
+    TRI_LOG_DEBUG(newNode);
+  }
+}
+
 void generateNodes(const Node& curNode, deque<Node>& nodes, const set<Node>& visited, const Grid& grid)
 {
   
   
   //portals
-  //if (cur
-  for(int dirIdx = 0; dirIdx < 4; ++dirIdx) {
-    Direction dir = directions[dirIdx];
-    Position newYellowPortal, newBluePortal;
-    newYellowPortal = curNode.yellowPortal;
-    newBluePortal = curNode.bluePortal;
-    PortalsFired pf = grid.canFirePortal(curNode, dir, newYellowPortal, newBluePortal); 
-    if (pf != NO_PORTALS) {
-      Node newNode;
-      if (pf == BOTH_PORTALS) {
-        TRI_LOG_STR_DEBUG("Firing both portals");
-        newNode = Node::createNode(curNode, newYellowPortal, curNode.bluePortal);
-        if (visited.find(newNode) == visited.end()) {
-          TRI_LOG_STR_DEBUG("Pushing portal Node");
-          TRI_LOG_DEBUG(newNode);
-          nodes.push_front(newNode); 
+  if (!curNode.hasTwoOrMorePortalParents()) {
+    for(int dirIdx = 0; dirIdx < 4; ++dirIdx) {
+      Direction dir = directions[dirIdx];
+      Position newYellowPortal, newBluePortal;
+      newYellowPortal = curNode.yellowPortal;
+      newBluePortal = curNode.bluePortal;
+      PortalsFired pf = grid.canFirePortal(curNode, dir, newYellowPortal, newBluePortal); 
+      if (pf != NO_PORTALS) {
+        Node newNode;
+        if (pf == BOTH_PORTALS) {
+          TRI_LOG_STR_DEBUG("Firing both portals");
+          newNode = Node::createNode(curNode, newYellowPortal, curNode.bluePortal, false);
+          addNode(newNode, nodes, visited);
+          
+          newNode = Node::createNode(curNode, curNode.yellowPortal, newBluePortal, true);
+          addNode(newNode, nodes, visited);
         } else {
-          TRI_LOG_STR_DEBUG("Portal Node is used");
-          TRI_LOG_DEBUG(newNode);
-        }
-        
-        newNode = Node::createNode(curNode, curNode.yellowPortal, newBluePortal);
-        if (visited.find(newNode) == visited.end()) {
-          TRI_LOG_STR_DEBUG("Pushing portal Node");
-          TRI_LOG_DEBUG(newNode);
-          nodes.push_front(newNode); 
-        } else {
-          TRI_LOG_STR_DEBUG("Portal Node is used");
-          TRI_LOG_DEBUG(newNode);
-        }
-      } else {
-        newNode = Node::createNode(curNode, newYellowPortal, newBluePortal);
-        if (visited.find(newNode) == visited.end()) {
-          TRI_LOG_STR_DEBUG("Pushing portal Node");
-          TRI_LOG_DEBUG(newNode);
-          nodes.push_front(newNode); 
-        } else {
-          TRI_LOG_STR_DEBUG("Portal Node is used");
-          TRI_LOG_DEBUG(newNode);
+          newNode = Node::createNode(curNode, newYellowPortal, newBluePortal, pf == BLUE);
+          addNode(newNode, nodes, visited);
         }
       }
     }
@@ -565,12 +590,12 @@ void do_test_case(int test_case, ifstream& input)
   unsigned int R, C;
   input >> R >> C;
   
-  TRI_LOG_INFO(R);
-  TRI_LOG_INFO(C);  
+  //TRI_LOG_INFO(R);
+  //TRI_LOG_INFO(C);  
   
   Grid grid(R, C);
   
-  TRI_LOG_STR_INFO("Done with grid");
+  //TRI_LOG_STR_INFO("Done with grid");
   
   for(unsigned int r = R; r >= 1; --r) {
     for(unsigned int c = 1; c <= C; ++c) {
@@ -586,7 +611,7 @@ void do_test_case(int test_case, ifstream& input)
   
   TRI_LOG_INFO(grid);
   
-  unsigned int visitedNodes;
+  unsigned int visitedNodes = 0;
   
   deque<Node> nodes;
   set<Node> visited;
@@ -604,8 +629,11 @@ void do_test_case(int test_case, ifstream& input)
     
     
     if (curNode.samePosition( grid.getCakeNode()) ) {
-      //TRI_LOG(visitedNodes);
-      //curNode.printPath(cout);
+      //
+      #if INFO
+      curNode.printPath(cout);
+      TRI_LOG(visitedNodes);
+      #endif
       printf("Case #%d: %d\n", test_case+1, curNode.depth);
       return;
     }
@@ -615,6 +643,9 @@ void do_test_case(int test_case, ifstream& input)
   }
   
       
+  #if INFO
+  TRI_LOG(visitedNodes);
+  #endif
   printf("Case #%d: THE CAKE IS A LIE\n", test_case+1);
    
   return;

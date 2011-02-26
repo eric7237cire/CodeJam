@@ -9,7 +9,7 @@
 #define DEBUG 0
 #define TRACE 0
     
-#define SHOW_TIME 0
+#define SHOW_TIME 1
 #define DEBUG_OUTPUT 0
 //#undef assert
 //#define assert(x) ((void)0)
