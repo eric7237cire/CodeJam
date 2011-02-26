@@ -1,15 +1,24 @@
 CC = g++
 CFLAGS = -Wall -g
 OLD = -g -O3
-EXEC_NAME = star_wars.exe boolean_tree.exe triangle_area.exe
+EXEC_NAME = pockets.exe test_util.exe portal.exe
 INCLUDES =
 LIBS =
 OBJ_FILES = star_wars.o simplex.o util.o
 INSTALL_DIR = /usr/bin
 
+
+# C++ compile flags
+#CFLAGS+=-DFTLOG
+#CFLAGS+=-DFTLOG="${PROG}"
+#CFLAGS+=-DETLOG
+CFLAGS+=-DTLOG
+#CFLAGS+=-DCLEANTLOG
+
+
 CXX_FILES = $(wildcard *.cxx)
 
-all : pockets.exe test_util.exe
+all : $(EXEC_NAME)
 
 
 #.depend: depend
@@ -25,6 +34,9 @@ include .depend
 clean :
 	rm $(EXEC_NAME) $(OBJ_FILES)
 
+portal.exe : portal.o util.o tri_logger.o
+	$(CC) $(CFLAGS) -o $@ $< util.o tri_logger.o $(LIBS)
+	
 pockets.exe : pockets.o util.o
 	$(CC) $(CFLAGS) -o $@ $< util.o $(LIBS)
 		
