@@ -68,15 +68,43 @@ enum SquareType {
 
 char SquareCh[4] = {'.', '#', 'O', 'X'}; 
 
+
+  enum PortalsFired {
+    NO_PORTALS,
+    YELLOW,
+    BLUE,
+    BOTH_PORTALS
+  };
+  
 /*
 enum Direction {
   NORTH, SOUTH, EAST, WEST
 };*/
-const int NORTH = 0;
-const int SOUTH = 1;
-const int EAST = 2;
-const int WEST = 3;
-typedef int Direction;
+const char NORTH = 'N';
+const char SOUTH = 'S';
+const char EAST = 'E';
+const char WEST = 'W';
+typedef char Direction;
+
+Direction directions[4] = { NORTH, SOUTH, EAST, WEST };
+
+Direction opposite(Direction dir) {
+  switch(dir) {
+    case NORTH:
+      return SOUTH;      
+      break;
+    case SOUTH:
+      return NORTH; 
+      break;
+    case EAST:
+      return WEST; 
+      break;
+    case WEST:
+      return EAST; 
+      break;  
+    }
+    throw 3;
+}
 
 class Position
 {
@@ -111,6 +139,16 @@ public:
     return !(*this == rhs);
   }
 };
+
+ostream& operator<<( ostream& os, const Position& rhs)
+{
+  if (rhs.valid) { 
+    os << "(" << rhs.row << ", " << rhs.col << ") Direction: " << rhs.dir;
+  } else {
+    os << "None";
+  }
+  return os;
+}
 
 class Node;
 
@@ -187,7 +225,7 @@ public:
 };
 
 ostream& operator<<( ostream& os, const Node& rhs)  {
-  os << "Row: " << rhs.row << " Col: " << rhs.col;
+  os << "Depth: " << rhs.depth << " Row: " << rhs.row << " Col: " << rhs.col << " Blue portal: " << rhs.bluePortal << " Yellow portal: " << rhs.yellowPortal;
   return os;
 }
 
@@ -301,10 +339,88 @@ public:
     return true;
   }
   
-  bool canFirePortal(const Node& curNode, Direction dir, Position& newYellowPortal, Position& newBluePortal) const
+  
+  PortalsFired canFirePortal(const Node& curNode, Direction dir, Position& newYellowPortal, Position& newBluePortal) const
   {
+    unsigned int cur_row = curNode.row;
+    unsigned int cur_col = curNode.col;
+    
+    int delta_row = 0;
+    int delta_col = 0;
+    
+    switch(dir) {
+    case NORTH:
+      delta_row = 1;      
+      break;
+    case SOUTH:
+      delta_row = -1; 
+      break;
+    case EAST:
+      delta_col = 1; 
+      break;
+    case WEST:
+      delta_col = -1; 
+      break;  
+    }
+    
+    bool foundWall = false;
+    
+    while(cur_row >= 1 && cur_row <= rows &&
+      cur_col >= 1 && cur_col <= cols) 
+    {
+      if(cells[cur_row][cur_col] == WALL) {
+        foundWall = true;
+        break; 
+      }
+      
+      cur_row += delta_row;
+      cur_col += delta_col;
+    }
+    
+    if (!foundWall) {
+      //cur_row += delta_row;
+      //cur_col += delta_col;
+    }
+    
+    //cur_row / cur_col is now where the portal is
+    
+    if (!curNode.bluePortal.valid) {
+      //use the blue first
+      newBluePortal.row = cur_row;
+      newBluePortal.col = cur_col;
+      newBluePortal.dir = opposite(dir);
+      newBluePortal.valid = true;
+      return BLUE;
+    }
+    
+    if (!curNode.yellowPortal.valid) {
+      //use the blue first
+      newYellowPortal.row = cur_row;
+      newYellowPortal.col = cur_col;
+      newYellowPortal.dir = opposite(dir);
+      newYellowPortal.valid = true;
+      return YELLOW;
+    }
+    
+    PortalsFired ret = NO_PORTALS;
+    
+    if (curNode.bluePortal != newBluePortal) {
+      newBluePortal.row = cur_row;
+      newBluePortal.col = cur_col;
+      newBluePortal.dir = opposite(dir);
+      newBluePortal.valid = true;
+      ret = BLUE;
+    }
+    
+    if (curNode.yellowPortal != newYellowPortal) {
+      newYellowPortal.row = cur_row;
+      newYellowPortal.col = cur_col;
+      newYellowPortal.dir = opposite(dir);
+      newYellowPortal.valid = true;
+      ret = (ret == BLUE) ? BOTH_PORTALS : YELLOW;
+    }
    
-    return false;
+    return ret;
   }
   
   
@@ -332,7 +448,8 @@ ostream& operator<<(ostream& os, const Grid& grid)
 void generateNodes(const Node& curNode, deque<Node>& nodes, const set<Node>& visited, const Grid& grid)
 {
   //movement
-  for(Direction dir = 0; dir < 4; ++dir) {
+  for(int dirIdx = 0; dirIdx < 4; ++dirIdx) {
+    Direction dir = directions[dirIdx];
     unsigned int new_row, new_col;
     if (grid.canMove(curNode, dir, new_row, new_col) ) {
       Node newNode = Node::createNode(curNode, new_row, new_col);
@@ -349,19 +466,45 @@ void generateNodes(const Node& curNode, deque<Node>& nodes, const set<Node>& vis
   
   //portals
   //if (cur
-  for(Direction dir = 0; dir < 4; ++dir) {
+  for(int dirIdx = 0; dirIdx < 4; ++dirIdx) {
+    Direction dir = directions[dirIdx];
     Position newYellowPortal, newBluePortal;
     newYellowPortal = curNode.yellowPortal;
     newBluePortal = curNode.bluePortal;
-    if (grid.canFirePortal(curNode, dir, newYellowPortal, newBluePortal)) {
-      Node newNode = Node::createNode(curNode, newYellowPortal, newBluePortal);
-      if (visited.find(newNode) == visited.end()) {
-        TRI_LOG_STR("Pushing portal Node");
-        TRI_LOG_DEBUG(newNode);
-        nodes.push_front(newNode); 
+    PortalsFired pf = grid.canFirePortal(curNode, dir, newYellowPortal, newBluePortal); 
+    if (pf != NO_PORTALS) {
+      Node newNode;
+      if (pf == BOTH_PORTALS) {
+        TRI_LOG_STR("Firing both portals");
+        newNode = Node::createNode(curNode, newYellowPortal, curNode.bluePortal);
+        if (visited.find(newNode) == visited.end()) {
+          TRI_LOG_STR("Pushing portal Node");
+          TRI_LOG_DEBUG(newNode);
+          nodes.push_front(newNode); 
+        } else {
+          TRI_LOG_STR_DEBUG("Portal Node is used");
+          TRI_LOG_DEBUG(newNode);
+        }
+        
+        newNode = Node::createNode(curNode, curNode.yellowPortal, newBluePortal);
+        if (visited.find(newNode) == visited.end()) {
+          TRI_LOG_STR_DEBUG("Pushing portal Node");
+          TRI_LOG_DEBUG(newNode);
+          nodes.push_front(newNode); 
+        } else {
+          TRI_LOG_STR_DEBUG("Portal Node is used");
+          TRI_LOG_DEBUG(newNode);
+        }
       } else {
-        TRI_LOG_STR_DEBUG("Portal Node is used");
-        TRI_LOG_DEBUG(newNode);
+        newNode = Node::createNode(curNode, newYellowPortal, newBluePortal);
+        if (visited.find(newNode) == visited.end()) {
+          TRI_LOG_STR_DEBUG("Pushing portal Node");
+          TRI_LOG_DEBUG(newNode);
+          nodes.push_front(newNode); 
+        } else {
+          TRI_LOG_STR_DEBUG("Portal Node is used");
+          TRI_LOG_DEBUG(newNode);
+        }
       }
     }
   }
