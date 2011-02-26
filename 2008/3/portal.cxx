@@ -8,7 +8,7 @@
 #include <string>
 #include <cstring>
 #include <bitset>
-#include <queue>
+#include <deque>
 #include <stdio.h>
 #include <time.h>
 #include <assert.h>
@@ -143,6 +143,20 @@ public:
     ret.col = new_col;
     ret.yellowPortal = curNode.yellowPortal;
     ret.bluePortal = curNode.bluePortal;
+    return ret;
+  }
+  
+  static Node createNode(const Node& curNode, const Position& newYellowPortal, const Position& newBluePortal)
+  {
+    Node ret;
+    
+    //Shooting portals costs nothing
+    ret.depth = curNode.depth;
+    ret.parent.reset(new Node(curNode));
+    ret.row = curNode.row;
+    ret.col = curNode.col;
+    ret.yellowPortal = newYellowPortal;
+    ret.bluePortal = newBluePortal;
     return ret;
   }
   
@@ -287,6 +301,12 @@ public:
     return true;
   }
   
+  bool canFirePortal(const Node& curNode, Direction dir, Position& newYellowPortal, Position& newBluePortal) const
+  {
+   
+    return false;
+  }
+  
   
   
 };
@@ -309,7 +329,7 @@ ostream& operator<<(ostream& os, const Grid& grid)
   return os;    
 }
 
-void generateNodes(const Node& curNode, queue<Node>& nodes, const set<Node>& visited, const Grid& grid)
+void generateNodes(const Node& curNode, deque<Node>& nodes, const set<Node>& visited, const Grid& grid)
 {
   //movement
   for(Direction dir = 0; dir < 4; ++dir) {
@@ -319,7 +339,7 @@ void generateNodes(const Node& curNode, queue<Node>& nodes, const set<Node>& vis
       if (visited.find(newNode) == visited.end()) {
         TRI_LOG_STR_DEBUG("Pushing Node");
         TRI_LOG_DEBUG(newNode);
-        nodes.push(newNode); 
+        nodes.push_back(newNode); 
       } else {
         TRI_LOG_STR_DEBUG("Node is used");
         TRI_LOG_DEBUG(newNode);
@@ -329,6 +349,22 @@ void generateNodes(const Node& curNode, queue<Node>& nodes, const set<Node>& vis
   
   //portals
   //if (cur
+  for(Direction dir = 0; dir < 4; ++dir) {
+    Position newYellowPortal, newBluePortal;
+    newYellowPortal = curNode.yellowPortal;
+    newBluePortal = curNode.bluePortal;
+    if (grid.canFirePortal(curNode, dir, newYellowPortal, newBluePortal)) {
+      Node newNode = Node::createNode(curNode, newYellowPortal, newBluePortal);
+      if (visited.find(newNode) == visited.end()) {
+        TRI_LOG_STR("Pushing portal Node");
+        TRI_LOG_DEBUG(newNode);
+        nodes.push_front(newNode); 
+      } else {
+        TRI_LOG_STR_DEBUG("Portal Node is used");
+        TRI_LOG_DEBUG(newNode);
+      }
+    }
+  }
 }
 
 void do_test_case(int test_case, ifstream& input)
@@ -360,14 +396,14 @@ void do_test_case(int test_case, ifstream& input)
   
   unsigned int visitedNodes;
   
-  queue<Node> nodes;
+  deque<Node> nodes;
   set<Node> visited;
   
-  nodes.push(grid.getStartingNode());
+  nodes.push_back(grid.getStartingNode());
   
   while(!nodes.empty()) {
     Node curNode = nodes.front();
-    nodes.pop();
+    nodes.pop_front();
     
     //TRI_LOG(curNode);
     
