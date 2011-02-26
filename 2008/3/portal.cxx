@@ -19,6 +19,7 @@
 #include <cmath>
 #include "util.h" 
 #include "tri_logger.hpp"
+#include <boost/shared_ptr.hpp>
 
 using namespace std;
 
@@ -111,15 +112,20 @@ public:
   }
 };
 
+class Node;
+
+ostream& operator<<( ostream& os, const Node& rhs);
 
 class Node
 {
 public:
+  typedef boost::shared_ptr<Node> NodePtr;
   Position yellowPortal;
   Position bluePortal;
   unsigned int row;
   unsigned int col;
   unsigned int depth;
+  NodePtr parent;
   
   Node() : depth(0) {
   }
@@ -132,6 +138,7 @@ public:
   {
     Node ret;
     ret.depth = curNode.depth + 1;
+    ret.parent.reset(new Node(curNode));
     ret.row = new_row;
     ret.col = new_col;
     ret.yellowPortal = curNode.yellowPortal;
@@ -150,6 +157,17 @@ public:
       return yellowPortal < rhs.yellowPortal;
     }
     return bluePortal < rhs.bluePortal;
+  }
+  
+  void printPath(ostream& os) const
+  {
+    os << "Path: " << endl;
+    os << *this << endl;
+    NodePtr ptr = parent;
+    while(ptr) {
+      os << *ptr << endl;
+      ptr = ptr->parent;
+    }
   }
   
 };
@@ -310,7 +328,7 @@ void generateNodes(const Node& curNode, queue<Node>& nodes, const set<Node>& vis
   }
   
   //portals
-  
+  //if (cur
 }
 
 void do_test_case(int test_case, ifstream& input)
@@ -358,6 +376,7 @@ void do_test_case(int test_case, ifstream& input)
     
     if (curNode.samePosition( grid.getCakeNode()) ) {
       TRI_LOG(visitedNodes);
+      curNode.printPath(cout);
       printf("Case #%d: %d\n", test_case+1, curNode.depth);
       return;
     }
