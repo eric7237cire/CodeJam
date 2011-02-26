@@ -117,6 +117,30 @@ public:
   Position() : valid(false) {
   }
   
+  void getOutputRowCol(unsigned int& out_row, unsigned int& out_col) const
+  {
+    switch(dir) {
+    case NORTH:
+      out_row = row + 1; 
+      out_col = col;
+      break;
+    case SOUTH:
+      out_row = row - 1;
+      out_col = col;
+      break;
+    case EAST:
+      out_col = col + 1;
+      out_row = row;
+      break;
+    case WEST:
+      out_col = col - 1;
+      out_row = row;
+      break;  
+    }
+  }
+    
+  
+  
   int operator<(const Position& rhs) const {
     if (row != rhs.row) {
       return row < rhs.row;
@@ -229,6 +253,9 @@ ostream& operator<<( ostream& os, const Node& rhs)  {
   return os;
 }
 
+class Grid;
+ostream& operator<<(ostream& os, const Grid& grid);
+
 class Grid
 {
 public:
@@ -245,7 +272,7 @@ public:
   Grid(unsigned int rows, unsigned int cols) : rows(rows), cols(cols), cells(rows+1)
   {
     for(VectorRows::iterator it = cells.begin(); it != cells.end(); ++it) {
-      *it = VectorCells(cols+1, EMPTY); 
+      *it = VectorCells(cols+1, WALL); 
     }
   }
   
@@ -305,37 +332,56 @@ public:
     
     switch(dir) {
     case NORTH:
-      if (cur_row == rows) {
-        return false;
-      }
       ++new_row; 
       break;
     case SOUTH:
-      if (cur_row == 1) {
-        return false;
-      }
       --new_row; 
       break;
     case EAST:
-      if (cur_col == cols) {
-        return false;
-      }
       ++new_col; 
       break;
     case WEST:
-      if (cur_col == 1) {
-        return false;
-      }
       --new_col; 
       break;  
     }
     
-    assert(new_row >= 1);
-    assert(new_row <= rows);
-    assert(new_col >= 1);
-    assert(new_col <= cols);
+    if (curNode.bluePortal.valid && curNode.yellowPortal.valid) {
+      if (curNode.bluePortal.row == new_row && curNode.bluePortal.col == new_col) {
+        TRI_LOG_STR_DEBUG("Walking through blue portal");
+        TRI_LOG_DEBUG(curNode.bluePortal);
+        TRI_LOG_DEBUG(curNode.yellowPortal);
+        curNode.yellowPortal.getOutputRowCol(new_row, new_col);
+        TRI_LOG_DEBUG(new_row);
+        TRI_LOG_DEBUG(new_col);
+        assert(new_row >= 1);
+        assert(new_row <= rows);
+        assert(new_col >= 1);
+        assert(new_col <= cols);
+      } else 
+      if (curNode.yellowPortal.row == new_row && curNode.yellowPortal.col == new_col) {
+        //Grid& grid = *this;
+        TRI_LOG_DEBUG(*this);
+        TRI_LOG_STR_DEBUG("Walking through yellow portal");
+        TRI_LOG_DEBUG(curNode.yellowPortal);
+        TRI_LOG_DEBUG(curNode.bluePortal);
+        curNode.bluePortal.getOutputRowCol(new_row, new_col);
+        TRI_LOG_DEBUG(new_row);
+        TRI_LOG_DEBUG(new_col);
+        assert(new_row >= 1);
+        assert(new_row <= rows);
+        assert(new_col >= 1);
+        assert(new_col <= cols);
+      }
+      
+    }
     
-    debug("New square %d, %d\n", new_row, new_col);
+    if(new_row < 1 || new_row > rows || new_col < 1 || new_col > cols) {
+      return false;
+    }
+    
+    TRI_LOG_STR_DEBUG("New square\n");
+    TRI_LOG_DEBUG(new_row);
+    TRI_LOG_DEBUG(new_col);
     return true;
   }
   
@@ -384,43 +430,32 @@ public:
     
     //cur_row / cur_col is now where the portal is
     
+    Position newPortal;
+    newPortal.row = cur_row;
+    newPortal.col = cur_col;
+    newPortal.dir = opposite(dir);
+    newPortal.valid = true;
+    
+    if (curNode.bluePortal == newPortal || curNode.yellowPortal == newPortal) {
+      return NO_PORTALS;
+    }
+      
     if (!curNode.bluePortal.valid) {
       //use the blue first
-      newBluePortal.row = cur_row;
-      newBluePortal.col = cur_col;
-      newBluePortal.dir = opposite(dir);
-      newBluePortal.valid = true;
+      newBluePortal = newPortal;
       return BLUE;
     }
     
     if (!curNode.yellowPortal.valid) {
       //use the blue first
-      newYellowPortal.row = cur_row;
-      newYellowPortal.col = cur_col;
-      newYellowPortal.dir = opposite(dir);
-      newYellowPortal.valid = true;
+      newYellowPortal = newPortal;
       return YELLOW;
     }
     
-    PortalsFired ret = NO_PORTALS;
+    newBluePortal = newPortal;
+    newYellowPortal = newPortal;
+    return BOTH_PORTALS;
     
-    if (curNode.bluePortal != newBluePortal) {
-      newBluePortal.row = cur_row;
-      newBluePortal.col = cur_col;
-      newBluePortal.dir = opposite(dir);
-      newBluePortal.valid = true;
-      ret = BLUE;
-    }
-    
-    if (curNode.yellowPortal != newYellowPortal) {
-      newYellowPortal.row = cur_row;
-      newYellowPortal.col = cur_col;
-      newYellowPortal.dir = opposite(dir);
-      newYellowPortal.valid = true;
-      ret = (ret == BLUE) ? BOTH_PORTALS : YELLOW;
-    }
-   
-    return ret;
   }
   
   
@@ -430,7 +465,7 @@ public:
 ostream& operator<<(ostream& os, const Grid& grid)
 {
     os << "\nCols  :  ";
-    for(unsigned int c = 0; c < grid.cols; ++c) {
+    for(unsigned int c = 1; c <= grid.cols; ++c) {
       os << (c % 10);
     }
     os << endl;
@@ -475,10 +510,10 @@ void generateNodes(const Node& curNode, deque<Node>& nodes, const set<Node>& vis
     if (pf != NO_PORTALS) {
       Node newNode;
       if (pf == BOTH_PORTALS) {
-        TRI_LOG_STR("Firing both portals");
+        TRI_LOG_STR_DEBUG("Firing both portals");
         newNode = Node::createNode(curNode, newYellowPortal, curNode.bluePortal);
         if (visited.find(newNode) == visited.end()) {
-          TRI_LOG_STR("Pushing portal Node");
+          TRI_LOG_STR_DEBUG("Pushing portal Node");
           TRI_LOG_DEBUG(newNode);
           nodes.push_front(newNode); 
         } else {
@@ -548,7 +583,8 @@ void do_test_case(int test_case, ifstream& input)
     Node curNode = nodes.front();
     nodes.pop_front();
     
-    //TRI_LOG(curNode);
+    TRI_LOG_STR_DEBUG("Poping off node");
+    TRI_LOG_DEBUG(curNode);
     
     ++visitedNodes;
     
