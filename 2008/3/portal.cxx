@@ -23,7 +23,7 @@
 
 using namespace std;
 
-#define INFO 1
+#define INFO 0
 #if INFO
 #define TRI_LOG_STR_INFO TRI_LOG_STR
 #define TRI_LOG_INFO TRI_LOG
@@ -60,9 +60,9 @@ int main(int argc, char** args)
   for (int test_case = 0; test_case < T; ++test_case) 
   {
     try {
-      SHOW_TIME_BEGIN(test_case)
+      //SHOW_TIME_BEGIN(test_case)
       do_test_case(test_case, input);
-      SHOW_TIME_END(test_case)
+      //SHOW_TIME_END(test_case)
     } catch(...) {
       error("Error exception caught\n"); 
     }
@@ -184,13 +184,14 @@ ostream& operator<<( ostream& os, const Position& rhs)
 }
 
 class Node;
+typedef boost::shared_ptr<Node> NodePtr;
 
 ostream& operator<<( ostream& os, const Node& rhs);
 
 class Node
 {
 public:
-  typedef boost::shared_ptr<Node> NodePtr;
+  
   Position yellowPortal;
   Position bluePortal;
   unsigned int row;
@@ -301,10 +302,10 @@ public:
   VectorRows cells;
   
 
-  Grid(unsigned int rows, unsigned int cols) : rows(rows), cols(cols), cells(rows+1)
+  Grid(unsigned int rows, unsigned int cols) : rows(rows), cols(cols), cells(rows+2)
   {
     for(VectorRows::iterator it = cells.begin(); it != cells.end(); ++it) {
-      *it = VectorCells(cols+1, WALL); 
+      *it = VectorCells(cols+2, WALL); 
     }
   }
   
@@ -414,10 +415,10 @@ public:
     if (cells[new_row][new_col] == WALL) {
       return false;
     }
-    
+    /*
     TRI_LOG_STR_DEBUG("New square\n");
     TRI_LOG_DEBUG(new_row);
-    TRI_LOG_DEBUG(new_col);
+    TRI_LOG_DEBUG(new_col);*/
     return true;
   }
   
@@ -503,7 +504,20 @@ public:
     
   }
   
-  
+  bool nextToWall(const Node& curNode) const {
+    for(int deltaRow = -1; deltaRow <= 1; ++deltaRow) {
+      if (cells[curNode.row + deltaRow][curNode.col] == WALL) {
+        return true;
+      }
+    }
+
+    for(int deltaCol = -1; deltaCol <= 1; ++deltaCol) {
+      if (cells[curNode.row][curNode.col + deltaCol] == WALL) {
+        return true;
+      }
+    }
+    return false;
+  }
   
 };
 
@@ -530,39 +544,73 @@ void addNode(const Node& newNode, deque<Node>& nodes, const set<Node>& visited)
   if (visited.find(newNode) == visited.end()) {
     TRI_LOG_STR_DEBUG("Pushing portal Node");
     TRI_LOG_DEBUG(newNode);
-    nodes.push_front(newNode); 
+    nodes.push_back(newNode); 
   } else {
     TRI_LOG_STR_DEBUG("Portal Node is used");
     TRI_LOG_DEBUG(newNode);
   }
 }
 
-void generateNodes(const Node& curNode, deque<Node>& nodes, const set<Node>& visited, const Grid& grid)
+void generateNodes(const Node& curNode, deque<Node>& nodes, set<Node>& possibleNodes, const set<Node>& visited, const Grid& grid)
 {
-  
-  
   //portals
-  if (!curNode.hasTwoOrMorePortalParents()) {
-    for(int dirIdx = 0; dirIdx < 4; ++dirIdx) {
-      Direction dir = directions[dirIdx];
-      Position newYellowPortal, newBluePortal;
-      newYellowPortal = curNode.yellowPortal;
-      newBluePortal = curNode.bluePortal;
-      PortalsFired pf = grid.canFirePortal(curNode, dir, newYellowPortal, newBluePortal); 
-      if (pf != NO_PORTALS) {
-        Node newNode;
-        if (pf == BOTH_PORTALS) {
-          TRI_LOG_STR_DEBUG("Firing both portals");
-          newNode = Node::createNode(curNode, newYellowPortal, curNode.bluePortal, false);
-          addNode(newNode, nodes, visited);
-          
-          newNode = Node::createNode(curNode, curNode.yellowPortal, newBluePortal, true);
-          addNode(newNode, nodes, visited);
-        } else {
-          newNode = Node::createNode(curNode, newYellowPortal, newBluePortal, pf == BLUE);
-          addNode(newNode, nodes, visited);
+  bool isNextToWall = grid.nextToWall(curNode);
+  
+  if (isNextToWall) {
+    //TRI_LOG_STR_INFO("Next to wall");
+    //TRI_LOG_STR(curNode);
+    for(set<Node>::iterator it = possibleNodes.begin(); it != possibleNodes.end(); ++it) {
+      Node nodeToAdd = *it;
+      nodeToAdd.depth = curNode.depth + 1;
+      bool foundCommonParent = false;
+      NodePtr p = curNode.parent;
+      while(p) {
+        if (p->samePosition(*nodeToAdd.parent)) {
+          foundCommonParent = true;
+          break;
         }
+        p = p->parent;
       }
+      if (foundCommonParent) {
+        NodePtr aparent(new Node(curNode));
+        nodeToAdd.parent = aparent;
+        TRI_LOG_STR_INFO("Adding possible" );
+        addNode(nodeToAdd, nodes, visited);
+      }
+    }
+    possibleNodes.clear();
+  }
+  
+  for(int dirIdx = 0; dirIdx < 4; ++dirIdx) {
+    Direction dir = directions[dirIdx];
+    Position newYellowPortal, newBluePortal;
+    newYellowPortal = curNode.yellowPortal;
+    newBluePortal = curNode.bluePortal;
+    PortalsFired pf = grid.canFirePortal(curNode, dir, newYellowPortal, newBluePortal); 
+    if (pf != NO_PORTALS) {
+      Node newNode;
+      unsigned int new_row, new_col;
+      if (pf == BOTH_PORTALS || pf == YELLOW) {
+        TRI_LOG_STR_DEBUG("Firing both portals");
+        newYellowPortal.getOutputRowCol(new_row, new_col);
+        newNode = Node::createNode(curNode, new_row, new_col);
+        if (isNextToWall) {
+          addNode(newNode, nodes, visited);
+        } else if (pf != BOTH_PORTALS) {
+          possibleNodes.insert(newNode); 
+        }
+      } 
+      
+      if (pf == BOTH_PORTALS || pf == BLUE) {
+        newBluePortal.getOutputRowCol(new_row, new_col);
+        newNode = Node::createNode(curNode, new_row, new_col);          
+     
+        if (isNextToWall) {
+          addNode(newNode, nodes, visited);
+        } else  if (pf != BOTH_PORTALS) {
+          possibleNodes.insert(newNode); 
+        }
+      } 
     }
   }
   
@@ -614,6 +662,7 @@ void do_test_case(int test_case, ifstream& input)
   unsigned int visitedNodes = 0;
   
   deque<Node> nodes;
+  set<Node> possibleNodes;
   set<Node> visited;
   
   nodes.push_back(grid.getStartingNode());
@@ -639,7 +688,7 @@ void do_test_case(int test_case, ifstream& input)
     }
     
     visited.insert(curNode);
-    generateNodes(curNode, nodes, visited, grid);
+    generateNodes(curNode, nodes, possibleNodes, visited, grid);
   }
   
       
