@@ -1,3 +1,6 @@
 pockets.o: pockets.cxx util.h
+portal_brute.o: portal_brute.cxx util.h tri_logger.hpp
+portal.o: portal.cxx util.h tri_logger.hpp
+tri_logger.o: tri_logger.cxx tri_logger.hpp nullstream.hpp
 util.o: util.cxx util.h
 util_test.o: util_test.cxx util.h

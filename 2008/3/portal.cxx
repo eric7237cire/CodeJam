@@ -436,19 +436,20 @@ ostream& operator<<(ostream& os, const Grid& grid)
   return os;    
 }
 
-void addNode(const Node& newNode, deque<Node>& nodes, const set<Node>& visited)
+void addNode(const Node& newNode, deque<Node>& nodes, set<Node>& visited)
 {
   if (visited.find(newNode) == visited.end()) {
     TRI_LOG_STR_DEBUG("Pushing portal Node");
     TRI_LOG_DEBUG(newNode);
     nodes.push_back(newNode); 
+    visited.insert(newNode);
   } else {
     TRI_LOG_STR_DEBUG("Portal Node is used");
     TRI_LOG_DEBUG(newNode);
   }
 }
 
-void generateNodes(const Node& curNode, deque<Node>& nodes, set<Node>& possibleNodes, const set<Node>& visited, const Grid& grid)
+void generateNodes(const Node& curNode, deque<Node>& nodes, set<Node>& possibleNodes, set<Node>& visited, const Grid& grid)
 {
   //portals
   bool isNextToWall = grid.nextToWall(curNode);
@@ -508,14 +509,7 @@ void generateNodes(const Node& curNode, deque<Node>& nodes, set<Node>& possibleN
     unsigned int new_row, new_col;
     if (grid.canMove(curNode, dir, new_row, new_col) ) {
       Node newNode = Node::createNode(curNode, new_row, new_col);
-      if (visited.find(newNode) == visited.end()) {
-        TRI_LOG_STR_DEBUG("Pushing Node");
-        TRI_LOG_DEBUG(newNode);
-        nodes.push_back(newNode); 
-      } else {
-        TRI_LOG_STR_DEBUG("Node is used");
-        TRI_LOG_DEBUG(newNode);
-      }
+      addNode(newNode, nodes, visited);
     }
   }
 }
@@ -560,22 +554,25 @@ void do_test_case(int test_case, ifstream& input)
     nodes.pop_front();
     
     TRI_LOG_STR_DEBUG("Poping off node");
-    TRI_LOG_DEBUG(curNode);
+    //TRI_LOG(curNode);
     
     ++visitedNodes;
-    
+    if (visitedNodes % 20000 == 0) {
+        //TRI_LOG(visitedNodes);
+      }
     
     if (curNode.samePosition( grid.getCakeNode()) ) {
       //
       #if INFO 
       //curNode.printPath(cout);
-      TRI_LOG(visitedNodes);
+      
       #endif
+      
       printf("Case #%d: %d\n", test_case+1, curNode.depth);
       return;
     }
     
-    visited.insert(curNode);
+    //visited.insert(curNode);
     generateNodes(curNode, nodes, possibleNodes, visited, grid);
   }
   
