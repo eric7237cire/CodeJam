@@ -559,7 +559,7 @@ void generateNodes(const Node& curNode, deque<Node>& nodes, set<Node>& possibleN
   if (isNextToWall) {
     //TRI_LOG_STR_INFO("Next to wall");
     //TRI_LOG_STR(curNode);
-    for(set<Node>::iterator it = possibleNodes.begin(); it != possibleNodes.end(); ++it) {
+    for(set<Node>::iterator it = possibleNodes.begin(); it != possibleNodes.end(); ) {
       Node nodeToAdd = *it;
       nodeToAdd.depth = curNode.depth + 1;
       bool foundCommonParent = false;
@@ -576,9 +576,13 @@ void generateNodes(const Node& curNode, deque<Node>& nodes, set<Node>& possibleN
         nodeToAdd.parent = aparent;
         TRI_LOG_STR_INFO("Adding possible" );
         addNode(nodeToAdd, nodes, visited);
+        possibleNodes.erase(it++);
+        continue;
       }
+      
+      ++it;
     }
-    possibleNodes.clear();
+    //possibleNodes.clear();
   }
   
   for(int dirIdx = 0; dirIdx < 4; ++dirIdx) {
@@ -679,8 +683,8 @@ void do_test_case(int test_case, ifstream& input)
     
     if (curNode.samePosition( grid.getCakeNode()) ) {
       //
-      #if INFO
-      curNode.printPath(cout);
+      #if INFO 
+      //curNode.printPath(cout);
       TRI_LOG(visitedNodes);
       #endif
       printf("Case #%d: %d\n", test_case+1, curNode.depth);
@@ -692,7 +696,7 @@ void do_test_case(int test_case, ifstream& input)
   }
   
       
-  #if INFO
+  #if INFO 
   TRI_LOG(visitedNodes);
   #endif
   printf("Case #%d: THE CAKE IS A LIE\n", test_case+1);
