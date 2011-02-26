@@ -78,13 +78,6 @@ enum SquareType {
 char SquareCh[4] = {'.', '#', 'O', 'X'}; 
 
 
-  enum PortalsFired {
-    NO_PORTALS,
-    YELLOW,
-    BLUE,
-    BOTH_PORTALS
-  };
-  
 /*
 enum Direction {
   NORTH, SOUTH, EAST, WEST
@@ -351,7 +344,7 @@ public:
   }
   
   
-  PortalsFired canFirePortal(const Node& curNode, Direction dir, Position& newBluePortal) const
+  void firePortal(const Node& curNode, Direction dir, Position& newPortal) const
   {
     unsigned int cur_row = curNode.row;
     unsigned int cur_col = curNode.col;
@@ -390,14 +383,11 @@ public:
     
     //cur_row / cur_col is now where the portal is
     
-    Position newPortal;
     newPortal.row = cur_row;
     newPortal.col = cur_col;
     newPortal.dir = opposite(dir);
     newPortal.valid = true;
     
-    newBluePortal = newPortal;
-    return BOTH_PORTALS;
     
   }
   
@@ -480,27 +470,27 @@ void generateNodes(const Node& curNode, deque<Node>& nodes, set<Node>& possibleN
       
       ++it;
     }
-    //possibleNodes.clear();
+    //anything we can't use we can throw out...
+    possibleNodes.clear();
   }
   
   for(int dirIdx = 0; dirIdx < 4; ++dirIdx) {
     Direction dir = directions[dirIdx];
-    Position newBluePortal;
-    PortalsFired pf = grid.canFirePortal(curNode, dir, newBluePortal); 
-    if (pf != NO_PORTALS) {
-      Node newNode;
-      unsigned int new_row, new_col;
+    Position newPortal;
+    grid.firePortal(curNode, dir, newPortal); 
+    Node newNode;
+    unsigned int new_row, new_col;
       
-      newBluePortal.getOutputRowCol(new_row, new_col);
-      newNode = Node::createNode(curNode, new_row, new_col);          
-   
-      if (isNextToWall) {
-        addNode(newNode, nodes, visited);
-      } else {
-        possibleNodes.insert(newNode); 
-      }
-       
+    newPortal.getOutputRowCol(new_row, new_col);
+    newNode = Node::createNode(curNode, new_row, new_col);          
+ 
+    if (isNextToWall) {
+      addNode(newNode, nodes, visited);
+    } else {
+      possibleNodes.insert(newNode); 
     }
+     
+    
   }
   
   //movement
@@ -520,21 +510,13 @@ void do_test_case(int test_case, ifstream& input)
   unsigned int R, C;
   input >> R >> C;
   
-  //TRI_LOG_INFO(R);
-  //TRI_LOG_INFO(C);  
-  
   Grid grid(R, C);
-  
-  //TRI_LOG_STR_INFO("Done with grid");
   
   for(unsigned int r = R; r >= 1; --r) {
     for(unsigned int c = 1; c <= C; ++c) {
       char sq;
       input >> sq;
   
-    /*  TRI_LOG_INFO(r);
-      TRI_LOG_INFO(c);
-      TRI_LOG_INFO(sq);*/
       grid.setSquare(r, c, sq);
     }
   }
@@ -553,7 +535,7 @@ void do_test_case(int test_case, ifstream& input)
     Node curNode = nodes.front();
     nodes.pop_front();
     
-    TRI_LOG_STR_DEBUG("Poping off node");
+    //TRI_LOG_STR_DEBUG("Poping off node");
     //TRI_LOG(curNode);
     
     ++visitedNodes;
@@ -564,15 +546,13 @@ void do_test_case(int test_case, ifstream& input)
     if (curNode.samePosition( grid.getCakeNode()) ) {
       //
       #if INFO 
-      //curNode.printPath(cout);
-      
+        curNode.printPath(cout);      
       #endif
       
       printf("Case #%d: %d\n", test_case+1, curNode.depth);
       return;
     }
     
-    //visited.insert(curNode);
     generateNodes(curNode, nodes, possibleNodes, visited, grid);
   }
   
