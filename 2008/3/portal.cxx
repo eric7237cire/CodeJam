@@ -24,6 +24,14 @@
 using namespace std;
 
 #if 0
+#define TRI_LOG_STR_INFO TRI_LOG_STR
+#define TRI_LOG_INFO TRI_LOG
+#else
+#define TRI_LOG_STR_INFO(str) do{}while(false)
+#define TRI_LOG_INFO(str) do{}while(false)
+#endif   
+
+#if 0
 #define TRI_LOG_STR_DEBUG TRI_LOG_STR
 #define TRI_LOG_DEBUG TRI_LOG
 #else
@@ -379,6 +387,10 @@ public:
       return false;
     }
     
+    if (cells[new_row][new_col] == WALL) {
+      return false;
+    }
+    
     TRI_LOG_STR_DEBUG("New square\n");
     TRI_LOG_DEBUG(new_row);
     TRI_LOG_DEBUG(new_col);
@@ -482,22 +494,7 @@ ostream& operator<<(ostream& os, const Grid& grid)
 
 void generateNodes(const Node& curNode, deque<Node>& nodes, const set<Node>& visited, const Grid& grid)
 {
-  //movement
-  for(int dirIdx = 0; dirIdx < 4; ++dirIdx) {
-    Direction dir = directions[dirIdx];
-    unsigned int new_row, new_col;
-    if (grid.canMove(curNode, dir, new_row, new_col) ) {
-      Node newNode = Node::createNode(curNode, new_row, new_col);
-      if (visited.find(newNode) == visited.end()) {
-        TRI_LOG_STR_DEBUG("Pushing Node");
-        TRI_LOG_DEBUG(newNode);
-        nodes.push_back(newNode); 
-      } else {
-        TRI_LOG_STR_DEBUG("Node is used");
-        TRI_LOG_DEBUG(newNode);
-      }
-    }
-  }
+  
   
   //portals
   //if (cur
@@ -543,6 +540,23 @@ void generateNodes(const Node& curNode, deque<Node>& nodes, const set<Node>& vis
       }
     }
   }
+  
+  //movement
+  for(int dirIdx = 0; dirIdx < 4; ++dirIdx) {
+    Direction dir = directions[dirIdx];
+    unsigned int new_row, new_col;
+    if (grid.canMove(curNode, dir, new_row, new_col) ) {
+      Node newNode = Node::createNode(curNode, new_row, new_col);
+      if (visited.find(newNode) == visited.end()) {
+        TRI_LOG_STR_DEBUG("Pushing Node");
+        TRI_LOG_DEBUG(newNode);
+        nodes.push_back(newNode); 
+      } else {
+        TRI_LOG_STR_DEBUG("Node is used");
+        TRI_LOG_DEBUG(newNode);
+      }
+    }
+  }
 }
 
 void do_test_case(int test_case, ifstream& input)
@@ -551,26 +565,26 @@ void do_test_case(int test_case, ifstream& input)
   unsigned int R, C;
   input >> R >> C;
   
-  TRI_LOG(R);
-  TRI_LOG(C);
+  TRI_LOG_INFO(R);
+  TRI_LOG_INFO(C);  
   
   Grid grid(R, C);
   
-  TRI_LOG_STR("Done with grid");
+  TRI_LOG_STR_INFO("Done with grid");
   
   for(unsigned int r = R; r >= 1; --r) {
     for(unsigned int c = 1; c <= C; ++c) {
       char sq;
       input >> sq;
   
-    /*  TRI_LOG(r);
-      TRI_LOG(c);
-      TRI_LOG(sq);*/
+    /*  TRI_LOG_INFO(r);
+      TRI_LOG_INFO(c);
+      TRI_LOG_INFO(sq);*/
       grid.setSquare(r, c, sq);
     }
   }
   
-  TRI_LOG(grid);
+  TRI_LOG_INFO(grid);
   
   unsigned int visitedNodes;
   
@@ -590,8 +604,8 @@ void do_test_case(int test_case, ifstream& input)
     
     
     if (curNode.samePosition( grid.getCakeNode()) ) {
-      TRI_LOG(visitedNodes);
-      curNode.printPath(cout);
+      //TRI_LOG(visitedNodes);
+      //curNode.printPath(cout);
       printf("Case #%d: %d\n", test_case+1, curNode.depth);
       return;
     }
