@@ -114,9 +114,8 @@ public:
   unsigned int row;
   unsigned int col;
   Direction dir;
-  bool valid;
   
-  Position() : valid(false) {
+  Position()  {
   }
   
   void getOutputRowCol(unsigned int& out_row, unsigned int& out_col) const
@@ -150,15 +149,13 @@ public:
     if (col != rhs.col) {
       return col < rhs.col;
     }
-    if (dir != rhs.dir) {
-      return dir < rhs.dir;
-    }
-    return valid < rhs.valid;
+    return dir < rhs.dir;
+    
   }
   
   int operator==(const Position& rhs) const {
     return (row == rhs.row && col == rhs.col && 
-      dir == rhs.dir && valid == rhs.valid);
+      dir == rhs.dir);
   }
   
   int operator!=(const Position& rhs) const {
@@ -168,11 +165,8 @@ public:
 
 ostream& operator<<( ostream& os, const Position& rhs)
 {
-  if (rhs.valid) { 
-    os << "(" << rhs.row << ", " << rhs.col << ") Direction: " << rhs.dir;
-  } else {
-    os << "None";
-  }
+  os << "(" << rhs.row << ", " << rhs.col << ") Direction: " << rhs.dir;
+  
   return os;
 }
 
@@ -386,8 +380,6 @@ public:
     newPortal.row = cur_row;
     newPortal.col = cur_col;
     newPortal.dir = opposite(dir);
-    newPortal.valid = true;
-    
     
   }
   
