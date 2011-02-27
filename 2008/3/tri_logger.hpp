@@ -109,8 +109,9 @@ namespace trivial_logger
 
 // ...
 
-#define TRI_LOG_INFO(name) \
+/*#define TRI_LOG_INFO(name) \
     ::trivial_logger::put_log_info ( trivial_logger::tri_logger(), (name) )
+    */
 
 // macros for switching off and on logger
 #define TRI_LOG_ON() \

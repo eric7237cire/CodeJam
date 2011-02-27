@@ -2,43 +2,15 @@
 #include <iostream>
 #include <vector>
 #include <set>
-#include <algorithm>
-#include <stack>
-#include <limits>
-#include <string>
-#include <cstring>
-#include <bitset>
 #include <deque>
-#include <stdio.h>
 #include <time.h>
 #include <assert.h>
-#include <stdlib.h>
-#include <boost/numeric/conversion/bounds.hpp>
-#include <boost/limits.hpp>
 #include <boost/smart_ptr.hpp>
-#include <cmath>
 #include "util.h" 
-#include "tri_logger.hpp"
+
 #include <boost/shared_ptr.hpp>
 
 using namespace std;
-
-#define INFO 0
-#if INFO
-#define TRI_LOG_STR_INFO TRI_LOG_STR
-#define TRI_LOG_INFO TRI_LOG
-#else
-#define TRI_LOG_STR_INFO(str) do{}while(false)
-#define TRI_LOG_INFO(str) do{}while(false)
-#endif   
-
-#if 0
-#define TRI_LOG_STR_DEBUG TRI_LOG_STR
-#define TRI_LOG_DEBUG TRI_LOG
-#else
-#define TRI_LOG_STR_DEBUG(str) do{}while(false)
-#define TRI_LOG_DEBUG(str) do{}while(false)
-#endif
 
 void do_test_case(int test_case, ifstream& input);
 
@@ -60,9 +32,7 @@ int main(int argc, char** args)
   for (int test_case = 0; test_case < T; ++test_case) 
   {
     try {
-      //SHOW_TIME_BEGIN(test_case)
       do_test_case(test_case, input);
-      //SHOW_TIME_END(test_case)
     } catch(...) {
       error("Error exception caught\n"); 
     }
@@ -77,11 +47,6 @@ enum SquareType {
 
 char SquareCh[4] = {'.', '#', 'O', 'X'}; 
 
-
-/*
-enum Direction {
-  NORTH, SOUTH, EAST, WEST
-};*/
 const char NORTH = 'N';
 const char SOUTH = 'S';
 const char EAST = 'E';
@@ -108,6 +73,27 @@ Direction opposite(Direction dir) {
     throw 3;
 }
 
+void GetDeltaRowCol(Direction dir, int& delta_row, int& delta_col)
+{
+  delta_row = 0;
+  delta_col = 0;
+    
+  switch(dir) {
+  case NORTH:
+    delta_row = 1;      
+    break;
+  case SOUTH:
+    delta_row = -1; 
+    break;
+  case EAST:
+    delta_col = 1; 
+    break;
+  case WEST:
+    delta_col = -1; 
+    break;  
+  }
+}
+
 class Position
 {
 public:
@@ -120,46 +106,11 @@ public:
   
   void getOutputRowCol(unsigned int& out_row, unsigned int& out_col) const
   {
-    switch(dir) {
-    case NORTH:
-      out_row = row + 1; 
-      out_col = col;
-      break;
-    case SOUTH:
-      out_row = row - 1;
-      out_col = col;
-      break;
-    case EAST:
-      out_col = col + 1;
-      out_row = row;
-      break;
-    case WEST:
-      out_col = col - 1;
-      out_row = row;
-      break;  
-    }
-  }
+    int delta_row, delta_col;
+    GetDeltaRowCol(dir, delta_row, delta_col); 
     
-  
-  
-  int operator<(const Position& rhs) const {
-    if (row != rhs.row) {
-      return row < rhs.row;
-    }
-    if (col != rhs.col) {
-      return col < rhs.col;
-    }
-    return dir < rhs.dir;
-    
-  }
-  
-  int operator==(const Position& rhs) const {
-    return (row == rhs.row && col == rhs.col && 
-      dir == rhs.dir);
-  }
-  
-  int operator!=(const Position& rhs) const {
-    return !(*this == rhs);
+    out_row = row + delta_row;
+    out_col = col + delta_col;
   }
 };
 
@@ -296,6 +247,7 @@ public:
   
   bool canMove(const Node& curNode, Direction dir, unsigned int& new_row, unsigned int& new_col) const
   {
+    int delta_row, delta_col;
     unsigned int cur_row = curNode.row;
     unsigned int cur_col = curNode.col;
     
@@ -307,21 +259,10 @@ public:
     assert(cur_col >= 1);
     assert(cur_col <= cols);
     
-    switch(dir) {
-    case NORTH:
-      ++new_row; 
-      break;
-    case SOUTH:
-      --new_row; 
-      break;
-    case EAST:
-      ++new_col; 
-      break;
-    case WEST:
-      --new_col; 
-      break;  
-    }
+    GetDeltaRowCol(dir, delta_row, delta_col);
     
+    new_row += delta_row;
+    new_col += delta_col;
     
     if(new_row < 1 || new_row > rows || new_col < 1 || new_col > cols) {
       return false;
@@ -330,10 +271,7 @@ public:
     if (cells[new_row][new_col] == WALL) {
       return false;
     }
-    /*
-    TRI_LOG_STR_DEBUG("New square\n");
-    TRI_LOG_DEBUG(new_row);
-    TRI_LOG_DEBUG(new_col);*/
+    
     return true;
   }
   
@@ -346,20 +284,7 @@ public:
     int delta_row = 0;
     int delta_col = 0;
     
-    switch(dir) {
-    case NORTH:
-      delta_row = 1;      
-      break;
-    case SOUTH:
-      delta_row = -1; 
-      break;
-    case EAST:
-      delta_col = 1; 
-      break;
-    case WEST:
-      delta_col = -1; 
-      break;  
-    }
+    GetDeltaRowCol(dir, delta_row, delta_col);
     
     bool foundWall = false;
     
@@ -375,23 +300,18 @@ public:
       cur_col += delta_col;
     }
     
-    //cur_row / cur_col is now where the portal is
-    
+    //cur_row / cur_col is now where the portal is    
     newPortal.row = cur_row;
     newPortal.col = cur_col;
-    newPortal.dir = opposite(dir);
-    
+    newPortal.dir = opposite(dir);    
   }
   
   bool nextToWall(const Node& curNode) const {
-    for(int deltaRow = -1; deltaRow <= 1; ++deltaRow) {
-      if (cells[curNode.row + deltaRow][curNode.col] == WALL) {
+    for(int delta = -1; delta <= 1; delta += 2) {
+      if (cells[curNode.row + delta][curNode.col] == WALL) {
         return true;
       }
-    }
-
-    for(int deltaCol = -1; deltaCol <= 1; ++deltaCol) {
-      if (cells[curNode.row][curNode.col + deltaCol] == WALL) {
+      if (cells[curNode.row][curNode.col + delta] == WALL) {
         return true;
       }
     }
@@ -443,13 +363,12 @@ void generateNodes(const Node& curNode, deque<Node>& nodes, set<Node>& possibleN
       Node nodeToAdd = *it;
       nodeToAdd.depth = curNode.depth + 1;
       bool foundCommonParent = false;
-      NodePtr p = curNode.parent;
-      while(p) {
+      
+      for(NodePtr p = curNode.parent; p; p = p -> parent) {
         if (p->samePosition(*nodeToAdd.parent)) {
           foundCommonParent = true;
           break;
         }
-        p = p->parent;
       }
       if (foundCommonParent) {
         NodePtr aparent(new Node(curNode));
@@ -527,16 +446,13 @@ void do_test_case(int test_case, ifstream& input)
     Node curNode = nodes.front();
     nodes.pop_front();
     
-    //TRI_LOG_STR_DEBUG("Poping off node");
-    //TRI_LOG(curNode);
+    TRI_LOG_STR_DEBUG("Poping off node");
+    TRI_LOG_DEBUG(curNode);
     
     ++visitedNodes;
-    if (visitedNodes % 20000 == 0) {
-        //TRI_LOG(visitedNodes);
-      }
     
     if (curNode.samePosition( grid.getCakeNode()) ) {
-      //
+      
       #if INFO 
         curNode.printPath(cout);      
       #endif
@@ -554,7 +470,6 @@ void do_test_case(int test_case, ifstream& input)
   #endif
   printf("Case #%d: THE CAKE IS A LIE\n", test_case+1);
    
-  return;
-    
+  return;    
 }
   

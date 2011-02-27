@@ -1,11 +1,12 @@
 #include <stdarg.h>
 #include <time.h>
+#include "tri_logger.hpp"
 
 #ifndef UTIL_H
 #define UTIL_H
 
 #define ERROR 1
-#define INFO 1
+#define INFO 0
 #define DEBUG 0
 #define TRACE 0
     
@@ -13,6 +14,22 @@
 #define DEBUG_OUTPUT 0
 //#undef assert
 //#define assert(x) ((void)0)
+
+#if INFO
+#define TRI_LOG_STR_INFO TRI_LOG_STR
+#define TRI_LOG_INFO TRI_LOG
+#else
+#define TRI_LOG_STR_INFO(str) do{}while(false)
+#define TRI_LOG_INFO(str) do{}while(false)
+#endif   
+
+#if DEBUG
+#define TRI_LOG_STR_DEBUG TRI_LOG_STR
+#define TRI_LOG_DEBUG TRI_LOG
+#else
+#define TRI_LOG_STR_DEBUG(str) do{}while(false)
+#define TRI_LOG_DEBUG(str) do{}while(false)
+#endif
 
 #if SHOW_TIME
 #define SHOW_TIME_BEGIN(A) clock_t begin_##A=clock();
