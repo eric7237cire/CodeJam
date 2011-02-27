@@ -6,8 +6,8 @@
 #define UTIL_H
 
 #define ERROR 1
-#define INFO 0
-#define DEBUG 0
+#define INFO 1
+#define DEBUG 1
 #define TRACE 0
     
 #define SHOW_TIME 0
@@ -16,19 +16,19 @@
 //#define assert(x) ((void)0)
 
 #if INFO
-#define TRI_LOG_STR_INFO TRI_LOG_STR
-#define TRI_LOG_INFO TRI_LOG
+#define LOG_STR_INFO LOG_STR
+#define LOG_INFO LOG
 #else
-#define TRI_LOG_STR_INFO(str) do{}while(false)
-#define TRI_LOG_INFO(str) do{}while(false)
+#define LOG_STR_INFO(str) do{}while(false)
+#define LOG_INFO(str) do{}while(false)
 #endif   
 
 #if DEBUG
-#define TRI_LOG_STR_DEBUG TRI_LOG_STR
-#define TRI_LOG_DEBUG TRI_LOG
+#define LOG_STR_DEBUG LOG_STR
+#define LOG_DEBUG LOG
 #else
-#define TRI_LOG_STR_DEBUG(str) do{}while(false)
-#define TRI_LOG_DEBUG(str) do{}while(false)
+#define LOG_STR_DEBUG(str) do{}while(false)
+#define LOG_DEBUG(str) do{}while(false)
 #endif
 
 #if SHOW_TIME

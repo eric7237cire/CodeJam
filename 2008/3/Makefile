@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall -g
 OLD = -g -O3
-EXEC_NAME = pockets.exe test_util.exe portal.exe
+EXEC_NAME = pockets.exe test_util.exe portal.exe classroom.exe
 INCLUDES =
 LIBS =
 OBJ_FILES = star_wars.o simplex.o util.o
@@ -34,12 +34,9 @@ include .depend
 clean :
 	rm $(EXEC_NAME) $(OBJ_FILES)
 
-portal.exe : portal.o util.o tri_logger.o
+%.exe : %.o util.o tri_logger.o
 	$(CC) $(CFLAGS) -o $@ $< util.o tri_logger.o $(LIBS)
 	
-pockets.exe : pockets.o util.o
-	$(CC) $(CFLAGS) -o $@ $< util.o $(LIBS)
-		
 test_util.exe : util_test.o util.o
 	$(CC) -static -o $@ $< util.o -lboost_unit_test_framework
 	

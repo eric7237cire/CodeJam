@@ -5,8 +5,8 @@
 // Distributed under the Boost Software License, Version 1.0.
 // ( copy at http://www.boost.org/LICENSE_1_0.txt )
 
-#ifndef TRI_LOGGER_HPP_INCLUDED
-#define TRI_LOGGER_HPP_INCLUDED 1
+#ifndef LOGGER_HPP_INCLUDED
+#define LOGGER_HPP_INCLUDED 1
 
 #include <ostream>
 #include <memory>
@@ -58,7 +58,7 @@ namespace trivial_logger
 } // namespace trival_logger
 
 // macro prints variable name and its value to the logger stream
-#define TRI_LOG(name) \
+#define LOG(name) \
     do { if ( trivial_logger::tri_logger().is_activated() ){\
     *trivial_logger::tri_logger().ostream_ptr() << __FILE__ \
     << " [" << __LINE__ << "] : " << #name \
@@ -66,7 +66,7 @@ namespace trivial_logger
 
 // macro prints value of the variable to the logger stream
 // useful for printing constant strings
-#define TRI_LOG_STR(str) \
+#define LOG_STR(str) \
     do { if ( trivial_logger::tri_logger().is_activated() ){\
     *trivial_logger::tri_logger().ostream_ptr() << __FILE__ \
     << " [" << __LINE__ << "] : " << str \
@@ -101,7 +101,7 @@ namespace trivial_logger
 } // namespace trivial_logger
 
 // macro shows how to write macros which using user-defined functions
-#define TRI_LOG_FN(name) \
+#define LOG_FN(name) \
     ::trivial_logger::put_debug_info ( trivial_logger::tri_logger(),\
     __FILE__, __LINE__, #name, (name) )
 
@@ -109,29 +109,29 @@ namespace trivial_logger
 
 // ...
 
-/*#define TRI_LOG_INFO(name) \
+/*#define LOG_INFO(name) \
     ::trivial_logger::put_log_info ( trivial_logger::tri_logger(), (name) )
     */
 
 // macros for switching off and on logger
-#define TRI_LOG_ON() \
+#define LOG_ON() \
     do { ::trivial_logger::tri_logger().activate ( true ); } while(false)
-#define TRI_LOG_OFF() \
+#define LOG_OFF() \
     do { ::trivial_logger::tri_logger().activate ( false ); } while(false)
 
 #if defined(CLEANTLOG)
-#undef TRI_LOG
-#undef TRI_LOG_ON
-#undef TRI_LOG_OFF
-#undef TRI_LOG_FN
-#undef TRI_LOG_STR
-#undef TRI_LOG_INFO
-#define TRI_LOG(name) do{}while(false)
-#define TRI_LOG_FN(name) do{}while(false)
-#define TRI_LOG_ON() do{}while(false)
-#define TRI_LOG_OFF() do{}while(false)
-#define TRI_LOG_STR(str) do{}while(false)
-#define TRI_LOG_INFO(str) do{}while(false)
+#undef LOG
+#undef LOG_ON
+#undef LOG_OFF
+#undef LOG_FN
+#undef LOG_STR
+#undef LOG_INFO
+#define LOG(name) do{}while(false)
+#define LOG_FN(name) do{}while(false)
+#define LOG_ON() do{}while(false)
+#define LOG_OFF() do{}while(false)
+#define LOG_STR(str) do{}while(false)
+#define LOG_INFO(str) do{}while(false)
 #endif
 
-#endif // TRI_LOGGER_HPP_INCLUDED
+#endif // LOGGER_HPP_INCLUDED

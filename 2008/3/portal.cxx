@@ -341,13 +341,13 @@ ostream& operator<<(ostream& os, const Grid& grid)
 void addNode(const Node& newNode, deque<Node>& nodes, set<Node>& visited)
 {
   if (visited.find(newNode) == visited.end()) {
-    TRI_LOG_STR_DEBUG("Pushing portal Node");
-    TRI_LOG_DEBUG(newNode);
+    LOG_STR_DEBUG("Pushing portal Node");
+    LOG_DEBUG(newNode);
     nodes.push_back(newNode); 
     visited.insert(newNode);
   } else {
-    TRI_LOG_STR_DEBUG("Portal Node is used");
-    TRI_LOG_DEBUG(newNode);
+    LOG_STR_DEBUG("Portal Node is used");
+    LOG_DEBUG(newNode);
   }
 }
 
@@ -357,8 +357,8 @@ void generateNodes(const Node& curNode, deque<Node>& nodes, set<Node>& possibleN
   bool isNextToWall = grid.nextToWall(curNode);
   
   if (isNextToWall) {
-    //TRI_LOG_STR_INFO("Next to wall");
-    //TRI_LOG_STR(curNode);
+    //LOG_STR_INFO("Next to wall");
+    //LOG_STR(curNode);
     for(set<Node>::iterator it = possibleNodes.begin(); it != possibleNodes.end(); ) {
       Node nodeToAdd = *it;
       nodeToAdd.depth = curNode.depth + 1;
@@ -373,7 +373,7 @@ void generateNodes(const Node& curNode, deque<Node>& nodes, set<Node>& possibleN
       if (foundCommonParent) {
         NodePtr aparent(new Node(curNode));
         nodeToAdd.parent = aparent;
-        TRI_LOG_STR_INFO("Adding possible" );
+        LOG_STR_INFO("Adding possible" );
         addNode(nodeToAdd, nodes, visited);
         possibleNodes.erase(it++);
         continue;
@@ -432,7 +432,7 @@ void do_test_case(int test_case, ifstream& input)
     }
   }
   
-  TRI_LOG_INFO(grid);
+  LOG_INFO(grid);
   
   unsigned int visitedNodes = 0;
   
@@ -446,8 +446,8 @@ void do_test_case(int test_case, ifstream& input)
     Node curNode = nodes.front();
     nodes.pop_front();
     
-    TRI_LOG_STR_DEBUG("Poping off node");
-    TRI_LOG_DEBUG(curNode);
+    LOG_STR_DEBUG("Poping off node");
+    LOG_DEBUG(curNode);
     
     ++visitedNodes;
     
@@ -466,7 +466,7 @@ void do_test_case(int test_case, ifstream& input)
   
       
   #if INFO 
-  TRI_LOG(visitedNodes);
+  LOG(visitedNodes);
   #endif
   printf("Case #%d: THE CAKE IS A LIE\n", test_case+1);
    
