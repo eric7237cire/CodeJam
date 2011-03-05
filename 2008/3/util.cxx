@@ -12,6 +12,9 @@ unsigned int SetBit(unsigned int anInt, unsigned int pos)
   return anInt | (1 << (pos - 1));
 }
 
+
+
+
 double diffclock(clock_t clock1,clock_t clock2)
 {
 	double diffticks=clock1-clock2;

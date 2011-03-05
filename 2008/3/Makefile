@@ -1,6 +1,6 @@
 CC = g++
-CFLAGS = -Wall -g
-OLD = -g -O3
+CFLAGS =  -g
+OLD = -g -O3 -Wall
 EXEC_NAME = pockets.exe test_util.exe portal.exe classroom.exe
 INCLUDES =
 LIBS =

@@ -5,11 +5,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#define ERROR 1
-#define INFO 1
-#define DEBUG 1
-#define TRACE 0
-    
+
 #define SHOW_TIME 0
 #define DEBUG_OUTPUT 0
 //#undef assert
@@ -38,6 +34,8 @@
 #define SHOW_TIME_BEGIN(A) 
 #define SHOW_TIME_END(A) 
 #endif
+
+
 
 #include <vector>
 #include <ostream>
