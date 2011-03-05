@@ -45,7 +45,7 @@ int main(int argc, char** args)
 }
 
 enum SquareType {
-  UNINIT = 4, CHAIR = 0, BROKEN = 1, INVALID = 2, STUDENT = 3  
+  UNINIT = 14, CHAIR = 0, BROKEN = 1, STUDENT = 3, FORCED_EMPTY = 4  
 };
 
 char SquareCh[4] = {'.', 'x', 'i', 's'}; 
@@ -199,6 +199,18 @@ public:
       return;
     }
     
+    if (sq == FORCED_EMPTY) {
+      assert(cells[row][col] != STUDENT);
+      //assert(cells[row][col] != BROKEN);
+    }
+    
+    if (sq == STUDENT) {
+      assert(cells[row][col] != FORCED_EMPTY);
+      assert(cells[row][col] != BROKEN);
+      assert(cells[row][col] != STUDENT);
+      assert(cells[row][col] == CHAIR);
+    }
+    
     if (cells[row][col] != BROKEN) {
       cells[row][col] = sq;
     }
@@ -208,7 +220,8 @@ public:
   SquareType getSquare(int row, int col) const 
   {
     if (row < 0 || row >= rows || col < 0 || col >= cols) {
-      return INVALID;
+      assert(false);
+      return UNINIT;
     }
     
     return cells[row][col];
@@ -221,71 +234,49 @@ public:
     }
     
     if (cells[row][col] == BROKEN || 
-      cells[row][col] == INVALID || 
-      cells[row][col] == STUDENT ) {
+      cells[row][col] == STUDENT ||
+      cells[row][col] == FORCED_EMPTY 
+      ) {
       return false;
     }
     
-    if (getSquare(row + 1, col + 1) == STUDENT) {
-      return false;
-    }
-    if (getSquare(row + 1, col - 1) == STUDENT) {
-      return false;
-    }
-    if (getSquare(row, col + 1) == STUDENT) {
-      return false;
-    }
-    if (getSquare(row, col - 1) == STUDENT) {
-      return false;
-    }
+    assert(cells[row][col] == CHAIR);
     
     return true;
         
   }
-    
-  int getLowestCost() const
-  {
-    int lowestCost = 50;
-    for(int r = 0; r < rows; ++r) {
-      for(int c = 0; c < cols; ++c) {
-        if (isOpen(r, c)) {
-          //LOG_INFO(r);
-          //LOG_INFO(c);
-          //LOG_INFO(lowestCost);
-          lowestCost = min<int>(lowestCost, getCost(r, c));   
-        }
-      }
-    }
-    return lowestCost;
-  }
   
+  void setForcedEmpty(int row, int col) 
+  {
+    if (row < 0 || row >= rows || col < 0 || col >= cols) {
+      return;
+    }
+    assert(row >= 0);
+    assert(row < rows);
+    
+    assert(col >= 0);
+    assert(col < cols);
+    
+    NodePtr emptyChairNode = nodes[row][col];
+    if (emptyChairNode) {
+      emptyChairNode->disconnectFromNeighbors();
+      setSquare(row, col, FORCED_EMPTY);
+      nodes[row][col].reset();
+    }
+  }
+    
   void setStudent(int r, int c)
   {
     setSquare(r, c, STUDENT);
-    setSquare(r+1, c-1, INVALID);
-    setSquare(r+1, c+1, INVALID);
-    setSquare(r, c+1, INVALID);
-    setSquare(r, c-1, INVALID);
-  }
-  
-  int placeStudents(int cost) {
-    int placed = 0;
-    vector<pair<int, int> > to_set;
     
-    for(int r = 0; r < rows; ++r) {
-      for(int c = 0; c < cols; ++c) {
-        if (isOpen(r, c) && getCost(r, c) <= cost) {
-          ++placed;
-          to_set.push_back(make_pair(r, c));
-        }
-      }
-    }
+    setForcedEmpty(r+1, c-1);
+    setForcedEmpty(r+1, c+1);
+    setForcedEmpty(r, c+1);
+    setForcedEmpty(r, c-1);
+    setForcedEmpty(r-1, c-1);
+    setForcedEmpty(r-1, c+1);
     
-    for(int i = 0; i < placed; ++i) {
-      setStudent(to_set[i].first, to_set[i].second);
-      return 1;
-    }
-    return placed;
+    nodes[r][c].reset();
   }
   
   void connectNodes(NodePtr node1, NodePtr node2)
@@ -336,7 +327,7 @@ public:
   }
   
   int fillEdge(int startRow, int endRow, int studentCol, int emptyCol) {
-    LOG_OFF();
+    LOG_ON();
     int local_count = 0;
     LOG_STR("Filling edge");
     LOG(startRow);
@@ -344,6 +335,7 @@ public:
     
     LOG(studentCol);
     LOG(emptyCol);
+    LOG_OFF();
     
     assert(startRow <= endRow);
     assert(startRow >= 0);
@@ -353,6 +345,8 @@ public:
     
     assert(studentCol >= 0);
     assert(studentCol < cols);
+    assert(emptyCol >= 0);
+    assert(emptyCol < cols);
     
     for(int r = startRow; r <= endRow; ++r) {
         NodePtr studentNode = nodes[r][studentCol];
@@ -362,20 +356,18 @@ public:
           studentNode->disconnectFromNeighbors();
           setStudent(r, studentCol);
           ++local_count;
+          nodes[r][studentCol].reset();
         }
         
-        if (emptyCol >= 0 && emptyCol < cols) {
-          NodePtr emptyChairNode = nodes[r][emptyCol];
-          if (emptyChairNode) {
-            emptyChairNode->disconnectFromNeighbors();
-          }
-          nodes[r][emptyCol].reset();
-        }
+        setForcedEmpty(r, emptyCol);
         
-        nodes[r][studentCol].reset();
         
         
     }
+    
+    LOG_ON();
+    LOG(*this);
+    validateGrid();
     
     LOG_OFF();
     
@@ -419,6 +411,29 @@ public:
     return true;
   }
   
+  bool isBlockSeparation(int row, int col1, int col2)
+  {
+    assert(col1 >= 0 && col1 < cols);
+    assert(col2 >= 0 && col2 < cols);
+    
+    if(hasNoChair(row, col1) 
+      && hasNoChair(row, col2)) 
+    {
+      return true;
+    }
+    
+    if (row < rows) {
+    if (hasNoChair(row, col1) == hasNoChair(row + 1, col1) &&
+        hasNoChair(row, col2) == hasNoChair(row + 1, col2) &&
+      hasNoChair(row, col1) != hasNoChair(row, col2)) 
+      {
+        return true;
+      }
+    }
+    
+    return false;
+  }
+  
   int searchForEdges() {
     LOG_ON();
     int potential_student_count = 0;
@@ -437,6 +452,9 @@ public:
         potential_student_count = 0;
         potential_empty_chair_count = 0;
         
+        if (empty_chair_col < 0 || empty_chair_col >= cols) {
+          continue;
+        }
       for(int r = 0; r < rows; ++r) {
         //r, c must have no connections towards c-col_offset
         
@@ -444,11 +462,6 @@ public:
         
         //r, c must have f
         LOG_OFF();
-        
-        if (c == 9) {
-          //LOG_ON();
-        }
-        
         LOG(r);
         LOG(c);
         LOG(student_col);
@@ -459,27 +472,17 @@ public:
         LOG(hasNoChair(r, empty_chair_col));
         LOG(potential_student_count);
         
-        if(hasNoChair(r, student_col) 
-          && hasNoChair(r, empty_chair_col)) {
-          //LOG(r);
-          //LOG(c);
-          LOG_STR("seperator");
-          if (!invalidUntilNextBlock && potential_student_count >= potential_empty_chair_count && potential_student_count > 0) {
-            count += fillEdge(start_row, r-1, student_col, empty_chair_col);
-          }
-          potential_student_count = 0;
-          potential_empty_chair_count = 0;
-          start_row = r + 1;
-          invalidUntilNextBlock = false;
-          continue;
-        } else {
-          
+        
+        //has a chair
+        if (!hasNoChair(r, student_col)) {
+          ++potential_student_count;
         }
         
-        if (invalidUntilNextBlock) {
-          continue;
+        //next door
+        if (!hasNoChair(r, empty_chair_col)) {
+          ++potential_empty_chair_count;
         }
-        
+         
         if (!hasNoConnections(r, c, all_blocked_col)) {
           //StackLogSwitch s(false);
           LOG_STR("Invalid!");
@@ -494,6 +497,29 @@ public:
           continue;
         }
         
+        if(isBlockSeparation(r, student_col, empty_chair_col)) {
+          //LOG(r);
+          //LOG(c);
+          LOG_STR("seperator"); 
+          if (!invalidUntilNextBlock && potential_student_count >= potential_empty_chair_count && potential_student_count > 0) {
+            count += fillEdge(start_row, r, student_col, empty_chair_col);
+          }
+          potential_student_count = 0;
+          potential_empty_chair_count = 0;
+          start_row = r + 1;
+          invalidUntilNextBlock = false;
+          continue;
+        } else {
+          
+        }
+        
+        if (invalidUntilNextBlock) {
+          continue;
+        }
+        
+        
+        
+        /*
         //has a chair
         if (!hasNoChair(r, student_col)) {
           ++potential_student_count;
@@ -502,7 +528,7 @@ public:
         //next door
         if (!hasNoChair(r, empty_chair_col)) {
           ++potential_empty_chair_count;
-        }
+        }*/
       }
       
         if (!invalidUntilNextBlock && potential_student_count >= potential_empty_chair_count && potential_student_count > 0) {
@@ -543,7 +569,6 @@ public:
           
         const int remove_row =  nodes[row_i][col_i]->connections[0]->row;
         const int remove_col =  nodes[row_i][col_i]->connections[0]->col;
-        connectedNodeToRemove->disconnectFromNeighbors();
         
         //LOG_ON();
         LOG_STR_INFO("Removing single connection");
@@ -554,14 +579,48 @@ public:
         LOG_INFO(remove_col);
         //LOG_OFF();
         setStudent(row_i, col_i);
-        nodes[remove_row][remove_col].reset();
-        nodes[row_i][col_i].reset();
         ++local_count;
       }
      }
       
     return local_count;
     
+  }
+  
+  void validateGrid() {
+    for(int r = 0; r < rows; ++r) {
+      for(int c = 0; c < cols; ++c) {
+        if (cells[r][c] == BROKEN) {
+          assert(!nodes[r][c]);
+        } else
+        if (cells[r][c] == FORCED_EMPTY) {
+          if (nodes[r][c]) {
+            LOG_ON();
+            LOG(r);
+            LOG(c);
+            LOG(*this);
+          }
+          assert(!nodes[r][c]);
+        } else
+        if (cells[r][c] == STUDENT) {
+          assert(!nodes[r][c]);
+        } else
+        if (cells[r][c] == CHAIR) {
+          if (!nodes[r][c]) {
+            cout << "what" << endl;
+            LOG_ON();
+            LOG(r);
+            LOG(c);
+            LOG(*this);
+          }
+          assert(nodes[r][c]);
+          assert(nodes[r][c]->connections.size() == getCost(r, c));
+        } else {
+          assert(false);
+        }
+      }
+    }
+        
   }
   
   //returns size of larger set 
@@ -572,33 +631,39 @@ public:
      int count = 0;
      int local_count = 0;
      
-     LOG_ON();
+     //LOG_ON();
      int s_count = 0;
+     validateGrid();
      
      do {
        s_count = count;
        
        
        do {
-         local_count = searchForEdges();
+       
+       local_count = searchForIsolated();
+
+       LOG_ON();
+       LOG_STR("Isolated");
+       LOG(*this);
+       validateGrid();
+       count += local_count;
+       //break;
+       } while (local_count > 0);
+       
+       local_count = searchForEdges();
        LOG_ON();
        LOG_STR("Edges");
        LOG(*this);
        count += local_count;
-       
-       
-       local_count = searchForIsolated();
-       LOG_ON();
-       LOG_STR("Isolated");
-       LOG(*this);
-       count += local_count;
-       } while (local_count > 0);
+       validateGrid();
        
        
        
        
      } while (s_count < count);
-     
+      
+     LOG_ON();
      LOG_STR("Done with initial searches");
      LOG(*this);
      LOG_OFF();
@@ -606,12 +671,6 @@ public:
      int s2_count = 0;
      
      local_count = 0;
-     
-     LOG_ON();
-     LOG_STR("After single nodes");
-     LOG(*this);
-     LOG_OFF();
-     
      
      NodePtr startingNode;
      do 
@@ -662,6 +721,7 @@ public:
           throw 3;
         }
         
+        //Add children
         for (vector<NodePtr>::const_iterator it = node->connections.begin();
           it != node->connections.end();
           ++it) 
@@ -689,7 +749,11 @@ public:
            setStudent(it->get()->row, it->get()->col);
          }
       }
-      
+      LOG_ON();
+      LOG_STR("alternating");
+      LOG(s1_count);
+      LOG(s2_count);
+      LOG(*this);
       count += max(s1_count, s2_count);
     
      } while(startingNode);
@@ -703,12 +767,12 @@ public:
     if (isOpen(row + 1, col + 1) ) {
       ++cost;
     }
-    if (isOpen(row, col + 1) ) {
-      ++cost;
-    }
     if (isOpen(row + 1, col - 1) ) {
       ++cost;
     }
+    if (isOpen(row, col + 1) ) {
+      ++cost;
+    }    
     if (isOpen(row, col - 1) ) {
       ++cost;
     }
@@ -727,6 +791,7 @@ public:
 
 ostream& operator<<(ostream& os, const Grid& grid)
 {
+  int global_count = 0;
     //os << "\nCols  :  ";
     os << endl;
     for(unsigned int c = 0; c < grid.cols; ++c) {
@@ -745,7 +810,7 @@ ostream& operator<<(ostream& os, const Grid& grid)
         if (grid.cells[r][c] == CHAIR && grid.isOpen(r, c)) {
           os << grid.getCost(r, c);
           ++connected;
-        } else if (grid.cells[r][c] == INVALID) {
+        } else if (grid.cells[r][c] == FORCED_EMPTY) {
           os << '.';
           ++empty;
         } else {
@@ -758,17 +823,86 @@ ostream& operator<<(ostream& os, const Grid& grid)
           }
         }
       }
-      
+      global_count += students;
       os << " :" << r;
       
       os << "  s: " << students << " x: " << broken << " .: " << empty << " n: " << connected;
       os << endl;
     }
+    
+    os << endl << endl << " Global count:  " << global_count << endl << endl;
   return os;    
+}
+
+typedef vector<bool> VecBool;
+typedef deque<VecBool> Perms;
+
+ostream& operator<<(ostream& os, const VecBool& rhs)
+{
+  for(std::vector<bool>::const_iterator iter = rhs.begin(); iter != rhs.end(); ++iter)
+  {
+    if (*iter) {
+      os << "1";
+    } else {
+      os << "0";
+    }
+  }
+  return os;
+}
+
+void generate_perms(int length)
+{
+  Perms list;  
+  VecBool startingNode(1, true);
+  
+  
+  
+  list.push_back(startingNode);
+  list.push_back(VecBool(1, false));
+    
+  LOG(list.front());
+  
+  while(list.front().size() < length) {
+    VecBool perm = list.front();
+    list.pop_front();
+    
+    bool lastElem = *perm.rbegin();
+    
+    //last element is a chair, can always add a student
+    if (!lastElem) {
+      VecBool addStudent(perm);
+      addStudent.push_back(true);
+      list.push_back(addStudent);
+    }
+    
+    //last element was a student, must add a chair
+    if (lastElem) {
+      perm.push_back(false);
+      list.push_back(perm);
+    } 
+      
+    //add another chair next to a chair  
+    if (!lastElem 
+      && ( perm.size() < 2 || (*(++perm.rbegin()) != false)) //2nd to last must be a student
+      && ( length <= 2 || perm.size() != length - 1)
+      && ( perm.size() != 1 )
+      ) 
+    {
+      perm.push_back(false);
+      list.push_back(perm);
+    } 
+    
+  }
+  
+  for(Perms::const_iterator it = list.begin(); it != list.end(); ++it) {
+    LOG(*it); 
+  }
 }
 
 void do_test_case(int test_case, ifstream& input)
 {
+  generate_perms(10);
+  return;
   
   LOG_OFF();
   unsigned int R, C;
@@ -794,16 +928,8 @@ void do_test_case(int test_case, ifstream& input)
   LOG(grid);
   LOG_OFF();
   
-  int lowest_cost = grid.getLowestCost();
-    LOG_DEBUG(lowest_cost);
-    //placed = grid.placeStudents(lowest_cost);
-    //LOG_DEBUG(placed);
-   grid.createNodeConnections();
+  grid.createNodeConnections();
    total_placed = grid.visitNodes();
-    LOG(grid);
-    
-    lowest_cost = grid.getLowestCost();
-    //LOG_INFO(total_placed);
   
   LOG_ON();
   LOG(grid);
