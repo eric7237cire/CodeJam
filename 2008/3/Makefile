@@ -7,13 +7,21 @@ LIBS =
 OBJ_FILES = star_wars.o simplex.o util.o
 INSTALL_DIR = /usr/bin
 
+ifeq ($(mode),release)
+   CFLAGS =
+   CFLAGS +=-DCLEANTLOG
+else
+   mode = debug
+   CFLAGS = -g
+   CFLAGS+=-DTLOG
+endif
 
 # C++ compile flags
 #CFLAGS+=-DFTLOG
 #CFLAGS+=-DFTLOG="${PROG}"
 #CFLAGS+=-DETLOG
-CFLAGS+=-DTLOG
-#CFLAGS+=-DCLEANTLOG
+
+#
 
 
 CXX_FILES = $(wildcard *.cxx)

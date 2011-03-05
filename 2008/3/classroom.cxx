@@ -13,6 +13,7 @@
 
 using namespace std;
 
+//#define LOG_ON LOG_OFF
 
 void do_test_case(int test_case, ifstream& input);
 
@@ -514,18 +515,9 @@ public:
     return count;
   }
   
-  //returns size of larger set 
-  int visitNodes()  {
-     
-     //find a node that has connections
-     int count = searchForEdges();
-     int s1_count = 0;
-     int s2_count = 0;
-     
-     int local_count = 0;
-     
-     do {
-      local_count = 0;  
+  int searchForIsolated()
+  {
+    int local_count = 0;
        
      for(int i = 0; i < rows*cols; ++i) {
       const int row_i = i / cols;
@@ -566,12 +558,60 @@ public:
         nodes[row_i][col_i].reset();
         ++local_count;
       }
+     }
       
-      
-    }
+    return local_count;
     
-    count+=local_count;
-     } while(local_count > 0);
+  }
+  
+  //returns size of larger set 
+  int visitNodes()  {
+     
+     //find a node that has connections
+     //int count = searchForEdges();
+     int count = 0;
+     int local_count = 0;
+     
+     LOG_ON();
+     int s_count = 0;
+     
+     do {
+       s_count = count;
+       
+       
+       do {
+         local_count = searchForEdges();
+       LOG_ON();
+       LOG_STR("Edges");
+       LOG(*this);
+       count += local_count;
+       
+       
+       local_count = searchForIsolated();
+       LOG_ON();
+       LOG_STR("Isolated");
+       LOG(*this);
+       count += local_count;
+       } while (local_count > 0);
+       
+       
+       
+       
+     } while (s_count < count);
+     
+     LOG_STR("Done with initial searches");
+     LOG(*this);
+     LOG_OFF();
+     int s1_count = 0;
+     int s2_count = 0;
+     
+     local_count = 0;
+     
+     LOG_ON();
+     LOG_STR("After single nodes");
+     LOG(*this);
+     LOG_OFF();
+     
      
      NodePtr startingNode;
      do 
@@ -695,19 +735,33 @@ ostream& operator<<(ostream& os, const Grid& grid)
     os << endl << endl;
     for(int r = grid.rows - 1; r >= 0; --r) {
       
-      //
+      int students = 0;
+      int empty = 0;
+      int connected = 0;
+      int broken = 0;
+      
       for(unsigned int c = 0; c < grid.cols; ++c) {
         
         if (grid.cells[r][c] == CHAIR && grid.isOpen(r, c)) {
           os << grid.getCost(r, c);
+          ++connected;
         } else if (grid.cells[r][c] == INVALID) {
           os << '.';
+          ++empty;
         } else {
           os << SquareCh[grid.cells[r][c]];
+          if (grid.cells[r][c] == STUDENT) {
+            ++students;
+          }
+          if (grid.cells[r][c] == BROKEN) {
+            ++broken;
+          }
         }
       }
       
       os << " :" << r;
+      
+      os << "  s: " << students << " x: " << broken << " .: " << empty << " n: " << connected;
       os << endl;
     }
   return os;    
@@ -715,6 +769,7 @@ ostream& operator<<(ostream& os, const Grid& grid)
 
 void do_test_case(int test_case, ifstream& input)
 {
+  
   LOG_OFF();
   unsigned int R, C;
   input >> R >> C;
@@ -735,7 +790,7 @@ void do_test_case(int test_case, ifstream& input)
     }
   }
   
-  //LOG_ON();
+  LOG_ON();
   LOG(grid);
   LOG_OFF();
   
@@ -750,8 +805,8 @@ void do_test_case(int test_case, ifstream& input)
     lowest_cost = grid.getLowestCost();
     //LOG_INFO(total_placed);
   
-  //LOG_ON();
-  LOG_INFO(grid);
+  LOG_ON();
+  LOG(grid);
   printf("Case #%d: %d\n", test_case+1, total_placed);
    
   return;    
