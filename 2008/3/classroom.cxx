@@ -1015,6 +1015,7 @@ int getSquareFromVisited(int row, int col, const VisitedMap& vMap)
 
 ostream& printMap(ostream& oos, const Grid& grid, const VisitedMap& visitedMap)
 {
+  return;
   ostringstream os;
   int global_count = 0;
     //os << "\nCols  :  ";
@@ -1054,8 +1055,6 @@ ostream& printMap(ostream& oos, const Grid& grid, const VisitedMap& visitedMap)
     
     void BoardAssignment::GenerateOtherBoardAssignments(BoardAssignmentQueue& queue) const
     {
-      
-      
       
       bool adjacent_to_student = false;
       bool adjacent_to_empty = false;
