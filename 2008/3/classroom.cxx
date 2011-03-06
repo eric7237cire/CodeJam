@@ -9,6 +9,7 @@
 #include <time.h>
 #include <assert.h>
 #include <boost/smart_ptr.hpp>
+#define SHOW_TIME 1
 #include "util.h" 
 
 #include <boost/shared_ptr.hpp>
@@ -115,21 +116,6 @@ public:
   friend ostream& operator<<( ostream& os, Node* rhs);
   friend ostream& operator<<( ostream& os, NodePtr rhs);
 };
-
-typedef  vector<NodePtr> NodeList;
-typedef  vector<NodeList> LevelNodeList;
-
-void addNode(LevelNodeList& list, NodePtr node) 
-{
-   int level = node->label;
-   assert(list.size() <= level);
-      
-   if (level == list.size() ) {
-     list.push_back(NodeList() );
-   }
-   
-   list[level].push_back(node);
-}
 
 int operator==(NodePtr lhs, Node* rhs)
 {

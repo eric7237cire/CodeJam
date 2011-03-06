@@ -5,8 +5,10 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-
+#ifndef SHOW_TIME
 #define SHOW_TIME 0
+#endif
+
 #define DEBUG_OUTPUT 0
 //#undef assert
 //#define assert(x) ((void)0)
@@ -26,6 +28,7 @@
 #define LOG_STR_DEBUG(str) do{}while(false)
 #define LOG_DEBUG(str) do{}while(false)
 #endif
+
 
 #if SHOW_TIME
 #define SHOW_TIME_BEGIN(A) clock_t begin_##A=clock();
