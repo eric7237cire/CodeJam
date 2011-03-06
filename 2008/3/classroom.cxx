@@ -1137,7 +1137,7 @@ ostream& printMap(ostream& oos, const Grid& grid, const VisitedMap& visitedMap)
       }
       
       LOG_STR("Adding ba nodes");
-      if (true || !adjacent_to_empty) {
+      if (!adjacent_to_empty) {
         LOG_STR("Adding chair");
         VisitedMap newVisitedMap(visitedMap);
 //        newVisitedMap[node] = CHAIR;
@@ -1162,6 +1162,37 @@ ostream& printMap(ostream& oos, const Grid& grid, const VisitedMap& visitedMap)
         printMap(cout, grid, newVisitedMap);
         BoardAssignmentPtr new_ba(new BoardAssignment(grid, node, newVisitedMap, CHAIR));
         queue.push_front(new_ba);
+      }
+      
+      if (adjacent_to_empty) {
+        LOG_STR("Adding chair + students");
+        VisitedMap newVisitedMap(visitedMap);
+        
+        bool placedStudent = false;
+        for (vector<NodePtr>::const_iterator it = node->connections.begin();
+        it != node->connections.end();
+        ++it) 
+        {
+          NodePtr connectedNode = *it;
+          
+          VisitedMap::const_iterator visited_it = visitedMap.find(connectedNode);
+          if (visited_it == visitedMap.end()) {
+            //newVisitedMap.insert(VisitedMap::value_type(connectedNode, STUDENT));
+            placeStudent(newVisitedMap, connectedNode);
+            placedStudent = true;
+            //BoardAssignmentPtr new_ba(new BoardAssignment(grid, connectedNode, newVisitedMap, CHAIR));
+            //queue.push_back(new_ba);
+            //BoardAssignmentPtr new_ba2(new BoardAssignment(grid, connectedNode, newVisitedMap, STUDENT));
+            //queue.push_back(new_ba2);
+          }
+        }
+      
+        if (placedStudent) {
+        LOG_STR("Adding chair");
+        printMap(cout, grid, newVisitedMap);
+        BoardAssignmentPtr new_ba(new BoardAssignment(grid, node, newVisitedMap, CHAIR));
+        queue.push_front(new_ba);
+        }
       }
       
       if (!adjacent_to_student)  {
