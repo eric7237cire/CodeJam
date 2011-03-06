@@ -1060,18 +1060,6 @@ ostream& printMap(ostream& oos, const Grid& grid, const VisitedMap& visitedMap)
       || getSquareFromVisited(node->row + 1, node->col, visitedMap) == STUDENT;
            
       LOG_STR("Adding ba nodes");
-      if (!mustPutStudent && !adjacent_to_empty) {
-        LOG_STR("Adding chair");
-        VisitedMap newVisitedMap(visitedMap);
-        
-        LOG_STR("Adding chair");
-        //printMap(cout, grid, newVisitedMap);
-        BoardAssignmentPtr new_ba(new BoardAssignment(grid, newVisitedMap, unvisitedSet));
-        new_ba->addVisited(node, CHAIR);
-        queue.push_front(new_ba);
-        throw 3;
-      }
-      
       if (!mustPutStudent && adjacent_to_empty) {
         LOG_STR("Adding chair + students");
         BoardAssignmentPtr new_ba(new BoardAssignment(grid, visitedMap, unvisitedSet));
