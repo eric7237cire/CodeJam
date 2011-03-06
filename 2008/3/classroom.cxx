@@ -2,8 +2,10 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <map>
 #include <deque>
 #include <queue>
+#include <sstream>
 #include <time.h>
 #include <assert.h>
 #include <boost/smart_ptr.hpp>
@@ -57,6 +59,10 @@ typedef boost::shared_ptr<Node> NodePtr;
 typedef vector<NodePtr> VectorNodes;
 typedef vector<VectorNodes> GridNodes;
 
+typedef vector<bool> VecBool;
+  typedef vector<VecBool> GridBool;
+  typedef boost::shared_ptr<GridBool> GridBoolPtr;
+
 ostream& operator<<( ostream& os, NodePtr rhs);
 ostream& operator<<( ostream& os, Node* rhs);
 
@@ -72,9 +78,9 @@ public:
   
 public:
   
-  unsigned int label; //1, 2
+  int label; //1, 2
   
-  Node(int row, int col) : row(row), col(col), label(0) {
+  Node(int row, int col) : row(row), col(col), label(-1) {
   }
   
   void disconnectFromNeighbors() //GridNodes& nodes)
@@ -110,6 +116,21 @@ public:
   friend ostream& operator<<( ostream& os, NodePtr rhs);
 };
 
+typedef  vector<NodePtr> NodeList;
+typedef  vector<NodeList> LevelNodeList;
+
+void addNode(LevelNodeList& list, NodePtr node) 
+{
+   int level = node->label;
+   assert(list.size() <= level);
+      
+   if (level == list.size() ) {
+     list.push_back(NodeList() );
+   }
+   
+   list[level].push_back(node);
+}
+
 int operator==(NodePtr lhs, Node* rhs)
 {
   assert(lhs);
@@ -126,13 +147,14 @@ ostream& operator<<( ostream& os, Node* rhsPtr)
   }
   const Node& rhs = *rhsPtr;
   os << "Node (" << rhs.row << ", " << rhs.col << ") " << endl;
+  /*
   os << "Connections: " << rhs.connections.size() << endl;
   for (vector<NodePtr>::const_iterator it = rhs.connections.begin();
     it != rhs.connections.end();
     ++it) {
   os << " Connected Node (" << (*it)->row << ", " << (*it)->col << ") " << endl;
     }
-    
+    */
     return os;
 }
 
@@ -144,6 +166,48 @@ ostream& operator<<( ostream& os, NodePtr rhsPtr)
 
 class Grid;
 ostream& operator<<(ostream& os, const Grid& grid);
+
+class BoardAssignment;
+  typedef boost::shared_ptr<BoardAssignment> BoardAssignmentPtr;
+  typedef deque<BoardAssignmentPtr> BoardAssignmentQueue;
+typedef map<NodePtr, bool> HasChairNeighborMap;
+  typedef map<NodePtr, int> VisitedMap;
+  typedef boost::shared_ptr<VisitedMap> VisitedMapPtr;
+  typedef deque<NodePtr> UnVisitedList;
+  
+  
+  class BoardAssignment
+  {
+    public:
+      Grid& grid;
+    VisitedMap visitedMap;
+    //current node assigning
+    
+    HasChairNeighborMap emptyNeighbor;
+  
+    BoardAssignment(Grid& grid, NodePtr node, const VisitedMap& visitedMap, int assignment) : grid(grid), visitedMap(visitedMap) 
+    {
+      this->visitedMap.insert(VisitedMap::value_type(node, assignment));
+    }
+    
+    void GenerateOtherBoardAssignments(BoardAssignmentQueue& queue) const;
+    static void GenerateInitialBoardAssignments(BoardAssignmentQueue& queue, NodePtr startingNode, Grid& grid);
+    void AssignStudents();
+    
+    int getScore() const;
+    
+    
+    
+  };
+  
+  ostream& operator<<(ostream& os, const BoardAssignment& rhs)
+  {
+    os << "BoardAssignment.  Visited: " << rhs.visitedMap.size()  << endl; 
+    return os;
+  }
+
+
+
 
 class Grid
 {
@@ -667,8 +731,6 @@ public:
      LOG_STR("Done with initial searches");
      LOG(*this);
      LOG_OFF();
-     int s1_count = 0;
-     int s2_count = 0;
      
      local_count = 0;
      
@@ -676,90 +738,174 @@ public:
      do 
      {
        startingNode.reset();
-       s1_count = 0;
-       s2_count = 0;
      
-      for(int i = 0; i < rows*cols; ++i) {
-        const int row_i = i / cols;
-        const int col_i = i % cols;
-        if (nodes[row_i][col_i]) {
-          //cout << row_i << " " << col_i << nodes[row_i][col_i] << endl;
-        }
+       for(int col = 0; col < cols; ++col) {
+         for(int row = 0; row < rows; ++row) {
         
         
-        if (!startingNode && nodes[row_i][col_i] && nodes[row_i][col_i]->connections.size() > 0) {
-          startingNode = nodes[row_i][col_i];
-          startingNode->label = 1;        
-        }
-        
-      }
-      
-      queue<NodePtr> nodesToSearch;
-      if (startingNode) {
-        nodesToSearch.push(startingNode);
-      }
-      
-      vector<NodePtr> s1_nodes;
-      vector<NodePtr> s2_nodes;
-      
-      while(!nodesToSearch.empty()) {
-        NodePtr node = nodesToSearch.front();
-        nodesToSearch.pop();
-        nodes[node->row][node->col].reset();
-        LOG_INFO(node);
-        if (node->label == 1) {
-          s1_count ++;
-          s1_nodes.push_back(node);
-          LOG_INFO("Logging 1");
-          LOG_INFO(node);
-        } else if (node->label == 2) {
-          LOG_INFO("Logging 2");
-          LOG_INFO(node);
-          s2_nodes.push_back(node);
-          s2_count++;
-        } else {
-          throw 3;
-        }
-        
-        //Add children
-        for (vector<NodePtr>::const_iterator it = node->connections.begin();
-          it != node->connections.end();
-          ++it) 
-        {
-          if (it->get()->label == 0) {
-            
-            it->get()->label = (node->label == 1) ? 2 : 1;
-            nodesToSearch.push(*it);        
+          if (!startingNode 
+            && nodes[row][col] 
+            && nodes[row][col]->connections.size() > 0) 
+          {
+            startingNode = nodes[row][col];
+            //startingNode->label = 0;
+            break;
           }
-        }
+        
+         }
+         
+         if (startingNode) {
+           break;
+         }
       }
       
-      if (s1_count >= s2_count) {
-         for (vector<NodePtr>::const_iterator it = s1_nodes.begin();
-          it != s1_nodes.end();
-          ++it)
-         {
-           setStudent(it->get()->row, it->get()->col);
-         }
-      } else {
-        for (vector<NodePtr>::const_iterator it = s2_nodes.begin();
-          it != s2_nodes.end();
-          ++it)
-         {
-           setStudent(it->get()->row, it->get()->col);
-         }
+      if (!startingNode) {
+        continue;
       }
+      
+      LOG_ON();
+      LOG(*this);
+      
+      local_count = searchOptimalBackTracking(startingNode);
+      
       LOG_ON();
       LOG_STR("alternating");
-      LOG(s1_count);
-      LOG(s2_count);
+      LOG(local_count);
       LOG(*this);
-      count += max(s1_count, s2_count);
+      count += local_count;
     
      } while(startingNode);
     
     return count; 
   }
+  
+  
+  
+  
+  
+  
+  int searchOptimalBackTracking(NodePtr startingNode)
+  {
+    LOG_STR("Starting!");
+    BoardAssignmentQueue queue;
+
+    BoardAssignment::GenerateInitialBoardAssignments(queue, startingNode, *this);
+    
+    assert(queue.size() == 2);
+    int max_score = 0;
+    BoardAssignmentPtr max_ba;
+    int processed_nodes = 0;
+    
+    while(!queue.empty()) 
+    {
+      ++processed_nodes;
+      if (processed_nodes % 1000000 == 0) {
+        LOG_ON();
+        LOG(processed_nodes);
+        LOG_OFF();
+      }
+      BoardAssignmentPtr ba = queue.front();
+      queue.pop_front();
+      LOG_STR("Board assignment " << *ba);
+      LOG_STR("Queue size: " << queue.size());
+      
+      int score = ba->getScore();
+      LOG_STR("Score: " << score);
+      if (score > max_score) {
+        max_ba = ba;
+        max_score = score;
+      }
+      
+      ba->GenerateOtherBoardAssignments(queue); 
+    }
+    
+    assert(max_ba);
+    
+    max_ba->AssignStudents();
+    LOG_ON();
+    LOG_STR("Processed nodes: " << processed_nodes << " " << max_score);
+    return max_score;
+  }
+  
+  #if 0
+  int searchOptimalBackTracking(NodePtr node, 
+    bool secToLastIsStudent,
+    bool lastIsStudent,
+    NodePtr lastNode,
+    int depth, 
+    VisitedMapPtr visitedMapPtr)
+  {
+    LOG_ON();
+    if (!visitedMapPtr) {
+      //visited.reset(new GridBool(rows, VecBool(cols, false)));
+      visitedMapPtr.reset(new VisitedMap());
+      //LOG_STR("Created grid bool, rows=" << visited->size() << " cols=" << (*visited)[0].size());
+    }
+    
+    GridBool& visitedRef = *visited;
+    
+    int benefitIfStudent = 0;
+    int benefitIfLeftEmpty = 0;
+    
+    bool tryStudent = false;
+    bool tryEmpty = false;
+    LOG_STR("Processing node " << node << " depth: " << depth);
+    
+    //last element is a chair, can always add a student
+    if (!lastIsStudent || depth == 0) {
+      tryStudent = true;
+      benefitIfStudent = 1;
+      LOG_STR("Try student");
+    }
+    
+    //last element was a student, must add a chair
+    if (lastIsStudent || 
+      (!lastIsStudent && secToLastIsStudent) ||
+      (depth == 0))
+    {
+      tryEmpty = true;
+      LOG_STR("Try empty");
+    } 
+      
+    visitedRef[node->row][node->col] = true;
+    
+    for (vector<NodePtr>::const_iterator it = node->connections.begin();
+    it != node->connections.end();
+    ++it) {
+      NodePtr connectedNode = *it;
+      LOG_STR(" Connected Node (" << (*it)->row << ", " << (*it)->col << ") " << endl);
+      
+      if (visitedRef[connectedNode->row][connectedNode->col]) {
+        LOG_STR("Already visited");
+        continue;
+      }
+      
+      if (tryStudent) {
+        benefitIfStudent += searchOptimalBackTracking(connectedNode,
+          lastIsStudent,
+          true,
+          1 + depth,
+          visited);
+        LOG(benefitIfStudent);
+      }
+      
+      if (tryEmpty) {
+        benefitIfLeftEmpty += searchOptimalBackTracking(connectedNode,
+          lastIsStudent,
+          false,
+          1 + depth,
+          visited);
+        LOG(benefitIfLeftEmpty);
+      }
+    }
+    
+    if (depth == 0) {
+      //mark all the nodes 
+    }
+    return max(benefitIfStudent, benefitIfLeftEmpty);
+  
+  }
+  #endif
   
   int getCost(int row, int col) const
   {
@@ -834,7 +980,240 @@ ostream& operator<<(ostream& os, const Grid& grid)
   return os;    
 }
 
-typedef vector<bool> VecBool;
+void placeStudent(VisitedMap& visitedMap, NodePtr node)
+{
+  visitedMap[node] = STUDENT;
+  for (vector<NodePtr>::const_iterator it = node->connections.begin();
+        it != node->connections.end();
+        ++it) 
+        {
+          NodePtr connectedNode = *it;
+          VisitedMap::const_iterator visited_it = visitedMap.find(connectedNode);
+          if (visited_it == visitedMap.end()) {
+            visitedMap.insert(VisitedMap::value_type(connectedNode, CHAIR));
+          } else {
+            assert(visited_it->second == CHAIR);            
+          }
+        }
+}
+
+void BoardAssignment::GenerateInitialBoardAssignments(BoardAssignmentQueue& queue, NodePtr startingNode, Grid& grid)
+{
+  VisitedMap visitedMap;
+  
+  {
+  BoardAssignmentPtr new_ba(new BoardAssignment(grid, startingNode, visitedMap, STUDENT));
+  queue.push_back(new_ba);
+  placeStudent(new_ba->visitedMap, startingNode); 
+  }
+  {
+  BoardAssignmentPtr new_ba(new BoardAssignment(grid, startingNode, visitedMap, CHAIR));
+  queue.push_back(new_ba);
+  }
+}
+
+int getSquareFromVisited(int row, int col, const VisitedMap& vMap)
+{
+  for(VisitedMap::const_iterator it = vMap.begin();
+    it != vMap.end();
+    ++it) {
+  NodePtr node = it->first;
+  int sq = it->second;
+  if (node->row == row && node->col == col) {
+    return sq;
+  }
+    }
+    
+    return -1;
+}
+
+ostream& printMap(ostream& oos, const Grid& grid, const VisitedMap& visitedMap)
+{
+  ostringstream os;
+  int global_count = 0;
+    //os << "\nCols  :  ";
+    os << endl;
+    for(unsigned int c = 0; c < grid.cols; ++c) {
+      os << (c % 10);
+    }
+    os << endl << endl;
+    for(int r = grid.rows - 1; r >= 0; --r) {
+      
+      int students = 0;
+      int empty = 0;
+      int connected = 0;
+      int broken = 0;
+      
+      for(unsigned int c = 0; c < grid.cols; ++c) {
+        int sq = getSquareFromVisited(r, c, visitedMap);
+        if (sq < 0) {
+          os << '_';
+        } else { 
+          os << SquareCh[sq];
+        }
+      
+      
+      }
+      os << " :" << r;
+      
+      os << endl;
+    }
+    
+    os << endl << endl ;
+    
+    LOG_STR(os.str());
+  return oos;    
+} 
+
+    
+    void BoardAssignment::GenerateOtherBoardAssignments(BoardAssignmentQueue& queue) const
+    {
+      
+      
+      
+      bool adjacent_to_student = false;
+      bool adjacent_to_empty = false;
+      vector<NodePtr> nonVisitedNodes;
+      
+      NodePtr nonVisitedNode;
+      
+      for(VisitedMap::const_iterator vit = visitedMap.begin();
+        vit != visitedMap.end();
+        ++vit) 
+      {
+        NodePtr node = vit->first;
+        for (vector<NodePtr>::const_iterator it = node->connections.begin();
+        it != node->connections.end();
+        ++it)
+        {
+          NodePtr connectedNode = *it;
+          VisitedMap::const_iterator visited_it = visitedMap.find(connectedNode);
+          if (visited_it == visitedMap.end()) {
+            //LOG_ON();
+            LOG_STR("Found non visited node " << connectedNode);
+            nonVisitedNodes.push_back(connectedNode);
+            
+          }
+        }
+      }
+      
+      while(!nonVisitedNodes.empty()) {
+        
+      //LOG_ON();
+      NodePtr node = nonVisitedNodes.back();
+      nonVisitedNodes.pop_back();
+      if (node->col == 1 && visitedMap.size() == 1 && visitedMap.begin()->second == STUDENT) {
+        LOG_ON();
+      } else {
+        LOG_OFF();
+      }
+      LOG_OFF();
+      //LOG_ON();
+      printMap(cout, grid, visitedMap);
+      LOG_STR("Processing node: " << node);
+      
+      
+      for (vector<NodePtr>::const_iterator it = node->connections.begin();
+        it != node->connections.end();
+        ++it) 
+      {
+        NodePtr connectedNode = *it;
+        LOG_STR(" Connected Node (" << (*it)->row << ", " << (*it)->col << ") " << endl);
+        
+        VisitedMap::const_iterator visited_it = visitedMap.find(connectedNode);
+        if (visited_it == visitedMap.end()) {
+          //LOG_STR("Adding unvisited node: " << connectedNode);
+          //unvisited.push_back(connectedNode);
+        } else {
+          LOG_STR("Node already visited");
+          int square = visited_it->second;
+          assert(square == CHAIR || square == STUDENT);
+          if (square == STUDENT) {
+            adjacent_to_student = true;
+          } else {
+            adjacent_to_empty = true;
+          }
+        }
+      }
+      
+      LOG_STR("Adding ba nodes");
+      if (true || !adjacent_to_empty) {
+        LOG_STR("Adding chair");
+        VisitedMap newVisitedMap(visitedMap);
+//        newVisitedMap[node] = CHAIR;
+        
+        for (vector<NodePtr>::const_iterator it = node->connections.begin();
+        it != node->connections.end();
+        ++it) 
+        {
+          NodePtr connectedNode = *it;
+          
+          VisitedMap::const_iterator visited_it = visitedMap.find(connectedNode);
+          if (visited_it == visitedMap.end()) {
+            //newVisitedMap.insert(VisitedMap::value_type(connectedNode, STUDENT));
+            //BoardAssignmentPtr new_ba(new BoardAssignment(grid, connectedNode, newVisitedMap, CHAIR));
+            //queue.push_back(new_ba);
+            //BoardAssignmentPtr new_ba2(new BoardAssignment(grid, connectedNode, newVisitedMap, STUDENT));
+            //queue.push_back(new_ba2);
+          }
+        }
+      
+        LOG_STR("Adding chair");
+        printMap(cout, grid, newVisitedMap);
+        BoardAssignmentPtr new_ba(new BoardAssignment(grid, node, newVisitedMap, CHAIR));
+        queue.push_front(new_ba);
+      }
+      
+      if (!adjacent_to_student)  {
+        LOG_STR("Adding student");
+        VisitedMap newVisitedMap(visitedMap);
+        //newVisitedMap[node] = STUDENT;
+
+        placeStudent(newVisitedMap, node);
+        
+        LOG_STR("Placeing student");
+        printMap(cout, grid, newVisitedMap);
+        
+        BoardAssignmentPtr new_ba(
+          new BoardAssignment(grid, node, newVisitedMap, STUDENT));
+        queue.push_front(new_ba);  
+        
+      }
+      
+      break;
+      }
+      
+    }
+    
+    void BoardAssignment::AssignStudents() {
+       for (VisitedMap::const_iterator it = visitedMap.begin();
+         it != visitedMap.end();
+         ++it) 
+       {
+         VisitedMap::value_type entry = *it;
+         if (entry.second == STUDENT) {
+            grid.setStudent(entry.first->row, entry.first->col);
+         }
+         
+       }
+    }
+    
+    int BoardAssignment::getScore() const
+    {
+      int score = 0;
+      for (VisitedMap::const_iterator it = visitedMap.begin();
+         it != visitedMap.end();
+         ++it) 
+       {
+         VisitedMap::value_type entry = *it;
+         if (entry.second == STUDENT) {
+            ++score;
+         }
+       }
+      return score;
+    }
+    
+
 typedef deque<VecBool> Perms;
 
 ostream& operator<<(ostream& os, const VecBool& rhs)
@@ -901,8 +1280,9 @@ void generate_perms(int length)
 
 void do_test_case(int test_case, ifstream& input)
 {
-  generate_perms(10);
-  return;
+  //generate_perms(10);
+  LOG_ON();
+  LOG_STR("abc " << 3 << " . " << 4.15);
   
   LOG_OFF();
   unsigned int R, C;

@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS =  -g
 OLD = -g -O3 -Wall
-EXEC_NAME = pockets.exe test_util.exe portal.exe classroom.exe
+EXEC_NAME = pockets.exe test_util.exe portal.exe classroom.exe classroom_old.exe
 INCLUDES =
 LIBS =
 OBJ_FILES = star_wars.o simplex.o util.o

@@ -1,4 +1,5 @@
 classroom.o: classroom.cxx util.h tri_logger.hpp
+classroom_old.o: classroom_old.cxx util.h tri_logger.hpp
 pockets.o: pockets.cxx util.h tri_logger.hpp
 portal_brute.o: portal_brute.cxx util.h tri_logger.hpp
 portal.o: portal.cxx util.h tri_logger.hpp
