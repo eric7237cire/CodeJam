@@ -156,24 +156,49 @@ ostream& operator<<(ostream& os, const Grid& grid);
 class BoardAssignment;
   typedef boost::shared_ptr<BoardAssignment> BoardAssignmentPtr;
   typedef deque<BoardAssignmentPtr> BoardAssignmentQueue;
-typedef map<NodePtr, bool> HasChairNeighborMap;
+
   typedef map<NodePtr, int> VisitedMap;
   typedef boost::shared_ptr<VisitedMap> VisitedMapPtr;
   typedef deque<NodePtr> UnVisitedList;
-  
+  typedef set<NodePtr> UnvisitedSet;
   
   class BoardAssignment
   {
     public:
       Grid& grid;
+      
+    private:
     VisitedMap visitedMap;
-    //current node assigning
+    UnvisitedSet unvisitedSet;
     
-    HasChairNeighborMap emptyNeighbor;
-  
-    BoardAssignment(Grid& grid, NodePtr node, const VisitedMap& visitedMap, int assignment) : grid(grid), visitedMap(visitedMap) 
+  public:
+    void addVisited(NodePtr node, int assignment)
     {
       this->visitedMap.insert(VisitedMap::value_type(node, assignment));
+      
+      UnvisitedSet::iterator it = unvisitedSet.find(node);
+      if (it != unvisitedSet.end()) {
+        unvisitedSet.erase(it);
+      }
+      
+      for (vector<NodePtr>::const_iterator it = node->connections.begin();
+        it != node->connections.end();
+        ++it)
+        {
+          NodePtr connectedNode = *it;
+          VisitedMap::const_iterator visited_it = visitedMap.find(connectedNode);
+          if (visited_it == visitedMap.end()) {
+            LOG_OFF();
+            LOG_STR("Found non visited node " << connectedNode);
+            unvisitedSet.insert(connectedNode);            
+          }
+        }
+    }
+    //current node assigning
+    
+    BoardAssignment(Grid& grid, const VisitedMap& visitedMap, const UnvisitedSet& unvisitedSet ) : grid(grid), visitedMap(visitedMap), unvisitedSet(unvisitedSet) 
+    {
+      
     }
     
     void GenerateOtherBoardAssignments(BoardAssignmentQueue& queue) const;
@@ -181,14 +206,35 @@ typedef map<NodePtr, bool> HasChairNeighborMap;
     void AssignStudents();
     
     int getScore() const;
+
+void placeStudent(NodePtr node)
+{
+  addVisited(node, STUDENT);
+  for (vector<NodePtr>::const_iterator it = node->connections.begin();
+        it != node->connections.end();
+        ++it) 
+        {
+          NodePtr connectedNode = *it;
+          VisitedMap::const_iterator visited_it = visitedMap.find(connectedNode);
+          if (visited_it == visitedMap.end()) {
+            addVisited(connectedNode, CHAIR);
+          } else {
+            assert(visited_it->second == CHAIR);            
+          }
+        }
+}    
     
-    
-    
+    friend ostream& operator<<(ostream& os, const BoardAssignment& rhs);
   };
+  
+  ostream& printMap(ostream& oos, const Grid& grid, const VisitedMap& visitedMap);
+
   
   ostream& operator<<(ostream& os, const BoardAssignment& rhs)
   {
-    os << "BoardAssignment.  Visited: " << rhs.visitedMap.size()  << endl; 
+    os << "BoardAssignment.  Visited: " << rhs.getScore() << endl; 
+    printMap(os, rhs.grid, rhs.visitedMap);
+    
     return os;
   }
 
@@ -765,11 +811,6 @@ public:
     return count; 
   }
   
-  
-  
-  
-  
-  
   int searchOptimalBackTracking(NodePtr startingNode)
   {
     LOG_STR("Starting!");
@@ -784,17 +825,20 @@ public:
     
     while(!queue.empty()) 
     {
+      BoardAssignmentPtr ba = queue.front();
       ++processed_nodes;
-      if (processed_nodes % 1000000 == 0) {
-        LOG_ON();
+      if (processed_nodes % 1000 == 0) {
+        LOG_ON(); 
         LOG(processed_nodes);
+        LOG_STR("Board assignment " << *ba);
         LOG_OFF();
       }
-      BoardAssignmentPtr ba = queue.front();
+      
       queue.pop_front();
+      LOG_OFF();
       LOG_STR("Board assignment " << *ba);
       LOG_STR("Queue size: " << queue.size());
-      
+      LOG_OFF();
       int score = ba->getScore();
       LOG_STR("Score: " << score);
       if (score > max_score) {
@@ -813,85 +857,6 @@ public:
     return max_score;
   }
   
-  #if 0
-  int searchOptimalBackTracking(NodePtr node, 
-    bool secToLastIsStudent,
-    bool lastIsStudent,
-    NodePtr lastNode,
-    int depth, 
-    VisitedMapPtr visitedMapPtr)
-  {
-    LOG_ON();
-    if (!visitedMapPtr) {
-      //visited.reset(new GridBool(rows, VecBool(cols, false)));
-      visitedMapPtr.reset(new VisitedMap());
-      //LOG_STR("Created grid bool, rows=" << visited->size() << " cols=" << (*visited)[0].size());
-    }
-    
-    GridBool& visitedRef = *visited;
-    
-    int benefitIfStudent = 0;
-    int benefitIfLeftEmpty = 0;
-    
-    bool tryStudent = false;
-    bool tryEmpty = false;
-    LOG_STR("Processing node " << node << " depth: " << depth);
-    
-    //last element is a chair, can always add a student
-    if (!lastIsStudent || depth == 0) {
-      tryStudent = true;
-      benefitIfStudent = 1;
-      LOG_STR("Try student");
-    }
-    
-    //last element was a student, must add a chair
-    if (lastIsStudent || 
-      (!lastIsStudent && secToLastIsStudent) ||
-      (depth == 0))
-    {
-      tryEmpty = true;
-      LOG_STR("Try empty");
-    } 
-      
-    visitedRef[node->row][node->col] = true;
-    
-    for (vector<NodePtr>::const_iterator it = node->connections.begin();
-    it != node->connections.end();
-    ++it) {
-      NodePtr connectedNode = *it;
-      LOG_STR(" Connected Node (" << (*it)->row << ", " << (*it)->col << ") " << endl);
-      
-      if (visitedRef[connectedNode->row][connectedNode->col]) {
-        LOG_STR("Already visited");
-        continue;
-      }
-      
-      if (tryStudent) {
-        benefitIfStudent += searchOptimalBackTracking(connectedNode,
-          lastIsStudent,
-          true,
-          1 + depth,
-          visited);
-        LOG(benefitIfStudent);
-      }
-      
-      if (tryEmpty) {
-        benefitIfLeftEmpty += searchOptimalBackTracking(connectedNode,
-          lastIsStudent,
-          false,
-          1 + depth,
-          visited);
-        LOG(benefitIfLeftEmpty);
-      }
-    }
-    
-    if (depth == 0) {
-      //mark all the nodes 
-    }
-    return max(benefitIfStudent, benefitIfLeftEmpty);
-  
-  }
-  #endif
   
   int getCost(int row, int col) const
   {
@@ -966,34 +931,21 @@ ostream& operator<<(ostream& os, const Grid& grid)
   return os;    
 }
 
-void placeStudent(VisitedMap& visitedMap, NodePtr node)
-{
-  visitedMap[node] = STUDENT;
-  for (vector<NodePtr>::const_iterator it = node->connections.begin();
-        it != node->connections.end();
-        ++it) 
-        {
-          NodePtr connectedNode = *it;
-          VisitedMap::const_iterator visited_it = visitedMap.find(connectedNode);
-          if (visited_it == visitedMap.end()) {
-            visitedMap.insert(VisitedMap::value_type(connectedNode, CHAIR));
-          } else {
-            assert(visited_it->second == CHAIR);            
-          }
-        }
-}
+
 
 void BoardAssignment::GenerateInitialBoardAssignments(BoardAssignmentQueue& queue, NodePtr startingNode, Grid& grid)
 {
   VisitedMap visitedMap;
-  
+  UnvisitedSet unvisitedSet;  
   {
-  BoardAssignmentPtr new_ba(new BoardAssignment(grid, startingNode, visitedMap, STUDENT));
+  BoardAssignmentPtr new_ba(new BoardAssignment(grid, visitedMap, unvisitedSet));
+  new_ba->placeStudent(startingNode);
   queue.push_back(new_ba);
-  placeStudent(new_ba->visitedMap, startingNode); 
+   
   }
   {
-  BoardAssignmentPtr new_ba(new BoardAssignment(grid, startingNode, visitedMap, CHAIR));
+  BoardAssignmentPtr new_ba(new BoardAssignment(grid, visitedMap, unvisitedSet));
+  new_ba->addVisited(startingNode, CHAIR);
   queue.push_back(new_ba);
   }
 }
@@ -1015,7 +967,7 @@ int getSquareFromVisited(int row, int col, const VisitedMap& vMap)
 
 ostream& printMap(ostream& oos, const Grid& grid, const VisitedMap& visitedMap)
 {
-  return;
+ // return oos;
   ostringstream os;
   int global_count = 0;
     //os << "\nCols  :  ";
@@ -1051,52 +1003,34 @@ ostream& printMap(ostream& oos, const Grid& grid, const VisitedMap& visitedMap)
     LOG_STR(os.str());
   return oos;    
 } 
-
     
     void BoardAssignment::GenerateOtherBoardAssignments(BoardAssignmentQueue& queue) const
     {
       
       bool adjacent_to_student = false;
       bool adjacent_to_empty = false;
-      vector<NodePtr> nonVisitedNodes;
       
-      NodePtr nonVisitedNode;
-      
-      for(VisitedMap::const_iterator vit = visitedMap.begin();
-        vit != visitedMap.end();
-        ++vit) 
-      {
-        NodePtr node = vit->first;
-        for (vector<NodePtr>::const_iterator it = node->connections.begin();
-        it != node->connections.end();
-        ++it)
-        {
-          NodePtr connectedNode = *it;
-          VisitedMap::const_iterator visited_it = visitedMap.find(connectedNode);
-          if (visited_it == visitedMap.end()) {
-            //LOG_ON();
-            LOG_STR("Found non visited node " << connectedNode);
-            nonVisitedNodes.push_back(connectedNode);
-            
-          }
-        }
+      if (unvisitedSet.empty()) {
+        return;
       }
       
-      while(!nonVisitedNodes.empty()) {
-        
+      //UnvisitedSet unvisitedSet(this->unvisitedSet);
+      UnvisitedSet::iterator it = unvisitedSet.begin();
+      
+      NodePtr node = *it;
+      
+      //unvisitedSet.erase(it);
+      
       //LOG_ON();
-      NodePtr node = nonVisitedNodes.back();
-      nonVisitedNodes.pop_back();
-      if (node->col == 1 && visitedMap.size() == 1 && visitedMap.begin()->second == STUDENT) {
-        LOG_ON();
-      } else {
-        LOG_OFF();
-      }
+      LOG_STR("Processing node: " << node);
+      //printMap(cout, grid, visitedMap);
+      
+      assert(visitedMap.find(node) == visitedMap.end());
+        
       LOG_OFF();
       //LOG_ON();
-      printMap(cout, grid, visitedMap);
+      //printMap(cout, grid, visitedMap);
       LOG_STR("Processing node: " << node);
-      
       
       for (vector<NodePtr>::const_iterator it = node->connections.begin();
         it != node->connections.end();
@@ -1121,37 +1055,27 @@ ostream& printMap(ostream& oos, const Grid& grid, const VisitedMap& visitedMap)
         }
       }
       
+      
+      bool mustPutStudent = getSquareFromVisited(node->row - 1, node->col, visitedMap) == STUDENT
+      || getSquareFromVisited(node->row + 1, node->col, visitedMap) == STUDENT;
+           
       LOG_STR("Adding ba nodes");
-      if (!adjacent_to_empty) {
+      if (!mustPutStudent && !adjacent_to_empty) {
         LOG_STR("Adding chair");
         VisitedMap newVisitedMap(visitedMap);
-//        newVisitedMap[node] = CHAIR;
         
-        for (vector<NodePtr>::const_iterator it = node->connections.begin();
-        it != node->connections.end();
-        ++it) 
-        {
-          NodePtr connectedNode = *it;
-          
-          VisitedMap::const_iterator visited_it = visitedMap.find(connectedNode);
-          if (visited_it == visitedMap.end()) {
-            //newVisitedMap.insert(VisitedMap::value_type(connectedNode, STUDENT));
-            //BoardAssignmentPtr new_ba(new BoardAssignment(grid, connectedNode, newVisitedMap, CHAIR));
-            //queue.push_back(new_ba);
-            //BoardAssignmentPtr new_ba2(new BoardAssignment(grid, connectedNode, newVisitedMap, STUDENT));
-            //queue.push_back(new_ba2);
-          }
-        }
-      
         LOG_STR("Adding chair");
-        printMap(cout, grid, newVisitedMap);
-        BoardAssignmentPtr new_ba(new BoardAssignment(grid, node, newVisitedMap, CHAIR));
+        //printMap(cout, grid, newVisitedMap);
+        BoardAssignmentPtr new_ba(new BoardAssignment(grid, newVisitedMap, unvisitedSet));
+        new_ba->addVisited(node, CHAIR);
         queue.push_front(new_ba);
+        throw 3;
       }
       
-      if (adjacent_to_empty) {
+      if (!mustPutStudent && adjacent_to_empty) {
         LOG_STR("Adding chair + students");
-        VisitedMap newVisitedMap(visitedMap);
+        BoardAssignmentPtr new_ba(new BoardAssignment(grid, visitedMap, unvisitedSet));
+        new_ba->addVisited(node, CHAIR);
         
         bool placedStudent = false;
         for (vector<NodePtr>::const_iterator it = node->connections.begin();
@@ -1163,7 +1087,7 @@ ostream& printMap(ostream& oos, const Grid& grid, const VisitedMap& visitedMap)
           VisitedMap::const_iterator visited_it = visitedMap.find(connectedNode);
           if (visited_it == visitedMap.end()) {
             //newVisitedMap.insert(VisitedMap::value_type(connectedNode, STUDENT));
-            placeStudent(newVisitedMap, connectedNode);
+            new_ba->placeStudent(connectedNode);
             placedStudent = true;
             //BoardAssignmentPtr new_ba(new BoardAssignment(grid, connectedNode, newVisitedMap, CHAIR));
             //queue.push_back(new_ba);
@@ -1174,30 +1098,26 @@ ostream& printMap(ostream& oos, const Grid& grid, const VisitedMap& visitedMap)
       
         if (placedStudent) {
         LOG_STR("Adding chair");
-        printMap(cout, grid, newVisitedMap);
-        BoardAssignmentPtr new_ba(new BoardAssignment(grid, node, newVisitedMap, CHAIR));
+        //printMap(cout, grid, new_ba->visitedMap);
         queue.push_front(new_ba);
         }
       }
       
       if (!adjacent_to_student)  {
         LOG_STR("Adding student");
-        VisitedMap newVisitedMap(visitedMap);
-        //newVisitedMap[node] = STUDENT;
-
-        placeStudent(newVisitedMap, node);
-        
-        LOG_STR("Placeing student");
-        printMap(cout, grid, newVisitedMap);
         
         BoardAssignmentPtr new_ba(
-          new BoardAssignment(grid, node, newVisitedMap, STUDENT));
+          new BoardAssignment(grid, visitedMap, unvisitedSet));
+        
+        new_ba->placeStudent(node);
+        
+        LOG_STR("Placeing student");
+        //printMap(cout, grid, new_ba->visitedMap);
+        
         queue.push_front(new_ba);  
         
       }
       
-      break;
-      }
       
     }
     
