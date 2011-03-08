@@ -856,7 +856,7 @@ public:
     assert(max_ba);
     
     max_ba->AssignStudents();
-    LOG_ON();
+    LOG_ON(); 
     LOG_STR("Processed nodes: " << processed_nodes << " " << max_score);
     return max_score;
   }
