@@ -11,6 +11,7 @@
 #include <boost/smart_ptr.hpp>
 #define SHOW_TIME 1
 #include "util.h" 
+#include "graph.h"
 
 #include <boost/shared_ptr.hpp>
 
@@ -256,12 +257,18 @@ public:
   GridNodes nodes;
   
   unsigned int num_spaces;
+  Graph graph;
 
-  Grid(unsigned int rows, unsigned int cols) : rows(rows), cols(cols), cells(rows), nodes(rows, VectorNodes(cols, NodePtr())), num_spaces(0)
+  Grid(unsigned int rows, unsigned int cols) : rows(rows), cols(cols), cells(rows), nodes(rows, VectorNodes(cols, NodePtr())), num_spaces(0), graph(rows * cols)
   {
     for(VectorRows::iterator it = cells.begin(); it != cells.end(); ++it) {
       *it = VectorCells(cols, UNINIT);      
     }
+  }
+  
+  int getIndex(int row, int col)
+  {
+    return row * cols + col;
   }
   
   void setSquare(unsigned int row, unsigned int col, char sq)
@@ -284,6 +291,7 @@ public:
       if (cells[row][col] == UNINIT) {
         cells[row][col] = BROKEN;
       }
+      graph.removeNode(getIndex(row, col));
       break;
     case 's':
       setStudent(row, col);
@@ -388,6 +396,21 @@ public:
     //cout << *node2 ;
     node1->connections.push_back(node2);
     node2->connections.push_back(node1);
+    
+    graph.addConnection(
+      getIndex(node1->row, node1->col),
+      getIndex(node2->row, node2->col));
+  }
+  
+  int findCompleteGraphOfInverse()
+  {
+    set<int> f;
+    graph.inverse();
+    
+    graph.findLargestSuperConnectedSubGraph(f);
+    LOG_ON();
+    LOG_STR(f);
+    return f.size();
   }
   
   void createNodeConnections() {
@@ -1214,7 +1237,7 @@ void do_test_case(int test_case, ifstream& input)
         total_placed++;
       }
     }
-  }
+  } 
   
   LOG_ON();
 //  LOG(grid);
@@ -1222,10 +1245,17 @@ void do_test_case(int test_case, ifstream& input)
   
   grid.createNodeConnections();
    total_placed = grid.visitNodes();
+
+
+   
   
   LOG_ON();
   LOG(grid);
-  printf("Case #%d: %d\n", test_case+1, total_placed);
+  
+  int max_ss = grid.findCompleteGraphOfInverse();
+  LOG(max_ss);
+  printf("Case #%d: %d\n", test_case+1, max_ss);
+  //printf("Case #%d: %d\n", test_case+1, total_placed);
    
   return;    
 }

@@ -8,7 +8,7 @@ OBJ_FILES = star_wars.o simplex.o util.o
 INSTALL_DIR = /usr/bin
 
 ifeq ($(mode),release)
-   CFLAGS =
+   CFLAGS = -O3
    CFLAGS +=-DCLEANTLOG
 else
    mode = debug
@@ -47,6 +47,9 @@ clean :
 	
 test_util.exe : util_test.o util.o
 	$(CC) -static -o $@ $< util.o -lboost_unit_test_framework
+	
+graph_test.exe : graph_test.o graph.h graph_test.cxx
+	$(CC) -static -o $@ $< util.o tri_logger.o -lboost_unit_test_framework
 	
 %.o: %.cxx
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
