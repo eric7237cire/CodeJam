@@ -122,7 +122,7 @@ private:
   static Edge buildEdge(int nodeA, int nodeB);
   bool growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const;
   void augmentMatch(NodePtr freeYNode, EdgeSet& match) const;
-  static int getUnmatchedVertex(NodeSet& nodeSet);
+  static int getUnmatchedVertex(const NodeSet& nodeSet);
   void findUnmatchedVertices(const EdgeSet& match, NodeSet& unmatchedVertices) const;
   void findMatchedVertices(const EdgeSet& match, NodeSet& matchedVertices) const;
   void findMinimumVertexCover(const EdgeSet& match, NodeSet& vertexCover) const;
@@ -171,12 +171,12 @@ Edge Graph::buildEdge(int nodeA, int nodeB)
   return Edge(nodeB, nodeA);
 }
 
-int Graph::getUnmatchedVertex(NodeSet& nodeSet)
+int Graph::getUnmatchedVertex(const NodeSet& nodeSet)
 {
   assert(!nodeSet.empty());
   NodeSet::iterator it = nodeSet.begin();
   int retVal = *it;
-  nodeSet.erase(it);
+  //nodeSet.erase(it);
   return retVal;
 }
 
@@ -339,7 +339,10 @@ void Graph::findMaximumIndependantSet(set<int>& returnSet) const
     LOG_STR("match grew"); 
   }
   
+  LOG_STR("MATCH DONE");
   LOG_STR("Match: [" << match << "]");
+  LOG_STR("Match size: " << match.size());
+  LOG_STR("Number of vertices: " << nodes.size());
   
   set<int> vertexCover;
   findMinimumVertexCover(match, vertexCover);
@@ -576,67 +579,73 @@ bool Graph::growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
     return false;
   }
   
-  int freeVertexFromX = getUnmatchedVertex(freeX);
-  
-  SetNode visited;
-  deque<NodePtr> toVisit;
-  
-  toVisit.push_back(NodePtr(new Node(NodePtr(), freeVertexFromX)));
- 
-  LOG_STR("growMatch starting.  Match: " << match << "\n" 
-    << " FreeX: " << freeX << "\n"
-    << " FreeY: " << freeY << "\n"
-    << " selected x " << freeVertexFromX);
-    
-  while(!toVisit.empty())
+  for(NodeSet::const_iterator it = freeX.begin();
+    it != freeX.end();
+    ++it)
   {
-    NodePtr nodePtr = toVisit.front();
-    int node = nodePtr->value;
+    int freeVertexFromX = *it; //getUnmatchedVertex(freeX);
+  
+    SetNode visited;
+    deque<NodePtr> toVisit;
     
-    NodeSet::iterator freeYit = freeY.find(node); 
-    if(freeYit != freeY.end())
-    {
-      LOG_STR("Augmented match!");
-      augmentMatch(nodePtr, match);
-      freeY.erase(freeYit);
-      LOG_STR(match);
-      return true;      
-    }
-    
-    toVisit.pop_front();
-    visited.insert(node);
-    
-    //X to Y use an unmatched edge
-    //Y to X, use a matched edge
-    bool useUnmatchedEdge = xNodes.find(node) != xNodes.end();
-    LOG_STR("useUnmatchedEdge " << useUnmatchedEdge);
-    assert(nodeExists(node));
-    
-    GraphConnections::const_iterator connIt = connections.find(node);  
-    NodeConnections& connections = *(connIt->second);
-    
-    for(NodeConnections::const_iterator it = connections.begin();
-      it != connections.end();
-      ++it)
-    {
-      Edge e = buildEdge(node, *it);
-      int otherNode = *it;
-      bool isMatched = match.find(e) != match.end();
-      LOG_STR("Edge " << e << " is matched " << isMatched);
+    toVisit.push_back(NodePtr(new Node(NodePtr(), freeVertexFromX)));
+   
+    LOG_STR("growMatch starting.\n  Match: " << match << "\n" 
+      << " FreeX: " << freeX << "\n"
+      << " FreeY: " << freeY << "\n"
+      << " selected x " << freeVertexFromX);
       
-      bool hasVisited = visited.find(otherNode) != visited.end();
-        LOG_STR("Has visited: " << hasVisited);
-        
-      if ( !hasVisited && ( (useUnmatchedEdge && !isMatched) || 
-        (!useUnmatchedEdge && isMatched) ) )
+    while(!toVisit.empty())
+    {
+      NodePtr nodePtr = toVisit.front();
+      int node = nodePtr->value;
+      
+      NodeSet::iterator freeYit = freeY.find(node); 
+      if(freeYit != freeY.end())
       {
-        LOG_STR("Going to visit " << otherNode);
-        
-        toVisit.push_back(NodePtr(new Node(nodePtr, otherNode)));
+        LOG_STR("Augmented match!");
+        augmentMatch(nodePtr, match);
+        freeY.erase(freeYit);
+        remove(freeX, freeVertexFromX);
+        LOG_STR(match);
+        return true;      
       }
+      
+      toVisit.pop_front();
+      visited.insert(node);
+      
+      //X to Y use an unmatched edge
+      //Y to X, use a matched edge
+      bool useUnmatchedEdge = xNodes.find(node) != xNodes.end();
+      LOG_STR("useUnmatchedEdge " << useUnmatchedEdge);
+      assert(nodeExists(node));
+      
+      GraphConnections::const_iterator connIt = connections.find(node);  
+      NodeConnections& connections = *(connIt->second);
+      
+      for(NodeConnections::const_iterator it = connections.begin();
+        it != connections.end();
+        ++it)
+      {
+        Edge e = buildEdge(node, *it);
+        int otherNode = *it;
+        bool isMatched = match.find(e) != match.end();
+        LOG_STR("Edge " << e << " is matched " << isMatched);
+        
+        bool hasVisited = visited.find(otherNode) != visited.end();
+          LOG_STR("Has visited: " << hasVisited);
+          
+        if ( !hasVisited && ( (useUnmatchedEdge && !isMatched) || 
+          (!useUnmatchedEdge && isMatched) ) )
+        {
+          LOG_STR("Going to visit " << otherNode);
+          
+          toVisit.push_back(NodePtr(new Node(nodePtr, otherNode)));
+        }
+      }
+      
+      
     }
-    
-    
   }
   
   return false;
