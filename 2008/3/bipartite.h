@@ -27,6 +27,7 @@ typedef map<int, NodeConnectionsPtr> GraphConnections;
 typedef set<int> SetInt;
 typedef set<int> SetNode;
 typedef set<int> NodeSet;
+typedef boost::shared_ptr<NodeSet> NodeSetPtr;
 typedef pair<int, int> Edge;
 typedef set<Edge> EdgeSet;
 
@@ -56,10 +57,36 @@ template<typename T> bool isMember(const set<T>& aSet, const T& value)
   return aSet.find(value) != aSet.end();
 };
 
+template<typename T> bool remove(set<T>& aSet, const T& value)
+{
+  typename set<T>::iterator it = aSet.find(value);
+  if (it == aSet.end()) {
+    return false;
+  }
+  
+  aSet.erase(it);
+  return true;
+}
+
+template<typename T> bool removeAll(set<T>& aSet, const set<T>& aSetToRemove)
+{
+  typename set<T>::const_iterator it = aSetToRemove.begin();
+  
+  for( ; it != aSetToRemove.end(); ++it)
+  {
+    remove(aSet, *it);
+  }
+  
+  return true;
+}
+
+
 template<typename K, typename V> bool isMember(const map<K, V>& aSet, const K& value)
 {
   return aSet.find(value) != aSet.end();
 };
+
+
 
 
 class Graph 
@@ -85,7 +112,6 @@ public:
   
   //Correspond à complément de minimum vertex cover
   void findMaximumIndependantSet(set<int>&) const;
-  void findMinimumVertexCover(const EdgeSet& match, NodeSet& vertexCover) const;
   
   friend ostream& operator<<(ostream& os, const Graph& g);
   
@@ -96,7 +122,11 @@ private:
   static Edge buildEdge(int nodeA, int nodeB);
   bool growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const;
   void augmentMatch(NodePtr freeYNode, EdgeSet& match) const;
-  static int getUnmatchedVertex(NodeSet& nodeSet); 
+  static int getUnmatchedVertex(NodeSet& nodeSet);
+  void findUnmatchedVertices(const EdgeSet& match, NodeSet& unmatchedVertices) const;
+  void findMatchedVertices(const EdgeSet& match, NodeSet& matchedVertices) const;
+  void findMinimumVertexCover(const EdgeSet& match, NodeSet& vertexCover) const;
+  bool isUnmatchedEdge(const EdgeSet& match, int unmatchedNode, int matchedNode) const;
 };
 
 Graph::Graph() : 
@@ -116,6 +146,20 @@ bool Graph::nodeExists(int node) const
     yNodes.find(node) != yNodes.end());
   
   return true;
+}
+
+bool Graph::isConnected(int nodeA, int nodeB) const
+{
+  GraphConnections::const_iterator it = connections.find(nodeA);
+  
+  assert(it != connections.end());
+  
+  NodeConnectionsPtr nodeConnections = it->second;
+  
+  assert(nodeConnections);
+  
+  return isMember(*nodeConnections, nodeB);
+  
 }
 
 Edge Graph::buildEdge(int nodeA, int nodeB)
@@ -315,8 +359,148 @@ void Graph::findMaximumIndependantSet(set<int>& returnSet) const
   
 }
 
+void Graph::findUnmatchedVertices(const EdgeSet& match, NodeSet& unmatchedVertices) const
+{
+  unmatchedVertices = nodes;
+  
+  for(EdgeSet::iterator it = match.begin(); it != match.end(); ++it)
+  {
+    remove(unmatchedVertices, it->first);
+    remove(unmatchedVertices, it->second);
+  }
+
+  
+}
+
+void Graph::findMatchedVertices(const EdgeSet& match, NodeSet& matchedVertices) const
+{
+  for(EdgeSet::iterator it = match.begin(); it != match.end(); ++it)
+  {
+    matchedVertices.insert(it->first);
+    matchedVertices.insert(it->second);
+  }
+}
+
+bool Graph::isUnmatchedEdge(const EdgeSet& match, int unmatchedNode, int matchedNode) const
+{
+  if (!isConnected(unmatchedNode, matchedNode)) {
+    return false;
+  }
+    
+  Edge edge = buildEdge(unmatchedNode, matchedNode);
+  bool isInMatched = isMember(match, edge);
+  LOG_STR("Edge: " << edge << " matched? " << isInMatched);
+  
+  if (isInMatched) {
+    return false;
+  }
+  
+  return true;
+}
+
+int getMatchedVertex(const EdgeSet& match, int node)
+{
+  for(EdgeSet::const_iterator it = match.begin(); it != match.end(); ++it)
+  {
+    const Edge& edge = *it;
+    if (edge.first == node) {
+      return edge.second;
+    }
+    if (edge.second == node) {
+      return edge.first;
+    }
+  }
+  
+  throw "Could not find matched vertex";
+}
+
 void Graph::findMinimumVertexCover(const EdgeSet& match, NodeSet& vertexCover) const
 {
+  //http://en.wikipedia.org/wiki/K%C3%B6nig's_theorem_(graph_theory)
+  
+  /*
+  Suppose that G=(V,E) is a bipartite graph, where V = A ∪ B. Let M be a matching for G.
+We must show either G has a vertex cover C of size |M|, or M is not a maximum matching.
+First, if M is a perfect matching, then M is maximum. In this case, every edge is incident to exactly one vertex on either side, so any partition of G is a vertex cover of size |M| and we are done.
+Otherwise, use an alternating path argument. An alternating path is a path where the edges alternate between M and E \ M. Partition the vertices of G into subsets Si as follows. Let S0 consist of all vertices unmatched by M. For integer j ≥ 0, let S2j+1 be the set of vertices that:
+Are adjacent to vertices in S2j via some edge e ∈ E \ M.
+Have not been included in any previously-defined set Sk, where k < j.
+Each vertex v ∈ S2j+1 must be adjacent to another vertex u via an edge e = ∈ M (otherwise, v is unmatched by M and would have been placed in S0). If the u has not yet been included in a set Si, insert u in S2j+2. If there are no vertices adjacent to S2j, arbitrarily pick an unused vertex and continue in S2j+1.
+*/
+  NodeSetPtr unmatchedVertices(new NodeSet());  
+  findUnmatchedVertices(match, *unmatchedVertices);
+  
+  NodeSet matchedVertices;  
+  findMatchedVertices(match, matchedVertices);
+  
+  assert(unmatchedVertices->size() + matchedVertices.size() == nodes.size());
+  
+  //S0
+  vector<NodeSetPtr> levels;
+  levels.push_back(unmatchedVertices);
+  
+  int j = 0;
+  
+  do
+  {
+    LOG_STR("Beginning level");
+    LOG_STR("S[2j] = " << *levels[2*j]);
+    NodeSetPtr TwoJ = levels[2 * j];
+    //odd (S1 S3 etc)
+    NodeSetPtr TwoJPlusOne(new NodeSet());
+    
+    //even
+    NodeSetPtr TwoJPlusTwo(new NodeSet());
+    
+    levels.push_back(TwoJPlusOne);
+    levels.push_back(TwoJPlusTwo);
+    
+    for(NodeSet::const_iterator it = TwoJ->begin();
+      it != TwoJ->end();
+      ++it)
+    {
+      //must connect to a matched vertex via an unmatched edge
+      for(NodeSet::iterator mit = matchedVertices.begin();
+        mit != matchedVertices.end();
+        ++mit)
+      {
+        if (isUnmatchedEdge(match, *it, *mit)) {
+          TwoJPlusOne->insert(*mit);
+          
+          int matchedVertex = getMatchedVertex(match, *mit);
+          
+          //if hasn't been placed yet, place it
+          if (isMember(matchedVertices, matchedVertex)) {
+            TwoJPlusTwo->insert(matchedVertex); 
+          }
+          
+           //If there are no vertices adjacent to S2j, arbitrarily pick an unused vertex and continue in S2j+1.
+        }
+        
+        
+      }
+    }
+    
+    LOG_STR("S[2j+1] = " << *levels[2*j+1]);
+    LOG_STR("S[2j+2] = " << *levels[2*j+2]);
+    
+    removeAll(matchedVertices, *TwoJPlusOne);
+    removeAll(matchedVertices, *TwoJPlusTwo);
+    
+    if (matchedVertices.empty()) {
+      return;
+    }
+    
+    LOG_STR("Matched vertices " << matchedVertices);
+      
+    if (TwoJPlusOne->size() == 0 || TwoJPlusTwo->size() == 0) {
+      throw 3;
+    }
+    
+    ++j;
+    
+  } while(true);
+  
   
 }
 
