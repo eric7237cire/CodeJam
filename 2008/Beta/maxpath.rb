@@ -1,7 +1,7 @@
 require 'set'
 
 DEBUG_OUTPUT = false
-TEST = false 
+TEST = true 
 
 MAX_NODES = 1000
 

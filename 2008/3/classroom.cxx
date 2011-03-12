@@ -406,9 +406,11 @@ public:
   {
     set<int> f;
     graph.inverse();
+    LOG_ON();
+    LOG_STR(graph);
     
     graph.findLargestSuperConnectedSubGraph(f);
-    LOG_ON();
+    
     LOG_STR(f);
     return f.size();
   }
