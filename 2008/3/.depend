@@ -1,6 +1,6 @@
 classroom.o: classroom.cxx util.h tri_logger.hpp graph.h
 classroom_old.o: classroom_old.cxx util.h tri_logger.hpp
-graph_test.o: graph_test.cxx graph.h
+graph_test.o: graph_test.cxx graph.h util.h tri_logger.hpp bipartite.h
 pockets.o: pockets.cxx util.h tri_logger.hpp
 portal_brute.o: portal_brute.cxx util.h tri_logger.hpp
 portal.o: portal.cxx util.h tri_logger.hpp

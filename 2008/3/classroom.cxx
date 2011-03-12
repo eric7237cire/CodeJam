@@ -82,7 +82,7 @@ public:
   
   int label; //1, 2
   
-  Node(int row, int col) : row(row), col(col), label(-1) {
+  Node(int row, int col) : row(row), col(col), label(0) {
   }
   
   void disconnectFromNeighbors() //GridNodes& nodes)
@@ -559,6 +559,86 @@ public:
     return false;
   }
   
+  int do_bipartite() {
+     NodePtr startingNode;
+     
+     startingNode.reset();
+     int s1_count = 0;
+     int s2_count = 0;
+   
+    for(int i = 0; i < rows*cols; ++i) {
+      const int row_i = i / cols;
+      const int col_i = i % cols;
+      if (nodes[row_i][col_i]) {
+        //cout << row_i << " " << col_i << nodes[row_i][col_i] << endl;
+      }
+      
+      
+      if (!startingNode && nodes[row_i][col_i] && nodes[row_i][col_i]->connections.size() > 0) {
+        startingNode = nodes[row_i][col_i];
+        startingNode->label = 1;        
+      }
+      
+    }
+    
+    queue<NodePtr> nodesToSearch;
+    if (startingNode) {
+      nodesToSearch.push(startingNode);
+    }
+    
+    vector<NodePtr> s1_nodes;
+    vector<NodePtr> s2_nodes;
+    
+    while(!nodesToSearch.empty()) {
+      NodePtr node = nodesToSearch.front();
+      nodesToSearch.pop();
+      //nodes[node->row][node->col].reset();
+      LOG(node);
+      if (node->label == 1) {
+        s1_count ++;
+        s1_nodes.push_back(node);
+        LOG("Logging 1");
+        LOG(node);
+      } else if (node->label == 2) {
+        LOG("Logging 2");
+        LOG(node);
+        s2_nodes.push_back(node);
+        s2_count++;
+      } else {
+        throw 3;
+      }
+      
+      for (vector<NodePtr>::const_iterator it = node->connections.begin();
+        it != node->connections.end();
+        ++it) 
+      {
+        if (it->get()->label == 0) {
+          
+          it->get()->label = (node->label == 1) ? 2 : 1;
+          nodesToSearch.push(*it);        
+        }
+      }
+    }
+    
+    if (s1_count >= s2_count) {
+       for (vector<NodePtr>::const_iterator it = s1_nodes.begin();
+        it != s1_nodes.end();
+        ++it)
+       {
+         setStudent(it->get()->row, it->get()->col);
+       }
+    } else {
+      for (vector<NodePtr>::const_iterator it = s2_nodes.begin();
+        it != s2_nodes.end();
+        ++it)
+       {
+         setStudent(it->get()->row, it->get()->col);
+       }
+    }
+    
+    return max(s1_count, s2_count); 
+  }
+  
   int searchForEdges() {
     LOG_ON();
     int potential_student_count = 0;
@@ -793,49 +873,23 @@ public:
      LOG(*this);
      LOG_OFF();
      
-     local_count = 0;
-     
-     NodePtr startingNode;
-     do 
-     {
-       startingNode.reset();
-     
-       for(int col = 0; col < cols; ++col) {
-         for(int row = 0; row < rows; ++row) {
-        
-        
-          if (!startingNode 
-            && nodes[row][col] 
-            && nodes[row][col]->connections.size() > 0) 
-          {
-            startingNode = nodes[row][col];
-            //startingNode->label = 0;
-            break;
-          }
-        
-         }
-         
-         if (startingNode) {
-           break;
-         }
-      }
+     do { 
+     local_count = do_bipartite();
+     count += local_count;
+     LOG_ON();
+     LOG_STR("bipartitie" << *this);
+     } while(local_count > 0);
       
-      if (!startingNode) {
-        continue;
-      }
-      
-      LOG_OFF();
       LOG(*this);
       
-      local_count = searchOptimalBackTracking(startingNode);
+      //local_count = searchOptimalBackTracking(startingNode);
       
-      LOG_OFF();
-      LOG_STR("alternating");
-      LOG(local_count);
+      LOG_ON();
+      
+      LOG_STR("Finit avec search");
       LOG(*this);
-      count += local_count;
-    
-     } while(startingNode);
+      
+     
     
     return count; 
   }
@@ -1254,10 +1308,10 @@ void do_test_case(int test_case, ifstream& input)
   LOG_ON();
   LOG(grid);
   
-  int max_ss = grid.findCompleteGraphOfInverse();
-  LOG(max_ss);
-  printf("Case #%d: %d\n", test_case+1, max_ss);
-  //printf("Case #%d: %d\n", test_case+1, total_placed);
+  //int max_ss = grid.findCompleteGraphOfInverse();
+  //LOG(max_ss);
+  //printf("Case #%d: %d\n", test_case+1, max_ss);
+  printf("Case #%d: %d\n", test_case+1, total_placed);
    
   return;    
 }

@@ -16,8 +16,12 @@
 
 using namespace std;
 
+namespace CompleteGraph
+{
+  
 typedef vector<bool> VectorBool;
 typedef vector<VectorBool> ArrayBool;
+
 
 class Graph 
 {
@@ -228,4 +232,4 @@ void Graph::findLargestSuperConnectedSubGraph(set<int>& returnSet)
   returnSet = q.front();
   
 } 
-
+}
