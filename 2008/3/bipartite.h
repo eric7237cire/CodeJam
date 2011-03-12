@@ -486,6 +486,9 @@ Each vertex v ∈ S2j+1 must be adjacent to another vertex u via an edge e = ∈
     
     removeAll(matchedVertices, *TwoJPlusOne);
     removeAll(matchedVertices, *TwoJPlusTwo);
+
+    copy(TwoJPlusOne->begin(), TwoJPlusOne->end(),
+      insert_iterator<NodeSet>(vertexCover, vertexCover.begin()));
     
     if (matchedVertices.empty()) {
       return;
@@ -500,7 +503,8 @@ Each vertex v ∈ S2j+1 must be adjacent to another vertex u via an edge e = ∈
     ++j;
     
   } while(true);
-  
+
+    
   
 }
 
