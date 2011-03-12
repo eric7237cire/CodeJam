@@ -323,6 +323,56 @@ ostream& operator<<(ostream& os, const Edge& edge)
 void Graph::createInitialMatching(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
 {
   
+    
+  int x = 0;
+  int y = 0;
+  
+  for(SetNode::iterator it_x = freeX.begin();
+    it_x != freeX.end();
+    )
+  {
+    bool added_x = false;
+    
+    GraphConnections::const_iterator connIt = connections.find(*it_x);  
+    NodeConnections& connections = *(connIt->second);
+      
+    for(NodeConnections::const_iterator it = connections.begin();
+        it != connections.end();
+        ++it)
+    {
+      const int yNode = *it;
+      
+      bool isFreeY = isMember(freeY, yNode);
+      
+      Edge e = buildEdge(*it_x, yNode);
+      
+      bool isMatched = isMember(match, e);
+      if (isMatched) {
+        assert(!isMember(yNodes, yNode));
+        continue;
+      }
+      
+      if (!isFreeY) {
+        continue;
+      }
+      
+      
+      assert(isFreeY);
+      match.insert(e);
+      
+      remove(freeY, yNode);
+      added_x = true;
+      break;
+    }
+      
+    if (added_x) {
+      freeX.erase(it_x++);
+    } else {
+      ++it_x;
+    }
+  
+      
+  }
 }
 
 void Graph::findMaximumIndependantSet(set<int>& returnSet) const
@@ -601,7 +651,9 @@ bool Graph::growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
       << " FreeX: " << freeX << "\n"
       << " FreeY: " << freeY << "\n"
       << " selected x " << freeVertexFromX);
-      
+     
+    int edgesConnected = 0;
+    
     while(!toVisit.empty())
     {
       NodePtr nodePtr = toVisit.front();
@@ -634,13 +686,24 @@ bool Graph::growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
         it != connections.end();
         ++it)
       {
+        const int otherNode = *it;
+        
+        bool hasVisited = isMember(visited, otherNode);
+        LOG_STR("Has visited: " << hasVisited);
+        
+        if (hasVisited) {
+          continue;
+        }
+        
+        ++edgesConnected;
+        if (edgesConnected % 5000 == 0) {
+          //cout << "Edges: " << edgesConnected << endl;
+        }
         Edge e = buildEdge(node, *it);
-        int otherNode = *it;
+        
         bool isMatched = match.find(e) != match.end();
         LOG_STR("Edge " << e << " is matched " << isMatched);
         
-        bool hasVisited = visited.find(otherNode) != visited.end();
-          LOG_STR("Has visited: " << hasVisited);
           
         if ( !hasVisited && ( (useUnmatchedEdge && !isMatched) || 
           (!useUnmatchedEdge && isMatched) ) )

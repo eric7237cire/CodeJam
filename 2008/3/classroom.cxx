@@ -775,7 +775,7 @@ public:
        //break;
        } while (local_count > 0);
        
-       //local_count = searchForEdges();
+       local_count = searchForEdges();
        LOG_OFF();
        LOG_STR("Edges");
        LOG(*this);
