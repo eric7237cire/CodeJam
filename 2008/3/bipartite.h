@@ -249,15 +249,17 @@ void Graph::addConnection(int nodeA, int nodeB)
   assert(isMember(connections, nodeA));
   assert(isMember(connections, nodeB));
 
+  LOG_STR("Adding connection " << nodeA << ", " << nodeB);
+  
   GraphConnections::iterator it_a = connections.find(nodeA);
   GraphConnections::iterator it_b = connections.find(nodeB);
 
   pair<NodeConnections::iterator, bool> r;
   
   r = it_a->second->insert(nodeB);
-  assert(r.second);
+  //assert(r.second);
   r = it_b->second->insert(nodeA);
-  assert(r.second);
+  //assert(r.second);
   
 }
 
@@ -383,8 +385,17 @@ void Graph::findMatchedVertices(const EdgeSet& match, NodeSet& matchedVertices) 
 
 bool Graph::isUnmatchedEdge(const EdgeSet& match, int unmatchedNode, int matchedNode) const
 {
+  if (unmatchedNode == 8) {
+    LOG_STR("isUnmatchedEdge " << unmatchedNode << ", " << matchedNode);  
+  }
+  
+  
   if (!isConnected(unmatchedNode, matchedNode)) {
     return false;
+  }
+  
+  if (unmatchedNode == 8) {
+    LOG_STR("Connected " << unmatchedNode << ", " << matchedNode);  
   }
     
   Edge edge = buildEdge(unmatchedNode, matchedNode);
@@ -412,6 +423,18 @@ int getMatchedVertex(const EdgeSet& match, int node)
   }
   
   throw "Could not find matched vertex";
+}
+
+void addNodeToOddLevel(int nodeToAdd, const EdgeSet& match, NodeSetPtr oddSet, NodeSetPtr evenSet, const NodeSet& matchedVertices)
+{
+  oddSet->insert(nodeToAdd);
+          
+  int matchedVertex = getMatchedVertex(match, nodeToAdd);
+          
+  //if hasn't been placed yet, place it
+  if (isMember(matchedVertices, matchedVertex)) {
+    evenSet->insert(matchedVertex); 
+  } 
 }
 
 void Graph::findMinimumVertexCover(const EdgeSet& match, NodeSet& vertexCover) const
@@ -465,20 +488,19 @@ Each vertex v ∈ S2j+1 must be adjacent to another vertex u via an edge e = ∈
         ++mit)
       {
         if (isUnmatchedEdge(match, *it, *mit)) {
-          TwoJPlusOne->insert(*mit);
+          addNodeToOddLevel(*mit, match, levels[2*j+1], levels[2*j+2], matchedVertices);
           
-          int matchedVertex = getMatchedVertex(match, *mit);
-          
-          //if hasn't been placed yet, place it
-          if (isMember(matchedVertices, matchedVertex)) {
-            TwoJPlusTwo->insert(matchedVertex); 
-          }
-          
-           //If there are no vertices adjacent to S2j, arbitrarily pick an unused vertex and continue in S2j+1.
+           
         }
         
         
       }
+    }
+    
+    //If there are no vertices adjacent to S2j, arbitrarily pick an unused vertex and continue in S2j+1.
+    if (levels[2*j+1]->size() == 0 && matchedVertices.size() > 0) {
+      int toAdd = *matchedVertices.begin();
+      addNodeToOddLevel(toAdd, match, levels[2*j+1], levels[2*j+2], matchedVertices);
     }
     
     LOG_STR("S[2j+1] = " << *levels[2*j+1]);
@@ -524,6 +546,7 @@ bool edgesIntersect(const Edge& edge1, const Edge& edge2)
 void Graph::augmentMatch(NodePtr freeYNode, EdgeSet& match) const
 {
   //match.erase(match.begin(), match.end());
+  const int oldSize = match.size();
   
   NodePtr node = freeYNode;
   
@@ -540,12 +563,19 @@ void Graph::augmentMatch(NodePtr freeYNode, EdgeSet& match) const
         
     }
     match.insert(edge);
-    node = node->parent;
+    node = node->parent->parent;
   }
+  
+  assert(match.size() == oldSize + 1);
 }
 
 bool Graph::growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
 {
+  if (freeX.empty()) {
+    LOG_STR("No more free x");
+    return false;
+  }
+  
   int freeVertexFromX = getUnmatchedVertex(freeX);
   
   SetNode visited;

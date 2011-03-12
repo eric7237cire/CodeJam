@@ -11,11 +11,12 @@
 #include <boost/smart_ptr.hpp>
 #define SHOW_TIME 1
 #include "util.h" 
-#include "graph.h"
+#include "bipartite.h"
 
 #include <boost/shared_ptr.hpp>
 
 using namespace std;
+
 
 //#define LOG_ON LOG_OFF
 
@@ -38,10 +39,13 @@ int main(int argc, char** args)
   	
   for (int test_case = 0; test_case < T; ++test_case) 
   {
-    try {
+    //try 
+    {
       do_test_case(test_case, input);
-    } catch(...) {
-      error("Error exception caught\n"); 
+    } 
+    //catch(...) 
+    {
+      //error("Error exception caught\n"); 
     }
   }
   
@@ -257,9 +261,8 @@ public:
   GridNodes nodes;
   
   unsigned int num_spaces;
-  Graph graph;
-
-  Grid(unsigned int rows, unsigned int cols) : rows(rows), cols(cols), cells(rows), nodes(rows, VectorNodes(cols, NodePtr())), num_spaces(0), graph(rows * cols)
+  
+  Grid(unsigned int rows, unsigned int cols) : rows(rows), cols(cols), cells(rows), nodes(rows, VectorNodes(cols, NodePtr())), num_spaces(0)
   {
     for(VectorRows::iterator it = cells.begin(); it != cells.end(); ++it) {
       *it = VectorCells(cols, UNINIT);      
@@ -291,7 +294,7 @@ public:
       if (cells[row][col] == UNINIT) {
         cells[row][col] = BROKEN;
       }
-      graph.removeNode(getIndex(row, col));
+      
       break;
     case 's':
       setStudent(row, col);
@@ -397,23 +400,8 @@ public:
     node1->connections.push_back(node2);
     node2->connections.push_back(node1);
     
-    graph.addConnection(
-      getIndex(node1->row, node1->col),
-      getIndex(node2->row, node2->col));
   }
   
-  int findCompleteGraphOfInverse()
-  {
-    set<int> f;
-    graph.inverse();
-    LOG_ON();
-    LOG_STR(graph);
-    
-    graph.findLargestSuperConnectedSubGraph(f);
-    
-    LOG_STR(f);
-    return f.size();
-  }
   
   void createNodeConnections() {
     
@@ -560,6 +548,9 @@ public:
   }
   
   int do_bipartite() {
+    
+    Bipartite::Graph graph;
+    
      NodePtr startingNode;
      
      startingNode.reset();
@@ -569,10 +560,6 @@ public:
     for(int i = 0; i < rows*cols; ++i) {
       const int row_i = i / cols;
       const int col_i = i % cols;
-      if (nodes[row_i][col_i]) {
-        //cout << row_i << " " << col_i << nodes[row_i][col_i] << endl;
-      }
-      
       
       if (!startingNode && nodes[row_i][col_i] && nodes[row_i][col_i]->connections.size() > 0) {
         startingNode = nodes[row_i][col_i];
@@ -584,59 +571,72 @@ public:
     queue<NodePtr> nodesToSearch;
     if (startingNode) {
       nodesToSearch.push(startingNode);
+      graph.addNode(getIndex(startingNode->row, startingNode->col));
     }
-    
-    vector<NodePtr> s1_nodes;
-    vector<NodePtr> s2_nodes;
-    
+    LOG_ON();
     while(!nodesToSearch.empty()) {
       NodePtr node = nodesToSearch.front();
       nodesToSearch.pop();
-      //nodes[node->row][node->col].reset();
-      LOG(node);
-      if (node->label == 1) {
-        s1_count ++;
-        s1_nodes.push_back(node);
-        LOG("Logging 1");
-        LOG(node);
-      } else if (node->label == 2) {
-        LOG("Logging 2");
-        LOG(node);
-        s2_nodes.push_back(node);
-        s2_count++;
-      } else {
-        throw 3;
-      }
       
       for (vector<NodePtr>::const_iterator it = node->connections.begin();
         it != node->connections.end();
         ++it) 
       {
-        if (it->get()->label == 0) {
-          
-          it->get()->label = (node->label == 1) ? 2 : 1;
-          nodesToSearch.push(*it);        
+        NodePtr otherNode = *it;
+        LOG_STR(getIndex(otherNode->row, otherNode->col) << " index");
+        
+        if (otherNode->label == 0) {
+          graph.addNode(getIndex(otherNode->row, otherNode->col));
+          nodesToSearch.push(otherNode);
+          otherNode->label = 1;
         }
+         
+        graph.addConnection(
+            getIndex(otherNode->row, otherNode->col), 
+            getIndex(node->row, node->col));
+          
+                 
+        
       }
     }
+
+    LOG_ON();
     
-    if (s1_count >= s2_count) {
-       for (vector<NodePtr>::const_iterator it = s1_nodes.begin();
-        it != s1_nodes.end();
-        ++it)
-       {
-         setStudent(it->get()->row, it->get()->col);
-       }
-    } else {
-      for (vector<NodePtr>::const_iterator it = s2_nodes.begin();
-        it != s2_nodes.end();
-        ++it)
-       {
-         setStudent(it->get()->row, it->get()->col);
-       }
+    graph.partition();
+    
+    set<int> studentSet;
+    graph.findMaximumIndependantSet(studentSet);
+    
+    LOG_ON();
+    LOG_STR("Avant bipartite");
+    LOG(*this);
+    
+    for (Bipartite::NodeSet::const_iterator it = studentSet.begin();
+      it != studentSet.end();
+      ++it)
+    {
+      int node = *it;
+      const int row = node / cols;
+      const int col = node % cols;
+      
+      LOG_STR("Would place a student at " << row << ", " << col);
     }
     
-    return max(s1_count, s2_count); 
+    for (Bipartite::NodeSet::const_iterator it = studentSet.begin();
+      it != studentSet.end();
+      ++it)
+    {
+      int node = *it;
+      const int row = node / cols;
+      const int col = node % cols;
+     
+      setStudent(row, col);
+     
+    }
+    LOG_ON();
+    LOG_STR("Après bipartite");
+    LOG(*this);
+    return studentSet.size(); 
   }
   
   int searchForEdges() {
@@ -846,7 +846,7 @@ public:
        
        do {
        
-       local_count = searchForIsolated();
+       //local_count = searchForIsolated();
 
        LOG_OFF();
        LOG_STR("Isolated");
@@ -856,7 +856,7 @@ public:
        //break;
        } while (local_count > 0);
        
-       local_count = searchForEdges();
+       //local_count = searchForEdges();
        LOG_OFF();
        LOG_STR("Edges");
        LOG(*this);
