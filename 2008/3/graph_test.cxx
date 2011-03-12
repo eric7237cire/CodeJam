@@ -105,7 +105,7 @@ BOOST_AUTO_TEST_CASE(test_bipartite)
   cout << g << endl;
   
   set<int> nodeSet;
-  //g.findMaximumIndependantSet(nodeSet);
+  g.findMaximumIndependantSet(nodeSet);
   
   cout << nodeSet << endl; 
   

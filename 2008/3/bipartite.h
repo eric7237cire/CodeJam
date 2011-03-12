@@ -47,7 +47,8 @@ Node::Node(NodePtr parent, int node) : parent(parent), value(node)
   
 }
 
-ostream& operator<<(ostream& os, const set<int>& s);
+template<typename T> ostream& operator<<(ostream& os, const set<T>& s);
+
 ostream& operator<<(ostream& os, const Edge& edge);
 
 template<typename T> bool isMember(const set<T>& aSet, const T& value)
@@ -137,9 +138,14 @@ int Graph::getUnmatchedVertex(NodeSet& nodeSet)
 
 void Graph::addNode(int node)
 {
+  ++numberOfNodes;
   nodes.insert(node);
+  assert(nodes.size() == numberOfNodes);
+  
   connections.insert(GraphConnections::value_type(node, 
     NodeConnectionsPtr(new NodeConnections())));
+  
+  assert(connections.size() == numberOfNodes);
 }
 
 void Graph::partition()
@@ -244,9 +250,9 @@ ostream& operator<<(ostream& os, const Graph& g)
   return os;
 }
 
-ostream& operator<<(ostream& os, const set<int>& s)
+template<typename T> ostream& operator<<(ostream& os, const set<T>& s)
 {
-  for(SetInt::const_iterator it = s.begin();
+  for(typename set<T>::const_iterator it = s.begin();
     it != s.end();
     ++it) 
   {
@@ -287,6 +293,8 @@ void Graph::findMaximumIndependantSet(set<int>& returnSet) const
     LOG_STR("match grew"); 
   }
   
+  LOG_STR("Match: [" << match << "]");
+  
   set<int> vertexCover;
   findMinimumVertexCover(match, vertexCover);
   
@@ -312,9 +320,40 @@ void Graph::findMinimumVertexCover(const EdgeSet& match, NodeSet& vertexCover) c
   
 }
 
+bool edgesIntersect(const Edge& edge1, const Edge& edge2)
+{
+  if (edge1.first == edge2.first ||
+    edge1.first == edge2.second ||
+    edge1.second == edge2.first ||
+    edge1.second == edge2.second) 
+  {
+    return true;
+  }
+
+  return false;  
+}
+
 void Graph::augmentMatch(NodePtr freeYNode, EdgeSet& match) const
 {
+  //match.erase(match.begin(), match.end());
   
+  NodePtr node = freeYNode;
+  
+  while(node && node->parent)
+  {
+    Edge edge = buildEdge(node->value, node->parent->value);
+    for(EdgeSet::iterator it = match.begin(); it != match.end();)
+    {
+      if (edgesIntersect(edge, *it)) {
+        match.erase(it++);
+      } else {
+        ++it;
+      }
+        
+    }
+    match.insert(edge);
+    node = node->parent;
+  }
 }
 
 bool Graph::growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
@@ -325,7 +364,12 @@ bool Graph::growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
   deque<NodePtr> toVisit;
   
   toVisit.push_back(NodePtr(new Node(NodePtr(), freeVertexFromX)));
-  
+ 
+  LOG_STR("growMatch starting.  Match: " << match << "\n" 
+    << " FreeX: " << freeX << "\n"
+    << " FreeY: " << freeY << "\n"
+    << " selected x " << freeVertexFromX);
+    
   while(!toVisit.empty())
   {
     NodePtr nodePtr = toVisit.front();
@@ -337,6 +381,7 @@ bool Graph::growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
       LOG_STR("Augmented match!");
       augmentMatch(nodePtr, match);
       freeY.erase(freeYit);
+      LOG_STR(match);
       return true;      
     }
     
