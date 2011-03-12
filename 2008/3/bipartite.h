@@ -215,6 +215,8 @@ void Graph::partition()
     
     visited.insert(node);
     
+    //LOG_STR("Node " << node << " visited: " << visited.size()) ;
+    
     bool isXNode = isMember(xNodes, node);
     
     //assert(nodeExists(node));
@@ -230,16 +232,19 @@ void Graph::partition()
       ++it)
     {
       if (!isMember(visited, *it))
-      {
-        to_visit.push_back(*it);
-        if (isXNode) {
+      {        
+        if (isXNode && !isMember(yNodes, *it)) {
           yNodes.insert(*it);
-        } else {
+          to_visit.push_back(*it);
+        } else if (!isXNode && !isMember(xNodes, *it)) {
           xNodes.insert(*it);
+          to_visit.push_back(*it);
         }
       }
     }
   }
+  
+  assert(xNodes.size() + yNodes.size() == nodes.size());
     
   
 }
@@ -249,7 +254,7 @@ void Graph::addConnection(int nodeA, int nodeB)
   assert(isMember(connections, nodeA));
   assert(isMember(connections, nodeB));
 
-  LOG_STR("Adding connection " << nodeA << ", " << nodeB);
+  //LOG_STR("Adding connection " << nodeA << ", " << nodeB);
   
   GraphConnections::iterator it_a = connections.find(nodeA);
   GraphConnections::iterator it_b = connections.find(nodeB);
@@ -325,19 +330,21 @@ void Graph::findMaximumIndependantSet(set<int>& returnSet) const
   if (numberOfNodes == 0) 
   {
     return;
-  }
+  } 
   
-  EdgeSet match;
+  EdgeSet match; 
   
   SetNode freeX(xNodes);
   SetNode freeY(yNodes);
   
   createInitialMatching(match, freeX, freeY);
+  //cout << "Match is now " << match.size() << endl;
   
   while(growMatch(match, freeX, freeY))
   {
-    LOG_STR("match grew"); 
-  }
+    LOG_STR("match grew");
+    cout << "Match is now " << match.size() << endl;
+  } 
   
   LOG_STR("MATCH DONE");
   LOG_STR("Match: [" << match << "]");
@@ -583,7 +590,7 @@ bool Graph::growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
     it != freeX.end();
     ++it)
   {
-    int freeVertexFromX = *it; //getUnmatchedVertex(freeX);
+    const int freeVertexFromX = *it; //getUnmatchedVertex(freeX);
   
     SetNode visited;
     deque<NodePtr> toVisit;
