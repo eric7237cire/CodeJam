@@ -11,6 +11,8 @@
 #include <assert.h>
 #include <boost/smart_ptr.hpp>
 #include <boost/bind.hpp>
+#include <boost/unordered_map.hpp>
+#include <boost/unordered_set.hpp>
 #include "util.h"
 
 //http://en.wikipedia.org/wiki/Independent_set_problem
@@ -29,7 +31,9 @@ typedef set<int> SetNode;
 typedef set<int> NodeSet;
 typedef boost::shared_ptr<NodeSet> NodeSetPtr;
 typedef pair<int, int> Edge;
-typedef set<Edge> EdgeSet;
+typedef boost::unordered_set<Edge> EdgeSet;
+
+typedef boost::unordered_map<int, Edge> NodeToEdge;
 
 class Node;
 typedef boost::shared_ptr<Node> NodePtr;
@@ -52,7 +56,7 @@ template<typename T> ostream& operator<<(ostream& os, const set<T>& s);
 
 ostream& operator<<(ostream& os, const Edge& edge);
 
-template<typename T> bool isMember(const set<T>& aSet, const T& value)
+template<typename C, typename T> bool isMember(const C& aSet, const T& value)
 {
   return aSet.find(value) != aSet.end();
 };
@@ -81,10 +85,6 @@ template<typename T> bool removeAll(set<T>& aSet, const set<T>& aSetToRemove)
 }
 
 
-template<typename K, typename V> bool isMember(const map<K, V>& aSet, const K& value)
-{
-  return aSet.find(value) != aSet.end();
-};
 
 
 
@@ -100,6 +100,9 @@ private:
   SetNode yNodes;
   SetNode nodes;
   
+  NodeToEdge nodeToMatchEdge;
+  EdgeSet matchEdges;
+  
 public:
   Graph();
   
@@ -111,22 +114,22 @@ public:
   void removeNode(int node);
   
   //Correspond à complément de minimum vertex cover
-  void findMaximumIndependantSet(set<int>&) const;
+  void findMaximumIndependantSet(set<int>&);
   
   friend ostream& operator<<(ostream& os, const Graph& g);
   
 private:
   bool nodeExists(int node) const;
   bool isConnected(int nodeA, int nodeB) const;
-  void createInitialMatching(EdgeSet& match, SetNode& freeX, SetNode& freeY) const;
+  void createInitialMatching(SetNode& freeX, SetNode& freeY);
   static Edge buildEdge(int nodeA, int nodeB);
-  bool growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const;
-  void augmentMatch(NodePtr freeYNode, EdgeSet& match) const;
+  bool growMatch(SetNode& freeX, SetNode& freeY);
+  void augmentMatch(NodePtr freeYNode);
   static int getUnmatchedVertex(const NodeSet& nodeSet);
-  void findUnmatchedVertices(const EdgeSet& match, NodeSet& unmatchedVertices) const;
-  void findMatchedVertices(const EdgeSet& match, NodeSet& matchedVertices) const;
-  void findMinimumVertexCover(const EdgeSet& match, NodeSet& vertexCover) const;
-  bool isUnmatchedEdge(const EdgeSet& match, int unmatchedNode, int matchedNode) const;
+  void findUnmatchedVertices(NodeSet& unmatchedVertices);
+  void findMatchedVertices(NodeSet& matchedVertices);
+  void findMinimumVertexCover(NodeSet& vertexCover);
+  bool isUnmatchedEdge(int unmatchedNode, int matchedNode) const;
 };
 
 Graph::Graph() : 
@@ -313,6 +316,19 @@ template<typename T> ostream& operator<<(ostream& os, const set<T>& s)
   return os;
 }
 
+template<typename T> ostream& operator<<(ostream& os, const boost::unordered_set<T>& s)
+{
+  for(typename boost::unordered_set<T>::const_iterator it = s.begin();
+    it != s.end();
+    ++it) 
+  {
+    os << *it << ' ';
+  }
+  
+  return os;
+}
+
+
 ostream& operator<<(ostream& os, const Edge& edge)
 {
   os << "[ " << edge.first << ", " << edge.second << "]" << endl;
@@ -320,7 +336,7 @@ ostream& operator<<(ostream& os, const Edge& edge)
 }
 
 
-void Graph::createInitialMatching(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
+void Graph::createInitialMatching(SetNode& freeX, SetNode& freeY)
 {
   
     
@@ -346,7 +362,7 @@ void Graph::createInitialMatching(EdgeSet& match, SetNode& freeX, SetNode& freeY
       
       Edge e = buildEdge(*it_x, yNode);
       
-      bool isMatched = isMember(match, e);
+      bool isMatched = isMember(matchEdges, e);
       if (isMatched) {
         assert(!isMember(yNodes, yNode));
         continue;
@@ -358,7 +374,7 @@ void Graph::createInitialMatching(EdgeSet& match, SetNode& freeX, SetNode& freeY
       
       
       assert(isFreeY);
-      match.insert(e);
+      matchEdges.insert(e);
       
       remove(freeY, yNode);
       added_x = true;
@@ -375,34 +391,33 @@ void Graph::createInitialMatching(EdgeSet& match, SetNode& freeX, SetNode& freeY
   }
 }
 
-void Graph::findMaximumIndependantSet(set<int>& returnSet) const
+void Graph::findMaximumIndependantSet(set<int>& returnSet)
 {
   if (numberOfNodes == 0) 
   {
     return;
   } 
   
-  EdgeSet match; 
   
   SetNode freeX(xNodes);
   SetNode freeY(yNodes);
   
-  createInitialMatching(match, freeX, freeY);
+  createInitialMatching(freeX, freeY);
   //cout << "Match is now " << match.size() << endl;
   
-  while(growMatch(match, freeX, freeY))
+  while(growMatch(freeX, freeY))
   {
     LOG_STR("match grew");
-    cout << "Match is now " << match.size() << endl;
+    cout << "Match is now " << matchEdges.size() << endl;
   } 
   
   LOG_STR("MATCH DONE");
-  LOG_STR("Match: [" << match << "]");
-  LOG_STR("Match size: " << match.size());
+  LOG_STR("Match: [" << matchEdges << "]");
+  LOG_STR("Match size: " << matchEdges.size());
   LOG_STR("Number of vertices: " << nodes.size());
   
   set<int> vertexCover;
-  findMinimumVertexCover(match, vertexCover);
+  findMinimumVertexCover(vertexCover);
   
   set<int> allVertexes;
   set_union(xNodes.begin(), xNodes.end(),
@@ -421,11 +436,11 @@ void Graph::findMaximumIndependantSet(set<int>& returnSet) const
   
 }
 
-void Graph::findUnmatchedVertices(const EdgeSet& match, NodeSet& unmatchedVertices) const
+void Graph::findUnmatchedVertices(NodeSet& unmatchedVertices)
 {
   unmatchedVertices = nodes;
   
-  for(EdgeSet::iterator it = match.begin(); it != match.end(); ++it)
+  for(EdgeSet::iterator it = matchEdges.begin(); it != matchEdges.end(); ++it)
   {
     remove(unmatchedVertices, it->first);
     remove(unmatchedVertices, it->second);
@@ -434,16 +449,16 @@ void Graph::findUnmatchedVertices(const EdgeSet& match, NodeSet& unmatchedVertic
   
 }
 
-void Graph::findMatchedVertices(const EdgeSet& match, NodeSet& matchedVertices) const
+void Graph::findMatchedVertices(NodeSet& matchedVertices)
 {
-  for(EdgeSet::iterator it = match.begin(); it != match.end(); ++it)
+  for(EdgeSet::iterator it = matchEdges.begin(); it != matchEdges.end(); ++it)
   {
     matchedVertices.insert(it->first);
     matchedVertices.insert(it->second);
   }
 }
 
-bool Graph::isUnmatchedEdge(const EdgeSet& match, int unmatchedNode, int matchedNode) const
+bool Graph::isUnmatchedEdge(int unmatchedNode, int matchedNode) const
 {
   if (unmatchedNode == 8) {
     LOG_STR("isUnmatchedEdge " << unmatchedNode << ", " << matchedNode);  
@@ -459,7 +474,7 @@ bool Graph::isUnmatchedEdge(const EdgeSet& match, int unmatchedNode, int matched
   }
     
   Edge edge = buildEdge(unmatchedNode, matchedNode);
-  bool isInMatched = isMember(match, edge);
+  bool isInMatched = isMember(matchEdges, edge);
   LOG_STR("Edge: " << edge << " matched? " << isInMatched);
   
   if (isInMatched) {
@@ -469,9 +484,10 @@ bool Graph::isUnmatchedEdge(const EdgeSet& match, int unmatchedNode, int matched
   return true;
 }
 
-int getMatchedVertex(const EdgeSet& match, int node)
+//TODO
+int getMatchedVertex(const EdgeSet& matchEdges, int node)
 {
-  for(EdgeSet::const_iterator it = match.begin(); it != match.end(); ++it)
+  for(EdgeSet::const_iterator it = matchEdges.begin(); it != matchEdges.end(); ++it)
   {
     const Edge& edge = *it;
     if (edge.first == node) {
@@ -485,11 +501,11 @@ int getMatchedVertex(const EdgeSet& match, int node)
   throw "Could not find matched vertex";
 }
 
-void addNodeToOddLevel(int nodeToAdd, const EdgeSet& match, NodeSetPtr oddSet, NodeSetPtr evenSet, const NodeSet& matchedVertices)
+void addNodeToOddLevel(int nodeToAdd, const EdgeSet& matchEdges, NodeSetPtr oddSet, NodeSetPtr evenSet, const NodeSet& matchedVertices)
 {
   oddSet->insert(nodeToAdd);
           
-  int matchedVertex = getMatchedVertex(match, nodeToAdd);
+  int matchedVertex = getMatchedVertex(matchEdges, nodeToAdd);
           
   //if hasn't been placed yet, place it
   if (isMember(matchedVertices, matchedVertex)) {
@@ -497,7 +513,7 @@ void addNodeToOddLevel(int nodeToAdd, const EdgeSet& match, NodeSetPtr oddSet, N
   } 
 }
 
-void Graph::findMinimumVertexCover(const EdgeSet& match, NodeSet& vertexCover) const
+void Graph::findMinimumVertexCover(NodeSet& vertexCover) 
 {
   //http://en.wikipedia.org/wiki/K%C3%B6nig's_theorem_(graph_theory)
   
@@ -511,10 +527,10 @@ Have not been included in any previously-defined set Sk, where k < j.
 Each vertex v ∈ S2j+1 must be adjacent to another vertex u via an edge e = ∈ M (otherwise, v is unmatched by M and would have been placed in S0). If the u has not yet been included in a set Si, insert u in S2j+2. If there are no vertices adjacent to S2j, arbitrarily pick an unused vertex and continue in S2j+1.
 */
   NodeSetPtr unmatchedVertices(new NodeSet());  
-  findUnmatchedVertices(match, *unmatchedVertices);
+  findUnmatchedVertices(*unmatchedVertices);
   
   NodeSet matchedVertices;  
-  findMatchedVertices(match, matchedVertices);
+  findMatchedVertices(matchedVertices);
   
   assert(unmatchedVertices->size() + matchedVertices.size() == nodes.size());
   
@@ -547,8 +563,8 @@ Each vertex v ∈ S2j+1 must be adjacent to another vertex u via an edge e = ∈
         mit != matchedVertices.end();
         ++mit)
       {
-        if (isUnmatchedEdge(match, *it, *mit)) {
-          addNodeToOddLevel(*mit, match, levels[2*j+1], levels[2*j+2], matchedVertices);
+        if (isUnmatchedEdge(*it, *mit)) {
+          addNodeToOddLevel(*mit, matchEdges, levels[2*j+1], levels[2*j+2], matchedVertices);
           
            
         }
@@ -560,7 +576,7 @@ Each vertex v ∈ S2j+1 must be adjacent to another vertex u via an edge e = ∈
     //If there are no vertices adjacent to S2j, arbitrarily pick an unused vertex and continue in S2j+1.
     if (levels[2*j+1]->size() == 0 && matchedVertices.size() > 0) {
       int toAdd = *matchedVertices.begin();
-      addNodeToOddLevel(toAdd, match, levels[2*j+1], levels[2*j+2], matchedVertices);
+      addNodeToOddLevel(toAdd, matchEdges, levels[2*j+1], levels[2*j+2], matchedVertices);
     }
     
     LOG_STR("S[2j+1] = " << *levels[2*j+1]);
@@ -603,33 +619,33 @@ bool edgesIntersect(const Edge& edge1, const Edge& edge2)
   return false;  
 }
 
-void Graph::augmentMatch(NodePtr freeYNode, EdgeSet& match) const
+void Graph::augmentMatch(NodePtr freeYNode)
 {
   //match.erase(match.begin(), match.end());
-  const int oldSize = match.size();
+  const int oldSize = matchEdges.size();
   
   NodePtr node = freeYNode;
   
   while(node && node->parent)
   {
     Edge edge = buildEdge(node->value, node->parent->value);
-    for(EdgeSet::iterator it = match.begin(); it != match.end();)
+    for(EdgeSet::iterator it = matchEdges.begin(); it != matchEdges.end();)
     {
       if (edgesIntersect(edge, *it)) {
-        match.erase(it++);
+        matchEdges.erase(it++);
       } else {
         ++it;
       }
         
     }
-    match.insert(edge);
+    matchEdges.insert(edge);
     node = node->parent->parent;
   }
   
-  assert(match.size() == oldSize + 1);
+  assert(matchEdges.size() == oldSize + 1);
 }
 
-bool Graph::growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
+bool Graph::growMatch(SetNode& freeX, SetNode& freeY)
 {
   if (freeX.empty()) {
     LOG_STR("No more free x");
@@ -647,7 +663,7 @@ bool Graph::growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
     
     toVisit.push_back(NodePtr(new Node(NodePtr(), freeVertexFromX)));
    
-    LOG_STR("growMatch starting.\n  Match: " << match << "\n" 
+    LOG_STR("growMatch starting.\n  Match: " << matchEdges << "\n" 
       << " FreeX: " << freeX << "\n"
       << " FreeY: " << freeY << "\n"
       << " selected x " << freeVertexFromX);
@@ -663,10 +679,10 @@ bool Graph::growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
       if(freeYit != freeY.end())
       {
         LOG_STR("Augmented match!");
-        augmentMatch(nodePtr, match);
+        augmentMatch(nodePtr);
         freeY.erase(freeYit);
         remove(freeX, freeVertexFromX);
-        LOG_STR(match);
+        LOG_STR(matchEdges);
         return true;      
       }
       
@@ -675,7 +691,7 @@ bool Graph::growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
       
       //X to Y use an unmatched edge
       //Y to X, use a matched edge
-      bool useUnmatchedEdge = xNodes.find(node) != xNodes.end();
+      bool useUnmatchedEdge = isMember(xNodes, node);
       LOG_STR("useUnmatchedEdge " << useUnmatchedEdge);
       assert(nodeExists(node));
       
@@ -701,7 +717,7 @@ bool Graph::growMatch(EdgeSet& match, SetNode& freeX, SetNode& freeY) const
         }
         Edge e = buildEdge(node, *it);
         
-        bool isMatched = match.find(e) != match.end();
+        bool isMatched = matchEdges.find(e) != matchEdges.end();
         LOG_STR("Edge " << e << " is matched " << isMatched);
         
           
