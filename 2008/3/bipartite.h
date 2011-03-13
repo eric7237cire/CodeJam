@@ -101,6 +101,9 @@ private:
   SetNode yNodes;
   SetNode nodes;
   
+  SetNode freeX;
+  SetNode freeY;
+  
   NodeToEdge nodeToMatchEdge;
   EdgeSet matchEdges;
   
@@ -122,9 +125,9 @@ public:
 private:
   bool nodeExists(int node) const;
   bool isConnected(int nodeA, int nodeB) const;
-  void createInitialMatching(SetNode& freeX, SetNode& freeY);
+  void createInitialMatching();
   Edge buildEdge(int nodeA, int nodeB) const;
-  bool growMatch(SetNode& freeX, SetNode& freeY);
+  bool growMatch();
   void augmentMatch(NodePtr freeYNode);
   static int getUnmatchedVertex(const NodeSet& nodeSet);
   void findUnmatchedVertices(NodeSet& unmatchedVertices);
@@ -133,6 +136,7 @@ private:
   bool isUnmatchedEdge(int unmatchedNode, int matchedNode) const;
   
   void addMatchEdge(const Edge& e);
+  void removeMatchEdge(const Edge& edge);
 };
 
 Graph::Graph() : 
@@ -147,16 +151,41 @@ bool isInEdge(const Edge& edge, int node)
   return edge.first == node || edge.second == node; 
 }
 
-//TODO handle freeX freeY aussi
 void Graph::addMatchEdge(const Edge& edge)
 {
   assert(2 * matchEdges.size() == nodeToMatchEdge.size()); 
   assert(!isMember(nodeToMatchEdge, edge.first));
   assert(!isMember(nodeToMatchEdge, edge.second));
   
+  assert(isMember(freeX, edge.first));
+  assert(isMember(freeY, edge.second));
+  
+  remove(freeX, edge.first);
+  remove(freeY, edge.second);
+  
   matchEdges.insert(edge);
   nodeToMatchEdge.insert(NodeToEdge::value_type(edge.first, edge));
   nodeToMatchEdge.insert(NodeToEdge::value_type(edge.second, edge));
+}
+
+void Graph::removeMatchEdge(const Edge& edge)
+{
+  assert(2 * matchEdges.size() == nodeToMatchEdge.size()); 
+  assert(isMember(nodeToMatchEdge, edge.first));
+  assert(isMember(nodeToMatchEdge, edge.second));
+  
+  assert(!isMember(freeX, edge.first));
+  assert(!isMember(freeY, edge.second));
+  
+  assert(isMember(xNodes, edge.first));
+  assert(isMember(yNodes, edge.second));
+  
+  freeX.insert(edge.first);
+  freeY.insert(edge.second);
+  
+  remove(matchEdges, edge);
+  remove(nodeToMatchEdge, edge.first);
+  remove(nodeToMatchEdge, edge.second);
 }
 
 bool Graph::nodeExists(int node) const
@@ -355,7 +384,7 @@ ostream& operator<<(ostream& os, const Edge& edge)
 }
 
 
-void Graph::createInitialMatching(SetNode& freeX, SetNode& freeY)
+void Graph::createInitialMatching()
 {
   
   int x = 0;
@@ -364,9 +393,9 @@ void Graph::createInitialMatching(SetNode& freeX, SetNode& freeY)
   //Ne modifie pas directement freeX
   NodeSet freeXToSearch(freeX);
   
-  for(SetNode::iterator it_x = freeX.begin();
-    it_x != freeX.end();
-    )
+  for(SetNode::iterator it_x = freeXToSearch.begin();
+    it_x != freeXToSearch.end();
+    ++it_x)
   {
     bool added_x = false;
     
@@ -383,8 +412,7 @@ void Graph::createInitialMatching(SetNode& freeX, SetNode& freeY)
       
       Edge e = buildEdge(*it_x, yNode);
       
-      bool isMatched = isMember(matchEdges, e);
-      if (isMatched) {
+      if (isMember(matchEdges, e)) {
         assert(!isMember(yNodes, yNode));
         continue;
       }
@@ -393,22 +421,10 @@ void Graph::createInitialMatching(SetNode& freeX, SetNode& freeY)
         continue;
       }
       
-      
-      assert(isFreeY);
       addMatchEdge(e);
-      
-      remove(freeY, yNode);
       added_x = true;
       break;
-    }
-      
-    if (added_x) {
-      freeX.erase(it_x++);
-    } else {
-      ++it_x;
-    }
-  
-      
+    }      
   }
 }
 
@@ -420,13 +436,13 @@ void Graph::findMaximumIndependantSet(set<int>& maxIndependantSet)
   } 
   
   
-  SetNode freeX(xNodes);
-  SetNode freeY(yNodes);
+  freeX = xNodes;
+  freeY = yNodes;
   
-  createInitialMatching(freeX, freeY);
+  createInitialMatching();
   //cout << "Match is now " << match.size() << endl;
   
-  while(growMatch(freeX, freeY))
+  while(growMatch())
   {
     LOG_ON();
     LOG_STR("Match is now " << matchEdges.size());
@@ -640,28 +656,32 @@ void Graph::augmentMatch(NodePtr freeYNode)
   
   while(node && node->parent)
   {
-    Edge edge = buildEdge(node->parent->value, node->value);
-    for(EdgeSet::iterator it = matchEdges.begin(); it != matchEdges.end();)
+    Edge newMatchEdge = buildEdge(node->parent->value, node->value);
+    
+    NodeToEdge::const_iterator it = nodeToMatchEdge.find(newMatchEdge.first);
+    
+    if (it != nodeToMatchEdge.end()) 
     {
-      if (edgesIntersect(edge, *it)) {
-        
-        remove(nodeToMatchEdge, it->first);
-        remove(nodeToMatchEdge, it->second);
-        matchEdges.erase(it++);
-      } else {
-        ++it;
-      }
-        
+      const Edge& edgeToDelete = it->second;
+      removeMatchEdge(edgeToDelete);
     }
     
-    addMatchEdge(edge);
+    it = nodeToMatchEdge.find(newMatchEdge.second);
+    
+    if (it != nodeToMatchEdge.end()) 
+    {
+      const Edge& edgeToDelete = it->second;
+      removeMatchEdge(edgeToDelete);
+    }
+    
+    addMatchEdge(newMatchEdge);
     node = node->parent->parent;
   }
   
   assert(matchEdges.size() == oldSize + 1);
 }
 
-bool Graph::growMatch(SetNode& freeX, SetNode& freeY)
+bool Graph::growMatch()
 {
   if (freeX.empty()) {
     LOG_STR("No more free x");
@@ -699,8 +719,6 @@ bool Graph::growMatch(SetNode& freeX, SetNode& freeY)
       {
         LOG_STR("Augmented match!");
         augmentMatch(nodePtr);
-        freeY.erase(freeYit);
-        remove(freeX, freeVertexFromX);
         LOG_STR(matchEdges);
         return true;      
       }
