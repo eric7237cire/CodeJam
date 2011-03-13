@@ -19,6 +19,8 @@
 
 using namespace std;
 
+//#undef assert
+//#define assert(x) ((void)0)
 
 namespace Bipartite
 {
@@ -137,6 +139,8 @@ private:
   
   void addMatchEdge(const Edge& e);
   void removeMatchEdge(const Edge& edge);
+  
+  void addNodeToOddLevel(int nodeToAdd, NodeSetPtr oddSet, NodeSetPtr evenSet, const NodeSet& matchedVertices);
 };
 
 Graph::Graph() : 
@@ -453,13 +457,13 @@ void Graph::findMaximumIndependantSet(set<int>& maxIndependantSet)
   LOG_STR("Match: [" << matchEdges << "]");
   LOG_STR("Match size: " << matchEdges.size());
   LOG_STR("Number of vertices: " << nodes.size());
-  LOG_ON();
+  //LOG_ON();
   LOG_STR("Vertex cover");
   LOG_OFF();
   set<int> vertexCover;
   findMinimumVertexCover(vertexCover);
   
-  LOG_ON();
+  //LOG_ON();
   LOG_STR("Vertex cover done");
   LOG_OFF();
   set_difference(nodes.begin(), nodes.end(),
@@ -499,8 +503,7 @@ bool Graph::isUnmatchedEdge(int unmatchedNode, int matchedNode) const
   NodeToEdge::const_iterator it = nodeToMatchEdge.find(matchedNode);
   
   assert(it != nodeToMatchEdge.end());
-  
-  
+    
   const Edge& edge = it->second;
   bool isInMatched = isInEdge(edge, unmatchedNode);
   LOG_STR("Edge: " << edge << " matched? " << isInMatched);
@@ -512,28 +515,17 @@ bool Graph::isUnmatchedEdge(int unmatchedNode, int matchedNode) const
   return true;
 }
 
-//TODO
-int getMatchedVertex(const EdgeSet& matchEdges, int node)
-{
-  for(EdgeSet::const_iterator it = matchEdges.begin(); it != matchEdges.end(); ++it)
-  {
-    const Edge& edge = *it;
-    if (edge.first == node) {
-      return edge.second;
-    }
-    if (edge.second == node) {
-      return edge.first;
-    }
-  }
-  
-  throw "Could not find matched vertex";
-}
 
-void addNodeToOddLevel(int nodeToAdd, const EdgeSet& matchEdges, NodeSetPtr oddSet, NodeSetPtr evenSet, const NodeSet& matchedVertices)
+void Graph::addNodeToOddLevel(int nodeToAdd, NodeSetPtr oddSet, NodeSetPtr evenSet, const NodeSet& matchedVertices)
 {
   oddSet->insert(nodeToAdd);
-          
-  int matchedVertex = getMatchedVertex(matchEdges, nodeToAdd);
+  
+  NodeToEdge::const_iterator it = nodeToMatchEdge.find(nodeToAdd);
+  assert(it != nodeToMatchEdge.end());
+  
+  const Edge& matchingEdge = it->second;
+  
+  int matchedVertex = (matchingEdge.first == nodeToAdd ? matchingEdge.second : matchingEdge.first);
           
   //if hasn't been placed yet, place it
   if (isMember(matchedVertices, matchedVertex)) {
@@ -586,15 +578,26 @@ Each vertex v ∈ S2j+1 must be adjacent to another vertex u via an edge e = ∈
       it != TwoJ->end();
       ++it)
     {
-      //must connect to a matched vertex via an unmatched edge
-      for(NodeSet::iterator mit = matchedVertices.begin();
-        mit != matchedVertices.end();
-        ++mit)
+      const int unmatchedNode = *it;
+      
+      GraphConnections::const_iterator it = connections.find(unmatchedNode);
+      assert(it != connections.end());
+      NodeConnectionsPtr nodeConnections = it->second;
+      
+      for(NodeConnections::const_iterator ncit = nodeConnections->begin();
+        ncit != nodeConnections->end();
+        ++ncit)
       {
-        if (isUnmatchedEdge(*it, *mit)) {
-          addNodeToOddLevel(*mit, matchEdges, levels[2*j+1], levels[2*j+2], matchedVertices);
-          
-           
+        if (!isMember(matchedVertices, *ncit)) {
+          continue;
+        }
+        
+        int matchedNode = *ncit;
+      
+      //must connect to a matched vertex via an unmatched edge
+      
+        if (isUnmatchedEdge(unmatchedNode, matchedNode)) {
+          addNodeToOddLevel(matchedNode, levels[2*j+1], levels[2*j+2], matchedVertices);
         }
         
         
@@ -604,7 +607,7 @@ Each vertex v ∈ S2j+1 must be adjacent to another vertex u via an edge e = ∈
     //If there are no vertices adjacent to S2j, arbitrarily pick an unused vertex and continue in S2j+1.
     if (levels[2*j+1]->size() == 0 && matchedVertices.size() > 0) {
       int toAdd = *matchedVertices.begin();
-      addNodeToOddLevel(toAdd, matchEdges, levels[2*j+1], levels[2*j+2], matchedVertices);
+      addNodeToOddLevel(toAdd, levels[2*j+1], levels[2*j+2], matchedVertices);
     }
     
     LOG_STR("S[2j+1] = " << *levels[2*j+1]);
@@ -622,9 +625,7 @@ Each vertex v ∈ S2j+1 must be adjacent to another vertex u via an edge e = ∈
     
     LOG_STR("Matched vertices " << matchedVertices);
       
-    if (TwoJPlusOne->size() == 0 || TwoJPlusTwo->size() == 0) {
-      throw 3;
-    }
+    assert(!TwoJPlusOne->empty() && !TwoJPlusTwo->empty());
     
     ++j;
     
@@ -732,43 +733,57 @@ bool Graph::growMatch()
       //X to Y use an unmatched edge
       //Y to X, use a matched edge
       bool useUnmatchedEdge = isMember(xNodes, node);
-      bool nodeIsInX = useUnmatchedEdge;
-      LOG_STR("useUnmatchedEdge " << useUnmatchedEdge);
-      assert(nodeExists(node));
       
-      GraphConnections::const_iterator connIt = connections.find(node);  
-      NodeConnections& connections = *(connIt->second);
-      
-      for(NodeConnections::const_iterator it = connections.begin();
-        it != connections.end();
-        ++it)
+      if (!useUnmatchedEdge)
       {
-        const int otherNode = *it;
-        
-        bool hasVisited = isMember(visited, otherNode);
-        LOG_STR("Has visited: " << hasVisited);
-        
-        if (hasVisited) {
-          continue;
-        }
-        
-        ++edgesConnected;
-        if (edgesConnected % 5000 == 0) {
-          //cout << "Edges: " << edgesConnected << endl;
-        }
-        Edge e = (nodeIsInX ? buildEdge(node, *it) : buildEdge(*it, node));
-        
-        bool isMatched = isMember(matchEdges, e);
-        LOG_STR("Edge " << e << " is matched " << isMatched);
-        
-          
-        if ( !isMember(inToVisit, otherNode) && ( (useUnmatchedEdge && !isMatched) || 
-          (!useUnmatchedEdge && isMatched) ) )
-        {
-          LOG_STR("Going to visit " << otherNode);
-          
+        NodeToEdge::const_iterator it = nodeToMatchEdge.find(node);
+        if (it != nodeToMatchEdge.end()) {
+          //node is in Y, so the otherNode is in the first part of the edge
+          int otherNode = it->second.first;
+          assert(isMember(xNodes, otherNode));
+          assert(!isMember(inToVisit, otherNode));
+            
           toVisit.push_back(NodePtr(new Node(nodePtr, otherNode)));
           inToVisit.insert(otherNode);
+        }
+      }
+      else
+      {
+        bool nodeIsInX = useUnmatchedEdge;
+        LOG_STR("useUnmatchedEdge " << useUnmatchedEdge);
+        assert(nodeExists(node));
+        
+        GraphConnections::const_iterator connIt = connections.find(node);  
+        NodeConnections& connections = *(connIt->second);
+        
+        for(NodeConnections::const_iterator it = connections.begin();
+          it != connections.end();
+          ++it)
+        {
+          const int otherNode = *it;
+          
+          bool hasVisited = isMember(visited, otherNode);
+          LOG_STR("Has visited: " << hasVisited);
+          
+          if (hasVisited) {
+            continue;
+          }
+          
+          //node is an X node
+          Edge e = buildEdge(node, otherNode);
+          
+          bool isMatched = isMember(matchEdges, e);
+          LOG_STR("Edge " << e << " is matched " << isMatched);
+          
+          assert(useUnmatchedEdge);
+          
+          if ( !isMember(inToVisit, otherNode) && !isMatched)
+          {
+            LOG_STR("Going to visit " << otherNode);
+            
+            toVisit.push_back(NodePtr(new Node(nodePtr, otherNode)));
+            inToVisit.insert(otherNode);
+          }
         }
       }
       
