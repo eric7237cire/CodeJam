@@ -9,30 +9,19 @@
 #define SHOW_TIME 0
 #endif
 
-#define DEBUG_OUTPUT 0
 //#undef assert
 //#define assert(x) ((void)0)
 
-#if INFO
-#define LOG_STR_INFO LOG_STR
-#define LOG_INFO LOG
-#else
 #define LOG_STR_INFO(str) do{}while(false)
 #define LOG_INFO(str) do{}while(false)
-#endif   
-
-#if DEBUG
-#define LOG_STR_DEBUG LOG_STR
-#define LOG_DEBUG LOG
-#else
 #define LOG_STR_DEBUG(str) do{}while(false)
 #define LOG_DEBUG(str) do{}while(false)
-#endif
+
 
 
 #if SHOW_TIME
 #define SHOW_TIME_BEGIN(A) clock_t begin_##A=clock();
-#define SHOW_TIME_END(A) clock_t end_##A=clock(); cout << "Time elapsed: " #A << " " << double(diffclock(end_##A,begin_##A)) << " ms"<< endl;
+#define SHOW_TIME_END(A) clock_t end_##A=clock(); LOG_STR("Time elapsed: " #A << " " << double(diffclock(end_##A,begin_##A)) << " ms");
 #else
 #define SHOW_TIME_BEGIN(A) 
 #define SHOW_TIME_END(A) 
