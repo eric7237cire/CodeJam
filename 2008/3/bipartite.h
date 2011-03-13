@@ -702,19 +702,20 @@ void Graph::augmentMatch(NodePtr freeYNode)
 }
 
 bool getY(const NodeHashSet& S_neighbors, 
-  const NodeHashSet& T, NodeHashSet& yNodesToProcess)
+  const NodeHashSet& T, deque<int>& yNodesToProcess)
 {
   /*set_difference(S_neighbors.begin(), S_neighbors.end(),
       T.begin(), T.end(),
       insert_iterator<NodeHashSet>(yNodesToProcess, yNodesToProcess.begin()));
   */
   //TODO
+  
   for(NodeHashSet::const_iterator it = S_neighbors.begin();
     it != S_neighbors.end();
     ++it)
   {
     if (!isMember(T, *it)) {
-      yNodesToProcess.insert(*it);
+      yNodesToProcess.push_back(*it);
       return true;
     }
   }
@@ -833,20 +834,25 @@ bool Graph::growMatch()
     
     addToS(freeVertexFromX, S, S_neighbors, augmentingTree);
     
+    deque<int> yNodesToProcess;
+    
     while(true)
     {
-      NodeHashSet yNodesToProcess;
-      getY(S_neighbors, T, yNodesToProcess);
+      if (yNodesToProcess.empty()) {
+        getY(S_neighbors, T, yNodesToProcess);
+      }
           
       if (yNodesToProcess.empty()) {
         LOG_STR("Done processing, finding another freex");
         break;
       }
       
-      assert(yNodesToProcess.size() == 1);
+      assert(!yNodesToProcess.empty());
       
       const int yNode = *yNodesToProcess.begin();
-      LOG_STR("In loop processing y node " << yNode << " yNodesToProcess " << yNodesToProcess);
+      yNodesToProcess.pop_front();
+      
+      //LOG_STR("In loop processing y node " << yNode << " yNodesToProcess " << yNodesToProcess);
       LOG_STR("T: " << T);
       LOG_STR("N(S): " << S_neighbors);
       
