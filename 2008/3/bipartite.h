@@ -29,9 +29,9 @@ typedef set<int> NodeConnections;
 typedef boost::shared_ptr<NodeConnections> NodeConnectionsPtr;
 typedef map<int, NodeConnectionsPtr> GraphConnections;
 typedef set<int> SetInt;
-typedef set<int> SetNode;
 typedef set<int> NodeSet;
 typedef boost::shared_ptr<NodeSet> NodeSetPtr;
+
 typedef pair<int, int> Edge;
 typedef boost::unordered_set<Edge> EdgeSet;
 typedef boost::unordered_set<int> NodeHashSet;
@@ -40,6 +40,8 @@ typedef boost::unordered_map<int, Edge> NodeToEdge;
 
 class Node;
 typedef boost::shared_ptr<Node> NodePtr;
+
+typedef boost::unordered_map<int, NodePtr> AugmentingTree;
 
 class Node
 {
@@ -99,12 +101,12 @@ private:
   
   GraphConnections connections;
   
-  SetNode xNodes;
-  SetNode yNodes;
-  SetNode nodes;
+  NodeSet xNodes;
+  NodeSet yNodes;
+  NodeSet nodes;
   
-  SetNode freeX;
-  SetNode freeY;
+  NodeSet freeX;
+  NodeSet freeY;
   
   NodeToEdge nodeToMatchEdge;
   EdgeSet matchEdges;
@@ -141,6 +143,24 @@ private:
   void removeMatchEdge(const Edge& edge);
   
   void addNodeToOddLevel(int nodeToAdd, NodeSetPtr oddSet, NodeSetPtr evenSet, const NodeSet& matchedVertices);
+  const NodeConnections& getConnections(int node) const;
+  
+  void addToSNeighbors(int xnode, 
+  NodeHashSet& S_neighbors,
+  AugmentingTree& tree) const;
+  
+  void addToS(int xnode,
+  int ynode,
+  NodeHashSet& S,
+  NodeHashSet& S_neighbors,
+  NodeHashSet& T,
+  AugmentingTree& tree) const;
+  
+  void addToS(int xnode, 
+  NodeHashSet& S,
+  NodeHashSet& S_neighbors,
+  AugmentingTree& tree) const;
+
 };
 
 Graph::Graph() : 
@@ -397,7 +417,7 @@ void Graph::createInitialMatching()
   //Ne modifie pas directement freeX
   NodeSet freeXToSearch(freeX);
   
-  for(SetNode::iterator it_x = freeXToSearch.begin();
+  for(NodeSet::iterator it_x = freeXToSearch.begin();
     it_x != freeXToSearch.end();
     ++it_x)
   {
@@ -444,7 +464,6 @@ void Graph::findMaximumIndependantSet(set<int>& maxIndependantSet)
   freeY = yNodes;
   
   createInitialMatching();
-  //cout << "Match is now " << match.size() << endl;
   
   while(growMatch())
   {
@@ -452,18 +471,18 @@ void Graph::findMaximumIndependantSet(set<int>& maxIndependantSet)
     LOG_STR("Match is now " << matchEdges.size());
     LOG_OFF();
   } 
-  
+  LOG_OFF();
   LOG_STR("MATCH DONE");
   LOG_STR("Match: [" << matchEdges << "]");
   LOG_STR("Match size: " << matchEdges.size());
   LOG_STR("Number of vertices: " << nodes.size());
-  //LOG_ON();
+  //LOG_OFF();
   LOG_STR("Vertex cover");
   LOG_OFF();
   set<int> vertexCover;
   findMinimumVertexCover(vertexCover);
   
-  //LOG_ON();
+  //LOG_OFF();
   LOG_STR("Vertex cover done");
   LOG_OFF();
   set_difference(nodes.begin(), nodes.end(),
@@ -682,6 +701,114 @@ void Graph::augmentMatch(NodePtr freeYNode)
   assert(matchEdges.size() == oldSize + 1);
 }
 
+bool getY(const NodeHashSet& S_neighbors, 
+  const NodeHashSet& T, NodeHashSet& yNodesToProcess)
+{
+  /*set_difference(S_neighbors.begin(), S_neighbors.end(),
+      T.begin(), T.end(),
+      insert_iterator<NodeHashSet>(yNodesToProcess, yNodesToProcess.begin()));
+  */
+  //TODO
+  for(NodeHashSet::const_iterator it = S_neighbors.begin();
+    it != S_neighbors.end();
+    ++it)
+  {
+    if (!isMember(T, *it)) {
+      yNodesToProcess.insert(*it);
+      return true;
+    }
+  }
+  
+  return false;
+}
+
+
+
+const NodeConnections& Graph::getConnections(int node) const
+{
+  GraphConnections::const_iterator connIt = connections.find(node);  
+  return *(connIt->second);    
+}
+
+void Graph::addToSNeighbors(int xnode, 
+  NodeHashSet& S_neighbors,
+  AugmentingTree& tree) const
+{
+  LOG_STR("add neighbors of " << xnode << " to N(S): " << S_neighbors);
+  assert(isMember(tree, xnode));
+  
+  NodePtr xNodePtr = tree.find(xnode)->second;
+  
+  const NodeConnections& nodeConnections = getConnections(xnode);
+  
+  for(NodeConnections::const_iterator it = nodeConnections.begin();
+    it != nodeConnections.end();
+    ++it)
+  {
+    const int yNode = *it;
+    if (!isMember(S_neighbors, yNode)) 
+    {
+      tree.insert(AugmentingTree::value_type(yNode,
+        NodePtr(new Node(xNodePtr, yNode))));
+      
+      S_neighbors.insert(yNode);
+    }
+  }
+  
+  LOG_STR("N(S) [" << S_neighbors << "]");
+}
+
+//adding matching edge from ynode to xnode
+void Graph::addToS(int xnode,
+  int ynode,
+  NodeHashSet& S,
+  NodeHashSet& S_neighbors,
+  NodeHashSet& T,
+  AugmentingTree& tree) const
+{
+  LOG_STR("Adding " << xnode << " to S, " << ynode << " to T");
+  assert(!isMember(T, ynode));
+  T.insert(ynode);
+  
+  if (isMember(S, xnode)) {
+    LOG_STR("Node " << xnode << " already in S");
+    return;
+  }
+  
+  assert(!isMember(S, xnode));  
+  assert(isMember(tree, ynode));
+  
+  NodePtr yNodePtr = tree.find(ynode)->second;  
+  assert(!isMember(tree, xnode));
+  
+  tree.insert(AugmentingTree::value_type(xnode,
+    NodePtr(new Node(yNodePtr, xnode))));
+   
+  S.insert(xnode);
+  
+  addToSNeighbors(xnode, S_neighbors, tree);
+}
+
+void Graph::addToS(int xnode, 
+  NodeHashSet& S,
+  NodeHashSet& S_neighbors,
+  AugmentingTree& tree) const
+{
+  LOG_STR("Adding " << xnode << " to S" );
+  assert(!isMember(S, xnode));
+  
+  assert(!isMember(tree, xnode));
+  
+  tree.insert(AugmentingTree::value_type(xnode,
+    NodePtr(new Node(NodePtr(), xnode))));
+  
+  S.insert(xnode);
+  
+  addToSNeighbors(xnode, S_neighbors, tree);   
+}
+
+
+
 bool Graph::growMatch()
 {
   if (freeX.empty()) {
@@ -690,110 +817,67 @@ bool Graph::growMatch()
   }
   
   LOG_OFF();
+  LOG_STR("Starting");
+  int count = 0;
   
-  for(NodeSet::const_iterator it = freeX.begin();
-    it != freeX.end();
-    ++it)
-  {
-    const int freeVertexFromX = *it; //getUnmatchedVertex(freeX);
-  
-    SetNode visited;
-    NodeHashSet inToVisit;
-    deque<NodePtr> toVisit;
-    
-    toVisit.push_back(NodePtr(new Node(NodePtr(), freeVertexFromX)));
+  NodeHashSet S;
+  NodeHashSet T;
+  NodeHashSet S_neighbors;
+  boost::unordered_map<int, NodePtr> augmentingTree;
    
-    LOG_STR("growMatch starting.\n  Match: " << matchEdges << "\n" 
-      << " FreeX: " << freeX << "\n"
-      << " FreeY: " << freeY << "\n"
-      << " selected x " << freeVertexFromX);
-     
-    int edgesConnected = 0;
+  for(NodeSet::const_iterator freeXit = freeX.begin();
+    freeXit != freeX.end();
+    ++freeXit)
+  {
+    const int freeVertexFromX = *freeXit;
     
-    while(!toVisit.empty())
+    addToS(freeVertexFromX, S, S_neighbors, augmentingTree);
+    
+    while(true)
     {
-      NodePtr nodePtr = toVisit.front();
-      int node = nodePtr->value;
+      NodeHashSet yNodesToProcess;
+      getY(S_neighbors, T, yNodesToProcess);
+          
+      if (yNodesToProcess.empty()) {
+        LOG_STR("Done processing, finding another freex");
+        break;
+      }
       
-      NodeSet::iterator freeYit = freeY.find(node); 
-      if(freeYit != freeY.end())
+      assert(yNodesToProcess.size() == 1);
+      
+      const int yNode = *yNodesToProcess.begin();
+      LOG_STR("In loop processing y node " << yNode << " yNodesToProcess " << yNodesToProcess);
+      LOG_STR("T: " << T);
+      LOG_STR("N(S): " << S_neighbors);
+      
+      if(isMember(freeY, yNode))
       {
         LOG_STR("Augmented match!");
-        augmentMatch(nodePtr);
+        assert(augmentingTree.find(yNode) != augmentingTree.end());
+        augmentMatch(augmentingTree.find(yNode)->second);
         LOG_STR(matchEdges);
         return true;      
-      }
-      
-      toVisit.pop_front();
-      
-      assert(!isMember(visited, node));
-      
-      visited.insert(node);
-      
-      //X to Y use an unmatched edge
-      //Y to X, use a matched edge
-      bool useUnmatchedEdge = isMember(xNodes, node);
-      
-      if (!useUnmatchedEdge)
-      {
-        NodeToEdge::const_iterator it = nodeToMatchEdge.find(node);
-        if (it != nodeToMatchEdge.end()) {
-          //node is in Y, so the otherNode is in the first part of the edge
-          int otherNode = it->second.first;
-          assert(isMember(xNodes, otherNode));
-          assert(!isMember(inToVisit, otherNode));
-            
-          toVisit.push_back(NodePtr(new Node(nodePtr, otherNode)));
-          inToVisit.insert(otherNode);
-        }
-      }
-      else
-      {
-        bool nodeIsInX = useUnmatchedEdge;
-        LOG_STR("useUnmatchedEdge " << useUnmatchedEdge);
-        assert(nodeExists(node));
+      } else {
+        assert(!isMember(T, yNode));
+        //find matching edge containing y
+        LOG_STR("Not an augmenting path, growing augmenting tree: " << yNode);
+        NodeToEdge::const_iterator it = nodeToMatchEdge.find(yNode);
+        assert(it != nodeToMatchEdge.end());
+        const Edge& matchingEdge = it->second;
+        assert(matchingEdge.second == yNode);
         
-        GraphConnections::const_iterator connIt = connections.find(node);  
-        NodeConnections& connections = *(connIt->second);
-        
-        for(NodeConnections::const_iterator it = connections.begin();
-          it != connections.end();
-          ++it)
-        {
-          const int otherNode = *it;
-          
-          bool hasVisited = isMember(visited, otherNode);
-          LOG_STR("Has visited: " << hasVisited);
-          
-          if (hasVisited) {
-            continue;
-          }
-          
-          //node is an X node
-          Edge e = buildEdge(node, otherNode);
-          
-          bool isMatched = isMember(matchEdges, e);
-          LOG_STR("Edge " << e << " is matched " << isMatched);
-          
-          assert(useUnmatchedEdge);
-          
-          if ( !isMember(inToVisit, otherNode) && !isMatched)
-          {
-            LOG_STR("Going to visit " << otherNode);
-            
-            toVisit.push_back(NodePtr(new Node(nodePtr, otherNode)));
-            inToVisit.insert(otherNode);
-          }
-        }
-      }
-      
+        const int z = matchingEdge.first;
+        int oldTsize = T.size();  
+        addToS(z, yNode, S, S_neighbors, T, augmentingTree);
+        assert(T.size() == oldTsize + 1);
+      }      
       
     }
   }
   
   return false;
-}
-
+}  
+ 
 
 
 } //namespace
