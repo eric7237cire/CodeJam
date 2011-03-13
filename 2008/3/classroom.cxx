@@ -18,7 +18,7 @@
 using namespace std;
 
 
-//#define LOG_ON LOG_OFF
+//#define LOG_OFF LOG_OFF
 
 void do_test_case(int test_case, ifstream& input);
 
@@ -357,54 +357,6 @@ public:
     }
   }
   
-  int fillEdge(int startRow, int endRow, int studentCol, int emptyCol) {
-    LOG_OFF();
-    int local_count = 0;
-    LOG_STR("Filling edge");
-    LOG(startRow);
-    LOG(endRow);
-    
-    LOG(studentCol);
-    LOG(emptyCol);
-    LOG_OFF();
-    
-    assert(startRow <= endRow);
-    assert(startRow >= 0);
-    assert(startRow < rows);
-    assert(endRow >= 0);
-    assert(endRow < rows);
-    
-    assert(studentCol >= 0);
-    assert(studentCol < cols);
-    assert(emptyCol >= 0);
-    assert(emptyCol < cols);
-    
-    for(int r = startRow; r <= endRow; ++r) {
-        NodePtr studentNode = nodes[r][studentCol];
-        
-          
-        if (studentNode) {
-          studentNode->disconnectFromNeighbors();
-          setStudent(r, studentCol);
-          ++local_count;
-          nodes[r][studentCol].reset();
-        }
-        
-        setForcedEmpty(r, emptyCol);
-        
-        
-        
-    }
-  
-    LOG_OFF();    
-    //LOG_ON();
-    LOG(*this);
-    validateGrid();
-    
-    LOG_OFF();
-    
-    return local_count;
-  }
   
   bool hasNoChair(int row, int col) {
     if (row < 0 || row >= rows) {
@@ -443,44 +395,17 @@ public:
     return true;
   }
   
-  bool isBlockSeparation(int row, int col1, int col2)
-  {
-    assert(col1 >= 0 && col1 < cols);
-    assert(col2 >= 0 && col2 < cols);
-    
-    if(hasNoChair(row, col1) 
-      && hasNoChair(row, col2)) 
-    {
-      return true;
-    }
-    
-    if (row < rows) {
-    if (hasNoChair(row, col1) == hasNoChair(row + 1, col1) &&
-        hasNoChair(row, col2) == hasNoChair(row + 1, col2) &&
-      hasNoChair(row, col1) != hasNoChair(row, col2)) 
-      {
-        return true;
-      }
-    }
-    
-    return false;
-  }
-  
   int do_bipartite() {
     
     Bipartite::Graph graph;
     
      NodePtr startingNode;
      
-     startingNode.reset();
-     int s1_count = 0;
-     int s2_count = 0;
-   
     for(int i = 0; i < rows*cols; ++i) {
       const int row_i = i / cols;
       const int col_i = i % cols;
       
-      if (!startingNode && nodes[row_i][col_i] && nodes[row_i][col_i]->connections.size() > 0) {
+      if (!startingNode && nodes[row_i][col_i]) {
         startingNode = nodes[row_i][col_i];
         startingNode->label = 1;        
       }
@@ -492,7 +417,7 @@ public:
       nodesToSearch.push(startingNode);
       graph.addNode(getIndex(startingNode->row, startingNode->col));
     }
-    LOG_ON();
+    LOG_OFF();
     while(!nodesToSearch.empty()) {
       NodePtr node = nodesToSearch.front();
       nodesToSearch.pop();
@@ -519,14 +444,14 @@ public:
       }
     }
 
-    LOG_ON();
+    LOG_OFF();
     
     graph.partition();
     
     set<int> studentSet;
     graph.findMaximumIndependantSet(studentSet);
     
-    LOG_ON();
+    LOG_OFF();
     LOG_STR("Avant bipartite");
     LOG(*this);
     
@@ -552,263 +477,32 @@ public:
       setStudent(row, col);
      
     }
-    LOG_ON();
+    LOG_OFF();
     LOG_STR("Après bipartite");
     LOG(*this);
     return studentSet.size(); 
   }
   
-  int searchForEdges() {
-    LOG_ON();
-    int potential_student_count = 0;
-    int potential_empty_chair_count = 0;
-    bool invalidUntilNextBlock = false;
-    int start_row = 0;
-    int count = 0;
-    
-    for(int c = 0; c < cols; ++c) {
-      for(int col_offset = -1; col_offset <= 1; col_offset += 2) {
-        start_row = 0;
-        invalidUntilNextBlock = false;
-        const int student_col = c;
-        const int all_blocked_col = c + col_offset;
-        const int empty_chair_col = c - col_offset;
-        potential_student_count = 0;
-        potential_empty_chair_count = 0;
-        
-        if (empty_chair_col < 0 || empty_chair_col >= cols) {
-          continue;
-        }
-      for(int r = 0; r < rows; ++r) {
-        //r, c must have no connections towards c-col_offset
-        
-        
-        
-        //r, c must have f
-        LOG_OFF();
-        LOG(r);
-        LOG(c);
-        LOG(student_col);
-        LOG(empty_chair_col);
-        LOG(all_blocked_col);
-        LOG(hasNoChair(r, c));
-        LOG(hasNoChair(r, student_col));
-        LOG(hasNoChair(r, empty_chair_col));
-        LOG(potential_student_count);
-        
-        
-        //has a chair
-        if (!hasNoChair(r, student_col)) {
-          ++potential_student_count;
-        }
-        
-        //next door
-        if (!hasNoChair(r, empty_chair_col)) {
-          ++potential_empty_chair_count;
-        }
-         
-        if (!hasNoConnections(r, c, all_blocked_col)) {
-          //StackLogSwitch s(false);
-          LOG_STR("Invalid!");
-          LOG(r);
-          LOG(c);
-          LOG(col_offset);
-          LOG(hasNoChair(r, -1));
-          LOG(!hasNoChair(r, c - col_offset));
-          potential_student_count = 0;
-          potential_empty_chair_count = 0;
-          invalidUntilNextBlock = true;
-          continue;
-        }
-        
-        if(isBlockSeparation(r, student_col, empty_chair_col)) {
-          //LOG(r);
-          //LOG(c);
-          LOG_STR("seperator"); 
-          if (!invalidUntilNextBlock && potential_student_count >= potential_empty_chair_count && potential_student_count > 0) {
-            count += fillEdge(start_row, r, student_col, empty_chair_col);
-          }
-          potential_student_count = 0;
-          potential_empty_chair_count = 0;
-          start_row = r + 1;
-          invalidUntilNextBlock = false;
-          continue;
-        } else {
-          
-        }
-        
-        if (invalidUntilNextBlock) {
-          continue;
-        }
-        
-        
-        
-        /*
-        //has a chair
-        if (!hasNoChair(r, student_col)) {
-          ++potential_student_count;
-        }
-        
-        //next door
-        if (!hasNoChair(r, empty_chair_col)) {
-          ++potential_empty_chair_count;
-        }*/
-      }
-      
-        if (!invalidUntilNextBlock && potential_student_count >= potential_empty_chair_count && potential_student_count > 0) {
-            count += fillEdge(start_row, rows-1, student_col, empty_chair_col);
-          }
-      }
-    }
-    
-    LOG_OFF();
-    return count;
-  }
   
-  int searchForIsolated()
-  {
-    int local_count = 0;
-       
-     for(int i = 0; i < rows*cols; ++i) {
-      const int row_i = i / cols;
-      const int col_i = i % cols;
-      if (nodes[row_i][col_i]) {
-        //cout << row_i << " " << col_i << nodes[row_i][col_i] << endl;
-      }
-      
-      if (nodes[row_i][col_i] && nodes[row_i][col_i]->connections.size() == 0) {
-        ++local_count;
-        setStudent(row_i, col_i);
-        nodes[row_i][col_i].reset();
-      }
-      
-      //if connections == 1, take it out of graph, remove connections to other nodes
-      if (nodes[row_i][col_i] && nodes[row_i][col_i]->connections.size() == 1) {
-        NodePtr connectedNodeToRemove = nodes[row_i][col_i]->connections[0];
-        NodePtr isolatedNodeToRemove = nodes[row_i][col_i];
-        assert(isolatedNodeToRemove->row == row_i);
-        assert(isolatedNodeToRemove->col == col_i);
-        assert(abs(static_cast<int>(connectedNodeToRemove->row) - row_i) <= 1);
-        assert(abs(static_cast<int>(connectedNodeToRemove->col) - col_i) == 1);
-          
-        const int remove_row =  nodes[row_i][col_i]->connections[0]->row;
-        const int remove_col =  nodes[row_i][col_i]->connections[0]->col;
-        
-        //LOG_ON();
-        LOG_STR_INFO("Removing single connection");
-        LOG_INFO(row_i);
-        LOG_INFO(col_i);
-        LOG_STR_INFO("and");
-        LOG_INFO(remove_row);
-        LOG_INFO(remove_col);
-        //LOG_OFF();
-        setStudent(row_i, col_i);
-        ++local_count;
-      }
-     }
-      
-    return local_count;
-    
-  }
-  
-  void validateGrid() {
-    for(int r = 0; r < rows; ++r) {
-      for(int c = 0; c < cols; ++c) {
-        if (cells[r][c] == BROKEN) {
-          assert(!nodes[r][c]);
-        } else
-        if (cells[r][c] == FORCED_EMPTY) {
-          if (nodes[r][c]) {
-            LOG_ON();
-            LOG(r);
-            LOG(c);
-            LOG(*this);
-          }
-          assert(!nodes[r][c]);
-        } else
-        if (cells[r][c] == STUDENT) {
-          assert(!nodes[r][c]);
-        } else
-        if (cells[r][c] == CHAIR) {
-          if (!nodes[r][c]) {
-            cout << "what" << endl;
-            LOG_ON();
-            LOG(r);
-            LOG(c);
-            LOG(*this);
-          }
-          assert(nodes[r][c]);
-          assert(nodes[r][c]->connections.size() == getCost(r, c));
-        } else {
-          assert(false);
-        }
-      }
-    }
-        
-  }
   
   //returns size of larger set 
-  int visitNodes()  {
-     
-     //find a node that has connections
-     //int count = searchForEdges();
-     int count = 0;
-     int local_count = 0;
-     
-     //LOG_ON();
-     int s_count = 0;
-     validateGrid();
-     
-     do {
-       s_count = count;
-       
-       
-       do {
-       
-       local_count = searchForIsolated();
-
-       LOG_OFF();
-       LOG_STR("Isolated");
-       LOG(*this);
-       validateGrid();
-       count += local_count;
-       //break;
-       } while (local_count > 0);
-       
-       local_count = searchForEdges();
-       LOG_OFF();
-       LOG_STR("Edges");
-       LOG(*this);
-       count += local_count;
-       validateGrid();
-       
-       
-       
-       
-     } while (s_count < count);
-      
-     //LOG_ON();
-     LOG_STR("Done with initial searches");
-     LOG(*this);
-     LOG_OFF();
-     
-     do { 
-     local_count = do_bipartite();
-     count += local_count;
-     LOG_ON();
-     LOG_STR("bipartitie" << *this);
-     } while(local_count > 0);
-      
-      LOG(*this);
-      
-      //local_count = searchOptimalBackTracking(startingNode);
-      
-      LOG_ON();
-      
-      LOG_STR("Finit avec search");
-      LOG(*this);
-      
-     
+  int visitNodes()  
+  {
+    //find a node that has connections
+    //int count = searchForEdges();
+    int count = 0;
+    int local_count = 0;
+    
+    do { 
+      local_count = do_bipartite();
+      count += local_count;
+      LOG_STR("bipartitie" << *this);
+    } while(local_count > 0);
+    
+    LOG(*this);
+    
+    LOG_STR("Finit avec search");
+    LOG(*this);
     
     return count; 
   }
@@ -902,53 +596,8 @@ int getSquareFromVisited(int row, int col, const VisitedMap& vMap)
     
     return -1;
 }
-
-ostream& printMap(ostream& oos, const Grid& grid, const VisitedMap& visitedMap)
-{
- // return oos;
-  ostringstream os;
-  int global_count = 0;
-    //os << "\nCols  :  ";
-    os << endl;
-    for(unsigned int c = 0; c < grid.cols; ++c) {
-      os << (c % 10);
-    }
-    os << endl << endl;
-    for(int r = grid.rows - 1; r >= 0; --r) {
-      
-      int students = 0;
-      int empty = 0;
-      int connected = 0;
-      int broken = 0;
-      
-      for(unsigned int c = 0; c < grid.cols; ++c) {
-        int sq = getSquareFromVisited(r, c, visitedMap);
-        if (sq < 0) {
-          os << '_';
-        } else { 
-          os << SquareCh[sq];
-        }
-      
-      
-      }
-      os << " :" << r;
-      
-      os << endl;
-    }
+  
     
-    os << endl << endl ;
-    
-    LOG_STR(os.str());
-  return oos;    
-} 
-    
-      
-      
-    
-    
-    
-    
-
 typedef deque<VecBool> Perms;
 
 ostream& operator<<(ostream& os, const VecBool& rhs)
@@ -1016,7 +665,7 @@ void generate_perms(int length)
 void do_test_case(int test_case, ifstream& input)
 {
   //generate_perms(10);
-  LOG_ON();
+  LOG_OFF();
   LOG_STR("abc " << 3 << " . " << 4.15);
   
   LOG_OFF();
@@ -1039,7 +688,7 @@ void do_test_case(int test_case, ifstream& input)
     }
   } 
   
-  LOG_ON();
+  LOG_OFF();
 //  LOG(grid);
   LOG_OFF();
   
@@ -1049,7 +698,7 @@ void do_test_case(int test_case, ifstream& input)
 
    
   
-  LOG_ON();
+  LOG_OFF();
   LOG(grid);
   
   //int max_ss = grid.findCompleteGraphOfInverse();

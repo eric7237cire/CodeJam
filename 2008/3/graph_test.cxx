@@ -57,6 +57,20 @@ BOOST_AUTO_TEST_CASE(test_graph)
   
 }
 
+BOOST_AUTO_TEST_CASE(test_bipartite_isolated)
+{
+  using namespace Bipartite;
+  Graph g;
+  g.addNode(37);
+  g.addNode(48);
+  
+  set<int> s;
+  
+  g.findMaximumIndependantSet(s);
+  
+  BOOST_CHECK(s.size() == 2);
+}
+
 BOOST_AUTO_TEST_CASE(test_bipartite)
 {
 //..........

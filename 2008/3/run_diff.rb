@@ -6,7 +6,7 @@ letter = "C"
 smallLetter = letter.downcase
 size = "small"
  
-system("touch classroom.cxx")
+#system("touch classroom.cxx")
 system("make mode=release && ./#{exec} #{letter}-#{size}-practice.in > test.txt && diff test.txt #{smallLetter}_#{size}.txt")
   
 size = "large"  

@@ -405,7 +405,7 @@ void Graph::createInitialMatching(SetNode& freeX, SetNode& freeY)
   }
 }
 
-void Graph::findMaximumIndependantSet(set<int>& returnSet)
+void Graph::findMaximumIndependantSet(set<int>& maxIndependantSet)
 {
   if (numberOfNodes == 0) 
   {
@@ -434,20 +434,9 @@ void Graph::findMaximumIndependantSet(set<int>& returnSet)
   set<int> vertexCover;
   findMinimumVertexCover(vertexCover);
   
-  set<int> allVertexes;
-  set_union(xNodes.begin(), xNodes.end(),
-    yNodes.begin(), yNodes.end(),
-    insert_iterator<NodeSet>(allVertexes, allVertexes.begin()));
-  
-  assert(allVertexes.size() == xNodes.size() + yNodes.size());
-  
-  set<int> maxIndependantSet;
-  
-  set_difference(allVertexes.begin(), allVertexes.end(),
+  set_difference(nodes.begin(), nodes.end(),
     vertexCover.begin(), vertexCover.end(),
     insert_iterator<NodeSet>(maxIndependantSet, maxIndependantSet.begin()));
-  
-  returnSet = maxIndependantSet;
   
 }
 
