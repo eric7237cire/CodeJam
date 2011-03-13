@@ -123,7 +123,7 @@ private:
   bool nodeExists(int node) const;
   bool isConnected(int nodeA, int nodeB) const;
   void createInitialMatching(SetNode& freeX, SetNode& freeY);
-  static Edge buildEdge(int nodeA, int nodeB);
+  Edge buildEdge(int nodeA, int nodeB) const;
   bool growMatch(SetNode& freeX, SetNode& freeY);
   void augmentMatch(NodePtr freeYNode);
   static int getUnmatchedVertex(const NodeSet& nodeSet);
@@ -142,12 +142,18 @@ Graph::Graph() :
   
 }
 
+bool isInEdge(const Edge& edge, int node)
+{
+  return edge.first == node || edge.second == node; 
+}
+
 //TODO handle freeX freeY aussi
 void Graph::addMatchEdge(const Edge& edge)
 {
   assert(2 * matchEdges.size() == nodeToMatchEdge.size()); 
   assert(!isMember(nodeToMatchEdge, edge.first));
   assert(!isMember(nodeToMatchEdge, edge.second));
+  
   matchEdges.insert(edge);
   nodeToMatchEdge.insert(NodeToEdge::value_type(edge.first, edge));
   nodeToMatchEdge.insert(NodeToEdge::value_type(edge.second, edge));
@@ -179,13 +185,12 @@ bool Graph::isConnected(int nodeA, int nodeB) const
   
 }
 
-Edge Graph::buildEdge(int nodeA, int nodeB)
+Edge Graph::buildEdge(int nodeX, int nodeY) const
 {
-  if (nodeA < nodeB) {
-    return Edge(nodeA, nodeB);
-  }
+  assert(isMember(xNodes, nodeX));
+  assert(isMember(yNodes, nodeY));
   
-  return Edge(nodeB, nodeA);
+  return Edge(nodeX, nodeY);
 }
 
 int Graph::getUnmatchedVertex(const NodeSet& nodeSet)
@@ -353,9 +358,11 @@ ostream& operator<<(ostream& os, const Edge& edge)
 void Graph::createInitialMatching(SetNode& freeX, SetNode& freeY)
 {
   
-    
   int x = 0;
   int y = 0;
+  
+  //Ne modifie pas directement freeX
+  NodeSet freeXToSearch(freeX);
   
   for(SetNode::iterator it_x = freeX.begin();
     it_x != freeX.end();
@@ -430,10 +437,15 @@ void Graph::findMaximumIndependantSet(set<int>& maxIndependantSet)
   LOG_STR("Match: [" << matchEdges << "]");
   LOG_STR("Match size: " << matchEdges.size());
   LOG_STR("Number of vertices: " << nodes.size());
-  
+  LOG_ON();
+  LOG_STR("Vertex cover");
+  LOG_OFF();
   set<int> vertexCover;
   findMinimumVertexCover(vertexCover);
   
+  LOG_ON();
+  LOG_STR("Vertex cover done");
+  LOG_OFF();
   set_difference(nodes.begin(), nodes.end(),
     vertexCover.begin(), vertexCover.end(),
     insert_iterator<NodeSet>(maxIndependantSet, maxIndependantSet.begin()));
@@ -464,21 +476,17 @@ void Graph::findMatchedVertices(NodeSet& matchedVertices)
 
 bool Graph::isUnmatchedEdge(int unmatchedNode, int matchedNode) const
 {
-  if (unmatchedNode == 8) {
-    LOG_STR("isUnmatchedEdge " << unmatchedNode << ", " << matchedNode);  
-  }
-  
-  
   if (!isConnected(unmatchedNode, matchedNode)) {
     return false;
   }
   
-  if (unmatchedNode == 8) {
-    LOG_STR("Connected " << unmatchedNode << ", " << matchedNode);  
-  }
-    
-  Edge edge = buildEdge(unmatchedNode, matchedNode);
-  bool isInMatched = isMember(matchEdges, edge);
+  NodeToEdge::const_iterator it = nodeToMatchEdge.find(matchedNode);
+  
+  assert(it != nodeToMatchEdge.end());
+  
+  
+  const Edge& edge = it->second;
+  bool isInMatched = isInEdge(edge, unmatchedNode);
   LOG_STR("Edge: " << edge << " matched? " << isInMatched);
   
   if (isInMatched) {
@@ -632,7 +640,7 @@ void Graph::augmentMatch(NodePtr freeYNode)
   
   while(node && node->parent)
   {
-    Edge edge = buildEdge(node->value, node->parent->value);
+    Edge edge = buildEdge(node->parent->value, node->value);
     for(EdgeSet::iterator it = matchEdges.begin(); it != matchEdges.end();)
     {
       if (edgesIntersect(edge, *it)) {
@@ -706,6 +714,7 @@ bool Graph::growMatch(SetNode& freeX, SetNode& freeY)
       //X to Y use an unmatched edge
       //Y to X, use a matched edge
       bool useUnmatchedEdge = isMember(xNodes, node);
+      bool nodeIsInX = useUnmatchedEdge;
       LOG_STR("useUnmatchedEdge " << useUnmatchedEdge);
       assert(nodeExists(node));
       
@@ -729,9 +738,9 @@ bool Graph::growMatch(SetNode& freeX, SetNode& freeY)
         if (edgesConnected % 5000 == 0) {
           //cout << "Edges: " << edgesConnected << endl;
         }
-        Edge e = buildEdge(node, *it);
+        Edge e = (nodeIsInX ? buildEdge(node, *it) : buildEdge(*it, node));
         
-        bool isMatched = matchEdges.find(e) != matchEdges.end();
+        bool isMatched = isMember(matchEdges, e);
         LOG_STR("Edge " << e << " is matched " << isMatched);
         
           

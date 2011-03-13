@@ -158,16 +158,6 @@ ostream& operator<<( ostream& os, NodePtr rhsPtr)
 class Grid;
 ostream& operator<<(ostream& os, const Grid& grid);
 
-typedef map<NodePtr, int> VisitedMap;
-typedef boost::shared_ptr<VisitedMap> VisitedMapPtr;
-typedef deque<NodePtr> UnVisitedList;
-typedef set<NodePtr> UnvisitedSet;
-  
-ostream& printMap(ostream& oos, const Grid& grid, const VisitedMap& visitedMap);
-
-  
-
-
 class Grid
 {
 public:
@@ -312,15 +302,9 @@ public:
   {
     assert(node1);
     assert(node2);
-    //LOG_INFO("Connecting");
-    //cout << *node1 ;
-    //LOG_INFO(*node1.get());
-    //cout << *node2 ;
     node1->connections.push_back(node2);
-    node2->connections.push_back(node1);
-    
-  }
-  
+    node2->connections.push_back(node1);    
+  }  
   
   void createNodeConnections() {
     
@@ -357,43 +341,6 @@ public:
     }
   }
   
-  
-  bool hasNoChair(int row, int col) {
-    if (row < 0 || row >= rows) {
-      return true;
-    }
-    
-    if (col < 0 || col >= cols) {
-      return true;
-    }
-    
-    if (!nodes[row][col]) {
-      return true;
-    }
-    
-    return false;
-  }
-  
-  bool hasNoConnections(int row, int col, int connecting_col) {
-    if (hasNoChair(row, col)) {
-      return true;
-    }
-    
-    NodePtr node = nodes[row][col];
-    
-    assert(node);
-    
-    for (vector<NodePtr>::const_iterator it = node->connections.begin();
-          it != node->connections.end();
-          ++it)
-    {
-      if (it->get()->col == connecting_col) {
-        return false;
-      }
-    }
-    
-    return true;
-  }
   
   int do_bipartite() {
     
@@ -582,92 +529,8 @@ ostream& operator<<(ostream& os, const Grid& grid)
   return os;    
 }
 
-int getSquareFromVisited(int row, int col, const VisitedMap& vMap)
-{
-  for(VisitedMap::const_iterator it = vMap.begin();
-    it != vMap.end();
-    ++it) {
-  NodePtr node = it->first;
-  int sq = it->second;
-  if (node->row == row && node->col == col) {
-    return sq;
-  }
-    }
-    
-    return -1;
-}
-  
-    
-typedef deque<VecBool> Perms;
-
-ostream& operator<<(ostream& os, const VecBool& rhs)
-{
-  for(std::vector<bool>::const_iterator iter = rhs.begin(); iter != rhs.end(); ++iter)
-  {
-    if (*iter) {
-      os << "1";
-    } else {
-      os << "0";
-    }
-  }
-  return os;
-}
-
-void generate_perms(int length)
-{
-  Perms list;  
-  VecBool startingNode(1, true);
-  
-  
-  
-  list.push_back(startingNode);
-  list.push_back(VecBool(1, false));
-    
-  LOG(list.front());
-  
-  while(list.front().size() < length) {
-    VecBool perm = list.front();
-    list.pop_front();
-    
-    bool lastElem = *perm.rbegin();
-    
-    //last element is a chair, can always add a student
-    if (!lastElem) {
-      VecBool addStudent(perm);
-      addStudent.push_back(true);
-      list.push_back(addStudent);
-    }
-    
-    //last element was a student, must add a chair
-    if (lastElem) {
-      perm.push_back(false);
-      list.push_back(perm);
-    } 
-      
-    //add another chair next to a chair  
-    if (!lastElem 
-      && ( perm.size() < 2 || (*(++perm.rbegin()) != false)) //2nd to last must be a student
-      && ( length <= 2 || perm.size() != length - 1)
-      && ( perm.size() != 1 )
-      ) 
-    {
-      perm.push_back(false);
-      list.push_back(perm);
-    } 
-    
-  }
-  
-  for(Perms::const_iterator it = list.begin(); it != list.end(); ++it) {
-    LOG(*it); 
-  }
-}
-
 void do_test_case(int test_case, ifstream& input)
 {
-  //generate_perms(10);
-  LOG_OFF();
-  LOG_STR("abc " << 3 << " . " << 4.15);
-  
   LOG_OFF();
   unsigned int R, C;
   input >> R >> C;
@@ -689,21 +552,15 @@ void do_test_case(int test_case, ifstream& input)
   } 
   
   LOG_OFF();
-//  LOG(grid);
+  LOG(grid);
   LOG_OFF();
   
   grid.createNodeConnections();
    total_placed = grid.visitNodes();
 
-
-   
-  
   LOG_OFF();
   LOG(grid);
   
-  //int max_ss = grid.findCompleteGraphOfInverse();
-  //LOG(max_ss);
-  //printf("Case #%d: %d\n", test_case+1, max_ss);
   printf("Case #%d: %d\n", test_case+1, total_placed);
    
   return;    
