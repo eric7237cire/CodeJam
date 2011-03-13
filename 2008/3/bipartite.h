@@ -704,12 +704,6 @@ void Graph::augmentMatch(NodePtr freeYNode)
 bool getY(const NodeHashSet& S_neighbors, 
   const NodeHashSet& T, deque<int>& yNodesToProcess)
 {
-  /*set_difference(S_neighbors.begin(), S_neighbors.end(),
-      T.begin(), T.end(),
-      insert_iterator<NodeHashSet>(yNodesToProcess, yNodesToProcess.begin()));
-  */
-  //TODO
-  
   for(NodeHashSet::const_iterator it = S_neighbors.begin();
     it != S_neighbors.end();
     ++it)
@@ -749,6 +743,7 @@ void Graph::addToSNeighbors(int xnode,
     const int yNode = *it;
     if (!isMember(S_neighbors, yNode)) 
     {
+      assert(!isMember(tree, yNode));
       tree.insert(AugmentingTree::value_type(yNode,
         NodePtr(new Node(xNodePtr, yNode))));
       
@@ -877,7 +872,7 @@ bool Graph::growMatch()
         addToS(z, yNode, S, S_neighbors, T, augmentingTree);
         assert(T.size() == oldTsize + 1);
       }      
-      
+       
     }
   }
   

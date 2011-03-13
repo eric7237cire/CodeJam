@@ -354,7 +354,8 @@ public:
       
       if (!startingNode && nodes[row_i][col_i]) {
         startingNode = nodes[row_i][col_i];
-        startingNode->label = 1;        
+        startingNode->label = 1;
+        break;        
       }
       
     }
@@ -409,17 +410,6 @@ public:
       int node = *it;
       const int row = node / cols;
       const int col = node % cols;
-      
-      LOG_STR("Would place a student at " << row << ", " << col);
-    }
-    
-    for (Bipartite::NodeSet::const_iterator it = studentSet.begin();
-      it != studentSet.end();
-      ++it)
-    {
-      int node = *it;
-      const int row = node / cols;
-      const int col = node % cols;
      
       setStudent(row, col);
      
@@ -455,33 +445,6 @@ public:
   }
   
   
-  
-  int getCost(int row, int col) const
-  {
-    int cost = 0;
-    if (isOpen(row + 1, col + 1) ) {
-      ++cost;
-    }
-    if (isOpen(row + 1, col - 1) ) {
-      ++cost;
-    }
-    if (isOpen(row, col + 1) ) {
-      ++cost;
-    }    
-    if (isOpen(row, col - 1) ) {
-      ++cost;
-    }
-    if (isOpen(row - 1, col - 1) ) {
-      ++cost;
-    }
-    if (isOpen(row - 1, col + 1) ) {
-      ++cost;
-    }
-    return cost;
-  }
-  
-  
-  
 };
 
 ostream& operator<<(ostream& os, const Grid& grid)
@@ -497,15 +460,11 @@ ostream& operator<<(ostream& os, const Grid& grid)
       
       int students = 0;
       int empty = 0;
-      int connected = 0;
       int broken = 0;
       
       for(unsigned int c = 0; c < grid.cols; ++c) {
         
-        if (grid.cells[r][c] == CHAIR && grid.isOpen(r, c)) {
-          os << grid.getCost(r, c);
-          ++connected;
-        } else if (grid.cells[r][c] == FORCED_EMPTY) {
+        if (grid.cells[r][c] == FORCED_EMPTY || grid.cells[r][c] == CHAIR) {
           os << '.';
           ++empty;
         } else {
@@ -521,7 +480,7 @@ ostream& operator<<(ostream& os, const Grid& grid)
       global_count += students;
       os << " :" << r;
       
-      os << "  s: " << students << " x: " << broken << " .: " << empty << " n: " << connected;
+      os << "  s: " << students << " x: " << broken << " .: " << empty;
       os << endl;
     }
     
