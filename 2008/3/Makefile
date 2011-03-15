@@ -1,7 +1,8 @@
 CC = g++
 CFLAGS =  -g
 OLD = -g -O3 -Wall
-EXEC_NAME = endlessknight.exe pockets.exe test_util.exe portal.exe classroom.exe classroom_old.exe
+EXEC_NAME = endlessknight.exe 
+OLD_EXEC_NAME = endlessknight.exe pockets.exe test_util.exe portal.exe classroom.exe classroom_old.exe
 INCLUDES =
 LIBS =
 OBJ_FILES = star_wars.o simplex.o util.o

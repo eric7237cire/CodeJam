@@ -31,6 +31,9 @@
 
 #include <vector>
 #include <ostream>
+#include <set>
+
+using namespace std;
 
 unsigned int SetBit(unsigned int anInt, unsigned int pos);
 
@@ -51,6 +54,33 @@ template<typename T> std::ostream& operator<<(std::ostream& os, const std::vecto
   
   void trace(const char* pMsg, ...);
   
+  template<typename C, typename T> bool isMember(const C& aSet, const T& value)
+{
+  return aSet.find(value) != aSet.end();
+};
+
+template<typename C, typename T> bool remove(C& aSet, const T& value)
+{
+  typename C::iterator it = aSet.find(value);
+  if (it == aSet.end()) {
+    return false;
+  }
   
+  aSet.erase(it);
+  return true;
+}
+
+template<typename T> bool removeAll(set<T>& aSet, const set<T>& aSetToRemove)
+{
+  typename set<T>::const_iterator it = aSetToRemove.begin();
+  
+  for( ; it != aSetToRemove.end(); ++it)
+  {
+    remove(aSet, *it);
+  }
+  
+  return true;
+}
+
 
 #endif

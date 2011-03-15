@@ -61,33 +61,6 @@ template<typename T> ostream& operator<<(ostream& os, const set<T>& s);
 
 ostream& operator<<(ostream& os, const Edge& edge);
 
-template<typename C, typename T> bool isMember(const C& aSet, const T& value)
-{
-  return aSet.find(value) != aSet.end();
-};
-
-template<typename C, typename T> bool remove(C& aSet, const T& value)
-{
-  typename C::iterator it = aSet.find(value);
-  if (it == aSet.end()) {
-    return false;
-  }
-  
-  aSet.erase(it);
-  return true;
-}
-
-template<typename T> bool removeAll(set<T>& aSet, const set<T>& aSetToRemove)
-{
-  typename set<T>::const_iterator it = aSetToRemove.begin();
-  
-  for( ; it != aSetToRemove.end(); ++it)
-  {
-    remove(aSet, *it);
-  }
-  
-  return true;
-}
 
 
 
