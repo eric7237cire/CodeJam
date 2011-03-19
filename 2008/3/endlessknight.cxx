@@ -134,7 +134,7 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
   ++count;
   
   if (count % 1000 == 0) {
-    LOG_ON();
+    //LOG_ON();
     LOG(count);
     LOG_OFF();
   }
@@ -192,13 +192,13 @@ void do_test_case(int test_case, ifstream& input)
   testRocks.insert(RowCol(3-1, 2-1));
   
   assert(isMember(testRocks, RowCol(2, 1)));
-  
-  for(int level = 5; level < 10; ++level)
+  LOG_OFF();
+  for(int level = 0; level < 20; ++level)
   {
     LOG(level);
     for(int i = 0; i <= level; ++i)
     {
-      LOG_STR(level << ", " << i << " = rc: " << getRowCol(level, i));
+      LOG_STR(level << ", " << i << " = rc: " << getRowCol(level+1, i+1));
     }
   }
   RowCol target(H-1, W-1);
@@ -206,15 +206,69 @@ void do_test_case(int test_case, ifstream& input)
   uint level, index;  
   bool possible = getLevelIndex(level, index, target);
   
-  LOG_OFF();
+  LOG_ON();
   LOG_STR("Possible " << possible);
-  LOG_STR("Level: " << level);
-  LOG(index);
-  LOG_STR("Target: " << target);
+  LOG_STR("Final Level: " << level);
+  LOG_STR("Final index: " << index);
+  LOG_STR("Final Target: " << target);
   LOG_OFF();
   
-  Calc c(rocks);
-  int num_paths = (possible == true) ? c.calculate_unique_paths(level, index) : 0;
+  RockSet empty;
+  //Calc c(rocks);
+  Calc c(empty);
+  int num_paths = 0;
+  if (possible == true) {
+    num_paths = c.calculate_unique_paths(level, index);
+    //rocks.erase(rocks.begin(), rocks.end());
+    for(RockSet::const_iterator r_it = rocks.begin();
+      r_it != rocks.end();
+      ++r_it)
+    {
+      const RowCol& rockRC = *r_it;
+      uint rockLevel, rockIndex;
+      bool rockOnPath = getLevelIndex(rockLevel, rockIndex, rockRC);
+      if (rockOnPath) {
+        LOG_ON();
+        LOG(rockLevel);
+        LOG(rockIndex);
+        
+        if (rockIndex > index) {
+          LOG_STR("Ignoring rock, index too Far");
+          continue;
+        }
+        
+        assert(rockLevel <= level);
+        assert(rockIndex <= index);
+        
+        int reduceByMult = c.calculate_unique_paths(rockLevel, rockIndex);
+        LOG(reduceByMult);
+        
+        int adjLevel = level - rockLevel;
+        int adjIndex = index - rockIndex;
+        LOG(adjLevel);
+        LOG(adjIndex);
+        
+        if (adjIndex > adjLevel) {
+          LOG_STR("Ignoring rock, doesn't touch final square");
+          continue;
+        }
+        
+        int reduceBy = c.calculate_unique_paths(adjLevel, adjIndex);
+        
+        LOG(reduceBy);
+        LOG(num_paths);
+        //assert(reduceBy * reduceByMult <= num_paths);
+        //num_paths += 10007;
+        num_paths -= ((static_cast<long long>(reduceBy) * reduceByMult) % 10007);
+        num_paths %= 10007;
+        if (num_paths < 0) {
+          num_paths += 10007;
+        }
+        LOG(num_paths);
+        LOG_OFF();
+      }
+    }
+  };
   
   printf("Case #%d: %d\n", test_case+1, num_paths);
    

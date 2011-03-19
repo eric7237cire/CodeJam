@@ -9,6 +9,7 @@ size = "small"
  
 #system("touch classroom.cxx")
 system("make mode=release && ./#{exec} #{letter}-#{size}-practice.in > test.txt && diff test.txt #{smallLetter}_#{size}.txt")
+#system("make && ./#{exec} #{letter}-#{size}-practice.in > test.txt && diff test.txt #{smallLetter}_#{size}.txt")
   
 size = "large"  
 ex = "make && ./#{exec} #{letter}-#{size}-practice.in > test.txt && diff test.txt #{smallLetter}_#{size}.txt"
