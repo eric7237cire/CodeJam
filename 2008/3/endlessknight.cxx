@@ -113,12 +113,11 @@ bool getLevelIndex(uint& level, uint& index, const RowCol& rc)
 struct Calc
 {
   int count;
-  const RockSet& rocks;
   typedef pair<uint, uint> PairUint;
   typedef boost::unordered_map<pair<uint, uint>, uint > Cache;
   Cache cache;
   
-  Calc(const RockSet& rocks) : rocks(rocks), count(0) {}
+  Calc() : count(0) {}
   
   int calculate_unique_paths(const uint& level, const uint& index);
 };
@@ -143,14 +142,7 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
   
   //LOG_OFF();
   //LOG_STR(level << " " << index);
-  
-  RowCol rc = getRowCol(level, index);
-  
-  int r = 0;
-  
-  if (isMember(rocks, rc)) {
-    r = 0;
-  } else if (level == 0) {
+  if (level == 0) {
     assert(index == 0);
     r = 1;
   } else { 
