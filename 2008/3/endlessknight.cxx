@@ -83,12 +83,14 @@ template<typename I> struct RowColGeneric
 
 template<typename I> ostream& operator<<(ostream& os, const RowColGeneric<I>& rc)
 {
-  os << rc.row << ", " << rc.col;
+  os << rc.row+1 << ", " << rc.col+1;
   return os;
 }
 
 typedef RowColGeneric<unsigned int> RowCol;
 typedef boost::unordered_set<RowCol> RockSet;
+typedef set<pair<uint, uint> > RockLevelIndexSet;
+typedef map<pair<uint, uint>, uint> RockMultipliers;
 typedef unsigned int uint;
 
 RowCol getRowCol(const unsigned int level, const unsigned int index)
@@ -139,7 +141,8 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
     LOG_OFF();
   }
   
-  LOG_STR(level << " " << index);
+  //LOG_OFF();
+  //LOG_STR(level << " " << index);
   
   RowCol rc = getRowCol(level, index);
   
@@ -171,6 +174,112 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
   return r;
 }
 
+void getRockLevelIndex(RockLevelIndexSet& rockLevelIndexSet, const RockSet& rockRowColSet)
+{
+  
+  for(RockSet::const_iterator r_it = rockRowColSet.begin();
+    r_it != rockRowColSet.end();
+    ++r_it)
+  {
+    const RowCol& rockRC = *r_it;
+    uint rockLevel, rockIndex;
+    bool rockOnPath = getLevelIndex(rockLevel, rockIndex, rockRC);
+    if (rockOnPath) {
+      LOG_ON();
+      LOG(rockLevel);
+      LOG(rockIndex);
+      rockLevelIndexSet.insert(RockLevelIndexSet::value_type(rockLevel, rockIndex));
+    }
+  }
+}
+
+uint getUniquePaths(uint targetLevel, uint targetIndex, const RockMultipliers& rockMult);
+
+//Multiplier is where the value of the rock
+void getRockMultipliers(const RockLevelIndexSet& rockLevelIndexSet, RockMultipliers& rockMult)
+{
+  LOG_STR("getRockMultipliers");
+  
+  assert(rockMult.empty());
+  
+  for(RockLevelIndexSet::const_iterator r_it = rockLevelIndexSet.begin();
+    r_it != rockLevelIndexSet.end();
+    ++r_it)
+  {
+    uint rockLevel = r_it->first;
+    uint rockIndex = r_it->second;
+    
+    LOG(rockLevel);
+    LOG(rockIndex);
+    
+    uint reduceByMult = getUniquePaths(rockLevel, rockIndex, rockMult);
+    LOG(reduceByMult);
+    
+    rockMult.insert(RockMultipliers::value_type(*r_it, reduceByMult));
+  }
+}
+
+
+uint getUniquePaths(uint targetLevel, uint targetIndex, const RockMultipliers& rockMult)
+{
+  LOG_ON();
+  LOG_STR("getUniquePaths");
+  RockSet empty;
+  Calc c(empty);
+  //start with target
+  int num_paths = c.calculate_unique_paths(targetLevel, targetIndex);
+  LOG(num_paths);
+  for(RockMultipliers::const_iterator r_it = rockMult.begin();
+    r_it != rockMult.end();
+        ++r_it)
+  {
+    uint rockLevel = r_it->first.first;
+    uint rockIndex = r_it->first.second;
+    
+    LOG(rockLevel);
+    LOG(rockIndex);
+    
+    if (rockIndex > targetIndex) {
+      LOG_STR("Ignoring rock, index too Far");
+      continue;
+    }
+    
+    assert(rockLevel <= targetLevel);
+    assert(rockIndex <= targetIndex);
+
+      
+    uint reduceByMult = r_it->second;
+    LOG(reduceByMult);
+      
+    int adjLevel = targetLevel - rockLevel;
+    int adjIndex = targetIndex - rockIndex;
+    LOG(adjLevel);
+    LOG(adjIndex);
+      
+    if (adjIndex > adjLevel) {
+      LOG_STR("Ignoring rock, doesn't touch final square");
+      continue;
+    }
+      
+    int reduceBy = c.calculate_unique_paths(adjLevel, adjIndex);
+      
+    LOG(reduceBy);
+    LOG(num_paths);
+      //assert(reduceBy * reduceByMult <= num_paths);
+      //num_paths += 10007;
+    num_paths -= (reduceBy * reduceByMult);
+    num_paths %= 10007;
+    if (num_paths < 0) {
+      LOG(num_paths);
+      num_paths += 10007;
+    }
+    LOG(num_paths);
+    LOG_OFF();
+  }
+  
+  return num_paths;
+}
+      
 void do_test_case(int test_case, ifstream& input)
 {
   
@@ -192,15 +301,17 @@ void do_test_case(int test_case, ifstream& input)
   testRocks.insert(RowCol(3-1, 2-1));
   
   assert(isMember(testRocks, RowCol(2, 1)));
+  LOG_ON();
   LOG_OFF();
   for(int level = 0; level < 20; ++level)
   {
     LOG(level);
     for(int i = 0; i <= level; ++i)
     {
-      LOG_STR(level << ", " << i << " = rc: " << getRowCol(level+1, i+1));
+      LOG_STR(level << ", " << i << " = rc: " << getRowCol(level, i));
     }
   }
+  //return;
   RowCol target(H-1, W-1);
 
   uint level, index;  
@@ -213,62 +324,19 @@ void do_test_case(int test_case, ifstream& input)
   LOG_STR("Final Target: " << target);
   LOG_OFF();
   
-  RockSet empty;
-  //Calc c(rocks);
-  Calc c(empty);
-  int num_paths = 0;
-  if (possible == true) {
-    num_paths = c.calculate_unique_paths(level, index);
-    //rocks.erase(rocks.begin(), rocks.end());
-    for(RockSet::const_iterator r_it = rocks.begin();
-      r_it != rocks.end();
-      ++r_it)
-    {
-      const RowCol& rockRC = *r_it;
-      uint rockLevel, rockIndex;
-      bool rockOnPath = getLevelIndex(rockLevel, rockIndex, rockRC);
-      if (rockOnPath) {
-        LOG_ON();
-        LOG(rockLevel);
-        LOG(rockIndex);
-        
-        if (rockIndex > index) {
-          LOG_STR("Ignoring rock, index too Far");
-          continue;
-        }
-        
-        assert(rockLevel <= level);
-        assert(rockIndex <= index);
-        
-        int reduceByMult = c.calculate_unique_paths(rockLevel, rockIndex);
-        LOG(reduceByMult);
-        
-        int adjLevel = level - rockLevel;
-        int adjIndex = index - rockIndex;
-        LOG(adjLevel);
-        LOG(adjIndex);
-        
-        if (adjIndex > adjLevel) {
-          LOG_STR("Ignoring rock, doesn't touch final square");
-          continue;
-        }
-        
-        int reduceBy = c.calculate_unique_paths(adjLevel, adjIndex);
-        
-        LOG(reduceBy);
-        LOG(num_paths);
-        //assert(reduceBy * reduceByMult <= num_paths);
-        //num_paths += 10007;
-        num_paths -= ((static_cast<long long>(reduceBy) * reduceByMult) % 10007);
-        num_paths %= 10007;
-        if (num_paths < 0) {
-          num_paths += 10007;
-        }
-        LOG(num_paths);
-        LOG_OFF();
-      }
-    }
-  };
+  uint num_paths = 0;
+  
+  if (possible) {
+    RockLevelIndexSet rockLevelIndexSet;
+    
+    getRockLevelIndex(rockLevelIndexSet, rocks);
+    
+    RockMultipliers rockMultipliers;
+    
+    getRockMultipliers(rockLevelIndexSet, rockMultipliers);
+    LOG_STR("Final get unique");
+    num_paths = getUniquePaths(level, index, rockMultipliers);
+  }
   
   printf("Case #%d: %d\n", test_case+1, num_paths);
    

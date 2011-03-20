@@ -8,6 +8,7 @@ smallLetter = letter.downcase
 size = "small"
  
 #system("touch classroom.cxx")
+system("rm endlessknight.exe")
 system("make mode=release && ./#{exec} #{letter}-#{size}-practice.in > test.txt && diff test.txt #{smallLetter}_#{size}.txt")
 #system("make && ./#{exec} #{letter}-#{size}-practice.in > test.txt && diff test.txt #{smallLetter}_#{size}.txt")
   
