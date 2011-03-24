@@ -9,9 +9,10 @@
 #include <time.h>
 #include <assert.h>
 #include <boost/smart_ptr.hpp>
-#define SHOW_TIME 0
+#define SHOW_TIME 1
 #include "util.h" 
 #include "bipartite.h"
+#include <boost/math/common_factor.hpp>
 
 #include <boost/shared_ptr.hpp>
 
@@ -120,7 +121,118 @@ struct Calc
   Calc() : count(0) {}
   
   int calculate_unique_paths(const uint& level, const uint& index);
+  int calculate_unique_paths2(const uint& level, const uint& index);
 };
+
+int Calc::calculate_unique_paths2(const uint& level, const uint& index)
+{
+  
+  
+  Cache::iterator c_it = cache.find(PairUint(level, index));
+  
+  if (c_it != cache.end()) {
+     //return c_it->second;
+  }
+  
+  uint denom_large = max(index, level-index);
+  uint denom_small = min(index, level-index);
+  
+  LOG(level);
+  LOG(denom_large);
+  LOG(denom_small);
+  
+  //level .. denom_large + 1
+  //1 .. denom_small
+  
+  vector<uint> numerator;
+  vector<uint> denom;
+  
+  const uint num_start = denom_large + 1;
+  const uint num_end = level;
+  
+  for(uint i = denom_large + 1; i <= level; ++i) {
+    numerator.push_back(i); 
+  }
+  
+  uint last_index_tried = level - (denom_large+1);
+  
+  for(uint den = denom_small; den > 1; --den) {
+    bool trouve = false;
+    uint den_remaining = den;
+    
+    const uint mult_begin = (num_start-1) / den + 1;
+    const uint mult_end = num_end / den;
+    
+    for(uint mult = mult_begin; mult <= mult_end; ++mult) {
+      LOG(mult);
+      const uint num_to_try = mult * den;
+      LOG(num_to_try);
+      const uint index_to_try = num_to_try - num_start;
+      LOG(numerator[index_to_try]);
+    /*
+    LOG(den);
+    LOG(index_to_try);
+    LOG(num_to_try);
+    LOG(numerator[0]);
+    LOG(numerator[numerator.size() - 1]);
+    LOG(level);
+    LOG(denom_large+1);
+    */
+      assert(index_to_try >= 0 && index_to_try < numerator.size());
+    
+      uint gcd = boost::math::gcd(numerator[index_to_try], den_remaining);
+      assert(numerator[index_to_try] % gcd == 0);
+      assert(den_remaining % gcd == 0);
+      numerator[index_to_try] = numerator[index_to_try] / gcd;
+      den_remaining = den_remaining / gcd;
+
+      if (den_remaining == 1) {
+        trouve = true;
+        break;
+      }
+    }
+    
+    if(trouve) {
+      continue;
+    }
+    //LOG_ON();
+    LOG_STR("Doing " << den << " the hard way");
+    LOG_OFF();
+    for(vector<uint>::reverse_iterator it = numerator.rbegin(); it != numerator.rend(); ++it) {
+      uint& num = *it;
+      uint gcd = boost::math::gcd(num, den_remaining);
+      //LOG(num);
+      //LOG(gcd);
+      assert(num % gcd == 0);
+      assert(den % gcd == 0);
+      num = num / gcd;
+      den_remaining = den_remaining / gcd;
+      if (den_remaining == 1) {
+        trouve = true;
+        break;
+      }
+    }
+    
+    if (!trouve) {
+      LOG(den);
+      throw den;
+    }
+      
+  }
+
+  uint r = 1;  
+  for(vector<uint>::iterator it = numerator.begin(); it != numerator.end(); ++it) {
+    uint& num = *it;
+    r *= num;
+    r %= 10007;
+  }
+  
+  
+  
+  cache.insert(Cache::value_type(PairUint(level, index), r));
+  return r;
+}
+
 
 int Calc::calculate_unique_paths(const uint& level, const uint& index)
 {
@@ -132,6 +244,7 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
      return c_it->second;
   }
   
+  uint r = 0;
   ++count;
   
   if (count % 1000 == 0) {
@@ -217,7 +330,7 @@ uint getUniquePaths(uint targetLevel, uint targetIndex, const RockMultipliers& r
   LOG_ON();
   LOG_STR("getUniquePaths");
   RockSet empty;
-  Calc c(empty);
+  Calc c;
   //start with target
   int num_paths = c.calculate_unique_paths(targetLevel, targetIndex);
   LOG(num_paths);
@@ -275,6 +388,28 @@ uint getUniquePaths(uint targetLevel, uint targetIndex, const RockMultipliers& r
 void do_test_case(int test_case, ifstream& input)
 {
   
+  const uint level_to_test = 10000;
+  for(uint index_to_test = 4000; index_to_test <= level_to_test; ++index_to_test) {
+    Calc c;
+    SHOW_TIME_BEGIN(g) 
+    LOG(index_to_test);
+    //uint c1 = c.calculate_unique_paths(level_to_test, index_to_test);
+    LOG_ON();
+    //LOG(c1);
+    SHOW_TIME_END(g)
+    SHOW_TIME_BEGIN(g2)
+    LOG_OFF();
+    uint c2 = c.calculate_unique_paths2(level_to_test, index_to_test);
+    LOG_ON();
+    LOG(c2);
+    //if (c1 != c2) 
+    {
+      //throw '3';
+    }
+    SHOW_TIME_END(g2)
+    }
+  
+  return;
   LOG_OFF();
   unsigned int H, W, R;
   input >> H >> W >> R;
