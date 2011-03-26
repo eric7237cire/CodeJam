@@ -1,0 +1,2 @@
+util.o: util.cxx util.h tri_logger.hpp
+what_are_birds.o: what_are_birds.cxx util.h tri_logger.hpp
