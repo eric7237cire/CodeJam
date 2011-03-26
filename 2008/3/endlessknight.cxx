@@ -9,7 +9,7 @@
 #include <time.h>
 #include <assert.h>
 #include <boost/smart_ptr.hpp>
-#define SHOW_TIME 1
+#define SHOW_TIME 0
 #include "util.h" 
 #include "bipartite.h"
 #include <boost/math/common_factor.hpp>
@@ -124,7 +124,13 @@ struct Calc
   int calculate_unique_paths2(const uint& level, const uint& index);
 };
 
-int Calc::calculate_unique_paths2(const uint& level, const uint& index)
+uint numHitsInRange(uint begin, uint end, uint num) {
+  assert(end >= begin);
+  return end / num - (begin >= 1 ? (begin-1) / num : 0);
+  
+}
+
+int Calc::calculate_unique_paths(const uint& level, const uint& index)
 {
   
   
@@ -137,9 +143,11 @@ int Calc::calculate_unique_paths2(const uint& level, const uint& index)
   uint denom_large = max(index, level-index);
   uint denom_small = min(index, level-index);
   
+  LOG_ON();
   LOG(level);
   LOG(denom_large);
   LOG(denom_small);
+  LOG_OFF();
   
   //level .. denom_large + 1
   //1 .. denom_small
@@ -147,8 +155,35 @@ int Calc::calculate_unique_paths2(const uint& level, const uint& index)
   vector<uint> numerator;
   vector<uint> denom;
   
+  if (level == index || index == 0) {
+    return 1;
+  }
+  
   const uint num_start = denom_large + 1;
   const uint num_end = level;
+  
+  
+  if (numHitsInRange(num_start, num_end, 10007) > 
+    numHitsInRange(1, denom_small, 10007))
+  {
+    return 0;
+  }
+  
+  if (index >= 10007 || level >= 10007) {
+    uint index_1 = index / 10007;
+    uint level_1 = level / 10007;
+    uint index_0 = index % 10007;
+    uint level_0 = level % 10007;
+    LOG_ON(); 
+    LOG(index_0);
+    LOG(index_1);
+    LOG(level_0);
+    LOG(level_1);
+    uint p1 = calculate_unique_paths(level_1, index_1);
+    uint p0 = calculate_unique_paths(level_0, index_0);
+    
+    return p1 * p0 % 10007;
+  }
   
   for(uint i = denom_large + 1; i <= level; ++i) {
     numerator.push_back(i); 
@@ -234,10 +269,8 @@ int Calc::calculate_unique_paths2(const uint& level, const uint& index)
 }
 
 
-int Calc::calculate_unique_paths(const uint& level, const uint& index)
+int Calc::calculate_unique_paths2(const uint& level, const uint& index)
 {
-  
-  
   Cache::iterator c_it = cache.find(PairUint(level, index));
   
   if (c_it != cache.end()) {
@@ -290,7 +323,7 @@ void getRockLevelIndex(RockLevelIndexSet& rockLevelIndexSet, const RockSet& rock
     uint rockLevel, rockIndex;
     bool rockOnPath = getLevelIndex(rockLevel, rockIndex, rockRC);
     if (rockOnPath) {
-      LOG_ON();
+      //LOG_ON();
       LOG(rockLevel);
       LOG(rockIndex);
       rockLevelIndexSet.insert(RockLevelIndexSet::value_type(rockLevel, rockIndex));
@@ -327,7 +360,7 @@ void getRockMultipliers(const RockLevelIndexSet& rockLevelIndexSet, RockMultipli
 
 uint getUniquePaths(uint targetLevel, uint targetIndex, const RockMultipliers& rockMult)
 {
-  LOG_ON();
+  LOG_OFF();
   LOG_STR("getUniquePaths");
   RockSet empty;
   Calc c;
@@ -384,32 +417,70 @@ uint getUniquePaths(uint targetLevel, uint targetIndex, const RockMultipliers& r
   
   return num_paths;
 }
-      
-void do_test_case(int test_case, ifstream& input)
-{
-  
-  const uint level_to_test = 10000;
-  for(uint index_to_test = 4000; index_to_test <= level_to_test; ++index_to_test) {
+
+void do_test_calc() {
+    const uint level_to_test = 10000;
+  for(uint index_to_test = 5000; index_to_test <= level_to_test; ++index_to_test) {
     Calc c;
     SHOW_TIME_BEGIN(g) 
     LOG(index_to_test);
-    //uint c1 = c.calculate_unique_paths(level_to_test, index_to_test);
+    uint c1 = c.calculate_unique_paths(level_to_test, index_to_test);
     LOG_ON();
-    //LOG(c1);
+    LOG(c1);
     SHOW_TIME_END(g)
-    SHOW_TIME_BEGIN(g2)
-    LOG_OFF();
-    uint c2 = c.calculate_unique_paths2(level_to_test, index_to_test);
-    LOG_ON();
-    LOG(c2);
-    //if (c1 != c2) 
-    {
-      //throw '3';
     }
-    SHOW_TIME_END(g2)
-    }
+
+}
+
+void do_test_range() {
+  assert(numHitsInRange(0, 2, 3) == 0);
+  assert(numHitsInRange(0, 3, 3) == 1);
+  assert(numHitsInRange(0, 4, 3) == 1);
+  assert(numHitsInRange(3, 3, 3) == 1);
+  assert(numHitsInRange(3, 7, 3) == 2);
+  assert(numHitsInRange(2, 19, 3) == 6);
+  assert(numHitsInRange(3, 19, 3) == 6);
+  assert(numHitsInRange(4, 19, 3) == 5);
+  assert(numHitsInRange(4, 18, 3) == 5);
+  assert(numHitsInRange(4, 17, 3) == 4);
+  //assert(false);
+}
+
+void do_comp_calc() {
+  LOG_OFF();
+  Calc c;
+  const uint level_to_test = 371;
+  for(uint index_to_test = 0; index_to_test <= level_to_test; ++index_to_test) {
   
-  return;
+  SHOW_TIME_BEGIN(g)
+  
+  LOG(index_to_test);
+  uint c1 = c.calculate_unique_paths(level_to_test, index_to_test);
+  //LOG_ON();
+  LOG(c1);
+    //SHOW_TIME_END(g)
+  SHOW_TIME_BEGIN(g2)
+  LOG_OFF();
+  uint c2 = c.calculate_unique_paths2(level_to_test, index_to_test);
+  //LOG_ON();
+  LOG(c2);
+  if (c1 != c2) 
+  {
+    throw '3';
+  }
+    //SHOW_TIME_END(g2)
+  }
+
+}
+
+void do_test_case(int test_case, ifstream& input)
+{
+  do_test_range();
+  
+  //do_comp_calc();
+  
+  //do_test_calc();
+  //return;
   LOG_OFF();
   unsigned int H, W, R;
   input >> H >> W >> R;
@@ -428,7 +499,7 @@ void do_test_case(int test_case, ifstream& input)
   testRocks.insert(RowCol(3-1, 2-1));
   
   assert(isMember(testRocks, RowCol(2, 1)));
-  LOG_ON();
+  //LOG_ON();
   LOG_OFF();
   for(int level = 0; level < 20; ++level)
   {
