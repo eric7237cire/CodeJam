@@ -121,6 +121,11 @@ struct Calc
   int calculate_unique_paths(const uint& level, const uint& index);
 };
 
+int inverte(int x)
+{
+  
+}
+
 uint numHitsInRange(uint begin, uint end, uint num) {
   assert(end >= begin);
   return end / num - (begin >= 1 ? (begin-1) / num : 0);
@@ -141,9 +146,6 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
   
   //level .. denom_large + 1
   //1 .. denom_small
-  
-  vector<uint> numerator;
-  vector<uint> denom;
   
   if (level == index || index == 0) {
     return 1;
@@ -176,103 +178,28 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
     return p1 * p0 % 10007;
   }
   
+  uint num = 1;
   for(uint i = denom_large + 1; i <= level; ++i) {
-    numerator.push_back(i); 
+    num *= i;
+    num %= 10007;
   }
   
-  uint last_index_tried = level - (denom_large+1);
-  
-  uint den = denom_small;
-  LOG_ON();
-  LOG_STR("Starting den " << den);
-  LOG_OFF();
-  for(; den > 1; --den) {
-    bool trouve = false;
-    
-    const uint mult_begin = (num_start-1) / den + 1;
-    const uint mult_end = num_end / den;
-    
-    for(uint mult = mult_begin; mult <= mult_end; ++mult) {
-      LOG(mult);
-      const uint num_to_try = mult * den;
-      LOG(num_to_try);
-      const uint index_to_try = num_to_try - num_start;
-      LOG(numerator[index_to_try]);
-    /*
-    LOG(den);
-    LOG(index_to_try);
-    LOG(num_to_try);
-    LOG(numerator[0]);
-    LOG(numerator[numerator.size() - 1]);
-    LOG(level);
-    LOG(denom_large+1);
-    */
-      assert(index_to_try >= 0 && index_to_try < numerator.size());
-    
-      //assert(numerator[index_to_try] % gcd == 0);
-      //assert(den_remaining % gcd == 0);
-      if (numerator[index_to_try] % den == 0) {
-        numerator[index_to_try] = numerator[index_to_try] / den;
-        trouve = true;
-        break;
-      }
-    }
-    
-    if(trouve) {
-      continue;
-    }
-    break;
+  uint den = 1;
+  for(uint i = 1; i <= denom_small; ++i) {
+    den *= i;
+    den %= 10007;
   }
-  LOG_ON();
-  LOG(den);
-  LOG_OFF();
-  for(; den > 1; --den) {
-    bool trouve = false;
-    //LOG_ON();
-    uint den_remaining = den;
-    LOG_STR("Doing " << den << " the hard way");
-    LOG_OFF();
-    //for(vector<uint>::reverse_iterator it = numerator.rbegin(); it != numerator.rend(); ++it) {
-    for(int i = 0; i <= numerator.size(); ++i) {
-      //uint& num = *it;
-      uint& num = numerator[i];
-      if (num == 1) {
-        //cout << "removing " << i << " " << numerator[i] << endl;
-        swap(numerator[i], numerator[numerator.size() - 1]);
-        //numerator.erase(numerator.begin() + (numerator.size() - 1) );
-        numerator.pop_back();
-        --i;
-        continue;
-      }
-      uint gcd = boost::math::gcd(num, den_remaining);
-      //LOG(num);
-      //LOG(gcd);
-      assert(num % gcd == 0);
-      assert(den % gcd == 0);
-      num = num / gcd;
-      den_remaining = den_remaining / gcd;
-      if (den_remaining == 1) {
-        trouve = true;
-        break;
-      }
+  
+  uint den_inv;
+  //Find inverse 1/n! % P == x;  n! * x % P == 1
+  for(den_inv=1;;++den_inv)
+  {
+    if((den_inv*den% 10007)==1) {
+      break;
     } 
-      
-    if (!trouve) {
-      LOG(den);
-      cout << den;
-      throw den;
-    }
-      
-  }
-
-  uint r = 1;  
-  for(vector<uint>::const_iterator it = numerator.begin(); it != numerator.end(); ++it) {
-    const uint& num = *it;
-    r *= num;
-    r %= 10007;
   }
   
-  return r;
+  return num * den_inv % 10007;
 }
 
 void getRockLevelIndex(RockLevelIndexSet& rockLevelIndexSet, const RockSet& rockRowColSet)
