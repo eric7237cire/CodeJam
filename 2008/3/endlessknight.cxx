@@ -1,3 +1,6 @@
+//http://en.wikipedia.org/wiki/Modular_multiplicative_inverse
+//Lucas's theorum
+//
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -113,15 +116,9 @@ bool getLevelIndex(uint& level, uint& index, const RowCol& rc)
 
 struct Calc
 {
-  int count;
-  typedef pair<uint, uint> PairUint;
-  typedef boost::unordered_map<pair<uint, uint>, uint > Cache;
-  Cache cache;
-  
-  Calc() : count(0) {}
+  Calc()  {}
   
   int calculate_unique_paths(const uint& level, const uint& index);
-  int calculate_unique_paths2(const uint& level, const uint& index);
 };
 
 uint numHitsInRange(uint begin, uint end, uint num) {
@@ -132,13 +129,6 @@ uint numHitsInRange(uint begin, uint end, uint num) {
 
 int Calc::calculate_unique_paths(const uint& level, const uint& index)
 {
-  
-  
-  Cache::iterator c_it = cache.find(PairUint(level, index));
-  
-  if (c_it != cache.end()) {
-     //return c_it->second;
-  }
   
   uint denom_large = max(index, level-index);
   uint denom_small = min(index, level-index);
@@ -276,59 +266,12 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
   }
 
   uint r = 1;  
-  for(vector<uint>::iterator it = numerator.begin(); it != numerator.end(); ++it) {
-    uint& num = *it;
+  for(vector<uint>::const_iterator it = numerator.begin(); it != numerator.end(); ++it) {
+    const uint& num = *it;
     r *= num;
     r %= 10007;
   }
   
-  
-  
-  cache.insert(Cache::value_type(PairUint(level, index), r));
-  return r;
-}
-
-
-int Calc::calculate_unique_paths2(const uint& level, const uint& index)
-{
-  Cache::iterator c_it = cache.find(PairUint(level, index));
-  
-  if (c_it != cache.end()) {
-     return c_it->second;
-  }
-  
-  uint r = 0;
-  ++count;
-  
-  if (count % 1000 == 0) {
-    //LOG_ON();
-    LOG(count);
-    LOG_OFF();
-  }
-  
-  //LOG_OFF();
-  //LOG_STR(level << " " << index);
-  if (level == 0) {
-    assert(index == 0);
-    r = 1;
-  } else { 
-  
-    assert(index >= 0 && index <= level);
-    
-    
-    
-    if (index > 0) {
-      r += calculate_unique_paths(level - 1, index - 1);
-    }
-    
-    if (index < level) {
-      r += calculate_unique_paths(level - 1, index);
-    }
-  }
-  
-  r %= 10007;
-  
-  cache.insert(Cache::value_type(PairUint(level, index), r));
   return r;
 }
 
@@ -464,34 +407,6 @@ void do_test_range() {
   assert(numHitsInRange(4, 18, 3) == 5);
   assert(numHitsInRange(4, 17, 3) == 4);
   //assert(false);
-}
-
-void do_comp_calc() {
-  LOG_OFF();
-  Calc c;
-  const uint level_to_test = 371;
-  for(uint index_to_test = 0; index_to_test <= level_to_test; ++index_to_test) {
-  
-  SHOW_TIME_BEGIN(g)
-  
-  LOG(index_to_test);
-  uint c1 = c.calculate_unique_paths(level_to_test, index_to_test);
-  //LOG_ON();
-  LOG(c1);
-    //SHOW_TIME_END(g)
-  SHOW_TIME_BEGIN(g2)
-  LOG_OFF();
-  uint c2 = c.calculate_unique_paths2(level_to_test, index_to_test);
-  //LOG_ON();
-  LOG(c2);
-  if (c1 != c2) 
-  {
-    cout << "Not a match" << endl;
-    throw '3';
-  }
-    //SHOW_TIME_END(g2)
-  }
-
 }
 
 void do_test_case(int test_case, ifstream& input)
