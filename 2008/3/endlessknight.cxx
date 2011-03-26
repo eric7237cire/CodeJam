@@ -9,7 +9,7 @@
 #include <time.h>
 #include <assert.h>
 #include <boost/smart_ptr.hpp>
-#define SHOW_TIME 0
+#define SHOW_TIME 1
 #include "util.h" 
 #include "bipartite.h"
 #include <boost/math/common_factor.hpp>
@@ -162,13 +162,14 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
   const uint num_start = denom_large + 1;
   const uint num_end = level;
   
-  
+  //Eric's therom :)
   if (numHitsInRange(num_start, num_end, 10007) > 
     numHitsInRange(1, denom_small, 10007))
   {
     return 0;
   }
   
+  //Lucas's theorum
   if (index >= 10007 || level >= 10007) {
     uint index_1 = index / 10007;
     uint level_1 = level / 10007;
@@ -191,9 +192,12 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
   
   uint last_index_tried = level - (denom_large+1);
   
-  for(uint den = denom_small; den > 1; --den) {
+  uint den = denom_small;
+  LOG_ON();
+  LOG_STR("Starting den " << den);
+  LOG_OFF();
+  for(; den > 1; --den) {
     bool trouve = false;
-    uint den_remaining = den;
     
     const uint mult_begin = (num_start-1) / den + 1;
     const uint mult_end = num_end / den;
@@ -215,13 +219,10 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
     */
       assert(index_to_try >= 0 && index_to_try < numerator.size());
     
-      uint gcd = boost::math::gcd(numerator[index_to_try], den_remaining);
-      assert(numerator[index_to_try] % gcd == 0);
-      assert(den_remaining % gcd == 0);
-      numerator[index_to_try] = numerator[index_to_try] / gcd;
-      den_remaining = den_remaining / gcd;
-
-      if (den_remaining == 1) {
+      //assert(numerator[index_to_try] % gcd == 0);
+      //assert(den_remaining % gcd == 0);
+      if (numerator[index_to_try] % den == 0) {
+        numerator[index_to_try] = numerator[index_to_try] / den;
         trouve = true;
         break;
       }
@@ -230,11 +231,29 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
     if(trouve) {
       continue;
     }
+    break;
+  }
+  LOG_ON();
+  LOG(den);
+  LOG_OFF();
+  for(; den > 1; --den) {
+    bool trouve = false;
     //LOG_ON();
+    uint den_remaining = den;
     LOG_STR("Doing " << den << " the hard way");
     LOG_OFF();
-    for(vector<uint>::reverse_iterator it = numerator.rbegin(); it != numerator.rend(); ++it) {
-      uint& num = *it;
+    //for(vector<uint>::reverse_iterator it = numerator.rbegin(); it != numerator.rend(); ++it) {
+    for(int i = 0; i <= numerator.size(); ++i) {
+      //uint& num = *it;
+      uint& num = numerator[i];
+      if (num == 1) {
+        //cout << "removing " << i << " " << numerator[i] << endl;
+        swap(numerator[i], numerator[numerator.size() - 1]);
+        //numerator.erase(numerator.begin() + (numerator.size() - 1) );
+        numerator.pop_back();
+        --i;
+        continue;
+      }
       uint gcd = boost::math::gcd(num, den_remaining);
       //LOG(num);
       //LOG(gcd);
@@ -246,10 +265,11 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
         trouve = true;
         break;
       }
-    }
-    
+    } 
+      
     if (!trouve) {
       LOG(den);
+      cout << den;
       throw den;
     }
       
@@ -466,6 +486,7 @@ void do_comp_calc() {
   LOG(c2);
   if (c1 != c2) 
   {
+    cout << "Not a match" << endl;
     throw '3';
   }
     //SHOW_TIME_END(g2)
