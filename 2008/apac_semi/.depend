@@ -1,2 +1,4 @@
+apocalypse_soon.o: apocalypse_soon.cxx util.h tri_logger.hpp grid.h
+tri_logger.o: tri_logger.cxx tri_logger.hpp nullstream.hpp
 util.o: util.cxx util.h tri_logger.hpp
 what_are_birds.o: what_are_birds.cxx util.h tri_logger.hpp
