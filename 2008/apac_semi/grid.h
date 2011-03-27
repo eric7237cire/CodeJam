@@ -33,11 +33,11 @@ public:
     cells[index] = val;
   }
   
-  const T& operator[](int index) const {
+  const T& operator[](unsigned int index) const {
     assert(index >= 0 && index < rows * cols);
     return cells[index];
   }
-  T& operator[](int index) {
+  T& operator[](unsigned int index) {
     assert(index >= 0 && index < rows * cols);
     return cells[index];
   }
@@ -63,11 +63,11 @@ public:
     return distance(begin().ptr, it.ptr); 
   }
   
-  vector<int> getAdjacentSquaresIndexes(int sqIndex) const {
+  vector<unsigned int> getAdjacentSquaresIndexes(unsigned int sqIndex) const {
     assert(sqIndex >= 0 && sqIndex < rows * cols);
-    const int row = sqIndex / cols;
-    const int col = sqIndex % cols;
-    vector<int> adjSquares;
+    const unsigned int row = sqIndex / cols;
+    const unsigned int col = sqIndex % cols;
+    vector<unsigned int> adjSquares;
     
     if (row > 0) {
       adjSquares.push_back(sqIndex - cols);
@@ -221,7 +221,7 @@ template<typename T> ostream& operator<<(ostream& os, const Grid<T>& grid)
     os << s;
   }
   os << endl;
-  for(int r = 0; r < grid.rows; ++r) {
+  for(unsigned int r = 0; r < grid.rows; ++r) {
     
     for(unsigned int c = 0; c < grid.cols; ++c) {
       

@@ -12,6 +12,7 @@
 
 
 #if SHOW_TIME
+double diffclock(clock_t clock1,clock_t clock2);
 #define SHOW_TIME_BEGIN(A) clock_t begin_##A=clock();
 #define SHOW_TIME_END(A) clock_t end_##A=clock(); cout << "Time elapsed: " #A << " " << double(diffclock(end_##A,begin_##A)) << " ms" << endl;
 #else

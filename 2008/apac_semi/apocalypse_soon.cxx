@@ -1,5 +1,3 @@
-//http://en.wikipedia.org/wiki/Modular_multiplicative_inverse
-//Lucas's theorum
 //
 #include <fstream>
 #include <iostream>
@@ -14,7 +12,7 @@
 #include <boost/smart_ptr.hpp>
 #include <boost/numeric/conversion/bounds.hpp>
 #include <boost/limits.hpp>
-#define SHOW_TIME 0
+#define SHOW_TIME 1
 #include "util.h"
 #include "grid.h"
 #include <boost/math/common_factor.hpp>
@@ -73,35 +71,26 @@ bool do_turn(int meIndex, int indexToAttack, Grid<int>& grid) {
   
   for(Grid<int>::iterator it = grid.begin(); it != grid.end(); ++it) 
   {
-    //LOG_STR(grid.getIndex(it) << " is value: " << *it);
-    
     if (grid.getIndex(it) == meIndex) {
-      //LOG(meIndex);
       if (indexToAttack >= 0) {
         diffs[indexToAttack] -= grid[meIndex];
-        //cout << diffs[indexToAttack]  << endl;
-        //cout << endl;
-        //cout << indexToAttack;
       }
       continue;
     }
     if(*it == 0) {
-      //LOG_STR("It 0 skipping");
       continue;
     }
     
-    vector<int> adjSquares = grid.getAdjacentSquaresIndexes(grid.getIndex(it));
+    vector<uint> adjSquares = grid.getAdjacentSquaresIndexes(grid.getIndex(it));
     
-    //Grid<int>::iterator strongestNeighbor = grid.end();
     int strongestNeighbor = -1;
     
-    for(vector<int>::const_iterator adj_it = adjSquares.begin();
+    for(vector<uint>::const_iterator adj_it = adjSquares.begin();
       adj_it != adjSquares.end();
       ++adj_it) 
     {
       
-      //cout << "A" << endl;
-      if (grid[*adj_it] == 0) { //**adj_it == 0) {
+      if (grid[*adj_it] == 0) { 
         continue;
       }
       
@@ -125,8 +114,7 @@ bool do_turn(int meIndex, int indexToAttack, Grid<int>& grid) {
   //cout << "Diffs\n" << diffs;
   
   Grid<int>::iterator it = grid.begin();
-  Grid<int>::iterator diffs_it = diffs.begin();
-  for( ;it != grid.end(); ++it, ++diffs_it) 
+  for( ;it != grid.end(); ++it) 
   {
     int idx = grid.getIndex(it);
     grid[idx] = max(0, grid[idx] + diffs[idx]);
@@ -136,73 +124,65 @@ bool do_turn(int meIndex, int indexToAttack, Grid<int>& grid) {
   return r;
 }
 
-typedef queue<pair<int, Grid<int> > > Queue;
+typedef boost::shared_ptr<Grid<int> > GridPtr;
+typedef queue<pair<int, GridPtr> > Queue;
 
 void do_test_case(int test_case, ifstream& input)
 {
- //LOG_OFF();
- if (test_case == 25) {
-   LOG_ON();
- } else {
-   //LOG_OFF();
- }
   int C, R, c, r;
   input >> C >> R >> c >> r;
   
-  Grid<int> g(R, C);
+  GridPtr g(new Grid<int>(R, C));
   
   for(int rIdx = 0; rIdx < R; ++rIdx) {
     for(int cIdx = 0; cIdx < C; ++cIdx) {
       int s;
       input >> s;
-      g.set(rIdx, cIdx, s);
+      g->set(rIdx, cIdx, s);
     }
   }
     
   cout << "Case #" << (test_case+1) << ": ";
     
-  //cout << g << endl;
-  
-  int t = 0;
   Queue q;
   q.push(Queue::value_type(0, g));
-  LOG(g);
+  //LOG(g);
   int max_t = 0;
   
-  const int meIndex = g.getIndex(r-1, c-1);
+  const int meIndex = g->getIndex(r-1, c-1);
   
   while(!q.empty()) {
     const Queue::value_type& item = q.front();
     
-    const Grid<int> itemGrid = item.second;
+    GridPtr itemGrid = item.second;
     q.pop();
         
-    if(itemGrid[meIndex] <= 0) {
+    if( (*itemGrid)[meIndex] <= 0) {
       continue;
     }
     
     LOG_STR("Grid off stack: " << itemGrid << " Turns: " << item.first);
     max_t = max(max_t, item.first);
     
-    vector<int> adjSquares = 
-      itemGrid.getAdjacentSquaresIndexes(meIndex);
+    vector<uint> adjSquares = 
+      itemGrid->getAdjacentSquaresIndexes(meIndex);
     
-    for(vector<int>::const_iterator adj_it = adjSquares.begin();
+    for(vector<uint>::const_iterator adj_it = adjSquares.begin();
       adj_it != adjSquares.end();
       ++adj_it) 
     { 
-      if (itemGrid[*adj_it] == 0) { 
+      if ( (*itemGrid)[*adj_it] == 0) { 
         continue;
       }
-      Grid<int> newGrid(itemGrid);
-      LOG_STR("Grid before: " << newGrid 
+      GridPtr newGrid(new Grid<int>(*itemGrid));
+      LOG_STR("Grid before: " << *newGrid 
         << " turns: " << item.first
         << " Attacking: " << *adj_it);
       LOG(meIndex);
       bool r = do_turn(meIndex, 
-        *adj_it, newGrid);
+        *adj_it, *newGrid);
      //LOG_OFF();
-      LOG_STR("Grid after: " << newGrid);
+      LOG_STR("Grid after: " << *newGrid);
       q.push(Queue::value_type(item.first+1, newGrid));
       if (!r) {
         cout << "forever" << endl;
@@ -210,12 +190,13 @@ void do_test_case(int test_case, ifstream& input)
       }
     }
     //LOG(itemGrid);
-    Grid<int> newGrid(itemGrid);
-    LOG_STR("Before doing nothing: " << newGrid);
-    bool r2 = do_turn(meIndex, -1, newGrid);
+    //GridPtr newGrid(new Grid<int>(*itemGrid));
+    GridPtr newGrid(itemGrid);
+    LOG_STR("Before doing nothing: " << *newGrid);
+    bool r2 = do_turn(meIndex, -1, *newGrid);
     q.push(Queue::value_type(item.first+1, newGrid));
    //LOG_OFF();
-    LOG_STR("After doing nothing: " << newGrid);
+    LOG_STR("After doing nothing: " << *newGrid);
     LOG(item.first+1);
     //return;
     if (!r2) {

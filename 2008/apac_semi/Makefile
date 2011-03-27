@@ -13,7 +13,7 @@ ifeq ($(mode),release)
    CFLAGS +=-DCLEANTLOG
 else
    mode = debug
-   CFLAGS = -g
+   CFLAGS = -g -Wall
    CFLAGS+=-DTLOG
 endif
 
