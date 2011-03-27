@@ -132,6 +132,6 @@ template<typename T> ostream& operator<<(ostream& os, const vector<T>& vect)
 }
 
 template std::ostream& operator<<(std::ostream& os, const std::vector<int>& vect);
-
+template ostream& operator<<(ostream& os, const vector<double>& vect);
  
   

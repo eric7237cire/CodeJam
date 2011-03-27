@@ -1,5 +1,6 @@
 #include <time.h>
 #include "tri_logger.hpp"
+#include <vector>
 #ifndef UTIL_H
 #define UTIL_H
 
@@ -27,5 +28,6 @@ void trim(string& str);
 template<typename T> bool isBetween(T a, T b, T n);
 
 template<typename C, typename T> bool isMember(const C& aSet, const T& value);
+template<typename T> ostream& operator<<(ostream& os, const vector<T>& vect);
 
 #endif
