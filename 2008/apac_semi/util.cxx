@@ -49,6 +49,7 @@ template<typename C, typename T> bool isMember(const C& aSet, const T& value)
 
 typedef unsigned int uint;
 template bool isMember(const set<pair<uint, uint> >& aSet, const pair<uint, uint>& value);
+template bool isMember(const set<pair<int, int> >& aSet, const pair<int, int>& value);
 
 template<typename T> bool isBetween(T a, T b, T n)
 {
@@ -60,6 +61,7 @@ template<typename T> bool isBetween(T a, T b, T n)
 
 
 template bool isBetween(uint a, uint b, uint n);
+template bool isBetween(int a, int b, int n);
 
 template<typename C, typename T> bool remove(C& aSet, const T& value)
 {

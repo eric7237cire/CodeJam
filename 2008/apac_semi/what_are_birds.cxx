@@ -57,8 +57,7 @@ int main(int argc, char** args)
   SHOW_TIME_END(g)
 }
 
-typedef unsigned int uint;
-typedef pair<uint, uint> HW;
+typedef pair<int, int> HW;
 
 
 
@@ -108,7 +107,7 @@ void do_test_case(int test_case, ifstream& input)
   set<HW> not_birds;
   input >> N;
   for(int i = 0; i < N; ++i) {
-    uint h, w;
+    int h, w;
     string s;
     input >> h >> w;
     getline( input, s);
@@ -124,8 +123,8 @@ void do_test_case(int test_case, ifstream& input)
     }
   }
   
-  HW min_valid(boost::numeric::bounds<uint>::highest(), boost::numeric::bounds<uint>::highest());
-  HW max_valid(boost::numeric::bounds<uint>::lowest(), boost::numeric::bounds<uint>::lowest());
+  HW min_valid(boost::numeric::bounds<int>::highest(), boost::numeric::bounds<int>::highest());
+  HW max_valid(boost::numeric::bounds<int>::lowest(), boost::numeric::bounds<int>::lowest());
   
   for(vector<HW>::const_iterator b = birds.begin(); b != birds.end(); ++b) {
     min_valid.first=min(min_valid.first, b->first);
@@ -138,8 +137,8 @@ void do_test_case(int test_case, ifstream& input)
   LOG(max_valid);
   
   //  0....nb_end .... min_width .. max_width .... nb_start
-  HW nb_end(boost::numeric::bounds<uint>::lowest(), boost::numeric::bounds<uint>::lowest());
-  HW nb_start(boost::numeric::bounds<uint>::highest(), boost::numeric::bounds<uint>::highest());
+  HW nb_end(boost::numeric::bounds<int>::lowest(), boost::numeric::bounds<int>::lowest());
+  HW nb_start(boost::numeric::bounds<int>::highest(), boost::numeric::bounds<int>::highest());
   
   for(set<HW>::const_iterator nb = not_birds.begin(); nb != not_birds.end(); ++nb) {
     LOG(*nb);
@@ -166,20 +165,14 @@ void do_test_case(int test_case, ifstream& input)
   
   LOG(nb_start);
   LOG(nb_end);
-  
-  set<HW> outside_birds;
-  
-  for(set<HW>::const_iterator nb = not_birds.begin(); nb != not_birds.end(); ++nb) {
     
-  }
-  
-  uint M;
+  int M;
   
   input >> M;
   
   cout << "Case #" << (test_case+1) << ":" << endl;
   for(int i = 0; i < M; ++i) {
-    uint h, w;
+    int h, w;
     input >> h >> w;
     HW hw(h, w);
     LOG(hw);
@@ -190,9 +183,10 @@ void do_test_case(int test_case, ifstream& input)
     }
     
     if (h >= nb_start.first || h <= nb_end.first ||
-      w >= nb_start.second || w <= nb_end.first || 
-      isMember(not_birds, hw) || isMember(outside_birds, hw)
+      w >= nb_start.second || w <= nb_end.second || 
+      isMember(not_birds, hw)
     ) {
+      LOG_STR("NB normal");
       cout << "NOT BIRD" << endl;
       continue;      
     } 
