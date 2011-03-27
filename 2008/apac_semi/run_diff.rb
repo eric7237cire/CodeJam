@@ -2,8 +2,9 @@
 #make && ./perm_rle.exe D-small-practice.in > d_test.txt && diff d_test.txt d_small.txt
 #exec = "portal.exe"
 #exec = "classroom.exe"
-exec = "what_are_birds.exe"
-letter = "A"
+#exec = "what_are_birds.exe"
+exec = "apocalypse_soon.exe"
+letter = "B"
 smallLetter = letter.downcase
 size = "small"
  

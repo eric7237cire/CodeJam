@@ -16,6 +16,10 @@ public:
     
   }
   
+  Grid(const Grid& rhs) : rows(rhs.rows), cols(rhs.cols), cells(rhs.cells) {
+    //cout << "Copy"; 
+  }
+  
   int getIndex(int row, int col) const
   {
     return row * cols + col;
@@ -59,7 +63,7 @@ public:
     return distance(begin().ptr, it.ptr); 
   }
   
-  vector<int> getAdjacentSquaresIndexes(int sqIndex) {
+  vector<int> getAdjacentSquaresIndexes(int sqIndex) const {
     assert(sqIndex >= 0 && sqIndex < rows * cols);
     const int row = sqIndex / cols;
     const int col = sqIndex % cols;
