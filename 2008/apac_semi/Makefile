@@ -1,8 +1,8 @@
 CC = g++
 CFLAGS =  -g
 OLD = -g -O3 -Wall
-EXEC_NAME = what_are_birds.exe 
-OLD_EXEC_NAME = endlessknight.exe pockets.exe test_util.exe portal.exe classroom.exe classroom_old.exe
+EXEC_NAME = apocalypse_soon.exe
+OLD_EXEC_NAME = what_are_birds.exe
 INCLUDES =
 LIBS =
 OBJ_FILES = star_wars.o simplex.o util.o

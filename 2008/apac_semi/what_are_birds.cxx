@@ -66,6 +66,8 @@ ostream& operator<<(ostream& os, const HW& hw) {
   return os;
 }
 
+bool isOutside(const int& potential_nb, const int& nb, const int& minValid, const int& maxValid);
+
 template<typename T> bool isBetween(T a, T b, T n);
 
 /*
@@ -73,23 +75,24 @@ if potential_nb is farther away for h and w, it is also a
 not bird.  Assumes there exists a valid range in the middle
 */
 bool isOutside(const HW& potential_nb, const HW& nb, const HW& minValid, const HW& maxValid) {
-  if (nb.first > maxValid.first) {
-    if (potential_nb.first < nb.first) {
+  if (!isOutside(potential_nb.first, nb.first, minValid.first, maxValid.first)) {
+    return false;    
+  }
+  if (!isOutside(potential_nb.second, nb.second, minValid.second, maxValid.second)) {
+    return false;    
+  }
+  
+  return true;
+}
+
+bool isOutside(const int& potential_nb, const int& nb, const int& minValid, const int& maxValid) {
+  if (nb > maxValid) {
+    if (potential_nb < nb) {
       return false;
     }
   }
-  if (nb.first < minValid.first) {
-    if (potential_nb.first > nb.first) {
-      return false;
-    }
-  }
-  if (nb.second > maxValid.second) {
-    if (potential_nb.second < nb.second) {
-      return false;
-    }
-  }
-  if (nb.second < minValid.second) {
-    if (potential_nb.second > nb.second) {
+  if (nb < minValid) {
+    if (potential_nb > nb) {
       return false;
     }
   }
@@ -150,7 +153,7 @@ void do_test_case(int test_case, ifstream& input)
         nb_end.first = max(nb_end.first, nb->first);
       }
     }
-    if(nb->first >= min_valid.first && nb->first <= max_valid.first) {
+    if(isBetween(min_valid.first, max_valid.first, nb->first)) {
       if(nb->second > max_valid.second) {
         nb_start.second = min(nb_start.second, nb->second);
       }
