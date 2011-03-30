@@ -46,7 +46,7 @@ template<typename K, typename V> ostream& operator<<(ostream& os, const map<K, V
 
 template<typename T> ostream& operator<<(ostream& os, const vector<T>& vect)
 {
-  os << "Size [" << vect.size() << "] " << endl;
+  //os << "Size [" << vect.size() << "] " << endl;
   
   typename std::vector<T>::const_iterator it;
   
@@ -55,6 +55,8 @@ template<typename T> ostream& operator<<(ostream& os, const vector<T>& vect)
     os << *it << endl;   
   }
   os << endl;
+  
+  os << "Size [" << vect.size() << "] " << endl;
   return os;
 }
 

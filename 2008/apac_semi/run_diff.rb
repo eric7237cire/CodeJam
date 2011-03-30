@@ -3,8 +3,9 @@
 #exec = "portal.exe"
 #exec = "classroom.exe"
 #exec = "what_are_birds.exe"
-exec = "apocalypse_soon.exe"
-letter = "B"
+#exec = "apocalypse_soon.exe"
+exec = "millionaire.exe"
+letter = "C"
 smallLetter = letter.downcase
 size = "small"
  

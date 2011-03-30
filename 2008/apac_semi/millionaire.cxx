@@ -13,6 +13,7 @@
 //#include <boost/smart_ptr.hpp>
 #include <boost/numeric/conversion/bounds.hpp>
 #include <boost/limits.hpp>
+#include <boost/unordered_set.hpp>
 #define SHOW_TIME 0
 #include "util.h"
 //#include "grid.h"
@@ -116,6 +117,7 @@ public:
 
 typedef vector<NodePtr> NodeList;
 typedef boost::shared_ptr<NodeList> NodeListPtr;
+typedef boost::unordered_set<NodePtr> NodeSet;
 //typedef map<int, NodeListPtr> NodeLevelMap;
 
 ostream& operator<<(ostream& os, const Node& n) {
@@ -157,7 +159,7 @@ void generateNextLevel(NodeList& nlist, int level, double P)
       NodePtr loseNode = *in;
       if (loseNode->minMoney >= winNode->minMoney) {
         continue;
-      }
+      } 
       if (loseNode->prob >= winNode->prob) {
         continue;
       }
