@@ -95,15 +95,15 @@ double diffclock(clock_t clock1,clock_t clock2)
 
 template<typename T> ostream& print_cont(ostream& os, const T& cont)
 {
-  cout << "Size [" << cont.size() << "] " ;
+  os << "Size [" << cont.size() << "] " ;
   
   typename T::const_iterator it;
   
   for(it = cont.begin(); 
     it != cont.end(); ++it) {
-    cout << *it << ", ";   
+    os << *it << ", ";   
   }
-  cout << endl;
+  os << endl;
   return os;
 }
 
@@ -117,21 +117,11 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& os, cons
 
 template std::ostream& operator<<(std::ostream& os, const std::pair<int, int>& pair);
 
-template<typename T> ostream& operator<<(ostream& os, const vector<T>& vect)
-{
-  cout << "Size [" << vect.size() << "] " ;
-  
-  typename std::vector<T>::const_iterator it;
-  
-  for(it = vect.begin(); 
-    it != vect.end(); ++it) {
-    cout << *it << ", ";   
-  }
-  cout << endl;
-  return os;
-}
+
 
 template std::ostream& operator<<(std::ostream& os, const std::vector<int>& vect);
 template ostream& operator<<(ostream& os, const vector<double>& vect);
  
-  
+
+
+
