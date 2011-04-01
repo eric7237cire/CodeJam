@@ -2,6 +2,7 @@
 #include "tri_logger.hpp"
 #include <vector>
 #include <map>
+#include <set>
 #ifndef UTIL_H
 #define UTIL_H
 
@@ -44,11 +45,42 @@ template<typename K, typename V> ostream& operator<<(ostream& os, const map<K, V
   return os;  
 }
 
+template<typename T> ostream& print_cont(ostream& os, const T& cont)
+{
+  os << "Size [" << cont.size() << "] " ;
+  
+  typename T::const_iterator it;
+  
+  for(it = cont.begin(); 
+    it != cont.end(); ++it) {
+    os << *it << ", ";   
+  }
+  os << endl;
+  return os;
+}
+
+
 template<typename T> ostream& operator<<(ostream& os, const vector<T>& vect)
 {
   //os << "Size [" << vect.size() << "] " << endl;
   
   typename std::vector<T>::const_iterator it;
+  
+  for(it = vect.begin(); 
+    it != vect.end(); ++it) {
+    os << *it << endl;   
+  }
+  os << endl;
+  
+  os << "Size [" << vect.size() << "] " << endl;
+  return os;
+}
+
+template<typename T> ostream& operator<<(ostream& os, const set<T>& vect)
+{
+  //os << "Size [" << vect.size() << "] " << endl;
+  
+  typename std::set<T>::const_iterator it;
   
   for(it = vect.begin(); 
     it != vect.end(); ++it) {

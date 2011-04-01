@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-//#include <set>
+#include <set>
 #include <map>
 //#include <deque>
 //#include <queue>
@@ -14,7 +14,7 @@
 #include <boost/numeric/conversion/bounds.hpp>
 #include <boost/limits.hpp>
 #include <boost/unordered_set.hpp>
-#define SHOW_TIME 0
+#define SHOW_TIME 1
 #include "util.h"
 //#include "grid.h"
 //#include <boost/math/common_factor.hpp>
@@ -117,7 +117,8 @@ public:
 
 typedef vector<NodePtr> NodeList;
 typedef boost::shared_ptr<NodeList> NodeListPtr;
-typedef boost::unordered_set<NodePtr> NodeSet;
+//typedef boost::unordered_set<NodePtr> NodeSet;
+typedef set<NodePtr> NodeSet;
 //typedef map<int, NodeListPtr> NodeLevelMap;
 
 ostream& operator<<(ostream& os, const Node& n) {
@@ -135,11 +136,12 @@ ostream& operator<<(ostream& os, NodeListPtr nl) {
   return os;
 }
 
-void generateNextLevel(NodeList& nlist, int level, double P)
+//step through half steps 
+void generateNextLevel(NodeSet& nlist, int level, double P)
 {
   NodeList newNodes;
   
-  for(NodeList::const_iterator oit = nlist.begin();
+  for(NodeSet::const_iterator oit = nlist.begin();
     oit != nlist.end();
     ++oit) 
   {
@@ -151,16 +153,21 @@ void generateNextLevel(NodeList& nlist, int level, double P)
       newNodes.push_back(n);
     }
     
-    for(NodeList::const_iterator in = nlist.begin();
+    NodeSet::const_iterator in = oit;
+    ++in;
+    for(;
     in != nlist.end();
     ++in)
     {
       //LOG(*in);
       NodePtr loseNode = *in;
       if (loseNode->minMoney >= winNode->minMoney) {
+        throw 3;
         continue;
       } 
+      //assert
       if (loseNode->prob >= winNode->prob) {
+        //throw 3;
         continue;
       }
       NodePtr n = Node::createWinLoseNode(*winNode, *loseNode, level, P);
@@ -168,16 +175,29 @@ void generateNextLevel(NodeList& nlist, int level, double P)
     }
   }
   
-  copy(newNodes.begin(), newNodes.end(), back_insert_iterator<NodeList>(nlist));
+  for(NodeList::const_iterator it = newNodes.begin();
+    it != newNodes.end();
+    ++it)
+  {
+    NodeSet::const_iterator sit = nlist.find(*it);
+    if (sit != nlist.end()) {
+      if (it->get()->prob < sit->get()->prob) {
+        continue;
+      }
+      
+      nlist.erase(sit);
+      
+    }
+    
+    pair<NodeSet::iterator, bool> r = nlist.insert(*it);
+    assert(r.second);
+  }
+  //copy(newNodes.begin(), newNodes.end(), insert_iterator<NodeSet>(nlist, nlist.begin()));
  
 }
 
 int operator<(NodePtr n1, NodePtr n2) {
-  if (n1->level != n2->level) {
-    return n1->level < n2->level;
-  }
-  return n1->minMoney > n2->minMoney;
-  
+  return n1->minMoney > n2->minMoney;  
 }
 
 void do_test_case(int test_case, ifstream& input)
@@ -191,21 +211,33 @@ void do_test_case(int test_case, ifstream& input)
   
   const int GOAL = 1000000;
   
-  NodeList nlist;
+  NodeSet nlist;
   
-  nlist.push_back(NodePtr(new Node(GOAL, 0, 1)));
+  nlist.insert(NodePtr(new Node(GOAL, 0, 1)));
   
   for(int m = 1; m<=M; ++m) {
     generateNextLevel(nlist, m, P);
   }
   
-  sort(nlist.begin(), nlist.end());
+  //sort(nlist.begin(), nlist.end());
   
-  LOG(nlist);
+  //LOG(nlist);
+  {
+    NodeSet::const_iterator in = nlist.begin();
+    NodePtr prevNode = *(in++);
+    for(int i = 0; in != nlist.end(); ++in) {
+      LOG(*in);
+      LOG((*in)->prob - prevNode->prob);
+      LOG((*in)->minMoney - prevNode->minMoney);
+      //cout << endl;
+      prevNode = *in;
+      
+    }
+  }
   
   double max_p = 0;
   
-  for(NodeList::const_iterator in = nlist.begin();
+  for(NodeSet::const_iterator in = nlist.begin();
     in != nlist.end();
     ++in)
   {

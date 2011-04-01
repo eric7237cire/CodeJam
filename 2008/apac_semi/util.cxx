@@ -93,19 +93,6 @@ double diffclock(clock_t clock1,clock_t clock2)
 	return diffms;
 } 
 
-template<typename T> ostream& print_cont(ostream& os, const T& cont)
-{
-  os << "Size [" << cont.size() << "] " ;
-  
-  typename T::const_iterator it;
-  
-  for(it = cont.begin(); 
-    it != cont.end(); ++it) {
-    os << *it << ", ";   
-  }
-  os << endl;
-  return os;
-}
 
 template ostream& print_cont(ostream& os, const set<pair<int, int> >& cont);
 
