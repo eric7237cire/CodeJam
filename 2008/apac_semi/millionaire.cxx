@@ -71,6 +71,7 @@ ostream& operator<<(ostream& os, const HW& hw) {
 
 class Node;
 typedef boost::shared_ptr<Node> NodePtr;
+typedef boost::shared_ptr<const Node> ConstNodePtr;
 
 class Node
 {
@@ -79,38 +80,50 @@ public:
   double prob;
   int level;  
   
+  ConstNodePtr winParent;
+  ConstNodePtr loseParent;
 
   Node(double minMoney, double level, double prob) :
   minMoney(minMoney), prob(prob), level(level)
   {
   }
   
-  static NodePtr createWinOnlyNode(const Node& sourceNode, int level, double P) 
+  static NodePtr createWinOnlyNode(ConstNodePtr sourceNode, int level, double P) 
   {
-    assert(level > sourceNode.level);
+    assert(level > sourceNode->level);
     
     NodePtr node(new Node(
-      sourceNode.minMoney / 2,
+      sourceNode->minMoney / 2,
       level,
-      sourceNode.prob * P));
+      sourceNode->prob * P));
+    
+    node->winParent = sourceNode;
     
     return node;
   }
   
   static NodePtr createWinLoseNode
-    (const Node& winNode, const Node& loseNode, int level, double P) 
+    (ConstNodePtr winNode, ConstNodePtr loseNode, int level, double P) 
   {
-    assert(level > winNode.level);
+    assert(level > winNode->level);
     
-    assert(winNode.prob > loseNode.prob);
-    assert(winNode.minMoney > loseNode.minMoney);
+    assert(winNode->prob > loseNode->prob);
+    assert(winNode->minMoney > loseNode->minMoney);
     
     NodePtr node(new Node(
-      (loseNode.minMoney + winNode.minMoney) / 2,
+      (loseNode->minMoney + winNode->minMoney) / 2,
       level,
-      winNode.prob * P + loseNode.prob * (1-P)));
+      winNode->prob * P + loseNode->prob * (1-P)));
+    
+    node->winParent = winNode;
+    node->loseParent = loseNode;
     
     return node;
+  }
+  
+  void print(ostream& os) const {
+    os << "Level: " << level
+    << " Min money: " << minMoney << " Prob " << prob;  
   }
 };
 
@@ -122,7 +135,15 @@ typedef map<double, NodePtr, greater<double> > NodeMap;
 //typedef map<int, NodeListPtr> NodeLevelMap;
 
 ostream& operator<<(ostream& os, const Node& n) {
-  os << "Level: " << n.level << " Min money: " << n.minMoney << " Prob " << n.prob;
+  n.print(os);
+  if (n.winParent) {
+    os << " Win Parent ";
+    n.winParent->print(os);
+  }
+  if (n.loseParent) {
+    os << " Lose Parent: ";
+    n.loseParent->print(os);
+  }
   return os;
 }
 
@@ -136,20 +157,46 @@ ostream& operator<<(ostream& os, NodeListPtr nl) {
   return os;
 }
 
+
+
 //step through half steps 
 void generateNextLevel(NodeMap& nmap, int level, double P)
 {
   NodeList newNodes;
+
+  int num_elems = 1 << (level-1);
   
+  if (nmap.size() != num_elems) {
+    cout << num_elems << endl;
+    cout << level << endl;
+    cout << nmap.size() << endl;
+  }
+  
+  assert(nmap.size() == num_elems);
+  double step = 1000000 / num_elems;
+  int i = 0;
   for(NodeMap::const_iterator oit = nmap.begin();
     oit != nmap.end();
-    ++oit) 
+    ++oit)
+  //for(double m = step; m < 1000000; m+=step)
   {
+    //NodeMap::const_iterator oit = nmap.find(m);
+    assert(oit != nmap.end());
+    LOG(oit->first);
+    LOG(1000000 - step * i);
+    if ( ! abs(oit->first - (1000000 - step * i) ) < .01 ) {
+      cout << oit->first << endl;
+      cout << (1000000 - step * i) << endl;
+      cout << abs(oit->first - (1000000 - step * i)) << endl;
+    }
+    assert( abs(oit->first - (1000000 - step * i) ) < .01);
+    ++i;
+      
     NodePtr winNode = oit->second;
     //LOG(winNode);
     if (winNode->level == level - 1) {
       //LOG_STR("Creating straight shot node, betting all for node");
-      NodePtr n = Node::createWinOnlyNode(*winNode, level, P);
+      NodePtr n = Node::createWinOnlyNode(winNode, level, P);
       newNodes.push_back(n);
     }
     
@@ -172,10 +219,13 @@ void generateNextLevel(NodeMap& nmap, int level, double P)
         //throw 3;
         continue;
       }
-      NodePtr n = Node::createWinLoseNode(*winNode, *loseNode, level, P);
+      NodePtr n = Node::createWinLoseNode(winNode, loseNode, level, P);
       newNodes.push_back(n);
     }
   }
+  
+  sort(newNodes.begin(), newNodes.end());
+  LOG(newNodes);
   
   for(NodeList::const_iterator it = newNodes.begin();
     it != newNodes.end();
@@ -199,8 +249,12 @@ void generateNextLevel(NodeMap& nmap, int level, double P)
 }
 
 int operator<(NodePtr n1, NodePtr n2) {
-  throw 4;
-  return n1->minMoney > n2->minMoney;  
+  //throw 4;
+  if (n1->minMoney != n2->minMoney) {
+    return n1->minMoney > n2->minMoney;
+  }
+  
+  return n1->prob < n2->prob;
 }
 
 void do_test_case(int test_case, ifstream& input)
@@ -214,6 +268,29 @@ void do_test_case(int test_case, ifstream& input)
   
   const int GOAL = 1000000;
   
+  if (X >= GOAL) { 
+    cout << "Case #" << (test_case+1) << ": 1" << endl;
+    return;
+  }
+  
+  if (X > 0 && P >= 1) {
+    double x = GOAL;
+    for (int i = 0; i < M; ++i) {
+      x /= 2;    
+    }
+    if (x <= X) {
+      cout << "Case #" << (test_case+1) << ": 1" << endl;
+    } else {
+      cout << "Case #" << (test_case+1) << ": 0" << endl;  
+    }
+    return;
+  }
+  
+  if (P <= 0) {
+    cout << "Case #" << (test_case+1) << ": 0" << endl;
+    return;
+  }
+  
   NodeMap nmap;
   
   nmap.insert(NodeMap::value_type(GOAL, NodePtr(new Node(GOAL, 0, 1))));
@@ -224,19 +301,18 @@ void do_test_case(int test_case, ifstream& input)
   
   //sort(nlist.begin(), nlist.end());
   
-  //LOG(nlist);
   {
-    /*
-    NodeSet::const_iterator in = nlist.begin();
-    NodePtr prevNode = *(in++);
-    for(int i = 0; in != nlist.end(); ++in) {
-      LOG(*in);
-      LOG((*in)->prob - prevNode->prob);
-      LOG((*in)->minMoney - prevNode->minMoney);
+    
+    NodeMap::const_iterator in = nmap.begin();
+    //NodePtr prevNode = *(in++);
+    for(; in != nmap.end(); ++in) {
+      LOG(in->second);
+      //LOG((*in)->prob - prevNode->prob);
+      //LOG((*in)->minMoney - prevNode->minMoney);
       //cout << endl;
-      prevNode = *in;
+      //prevNode = *in;
       
-    }*/
+    }
   }
   
   double max_p = 0;
