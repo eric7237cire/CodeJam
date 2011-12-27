@@ -63,46 +63,17 @@ void do_test_case(int test_case, ifstream& input)
   int N, K;
   input >> N >> K;
     
-  vector<bool> snapper_state;
-  snapper_state.assign(N, false);
   
-  for(int i=0; i < K; ++i) {
-      int powered_to = 0;
-      
-      for(int n=0; n<N; ++n) {
-         // cout << setw(3) << n ;   
-      }
-     // cout << endl;
-      
-      for(int n=0; n<N; ++n) {
-         // cout << setw(3) << snapper_state[n];   
-      }
-     // cout << endl;
-     // cout << endl;
-      
-      for(int n=1; n<N; ++n) {
-          if (!snapper_state[n-1]) {
-              break;
-          }
-          powered_to = n;
-        //
-      }
-      
-      //snapper_state[0] = !snapper_state[0];
-      
-      for(int n=0; n<=powered_to; ++n) {
-          snapper_state[n] = !snapper_state[n];
-      }      
-      
-      
-  }
+  //calculate 2^n
+  int n_sq = (1 << N) - 1;
   
-  bool isOn = true;
-  for(int n=0; n<N; ++n) {
-    isOn = snapper_state[n] && isOn;
-  } 
+  
+  
+  
+  bool isOn = (n_sq & K) == n_sq;
       
-cout << "Case #" << (1+test_case) << ": " << ( isOn ? "ON" : "OFF" ) << endl;  
+cout << "Case #" << (1+test_case) << ": " << ( isOn ? "ON" : "OFF" ) << endl;
+    
   return;
     
 }
