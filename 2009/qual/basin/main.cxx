@@ -19,23 +19,10 @@ using namespace std;
 
 void do_test_case(int, ifstream& input);
 
-#define SHOW_TIME 0
-#define DEBUG_OUTPUT 0
-//#undef assert
-//#define assert(x) ((void)0)
-
-#if SHOW_TIME
-#define SHOW_TIME_BEGIN(A) clock_t begin_##A=clock();
-#define SHOW_TIME_END(A) clock_t end_##A=clock(); cout << "Time elapsed: " #A << " " << double(diffclock(end_##A,begin_##A)) << " ms"<< endl;
-#else
-#define SHOW_TIME_BEGIN(A) 
-#define SHOW_TIME_END(A) 
-#endif
-
 int main(int argc, char** args)
 {
     
-    LOG_OFF();
+  LOG_OFF();
     
   if (argc < 2) {
     cerr << "Usage: <exe> input_file" << endl;
@@ -76,8 +63,6 @@ void do_test_case(const int test_case, ifstream& input)
     int alt[H][W];
     char visited[H][W];
     
-    const int INT_MAX = 99999999;
-    
     for(int h = 0; h < H; ++h) {
         for(int w = 0; w < W; ++w) {
             alt[h][w] = 0;
@@ -96,9 +81,9 @@ void do_test_case(const int test_case, ifstream& input)
             
             set<IntPair> visitedList;
             
-            //visitedList.insert(cur);
-            
-            while(true) {
+            while(true) {                
+                LOG(cur);
+                
                 //If we have already been here, it's a new basin
                 if (visitedList.find(cur) != visitedList.end()) {
                     LOG(cur);
@@ -115,9 +100,8 @@ void do_test_case(const int test_case, ifstream& input)
                 
                 //If current square has a label, then label all visited with that label
                 if (visited[cur.first][cur.second] != ' ') {
-                                    for(set<IntPair>::const_iterator it = visitedList.begin();
-                        it != visitedList.end();
-                        ++it) {
+                    for(set<IntPair>::const_iterator it = visitedList.begin();
+                        it != visitedList.end(); ++it) {
                         visited[it->first][it->second] = visited[cur.first][cur.second];
                     }
                     break;
@@ -126,69 +110,54 @@ void do_test_case(const int test_case, ifstream& input)
                 visitedList.insert(cur);
                 
                 int cur_alt = alt[cur.first][cur.second];
-                int flow_dir = -1;
                 
-                int northAlt = (cur.first > 0) ? alt[cur.first-1][cur.second] : INT_MAX;
+                vector<IntPair> nextSquares;
                 
-                if (northAlt < cur_alt) {
-                    flow_dir = NORTH;
-                    cur_alt = northAlt;
+                if (cur.first > 0) { //north
+                    nextSquares.push_back( IntPair(cur.first-1, cur.second) );
                 }
-                int westAlt = (cur.second > 0) ? alt[cur.first][cur.second-1] : INT_MAX;
-                if (westAlt < cur_alt) {
-                    flow_dir = WEST;
-                    cur_alt = westAlt;
+                if (cur.second > 0) { //west
+                    nextSquares.push_back( IntPair(cur.first, cur.second-1) );
                 }
-                int eastAlt = (cur.second < W-1) ? alt[cur.first][cur.second+1] : INT_MAX;
-                if (eastAlt < cur_alt) {
-                    flow_dir = EAST;
-                    cur_alt = eastAlt;
+                if (cur.second < W-1) { //east
+                    nextSquares.push_back( IntPair(cur.first, cur.second+1) );
                 }
-                int southAlt = (cur.first < H-1) ? alt[cur.first+1][cur.second] : INT_MAX;
-                if (southAlt < cur_alt) {
-                    flow_dir = SOUTH;
-                    cur_alt = southAlt;
+                if  (cur.first < H-1) { //south
+                    nextSquares.push_back( IntPair(cur.first+1, cur.second) );
                 }
                 
-                LOG(flow_dir);
                 
-                switch(flow_dir) {
-                case NORTH:
-                    cur.first --;
-                    break;
-                case SOUTH:
-                    cur.first++;
-                    break;
-                case EAST:
-                    cur.second++;
-                    break;
-                case WEST:
-                    cur.second--;
-                    break;
+                IntPair nextSquare(cur);
+                
+                for(vector<IntPair>::const_iterator it = nextSquares.begin();
+                    it != nextSquares.end();
+                    ++it) {
+                    const IntPair& potenNextSquare = *it;
+                    int nextAlt = alt[potenNextSquare.first][potenNextSquare.second];
+                    
+                    if (nextAlt < cur_alt) {
+                        nextSquare = potenNextSquare;
+                        cur_alt = nextAlt;
+                    }
                 }
                 
-            
+                cur = nextSquare;         
+                LOG(cur);
                 
             }
         }
     }
         
         
-cout << "Case #" << (1+test_case) << ": " << endl;
-
-for(int h = 0; h < H; ++h) {
+    cout << "Case #" << (1+test_case) << ": " << endl;
+    
+    for(int h = 0; h < H; ++h) {
         for(int w = 0; w < W; ++w) {
             cout << visited[h][w] << " ";
         }
         cout << endl;
-}
-  
-  
-  //bool isOn = (n_sq & K) == n_sq;
+    }
       
-//
-    
-  return;
     
 }
   
