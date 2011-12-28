@@ -61,16 +61,20 @@ string searchText = "welcome to code jam";
 string text;
 
 int search(unsigned int indexOfSearchString, unsigned int indexOfText) {
-    LOG(indexOfSearchString);
-    LOG(indexOfText);
+    
     
     if (indexOfSearchString >= 19 || indexOfText >= text.length() ) {
         return 0;
     }
     
-    if (searchSpace[indexOfSearchString][indexOfText] > 0 ) {
+    if (searchSpace[indexOfSearchString][indexOfText] >= 0 ) {
         return searchSpace[indexOfSearchString][indexOfText];
     }
+    
+    LOG_ON();
+    LOG(indexOfSearchString);
+    LOG(indexOfText);
+    LOG_OFF();
     
     char searchChar = searchText[indexOfSearchString];
     LOG(searchChar);
@@ -84,6 +88,8 @@ int search(unsigned int indexOfSearchString, unsigned int indexOfText) {
             if (indexOfSearchString == 18) {
                 ++hits;
                 LOG_STR("HIT!");
+                //searchSpace[indexOfSearchString][indexOfText] = hits;
+                //return hits;
             }
         }
     }
