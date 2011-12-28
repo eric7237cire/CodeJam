@@ -134,11 +134,8 @@ void do_test_case(const int L, const int D, const int N, ifstream& input)
             LOG(currPosWordMatches);
             
             if (inParen) {
-                set_union(parenMatches.begin(), parenMatches.end(),
-               currPosWordMatches.begin(), currPosWordMatches.end(),  
-               insert_iterator< set<int> > (intersection, intersection.begin()));
-                
-                parenMatches = intersection;
+                parenMatches.insert(
+               currPosWordMatches.begin(), currPosWordMatches.end() );  
                 
                 LOG(parenMatches);
             } else {
