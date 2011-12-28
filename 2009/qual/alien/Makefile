@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS =  -g
+CFLAGS =  -g -O3
 OLD = -g -O3 -Wall
 EXEC_NAME = main.exe
 OLD_EXEC_NAME = what_are_birds.exe apocalypse_soon.exe

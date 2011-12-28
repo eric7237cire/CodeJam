@@ -59,6 +59,7 @@ int main(int argc, char** args)
 }
 
 
+
 void do_test_case(const int L, const int D, const int N, ifstream& input)
 {
   vector<string> words;
@@ -83,21 +84,22 @@ void do_test_case(const int L, const int D, const int N, ifstream& input)
       }
   }
   
-  for(int j=0; j < L; ++j) {
-        LOG(letters_words[j]);        
-      }
+  set<int> initialSet;
+  
+  for(int i = 0; i < D; ++i) {
+        initialSet.insert(i);
+    }
+  
   
   for(int test_case = 0; test_case < N; ++test_case) {
       LOG(test_case);
     string test_word;
     input >> test_word;
     
-    set<int> possibleMatches;
+    set<int> possibleMatches(initialSet);
     set<int> parenMatches;
     
-    for(int i = 0; i < D; ++i) {
-        possibleMatches.insert(i);
-    }
+    
     
     LOG(possibleMatches);
     
@@ -127,9 +129,9 @@ void do_test_case(const int L, const int D, const int N, ifstream& input)
                 continue;
             }
             
-            set<int> intersection;
             
-            set<int> currPosWordMatches = letters_words[currentPosition][ (*it) ] ;
+            
+            const set<int>& currPosWordMatches = letters_words[currentPosition][ (*it) ] ;
             
             LOG(currPosWordMatches);
             
@@ -139,6 +141,8 @@ void do_test_case(const int L, const int D, const int N, ifstream& input)
                 
                 LOG(parenMatches);
             } else {
+                set<int> intersection;
+                
             set_intersection(possibleMatches.begin(), possibleMatches.end(),
                currPosWordMatches.begin(), currPosWordMatches.end(),  
                insert_iterator< set<int> > (intersection, intersection.begin()));
