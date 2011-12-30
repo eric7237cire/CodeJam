@@ -57,6 +57,7 @@ enum {
 typedef pair<int, int> IntPair;
 
 int searchSpace[19][500];
+int searchCount;
 string searchText = "welcome to code jam";
 string text;
 
@@ -68,12 +69,18 @@ int search(unsigned int indexOfSearchString, unsigned int indexOfText) {
     }
     
     if (searchSpace[indexOfSearchString][indexOfText] >= 0 ) {
+	assert(searchSpace[indexOfSearchString][indexOfText] >= 0);
         return searchSpace[indexOfSearchString][indexOfText];
     }
+
+++searchCount;
     
     LOG_ON();
-    LOG(indexOfSearchString);
-    LOG(indexOfText);
+if (searchCount % 5000 == 0) {
+LOG(searchCount);
+}
+//    LOG(indexOfSearchString);
+//    LOG(indexOfText);
     LOG_OFF();
     
     char searchChar = searchText[indexOfSearchString];
@@ -84,15 +91,19 @@ int search(unsigned int indexOfSearchString, unsigned int indexOfText) {
         if (text[i] == searchChar) {
             LOG_STR("Hit " << hits << " I " << i);
             hits = hits + search(indexOfSearchString + 1, i + 1);   
-            
+            assert(hits >= 0);
             if (indexOfSearchString == 18) {
                 ++hits;
+		assert(hits >= 0);
                 LOG_STR("HIT!");
-                //searchSpace[indexOfSearchString][indexOfText] = hits;
-                //return hits;
             }
         }
     }
+	assert(0 <= indexOfSearchString && 19 > indexOfSearchString);
+assert(0 <= indexOfText && 500 > indexOfText);
+
+assert(hits >= 0);
+	hits %= 10000;
     searchSpace[indexOfSearchString][indexOfText] = hits;
     return hits;
 }
@@ -102,6 +113,7 @@ void do_test_case(const int test_case, ifstream& input)
     //LOG_ON();
     
     memset( &searchSpace[0][0], -1, sizeof(searchSpace) );
+	searchCount = 0;
         
     getline(input, text);
    
