@@ -62,6 +62,7 @@ string text;
 
 int search(unsigned int indexOfSearchString, unsigned int indexOfText) {
     
+    LOG(searchSpace[indexOfSearchString][indexOfText]);
     
     if (indexOfSearchString >= 19 || indexOfText >= text.length() ) {
         return 0;
@@ -71,30 +72,26 @@ int search(unsigned int indexOfSearchString, unsigned int indexOfText) {
         return searchSpace[indexOfSearchString][indexOfText];
     }
     
-    LOG_ON();
+   // LOG_ON();
     LOG(indexOfSearchString);
     LOG(indexOfText);
     LOG_OFF();
     
-    char searchChar = searchText[indexOfSearchString];
-    LOG(searchChar);
-    int hits = 0;
-    
-    for(int i = indexOfText;  i < text.length(); ++i) {
-        if (text[i] == searchChar) {
-            LOG_STR("Hit " << hits << " I " << i);
-            hits = hits + search(indexOfSearchString + 1, i + 1);   
-            
-            if (indexOfSearchString == 18) {
-                ++hits;
-                LOG_STR("HIT!");
-                //searchSpace[indexOfSearchString][indexOfText] = hits;
-                //return hits;
-            }
+    int r = 0; 
+    if (searchText[indexOfSearchString] == text[indexOfText]) {
+        if (indexOfSearchString == 18) {
+            r = 1;
         }
+        
+        r += search(indexOfSearchString + 1, indexOfText + 1) + search(indexOfSearchString, indexOfText + 1);
+        
+    } else {
+        r = search(indexOfSearchString, indexOfText + 1);   
     }
-    searchSpace[indexOfSearchString][indexOfText] = hits;
-    return hits;
+    
+    r %= 10000;
+    searchSpace[indexOfSearchString][indexOfText] = r;
+    return r;
 }
 
 void do_test_case(const int test_case, ifstream& input)
