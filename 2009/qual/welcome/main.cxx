@@ -57,6 +57,7 @@ enum {
 typedef pair<int, int> IntPair;
 
 int searchSpace[19][500];
+int searchCount;
 string searchText = "welcome to code jam";
 string text;
 
@@ -69,8 +70,11 @@ int search(unsigned int indexOfSearchString, unsigned int indexOfText) {
     }
     
     if (searchSpace[indexOfSearchString][indexOfText] >= 0 ) {
+	assert(searchSpace[indexOfSearchString][indexOfText] >= 0);
         return searchSpace[indexOfSearchString][indexOfText];
     }
+
+++searchCount;
     
    // LOG_ON();
     LOG(indexOfSearchString);
@@ -88,10 +92,11 @@ int search(unsigned int indexOfSearchString, unsigned int indexOfText) {
     } else {
         r = search(indexOfSearchString, indexOfText + 1);   
     }
-    
+
     r %= 10000;
     searchSpace[indexOfSearchString][indexOfText] = r;
     return r;
+
 }
 
 void do_test_case(const int test_case, ifstream& input)
@@ -99,6 +104,7 @@ void do_test_case(const int test_case, ifstream& input)
     //LOG_ON();
     
     memset( &searchSpace[0][0], -1, sizeof(searchSpace) );
+	searchCount = 0;
         
     getline(input, text);
    
