@@ -82,9 +82,10 @@ class Node {
     
 public:
     bool happy ;
+    bool init;
     Node* nextNode;
     
-    Node() : happy(false), nextNode(0) { 
+    Node() : happy(false), init(false), nextNode(0) { 
            
     }
 };
@@ -159,7 +160,9 @@ void do_test_case(const int test_case, ifstream& input)
             int num = K;
     
             set<int> visited;
+            vector<int> visitedVec;
             
+            /*
             while (bas.size() < K) {
                 bas.push_back(new Node());
                 //LOG(bas);
@@ -176,7 +179,7 @@ void do_test_case(const int test_case, ifstream& input)
                 LOG_STR("skipped");
                 LOG_OFF();
                 break;
-            }
+            }*/
                         
             while (num != 1) {
                 
@@ -191,17 +194,24 @@ void do_test_case(const int test_case, ifstream& input)
                 
                 int newNum = getSq(conNum);
                 
+                visitedVec.push_back(newNum);
+                
                 //LOG(bas);
                 //LOG_STR(num << " in base " << base << " = " << conNum << " square = " << newNum);
                 while (bas.size() < newNum ) {
                     bas.push_back(new Node());
                     //LOG(bas);
                 }
+                                         
+                if (bas[newNum-1]->happy) {                    
+                    break;
+                } else if (bas[newNum-1]->init) {
+                    allHappy = false;                    
+                    break;
+                }
                 
-                bas[num-1]->nextNode = bas[newNum-1];
-                
-                
-                
+                bas[newNum-1]->init = true;
+                                
                 num = newNum;
                 
                 if (visited.find(num) != visited.end()) {
@@ -221,18 +231,17 @@ void do_test_case(const int test_case, ifstream& input)
             } else {
                 //mark all nodes as happy
                 //LOG_ON();
+                
                 LOG_STR( K << " is happy in base " << base );
-                Node* curNode = bas[K-1];
-                //LOG(curNode);
-                while(curNode) {
-                    //LOG(curNode);
-                    curNode->happy = true;
-                    curNode = curNode->nextNode;
+                for(vector<int>::const_iterator it = visitedVec.begin();
+                    it != visitedVec.end();
+                    ++it) {
+                    bas[ (*it) - 1 ]->happy=true;
                 }
             }
         }		
         
-        if (allHappy) {
+        if (allHappy ) {
             cout << "Case #" << (1+test_case) << ": " << K << endl;
             SHOW_TIME_END(tc);
             return;
@@ -240,8 +249,8 @@ void do_test_case(const int test_case, ifstream& input)
             allHappy = true;
         }
         ++K;
-        //LOG_ON();
-        //LOG_OFF();
+        LOG_ON();
+        LOG_OFF();
         LOG(K);
 
     }
