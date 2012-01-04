@@ -49,15 +49,20 @@ template std::ostream& operator<<(std::ostream& os, const std::pair<int, int>& p
 
 template<typename T> ostream& operator<<(ostream& os, const deque<T>& vect)
 {
-  cout << "Size [" << vect.size() << "] " ;
+  cout << "[" ;
   
-  typename std::deque<T>::const_iterator it;
-  
-  for(it = vect.begin(); 
-    it != vect.end(); ++it) {
-    cout << *it << ", ";   
+  if (!vect.empty()) {
+      typename std::deque<T>::const_iterator it = vect.begin();
+      
+      cout << *it;
+      ++it;
+      
+      for(; 
+        it != vect.end(); ++it) {
+        cout << ", " << *it ;   
+      }
   }
-  cout << endl;
+  cout << "]";
   return os;
 }
 

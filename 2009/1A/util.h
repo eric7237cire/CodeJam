@@ -6,7 +6,7 @@
 #define UTIL_H
 
 #ifndef SHOW_TIME
-#define SHOW_TIME 0
+#define SHOW_TIME 1
 #endif
 
 //#undef assert
