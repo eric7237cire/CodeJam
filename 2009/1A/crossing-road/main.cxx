@@ -138,15 +138,34 @@ private:
     int NS_Duration;
     int EW_Duration;
     int NS_Start;
+    int cycle;
 
 public:
     Light(int ns, int es, int start) {
-            
+        cycle = NS_Duration + EW_Duration;
+        NS_Start = start % cycle;
     }
     
-    int nextNorth(int time) {
+    int nextNorth(int time) const {
+        int t_mod = time % cycle;
         
-        return 
+        if (t_mod < NS_Duration) {
+            return time;
+        }
+        
+        //wait until next north / south light
+        return time + (cycle - t_mod);
+    }
+    
+    int nextEastWest(int time) const {
+        int t_mod = time % cycle;
+        
+        if (t_mod >= NS_Duration) {
+            return time;
+        }
+        
+        //wait until next north / south light
+        return time + (NS_Duration - t_mod);
     }
 };
 
@@ -169,6 +188,17 @@ int operator<(const Location& lhs, const Location& rhs) {
     return lhs.corner < rhs.corner;
 }
 
+int operator==(const Location& lhs, const Location& rhs) {
+    return (lhs.row == rhs.row && lhs.col == rhs.col && lhs.corner ==rhs.corner);    
+}
+
+typedef pair<int, Location> TimeLocPair;
+
+ostream& operator<<(ostream& os, const TimeLocPair& tl) {
+    os << tl.second.row << ", " << tl.second.col << " Corner " << tl.second.corner << " Time " << tl.first;
+    return os;
+}
+
 void do_test_case(const int test_case, ifstream& input)
 {
     SHOW_TIME_BEGIN(tc);
@@ -187,8 +217,10 @@ void do_test_case(const int test_case, ifstream& input)
     for(int i = 0; i < N; ++i) {
         VL row;
         for(int i = 0; i < M; ++i) {
-            Light l;
-            input >> l.NS_Duration >> l.EW_Duration >> l.NS_Start;
+            
+            int ns, ew, start;
+            input >> ns >> ew >> start;
+            Light l(ns, ew, start);
             row.push_back(l);
         }        
         
@@ -207,7 +239,7 @@ void do_test_case(const int test_case, ifstream& input)
     endingLoc.col = M - 1;
     endingLoc.corner = NE;
     
-    typedef pair<int, Location> TimeLocPair;
+    
     
     typedef priority_queue<TimeLocPair> Queue;
     
@@ -223,11 +255,75 @@ void do_test_case(const int test_case, ifstream& input)
     while(!q.empty()) {
         const TimeLocPair& timeLoc = q.top();
         
+        LOG_ON();
+        LOG_STR("Processing " << timeLoc);
+        LOG_OFF();
+        
+        if (timeLoc.second == endingLoc) {
+            cout << "Case #" << (1+test_case) << ": " << timeLoc.first << endl;
+        }
+        
         const Light& light = lights[timeLoc.second.row][timeLoc.second.col];
         
-        //go north
-        if (timeLoc.second.row > 0) {
-            l
+        //go north ; crossing street
+        if (timeLoc.second.corner == SE || timeLoc.second.corner == SW)  {
+            int time = light.nextNorth(timeLoc.first);
+            Location newLoc(timeLoc.second);
+            
+            newLoc.corner = timeLoc.second.corner == SE ? NE : NW; 
+            
+            TimeLocPair newTL;
+            newTL.first = time;
+            newTL.second = newLoc;
+            
+            q.push(newTL);
+        }
+        
+        //go north walking accross block
+        if ( timeLoc.second.row > 0 &&
+            (timeLoc.second.corner == NE || timeLoc.second.corner == NW) )
+        {
+            int time = timeLoc.first + 2;
+            Location newLoc(timeLoc.second);
+            
+            newLoc.corner = timeLoc.second.corner == NE ? SE : SW; 
+            newLoc.row -= 1;
+            
+            TimeLocPair newTL;
+            newTL.first = time;
+            newTL.second = newLoc;
+            
+            q.push(newTL);
+        }
+        
+        //Going east accross block
+        if (timeLoc.second.col < M - 1 && 
+            (timeLoc.second.corner == NE || timeLoc.second.corner == SE) ) {
+            int time = timeLoc.first + 2;
+            Location newLoc(timeLoc.second);
+            
+            newLoc.corner = timeLoc.second.corner == SE ? SW : NW; 
+            newLoc.col += 1;
+            
+            TimeLocPair newTL;
+            newTL.first = time;
+            newTL.second = newLoc;
+            
+            q.push(newTL);
+        }
+        
+        //go east ; crossing street
+        if (timeLoc.second.corner == SW || timeLoc.second.corner == NW)  {
+            int time = light.nextEastWest(timeLoc.first);
+            Location newLoc(timeLoc.second);
+            
+            newLoc.corner = timeLoc.second.corner == SW ? SE : NE; 
+            
+            TimeLocPair newTL;
+            newTL.first = time;
+            newTL.second = newLoc;
+            
+            q.push(newTL);
         }
         
         seen.insert(timeLoc);
