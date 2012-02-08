@@ -290,7 +290,7 @@ void do_test_case(const int test_case, ifstream& input)
 
         q.pop();
         
-        LOG_ON();
+//        LOG_ON();
         LOG_STR("Processing " << timeLoc << " Queue size " << q.size()  );
 //        LOG_OFF();
         
@@ -335,6 +335,39 @@ void do_test_case(const int test_case, ifstream& input)
             q.push(newTL);
         }
 
+
+        if (timeLoc.second.corner == NE || timeLoc.second.corner == NW)  {
+
+            int time = light.nextNorth(timeLoc.first);
+		LOG_STR("Going south across street.  New time " << time);
+            Location newLoc(timeLoc.second);
+            
+            newLoc.corner = timeLoc.second.corner == NE ? SE : SW; 
+            
+            TimeLocPair newTL;
+            newTL.first = time;
+            newTL.second = newLoc;
+            
+            q.push(newTL);
+        }
+        
+        if ( timeLoc.second.row > N - 1 &&
+            (timeLoc.second.corner == SE || timeLoc.second.corner == SW) )
+        {
+            int time = timeLoc.first + 2;
+		LOG_STR("Going south across block.  New time " << time);
+            Location newLoc(timeLoc.second);
+            
+            newLoc.corner = (timeLoc.second.corner == SE) ? NE : NW; 
+            newLoc.row += 1;
+            
+            TimeLocPair newTL;
+            newTL.first = time;
+            newTL.second = newLoc;
+            
+            q.push(newTL);
+        }
+
         //Going east accross block
         if (timeLoc.second.col < M - 1 && 
             (timeLoc.second.corner == NE || timeLoc.second.corner == SE) ) {
@@ -366,6 +399,41 @@ void do_test_case(const int test_case, ifstream& input)
             newTL.second = newLoc;
 
 		LOG_STR("Pushing after east walking street " << newTL);
+            
+            q.push(newTL);
+        }
+
+	//Going west accross block
+        if (timeLoc.second.col > 0 && 
+            (timeLoc.second.corner == NW || timeLoc.second.corner == SW) ) {
+
+            int time = timeLoc.first + 2;
+		LOG_STR("Going west across block.  New time " << time);
+            Location newLoc(timeLoc.second);
+            
+            newLoc.corner = timeLoc.second.corner == SW ? SE : NE; 
+            newLoc.col -= 1;
+            
+            TimeLocPair newTL;
+            newTL.first = time;
+            newTL.second = newLoc;
+            
+            q.push(newTL);
+        }
+
+        //go west ; crossing street
+        if (timeLoc.second.corner == SE || timeLoc.second.corner == NE)  {
+            int time = light.nextEastWest(timeLoc.first);
+		LOG_STR("Going west across street.  New time " << time );
+            Location newLoc(timeLoc.second);
+            
+            newLoc.corner = (timeLoc.second.corner == SE) ? SW : NW; 
+            
+            TimeLocPair newTL;
+            newTL.first = time;
+            newTL.second = newLoc;
+
+
             
             q.push(newTL);
         }
