@@ -351,7 +351,7 @@ void do_test_case(const int test_case, ifstream& input)
             q.push(newTL);
         }
         
-        if ( timeLoc.second.row > N - 1 &&
+        if ( timeLoc.second.row < N - 1 &&
             (timeLoc.second.corner == SE || timeLoc.second.corner == SW) )
         {
             int time = timeLoc.first + 2;
@@ -398,7 +398,7 @@ void do_test_case(const int test_case, ifstream& input)
             newTL.first = time;
             newTL.second = newLoc;
 
-		LOG_STR("Pushing after east walking street " << newTL);
+//		LOG_STR("Pushing after east walking street " << newTL);
             
             q.push(newTL);
         }
