@@ -283,7 +283,8 @@ void do_test_case(const int test_case, ifstream& input)
     
     q.push(start);
     
-    set<TimeLocPair> seen;
+	typedef set<Location> LocSet;
+	LocSet seen;
 
     while(!q.empty()) {
         const TimeLocPair timeLoc = q.top();
@@ -298,6 +299,12 @@ void do_test_case(const int test_case, ifstream& input)
             cout << "Case #" << (1+test_case) << ": " << timeLoc.first << endl;
 	    return;
         }
+
+	if (seen.find(timeLoc.second) != seen.end()) {
+		continue;
+}
+
+	seen.insert(timeLoc.second);
         
         const Light& light = lights[timeLoc.second.row][timeLoc.second.col];
         
@@ -437,9 +444,7 @@ void do_test_case(const int test_case, ifstream& input)
             
             q.push(newTL);
         }
-        
-        seen.insert(timeLoc);
-
+ 
     }
     
     cout << "Case #" << (1+test_case) << ": " << lights.size() << endl;
