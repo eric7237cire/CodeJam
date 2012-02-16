@@ -95,16 +95,57 @@ void gen_combinations(VecInt& list, const int N, const int C) {
     assert(expectedCount == list.size());
 }
 
-void calculateAverage(const int C, const int N, int taken) {
+double calculateAverage(const int C, const int N, int taken) {
+//LOG_ON();
+
+    LOG_STR("Calc average C= " << C << " N= " << N << " Taken " << taken);
+
+if (taken == 0) {
+LOG_STR("First step, all cards count");
+	return 1 + calculateAverage(C, N, N);
+}
+
+
     double avg = 0;
     
-    int remaining = N - taken;
+	assert(taken <= C);
+
+    int remaining = C - taken;
+
+	if (remaining == 0) {
+		LOG_STR("No cards remaining, avg is 0");
+		
+		return 0;
+	}
+
+
     
+    int denom = nCk(C, N);
+
     //i is the # of cards that are in the deck that are currently not taken
-    for(int i = 1; i < remaining && i < N; ++i) {
-        LOG_STR("Calculating
-        int remCoef = nCk(R, i);   (R i ) (T N-i) * (average (i-1) + 1)
+    for(int i = 1; i <= remaining && i <= N; ++i) {
+
+        int coef = nCk(remaining, i) * nCk(taken, N-i); 
+        LOG_STR("Coeff i=" << i << " coef = " << coef);
+	avg += (coef * (calculateAverage(C, N, taken+i) + 1)  / denom );
     }
+
+    //Special treatment for the i=0 case as its when the current state is repeated
+    
+LOG(denom);
+LOG(avg);
+LOG(taken);
+
+    double zeroCoef = ( 1.0 * nCk(taken, N) / denom );
+    avg += zeroCoef;
+
+LOG(zeroCoef);
+
+    assert(zeroCoef < 1);
+    avg /= (1 - zeroCoef);
+
+
+    return avg;
 }
 
 void do_test_case(const int test_case, ifstream& input)
@@ -120,7 +161,7 @@ void do_test_case(const int test_case, ifstream& input)
     VecInt combin;
     gen_combinations(combin, N, C);
     
-    const int NUM_TRIALS = 100000;
+    const int NUM_TRIALS = 1;
     
     LOG_OFF();
     
@@ -151,8 +192,10 @@ void do_test_case(const int test_case, ifstream& input)
     int total =  accumulate(trials.begin(), trials.end(), 0);
     double average = (1.0 * total) / NUM_TRIALS;
 
-    cout << "Case #" << (1+test_case) << ": " << average << endl;
-        
+//    cout << "Case #" << (1+test_case) << ": " << average << endl;
+
+    average = calculateAverage(C, N, 0);
     
+    cout << "Case #" << (1+test_case) << ": " << average << endl;
 }
   
