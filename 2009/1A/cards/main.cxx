@@ -95,6 +95,18 @@ void gen_combinations(VecInt& list, const int N, const int C) {
     assert(expectedCount == list.size());
 }
 
+void calculateAverage(const int C, const int N, int taken) {
+    double avg = 0;
+    
+    int remaining = N - taken;
+    
+    //i is the # of cards that are in the deck that are currently not taken
+    for(int i = 1; i < remaining && i < N; ++i) {
+        LOG_STR("Calculating
+        int remCoef = nCk(R, i);   (R i ) (T N-i) * (average (i-1) + 1)
+    }
+}
+
 void do_test_case(const int test_case, ifstream& input)
 {
     SHOW_TIME_BEGIN(tc);

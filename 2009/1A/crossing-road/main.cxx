@@ -34,33 +34,50 @@ int main(int argc, char** args)
   }
 }
 
-enum {
-    NE,
-    NW,
-    SE,
-    SW
+struct Corner {
+private:
+    bool north;
+    bool east;
+    
+    Corner(bool _isNorth, bool _isEast) : north(_isNorth), east(_isEast) {}
+        
+public:
+    Corner flipEW() const {
+        return Corner(north, !east);
+    }
+    
+    Corner flipNS() const {
+        return Corner(!north, east);
+    }
+    
+    bool isNorth() const {
+        return north;
+    }
+    
+    bool isEast() const {
+        return east;
+    }
+    
+    int operator==(const Corner& rhs) const {
+        return north == rhs.north && east == rhs.east;
+    }
+    
+    int operator<(const Corner& rhs) const {
+        return toInt() < rhs.toInt();
+    }
+    
+    int toInt() const {
+        return (east ? 1 : 0) + (north ? 2 : 0);
+    }
+    
+    static Corner NE, NW, SE, SW;    
 };
 
-int flipNS(int corner) {
-    switch(corner) {
-    case NE: return SE;
-    case NW: return SW;
-    case SE: return NE;
-    case SW: return NW;
-    }    
-    return -1;
-}
-
-int flipEW(int corner) {
-    switch(corner) {
-    case NE: return NW;
-    case NW: return NE;
-    case SE: return SW;
-    case SW: return SE;
-    }    
-    return -1;
-}
-
+Corner Corner::NE(true, true);
+Corner Corner::NW(true, false);
+Corner Corner::SE(false, true);
+Corner Corner::SW(false, false);
+    
 struct Light {
     
 private:
@@ -110,9 +127,9 @@ public:
 struct Location {
     int row;
     int col;
-    int corner;
+    Corner corner;
     
-    Location(int r, int c, int corn) : row(r), col(c), corner(corn) {}
+    Location(int r, int c, Corner _corner) : row(r), col(c), corner(_corner) {}
 };
 
 int operator<(const Location& lhs, const Location& rhs) {
@@ -134,32 +151,8 @@ int operator==(const Location& lhs, const Location& rhs) {
 
 typedef pair<int, Location> TimeLocPair;
 
-ostream& operator<<(ostream& os, const TimeLocPair& tl) {
-	string corner;
-	switch (tl.second.corner) {
-case SW:
-corner = "SW";
-break;
-case SE:
-corner = "SE";
-break;
-case NW:
-corner = "NW";
-break;
-case NE:
-corner = "NE";
-break;
-}
-    os << tl.second.row << ", " << tl.second.col << " Corner " << corner << " Time " << tl.first;
-    return os;
-}
-
 void do_test_case(const int test_case, ifstream& input)
 {
-    SHOW_TIME_BEGIN(tc);
-    LOG_ON();
-    LOG_OFF();
-    
     int N, M; //N = rows (# of roads), M = cols (# of roads)
     input >> N >> M;
 
@@ -174,22 +167,20 @@ void do_test_case(const int test_case, ifstream& input)
         for(int i = 0; i < M; ++i) {            
             int ns, ew, start;
             input >> ns >> ew >> start;
-            Light l(ns, ew, start);
-            row.push_back(l);
-        }        
-        
+            
+            row.push_back( Light(ns, ew, start) );
+        }
         lights.push_back(row);
     }
     
     //Coord is the intersection, so NE means SW of the NE block    
-    Location endingLoc(0, M-1, NE);
+    Location endingLoc(0, M-1, Corner::NE);
         
     typedef priority_queue<TimeLocPair, vector<TimeLocPair>, greater<TimeLocPair> > Queue;
     
     Queue q;
-    TimeLocPair start(0, Location(N - 1, 0, SW));
-        
-    q.push(start);
+    
+    q.push(TimeLocPair(0, Location(N - 1, 0, Corner::SW)));
     
 	typedef set<Location> LocSet;
 	LocSet seen;
@@ -198,11 +189,7 @@ void do_test_case(const int test_case, ifstream& input)
         const TimeLocPair timeLoc = q.top();
 
         q.pop();
-        
-//        LOG_ON();
-        LOG_STR("Processing " << timeLoc << " Queue size " << q.size()  );
-//        LOG_OFF();
-        
+   
         if (timeLoc.second == endingLoc) {
             cout << "Case #" << (1+test_case) << ": " << timeLoc.first << endl;
             return;
@@ -218,54 +205,52 @@ void do_test_case(const int test_case, ifstream& input)
         
         //crossing street (north / south)
         Location newLoc(timeLoc.second);        
-        newLoc.corner = flipNS(timeLoc.second.corner);
+        newLoc.corner = timeLoc.second.corner.flipNS();
         
         q.push(TimeLocPair(light.nextNorth(timeLoc.first), newLoc) );
+        
+        //go east/west ; crossing street
+        Location newLocEW(timeLoc.second);            
+        newLocEW.corner = timeLoc.second.corner.flipEW(); 
+        
+        q.push(TimeLocPair(light.nextEastWest(timeLoc.first), newLocEW) );
     
         //go north walking across block
-        if ( timeLoc.second.row > 0 &&
-            (timeLoc.second.corner == NE || timeLoc.second.corner == NW) )
+        if ( timeLoc.second.row > 0 && timeLoc.second.corner.isNorth() )
         {
             q.push(
                 TimeLocPair(timeLoc.first + 2, 
-                    Location(timeLoc.second.row - 1, timeLoc.second.col, flipNS(timeLoc.second.corner) )
-                ));
+                    Location(timeLoc.second.row - 1, timeLoc.second.col, timeLoc.second.corner.flipNS()) )
+                );
         }
 
         //south across block
-        if ( timeLoc.second.row < N - 1 &&
-            (timeLoc.second.corner == SE || timeLoc.second.corner == SW) )
+        if ( timeLoc.second.row < N - 1 && !timeLoc.second.corner.isNorth() )
         {
             q.push(
                 TimeLocPair(timeLoc.first + 2, 
-                    Location(timeLoc.second.row + 1, timeLoc.second.col, flipNS(timeLoc.second.corner) )
-                ));
+                    Location(timeLoc.second.row + 1, timeLoc.second.col, timeLoc.second.corner.flipNS()) )
+                );
         }
 
         //Going east across block
-        if (timeLoc.second.col < M - 1 && 
-            (timeLoc.second.corner == NE || timeLoc.second.corner == SE) ) {
+        if ( timeLoc.second.col < M - 1 && timeLoc.second.corner.isEast() ) {
             q.push(
                 TimeLocPair(timeLoc.first + 2, 
-                    Location(timeLoc.second.row, timeLoc.second.col + 1, flipEW(timeLoc.second.corner) )
-                ));
+                    Location(timeLoc.second.row, timeLoc.second.col + 1, timeLoc.second.corner.flipEW()) )
+                );
         }
         
         
 	//Going west accross block
-        if (timeLoc.second.col > 0 && 
-            (timeLoc.second.corner == NW || timeLoc.second.corner == SW) ) {
+        if (timeLoc.second.col > 0 &&  !timeLoc.second.corner.isEast() ) {
             q.push(
                 TimeLocPair(timeLoc.first + 2, 
-                    Location(timeLoc.second.row, timeLoc.second.col - 1, flipEW(timeLoc.second.corner) )
-                ));
+                    Location(timeLoc.second.row, timeLoc.second.col - 1, timeLoc.second.corner.flipEW()) )
+                );
         }
 
-        //go east/west ; crossing street
-        Location newLocEW(timeLoc.second);            
-        newLocEW.corner = flipEW(timeLoc.second.corner); 
         
-        q.push(TimeLocPair(light.nextEastWest(timeLoc.first), newLocEW) );
             
     }
     
