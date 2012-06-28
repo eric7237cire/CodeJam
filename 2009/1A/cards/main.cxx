@@ -24,10 +24,28 @@ using namespace std;
 
 void do_test_case(int, ifstream& input);
 
+
+typedef unsigned long long Int_t;
+
+Int_t combinArray[41][41];
+
+double averageArray[41][41][41];
+
 int main(int argc, char** args)
 {
     
-    LOG_OFF();
+    for(int i = 0; i <= 40; ++i) {
+        for(int j = 0; j <= 40; ++j) {
+            factArray[i][j] = 0;   
+            combinArray[i][j] = 0;
+            
+            for(int k = 0; k <= 40; ++k) {
+                averageArray[i][j][k] = -1;   
+            }
+        }
+    }
+    
+    //LOG_OFF();
     
   if (argc < 2) {
     cerr << "Usage: <exe> input_file" << endl;
@@ -54,55 +72,42 @@ int main(int argc, char** args)
 
 typedef vector<int> VecInt;
 
-int fact(int x) {
-    int f = 1;
-    for(int i = 1; i <= x; ++i) {
-        f *= i ;  
-    }
-    return f;
-}
 
-int nCk (int n, int k) {
-  return fact(n) / ( fact(k) * fact(n-k) );  
+Int_t nCk (int n, int k) {
+    
+    if (combinArray[n][k] != 0) {
+        return combinArray[n][k];
+    }
+ 
+    if (k==0 || k==n) {
+        combinArray[n][k] = 1;        
+    } else {
+        combinArray[n][k] = nCk(n-1, k-1) + nCk(n-1, k);   
+    } 
+    
+    return combinArray[n][k];
 }  
 
-int countOnes(int x) {
-    bitset<10> bs(x);
-    return bs.count();
-}
 
-//C # of cards
-//N # of cards in a set
-void gen_combinations(VecInt& list, const int N, const int C) {
-    int end = (1 << C) - 1;
+//C kinds of cards
+//N number of cards in a set
+//taken = number of cards in our possesion
+double calculateAverage(const int C, const int N, const int taken) {
+    //LOG_ON();
     
-    LOG(N);
-    LOG(C);
-    LOG(end);
-    
-    const unsigned int expectedCount = nCk(C, N);
-    
-    for(int i = 0; i <= end; ++i) {
-        LOG_STR(i << " 1s " << countOnes(i) );
-        if(countOnes(i) == N) {
-            list.push_back(i);
-            LOG_STR("Adding combin " << i);
-        }
+    if (averageArray[C][N][taken] >= 0) {
+        return averageArray[C][N][taken];
     }
     
-    LOG(list.size());
-    
-    assert(expectedCount == list.size());
-}
-
-double calculateAverage(const int C, const int N, int taken) {
-//LOG_ON();
-
+    //LOG_ON();
     LOG_STR("Calc average C= " << C << " N= " << N << " Taken " << taken);
-
+    //LOG_OFF();
+    
+    
 if (taken == 0) {
 LOG_STR("First step, all cards count");
-	return 1 + calculateAverage(C, N, N);
+	averageArray[C][N][taken] = 1 + calculateAverage(C, N, N);
+	return averageArray[C][N][taken];
 }
 
 
@@ -110,91 +115,106 @@ LOG_STR("First step, all cards count");
     
 	assert(taken <= C);
 
-    int remaining = C - taken;
+    const int remaining = C - taken;
 
 	if (remaining == 0) {
 		LOG_STR("No cards remaining, avg is 0");
 		
-		return 0;
+		averageArray[C][N][taken] = 0;
+		return averageArray[C][N][taken];
 	}
 
 
+    LOG_STR("Calc average 2 C= " << C << " N= " << N << " Taken " << taken);
     
-    int denom = nCk(C, N);
+    //Total # of combinations :  C kinds of cards, N total # of cards in a deck
+    //int denom = nCk(C, N);
+    
+    Int_t coefSum = 0;
+    int numCoef = min(remaining, N);
+    vector<Int_t> coef(numCoef+1, 0);
+    
+    LOG(numCoef);
+    for(int i = 0; i <= numCoef; ++i) {
+        //LOG_ON();
+        LOG_STR("coef loop Calc average C= " << C << " N= " << N << " Taken " << taken);
+        //LOG(remaining);
+        LOG(i);
+        //LOG(taken);
+        //LOG(N);
+        
+        coef[i] =  nCk(remaining, i) * nCk(taken, N-i);
+        
+        LOG(coef[i]);
+        coefSum += coef[i];
+        //LOG_OFF();
+    }
+    LOG(coef.size());
+    
+    const Int_t denom = coefSum; //nCk(C, N)
+    //assert(denom == nCk(C, N));
 
+    LOG(taken);
+    LOG(N);
+    
     //i is the # of cards that are in the deck that are currently not taken
-    for(int i = 1; i <= remaining && i <= N; ++i) {
+    for(int i = 1; i <= numCoef; ++i) {
 
-        int coef = nCk(remaining, i) * nCk(taken, N-i); 
-        LOG_STR("Coeff i=" << i << " coef = " << coef);
-	avg += (coef * (calculateAverage(C, N, taken+i) + 1)  / denom );
+        //Build decks where you add cards not currently owned (taken)
+        //nCk(remaining, i) == choose i number of cards remaining
+        //nCk(taken, N-i) == choose the rest of the cards from cards already owned
+        //int coefTest = nCk(remaining, i) * nCk(taken, N-i);
+        LOG_STR("for loop Calc average C= " << C << " N= " << N << " Taken " << taken);
+        
+        //coef / denom is the percentage of decks where exactly i new cards are taken 
+        
+        LOG_STR("Coeff i=" << i << " coef = " << coef[i] << " denom = " << denom);
+	avg += (coef[i] * (calculateAverage(C, N, taken+i) + 1)  / denom );
     }
 
     //Special treatment for the i=0 case as its when the current state is repeated
     
-LOG(denom);
-LOG(avg);
-LOG(taken);
 
-    double zeroCoef = ( 1.0 * nCk(taken, N) / denom );
+//Percentage of decks where no more cards are taken * # of average decks 1
+    double zeroCoef = ((double) coef[0]) / denom ;
     avg += zeroCoef;
 
+    //coefSum += nCk(taken, N);
 LOG(zeroCoef);
-
+LOG(coefSum);
+//LOG_OFF();
     assert(zeroCoef < 1);
     avg /= (1 - zeroCoef);
+    
+    //Explication
+    
+    //Let 
+    //P_zero = Probability state is repeated (zero cards taken)
+    //Avg_rest = Sum of Average where cards are taken (state not repeated)
+    
+    //Avergage = Avg_rest + P_zero (Average + 1)
+    
+    //The + 1 is because of the repetition
+    //then algreba gives
+    //Average = Avg_rest + P_zero*Average + P_zero
+    //Average (1 - P_zero) = Avg_rest + P_zero
+    //Average = Avg_rest + P_zero / (1-P_zero)
 
-
-    return avg;
+    averageArray[C][N][taken] = avg;
+		return averageArray[C][N][taken];
+		
 }
 
 void do_test_case(const int test_case, ifstream& input)
 {
     SHOW_TIME_BEGIN(tc);
-    //LOG_ON();
-    //LOG_OFF();
-    
-    int C, N;
-    input >> C >> N;
-    
-    vector<int> trials;
-    VecInt combin;
-    gen_combinations(combin, N, C);
-    
-    const int NUM_TRIALS = 1;
-    
+   // LOG_ON();
     LOG_OFF();
     
-    for(int i = 0; i < NUM_TRIALS; ++i) {
-        vector<bool> found;
-        found.assign(C, false);
-        int numPacks = 0;
-        
-        while(find(found.begin(), found.end(), false) != found.end()) {
-            numPacks ++;
-            int combinNum = rand() % combin.size();
-            LOG(combinNum);
-            
-            int packCards = combin[combinNum];
-            LOG(packCards);
-            for(int c = 0; c < C; ++c) {
-                if ( ( (packCards >> c) & 1 ) == 1) {
-                    LOG_STR("Found " << c << " in " << packCards);
-                    found[c] = true;   
-                }
-            }
-        }
-        
-        LOG(numPacks);
-        trials.push_back(numPacks);
-    }
-    
-    int total =  accumulate(trials.begin(), trials.end(), 0);
-    double average = (1.0 * total) / NUM_TRIALS;
-
-//    cout << "Case #" << (1+test_case) << ": " << average << endl;
-
-    average = calculateAverage(C, N, 0);
+    int C, N;
+    input >> C >> N;    
+   
+    double average = calculateAverage(C, N, 0);
     
     cout << "Case #" << (1+test_case) << ": " << average << endl;
 }
