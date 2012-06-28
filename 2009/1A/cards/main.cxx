@@ -36,7 +36,6 @@ int main(int argc, char** args)
     
     for(int i = 0; i <= 40; ++i) {
         for(int j = 0; j <= 40; ++j) {
-            factArray[i][j] = 0;   
             combinArray[i][j] = 0;
             
             for(int k = 0; k <= 40; ++k) {
@@ -48,25 +47,29 @@ int main(int argc, char** args)
     //LOG_OFF();
     
   if (argc < 2) {
+
     cerr << "Usage: <exe> input_file" << endl;
     return -1;
   }
-  
+
   ifstream input;
   input.open(args[1]);
-  
+
   int T;
   input >> T;
 
   string dummy;
   getline(input, dummy);
-  SHOW_TIME_BEGIN(g) 
-  	
-  for (int test_case = 0; test_case < T; ++test_case) {
-      
-    do_test_case(test_case, input);   
+  SHOW_TIME_BEGIN(g)
+
+
+
+  for(int test_case = 0; test_case < T; ++test_case)
+  {
+
+    do_test_case(test_case, input);
   }
-      
+
   SHOW_TIME_END(g)
 }
 
@@ -110,11 +113,6 @@ LOG_STR("First step, all cards count");
 	return averageArray[C][N][taken];
 }
 
-
-    double avg = 0;
-    
-	assert(taken <= C);
-
     const int remaining = C - taken;
 
 	if (remaining == 0) {
@@ -124,6 +122,12 @@ LOG_STR("First step, all cards count");
 		return averageArray[C][N][taken];
 	}
 
+
+  if(taken == 0)
+  {
+    LOG_STR("First step, all cards count");
+    return 1 + calculateAverage(C, N, N);
+  }
 
     LOG_STR("Calc average 2 C= " << C << " N= " << N << " Taken " << taken);
     
@@ -156,6 +160,8 @@ LOG_STR("First step, all cards count");
 
     LOG(taken);
     LOG(N);
+    
+    double avg = 0;
     
     //i is the # of cards that are in the deck that are currently not taken
     for(int i = 1; i <= numCoef; ++i) {
@@ -202,7 +208,7 @@ LOG(coefSum);
 
     averageArray[C][N][taken] = avg;
 		return averageArray[C][N][taken];
-		
+	
 }
 
 void do_test_case(const int test_case, ifstream& input)
@@ -217,5 +223,6 @@ void do_test_case(const int test_case, ifstream& input)
     double average = calculateAverage(C, N, 0);
     
     cout << "Case #" << (1+test_case) << ": " << average << endl;
+
 }
-  
+
