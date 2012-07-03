@@ -162,7 +162,7 @@ Node* parseTree( std::stringstream& ss ) {
 void do_test_case(const int test_case, ifstream& input)
 {
     SHOW_TIME_BEGIN(tc);
-   //LOG_ON();
+   LOG_ON();
     LOG_OFF();
     
     /*
@@ -181,6 +181,7 @@ void do_test_case(const int test_case, ifstream& input)
         getline(input, line);
         LOG(i);
         treeDef += line;
+        treeDef += " ";
         
     }
    
