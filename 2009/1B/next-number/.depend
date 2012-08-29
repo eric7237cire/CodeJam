@@ -1,0 +1,3 @@
+main.o: main.cxx util.h tri_logger.hpp
+tri_logger.o: tri_logger.cxx tri_logger.hpp nullstream.hpp
+util.o: util.cxx util.h tri_logger.hpp
