@@ -114,48 +114,9 @@ public class Main {
                 	
                 	os.format("Case #%d: %s\n", i, s);
                 	break;
-                } else {
-                	//os.println("no");
-                }
+                } 
             }
             
-            if (1==1) {
-            	continue;
-            }
-            NumCom numCom = new NumCom();
-            
-            //gen all combinations
-            SortedSet<String> comb = new TreeSet<String>(numCom);
-            
-            List<Node> nodes = new ArrayList<Node>();
-            //nodes.add(new Node(remaining));
-            
-            while(nodes.size() > 0) {
-                Node n = nodes.remove(0);
-                
-                if (n.remaining.size() == 0) {
-                    if (numCom.compare(nStr, n.num) < 0) {
-                        comb.add(n.num);
-                    }
-                    
-                    continue;
-                }
-                for(Character c : n.remaining.elementSet()) {
-                    if (c.equals('0') && n.num == "") {
-                        continue;
-                    }
-                    Multiset<Character> newRemaining = HashMultiset.create(n.remaining);
-                    newRemaining.remove(c);
-                    nodes.add(new Node(newRemaining, n.num + c));
-                }
-            }
-            
-            for(Iterator<String> it = comb.iterator(); it.hasNext();) {
-                String num = it.next();
-                System.out.format("String %s\n", num);
-            }
-            
-            os.format("Case #%d: %s\n", i, comb.first());
         }
     }
 }
