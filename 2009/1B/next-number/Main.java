@@ -78,22 +78,17 @@ public class Main {
             int nInt = scanner.nextInt();
             String nStr = new Integer(nInt).toString();
             
-            if (strictlyDesc(nStr)) {
-                
-                /*
-                String newStr = nStr.replaceAll("0", "");
-                newStr = new StringBuffer(newStr).reverse().toString();
-                
-                newStr = StringUtils.rightPad(newStr, nStr.length()+1, '0');
-
-                os.format("Case #%d: %s\n", i, newStr);
-                continue;*/
-                nStr = '0' + nStr ;
+            List<Integer> listDigits  = new ArrayList<Integer>();
+            
+            
+            for(int si = 0; si < nStr.length(); ++si) {
+                listDigits.add(Character.digit(nStr.charAt(si), 10));
             }
             
-            Multiset<Character> remaining = HashMultiset.create();
-            for(int si = 0; si < nStr.length(); ++si) {
-                remaining.add(nStr.charAt(si));
+            //Find right side group that is not descending
+            
+            for(int leftIndex = listDigits.size() - 2; leftIndex > 0; ++ leftIndex) {
+                
             }
             
             NumCom numCom = new NumCom();
