@@ -1,4 +1,5 @@
 import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -6,6 +7,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
@@ -41,21 +44,62 @@ public class Main {
             this.num = num;
         }
     }
+    
+    private static boolean strictlyDesc(String s) {
+        if (s.length() <= 1) {
+            return true;
+        }
+        
+        for(int si = 0; si < s.length() - 1; ++si) {
+            
+            if (Character.digit(s.charAt(si), 10) < Character.digit(s.charAt(si+1), 10)) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
     public static void main(String args[]) throws Exception {
-        Scanner scanner = new Scanner(new File("input-sam.txt"));
+        
+        boolean debug = true; 
+        
+        PrintStream os = System.out;
+        
+        if (!debug) {
+            os = new PrintStream(new File("out.txt"));
+        }
+        
+        
+        Scanner scanner = new Scanner(new File(debug ? "input-sam.txt" : "B-small-practice.in"));
         int t = scanner.nextInt();
         
         for(int i = 1; i <= t; ++i) {
             int nInt = scanner.nextInt();
-            String s = new Integer(nInt).toString();
+            String nStr = new Integer(nInt).toString();
             
-            Multiset<Character> remaining = HashMultiset.create();
-            for(int si = 0; si < s.length(); ++si) {
-                remaining.add(s.charAt(si));
+            if (strictlyDesc(nStr)) {
+                
+                /*
+                String newStr = nStr.replaceAll("0", "");
+                newStr = new StringBuffer(newStr).reverse().toString();
+                
+                newStr = StringUtils.rightPad(newStr, nStr.length()+1, '0');
+
+                os.format("Case #%d: %s\n", i, newStr);
+                continue;*/
+                nStr = '0' + nStr ;
             }
             
+            Multiset<Character> remaining = HashMultiset.create();
+            for(int si = 0; si < nStr.length(); ++si) {
+                remaining.add(nStr.charAt(si));
+            }
+            
+            NumCom numCom = new NumCom();
+            
             //gen all combinations
-            SortedSet<String> comb = new TreeSet<String>(new NumCom());
+            SortedSet<String> comb = new TreeSet<String>(numCom);
             
             List<Node> nodes = new ArrayList<Node>();
             nodes.add(new Node(remaining));
@@ -64,7 +108,10 @@ public class Main {
                 Node n = nodes.remove(0);
                 
                 if (n.remaining.size() == 0) {
-                    comb.add(n.num);
+                    if (numCom.compare(nStr, n.num) < 0) {
+                        comb.add(n.num);
+                    }
+                    
                     continue;
                 }
                 for(Character c : n.remaining.elementSet()) {
@@ -73,7 +120,7 @@ public class Main {
                     }
                     Multiset<Character> newRemaining = HashMultiset.create(n.remaining);
                     newRemaining.remove(c);
-                    nodes.add(new Node(newRemaining, c + n.num));
+                    nodes.add(new Node(newRemaining, n.num + c));
                 }
             }
             
@@ -82,7 +129,7 @@ public class Main {
                 System.out.format("String %s\n", num);
             }
             
-            System.out.format("Case #%d: %s\n", i, "bob");
+            os.format("Case #%d: %s\n", i, comb.first());
         }
     }
 }
