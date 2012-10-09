@@ -1,0 +1,29 @@
+ INFO [main] Main.[] (Main.java:17) oct./09 14:07:01 - arg 0 sample.txt
+ INFO [main] Main.[] (Main.java:17) oct./09 14:07:43 - arg 0 sample.txt
+ INFO [main] Main.[] (Main.java:17) oct./09 14:08:19 - arg 0 sample.txt
+ INFO [main] Main.[] (Main.java:17) oct./09 14:08:58 - arg 0 sample.txt
+ INFO [main] Main.[] (Main.java:22) oct./09 14:08:58 - s sample.txt
+ INFO [main] Main.[] (Main.java:18) oct./09 14:09:51 - arg 0 sample.txt
+ INFO [main] Main.[] (Main.java:12) oct./09 14:09:51 - Case 3
+ INFO [main] Main.[] (Main.java:12) oct./09 14:09:51 - Case 3
+ INFO [main] Main.[] (Main.java:12) oct./09 14:09:52 - Case 3
+ INFO [main] Main.[] (Main.java:18) oct./09 14:10:13 - arg 0 sample.txt
+ INFO [main] Main.[] (Main.java:12) oct./09 14:10:13 - Case 1
+ INFO [main] Main.[] (Main.java:12) oct./09 14:10:13 - Case 2
+ INFO [main] Main.[] (Main.java:12) oct./09 14:10:13 - Case 3
+ INFO [main] Main.[] (Main.java:18) oct./09 14:14:21 - Input file sample.txt
+ INFO [main] Main.[] (Main.java:12) oct./09 14:14:21 - Case 1
+ INFO [main] Main.[] (Main.java:12) oct./09 14:14:21 - Case 2
+ INFO [main] Main.[] (Main.java:12) oct./09 14:14:21 - Case 3
+ INFO [main] Main.[] (Main.java:18) oct./09 14:16:04 - Input file sample.txt
+ INFO [main] Main.[] (Main.java:12) oct./09 14:16:04 - Case 1
+ INFO [main] Main.[] (Main.java:12) oct./09 14:16:04 - Case 2
+ INFO [main] Main.[] (Main.java:12) oct./09 14:16:04 - Case 3
+ INFO [main] Main.[] (Main.java:18) oct./09 14:17:04 - Input file sample.txt
+ INFO [main] Main.[] (Main.java:12) oct./09 14:17:04 - Case 1
+ INFO [main] Main.[] (Main.java:12) oct./09 14:17:04 - Case 2
+ INFO [main] Main.[] (Main.java:12) oct./09 14:17:04 - Case 3
+ INFO [main] Main.[] (?:?) oct./09 14:19:24 - Input file sample.txt
+ INFO [main] Main.[] (?:?) oct./09 14:19:24 - Case 1
+ INFO [main] Main.[] (?:?) oct./09 14:19:24 - Case 2
+ INFO [main] Main.[] (?:?) oct./09 14:19:24 - Case 3

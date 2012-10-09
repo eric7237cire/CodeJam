@@ -1,0 +1,54 @@
+<project>
+
+
+<property name="inputFile" value="sample.txt"/>
+<path id="project.class.path">
+    
+    <fileset dir="lib">
+        <include name="**/*.jar"/>
+      </fileset>
+    <pathelement path="${java.class.path}/"/>
+    <pathelement location="classes"/>
+	<pathelement location="."/>
+  </path>
+  
+    <target name="clean">
+        <delete dir="build"/>
+        <delete dir="classes"/>
+    </target>
+
+    <target name="compile" depends="clean">
+        <mkdir dir="classes"/>
+        <javac srcdir="." destdir="classes" source="1.7">
+        
+        <classpath refid="project.class.path"/>
+        </javac>
+    </target>
+
+    <target name="jar" depends="compile">
+        <mkdir dir="jar"/>
+        <jar destfile="jar/HelloWorld.jar" basedir="classes">
+            <manifest>
+                <attribute name="Main-Class" value="Main"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar">
+        <java jar="jar/HelloWorld.jar" fork="true">
+        <classpath refid="project.class.path"/>
+            <arg value="${inputFile}"/>
+        </java>
+    </target>
+    
+    <target name="run2" depends="compile">
+    <java classname="Main"
+    	dir="."
+        fork="yes" >
+    
+    <classpath refid="project.class.path"/>
+            <arg value="${inputFile}"/>
+  </java>
+  </target>
+
+</project>

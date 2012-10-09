@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path=""/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="lib/guava-13.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.6.6.jar"/>
+	<classpathentry kind="output" path=""/>
+</classpath>
