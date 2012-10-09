@@ -2,8 +2,8 @@
 
 
 <property name="inputFile2" value="sample.txt"/>
-	<property name="inputFile" value="A-small-practice.in"/>
-	<property name="inputFile2" value="A-large-practice.in"/>
+	<property name="inputFile2" value="A-small-practice.in"/>
+	<property name="inputFile" value="A-large-practice.in"/>
 	
 <path id="project.class.path">
     
