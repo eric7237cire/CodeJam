@@ -1,7 +1,10 @@
 <project>
 
 
-<property name="inputFile" value="sample.txt"/>
+<property name="inputFile2" value="sample.txt"/>
+	<property name="inputFile" value="A-small-practice.in"/>
+	<property name="inputFile2" value="A-large-practice.in"/>
+	
 <path id="project.class.path">
     
     <fileset dir="lib">
@@ -19,7 +22,7 @@
 
     <target name="compile" depends="clean">
         <mkdir dir="classes"/>
-        <javac srcdir="." destdir="classes" source="1.7">
+        <javac srcdir="." destdir="classes" source="1.7" debug="true">
         
         <classpath refid="project.class.path"/>
         </javac>

@@ -27,3 +27,78 @@
  INFO [main] Main.[] (?:?) oct./09 14:19:24 - Case 1
  INFO [main] Main.[] (?:?) oct./09 14:19:24 - Case 2
  INFO [main] Main.[] (?:?) oct./09 14:19:24 - Case 3
+ INFO [main] Main.[] (?:?) oct./09 14:25:07 - Input file sample.txt
+ INFO [main] Main.[] (?:?) oct./09 14:25:07 - Case 1
+ INFO [main] Main.[] (?:?) oct./09 14:25:07 - Case 2
+ INFO [main] Main.[] (?:?) oct./09 14:25:07 - Case 3
+ INFO [main] Main.[] (?:?) oct./09 14:59:58 - Input file sample.txt
+ INFO [main] Main.[] (?:?) oct./09 14:59:58 - Case 1
+ INFO [main] Main.[] (?:?) oct./09 14:59:58 - list [1, 0]
+ INFO [main] Main.[] (?:?) oct./09 14:59:58 - Case 2
+ INFO [main] Main.[] (?:?) oct./09 14:59:58 - list [c, a, t, s]
+ INFO [main] Main.[] (?:?) oct./09 14:59:58 - Case 3
+ INFO [main] Main.[] (?:?) oct./09 14:59:58 - list [z, i, g]
+ INFO [main] Main.[] (?:?) oct./09 15:00:18 - Input file sample.txt
+ INFO [main] Main.[] (?:?) oct./09 15:00:18 - Case 1
+ INFO [main] Main.[] (?:?) oct./09 15:00:18 - list [1, 0]
+ INFO [main] Main.[] (?:?) oct./09 15:00:18 - Case 2
+ INFO [main] Main.[] (?:?) oct./09 15:00:18 - list [c, a, t, s]
+ INFO [main] Main.[] (?:?) oct./09 15:00:18 - Case 3
+ INFO [main] Main.[] (?:?) oct./09 15:00:18 - list [z, i, g]
+ INFO [main] Main.[] (Main.java:39) oct./09 15:00:23 - Input file sample.txt
+ INFO [main] Main.[] (Main.java:16) oct./09 15:00:23 - Case 1
+ INFO [main] Main.[] (Main.java:33) oct./09 15:00:23 - list [1, 0]
+ INFO [main] Main.[] (Main.java:16) oct./09 15:00:23 - Case 2
+ INFO [main] Main.[] (Main.java:33) oct./09 15:00:23 - list [c, a, t, s]
+ INFO [main] Main.[] (Main.java:16) oct./09 15:00:23 - Case 3
+ INFO [main] Main.[] (Main.java:33) oct./09 15:00:23 - list [z, i, g]
+ INFO [main] Main.[] (?:?) oct./09 15:07:41 - Input file sample.txt
+ INFO [main] Main.[] (?:?) oct./09 15:07:41 - Case 1
+ INFO [main] Main.[] (?:?) oct./09 15:07:41 - list [1, 0]
+ INFO [main] Main.[] (?:?) oct./09 15:07:41 - Num 11001001
+ INFO [main] Main.[] (?:?) oct./09 15:07:41 - Case 2
+ INFO [main] Main.[] (?:?) oct./09 15:07:41 - list [c, a, t, s]
+ INFO [main] Main.[] (?:?) oct./09 15:07:41 - Num cats
+ INFO [main] Main.[] (?:?) oct./09 15:07:41 - Case 3
+ INFO [main] Main.[] (?:?) oct./09 15:07:41 - list [z, i, g]
+ INFO [main] Main.[] (?:?) oct./09 15:07:41 - Num zig
+ INFO [main] Main.[] (?:?) oct./09 15:07:58 - Input file sample.txt
+ INFO [main] Main.[] (?:?) oct./09 15:07:58 - Case 1
+ INFO [main] Main.[] (?:?) oct./09 15:07:58 - list [1, 0]
+ INFO [main] Main.[] (?:?) oct./09 15:07:58 - Num 11001001
+ INFO [main] Main.[] (?:?) oct./09 15:07:58 - Case 2
+ INFO [main] Main.[] (?:?) oct./09 15:07:58 - list [c, a, t, s]
+ INFO [main] Main.[] (?:?) oct./09 15:07:58 - Num 1023
+ INFO [main] Main.[] (?:?) oct./09 15:07:58 - Case 3
+ INFO [main] Main.[] (?:?) oct./09 15:07:58 - list [z, i, g]
+ INFO [main] Main.[] (?:?) oct./09 15:07:58 - Num 102
+ INFO [main] Main.[] (?:?) oct./09 15:08:54 - Input file sample.txt
+ INFO [main] Main.[] (?:?) oct./09 15:08:54 - Case 1
+ INFO [main] Main.[] (?:?) oct./09 15:08:54 - list [1, 0]
+ INFO [main] Main.[] (?:?) oct./09 15:08:54 - Num 11001001, val base 10 201
+ INFO [main] Main.[] (?:?) oct./09 15:08:54 - Case 2
+ INFO [main] Main.[] (?:?) oct./09 15:08:54 - list [c, a, t, s]
+ INFO [main] Main.[] (?:?) oct./09 15:08:54 - Num 1023, val base 10 75
+ INFO [main] Main.[] (?:?) oct./09 15:08:54 - Case 3
+ INFO [main] Main.[] (?:?) oct./09 15:08:54 - list [z, i, g]
+ INFO [main] Main.[] (?:?) oct./09 15:08:54 - Num 102, val base 10 11
+ INFO [main] Main.[] (?:?) oct./09 15:11:37 - Input file sample.txt
+ INFO [main] Main.[] (?:?) oct./09 15:11:37 - Case 1
+ INFO [main] Main.[] (?:?) oct./09 15:11:37 - list [1, 0]
+ INFO [main] Main.[] (?:?) oct./09 15:11:37 - Num 11001001, val base 10 201
+ INFO [main] Main.[] (?:?) oct./09 15:11:37 - Case 2
+ INFO [main] Main.[] (?:?) oct./09 15:11:37 - list [c, a, t, s]
+ INFO [main] Main.[] (?:?) oct./09 15:11:37 - Num 1023, val base 10 75
+ INFO [main] Main.[] (?:?) oct./09 15:11:37 - Case 3
+ INFO [main] Main.[] (?:?) oct./09 15:11:37 - list [z, i, g]
+ INFO [main] Main.[] (?:?) oct./09 15:11:37 - Num 102, val base 10 11
+ INFO [main] Main.[] (?:?) oct./09 15:12:02 - Input file sample.txt
+ INFO [main] Main.[] (?:?) oct./09 15:12:02 - Case 1
+ INFO [main] Main.[] (?:?) oct./09 15:12:02 - list [1, 0]
+ INFO [main] Main.[] (?:?) oct./09 15:12:02 - Num 11001001, val base 10 201
+ INFO [main] Main.[] (?:?) oct./09 15:12:02 - Case 2
+ INFO [main] Main.[] (?:?) oct./09 15:12:02 - list [c, a, t, s]
+ INFO [main] Main.[] (?:?) oct./09 15:12:02 - Num 1023, val base 10 75
+ INFO [main] Main.[] (?:?) oct./09 15:12:02 - Case 3
+ INFO [main] Main.[] (?:?) oct./09 15:12:02 - list [z, i, g]
+ INFO [main] Main.[] (?:?) oct./09 15:12:02 - Num 102, val base 10 11
