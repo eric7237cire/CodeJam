@@ -211,7 +211,7 @@ public class Main {
 	public static void main(String args[]) throws Exception {
 
 		//String fileName = args.length >= 1 ? args[0] :
-		args[0] = "C-small-practice.in";
+	//	args[0] = "C-small-practice.in";
 		log.info("Input file {}", args[0]);
 
 		Scanner scanner = new Scanner(new File(args[0]));
