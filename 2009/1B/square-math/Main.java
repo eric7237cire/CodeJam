@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,8 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayTable;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 
 public class Main {
@@ -138,16 +141,12 @@ public class Main {
 		
 			//String exp = findTarget(table, width, target);
 			String exp = m.getExpression(target, table);
+			log.info("Exp " + exp);
 			os.println(exp);
 		}
 	}
 	
-	//position, value = expression
-	private String[][] memoize;
 	
-	Main() {
-	    memoize = new String[400][100];
-	}
 	
 	private static class Position {
 	    private int row;
@@ -229,11 +228,48 @@ public class Main {
             
             return ret;
         }
+        
+        public int toInt() {
+        	return col + row * maxCol;
+        }
+        
+		@Override
+		public String toString() {
+			
+			return Objects.toStringHelper(this).add("row",  row).add("col",  col).toString();
+		}
+        
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == null)  
+		      {  
+		         return false;  
+		      }  
+		      if (getClass() != obj.getClass())  
+		      {  
+		         return false;  
+		      }  
+		      
+		      Position rhs = (Position) obj;
+		      
+			return Objects.equal(rhs.row,  row) && Objects.equal(rhs.col,  col);
+		}
+		
+		
+
+		@Override
+		public int hashCode() {
+			return Objects.hashCode(row, col);
+		}
 	    
 	   
 	}
 	
+	int expressionCount = 0;
+	
 	private String getExpression(int targetValue, Table<Integer, Integer, Character> table) {
+		
+		expressionCount = 0;
 
         String retExp = null;
         
@@ -244,7 +280,8 @@ public class Main {
                     continue;
                 }
                 
-                String expression = getExpression(new Position(r,c), targetValue, table);
+                Multimap<Position, Integer> seenTargetValues = HashMultimap.create();
+                String expression = getExpression(new Position(r,c), targetValue, table, seenTargetValues, 0, targetValue);
                 
                 if (retExp == null || expression.length() < retExp.length() || expression.compareTo(retExp) < 0) {
                     retExp = expression;
@@ -252,11 +289,26 @@ public class Main {
             }
         }
         
+        log.info("Expression count " + expressionCount);
         return retExp;
 	}
 	
-	private String getExpression(Position pos, int targetValue, Table<Integer, Integer, Character> table) {
+	//position, value = expression
+		private String[][] memoize;
+		
+		Main() {
+		    memoize = new String[400][265];
+		}
+	
+	private String getExpression(Position pos, int targetValue, Table<Integer, Integer, Character> table, Multimap<Position, Integer> seenTargetValues, final int recLevel, final int originalTargetValue) {
 	    
+		String ms = memoize[pos.toInt()][targetValue + 10];
+		if (ms != null) {
+			return ms;
+		}
+		
+		log.debug(Objects.toStringHelper(this).add("pos",  pos).add("targetValue",  targetValue).toString());
+		
 	    Character c = table.get(pos.getRow(), pos.getCol());
 	    
 	    Preconditions.checkArgument(Character.isDigit(c));
@@ -265,12 +317,20 @@ public class Main {
 	    
 	    //base case
 	    if (posDigit == targetValue) {
+	    	log.debug("Returning " + c);
 	        return "" + c;
 	    }
 	    
+	    ++expressionCount;
+	    
+	    //error case, lets guess over 10 is not valid
 	    List<Position> signPositions = pos.getAdjPositions();
 	    
 	    String retExp = null;
+	    
+	    seenTargetValues.put(pos, targetValue);
+	    
+	    log.debug("Seen Target Values " + seenTargetValues);
 	    
 	    for(Position signPos : signPositions) {
 	        Character sign = table.get(signPos.getRow(), signPos.getCol());
@@ -278,12 +338,50 @@ public class Main {
 	        List<Position> digitPositions = signPos.getAdjPositions();
 	        
 	        for(Position digitPos : digitPositions) {
-	            
-	            int digit = Character.digit(table.get(digitPos.getRow(), digitPos.getCol()), 10);
-	            Preconditions.checkState(digit >= 0 && digit <= 9);
+	        	
+	        	
+	            //Just for a sanity check
+	            int checkDigit = Character.digit(table.get(digitPos.getRow(), digitPos.getCol()), 10);
+	            Preconditions.checkState(checkDigit >= 0 && checkDigit <= 9);
 	            
 	            int digitPosTargetValue = sign == '+' ? targetValue - posDigit : targetValue + posDigit;
-	            String expression = c + sign + getExpression(digitPos, digitPosTargetValue, table);
+	            
+	            if (seenTargetValues.get(digitPos).contains(digitPosTargetValue)) {
+	            	log.debug("Snipping potential Loop " + " with target value " + digitPosTargetValue + " pos " + digitPos );
+	            	continue;
+	            }
+	            
+	            if (sign == '-' && seenTargetValues.get(digitPos).contains(digitPosTargetValue - posDigit)) {
+	            	log.trace("GUESS Snipping potential Loop " + " with target value " + digitPosTargetValue + " pos " + digitPos );
+	            	continue;
+	            }
+	            
+	            if (digitPosTargetValue < -8) {
+	            	log.trace("Snipping potential Loop.  Value too negative " + " with target value " + digitPosTargetValue + " pos " + digitPos );
+	            	continue;
+	            }
+	            
+	            int delta = Math.abs(targetValue - originalTargetValue);
+	            int newDelta = Math.abs(digitPosTargetValue - originalTargetValue);
+	            
+	            if (newDelta > delta && newDelta >= 9) {
+	            	log.trace("Snipping potential Loop.  target going wrong direction " + " with target value " + digitPosTargetValue + " pos " + digitPos );
+	            	continue;
+	            }
+	            
+	            log.debug("Building expression.  with target value " + digitPosTargetValue + " pos " + digitPos );
+	            log.debug(StringUtils.repeat("   ", recLevel) + sign + c);
+	            
+	            Multimap<Position, Integer> seenTargetValuesCopy = HashMultimap.create(seenTargetValues);
+	                            
+	            final String getReturn = getExpression(digitPos, digitPosTargetValue, table, seenTargetValuesCopy, 1+recLevel, originalTargetValue);
+	            
+	            if (getReturn == "ERROR") {
+	            	log.trace("Get return null");
+	            	continue;
+	            }
+	            
+	            String expression = getReturn + sign + c;
 	            
 	            if (retExp == null || expression.length() < retExp.length() || expression.compareTo(retExp) < 0) {
 	                retExp = expression;
@@ -291,6 +389,14 @@ public class Main {
 	        }	        
 	    }
 	    
+	    if (retExp == null) {
+	    	log.debug("returning null");
+	    	memoize[pos.toInt()][targetValue + 10] = "ERROR";
+	    	return "ERROR";
+	    }
+	    //Preconditions.checkState(retExp != null);
+	    
+	    memoize[pos.toInt()][targetValue + 10] = retExp;
 	    return retExp;
 	   
 	}
