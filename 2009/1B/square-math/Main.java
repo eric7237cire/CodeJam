@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Objects.ToStringHelper;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayTable;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Table;
@@ -128,12 +128,171 @@ public class Main {
 		
 		scanner.useDelimiter(oldPattern);
 		
+		Position.setMaxCol(width);
+		Position.setMaxRow(width);
+		
+		Main m = new Main();
+		
 		for(int q = 0; q < queries; ++q) {
 			int target = scanner.nextInt();
 		
-			String exp = findTarget(table, width, target);
+			//String exp = findTarget(table, width, target);
+			String exp = m.getExpression(target, table);
 			os.println(exp);
 		}
+	}
+	
+	//position, value = expression
+	private String[][] memoize;
+	
+	Main() {
+	    memoize = new String[400][100];
+	}
+	
+	private static class Position {
+	    private int row;
+	    private int col;
+	    
+	    private static int maxRow;
+	    private static int maxCol;
+	    
+        public Position(int row, int col) {
+            super();
+            this.row = row;
+            this.col = col;
+        }
+        /**
+         * @return the row
+         */
+        public int getRow() {
+            return row;
+        }
+        /**
+         * @param row the row to set
+         */
+        public void setRow(int row) {
+            this.row = row;
+        }
+        /**
+         * @return the col
+         */
+        public int getCol() {
+            return col;
+        }
+        /**
+         * @param col the col to set
+         */
+        public void setCol(int col) {
+            this.col = col;
+        }
+        /**
+         * @return the maxRow
+         */
+        public static int getMaxRow() {
+            return maxRow;
+        }
+        /**
+         * @param maxRow the maxRow to set
+         */
+        public static void setMaxRow(int maxRow) {
+            Position.maxRow = maxRow;
+        }
+        /**
+         * @return the maxCol
+         */
+        public static int getMaxCol() {
+            return maxCol;
+        }
+        /**
+         * @param maxCol the maxCol to set
+         */
+        public static void setMaxCol(int maxCol) {
+            Position.maxCol = maxCol;
+        }
+        
+        private List<Position> getAdjPositions() {
+            List<Position> ret = new ArrayList<>();
+            
+            if (row > 0) {
+                ret.add(new Position(row - 1, col));
+            }
+                        
+            if (col > 0) {
+                ret.add(new Position(row , col - 1));
+            }
+            if (row < maxRow - 1) {
+                ret.add(new Position(row + 1, col ));
+            }
+            if (col < maxCol - 1) {
+                ret.add(new Position(row , col + 1));
+            }
+            
+            return ret;
+        }
+	    
+	   
+	}
+	
+	private String getExpression(int targetValue, Table<Integer, Integer, Character> table) {
+
+        String retExp = null;
+        
+        for (int r = 0; r < Position.getMaxRow(); ++r) {
+            for(int c = 0; c < Position.getMaxCol(); ++c) {
+                Character ch = table.get(r, c);
+                if (!Character.isDigit(ch)) {
+                    continue;
+                }
+                
+                String expression = getExpression(new Position(r,c), targetValue, table);
+                
+                if (retExp == null || expression.length() < retExp.length() || expression.compareTo(retExp) < 0) {
+                    retExp = expression;
+                }
+            }
+        }
+        
+        return retExp;
+	}
+	
+	private String getExpression(Position pos, int targetValue, Table<Integer, Integer, Character> table) {
+	    
+	    Character c = table.get(pos.getRow(), pos.getCol());
+	    
+	    Preconditions.checkArgument(Character.isDigit(c));
+	   
+	    int posDigit = Character.digit(c,  10);
+	    
+	    //base case
+	    if (posDigit == targetValue) {
+	        return "" + c;
+	    }
+	    
+	    List<Position> signPositions = pos.getAdjPositions();
+	    
+	    String retExp = null;
+	    
+	    for(Position signPos : signPositions) {
+	        Character sign = table.get(signPos.getRow(), signPos.getCol());
+	        
+	        List<Position> digitPositions = signPos.getAdjPositions();
+	        
+	        for(Position digitPos : digitPositions) {
+	            
+	            int digit = Character.digit(table.get(digitPos.getRow(), digitPos.getCol()), 10);
+	            Preconditions.checkState(digit >= 0 && digit <= 9);
+	            
+	            int digitPosTargetValue = sign == '+' ? targetValue - posDigit : targetValue + posDigit;
+	            String expression = c + sign + getExpression(digitPos, digitPosTargetValue, table);
+	            
+	            if (retExp == null || expression.length() < retExp.length() || expression.compareTo(retExp) < 0) {
+	                retExp = expression;
+	            }
+	        }	        
+	    }
+	    
+	    return retExp;
+	   
 	}
 	
 	private static String findTarget(Table<Integer, Integer, Character> table, final int tableWidth, final int target) {

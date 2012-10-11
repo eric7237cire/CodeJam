@@ -14,18 +14,12 @@ public class Main {
 
 	final static Logger log = LoggerFactory.getLogger(Main.class);
 	
-	
-
 	public static void handleCase(int caseNumber, Scanner scanner,
 			PrintStream os) {
 		
-
 		String codedNum = scanner.next();
 
 		log.info("Case {} {}", caseNumber, codedNum);
-		
-		//List<Character> listChar = new ArrayList<>();
-		//Set<Character> taken = new HashSet<>();
 		
 		Map<Character, Character> trans = new HashMap<>();
 
@@ -43,22 +37,11 @@ public class Main {
 
 		}
 
-		
-		
-		log.info("Trans size {} {}",
-				Math.max(2, trans.size()),
-				//Character.forDigit(15, 36),
-				trans.toString());
-
-		
-		//os.println("Case #" + caseNumber + ": " + numVal);
-		
 		StringBuilder transNum = new StringBuilder(codedNum);
 		for(int i = 0; i < transNum.length(); ++i) {
 			transNum.setCharAt(i, trans.get(transNum.charAt(i)));
 		}
-		String num = transNum.toString();
-		String numVal = new BigInteger(num, Math.max(2, trans.size())).toString(10);
+		String numVal = new BigInteger(transNum.toString(), Math.max(2, trans.size())).toString(10);
 		
 		os.println("Case #" + caseNumber + ": " + numVal);
 		
