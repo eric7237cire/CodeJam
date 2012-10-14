@@ -1,0 +1,392 @@
+
+C:\codejam\CodeJam\2009\1C\center-mass>mvn package   && java -jar .\target\center-mass-1.0-SNAPSHOT-jar-with-dependencies.jar B-small-practice.in   
+
+C:\codejam\CodeJam\2009\1C\center-mass>set JAVA_HOME=C:\Program Files\Java\jdk1.7.0_07 
+
+C:\codejam\CodeJam\2009\1C\center-mass>C:\codejam\apache-maven-3.0.4\bin\mvn package    
+[INFO] Scanning for projects...
+[INFO]                                                                         
+[INFO] ------------------------------------------------------------------------
+[INFO] Building center-mass 1.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:resources (default-resources) @ center-mass ---
+[debug] execute contextualize
+[WARNING] Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.3.2:compile (default-compile) @ center-mass ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.5:testResources (default-testResources) @ center-mass ---
+[debug] execute contextualize
+[WARNING] Using platform encoding (Cp1252 actually) to copy filtered resources, i.e. build is platform dependent!
+[INFO] skip non existing resourceDirectory C:\codejam\CodeJam\2009\1C\center-mass\src\test\resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:2.3.2:testCompile (default-testCompile) @ center-mass ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.10:test (default-test) @ center-mass ---
+[INFO] Surefire report directory: C:\codejam\CodeJam\2009\1C\center-mass\target\surefire-reports
+
+-------------------------------------------------------
+ T E S T S
+-------------------------------------------------------
+Running com.eric.codejam.AppTest
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 sec
+
+Results :
+
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+
+[INFO] 
+[INFO] --- maven-jar-plugin:2.3.2:jar (default-jar) @ center-mass ---
+[INFO] Building jar: C:\codejam\CodeJam\2009\1C\center-mass\target\center-mass-1.0-SNAPSHOT.jar
+[INFO] 
+[INFO] --- maven-assembly-plugin:2.2-beta-5:single (default) @ center-mass ---
+[INFO] META-INF/ already added, skipping
+[INFO] META-INF/MANIFEST.MF already added, skipping
+[INFO] org/ already added, skipping
+[INFO] org/slf4j/ already added, skipping
+[INFO] META-INF/maven/ already added, skipping
+[INFO] META-INF/maven/org.slf4j/ already added, skipping
+[INFO] META-INF/MANIFEST.MF already added, skipping
+[INFO] META-INF/ already added, skipping
+[INFO] META-INF/maven/ already added, skipping
+[INFO] org/ already added, skipping
+[INFO] Building jar: C:\codejam\CodeJam\2009\1C\center-mass\target\center-mass-1.0-SNAPSHOT-jar-with-dependencies.jar
+[INFO] META-INF/ already added, skipping
+[INFO] META-INF/MANIFEST.MF already added, skipping
+[INFO] org/ already added, skipping
+[INFO] org/slf4j/ already added, skipping
+[INFO] META-INF/maven/ already added, skipping
+[INFO] META-INF/maven/org.slf4j/ already added, skipping
+[INFO] META-INF/MANIFEST.MF already added, skipping
+[INFO] META-INF/ already added, skipping
+[INFO] META-INF/maven/ already added, skipping
+[INFO] org/ already added, skipping
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 1.921s
+[INFO] Finished at: Sun Oct 14 18:09:58 CEST 2012
+[INFO] Final Memory: 10M/219M
+[INFO] ------------------------------------------------------------------------
+18:09:58,413 - Input file B-small-practice.in
+18:09:58,421 - caseNumber 1 is 6.0 a -12.0 b 2.0
+18:09:58,421 - D is 1.0
+18:09:58,422 - caseNumber 2 is 1.0 a -6.0 b 6.0
+18:09:58,423 - D is 0.0
+18:09:58,423 - caseNumber 3 is 1.0 a -7.0 b 7.0
+18:09:58,424 - D is 3.3634060117684275
+18:09:58,425 - caseNumber 4 is 7.133333333333334 a -2407.5 b 337.5
+18:09:58,425 - D is 0.3535533905932738
+18:09:58,426 - caseNumber 5 is 500.0 a 0.0 b 0.0
+18:09:58,426 - D is 1800.0
+18:09:58,427 - caseNumber 6 is 500.0 a 0.0 b 0.0
+18:09:58,427 - D is 1635.1918847645984
+18:09:58,428 - caseNumber 7 is 500.0 a 0.0 b 0.0
+18:09:58,428 - D is 837.8170922104657
+18:09:58,429 - caseNumber 8 is 500.0 a 0.0 b 0.0
+18:09:58,429 - D is 1539.6248122513484
+18:09:58,431 - caseNumber 9 is 500.0 a 0.0 b 0.0
+18:09:58,431 - D is 1073.1396765715538
+18:09:58,432 - caseNumber 10 is 500.0 a 0.0 b 0.0
+18:09:58,432 - D is 850.9067549124027
+18:09:58,433 - caseNumber 11 is 500.0 a 0.0 b 0.0
+18:09:58,433 - D is 0.0
+18:09:58,435 - caseNumber 12 is -0.0 a 0.0 b 1096206.8399999999
+18:09:58,435 - D is 0.0
+18:09:58,437 - caseNumber 13 is -0.0 a 0.0 b 213516.76
+18:09:58,437 - D is 0.0
+18:09:58,439 - caseNumber 14 is -0.0 a 0.0 b 320307.3
+18:09:58,439 - D is 0.0
+18:09:58,441 - caseNumber 15 is -0.0 a 0.0 b 1055269.46
+18:09:58,441 - D is 0.0
+18:09:58,443 - caseNumber 16 is -0.0 a 0.0 b 343720.42
+18:09:58,443 - D is 0.0
+18:09:58,444 - caseNumber 17 is 0.6 a -26750.15625 b 44583.59375
+18:09:58,444 - D is 0.0
+18:09:58,446 - caseNumber 18 is 0.85 a -349931.35802469135 b 411683.95061728393
+18:09:58,446 - D is 0.0
+18:09:58,448 - caseNumber 19 is 1.5384615384615385 a -666485.925925926 b 433215.85185185185
+18:09:58,448 - D is 8.038873388460929E-14
+18:09:58,449 - caseNumber 20 is 0.8461538461538461 a -935220.0 b 1105260.0
+18:09:58,449 - D is 9.845568954283847E-14
+18:09:58,450 - caseNumber 21 is 0.5 a -1385.7599999999998 b 2771.5199999999995
+18:09:58,450 - D is 0.0
+18:09:58,451 - caseNumber 22 is 0.4444444444444444 a -767628.0 b 1727163.0
+18:09:58,451 - D is 0.0
+18:09:58,453 - caseNumber 23 is 5.333333333333333 a -43035.84 b 8069.219999999999
+18:09:58,453 - D is 5.685035733124713E-14
+18:09:58,454 - caseNumber 24 is 18.000000000000004 a -54848.16 b 3047.12
+18:09:58,454 - D is 1.3923737144427707E-13
+18:09:58,455 - caseNumber 25 is 1.7 a -370451.25 b 217912.5
+18:09:58,455 - D is 0.0
+18:09:58,456 - caseNumber 26 is 0.6666666666666666 a -102467.75510204083 b 153701.63265306124
+18:09:58,456 - D is 1.4217791915866692E-14
+18:09:58,457 - caseNumber 27 is 0.8333333333333333 a -19563.6 b 23476.32
+18:09:58,457 - D is 3.552713678800501E-15
+18:09:58,458 - caseNumber 28 is 1.0 a -1892281.5 b 1892281.5
+18:09:58,458 - D is 0.0
+18:09:58,460 - caseNumber 29 is 0.33333333333333337 a -58429.62962962963 b 175288.88888888888
+18:09:58,460 - D is 1.5987211554602254E-14
+18:09:58,461 - caseNumber 30 is 12.315934856419407 a -8560.560000000001 b 695.08
+18:09:58,461 - D is 77.73024091539375
+18:09:58,462 - caseNumber 31 is 10.17860987712373 a -16451.28 b 1616.26
+18:09:58,462 - D is 16.04242657255944
+18:09:58,463 - caseNumber 32 is 3.256412100857777 a -55229.14000000001 b 16960.120000000003
+18:09:58,464 - D is 8.39464662840898
+18:09:58,465 - caseNumber 33 is 1.9003516719885414 a -143761.68000000002 b 75650.04
+18:09:58,465 - D is 3.495071109320744
+18:09:58,466 - caseNumber 34 is 5.045466576030559 a -108153.5918367347 b 21435.795918367345
+18:09:58,466 - D is 23.949926120435798
+18:09:58,466 - caseNumber 35 is 2.9331431947655973 a -160845.36000000002 b 54837.200000000004
+18:09:58,466 - D is 26.914001062434206
+18:09:58,467 - caseNumber 36 is 3.2151897729347474 a -354401.125 b 110227.125
+18:09:58,467 - D is 52.0936770800019
+18:09:58,468 - caseNumber 37 is 5.050423049538512 a -128467.61111111111 b 25436.999999999996
+18:09:58,468 - D is 50.569501968222006
+18:09:58,468 - caseNumber 38 is 1.2533453134104793 a -769066.8888888888 b 613611.3333333334
+18:09:58,468 - D is 29.548991341497523
+18:09:58,469 - caseNumber 39 is 3.8149308370801704 a -24843.44 b 6512.159999999999
+18:09:58,469 - D is 28.02708194629813
+18:09:58,470 - caseNumber 40 is 5.443973600836346 a -85271.0 b 15663.375
+18:09:58,470 - D is 51.957564815356506
+18:09:58,471 - caseNumber 41 is 1.8217290385633427 a -214733.76 b 117873.59999999999
+18:09:58,471 - D is 12.237521156436921
+18:09:58,471 - caseNumber 42 is 17.506139197896964 a -34129.3125 b 1949.5625
+18:09:58,471 - D is 107.26581677420623
+18:09:58,472 - caseNumber 43 is -1.2499999999999998 a 26362.222222222223 b 21089.77777777778
+18:09:58,472 - CN 43 Dimension 0 coord -67.5 velocity -54.0
+18:09:58,472 - CN 43 Dimension 1 coord -64.16666666666667 velocity -51.333333333333336
+18:09:58,472 - CN 43 Dimension 2 coord 88.33333333333333 velocity 70.66666666666667
+18:09:58,472 - D is 2.0097183471152322E-14
+18:09:58,473 - caseNumber 44 is -0.5714285714285715 a 120106.56 b 210186.47999999998
+18:09:58,473 - CN 44 Dimension 0 coord -53.6 velocity -93.8
+18:09:58,473 - CN 44 Dimension 1 coord 154.4 velocity 270.2
+18:09:58,473 - CN 44 Dimension 2 coord -87.2 velocity -152.6
+18:09:58,473 - D is 7.105427357601002E-15
+18:09:58,474 - caseNumber 45 is -0.6666666666666666 a 49217.625 b 73826.4375
+18:09:58,474 - CN 45 Dimension 0 coord -125.25 velocity -187.875
+18:09:58,475 - CN 45 Dimension 1 coord -8.25 velocity -12.375
+18:09:58,475 - CN 45 Dimension 2 coord -25.5 velocity -38.25
+18:09:58,475 - D is 0.0
+18:09:58,475 - caseNumber 46 is -0.2857142857142857 a 78886.08 b 276101.28
+18:09:58,475 - CN 46 Dimension 0 coord -78.0 velocity -273.0
+18:09:58,475 - CN 46 Dimension 1 coord 1.2 velocity 4.2
+18:09:58,476 - CN 46 Dimension 2 coord -72.0 velocity -252.0
+18:09:58,476 - D is 0.0
+18:09:58,476 - caseNumber 47 is -1.0 a 245251.125 b 245251.125
+18:09:58,476 - CN 47 Dimension 0 coord -288.75 velocity -288.75
+18:09:58,476 - CN 47 Dimension 1 coord 105.0 velocity 105.0
+18:09:58,476 - CN 47 Dimension 2 coord 168.0 velocity 168.0
+18:09:58,476 - D is 0.0
+18:09:58,477 - caseNumber 48 is -4.5 a 17621.28 b 3915.8399999999997
+18:09:58,477 - CN 48 Dimension 0 coord 82.8 velocity 18.4
+18:09:58,478 - CN 48 Dimension 1 coord -109.8 velocity -24.4
+18:09:58,478 - CN 48 Dimension 2 coord 144.0 velocity 32.0
+18:09:58,478 - D is 0.0
+18:09:58,479 - caseNumber 49 is -1.6666666666666667 a 19962.0 b 11977.199999999999
+18:09:58,479 - CN 49 Dimension 0 coord 29.0 velocity 17.4
+18:09:58,479 - CN 49 Dimension 1 coord 113.0 velocity 67.8
+18:09:58,479 - CN 49 Dimension 2 coord -55.0 velocity -33.0
+18:09:58,479 - D is 0.0
+18:09:58,480 - caseNumber 50 is -3.0 a 32880.9375 b 10960.3125
+18:09:58,480 - CN 50 Dimension 0 coord -157.5 velocity -52.5
+18:09:58,480 - CN 50 Dimension 1 coord 7.875 velocity 2.625
+18:09:58,480 - CN 50 Dimension 2 coord 156.375 velocity 52.125
+18:09:58,480 - D is 0.0
+18:09:58,481 - caseNumber 51 is -1.2857142857142858 a 28627.59375 b 22265.90625
+18:09:58,481 - CN 51 Dimension 0 coord -63.0 velocity -49.0
+18:09:58,481 - CN 51 Dimension 1 coord -86.625 velocity -67.375
+18:09:58,481 - CN 51 Dimension 2 coord -83.25 velocity -64.75
+18:09:58,481 - D is 7.105427357601002E-15
+18:09:58,482 - caseNumber 52 is -1.8 a 59082.1875 b 32823.4375
+18:09:58,482 - CN 52 Dimension 0 coord -174.375 velocity -96.875
+18:09:58,482 - CN 52 Dimension 1 coord -146.25 velocity -81.25
+18:09:58,482 - CN 52 Dimension 2 coord 37.125 velocity 20.625
+18:09:58,482 - D is 0.0
+18:09:58,483 - caseNumber 53 is -0.9230769230769232 a 0.4897959183673469 b 0.5306122448979591
+18:09:58,483 - CN 53 Dimension 0 coord -1.2857142857142858 velocity 0.0
+18:09:58,483 - CN 53 Dimension 1 coord 0.8571428571428571 velocity 0.42857142857142855
+18:09:58,483 - CN 53 Dimension 2 coord 0.42857142857142855 velocity -0.2857142857142857
+18:09:58,483 - D is 1.5314597339784968
+18:09:58,484 - caseNumber 54 is 0.679245283018868 a -1.4400000000000002 b 2.12
+18:09:58,484 - D is 1.030021065913904
+18:09:58,485 - caseNumber 55 is 0.45 a -0.8888888888888888 b 1.9753086419753085
+18:09:58,485 - D is 1.78401682990456
+18:09:58,485 - caseNumber 56 is -0.10077519379844961 a 1.625 b 16.125
+18:09:58,485 - CN 56 Dimension 0 coord 3.0 velocity 2.0
+18:09:58,486 - CN 56 Dimension 1 coord -0.5 velocity -1.0
+18:09:58,486 - CN 56 Dimension 2 coord -3.25 velocity 1.75
+18:09:58,486 - D is 4.441916270601998
+18:09:58,486 - caseNumber 57 is -1.0714285714285714 a 53.33333333333333 b 49.77777777777778
+18:09:58,486 - CN 57 Dimension 0 coord -7.0 velocity -2.6666666666666665
+18:09:58,486 - CN 57 Dimension 1 coord 1.0 velocity 4.0
+18:09:58,486 - CN 57 Dimension 2 coord -3.0 velocity -1.3333333333333333
+18:09:58,486 - D is 5.516209878945093
+18:09:58,487 - caseNumber 58 is -0.7935483870967742 a 92.25 b 116.25
+18:09:58,487 - CN 58 Dimension 0 coord -5.75 velocity -5.0
+18:09:58,487 - CN 58 Dimension 1 coord 3.25 velocity 5.75
+18:09:58,487 - CN 58 Dimension 2 coord -5.25 velocity 0.25
+18:09:58,487 - D is 5.880908147995622
+18:09:58,488 - caseNumber 59 is -2.0090702947845798 a 17.72 b 8.820000000000002
+18:09:58,488 - CN 59 Dimension 0 coord 5.5 velocity 1.6
+18:09:58,488 - CN 59 Dimension 1 coord 3.4 velocity 0.4
+18:09:58,488 - CN 59 Dimension 2 coord -1.0 velocity 1.3
+18:09:58,488 - D is 5.000963625963362
+18:09:58,489 - caseNumber 60 is -0.5084823475469968 a 27.38271604938272 b 53.851851851851855
+18:09:58,489 - CN 60 Dimension 0 coord -1.5555555555555556 velocity -3.5555555555555554
+18:09:58,489 - CN 60 Dimension 1 coord -5.0 velocity -1.5555555555555556
+18:09:58,489 - CN 60 Dimension 2 coord 0.1111111111111111 velocity 3.4444444444444446
+18:09:58,489 - D is 4.524409894774193
+18:09:58,490 - caseNumber 61 is -0.4943820224719101 a 3.5199999999999996 b 7.119999999999999
+18:09:58,490 - CN 61 Dimension 0 coord 3.8 velocity -1.2
+18:09:58,490 - CN 61 Dimension 1 coord 1.0 velocity -0.4
+18:09:58,490 - CN 61 Dimension 2 coord 4.8 velocity 1.4
+18:09:58,490 - D is 6.132690081884901
+18:09:58,491 - caseNumber 62 is 0.37390180878552964 a -115.75999999999999 b 309.6
+18:09:58,491 - D is 10.615015935338652
+18:09:58,491 - caseNumber 63 is -0.22647345451463924 a 106.9 b 472.02
+18:09:58,491 - CN 63 Dimension 0 coord 2.5 velocity 1.3
+18:09:58,492 - CN 63 Dimension 1 coord -2.8 velocity -7.4
+18:09:58,492 - CN 63 Dimension 2 coord 2.2 velocity 13.4
+18:09:58,492 - D is 2.612468919660583
+18:09:58,492 - caseNumber 64 is -0.6682088565763384 a 41.26530612244898 b 61.755102040816325
+18:09:58,492 - CN 64 Dimension 0 coord 1.2857142857142858 velocity 2.7142857142857144
+18:09:58,492 - CN 64 Dimension 1 coord -0.5714285714285714 velocity -3.4285714285714284
+18:09:58,492 - CN 64 Dimension 2 coord -4.428571428571429 velocity -3.4285714285714284
+18:09:58,493 - D is 2.7937278365146407
+18:09:58,493 - caseNumber 65 is 1.3549931600547194 a -316.96 b 233.92000000000002
+18:09:58,493 - D is 8.514733348410157
+18:09:58,494 - caseNumber 66 is -1.3650793650793651 a 122.85714285714286 b 90.0
+18:09:58,494 - CN 66 Dimension 0 coord 8.857142857142858 velocity 5.0
+18:09:58,494 - CN 66 Dimension 1 coord -1.2857142857142858 velocity 4.0
+18:09:58,494 - CN 66 Dimension 2 coord 11.142857142857142 velocity 2.0
+18:09:58,494 - D is 10.973168678144077
+18:09:58,495 - caseNumber 67 is -0.11255539143279172 a 11.90625 b 105.78125
+18:09:58,495 - CN 67 Dimension 0 coord -1.625 velocity -3.0
+18:09:58,495 - CN 67 Dimension 1 coord -1.5 velocity 3.5
+18:09:58,495 - CN 67 Dimension 2 coord -1.125 velocity -5.625
+18:09:58,495 - D is 2.3422625141893603
+18:09:58,495 - caseNumber 68 is 0.73374050841862 a -987.7777777777777 b 1346.2222222222222
+18:09:58,495 - D is 19.06865793820738
+18:09:58,496 - caseNumber 69 is 0.5977847005884388 a -138.16 b 231.12000000000003
+18:09:58,496 - D is 10.449164219369445
+18:09:58,496 - caseNumber 70 is 0.0073024428409979684 a -3.359999999999985 b 460.12
+18:09:58,496 - D is 17.923942978486263
+18:09:58,497 - caseNumber 71 is -0.244991652754591 a 260.8888888888889 b 1064.888888888889
+18:09:58,497 - CN 71 Dimension 0 coord 9.333333333333334 velocity 22.0
+18:09:58,497 - CN 71 Dimension 1 coord -15.333333333333334 velocity 6.666666666666667
+18:09:58,497 - CN 71 Dimension 2 coord 13.666666666666666 velocity 2.0
+18:09:58,497 - D is 21.841295748258645
+18:09:58,498 - caseNumber 72 is 7.390469716352537E-4 a -2213.5 b 2995073.5
+18:09:58,498 - D is 7.749649009093424
+18:09:58,498 - caseNumber 73 is 2.5754430310699584E-4 a -752.1728395061737 b 2920557.0864197533
+18:09:58,498 - D is 7.404665219376404
+18:09:58,499 - caseNumber 74 is -0.0019471856072612863 a 6481.780000000001 b 3328794.1200000006
+18:09:58,499 - CN 74 Dimension 0 coord 1.9 velocity 1258.4
+18:09:58,499 - CN 74 Dimension 1 coord -4.4 velocity -250.9
+18:09:58,499 - CN 74 Dimension 2 coord 1.9 velocity -133.7
+18:09:58,499 - D is 4.502153444440001
+18:09:58,500 - caseNumber 75 is 0.006948800842810152 a -2552.3456790123455 b 367307.35802469135
+18:09:58,500 - D is 13.186554345886615
+18:09:58,501 - caseNumber 76 is 0.013039668365026194 a -4443.4 b 340760.20000000007
+18:09:58,501 - D is 7.92589230266355
+18:09:58,501 - caseNumber 77 is -4.004207278591964 a 1784.5 b 445.65625
+18:09:58,501 - CN 77 Dimension 0 coord 53.0 velocity 13.5
+18:09:58,502 - CN 77 Dimension 1 coord -234.875 velocity -1.75
+18:09:58,502 - CN 77 Dimension 2 coord 38.25 velocity -6.125
+18:09:58,502 - D is 236.3589942876647
+18:09:58,502 - caseNumber 78 is -58.85347304377217 a 38692.88888888888 b 657.4444444444445
+18:09:58,502 - CN 78 Dimension 0 coord -1172.8333333333333 velocity -17.5
+18:09:58,502 - CN 78 Dimension 1 coord 138.83333333333334 velocity -0.8333333333333334
+18:09:58,502 - CN 78 Dimension 2 coord -227.66666666666666 velocity 4.666666666666667
+18:09:58,502 - D is 555.012960866128
+18:09:58,503 - caseNumber 79 is 19.7137882542021 a -12015.755102040815 b 609.5102040816327
+18:09:58,503 - D is 1152.7143010374664
+18:09:58,503 - caseNumber 80 is -107.87091757387246 a 30827.111111111113 b 285.7777777777778
+18:09:58,503 - CN 80 Dimension 0 coord -232.66666666666666 velocity 8.333333333333334
+18:09:58,504 - CN 80 Dimension 1 coord -1930.3333333333333 velocity -8.333333333333334
+18:09:58,504 - CN 80 Dimension 2 coord 633.1666666666666 velocity 2.0
+18:09:58,504 - D is 1586.9928174001595
+18:09:58,504 - caseNumber 81 is 46.756598240469216 a -1275.5200000000004 b 27.280000000000005
+18:09:58,504 - D is 2221.6524102357143
+18:09:58,505 - caseNumber 82 is 0.10257802276712374 a -584282.84375 b 5695984.65625
+18:09:58,505 - D is 649.5718238391242
+18:09:58,505 - caseNumber 83 is -0.17625741700568867 a 14031.875 b 79610.125
+18:09:58,505 - CN 83 Dimension 0 coord -133.5 velocity 177.0
+18:09:58,505 - CN 83 Dimension 1 coord -1199.75 velocity -46.0
+18:09:58,505 - CN 83 Dimension 2 coord -307.75 velocity 79.75
+18:09:58,505 - D is 1245.2693539866693
+18:09:58,506 - caseNumber 84 is -0.031606274366588645 a 23581.88 b 746113.8800000001
+18:09:58,506 - CN 84 Dimension 0 coord 20.2 velocity 83.1
+18:09:58,506 - CN 84 Dimension 1 coord -8.0 velocity -564.2
+18:09:58,506 - CN 84 Dimension 2 coord -25.6 velocity -218.7
+18:09:58,506 - D is 27.472391874753377
+18:09:58,507 - caseNumber 85 is 0.0014818467812448288 a -15865.02040816327 b 1.0706248857142856E7
+18:09:58,507 - D is 67.01248993072457
+18:09:58,507 - caseNumber 86 is -0.129354266043205 a 1113673.5 b 8609484.125
+18:09:58,507 - CN 86 Dimension 0 coord -266.75 velocity -1924.5
+18:09:58,507 - CN 86 Dimension 1 coord 151.5 velocity 646.75
+18:09:58,507 - CN 86 Dimension 2 coord -127.5 velocity 427.5
+18:09:58,507 - D is 195.79288393061267
+18:09:58,508 - caseNumber 87 is 0.4565987532337975 a -1086005.1851851852 b 2378467.2592592593
+18:09:58,508 - D is 734.4654237277622
+18:09:58,509 - caseNumber 88 is 0.007265914109063244 a -19764.58 b 2720178.04
+18:09:58,509 - D is 59.607433510084505
+18:09:58,509 - caseNumber 89 is 3.174915615830388 a -1043403.7600000001 b 328639.83999999997
+18:09:58,509 - D is 1694.0905744321728
+18:09:58,510 - caseNumber 90 is -0.7748929025754996 a 52087.510204081635 b 67218.97959183673
+18:09:58,510 - CN 90 Dimension 0 coord 316.85714285714283 velocity -17.857142857142858
+18:09:58,510 - CN 90 Dimension 1 coord -177.28571428571428 velocity -44.857142857142854
+18:09:58,510 - CN 90 Dimension 2 coord 134.28571428571428 velocity 176.85714285714286
+18:09:58,510 - D is 360.11137936147804
+18:09:58,510 - caseNumber 91 is -0.08440508015949467 a 324635.1020408161 b 3846155.959183674
+18:09:58,510 - CN 91 Dimension 0 coord 223.85714285714286 velocity 917.4285714285714
+18:09:58,511 - CN 91 Dimension 1 coord -616.8571428571429 velocity 766.2857142857143
+18:09:58,511 - CN 91 Dimension 2 coord -611.1428571428571 velocity -703.0
+18:09:58,511 - D is 889.055634386063
+18:09:58,511 - caseNumber 92 is -0.27192053213489065 a 441794.625 b 1624719.625
+18:09:58,511 - CN 92 Dimension 0 coord 195.75 velocity 884.5
+18:09:58,511 - CN 92 Dimension 1 coord -483.75 velocity -88.0
+18:09:58,511 - CN 92 Dimension 2 coord -34.75 velocity -149.25
+18:09:58,511 - D is 462.03157114837165
+18:09:58,512 - caseNumber 93 is 0.013359059195873156 a -24978.172839506173 b 1869755.3827160494
+18:09:58,512 - D is 196.379883872519
+18:09:58,512 - caseNumber 94 is -0.407333850886194 a 1527969.0 b 3751146.625
+18:09:58,512 - CN 94 Dimension 0 coord 1086.0 velocity 296.25
+18:09:58,512 - CN 94 Dimension 1 coord 31.5 velocity 615.5
+18:09:58,512 - CN 94 Dimension 2 coord -356.25 velocity -1187.0
+18:09:58,512 - D is 998.0508825193416
+18:09:58,513 - caseNumber 95 is -0.29981490661754817 a 108682.81481481482 b 362499.7037037037
+18:09:58,513 - CN 95 Dimension 0 coord -269.8888888888889 velocity -29.88888888888889
+18:09:58,513 - CN 95 Dimension 1 coord 85.44444444444444 velocity 424.55555555555554
+18:09:58,513 - CN 95 Dimension 2 coord -957.3333333333334 velocity -10.444444444444445
+18:09:58,513 - D is 990.1189385906583
+18:09:58,514 - caseNumber 96 is -0.2636464698437259 a 280797.19999999995 b 1065052.0
+18:09:58,514 - CN 96 Dimension 0 coord 25.4 velocity -451.0
+18:09:58,514 - CN 96 Dimension 1 coord 1890.6 velocity -290.0
+18:09:58,514 - CN 96 Dimension 2 coord 1414.4 velocity 495.0
+18:09:58,514 - D is 2353.4071650989335
+18:09:58,515 - caseNumber 97 is -0.4941449363888553 a 1241301.9753086418 b 2512020.0246913577
+18:09:58,515 - CN 97 Dimension 0 coord -163.77777777777777 velocity -685.0
+18:09:58,515 - CN 97 Dimension 1 coord 188.88888888888889 velocity -247.88888888888889
+18:09:58,515 - CN 97 Dimension 2 coord 652.0 velocity 851.6666666666666
+18:09:58,515 - D is 425.34060472212326
+18:09:58,515 - caseNumber 98 is -3.5286650572871023 a 291692.0 b 82663.55555555555
+18:09:58,515 - CN 98 Dimension 0 coord -809.0 velocity -116.0
+18:09:58,515 - CN 98 Dimension 1 coord 983.3333333333334 velocity -33.0
+18:09:58,515 - CN 98 Dimension 2 coord 516.0 velocity 163.66666666666666
+18:09:58,515 - D is 1171.7677929092222
+18:09:58,516 - caseNumber 99 is -0.06289588043090069 a 79960.21875 b 1271310.90625
+18:09:58,516 - CN 99 Dimension 0 coord -73.375 velocity 444.25
+18:09:58,516 - CN 99 Dimension 1 coord 41.75 velocity 433.5
+18:09:58,516 - CN 99 Dimension 2 coord 108.875 velocity 500.375
+18:09:58,516 - D is 128.3204370750648
+18:09:58,517 - caseNumber 100 is -1.8176797968714735 a 3373957.8125 b 1856189.3125
+18:09:58,517 - CN 100 Dimension 0 coord 1008.625 velocity 375.375
+18:09:58,517 - CN 100 Dimension 1 coord 716.375 velocity 308.5
+18:09:58,517 - CN 100 Dimension 2 coord -1307.125 velocity -831.875
+18:09:58,517 - D is 415.5788989302025

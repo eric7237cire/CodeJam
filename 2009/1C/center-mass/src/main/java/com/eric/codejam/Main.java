@@ -4,6 +4,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -37,8 +41,7 @@ public class Main {
 			coordsAvg[j] = coordsAvg[j] / (double) numFireflies;
 			velocityAvg[j] = velocityAvg[j] / (double) numFireflies;
 			
-			log.info("Dimension {} coord {} velocity {}", new Object[] { j,
-					coordsAvg[j], velocityAvg[j] });
+			log.debug("Dimension {} coord {} velocity {}",  j,coordsAvg[j], velocityAvg[j] );
 		}
 		
 		//find where derivative of distance formula is 0
@@ -46,14 +49,26 @@ public class Main {
 		double a = 0;
 		double b = 0;
 
+		double vSum = 0;
 		for (int j = 0; j < 3; ++j) { 
 			a += 2 * coordsAvg[j] * velocityAvg[j];
 			b += 2 * velocityAvg[j] * velocityAvg[j] ;
+			vSum += velocityAvg[j];
+		}
+		double t = 0;
+		
+		if (b != 0) {
+			t = -a / b;
 		}
 		
-		double t = -a / b;
-		
-		log.info("T is {} a {} b {}", t, a, b);
+		log.info("caseNumber {} is {} a {} b {}", caseNumber, t, a, b);
+		if (t < 0) {
+			//t = 0;
+			for (int j = 0; j < 3; ++j) {
+				log.info("CN {} Dimension {} coord {} velocity {}", caseNumber, j,coordsAvg[j], velocityAvg[j] );
+			}
+			t = 0;
+		}
 		
 		double d = 0;
 		
@@ -65,7 +80,9 @@ public class Main {
 		
 		log.info("D is " + d);
 		
-		os.println("Case #" + caseNumber + ": " + d + " " + t);
+		DecimalFormatSymbols dfs = DecimalFormatSymbols.getInstance(Locale.US);
+		NumberFormat df = new DecimalFormat("#.######", dfs);
+		os.println("Case #" + caseNumber + ": " + df.format(d) + " " + df.format(t));
 	}
 
 	Main() {
