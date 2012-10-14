@@ -40,8 +40,32 @@ public class Main {
 			log.info("Dimension {} coord {} velocity {}", new Object[] { j,
 					coordsAvg[j], velocityAvg[j] });
 		}
+		
+		//find where derivative of distance formula is 0
+		
+		double a = 0;
+		double b = 0;
 
-		os.println("Case #" + caseNumber + ": ");
+		for (int j = 0; j < 3; ++j) { 
+			a += 2 * coordsAvg[j] * velocityAvg[j];
+			b += 2 * velocityAvg[j] * velocityAvg[j] ;
+		}
+		
+		double t = -a / b;
+		
+		log.info("T is {} a {} b {}", t, a, b);
+		
+		double d = 0;
+		
+		for (int j = 0; j < 3; ++j) {
+			d += (coordsAvg[j] + velocityAvg[j] * t)* (coordsAvg[j] + velocityAvg[j] * t);
+		}
+		
+		d = Math.sqrt(d);
+		
+		log.info("D is " + d);
+		
+		os.println("Case #" + caseNumber + ": " + d + " " + t);
 	}
 
 	Main() {
