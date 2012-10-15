@@ -1,3 +1,4 @@
+package com.eric.codejam;
 import java.util.ArrayList;
 import java.util.List;
 
