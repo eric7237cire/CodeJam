@@ -4,18 +4,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Preconditions;
 
 public class Main {
 
@@ -39,8 +33,10 @@ public class Main {
 			
 		}
 
-		PrisonSelectionAlgorithm alg = new ChooseLargestSegment();
-		int cost = alg.findMinCost(0, numCells - 1, listToBeFree);
+		PrisonSelectionAlgorithm alg = new MinMax();
+		int cost = 0;
+		
+		cost = alg.findMinCost(0, numCells - 1, listToBeFree);
 
 		log.info("Case #" + caseNumber + ": " + cost);
 		//os.println("Case #" + caseNumber + ": " + cost);
