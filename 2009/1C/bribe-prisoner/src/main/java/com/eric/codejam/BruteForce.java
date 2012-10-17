@@ -7,11 +7,17 @@ import com.google.common.base.Preconditions;
 
 public class BruteForce implements PrisonSelectionAlgorithm {
 
-	@Override
-	public int findMinCost(int segStart, int segEnd, List<Integer> toBeFreed) {
+    @Override
+    public int findMinCost(int segStart, int segEnd, List<Integer> toBeFreed) {
+        return findMinCost(segStart, segEnd, toBeFreed, 0);
+    }
+	
+	public int findMinCost(int segStart, int segEnd, List<Integer> toBeFreed, int recLevel) {
 		int minCost = Integer.MAX_VALUE;
 
+		if (recLevel == 0) {
 		log.debug("findMinCost {} {} {}", segStart, segEnd, toBeFreed);
+		}
 		if (segEnd <= segStart) {
 			return 0;
 		}
@@ -36,13 +42,13 @@ public class BruteForce implements PrisonSelectionAlgorithm {
 			if (i > 0) {
 				List<Integer> cpy = new ArrayList<>(toBeFreed);
 				cpy = cpy.subList(0, i);
-				cost += findMinCost(segStart, prisIdx - 1, cpy);
+				cost += findMinCost(segStart, prisIdx - 1, cpy, 1+recLevel);
 			}
 
 			if (i < toBeFreed.size() - 1) {
 				List<Integer> cpy = new ArrayList<>(toBeFreed);
 				cpy = cpy.subList(i + 1, toBeFreed.size());
-				cost += findMinCost(prisIdx + 1, segEnd, cpy);
+				cost += findMinCost(prisIdx + 1, segEnd, cpy, 1+recLevel);
 			}
 
 			minCost = Math.min(minCost, cost);
@@ -52,9 +58,11 @@ public class BruteForce implements PrisonSelectionAlgorithm {
 
 		}
 
+		if (recLevel == 0) {
 		log.debug(
 				"findMinCost return {} freed prisoner {} params start {}  end {} to be freed {}",
 				minCost, minIdx, segStart, segEnd, toBeFreed);
+		}
 		return minCost;
 
 	}
