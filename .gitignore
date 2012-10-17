@@ -5,3 +5,5 @@
 !foo.html
 *.class
 target/
+log.txt
+output.txt
