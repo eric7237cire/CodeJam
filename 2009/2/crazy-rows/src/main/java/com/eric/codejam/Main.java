@@ -48,12 +48,11 @@ public class Main {
         
     }
 
-    static int findMin(List<Row> liste) {
+    static int findMin(int listeProg, List<Row> liste) {
         Integer bottomRowIndex = null;
         Row  bottomRow = null;
         
-        Integer minCost = Integer.MAX_VALUE;
-
+       
         log.debug("findMin {}", liste);
 
         for (int i = 0; i < liste.size(); ++i) {
@@ -61,22 +60,24 @@ public class Main {
 
             if (bottomRow == null) {
                 
-                if (r.rightOne > i ) {
+                if (r.rightOne > i + listeProg ) {
                     bottomRow = r;
                     bottomRowIndex = i;
                     continue;
                 }
             } else {
 
-                if (r.rightOne <= bottomRowIndex) {
+                if (r.rightOne <= bottomRowIndex + listeProg) {
                     List<Row> copyListe = new ArrayList<>(liste);
-                    Collections.swap(copyListe, bottomRowIndex, i);
+                    //Collections.swap(copyListe, bottomRowIndex, i);
+                    Row rem = copyListe.remove(i);
+                    //copyListe.add(0,  rem);
 
                     log.debug("findMin {} new liste {}", liste, copyListe);
 
-                    int cost = 1 + findMin(copyListe);
+                    return  i - bottomRowIndex + findMin(listeProg + 1, copyListe);
 
-                    minCost = Math.min(minCost, cost);
+                    //minCost = Math.min(minCost, cost);
                 }
             }
 
@@ -86,9 +87,9 @@ public class Main {
             return 0;
         }
 
-        log.debug("findMin {} returns {}", liste, minCost);
+        log.debug("findMin {} returns {}", liste, 0);
         
-        return minCost;
+        return 0;
     }
 
     public static void handleCase(int caseNumber, Scanner scanner,
@@ -102,7 +103,7 @@ public class Main {
             liste.add(new Row(scanner.next()));
         }
 
-        int cost = findMin(liste);
+        int cost = findMin(0, liste);
         log.info("Real Case #" + caseNumber + ": " + cost);
         os.println("Case #" + caseNumber + ": " + cost);
     }
