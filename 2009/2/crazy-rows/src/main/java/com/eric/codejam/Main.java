@@ -5,77 +5,135 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ComparisonChain;
+
 public class Main {
+    
+    static class Row implements Comparable<Row>{
+        final int leftOne;
+        final int rightOne;
+        /* (non-Javadoc)
+         * @see java.lang.Comparable#compareTo(java.lang.Object)
+         */
+        @Override
+        public int compareTo(Row o) {
+            return ComparisonChain.start()
+                    .compare(leftOne, o.leftOne)
+                    .compare(rightOne, o.rightOne).result();
+        }
+        
+        public Row(String s) {
+            boolean hasOne = -1 != s.indexOf('1');
+            
+            leftOne = hasOne ? s.indexOf('1') : 0;
+            rightOne = hasOne ? s.lastIndexOf('1') : 0;
+            
+        }
 
-	
-	
-	
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+            return "(" + leftOne + ", " + rightOne + ")";
+        }
+        
+        
+    }
 
-	public static void handleCase(int caseNumber, Scanner scanner,
-			PrintStream os) {
-		final int numCells = scanner.nextInt();
-		final int numToBeFreed = scanner.nextInt();
+    static int findMin(List<Row> liste) {
+        Integer bottomRowIndex = null;
+        Row  bottomRow = null;
+        
+        Integer minCost = Integer.MAX_VALUE;
 
-		
+        log.debug("findMin {}", liste);
 
+        for (int i = 0; i < liste.size(); ++i) {
+            Row r = liste.get(i);
 
-		List<Integer> listToBeFree = new ArrayList<>();
-		for (int i = 0; i < numToBeFreed; ++i) {
-			int index = scanner.nextInt();
+            if (bottomRow == null) {
+                
+                if (r.rightOne > i ) {
+                    bottomRow = r;
+                    bottomRowIndex = i;
+                    continue;
+                }
+            } else {
 
-			listToBeFree.add(index);
-			
-		}
+                if (r.rightOne <= bottomRowIndex) {
+                    List<Row> copyListe = new ArrayList<>(liste);
+                    Collections.swap(copyListe, bottomRowIndex, i);
 
-		PrisonSelectionAlgorithm alg ;
-		//alg = new MinMax();
-		int cost = 0;
-		
-		//cost = alg.findMinCost(0, numCells - 1, listToBeFree);
+                    log.debug("findMin {} new liste {}", liste, copyListe);
 
-		log.info("Case #" + caseNumber + ": " + cost);
-		//os.println("Case #" + caseNumber + ": " + cost);
-		
-		alg = new BruteForce();
-		cost = alg.findMinCost(1, numCells, listToBeFree);
-		
-		log.info("Real Case #" + caseNumber + ": " + cost);
-		os.println("Case #" + caseNumber + ": " + cost);
-	}
+                    int cost = 1 + findMin(copyListe);
 
-	Main() {
+                    minCost = Math.min(minCost, cost);
+                }
+            }
 
-	}
+        }
 
-	final static Logger log = LoggerFactory.getLogger(Main.class);
+        if (bottomRow == null) {
+            return 0;
+        }
 
-	public static void main(String args[]) throws Exception {
+        log.debug("findMin {} returns {}", liste, minCost);
+        
+        return minCost;
+    }
 
-		if (args.length < 1) {
-			args = new String[] { "sample.txt" };
-		}
-		log.info("Input file {}", args[0]);
+    public static void handleCase(int caseNumber, Scanner scanner,
+            PrintStream os) {
 
-		Scanner scanner = new Scanner(new File(args[0]));
+        int dimension = scanner.nextInt();
 
-		OutputStream os = new FileOutputStream("output.txt");
+        List<Row> liste = new ArrayList<>();
 
-		PrintStream pos = new PrintStream(os);
+        for (int i = 0; i < dimension; ++i) {
+            liste.add(new Row(scanner.next()));
+        }
 
-		int t = scanner.nextInt();
+        int cost = findMin(liste);
+        log.info("Real Case #" + caseNumber + ": " + cost);
+        os.println("Case #" + caseNumber + ": " + cost);
+    }
 
-		for (int i = 1; i <= t; ++i) {
+    Main() {
 
-			handleCase(i, scanner, pos);
+    }
 
-		}
+    final static Logger log = LoggerFactory.getLogger(Main.class);
 
-		scanner.close();
-	}
+    public static void main(String args[]) throws Exception {
+
+        if (args.length < 1) {
+            args = new String[] { "sample.txt" };
+        }
+        log.info("Input file {}", args[0]);
+
+        Scanner scanner = new Scanner(new File(args[0]));
+
+        OutputStream os = new FileOutputStream("output.txt");
+
+        PrintStream pos = new PrintStream(os);
+
+        int t = scanner.nextInt();
+
+        for (int i = 1; i <= t; ++i) {
+
+            handleCase(i, scanner, pos);
+
+        }
+
+        scanner.close();
+    }
 }

@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.eric.codejam</groupId>
-  <artifactId>bribe-prisoner</artifactId>
+  <artifactId>crazy-rows</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>center-mass</name>
+  <name>crazy-rows</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>
