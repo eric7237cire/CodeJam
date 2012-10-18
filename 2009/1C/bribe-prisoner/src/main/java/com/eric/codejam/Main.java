@@ -34,19 +34,19 @@ public class Main {
 		}
 
 		PrisonSelectionAlgorithm alg ;
-		//alg = new MinMax();
+		alg = new Dynamic();
 		int cost = 0;
 		
-		//cost = alg.findMinCost(0, numCells - 1, listToBeFree);
+		cost = alg.findMinCost(1, numCells , listToBeFree);
 
 		log.info("Case #" + caseNumber + ": " + cost);
-		//os.println("Case #" + caseNumber + ": " + cost);
-		
-		alg = new BruteForce();
-		cost = alg.findMinCost(1, numCells, listToBeFree);
-		
-		log.info("Real Case #" + caseNumber + ": " + cost);
 		os.println("Case #" + caseNumber + ": " + cost);
+		
+		//alg = new BruteForce();
+		//cost = alg.findMinCost(1, numCells, listToBeFree);
+		
+		//log.info("Real Case #" + caseNumber + ": " + cost);
+		//os.println("Case #" + caseNumber + ": " + cost);
 	}
 
 	Main() {
