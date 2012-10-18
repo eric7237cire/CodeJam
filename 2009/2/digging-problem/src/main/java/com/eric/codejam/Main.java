@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,14 +15,16 @@ import com.google.common.collect.ComparisonChain;
 
 public class Main {
     
-    static class Row implements Comparable<Row>{
-        final int leftOne;
-        final int rightOne;
+    boolean [][] grid;
+    
+    static class GridState implements Comparable<GridState>{
+        final int depth;
+        List<Boolean> currentRow;
         /* (non-Javadoc)
          * @see java.lang.Comparable#compareTo(java.lang.Object)
          */
         @Override
-        public int compareTo(Row o) {
+        public int compareTo(GridState o) {
             return ComparisonChain.start()
                     .compare(leftOne, o.leftOne)
                     .compare(rightOne, o.rightOne).result();
