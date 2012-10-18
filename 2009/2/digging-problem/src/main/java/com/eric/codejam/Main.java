@@ -4,107 +4,100 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ComparisonChain;
+import com.google.common.base.Preconditions;
 
 public class Main {
     
-    boolean [][] grid;
+    boolean [][] grid; //false #  true .
+    int rows;
+    int cols;
+    int fallingDistance;
+        
+    int[] findRange(int row, int col) {
+    	
+    	Preconditions.checkArgument(row < rows - 1);
+    	Preconditions.checkArgument(col >= 0 && col < cols);
+    	int right = col;
+    	int left = col;
+    	
+    	for( ; right < cols - 1 && grid[row][right+1]; ++right) {
+    		
+    	}
+    	
+    	for( ; left > 0  && grid[row][left-1]; --left) {
+    		
+    	}
+    	
+    	return new int[] { left, right };
+    }
     
-    static class GridState implements Comparable<GridState>{
-        final int depth;
-        List<Boolean> currentRow;
-        /* (non-Javadoc)
-         * @see java.lang.Comparable#compareTo(java.lang.Object)
-         */
-        @Override
-        public int compareTo(GridState o) {
-            return ComparisonChain.start()
-                    .compare(leftOne, o.leftOne)
-                    .compare(rightOne, o.rightOne).result();
-        }
-        
-        public Row(String s) {
-            boolean hasOne = -1 != s.indexOf('1');
-            
-            leftOne = hasOne ? s.indexOf('1') : 0;
-            rightOne = hasOne ? s.lastIndexOf('1') : 0;
-            
-        }
-
-        /* (non-Javadoc)
-         * @see java.lang.Object#toString()
-         */
-        @Override
-        public String toString() {
-            return "(" + leftOne + ", " + rightOne + ")";
-        }
-        
-        
+    Integer getFallRow(int row, int col) {
+    	int r = row;
+    	
+    	while(r < rows - 1) {
+    		if (!grid[r + 1][col] ) {
+    			break;
+    		}
+    		++ r;
+    	}
+    	
+    	int diff = r - row + 1;
+    	if (diff > fallingDistance) {
+    		return null;
+    	}
+    	
+    	return r;
+    }
+   
+    Integer getDepthOutOfCave(Node n) {
+    	for(int position = n.left; position <= n.right; ++position) {
+    		for(int rightPosition = position + 1; rightPosition <= n.right; ++rightPosition) {
+    		
+    			//p to rp dug
+    		}
+    	}
     }
 
-    static int findMin(int listeProg, List<Row> liste) {
-        Integer bottomRowIndex = null;
-        Row  bottomRow = null;
-        
-       
-        log.debug("findMin {}", liste);
-
-        for (int i = 0; i < liste.size(); ++i) {
-            Row r = liste.get(i);
-
-            if (bottomRow == null) {
-                
-                if (r.rightOne > i + listeProg ) {
-                    bottomRow = r;
-                    bottomRowIndex = i;
-                    continue;
-                }
-            } else {
-
-                if (r.rightOne <= bottomRowIndex + listeProg) {
-                    List<Row> copyListe = new ArrayList<>(liste);
-                    //Collections.swap(copyListe, bottomRowIndex, i);
-                    Row rem = copyListe.remove(i);
-                    //copyListe.add(0,  rem);
-
-                    log.debug("findMin {} new liste {}", liste, copyListe);
-
-                    return  i - bottomRowIndex + findMin(listeProg + 1, copyListe);
-
-                    //minCost = Math.min(minCost, cost);
-                }
-            }
-
-        }
-
-        if (bottomRow == null) {
-            return 0;
-        }
-
-        log.debug("findMin {} returns {}", liste, 0);
-        
-        return 0;
-    }
 
     public static void handleCase(int caseNumber, Scanner scanner,
             PrintStream os) {
 
-        int dimension = scanner.nextInt();
+    	Main m = new Main();
+        m.rows = scanner.nextInt();
+        m.cols = scanner.nextInt();
+        m.fallingDistance = scanner.nextInt();
+        
+        m.grid = new boolean[m.rows][m.cols];
 
-        List<Row> liste = new ArrayList<>();
+        Pattern delim = scanner.delimiter();
+        scanner.useDelimiter("");
 
-        for (int i = 0; i < dimension; ++i) {
-            liste.add(new Row(scanner.next()));
+        for (int r = 0; r < m.rows; ++r) {
+            for(int c = 0; c < m.cols; ++c) {
+            	char ch = scanner.next().charAt(0);
+            	if (ch == '#') {
+            		m.grid[r][c] = false;
+            	} else {
+            		m.grid[r][c] = true;
+            	}
+            }
         }
+        
+        scanner.useDelimiter(delim);
+        
+        int[] range = m.findRange(0, 0);
+        
+        Node n = new Node(0, range[0], range[1]);
 
-        int cost = findMin(0, liste);
+        //log.debug("Grid {}", grid);
+        Integer cost = m.getDepthOutOfCave(n);
+        
         log.info("Real Case #" + caseNumber + ": " + cost);
         os.println("Case #" + caseNumber + ": " + cost);
     }
