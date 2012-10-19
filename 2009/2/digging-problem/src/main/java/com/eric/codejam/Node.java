@@ -3,14 +3,14 @@ package com.eric.codejam;
 import com.google.common.collect.ComparisonChain;
 
 public class Node implements Comparable<Node> {
-	 int level;
+	 int row;
      int left;
      int right;
      
      
      public Node(int level, int left, int right) {
 		super();
-		this.level = level;
+		this.row = level;
 		this.left = left;
 		this.right = right;
 	}
@@ -22,9 +22,20 @@ public class Node implements Comparable<Node> {
      @Override
      public int compareTo(Node o) {
          return ComparisonChain.start()
-                 .compare(level, o.level)
+                 .compare(row, o.row)
                  .compare(left, o.left)
                  .compare(right,  o.right)
                  .result();
      }
+
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Node [row=" + row + ", left=" + left + ", right=" + right + "]";
+    }
+     
+     
 }
