@@ -95,4 +95,18 @@ public class AppTest extends TestCase {
 
         assertEquals("Case #1: Yes 1", output);
     }
+    
+    public void testMultistep() throws UnsupportedEncodingException {
+        String testCase = 
+                "5 8 3 " +
+"........\n" +
+"########\n" +
+"...#.###\n" +
+"####..##\n" +
+"###.##..\n" ;
+        
+        String output = getOutput(testCase);
+
+        assertEquals("Case #1: Yes 2", output);
+    }
 }

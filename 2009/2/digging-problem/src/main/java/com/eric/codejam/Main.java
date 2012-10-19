@@ -27,7 +27,7 @@ public class Main {
     	Preconditions.checkArgument(row < rows - 1);
     	Preconditions.checkArgument(col >= 0 && col < cols);
     	Preconditions.checkArgument(initialLeft >= 0 && initialLeft <= col);
-    	Preconditions.checkArgument(initialRight < rows && initialRight >= col);
+    	Preconditions.checkArgument(initialRight < cols && initialRight >= col);
     	
     	int right = initialRight;
     	int left = initialLeft;
@@ -83,6 +83,8 @@ public class Main {
             } else {
                 range = findRange(row, digEntryCol, digEntryCol, position);
             }
+        } else {
+            range = findRange(row, digEntryCol);
         }
                 
         Node newNode = new Node(row, range[0], range[1]);
