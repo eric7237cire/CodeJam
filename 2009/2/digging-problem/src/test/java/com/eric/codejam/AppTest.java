@@ -84,4 +84,15 @@ public class AppTest extends TestCase {
 
         assertEquals("Case #1: Yes 3", output);
     }
+    
+    public void testDigFallTwo() throws UnsupportedEncodingException {
+        String testCase = "3 3 2 " + 
+                "...\n" + 
+                "###\n" +
+                ".##";
+        
+        String output = getOutput(testCase);
+
+        assertEquals("Case #1: Yes 1", output);
+    }
 }

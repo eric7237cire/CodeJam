@@ -118,7 +118,7 @@ public class Main {
     	            continue;
     	        }
     	        
-    	        minCost = dug + Math.min(toDig, minCost);
+    	        minCost =  Math.min(dug + toDig, minCost);
     		}
     	   	
     	
@@ -141,7 +141,7 @@ public class Main {
                     continue;
                 }
                 
-                minCost = dug + Math.min(toDig, minCost);
+                minCost =  Math.min(dug + toDig, minCost);
             }
         }
     	
