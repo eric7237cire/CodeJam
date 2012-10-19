@@ -162,6 +162,16 @@ public class Main {
         return newNode;
     }
     
+    private int getNewMin(int minCost, int costAddition, Node newNode) {
+        Integer toDig = getDepthOutOfCave(newNode);
+        
+        if (toDig == null) {
+            return minCost;
+        }
+        
+        return Math.min(costAddition + toDig, minCost);
+    }
+    
     Integer getDepthOutOfCave(Node n) {
         
         int minCost = Integer.MAX_VALUE;
