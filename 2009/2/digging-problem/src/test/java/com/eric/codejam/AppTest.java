@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +55,7 @@ public class AppTest extends TestCase {
     /**
      * Rigourous Test :-)
      */
-    public void testBaseCase() throws UnsupportedEncodingException {
+    public void testBaseCase() {
         String testCase = "2 2 1 \n" + 
                 "..\n" + 
                 "##";
@@ -64,7 +65,7 @@ public class AppTest extends TestCase {
         assertEquals("Case #1: Yes 1", output);
     }
     
-    public void testBaseCaseNo() throws UnsupportedEncodingException {
+    public void testBaseCaseNo() {
         String testCase = "2 2 1 \n" + 
                 ".#\n" + 
                 "##";
@@ -74,7 +75,7 @@ public class AppTest extends TestCase {
         assertEquals("Case #1: No", output);
     }
     
-    public void testDigRightTwo() throws UnsupportedEncodingException {
+    public void testDigRightTwo()  {
         String testCase = "3 3 1 " + 
                 "...\n" + 
                 "###\n" +
@@ -82,10 +83,10 @@ public class AppTest extends TestCase {
         
         String output = getOutput(testCase);
 
-        assertEquals("Case #1: Yes 3", output);
+        assertEquals("Case #1: Yes 2", output);
     }
     
-    public void testDigFallTwo() throws UnsupportedEncodingException {
+    public void testDigFallTwo()  {
         String testCase = "3 3 2 " + 
                 "...\n" + 
                 "###\n" +
@@ -96,7 +97,7 @@ public class AppTest extends TestCase {
         assertEquals("Case #1: Yes 1", output);
     }
     
-    public void testMultistep() throws UnsupportedEncodingException {
+    public void testMultistep() {
         String testCase = 
                 "5 8 3 " +
 "........\n" +
@@ -108,5 +109,63 @@ public class AppTest extends TestCase {
         String output = getOutput(testCase);
 
         assertEquals("Case #1: Yes 2", output);
+    }
+    
+    public void testWalkRight() {
+        String testCase = 
+                "4 5 1\n" +
+        ".....\n" +
+        "##..#\n" +
+        "###..\n" +
+        "####.\n";
+
+        String output = getOutput(testCase);
+
+        assertEquals("Case #1: Yes 0", output);
+    }
+   
+    
+    public void testDigThenWalk1() {
+        String testCase = 
+                "4 5 1\n" +
+        ".....\n" +
+        "#####\n" +
+        "..###\n" +
+        ".#...\n";
+
+        String output = getOutput(testCase);
+
+        assertEquals("Case #1: Yes 2", output);
+    }
+    
+    public void testFindRange() {
+        String testCase = 
+                "4 5 1\n" +
+        ".....\n" +
+        "#####\n" + //1
+        "..###\n" +
+        ".#...\n";
+        
+        Scanner sc = new Scanner(testCase);
+
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        PrintStream pos = new PrintStream(os);
+
+        Main m = Main.buildMain(sc);
+        
+        int[] range = m.findWalkableRange(1, //row
+                2, //col
+                1, 2); //dug
+        
+        assertTrue( ArrayUtils.isEquals(new int[] {2, 2}, range) );
+        
+        range = m.findWalkableRange(1, 2, 2, 4);
+        
+        assertTrue( ArrayUtils.isEquals(new int[] {2, 4}, range) );
+        
+        range = m.findWalkableRange(0, 3);
+        
+        assertTrue( ArrayUtils.isEquals(new int[] {0, 4}, range) );
+        
     }
 }

@@ -4,15 +4,17 @@ import com.google.common.collect.ComparisonChain;
 
 public class Node implements Comparable<Node> {
 	 int row;
-     int left;
-     int right;
+	 int col;
+     int openLeft;
+     int openRight;
      
      
-     public Node(int level, int left, int right) {
+     public Node(int row, int col, int left, int right) {
 		super();
-		this.row = level;
-		this.left = left;
-		this.right = right;
+		this.col   = col;
+		this.row = row;
+		this.openLeft = left;
+		this.openRight = right;
 	}
 
 
@@ -23,8 +25,9 @@ public class Node implements Comparable<Node> {
      public int compareTo(Node o) {
          return ComparisonChain.start()
                  .compare(row, o.row)
-                 .compare(left, o.left)
-                 .compare(right,  o.right)
+                 .compare(col, o.col)
+                 .compare(openLeft, o.openLeft)
+                 .compare(openRight,  o.openRight)
                  .result();
      }
 
@@ -34,8 +37,11 @@ public class Node implements Comparable<Node> {
      */
     @Override
     public String toString() {
-        return "Node [row=" + row + ", left=" + left + ", right=" + right + "]";
+        return "Node [row=" + row + ", col=" + col + ", openLeft=" + openLeft
+                + ", openRight=" + openRight + "]";
     }
-     
+
+
+  
      
 }
