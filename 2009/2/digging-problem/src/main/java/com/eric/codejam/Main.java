@@ -20,6 +20,8 @@ public class Main {
     int cols;
     int fallingDistance;
     
+    int iterations;
+    
     Map<Node, Integer> minCostMap;
      
     int[] findOpenRange(int row, int col) {
@@ -193,6 +195,8 @@ public class Main {
         	return minCostMap.get(n);
         }
         
+        ++iterations;
+        
         int[] walkableRange = findWalkableRange(n.row, n.col, n.openLeft, n.openRight);
         
     	for(int position = walkableRange[0]; position <= walkableRange[1]; ++position) {
@@ -310,6 +314,7 @@ public class Main {
         
         Node n = new Node(0, 0, range[0], range[1]);
 
+        log.error("Starting case {}", caseNumber);
         Integer cost = m.getDepthOutOfCave(n);
         
         if (cost == null) {
@@ -317,10 +322,13 @@ public class Main {
         } else {
             os.println("Case #" + caseNumber + ": Yes " + cost);
         }
+        
+        log.error("Finished Starting case {}.  Iterations {}", caseNumber, m.iterations);
     }
 
     Main() {
     	minCostMap = new HashMap<>();
+    	iterations = 0;
     }
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
