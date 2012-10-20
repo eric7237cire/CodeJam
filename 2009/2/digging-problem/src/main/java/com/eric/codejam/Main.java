@@ -1,8 +1,6 @@
 package com.eric.codejam;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,18 +9,19 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eric.codejam.Node.Direction;
 import com.google.common.base.Preconditions;
 
 public class Main {
     
-    boolean [][] grid; //false #  true .
-    int rows;
-    int cols;
-    int fallingDistance;
+    final boolean [][] grid; //false #  true .
+    final int rows;
+    final int cols;
+    final int fallingDistance;
     
     int iterations;
     
-    Map<Node, Integer> minCostMap;
+    final  Map<Node, Integer> minCostMap;
      
     int[] findOpenRange(int row, int col) {
     	return findOpenRange(row, col, col, col);
@@ -30,11 +29,11 @@ public class Main {
     
     int[] findOpenRange(int row, int col, int dugLeft, int dugRight) {
         
-        Preconditions.checkArgument(row < rows - 1);
+        Preconditions.checkArgument(row >= 0 && row < rows );
         Preconditions.checkArgument(col >= 0 && col < cols);
         Preconditions.checkArgument(dugLeft >= 0 && dugLeft <= col);
         Preconditions.checkArgument(dugRight < cols && dugRight >= col);
-        Preconditions.checkState(!grid[row+1][col]);
+        Preconditions.checkState(row == rows - 1 || !grid[row+1][col]);
         int right = col;
         int left = col;
         
@@ -140,7 +139,7 @@ public class Main {
     }
    
    
-    Node getNewNodeAfterDigging(Node n, int position, int digEntryCol) {
+    Node getNewNodeAfterDigging(Node n, int initialPosition, int digEntryCol) {
         Integer row = getFallRow(n.row + 1, digEntryCol);             
         
         if (row == null) {
@@ -148,26 +147,23 @@ public class Main {
             return null;
         }
         
-        if (row == rows - 1) {
-            return new Node(row, position, digEntryCol, digEntryCol);
-        }
         
         //If n+1, range is extented by what has been dug
         int[] range = null;
         
         if (row == n.row + 1) {
-            if (digEntryCol >= position) {
-                range = findOpenRange(row, digEntryCol, position, digEntryCol);
-            } else {
-                range = findOpenRange(row, digEntryCol, digEntryCol, position);
-            }
+        	//only fell 1 row
+        	range = new int[] { digEntryCol, initialPosition };
+            
+            Preconditions.checkState(range[0] == digEntryCol || range[1] == digEntryCol);
+            
+            return new Node(row, digEntryCol, initialPosition);
         } else {
-            range = findOpenRange(row, digEntryCol, digEntryCol, digEntryCol);
-        }
-                
-        Node newNode = new Node(row, digEntryCol, range[0], range[1]);
+        	//fell many rows
+            return new Node(row, digEntryCol, digEntryCol);
+        }                
         
-        return newNode;
+        
     }
     
     private int getNewMin(int minCost, int costAddition, Node newNode) {
@@ -197,7 +193,9 @@ public class Main {
         
         ++iterations;
         
-        int[] walkableRange = findWalkableRange(n.row, n.col, n.openLeft, n.openRight);
+        int[] walkableRange = n.direction == Direction.RIGHT ?
+        		findWalkableRange(n.row, n.col, n.col, n.dugToCol) :
+        			findWalkableRange(n.row, n.col, n.dugToCol, n.col);
         
     	for(int position = walkableRange[0]; position <= walkableRange[1]; ++position) {
     		for(int rightPosition = position + 1; rightPosition <= walkableRange[1]; ++rightPosition) {
@@ -229,7 +227,7 @@ public class Main {
     	
     	if (walkableRange[1] < cols - 1 &&
     	        (grid[n.row][walkableRange[1] + 1]
-    	                || walkableRange[1] + 1 <= n.openRight
+    	                || walkableRange[1] + 1 <= Math.max(n.dugToCol, n.col)
     	                )
     	        
     	        ){
@@ -243,16 +241,19 @@ public class Main {
     	        }
     	        Preconditions.checkState(grid[row][col]);
     	        Preconditions.checkState(!grid[row+1][col]);
-    	        int[] range = findOpenRange(row, col);
-    	        Node newNode = new Node(row, col, range[0], range[1]);
+    	        //int[] range = findOpenRange(row, col);
+    	        Node newNode = new Node(row, col, col);
     	        minCost = getNewMin(minCost, 0,  newNode);
+    	        
+    	        //newNode = new Node(row, col, range[1]);
+    	        //minCost = getNewMin(minCost, 0,  newNode);
     	    }
     	}
     	
     	
     	if (walkableRange[0] > 0 && (
     	        grid[n.row][walkableRange[0] - 1]
-    	        || walkableRange[0] - 1 >= n.openLeft        
+    	        || walkableRange[0] - 1 >= Math.min(n.dugToCol, n.col)        
     	        )) {
             int col = walkableRange[0] - 1;
             Integer row = getFallRow(n.row + 1, col);   
@@ -264,9 +265,9 @@ public class Main {
                 }
                 Preconditions.checkState(grid[row][col]);
     	        Preconditions.checkState(!grid[row+1][col]);
-                int[] range = findOpenRange(row, col);
-                Node newNode = new Node(row, col, range[0], range[1]);
-                minCost = getNewMin(minCost, 0,  newNode);
+                
+                Node newNode = new Node(row, col, col);
+    	        minCost = getNewMin(minCost, 0,  newNode);
             }
         }
     	
@@ -281,16 +282,9 @@ public class Main {
     }
 
     static Main buildMain(Scanner scanner) {
-        Main m = new Main();
-        m.rows = scanner.nextInt();
-        m.cols = scanner.nextInt();
-        m.fallingDistance = scanner.nextInt();
         
-        m.grid = new boolean[m.rows][m.cols];
-
-        //Pattern delim = scanner.delimiter();
-        //scanner.useDelimiter("");
-
+        Main m = new Main(scanner.nextInt(), scanner.nextInt(), scanner.nextInt());
+        
         for (int r = 0; r < m.rows; ++r) {
             String rowStr = scanner.next();
             for(int c = 0; c < m.cols; ++c) {
@@ -312,9 +306,9 @@ public class Main {
         
         int[] range = m.findOpenRange(0, 0, 0, 0);
         
-        Node n = new Node(0, 0, range[0], range[1]);
+        Node n = new Node(0, 0, range[1]);
 
-        log.error("Starting case {}", caseNumber);
+        log.info("Starting case {}", caseNumber);
         Integer cost = m.getDepthOutOfCave(n);
         
         if (cost == null) {
@@ -323,15 +317,22 @@ public class Main {
             os.println("Case #" + caseNumber + ": Yes " + cost);
         }
         
-        log.error("Finished Starting case {}.  Iterations {}", caseNumber, m.iterations);
+        log.info("Finished Starting case {}.  Iterations {}", caseNumber, m.iterations);
     }
 
-    Main() {
-    	minCostMap = new HashMap<>();
+
+    public Main( int rows, int cols, int fallingDistance
+			) {
+		super();
+		this.grid = new boolean[rows][cols];
+		this.rows = rows;
+		this.cols = cols;
+		this.fallingDistance = fallingDistance;
+		minCostMap = new HashMap<>();
     	iterations = 0;
-    }
+	}
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
+	final static Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String args[]) throws Exception {
 

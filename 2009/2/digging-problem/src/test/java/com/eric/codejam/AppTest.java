@@ -129,8 +129,7 @@ public class AppTest {
 
 	@Test
 	public void testMultistep() {
-		String testCase = "5 8 3 " + "........\n" + "########\n" + "...#.###\n"
-				+ "####..##\n" + "###.##..\n";
+		String testCase = testData.get("testMultistep");
 
 		String output = getOutput(testCase);
 

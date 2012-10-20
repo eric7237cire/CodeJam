@@ -1,9 +1,6 @@
 <testData>
 
-<test name="testCantWalk1">
-aoeu
-
-aoeuhhh
+<test name="">
 
 </test>
 
@@ -13,6 +10,19 @@ aoeuhhh
 ##
 
 </test>
+
+<test name="testMultistep">
+5 8 3 
+........
+########
+...#.###
+####..##
+###.##..
+
+</test>
+
+public void () {
+		String testCase = 
 
 
 </testData>
