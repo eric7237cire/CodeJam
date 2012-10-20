@@ -306,16 +306,12 @@ public class Main {
 
     	Main m = Main.buildMain(scanner);
         
-       // scanner.useDelimiter(delim);
-        
         int[] range = m.findOpenRange(0, 0, 0, 0);
         
         Node n = new Node(0, 0, range[0], range[1]);
 
-        //log.debug("Grid {}", grid);
         Integer cost = m.getDepthOutOfCave(n);
         
-        //log.info("Real Case #" + caseNumber + ": " + cost);
         if (cost == null) {
             os.println("Case #" + caseNumber + ": No");
         } else {
@@ -338,15 +334,15 @@ public class Main {
 
         Scanner scanner = new Scanner(new File(args[0]));
 
-        OutputStream os = new FileOutputStream("output.txt");
+       // OutputStream os = new FileOutputStream("output.txt");
 
-        PrintStream pos = new PrintStream(os);
+      //  PrintStream pos = new PrintStream(os);
 
         int t = scanner.nextInt();
 
         for (int i = 1; i <= t; ++i) {
 
-            handleCase(i, scanner, pos);
+            handleCase(i, scanner, System.out);
 
         }
 
