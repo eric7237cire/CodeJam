@@ -1,5 +1,6 @@
 package com.eric.codejam;
 
+import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
 
 public class Node implements Comparable<Node> {
@@ -15,6 +16,26 @@ public class Node implements Comparable<Node> {
 		this.row = row;
 		this.openLeft = left;
 		this.openRight = right;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Node){
+	        final Node other = (Node) obj;
+	        return Objects.equal(col, other.col)
+	            && Objects.equal(row, other.row)
+	            && Objects.equal(openLeft, other.openLeft)
+	            && Objects.equal(openRight, other.openRight);
+	    } else{
+	        return false;
+	    }
+	}
+
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(col, row, openLeft, openRight);
 	}
 
 

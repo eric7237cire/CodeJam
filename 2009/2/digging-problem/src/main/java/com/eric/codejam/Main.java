@@ -4,8 +4,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
-import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,8 @@ public class Main {
     int rows;
     int cols;
     int fallingDistance;
+    
+    Map<Node, Integer> minCostMap;
      
     int[] findOpenRange(int row, int col) {
     	return findOpenRange(row, col, col, col);
@@ -186,6 +189,10 @@ public class Main {
             return 0;
         }
         
+        if (minCostMap.containsKey(n)) {
+        	return minCostMap.get(n);
+        }
+        
         int[] walkableRange = findWalkableRange(n.row, n.col, n.openLeft, n.openRight);
         
     	for(int position = walkableRange[0]; position <= walkableRange[1]; ++position) {
@@ -227,6 +234,7 @@ public class Main {
     	    
     	    if (row != null) {
     	        if (row == rows - 1) {
+    	        	minCostMap.put(n, 0);
     	            return 0;
     	        }
     	        Preconditions.checkState(grid[row][col]);
@@ -247,6 +255,7 @@ public class Main {
             
             if (row != null) {
                 if (row == rows - 1) {
+                	minCostMap.put(n, 0);
                     return 0;
                 }
                 Preconditions.checkState(grid[row][col]);
@@ -258,10 +267,12 @@ public class Main {
         }
     	
     	if (minCost == Integer.MAX_VALUE) {
+    		minCostMap.put(n, null);
     	    return null;
     	}
     	
     	log.debug("Returning {} for node {}", minCost, n);
+    	minCostMap.put(n, minCost);
     	return minCost;
     }
 
@@ -313,7 +324,7 @@ public class Main {
     }
 
     Main() {
-
+    	minCostMap = new HashMap<>();
     }
 
     final static Logger log = LoggerFactory.getLogger(Main.class);

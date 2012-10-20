@@ -1,0 +1,18 @@
+<testData>
+
+<test name="testCantWalk1">
+aoeu
+
+aoeuhhh
+
+</test>
+
+<test name="testBaseCase">
+2 2 1
+..
+##
+
+</test>
+
+
+</testData>
