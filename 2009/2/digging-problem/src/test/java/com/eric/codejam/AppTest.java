@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -181,8 +180,6 @@ public class AppTest {
 
 		Scanner sc = new Scanner(testCase);
 
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		PrintStream pos = new PrintStream(os);
 
 		Main m = Main.buildMain(sc);
 
