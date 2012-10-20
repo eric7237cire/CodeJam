@@ -138,6 +138,45 @@ public class AppTest extends TestCase {
         assertEquals("Case #1: Yes 2", output);
     }
     
+    public void testCantWalk1() {
+   	 String testCase = 
+   			 "3 6 1\n" +
+   	 "..####\n" +
+   	 "##.#.#\n" +
+   	 "###.##\n";
+        String output = getOutput(testCase);
+
+        assertEquals("Case #1: Yes 2", output);
+
+   }
+    
+    public void testCantWalk2() {
+   	 String testCase = 
+   			 "3 5 2\n" +
+   	 "...##\n" +
+   	 "#.#.#\n" +
+   	 "##.##\n";
+        String output = getOutput(testCase);
+
+        assertEquals("Case #1: No", output);
+
+   }
+    
+    public void testSmall14() {
+    	 String testCase = 
+    			 "6 6 2\n" +
+    	 "......\n" +
+    	 "######\n" +
+    	 "######\n" +
+    	 "######\n" +
+    	 "##.#.#\n" +
+    	 "###.##\n";
+         String output = getOutput(testCase);
+
+         //assertEquals("Case #1: Yes 2", output);
+
+    }
+    
     public void testFindRange() {
         String testCase = 
                 "4 5 1\n" +

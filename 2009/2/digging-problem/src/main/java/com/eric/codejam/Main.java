@@ -19,6 +19,9 @@ public class Main {
     int cols;
     int fallingDistance;
      
+    int[] findOpenRange(int row, int col) {
+    	return findOpenRange(row, col, col, col);
+    }
     
     int[] findOpenRange(int row, int col, int dugLeft, int dugRight) {
         
@@ -163,6 +166,9 @@ public class Main {
     }
     
     private int getNewMin(int minCost, int costAddition, Node newNode) {
+    	if (newNode == null) {
+    		return minCost;
+    	}
         Integer toDig = getDepthOutOfCave(newNode);
         
         if (toDig == null) {
@@ -172,7 +178,7 @@ public class Main {
         return Math.min(costAddition + toDig, minCost);
     }
     
-    Integer getDepthOutOfCave(Node n) {
+    Integer getDepthOutOfCave(final Node n) {
         
         int minCost = Integer.MAX_VALUE;
         
@@ -191,19 +197,9 @@ public class Main {
     		    
     		    Node newNode = getNewNodeAfterDigging(n, position, digEntryCol);
     		    
-    		    if (newNode == null) {
-    		        continue;
-    		    }
-    		    
     		    int dug = 1 + Math.abs(digEntryCol - position);
     	        
-    	        Integer toDig = getDepthOutOfCave(newNode);
-    	        
-    	        if (toDig == null) {
-    	            continue;
-    	        }
-    	        
-    	        minCost =  Math.min(dug + toDig, minCost);
+    	        minCost = getNewMin(minCost, dug,  newNode);
     		}
     	   	
     	
@@ -214,19 +210,9 @@ public class Main {
                 
                 Node newNode = getNewNodeAfterDigging(n, position, digEntryCol);
                 
-                if (newNode == null) {
-                    continue;
-                }
-                
                 int dug = 1 + Math.abs(digEntryCol - position);
                 
-                Integer toDig = getDepthOutOfCave(newNode);
-                
-                if (toDig == null) {
-                    continue;
-                }
-                
-                minCost =  Math.min(dug + toDig, minCost);
+                minCost = getNewMin(minCost, dug,  newNode);
             }
         }
     	
@@ -243,10 +229,11 @@ public class Main {
     	        if (row == rows - 1) {
     	            return 0;
     	        }
-    	        int[] range = findOpenRange(row, col, n.openLeft, n.openRight);
+    	        Preconditions.checkState(grid[row][col]);
+    	        Preconditions.checkState(!grid[row+1][col]);
+    	        int[] range = findOpenRange(row, col);
     	        Node newNode = new Node(row, col, range[0], range[1]);
-    	        int cost = getDepthOutOfCave(newNode);
-    	        minCost = Math.min(cost, minCost);
+    	        minCost = getNewMin(minCost, 0,  newNode);
     	    }
     	}
     	
@@ -262,10 +249,11 @@ public class Main {
                 if (row == rows - 1) {
                     return 0;
                 }
-                int[] range = findOpenRange(row, col, n.openLeft, n.openRight);
+                Preconditions.checkState(grid[row][col]);
+    	        Preconditions.checkState(!grid[row+1][col]);
+                int[] range = findOpenRange(row, col);
                 Node newNode = new Node(row, col, range[0], range[1]);
-                int cost = getDepthOutOfCave(newNode);
-                minCost = Math.min(cost, minCost);
+                minCost = getNewMin(minCost, 0,  newNode);
             }
         }
     	
@@ -273,6 +261,7 @@ public class Main {
     	    return null;
     	}
     	
+    	log.debug("Returning {} for node {}", minCost, n);
     	return minCost;
     }
 

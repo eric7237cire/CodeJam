@@ -3,10 +3,10 @@ package com.eric.codejam;
 import com.google.common.collect.ComparisonChain;
 
 public class Node implements Comparable<Node> {
-	 int row;
-	 int col;
-     int openLeft;
-     int openRight;
+	 final int row;
+	 final int col;
+	 final int openLeft;
+	 final int openRight;
      
      
      public Node(int row, int col, int left, int right) {
