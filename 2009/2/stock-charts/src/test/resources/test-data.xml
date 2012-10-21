@@ -4,6 +4,14 @@
 
 </test>
 
+<test name="onpaper">
+4 1
+3
+1
+3
+2
+</test>
+
 <test name="sample1">
 3 4
 1 2 3 4
