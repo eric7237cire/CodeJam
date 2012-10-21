@@ -85,17 +85,40 @@ public class AppTest {
 
 	}
 
-	/**
-	 * Rigourous Test :-)
-	 */
 	@Test
-	public void testBaseCase() {
-		String testCase = testData.get("testBaseCase");
+	public void testSmall14() {
+		String testCase = testData.get("small14");
 
 		String output = getOutput(testCase);
 
-		assertEquals("Case #1: Yes 1", output);
+		assertEquals("Case #1: 2", output);
+	}
+	
+	@Test
+	public void testSample1() {
+		String testCase = testData.get("sample1");
+
+		String output = getOutput(testCase);
+
+		assertEquals("Case #1: 2", output);
 	}
 
+	@Test
+	public void testSample2() {
+		String testCase = testData.get("sample2");
+
+		String output = getOutput(testCase);
+
+		assertEquals("Case #1: 3", output);
+	}
+	
+	@Test
+	public void testSample3() {
+		String testCase = testData.get("sample3");
+
+		String output = getOutput(testCase);
+
+		assertEquals("Case #1: 2", output);
+	}
 	
 }
