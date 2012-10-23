@@ -1,0 +1,4 @@
+set JAVA_HOME=C:\Program Files\Java\jdk1.7.0_02
+set MVN_HOME=C:\apache-maven-3.0.4
+set M2_HOME=C:\apache-maven-3.0.4
+Path=C:\Program Files\Java\jdk1.7.0_02\bin;C:\Ruby193\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\Program Files\QuickTime\QTSystem\;C:\Program Files\Fichiers communs\Roxio Shared\DLLShared\;C:\Program Files\Fichiers communs\Roxio Shared\9.0\DLLShared\;C:\Program Files\NTRU Cryptosystems\NTRU TCG Software Stack\bin\;C:\Program Files\Wave Systems Corp\Gemalto\Access Client\v5\;C:\Program Files\TortoiseSVN\bin;C:\apache-maven-3.0.4\bin;C:\Program Files\Java\jdk1.5.0_22;C:\Program Files\jEdit;C:\Program Files\Subversion\bin;C:\Program Files\Support Tools\;C:\apache-ant-1.8.2\bin;C:\Program Files\Java\jdk1.5.0_22\bin;C:\Program Files\Git\cmd;C:\Program Files\Git\bin;C:\Program Files\MySQL\MySQL Server 5.5\bin;C:\Program Files\MiKTeX 2.9\miktex\bin\;C:\Documents and Settings\g-cg34-frmp\Mes documents\Notes\Data
