@@ -38,20 +38,7 @@ public class Main {
 	 * Take center, find most extreme point away from this center
 	 */
 	private void intersectionPointCircle() {
-		/**
-		 * y - y.s = (y.p - y.s) / (x.p - x.s)  (x - x.s)
-		 * m = (y.p - y.s) / (x.p - x.s)
-		 * b = y.s-m*x.s
-		 * 
-		 * (x-x.p)2 + (y-y.p)2 = r.p^2
-		 * 
-		 * x2 -2x*x.p +x.p^2 + (mx + b - y.p)2 = r.p2
-		 * c = b - y.p
-		 * 
-		 * x2 - 2x*x.p + x.p^2 + m2x2 + 2mcx + y.p^2 - r.p^2 = 0
-		 * 
-		 * -B +/- sqrt(B^2 - 4 A C) /  2 A
-		 */
+		
 	}
 
 	public static void handleCase(int caseNumber, Scanner scanner,
