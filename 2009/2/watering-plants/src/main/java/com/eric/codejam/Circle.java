@@ -24,8 +24,8 @@ public class Circle {
      * x2 -2x*x.p +x.p^2 + (mx + b - y.p)2 = r.p2
      * c = b - y.p
      * 
-     * x2 - 2x*x.p + x.p^2 + m2x2 + 2mcx + y.p^2 - r.p^2 = 0
-     * (1+m2) x2 + (2mc - 2x.p)x + (x.p^2 + y.p^2 - r.p^2) = 0;
+     * x2 - 2x*x.p + x.p^2 + m2x2 + 2mcx + c^2 - r.p^2 = 0
+     * (1+m2) x2 + (2mc - 2x.p)x + (x.p^2 + c^2 - r.p^2) = 0;
      * 
      * -B +/- sqrt(B^2 - 4 A C) /  2 A
      */
@@ -46,12 +46,12 @@ Point[] ret = handleBaseCasesPointsIntersectingLineOriginatingAtP(p);
 	    
 	    double A = 1 + m*m;
 	    double B = 2 * m * c - 2 * x;
-	    double C = x *x + y * y - r * r;
+	    double C = x *x + c * c - r * r;
 	    
-	    double y1 = (-B + Math.sqrt(B*B - 4 * A * C)) / (2 * A);
-	    double y2 = (-B - Math.sqrt(B*B - 4 * A * C)) / (2 * A);
+	    double x1 = (-B + Math.sqrt(B*B - 4 * A * C)) / (2 * A);
+	    double x2 = (-B - Math.sqrt(B*B - 4 * A * C)) / (2 * A);
 	    
-	    return buildCloseFar(l.getPointGivenY(y1), l.getPointGivenY(y2), p);
+	    return buildCloseFar(l.getPointGivenX(x1), l.getPointGivenX(x2), p);
 	    
 	}
 	
