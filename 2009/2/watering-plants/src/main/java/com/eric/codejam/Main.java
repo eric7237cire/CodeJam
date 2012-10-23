@@ -4,136 +4,54 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 public class Main {
 
-	final List<List<Integer>> stocks; // false # true .
-	final int n;
-	final int k;
 
-	//Left to right
-	boolean[][] canMatch;
-
-	int iterations;
+	int iterations ;
+	
+	int n;
+	List<Circle> plants;
 	
 	
-	
-	//Right to Left
-	BiMap<Integer, Integer> matchesMap;
-	//Right hand side of the bipartite graph
-	boolean[] seen;
-	
-	public int findAllAugmentingPaths() {
-		matchesMap = HashBiMap.create();
-		int count = 0;
-		for(int i = 0; i < n; ++i) {
-			seen = new boolean[n];
-			/*Is there an augmenting path?
-			 * If so, then the node belongs to a combined graph.
-			 * Otherwise, it is the lowest stock chart on a new combined graph
-			 */
-			if (!findAugmentingPath(i)) {
-				++count;
-			}
-			
-			printAugmentingPaths();
-		}
+	private void pickSplinkerLocation() {
 		
-		return count;
 	}
 	
-	private void printAugmentingPaths() {
-		Map<Integer, Integer> leftToRightMatches = matchesMap.inverse();
-		log.info("Print all paths\n\n");
-		for(int lhsVertex = 0; lhsVertex < n; ++lhsVertex) {
-			//Only looking for unmatched vertices
-			if (leftToRightMatches.containsKey(lhsVertex)) {
-				continue;
-			}
-			log.info("Path Start");
-			//Check if another lhsVertex has a match ending on the vertex,
-			//which is why the right->left map is used
-			Integer nextLhsVertex = lhsVertex;
-			do {
-				log.info("Path {}", nextLhsVertex);
-				nextLhsVertex = matchesMap.get(nextLhsVertex);
-				
-			} while (nextLhsVertex != null);
-			
-		}
+	/*
+	 * Line from center through plant circle.  Find furthest point(s).
+	 * 
+	 * If 1, move center closer to that point
+	 * If 2 or 3, if 180 then done, otherwise move towards them both (line between 2 more extreme points, halfway)
+	 * 
+	 * Make a triangle, if centre circle inside, then the points are not on the same side
+	 */
+	private void findFurthestIntersectionPoints() {
+		
 	}
 	
-	private boolean findAugmentingPath(int lhsVertex) {
-		/* 
-		 * The vertex is part of the left hand side
+	/*
+	 * Take center, find most extreme point away from this center
+	 */
+	private void intersectionPointCircle() {
+		/**
+		 * y - y.s = (y.p - y.s) / (x.p - x.s)  (x - x.s)
+		 * m = (y.p - y.s) / (x.p - x.s)
+		 * b = y.s-m*x.s
+		 * 
+		 * (x-x.p)2 + (y-y.p)2 = r.p^2
+		 * 
+		 * x2 -2x*x.p +x.p^2 + (mx + b - y.p)2 = r.p2
+		 * c = b - y.p
+		 * 
+		 * x2 - 2x*x.p + x.p^2 + m2x2 + 2mcx + y.p^2 - r.p^2 = 0
+		 * 
+		 * -B +/- sqrt(B^2 - 4 A C) /  2 A
 		 */
-		
-		//Loop through all right hand side vertices
-		for(int rhsVertex = 0; rhsVertex < n; ++rhsVertex) {
-			if (!canMatch[lhsVertex][rhsVertex]) {
-				continue;
-			}
-			if (seen[rhsVertex]) {
-				continue;
-			}
-			
-			seen[rhsVertex] = true;
-			
-			/*Here the edge is either already in M or not.
-			 * If its not we are done, we found a path.  Otherwise
-			 * we try to rematch the connected lhsvertex to another greater rhsVertex .
-			 */
-			if (!matchesMap.containsKey(rhsVertex) || findAugmentingPath(matchesMap.get(rhsVertex))) {
-				
-				//If it exists, free the existing match edge
-				Integer removed = matchesMap.inverse().remove(lhsVertex);
-				
-				matchesMap.put(rhsVertex,  lhsVertex);
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	private void buildCanMatch() {
-		canMatch = new boolean[n][n];
-
-		for (int i = 0; i < n; ++i) {
-			
-			for (int j = 0; j < n; ++j) {
-				boolean canMatchB = isStrictlyGreater(stocks.get(i), stocks.get(j));
-				canMatch[i][j] = canMatchB;
-				
-			}
-		}
-	}
-	
-	
-
-	
-
-	
-
-	private boolean isStrictlyGreater(List<Integer> a, List<Integer> b) {
-		
-		Preconditions.checkArgument(a.size() == k && b.size() == k);
-		for (int i = 0; i < a.size(); ++i) {
-			if (a.get(i) <= b.get(i)) {
-				return false;
-			}			
-		}
-
-		return true;
 	}
 
 	public static void handleCase(int caseNumber, Scanner scanner,
@@ -141,7 +59,7 @@ public class Main {
 
 		Main m = Main.buildMain(scanner);
 
-		int min = m.findAllAugmentingPaths();
+		int min = 5;
 
 		log.info("Starting case {}", caseNumber);
 
@@ -152,31 +70,22 @@ public class Main {
 	}
 
 	private static Main buildMain(Scanner scanner) {
-		Main m = new Main(scanner.nextInt(), scanner.nextInt());
+		Main m = new Main(scanner.nextInt());
 
 
-		for (int n = 0; n < m.n; ++n) {
-			List<Integer> values = new ArrayList<>(m.k);
-			for (int k = 0; k < m.k; ++k) {
-				int value = scanner.nextInt();
-				values.add(value);
-			}
-			m.stocks.add(values);
+		for(int i = 0; i < m.n; ++i) {
+			m.plants.add(new Circle(scanner.nextInt(),scanner.nextInt(),scanner.nextInt()));
 		}
 
-		m.buildCanMatch();
-
-	
-		//m.findDisjointSets();
 		return m;
 	}
 
-	public Main(int n, int k) {
+	public Main(int n) {
 		super();
+
 		this.n = n;
-		this.k = k;
 		
-		this.stocks = new ArrayList<>(n);
+		this.plants = new ArrayList<>();
 
 	}
 
