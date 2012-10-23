@@ -168,17 +168,19 @@ public class AppTest {
         Point[] pts1 = c1.getPointsIntersectingLineOriginatingAtP(p);
         
         log.debug("{} {}", pts1[0], pts1[1]);
-        /*
+        
+        Point[] pts2 = c1.getPointsIntersectingLineOriginatingAtP_second(p);
+        
+        log.debug("{} {}", pts2[0], pts2[1]);
+        
         assertTrue( l.onLine(pts1[0]));
         assertTrue( l.onLine(pts1[1]));
         assertTrue( c1.onCircle(pts1[0]));
         assertTrue( c1.onCircle(pts1[0]));
         assertFalse(pts1[0].equals(pts1[1]));
-        */
         
-        Point[] pts2 = c1.getPointsIntersectingLineOriginatingAtP_second(p);
         
-        log.debug("{} {}", pts2[0], pts2[1]);
+        
         
         assertTrue( l.onLine(pts2[0]));
         assertTrue( l.onLine(pts2[1]));

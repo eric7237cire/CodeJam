@@ -92,7 +92,7 @@ angle = tan-1 (m)
 	    double x2 = transCircle.x + transCircle.r * Math.cos(angle+Math.PI);
         double y2 = transCircle.y + transCircle.r * Math.sin(angle+Math.PI);
 
-        return buildCloseFar(new Point(x1, y1), new Point(x2,y2), p);
+        return buildCloseFar(new Point(x1+p.getX(), y1+p.getY()), new Point(x2+p.getX(),y2+p.getY()), p);
         
 	}
 	
