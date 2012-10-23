@@ -1,53 +1,93 @@
 package com.eric.codejam;
 
+import com.google.common.base.Preconditions;
+
 public class Line {
     private double m;
     private double b;
+
+    private enum Type {
+        NORMAL, VERTICAL, HORIZONTAL
+    }
+
+    private Type type;
+
     public Line(double m, double b) {
         super();
         this.m = m;
         this.b = b;
+        type = Type.NORMAL;
     }
-    
+
     public Line(Point a, Point b) {
-        m = (a.getY() - b.getY() ) / (a.getX() - b.getX());
+        if (DoubleComparator.compareStatic(a.getX(), b.getX()) == 0) {
+            type = Type.VERTICAL;
+            this.b = a.getX();
+            this.m = Double.POSITIVE_INFINITY;
+            return;
+        }
+
+        if (DoubleComparator.compareStatic(a.getY(), b.getY()) == 0) {
+            type = Type.HORIZONTAL;
+            this.b = a.getY();
+            this.m = 0;
+            return;
+        }
+        type = Type.NORMAL;
+        m = (a.getY() - b.getY()) / (a.getX() - b.getX());
         this.b = a.getY() - m * a.getX();
     }
+
     /**
      * @return the m
      */
     public double getM() {
         return m;
     }
+
     /**
      * @param m the m to set
      */
     public void setM(double m) {
         this.m = m;
     }
+
     /**
      * @return the b
      */
     public double getB() {
         return b;
     }
+
     /**
      * @param b the b to set
      */
     public void setB(double b) {
         this.b = b;
     }
-    
+
     public Point getPointGivenX(double x) {
+        Preconditions.checkState(type == Type.NORMAL);
         return new Point(x, m * x + b);
+
     }
-    
+
     public Point getPointGivenY(double y) {
-        return new Point( (y-b) / m, y);
+        Preconditions.checkState(type == Type.NORMAL);
+        return new Point((y - b) / m, y);
     }
-    
+
     public boolean onLine(Point a) {
-        Point b = getPointGivenY(a.getY());
-        return a.equals(b);
+        if (type == Type.NORMAL) {
+            Point b = getPointGivenY(a.getY());
+            return a.equals(b);
+        } else if (type == Type.HORIZONTAL) {
+            return DoubleComparator.compareStatic(a.getY(), b) == 0;
+        } else if (type == Type.VERTICAL) {
+            return DoubleComparator.compareStatic(a.getX(), b) == 0;
+        }
+
+        throw new IllegalStateException("huh");
+
     }
 }

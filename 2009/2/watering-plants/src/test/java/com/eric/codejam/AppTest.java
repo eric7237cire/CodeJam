@@ -123,7 +123,7 @@ public class AppTest {
 	}
 
 	@Test
-	public void testFurthestPoint() {
+	public void testIntersectingPoint() {
 	    Circle c1 = null;
 	    Point p = null;
 	    
@@ -134,13 +134,18 @@ public class AppTest {
         
         Point[] pts1 = c1.getPointsIntersectingLineOriginatingAtP(p);
         
+        log.debug("{} {}", pts1[0], pts1[1]);
+        
         assertTrue( l.onLine(pts1[0]));
         assertTrue( l.onLine(pts1[1]));
         assertTrue( c1.onCircle(pts1[0]));
         assertTrue( c1.onCircle(pts1[0]));
         assertFalse(pts1[0].equals(pts1[1]));
         
+        
         Point[] pts2 = c1.getPointsIntersectingLineOriginatingAtP_second(p);
+        
+        log.debug("{} {}", pts2[0], pts2[1]);
         
         assertTrue( l.onLine(pts2[0]));
         assertTrue( l.onLine(pts2[1]));
@@ -148,15 +153,121 @@ public class AppTest {
         assertTrue( c1.onCircle(pts2[0]));
         assertFalse(pts1[0].equals(pts2[1]));
 	    
-	    //Vertical / Horizontal line
-		 c1 = new Circle(4, 4, 2);
-		p = new Point(4, 1);
-		
-		//Point f = c1.getFurthestPointFrom(p);
-		//Inside circle
-		//assertEquals(new Point(4, 6), f);
 	}
 	
+	@Test
+    public void testIntersectingPoint2() {
+        Circle c1 = null;
+        Point p = null;
+        
+        c1 = new Circle(7, 2, 5);
+        p = new Point(-3, 4);
+        
+        Line l = new Line(p, c1.getCenter());
+        
+        Point[] pts1 = c1.getPointsIntersectingLineOriginatingAtP(p);
+        
+        log.debug("{} {}", pts1[0], pts1[1]);
+        /*
+        assertTrue( l.onLine(pts1[0]));
+        assertTrue( l.onLine(pts1[1]));
+        assertTrue( c1.onCircle(pts1[0]));
+        assertTrue( c1.onCircle(pts1[0]));
+        assertFalse(pts1[0].equals(pts1[1]));
+        */
+        
+        Point[] pts2 = c1.getPointsIntersectingLineOriginatingAtP_second(p);
+        
+        log.debug("{} {}", pts2[0], pts2[1]);
+        
+        assertTrue( l.onLine(pts2[0]));
+        assertTrue( l.onLine(pts2[1]));
+        assertTrue( c1.onCircle(pts2[0]));
+        assertTrue( c1.onCircle(pts2[0]));
+        assertFalse(pts1[0].equals(pts2[1]));
+        
+    }
+	
+	@Test
+    public void testIntersectingPointVertical() {
+        Circle c1 = null;
+        Point p = null;
+        
+        c1 = new Circle(-3, -3, 7);
+        p = new Point(-3, -14);
+        
+        Line l = new Line(p, c1.getCenter());
+        
+        Point closePoint = new Point(-3, -10);
+        Point farPoint = new Point(-3, 4);
+        
+        Point[] pts1 = c1.getPointsIntersectingLineOriginatingAtP(p);
+        
+        assertEquals(pts1[0], closePoint);
+        assertEquals(pts1[1], farPoint);
+        
+        log.debug("{} {}", pts1[0], pts1[1]);
+        
+        assertTrue( l.onLine(pts1[0]));
+        assertTrue( l.onLine(pts1[1]));
+        assertTrue( c1.onCircle(pts1[0]));
+        assertTrue( c1.onCircle(pts1[0]));
+        assertFalse(pts1[0].equals(pts1[1]));
+                
+        Point[] pts2 = c1.getPointsIntersectingLineOriginatingAtP_second(p);
+        
+        log.debug("{} {}", pts2[0], pts2[1]);
+        
+        assertTrue( l.onLine(pts2[0]));
+        assertTrue( l.onLine(pts2[1]));
+        assertTrue( c1.onCircle(pts2[0]));
+        assertTrue( c1.onCircle(pts2[0]));
+        assertFalse(pts1[0].equals(pts2[1]));
+        
+        assertEquals(pts1[0], pts2[0]);
+        assertEquals(pts1[1], pts2[1]);
+        
+    }
+	
+	@Test
+    public void testIntersectingPointHorizontal() {
+	    Circle c1 = null;
+        Point p = null;
+        
+        c1 = new Circle(5, -3, 2);
+        p = new Point(15, -3);
+        
+        Line l = new Line(p, c1.getCenter());
+        
+        Point closePoint = new Point(7, -3);
+        Point farPoint = new Point(3, -3);
+        
+        Point[] pts1 = c1.getPointsIntersectingLineOriginatingAtP(p);
+        
+        assertEquals(pts1[0], closePoint);
+        assertEquals(pts1[1], farPoint);
+        
+        log.debug("{} {}", pts1[0], pts1[1]);
+        
+        assertTrue( l.onLine(pts1[0]));
+        assertTrue( l.onLine(pts1[1]));
+        assertTrue( c1.onCircle(pts1[0]));
+        assertTrue( c1.onCircle(pts1[0]));
+        assertFalse(pts1[0].equals(pts1[1]));
+                
+        Point[] pts2 = c1.getPointsIntersectingLineOriginatingAtP_second(p);
+        
+        log.debug("{} {}", pts2[0], pts2[1]);
+        
+        assertTrue( l.onLine(pts2[0]));
+        assertTrue( l.onLine(pts2[1]));
+        assertTrue( c1.onCircle(pts2[0]));
+        assertTrue( c1.onCircle(pts2[0]));
+        assertFalse(pts1[0].equals(pts2[1]));
+        
+        assertEquals(pts1[0], pts2[0]);
+        assertEquals(pts1[1], pts2[1]);
+    }
 	
 	
 }

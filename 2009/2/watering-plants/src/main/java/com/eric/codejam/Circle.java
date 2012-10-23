@@ -31,6 +31,12 @@ public class Circle {
      */
 	public Point[] getPointsIntersectingLineOriginatingAtP(Point p) {
 	    
+Point[] ret = handleBaseCasesPointsIntersectingLineOriginatingAtP(p);
+        
+        if (ret != null) {
+            return ret;
+        }
+        
 	    Point s = new Point(x, y);
 	    Line l = new Line(s, p);
 	    
@@ -42,10 +48,22 @@ public class Circle {
 	    double B = 2 * m * c - 2 * x;
 	    double C = x *x + y * y - r * r;
 	    
-	    double y1 = -B + Math.sqrt(B*B - 4 * A * C) / (2 * A);
-	    double y2 = -B - Math.sqrt(B*B - 4 * A * C) / (2 * A);
+	    double y1 = (-B + Math.sqrt(B*B - 4 * A * C)) / (2 * A);
+	    double y2 = (-B - Math.sqrt(B*B - 4 * A * C)) / (2 * A);
 	    
-	    return new Point[] { l.getPointGivenY(y1), l.getPointGivenY(y2) };
+	    return buildCloseFar(l.getPointGivenY(y1), l.getPointGivenY(y2), p);
+	    
+	}
+	
+	private Point[] buildCloseFar(Point a, Point b, Point ref) {
+	    double distA = a.distance(ref);
+	    double distB = b.distance(ref);
+	    
+	    if (distA <= distB) {
+	        return new Point[] { a, b };
+	    }
+	    
+	    return new Point[] { b, a };
 	    
 	}
 	
@@ -56,6 +74,11 @@ y = cy + r * sin(a)
 angle = tan-1 (m)
      */
 	public Point[] getPointsIntersectingLineOriginatingAtP_second(Point p) {
+	    Point[] ret = handleBaseCasesPointsIntersectingLineOriginatingAtP(p);
+	    
+	    if (ret != null) {
+	        return ret;
+	    }
 	    Circle transCircle = new Circle(this);
 	    //move point to origin 
 	    transCircle.y = this.y - p.getY();
@@ -69,8 +92,21 @@ angle = tan-1 (m)
 	    double x2 = transCircle.x + transCircle.r * Math.cos(angle+Math.PI);
         double y2 = transCircle.y + transCircle.r * Math.sin(angle+Math.PI);
 
-        return new Point[] {new Point(x1, y1), new Point(x2,y2) };
+        return buildCloseFar(new Point(x1, y1), new Point(x2,y2), p);
         
+	}
+	
+	private Point[] handleBaseCasesPointsIntersectingLineOriginatingAtP(Point p) {
+	    if (this.getCenter().equals(p)) {
+	        return new Point[] {p, p};
+	    }
+	    if (DoubleComparator.compareStatic(p.getX(), x) == 0) {
+            return buildCloseFar( new Point(x, y - r), new Point(x, y + r), p);
+        }
+        if (DoubleComparator.compareStatic(p.getY(), y) == 0) {
+            return buildCloseFar( new Point(x - r, y), new Point(x + r, y), p);
+        }
+        return null;
 	}
 	
 	private final static double DOUBLE_TOLERANCE = 0.000001d;

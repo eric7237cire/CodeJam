@@ -18,4 +18,7 @@ public class DoubleComparator implements Comparator<Double> {
         return Double.compare(o1,o2);
     }
     
+    static public int compareStatic(Double o1, Double o2) {
+        return new DoubleComparator().compare(o1, o2);
+    }
 }
