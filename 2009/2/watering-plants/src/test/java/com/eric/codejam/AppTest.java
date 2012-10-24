@@ -1,7 +1,8 @@
 package com.eric.codejam;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -12,8 +13,6 @@ import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
-import junit.framework.Assert;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -90,14 +89,6 @@ public class AppTest {
 
 	
 	
-	@Test
-	public void testSample1() {
-		String testCase = testData.get("sample1");
-
-		String output = getOutput(testCase);
-
-		//assertEquals("Case #1: 2", output);
-	}
 	
 	private final static double DOUBLE_THRESHOLD = 0.000001d;
 	
@@ -271,5 +262,29 @@ public class AppTest {
         assertEquals(pts1[1], pts2[1]);
     }
 	
+	@Test
+	public void testCircle3Points() {
+		Circle a = new Circle(2, 3, 3);
+		//Circle b = new Circle(5, 3, 2);
+		Circle b = new Circle(4.4142135623731, 1.5857864376269, 2);
+		
+		Circle c = new Circle(3, 6, 1);
+		
+		Circle ans = Circle.getCircleContaining(a, b, c);
+		
+		assertEquals(3, ans.getX(), DoubleComparator.TOLERANCE);
+		assertEquals(3, ans.getY(), DoubleComparator.TOLERANCE);
+		assertEquals(4, ans.getR(), DoubleComparator.TOLERANCE);
+		
+		 b = new Circle(5, 3, 2);
+		//Circle b = new Circle(4.4142135623731, 1.5857864376269, 2);
+		
+		
+		ans = Circle.getCircleContaining(a, b, c);
+		
+		assertEquals(3, ans.getX(), DoubleComparator.TOLERANCE);
+		assertEquals(3, ans.getY(), DoubleComparator.TOLERANCE);
+		assertEquals(4, ans.getR(), DoubleComparator.TOLERANCE);
+	}
 	
 }

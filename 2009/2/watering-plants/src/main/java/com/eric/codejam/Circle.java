@@ -1,15 +1,27 @@
 package com.eric.codejam;
 
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.RealMatrix;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+
 public class Circle {
+	
+	final static Logger log = LoggerFactory.getLogger(Circle.class);
+	
 	double x;
 	double y;
-	int r;
-	public Circle(int x, int y, int r) {
+	double r;
+	public Circle(double x, double y, double r) {
 		super();
 		this.x = x;
 		this.y = y;
 		this.r = r;
 	}
+
+	
 	
 	public Circle(Circle c) {
 	    this.x = c.x;
@@ -118,7 +130,75 @@ angle = tan-1 (m)
 	    
 	    return Math.abs(rCalc - r) < DOUBLE_TOLERANCE;
 	}
-
+	
+	public static Circle getCircleContaining(Circle circle1, Circle circle2, Circle circle3) {
+		 
+		
+		
+		
+		RealMatrix circ1_2 = new Array2DRowRealMatrix( getABCD(circle1, circle2) );
+		RealMatrix circ1_3 = new Array2DRowRealMatrix( getABCD(circle1, circle3) );
+		RealMatrix circ2_3 = new Array2DRowRealMatrix( getABCD(circle2, circle3) );
+		
+		
+		RealMatrix ry = circ1_2.scalarMultiply( 1d / circ1_2.getEntry(0, 0))
+				.add(circ1_3.scalarMultiply( -1d / circ1_3.getEntry(0, 0)));
+		
+		ry = ry.scalarMultiply(1d / ry.getEntry(1,  0));
+		log.debug("{} {}", ry.getRowDimension(), ry.getColumnDimension());
+		
+		
+		RealMatrix rx = circ1_3.scalarMultiply( 1d / circ1_3.getEntry(1, 0))
+				.add(circ2_3.scalarMultiply( -1d / circ2_3.getEntry(1, 0)));
+		
+		rx = rx.scalarMultiply(1d / rx.getEntry(0,  0));
+		
+		double M = rx.getEntry(3, 0);
+		double N = -1 * rx.getEntry(2, 0);
+		
+		double P = ry.getEntry(3, 0);
+		double Q = -1 * ry.getEntry(2, 0);
+		
+		double x1 = circle1.getX();
+		double y1 = circle1.getY();
+		double r1 = circle1.getR();
+		//double s1 = -1;
+		double a = N*N + Q*Q - 1;
+		double b = 2*M*N - 2*N*x1 + 2*P*Q - 2*Q*y1 + 2*r1;
+		double c = x1*x1 + M*M - 2*M*x1 + P*P + y1*y1 - 2*P*y1 - r1*r1;
+		
+		double rs = (-b + Math.sqrt(b*b - 4 *a*c)) / (2*a);
+		double rs2 = (-b - Math.sqrt(b*b - 4 *a*c)) / (2*a);
+		
+		//take positive one
+		rs = Math.max(rs2,  rs);
+		double xs = M+N*rs;
+		double ys = P+Q*rs;
+		return new Circle(xs,ys,rs);
+		//return null;
+		
+	}
+	
+	/**
+	 * 
+	 * @param circle1
+	 * @param circle2
+	 * @return
+	 */
+	private static double[] getABCD(Circle circle1, Circle circle2) {
+		//Ax + By + Cr = d
+		return new double[] {
+				2*circle2.getX() - 2 *circle1.getX(),
+				2*circle2.getY() - 2 *circle1.getY(),
+				2*circle1.getR() - 2 *circle2.getR(),
+				circle1.getR()*circle1.getR() 
+				- circle2.getR()*circle2.getR()
+				- circle1.getX()*circle1.getX()
+				+ circle2.getX()*circle2.getX()
+				- circle1.getY()*circle1.getY()
+				+ circle2.getY()*circle2.getY()
+		};
+	}
     /**
      * @return the x
      */
@@ -147,21 +227,21 @@ angle = tan-1 (m)
         this.y = y;
     }
 
-    /**
-     * @return the r
-     */
-    public int getR() {
-        return r;
-    }
-
-    /**
-     * @param r the r to set
-     */
-    public void setR(int r) {
-        this.r = r;
-    }
+  
 	
-    public Point getCenter() {
+    public double getR() {
+		return r;
+	}
+
+
+
+	public void setR(double r) {
+		this.r = r;
+	}
+
+
+
+	public Point getCenter() {
         return new Point(x, y);
     }
 	

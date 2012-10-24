@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 public class DoubleComparator implements Comparator<Double> {
 
-    private final static double TOLERANCE = 0.0000001d;
+    public final static double TOLERANCE = 0.0000001d;
     
     /* (non-Javadoc)
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
