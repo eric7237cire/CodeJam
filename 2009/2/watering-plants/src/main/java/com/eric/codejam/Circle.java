@@ -1,6 +1,7 @@
 package com.eric.codejam;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,23 @@ public class Circle {
 	    this.r = c.r;
 	}
 	
+	private static Circle getCircleContaining_vertical(Circle circleA, Circle circleB) {
+		Circle top = circleA.getY() >= circleB.getY() ? circleA : circleB;
+		Circle bottom = circleA.getY() < circleB.getY() ? circleA : circleB;
+		
+		double yTop = top.getY() + top.getR();
+		double yBottom = bottom.getY() - bottom.getR();
+		
+		double y = (yTop + yBottom) / 2;
+		
+		return new Circle(circleA.getX(), y, (yTop - yBottom) / 2);
+		
+		
+	}
 	public static Circle getCircleContaining(Circle circleA, Circle circleB) {
+		if (DoubleComparator.compareStatic(circleA.getX(), circleB.getX()) == 0) {
+			return getCircleContaining_vertical(circleA, circleB);
+		}
 	    //da and db, distance from center to edge of circle a and b
 	    
 	    //D distance between center of a and b
@@ -170,6 +187,17 @@ angle = tan-1 (m)
 	    return Math.abs(rCalc - r) < DOUBLE_TOLERANCE;
 	}
 	
+	public boolean contains(Circle c) {
+		//Radius must be >= c
+		if (r < c.getR()) {
+			return false;
+		}
+		
+		double d = c.getCenter().distance(getCenter());
+		
+		return DoubleComparator.compareStatic(d, r - c.r) <= 0;
+	}
+	
 	public static Circle getCircleContaining(Circle circle1, Circle circle2, Circle circle3) {
 		 
 		
@@ -178,6 +206,13 @@ angle = tan-1 (m)
 		RealMatrix circ1_2 = new Array2DRowRealMatrix( getABCD(circle1, circle2) );
 		RealMatrix circ1_3 = new Array2DRowRealMatrix( getABCD(circle1, circle3) );
 		RealMatrix circ2_3 = new Array2DRowRealMatrix( getABCD(circle2, circle3) );
+		
+		RealMatrix rm = new Array2DRowRealMatrix( new double[][] { circ1_2.getColumn(0), circ1_3.getColumn(0), circ2_3.getColumn(0) });
+		double[][] rmDat = new double[3][3];
+		rm.copySubMatrix(0, 2, 0, 2, rmDat);
+		rm = new Array2DRowRealMatrix(rmDat);
+		RealMatrix d = new Array2DRowRealMatrix( new double[] { circ1_2.getEntry(3, 0), circ1_3.getEntry(3, 0),circ2_3.getEntry(3, 0) });
+		double det = new LUDecomposition(rm).getDeterminant();
 		
 		
 		RealMatrix ry = circ1_2.scalarMultiply( 1d / circ1_2.getEntry(0, 0))

@@ -30,9 +30,9 @@ public class Display extends Frame {
 		this.circles.add(c);
 	}
 	private void drawCircle(Circle c, Graphics g) {
-		double blowUpFactor = 50.0;
-		int transX = 100;
-		int transY = 100;
+		double blowUpFactor = 3.0;
+		int transX = 200;
+		int transY = 200;
 		int r = (int) (2 * c.getR()*blowUpFactor);
 		this.getGraphics().drawOval((int) (c.getX()*blowUpFactor) + transX - r/2,
 				(int) (c.getY()*blowUpFactor) + transY - r/2, r, r);

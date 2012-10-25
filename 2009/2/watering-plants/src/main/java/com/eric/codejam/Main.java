@@ -2,12 +2,21 @@ package com.eric.codejam;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
 
 public class Main {
 
@@ -17,9 +26,65 @@ public class Main {
 	int n;
 	List<Circle> plants;
 	
+	Map<Circle, List<Integer>> plantsCovered = new HashMap<>();
 	
-	private void pickSplinkerLocation() {
+	public double bruteForce() {
 		
+		plantsCovered = new HashMap<>();
+		
+		//all pairs
+		Iterator<Long> it = new CombinationsIterator(n, 2);
+		
+		while(it.hasNext()) {
+			final Long combin = it.next();
+			
+			List<Circle> chosenCircles = new ArrayList<>();
+			for(int chosen = 0; chosen < n; ++chosen) {				
+				if ((1 << chosen & combin) != 0) {
+					chosenCircles.add(plants.get(chosen));
+				}
+			}
+			
+			Preconditions.checkState(chosenCircles.size() == 2);
+			
+			Circle sprinkler = Circle.getCircleContaining(chosenCircles.get(0), chosenCircles.get(1));
+			
+			List<Integer> plantsInside = new ArrayList<>();
+			
+			for(int plant = 0; plant < n; ++plant) {
+				if (sprinkler.contains(plants.get(plant))) {
+					plantsInside.add(plant);
+				}
+			}
+			
+			Preconditions.checkState(plantsInside.size() >= 2);
+			plantsCovered.put(sprinkler, plantsInside);
+		}
+		
+		
+		double minRadius = Double.MAX_VALUE;
+		
+		for(Circle s1 : plantsCovered.keySet() ) {
+			
+			
+			if (plantsCovered.get(s1).size() >= n - 1) {
+				minRadius = Math.min(s1.getR(), minRadius);
+				continue;
+			}
+			
+			for(Circle s2 : plantsCovered.keySet() ) {
+				Set<Integer> plants = new HashSet<>();
+				plants.addAll(plantsCovered.get(s1));
+				plants.addAll(plantsCovered.get(s2));
+				if (plants.size() < n) {
+					continue;
+				}
+				double r = Math.max(s1.getR(), s2.getR());
+				minRadius = Math.min(r, minRadius);
+			}
+		}
+		
+		return minRadius;
 	}
 	
 	/*
@@ -46,11 +111,14 @@ public class Main {
 
 		Main m = Main.buildMain(scanner);
 
-		int min = 5;
+		double min = m.bruteForce();
 
 		log.info("Starting case {}", caseNumber);
+		
+		DecimalFormat df = new DecimalFormat("0.######");
+		df.setRoundingMode(RoundingMode.HALF_UP);
 
-		os.println("Case #" + caseNumber + ": " + min);
+		os.println("Case #" + caseNumber + ": " + df.format(min));
 
 		log.info("Finished Starting case {}.  Iterations {}", caseNumber,
 				m.iterations);
@@ -87,6 +155,7 @@ public class Main {
 
 		Scanner scanner = new Scanner(new File(args[0]));
 
+		
 		// OutputStream os = new FileOutputStream("output.txt");
 
 		// PrintStream pos = new PrintStream(os);
