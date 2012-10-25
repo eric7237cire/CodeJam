@@ -244,5 +244,12 @@ angle = tan-1 (m)
 	public Point getCenter() {
         return new Point(x, y);
     }
+
+
+
+	@Override
+	public String toString() {
+		return "Circle [x=" + x + ", y=" + y + ", r=" + r + "]";
+	}
 	
 }

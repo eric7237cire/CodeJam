@@ -265,7 +265,7 @@ public class AppTest {
 	@Test
 	public void testCircle3Points() {
 		Circle a = new Circle(2, 3, 3);
-		//Circle b = new Circle(5, 3, 2);
+		
 		Circle b = new Circle(4.4142135623731, 1.5857864376269, 2);
 		
 		Circle c = new Circle(3, 6, 1);
@@ -281,6 +281,40 @@ public class AppTest {
 		
 		
 		ans = Circle.getCircleContaining(a, b, c);
+		
+		Display d = new Display();
+		d.addCircle(a);
+		d.addCircle(b);
+		d.addCircle(c);
+		d.addCircle(ans);
+		d.setBounds(0, 0, 400,  400);
+		//d.setVisible(true);
+		
+		
+		assertEquals(3, ans.getX(), DoubleComparator.TOLERANCE);
+		assertEquals(3, ans.getY(), DoubleComparator.TOLERANCE);
+		assertEquals(4, ans.getR(), DoubleComparator.TOLERANCE);
+	}
+	
+	@Test
+	public void testInvalidCircle3Points() {
+		Circle a = new Circle(3, 5, 4);
+		
+		Circle b = new Circle(2, 1, 5);
+		
+		Circle c = new Circle(4, 3, 1);
+		
+		Circle ans = Circle.getCircleContaining(a, b, c);
+		
+		Display d = new Display();
+		d.addCircle(a);
+		d.addCircle(b);
+		d.addCircle(c);
+		d.addCircle(ans);
+		d.setBounds(0, 0, 400,  400);
+	//	d.setVisible(true);
+		
+		
 		
 		assertEquals(3, ans.getX(), DoubleComparator.TOLERANCE);
 		assertEquals(3, ans.getY(), DoubleComparator.TOLERANCE);
