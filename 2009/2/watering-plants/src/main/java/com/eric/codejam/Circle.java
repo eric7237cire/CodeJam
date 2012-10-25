@@ -28,6 +28,45 @@ public class Circle {
 	    this.y = c.y;
 	    this.r = c.r;
 	}
+	
+	public static Circle getCircleContaining(Circle circleA, Circle circleB) {
+	    //da and db, distance from center to edge of circle a and b
+	    
+	    //D distance between center of a and b
+	    
+	    //D = r_a + d_a + d_b + r_b
+	    //2r_a + d_a = 2r_b + d_b
+	    
+	    Line lineAB = new Line(circleA.getCenter(), circleB.getCenter());
+	    
+	    double m = lineAB.getM();
+	    double b = lineAB.getB();
+	    
+	    double r_a = circleA.getR();
+	    double r_b = circleB.getR();
+	    double x_a = circleA.getX();
+	    double y_a = circleA.getY();
+	    
+	    double D = circleA.getCenter().distance(circleB.getCenter());
+	    double d_b = (D + r_a - 3 * r_b) / 2;
+	    double d_a = 2 * r_b + d_b - 2 * r_a;
+	    
+	    double A = 1 + m*m;
+	    double B = -2*x_a - 2*m*(y_a-b);
+	    double C = x_a * x_a + (y_a-b)*(y_a-b) - d_a * d_a - 2 * d_a * r_a - r_a*r_a;
+	    
+	    double x1_c = (-B + Math.sqrt(B*B - 4 *A * C)) / (2*A);
+	    double x2_c = (-B - Math.sqrt(B*B - 4 *A * C)) / (2*A);
+	    
+	    double x_c = x1_c >= Math.min(circleA.getX(), circleB.getX()) && x1_c <= Math.max(circleA.getX(), circleB.getX()) ?
+	    		x1_c : x2_c;
+	    
+	    double y_c = m * x1_c + b;
+	    double r_c = d_a+2*r_a;
+	    return new Circle(x_c, y_c, r_c);
+	}
+	
+	
 	/**
      *
      * 
