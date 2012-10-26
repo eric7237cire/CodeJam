@@ -6,6 +6,8 @@ import org.apache.commons.math3.linear.RealMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
+
 
 
 public class Circle {
@@ -201,31 +203,93 @@ angle = tan-1 (m)
 	public static Circle getCircleContaining(Circle circle1, Circle circle2, Circle circle3) {
 		 
 		
-		
+		if (circle1.getY() == circle2.getY() && circle3.getY() == circle2.getY()) {
+			//since circles do not intersect
+			double diffx_12 = Math.abs(circle1.getX() - circle2.getX());
+			double diffx_13 = Math.abs(circle1.getX() - circle3.getX());
+			double diffx_23 = Math.abs(circle2.getX() - circle3.getX());
+			
+			if (diffx_12 >= diffx_13 && diffx_12 >= diffx_23) {
+				return getCircleContaining_vertical(circle1, circle2);
+			}
+			if (diffx_13 >= diffx_12 && diffx_13 >= diffx_23) {
+				return getCircleContaining_vertical(circle1, circle3);
+			}
+			if (diffx_23 >= diffx_13 && diffx_23 >= diffx_12) {
+				return getCircleContaining_vertical(circle2, circle3);
+			}
+			
+			throw new IllegalStateException("h");
+		}
 		
 		RealMatrix circ1_2 = new Array2DRowRealMatrix( getABCD(circle1, circle2) );
 		RealMatrix circ1_3 = new Array2DRowRealMatrix( getABCD(circle1, circle3) );
 		RealMatrix circ2_3 = new Array2DRowRealMatrix( getABCD(circle2, circle3) );
 		
+		/*
 		RealMatrix rm = new Array2DRowRealMatrix( new double[][] { circ1_2.getColumn(0), circ1_3.getColumn(0), circ2_3.getColumn(0) });
 		double[][] rmDat = new double[3][3];
 		rm.copySubMatrix(0, 2, 0, 2, rmDat);
 		rm = new Array2DRowRealMatrix(rmDat);
 		RealMatrix d = new Array2DRowRealMatrix( new double[] { circ1_2.getEntry(3, 0), circ1_3.getEntry(3, 0),circ2_3.getEntry(3, 0) });
 		double det = new LUDecomposition(rm).getDeterminant();
+		*/
 		
+		RealMatrix ry = null;
+		RealMatrix rx = null;
 		
-		RealMatrix ry = circ1_2.scalarMultiply( 1d / circ1_2.getEntry(0, 0))
-				.add(circ1_3.scalarMultiply( -1d / circ1_3.getEntry(0, 0)));
+		//Special case where cant eliminate x
+		if (  circ1_2.getEntry(1, 0) != 0
+				&& circ1_3.getEntry(1, 0) != 0
+				) {
+			//eliminate x
+			rx = circ1_2.scalarMultiply(1d / circ1_2.getEntry(1, 0)).add(
+					circ1_3.scalarMultiply(-1d / circ1_3.getEntry(1, 0)));
+		} else if (circ1_2.getEntry(1, 0) == 0) {
+			rx = circ1_2;
+		} else {
+			rx = circ1_3;
+		}
 		
+		//eliminate x
+		if (  circ1_3.getEntry(0, 0) != 0
+				&& circ2_3.getEntry(0, 0) != 0
+				) {
+		
+			ry = circ1_3.scalarMultiply(1d / circ1_3.getEntry(0, 0)).add(
+					circ2_3.scalarMultiply(-1d / circ2_3.getEntry(0, 0)));
+		} else if (  circ1_3.getEntry(0, 0) != 0 ) {
+			//x is already gone
+			ry = circ1_3;
+		} else {
+			ry = circ2_3;
+		}
+					
 		ry = ry.scalarMultiply(1d / ry.getEntry(1,  0));
 		log.debug("{} {}", ry.getRowDimension(), ry.getColumnDimension());
 		
-		
-		RealMatrix rx = circ1_3.scalarMultiply( 1d / circ1_3.getEntry(1, 0))
-				.add(circ2_3.scalarMultiply( -1d / circ2_3.getEntry(1, 0)));
-		
 		rx = rx.scalarMultiply(1d / rx.getEntry(0,  0));
+		
+		Preconditions.checkState(ry.getEntry(0, 0) == 0);
+		Preconditions.checkState(rx.getEntry(1, 0) == 0);
+		
+		//Check if xs or ys can be solved for directly instead of in terms of Rs
+		/*
+		if (0 == rx.getEntry(2, 0)) {
+			
+			double xs = rx.getEntry(3, 0);
+			double ys = ry.getEntry(3, 0) - ry.getEntry(0, 0) * xs ;
+			double rs = Math.sqrt((xs-circle1.getX()) * (xs-circle1.getX()) + (ys-circle1.getY()) * (ys-circle1.getY())) + circle1.getR();
+			return new Circle(xs,ys,rs);
+		} else if (0 == ry.getEntry(2, 0)) {
+			
+			double ys = ry.getEntry(3, 0) ;
+			double xs = rx.getEntry(3, 0) - rx.getEntry(1, 0) * ys ;
+			
+			double rs = Math.sqrt((xs-circle1.getX()) * (xs-circle1.getX()) + (ys-circle1.getY()) * (ys-circle1.getY())) + circle1.getR();
+			return new Circle(xs,ys,rs);
+		}*/
+		
 		
 		double M = rx.getEntry(3, 0);
 		double N = -1 * rx.getEntry(2, 0);
@@ -233,10 +297,13 @@ angle = tan-1 (m)
 		double P = ry.getEntry(3, 0);
 		double Q = -1 * ry.getEntry(2, 0);
 		
+		
 		double x1 = circle1.getX();
 		double y1 = circle1.getY();
 		double r1 = circle1.getR();
 		//double s1 = -1;
+		
+		//Substitute xs = M+N*rs, ys = P + Q*rs
 		double a = N*N + Q*Q - 1;
 		double b = 2*M*N - 2*N*x1 + 2*P*Q - 2*Q*y1 + 2*r1;
 		double c = x1*x1 + M*M - 2*M*x1 + P*P + y1*y1 - 2*P*y1 - r1*r1;

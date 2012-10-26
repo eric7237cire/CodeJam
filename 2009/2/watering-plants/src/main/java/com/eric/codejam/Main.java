@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.PrintStream;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -58,6 +60,34 @@ public class Main {
 			}
 			
 			Preconditions.checkState(plantsInside.size() >= 2);
+			plantsCovered.put(sprinkler, plantsInside);
+		}
+		
+		it = new CombinationsIterator(n, 3);
+		
+		while(it.hasNext()) {
+			final Long combin = it.next();
+			
+			List<Circle> chosenCircles = new ArrayList<>();
+			for(int chosen = 0; chosen < n; ++chosen) {				
+				if ((1 << chosen & combin) != 0) {
+					chosenCircles.add(plants.get(chosen));
+				}
+			}
+			
+			Preconditions.checkState(chosenCircles.size() == 3);
+			
+			Circle sprinkler = Circle.getCircleContaining(chosenCircles.get(0), chosenCircles.get(1), chosenCircles.get(2));
+			
+			List<Integer> plantsInside = new ArrayList<>();
+			
+			for(int plant = 0; plant < n; ++plant) {
+				if (sprinkler.contains(plants.get(plant))) {
+					plantsInside.add(plant);
+				}
+			}
+			
+			Preconditions.checkState(plantsInside.size() >= 3);
 			plantsCovered.put(sprinkler, plantsInside);
 		}
 		
@@ -117,6 +147,7 @@ public class Main {
 		
 		DecimalFormat df = new DecimalFormat("0.######");
 		df.setRoundingMode(RoundingMode.HALF_UP);
+		df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
 
 		os.println("Case #" + caseNumber + ": " + df.format(min));
 

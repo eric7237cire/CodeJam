@@ -396,6 +396,44 @@ Case #5: 51
 		assertEquals(7, output, DoubleComparator.TOLERANCE);
 	}
 	
+	@Test 
+	public void testS1Plus() {
+		
+		
+		Circle a = new Circle(20, 10, 2);
+		
+		Circle b = new Circle(20, 20, 2);
+		
+		Circle c = new Circle(40, 10, 3);
+		
+		//120, 115,26
+		
+		Circle ans = Circle.getCircleContaining(a, b, c);
+		
+		assertTrue(ans.contains(a));
+		assertTrue(ans.contains(b));
+		assertTrue(ans.contains(c));
+		
+		/*ans = new Circle(120, 115, 26);
+		
+		
+		
+		Display d = new Display();
+		d.addCircle(a);
+		d.addCircle(b);
+		d.addCircle(c);
+		d.addCircle(ans);
+		d.setBounds(0, 0, 400,  400);
+		d.setVisible(true);
+		
+		assertTrue(true);
+		*/
+		/*assertEquals(120, ans.getX(), DoubleComparator.TOLERANCE);
+		assertEquals(115, ans.getY(), DoubleComparator.TOLERANCE);
+		assertEquals(26, ans.getR(), DoubleComparator.TOLERANCE);
+		*/
+	}
+	
 	@Test
 	public void testS2() {
 		String testCase = testData.get("s2");
@@ -422,10 +460,11 @@ Case #5: 51
 		
 		Circle c = new Circle(100, 130, 1);
 		
+		
 		//120, 115,26
 		
 		Circle ans = Circle.getCircleContaining(a, b, c);
-		ans = new Circle(120, 115, 26);
+		/*ans = new Circle(120, 115, 26);
 		
 		Display d = new Display();
 		d.addCircle(a);
@@ -436,10 +475,10 @@ Case #5: 51
 		d.setVisible(true);
 		
 		assertTrue(true);
-		
-		//assertEquals(3, ans.getX(), DoubleComparator.TOLERANCE);
-		//assertEquals(3, ans.getY(), DoubleComparator.TOLERANCE);
-		//assertEquals(4, ans.getR(), DoubleComparator.TOLERANCE);
+		*/
+		assertEquals(120, ans.getX(), DoubleComparator.TOLERANCE);
+		assertEquals(115, ans.getY(), DoubleComparator.TOLERANCE);
+		assertEquals(26, ans.getR(), DoubleComparator.TOLERANCE);
 	}
 	
 	@Test
