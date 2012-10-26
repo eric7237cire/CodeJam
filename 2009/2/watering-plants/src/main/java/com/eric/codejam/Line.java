@@ -121,6 +121,11 @@ public class Line {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "Line [m=" + m + ", b=" + b + ", type=" + type + "]";
+	}
     
     
 }

@@ -95,7 +95,7 @@ public class Circle {
 	    double x_c = x1_c >= Math.min(circleA.getX(), circleB.getX()) && x1_c <= Math.max(circleA.getX(), circleB.getX()) ?
 	    		x1_c : x2_c;
 	    
-	    double y_c = m * x1_c + b;
+	    double y_c = m * x_c + b;
 	    double r_c = d_a+2*r_a;
 	    return new Circle(x_c, y_c, r_c);
 	}

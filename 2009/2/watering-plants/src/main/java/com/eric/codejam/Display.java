@@ -3,6 +3,7 @@ package com.eric.codejam;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -12,30 +13,75 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Display extends Frame {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4340527108758519768L;
+
+
+	final static Logger log = LoggerFactory.getLogger(Display.class);
+
 
 	String keymsg = "";
 	String mousemsg = "";
 	int mouseX = 30, mouseY = 30;
 	
+	double minX = Double.MAX_VALUE;
+	double maxX = Double.MIN_VALUE;
+	double minY = Double.MAX_VALUE;
+	double maxY = Double.MIN_VALUE;
+	
+	final int minDisplayX;
+	final int maxDisplayX;
+	final int minDisplayY;
+	final int maxDisplayY;
+	
 	List<Circle> circles = new ArrayList<>();
 
-	public Display() {
+	public Display(int width, int height) {
+		setBounds(0, 0, width, height);
+		
+		final int marge = 25;
+		minDisplayX = marge;
+		maxDisplayX = width - marge;
+		minDisplayY = 2*marge;
+		maxDisplayY = height - marge;
+		
 		addKeyListener(new MyKeyAdapter(this));
 		addMouseListener(new MyMouseAdapter(this));
 		addWindowListener(new MyWindowAdapter());
 	}
 
 	public void addCircle(Circle c) {
+		minX = Math.min(c.getX() - c.getR(),  minX);
+		maxX = Math.max(c.getX() + c.getR(),  maxX);
+		minY = Math.min(c.getY() - c.getR(),  minY);
+		maxY = Math.max(c.getY() + c.getR(),  maxY);
 		this.circles.add(c);
 	}
+	
+	private double translateCoord(double coord, double coordMin, double coordMax, double targetCoordMin, double targetCoordMax) {
+		double perc = (coord - coordMin) / (coordMax - coordMin);
+		double r = targetCoordMin + perc * (targetCoordMax - targetCoordMin);
+		return  r;
+	}
+	
+	
 	private void drawCircle(Circle c, Graphics g) {
-		double blowUpFactor = 3.0;
-		int transX = 200;
-		int transY = 200;
-		int r = (int) (2 * c.getR()*blowUpFactor);
-		this.getGraphics().drawOval((int) (c.getX()*blowUpFactor) + transX - r/2,
-				(int) (c.getY()*blowUpFactor) + transY - r/2, r, r);
+		Rectangle r = getBounds();
+		int x = (int) translateCoord(c.getX(),minX,maxX,minDisplayX, maxDisplayX);
+		int y = (int) translateCoord(c.getY(),minY,maxY,minDisplayY, maxDisplayY);
+		int width = (int)  (2*c.getR() / (maxX - minX) * (maxDisplayX - minDisplayX));
+		int height = (int)  (2*c.getR() / (maxY - minY) * (maxDisplayY - minDisplayY));
+		log.debug("DrawCircle {} ({}, {}) width {} height {} ", c, x, y, width, height);
+		
+		this.getGraphics().drawOval((int) (x  - width/2),
+				(int) (y -height / 2), width, height);
 	}
 	
 	public void paint(Graphics g) {
@@ -84,8 +130,11 @@ public class Display extends Frame {
 		public void mousePressed(MouseEvent me) {
 			appWindow.mouseX = me.getX();
 			appWindow.mouseY = me.getY();
-			appWindow.mousemsg = "Mouse Down at " + appWindow.mouseX + ", "
-					+ appWindow.mouseY;
+			appWindow.mousemsg = "Mouse Down at " +
+			translateCoord(appWindow.mouseX, minDisplayX, 
+					maxDisplayX, minX, maxX) + ", "
+					+ translateCoord(appWindow.mouseY, minDisplayY, 
+							maxDisplayY,  minY,  maxY);
 			appWindow.repaint();
 		}
 	}

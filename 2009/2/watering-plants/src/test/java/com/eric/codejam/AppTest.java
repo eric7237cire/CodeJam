@@ -294,12 +294,12 @@ public class AppTest {
 		
 		ans = Circle.getCircleContaining(a, b, c);
 		
-		Display d = new Display();
+		Display d = new Display(600,600);
 		d.addCircle(a);
 		d.addCircle(b);
 		d.addCircle(c);
 		d.addCircle(ans);
-		d.setBounds(0, 0, 400,  400);
+		
 		//d.setVisible(true);
 		
 		
@@ -320,6 +320,14 @@ public class AppTest {
 		assertEquals(7, ans.getY(), DoubleComparator.TOLERANCE);
 		assertEquals(50, ans.getR(), DoubleComparator.TOLERANCE);
 		
+		a = new Circle(430, 1000, 84);
+		
+		b = new Circle(288, 572, 21);
+		
+		ans = Circle.getCircleContaining(a, b);
+		
+		assertTrue(ans.contains(a));
+		assertTrue(ans.contains(b));
 	}
 	
 	@Test
@@ -347,12 +355,7 @@ public class AppTest {
 		
 		Circle ans = Circle.getCircleContaining(a, b, c);
 		
-		Display d = new Display();
-		d.addCircle(a);
-		d.addCircle(b);
-		d.addCircle(c);
-		d.addCircle(ans);
-		d.setBounds(0, 0, 400,  400);
+		
 	//	d.setVisible(true);
 		
 		
@@ -510,6 +513,6 @@ Case #5: 51
 
 		double output = Double.parseDouble(extractAns(getOutput(testCase)));
 		
-		assertEquals(26, output, DoubleComparator.TOLERANCE);
+		assertEquals(51, output, DoubleComparator.TOLERANCE);
 	}
 }

@@ -22,17 +22,44 @@ import com.google.common.base.Preconditions;
 
 public class Main {
 
+	Display d;
+	
+	public void display() {
+		d = new Display(600, 600);
+		
+		for(Circle p : plants) {
+			d.addCircle(p);
+		}
+		
+		for(Circle s : sprinklers) {
+			d.addCircle(s);
+		}
+		
+		d.setVisible(true);
+	}
 
 	int iterations ;
 	
 	int n;
 	List<Circle> plants;
 	
+	Circle[] sprinklers;
+	
 	Map<Circle, List<Integer>> plantsCovered = new HashMap<>();
 	
 	public double bruteForce() {
 		
 		plantsCovered = new HashMap<>();
+		
+		if (n == 1) {
+			sprinklers = new Circle[] { plants.get(0) };
+			return plants.get(0).getR();
+		}
+		
+		if (n == 2) {
+			sprinklers = new Circle[] { plants.get(0), plants.get(1) };
+			return Math.max(plants.get(0).getR(), plants.get(1).getR());
+		}
 		
 		//all pairs
 		Iterator<Long> it = new CombinationsIterator(n, 2);
@@ -99,6 +126,9 @@ public class Main {
 			
 			if (plantsCovered.get(s1).size() >= n - 1) {
 				minRadius = Math.min(s1.getR(), minRadius);
+				if (s1.getR() == minRadius) {
+					sprinklers = new Circle[] { s1 };
+				}
 				continue;
 			}
 			
@@ -111,6 +141,10 @@ public class Main {
 				}
 				double r = Math.max(s1.getR(), s2.getR());
 				minRadius = Math.min(r, minRadius);
+				
+				if (r == minRadius) {
+					sprinklers = new Circle[] { s1, s2 };
+				}
 			}
 		}
 		
@@ -150,9 +184,16 @@ public class Main {
 		df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
 
 		os.println("Case #" + caseNumber + ": " + df.format(min));
+		
+		/*
+		m.display();
+		m.d.toFront();
 
 		log.info("Finished Starting case {}.  Iterations {}", caseNumber,
 				m.iterations);
+		
+		m.d.setVisible(false);
+		m.d.dispose();*/
 	}
 
 	private static Main buildMain(Scanner scanner) {
