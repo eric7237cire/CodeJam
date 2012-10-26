@@ -45,6 +45,21 @@ public class Circle {
 		
 		
 	}
+	
+	private static Circle getCircleContaining_horizontal(Circle circleA, Circle circleB) {
+		Circle top = circleA.getX() >= circleB.getX() ? circleA : circleB;
+		Circle bottom = circleA.getX() < circleB.getX() ? circleA : circleB;
+		
+		double xTop = top.getX() + top.getR();
+		double xBottom = bottom.getX() - bottom.getR();
+		
+		double x = (xTop + xBottom) / 2;
+		
+		return new Circle( x, circleA.getY(), (xTop - xBottom) / 2);
+		
+		
+	}
+	
 	public static Circle getCircleContaining(Circle circleA, Circle circleB) {
 		if (DoubleComparator.compareStatic(circleA.getX(), circleB.getX()) == 0) {
 			return getCircleContaining_vertical(circleA, circleB);
@@ -202,25 +217,29 @@ angle = tan-1 (m)
 	
 	public static Circle getCircleContaining(Circle circle1, Circle circle2, Circle circle3) {
 		 
+		Line line12 = new Line(circle1.getCenter(), circle2.getCenter());
+		Line line23 = new Line(circle2.getCenter(), circle3.getCenter());
 		
-		if (circle1.getY() == circle2.getY() && circle3.getY() == circle2.getY()) {
+		if (line12.equals(line23)) {
 			//since circles do not intersect
-			double diffx_12 = Math.abs(circle1.getX() - circle2.getX());
-			double diffx_13 = Math.abs(circle1.getX() - circle3.getX());
-			double diffx_23 = Math.abs(circle2.getX() - circle3.getX());
+			double diff_12 = circle1.getCenter().distance(circle2.getCenter());
+			double diff_13 = circle1.getCenter().distance(circle3.getCenter());
+			double diff_23 = circle2.getCenter().distance(circle3.getCenter());
 			
-			if (diffx_12 >= diffx_13 && diffx_12 >= diffx_23) {
-				return getCircleContaining_vertical(circle1, circle2);
+			if (diff_12 >= diff_13 && diff_12 >= diff_23) {
+				return getCircleContaining(circle1, circle2);
 			}
-			if (diffx_13 >= diffx_12 && diffx_13 >= diffx_23) {
-				return getCircleContaining_vertical(circle1, circle3);
+			if (diff_13 >= diff_12 && diff_13 >= diff_23) {
+				return getCircleContaining(circle1, circle3);
 			}
-			if (diffx_23 >= diffx_13 && diffx_23 >= diffx_12) {
-				return getCircleContaining_vertical(circle2, circle3);
+			if (diff_23 >= diff_13 && diff_23 >= diff_12) {
+				return getCircleContaining(circle2, circle3);
 			}
 			
 			throw new IllegalStateException("h");
 		}
+		
+		
 		
 		RealMatrix circ1_2 = new Array2DRowRealMatrix( getABCD(circle1, circle2) );
 		RealMatrix circ1_3 = new Array2DRowRealMatrix( getABCD(circle1, circle3) );
@@ -258,7 +277,7 @@ angle = tan-1 (m)
 		
 			ry = circ1_3.scalarMultiply(1d / circ1_3.getEntry(0, 0)).add(
 					circ2_3.scalarMultiply(-1d / circ2_3.getEntry(0, 0)));
-		} else if (  circ1_3.getEntry(0, 0) != 0 ) {
+		} else if (  circ1_3.getEntry(0, 0) == 0 ) {
 			//x is already gone
 			ry = circ1_3;
 		} else {

@@ -414,6 +414,20 @@ Case #5: 51
 		assertTrue(ans.contains(b));
 		assertTrue(ans.contains(c));
 		
+		
+		a = new Circle(20, 10, 3);
+		
+		b = new Circle(30, 10, 3);
+		
+		c = new Circle(40, 10, 3);
+		
+		//120, 115,26
+		
+		ans = Circle.getCircleContaining(a, b, c);
+		
+		assertTrue(ans.contains(a));
+		assertTrue(ans.contains(b));
+		assertTrue(ans.contains(c));
 		/*ans = new Circle(120, 115, 26);
 		
 		
