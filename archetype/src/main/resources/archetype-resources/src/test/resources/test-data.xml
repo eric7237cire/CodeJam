@@ -1,0 +1,29 @@
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+<testData>
+
+<test name="">
+
+</test>
+
+<test name="s1">
+
+</test>
+<test name="s2">
+
+</test>
+
+<test name="s3">
+
+</test>
+
+<test name="s4">
+
+</test>
+
+<test name="s5">
+
+</test>
+
+</testData>

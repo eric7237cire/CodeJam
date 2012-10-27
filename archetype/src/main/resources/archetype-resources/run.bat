@@ -1,0 +1,2 @@
+@echo off
+java -jar .${symbol_escape}target${symbol_escape}${artifactId}-${version}-jar-with-dependencies.jar %1 %2 %3 
