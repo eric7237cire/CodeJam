@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+
 
 public class Main {
 
@@ -38,137 +40,149 @@ public class Main {
 		d.setVisible(true);
 	}
 
-	int iterations ;
+	
+	final static int ITERATION_PRINT = 500000;
 	
 	int n;
 	List<Circle> plants;
 	
 	Circle[] sprinklers;
 	
-	Map<Circle, List<Integer>> plantsCovered = new HashMap<>();
 	
 	public double bruteForce() {
-		
-		plantsCovered = new HashMap<>();
-		
+
+		int iterations = 0;
+
 		if (n == 1) {
 			sprinklers = new Circle[] { plants.get(0) };
 			return plants.get(0).getR();
 		}
-		
+
 		if (n == 2) {
 			sprinklers = new Circle[] { plants.get(0), plants.get(1) };
 			return Math.max(plants.get(0).getR(), plants.get(1).getR());
 		}
-		
-		//all pairs
-		Iterator<Long> it = new CombinationsIterator(n, 2);
-		
-		while(it.hasNext()) {
-			final Long combin = it.next();
-			
-			List<Circle> chosenCircles = new ArrayList<>();
-			for(int chosen = 0; chosen < n; ++chosen) {				
-				if ((1 << chosen & combin) != 0) {
-					chosenCircles.add(plants.get(chosen));
-				}
-			}
-			
-			Preconditions.checkState(chosenCircles.size() == 2);
-			
-			Circle sprinkler = Circle.getCircleContaining(chosenCircles.get(0), chosenCircles.get(1));
-			
-			List<Integer> plantsInside = new ArrayList<>();
-			
-			for(int plant = 0; plant < n; ++plant) {
-				if (sprinkler.contains(plants.get(plant))) {
-					plantsInside.add(plant);
-				}
-			}
-			
-			Preconditions.checkState(plantsInside.size() >= 2);
-			plantsCovered.put(sprinkler, plantsInside);
+
+		Map<Circle, List<Integer>> plantsCovered = new HashMap<>();
+		List<List<Sprinkler>> sizeToSprinkler = new ArrayList<>();
+		for (int i = 0; i < n; ++i) {
+			sizeToSprinkler.add(new ArrayList<Sprinkler>());
 		}
 		
-		it = new CombinationsIterator(n, 3);
-		
-		while(it.hasNext()) {
-			final Long combin = it.next();
-			
-			List<Circle> chosenCircles = new ArrayList<>();
-			for(int chosen = 0; chosen < n; ++chosen) {				
-				if ((1 << chosen & combin) != 0) {
-					chosenCircles.add(plants.get(chosen));
-				}
-			}
-			
-			Preconditions.checkState(chosenCircles.size() == 3);
-			
-			Circle sprinkler = Circle.getCircleContaining(chosenCircles.get(0), chosenCircles.get(1), chosenCircles.get(2));
-			
-			List<Integer> plantsInside = new ArrayList<>();
-			
-			for(int plant = 0; plant < n; ++plant) {
-				if (sprinkler.contains(plants.get(plant))) {
-					plantsInside.add(plant);
-				}
-			}
-			
-			Preconditions.checkState(plantsInside.size() >= 3);
-			plantsCovered.put(sprinkler, plantsInside);
-		}
-		
-		
-		double minRadius = Double.MAX_VALUE;
-		
-		for(Circle s1 : plantsCovered.keySet() ) {
-			
-			
-			if (plantsCovered.get(s1).size() >= n - 1) {
-				minRadius = Math.min(s1.getR(), minRadius);
-				if (s1.getR() == minRadius) {
-					sprinklers = new Circle[] { s1 };
-				}
-				continue;
-			}
-			
-			for(Circle s2 : plantsCovered.keySet() ) {
-				Set<Integer> plants = new HashSet<>();
-				plants.addAll(plantsCovered.get(s1));
-				plants.addAll(plantsCovered.get(s2));
-				if (plants.size() < n) {
+		Set<Long> ignoreK3 = new HashSet<>();
+
+		// all pairs
+		for (int k = 2; k <= 3; ++k) {
+
+			Iterator<Long> it = new CombinationsIterator(n, k);
+
+			while (it.hasNext()) {
+				final long combin = it.next();
+
+				if (k==3 && ignoreK3.contains(combin)) {
 					continue;
 				}
-				double r = Math.max(s1.getR(), s2.getR());
-				minRadius = Math.min(r, minRadius);
+				List<Circle> chosenCircles = new ArrayList<>();
 				
-				if (r == minRadius) {
-					sprinklers = new Circle[] { s1, s2 };
+				for (int chosen = 0; chosen < n; ++chosen) {
+					if ((1L << chosen & combin) != 0) {
+						chosenCircles.add(plants.get(chosen));
+					}
+				}
+
+				Preconditions.checkState(chosenCircles.size() == k);
+
+				Circle sprinkler = k == 2 ? Circle.getCircleContaining(
+						chosenCircles.get(0), chosenCircles.get(1)) : Circle
+						.getCircleContaining(chosenCircles.get(0),
+								chosenCircles.get(1), chosenCircles.get(2));
+
+				List<Integer> plantsInside = new ArrayList<>();
+				long plantsInsideBitSet = 0L;
+				int plantsCount = 0;
+
+				for (int plant = 0; plant < n; ++plant) {
+					if (sprinkler.contains(plants.get(plant))) {
+						plantsInside.add(plant);
+						plantsInsideBitSet |= (1L << plant);
+						plantsCount++;
+						
+						if (k==2 && (1L << plant & combin) == 0) {
+							ignoreK3.add(1L << plant | combin);
+						}
+					}
+				}
+
+				++iterations;
+				if (iterations % ITERATION_PRINT == 0) {
+					log.debug("Iterations {} c k {}", iterations, k);
+				}
+
+				Preconditions.checkState(plantsInside.size() >= k);
+				plantsCovered.put(sprinkler, plantsInside);
+				sizeToSprinkler.get(plantsCount - 1).add(
+						new Sprinkler(sprinkler.getR(), plantsInsideBitSet, sprinkler));
+
+			}
+
+		}
+
+		for (int i = 0; i < n; ++i) {
+			Collections.sort(sizeToSprinkler.get(i));
+		}
+
+		double minRadius = Double.MAX_VALUE;
+
+		long goal = (1L << n) - 1;
+
+		for (int sizeOuter = 1; sizeOuter <= n; ++sizeOuter) {
+
+			for (Sprinkler outer : sizeToSprinkler.get(sizeOuter-1)) {
+
+				if (sizeOuter >= n - 1 && outer.r < minRadius) {
+					minRadius = outer.r;
+					sprinklers = new Circle[] { outer.circle, outer.circle };
+					continue;
+				}
+
+				if (outer.r >= minRadius) {
+					continue;
+				}
+
+				int sizeNeeded = n - sizeOuter;
+
+				for (int size = sizeNeeded; size <= n; ++size) {
+					for (Sprinkler inner : sizeToSprinkler.get(size-1)) {
+						++iterations;
+						if (iterations % ITERATION_PRINT == 0) {
+							log.debug("Iterations {} choose plants", iterations);
+						}
+
+						if (inner.r > outer.r) {
+							break;
+						}
+
+						long combined = outer.plantsCovered
+					| inner.plantsCovered;
+
+						if (combined != goal) {
+							continue;
+						}
+
+						Preconditions.checkState(outer.r <= minRadius);
+						minRadius = outer.r;
+						sprinklers = new Circle[] { outer.circle, inner.circle };
+						break;
+
+					}
 				}
 			}
 		}
-		
+
 		return minRadius;
 	}
 	
-	/*
-	 * Line from center through plant circle.  Find furthest point(s).
-	 * 
-	 * If 1, move center closer to that point
-	 * If 2 or 3, if 180 then done, otherwise move towards them both (line between 2 more extreme points, halfway)
-	 * 
-	 * Make a triangle, if centre circle inside, then the points are not on the same side
-	 */
-	private void findFurthestIntersectionPoints() {
-		
-	}
 	
-	/*
-	 * Take center, find most extreme point away from this center
-	 */
-	private void intersectionPointCircle() {
-		
-	}
 
 	public static void handleCase(int caseNumber, Scanner scanner,
 			PrintStream os) {
@@ -185,12 +199,13 @@ public class Main {
 
 		os.println("Case #" + caseNumber + ": " + df.format(min));
 		
+	
 		/*
 		m.display();
 		m.d.toFront();
 
-		log.info("Finished Starting case {}.  Iterations {}", caseNumber,
-				m.iterations);
+		log.info("Finished Starting case {}.  ", caseNumber
+				);
 		
 		m.d.setVisible(false);
 		m.d.dispose();*/
