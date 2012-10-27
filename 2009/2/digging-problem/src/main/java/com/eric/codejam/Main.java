@@ -10,11 +10,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eric.codejam.Node.Direction;
+import com.eric.codejam.utils.Grid;
 import com.google.common.base.Preconditions;
 
 public class Main {
     
-    final boolean [][] grid; //false #  true .
+    final Grid<Boolean> grid; //false #  true .
+    
     final int rows;
     final int cols;
     final int fallingDistance;
@@ -33,7 +35,7 @@ public class Main {
         Preconditions.checkArgument(col >= 0 && col < cols);
         Preconditions.checkArgument(dugLeft >= 0 && dugLeft <= col);
         Preconditions.checkArgument(dugRight < cols && dugRight >= col);
-        Preconditions.checkState(row == rows - 1 || !grid[row+1][col]);
+        Preconditions.checkState(row == rows - 1 || !grid.getEntry(row+1, col));
         int right = col;
         int left = col;
         
@@ -43,7 +45,7 @@ public class Main {
                 break;
             }
             //space above
-            if (next > dugRight && !grid[row][next]) {
+            if (next > dugRight && !grid.getEntry(row, next)) {
                 break;
             }
             
@@ -58,7 +60,7 @@ public class Main {
                 break;
             }
             //space above
-            if (next < dugLeft && !grid[row][next]) {
+            if (next < dugLeft && !grid.getEntry(row, next)) {
                 break;
             }
             
@@ -78,7 +80,7 @@ public class Main {
     	Preconditions.checkArgument(col >= 0 && col < cols);
     	Preconditions.checkArgument(dugLeft >= 0 && dugLeft <= col);
     	Preconditions.checkArgument(dugRight < cols && dugRight >= col);
-    	Preconditions.checkState(!grid[row+1][col]);
+    	Preconditions.checkState(!grid.getEntry(row+1, col));
     	int right = col;
     	int left = col;
     	
@@ -88,11 +90,11 @@ public class Main {
     	        break;
     	    }
     	    //space above
-    	    if (next > dugRight && !grid[row][next]) {
+    	    if (next > dugRight && !grid.getEntry(row, next)) {
     	        break;
     	    }
     	    //space below
-    	    if (grid[row+1][next]) {
+    	    if (grid.getEntry(row+1, next)) {
     	        break;
     	    }
     	    
@@ -106,11 +108,11 @@ public class Main {
                 break;
             }
             //space above
-            if (next < dugLeft && !grid[row][next]) {
+            if (next < dugLeft && !grid.getEntry(row, next)) {
                 break;
             }
             //cannot walk on space below
-            if (grid[row+1][next]) {
+            if (grid.getEntry(row+1, next)) {
                 break;
             }
             
@@ -124,7 +126,7 @@ public class Main {
     	int r = row;
     	
     	while(r < rows - 1) {
-    		if (!grid[r + 1][col] ) {
+    		if (!grid.getEntry(r + 1, col) ) {
     			break;
     		}
     		++ r;
@@ -226,7 +228,7 @@ public class Main {
         }
     	
     	if (walkableRange[1] < cols - 1 &&
-    	        (grid[n.row][walkableRange[1] + 1]
+    	        (grid.getEntry(n.row, walkableRange[1] + 1)
     	                || walkableRange[1] + 1 <= Math.max(n.dugToCol, n.col)
     	                )
     	        
@@ -239,8 +241,8 @@ public class Main {
     	        	minCostMap.put(n, 0);
     	            return 0;
     	        }
-    	        Preconditions.checkState(grid[row][col]);
-    	        Preconditions.checkState(!grid[row+1][col]);
+    	        Preconditions.checkState(grid.getEntry(row, col));
+    	        Preconditions.checkState(!grid.getEntry(row+1, col));
     	        //int[] range = findOpenRange(row, col);
     	        Node newNode = new Node(row, col, col);
     	        minCost = getNewMin(minCost, 0,  newNode);
@@ -252,7 +254,7 @@ public class Main {
     	
     	
     	if (walkableRange[0] > 0 && (
-    	        grid[n.row][walkableRange[0] - 1]
+    	        grid.getEntry(n.row, walkableRange[0] - 1)
     	        || walkableRange[0] - 1 >= Math.min(n.dugToCol, n.col)        
     	        )) {
             int col = walkableRange[0] - 1;
@@ -263,8 +265,8 @@ public class Main {
                 	minCostMap.put(n, 0);
                     return 0;
                 }
-                Preconditions.checkState(grid[row][col]);
-    	        Preconditions.checkState(!grid[row+1][col]);
+                Preconditions.checkState(grid.getEntry(row, col));
+    	        Preconditions.checkState(!grid.getEntry(row+1, col));
                 
                 Node newNode = new Node(row, col, col);
     	        minCost = getNewMin(minCost, 0,  newNode);
@@ -285,16 +287,19 @@ public class Main {
         
         Main m = new Main(scanner.nextInt(), scanner.nextInt(), scanner.nextInt());
         
-        for (int r = 0; r < m.rows; ++r) {
-            String rowStr = scanner.next();
-            for(int c = 0; c < m.cols; ++c) {
-                char ch = rowStr.charAt(c);
+        Grid.ConvertSquare<Boolean> cs =  new Grid.ConvertSquare<Boolean>() {
+            public Boolean convert(Character ch) {
                 if (ch == '#') {
-                    m.grid[r][c] = false;
+                    return false;
                 } else {
-                    m.grid[r][c] = true;
+                    return true;
                 }
             }
+        };
+        
+        for (int r = 0; r < m.rows; ++r) {
+            String rowStr = scanner.next();
+            m.grid.setRow(r, rowStr, cs);            
         }
         return m;
     }
@@ -324,7 +329,7 @@ public class Main {
     public Main( int rows, int cols, int fallingDistance
 			) {
 		super();
-		this.grid = new boolean[rows][cols];
+		this.grid = new Grid<Boolean>(rows, cols, false);
 		this.rows = rows;
 		this.cols = cols;
 		this.fallingDistance = fallingDistance;
@@ -342,10 +347,6 @@ public class Main {
         log.info("Input file {}", args[0]);
 
         Scanner scanner = new Scanner(new File(args[0]));
-
-       // OutputStream os = new FileOutputStream("output.txt");
-
-      //  PrintStream pos = new PrintStream(os);
 
         int t = scanner.nextInt();
 

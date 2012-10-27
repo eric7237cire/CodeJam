@@ -7,3 +7,6 @@
 target/
 log.txt
 output.txt
+.settings
+.classpath
+.project

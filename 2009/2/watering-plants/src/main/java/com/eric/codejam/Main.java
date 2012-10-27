@@ -242,11 +242,6 @@ public class Main {
 
 		Scanner scanner = new Scanner(new File(args[0]));
 
-		
-		// OutputStream os = new FileOutputStream("output.txt");
-
-		// PrintStream pos = new PrintStream(os);
-
 		int t = scanner.nextInt();
 
 		for (int i = 1; i <= t; ++i) {
