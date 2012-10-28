@@ -110,5 +110,58 @@ public class AppTest {
 		assertEquals(2, output);
 	}
 	
+	@Test
+	public void testS2() {
+        String testCase = testData.get("s2");
+
+        int output = Integer.parseInt(extractAns(getOutput(testCase)));
+        
+        assertEquals(8, output);    
+	}
+	
+	@Test
+    public void testS2_b() {
+        String testCase = testData.get("s2_b");
+
+        int output = Integer.parseInt(extractAns(getOutput(testCase)));
+        
+        assertEquals(6, output);
+    }
+	
+	   @Test
+	    public void testS3() {
+	        String testCase = testData.get("s3");
+
+	        int output = Integer.parseInt(extractAns(getOutput(testCase)));
+	        
+	        assertEquals(12, output);    
+	    }
+	   
+	    @Test
+	    public void testS4() {
+	        String testCase = testData.get("s4");
+
+	        int output = Integer.parseInt(extractAns(getOutput(testCase)));
+	        
+	        assertEquals(8, output);    
+	    }
+	    
+	    @Test
+        public void testS5() {
+            String testCase = testData.get("s5");
+
+            int output = Integer.parseInt(extractAns(getOutput(testCase)));
+            
+            assertEquals(-1, output);    
+        }
+       
+        @Test
+        public void testS6() {
+            String testCase = testData.get("s6");
+
+            int output = Integer.parseInt(extractAns(getOutput(testCase)));
+            
+            assertEquals(2, output);    
+        }
 	
 }

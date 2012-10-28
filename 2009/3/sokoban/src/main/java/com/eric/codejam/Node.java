@@ -2,6 +2,8 @@ package com.eric.codejam;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.eric.codejam.utils.Grid;
 import com.google.common.base.Objects;
 import com.google.common.collect.ComparisonChain;
@@ -15,7 +17,7 @@ public class Node implements Comparable<Node> {
     @Override
     public int hashCode() {
         
-        return Objects.hashCode(boxes, steps);
+        return Objects.hashCode(boxes, mustBeConnectedThisTurn);
     }
 
     @Override
@@ -27,7 +29,7 @@ public class Node implements Comparable<Node> {
         if (getClass() != obj.getClass())
             return false;
         Node other = (Node) obj;
-        return Objects.equal(boxes, other.boxes) && Objects.equal(steps, other.steps) && Objects.equal(mustBeConnectedThisTurn,  other.mustBeConnectedThisTurn);
+        return Objects.equal(boxes, other.boxes) && Objects.equal(mustBeConnectedThisTurn,  other.mustBeConnectedThisTurn);
     }
 
     public Node(List<Integer> boxes, int steps, Grid<SquareType> grid) {
@@ -40,7 +42,10 @@ public class Node implements Comparable<Node> {
 
     @Override
     public int compareTo(Node o) {
-        return ComparisonChain.start().compare(steps, o.steps).compareFalseFirst(mustBeConnectedThisTurn, o.mustBeConnectedThisTurn).result();
+        return ComparisonChain.start().compare(steps, o.steps)
+                .compareFalseFirst(mustBeConnectedThisTurn, o.mustBeConnectedThisTurn)
+                .compare(StringUtils.join(boxes, ","),  StringUtils.join(o.boxes, ","))
+                .result();
     }
 
     @Override

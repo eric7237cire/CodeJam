@@ -41,8 +41,14 @@ public class Main {
         
         while(!nodesToProcess.isEmpty()) {
             Node n = nodesToProcess.iterator().next();
-            seen.add(n);
+            
             nodesToProcess.remove(n);
+            
+            if (seen.contains(n)) {
+                continue;
+            }
+            seen.add(n);
+            
             log.debug("Processing {}", n);
             
             if (n.grid.getIndexesOf(SquareType.Box).isEmpty()) {
@@ -98,7 +104,7 @@ public class Main {
             for(int diag = 0; diag <= 3; ++diag) {
                 Direction dir = Direction.NORTH.turn(diag * 2);
                 
-                final int targetSquareIndex = n.grid.getIndex(box,dir);
+                final Integer targetSquareIndex = n.grid.getIndex(box,dir);
                 SquareType targetSquare = n.grid.getEntry(box, dir);
                 SquareType[] neededEmpty = 
                         new SquareType[] {targetSquare, n.grid.getEntry(box, dir.turn(4))
@@ -108,7 +114,7 @@ public class Main {
                 boolean valid = true;
                 
                 for(SquareType needToBeEmpty : neededEmpty) {
-                    if(needToBeEmpty == null || !needToBeEmpty.isEmpty()) {
+                    if(!needToBeEmpty.isEmpty()) {
                         valid = false;
                         break;
                     }                        
