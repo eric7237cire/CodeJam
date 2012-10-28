@@ -103,9 +103,9 @@ public class AppTest {
     public void testS1() {
         String testCase = testData.get("s1");
 
-        // double output = Double.parseDouble(extractAns(getOutput(testCase)));
+        String output = extractAns(getOutput(testCase));
 
-        // assertEquals(7, output, DoubleComparator.TOLERANCE);
+        assertEquals("15 1032 7522 6864 253", output);
     }
 
     @Test

@@ -32,7 +32,7 @@ public class Main {
 
         log.info("Starting case {}", caseNumber);
 
-        os.println("Case #" + caseNumber + ": " + total);
+        os.println("Case #" + caseNumber + ": " + StringUtils.join(total, " "));
 
     }
 
@@ -46,11 +46,16 @@ public class Main {
             for (int i = 0; i < d; ++i) {
                 dictArray[i] = i;
             }
+            
+            for (int i = 0; i < eachK; ++i) {
+                combin[i] = 0;
+            }
 
-            Permutations<Integer> perm = Permutations.create(dictArray, combin,
+            /*Permutations<Integer> perm = Permutations.create(dictArray, combin,
                     eachK);
-
-            while (perm.next()) {
+*/
+            
+            while (true) {
                 
                 String word = "";
                 for(Integer comIndex : combin) {
@@ -58,7 +63,22 @@ public class Main {
                 }
                 
                 total += evalP(word);
+
+                total %= 10009;
                 
+                boolean fullLoop = true;
+                for(int pos=0; pos<eachK; ++pos) {
+                    combin[pos] ++;
+                    if (combin[pos] < d) {
+                        fullLoop = false;
+                        break;
+                    }
+                    combin[pos] = 0;
+                }
+                
+                if (fullLoop) {
+                    break;
+                }
                 log.info("Perm {} word {} total {}", (Object) combin, word, total);
             }
             
