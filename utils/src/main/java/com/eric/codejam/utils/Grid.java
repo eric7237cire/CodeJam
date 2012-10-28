@@ -5,19 +5,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
 
 public class Grid<SquareType> {
     
     private final int rows;
     private final int cols;
     
-    final List<SquareType> grid;
+    private final List<SquareType> grid;
     
-    public static<SquareType> Grid<SquareType>  buildFromScanner(Scanner scanner, int rows, int cols, final Map<Character, SquareType> mapping) {
+    private SquareType invalidSquare;
+    
+    final BiMap<Character, SquareType> mapping;
+    
+    public static<SquareType> Grid<SquareType>  buildFromScanner(Scanner scanner, int rows, int cols, final BiMap<Character, SquareType> mapping, SquareType invalidSq) {
         
-        Grid<SquareType> g = new Grid<>(rows, cols);
+        
+        Grid<SquareType> g = new Grid<>(rows, cols, invalidSq, mapping);
+        
         for (int r = 0; r < rows; ++r) {
             String rowStr = scanner.next();
             for(int c = 0; c < cols; ++c) {
@@ -34,36 +43,30 @@ public class Grid<SquareType> {
     public Grid(Grid<SquareType> rhs) {
         this.rows = rhs.rows;
         this.cols = rhs.cols;
-        this.grid = new ArrayList<>(rhs.grid);   
+        this.grid = new ArrayList<>(rhs.grid);
+        this.invalidSquare = rhs.invalidSquare;
+        this.mapping = rhs.mapping;
     }
     
-    private Grid(int rows, int cols) {
+    private Grid(int rows, int cols, SquareType invalidSq, BiMap<Character, SquareType> mapping) {
         super();
         this.rows = rows;
         this.cols = cols;
-        
+        this.invalidSquare = invalidSq;
+        this.mapping = mapping;
         
         grid = new ArrayList<>(rows*cols);
         
     }
     
-    public Grid(int rows, int cols, SquareType defaultSq) {
-        this(rows, cols);
-                
-        for(int r = 0; r < rows; ++r) {
-            for(int c = 0; c < cols; ++c) {
-                grid.add(defaultSq);
-            }
-        }
-    }
     
     private int getIndex(int row, int col) {
         return col + row * cols;
     }
     
     public Integer getIndex(int index, Direction dir) {
-        int row = index % cols - dir.getDeltaY();
-        int col = index / cols + dir.getDeltaX();
+        int row = index / cols - dir.getDeltaY();
+        int col = index % cols + dir.getDeltaX();
         
         if (row < 0 || row >= rows) {
             return null;
@@ -94,20 +97,30 @@ public class Grid<SquareType> {
         }
     }
     
+    public void setEntry(int index, SquareType square) {
+        Preconditions.checkArgument(invalidSquare == null || square != null);
+        
+        grid.set(index, square);
+    }
+    
     public SquareType getEntry(int row, int col, Direction dir) {
         return getEntry(getIndex(row,col), dir);
     }
     
+    public SquareType getEntry(final int index) {
+        return grid.get(index);
+    }
+    
     public SquareType getEntry(final int index, Direction dir) {
-        int row = index % cols - dir.getDeltaY();
-        int col = index / cols + dir.getDeltaX();
+        int row = index / cols - dir.getDeltaY();
+        int col = index % cols + dir.getDeltaX();
         
         if (row < 0 || row >= rows) {
-            return null;
+            return invalidSquare;
         }
         
         if (col < 0 || col >= cols) {
-            return null;
+            return invalidSquare;
         }
         
         return getEntry(row,col);
@@ -129,8 +142,36 @@ public class Grid<SquareType> {
 
 
 
-    public List<SquareType> getGrid() {
+    private List<SquareType> getGrid() {
         return grid;
+    }
+
+
+    public SquareType getInvalidSquare() {
+        return invalidSquare;
+    }
+
+
+    public void setInvalidSquare(SquareType invalidSquare) {
+        this.invalidSquare = invalidSquare;
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuffer gridStr = new StringBuffer();
+        for(int r=0; r<rows; ++r) {
+            int index = getIndex(r,0);
+            gridStr.append(StringUtils.rightPad("" + index, 4));
+            for(int c=0; c<cols; ++c) {
+                gridStr.append(mapping.inverse().get(getEntry(r,c) ));
+            }
+            gridStr.append("\n");
+        }
+        return "Grid [rows=" + rows + ", cols=" + cols 
+                + ", invalidSquare=" + invalidSquare + "]\n\n" + gridStr;
+        
+        
     }
 
     

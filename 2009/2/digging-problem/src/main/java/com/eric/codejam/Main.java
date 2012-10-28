@@ -12,10 +12,12 @@ import org.slf4j.LoggerFactory;
 import com.eric.codejam.Node.Direction;
 import com.eric.codejam.utils.Grid;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 public class Main {
     
-    final Grid<Boolean> grid; //false #  true .
+    Grid<Boolean> grid; //false #  true .
     
     final int rows;
     final int cols;
@@ -287,20 +289,12 @@ public class Main {
         
         Main m = new Main(scanner.nextInt(), scanner.nextInt(), scanner.nextInt());
         
-        Grid.ConvertSquare<Boolean> cs =  new Grid.ConvertSquare<Boolean>() {
-            public Boolean convert(Character ch) {
-                if (ch == '#') {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        };
-        
-        for (int r = 0; r < m.rows; ++r) {
-            String rowStr = scanner.next();
-            m.grid.setRow(r, rowStr, cs);            
-        }
+        BiMap<Character, Boolean> mapping = HashBiMap.create(2);
+        mapping.put('#', false);
+        mapping.put('.', true);
+               
+        Grid<Boolean> grid = Grid.buildFromScanner(scanner, m.rows, m.cols,  mapping, null);
+        m.grid = grid;
         return m;
     }
 
@@ -329,7 +323,7 @@ public class Main {
     public Main( int rows, int cols, int fallingDistance
 			) {
 		super();
-		this.grid = new Grid<Boolean>(rows, cols, false);
+		
 		this.rows = rows;
 		this.cols = cols;
 		this.fallingDistance = fallingDistance;

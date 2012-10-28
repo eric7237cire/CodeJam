@@ -5,7 +5,8 @@ public enum SquareType {
     BoxOnGoal,
     Goal,
     Empty,
-    Wall;
+    Wall,
+    Invalid;
     
     boolean isEmpty() {
         return this == Empty || this == Goal;
