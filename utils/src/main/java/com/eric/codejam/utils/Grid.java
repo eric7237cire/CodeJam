@@ -1,9 +1,10 @@
 package com.eric.codejam.utils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -79,8 +80,8 @@ public class Grid<SquareType> {
         return getIndex(row, col);
     }
     
-    public List<Integer> getIndexesOf(SquareType type) {
-        List<Integer> ret = new ArrayList<>();
+    public Set<Integer> getIndexesOf(SquareType type) {
+        Set<Integer> ret = new HashSet<>();
         for(int i = 0; i < grid.size(); ++i) {
             if (Objects.equal(type, grid.get(i))) {
                 ret.add(i);

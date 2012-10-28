@@ -3,8 +3,10 @@ package com.eric.codejam;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
@@ -20,9 +22,10 @@ import com.google.common.collect.HashBiMap;
 public class Main {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
+    final static Logger perfLog = LoggerFactory.getLogger("perf");
     
     private Set<Node> seen;
-    private Set<Node> nodesToProcess;
+    private PriorityQueue<Node> nodesToProcess;
 
     public static void handleCase(int caseNumber, Scanner scanner,
             PrintStream os) {
@@ -37,10 +40,12 @@ public class Main {
     }
     
     public int getMinSteps() {
+        int iterations = 0;
         seen = new HashSet<>();
         
         while(!nodesToProcess.isEmpty()) {
             Node n = nodesToProcess.iterator().next();
+            
             
             nodesToProcess.remove(n);
             
@@ -48,7 +53,10 @@ public class Main {
                 continue;
             }
             seen.add(n);
-            
+            ++iterations;
+            if (iterations % 1000 == 0) {
+                perfLog.debug("Iterations {}", iterations);
+            }
             log.debug("Processing {}", n);
             
             if (n.grid.getIndexesOf(SquareType.Box).isEmpty()) {
@@ -68,24 +76,32 @@ public class Main {
             return true;
         }
         
-        for(int boxListIndex = 0; boxListIndex < n.boxes.size(); ++boxListIndex) {
-            int box = n.boxes.get(boxListIndex);
-            boolean connected = false;
+        Set<Integer> seen = new HashSet<Integer>();
+        List<Integer> toSee = new ArrayList<>();
+        
+        toSee.add(n.boxes.iterator().next());
+        
+        while(!toSee.isEmpty()) {
+            int box = toSee.remove(0);
+            if (seen.contains(box)) {
+                continue;
+            }
+            seen.add(box);
             for(int diag = 0; diag <= 3; ++diag) {
                 Direction dir = Direction.NORTH.turn(diag * 2);
+                Integer idx = n.grid.getIndex(box, dir);
                 SquareType sq = n.grid.getEntry(box,  dir);
                 if (sq.isBox()) {
-                    connected = true;
-                    break;
+                    toSee.add(idx);
                 }
-            }
-            
-            if (!connected) {
-                return false;
             }
         }
         
-        return true;
+        if (seen.equals(n.boxes)) {
+            return true;
+        }
+        
+        return false;
     }
     
     public void generateNodes(Node n) {
@@ -96,11 +112,17 @@ public class Main {
         //F..
         
         log.debug("Node generateNodes {}", n);
+        /*
+        Set<Integer> stop = new HashSet<>();
+        stop.addAll( Arrays.asList(new Integer[] {
+        4, 13, 22, 23, 33 } ));
         
-        for(int boxListIndex = 0; boxListIndex < n.boxes.size(); ++boxListIndex) {
-            final int box = n.boxes.get(boxListIndex);
+        if (n.boxes.equals(stop)) {
+            log.info("Stop");
+        }*/
+        
+        for(int box : n.boxes) {
             
-            //Diagonals
             for(int diag = 0; diag <= 3; ++diag) {
                 Direction dir = Direction.NORTH.turn(diag * 2);
                 
@@ -124,20 +146,20 @@ public class Main {
                     continue;
                 }
                 
-                List<Integer> newBoxes = new ArrayList<>(n.boxes);
+                Set<Integer> newBoxes = new HashSet<>(n.boxes);
                 Grid<SquareType> newGrid = new Grid<>(n.grid);
                 newGrid.setEntry(box, newGrid.getEntry(box).removeBox());
                 newGrid.setEntry(targetSquareIndex, newGrid.getEntry(targetSquareIndex).addBox());
                 
-                newBoxes.remove(boxListIndex);
+                newBoxes.remove(box);
                 newBoxes.add(targetSquareIndex);
                 
                 Node newSteps = new Node(newBoxes, 1+n.steps, newGrid);
                 if (seen.contains(newSteps)) {
                     continue;
                 }
-                newSteps.mustBeConnectedThisTurn =  !isAllConnected(newSteps);
-                if (n.mustBeConnectedThisTurn && newSteps.mustBeConnectedThisTurn) {
+                newSteps.isConnected =  isAllConnected(newSteps);
+                if (!n.isConnected && !newSteps.isConnected) {
                     continue;
                 }
                                 
@@ -164,9 +186,9 @@ public class Main {
         
         Grid<SquareType> grid = Grid.buildFromScanner(scanner, row,col,  mapping, SquareType.Invalid);
         
-        m.nodesToProcess = new TreeSet<>();
+        m.nodesToProcess = new PriorityQueue<>(1, new Node.PriorityCompare());
         
-        List<Integer> listBoxes = grid.getIndexesOf(SquareType.Box);
+        Set<Integer> listBoxes = grid.getIndexesOf(SquareType.Box);
         listBoxes.addAll(grid.getIndexesOf(SquareType.BoxOnGoal));
         m.nodesToProcess.add(new Node(listBoxes,0,grid));
 
