@@ -9,6 +9,13 @@
   <name>${project.artifactId}</name>
   <url>http://maven.apache.org</url>
   <dependencies>
+  
+  <dependency>
+      <groupId>com.eric.codejam</groupId>
+      <artifactId>utils</artifactId>
+      <version>1.0-SNAPSHOT</version>      
+    </dependency>
+    
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
