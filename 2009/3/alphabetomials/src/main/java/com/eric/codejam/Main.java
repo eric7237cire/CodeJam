@@ -62,9 +62,12 @@ public class Main {
                     word += dictWords.get(comIndex) + " ";
                 }
                 
-                total += evalP(word);
+                final int wordEval = evalP(word);
+                total += wordEval;
 
                 total %= 10009;
+                
+                log.info("Perm {} word {} p(word) {} total {}", (Object) combin, word, wordEval, total);
                 
                 boolean fullLoop = true;
                 for(int pos=0; pos<eachK; ++pos) {
@@ -79,7 +82,7 @@ public class Main {
                 if (fullLoop) {
                     break;
                 }
-                log.info("Perm {} word {} total {}", (Object) combin, word, total);
+                
             }
             
             totals.add(total);
