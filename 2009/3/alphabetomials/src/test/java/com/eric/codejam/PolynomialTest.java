@@ -1,6 +1,7 @@
 package com.eric.codejam;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +19,23 @@ public class PolynomialTest {
     public void testConstructor() {
         Polynomial p = new Polynomial("aaab+caac+c");
         
+        p.simplify();
         assertEquals("a^3*b + a^2*c^2 + c", p.toString());
+    }
+    
+    @Test
+    public void testMult() {
+        MultTerms mul = new MultTerms("8(a_2 + a_1)^2");
+        assertEquals(8, mul.getCoeff());
+        assertTrue(mul.getTerms().get(0) instanceof PowerTerm);
+        
+        PowerTerm pt = (PowerTerm) mul.getTerms().get(0);
+        assertEquals( 2, pt.degree );
+        
+        BinomialTerm bt = (BinomialTerm) pt.term;
+        assertEquals( "a_2", ((VariableTerm) bt.getX()).name );
+        assertEquals( "a_1", ((VariableTerm) bt.getX()).name );
+        
     }
     
     @Test
@@ -26,6 +43,8 @@ public class PolynomialTest {
         Polynomial p = new Polynomial("aa");
         
         p.substitute(new VariableTerm("a"), new VariableTerm("a_0"));
+        
+        p.simplify();
         
         assertEquals("a_0^2", p.toString());
         
@@ -35,7 +54,7 @@ public class PolynomialTest {
         
         p.doSimplify();
         
-        assertEquals("a_0^2 + 2*a_0*a_1 + a_1^2", p.toString());
+        assertEquals("a_0^2 + 2a_0*a_1 + a_1^2", p.toString());
     }
     
     @Test
@@ -46,6 +65,7 @@ public class PolynomialTest {
         p.substitute(new VariableTerm("b"), new VariableTerm("a_1"));
         p.substitute(new VariableTerm("c"), new VariableTerm("a_2"));
         
+        p.simplify();
         assertEquals("a_0^2 + a_1^2 + a_2^2", p.toString());
         
         Cloner cloner=new Cloner();
@@ -78,7 +98,9 @@ public class PolynomialTest {
         p.doSimplify();
         String s = p.toString();
         
-        assertEquals("a_0^2 + 2*a_0*a_1 + a_1^2", p.toString());
+        log.info(s);
+        
+        assertEquals("8a_0^2 + 4a_0*a_1 + 4a_0*a_2 + 8a_1^2 + 4a_1*a_2 + 8a_2^2", p.toString());
     }
     
     

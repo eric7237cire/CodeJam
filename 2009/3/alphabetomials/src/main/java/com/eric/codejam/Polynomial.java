@@ -1,11 +1,14 @@
 package com.eric.codejam;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.collect.ComparisonChain;
 
 public class Polynomial extends AddTerms {
 	Polynomial(String s) {
@@ -16,11 +19,17 @@ public class Polynomial extends AddTerms {
 			terms.add(new MultTerms(termStr));
 		}
 	}
+	
+	Polynomial() {
+	    super();
+	}
 
 	public void doSimplify() {
 		while(simplify() != null) {
 			
 		}
+		
+		Collections.sort(terms, new Polynomial.CompareTerm());
 	}
 	
 	public void substitute(Map<VariableTerm,Term> terms) {
@@ -33,13 +42,73 @@ public class Polynomial extends AddTerms {
 		}
     }
 	
+	static int getDegree(Term term) {
+	    if (term instanceof PowerTerm) {
+            PowerTerm p = (PowerTerm) term;
+            return p.degree;
+	    }
+	    
+	    return 1;
+	}
+	
+	static String getVarname(Term term) {
+	    VariableTerm var = null;
+	
+	    if (term instanceof VariableTerm) {
+            var = (VariableTerm) term;
+            return var.name;
+        } else if (term instanceof PowerTerm) {
+            PowerTerm p = (PowerTerm) term;
+            if (p.term instanceof VariableTerm) {
+                var = (VariableTerm) p.term;                
+            }
+            return var.name;
+        } else if (term instanceof MultTerms) {
+            MultTerms m = (MultTerms) term;
+            return getVarname(m.getTerms().get(0));
+        }
+	    
+        return null;
+    }
+	
 	public static class CompareTerm implements Comparator<Term> {
 
 		@Override
 		public int compare(Term lhs, Term rhs) {
 			
-			return lhs.toString().compareTo(rhs.toString());
+		    if(lhs instanceof MultTerms && rhs instanceof MultTerms) {
+		        return compareMul((MultTerms)lhs, (MultTerms)rhs);
+		    }
+		    
+	         String lhsVar = StringUtils.rightPad(getVarname(lhs), 3);
+             String rhsVar = StringUtils.rightPad(getVarname(rhs), 3);
+             int lhsDegree = getDegree(lhs);
+             int rhsDegree = getDegree(rhs);
+             
+             int cc = ComparisonChain.start()
+                     .compare(lhsVar.charAt(0), rhsVar.charAt(0))
+                     .compare(lhsVar.charAt(2), rhsVar.charAt(2))
+                     .compare(rhsDegree, lhsDegree).result();
+		    
+             if (cc == 0) {
+                 return lhs.toString().compareTo(rhs.toString());
+             } else {
+                 return cc;
+             }
 		}
 		
+		public int compareMul(MultTerms lhs, MultTerms rhs) {
+		    ComparisonChain cc =
+		            ComparisonChain.start();
+		    
+		    
+		        for(int i = 0; i < lhs.getTerms().size() && i < rhs.getTerms().size(); ++i) {
+		            cc = cc.compare(lhs.getTerms().get(i), rhs.getTerms().get(i), new CompareTerm());
+		        }
+		    
+		        cc = cc.compare(lhs.getTerms().size(), rhs.getTerms().size());
+		        
+		    return cc.result();
+		}
 	}
 }

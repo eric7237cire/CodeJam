@@ -1,5 +1,7 @@
 package com.eric.codejam;
 
+import java.util.Map;
+
 public class BinomialTerm extends AbstractTerm {
     private VariableTerm x;
     private VariableTerm y;
@@ -30,5 +32,8 @@ public class BinomialTerm extends AbstractTerm {
 		this.y = y;
 	}
     
-    
+	@Override
+    public int evaluate(Map<String, Integer> values) {
+	    return x.evaluate(values) + y.evaluate(values);
+	}
 }

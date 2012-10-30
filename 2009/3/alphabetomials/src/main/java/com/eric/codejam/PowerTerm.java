@@ -2,6 +2,9 @@ package com.eric.codejam;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import com.google.common.base.Objects;
 
 public class PowerTerm extends AbstractTerm {
     int degree;
@@ -64,9 +67,9 @@ public class PowerTerm extends AbstractTerm {
 			for(int leftPower = degree; leftPower >= 0; --leftPower) {
 				int rightPower = degree - leftPower;
 				MultTerms mt = new MultTerms();
-				mt.terms.add(new CoefficientTerm(binomialCoeff.get(degree).get(rightPower)));
-				mt.terms.add(new PowerTerm(binomial.getX(), leftPower));
-				mt.terms.add(new PowerTerm(binomial.getY(), rightPower));
+				mt.multiply(new CoefficientTerm(binomialCoeff.get(degree).get(rightPower)));
+				mt.multiply(new PowerTerm(binomial.getX(), leftPower));
+				mt.multiply(new PowerTerm(binomial.getY(), rightPower));
 				add.terms.add(mt);
 			}
 			
@@ -75,5 +78,39 @@ public class PowerTerm extends AbstractTerm {
 		
 		return super.simplify();
 	}
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + degree;
+        result = prime * result + ((term == null) ? 0 : term.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        PowerTerm other = (PowerTerm) obj;
+        return Objects.equal(degree, other.degree) && 
+                Objects.equal(term, other.term);
+    }
+    
+    @Override
+    public int evaluate(Map<String, Integer> values) {
+        int r = term.evaluate(values);
+        
+        for(int d = 2; d <= degree; ++d) {
+            r *= r;
+        }
+            
+        
+        return r;
+    }
     
 }

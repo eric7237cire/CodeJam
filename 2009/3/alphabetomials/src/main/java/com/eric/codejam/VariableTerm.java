@@ -1,5 +1,7 @@
 package com.eric.codejam;
 
+import java.util.Map;
+
 import com.google.common.base.Objects;
 
 public class VariableTerm extends AbstractTerm {
@@ -37,7 +39,8 @@ public class VariableTerm extends AbstractTerm {
 				
 	}
     
-    public void substitute(Term old, Term newTerm) {
-        
+    @Override
+    public int evaluate(Map<String, Integer> values) {
+        return values.get(name);
     }
 }

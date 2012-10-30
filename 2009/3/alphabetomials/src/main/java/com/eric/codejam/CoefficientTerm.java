@@ -1,5 +1,7 @@
 package com.eric.codejam;
 
+import java.util.Map;
+
 public class CoefficientTerm extends AbstractTerm {
     int value;
 
@@ -41,5 +43,8 @@ public class CoefficientTerm extends AbstractTerm {
 		return true;
 	}
     
-    
+	@Override
+    public int evaluate(Map<String, Integer> values) {
+	    return value;
+	}
 }
