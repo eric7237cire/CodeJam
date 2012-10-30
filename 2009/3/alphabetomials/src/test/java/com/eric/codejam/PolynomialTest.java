@@ -34,7 +34,13 @@ public class PolynomialTest {
         
         BinomialTerm bt = (BinomialTerm) pt.term;
         assertEquals( "a_2", ((VariableTerm) bt.getX()).name );
-        assertEquals( "a_1", ((VariableTerm) bt.getX()).name );
+        assertEquals( "a_1", ((VariableTerm) bt.getY()).name );
+        
+        Polynomial p = new Polynomial();
+        p.add(mul);
+        p.doSimplify();
+        
+        assertEquals( "8a_1^2 + 16a_1*a_2 + 8a_2^2", p.toString());
         
     }
     

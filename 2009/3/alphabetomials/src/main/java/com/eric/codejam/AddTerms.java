@@ -30,6 +30,12 @@ public class AddTerms extends AbstractTerm {
 
     @Override
     public void multiply(Term mult) {
+        if (mult instanceof CoefficientTerm) {
+            for(Term term : terms) {
+                term.multiply(mult);
+            }
+            return;
+        }
         throw new UnsupportedOperationException("mult");        
     }
     

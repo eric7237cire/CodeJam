@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -23,6 +25,38 @@ public class MultTerms extends AbstractTerm {
     MultTerms(String str) {
         this();
 
+        Pattern coeffPat = Pattern.compile("^(\\d+)(.*)");
+        Matcher m = coeffPat.matcher(str);
+        if (m.matches()) {
+            coeff = Integer.parseInt(m.group(1));
+            str = m.group(2);
+        } else {
+            coeff = 1;
+        }
+        
+        Pattern binoPat = Pattern.compile("\\(([^\\+]+)\\s*\\+\\s*([^\\+]+)\\)(.*)");
+        Pattern expPat = Pattern.compile("\\^?(\\d+)(.*)");
+        m = binoPat.matcher(str);
+        if (m.matches()) {
+            String v1 = m.group(1).trim();
+            String v2 = m.group(2).trim();
+            BinomialTerm bt = new BinomialTerm(new VariableTerm(v1), new VariableTerm(v2));
+            
+            str = m.group(3);
+            
+            Matcher expMat = expPat.matcher(str);
+            if (expMat.matches())
+            {
+                String exp = expMat.group(1);
+                str = expMat.group(2);
+                PowerTerm pt = new PowerTerm(bt, Integer.parseInt(exp));
+                terms.add(pt);
+            } else {
+                terms.add(bt);
+            }  
+            
+            
+        }
         for (int i = 0; i < str.length(); ++i) {
             terms.add(new VariableTerm("" + str.charAt(i)));
         }
@@ -81,10 +115,13 @@ public class MultTerms extends AbstractTerm {
     public Term simplify() {
         Term ret = null;
         
-        if (terms.size() == 1 && coeff == 1) {
+        //Distribute coefficient
+        if (terms.size() == 1 && !( terms.get(0) instanceof PowerTerm)) {
+            terms.get(0).multiply(new CoefficientTerm(coeff));
             return terms.get(0);
         }
 
+        //Simplify any sub elements
         for (ListIterator<Term> li = terms.listIterator(); li.hasNext();) {
             Term t = li.next();
             
@@ -104,6 +141,37 @@ public class MultTerms extends AbstractTerm {
                 ret = this;
             }
         }
+        
+        //Mult binomials
+        if (terms.size() >= 2 && terms.get(0) instanceof BinomialTerm &&
+                terms.get(1) instanceof BinomialTerm) {
+            BinomialTerm lhs = (BinomialTerm) terms.get(0);
+            BinomialTerm rhs = (BinomialTerm) terms.get(1);
+            terms.remove(1);
+            terms.remove(0);
+            AddTerms add = new AddTerms();
+            MultTerms m = new MultTerms();
+            m.multiply(lhs.getX());
+            m.multiply(rhs.getX());
+            add.add(m);
+            
+            m = new MultTerms();
+            m.multiply(lhs.getX());
+            m.multiply(rhs.getY());
+            add.add(m);
+            
+            m = new MultTerms();
+            m.multiply(lhs.getY());
+            m.multiply(rhs.getX());
+            add.add(m);
+            
+            m = new MultTerms();
+            m.multiply(lhs.getY());
+            m.multiply(rhs.getY());
+            add.add(m);
+            terms.add(add);
+        }
+                
         
         //Merge same degrees
         Map<VariableTerm, Integer> map = new HashMap<>();
