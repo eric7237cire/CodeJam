@@ -1,5 +1,13 @@
 package com.eric.codejam;
 
+import java.util.Map;
+
 public interface Term {
-    public void substitute(Term old, Term newTerm);
+    public void substitute(VariableTerm old, Term newTerm);
+    
+    public void multiply(Term mult);
+    
+    public void add(Term addTerm);
+    
+    public Term simplify();
 }

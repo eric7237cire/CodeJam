@@ -13,5 +13,22 @@ public class BinomialTerm extends AbstractTerm {
         this.y = y;
     }
     
+    @Override
+	public void multiply(Term mult) {
+				
+	}
+	public VariableTerm getX() {
+		return x;
+	}
+	public void setX(VariableTerm x) {
+		this.x = x;
+	}
+	public VariableTerm getY() {
+		return y;
+	}
+	public void setY(VariableTerm y) {
+		this.y = y;
+	}
+    
     
 }

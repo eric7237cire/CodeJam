@@ -1,10 +1,24 @@
 package com.eric.codejam;
 
-public class AbstractTerm implements Term {
+import java.util.Map;
 
-    public void substitute(Term old, Term newTerm) {
+public abstract class AbstractTerm implements Term {
+
+    public void substitute(VariableTerm old, Term newTerm) {
         
     }
     
+    
+
+	@Override
+	abstract public void multiply(Term mult);
+	
+	public void add(Term addTerm) {
+		
+	}
+    
+	public Term simplify() {
+		return null;
+	}
     
 }

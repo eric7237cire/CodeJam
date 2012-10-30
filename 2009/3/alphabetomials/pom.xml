@@ -48,7 +48,20 @@
 	<artifactId>commons-math3</artifactId>
 	<version>3.0</version>
 </dependency>
+                <dependency>
+                        <groupId>uk.com.robust-it</groupId>
+                        <artifactId>cloning</artifactId>
+                        <version>1.9.0</version>
+                </dependency>
+        
   </dependencies>
+  
+  <repositories>
+        <repository>
+                <id>sonatype.releases</id>
+                <url>http://oss.sonatype.org/content/repositories/releases/</url>
+        </repository>
+</repositories>
   
   <build>
   <plugins>
