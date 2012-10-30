@@ -67,7 +67,11 @@ public class Main {
 
                 total %= 10009;
                 
-                log.info("Perm {} word {} p(word) {} total {}", (Object) combin, word, wordEval, total);
+                List<Integer> p_counts = new ArrayList<>();
+                p_counts.add(StringUtils.countMatches(word,  "a"));
+                //p_counts.add(StringUtils.countMatches(word,  "b"));
+                
+                log.info("Perm {} p({}) {} total {}", (Object) combin, p_counts, wordEval, total);
                 
                 boolean fullLoop = true;
                 for(int pos=0; pos<eachK; ++pos) {
@@ -119,6 +123,7 @@ public class Main {
         for (int i = 0; i < m.d; ++i) {
             m.dictWords.add(scanner.next());
         }
+        log.info("k {} d {} poly {}", m.k, m.d, m.polynomial);
 
         return m;
     }

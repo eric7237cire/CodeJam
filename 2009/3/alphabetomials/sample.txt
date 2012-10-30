@@ -1,4 +1,16 @@
-2
+1
+aa 5
+3
+ab
+aacba
+aab
+
+a 5
+4
+ba
+ca
+aba
+ac
 a+e+i+o+u 3
 4
 apple
