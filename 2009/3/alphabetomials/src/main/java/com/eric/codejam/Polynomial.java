@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Ordering;
 
 public class Polynomial extends AddTerms {
 	Polynomial(String s) {
@@ -80,14 +81,13 @@ public class Polynomial extends AddTerms {
 		        return compareMul((MultTerms)lhs, (MultTerms)rhs);
 		    }
 		    
-	         String lhsVar = StringUtils.rightPad(getVarname(lhs), 3);
-             String rhsVar = StringUtils.rightPad(getVarname(rhs), 3);
+	         String lhsVar = getVarname(lhs);
+             String rhsVar = getVarname(rhs);
              int lhsDegree = getDegree(lhs);
              int rhsDegree = getDegree(rhs);
              
              int cc = ComparisonChain.start()
-                     .compare(lhsVar.charAt(0), rhsVar.charAt(0))
-                     .compare(lhsVar.charAt(2), rhsVar.charAt(2))
+                     .compare(lhsVar, rhsVar, Ordering.natural().nullsFirst())
                      .compare(rhsDegree, lhsDegree).result();
 		    
              if (cc == 0) {

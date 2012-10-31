@@ -28,14 +28,16 @@ public class Main {
 
         Main m = Main.buildMain(scanner);
 
-        List<Integer> total = m.doPerms();
+       // List<Integer> total = m.doPerms();
 
+        List<Integer> total = null;
         List<Integer> total2 = m.usePoly();
 
         log.info("Starting case {}\n total {}\n total poly {}", caseNumber,
                 total, total2);
 
-        os.println("Case #" + caseNumber + ": " + StringUtils.join(total, " "));
+//        os.println("Case #" + caseNumber + ": " + StringUtils.join(total, " "));
+        os.println("Case #" + caseNumber + ": " + StringUtils.join(total2, " "));
 
     }
 
@@ -46,9 +48,15 @@ public class Main {
 
         Map<String, Integer> values = new HashMap<>();
 
+
+        Polynomial orig = new Polynomial(polynomial);
+        orig.simplify();
+        
         Polynomial totalPoly = new Polynomial();
+        
         for (int i = 0; i < d; ++i) {
-            Polynomial p = new Polynomial(polynomial);
+            Polynomial p = c.deepClone(orig);
+            
             for (int chInt = 'a'; chInt <= 'z'; ++chInt) {
                 char ch = (char) chInt;
                 String varName = "" + ch + "_" + i;
@@ -70,7 +78,6 @@ public class Main {
 
         totals.add(totalPoly.evaluate(values));
 
-        Polynomial orig = c.deepClone(totalPoly);
         for (int eachK = 2; eachK <= k; ++eachK) {
 
             totalPoly = new Polynomial();
@@ -106,7 +113,7 @@ public class Main {
             
             orig = c.deepClone(totalPoly);
 
-            totals.add(totalPoly.evaluate(values));
+            totals.add(totalPoly.evaluate(values) % 10009);
         }
 
         return totals;

@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
-import com.sun.xml.internal.ws.api.ha.StickyFeature;
 
 public class MultTerms extends AbstractTerm {
 
@@ -127,6 +126,12 @@ public class MultTerms extends AbstractTerm {
             terms.add(mult);
             return;
         }
+        
+        if (mult instanceof MultTerms) {
+            this.terms.addAll( ((MultTerms) mult).getTerms());
+            this.coeff *= ((MultTerms) mult).coeff;
+            return;
+        }
 
         /*
          * if (mult instanceof MultTerms) { coeff terms.addAll( ((MultTerms)
@@ -190,6 +195,32 @@ public class MultTerms extends AbstractTerm {
     public static AddTerms multiply(BinomialTerm lhs, VariableTerm rhs) {
         return multiply(rhs, lhs);
     }
+    
+    public static AddTerms multiply(VariableTerm lhs, AddTerms rhs) {
+        AddTerms add = new AddTerms();
+        
+        for(Term t : rhs.terms) {
+            MultTerms m = new MultTerms();
+            m.multiply(lhs);
+            m.multiply(t);
+            add.add(m);
+        }
+        
+        return add;
+    }
+    
+    public static AddTerms multiply(PowerTerm lhs, AddTerms rhs) {
+        AddTerms add = new AddTerms();
+        
+        for(Term t : rhs.terms) {
+            MultTerms m = new MultTerms();
+            m.multiply(lhs);
+            m.multiply(t);
+            add.add(m);
+        }
+        
+        return add;
+    }
 
     @Override
     public Term simplify() {
@@ -247,6 +278,26 @@ public class MultTerms extends AbstractTerm {
                             && VariableTerm.class.isInstance(rhs)) {
                         replacement = MultTerms.multiply((BinomialTerm) lhs,
                                 (VariableTerm) rhs);
+
+                    } else if (AddTerms.class.isInstance(lhs)
+                            && VariableTerm.class.isInstance(rhs)) {
+                        replacement = MultTerms.multiply(
+                                (VariableTerm) rhs, (AddTerms) lhs);
+
+                    } else if (AddTerms.class.isInstance(rhs)
+                            && VariableTerm.class.isInstance(lhs)) {
+                        replacement = MultTerms.multiply((VariableTerm) lhs,
+                                (AddTerms) rhs);
+
+                    } else if (AddTerms.class.isInstance(lhs)
+                            && PowerTerm.class.isInstance(rhs)) {
+                        replacement = MultTerms.multiply(
+                                (PowerTerm) rhs, (AddTerms) lhs);
+
+                    } else if (AddTerms.class.isInstance(rhs)
+                            && PowerTerm.class.isInstance(lhs)) {
+                        replacement = MultTerms.multiply((PowerTerm) lhs,
+                                (AddTerms) rhs);
 
                     }
 
@@ -331,7 +382,7 @@ public class MultTerms extends AbstractTerm {
 
     @Override
     public String toString() {
-        return (coeff == 1 ? "" : coeff) + StringUtils.join(terms, "*");
+        return (coeff == 1 ? "" : coeff+"*") + StringUtils.join(terms, "*");
     }
 
 }

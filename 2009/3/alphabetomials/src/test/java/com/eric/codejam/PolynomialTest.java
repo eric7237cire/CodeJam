@@ -24,6 +24,21 @@ public class PolynomialTest {
     }
     
     @Test
+    public void testConstructor2() {
+        
+        Polynomial p = new Polynomial("ehw+hwww");
+        
+        p.simplify();
+        assertEquals("e*h*w + h*w^3", p.toString());
+        
+        p.substitute(new VariableTerm("w"), new BinomialTerm(new VariableTerm("f_0"), new VariableTerm("f_1")));
+        
+        p.doSimplify();
+        
+        assertEquals("e*f_0*h + e*f_1*h + f_0^3*h + 3*f_0^2*f_1*h + 3*f_0*f_1^2*h + f_1^3*h", p.toString());
+    }
+    
+    @Test
     public void testMultConstructor() {
         MultTerms mul = new MultTerms("8(a_2 + a_1)^2");
         assertEquals(8, mul.getCoeff());
@@ -40,7 +55,7 @@ public class PolynomialTest {
         p.add(mul);
         p.doSimplify();
         
-        assertEquals( "8a_1^2 + 16a_1*a_2 + 8a_2^2", p.toString());
+        assertEquals( "8*a_1^2 + 16*a_1*a_2 + 8*a_2^2", p.toString());
         
     }
     
@@ -71,7 +86,7 @@ public class PolynomialTest {
         
         p.doSimplify();
         
-        assertEquals("a_0^2 + 2a_0*a_1 + a_1^2", p.toString());
+        assertEquals("a_0^2 + 2*a_0*a_1 + a_1^2", p.toString());
     }
     
     @Test
@@ -117,7 +132,7 @@ public class PolynomialTest {
         
         log.info(s);
         
-        assertEquals("8a_0^2 + 4a_0*a_1 + 4a_0*a_2 + 8a_1^2 + 4a_1*a_2 + 8a_2^2", p.toString());
+        assertEquals("8*a_0^2 + 4*a_0*a_1 + 4*a_0*a_2 + 8*a_1^2 + 4*a_1*a_2 + 8*a_2^2", p.toString());
     }
     
     
