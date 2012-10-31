@@ -10,6 +10,6 @@ public interface Term {
     public void add(Term addTerm);
     
     public Term simplify();
-    
+        
     public int evaluate(Map<String, Integer> values);
 }

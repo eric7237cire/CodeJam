@@ -22,17 +22,18 @@ public class Main {
     int k;
     int d;
     List<String> dictWords;
-    
+
     public static void handleCase(int caseNumber, Scanner scanner,
             PrintStream os) {
 
         Main m = Main.buildMain(scanner);
 
         List<Integer> total = m.doPerms();
-        
+
         List<Integer> total2 = m.usePoly();
 
-        log.info("Starting case {}\n total {}\n total poly {}", caseNumber, total, total2);
+        log.info("Starting case {}\n total {}\n total poly {}", caseNumber,
+                total, total2);
 
         os.println("Case #" + caseNumber + ": " + StringUtils.join(total, " "));
 
@@ -40,84 +41,75 @@ public class Main {
 
     public List<Integer> usePoly() {
         List<Integer> totals = new ArrayList<>();
-        
+
         Cloner c = new Cloner();
-        
-        
+
         Map<String, Integer> values = new HashMap<>();
-        Polynomial[] origPolyPerVar = new Polynomial[d];
-        Polynomial[] polyPerVar = new Polynomial[d];
-        
+
         Polynomial totalPoly = new Polynomial();
-        for(int i = 0; i < d; ++i) {
+        for (int i = 0; i < d; ++i) {
             Polynomial p = new Polynomial(polynomial);
-            for(int ch = 'a'; ch <= 'z'; ++ch) {
-                String varName = "" + (char) ch + "_" + i;
-                p.substitute(new VariableTerm("" + (char) ch), new VariableTerm(varName));
-                values.put(varName, StringUtils.countMatches(dictWords.get(i), "" + (char) ch));
+            for (int chInt = 'a'; chInt <= 'z'; ++chInt) {
+                char ch = (char) chInt;
+                String varName = "" + ch + "_" + i;
+                String xVarName = "" + ch + "_x" ;
+                
+                p.substitute(new VariableTerm("" + ch), new BinomialTerm(
+                        new VariableTerm(varName), new VariableTerm(xVarName)));
+                values.put(
+                        varName,
+                        StringUtils.countMatches(dictWords.get(i), ""
+                                + (char) chInt));
+                values.put(xVarName, 0);
             }
-            
+
             p.doSimplify();
-            
-            polyPerVar[i] = p;
+
             totalPoly.add(p);
         }
-        
+
         totals.add(totalPoly.evaluate(values));
-        
-        origPolyPerVar = c.deepClone(polyPerVar);
-        
+
+        Polynomial orig = c.deepClone(totalPoly);
         for (int eachK = 2; eachK <= k; ++eachK) {
-            
+
             totalPoly = new Polynomial();
-            
-            for(int i = 0; i < d; ++i) {
-                
-                Polynomial levelP = new Polynomial();
-            
-                /*
+
+            for (int i = 0; i < d; ++i) {
+
+                Polynomial p = c.deepClone(orig);
+
                 Map<VariableTerm, Term> subs = new HashMap<>();
-                for(String varName : values.keySet()) {
-                    subs.put(new VariableTerm(varName), new BinomialTerm(new VariableTerm(varName), 
-                            new VariableTerm(varName.charAt(0) + "_" + i)));
-                }*/
-                
-                for(int j = 0; j < d; ++j) {
-                    Polynomial p = c.deepClone(origPolyPerVar[j]);
-                    
-                    Map<VariableTerm, Term> subs = new HashMap<>();
-                    for(int chInt = 'a'; chInt <= 'z'; ++chInt) {
-                        char ch = (char) chInt;
-                        subs.put(new VariableTerm(ch + "_" + j), 
-                                new BinomialTerm(new VariableTerm(ch + "_" + j), 
-                                    new VariableTerm(ch + "_" + i)));
-                        
-                    }
-                    log.info("Computing k {} before sub {}", eachK, p);
-                    p.substitute(subs);
-                    log.info("Computing k {} after sub {}", eachK, p);
-                    levelP.add(p);
-                    log.info("Computing k {} after simplify {}", eachK, levelP);
+                for (int chInt = 'a'; chInt <= 'z'; ++chInt) {
+                    char ch = (char) chInt;
+                    String xVarName = "" + ch + "_x" ;
+                    subs.put(new VariableTerm(xVarName), new BinomialTerm(
+                            new VariableTerm(xVarName), new VariableTerm(ch
+                                    + "_" + i)));
+
                 }
+                log.info("Computing k {} before sub {}", eachK, p);
+                p.substitute(subs);
+                log.info("Computing k {} after sub {}", eachK, p);
+                totalPoly.add(p);
                 
-                    
+                log.info("Computing k {} after add {}", eachK, totalPoly);
+                totalPoly.doSimplify();
+
+                log.info("Computing k {} after simplify {}", eachK, totalPoly);
                 
-                levelP.doSimplify();
-                
-                totalPoly.add(levelP);
-                polyPerVar[i] = c.deepClone(levelP);
-                log.info("Computing k {} Polyobj {}", eachK, totalPoly);
             }
-            
+
             totalPoly.doSimplify();
-            origPolyPerVar = polyPerVar;
+
             log.info("Poly obj {} k {}", totalPoly, eachK);
-            
+
             totals.add(totalPoly.evaluate(values));
         }
-        
+
         return totals;
     }
+
     public List<Integer> doPerms() {
         List<Integer> totals = new ArrayList<>();
 
@@ -128,49 +120,51 @@ public class Main {
             for (int i = 0; i < d; ++i) {
                 dictArray[i] = i;
             }
-            
+
             for (int i = 0; i < eachK; ++i) {
                 combin[i] = 0;
             }
 
-            /*Permutations<Integer> perm = Permutations.create(dictArray, combin,
-                    eachK);
-*/
-            
+            /*
+             * Permutations<Integer> perm = Permutations.create(dictArray,
+             * combin, eachK);
+             */
+
             while (true) {
-                
+
                 String word = "";
-                for(Integer comIndex : combin) {
+                for (Integer comIndex : combin) {
                     word += dictWords.get(comIndex) + " ";
                 }
-                
+
                 final int wordEval = evalP(word);
                 total += wordEval;
 
                 total %= 10009;
-                
+
                 List<Integer> p_counts = new ArrayList<>();
-                p_counts.add(StringUtils.countMatches(word,  "a"));
-                //p_counts.add(StringUtils.countMatches(word,  "b"));
-                
-                log.info("Perm {} p({}) {} total {}", (Object) combin, p_counts, wordEval, total);
-                
+                p_counts.add(StringUtils.countMatches(word, "a"));
+                // p_counts.add(StringUtils.countMatches(word, "b"));
+
+                log.info("Perm {} p({}) {} total {}", (Object) combin,
+                        p_counts, wordEval, total);
+
                 boolean fullLoop = true;
-                for(int pos=0; pos<eachK; ++pos) {
-                    combin[pos] ++;
+                for (int pos = 0; pos < eachK; ++pos) {
+                    combin[pos]++;
                     if (combin[pos] < d) {
                         fullLoop = false;
                         break;
                     }
                     combin[pos] = 0;
                 }
-                
+
                 if (fullLoop) {
                     break;
                 }
-                
+
             }
-            
+
             totals.add(total);
         }
 

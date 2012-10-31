@@ -24,7 +24,7 @@ public class PolynomialTest {
     }
     
     @Test
-    public void testMult() {
+    public void testMultConstructor() {
         MultTerms mul = new MultTerms("8(a_2 + a_1)^2");
         assertEquals(8, mul.getCoeff());
         assertTrue(mul.getTerms().get(0) instanceof PowerTerm);
@@ -42,6 +42,17 @@ public class PolynomialTest {
         
         assertEquals( "8a_1^2 + 16a_1*a_2 + 8a_2^2", p.toString());
         
+    }
+    
+    @Test
+    public void testMultConstructor2() {
+        MultTerms mul = new MultTerms("a_0*(a_x + a_0)");
+        
+        Polynomial p = new Polynomial();
+        p.add(mul);
+        p.doSimplify();
+        
+        assertEquals( "a_0^2 + a_0*a_x", p.toString());
     }
     
     @Test
