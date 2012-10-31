@@ -103,6 +103,8 @@ public class Main {
             totalPoly.doSimplify();
 
             log.info("Poly obj {} k {}", totalPoly, eachK);
+            
+            orig = c.deepClone(totalPoly);
 
             totals.add(totalPoly.evaluate(values));
         }
