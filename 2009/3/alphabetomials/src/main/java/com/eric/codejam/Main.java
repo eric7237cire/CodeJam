@@ -22,8 +22,7 @@ public class Main {
     int k;
     int d;
     List<String> dictWords;
-    Polynomial polyObj;
-
+    
     public static void handleCase(int caseNumber, Scanner scanner,
             PrintStream os) {
 
@@ -41,51 +40,80 @@ public class Main {
 
     public List<Integer> usePoly() {
         List<Integer> totals = new ArrayList<>();
-        polyObj = new Polynomial();
+        
         Cloner c = new Cloner();
-        Polynomial orig = new Polynomial(polynomial);
+        
         
         Map<String, Integer> values = new HashMap<>();
+        Polynomial[] origPolyPerVar = new Polynomial[d];
+        Polynomial[] polyPerVar = new Polynomial[d];
+        
+        Polynomial totalPoly = new Polynomial();
         for(int i = 0; i < d; ++i) {
-            Polynomial p = c.deepClone(orig);
+            Polynomial p = new Polynomial(polynomial);
             for(int ch = 'a'; ch <= 'z'; ++ch) {
                 String varName = "" + (char) ch + "_" + i;
                 p.substitute(new VariableTerm("" + (char) ch), new VariableTerm(varName));
                 values.put(varName, StringUtils.countMatches(dictWords.get(i), "" + (char) ch));
             }
-            polyObj.add(p);
+            
+            p.doSimplify();
+            
+            polyPerVar[i] = p;
+            totalPoly.add(p);
         }
         
-        totals.add(polyObj.evaluate(values));
+        totals.add(totalPoly.evaluate(values));
         
-        polyObj.simplify();
+        origPolyPerVar = c.deepClone(polyPerVar);
         
         for (int eachK = 2; eachK <= k; ++eachK) {
-            orig = c.deepClone(polyObj);
-            polyObj = new Polynomial();
+            
+            totalPoly = new Polynomial();
             
             for(int i = 0; i < d; ++i) {
-                Map<VariableTerm, Term> subs = new HashMap<>();
-                Polynomial p = c.deepClone(orig);
+                
+                Polynomial levelP = new Polynomial();
             
+                /*
+                Map<VariableTerm, Term> subs = new HashMap<>();
                 for(String varName : values.keySet()) {
-                    subs.put(new VariableTerm(varName), new BinomialTerm(new VariableTerm(varName), new VariableTerm(varName.charAt(0) + "_" + i)));
+                    subs.put(new VariableTerm(varName), new BinomialTerm(new VariableTerm(varName), 
+                            new VariableTerm(varName.charAt(0) + "_" + i)));
+                }*/
+                
+                for(int j = 0; j < d; ++j) {
+                    Polynomial p = c.deepClone(origPolyPerVar[j]);
+                    
+                    Map<VariableTerm, Term> subs = new HashMap<>();
+                    for(int chInt = 'a'; chInt <= 'z'; ++chInt) {
+                        char ch = (char) chInt;
+                        subs.put(new VariableTerm(ch + "_" + j), 
+                                new BinomialTerm(new VariableTerm(ch + "_" + j), 
+                                    new VariableTerm(ch + "_" + i)));
+                        
+                    }
+                    log.info("Computing k {} before sub {}", eachK, p);
+                    p.substitute(subs);
+                    log.info("Computing k {} after sub {}", eachK, p);
+                    levelP.add(p);
+                    log.info("Computing k {} after simplify {}", eachK, levelP);
                 }
                 
-                log.info("Computing k {} before sub {}", eachK, p);
+                    
                 
+                levelP.doSimplify();
                 
-                p.substitute(subs);
-                log.info("Computing k {} after sub {}", eachK, p);                
-                polyObj.add(p);
-                log.info("Computing k {} Polyobj {}", eachK, polyObj);
+                totalPoly.add(levelP);
+                polyPerVar[i] = c.deepClone(levelP);
+                log.info("Computing k {} Polyobj {}", eachK, totalPoly);
             }
             
-            polyObj.doSimplify();
+            totalPoly.doSimplify();
+            origPolyPerVar = polyPerVar;
+            log.info("Poly obj {} k {}", totalPoly, eachK);
             
-            log.info("Poly obj {} k {}", polyObj, eachK);
-            
-            totals.add(polyObj.evaluate(values));
+            totals.add(totalPoly.evaluate(values));
         }
         
         return totals;
