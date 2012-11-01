@@ -8,6 +8,9 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+
 
 public class AddTerms extends AbstractTerm {
     
@@ -16,6 +19,15 @@ public class AddTerms extends AbstractTerm {
     AddTerms() {
         terms = new ArrayList<>();
     }
+    AddTerms(List<Term> args) {
+        terms = new ArrayList<>();
+        terms.addAll(args);
+        Collections.sort(terms, new Polynomial.CompareTerm());
+        
+        terms = ImmutableList.copyOf(terms);
+        
+    }
+    
     @Override
     public void substitute(VariableTerm old, Term newTerm) {
         for(ListIterator<Term> li = terms.listIterator(); li.hasNext();) {
@@ -28,16 +40,7 @@ public class AddTerms extends AbstractTerm {
         }
     }
 
-    @Override
-    public void multiply(Term mult) {
-        if (mult instanceof CoefficientTerm) {
-            for(Term term : terms) {
-                term.multiply(mult);
-            }
-            return;
-        }
-        throw new UnsupportedOperationException("mult");        
-    }
+   
     
     @Override
     public int evaluate(Map<String, Integer> values) {
@@ -50,71 +53,148 @@ public class AddTerms extends AbstractTerm {
         return r;
     }
 
-    @Override
-    public void add(Term addTerm) {
-        if (addTerm instanceof AddTerms) {
-            this.terms.addAll( ((AddTerms) addTerm).terms ); 
-        } else {
-            this.terms.add(addTerm);
-        }
-    }
+   
 
     @Override
     public Term simplify() {
-        Term ret = null;
+                
+        List<Term> simTerms = new ArrayList<>();
+        simTerms.addAll(getTerms());
+        boolean hasSimp = false;
         
-        List<Term> toAdd = new ArrayList<>();
-        for(ListIterator<Term> li = terms.listIterator(); li.hasNext();) {
+        // Simplify any sub elements
+        for (ListIterator<Term> li = simTerms.listIterator(); li.hasNext();) {
             Term t = li.next();
-            
-            if (t instanceof AddTerms) {
-                toAdd.addAll( ((AddTerms) t).terms );
-                li.remove();
-                continue;
-            }
+
             Term r = t.simplify();
             if (r != null) {
-                if (r instanceof AddTerms) {
-                    li.remove();
-                    toAdd.addAll( ((AddTerms) r).terms ); 
-                } else {
-                    li.set(r);
-                }
-                
-                ret = this;
-                continue;
+            
+                li.set(r);
+                hasSimp = true;
             }
         }
         
-        this.terms.addAll(toAdd);
-        
-        for(ListIterator<Term> li = terms.listIterator(); li.hasNext(); ) {
-            Term term = li.next();
-            if (!(term instanceof MultTerms)) {
-                continue;
-            }
-            MultTerms multTerm = (MultTerms) term;
-            
-            for(ListIterator<Term> innerLi = terms.listIterator(li.nextIndex()); innerLi.hasNext(); ) {
-                Term innerTerm = innerLi.next();
-                if (!(innerTerm instanceof MultTerms)) {
-                    continue;
-                }
-                MultTerms innerMultTerm = (MultTerms) innerTerm;
+        boolean found = true;
+        while (found) {
+            found = false;
+
+            for (int i = 0; i < simTerms.size(); ++i) {
+                for (int j = i + 1; j < simTerms.size(); ++j) {
+
+                    Term lhs = simTerms.get(i);
+                    Term rhs = simTerms.get(j);
+                    Term replacement = null;
+                    
+                    if (!lhs.canAdd(rhs)) {
+                        continue;
+                    }
+                    
+                    replacement = lhs.add(rhs);
+                    
+                    Preconditions.checkState(replacement != null);
+                    simTerms.remove(j);
+                    simTerms.remove(i);
+
+                    simTerms.add(replacement);
+                    found = true;
+                    hasSimp = true;
+                    break;
                 
-                if (multTerm.getTerms().equals(innerMultTerm.getTerms())) {
-                    li.remove();
-                    innerMultTerm.add(multTerm);
+                }
+
+                if (found) {
                     break;
                 }
             }
+
         }
+       
+
+       if (hasSimp) {
+           return new AddTerms(simTerms);
+       }
+
+        return null;
         
         
-        
-        return ret;
     }
     
+    @Override
+    public boolean canAdd(Term rhs) {
+        return rhs.canAddAsRhs(this);
+    }
+    @Override
+    public Term add(Term rhs) {
+        return rhs.addAsRhs(this);
+    }
+    
+    @Override
+    public Term multiply(Term rhs) {
+        return rhs.multiplyAsRhs(this);
+    }
+    public Term multiplyAsRhsImpl(Term lhs) {
+        List<Term> terms = new ArrayList<>();
+        for(Term term : getTerms()) {
+            List<Term> mTerms = new ArrayList<>();
+            mTerms.add(lhs);
+            mTerms.add(term);
+            MultTerms m = new MultTerms(mTerms);
+            terms.add(m);
+        }
+
+        return new AddTerms(terms);
+    }
+    @Override
+    public Term multiplyAsRhs(MultTerms lhs) {
+        return multiplyAsRhsImpl(lhs);
+    }
+   
+    @Override
+    public boolean canMultiplyAsRhs(MultTerms lhs) {
+        return true;
+    }
+    @Override
+    public Term multiplyAsRhs(CoefficientTerm lhs) {
+        return multiplyAsRhsImpl(lhs);
+    }
+    @Override
+    public Term multiplyAsRhs(VariableTerm lhs) {
+        return multiplyAsRhsImpl(lhs);
+    }
+    @Override
+    public boolean canMultiplyAsRhs(PowerTerm lhs) {
+        return true;
+    }
+    @Override
+    public Term multiplyAsRhs(PowerTerm lhs) {
+        return multiplyAsRhsImpl(lhs);
+    }
+    @Override
+    public boolean canMultiplyAsRhs(VariableTerm lhs) {
+        return true;
+    }
+    @Override
+    public boolean canMultiplyAsRhs(CoefficientTerm lhs) {
+        return true;
+    }
+    @Override
+    public boolean canMultiply(Term rhs) {
+        return rhs.canMultiply(this);
+    }
+    @Override
+    public boolean canAddAsRhs(AddTerms lhs) {
+        return true;
+    }
+    @Override
+    public Term addAsRhs(AddTerms lhs) {
+        List<Term> terms = new ArrayList<>();
+        terms.addAll(lhs.getTerms());
+        terms.addAll(this.getTerms());
+        return new AddTerms(terms);
+    }
+    public List<Term> getTerms() {
+        return terms;
+    }
     @Override
     public String toString() {
         return StringUtils.join(terms, " + ");        

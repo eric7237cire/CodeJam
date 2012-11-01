@@ -1,6 +1,7 @@
 package com.eric.codejam;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -12,14 +13,31 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 
 public class MultTerms extends AbstractTerm {
 
     private List<Term> terms;
-    private int coeff;
 
     public List<Term> getTerms() {
-        return Collections.unmodifiableList(terms);
+        return terms;
+    }
+    
+    MultTerms(Term... args) {
+        terms = new ArrayList<>();
+        terms.addAll(Arrays.asList(args));
+        Collections.sort(terms, new Polynomial.CompareTerm());
+        
+        terms = ImmutableList.copyOf(terms);
+        
+    }
+    MultTerms(List<Term> args) {
+        terms = new ArrayList<>();
+        terms.addAll(args);
+        Collections.sort(terms, new Polynomial.CompareTerm());
+        
+        terms = ImmutableList.copyOf(terms);
+        
     }
 
     static Term parseBinomialTerm(String[] strList) {
@@ -62,24 +80,27 @@ public class MultTerms extends AbstractTerm {
 
         return null;
     }
+    
+    static Term parseCoeffTerm(String[] strList) {
+        Pattern varPat = Pattern.compile("(\\d+)(.*?)");
+        Matcher m = varPat.matcher(strList[0]);
+        if (m.matches()) {
+            strList[0] = m.group(2);
+            return new CoefficientTerm(Integer.parseInt(m.group(1)));
+        }
+
+        return null;
+
+    }
 
     MultTerms(String str) {
         this();
-
-        Pattern coeffPat = Pattern.compile("^(\\d+)(.*)");
-        Matcher m = coeffPat.matcher(str);
-        if (m.matches()) {
-            coeff = Integer.parseInt(m.group(1));
-            str = m.group(2);
-        } else {
-            coeff = 1;
-        }
 
         String[] strList = new String[] { str };
         while (!strList[0].isEmpty()) {
             str = strList[0];
 
-            strList[0] = strList[0].replaceFirst("^\\*", "");
+            strList[0] = strList[0].trim().replaceFirst("^\\*", "");
             Term t = parseBinomialTerm(strList);
 
             if (t != null) {
@@ -88,6 +109,12 @@ public class MultTerms extends AbstractTerm {
 
             t = parseVarTerm(strList);
 
+            if (t != null) {
+                terms.add(t);
+            }
+            
+            t = parseCoeffTerm(strList);
+            
             if (t != null) {
                 terms.add(t);
             }
@@ -100,7 +127,6 @@ public class MultTerms extends AbstractTerm {
 
     MultTerms() {
         terms = new ArrayList<>();
-        coeff = 1;
     }
 
     @Override
@@ -115,201 +141,129 @@ public class MultTerms extends AbstractTerm {
         }
     }
 
+  
+
     @Override
-    public void multiply(Term mult) {
-        if (mult instanceof CoefficientTerm) {
-            coeff *= ((CoefficientTerm) mult).value;
-            return;
-        }
-
-        if (mult instanceof PowerTerm || mult instanceof VariableTerm) {
-            terms.add(mult);
-            return;
-        }
-        
-        if (mult instanceof MultTerms) {
-            this.terms.addAll( ((MultTerms) mult).getTerms());
-            this.coeff *= ((MultTerms) mult).coeff;
-            return;
-        }
-
-        /*
-         * if (mult instanceof MultTerms) { coeff terms.addAll( ((MultTerms)
-         * mult).terms); }
-         */
-
-        throw new UnsupportedOperationException("mult");
+    public Term multiply(Term rhs) {
+        return rhs.multiply(this);
     }
 
     @Override
-    public void add(Term addTerm) {
-        if (addTerm instanceof MultTerms) {
-            MultTerms rhs = (MultTerms) addTerm;
-            Preconditions.checkArgument(this.terms.equals(rhs.terms));
-            coeff += rhs.coeff;
-            return;
-        }
-        throw new UnsupportedOperationException("add");
+    public boolean canMultiply(Term rhs) {
+        return rhs.canMultiply(this);
     }
 
-    public static AddTerms multiply(BinomialTerm lhs, BinomialTerm rhs) {
-        AddTerms add = new AddTerms();
-        MultTerms m = new MultTerms();
-        m.multiply(lhs.getX());
-        m.multiply(rhs.getX());
-        add.add(m);
-
-        m = new MultTerms();
-        m.multiply(lhs.getX());
-        m.multiply(rhs.getY());
-        add.add(m);
-
-        m = new MultTerms();
-        m.multiply(lhs.getY());
-        m.multiply(rhs.getX());
-        add.add(m);
-
-        m = new MultTerms();
-        m.multiply(lhs.getY());
-        m.multiply(rhs.getY());
-        add.add(m);
-
-        return add;
-    }
-
-    public static AddTerms multiply(VariableTerm lhs, BinomialTerm rhs) {
-        AddTerms add = new AddTerms();
-        MultTerms m = new MultTerms();
-        m.multiply(lhs);
-        m.multiply(rhs.getX());
-        add.add(m);
-
-        m = new MultTerms();
-        m.multiply(lhs);
-        m.multiply(rhs.getY());
-        add.add(m);
-
-        return add;
-    }
-
-    public static AddTerms multiply(BinomialTerm lhs, VariableTerm rhs) {
-        return multiply(rhs, lhs);
+    @Override
+    public boolean canMultiplyAsRhs(BinomialTerm lhs) {
+        return false;
     }
     
-    public static AddTerms multiply(VariableTerm lhs, AddTerms rhs) {
-        AddTerms add = new AddTerms();
-        
-        for(Term t : rhs.terms) {
-            MultTerms m = new MultTerms();
-            m.multiply(lhs);
-            m.multiply(t);
-            add.add(m);
-        }
-        
-        return add;
+    public Term multiplyAsRhsImpl(Term lhs) {
+        List<Term> terms = new ArrayList<>();
+        terms.addAll(getTerms());
+        terms.add(lhs);
+        return new MultTerms(terms);
     }
-    
-    public static AddTerms multiply(PowerTerm lhs, AddTerms rhs) {
-        AddTerms add = new AddTerms();
-        
-        for(Term t : rhs.terms) {
-            MultTerms m = new MultTerms();
-            m.multiply(lhs);
-            m.multiply(t);
-            add.add(m);
-        }
-        
-        return add;
+
+    @Override
+    public Term multiplyAsRhs(BinomialTerm lhs) {
+        return multiplyAsRhsImpl(lhs);
+    }
+
+    @Override
+    public Term multiplyAsRhs(CoefficientTerm lhs) {
+        return multiplyAsRhsImpl(lhs);
+    }
+
+    @Override
+    public boolean canMultiplyAsRhs(CoefficientTerm lhs) {
+        return true;
+    }
+
+    @Override
+    public Term multiplyAsRhs(VariableTerm lhs) {
+        return multiplyAsRhsImpl(lhs);
+    }
+
+    @Override
+    public boolean canMultiplyAsRhs(VariableTerm lhs) {
+        return true;
+    }
+
+    @Override
+    public boolean canMultiplyAsRhs(MultTerms lhs) {
+        return true;
+    }
+
+    @Override
+    public Term multiplyAsRhs(MultTerms lhs) {
+        List<Term> terms = new ArrayList<>();
+        terms.addAll(getTerms());
+        terms.addAll(lhs.getTerms());
+        return new MultTerms(terms);
+    }
+
+    @Override
+    public boolean canMultiplyAsRhs(PowerTerm lhs) {
+        return true;
+    }
+
+    @Override
+    public Term multiplyAsRhs(PowerTerm lhs) {
+        return multiplyAsRhsImpl(lhs);
     }
 
     @Override
     public Term simplify() {
-        Term ret = null;
+        List<Term> simTerms = new ArrayList<>();
+        simTerms.addAll(getTerms());
+        boolean hasSimp = false;
 
         // Distribute coefficient
         if (terms.size() == 1 && !(terms.get(0) instanceof PowerTerm)) {
-            terms.get(0).multiply(new CoefficientTerm(coeff));
             return terms.get(0);
         }
 
         // Simplify any sub elements
-        for (ListIterator<Term> li = terms.listIterator(); li.hasNext();) {
+        for (ListIterator<Term> li = simTerms.listIterator(); li.hasNext();) {
             Term t = li.next();
-
-            if (t.equals(new CoefficientTerm(1))) {
-                li.remove();
-                continue;
-            }
 
             Term r = t.simplify();
             if (r != null) {
-                if (r instanceof CoefficientTerm) {
-                    coeff *= ((CoefficientTerm) r).value;
-                    li.remove();
-                } else {
-                    li.set(r);
-                }
-                ret = this;
+            
+                li.set(r);
+                hasSimp = true;
             }
         }
 
-        // Mult binomials
+        
+        
         boolean found = true;
         while (found) {
             found = false;
 
-            for (int i = 0; i < terms.size(); ++i) {
-                for (int j = i + 1; j < terms.size(); ++j) {
+            for (int i = 0; i < simTerms.size(); ++i) {
+                for (int j = i + 1; j < simTerms.size(); ++j) {
 
-                    Term lhs = terms.get(i);
-                    Term rhs = terms.get(j);
+                    Term lhs = simTerms.get(i);
+                    Term rhs = simTerms.get(j);
                     Term replacement = null;
-                    if (BinomialTerm.class.isInstance(lhs)
-                            && BinomialTerm.class.isInstance(rhs)) {
-                        replacement = MultTerms.multiply((BinomialTerm) lhs,
-                                (BinomialTerm) rhs);
-
-                    } else if (VariableTerm.class.isInstance(lhs)
-                            && BinomialTerm.class.isInstance(rhs)) {
-                        replacement = MultTerms.multiply((VariableTerm) lhs,
-                                (BinomialTerm) rhs);
-
-                    } else if (BinomialTerm.class.isInstance(lhs)
-                            && VariableTerm.class.isInstance(rhs)) {
-                        replacement = MultTerms.multiply((BinomialTerm) lhs,
-                                (VariableTerm) rhs);
-
-                    } else if (AddTerms.class.isInstance(lhs)
-                            && VariableTerm.class.isInstance(rhs)) {
-                        replacement = MultTerms.multiply(
-                                (VariableTerm) rhs, (AddTerms) lhs);
-
-                    } else if (AddTerms.class.isInstance(rhs)
-                            && VariableTerm.class.isInstance(lhs)) {
-                        replacement = MultTerms.multiply((VariableTerm) lhs,
-                                (AddTerms) rhs);
-
-                    } else if (AddTerms.class.isInstance(lhs)
-                            && PowerTerm.class.isInstance(rhs)) {
-                        replacement = MultTerms.multiply(
-                                (PowerTerm) rhs, (AddTerms) lhs);
-
-                    } else if (AddTerms.class.isInstance(rhs)
-                            && PowerTerm.class.isInstance(lhs)) {
-                        replacement = MultTerms.multiply((PowerTerm) lhs,
-                                (AddTerms) rhs);
-
+                    
+                    if (!lhs.canMultiply(rhs)) {
+                        continue;
                     }
+                    
+                    replacement = lhs.multiply(rhs);
+                    
+                    Preconditions.checkState(replacement != null);
+                    simTerms.remove(j);
+                    simTerms.remove(i);
 
-                    if (replacement != null) {
-                        terms.remove(j);
-                        terms.remove(i);
-
-                        terms.add(replacement);
-                        found = true;
-                        ret = this;
-                        break;
-                    }
+                    simTerms.add(replacement);
+                    found = true;
+                    hasSimp = true;
+                    break;
+                
                 }
 
                 if (found) {
@@ -320,58 +274,72 @@ public class MultTerms extends AbstractTerm {
         }
        
 
-        // Merge same degrees
-        Map<VariableTerm, Integer> map = new HashMap<>();
+       if (hasSimp) {
+           return new MultTerms(simTerms);
+       }
 
-        for (ListIterator<Term> li = terms.listIterator(); li.hasNext();) {
-            Term term = li.next();
-
-            VariableTerm var = null;
-            int degree = 0;
-
-            if (term instanceof VariableTerm) {
-                var = (VariableTerm) term;
-                degree = 1;
-            } else if (term instanceof PowerTerm) {
-                PowerTerm p = (PowerTerm) term;
-                if (p.term instanceof VariableTerm) {
-                    var = (VariableTerm) p.term;
-                    degree = p.degree;
-                }
-            }
-
-            if (var == null) {
-                continue;
-            }
-
-            li.remove();
-            Integer savedDegree = map.get(var);
-
-            savedDegree = savedDegree == null ? 0 : savedDegree;
-
-            map.put(var, savedDegree + degree);
-        }
-
-        for (Map.Entry<VariableTerm, Integer> ent : map.entrySet()) {
-            if (ent.getValue() == 1) {
-                terms.add(ent.getKey());
-            } else {
-                terms.add(new PowerTerm(ent.getKey(), ent.getValue()));
-            }
-        }
-
-        Collections.sort(terms, new Polynomial.CompareTerm());
-
-        return ret;
+        return null;
     }
 
-    public int getCoeff() {
-        return coeff;
+    @Override
+    public boolean canAdd(Term rhs) {
+        return rhs.canAddAsRhs(this);
+    }
+    @Override
+    public Term add(Term rhs) {
+        return rhs.addAsRhs(this);
+    }
+    
+    
+
+    @Override
+    public Term addAsRhs(MultTerms lhs) {
+        
+        List<Term> lhsTerms = null;
+        List<Term> rhsTerms = null;
+        int coeffLhs = 1;
+        int coeffRhs = 1;
+        if (lhs.getTerms().get(0) instanceof CoefficientTerm) {
+            lhsTerms = new ArrayList<>(lhs.getTerms().subList(1, lhs.getTerms().size()));
+            coeffLhs = ((CoefficientTerm) lhs.getTerms().get(0)).getValue();
+        } else {
+            lhsTerms = new ArrayList<>(lhs.getTerms());
+        }
+        
+        MultTerms rhs = this;
+        if (rhs.getTerms().get(0) instanceof CoefficientTerm) {
+            rhsTerms = rhs.getTerms().subList(1, rhs.getTerms().size());
+            coeffRhs = ((CoefficientTerm) rhs.getTerms().get(0)).getValue();
+        } else {
+            rhsTerms = rhs.getTerms();
+        }
+        Preconditions.checkArgument(lhsTerms.equals(rhsTerms));
+        lhsTerms.add(0, new CoefficientTerm(coeffLhs + coeffRhs));
+        return new MultTerms(lhsTerms);
+    }
+
+    @Override
+    public boolean canAddAsRhs(MultTerms lhs) {
+        List<Term> lhsTerms = null;
+        List<Term> rhsTerms = null;
+        if (lhs.getTerms().get(0) instanceof CoefficientTerm) {
+            lhsTerms = lhs.getTerms().subList(1, lhs.getTerms().size());
+        } else {
+            lhsTerms = lhs.getTerms();
+        }
+        
+        MultTerms rhs = this;
+        if (rhs.getTerms().get(0) instanceof CoefficientTerm) {
+            rhsTerms = rhs.getTerms().subList(1, rhs.getTerms().size());
+        } else {
+            rhsTerms = rhs.getTerms();
+        }
+        return lhsTerms.equals(rhsTerms);
     }
 
     @Override
     public int evaluate(Map<String, Integer> values) {
-        int r = coeff;
+        int r = 1;
 
         for (Term term : terms) {
             r *= term.evaluate(values);
@@ -382,7 +350,7 @@ public class MultTerms extends AbstractTerm {
 
     @Override
     public String toString() {
-        return (coeff == 1 ? "" : coeff+"*") + StringUtils.join(terms, "*");
+        return StringUtils.join(terms, "*");
     }
 
 }

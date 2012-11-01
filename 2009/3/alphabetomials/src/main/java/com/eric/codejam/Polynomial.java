@@ -11,42 +11,73 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 
-public class Polynomial extends AddTerms {
+public class Polynomial {
+    AddTerms addTerms;
 	Polynomial(String s) {
 		super();
+		List<Term> terms = new ArrayList<>();
 		String[] termStrList = s.split("\\+");
 		
 		for (String termStr : termStrList) {
 			terms.add(new MultTerms(termStr));
 		}
+		
+		addTerms = new AddTerms(terms);
 	}
 	
 	Polynomial() {
-	    super();
+	    addTerms = new AddTerms();
 	}
 
 	public void doSimplify() {
-		while(simplify() != null) {
-			
-		}
+	    boolean didSimp = true;
+	    while(didSimp) {
+	        didSimp = false;
+	        Term sim = addTerms.simplify();
+	        if (sim != null) {
+	            addTerms = (AddTerms) sim;
+	            didSimp = true;
+	        }
+	    }
 		
-		Collections.sort(terms, new Polynomial.CompareTerm());
+		//Collections.sort(terms, new Polynomial.CompareTerm());
 	}
 	
 	public void substitute(Map<VariableTerm,Term> terms) {
 		for(VariableTerm var : terms.keySet()) {
-			substitute(var, new VariableTerm(var.name + "old"));
+			addTerms.substitute(var, new VariableTerm(var.getName() + "old"));
 		}
 		
 		for(VariableTerm var : terms.keySet()) {
-			substitute(new VariableTerm(var.name + "old"), terms.get(var));
+		    addTerms.substitute(new VariableTerm(var.getName() + "old"), terms.get(var));
 		}
     }
 	
+	public void substitute(VariableTerm old, Term newTerm) {
+	    addTerms.substitute(old, newTerm);
+	}
+	
+
+    public int evaluate(Map<String, Integer> values) {
+        return addTerms.evaluate(values);
+    }
+	
+	public void addSelf(Term term) {
+	    List<Term> terms = new ArrayList<>();
+	    terms.addAll(addTerms.getTerms());
+	    terms.add(term);
+	    addTerms = new AddTerms(terms);
+	}
+	public void addSelf(Polynomial term) {
+        List<Term> terms = new ArrayList<>();
+        terms.addAll(addTerms.getTerms());
+        terms.addAll(term.addTerms.getTerms());
+        addTerms = new AddTerms(terms);
+    }
 	static int getDegree(Term term) {
 	    if (term instanceof PowerTerm) {
             PowerTerm p = (PowerTerm) term;
-            return p.degree;
+            return p.getDegree();
 	    }
 	    
 	    return 1;
@@ -57,13 +88,14 @@ public class Polynomial extends AddTerms {
 	
 	    if (term instanceof VariableTerm) {
             var = (VariableTerm) term;
-            return var.name;
+            return var.getName();
         } else if (term instanceof PowerTerm) {
             PowerTerm p = (PowerTerm) term;
-            if (p.term instanceof VariableTerm) {
-                var = (VariableTerm) p.term;                
+            if (p.getTerm() instanceof VariableTerm) {
+                var = (VariableTerm) p.getTerm();
+                return var.getName();
             }
-            return var.name;
+            
         } else if (term instanceof MultTerms) {
             MultTerms m = (MultTerms) term;
             return getVarname(m.getTerms().get(0));
@@ -97,18 +129,40 @@ public class Polynomial extends AddTerms {
              }
 		}
 		
-		public int compareMul(MultTerms lhs, MultTerms rhs) {
-		    ComparisonChain cc =
-		            ComparisonChain.start();
-		    
-		    
-		        for(int i = 0; i < lhs.getTerms().size() && i < rhs.getTerms().size(); ++i) {
-		            cc = cc.compare(lhs.getTerms().get(i), rhs.getTerms().get(i), new CompareTerm());
-		        }
-		    
-		        cc = cc.compare(lhs.getTerms().size(), rhs.getTerms().size());
-		        
-		    return cc.result();
-		}
+        public int compareMul(MultTerms lhs, MultTerms rhs) {
+            ComparisonChain cc = ComparisonChain.start();
+
+            int i = 0;
+            int j = 0;
+
+            while (i < lhs.getTerms().size() && j < rhs.getTerms().size()) {
+                Term lhsTerm = lhs.getTerms().get(i);
+                Term rhsTerm = rhs.getTerms().get(j);
+
+                if (lhsTerm instanceof CoefficientTerm) {
+                    ++i;
+                    continue;
+                }
+                if (rhsTerm instanceof CoefficientTerm) {
+                    ++j;
+                    continue;
+                }
+                cc = cc.compare(lhs.getTerms().get(i), rhs.getTerms().get(j),
+                        new CompareTerm());
+                ++i;
+                ++j;
+            }
+
+            cc = cc.compare(lhs.getTerms().size(), rhs.getTerms().size());
+
+            return cc.result();
+        }
 	}
+
+    @Override
+    public String toString() {
+        return addTerms.toString();
+    }
+	
+	
 }

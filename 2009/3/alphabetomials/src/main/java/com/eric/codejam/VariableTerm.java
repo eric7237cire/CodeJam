@@ -3,10 +3,14 @@ package com.eric.codejam;
 import java.util.Map;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 public class VariableTerm extends AbstractTerm {
-    String name;
+    private String name;
     
+    public String getName() {
+        return name;
+    }
     public VariableTerm(String name) {
         super();
         this.name = name;
@@ -34,10 +38,30 @@ public class VariableTerm extends AbstractTerm {
             
     }
     
-    @Override
-	public void multiply(Term mult) {
-				
-	}
+    public boolean canMultiply(Term rhs) {
+        return rhs.canMultiplyAsRhs(this);
+    }
+    public Term multiply(Term rhs) {
+        //concrete lhs
+        return rhs.multiplyAsRhs(this);
+    }
+    
+    public Term multiplyAsRhs(VariableTerm lhs) {
+        return new PowerTerm(lhs, 2);
+    }
+    public boolean canMultiplyAsRhs(VariableTerm lhs) {
+        return lhs.equals(this);
+    }
+    
+    public Term multiplyAsRhs(PowerTerm lhs) {
+        Preconditions.checkArgument( ((VariableTerm) lhs.getTerm()).getName().equals(name) );
+        return new PowerTerm(lhs.getTerm(), lhs.getDegree() + 1);
+    }
+    public boolean canMultiplyAsRhs(PowerTerm lhs) {        
+        return lhs.getTerm().equals(this);
+    }
+    
+   
     
     @Override
     public int evaluate(Map<String, Integer> values) {

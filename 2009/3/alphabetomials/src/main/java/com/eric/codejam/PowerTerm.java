@@ -5,18 +5,20 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 public class PowerTerm extends AbstractTerm {
-    int degree;
-    Term term;
+    private int degree;
+    public Term getTerm() {
+        return term;
+    }
+
+    private Term term;
     
     public int getDegree() {
         return degree;
     }
 
-    public void setDegree(int degree) {
-        this.degree = degree;
-    }
 
     public PowerTerm( Term term, int degree) {
         super();
@@ -29,10 +31,7 @@ public class PowerTerm extends AbstractTerm {
         return degree != 1 ? term + "^" + degree : term.toString();
         
     }
-    @Override
-	public void multiply(Term mult) {
-				
-	}
+    
     
     public void substitute(VariableTerm old, Term newTerm) {
     	if (term.equals(old)) {
@@ -66,10 +65,10 @@ public class PowerTerm extends AbstractTerm {
 			AddTerms add = new AddTerms();
 			for(int leftPower = degree; leftPower >= 0; --leftPower) {
 				int rightPower = degree - leftPower;
-				MultTerms mt = new MultTerms();
-				mt.multiply(new CoefficientTerm(binomialCoeff.get(degree).get(rightPower)));
-				mt.multiply(new PowerTerm(binomial.getX(), leftPower));
-				mt.multiply(new PowerTerm(binomial.getY(), rightPower));
+				MultTerms mt = new MultTerms(
+				(new CoefficientTerm(binomialCoeff.get(degree).get(rightPower))),
+				(new PowerTerm(binomial.getX(), leftPower)),
+				(new PowerTerm(binomial.getY(), rightPower)));
 				add.terms.add(mt);
 			}
 			
@@ -111,6 +110,30 @@ public class PowerTerm extends AbstractTerm {
             
         
         return r;
+    }
+    
+    public boolean canMultiply(Term rhs) {
+        return rhs.canMultiplyAsRhs(this);
+    }
+    public Term multiply(Term rhs) {
+        //concrete lhs
+        return rhs.multiplyAsRhs(this);
+    }
+    
+    public Term multiplyAsRhs(VariableTerm lhs) {
+        Preconditions.checkArgument(term.equals(lhs));
+        return new PowerTerm(lhs, degree + 1);
+    }
+    public boolean canMultiplyAsRhs(VariableTerm lhs) {
+        return term.equals(lhs);
+    }
+    
+    public Term multiplyAsRhs(PowerTerm lhs) {
+        Preconditions.checkArgument( lhs.getTerm().equals(getTerm()) );
+        return new PowerTerm(lhs.getTerm(), lhs.getDegree() + this.getDegree());
+    }
+    public boolean canMultiplyAsRhs(PowerTerm lhs) {        
+        return lhs.getTerm().equals(this.getTerm());
     }
     
 }

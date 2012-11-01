@@ -50,7 +50,7 @@ public class Main {
 
 
         Polynomial orig = new Polynomial(polynomial);
-        orig.simplify();
+        orig.doSimplify();
         
         Polynomial totalPoly = new Polynomial();
         
@@ -73,7 +73,7 @@ public class Main {
 
             p.doSimplify();
 
-            totalPoly.add(p);
+            totalPoly.addSelf(p);
         }
 
         totals.add(totalPoly.evaluate(values));
@@ -98,7 +98,7 @@ public class Main {
                 log.info("Computing k {} before sub {}", eachK, p);
                 p.substitute(subs);
                 log.info("Computing k {} after sub {}", eachK, p);
-                totalPoly.add(p);
+                totalPoly.addSelf(p);
                 
                 log.info("Computing k {} after add {}", eachK, totalPoly);
                 totalPoly.doSimplify();

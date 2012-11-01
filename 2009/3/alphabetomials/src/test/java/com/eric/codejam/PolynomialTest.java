@@ -19,7 +19,7 @@ public class PolynomialTest {
     public void testConstructor() {
         Polynomial p = new Polynomial("aaab+caac+c");
         
-        p.simplify();
+        p.doSimplify();
         assertEquals("a^3*b + a^2*c^2 + c", p.toString());
     }
     
@@ -28,7 +28,7 @@ public class PolynomialTest {
         
         Polynomial p = new Polynomial("ehw+hwww");
         
-        p.simplify();
+        p.doSimplify();
         assertEquals("e*h*w + h*w^3", p.toString());
         
         p.substitute(new VariableTerm("w"), new BinomialTerm(new VariableTerm("f_0"), new VariableTerm("f_1")));
@@ -41,18 +41,18 @@ public class PolynomialTest {
     @Test
     public void testMultConstructor() {
         MultTerms mul = new MultTerms("8(a_2 + a_1)^2");
-        assertEquals(8, mul.getCoeff());
-        assertTrue(mul.getTerms().get(0) instanceof PowerTerm);
+        assertTrue(mul.getTerms().get(0) instanceof CoefficientTerm);
+        assertTrue(mul.getTerms().get(1) instanceof PowerTerm);
         
-        PowerTerm pt = (PowerTerm) mul.getTerms().get(0);
-        assertEquals( 2, pt.degree );
+        PowerTerm pt = (PowerTerm) mul.getTerms().get(1);
+        assertEquals( 2, pt.getDegree() );
         
-        BinomialTerm bt = (BinomialTerm) pt.term;
-        assertEquals( "a_2", ((VariableTerm) bt.getX()).name );
-        assertEquals( "a_1", ((VariableTerm) bt.getY()).name );
+        BinomialTerm bt = (BinomialTerm) pt.getTerm();
+        assertEquals( "a_2", ((VariableTerm) bt.getX()).getName() );
+        assertEquals( "a_1", ((VariableTerm) bt.getY()).getName() );
         
         Polynomial p = new Polynomial();
-        p.add(mul);
+        p.addSelf(mul);
         p.doSimplify();
         
         assertEquals( "8*a_1^2 + 16*a_1*a_2 + 8*a_2^2", p.toString());
@@ -64,7 +64,7 @@ public class PolynomialTest {
         MultTerms mul = new MultTerms("a_0*(a_x + a_0)");
         
         Polynomial p = new Polynomial();
-        p.add(mul);
+        p.addSelf(mul);
         p.doSimplify();
         
         assertEquals( "a_0^2 + a_0*a_x", p.toString());
@@ -76,7 +76,7 @@ public class PolynomialTest {
         
         p.substitute(new VariableTerm("a"), new VariableTerm("a_0"));
         
-        p.simplify();
+        p.doSimplify();
         
         assertEquals("a_0^2", p.toString());
         
@@ -97,7 +97,7 @@ public class PolynomialTest {
         p.substitute(new VariableTerm("b"), new VariableTerm("a_1"));
         p.substitute(new VariableTerm("c"), new VariableTerm("a_2"));
         
-        p.simplify();
+        p.doSimplify();
         assertEquals("a_0^2 + a_1^2 + a_2^2", p.toString());
         
         Cloner cloner=new Cloner();
@@ -124,8 +124,8 @@ public class PolynomialTest {
         
         assertEquals("(a_0 + a_0)^2 + (a_0 + a_1)^2 + (a_0 + a_2)^2", p.toString());
         
-        p.add(p2);
-        p.add(p3);
+        p.addSelf(p2);
+        p.addSelf(p3);
         
         p.doSimplify();
         String s = p.toString();
@@ -135,5 +135,20 @@ public class PolynomialTest {
         assertEquals("8*a_0^2 + 4*a_0*a_1 + 4*a_0*a_2 + 8*a_1^2 + 4*a_1*a_2 + 8*a_2^2", p.toString());
     }
     
+    @Test
+    public void testMultCoeff() {
+        Term c1 = new CoefficientTerm(3);
+        Term c2 = new CoefficientTerm(7);
+        
+        Term c3 = c1.multiply(c2);
+        
+        CoefficientTerm c3_c = (CoefficientTerm) c3;
+        assertEquals(3*7, c3_c.getValue());
+        
+        Polynomial p = new Polynomial("5 * x_3 * 9");
+        p.doSimplify();
+        
+        assertEquals("45*x_3", p.toString());
+    }
     
 }
