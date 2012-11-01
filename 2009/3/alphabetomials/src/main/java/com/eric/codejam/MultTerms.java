@@ -83,7 +83,7 @@ public class MultTerms extends AbstractTerm {
     }
     
     static Term parseVarTerm(String[] strList) {
-        Pattern varPat = Pattern.compile("([a-zA-Z_]+\\d*)(.*?)");
+        Pattern varPat = Pattern.compile("([a-zA-Z](?:_[a-zA-Z\\d]+){0,1}\\d*)(.*?)");
         Matcher m = varPat.matcher(strList[0]);
         if (m.matches()) {
             strList[0] = m.group(2);

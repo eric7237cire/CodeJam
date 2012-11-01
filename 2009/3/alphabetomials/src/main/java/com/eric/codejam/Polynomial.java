@@ -49,11 +49,11 @@ public class Polynomial {
 	
 	public void substitute(Map<VariableTerm,Term> terms) {
 		for(VariableTerm var : terms.keySet()) {
-			addTerms.substitute(var, new VariableTerm(var.getName() + "old"));
+			addTerms.substitute(var, new VariableTerm(var.getName() + "_old"));
 		}
 		
 		for(VariableTerm var : terms.keySet()) {
-		    addTerms.substitute(new VariableTerm(var.getName() + "old"), terms.get(var));
+		    addTerms.substitute(new VariableTerm(var.getName() + "_old"), terms.get(var));
 		}
     }
 	

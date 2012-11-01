@@ -1,6 +1,7 @@
 package com.eric.codejam;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
@@ -22,6 +23,14 @@ public class AddTerms extends AbstractTerm {
     public AddTerms(List<Term> args) {
         terms = new ArrayList<>();
         terms.addAll(args);
+        Collections.sort(terms, new Polynomial.CompareTerm());
+        
+        terms = ImmutableList.copyOf(terms);
+        
+    }
+    public AddTerms(Term... args) {
+        terms = new ArrayList<>();
+        terms.addAll(Arrays.asList(args));
         Collections.sort(terms, new Polynomial.CompareTerm());
         
         terms = ImmutableList.copyOf(terms);

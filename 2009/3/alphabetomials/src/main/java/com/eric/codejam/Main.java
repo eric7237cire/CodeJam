@@ -93,9 +93,11 @@ public class Main {
                 for (int chInt = 'a'; chInt <= 'z'; ++chInt) {
                     char ch = (char) chInt;
                     String xVarName = "" + ch + "_x" ;
-                    subs.put(new VariableTerm(xVarName), new BinomialTerm(
-                            new VariableTerm(xVarName), new VariableTerm(ch
-                                    + "_" + i)));
+                    String varNameKey = ch + "_" + i;
+                    
+                    subs.put(new VariableTerm(xVarName), new AddTerms(
+                            new VariableTerm(xVarName), 
+                            new CoefficientTerm(values.get(varNameKey))));
 
                 }
                 log.info("Computing k {} before sub {}", eachK, p);
