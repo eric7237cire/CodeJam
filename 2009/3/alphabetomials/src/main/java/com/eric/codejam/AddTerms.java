@@ -14,12 +14,12 @@ import com.google.common.collect.ImmutableList;
 
 public class AddTerms extends AbstractTerm {
     
-    List<Term> terms;
+    private List<Term> terms;
     
     AddTerms() {
         terms = new ArrayList<>();
     }
-    AddTerms(List<Term> args) {
+    public AddTerms(List<Term> args) {
         terms = new ArrayList<>();
         terms.addAll(args);
         Collections.sort(terms, new Polynomial.CompareTerm());
@@ -30,6 +30,8 @@ public class AddTerms extends AbstractTerm {
     
     @Override
     public void substitute(VariableTerm old, Term newTerm) {
+        List<Term> terms = new ArrayList<>(this.terms);
+        
         for(ListIterator<Term> li = terms.listIterator(); li.hasNext();) {
             Term t = li.next();
             if (t.equals(old)) {
@@ -38,6 +40,8 @@ public class AddTerms extends AbstractTerm {
                 t.substitute(old, newTerm);
             }
         }
+        
+        this.terms = terms;
     }
 
    
@@ -58,6 +62,7 @@ public class AddTerms extends AbstractTerm {
     @Override
     public Term simplify() {
                 
+        
         List<Term> simTerms = new ArrayList<>();
         simTerms.addAll(getTerms());
         boolean hasSimp = false;
@@ -129,7 +134,13 @@ public class AddTerms extends AbstractTerm {
     }
     
     @Override
+    public boolean canMultiply(Term rhs) {
+        //concrete lhs
+        return rhs.canMultiplyAsRhs(this);
+    }
+    @Override
     public Term multiply(Term rhs) {
+        //concrete lhs
         return rhs.multiplyAsRhs(this);
     }
     public Term multiplyAsRhsImpl(Term lhs) {
@@ -149,6 +160,27 @@ public class AddTerms extends AbstractTerm {
         return multiplyAsRhsImpl(lhs);
     }
    
+   
+    @Override
+    public boolean canMultiplyAsRhs(AddTerms lhs) {
+        return true;
+    }
+    @Override
+    public Term multiplyAsRhs(AddTerms lhs) {
+
+        List<Term> terms = new ArrayList<>();
+        for(Term outerTerm : getTerms()) {
+            for(Term innerTerm : lhs.getTerms()) {
+                List<Term> mTerms = new ArrayList<>();
+                mTerms.add(innerTerm);
+                mTerms.add(outerTerm);
+                MultTerms m = new MultTerms(mTerms);
+                terms.add(m);
+            }
+        }
+        return new AddTerms(terms);
+
+    }
     @Override
     public boolean canMultiplyAsRhs(MultTerms lhs) {
         return true;
@@ -177,10 +209,7 @@ public class AddTerms extends AbstractTerm {
     public boolean canMultiplyAsRhs(CoefficientTerm lhs) {
         return true;
     }
-    @Override
-    public boolean canMultiply(Term rhs) {
-        return rhs.canMultiply(this);
-    }
+    
     @Override
     public boolean canAddAsRhs(AddTerms lhs) {
         return true;

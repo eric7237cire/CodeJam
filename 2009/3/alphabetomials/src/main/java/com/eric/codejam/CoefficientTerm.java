@@ -15,46 +15,27 @@ public class CoefficientTerm extends AbstractTerm {
          this.value = value;
     }
 
-	
-
+	@Override
     public boolean canMultiply(Term rhs) {
+	    //concrete lhs
         return rhs.canMultiplyAsRhs(this);
     }
-	public Term multiply(Term rhs) {
-	    //concrete lhs
-	    return rhs.multiplyAsRhs(this);
-	}
-	
+	@Override
+    public Term multiply(Term rhs) {
+        //concrete lhs
+        return rhs.multiplyAsRhs(this);
+    }
+    
+	@Override
 	public Term multiplyAsRhs(CoefficientTerm lhs) {
 	    return new CoefficientTerm(lhs.value * value);
 	}
+	@Override
 	public boolean canMultiplyAsRhs(CoefficientTerm lhs) {
         return true;
     }
 
-	@Override
-    public boolean canMultiplyAsRhs(AddTerms lhs) {
-        return lhs.canMultiplyAsRhs(this);        
-    }
 
-    @Override
-    public Term multiplyAsRhs(AddTerms lhs) {
-        return lhs.multiplyAsRhs(this);
-    }
-
-
-
-    @Override
-    public Term multiplyAsRhs(MultTerms lhs) {
-        return lhs.multiplyAsRhs(this);
-    }
-
-
-
-    @Override
-    public boolean canAddAsRhs(MultTerms lhs) {
-        return lhs.canAddAsRhs(this);
-    }
 
     @Override
 	public String toString() {

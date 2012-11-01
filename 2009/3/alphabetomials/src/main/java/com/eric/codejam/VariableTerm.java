@@ -62,7 +62,6 @@ public class VariableTerm extends AbstractTerm {
     }
     
    
-    
     @Override
     public int evaluate(Map<String, Integer> values) {
         return values.get(name);

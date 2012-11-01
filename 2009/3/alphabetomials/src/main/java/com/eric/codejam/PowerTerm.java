@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.math3.util.MathUtils;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -41,9 +43,27 @@ public class PowerTerm extends AbstractTerm {
     	}
     }
     
+    static int ipow(int base, int exp)
+    {
+        int result = 1;
+        while (exp > 0)
+        {
+            if ((exp & 1) != 0)
+                result *= base;
+            exp >>= 1;
+            base *= base;
+        }
+
+        return result;
+    }
+    
     public Term simplify() {
     	if (degree == 0) {
     		return new CoefficientTerm(1);
+    	}
+    	
+    	if (term instanceof CoefficientTerm) {
+    	    return new CoefficientTerm(ipow( ((CoefficientTerm) term).getValue(), degree ));
     	}
 		if (term instanceof BinomialTerm && degree > 1) {
 			BinomialTerm binomial = (BinomialTerm) term;
@@ -62,17 +82,18 @@ public class PowerTerm extends AbstractTerm {
 				binomialCoeff.add(currentLevel);
 			}
 			
-			AddTerms add = new AddTerms();
+			List<Term> addTerms = new ArrayList<>();
+			
 			for(int leftPower = degree; leftPower >= 0; --leftPower) {
 				int rightPower = degree - leftPower;
 				MultTerms mt = new MultTerms(
 				(new CoefficientTerm(binomialCoeff.get(degree).get(rightPower))),
 				(new PowerTerm(binomial.getX(), leftPower)),
 				(new PowerTerm(binomial.getY(), rightPower)));
-				add.terms.add(mt);
+				addTerms.add(mt);
 			}
 			
-			return add;
+			return new AddTerms(addTerms);
 		}
 		
 		return super.simplify();
@@ -80,11 +101,7 @@ public class PowerTerm extends AbstractTerm {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + degree;
-        result = prime * result + ((term == null) ? 0 : term.hashCode());
-        return result;
+        return Objects.hashCode(term, degree);        
     }
 
     @Override

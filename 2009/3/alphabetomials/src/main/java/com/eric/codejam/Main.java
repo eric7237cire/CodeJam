@@ -28,9 +28,9 @@ public class Main {
 
         Main m = Main.buildMain(scanner);
 
-       // List<Integer> total = m.doPerms();
+        List<Integer> total = m.doPerms();
 
-        List<Integer> total = null;
+        //List<Integer> total = null;
         List<Integer> total2 = m.usePoly();
 
         log.info("Starting case {}\n total {}\n total poly {}", caseNumber,
@@ -77,6 +77,9 @@ public class Main {
         }
 
         totals.add(totalPoly.evaluate(values));
+        
+
+        orig = c.deepClone(totalPoly);
 
         for (int eachK = 2; eachK <= k; ++eachK) {
 

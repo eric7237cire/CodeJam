@@ -68,10 +68,22 @@ public class MultTerms extends AbstractTerm {
         return null;
     }
 
-    static Term parseVarTerm(String[] strList) {
+    static Term parsePowerVarTerm(String[] strList) {
         Pattern varExpPat = Pattern
-                .compile("\\(([^\\+]+)\\s*\\+\\s*([^\\+]+)\\)(.*)");
-        Pattern varPat = Pattern.compile("([a-z](?:_[\\da-z])?)(.*?)");
+                .compile("([a-zA-Z_]+\\d*)\\^(\\d+)(.*?)");
+        
+        Matcher m = varExpPat.matcher(strList[0]);
+        if (m.matches()) {
+            strList[0] = m.group(3);
+            return new PowerTerm(new VariableTerm(m.group(1)),
+                    Integer.parseInt(m.group(2)));
+        }
+
+        return null;
+    }
+    
+    static Term parseVarTerm(String[] strList) {
+        Pattern varPat = Pattern.compile("([a-zA-Z_]+\\d*)(.*?)");
         Matcher m = varPat.matcher(strList[0]);
         if (m.matches()) {
             strList[0] = m.group(2);
@@ -106,7 +118,13 @@ public class MultTerms extends AbstractTerm {
             if (t != null) {
                 terms.add(t);
             }
+            
+            t = parsePowerVarTerm(strList);
 
+            if (t != null) {
+                terms.add(t);
+            }
+            
             t = parseVarTerm(strList);
 
             if (t != null) {
@@ -131,6 +149,8 @@ public class MultTerms extends AbstractTerm {
 
     @Override
     public void substitute(VariableTerm old, Term newTerm) {
+        List<Term> terms = new ArrayList<>(this.terms);
+        
         for (ListIterator<Term> li = terms.listIterator(); li.hasNext();) {
             Term t = li.next();
             if (t.equals(old)) {
@@ -139,24 +159,25 @@ public class MultTerms extends AbstractTerm {
                 t.substitute(old, newTerm);
             }
         }
+        
+        this.terms = terms;
     }
 
   
 
-    @Override
-    public Term multiply(Term rhs) {
-        return rhs.multiply(this);
-    }
+
 
     @Override
     public boolean canMultiply(Term rhs) {
-        return rhs.canMultiply(this);
+        //concrete lhs
+        return rhs.canMultiplyAsRhs(this);
     }
-
     @Override
-    public boolean canMultiplyAsRhs(BinomialTerm lhs) {
-        return false;
+    public Term multiply(Term rhs) {
+        //concrete lhs
+        return rhs.multiplyAsRhs(this);
     }
+    
     
     public Term multiplyAsRhsImpl(Term lhs) {
         List<Term> terms = new ArrayList<>();
@@ -165,10 +186,7 @@ public class MultTerms extends AbstractTerm {
         return new MultTerms(terms);
     }
 
-    @Override
-    public Term multiplyAsRhs(BinomialTerm lhs) {
-        return multiplyAsRhsImpl(lhs);
-    }
+    
 
     @Override
     public Term multiplyAsRhs(CoefficientTerm lhs) {
@@ -249,11 +267,16 @@ public class MultTerms extends AbstractTerm {
                     Term rhs = simTerms.get(j);
                     Term replacement = null;
                     
-                    if (!lhs.canMultiply(rhs)) {
+                    if (lhs.canMultiply(rhs)) {
+                        replacement = lhs.multiply(rhs);
+                        
+                    } else if (rhs.canMultiply(lhs)) {
+                        replacement = rhs.multiply(lhs);
+                    } else {
                         continue;
                     }
                     
-                    replacement = lhs.multiply(rhs);
+                    
                     
                     Preconditions.checkState(replacement != null);
                     simTerms.remove(j);

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 
@@ -31,7 +32,10 @@ public class Polynomial {
 
 	public void doSimplify() {
 	    boolean didSimp = true;
+	    int stop = 0;
 	    while(didSimp) {
+	        stop++;
+	        Preconditions.checkState(stop < 100);
 	        didSimp = false;
 	        Term sim = addTerms.simplify();
 	        if (sim != null) {
@@ -51,6 +55,16 @@ public class Polynomial {
 		for(VariableTerm var : terms.keySet()) {
 		    addTerms.substitute(new VariableTerm(var.getName() + "old"), terms.get(var));
 		}
+    }
+	
+	public void substituteVals(Map<String, Integer> terms) {
+        for(String var : terms.keySet()) {
+            addTerms.substitute(new VariableTerm(var), new VariableTerm(var + "old"));
+        }
+        
+        for(String var : terms.keySet()) {
+            addTerms.substitute(new VariableTerm(var + "old"), new CoefficientTerm(terms.get(var)));
+        }
     }
 	
 	public void substitute(VariableTerm old, Term newTerm) {
@@ -108,6 +122,7 @@ public class Polynomial {
 
 		@Override
 		public int compare(Term lhs, Term rhs) {
+		    
 			
 		    if(lhs instanceof MultTerms && rhs instanceof MultTerms) {
 		        return compareMul((MultTerms)lhs, (MultTerms)rhs);
@@ -134,6 +149,8 @@ public class Polynomial {
 
             int i = 0;
             int j = 0;
+            int lhsCoef = 1;
+            int rhsCoef = 1;
 
             while (i < lhs.getTerms().size() && j < rhs.getTerms().size()) {
                 Term lhsTerm = lhs.getTerms().get(i);
@@ -141,10 +158,12 @@ public class Polynomial {
 
                 if (lhsTerm instanceof CoefficientTerm) {
                     ++i;
+                    lhsCoef = ((CoefficientTerm) lhsTerm).getValue();
                     continue;
                 }
                 if (rhsTerm instanceof CoefficientTerm) {
                     ++j;
+                    rhsCoef = ((CoefficientTerm) rhsTerm).getValue();
                     continue;
                 }
                 cc = cc.compare(lhs.getTerms().get(i), rhs.getTerms().get(j),
@@ -153,6 +172,8 @@ public class Polynomial {
                 ++j;
             }
 
+            cc = cc.compare(lhsCoef, rhsCoef);
+            cc = cc.compare(i, j);
             cc = cc.compare(lhs.getTerms().size(), rhs.getTerms().size());
 
             return cc.result();

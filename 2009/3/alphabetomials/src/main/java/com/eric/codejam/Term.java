@@ -21,8 +21,6 @@ public interface Term {
     public boolean canMultiplyAsRhs(VariableTerm lhs);
     public Term multiplyAsRhs(VariableTerm lhs);
     
-    public boolean canMultiplyAsRhs(BinomialTerm lhs);
-    public Term multiplyAsRhs(BinomialTerm lhs);
     
     public boolean canMultiplyAsRhs(MultTerms lhs);
     public Term multiplyAsRhs(MultTerms lhs);
@@ -42,8 +40,6 @@ public interface Term {
     public boolean canAddAsRhs(VariableTerm lhs);
     public Term addAsRhs(VariableTerm lhs);
     
-    public boolean canAddAsRhs(BinomialTerm lhs);
-    public Term addAsRhs(BinomialTerm lhs);
     
     public boolean canAddAsRhs(MultTerms lhs);
     public Term addAsRhs(MultTerms lhs);

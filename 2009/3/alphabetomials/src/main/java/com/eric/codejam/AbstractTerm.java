@@ -1,11 +1,14 @@
 package com.eric.codejam;
 
-import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
 public abstract class AbstractTerm implements Term {
 
+    protected Logger log = LoggerFactory.getLogger(this.getClass());
+    
     public void substitute(VariableTerm old, Term newTerm) {
         
     }
@@ -44,12 +47,6 @@ public abstract class AbstractTerm implements Term {
     }
     
     
-    public boolean canMultiplyAsRhs(BinomialTerm lhs) {
-        return false;
-    }
-    public Term multiplyAsRhs(BinomialTerm lhs) {
-        throw new UnsupportedOperationException("ex");
-    }
     
     public boolean canMultiplyAsRhs(MultTerms lhs) {
         return false;
@@ -94,12 +91,7 @@ public abstract class AbstractTerm implements Term {
         throw new UnsupportedOperationException("ex");
     }
     
-    public boolean canAddAsRhs(BinomialTerm lhs) {
-        return false;
-    }
-    public Term addAsRhs(BinomialTerm lhs) {
-        throw new UnsupportedOperationException("ex");
-    }
+   
     
     public boolean canAddAsRhs(MultTerms lhs) {
         return false;

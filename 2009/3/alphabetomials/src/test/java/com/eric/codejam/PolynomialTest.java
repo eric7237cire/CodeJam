@@ -48,8 +48,8 @@ public class PolynomialTest {
         assertEquals( 2, pt.getDegree() );
         
         BinomialTerm bt = (BinomialTerm) pt.getTerm();
-        assertEquals( "a_2", ((VariableTerm) bt.getX()).getName() );
-        assertEquals( "a_1", ((VariableTerm) bt.getY()).getName() );
+        assertEquals( "a_1", ((VariableTerm) bt.getX()).getName() );
+        assertEquals( "a_2", ((VariableTerm) bt.getY()).getName() );
         
         Polynomial p = new Polynomial();
         p.addSelf(mul);
@@ -149,6 +149,23 @@ public class PolynomialTest {
         p.doSimplify();
         
         assertEquals("45*x_3", p.toString());
+    }
+    
+    @Test
+    public void testSubCoeff() {
+        Polynomial p = new Polynomial("E10^2+2*E10*E12+E11^2+2*E11*E12+6*E12^2");
+        
+        Map<String, Integer> subs = new HashMap();
+        subs.put("E10", 1);
+        subs.put("E11", 3);
+        subs.put("E12", 2);
+        
+        p.substituteVals(subs);
+        
+        p.doSimplify();
+        
+        assertEquals("50", p.toString());
+        
     }
     
 }
