@@ -17,6 +17,17 @@ import com.google.common.collect.Ordering;
 
 public class Polynomial {
     Term addTerms;
+    
+    Polynomial(Polynomial p) {
+        if (addTerms instanceof AddTerms) {
+            List<Term> terms = new ArrayList<>();
+            terms.addAll( ((AddTerms) p.addTerms).getTerms() );
+            addTerms = new AddTerms(terms);
+        } else {
+            addTerms = new AddTerms(p.addTerms);
+        }
+    }
+    
 	Polynomial(String s) {
 		super();
 		List<Term> terms = new ArrayList<>();

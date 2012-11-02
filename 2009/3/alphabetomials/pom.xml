@@ -13,7 +13,13 @@
     <dependency>
       <groupId>com.eric.codejam</groupId>
       <artifactId>utils</artifactId>
-      <version>1.0-SNAPSHOT</version>      
+      <version>1.0-SNAPSHOT</version>    
+      <exclusions>
+        <exclusion>  <!-- declare the exclusion here -->
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>   
     </dependency>
   
   
@@ -23,15 +29,31 @@
       <version>4.10</version>
       <scope>test</scope>
     </dependency>
+
+<!--     
     <dependency>
   <groupId>org.slf4j</groupId>
   <artifactId>slf4j-api</artifactId>
   <version>1.7.2</version>
 </dependency>
+
 <dependency>
   <groupId>org.slf4j</groupId>
   <artifactId>slf4j-nop</artifactId>
   <version>1.7.2</version>  
+</dependency>
+ 
+ <dependency>
+ <groupId>org.codehaus.groovy</groupId>
+ <artifactId>groovy</artifactId>
+ <version>2.0.5</version>
+ <scope>runtime</scope>
+</dependency>
+ -->
+<dependency>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-classic</artifactId>
+    <version>1.0.7</version>
 </dependency>
 <!-- 
 <dependency>
@@ -55,12 +77,13 @@
 	<artifactId>commons-math3</artifactId>
 	<version>3.0</version>
 </dependency>
+<!-- 
                 <dependency>
                         <groupId>uk.com.robust-it</groupId>
                         <artifactId>cloning</artifactId>
                         <version>1.9.0</version>
                 </dependency>
-        
+      -->   
   </dependencies>
   
   <repositories>
@@ -76,7 +99,7 @@
     <artifactId>maven-compiler-plugin</artifactId>
     <version>2.5.1</version>
     <configuration>
-    	<debug>true</debug>
+    	<debug>false</debug>
     	<encoding>UTF-8</encoding>
     	<source>1.7</source>
     	<target>1.7</target>

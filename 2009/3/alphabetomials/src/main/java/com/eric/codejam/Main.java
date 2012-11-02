@@ -3,6 +3,7 @@ package com.eric.codejam;
 import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class Main {
         List<Integer> total2 = m.usePoly();
 //os.println("thonetuhhu");
         log.info("Starting case {}\n total {}\n total poly {}", caseNumber,
-                total, total2);
+                 total2);
 
 //        os.println("Case #" + caseNumber + ": " + StringUtils.join(total, " "));
         os.println("Case #" + caseNumber + ": " + StringUtils.join(total2, " "));
@@ -44,70 +45,48 @@ public class Main {
     public List<Integer> usePoly() {
         List<Integer> totals = new ArrayList<>();
 
-        Cloner c = new Cloner();
+//        Cloner c = new Cloner();
 
         Map<String, Integer> values = new HashMap<>();
 
+       
+
+        List<Map<VariableTerm, Term>> subsList = new ArrayList<>();
+        
+        for (int i = 0; i < d; ++i) {
+            Map<VariableTerm, Term> subs = new HashMap<>();
+            for (int chInt = 'a'; chInt <= 'z'; ++chInt) {
+                char ch = (char) chInt;
+                
+                String varName = "" + ch;
+                
+                int count = StringUtils.countMatches(dictWords.get(i), varName);
+                
+                subs.put(new VariableTerm(varName), new AddTerms(
+                        new CoefficientTerm(count),
+                        new VariableTerm(varName)));
+                
+                values.put(varName, 0);
+            }
+            
+            subsList.add(subs);
+        }
 
         Polynomial orig = new Polynomial(polynomial);
         orig.doSimplify();
         
         Polynomial totalPoly = new Polynomial();
-        
-        for (int i = 0; i < d; ++i) {
-            Polynomial p = c.deepClone(orig);
-            
-            for (int chInt = 'a'; chInt <= 'z'; ++chInt) {
-                char ch = (char) chInt;
-                String varName = "" + ch + "_" + i;
-                String xVarName = "" + ch + "_x" ;
-                
-                values.put(
-                        varName,
-                        StringUtils.countMatches(dictWords.get(i), ""
-                                + (char) chInt));
-                
-                p.substitute(new VariableTerm("" + ch), new AddTerms(
-                        new CoefficientTerm(values.get(varName)),
-                        new VariableTerm(xVarName)));
-                
-                values.put(xVarName, 0);
-            }
 
-            p.doSimplify();
-
-            totalPoly.addSelf(p);
-        }
-
-
-        totalPoly.doSimplify();
-        
-        totals.add(totalPoly.evaluate(values));
-        
-
-        orig = c.deepClone(totalPoly);
-
-        for (int eachK = 2; eachK <= k; ++eachK) {
+        for (int eachK = 1; eachK <= k; ++eachK) {
             //System.out.println("k " + eachK);
             totalPoly = new Polynomial();
 
             for (int i = 0; i < d; ++i) {
                 //System.out.println("i " + i);
-                Polynomial p = c.deepClone(orig);
+                Polynomial p = new Polynomial(orig);
 
-                Map<VariableTerm, Term> subs = new HashMap<>();
-                for (int chInt = 'a'; chInt <= 'z'; ++chInt) {
-                    char ch = (char) chInt;
-                    String xVarName = "" + ch + "_x" ;
-                    String varNameKey = ch + "_" + i;
-                    
-                    subs.put(new VariableTerm(xVarName), new AddTerms(
-                            new VariableTerm(xVarName), 
-                            new CoefficientTerm(values.get(varNameKey))));
-
-                }
                 log.info("Computing k {} before sub {}", eachK, p);
-                p.substitute(subs);
+                p.substitute(subsList.get(i));
                 log.info("Computing k {} after sub {}", eachK, p);
                 totalPoly.addSelf(p);
                 
@@ -120,9 +99,9 @@ public class Main {
 
             totalPoly.doSimplify();
 
-            log.info("Poly obj {} k {}", totalPoly, eachK);
+        //    log.info("Poly obj {} k {}", totalPoly, eachK);
             
-            orig = c.deepClone(totalPoly);
+            orig = new Polynomial(totalPoly);
             
             totals.add(totalPoly.evaluate(values) % 10009);
             //System.out.println(totals);
@@ -167,8 +146,8 @@ public class Main {
                 p_counts.add(StringUtils.countMatches(word, "a"));
                 // p_counts.add(StringUtils.countMatches(word, "b"));
 
-                log.info("Perm {} p({}) {} total {}", (Object) combin,
-                        p_counts, wordEval, total);
+                log.info("Perm {} p({}) {} total {}", new Object[] {(Object) combin,
+                        p_counts, wordEval, total});
 
                 boolean fullLoop = true;
                 for (int pos = 0; pos < eachK; ++pos) {
@@ -220,7 +199,7 @@ public class Main {
         for (int i = 0; i < m.d; ++i) {
             m.dictWords.add(scanner.next());
         }
-        log.info("k {} d {} poly {}", m.k, m.d, m.polynomial);
+       // log.info("k {} d {} poly {}", m.k, m.d, m.polynomial);
 
         return m;
     }
