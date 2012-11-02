@@ -1,5 +1,7 @@
 package com.eric.codejam;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,12 +11,18 @@ public abstract class AbstractTerm implements Term {
 
     protected Logger log = LoggerFactory.getLogger(this.getClass());
     
-    public void substitute(VariableTerm old, Term newTerm) {
-        
+    @Override
+    public Term substitute(VariableTerm old, Term newTerm) {
+        return null;
     }
     
     @Override
-    public String getNonCoefPart() {
+    public Term substitute(Map<VariableTerm, Term> terms) {
+        return null;
+    }
+
+    @Override
+    public String getFirstNonCoefPart() {
         return null;
     }
     @Override
@@ -123,5 +131,9 @@ public abstract class AbstractTerm implements Term {
     }
     public Term addAsRhs(AddTerms lhs) {
         throw new UnsupportedOperationException("ex");
+    }
+    @Override
+    public String getNonCoefPart() {
+        return getFirstNonCoefPart();
     }
 }

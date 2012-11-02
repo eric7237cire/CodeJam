@@ -2,8 +2,6 @@ package com.eric.codejam;
 
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-
 public class CoefficientTerm extends AbstractTerm {
     private int value;
 
@@ -90,7 +88,7 @@ public class CoefficientTerm extends AbstractTerm {
     }
 
     @Override
-    public String getNonCoefPart() {
+    public String getFirstNonCoefPart() {
         return null;
     }
 

@@ -3,8 +3,8 @@ package com.eric.codejam;
 import java.util.Map;
 
 public interface Term {
-    public void substitute(VariableTerm old, Term newTerm);
-    
+    public Term substitute(VariableTerm old, Term newTerm);
+    public Term substitute(Map<VariableTerm,Term> terms);
     
     
     public Term simplify();
@@ -53,6 +53,7 @@ public interface Term {
     
     //For sorting
     public String getNonCoefPart();
+    public String getFirstNonCoefPart();
     public String getCoefPart();
     public int getDegree();
 }

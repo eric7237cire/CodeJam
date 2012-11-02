@@ -15,42 +15,66 @@ import com.google.common.collect.ImmutableList;
 
 public class AddTerms extends AbstractTerm {
     
-    private List<Term> terms;
+    final private List<Term> terms;
     
-    AddTerms() {
-        terms = new ArrayList<>();
-    }
     public AddTerms(List<Term> args) {
-        terms = new ArrayList<>();
+        List<Term> terms = new ArrayList<>();
         terms.addAll(args);
         Collections.sort(terms, new Polynomial.CompareTerm());
         
-        terms = ImmutableList.copyOf(terms);
+        this.terms = ImmutableList.copyOf(terms);
         
     }
     public AddTerms(Term... args) {
-        terms = new ArrayList<>();
+        List<Term> terms = new ArrayList<>();
         terms.addAll(Arrays.asList(args));
         Collections.sort(terms, new Polynomial.CompareTerm());
         
-        terms = ImmutableList.copyOf(terms);
+        this.terms = ImmutableList.copyOf(terms);
         
     }
     
     @Override
-    public void substitute(VariableTerm old, Term newTerm) {
+    public Term substitute(VariableTerm old, Term newTerm) {
         List<Term> terms = new ArrayList<>(this.terms);
         
-        for(ListIterator<Term> li = terms.listIterator(); li.hasNext();) {
+        for (ListIterator<Term> li = terms.listIterator(); li.hasNext();) {
             Term t = li.next();
             if (t.equals(old)) {
                 li.set(newTerm);
-            } else {
-                t.substitute(old, newTerm);
+                continue;
+            } 
+            
+            Term sub = t.substitute(old, newTerm);
+            if (sub != null) {
+                li.set(sub);
+                continue;
             }
         }
         
-        this.terms = terms;
+        return new AddTerms(terms);
+    }
+    
+    @Override
+    public AddTerms substitute(Map<VariableTerm, Term> termsToSub) {
+        List<Term> terms = new ArrayList<>(this.terms);
+        
+        for (ListIterator<Term> li = terms.listIterator(); li.hasNext();) {
+            Term t = li.next();
+            Term value = termsToSub.get(t);
+            if (value != null) {
+                li.set(value);
+                continue;
+            } 
+            
+            Term sub = t.substitute(termsToSub);
+            if (sub != null) {
+                li.set(sub);
+                continue;
+            }
+        }
+        
+        return new AddTerms(terms);
     }
 
    

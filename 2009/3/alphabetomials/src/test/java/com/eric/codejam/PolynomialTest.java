@@ -31,7 +31,7 @@ public class PolynomialTest {
         p.doSimplify();
         assertEquals("e*h*w + h*w^3", p.toString());
         
-        p.substitute(new VariableTerm("w"), new BinomialTerm(new VariableTerm("f_0"), new VariableTerm("f_1")));
+        p.substitute(new VariableTerm("w"), new AddTerms(new VariableTerm("f_0"), new VariableTerm("f_1")));
         
         p.doSimplify();
         
@@ -47,9 +47,9 @@ public class PolynomialTest {
         PowerTerm pt = (PowerTerm) mul.getTerms().get(1);
         assertEquals( 2, pt.getDegree() );
         
-        BinomialTerm bt = (BinomialTerm) pt.getTerm();
-        assertEquals( "a_1", ((VariableTerm) bt.getX()).getName() );
-        assertEquals( "a_2", ((VariableTerm) bt.getY()).getName() );
+        AddTerms bt = (AddTerms) pt.getTerm();
+        assertEquals( "a_1", ((VariableTerm) bt.getTerms().get(0)).getName() );
+        assertEquals( "a_2", ((VariableTerm) bt.getTerms().get(1)).getName() );
         
         Polynomial p = new Polynomial();
         p.addSelf(mul);
@@ -80,7 +80,7 @@ public class PolynomialTest {
         
         assertEquals("a_0^2", p.toString());
         
-        p.substitute(new VariableTerm("a_0"), new BinomialTerm(new VariableTerm("a_0"), new VariableTerm("a_1")));
+        p.substitute(new VariableTerm("a_0"), new AddTerms(new VariableTerm("a_0"), new VariableTerm("a_1")));
         
         //assertEquals("(a_0 + a_1)^2", p.toString());
         
@@ -105,21 +105,21 @@ public class PolynomialTest {
         Polynomial p3 = cloner.deepClone(p);
         
         Map<VariableTerm, Term> subs = new HashMap<>();
-        subs.put(new VariableTerm("a_0"), new BinomialTerm(new VariableTerm("a_0"), new VariableTerm("a_0")));
-        subs.put(new VariableTerm("a_1"), new BinomialTerm(new VariableTerm("a_0"), new VariableTerm("a_1")));
-        subs.put(new VariableTerm("a_2"), new BinomialTerm(new VariableTerm("a_0"), new VariableTerm("a_2")));
+        subs.put(new VariableTerm("a_0"), new AddTerms(new VariableTerm("a_0"), new VariableTerm("a_0")));
+        subs.put(new VariableTerm("a_1"), new AddTerms(new VariableTerm("a_0"), new VariableTerm("a_1")));
+        subs.put(new VariableTerm("a_2"), new AddTerms(new VariableTerm("a_0"), new VariableTerm("a_2")));
         p.substitute(subs);
         
         subs = new HashMap<>();
-        subs.put(new VariableTerm("a_0"), new BinomialTerm(new VariableTerm("a_1"), new VariableTerm("a_0")));
-        subs.put(new VariableTerm("a_1"), new BinomialTerm(new VariableTerm("a_1"), new VariableTerm("a_1")));
-        subs.put(new VariableTerm("a_2"), new BinomialTerm(new VariableTerm("a_1"), new VariableTerm("a_2")));
+        subs.put(new VariableTerm("a_0"), new AddTerms(new VariableTerm("a_1"), new VariableTerm("a_0")));
+        subs.put(new VariableTerm("a_1"), new AddTerms(new VariableTerm("a_1"), new VariableTerm("a_1")));
+        subs.put(new VariableTerm("a_2"), new AddTerms(new VariableTerm("a_1"), new VariableTerm("a_2")));
         p2.substitute(subs);
         
         subs = new HashMap<>();
-        subs.put(new VariableTerm("a_0"), new BinomialTerm(new VariableTerm("a_2"), new VariableTerm("a_0")));
-        subs.put(new VariableTerm("a_1"), new BinomialTerm(new VariableTerm("a_2"), new VariableTerm("a_1")));
-        subs.put(new VariableTerm("a_2"), new BinomialTerm(new VariableTerm("a_2"), new VariableTerm("a_2")));
+        subs.put(new VariableTerm("a_0"), new AddTerms(new VariableTerm("a_2"), new VariableTerm("a_0")));
+        subs.put(new VariableTerm("a_1"), new AddTerms(new VariableTerm("a_2"), new VariableTerm("a_1")));
+        subs.put(new VariableTerm("a_2"), new AddTerms(new VariableTerm("a_2"), new VariableTerm("a_2")));
         p3.substitute(subs);
         
         //assertEquals("(a_0 + a_0)^2 + (a_0 + a_1)^2 + (a_0 + a_2)^2", p.toString());

@@ -84,7 +84,7 @@ public class VariableTerm extends AbstractTerm {
         return values.get(name);
     }
     @Override
-    public String getNonCoefPart() {
+    public String getFirstNonCoefPart() {
         return name;
     }
     @Override

@@ -4,18 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.math3.util.MathUtils;
-
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 public class PowerTerm extends AbstractTerm {
-    private int degree;
+    final private int degree;
     public Term getTerm() {
         return term;
     }
 
-    private Term term;
+    final private Term term;
     
     public int getDegree() {
         return degree;
@@ -34,13 +32,33 @@ public class PowerTerm extends AbstractTerm {
         
     }
     
+    @Override
+    public PowerTerm substitute(Map<VariableTerm, Term> termsToSub) {
+        Term value = termsToSub.get(term);
+        
+        if (value != null) {
+            return new PowerTerm(value, getDegree());
+        } else {
+            Term sub = term.substitute(termsToSub);
+            if (sub != null) {
+                return new PowerTerm(sub, getDegree());
+            }
+        }
+        
+        return null;
+    }
     
-    public void substitute(VariableTerm old, Term newTerm) {
+    public Term substitute(VariableTerm old, Term newTerm) {
     	if (term.equals(old)) {
-    		term = newTerm;
+    		return new PowerTerm(newTerm, getDegree());
     	} else {
-    		term.substitute(old, newTerm);
+    		Term sub = term.substitute(old, newTerm);
+    		if (sub != null) {
+    		    return new PowerTerm(sub, getDegree());
+    		}
     	}
+    	
+    	return null;
     }
     
     static int ipow(int base, int exp)
@@ -165,8 +183,8 @@ public class PowerTerm extends AbstractTerm {
     }
     
     @Override
-    public String getNonCoefPart() {
-        return term.getNonCoefPart();
+    public String getFirstNonCoefPart() {
+        return term.getFirstNonCoefPart();
     }
     @Override
     public String getCoefPart() {

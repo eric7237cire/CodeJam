@@ -3,7 +3,6 @@ package com.eric.codejam;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -24,19 +23,19 @@ public class MultTerms extends AbstractTerm {
     }
     
     MultTerms(Term... args) {
-        terms = new ArrayList<>();
+        ArrayList<Term> terms = new ArrayList<>();
         terms.addAll(Arrays.asList(args));
         Collections.sort(terms, new Polynomial.MultCompareTerm());
         
-        terms = ImmutableList.copyOf(terms);
+        this.terms = ImmutableList.copyOf(terms);
         
     }
     MultTerms(List<Term> args) {
-        terms = new ArrayList<>();
+        ArrayList<Term> terms = new ArrayList<>();
         terms.addAll(args);
         Collections.sort(terms, new Polynomial.MultCompareTerm());
         
-        terms = ImmutableList.copyOf(terms);
+        this.terms = ImmutableList.copyOf(terms);
         
     }
 
@@ -49,7 +48,7 @@ public class MultTerms extends AbstractTerm {
         if (m.matches()) {
             String v1 = m.group(1).trim();
             String v2 = m.group(2).trim();
-            BinomialTerm bt = new BinomialTerm(new VariableTerm(v1),
+            AddTerms bt = new AddTerms(new VariableTerm(v1),
                     new VariableTerm(v2));
 
             strList[0] = m.group(3);
@@ -106,7 +105,7 @@ public class MultTerms extends AbstractTerm {
     }
 
     MultTerms(String str) {
-        this();
+        ArrayList<Term> terms = new ArrayList<>();
 
         String[] strList = new String[] { str };
         while (!strList[0].isEmpty()) {
@@ -141,29 +140,52 @@ public class MultTerms extends AbstractTerm {
             Preconditions.checkState(str.length() > strList[0].length());
         }
 
+        this.terms = ImmutableList.copyOf(terms);
     }
 
-    MultTerms() {
-        terms = new ArrayList<>();
-    }
 
     @Override
-    public void substitute(VariableTerm old, Term newTerm) {
+    public Term substitute(VariableTerm old, Term newTerm) {
         List<Term> terms = new ArrayList<>(this.terms);
         
         for (ListIterator<Term> li = terms.listIterator(); li.hasNext();) {
             Term t = li.next();
             if (t.equals(old)) {
                 li.set(newTerm);
-            } else {
-                t.substitute(old, newTerm);
+                continue;
+            } 
+            
+            Term sub = t.substitute(old, newTerm);
+            if (sub != null) {
+                li.set(sub);
+                continue;
             }
         }
         
-        this.terms = terms;
+        return new MultTerms(terms);
     }
 
-  
+    @Override
+    public MultTerms substitute(Map<VariableTerm, Term> termsToSub) {
+        List<Term> terms = new ArrayList<>(this.terms);
+        
+        for (ListIterator<Term> li = terms.listIterator(); li.hasNext();) {
+            Term t = li.next();
+            Term value = termsToSub.get(t);
+            if (value != null) {
+                li.set(value);
+                continue;
+            } 
+            
+            Term sub = t.substitute(termsToSub);
+            if (sub != null) {
+                li.set(sub);
+                continue;
+            }
+        }
+        
+        return new MultTerms(terms);
+    }
 
 
 
@@ -410,16 +432,16 @@ public class MultTerms extends AbstractTerm {
     }
     
     @Override
-    public String getNonCoefPart() {
+    public String getFirstNonCoefPart() {
         
         if (terms.get(0) instanceof CoefficientTerm) {
             if (terms.size() > 1 )
-                return    terms.get(1).getNonCoefPart();
+                return    terms.get(1).getFirstNonCoefPart();
             else
                 return null;
         }
         
-        return terms.get(0).getNonCoefPart();
+        return terms.get(0).getFirstNonCoefPart();
     }
     @Override
     public String getCoefPart() {
@@ -437,6 +459,12 @@ public class MultTerms extends AbstractTerm {
                 return 1;
         }          
          return terms.get(0).getDegree();
+    }
+
+    @Override
+    public String getNonCoefPart() {
+        // TODO Auto-generated method stub
+        return super.getNonCoefPart();
     }
 
 }

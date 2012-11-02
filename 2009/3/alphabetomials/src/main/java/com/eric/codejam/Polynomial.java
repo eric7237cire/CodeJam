@@ -1,12 +1,10 @@
 package com.eric.codejam;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
@@ -48,27 +46,22 @@ public class Polynomial {
 	}
 	
 	public void substitute(Map<VariableTerm,Term> terms) {
-		for(VariableTerm var : terms.keySet()) {
-			addTerms.substitute(var, new VariableTerm(var.getName() + "_old"));
-		}
-		
-		for(VariableTerm var : terms.keySet()) {
-		    addTerms.substitute(new VariableTerm(var.getName() + "_old"), terms.get(var));
-		}
+		addTerms = addTerms.substitute(terms);
     }
 	
 	public void substituteVals(Map<String, Integer> terms) {
-        for(String var : terms.keySet()) {
-            addTerms.substitute(new VariableTerm(var), new VariableTerm(var + "old"));
+	    Map<VariableTerm, Term> subs = new HashMap<>();
+	    
+	    
+        for(Map.Entry<String, Integer> entry : terms.entrySet()) {
+            subs.put(new VariableTerm(entry.getKey()), new CoefficientTerm(entry.getValue())); 
         }
         
-        for(String var : terms.keySet()) {
-            addTerms.substitute(new VariableTerm(var + "old"), new CoefficientTerm(terms.get(var)));
-        }
+        substitute(subs);
     }
 	
 	public void substitute(VariableTerm old, Term newTerm) {
-	    addTerms.substitute(old, newTerm);
+	    addTerms = addTerms.substitute(old, newTerm);
 	}
 	
 
@@ -124,7 +117,7 @@ public class Polynomial {
         public int compare(Term lhs, Term rhs) {
             return ComparisonChain.start()
                     .compare(lhs.getCoefPart(), rhs.getCoefPart(), Ordering.natural().nullsLast())
-                    .compare(lhs.getNonCoefPart(), rhs.getNonCoefPart(), Ordering.natural().nullsFirst())
+                    .compare(lhs.getFirstNonCoefPart(), rhs.getFirstNonCoefPart(), Ordering.natural().nullsFirst())
                     .compare(rhs.getDegree(), lhs.getDegree())                    
                     .result();
         }
@@ -135,7 +128,7 @@ public class Polynomial {
 		@Override
 		public int compare(Term lhs, Term rhs) {
 		    return ComparisonChain.start()
-		            .compare(lhs.getNonCoefPart(), rhs.getNonCoefPart(), Ordering.natural().nullsFirst())
+		            .compare(lhs.getFirstNonCoefPart(), rhs.getFirstNonCoefPart(), Ordering.natural().nullsFirst())
 		            .compare(rhs.getDegree(), lhs.getDegree())
 		            .compare(lhs.getCoefPart(), rhs.getCoefPart(), Ordering.natural().nullsFirst())
 		            .result();
