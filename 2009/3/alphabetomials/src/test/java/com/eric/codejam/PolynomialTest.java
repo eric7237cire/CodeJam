@@ -10,8 +10,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.rits.cloning.Cloner;
-
 public class PolynomialTest {
     final static Logger log = LoggerFactory.getLogger(PolynomialTest.class);
     
@@ -98,9 +96,8 @@ public class PolynomialTest {
         p.doSimplify();
         assertEquals("a_0^2 + a_1^2 + a_2^2", p.toString());
         
-        Cloner cloner=new Cloner();
-        Polynomial p2 = cloner.deepClone(p);
-        Polynomial p3 = cloner.deepClone(p);
+        Polynomial p2 = new Polynomial(p);
+        Polynomial p3 = new Polynomial(p);
         
         Map<VariableTerm, Term> subs = new HashMap<>();
         subs.put(new VariableTerm("a_0"), new AddTerms(new VariableTerm("a_0"), new VariableTerm("a_0")));

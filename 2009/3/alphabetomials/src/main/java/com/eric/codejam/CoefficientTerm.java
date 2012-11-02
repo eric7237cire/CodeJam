@@ -10,7 +10,7 @@ public class CoefficientTerm extends AbstractTerm {
     }
 
     public CoefficientTerm(int value) {
-        this.value = value;
+        this.value = value % 10009;
     }
 
     @Override

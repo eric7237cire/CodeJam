@@ -215,8 +215,8 @@ public class PowerTerm extends AbstractTerm {
     }
     @Override
     public String getCoefPart() {
-        
-        return  term.getCoefPart();
+        return null;
+        //return  term.getCoefPart();
     }
     @Override
     public String getNonCoefPart() {
