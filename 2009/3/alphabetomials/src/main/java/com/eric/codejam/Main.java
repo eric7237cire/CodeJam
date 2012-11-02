@@ -82,21 +82,21 @@ public class Main {
                 //System.out.println("i " + i);
                 Polynomial p = new Polynomial(orig);
 
-                log.info("Computing k {} before sub {}", eachK, p);
+                //log.info("Computing k {} before sub {}", eachK, p);
                 p.substitute(subsList.get(i));
                 log.info("Computing k {} after sub {}", eachK, p);
                 totalPoly.addSelf(p);
                 
-                log.info("Computing k {} after add {}", eachK, totalPoly);
+                //log.info("Computing k {} after add {}", eachK, totalPoly);
                 totalPoly.doSimplify();
 
-                log.info("Computing k {} after simplify {}", eachK, totalPoly);
+                //log.info("Computing k {} after simplify {}", eachK, totalPoly);
                 
             }
 
             totalPoly.doSimplify();
 
-        //    log.info("Poly obj {} k {}", totalPoly, eachK);
+            log.info("Poly obj {} k {}", totalPoly, eachK);
             
             orig = new Polynomial(totalPoly);
             

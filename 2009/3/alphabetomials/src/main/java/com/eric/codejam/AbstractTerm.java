@@ -9,7 +9,7 @@ import com.google.common.base.Preconditions;
 
 public abstract class AbstractTerm implements Term {
 
-    protected Logger log = LoggerFactory.getLogger(this.getClass());
+    protected static Logger log = LoggerFactory.getLogger(AbstractTerm.class);
     
     @Override
     public Term substitute(VariableTerm old, Term newTerm) {

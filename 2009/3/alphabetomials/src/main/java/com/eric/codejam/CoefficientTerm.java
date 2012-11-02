@@ -1,9 +1,11 @@
 package com.eric.codejam;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class CoefficientTerm extends AbstractTerm {
     private int value;
+    private String valAsString;
 
     public int getValue() {
         return value;
@@ -11,6 +13,7 @@ public class CoefficientTerm extends AbstractTerm {
 
     public CoefficientTerm(int value) {
         this.value = value % 10009;
+        valAsString = Integer.toString(value);
     }
 
     @Override
@@ -57,15 +60,12 @@ public class CoefficientTerm extends AbstractTerm {
 
     @Override
     public String toString() {
-        return Integer.toString(value);
+        return valAsString;
     }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + value;
-        return result;
+        return Objects.hashCode(value);
     }
 
     @Override
@@ -94,8 +94,7 @@ public class CoefficientTerm extends AbstractTerm {
 
     @Override
     public String getCoefPart() {
-
-        return Integer.toString(value);
+        return valAsString;
     }
 
     @Override
