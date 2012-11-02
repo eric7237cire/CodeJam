@@ -25,14 +25,14 @@ public class Main {
 
     public static void handleCase(int caseNumber, Scanner scanner,
             PrintStream os) {
-
+        //os.println("thonetuhhu");
         Main m = Main.buildMain(scanner);
+       // os.println("thonetuhhu");
+        //List<Integer> total = m.doPerms();
 
-        List<Integer> total = m.doPerms();
-
-        //List<Integer> total = null;
+        List<Integer> total = null;
         List<Integer> total2 = m.usePoly();
-
+//os.println("thonetuhhu");
         log.info("Starting case {}\n total {}\n total poly {}", caseNumber,
                 total, total2);
 
@@ -88,11 +88,11 @@ public class Main {
         orig = c.deepClone(totalPoly);
 
         for (int eachK = 2; eachK <= k; ++eachK) {
-
+            //System.out.println("k " + eachK);
             totalPoly = new Polynomial();
 
             for (int i = 0; i < d; ++i) {
-
+                //System.out.println("i " + i);
                 Polynomial p = c.deepClone(orig);
 
                 Map<VariableTerm, Term> subs = new HashMap<>();
@@ -123,8 +123,9 @@ public class Main {
             log.info("Poly obj {} k {}", totalPoly, eachK);
             
             orig = c.deepClone(totalPoly);
-
+            
             totals.add(totalPoly.evaluate(values) % 10009);
+            //System.out.println(totals);
         }
 
         return totals;
@@ -240,7 +241,8 @@ public class Main {
         Scanner scanner = new Scanner(new File(args[0]));
 
         int t = scanner.nextInt();
-
+        
+        
         for (int i = 1; i <= t; ++i) {
 
             handleCase(i, scanner, System.out);

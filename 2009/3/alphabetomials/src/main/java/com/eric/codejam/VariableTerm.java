@@ -45,7 +45,14 @@ public class VariableTerm extends AbstractTerm {
         //concrete lhs
         return rhs.multiplyAsRhs(this);
     }
-    
+    @Override
+    public boolean canAdd(Term rhs) {
+        return rhs.canAddAsRhs(this);
+    }
+    @Override
+    public Term add(Term rhs) {
+        return rhs.addAsRhs(this);
+    }
     public Term multiplyAsRhs(VariableTerm lhs) {
         return new PowerTerm(lhs, 2);
     }
@@ -62,6 +69,16 @@ public class VariableTerm extends AbstractTerm {
     }
     
    
+    @Override
+    public boolean canAddAsRhs(VariableTerm lhs) {
+        return lhs.equals(this);
+    }
+    @Override
+    public Term addAsRhs(VariableTerm lhs) {
+        Preconditions.checkArgument(lhs.equals(this));
+        return new MultTerms(new CoefficientTerm(2),
+                lhs);
+    }
     @Override
     public int evaluate(Map<String, Integer> values) {
         return values.get(name);

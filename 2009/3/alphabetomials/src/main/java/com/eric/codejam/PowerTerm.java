@@ -65,6 +65,9 @@ public class PowerTerm extends AbstractTerm {
     	if (term instanceof CoefficientTerm) {
     	    return new CoefficientTerm(ipow( ((CoefficientTerm) term).getValue(), degree ));
     	}
+    	if (degree == 1) {
+            return term;
+        }
 		if (term instanceof AddTerms && degree > 1) {
 		    AddTerms binomial = (AddTerms) term;
 			List<List<Integer>> binomialCoeff = new ArrayList<>();

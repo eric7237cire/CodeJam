@@ -30,9 +30,16 @@
 </dependency>
 <dependency>
   <groupId>org.slf4j</groupId>
+  <artifactId>slf4j-nop</artifactId>
+  <version>1.7.2</version>  
+</dependency>
+<!-- 
+<dependency>
+  <groupId>org.slf4j</groupId>
   <artifactId>slf4j-log4j12</artifactId>
   <version>1.7.2</version>  
 </dependency>
+ -->
 <dependency>
     <groupId>com.google.guava</groupId>
     <artifactId>guava</artifactId>
@@ -69,7 +76,7 @@
     <artifactId>maven-compiler-plugin</artifactId>
     <version>2.5.1</version>
     <configuration>
-    	<debug>false</debug>
+    	<debug>true</debug>
     	<encoding>UTF-8</encoding>
     	<source>1.7</source>
     	<target>1.7</target>
