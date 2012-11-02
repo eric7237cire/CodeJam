@@ -13,7 +13,7 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 
 public class Polynomial {
-    AddTerms addTerms;
+    Term addTerms;
 	Polynomial(String s) {
 		super();
 		List<Term> terms = new ArrayList<>();
@@ -39,7 +39,7 @@ public class Polynomial {
 	        didSimp = false;
 	        Term sim = addTerms.simplify();
 	        if (sim != null) {
-	            addTerms = (AddTerms) sim;
+	            addTerms = sim;
 	            didSimp = true;
 	        }
 	    }
@@ -78,14 +78,14 @@ public class Polynomial {
 	
 	public void addSelf(Term term) {
 	    List<Term> terms = new ArrayList<>();
-	    terms.addAll(addTerms.getTerms());
+	    terms.add(addTerms);
 	    terms.add(term);
 	    addTerms = new AddTerms(terms);
 	}
 	public void addSelf(Polynomial term) {
-        List<Term> terms = new ArrayList<>();
-        terms.addAll(addTerms.getTerms());
-        terms.addAll(term.addTerms.getTerms());
+        List<Term> terms = new ArrayList<>();        
+        terms.add(addTerms);
+        terms.add(term.addTerms);
         addTerms = new AddTerms(terms);
     }
 	static int getDegree(Term term) {
@@ -118,15 +118,31 @@ public class Polynomial {
         return null;
     }
 	
+	public static class MultCompareTerm implements Comparator<Term> {
+
+        @Override
+        public int compare(Term lhs, Term rhs) {
+            return ComparisonChain.start()
+                    .compare(lhs.getCoefPart(), rhs.getCoefPart(), Ordering.natural().nullsLast())
+                    .compare(lhs.getNonCoefPart(), rhs.getNonCoefPart(), Ordering.natural().nullsFirst())
+                    .compare(rhs.getDegree(), lhs.getDegree())                    
+                    .result();
+        }
+	}
+	
 	public static class CompareTerm implements Comparator<Term> {
 
 		@Override
 		public int compare(Term lhs, Term rhs) {
-		    
-			
+		    return ComparisonChain.start()
+		            .compare(lhs.getNonCoefPart(), rhs.getNonCoefPart(), Ordering.natural().nullsFirst())
+		            .compare(rhs.getDegree(), lhs.getDegree())
+		            .compare(lhs.getCoefPart(), rhs.getCoefPart(), Ordering.natural().nullsFirst())
+		            .result();
+			/*
 		    if(lhs instanceof MultTerms && rhs instanceof MultTerms) {
 		        return compareMul((MultTerms)lhs, (MultTerms)rhs);
-		    }
+		    }(
 		    
 	         String lhsVar = getVarname(lhs);
              String rhsVar = getVarname(rhs);
@@ -141,7 +157,7 @@ public class Polynomial {
                  return lhs.toString().compareTo(rhs.toString());
              } else {
                  return cc;
-             }
+             }*/
 		}
 		
         public int compareMul(MultTerms lhs, MultTerms rhs) {
@@ -182,7 +198,8 @@ public class Polynomial {
 
     @Override
     public String toString() {
-        return addTerms.toString();
+        String s = addTerms.toString();
+        return addTerms instanceof AddTerms ? s.substring(1, s.length() - 1) : s;
     }
 	
 	

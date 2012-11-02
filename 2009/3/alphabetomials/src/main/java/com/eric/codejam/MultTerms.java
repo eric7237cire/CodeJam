@@ -26,7 +26,7 @@ public class MultTerms extends AbstractTerm {
     MultTerms(Term... args) {
         terms = new ArrayList<>();
         terms.addAll(Arrays.asList(args));
-        Collections.sort(terms, new Polynomial.CompareTerm());
+        Collections.sort(terms, new Polynomial.MultCompareTerm());
         
         terms = ImmutableList.copyOf(terms);
         
@@ -34,7 +34,7 @@ public class MultTerms extends AbstractTerm {
     MultTerms(List<Term> args) {
         terms = new ArrayList<>();
         terms.addAll(args);
-        Collections.sort(terms, new Polynomial.CompareTerm());
+        Collections.sort(terms, new Polynomial.MultCompareTerm());
         
         terms = ImmutableList.copyOf(terms);
         
@@ -237,8 +237,7 @@ public class MultTerms extends AbstractTerm {
         simTerms.addAll(getTerms());
         boolean hasSimp = false;
 
-        // Distribute coefficient
-        if (terms.size() == 1 && !(terms.get(0) instanceof PowerTerm)) {
+        if (terms.size() == 1 ) {
             return terms.get(0);
         }
 
@@ -361,6 +360,40 @@ public class MultTerms extends AbstractTerm {
     }
 
     @Override
+    public boolean canAddAsRhs(PowerTerm lhs) {
+        List<Term> rhsTerms = null;
+                
+        MultTerms rhs = this;
+        if (rhs.getTerms().get(0) instanceof CoefficientTerm) {
+            rhsTerms = rhs.getTerms().subList(1, rhs.getTerms().size());
+        } else {
+            rhsTerms = rhs.getTerms();
+        }
+        return rhsTerms.size() == 1 && lhs.equals(rhsTerms.get(0));
+    }
+
+    @Override
+    public Term addAsRhs(PowerTerm lhs) {
+
+        List<Term> rhsTerms = new ArrayList<>();
+        int coeffLhs = 1;
+        int coeffRhs = 1;
+        
+        MultTerms rhs = this;
+        if (rhs.getTerms().get(0) instanceof CoefficientTerm) {
+            Preconditions.checkState(rhs.getTerms().size() == 2);
+            rhsTerms.add( rhs.getTerms().get(1) );
+            coeffRhs = ((CoefficientTerm) rhs.getTerms().get(0)).getValue();
+        } else {
+            Preconditions.checkState(rhs.getTerms().size() == 1);
+            rhsTerms.add( rhs.getTerms().get(0) );
+        }
+        Preconditions.checkArgument(lhs.equals(rhsTerms.get(0)));
+        rhsTerms.add(0, new CoefficientTerm(coeffLhs + coeffRhs));
+        return new MultTerms(rhsTerms);
+    }
+
+    @Override
     public int evaluate(Map<String, Integer> values) {
         int r = 1;
 
@@ -374,6 +407,36 @@ public class MultTerms extends AbstractTerm {
     @Override
     public String toString() {
         return StringUtils.join(terms, "*");
+    }
+    
+    @Override
+    public String getNonCoefPart() {
+        
+        if (terms.get(0) instanceof CoefficientTerm) {
+            if (terms.size() > 1 )
+                return    terms.get(1).getNonCoefPart();
+            else
+                return null;
+        }
+        
+        return terms.get(0).getNonCoefPart();
+    }
+    @Override
+    public String getCoefPart() {
+        
+        return terms.get(0) instanceof CoefficientTerm ?
+                terms.get(0).toString() :
+                    null;
+    }
+    @Override
+    public int getDegree() {
+        if (terms.get(0) instanceof CoefficientTerm) {
+            if (terms.size() > 1 )
+                return terms.get(1).getDegree();
+            else 
+                return 1;
+        }          
+         return terms.get(0).getDegree();
     }
 
 }

@@ -66,4 +66,17 @@ public class VariableTerm extends AbstractTerm {
     public int evaluate(Map<String, Integer> values) {
         return values.get(name);
     }
+    @Override
+    public String getNonCoefPart() {
+        return name;
+    }
+    @Override
+    public String getCoefPart() {
+        
+        return  null;
+    }
+    @Override
+    public int getDegree() {
+        return 1;
+    }
 }

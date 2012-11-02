@@ -49,4 +49,10 @@ public interface Term {
     
     public boolean canAddAsRhs(AddTerms lhs);
     public Term addAsRhs(AddTerms lhs);
+    
+    
+    //For sorting
+    public String getNonCoefPart();
+    public String getCoefPart();
+    public int getDegree();
 }

@@ -65,8 +65,8 @@ public class PowerTerm extends AbstractTerm {
     	if (term instanceof CoefficientTerm) {
     	    return new CoefficientTerm(ipow( ((CoefficientTerm) term).getValue(), degree ));
     	}
-		if (term instanceof BinomialTerm && degree > 1) {
-			BinomialTerm binomial = (BinomialTerm) term;
+		if (term instanceof AddTerms && degree > 1) {
+		    AddTerms binomial = (AddTerms) term;
 			List<List<Integer>> binomialCoeff = new ArrayList<>();
 			binomialCoeff.add(new ArrayList<Integer>());
 			binomialCoeff.get(0).add(1);
@@ -88,8 +88,8 @@ public class PowerTerm extends AbstractTerm {
 				int rightPower = degree - leftPower;
 				MultTerms mt = new MultTerms(
 				(new CoefficientTerm(binomialCoeff.get(degree).get(rightPower))),
-				(new PowerTerm(binomial.getX(), leftPower)),
-				(new PowerTerm(binomial.getY(), rightPower)));
+				(new PowerTerm(binomial.getTerms().get(0), leftPower)),
+				(new PowerTerm(binomial.getTerms().get(1), rightPower)));
 				addTerms.add(mt);
 			}
 			
@@ -136,6 +136,14 @@ public class PowerTerm extends AbstractTerm {
         //concrete lhs
         return rhs.multiplyAsRhs(this);
     }
+    @Override
+    public boolean canAdd(Term rhs) {
+        return rhs.canAddAsRhs(this);
+    }
+    @Override
+    public Term add(Term rhs) {
+        return rhs.addAsRhs(this);
+    }
     
     public Term multiplyAsRhs(VariableTerm lhs) {
         Preconditions.checkArgument(term.equals(lhs));
@@ -152,5 +160,16 @@ public class PowerTerm extends AbstractTerm {
     public boolean canMultiplyAsRhs(PowerTerm lhs) {        
         return lhs.getTerm().equals(this.getTerm());
     }
+    
+    @Override
+    public String getNonCoefPart() {
+        return term.getNonCoefPart();
+    }
+    @Override
+    public String getCoefPart() {
+        
+        return  term.getCoefPart();
+    }
+    
     
 }

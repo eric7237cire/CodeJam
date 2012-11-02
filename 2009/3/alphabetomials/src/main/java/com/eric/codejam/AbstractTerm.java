@@ -13,7 +13,18 @@ public abstract class AbstractTerm implements Term {
         
     }
     
-
+    @Override
+    public String getNonCoefPart() {
+        return null;
+    }
+    @Override
+    public String getCoefPart() {
+        return null;
+    }
+    @Override
+    public int getDegree() {
+        return 0;
+    }
 	
     
 	public Term simplify() {

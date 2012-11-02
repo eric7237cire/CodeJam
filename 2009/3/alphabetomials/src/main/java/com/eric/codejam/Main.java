@@ -62,12 +62,15 @@ public class Main {
                 String varName = "" + ch + "_" + i;
                 String xVarName = "" + ch + "_x" ;
                 
-                p.substitute(new VariableTerm("" + ch), new BinomialTerm(
-                        new VariableTerm(varName), new VariableTerm(xVarName)));
                 values.put(
                         varName,
                         StringUtils.countMatches(dictWords.get(i), ""
                                 + (char) chInt));
+                
+                p.substitute(new VariableTerm("" + ch), new AddTerms(
+                        new CoefficientTerm(values.get(varName)),
+                        new VariableTerm(xVarName)));
+                
                 values.put(xVarName, 0);
             }
 
@@ -76,6 +79,9 @@ public class Main {
             totalPoly.addSelf(p);
         }
 
+
+        totalPoly.doSimplify();
+        
         totals.add(totalPoly.evaluate(values));
         
 

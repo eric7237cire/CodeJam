@@ -76,9 +76,21 @@ public class AddTerms extends AbstractTerm {
         simTerms.addAll(getTerms());
         boolean hasSimp = false;
         
+        if (terms.size() == 1 ) {
+            return terms.get(0);
+        }
+        
+        List<Term> toAdd = new ArrayList<>();
+        
         // Simplify any sub elements
         for (ListIterator<Term> li = simTerms.listIterator(); li.hasNext();) {
             Term t = li.next();
+            
+            if (t instanceof AddTerms) {
+                li.remove();
+                toAdd.addAll(((AddTerms) t).getTerms());
+                continue;
+            }
 
             Term r = t.simplify();
             if (r != null) {
@@ -86,6 +98,11 @@ public class AddTerms extends AbstractTerm {
                 li.set(r);
                 hasSimp = true;
             }
+        }
+        
+        if (!toAdd.isEmpty()) {
+            simTerms.addAll(toAdd);
+            hasSimp = true;
         }
         
         boolean found = true;
@@ -99,11 +116,15 @@ public class AddTerms extends AbstractTerm {
                     Term rhs = simTerms.get(j);
                     Term replacement = null;
                     
-                    if (!lhs.canAdd(rhs)) {
+                    if (lhs.canAdd(rhs)) {
+                        replacement = lhs.add(rhs);                        
+                    } else if (rhs.canAdd(lhs)) {
+                        replacement = rhs.add(lhs);
+                    } else {
                         continue;
                     }
                     
-                    replacement = lhs.add(rhs);
+                    
                     
                     Preconditions.checkState(replacement != null);
                     simTerms.remove(j);
@@ -235,6 +256,6 @@ public class AddTerms extends AbstractTerm {
     }
     @Override
     public String toString() {
-        return StringUtils.join(terms, " + ");        
+        return "(" + StringUtils.join(terms, " + ") + ")";        
     }
 }
