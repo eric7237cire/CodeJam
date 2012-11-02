@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,133 +14,39 @@ import com.google.common.collect.ImmutableList;
 
 public class MultTerms extends AbstractTerm {
 
-    private List<Term> terms;
+    final private List<Term> terms;
 
     public List<Term> getTerms() {
         return terms;
     }
     
-    MultTerms(Term... args) {
-        ArrayList<Term> terms = new ArrayList<>();
-        terms.addAll(Arrays.asList(args));
-        Collections.sort(terms, new Polynomial.MultCompareTerm());
+    
+    private MultTerms(List<Term> args) {
         
-        this.terms = ImmutableList.copyOf(terms);
+        this.terms = args;
         
+        Preconditions.checkState(this.terms.size() > 1);
     }
-    MultTerms(List<Term> args) {
+    
+    static Term  buildMultTerm(Term...args) {
+        return buildMultTerm(Arrays.asList(args));
+    }
+   
+    static Term buildMultTerm(List<Term> args) {
         ArrayList<Term> terms = new ArrayList<>();
         terms.addAll(args);
+        simplifyImpl(terms);
         Collections.sort(terms, new Polynomial.MultCompareTerm());
         
-        this.terms = ImmutableList.copyOf(terms);
+        if (terms.size() > 1) {
+            return new MultTerms( ImmutableList.copyOf(terms) );
+        } else {
+            Preconditions.checkState(terms.size() == 1);
+            return terms.get(0);
+        }
         
     }
-
-    static Term parseBinomialTerm(String[] strList) {
-
-        Pattern binoPat = Pattern
-                .compile("\\(([^\\+]+)\\s*\\+\\s*([^\\+]+)\\)(.*)");
-        Pattern expPat = Pattern.compile("\\^?(\\d+)(.*)");
-        Matcher m = binoPat.matcher(strList[0]);
-        if (m.matches()) {
-            String v1 = m.group(1).trim();
-            String v2 = m.group(2).trim();
-            AddTerms bt = new AddTerms(new VariableTerm(v1),
-                    new VariableTerm(v2));
-
-            strList[0] = m.group(3);
-
-            Matcher expMat = expPat.matcher(strList[0]);
-            if (expMat.matches()) {
-                String exp = expMat.group(1);
-                strList[0] = expMat.group(2);
-                PowerTerm pt = new PowerTerm(bt, Integer.parseInt(exp));
-                return pt;
-            } else {
-                return bt;
-            }
-        }
-
-        return null;
-    }
-
-    static Term parsePowerVarTerm(String[] strList) {
-        Pattern varExpPat = Pattern
-                .compile("([a-zA-Z_]+\\d*)\\^(\\d+)(.*?)");
-        
-        Matcher m = varExpPat.matcher(strList[0]);
-        if (m.matches()) {
-            strList[0] = m.group(3);
-            return new PowerTerm(new VariableTerm(m.group(1)),
-                    Integer.parseInt(m.group(2)));
-        }
-
-        return null;
-    }
     
-    static Term parseVarTerm(String[] strList) {
-        Pattern varPat = Pattern.compile("([a-zA-Z](?:_[a-zA-Z\\d]+){0,1}\\d*)(.*?)");
-        Matcher m = varPat.matcher(strList[0]);
-        if (m.matches()) {
-            strList[0] = m.group(2);
-            return new VariableTerm(m.group(1));
-        }
-
-        return null;
-    }
-    
-    static Term parseCoeffTerm(String[] strList) {
-        Pattern varPat = Pattern.compile("(\\d+)(.*?)");
-        Matcher m = varPat.matcher(strList[0]);
-        if (m.matches()) {
-            strList[0] = m.group(2);
-            return new CoefficientTerm(Integer.parseInt(m.group(1)));
-        }
-
-        return null;
-
-    }
-
-    MultTerms(String str) {
-        ArrayList<Term> terms = new ArrayList<>();
-
-        String[] strList = new String[] { str };
-        while (!strList[0].isEmpty()) {
-            str = strList[0];
-
-            strList[0] = strList[0].trim().replaceFirst("^\\*", "");
-            Term t = parseBinomialTerm(strList);
-
-            if (t != null) {
-                terms.add(t);
-            }
-            
-            t = parsePowerVarTerm(strList);
-
-            if (t != null) {
-                terms.add(t);
-            }
-            
-            t = parseVarTerm(strList);
-
-            if (t != null) {
-                terms.add(t);
-            }
-            
-            t = parseCoeffTerm(strList);
-            
-            if (t != null) {
-                terms.add(t);
-            }
-
-            Preconditions.checkState(!StringUtils.equals(str, strList[0]));
-            Preconditions.checkState(str.length() > strList[0].length());
-        }
-
-        this.terms = ImmutableList.copyOf(terms);
-    }
-
 
     @Override
     public Term substitute(VariableTerm old, Term newTerm) {
@@ -162,11 +66,11 @@ public class MultTerms extends AbstractTerm {
             }
         }
         
-        return new MultTerms(terms);
+        return MultTerms.buildMultTerm(terms);
     }
 
     @Override
-    public MultTerms substitute(Map<VariableTerm, Term> termsToSub) {
+    public Term substitute(Map<VariableTerm, Term> termsToSub) {
         List<Term> terms = new ArrayList<>(this.terms);
         
         for (ListIterator<Term> li = terms.listIterator(); li.hasNext();) {
@@ -184,7 +88,7 @@ public class MultTerms extends AbstractTerm {
             }
         }
         
-        return new MultTerms(terms);
+        return MultTerms.buildMultTerm(terms);
     }
 
 
@@ -205,7 +109,7 @@ public class MultTerms extends AbstractTerm {
         List<Term> terms = new ArrayList<>();
         terms.addAll(getTerms());
         terms.add(lhs);
-        return new MultTerms(terms);
+        return buildMultTerm(terms);
     }
 
     
@@ -240,7 +144,7 @@ public class MultTerms extends AbstractTerm {
         List<Term> terms = new ArrayList<>();
         terms.addAll(getTerms());
         terms.addAll(lhs.getTerms());
-        return new MultTerms(terms);
+        return buildMultTerm(terms);
     }
 
     @Override
@@ -253,30 +157,7 @@ public class MultTerms extends AbstractTerm {
         return multiplyAsRhsImpl(lhs);
     }
 
-    @Override
-    public Term simplify() {
-        List<Term> simTerms = new ArrayList<>();
-        simTerms.addAll(getTerms());
-        boolean hasSimp = false;
-
-        if (terms.size() == 1 ) {
-            return terms.get(0);
-        }
-
-        // Simplify any sub elements
-        for (ListIterator<Term> li = simTerms.listIterator(); li.hasNext();) {
-            Term t = li.next();
-
-            Term r = t.simplify();
-            if (r != null) {
-            
-                li.set(r);
-                hasSimp = true;
-            }
-        }
-
-        
-        
+    private static void simplifyImpl(List<Term> simTerms) {
         boolean found = true;
         while (found) {
             found = false;
@@ -305,7 +186,6 @@ public class MultTerms extends AbstractTerm {
 
                     simTerms.add(replacement);
                     found = true;
-                    hasSimp = true;
                     break;
                 
                 }
@@ -316,10 +196,36 @@ public class MultTerms extends AbstractTerm {
             }
 
         }
+        
+    }
+    @Override
+    public Term simplify() {
+        List<Term> simTerms = new ArrayList<>();
+        simTerms.addAll(getTerms());
+        boolean hasSimp = false;
+
+        if (terms.size() == 1 ) {
+            return terms.get(0);
+        }
+
+        // Simplify any sub elements
+        for (ListIterator<Term> li = simTerms.listIterator(); li.hasNext();) {
+            Term t = li.next();
+
+            Term r = t.simplify();
+            if (r != null) {
+            
+                li.set(r);
+                hasSimp = true;
+            }
+        }
+
+        
+        
        
 
        if (hasSimp) {
-           return new MultTerms(simTerms);
+           return buildMultTerm(simTerms);
        }
 
         return null;
@@ -359,7 +265,7 @@ public class MultTerms extends AbstractTerm {
         }
         Preconditions.checkArgument(lhsTerms.equals(rhsTerms));
         lhsTerms.add(0, new CoefficientTerm(coeffLhs + coeffRhs));
-        return new MultTerms(lhsTerms);
+        return buildMultTerm(lhsTerms);
     }
 
     @Override
@@ -412,7 +318,41 @@ public class MultTerms extends AbstractTerm {
         }
         Preconditions.checkArgument(lhs.equals(rhsTerms.get(0)));
         rhsTerms.add(0, new CoefficientTerm(coeffLhs + coeffRhs));
-        return new MultTerms(rhsTerms);
+        return buildMultTerm(rhsTerms);
+    }
+    
+    @Override
+    public boolean canAddAsRhs(VariableTerm lhs) {
+        List<Term> rhsTerms = null;
+                
+        MultTerms rhs = this;
+        if (rhs.getTerms().get(0) instanceof CoefficientTerm) {
+            rhsTerms = rhs.getTerms().subList(1, rhs.getTerms().size());
+        } else {
+            rhsTerms = rhs.getTerms();
+        }
+        return rhsTerms.size() == 1 && lhs.equals(rhsTerms.get(0));
+    }
+
+    @Override
+    public Term addAsRhs(VariableTerm lhs) {
+
+        List<Term> rhsTerms = new ArrayList<>();
+        int coeffLhs = 1;
+        int coeffRhs = 1;
+        
+        MultTerms rhs = this;
+        if (rhs.getTerms().get(0) instanceof CoefficientTerm) {
+            Preconditions.checkState(rhs.getTerms().size() == 2);
+            rhsTerms.add( rhs.getTerms().get(1) );
+            coeffRhs = ((CoefficientTerm) rhs.getTerms().get(0)).getValue();
+        } else {
+            Preconditions.checkState(rhs.getTerms().size() == 1);
+            rhsTerms.add( rhs.getTerms().get(0) );
+        }
+        Preconditions.checkArgument(lhs.equals(rhsTerms.get(0)));
+        rhsTerms.add(0, new CoefficientTerm(coeffLhs + coeffRhs));
+        return buildMultTerm(rhsTerms);
     }
 
     @Override
@@ -463,8 +403,11 @@ public class MultTerms extends AbstractTerm {
 
     @Override
     public String getNonCoefPart() {
-        // TODO Auto-generated method stub
-        return super.getNonCoefPart();
+        if (terms.get(0) instanceof CoefficientTerm) {
+            return StringUtils.join(terms.subList(1, terms.size()), "*");
+        }
+        
+        return StringUtils.join(terms.subList(0, terms.size()), "*");
     }
 
 }

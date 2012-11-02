@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -22,6 +24,7 @@ public class PowerTerm extends AbstractTerm {
 
     public PowerTerm( Term term, int degree) {
         super();
+        Preconditions.checkArgument(degree > 1);
         this.degree = degree;
         this.term = term;
     }
@@ -107,10 +110,10 @@ public class PowerTerm extends AbstractTerm {
 			
 			for(int leftPower = degree; leftPower >= 0; --leftPower) {
 				int rightPower = degree - leftPower;
-				MultTerms mt = new MultTerms(
+				Term mt = MultTerms.buildMultTerm(
 				(new CoefficientTerm(binomialCoeff.get(degree).get(rightPower))),
-				(new PowerTerm(binomial.getTerms().get(0), leftPower)),
-				(new PowerTerm(binomial.getTerms().get(1), rightPower)));
+				createPowerTerm(binomial.getTerms().get(0), leftPower),
+				createPowerTerm(binomial.getTerms().get(1), rightPower));
 				addTerms.add(mt);
 			}
 			
@@ -119,6 +122,16 @@ public class PowerTerm extends AbstractTerm {
 		
 		return super.simplify();
 	}
+    
+    private static Term createPowerTerm(Term term, int power) {
+        if (power > 1) {
+            return new PowerTerm(term, power);
+        }
+        if (power == 1)
+            return term;
+        Preconditions.checkState(power == 0);
+        return new CoefficientTerm(1);
+    }
 
     @Override
     public int hashCode() {
@@ -166,6 +179,20 @@ public class PowerTerm extends AbstractTerm {
         return rhs.addAsRhs(this);
     }
     
+    
+    @Override
+    public boolean canAddAsRhs(PowerTerm lhs) {
+        return  lhs.getTerm().equals(getTerm()) ;
+    }
+
+
+    @Override
+    public Term addAsRhs(PowerTerm lhs) {
+        Preconditions.checkArgument( lhs.getTerm().equals(getTerm()) );
+        return MultTerms.buildMultTerm(new CoefficientTerm(2), this);
+    }
+
+
     public Term multiplyAsRhs(VariableTerm lhs) {
         Preconditions.checkArgument(term.equals(lhs));
         return new PowerTerm(lhs, degree + 1);
@@ -190,6 +217,10 @@ public class PowerTerm extends AbstractTerm {
     public String getCoefPart() {
         
         return  term.getCoefPart();
+    }
+    @Override
+    public String getNonCoefPart() {
+        return toString();
     }
     
     

@@ -40,7 +40,7 @@ public class PolynomialTest {
     
     @Test
     public void testMultConstructor() {
-        MultTerms mul = new MultTerms("8(a_2 + a_1)^2");
+        MultTerms mul = (MultTerms) Polynomial.parseTerms("8(a_2 + a_1)^2");
         assertTrue(mul.getTerms().get(0) instanceof CoefficientTerm);
         assertTrue(mul.getTerms().get(1) instanceof PowerTerm);
         
@@ -61,10 +61,8 @@ public class PolynomialTest {
     
     @Test
     public void testMultConstructor2() {
-        MultTerms mul = new MultTerms("a_0*(a_x + a_0)");
         
-        Polynomial p = new Polynomial();
-        p.addSelf(mul);
+        Polynomial p = new Polynomial("a_0*a_x + a_0*a_0");
         p.doSimplify();
         
         assertEquals( "a_0^2 + a_0*a_x", p.toString());
@@ -109,6 +107,9 @@ public class PolynomialTest {
         subs.put(new VariableTerm("a_1"), new AddTerms(new VariableTerm("a_0"), new VariableTerm("a_1")));
         subs.put(new VariableTerm("a_2"), new AddTerms(new VariableTerm("a_0"), new VariableTerm("a_2")));
         p.substitute(subs);
+        
+        p.doSimplify();
+        assertEquals("6*a_0^2 + 2*a_0*a_1 + 2*a_0*a_2 + a_1^2 + a_2^2", p.toString());
         
         subs = new HashMap<>();
         subs.put(new VariableTerm("a_0"), new AddTerms(new VariableTerm("a_1"), new VariableTerm("a_0")));
@@ -174,5 +175,6 @@ public class PolynomialTest {
         p.doSimplify();
         assertEquals("8*a_0^2", p.toString());
     }
+    
     
 }

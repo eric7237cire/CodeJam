@@ -76,7 +76,7 @@ public class VariableTerm extends AbstractTerm {
     @Override
     public Term addAsRhs(VariableTerm lhs) {
         Preconditions.checkArgument(lhs.equals(this));
-        return new MultTerms(new CoefficientTerm(2),
+        return MultTerms.buildMultTerm(new CoefficientTerm(2),
                 lhs);
     }
     @Override

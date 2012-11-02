@@ -5,9 +5,14 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 
 public class Polynomial {
@@ -18,11 +23,118 @@ public class Polynomial {
 		String[] termStrList = s.split("\\+");
 		
 		for (String termStr : termStrList) {
-			terms.add(new MultTerms(termStr));
+			terms.add(parseTerms(termStr));
 		}
 		
 		addTerms = new AddTerms(terms);
 	}
+	
+
+    static Term parseBinomialTerm(String[] strList) {
+
+        Pattern binoPat = Pattern
+                .compile("\\(([^\\+]+)\\s*\\+\\s*([^\\+]+)\\)(.*)");
+        Pattern expPat = Pattern.compile("\\^?(\\d+)(.*)");
+        Matcher m = binoPat.matcher(strList[0]);
+        if (m.matches()) {
+            String v1 = m.group(1).trim();
+            String v2 = m.group(2).trim();
+            AddTerms bt = new AddTerms(new VariableTerm(v1),
+                    new VariableTerm(v2));
+
+            strList[0] = m.group(3);
+
+            Matcher expMat = expPat.matcher(strList[0]);
+            if (expMat.matches()) {
+                String exp = expMat.group(1);
+                strList[0] = expMat.group(2);
+                PowerTerm pt = new PowerTerm(bt, Integer.parseInt(exp));
+                return pt;
+            } else {
+                return bt;
+            }
+        }
+
+        return null;
+    }
+
+    static Term parsePowerVarTerm(String[] strList) {
+        Pattern varExpPat = Pattern
+                .compile("([a-zA-Z_]+\\d*)\\^(\\d+)(.*?)");
+        
+        Matcher m = varExpPat.matcher(strList[0]);
+        if (m.matches()) {
+            strList[0] = m.group(3);
+            return new PowerTerm(new VariableTerm(m.group(1)),
+                    Integer.parseInt(m.group(2)));
+        }
+
+        return null;
+    }
+    
+    static Term parseVarTerm(String[] strList) {
+        Pattern varPat = Pattern.compile("([a-zA-Z](?:_[a-zA-Z\\d]+){0,1}\\d*)(.*?)");
+        Matcher m = varPat.matcher(strList[0]);
+        if (m.matches()) {
+            strList[0] = m.group(2);
+            return new VariableTerm(m.group(1));
+        }
+
+        return null;
+    }
+    
+    static Term parseCoeffTerm(String[] strList) {
+        Pattern varPat = Pattern.compile("(\\d+)(.*?)");
+        Matcher m = varPat.matcher(strList[0]);
+        if (m.matches()) {
+            strList[0] = m.group(2);
+            return new CoefficientTerm(Integer.parseInt(m.group(1)));
+        }
+
+        return null;
+
+    }
+
+	 static Term parseTerms(String str) {
+	        ArrayList<Term> terms = new ArrayList<>();
+
+	        String[] strList = new String[] { str };
+	        while (!strList[0].isEmpty()) {
+	            str = strList[0];
+
+	            strList[0] = strList[0].trim().replaceFirst("^\\*", "");
+	            Term t = parseBinomialTerm(strList);
+
+	            if (t != null) {
+	                terms.add(t);
+	            }
+	            
+	            t = parsePowerVarTerm(strList);
+
+	            if (t != null) {
+	                terms.add(t);
+	            }
+	            
+	            t = parseVarTerm(strList);
+
+	            if (t != null) {
+	                terms.add(t);
+	            }
+	            
+	            t = parseCoeffTerm(strList);
+	            
+	            if (t != null) {
+	                terms.add(t);
+	            }
+
+	            Preconditions.checkState(!StringUtils.equals(str, strList[0]));
+	            Preconditions.checkState(str.length() > strList[0].length());
+	        }
+
+	        
+	        return MultTerms.buildMultTerm(terms);
+	        
+	    }
 	
 	Polynomial() {
 	    addTerms = new AddTerms();
