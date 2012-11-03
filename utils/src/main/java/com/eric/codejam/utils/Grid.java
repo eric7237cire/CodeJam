@@ -23,6 +23,10 @@ public class Grid<SquareType> {
     
     final BiMap<Character, SquareType> mapping;
     
+    //Builds character grid
+    //..#
+    //.O#
+    //.OO
     public static<SquareType> Grid<SquareType>  buildFromScanner(Scanner scanner, int rows, int cols, final BiMap<Character, SquareType> mapping, SquareType invalidSq) {
         
         
@@ -40,6 +44,19 @@ public class Grid<SquareType> {
         return g;
     }
     
+    public static<SquareType> Grid<SquareType>  buildEmptyGrid( int rows, int cols, SquareType invalidSq) {
+        
+        
+        Grid<SquareType> g = new Grid<>(rows, cols, invalidSq,null);
+        
+        for (int r = 0; r < rows; ++r) {
+            for(int c = 0; c < cols; ++c) {
+                g.grid.add(g.getIndex(r,c), invalidSq );
+            }            
+        }
+        
+        return g;
+    }
  
     public Grid(Grid<SquareType> rhs) {
         this.rows = rhs.rows;
@@ -104,6 +121,10 @@ public class Grid<SquareType> {
         grid.set(index, square);
     }
     
+    public void setEntry(int row, int col, SquareType square) {
+        setEntry(getIndex(row, col), square);
+    }
+    
     public SquareType getEntry(int row, int col, Direction dir) {
         return getEntry(getIndex(row,col), dir);
     }
@@ -157,15 +178,42 @@ public class Grid<SquareType> {
         this.invalidSquare = invalidSquare;
     }
 
+    private static int printWidth = 4; 
+    private boolean yZeroOnTop = true;
+    
+    
+
+    public boolean isyZeroOnTop() {
+        return yZeroOnTop;
+    }
+
+    public void setyZeroOnTop(boolean yZeroOnTop) {
+        this.yZeroOnTop = yZeroOnTop;
+    }
 
     @Override
     public String toString() {
         StringBuffer gridStr = new StringBuffer();
-        for(int r=0; r<rows; ++r) {
+        for(int rIdx=0; rIdx<rows; ++rIdx) {
+            int r = rIdx;
+            if (!yZeroOnTop) {
+                r = rows - rIdx - 1;
+            }
             int index = getIndex(r,0);
             gridStr.append(StringUtils.rightPad("" + index, 4));
             for(int c=0; c<cols; ++c) {
-                gridStr.append(mapping.inverse().get(getEntry(r,c) ));
+                if (mapping != null) {
+                    gridStr.append(mapping.inverse().get(getEntry(r,c) ));
+                } else {
+                    String s = "";
+                    Object o = getEntry(r,c);
+                    if (o != null) {
+                        s += o.toString();
+                    }
+                    s = StringUtils.rightPad(s,printWidth); 
+                    gridStr.append( s );
+                }
+            
             }
             gridStr.append("\n");
         }
