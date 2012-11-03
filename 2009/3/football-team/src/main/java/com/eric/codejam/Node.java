@@ -10,5 +10,10 @@ public class Node<DataType> {
         super();
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return data.toString() + " child " + lhs + " branch " + rhs;
+    }
     
 }
