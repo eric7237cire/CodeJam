@@ -29,86 +29,101 @@ import org.w3c.dom.NodeList;
  */
 public class AppTest {
 
-	final static Logger log = LoggerFactory.getLogger(AppTest.class);
+    final static Logger log = LoggerFactory.getLogger(AppTest.class);
 
-	/**
-	 * Create the test case
-	 * 
-	 * @param testName
-	 *            name of the test case
-	 */
-	public AppTest() {
-		super();
-	}
+    /**
+     * Create the test case
+     * 
+     * @param testName
+     *            name of the test case
+     */
+    public AppTest() {
+        super();
+    }
 
-	private String getOutput(String testCase) {
-		Scanner sc = new Scanner(testCase);
+    private String getOutput(String testCase) {
+        Scanner sc = new Scanner(testCase);
 
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		PrintStream pos = new PrintStream(os);
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        PrintStream pos = new PrintStream(os);
 
-		Main.handleCase(1, sc, pos);
+        Main.handleCase(1, sc, pos);
 
-		try {
-			String output = new String(os.toString("UTF-8"));
-			log.info(output);
-			return output.trim();
-		} catch (UnsupportedEncodingException ex) {
-			return null;
-		}
-	}
-	
-	private static String extractAns(String str) {
-		Pattern p = Pattern.compile("Case #\\d: (.*)");
-		Matcher m = p.matcher(str);
-		if (m.matches()) {
-			return m.group(1);
-		}
-		
-		return "Error";
-	}
+        try {
+            String output = new String(os.toString("UTF-8"));
+            log.info(output);
+            return output.trim();
+        } catch (UnsupportedEncodingException ex) {
+            return null;
+        }
+    }
 
-	private static Map<String, String> testData;
+    private static String extractAns(String str) {
+        Pattern p = Pattern.compile("Case #\\d: (.*)");
+        Matcher m = p.matcher(str);
+        if (m.matches()) {
+            return m.group(1);
+        }
 
-	@BeforeClass
-	public static void getTestData() {
-		testData = new HashMap<>();
+        return "Error";
+    }
 
-		try {
+    private static Map<String, String> testData;
 
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-					.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(ClassLoader
-					.getSystemResourceAsStream("test-data.xml"));
-			doc.getDocumentElement().normalize();
+    @BeforeClass
+    public static void getTestData() {
+        testData = new HashMap<>();
 
-			NodeList nl = doc.getElementsByTagName("test");
-			for (int i = 0; i < nl.getLength(); ++i) {
-				Node n = nl.item(i);
-				String value = n.getTextContent();
+        try {
 
-				String name = n.getAttributes().getNamedItem("name")
-						.getNodeValue();
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+                    .newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(ClassLoader
+                    .getSystemResourceAsStream("test-data.xml"));
+            doc.getDocumentElement().normalize();
 
-				testData.put(name, value);
-			}
-		} catch (Exception ex) {
+            NodeList nl = doc.getElementsByTagName("test");
+            for (int i = 0; i < nl.getLength(); ++i) {
+                Node n = nl.item(i);
+                String value = n.getTextContent();
 
-		}
+                String name = n.getAttributes().getNamedItem("name")
+                        .getNodeValue();
 
-	}
+                testData.put(name, value);
+            }
+        } catch (Exception ex) {
 
-	
+        }
 
-	@Test
-	public void testS1() {
-		String testCase = testData.get("s1");
+    }
 
-		//double output = Double.parseDouble(extractAns(getOutput(testCase)));
-		
-		//assertEquals(7, output, DoubleComparator.TOLERANCE);
-	}
-	
-	
+    @Test
+    public void testS1() {
+        String testCase = testData.get("s1");
+
+        int output = Integer.parseInt(extractAns(getOutput(testCase)));
+
+        assertEquals(1, output);
+    }
+
+    @Test
+    public void testS2() {
+        String testCase = testData.get("s2");
+
+        int output = Integer.parseInt(extractAns(getOutput(testCase)));
+
+        assertEquals(2, output);
+    }
+
+    @Test
+    public void testS3() {
+        String testCase = testData.get("s3");
+
+        int output = Integer.parseInt(extractAns(getOutput(testCase)));
+
+        assertEquals(3, output);
+    }
+
 }
