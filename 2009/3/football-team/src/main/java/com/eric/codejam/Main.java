@@ -5,8 +5,10 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Scanner;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -191,11 +193,61 @@ public class Main {
             }
             
             log.debug("Root node {}", rootNode);
+            Main.traverseTree(rootNode);
+            
         }
 
         m.grid = grid;
 
         return m;
+    }
+    
+    private static int traverseTree(Node root) {
+        List<Node> toProcess = new ArrayList<>();
+        Map<Integer, Integer> coloring = new HashMap<>();
+        
+        toProcess.add(root);
+        
+        while(toProcess.size() > 0) {
+            Node<List<Integer>> n = toProcess.remove(0);
+            
+            boolean[] colorsTaken = new boolean[3];
+            //check
+            for(int i = 0; i < n.data.size(); ++i) {
+                Integer player = n.data.get(i);
+                Integer color = coloring.get(player);
+                if (colorsTaken[color]) {
+                    return 4;
+                }
+                colorsTaken[color] = true;
+            }
+            //assign colors
+            for(int i = 0; i < n.data.size(); ++i) {
+                Integer player = n.data.get(i);
+                Integer color = coloring.get(player);
+                if (color == null) {
+                    for(int colorChoice = 0; colorChoice < 3; ++colorChoice) {
+                        if (!colorsTaken[colorChoice]) {
+                            colorsTaken[colorChoice] = true;
+                            coloring.put(player, colorChoice);
+                            continue;
+                        }
+                    }
+                }
+                colorsTaken[color] = true;
+            }
+            
+            if (n.lhs != null) {
+                toProcess.add(0, n.lhs);
+            }
+            
+            if (n.rhs != null) {
+                toProcess.add(n.rhs);
+            }
+        }
+                
+        
+        return 3;
     }
 
     public Main() {
