@@ -5,23 +5,17 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eric.codejam.utils.CombinationIterator;
 import com.eric.codejam.utils.Grid;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Range;
-import com.google.common.collect.Ranges;
 import com.google.common.collect.Sets;
 
 public class Main {
@@ -358,153 +352,9 @@ public class Main {
 
 	}
 
-	private static List<Node<List<Integer>>> buildTriangles(
-			List<Integer> players, List<Integer> playersSameRow) {
 
-		List<Node<List<Integer>>> ret = new ArrayList<>();
-		log.debug("Build triangles");
 
-		if (playersSameRow.size() == 2) {
-			Preconditions.checkState(players.size() == 1);
-			List<Integer> triangle = Arrays.asList(playersSameRow.get(0),
-					players.get(0), playersSameRow.get(1));
-			Node<List<Integer>> node = new Node<List<Integer>>(triangle);
-			log.debug("Built triangle {}", triangle);
-			ret.add(node);
-			return ret;
-		}
-
-		for (int i = 0; i <= players.size() - 2; ++i) {
-			List<Integer> triangle = Arrays.asList(players.get(i),
-					players.get(i + 1), playersSameRow.get(0));
-			Node<List<Integer>> node = new Node<List<Integer>>(triangle);
-			log.debug("Built triangle {}", triangle);
-			ret.add(node);
-			if (ret.size() > 1) {
-				ret.get(ret.size() - 2).lhs = node;
-			}
-		}
-
-		return ret;
-	}
-
-	private static void attachNodeIfNeeded(int branchIndex,
-			List<Node<List<Integer>>> lastNode, Node<List<Integer>> node) {
-		// Is it attatched / branched to the tree or not?
-		if (lastNode.get(branchIndex) == null) {
-			// non attatched
-
-			Node<List<Integer>> bottomNode = branchIndex > 0 ? lastNode
-					.get(branchIndex - 1) : null;
-			Node<List<Integer>> topNode = branchIndex < Main.MAX_HEIGHT - 1 ? lastNode
-					.get(branchIndex + 1) : null;
-
-			if (topNode == null && bottomNode == null) {
-				// stays non attached
-			} else if (bottomNode == null
-					|| Collections.max(topNode.data) > Collections
-							.max(bottomNode.data)) {
-				log.debug(
-						"Attaching node with triangle {} above with triangle {}",
-						node.data, topNode.data);
-				topNode.rhs = node;
-			} else {
-				log.debug(
-						"Attaching node with triangle {} below with triangle {}",
-						node.data, bottomNode.data);
-				bottomNode.rhs = node;
-			}
-		} else {
-			// attached, just need to add to currenty node
-			lastNode.get(branchIndex).lhs = node;
-		}
-
-		log.debug("Branch index {} now has node {}", branchIndex, node.data);
-		lastNode.set(branchIndex, node);
-	}
-
-	private static void handleFindMatches(
-			List<List<List<Integer>>> unmatchedPlayers, int y,
-			List<Node<List<Integer>>> lastNode,
-			List<Node<List<Integer>>> rootNodeList) {
-
-		// either 2 above, 1 same row or 1 above 2 same row
-		List<Integer> playersSameRow = unmatchedPlayers.get(y).get(1);
-		List<Integer> playersAbove = unmatchedPlayers.get(y).get(2);
-		List<Integer> playersBelow = unmatchedPlayers.get(y).get(0);
-
-		Preconditions.checkArgument(playersSameRow.size() >= 1);
-
-		if (playersAbove.size() > 0) {
-			List<Node<List<Integer>>> nodes = buildTriangles(playersAbove,
-					playersSameRow);
-			if (nodes.size() > 0) {
-				if (rootNodeList.size() == 0) {
-					rootNodeList.add(nodes.get(0));
-				}
-				attachNodeIfNeeded(y, lastNode, nodes.get(nodes.size() - 1));
-			}
-		}
-
-		if (playersBelow.size() > 0) {
-			List<Node<List<Integer>>> nodes = buildTriangles(playersBelow,
-					playersSameRow);
-			if (nodes.size() > 0) {
-				if (rootNodeList.size() == 0) {
-					rootNodeList.add(nodes.get(0));
-				}
-				attachNodeIfNeeded(y - 1, lastNode, nodes.get(nodes.size() - 1));
-			}
-		}
-
-	}
-
-	private static int traverseTree(Node root) {
-		List<Node> toProcess = new ArrayList<>();
-		Map<Integer, Integer> coloring = new HashMap<>();
-
-		toProcess.add(root);
-
-		while (toProcess.size() > 0) {
-			Node<List<Integer>> n = toProcess.remove(0);
-
-			boolean[] colorsTaken = new boolean[3];
-			// check
-			for (int i = 0; i < n.data.size(); ++i) {
-				Integer player = n.data.get(i);
-				Integer color = coloring.get(player);
-				if (colorsTaken[color]) {
-					return 4;
-				}
-				colorsTaken[color] = true;
-			}
-			// assign colors
-			for (int i = 0; i < n.data.size(); ++i) {
-				Integer player = n.data.get(i);
-				Integer color = coloring.get(player);
-				if (color == null) {
-					for (int colorChoice = 0; colorChoice < 3; ++colorChoice) {
-						if (!colorsTaken[colorChoice]) {
-							colorsTaken[colorChoice] = true;
-							coloring.put(player, colorChoice);
-							continue;
-						}
-					}
-				}
-				colorsTaken[color] = true;
-			}
-
-			if (n.lhs != null) {
-				toProcess.add(0, n.lhs);
-			}
-
-			if (n.rhs != null) {
-				toProcess.add(n.rhs);
-			}
-		}
-
-		return 3;
-	}
+	
 
 	public Main() {
 
