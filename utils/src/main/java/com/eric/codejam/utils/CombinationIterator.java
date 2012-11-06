@@ -2,12 +2,12 @@ package com.eric.codejam.utils;
 
 import java.util.Iterator;
 
-final class CombinationsIterator implements Iterator<Long> {
+final public class CombinationIterator implements Iterator<Long> {
                 private int n;
                 private int k;
                 private long next;
 
-                public CombinationsIterator(int n, int k) {
+                public CombinationIterator(int n, int k) {
                         this.n = n;
                         this.k = k;
                         next = (1L << k) - 1;
