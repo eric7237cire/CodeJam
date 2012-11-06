@@ -100,6 +100,21 @@ public class Graph<GraphNode> {
     	}
     }
     
+    public void removeNode(GraphNode toRemove) {
+    	if (!edges.containsKey(toRemove)) {
+    		return;
+    	}
+    	Set<GraphNode> connections  = edges.get(toRemove);
+    	
+    	for(GraphNode gn : connections) {
+			edges.get(gn).remove(toRemove);
+		}
+    	
+    	edges.remove(toRemove);
+		log.debug("Removing gn {}", toRemove);
+		
+    }
+    
     public Set<GraphNode> getConnectedGraphNodes(GraphNode a) {
         return edges.get(a);
     }

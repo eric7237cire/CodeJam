@@ -153,10 +153,31 @@ public class Main {
 			players = new ArrayList<Integer>(g.getNodes());
 			Collections.sort(players);
 			
-			int[] partialSolutionArray = partialSolution(g, players);
+			int[] partialSolutionArray = null;
+			
+			while(players.size() > 0) {
+				
+				partialSolutionArray = partialSolution(g, players);
 
-			if (partialSolutionArray == null) {
-				return 4;
+				if (partialSolutionArray == null) {
+					return 4;
+				}
+				
+				boolean found = false;
+				for(int i = 0; i < partialSolutionArray.length; ++i) {
+					if (partialSolutionArray[i] != 0) {
+						g.removeNode(players.get(i));
+						found = true;
+					}
+				}
+				
+				if (!found) {
+					break;
+				}
+				
+				players = new ArrayList<Integer>(g.getNodes());
+				Collections.sort(players);
+			
 			}
 
 			re = backtrack(new int[0], partialSolutionArray, 3, g, players);
@@ -206,6 +227,8 @@ public class Main {
 			if (seenTriangles.contains(coloredVertices)) {
 				continue;
 			}
+			
+			log.debug("Processing triangle {}", coloredVertices);
 
 			seenTriangles.add(coloredVertices);
 
