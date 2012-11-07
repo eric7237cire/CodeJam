@@ -147,6 +147,31 @@ public class AppTest {
         
     }
 	
+	@Test
+    public void testSubtract2() {
+        
+        
+        
+        for (int lb = 2; lb <= 999; ++lb) {
+            for(int up = lb+1; up <= 1000; ++up) {
+                Interval small = BruteForce.createInterval(1, lb-1);
+                Interval big = BruteForce.createInterval(1, up);
+                
+                Interval sub = Interval.subtract(small, big);
+                Interval check = BruteForce.createInterval(lb, up);
+                
+               // log.debug("{}", c);
+                assertEquals("Fail " + lb + " small \n " +
+               small + " big \n " + big + "\n good \n" + check
+                        + "\n bad\n" + sub,check, sub);    
+            }
+            
+            
+        }
+        
+        
+    }
+	
 	
 	public void testFixedRanges() {
 	     int size = 10;

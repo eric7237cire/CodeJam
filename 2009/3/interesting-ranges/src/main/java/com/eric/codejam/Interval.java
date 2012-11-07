@@ -110,10 +110,10 @@ public class Interval {
         
         if (!lhs.isEvenSpanning && !big.isEvenSpanning) {
             total.isEvenSpanning = true;
-            total.evenLeft = big.evenLeft - lhs.evenLeft;
+            total.evenLeft = big.oddLeft - lhs.oddLeft;
             total.evenRight = big.evenRight - lhs.evenRight;
             
-            total.oddLeft = big.oddLeft - lhs.evenLeft;
+            total.oddLeft = big.evenLeft - lhs.evenLeft;
             total.oddRight = big.oddRight - lhs.oddRight;
         }
         
