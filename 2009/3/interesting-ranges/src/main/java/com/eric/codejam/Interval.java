@@ -91,13 +91,12 @@ public class Interval {
         
         if (lhs.isEvenSpanning && !big.isEvenSpanning) {
             total.isEvenSpanning = false;
-            total.evenLeft = lhs.evenLeft + big.evenLeft;
-            total.evenRight = lhs.oddLeft + big.evenRight;
+            total.evenLeft = big.evenLeft - lhs.evenLeft;
+            total.evenRight = big.evenRight - lhs.oddLeft;
            
-            total.totalEven = lhs.totalEven + big.totalEven + lhs.oddRight * big.oddLeft + lhs.evenRight * big.evenLeft;
-            total.oddLeft = lhs.oddLeft + big.oddLeft;
-            total.oddRight = lhs.evenRight + big.oddRight; 
-                    //lhs.oddRight * rhs.oddRight;
+            total.oddLeft = big.oddLeft - lhs.oddLeft;
+            total.oddRight = big.oddRight - lhs.evenRight; 
+
         }
         
         if (!lhs.isEvenSpanning && big.isEvenSpanning) {

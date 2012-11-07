@@ -22,6 +22,12 @@ public class BruteForce {
         
         return range;
     }
+    /**
+     * How many palin in a range
+     * @param lb
+     * @param up
+     * @return
+     */
     public static int countPalin(int lb, int up) {
         int count = 0;
         int countBlanks = 0;
@@ -44,6 +50,14 @@ public class BruteForce {
          return s.endsWith(StringUtils.reverse(s.substring(0, s.length() / 2)));
              
     }
+    
+    /**
+     * How many even # palin ranges
+     * @param l
+     * @param r
+     * @param countEven
+     * @return
+     */
     public static int countTotal(int l, int r, boolean countEven) {
         int ret = 0;
         int rangeCount = 0;
@@ -68,7 +82,7 @@ public class BruteForce {
             }
         }
         
-        log.debug("Range count {} l {} r {}", rangeCount, l, r);
+        //log.debug("Range count {} l {} r {}", rangeCount, l, r);
         return ret;
     }
     

@@ -150,20 +150,27 @@ public class AppTest {
 	@Test
     public void testSubtract2() {
         
+	    int TEST_UPPER = 200;
+	    
+	    Interval[] cacheInt = new Interval[TEST_UPPER+1];
+        for(int i = 1; i <= TEST_UPPER; ++i) {
+            Interval small = BruteForce.createInterval(1, i);
+            cacheInt[i] = small;
+        }
         
-        
-        for (int lb = 2; lb <= 999; ++lb) {
-            for(int up = lb+1; up <= 1000; ++up) {
-                Interval small = BruteForce.createInterval(1, lb-1);
-                Interval big = BruteForce.createInterval(1, up);
+        for (int lb = 2; lb <= 99; ++lb) {
+            for(int up = lb+1; up <= 200; ++up) {
+                Interval small = cacheInt[lb-1];
+                Interval big = cacheInt[up];
                 
                 Interval sub = Interval.subtract(small, big);
-                Interval check = BruteForce.createInterval(lb, up);
+               // Interval check = BruteForce.createInterval(lb, up);
+                int checkCount = BruteForce.countTotal(lb,up,true);
                 
                // log.debug("{}", c);
                 assertEquals("Fail " + lb + " small \n " +
-               small + " big \n " + big + "\n good \n" + check
-                        + "\n bad\n" + sub,check, sub);    
+               small + " big \n " + big + "\n"  
+                        + "\n bad\n" + sub,checkCount, sub.totalEven);    
             }
             
             
