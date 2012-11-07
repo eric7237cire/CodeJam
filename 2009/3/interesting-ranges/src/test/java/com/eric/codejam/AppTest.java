@@ -99,6 +99,31 @@ public class AppTest {
 
 	}
 
+	@Test 
+	public void testCountRange() {
+	    int c = BruteForce.countTotal(10, 99,true);
+	    
+	    Interval beforeFirstPalin = new Interval(10);
+	    
+	    Interval palin = new Interval(1);
+	    Interval empties = Interval.createEmpty(10);
+	    
+	    Interval total = beforeFirstPalin;
+	    assertEquals(BruteForce.countTotal(10, 10,true), total.totalEven);
+	    for(int i = 0; i < 8; ++i) {
+	        total = Interval.combin(total, palin);
+	        total = Interval.combin(total, empties);
+	        
+	        if (i==0) {
+	            assertEquals(BruteForce.countTotal(10, 21,true), total.totalEven);
+	        }
+	    }
+	    
+	    total = Interval.combin(total, palin);
+	    
+	    assertEquals(c, total.totalEven);
+	    
+	}
 	@Test
 	public void testIntervalSingle() {
 	    Interval i1 = new Interval(10);
@@ -150,7 +175,7 @@ public class AppTest {
 	@Test
     public void testSubtract2() {
         
-	    int TEST_UPPER = 200;
+	    int TEST_UPPER = 20;
 	    
 	    Interval[] cacheInt = new Interval[TEST_UPPER+1];
         for(int i = 1; i <= TEST_UPPER; ++i) {
@@ -158,8 +183,8 @@ public class AppTest {
             cacheInt[i] = small;
         }
         
-        for (int lb = 2; lb <= 99; ++lb) {
-            for(int up = lb+1; up <= 200; ++up) {
+        for (int lb = 2; lb <= TEST_UPPER/2; ++lb) {
+            for(int up = lb+1; up <= TEST_UPPER; ++up) {
                 Interval small = cacheInt[lb-1];
                 Interval big = cacheInt[up];
                 
@@ -213,7 +238,7 @@ public class AppTest {
 	        log.debug(BruteForce.createInterval(100, i).toString());
 	    }
 	    
-	    BruteForce.countPalin(1, 1000);
+	    //BruteForce.countPalin(1, 1000);
 	    assertEquals(intsUnit[0], intsUnit[3]);
 	}
 

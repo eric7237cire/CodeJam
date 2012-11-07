@@ -32,6 +32,18 @@ public class Interval {
         }
     }
     
+    static Interval createEmpty(int space) {
+        Interval ret = new Interval();
+        ret.totalEven = space * (space+1) / 2;
+        ret.oddRight= 0;
+        ret.oddLeft = 0;
+        ret.evenRight=space;
+        ret.evenLeft = space;
+        ret.isEvenSpanning = true;
+        
+        return ret;
+    }
+    
     static Interval combin(Interval lhs, Interval rhs) {
         Interval total = new Interval();
         total.left = lhs.left;
