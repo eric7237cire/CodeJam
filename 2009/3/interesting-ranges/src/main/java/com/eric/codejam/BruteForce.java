@@ -16,7 +16,7 @@ public class BruteForce {
         range.evenRight = countRightEdge(lb, up, true);
         range.oddRight = countRightEdge(lb, up, false);
         range.isEvenSpanning = countPalin(lb,up) % 2 == 0;
-        range.internalEven = countTotal(lb+1,up-1,true);
+        
         range.left = lb;
         range.right = up;
         

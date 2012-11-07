@@ -16,6 +16,19 @@
       <level>DEBUG</level>
     </filter>
   </appender>
+  
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>myApp.log</file>
+    <append>false</append>
+    <encoder>
+      <pattern>%msg%n</pattern>
+    </encoder>
+  </appender>
+  
+  <logger name="com.eric.codejam.AppTest" additivity="true">
+    <appender-ref ref="FILE" />
+  </logger>
+  
   <root level="${root-level:-DEBUG}">
     <appender-ref ref="console"/>
   </root>

@@ -10,6 +10,10 @@ import org.slf4j.LoggerFactory;
 public class Main {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
+    
+    static int getNumRanges(int l, int r) {
+        return 42;
+    }
 
     public static void handleCase(int caseNumber, Scanner scanner,
             PrintStream os) {
@@ -18,7 +22,7 @@ public class Main {
 
         log.info("Starting case {}", caseNumber);
 
-        int r = 0; //BruteForce.count(m.L,  m.R);
+        int r = BruteForce.countTotal(m.L,  m.R, true);
         os.println("Case #" + caseNumber + ": " + r);
         int palin = 10;
         BruteForce.countPalin(palin, palin * 100 - 1);

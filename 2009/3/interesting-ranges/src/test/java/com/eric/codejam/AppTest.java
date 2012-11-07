@@ -101,19 +101,88 @@ public class AppTest {
 
 	@Test
 	public void testIntervalSingle() {
-	    Interval i = new Interval(10);
+	    Interval i1 = new Interval(10);
 	    Interval t_i = BruteForce.createInterval(10,10);
 	    
-	    assertEquals(t_i, i);
+	    assertEquals(t_i, i1);
 	    Interval i2 = new Interval(11);
 	    Interval t_ii = BruteForce.createInterval(11,11);
 	    
 	    assertEquals(t_ii, i2);
 	    
-	    Interval c = Interval.combin(i,i2);
+	    Interval c = Interval.combin(i1,i2);
 	    Interval c_t = BruteForce.createInterval(10, 11);
 	    
 	    assertEquals(c_t, c);
+	    
+	    for (int i = 12; i <= 62; ++i) {
+	        c = Interval.combin(c,new Interval(i));
+            c_t = BruteForce.createInterval(10, i);
+            
+           // log.debug("{}", c);
+            assertEquals("Fail " + i + " good \n" + c_t + "\n bad\n" + c,c_t, c);
+	    }
+        
+        
+	}
+	
+	@Test
+    public void testSubtract() {
+        
+        
+	    Interval big = BruteForce.createInterval(1, 100);
+	    
+        for (int i = 1; i <= 99; ++i) {
+            
+            Interval small = BruteForce.createInterval(1, i);
+            
+            Interval diff = Interval.subtract(small, big);
+            Interval check = BruteForce.createInterval(i+1, 100);
+            
+           // log.debug("{}", c);
+            assertEquals("Fail " + i + " small \n " + small + " big \n " + big + "\n good \n" + check
+                    + "\n bad\n" + diff,check, diff);
+        }
+        
+        
+    }
+	
+	
+	public void testFixedRanges() {
+	     int size = 10;
+	    Interval[] intsUnit = new Interval[size];
+	    for(int i = 0; i < size; i++) {
+	        intsUnit[i] = BruteForce.createInterval(i, i);
+	        log.debug(intsUnit[i].toString());
+	    }
+	    
+	    Interval[] ints = new Interval[size];
+	    Interval[] intsNext = new Interval[size];
+	    
+	    ints = intsUnit;
+	    
+	    for(int i = 1; i < size; ++i) {
+	        Interval ii = ints[i];
+	        for(int j = 0; j< size; ++j) {
+	            ii = Interval.combin(ii, intsUnit[j]);
+	        }
+	        intsNext[i] = ii;
+	    }
+	    
+	    log.debug(BruteForce.createInterval(1, 19).toString());
+	    
+	    log.debug(BruteForce.createInterval(1, 49).toString());
+	    
+	    log.debug(BruteForce.createInterval(20, 49).toString());
+	    
+	    log.debug(BruteForce.createInterval(990, 998).toString());
+	    
+	    for(int i = 100; i <= 100; ++i) {
+	        log.debug(BruteForce.createInterval(100, i).toString());
+	    }
+	    
+	    BruteForce.countPalin(1, 1000);
+	    assertEquals(intsUnit[0], intsUnit[3]);
 	}
 
 	@Test
