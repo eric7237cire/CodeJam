@@ -54,8 +54,6 @@ public class Main {
 
 		int minCol = 1;
 
-		final int lowerBound = 0;
-		final int upperBound = MAX_HEIGHT - 1;
 
 		List<Node<List<Integer>>> lastNode = new ArrayList<>();
 
@@ -74,7 +72,7 @@ public class Main {
 		List<Integer> players = new ArrayList<>();
 
 		for (int x = 0; x < MAX_WIDTH; ++x) {
-			for (int y = lowerBound; y <= upperBound; ++y) {
+			for (int y = 0; y < MAX_HEIGHT; ++y) {
 
 				Integer player = grid.getEntry(y, x);
 
@@ -84,12 +82,12 @@ public class Main {
 
 				log.debug("Processing player {} x,y {}, {}", player, x, y);
 				players.add(player);
-				if (y < upperBound) {
+				if (y < MAX_HEIGHT - 1) {
 					// tops bottom row
 					unmatchedPlayers.get(y + 1).get(0).add(player);
 				}
 
-				if (y > lowerBound) {
+				if (y > 0) {
 					// bottoms top row
 					unmatchedPlayers.get(y - 1).get(2).add(player);
 				}
@@ -140,11 +138,13 @@ public class Main {
 
 		graph.stripNodesOfDegreeLessThan(3);
 
-		List<Graph<Integer>> connectedGraphs = graph.getAllConnectedGraphs();
+		//List<Graph<Integer>> connectedGraphs = graph.getAllConnectedGraphs();
 
-		for (Graph<Integer> g : connectedGraphs) {
+		//for (Graph<Integer> g : connectedGraphs) {
+		
+		Graph<Integer> g = graph;
 			
-			players = new ArrayList<Integer>(g.getNodes());
+			players = new ArrayList<Integer>(graph.getNodes());
 			Collections.sort(players);
 			
 			int[] partialSolutionArray = null;
@@ -165,10 +165,12 @@ public class Main {
 					}
 				}
 				
+				
+				
 				if (!found) {
 					break;
 				}
-				
+				graph.stripNodesOfDegreeLessThan(3);
 				players = new ArrayList<Integer>(g.getNodes());
 				Collections.sort(players);
 			
@@ -180,7 +182,7 @@ public class Main {
 			}
 			log.info("Re is {}", re);
 
-		}
+		//}
 
 		return 3;
 

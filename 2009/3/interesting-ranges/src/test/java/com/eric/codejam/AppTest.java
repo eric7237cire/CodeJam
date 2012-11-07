@@ -99,7 +99,22 @@ public class AppTest {
 
 	}
 
-	
+	@Test
+	public void testIntervalSingle() {
+	    Interval i = new Interval(10);
+	    Interval t_i = BruteForce.createInterval(10,10);
+	    
+	    assertEquals(t_i, i);
+	    Interval i2 = new Interval(11);
+	    Interval t_ii = BruteForce.createInterval(11,11);
+	    
+	    assertEquals(t_ii, i2);
+	    
+	    Interval c = Interval.combin(i,i2);
+	    Interval c_t = BruteForce.createInterval(10, 11);
+	    
+	    assertEquals(c_t, c);
+	}
 
 	@Test
 	public void testS1() {

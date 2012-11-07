@@ -18,7 +18,7 @@ public class Main {
 
         log.info("Starting case {}", caseNumber);
 
-        int r = BruteForce.count(m.L,  m.R);
+        int r = 0; //BruteForce.count(m.L,  m.R);
         os.println("Case #" + caseNumber + ": " + r);
         int palin = 10;
         BruteForce.countPalin(palin, palin * 100 - 1);
