@@ -15,7 +15,7 @@ public class BruteForce {
             String s = Integer.toString(i, 10);
            // log.debug("String {}", s);
             if (s.endsWith(StringUtils.reverse(s.substring(0, s.length() / 2)))) {
-                log.debug("Is palin. {}  Blanks {}", s, countBlanks);
+                log.debug("Is palin. {}.  Count {} Blanks {}", s, count, countBlanks);
                 ++count;
                 countBlanks = 0;
             } else {
@@ -24,6 +24,11 @@ public class BruteForce {
         }
         
         return count;
+    }
+    public static boolean isPalin(int i) {
+        String s = Integer.toString(i, 10);
+         return s.endsWith(StringUtils.reverse(s.substring(0, s.length() / 2)));
+             
     }
     public static int count(int l, int r) {
         int ret = 0;
@@ -41,7 +46,7 @@ public class BruteForce {
                     }
                 }
                 
-                if (count >= 0 && count % 2 == 0) {
+                if (count % 2 == 0) {
                     ++ret;
                 }
             }

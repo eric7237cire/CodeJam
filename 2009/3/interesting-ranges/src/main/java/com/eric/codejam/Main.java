@@ -20,7 +20,8 @@ public class Main {
 
         int r = BruteForce.count(m.L,  m.R);
         os.println("Case #" + caseNumber + ": " + r);
-        BruteForce.countPalin(1, 100000);
+        int palin = 10;
+        BruteForce.countPalin(palin, palin * 100 - 1);
         /*
         os.println("1-9 " + BruteForce.countPalin(1, 9));
         os.println(BruteForce.countPalin(10, 99));
