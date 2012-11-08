@@ -38,7 +38,7 @@ public class BruteForce {
             String s = Integer.toString(i, 10);
            // log.debug("String {}", s);
             if (s.endsWith(StringUtils.reverse(s.substring(0, s.length() / 2)))) {
-                log.debug("Is palin. {}.  Count {} Blanks {}", s, count, countBlanks);
+                //log.debug("Is palin. {}.  Count {} Blanks {}", s, count, countBlanks);
                 ++count;
                 countBlanks = 0;
             } else {

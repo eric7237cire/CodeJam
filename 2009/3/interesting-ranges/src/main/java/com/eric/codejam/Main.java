@@ -53,20 +53,21 @@ public class Main {
     }
     
     /**
-     * 10 ^ exp + 1 to target = 10001 - ????
+     * num*10 ^ exp + 1 to target = 10001 - ????
      * @param num
      * @param exp
      * @return
      */
     static Interval getPartialRange(int num, int exp, BigInteger target) {
-        if (num == 1) {
+        /*if (num == 1) {
             exp --;
             num = 10;
-        }
-        if (exp < 1) {
+        }*/
+        Preconditions.checkArgument(exp >= 0);
+        /*if (exp < 1) {
             Preconditions.checkArgument(BigInteger.TEN.compareTo(target) > 0);
             return BruteForce.createInterval(1, target.intValue());
-        }
+        }*/
         int totalPalinExp = exp / 2; // 9 * 10 ^ totalPalin
 
         int totalPerNum = IntMath.pow(10, totalPalinExp);
@@ -88,35 +89,38 @@ public class Main {
 
         Interval total = new Interval();
 
+        total = new Interval(BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp)).add(BigInteger.ONE));
+        total.left = BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp)).add(BigInteger.ONE);
+        total.right = total.left;
         
+        if (total.right.compareTo(target) == 0) {
+            return total;
+        } 
 
         Interval palin = new Interval(1);
 
-        for (int n = 1; n < num; ++n) {
+        for (int n = num; n <= 10; ++n) {
 
             if (n == 1) {
-                total = new Interval(1);
-                total.left = BigInteger.TEN.pow(exp).add(BigInteger.ONE);
+                
                 Preconditions.checkState(total.left.compareTo(target) <= 0);
                 
                 if (total.right.compareTo(target) == 0) {
                     return total;
                 }
-                total.right = total.left;
+          
             } else {
+                if (n > 2) {
                 // Get to first palin 1001 / 3003 / 9009 etc
-                total = Interval.combin(total, Interval.createEmpty(n - 1));
+                total = Interval.combin(total, Interval.createEmpty(Math.min(n-2,target.subtract(total.right).intValue())));
+                
                 if (total.right.compareTo(target) == 0) {
                     return total;
-                } else if (total.right.compareTo(target) > 0) {
-                    //need to go back
-                    Interval overShoot = Interval.createEmpty(total.right.subtract(target).intValue());
-                    total = Interval.subtract(overShoot, total);
-                    Preconditions.checkState(total.right.compareTo(target) == 0);
-                    return total;
-                }
+                } }
+
                 // Add first palin
                 total = Interval.combin(total, palin);
+                
                 if (total.right.compareTo(target) == 0) {
                     return total;
                 }
@@ -280,6 +284,10 @@ public class Main {
         //String upBoundStr = upBound.toString();
         int digit =  Character.digit(num.charAt(0), 10);
         int exp = num.length()-1;
+        
+        //4367
+        
+        //1 - 4000
         Interval regularInterval = Main.getFullRange(
                 Character.digit(num.charAt(0), 10), num.length()-1);
 
@@ -288,13 +296,13 @@ public class Main {
         Preconditions.checkState(leftOverInt.compareTo(BigInteger.ZERO) >= 0);
         
         if (leftOverInt.compareTo(BigInteger.ZERO) > 0) {
-        Interval leftOver = getPartialRange(Character.digit(num.charAt(0), 10), num.length(), numInt);
+        Interval leftOver = getPartialRange(Character.digit(num.charAt(0), 10), num.length()-1, numInt);
         
         //
         
         //Preconditions.checkState(leftOver.compareTo(BigInteger.ZERO) >= 0);
         
-        Interval total = Interval.combin(leftOver, regularInterval);
+        Interval total = Interval.combin(regularInterval, leftOver);
 
         return total; 
         } else {

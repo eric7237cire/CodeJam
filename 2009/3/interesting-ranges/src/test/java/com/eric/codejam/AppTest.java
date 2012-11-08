@@ -114,12 +114,14 @@ public class AppTest {
 	
 	@Test
 	public void testMainMethod() {
-	    Interval i1 = BruteForce.createInterval(1, 1);
-	    Interval i2 = BruteForce.createInterval(1, 10);
-	    Interval i3 = Interval.combin(i1, i2);
+	    //Interval i1 = BruteForce.createInterval(1, 1);
+	    Interval i2 = BruteForce.createInterval(1, 20);
+	    Interval i5 = BruteForce.createInterval(21, 22);
+	    Interval i3 = Interval.combin(i2, i5);
 	    
-	    Interval i4 = Main.calc(new BigInteger("10"));
+	    Interval i4 = Main.calc(new BigInteger("22"));
 	    for(int i = 1; i < 200; ++i) {
+	        log.debug("i is {}", i);
 	        BigInteger check = BruteForce.countTotal(1, i, true);
 	        Interval intv = Main.calc(BigInteger.valueOf(i));
 	        assertEquals("Failed at " + i, check, intv.totalEven);
