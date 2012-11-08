@@ -3,6 +3,7 @@ package com.eric.codejam;
 import java.math.BigInteger;
 import java.util.Objects;
 
+import com.google.common.base.Preconditions;
 import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
 
@@ -69,6 +70,7 @@ public class Interval {
 
     static Interval createEmpty(int space) {
         Interval ret = new Interval();
+        Preconditions.checkArgument(space > 0);
         ret.size = BigInteger.valueOf(space);
         ret.totalEven = BigInteger.valueOf(space).multiply( 
                 BigInteger.valueOf(space).add(BigInteger.ONE)).divide(BigInteger.valueOf(2));
@@ -130,7 +132,8 @@ public class Interval {
     }
 
     /**
-     * 
+     *  lhs combin rhs = big
+     *  big subt   lhs = rhs
      * @param lhs
      *            smaller 1-19
      * @param big

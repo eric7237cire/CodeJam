@@ -16,6 +16,16 @@ public class Main {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
+    static BigInteger roundUp(BigInteger someInt) {
+        String s = someInt.subtract(BigInteger.ONE).toString();
+        int n = Character.digit(s.charAt(0), 10);
+        ++n;
+        
+        int exp = s.length() - 1;
+        
+        return BigInteger.valueOf(n).multiply(BigInteger.TEN.pow(exp));
+    }
+    
     /**
      * 1 to num*10^exp f(3, 4) = 1 - 30000
      * 
@@ -25,7 +35,13 @@ public class Main {
      * @param exp
      * @return
      */
-    static Interval getFullRanges(int num, final int exp) {
+    static Interval getFullRange(int num, final int exp) {
+        if (num == 1) {
+            if (exp == 0) {
+                return BruteForce.createInterval(1, 1);
+            }
+            return getFullRange(10, exp-1);
+        }
         Interval total = getRangeSlice(num, exp);
 
         for (int i = exp - 1; i >= 0; --i) {
@@ -34,6 +50,133 @@ public class Main {
         }
 
         return total;
+    }
+    
+    /**
+     * 10 ^ exp + 1 to target = 10001 - ????
+     * @param num
+     * @param exp
+     * @return
+     */
+    static Interval getPartialRange(int num, int exp, BigInteger target) {
+        if (num == 1) {
+            exp --;
+            num = 10;
+        }
+        if (exp < 1) {
+            Preconditions.checkArgument(BigInteger.TEN.compareTo(target) > 0);
+            return BruteForce.createInterval(1, target.intValue());
+        }
+        int totalPalinExp = exp / 2; // 9 * 10 ^ totalPalin
+
+        int totalPerNum = IntMath.pow(10, totalPalinExp);
+
+        int numBetween = exp % 2 == 0 ? Integer.parseInt(
+                StringUtils.repeat('9', exp / 2), 10) : Integer.parseInt("10"
+                + StringUtils.repeat('9', exp / 2));
+
+        int numBetween_10 = exp >= 2 ? Integer.parseInt("10"
+                + StringUtils.repeat('9', exp / 2 - 1)) : 0;
+        int numBetween_100 = exp >= 4 ? Integer.parseInt("10"
+                + StringUtils.repeat('9', (exp - 2) / 2 - 1)) : 0;
+        int numBetween_1000 = exp >= 6 ? Integer.parseInt("10"
+                + StringUtils.repeat('9', (exp - 4) / 2 - 1)) : 0;
+        int numBetween_10000 = exp >= 8 ? Integer.parseInt("10"
+                + StringUtils.repeat('9', (exp - 6) / 2 - 1)) : 0;
+        int numBetween_100000 = exp >= 10 ? Integer.parseInt("10"
+                + StringUtils.repeat('9', (exp - 8) / 2 - 1)) : 0;
+
+        Interval total = new Interval();
+
+        
+
+        Interval palin = new Interval(1);
+
+        for (int n = 1; n < num; ++n) {
+
+            if (n == 1) {
+                total = new Interval(1);
+                total.left = BigInteger.TEN.pow(exp).add(BigInteger.ONE);
+                Preconditions.checkState(total.left.compareTo(target) <= 0);
+                
+                if (total.right.compareTo(target) == 0) {
+                    return total;
+                }
+                total.right = total.left;
+            } else {
+                // Get to first palin 1001 / 3003 / 9009 etc
+                total = Interval.combin(total, Interval.createEmpty(n - 1));
+                if (total.right.compareTo(target) == 0) {
+                    return total;
+                } else if (total.right.compareTo(target) > 0) {
+                    //need to go back
+                    Interval overShoot = Interval.createEmpty(total.right.subtract(target).intValue());
+                    total = Interval.subtract(overShoot, total);
+                    Preconditions.checkState(total.right.compareTo(target) == 0);
+                    return total;
+                }
+                // Add first palin
+                total = Interval.combin(total, palin);
+                if (total.right.compareTo(target) == 0) {
+                    return total;
+                }
+            }
+
+            int t = 1; // already added 1
+            while (t < totalPerNum) {
+                if (t >= 100000 && t % 100000 == 0) {
+                   
+                    total = Interval.combin(total, Interval.createEmpty(Math.min(numBetween_100000,target.subtract(total.right).intValue())));
+                } else if (t >= 10000 && t % 10000 == 0) {
+                    
+                    total = Interval.combin(total, Interval.createEmpty(Math.min(numBetween_10000,target.subtract(total.right).intValue())));
+                } else if (t >= 1000 && t % 1000 == 0) {
+                    total = Interval.combin(total, Interval.createEmpty(Math.min(numBetween_1000,target.subtract(total.right).intValue())));
+                    
+ 
+                } else if (t >= 100 && t % 100 == 0) {
+                    total = Interval.combin(total,
+                            Interval.createEmpty(Math.min(numBetween_100,target.subtract(total.right).intValue())));
+                } else if (t >= 10 && (t) % 10 == 0) { // t = 11 / 21 / 31 put
+                                                       // the 10th empties
+                    total = Interval.combin(total, Interval.createEmpty(Math.min(numBetween_10,target.subtract(total.right).intValue())));
+                    
+                } else {
+                    total = Interval.combin(total, Interval.createEmpty(Math.min(numBetween,target.subtract(total.right).intValue())));
+                }
+                if (total.right.compareTo(target) == 0) {
+                    return total;
+                }
+                
+                ++t;
+                total = Interval.combin(total, palin);
+                Preconditions.checkState(BruteForce.isPalin(total.right));
+                
+                if (total.right.compareTo(target) == 0) {
+                    return total;
+                }
+            }
+
+            // Add the empty space to get to next round #
+
+            if (total.right.compareTo(target) == 0) {
+                return total;
+            } 
+            
+            BigInteger spaceNeeded = BigInteger.valueOf(n).add(BigInteger.ONE)
+                    .multiply(BigInteger.TEN.pow(exp));
+            spaceNeeded = spaceNeeded.subtract(total.right);
+
+            total = Interval.combin(total, 
+                    Interval.createEmpty(Math.min(spaceNeeded.intValue(),target.subtract(total.right).intValue())));
+
+            if (total.right.compareTo(target) == 0) {
+                return total;
+            } 
+        }
+
+        return total;
+
     }
 
     /**
@@ -72,8 +215,7 @@ public class Main {
         Interval total = new Interval();
 
         Interval empties = Interval.createEmpty(numBetween);
-        Interval emptiesTenth = Interval.createEmpty(numBetween_10);
-
+        
         Interval palin = new Interval(1);
 
         for (int n = 1; n < num; ++n) {
@@ -106,7 +248,7 @@ public class Main {
                             Interval.createEmpty(numBetween_100));
                 } else if (t >= 10 && (t) % 10 == 0) { // t = 11 / 21 / 31 put
                                                        // the 10th empties
-                    total = Interval.combin(total, emptiesTenth);
+                    total = Interval.combin(total, Interval.createEmpty(numBetween_10));
                 } else {
                     total = Interval.combin(total, empties);
                 }
@@ -130,17 +272,34 @@ public class Main {
 
     }
 
-    public static Interval calc(String num) {
-        Interval total = getRangeSlice(
-                Character.digit(num.charAt(num.length() - 1), 10), 0);
+    public static Interval calc(BigInteger numInt) {
+        Preconditions.checkArgument(numInt.compareTo(BigInteger.ZERO) > 0);
+        String num = numInt.toString();
+        
+        //BigInteger upBound = roundUp(numInt);
+        //String upBoundStr = upBound.toString();
+        int digit =  Character.digit(num.charAt(0), 10);
+        int exp = num.length()-1;
+        Interval regularInterval = Main.getFullRange(
+                Character.digit(num.charAt(0), 10), num.length()-1);
 
-        for (int i = 1; i < num.length(); ++i) {
-            Interval next = getRangeSlice(
-                    Character.digit(num.charAt(num.length() - 1 - i), 10), i);
-            total = Interval.combin(total, next);
+        BigInteger leftOverInt = numInt.subtract(BigInteger.valueOf(digit).multiply(BigInteger.TEN.pow(exp)));
+        
+        Preconditions.checkState(leftOverInt.compareTo(BigInteger.ZERO) >= 0);
+        
+        if (leftOverInt.compareTo(BigInteger.ZERO) > 0) {
+        Interval leftOver = getPartialRange(Character.digit(num.charAt(0), 10), num.length(), numInt);
+        
+        //
+        
+        //Preconditions.checkState(leftOver.compareTo(BigInteger.ZERO) >= 0);
+        
+        Interval total = Interval.combin(leftOver, regularInterval);
+
+        return total; 
+        } else {
+            return regularInterval;
         }
-
-        return total;
     }
 
     public static void handleCase(int caseNumber, Scanner scanner,
@@ -148,12 +307,19 @@ public class Main {
 
         log.info("Starting case {}", caseNumber);
 
+        Interval ans = null;
+        
         BigInteger L = scanner.nextBigInteger();
-        Interval li = calc(L.subtract(BigInteger.ONE).toString(10));
-        String R = scanner.next();
+        BigInteger R = scanner.nextBigInteger();
         Interval ri = calc(R);
-
-        Interval ans = Interval.subtract(li, ri);
+        
+        
+        if (L.compareTo(BigInteger.ONE) > 0) {
+            Interval li = calc(L.subtract(BigInteger.ONE));        
+            ans = Interval.subtract(li, ri);
+        } else {
+            ans = ri;
+        }
 
         // BigInteger r = BruteForce.countTotal(m.L, m.R, true);
         os.println("Case #" + caseNumber + ": "

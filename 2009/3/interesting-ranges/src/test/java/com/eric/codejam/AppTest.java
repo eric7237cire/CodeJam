@@ -100,16 +100,28 @@ public class AppTest {
 
 	}
 	
+	@Test 
+	public void testRoundUp() {
+	    assertEquals(new BigInteger("600"), Main.roundUp(new BigInteger("547")));
+	    assertEquals(new BigInteger("20000"), Main.roundUp(new BigInteger("10005")));
+	    
+	    assertEquals(new BigInteger("1"), Main.roundUp(new BigInteger("1")));
+	    
+	    assertEquals(new BigInteger("100"), Main.roundUp(new BigInteger("99")));
+	    
+	    assertEquals(new BigInteger("90000"), Main.roundUp(new BigInteger("90000")));
+	}
+	
 	@Test
 	public void testMainMethod() {
 	    Interval i1 = BruteForce.createInterval(1, 1);
 	    Interval i2 = BruteForce.createInterval(1, 10);
 	    Interval i3 = Interval.combin(i1, i2);
 	    
-	    Interval i4 = Main.calc("11");
+	    Interval i4 = Main.calc(new BigInteger("10"));
 	    for(int i = 1; i < 200; ++i) {
 	        BigInteger check = BruteForce.countTotal(1, i, true);
-	        Interval intv = Main.calc(Integer.toString(i));
+	        Interval intv = Main.calc(BigInteger.valueOf(i));
 	        assertEquals("Failed at " + i, check, intv.totalEven);
 	    }
 	}
@@ -118,24 +130,24 @@ public class AppTest {
 	public void testFullRangeSmall() {
 	    int exp = 0;
         //1 - 2 until 1 - 10
-        for(int num = 2; num <= 10; ++num) {
-            Interval intv = Main.getFullRanges(num, exp);
+        for(int num = 1; num <= 10; ++num) {
+            Interval intv = Main.getFullRange(num, exp);
             Interval check = BruteForce.createInterval(1, num);
             assertEquals("Num " + num, check, intv);
         }
         
         exp = 1;
         //1 - 20 until 1 - 100
-        for(int num = 2; num <= 10; ++num) {
-            Interval intv = Main.getFullRanges(num, exp);
+        for(int num = 1; num <= 10; ++num) {
+            Interval intv = Main.getFullRange(num, exp);
             Interval check = BruteForce.createInterval(1, 10*num);
             assertEquals("\nGood\n" + check + "\nBad\n" + intv + " num " + num + " exp " + exp, check, intv);
         }
         
         exp = 2;
         //1 - 200 until 1 - 1000
-        for(int num = 2; num <= 10; ++num) {
-            Interval intv = Main.getFullRanges(num, exp);
+        for(int num = 1; num <= 10; ++num) {
+            Interval intv = Main.getFullRange(num, exp);
             Interval check = BruteForce.createInterval(1, 100*num);
             assertEquals("\nGood\n" + check + "\nBad\n" + intv + " num " + num + " exp " + exp, check, intv);
         }
@@ -372,6 +384,8 @@ public class AppTest {
 	   
 	    @Test
 	    public void testS3() {
+	        
+	        
 	        String testCase = testData.get("s3");
 
 	        int output = Integer.parseInt(extractAns(getOutput(testCase)));
