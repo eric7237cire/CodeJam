@@ -4,15 +4,81 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.math.IntMath;
 
 public class Main {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
     
-    static int getNumRanges(int l, int r) {
-        return 42;
+    /**
+     * 10 ^ exp  to num*10^exp
+     * exp = 3
+     * 1000 to 9999
+     * @param num
+     * @param exp
+     * @return
+     */
+    static Interval getNumRanges(int num, int exp) {
+        if (exp < 2) {
+            return exp == 1 ?
+                    BruteForce.createInterval(10, 10*num+9)
+                    : BruteForce.createInterval(1, num);
+        }
+        int totalPalinExp = exp / 2; // 9 * 10 ^ totalPalin
+        
+        int totalPerNum = IntMath.pow(10, totalPalinExp);
+        
+        int numBetween = exp % 2 == 0 ? Integer.parseInt(StringUtils.repeat('9', exp / 2), 10)
+                : Integer.parseInt("10" +  StringUtils.repeat('9', exp / 2));
+        
+        int numBetweenExcep = Integer.parseInt("10" + StringUtils.repeat('9', exp / 2 - 1));
+        
+        Interval beforeFirstPalin = new Interval(10);
+        beforeFirstPalin.left = IntMath.pow(10, exp);
+        beforeFirstPalin.right = beforeFirstPalin.left;
+        
+        Interval palin = new Interval(1);
+        
+        Interval empties = Interval.createEmpty(numBetween);
+        Interval emptiesTenth = Interval.createEmpty(numBetweenExcep);
+        
+        Interval total = beforeFirstPalin;
+        
+        for(int n = 1; n < num; ++n) {
+            //Get to first palin  1001 / 3003 / 9009 etc
+            total = Interval.combin(total, Interval.createEmpty(n-1));
+            
+            //Add first palin
+            total = Interval.combin(total, palin);
+            
+            int t = 1; //already added 1
+            while(t < totalPerNum ) {
+                if ( t>10 && (t-1)%10 == 0) { //t = 11 / 21 / 31 put the 10th empties
+                    total = Interval.combin(total, emptiesTenth);
+                } else {
+                    total = Interval.combin(total, empties);
+                }
+                ++t;
+                total = Interval.combin(total, palin);                
+            }
+            
+            //Add the empty space to get to next round #
+            
+            int spaceNeeded = (n+1) * IntMath.pow(10, exp);
+            spaceNeeded -= total.right;
+            
+            total = Interval.combin(total, Interval.createEmpty(spaceNeeded));
+            
+            
+        }
+        
+        
+        return total;
+        
     }
 
     public static void handleCase(int caseNumber, Scanner scanner,

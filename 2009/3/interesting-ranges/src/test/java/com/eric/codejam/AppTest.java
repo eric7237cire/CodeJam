@@ -100,7 +100,19 @@ public class AppTest {
 	}
 
 	@Test 
-	public void testCountRange() {
+    public void testCountRange() {
+	    BruteForce.countPalin(1, 100000);
+	    
+	    Interval check = BruteForce.createInterval(100, 200);
+	    
+	    Interval i = Main.getNumRanges(2, 2);
+	    
+	    assertEquals(check, i);
+	}
+	
+	@Test 
+	public void testCountRangeSmall() {
+	    
 	    int c = BruteForce.countTotal(10, 99,true);
 	    
 	    Interval beforeFirstPalin = new Interval(10);

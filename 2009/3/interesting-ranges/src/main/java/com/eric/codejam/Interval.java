@@ -11,6 +11,7 @@ public class Interval {
     
     int left;
     int right;
+    int size; //right + left - 1
     
     Interval() {
         
@@ -18,6 +19,7 @@ public class Interval {
     Interval(int i) {
         left = i;
         right = i;
+        size = 1;
         if (BruteForce.isPalin(i)) {
             isEvenSpanning = false;
            
@@ -34,6 +36,7 @@ public class Interval {
     
     static Interval createEmpty(int space) {
         Interval ret = new Interval();
+        ret.size = space;
         ret.totalEven = space * (space+1) / 2;
         ret.oddRight= 0;
         ret.oddLeft = 0;
@@ -47,7 +50,7 @@ public class Interval {
     static Interval combin(Interval lhs, Interval rhs) {
         Interval total = new Interval();
         total.left = lhs.left;
-        total.right = rhs.right;
+        total.right = lhs.right + rhs.size;
         
         if (lhs.isEvenSpanning && !rhs.isEvenSpanning) {
             total.isEvenSpanning = false;
@@ -152,10 +155,8 @@ public class Interval {
         result = prime * result + evenRight;
        // result = prime * result + internalEven;
         result = prime * result + (isEvenSpanning ? 1231 : 1237);
-        result = prime * result + left;
         result = prime * result + oddLeft;
         result = prime * result + oddRight;
-        result = prime * result + right;
         result = prime * result + totalEven;
         return result;
     }
@@ -178,13 +179,9 @@ public class Interval {
         
         if (isEvenSpanning != other.isEvenSpanning)
             return false;
-        if (left != other.left)
-            return false;
         if (oddLeft != other.oddLeft)
             return false;
         if (oddRight != other.oddRight)
-            return false;
-        if (right != other.right)
             return false;
         if (totalEven != other.totalEven)
             return false;
