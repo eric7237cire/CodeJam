@@ -13,10 +13,10 @@ public class BruteForce {
     public static Interval createInterval(int lb, int up) {
         Interval range = new Interval();
         range.totalEven = countTotal(lb, up, true);
-        range.evenLeft = countLeftEdge(lb, up, true);
-        range.oddLeft = countLeftEdge(lb, up, false);
-        range.evenRight = countRightEdge(lb, up, true);
-        range.oddRight = countRightEdge(lb, up, false);
+        range.evenLeft = BigInteger.valueOf(countLeftEdge(lb, up, true));
+        range.oddLeft = BigInteger.valueOf(countLeftEdge(lb, up, false));
+        range.evenRight = BigInteger.valueOf(countRightEdge(lb, up, true));
+        range.oddRight = BigInteger.valueOf( countRightEdge(lb, up, false));
         range.isEvenSpanning = countPalin(lb,up) % 2 == 0;
         
         range.left = BigInteger.valueOf(lb);
@@ -123,7 +123,7 @@ public class BruteForce {
             }
         
         
-        log.debug("Range odd count {} l {} r {}", rangeCount, l, r);
+        //log.debug("Range odd count {} l {} r {}", rangeCount, l, r);
         return ret;
     }
     

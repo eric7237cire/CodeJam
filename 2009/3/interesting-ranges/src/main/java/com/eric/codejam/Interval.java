@@ -10,10 +10,10 @@ import com.google.common.math.LongMath;
 public class Interval {
 
     BigInteger totalEven;
-    int oddRight;
-    int oddLeft;
-    int evenRight;
-    int evenLeft;
+    BigInteger oddRight;
+    BigInteger oddLeft;
+    BigInteger evenRight;
+    BigInteger evenLeft;
     boolean isEvenSpanning;
 
     BigInteger left;
@@ -24,6 +24,11 @@ public class Interval {
         left = BigInteger.ZERO;
         right = BigInteger.ZERO;
         size = BigInteger.ZERO;
+        
+        oddRight = BigInteger.ZERO;
+        oddLeft = BigInteger.ZERO;
+        evenRight = BigInteger.ZERO;
+        evenLeft = BigInteger.ZERO;
         
         totalEven = BigInteger.ZERO;
     }
@@ -37,14 +42,14 @@ public class Interval {
             totalEven = BigInteger.ZERO;
             size = BigInteger.ONE;
             
-            oddRight = 1;
-            oddLeft = 1;
+            oddRight = BigInteger.ONE;
+            oddLeft = BigInteger.ONE;
         } else {
             isEvenSpanning = true;
             totalEven = BigInteger.ONE;
             size = BigInteger.ONE;
-            evenLeft = 1;
-            evenRight = 1;
+            evenLeft = BigInteger.ONE;
+            evenRight = BigInteger.ONE;
         }
     }
     
@@ -57,14 +62,14 @@ public class Interval {
             totalEven = BigInteger.ZERO;
             size = BigInteger.ONE;
             
-            oddRight = 1;
-            oddLeft = 1;
+            oddRight = BigInteger.ONE;
+            oddLeft = BigInteger.ONE;
         } else {
             isEvenSpanning = true;
             totalEven = BigInteger.ONE;
             size = BigInteger.ONE;
-            evenLeft = 1;
-            evenRight = 1;
+            evenLeft = BigInteger.ONE;
+            evenRight = BigInteger.ONE;
         }
     }
 
@@ -74,10 +79,10 @@ public class Interval {
         ret.size = BigInteger.valueOf(space);
         ret.totalEven = BigInteger.valueOf(space).multiply( 
                 BigInteger.valueOf(space).add(BigInteger.ONE)).divide(BigInteger.valueOf(2));
-        ret.oddRight = 0;
-        ret.oddLeft = 0;
-        ret.evenRight = space;
-        ret.evenLeft = space;
+        ret.oddRight = BigInteger.ZERO;
+        ret.oddLeft = BigInteger.ZERO;
+        ret.evenRight = BigInteger.valueOf(space);
+        ret.evenLeft = BigInteger.valueOf(space);
         ret.isEvenSpanning = true;
 
         return ret;
@@ -90,43 +95,43 @@ public class Interval {
 
         if (lhs.isEvenSpanning && !rhs.isEvenSpanning) {
             total.isEvenSpanning = false;
-            total.evenLeft = lhs.evenLeft + rhs.evenLeft;
-            total.evenRight = lhs.oddLeft + rhs.evenRight;
-            total.oddLeft = lhs.oddLeft + rhs.oddLeft;
-            total.oddRight = lhs.evenRight + rhs.oddRight;
+            total.evenLeft = lhs.evenLeft.add(rhs.evenLeft);
+            total.evenRight = lhs.oddLeft.add(rhs.evenRight);
+            total.oddLeft = lhs.oddLeft.add(rhs.oddLeft);
+            total.oddRight = lhs.evenRight.add(rhs.oddRight);
             // lhs.oddRight * rhs.oddRight;
         }
 
         if (!lhs.isEvenSpanning && rhs.isEvenSpanning) {
             total.isEvenSpanning = false;
-            total.evenLeft = lhs.evenLeft + rhs.oddLeft;
-            total.evenRight = lhs.evenRight + rhs.evenRight;
-            total.oddLeft = lhs.oddLeft + rhs.evenLeft;
-            total.oddRight = lhs.oddRight + rhs.oddRight;
+            total.evenLeft = lhs.evenLeft.add(rhs.oddLeft);
+            total.evenRight = lhs.evenRight.add(rhs.evenRight);
+            total.oddLeft = lhs.oddLeft.add(rhs.evenLeft);
+            total.oddRight = lhs.oddRight.add(rhs.oddRight);
         }
 
         if (!lhs.isEvenSpanning && !rhs.isEvenSpanning) {
             total.isEvenSpanning = true;
-            total.evenLeft = lhs.evenLeft + rhs.oddLeft;
-            total.evenRight = lhs.oddRight + rhs.evenRight;
-            total.oddLeft = lhs.oddLeft + rhs.evenLeft;
-            total.oddRight = lhs.evenRight + rhs.oddRight;
+            total.evenLeft = lhs.evenLeft.add(rhs.oddLeft);
+            total.evenRight = lhs.oddRight.add(rhs.evenRight);
+            total.oddLeft = lhs.oddLeft.add(rhs.evenLeft);
+            total.oddRight = lhs.evenRight.add(rhs.oddRight);
         }
 
         if (lhs.isEvenSpanning && rhs.isEvenSpanning) {
             total.isEvenSpanning = true;
-            total.evenLeft = lhs.evenLeft + rhs.evenLeft;
-            total.evenRight = lhs.evenRight + rhs.evenRight;
-            total.oddLeft = lhs.oddLeft + rhs.oddLeft;
-            total.oddRight = lhs.oddRight + rhs.oddRight;
+            total.evenLeft = lhs.evenLeft.add(rhs.evenLeft);
+            total.evenRight = lhs.evenRight.add(rhs.evenRight);
+            total.oddLeft = lhs.oddLeft.add(rhs.oddLeft);
+            total.oddRight = lhs.oddRight.add(rhs.oddRight);
         }
 
         total.totalEven = lhs.totalEven
                 .add(rhs.totalEven)
-                .add(BigInteger.valueOf((LongMath.checkedMultiply(lhs.oddRight,
-                        rhs.oddLeft))))
-                .add(BigInteger.valueOf(LongMath.checkedMultiply(lhs.evenRight,
-                        rhs.evenLeft)));
+                .add(lhs.oddRight.multiply(
+                        rhs.oddLeft))
+                .add(lhs.evenRight.multiply(
+                        rhs.evenLeft));
 
         return total;
     }
@@ -147,43 +152,43 @@ public class Interval {
 
         if (lhs.isEvenSpanning && !big.isEvenSpanning) {
             total.isEvenSpanning = false;
-            total.evenLeft = big.evenLeft - lhs.evenLeft;
-            total.evenRight = big.evenRight - lhs.oddLeft;
+            total.evenLeft = big.evenLeft.subtract(lhs.evenLeft);
+            total.evenRight = big.evenRight.subtract(lhs.oddLeft);
 
-            total.oddLeft = big.oddLeft - lhs.oddLeft;
-            total.oddRight = big.oddRight - lhs.evenRight;
+            total.oddLeft = big.oddLeft.subtract(lhs.oddLeft);
+            total.oddRight = big.oddRight.subtract(lhs.evenRight);
 
         }
 
         if (!lhs.isEvenSpanning && big.isEvenSpanning) {
             total.isEvenSpanning = false;
-            total.evenLeft = big.oddLeft - lhs.oddLeft;
-            total.evenRight = big.evenRight - lhs.oddRight;
-            total.oddLeft = big.evenLeft - lhs.evenLeft;
-            total.oddRight = big.oddRight - lhs.evenRight;
+            total.evenLeft = big.oddLeft.subtract(lhs.oddLeft);
+            total.evenRight = big.evenRight.subtract(lhs.oddRight);
+            total.oddLeft = big.evenLeft.subtract(lhs.evenLeft);
+            total.oddRight = big.oddRight.subtract(lhs.evenRight);
         }
 
         if (!lhs.isEvenSpanning && !big.isEvenSpanning) {
             total.isEvenSpanning = true;
-            total.evenLeft = big.oddLeft - lhs.oddLeft;
-            total.evenRight = big.evenRight - lhs.evenRight;
+            total.evenLeft = big.oddLeft.subtract(lhs.oddLeft);
+            total.evenRight = big.evenRight.subtract(lhs.evenRight);
 
-            total.oddLeft = big.evenLeft - lhs.evenLeft;
-            total.oddRight = big.oddRight - lhs.oddRight;
+            total.oddLeft = big.evenLeft.subtract(lhs.evenLeft);
+            total.oddRight = big.oddRight.subtract(lhs.oddRight);
         }
 
         if (lhs.isEvenSpanning && big.isEvenSpanning) {
             total.isEvenSpanning = true;
-            total.evenLeft = big.evenLeft - lhs.evenLeft;
-            total.evenRight = big.evenRight - lhs.evenRight;
+            total.evenLeft = big.evenLeft.subtract(lhs.evenLeft);
+            total.evenRight = big.evenRight.subtract(lhs.evenRight);
 
-            total.oddLeft = big.oddLeft - lhs.oddLeft;
-            total.oddRight = big.oddRight - lhs.oddRight;
+            total.oddLeft = big.oddLeft.subtract(lhs.oddLeft);
+            total.oddRight = big.oddRight.subtract(lhs.oddRight);
         }
 
         total.totalEven = big.totalEven.subtract(lhs.totalEven)
-                .subtract(BigInteger.valueOf(lhs.oddRight * total.oddLeft))
-                .subtract(BigInteger.valueOf(lhs.evenRight * total.evenLeft));
+                .subtract(lhs.oddRight.multiply( total.oddLeft))
+                .subtract(lhs.evenRight.multiply(total.evenLeft));
 
         return total;
     }
