@@ -23,6 +23,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
+
 /**
  * Unit test for simple App.
  */
@@ -112,49 +114,90 @@ public class AppTest {
 	    }
 	}
 
+	@Test
+	public void testFullRangeSmall() {
+	    int exp = 0;
+        //1 - 2 until 1 - 10
+        for(int num = 2; num <= 10; ++num) {
+            Interval intv = Main.getFullRanges(num, exp);
+            Interval check = BruteForce.createInterval(1, num);
+            assertEquals("Num " + num, check, intv);
+        }
+        
+        exp = 1;
+        //1 - 20 until 1 - 100
+        for(int num = 2; num <= 10; ++num) {
+            Interval intv = Main.getFullRanges(num, exp);
+            Interval check = BruteForce.createInterval(1, 10*num);
+            assertEquals("\nGood\n" + check + "\nBad\n" + intv + " num " + num + " exp " + exp, check, intv);
+        }
+        
+        exp = 2;
+        //1 - 200 until 1 - 1000
+        for(int num = 2; num <= 10; ++num) {
+            Interval intv = Main.getFullRanges(num, exp);
+            Interval check = BruteForce.createInterval(1, 100*num);
+            assertEquals("\nGood\n" + check + "\nBad\n" + intv + " num " + num + " exp " + exp, check, intv);
+        }
+	}
+	
+	@Test 
+    public void testRangeSliceSmall() {
+	    int exp = 0;
+	    //1 - 2 until 1 - 10
+	    for(int num = 2; num <= 10; ++num) {
+	        Interval intv = Main.getRangeSlice(num, exp);
+	        Interval check = BruteForce.createInterval(1, num);
+	        assertEquals("Num " + num, check, intv);
+	    }
+	    
+	    exp = 1;
+        //11 - 20 until 11 - 100
+        for(int num = 2; num <= 10; ++num) {
+            Interval intv = Main.getRangeSlice(num, exp);
+            Interval check = BruteForce.createInterval(11, 10*num);
+            assertEquals("\nGood\n" + check + "\nBad\n" + intv + " num " + num + " exp " + exp, check, intv);
+        }
+        
+        exp = 2;
+        //101 - 200 until 101 - 1000
+        for(int num = 2; num <= 10; ++num) {
+            Interval intv = Main.getRangeSlice(num, exp);
+            Interval check = BruteForce.createInterval(101, 100*num);
+            assertEquals("\nGood\n" + check + "\nBad\n" + intv + " num " + num + " exp " + exp, check, intv);
+        }
+        
+	}
 	@Test 
     public void testCountRange() {
 	    
 	    
-	    Interval check = BruteForce.createInterval(100, 200);
+	    Interval check;
 	    
-	    Interval i = Main.getNumRanges(2, 2);
-	    assertEquals(check, i);
-	    
-	    Interval check2 = BruteForce.createInterval(201, 300);
-	    check2 = Interval.combin(check, check2);
-	    
-	    i = Main.getNumRanges(3, 2);
-	    
-	    assertEquals(check2, i);
+	    Interval check2;
 	    
 	    
-	    
-	    i = Main.getNumRanges(10, 2);
-	    assertEquals(BruteForce.countTotal(100, 1000, true), i.totalEven); 
-	    
-	    
-	    i = Main.getNumRanges(3, 3);
+	    Interval i = Main.getRangeSlice(3, 3);
 	    //assertEquals(BruteForce.countTotal(1000, 3000, true), i.totalEven);
 	    
-	    i = Main.getNumRanges(4, 3);
+	    i = Main.getRangeSlice(4, 3);
 	    
-	    i = Main.getNumRanges(4, 4);
+	    i = Main.getRangeSlice(4, 4);
 	    
-	    i = Main.getNumRanges(4, 5);
+	    i = Main.getRangeSlice(4, 5);
 	    
 	    //BruteForce.countPalin(1000000, 1300000);
 	    BruteForce.countPalin(10000000, 11001001);
 	            
-	    i = Main.getNumRanges(4, 6);
+	    i = Main.getRangeSlice(4, 6);
 	    
-	    i = Main.getNumRanges(4, 7);
+	    i = Main.getRangeSlice(4, 7);
 	    
-	    i = Main.getNumRanges(4, 7);
+	    i = Main.getRangeSlice(4, 7);
 	    
-	    i = Main.getNumRanges(4, 8);
+	    i = Main.getRangeSlice(4, 8);
 	    
-	    i = Main.getNumRanges(4, 9);
+	    i = Main.getRangeSlice(4, 9);
 	    /*
 	    i = Main.getNumRanges(4, 10);
 	    

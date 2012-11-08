@@ -22,9 +22,32 @@ public class Interval {
     Interval() {
         left = BigInteger.ZERO;
         right = BigInteger.ZERO;
+        size = BigInteger.ZERO;
+        
+        totalEven = BigInteger.ZERO;
     }
 
     Interval(int i) {
+        this();
+        
+        size = BigInteger.ONE;
+        if (BruteForce.isPalin(i)) {
+            isEvenSpanning = false;
+            totalEven = BigInteger.ZERO;
+            size = BigInteger.ONE;
+            
+            oddRight = 1;
+            oddLeft = 1;
+        } else {
+            isEvenSpanning = true;
+            totalEven = BigInteger.ONE;
+            size = BigInteger.ONE;
+            evenLeft = 1;
+            evenRight = 1;
+        }
+    }
+    
+    Interval(BigInteger i) {
         this();
         
         size = BigInteger.ONE;
