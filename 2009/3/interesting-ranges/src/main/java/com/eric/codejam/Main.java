@@ -2,6 +2,7 @@ package com.eric.codejam;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.math.BigInteger;
 import java.util.Scanner;
 
 import org.apache.commons.lang3.StringUtils;
@@ -70,10 +71,10 @@ public class Main {
             
             //Add the empty space to get to next round #
             
-            int spaceNeeded = (n+1) * IntMath.pow(10, exp);
-            spaceNeeded -= total.right;
+            BigInteger spaceNeeded = BigInteger.valueOf(n).add(BigInteger.ONE).multiply(BigInteger.TEN.pow(exp));
+            spaceNeeded = spaceNeeded.subtract( total.right );
             
-            total = Interval.combin(total, Interval.createEmpty(spaceNeeded));
+            total = Interval.combin(total, Interval.createEmpty(spaceNeeded.intValue()));
             
             
         }

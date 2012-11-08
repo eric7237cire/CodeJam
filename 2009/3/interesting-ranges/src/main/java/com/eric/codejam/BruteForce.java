@@ -1,5 +1,7 @@
 package com.eric.codejam;
 
+import java.math.BigInteger;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,15 +12,15 @@ public class BruteForce {
     
     public static Interval createInterval(int lb, int up) {
         Interval range = new Interval();
-        range.totalEven = countTotal(lb, up, true);
+        range.totalEven = BigInteger.valueOf(countTotal(lb, up, true));
         range.evenLeft = countLeftEdge(lb, up, true);
         range.oddLeft = countLeftEdge(lb, up, false);
         range.evenRight = countRightEdge(lb, up, true);
         range.oddRight = countRightEdge(lb, up, false);
         range.isEvenSpanning = countPalin(lb,up) % 2 == 0;
         
-        range.left = lb;
-        range.right = up;
+        range.left = BigInteger.valueOf(lb);
+        range.right = BigInteger.valueOf(up);
         
         return range;
     }
