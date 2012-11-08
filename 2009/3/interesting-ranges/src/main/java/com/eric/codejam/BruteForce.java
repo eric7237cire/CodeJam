@@ -12,7 +12,7 @@ public class BruteForce {
     
     public static Interval createInterval(int lb, int up) {
         Interval range = new Interval();
-        range.totalEven = BigInteger.valueOf(countTotal(lb, up, true));
+        range.totalEven = countTotal(lb, up, true);
         range.evenLeft = countLeftEdge(lb, up, true);
         range.oddLeft = countLeftEdge(lb, up, false);
         range.evenRight = countRightEdge(lb, up, true);
@@ -21,6 +21,7 @@ public class BruteForce {
         
         range.left = BigInteger.valueOf(lb);
         range.right = BigInteger.valueOf(up);
+        range.size = BigInteger.valueOf(up-lb+1);
         
         return range;
     }
@@ -53,6 +54,12 @@ public class BruteForce {
              
     }
     
+    public static boolean isPalin(BigInteger i) {
+        String s = i.toString(10);
+         return s.endsWith(StringUtils.reverse(s.substring(0, s.length() / 2)));
+             
+    }
+    
     /**
      * How many even # palin ranges
      * @param l
@@ -60,7 +67,7 @@ public class BruteForce {
      * @param countEven
      * @return
      */
-    public static int countTotal(int l, int r, boolean countEven) {
+    public static BigInteger countTotal(int l, int r, boolean countEven) {
         int ret = 0;
         int rangeCount = 0;
         boolean[] isPalin = new boolean[r-l+1];
@@ -89,7 +96,7 @@ public class BruteForce {
         }
         
         //log.debug("Range count {} l {} r {}", rangeCount, l, r);
-        return ret;
+        return BigInteger.valueOf(ret);
     }
     
     public static int countLeftEdge(int l, int r,  boolean countEven) {

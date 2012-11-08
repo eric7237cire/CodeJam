@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 import com.google.common.math.IntMath;
+import com.google.common.math.LongMath;
 
 public class Interval {
 
@@ -19,19 +20,25 @@ public class Interval {
     BigInteger size; // right + left - 1
 
     Interval() {
-
+        left = BigInteger.ZERO;
+        right = BigInteger.ZERO;
     }
 
     Interval(int i) {
+        this();
         
         size = BigInteger.ONE;
         if (BruteForce.isPalin(i)) {
             isEvenSpanning = false;
+            totalEven = BigInteger.ZERO;
+            size = BigInteger.ONE;
+            
             oddRight = 1;
             oddLeft = 1;
         } else {
             isEvenSpanning = true;
             totalEven = BigInteger.ONE;
+            size = BigInteger.ONE;
             evenLeft = 1;
             evenRight = 1;
         }
@@ -91,9 +98,9 @@ public class Interval {
 
         total.totalEven = lhs.totalEven
                 .add(rhs.totalEven)
-                .add(BigInteger.valueOf((IntMath.checkedMultiply(lhs.oddRight,
+                .add(BigInteger.valueOf((LongMath.checkedMultiply(lhs.oddRight,
                         rhs.oddLeft))))
-                .add(BigInteger.valueOf(IntMath.checkedMultiply(lhs.evenRight,
+                .add(BigInteger.valueOf(LongMath.checkedMultiply(lhs.evenRight,
                         rhs.evenLeft)));
 
         return total;
@@ -180,20 +187,13 @@ public class Interval {
         if (getClass() != obj.getClass())
             return false;
         Interval other = (Interval) obj;
-        if (evenLeft != other.evenLeft)
-            return false;
-        if (evenRight != other.evenRight)
-            return false;
-
-        if (isEvenSpanning != other.isEvenSpanning)
-            return false;
-        if (oddLeft != other.oddLeft)
-            return false;
-        if (oddRight != other.oddRight)
-            return false;
-        if (totalEven != other.totalEven)
-            return false;
-        return true;
+        return Objects.equals(evenLeft, other.evenLeft)
+            && Objects.equals(evenRight, other.evenRight)
+            &&  Objects.equals(isEvenSpanning, other.isEvenSpanning)
+            &&  Objects.equals(oddLeft, other.oddLeft)
+            &&  Objects.equals(oddRight, other.oddRight)
+            &&  Objects.equals(totalEven, other.totalEven);
+            
     }
 
     /*

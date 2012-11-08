@@ -1,12 +1,11 @@
 package com.eric.codejam;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -98,6 +97,20 @@ public class AppTest {
 		}
 
 	}
+	
+	@Test
+	public void testMainMethod() {
+	    Interval i1 = BruteForce.createInterval(1, 1);
+	    Interval i2 = BruteForce.createInterval(1, 10);
+	    Interval i3 = Interval.combin(i1, i2);
+	    
+	    Interval i4 = Main.calc("11");
+	    for(int i = 1; i < 200; ++i) {
+	        BigInteger check = BruteForce.countTotal(1, i, true);
+	        Interval intv = Main.calc(Integer.toString(i));
+	        assertEquals("Failed at " + i, check, intv.totalEven);
+	    }
+	}
 
 	@Test 
     public void testCountRange() {
@@ -115,18 +128,39 @@ public class AppTest {
 	    
 	    assertEquals(check2, i);
 	    
-	    BruteForce.countPalin(1, 100000);
 	    
-	    i = Main.getNumRanges(2, 3);
 	    
-	    assertEquals(BruteForce.countTotal(1000, 2000, true), i.totalEven); 
+	    i = Main.getNumRanges(10, 2);
+	    assertEquals(BruteForce.countTotal(100, 1000, true), i.totalEven); 
+	    
 	    
 	    i = Main.getNumRanges(3, 3);
 	    //assertEquals(BruteForce.countTotal(1000, 3000, true), i.totalEven);
 	    
 	    i = Main.getNumRanges(4, 3);
 	    
-	    i = Main.getNumRanges(4, 12);
+	    i = Main.getNumRanges(4, 4);
+	    
+	    i = Main.getNumRanges(4, 5);
+	    
+	    //BruteForce.countPalin(1000000, 1300000);
+	    BruteForce.countPalin(10000000, 11001001);
+	            
+	    i = Main.getNumRanges(4, 6);
+	    
+	    i = Main.getNumRanges(4, 7);
+	    
+	    i = Main.getNumRanges(4, 7);
+	    
+	    i = Main.getNumRanges(4, 8);
+	    
+	    i = Main.getNumRanges(4, 9);
+	    /*
+	    i = Main.getNumRanges(4, 10);
+	    
+	    i = Main.getNumRanges(4, 11);
+	    
+	    i = Main.getNumRanges(4, 12);*/
 	    //assertEquals(BruteForce.countTotal(1000, 4000, true), i.totalEven);
 	    
 	}
@@ -134,7 +168,7 @@ public class AppTest {
 	@Test 
 	public void testCountRangeSmall() {
 	    
-	    int c = BruteForce.countTotal(10, 99,true);
+	    BigInteger c = BruteForce.countTotal(10, 99,true);
 	    
 	    Interval beforeFirstPalin = new Interval(10);
 	    
@@ -223,7 +257,7 @@ public class AppTest {
                 
                 Interval sub = Interval.subtract(small, big);
                // Interval check = BruteForce.createInterval(lb, up);
-                int checkCount = BruteForce.countTotal(lb,up,true);
+                BigInteger checkCount = BruteForce.countTotal(lb,up,true);
                 
                // log.debug("{}", c);
                 assertEquals("Fail " + lb + " small \n " +
