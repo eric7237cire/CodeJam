@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.common.math.IntMath;
 
 public class Main {
@@ -63,7 +64,8 @@ public class Main {
                     total = Interval.combin(total, empties);
                 }
                 ++t;
-                total = Interval.combin(total, palin);                
+                total = Interval.combin(total, palin);
+                Preconditions.checkState(BruteForce.isPalin(total.right));
             }
             
             //Add the empty space to get to next round #

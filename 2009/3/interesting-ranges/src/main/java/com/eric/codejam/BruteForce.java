@@ -61,15 +61,19 @@ public class BruteForce {
     public static int countTotal(int l, int r, boolean countEven) {
         int ret = 0;
         int rangeCount = 0;
+        boolean[] isPalin = new boolean[r-l+1];
+        for(int i = l; i <= r; ++i) {
+            String s = Integer.toString(i, 10);
+            if (s.endsWith(StringUtils.reverse(s.substring(0, s.length() / 2)))) {
+                isPalin[i-l] = true;
+            }
+        }
         for(int lb = l; lb <= r; ++lb) {
             for(int up = lb; up <= r; ++up) {
                 rangeCount++;
                 int count = 0;
                 for(int i = lb; i <= up; ++i) {
-                    String s = Integer.toString(i, 10);
-                   // log.debug("String {}", s);
-                    if (s.endsWith(StringUtils.reverse(s.substring(0, s.length() / 2)))) {
-                        ///log.debug("Is palin");
+                    if (isPalin[i-l]) {                    
                         ++count;
                     }
                 }

@@ -101,13 +101,34 @@ public class AppTest {
 
 	@Test 
     public void testCountRange() {
-	    BruteForce.countPalin(1, 100000);
+	    
 	    
 	    Interval check = BruteForce.createInterval(100, 200);
 	    
 	    Interval i = Main.getNumRanges(2, 2);
-	    
 	    assertEquals(check, i);
+	    
+	    Interval check2 = BruteForce.createInterval(201, 300);
+	    check2 = Interval.combin(check, check2);
+	    
+	    i = Main.getNumRanges(3, 2);
+	    
+	    assertEquals(check2, i);
+	    
+	    BruteForce.countPalin(1, 100000);
+	    
+	    i = Main.getNumRanges(2, 3);
+	    
+	    assertEquals(BruteForce.countTotal(1000, 2000, true), i.totalEven); 
+	    
+	    i = Main.getNumRanges(3, 3);
+	    //assertEquals(BruteForce.countTotal(1000, 3000, true), i.totalEven);
+	    
+	    i = Main.getNumRanges(4, 3);
+	    
+	    i = Main.getNumRanges(4, 12);
+	    //assertEquals(BruteForce.countTotal(1000, 4000, true), i.totalEven);
+	    
 	}
 	
 	@Test 
