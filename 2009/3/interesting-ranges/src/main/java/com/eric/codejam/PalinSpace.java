@@ -141,6 +141,8 @@ public class PalinSpace {
             currentInt = Interval.combin(currentInt, palin);
             t = t.add(BigInteger.ONE);
             step = currentInt;
+            
+            sizeToInterval.put(currentInt.size, currentInt);
 
             //Preconditions.checkState(t.equals(BigInteger.TEN.pow(stepExp)));
 

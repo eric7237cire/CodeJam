@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.math.BigInteger;
 import java.util.Scanner;
+import java.util.SortedMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -72,7 +73,7 @@ public class Main {
         }*/
         int totalPalinExp = exp / 2; // 9 * 10 ^ totalPalin
 
-        int totalPerNum = IntMath.pow(10, totalPalinExp);
+        BigInteger totalPerNum = BigInteger.TEN.pow(totalPalinExp);
 
         /*
 1-9              (exp == 0)   -->   9
@@ -153,7 +154,7 @@ public class Main {
                     }
                 }
 
-                // Add first palin
+                // Add first palin (palin 0)
                 total = Interval.combin(total, palin);
 
                 if (total.right.compareTo(target) == 0) {
@@ -161,10 +162,38 @@ public class Main {
                 }
             }
 
-            int t = 1; // already added 1
-            while (t < totalPerNum) {
-                if (t >= 100000 && t % 100000 == 0) {
-                   
+            BigInteger t = BigInteger.ONE; // already added 1
+            while (t.compareTo(totalPerNum) < 0) {
+                
+                BigInteger leftToGo = target.subtract(total.right);
+                
+                SortedMap<BigInteger, Interval> map = palinSpace.segments.get(exp).headMap(leftToGo.add(BigInteger.ONE));
+                
+                if (!map.isEmpty()) {
+                    BigInteger chunk = palinSpace.segments.get(exp).headMap(leftToGo.add(BigInteger.ONE)).lastKey();
+                    Interval chunkInterval =  palinSpace.segments.get(exp).get(chunk);
+                
+                    total = Interval.combin(total, chunkInterval);
+                    Preconditions.checkState(BruteForce.isPalin(total.right));
+                    t = t.add(chunkInterval.palinsCovered);
+                    Preconditions.checkState(t.compareTo(BigInteger.ZERO) >= 0);
+                    Preconditions.checkState(t.compareTo(total.palinsCovered) == 0);
+                    
+                    //Handle edge case...if palincsCovered < 10, then we are done.  Sometimes the diff
+                    //between palin 9 and 10 is larger than palin 0 and 1
+                    if (chunkInterval.palinsCovered.compareTo(BigInteger.TEN) < 0) {
+                        total = Interval.combin(total, Interval.createEmpty(target.subtract(total.right)));
+                        break;
+                    }
+                } else {
+                    total = Interval.combin(total, Interval.createEmpty(target.subtract(total.right)));
+                    break;
+                }
+                
+                Preconditions.checkState(BruteForce.isPalin(total.right));
+                /*
+                
+                if (t >= 100000 && t % 100000 == 0) {                   
                     total = Interval.combin(total, Interval.createEmpty(target.subtract(total.right).min(BigInteger.valueOf(numBetween_100000))));
                 } else if (t >= 10000 && t % 10000 == 0) {
                     
@@ -189,7 +218,8 @@ public class Main {
                 
                 ++t;
                 total = Interval.combin(total, palin);
-                Preconditions.checkState(BruteForce.isPalin(total.right));
+                */
+                
                 
                 if (total.right.compareTo(target) == 0) {
                     return total;

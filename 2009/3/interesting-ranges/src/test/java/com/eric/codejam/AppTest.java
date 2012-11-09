@@ -127,6 +127,14 @@ public class AppTest {
 	        assertEquals("Failed at " + i, check, intv.totalEven);
 	    }
 	}
+	
+	@Test
+	public void testNumBetween() {
+	    assertEquals(new BigInteger("10999"), PalinSpace.calcNumBetween(7, 0));
+	    assertEquals(new BigInteger("1099"), PalinSpace.calcNumBetween(7, 1));
+	    assertEquals(new BigInteger("109"), PalinSpace.calcNumBetween(7, 2));
+	    
+	}
 
 	@Test
 	public void testPalinSpace() {
@@ -134,9 +142,31 @@ public class AppTest {
 	    
 	    Interval i = Main.palinSpace.segments.get(3).get(new BigInteger("990"));
 	    Interval check = Main.calcEvenPairRanges(new BigInteger("4005"), new BigInteger("4994"));
+	    assertEquals(check, i);
 	    
 	    i = Main.palinSpace.segments.get(6).get(new BigInteger("800080"));
         check = Main.calcEvenPairRanges(new BigInteger("5000006"), new BigInteger("5800085"));
+        assertEquals(check, i);
+        
+        i = Main.palinSpace.segments.get(7).get(new BigInteger("77000"));
+        check = Main.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("60077006"));
+        assertEquals(check, i);
+        
+        i = Main.palinSpace.segments.get(7).get(new BigInteger("200200"));
+        check = Main.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("60200206"));
+        assertEquals(check, i);
+        
+        i = Main.palinSpace.segments.get(7).get(new BigInteger("7000070"));
+        check = Main.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("67000076"));
+        assertEquals(check, i);
+        
+        i = Main.palinSpace.segments.get(7).get(new BigInteger("1000010"));
+        check = Main.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("61000016"));
+        assertEquals(check, i);
+        
+        i = Main.palinSpace.segments.get(7).get(new BigInteger("11000"));
+        check = Main.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("60011006"));
+        assertEquals(check, i);
         
         Object o = Main.palinSpace.segments.get(6);
         
