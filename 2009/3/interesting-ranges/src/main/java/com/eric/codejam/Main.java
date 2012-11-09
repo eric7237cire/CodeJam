@@ -72,10 +72,34 @@ public class Main {
 
         int totalPerNum = IntMath.pow(10, totalPalinExp);
 
+        /*
+1-9              (exp == 0)   -->   9
+10-99            (exp == 1)   -->   10
+100-999          (exp == 2)   -->   9 
+1000-9999        (exp == 3)   -->   109
+4  10000-99999    ; 900   ; 99  ; 109
+5  100000-999999  ; 900   ; 1099 ; 109
+6  1000000-999999 ; 9000  ; 999  ; 1099
+7  10000000       ; 9000  ; 10999 ; 1099
+8  100000000      ; 90000 ; 9999  ; 10999
+9  1000000000      ; 90000
+10 10000000000     ; 900000
+11 100000000000   ; 900000
+12 1000000000000  ; 9000000
+13 10000000000000  ; 9000000
+*/
         int numBetween = exp % 2 == 0 ? Integer.parseInt(
                 StringUtils.repeat('9', exp / 2), 10) : Integer.parseInt("10"
                 + StringUtils.repeat('9', exp / 2));
 
+                //numBetween 10  = 10 
+                //1 0
+                //2 -2
+                //3 -4
+                //4 -6
+                //5 -8
+                
+                
         int numBetween_10 = exp >= 2 ? Integer.parseInt("10"
                 + StringUtils.repeat('9', exp / 2 - 1)) : 0;
         int numBetween_100 = exp >= 4 ? Integer.parseInt("10"
@@ -103,24 +127,25 @@ public class Main {
 
             if (n == 1) {
                 
-                Preconditions.checkState(total.left.compareTo(target) <= 0);
-                
+                Preconditions.checkState(total.left.compareTo(target) <= 0);                
                 if (total.right.compareTo(target) == 0) {
                     return total;
-                }
-          
+                }          
             } else {
                 if (n > 2) {
-                // Get to first palin 1001 / 3003 / 9009 etc
-                total = Interval.combin(total, Interval.createEmpty( target.subtract(total.right).min(BigInteger.valueOf(n-2))));
-                
-                if (total.right.compareTo(target) == 0) {
-                    return total;
-                } }
+                    // Get to first palin 1001 / 3003 / 9009 etc
+                    total = Interval.combin(total, Interval.createEmpty(target
+                            .subtract(total.right).min(
+                                    BigInteger.valueOf(n - 2))));
+
+                    if (total.right.compareTo(target) == 0) {
+                        return total;
+                    }
+                }
 
                 // Add first palin
                 total = Interval.combin(total, palin);
-                
+
                 if (total.right.compareTo(target) == 0) {
                     return total;
                 }
