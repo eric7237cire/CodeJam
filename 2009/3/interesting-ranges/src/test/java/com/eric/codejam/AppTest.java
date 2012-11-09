@@ -129,6 +129,18 @@ public class AppTest {
 	}
 
 	@Test
+	public void testPalinSpace() {
+	    Interval i = Main.palinSpace.segments.get(3).get(new BigInteger("9"));
+	    Interval check = Main.calcEvenPairRanges(new BigInteger("4005"), new BigInteger("4994"));
+	    
+	    i = Main.palinSpace.segments.get(6).get(new BigInteger("800"));
+        check = Main.calcEvenPairRanges(new BigInteger("5000006"), new BigInteger("5800085"));
+        
+        Object o = Main.palinSpace.segments.get(6);
+        
+	    assertEquals(check, i);
+	}
+	@Test
 	public void testFullRangeSmall() {
 	    int exp = 0;
         //1 - 2 until 1 - 10

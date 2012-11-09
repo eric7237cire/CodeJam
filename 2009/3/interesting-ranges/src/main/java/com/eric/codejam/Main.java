@@ -15,6 +15,8 @@ import com.google.common.math.IntMath;
 public class Main {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
+    
+    static PalinSpace palinSpace = new PalinSpace();
 
     static BigInteger roundUp(BigInteger someInt) {
         String s = someInt.subtract(BigInteger.ONE).toString();
@@ -77,16 +79,24 @@ public class Main {
 10-99            (exp == 1)   -->   10
 100-999          (exp == 2)   -->   9 
 1000-9999        (exp == 3)   -->   109
-4  10000-99999    ; 900   ; 99  ; 109
-5  100000-999999  ; 900   ; 1099 ; 109
-6  1000000-999999 ; 9000  ; 999  ; 1099
-7  10000000       ; 9000  ; 10999 ; 1099
-8  100000000      ; 90000 ; 9999  ; 10999
-9  1000000000      ; 90000
-10 10000000000     ; 900000
-11 100000000000   ; 900000
-12 1000000000000  ; 9000000
-13 10000000000000  ; 9000000
+10000-99999      (exp == 4)   -->   99
+100000-99..      (exp == 5)   -->   1099  
+1000000-999      (exp == 6)   -->   999  
+10000000-99      (exp == 7)   -->   10999 
+100000000-99      (exp == 8)   -->  9999  
+....             (exp == 9)   -->   109999
+                 (exp == 10)   -->  99999
+                (exp == 11)   -->   1099999  
+  
+100000-999999  ; 900   ; 1099 ; 109
+1000000-999999 ; 9000  ; 999  ; 1099
+10000000       ; 9000  ; 10999 ; 1099
+100000000      ; 90000 ; 9999  ; 10999
+1000000000      ; 90000
+10000000000     ; 900000
+100000000000   ; 900000
+1000000000000  ; 9000000
+10000000000000  ; 9000000
 */
         int numBetween = exp % 2 == 0 ? Integer.parseInt(
                 StringUtils.repeat('9', exp / 2), 10) : Integer.parseInt("10"
@@ -166,8 +176,8 @@ public class Main {
                 } else if (t >= 100 && t % 100 == 0) {
                     total = Interval.combin(total,
                             Interval.createEmpty(target.subtract(total.right).min(BigInteger.valueOf(numBetween_100))));
-                } else if (t >= 10 && (t) % 10 == 0) { // t = 11 / 21 / 31 put
-                                                       // the 10th empties
+                } else if (t >= 10 && (t) % 10 == 0) { 
+                                                       
                     total = Interval.combin(total, Interval.createEmpty( target.subtract(total.right).min(BigInteger.valueOf(numBetween_10))));
                     
                 } else {
@@ -334,16 +344,9 @@ public class Main {
             return regularInterval;
         }
     }
-
-    public static void handleCase(int caseNumber, Scanner scanner,
-            PrintStream os) {
-
-        log.info("Starting case {}", caseNumber);
-
+    
+    public static Interval calcEvenPairRanges(BigInteger L, BigInteger R) {
         Interval ans = null;
-        
-        BigInteger L = scanner.nextBigInteger();
-        BigInteger R = scanner.nextBigInteger();
         Interval ri = calc(R);
         
         
@@ -353,7 +356,20 @@ public class Main {
         } else {
             ans = ri;
         }
+        
+        return ans;
+    }
 
+    public static void handleCase(int caseNumber, Scanner scanner,
+            PrintStream os) {
+
+        log.info("Starting case {}", caseNumber);
+
+        BigInteger L = scanner.nextBigInteger();
+        BigInteger R = scanner.nextBigInteger();
+        
+        Interval ans = calcEvenPairRanges(L, R);
+        
         // BigInteger r = BruteForce.countTotal(m.L, m.R, true);
         os.println("Case #" + caseNumber + ": "
                 + ans.totalEven.mod(BigInteger.valueOf(1000000007)));

@@ -9,6 +9,8 @@ import com.google.common.math.LongMath;
 
 public class Interval {
 
+    BigInteger palinsCovered;
+    
     BigInteger totalEven;
     BigInteger oddRight;
     BigInteger oddLeft;
@@ -30,43 +32,31 @@ public class Interval {
         evenRight = BigInteger.ZERO;
         evenLeft = BigInteger.ZERO;
         
+        palinsCovered = BigInteger.ZERO;
         totalEven = BigInteger.ZERO;
     }
 
     Interval(int i) {
-        this();
-        
-        size = BigInteger.ONE;
-        if (BruteForce.isPalin(i)) {
-            isEvenSpanning = false;
-            totalEven = BigInteger.ZERO;
-            size = BigInteger.ONE;
-            
-            oddRight = BigInteger.ONE;
-            oddLeft = BigInteger.ONE;
-        } else {
-            isEvenSpanning = true;
-            totalEven = BigInteger.ONE;
-            size = BigInteger.ONE;
-            evenLeft = BigInteger.ONE;
-            evenRight = BigInteger.ONE;
-        }
+        this(BigInteger.valueOf(i));        
     }
     
     Interval(BigInteger i) {
         this();
         
         size = BigInteger.ONE;
+        
         if (BruteForce.isPalin(i)) {
             isEvenSpanning = false;
             totalEven = BigInteger.ZERO;
             size = BigInteger.ONE;
+            palinsCovered = BigInteger.ONE;
             
             oddRight = BigInteger.ONE;
             oddLeft = BigInteger.ONE;
         } else {
             isEvenSpanning = true;
             totalEven = BigInteger.ONE;
+            palinsCovered = BigInteger.ZERO;
             size = BigInteger.ONE;
             evenLeft = BigInteger.ONE;
             evenRight = BigInteger.ONE;
@@ -74,23 +64,12 @@ public class Interval {
     }
 
     static Interval createEmpty(int space) {
-        Interval ret = new Interval();
-        Preconditions.checkArgument(space > 0);
-        ret.size = BigInteger.valueOf(space);
-        ret.totalEven = BigInteger.valueOf(space).multiply( 
-                BigInteger.valueOf(space).add(BigInteger.ONE)).divide(BigInteger.valueOf(2));
-        ret.oddRight = BigInteger.ZERO;
-        ret.oddLeft = BigInteger.ZERO;
-        ret.evenRight = BigInteger.valueOf(space);
-        ret.evenLeft = BigInteger.valueOf(space);
-        ret.isEvenSpanning = true;
-
-        return ret;
+       return createEmpty(BigInteger.valueOf(space));
     }
     
     static Interval createEmpty(BigInteger space) {
         Interval ret = new Interval();
-        Preconditions.checkArgument(space.compareTo(BigInteger.ZERO) > 0);
+        Preconditions.checkArgument(space.compareTo(BigInteger.ZERO) >= 0);
         ret.size = space;
         ret.totalEven = space.multiply( 
                 space.add(BigInteger.ONE)).divide(BigInteger.valueOf(2));
@@ -99,14 +78,23 @@ public class Interval {
         ret.evenRight = space;
         ret.evenLeft = space;
         ret.isEvenSpanning = true;
+        ret.palinsCovered = BigInteger.ZERO;
 
         return ret;
     }
 
     static Interval combin(Interval lhs, Interval rhs) {
+        if (rhs.size.compareTo(BigInteger.ZERO) == 0) {
+            return lhs;
+        }
+        if (lhs.size.compareTo(BigInteger.ZERO) == 0) {
+            return rhs;
+        }
         Interval total = new Interval();
         total.left = lhs.left;
         total.right = lhs.right.add(rhs.size);
+        total.size = lhs.size.add(rhs.size);
+        total.palinsCovered = lhs.palinsCovered.add(rhs.palinsCovered);
 
         if (lhs.isEvenSpanning && !rhs.isEvenSpanning) {
             total.isEvenSpanning = false;

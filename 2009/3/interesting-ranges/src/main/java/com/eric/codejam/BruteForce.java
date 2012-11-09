@@ -18,7 +18,7 @@ public class BruteForce {
         range.evenRight = BigInteger.valueOf(countRightEdge(lb, up, true));
         range.oddRight = BigInteger.valueOf( countRightEdge(lb, up, false));
         range.isEvenSpanning = countPalin(lb,up) % 2 == 0;
-        
+        range.palinsCovered = BigInteger.valueOf(countPalin(lb, up));
         range.left = BigInteger.valueOf(lb);
         range.right = BigInteger.valueOf(up);
         range.size = BigInteger.valueOf(up-lb+1);
