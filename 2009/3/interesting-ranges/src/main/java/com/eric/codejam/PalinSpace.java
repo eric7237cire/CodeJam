@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,7 +29,7 @@ public class PalinSpace {
      * 1 equals 11 or 22 or 33 seg of exp 2 equals 101 - 191 or 202 - 292 etc
      * seg of exp = 3 (equals 1001 - 1991 or 2002 - 1992 etc
      */
-    List<Map<BigInteger,Interval>> segments;
+    List<SortedMap<BigInteger,Interval>> segments;
 
     PalinSpace() {
         segments = new ArrayList<>();
@@ -53,13 +55,14 @@ public class PalinSpace {
 
     }
 
-    private Map<BigInteger, Interval> buildSegment(int exponent) {
-        Map<BigInteger, Interval> map = new HashMap<>();
+    private SortedMap<BigInteger, Interval> buildSegment(int exponent) {
+        Map<BigInteger, Interval> palinCountToInterval = new HashMap<>();
+        SortedMap<BigInteger, Interval> sizeToInterval = new TreeMap<>();
         Interval palin = new Interval(1);
         palin.left = BigInteger.ONE;
         palin.right = BigInteger.ONE;
         
-        Interval total = Interval.createEmpty(BigInteger.ZERO);
+        Interval currentInt = Interval.createEmpty(BigInteger.ZERO);
 
         //Not counting first one
         BigInteger totalPalinCount = BigInteger.TEN.pow(exponent / 2).subtract(BigInteger.ONE);
@@ -90,30 +93,36 @@ public class PalinSpace {
 
             for (int i = 0; i < 8; ++i) {
                 
-                total = Interval.combin(total, step);
+                currentInt = Interval.combin(currentInt, step);
                 t = t.add(BigInteger.TEN.pow(stepExp));
-                Preconditions.checkState(t.equals(total.palinsCovered));
-                map.put(t, total);                
+                Preconditions.checkState(t.equals(currentInt.palinsCovered));
+                sizeToInterval.put(currentInt.size, currentInt);        
+                
+                palinCountToInterval.put(currentInt.palinsCovered, currentInt);
+                
             }
             
             if (stepExp == 0) {
                 //just add another normally
-                total = Interval.combin(total, step);
+                currentInt = Interval.combin(currentInt, step);
                 t = t.add(BigInteger.TEN.pow(stepExp));
-                Preconditions.checkState(t.equals(total.palinsCovered));
-                map.put(t, total);
+                Preconditions.checkState(t.equals(currentInt.palinsCovered));
+                sizeToInterval.put(currentInt.size, currentInt);
+                
+                palinCountToInterval.put(currentInt.palinsCovered, currentInt);
+                
             } else {
                 //add all the 1 to 9 ; 1 to 90 ; etc to get a 99999
                 //stepExp == 2 means skipping 100 at a time
                 //add 90 and 9
                 for (int stepFactor = stepExp; stepFactor >= 1; -- stepFactor) {
-                    total = Interval.combin(total, 
-                            map.get(BigInteger.TEN.pow(stepFactor-1).multiply(BigInteger.valueOf(9))));
+                    currentInt = Interval.combin(currentInt, 
+                            palinCountToInterval.get(BigInteger.TEN.pow(stepFactor-1).multiply(BigInteger.valueOf(9))));
                 }
                 
                 t = t.add(BigInteger.TEN.pow(stepExp).subtract(BigInteger.ONE));
                 
-                Preconditions.checkState(t.equals(total.palinsCovered));
+                Preconditions.checkState(t.equals(currentInt.palinsCovered));
             }
             
             if (t.compareTo(totalPalinCount) == 0) {
@@ -126,18 +135,18 @@ public class PalinSpace {
             //Add new increased empty space
             empty = calcNumBetween(exponent, stepExp);
             emptyInt = Interval.createEmpty(empty);
-            total = Interval.combin(total, emptyInt);
+            currentInt = Interval.combin(currentInt, emptyInt);
             
             //Add palin at the end
-            total = Interval.combin(total, palin);
+            currentInt = Interval.combin(currentInt, palin);
             t = t.add(BigInteger.ONE);
-            step = total;
+            step = currentInt;
 
             //Preconditions.checkState(t.equals(BigInteger.TEN.pow(stepExp)));
 
         }
 
-        return map;
+        return sizeToInterval;
 
     }
 }

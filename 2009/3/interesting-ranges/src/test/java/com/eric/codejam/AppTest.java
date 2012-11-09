@@ -130,10 +130,12 @@ public class AppTest {
 
 	@Test
 	public void testPalinSpace() {
-	    Interval i = Main.palinSpace.segments.get(3).get(new BigInteger("9"));
+	    Object o2 = Main.palinSpace.segments.get(3);
+	    
+	    Interval i = Main.palinSpace.segments.get(3).get(new BigInteger("990"));
 	    Interval check = Main.calcEvenPairRanges(new BigInteger("4005"), new BigInteger("4994"));
 	    
-	    i = Main.palinSpace.segments.get(6).get(new BigInteger("800"));
+	    i = Main.palinSpace.segments.get(6).get(new BigInteger("800080"));
         check = Main.calcEvenPairRanges(new BigInteger("5000006"), new BigInteger("5800085"));
         
         Object o = Main.palinSpace.segments.get(6);
