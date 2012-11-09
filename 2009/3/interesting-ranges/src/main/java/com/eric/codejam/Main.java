@@ -112,7 +112,7 @@ public class Main {
             } else {
                 if (n > 2) {
                 // Get to first palin 1001 / 3003 / 9009 etc
-                total = Interval.combin(total, Interval.createEmpty(Math.min(n-2,target.subtract(total.right).intValue())));
+                total = Interval.combin(total, Interval.createEmpty( target.subtract(total.right).min(BigInteger.valueOf(n-2))));
                 
                 if (total.right.compareTo(target) == 0) {
                     return total;
@@ -130,23 +130,23 @@ public class Main {
             while (t < totalPerNum) {
                 if (t >= 100000 && t % 100000 == 0) {
                    
-                    total = Interval.combin(total, Interval.createEmpty(Math.min(numBetween_100000,target.subtract(total.right).intValue())));
+                    total = Interval.combin(total, Interval.createEmpty(target.subtract(total.right).min(BigInteger.valueOf(numBetween_100000))));
                 } else if (t >= 10000 && t % 10000 == 0) {
                     
-                    total = Interval.combin(total, Interval.createEmpty(Math.min(numBetween_10000,target.subtract(total.right).intValue())));
+                    total = Interval.combin(total, Interval.createEmpty(target.subtract(total.right).min(BigInteger.valueOf(numBetween_10000))));
                 } else if (t >= 1000 && t % 1000 == 0) {
-                    total = Interval.combin(total, Interval.createEmpty(Math.min(numBetween_1000,target.subtract(total.right).intValue())));
+                    total = Interval.combin(total, Interval.createEmpty(target.subtract(total.right).min(BigInteger.valueOf(numBetween_1000))));
                     
  
                 } else if (t >= 100 && t % 100 == 0) {
                     total = Interval.combin(total,
-                            Interval.createEmpty(Math.min(numBetween_100,target.subtract(total.right).intValue())));
+                            Interval.createEmpty(target.subtract(total.right).min(BigInteger.valueOf(numBetween_100))));
                 } else if (t >= 10 && (t) % 10 == 0) { // t = 11 / 21 / 31 put
                                                        // the 10th empties
-                    total = Interval.combin(total, Interval.createEmpty(Math.min(numBetween_10,target.subtract(total.right).intValue())));
+                    total = Interval.combin(total, Interval.createEmpty( target.subtract(total.right).min(BigInteger.valueOf(numBetween_10))));
                     
                 } else {
-                    total = Interval.combin(total, Interval.createEmpty(Math.min(numBetween,target.subtract(total.right).intValue())));
+                    total = Interval.combin(total, Interval.createEmpty( target.subtract(total.right).min(BigInteger.valueOf(numBetween))));
                 }
                 if (total.right.compareTo(target) == 0) {
                     return total;

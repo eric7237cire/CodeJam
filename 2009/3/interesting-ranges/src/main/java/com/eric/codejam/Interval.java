@@ -87,6 +87,21 @@ public class Interval {
 
         return ret;
     }
+    
+    static Interval createEmpty(BigInteger space) {
+        Interval ret = new Interval();
+        Preconditions.checkArgument(space.compareTo(BigInteger.ZERO) > 0);
+        ret.size = space;
+        ret.totalEven = space.multiply( 
+                space.add(BigInteger.ONE)).divide(BigInteger.valueOf(2));
+        ret.oddRight = BigInteger.ZERO;
+        ret.oddLeft = BigInteger.ZERO;
+        ret.evenRight = space;
+        ret.evenLeft = space;
+        ret.isEvenSpanning = true;
+
+        return ret;
+    }
 
     static Interval combin(Interval lhs, Interval rhs) {
         Interval total = new Interval();
