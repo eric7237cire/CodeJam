@@ -6,12 +6,10 @@ import java.math.BigInteger;
 import java.util.Scanner;
 import java.util.SortedMap;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
-import com.google.common.math.IntMath;
 
 public class Main {
 
@@ -367,8 +365,8 @@ public class Main {
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-           // args = new String[] { "sample.txt" };
-            args = new String[] { "D-small-practice.in" };
+            args = new String[] { "sample.txt" };
+           // args = new String[] { "D-small-practice.in" };
         }
         log.info("Input file {}", args[0]);
 

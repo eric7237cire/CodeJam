@@ -33,7 +33,7 @@ public class PalinSpace {
 
     PalinSpace() {
         segments = new ArrayList<>();
-        for (int i = 0; i < 15; ++i) {
+        for (int i = 0; i < 102; ++i) {
             segments.add(buildSegment(i));
         }
 
