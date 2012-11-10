@@ -27,16 +27,17 @@ public class Main {
      * @return
      */
     static Interval getFullRange(int num, final int exp) {
-        if (num == 1) {
-            if (exp == 0) {
-                return BruteForce.createInterval(1, 1);
-            }
-            return getFullRange(10, exp-1);
+        
+        if (num == 1 && exp ==0 ){
+            return new Interval(1);
         }
-        Interval total = getRangeSlice(num, exp);
+        Interval total = num > 1 ?
+                getPartialRange(1, exp, BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp))) 
+                : new Interval();
 
         for (int i = exp - 1; i >= 0; --i) {
-            Interval next = getRangeSlice(10, i);
+            Interval next 
+            = getPartialRange(1, i, BigInteger.valueOf(10).multiply(BigInteger.TEN.pow(i)));
             total = Interval.combin(next, total);
         }
 
@@ -51,8 +52,8 @@ public class Main {
      */
     static Interval getPartialRange(int num, int exp, BigInteger target) {
         
-        Preconditions.checkArgument(exp >= 1);
-        Preconditions.checkArgument(target.compareTo(BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp))) > 0 );
+        Preconditions.checkArgument(exp >= 0);
+        Preconditions.checkArgument(target.compareTo(BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp))) >= 0 );
         Preconditions.checkArgument(target.compareTo(BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp+1))) <= 0 );
         
         
@@ -88,6 +89,11 @@ public class Main {
         total = new Interval(BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp)).add(BigInteger.ONE));
         total.left = BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp)).add(BigInteger.ONE);
         total.right = total.left;
+        
+        if (exp == 0) {
+            total.left = BigInteger.ONE;
+            total.right = BigInteger.ONE;
+        }
         
         if (total.right.compareTo(target) == 0) {
             return total;
@@ -166,28 +172,9 @@ public class Main {
             leftToGo = target.subtract(total.right);
         }
 
-        // Add the empty space to get to next round #
-
         Preconditions.checkState(total.right.compareTo(target) == 0);
-        
-        
-            return total;
-        
-/*
-        BigInteger spaceNeeded = BigInteger.valueOf(n).add(BigInteger.ONE)
-                .multiply(BigInteger.TEN.pow(exp));
-        spaceNeeded = spaceNeeded.subtract(total.right);
-
-        total = Interval.combin(total,
-                Interval.createEmpty(Math.min(spaceNeeded.intValue(), target
-                        .subtract(total.right).intValue())));
-
-        if (total.right.compareTo(target) == 0) {
-            return total;
-        }
 
         return total;
-*/
     }
 
     /**
@@ -203,31 +190,7 @@ public class Main {
             return getRangeSlice(10, exp - 1);
         }
         
-        Interval total = new Interval();
-        
-        if (exp < 1) {
-            for(int i = 1; i <= num && i <= 9; ++i) {
-                total = Interval.combin(total, new Interval(1));
-            }
-            if (num == 10) {
-                total = Interval.combin(total, new Interval(10));
-            }
-            return total;
-         
-        }
-   
-
-        /*
-
-        for (int n = 1; n < num; ++n) {
-            
-            Interval partial = getPartialRange(n, exp, BigInteger.TEN.pow(exp).multiply(BigInteger.valueOf(n+1)));
-            total = Interval.combin(total,
-                    partial);
-            
-        }*/
-        
-        total = getPartialRange(1, exp, BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp)));
+        Interval total = getPartialRange(1, exp, BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp)));
 
         return total;
 
@@ -255,11 +218,6 @@ public class Main {
             Interval leftOver = getPartialRange(
                     Character.digit(num.charAt(0), 10), num.length() - 1,
                     numInt);
-
-            //
-
-            // Preconditions.checkState(leftOver.compareTo(BigInteger.ZERO) >=
-            // 0);
 
             Interval total = Interval.combin(regularInterval, leftOver);
 
