@@ -39,6 +39,12 @@ public class PalinSpace {
 
     }
 
+    /*
+     * Space between palindromes
+     * exp is the 'level' 10^exp.  stepExp  10^stepExp.
+     * 
+     * calcNumBetween 7, 3 means the space between  the 1000th palindrome in n*10000000+n
+     */
     public static BigInteger calcNumBetween(int exp, int stepExp) {
         if (stepExp == 0) {
             return exp % 2 == 0 ? new BigInteger(
@@ -69,11 +75,9 @@ public class PalinSpace {
 
         BigInteger t = BigInteger.ZERO;
         int stepExp = 0;
-
-        BigInteger empty = null;// calcNumBetween(exponent, stepExp);
-
-        Interval emptyInt = null; // Interval.createEmpty(empty);
-        Interval step = null;// Interval.combin(emptyInt, palin);
+        BigInteger empty = null;
+        Interval emptyInt = null;
+        Interval step = null;
         
         //First palin already 'added' (ie 1001 (exp 3), 50005 (exp 4)
         //total = palin;
@@ -143,9 +147,6 @@ public class PalinSpace {
             step = currentInt;
             
             sizeToInterval.put(currentInt.size, currentInt);
-
-            //Preconditions.checkState(t.equals(BigInteger.TEN.pow(stepExp)));
-
         }
 
         return sizeToInterval;
