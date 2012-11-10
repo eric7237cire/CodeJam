@@ -25,8 +25,10 @@ public class PalinSpace {
      * 
      * 
      * Segments start and end at palindroms so seg of exp 0 and 1 are not
-     * interesting because each level only has 1 seg of exp 0 1 to 1 seg of exp
-     * 1 equals 11 or 22 or 33 seg of exp 2 equals 101 - 191 or 202 - 292 etc
+     * interesting because each level only has 1 seg of exp 0 1 to 1 
+     * seg of exp
+     * 1 equals 11 or 22 or 33 
+     * seg of exp 2 equals 101 - 191 or 202 - 292 etc
      * seg of exp = 3 (equals 1001 - 1991 or 2002 - 1992 etc
      */
     List<SortedMap<BigInteger,Interval>> segments;
@@ -53,9 +55,11 @@ public class PalinSpace {
                     : new BigInteger("10" + StringUtils.repeat('9', exp / 2));
         }
 
+       
+        
         int repeatCount = (exp - (2 * stepExp - 2)) / 2 - 1;
 
-        Preconditions.checkState(repeatCount > 0);
+        Preconditions.checkState(repeatCount >= 0);
 
         return new BigInteger("10" + StringUtils.repeat('9', repeatCount));
 
@@ -71,7 +75,7 @@ public class PalinSpace {
         Interval currentInt = Interval.createEmpty(BigInteger.ZERO);
 
         //Not counting first one
-        BigInteger totalPalinCount = BigInteger.TEN.pow(exponent / 2).subtract(BigInteger.ONE);
+        BigInteger totalPalinCountPerLevel = BigInteger.valueOf(9).multiply(BigInteger.TEN.pow(exponent / 2)).subtract(BigInteger.ONE);
 
         BigInteger t = BigInteger.ZERO;
         int stepExp = 0;
@@ -88,14 +92,19 @@ public class PalinSpace {
         step =  emptyInt;
         step = Interval.combin(step, palin);
         
-        while (t.compareTo(totalPalinCount) < 0) {
-
+        while (t.compareTo(totalPalinCountPerLevel) < 0) {
         
             // t=1 ; 10; 100 ; etc. basically the first 'jump of 10'. T is the
             // palin count
             // Interval step = list.get(list.size() - 1);
 
-            for (int i = 0; i < 8; ++i) {
+            int upperBound = 8;
+            
+            //Very last one, we only do 7.  Last step is always 10
+            if (emptyInt.size.equals(BigInteger.TEN) && exponent >= 2) {
+                upperBound = 7;
+            }
+            for (int i = 0; i < upperBound; ++i) {
                 
                 currentInt = Interval.combin(currentInt, step);
                 t = t.add(BigInteger.TEN.pow(stepExp));
@@ -104,6 +113,10 @@ public class PalinSpace {
                 
                 palinCountToInterval.put(currentInt.palinsCovered, currentInt);
                 
+            }
+            
+            if (t.compareTo(totalPalinCountPerLevel) == 0) {
+                break;
             }
             
             if (stepExp == 0) {
@@ -126,10 +139,12 @@ public class PalinSpace {
                 
                 t = t.add(BigInteger.TEN.pow(stepExp).subtract(BigInteger.ONE));
                 
+                sizeToInterval.put(currentInt.size, currentInt);
+                
                 Preconditions.checkState(t.equals(currentInt.palinsCovered));
             }
             
-            if (t.compareTo(totalPalinCount) == 0) {
+            if (t.compareTo(totalPalinCountPerLevel) == 0) {
                 break;
             }
 

@@ -122,8 +122,29 @@ public class AppTest {
 	    assertEquals(new BigInteger("10999"), PalinSpace.calcNumBetween(7, 0));
 	    assertEquals(new BigInteger("1099"), PalinSpace.calcNumBetween(7, 1));
 	    assertEquals(new BigInteger("109"), PalinSpace.calcNumBetween(7, 2));
+	    assertEquals(new BigInteger("10"), PalinSpace.calcNumBetween(7, 3));
 	    
+	    //1 to 9
+	    assertEquals(new BigInteger("0"), PalinSpace.calcNumBetween(0, 0));
+	    
+	    //10 to 99
+	    assertEquals(new BigInteger("10"), PalinSpace.calcNumBetween(1, 0));
+	    
+        //100 to 999
+        assertEquals(new BigInteger("9"), PalinSpace.calcNumBetween(2, 0));
+        assertEquals(new BigInteger("10"), PalinSpace.calcNumBetween(2, 1));
+       
+        //1000 to 9999
+        assertEquals(new BigInteger("109"), PalinSpace.calcNumBetween(3, 0));
+        assertEquals(new BigInteger("10"), PalinSpace.calcNumBetween(3, 1));
+        
+        //10000 to 99999
+        assertEquals(new BigInteger("99"), PalinSpace.calcNumBetween(4, 0));
+        assertEquals(new BigInteger("109"), PalinSpace.calcNumBetween(4, 1));
+        assertEquals(new BigInteger("10"), PalinSpace.calcNumBetween(4, 2));
+        
 	}
+	
 
 	@Test
 	public void testPalinSpace() {
@@ -155,6 +176,18 @@ public class AppTest {
         
         i = Main.palinSpace.segments.get(7).get(new BigInteger("11000"));
         check = Main.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("60011006"));
+        assertEquals(check, i);
+        
+        i = Main.palinSpace.segments.get(7).get(new BigInteger("11000"));
+        check = Main.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("60011006"));
+        assertEquals(check, i);
+        
+        i = Main.palinSpace.segments.get(7).get(new BigInteger("80000008"));
+        check = Main.calcEvenPairRanges(new BigInteger("10000002"), new BigInteger("90000009"));
+        assertEquals(check, i);
+        
+        i = Main.palinSpace.segments.get(7).get(new BigInteger("89999998"));
+        check = Main.calcEvenPairRanges(new BigInteger("10000002"), new BigInteger("99999999"));
         assertEquals(check, i);
         
         Object o = Main.palinSpace.segments.get(6);

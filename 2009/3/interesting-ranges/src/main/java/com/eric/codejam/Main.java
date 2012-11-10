@@ -55,9 +55,7 @@ public class Main {
         Preconditions.checkArgument(target.compareTo(BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp))) > 0 );
         Preconditions.checkArgument(target.compareTo(BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp+1))) <= 0 );
         
-        int totalPalinExp = exp / 2; // 9 * 10 ^ totalPalin
-
-        BigInteger totalPerNum = BigInteger.TEN.pow(totalPalinExp);
+        
 
         /*
 1-9              (exp == 0)   -->   9
@@ -126,10 +124,9 @@ public class Main {
             }
         }
 
+        BigInteger leftToGo = target.subtract(total.right);
         BigInteger t = BigInteger.ONE; // already added 1
-        while (t.compareTo(totalPerNum) < 0) {
-
-            BigInteger leftToGo = target.subtract(total.right);
+        while (leftToGo.compareTo(BigInteger.ZERO) > 0) {
 
             SortedMap<BigInteger, Interval> map = palinSpace.segments.get(exp)
                     .headMap(leftToGo.add(BigInteger.ONE));
@@ -165,14 +162,18 @@ public class Main {
             if (total.right.compareTo(target) == 0) {
                 return total;
             }
+            
+            leftToGo = target.subtract(total.right);
         }
 
         // Add the empty space to get to next round #
 
-        if (total.right.compareTo(target) == 0) {
+        Preconditions.checkState(total.right.compareTo(target) == 0);
+        
+        
             return total;
-        }
-
+        
+/*
         BigInteger spaceNeeded = BigInteger.valueOf(n).add(BigInteger.ONE)
                 .multiply(BigInteger.TEN.pow(exp));
         spaceNeeded = spaceNeeded.subtract(total.right);
@@ -186,7 +187,7 @@ public class Main {
         }
 
         return total;
-
+*/
     }
 
     /**
@@ -216,7 +217,7 @@ public class Main {
         }
    
 
-        
+        /*
 
         for (int n = 1; n < num; ++n) {
             
@@ -224,7 +225,9 @@ public class Main {
             total = Interval.combin(total,
                     partial);
             
-        }
+        }*/
+        
+        total = getPartialRange(1, exp, BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp)));
 
         return total;
 
