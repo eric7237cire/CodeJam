@@ -14,22 +14,25 @@ import com.google.common.base.Preconditions;
 
 public class PalinSpace {
 
-    // First dimension = exponent of 10. 10^0 until 10^50
-    // Second follows pattern for palinsCovered --
+
     /*
-     * dist 1 to 2 ; 1 to 3;..... 1 to 9
-     *  1 to 10, 20, 30, 40, 50, 60, 70, 80, 90,
-     *   100,
-     *   200, ... 1000, ...
-     * 1e50
+     * Index of list is the exponent of 10.
+     * 
+     * so 0 goes 1-9
+     * 1 --> 12-99
+     * 2 --> 102-99
+     * 3 --> 1002 - 99
+     * 
+     * The first palin is not counted in the map, neither is the last.
+     * The main code handles the boundaries.
+     * 
+     *  The map contains all major chunks.  Ie for 
+     *  7 --> 10 000 000  (total 999 palindromes)
+     *    map (1...9 ==> their intervals
+     *        (10..90, 99) ==> their intervals
+     *        (100..900, 999) ==> their intervals
      * 
      * 
-     * Segments start and end at palindroms so seg of exp 0 and 1 are not
-     * interesting because each level only has 1 seg of exp 0 1 to 1 
-     * seg of exp
-     * 1 equals 11 or 22 or 33 
-     * seg of exp 2 equals 101 - 191 or 202 - 292 etc
-     * seg of exp = 3 (equals 1001 - 1991 or 2002 - 1992 etc
      */
     List<SortedMap<BigInteger,Interval>> segments;
 
@@ -55,7 +58,18 @@ public class PalinSpace {
                     : new BigInteger("10" + StringUtils.repeat('9', exp / 2));
         }
 
-       
+        /*
+1-9              (exp == 0)   -->   9
+10-99            (exp == 1)   -->   10
+100-999          (exp == 2)   -->   9 
+1000-9999        (exp == 3)   -->   109
+10000-99999      (exp == 4)   -->   99
+100000-99..      (exp == 5)   -->   1099  
+1000000-999      (exp == 6)   -->   999  
+10000000-99      (exp == 7)   -->   10999 
+100000000-99      (exp == 8)   -->  9999  
+....          
+*/
         
         int repeatCount = (exp - (2 * stepExp - 2)) / 2 - 1;
 

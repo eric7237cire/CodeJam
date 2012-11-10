@@ -56,34 +56,7 @@ public class Main {
         Preconditions.checkArgument(target.compareTo(BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp))) >= 0 );
         Preconditions.checkArgument(target.compareTo(BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp+1))) <= 0 );
         
-        
-
-        /*
-1-9              (exp == 0)   -->   9
-10-99            (exp == 1)   -->   10
-100-999          (exp == 2)   -->   9 
-1000-9999        (exp == 3)   -->   109
-10000-99999      (exp == 4)   -->   99
-100000-99..      (exp == 5)   -->   1099  
-1000000-999      (exp == 6)   -->   999  
-10000000-99      (exp == 7)   -->   10999 
-100000000-99      (exp == 8)   -->  9999  
-....             (exp == 9)   -->   109999
-                 (exp == 10)   -->  99999
-                (exp == 11)   -->   1099999  
-  
-100000-999999  ; 900   ; 1099 ; 109
-1000000-999999 ; 9000  ; 999  ; 1099
-10000000       ; 9000  ; 10999 ; 1099
-100000000      ; 90000 ; 9999  ; 10999
-1000000000      ; 90000
-10000000000     ; 900000
-100000000000   ; 900000
-1000000000000  ; 9000000
-10000000000000  ; 9000000
-*/
-        
-
+       
         Interval total = new Interval();
 
         total = new Interval(BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp)).add(BigInteger.ONE));
