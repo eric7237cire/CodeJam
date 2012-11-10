@@ -250,86 +250,29 @@ public class Main {
         if (num == 1 && exp > 0) {
             return getRangeSlice(10, exp - 1);
         }
-        if (exp < 1) {
-            return BruteForce.createInterval(1, num);
-        }
-        int totalPalinExp = exp / 2; // 9 * 10 ^ totalPalin
-
-        int totalPerNum = IntMath.pow(10, totalPalinExp);
-
-        int numBetween = exp % 2 == 0 ? Integer.parseInt(
-                StringUtils.repeat('9', exp / 2), 10) : Integer.parseInt("10"
-                + StringUtils.repeat('9', exp / 2));
-
-        int numBetween_10 = exp >= 2 ? Integer.parseInt("10"
-                + StringUtils.repeat('9', exp / 2 - 1)) : 0;
-        int numBetween_100 = exp >= 4 ? Integer.parseInt("10"
-                + StringUtils.repeat('9', (exp - 2) / 2 - 1)) : 0;
-        int numBetween_1000 = exp >= 6 ? Integer.parseInt("10"
-                + StringUtils.repeat('9', (exp - 4) / 2 - 1)) : 0;
-        int numBetween_10000 = exp >= 8 ? Integer.parseInt("10"
-                + StringUtils.repeat('9', (exp - 6) / 2 - 1)) : 0;
-        int numBetween_100000 = exp >= 10 ? Integer.parseInt("10"
-                + StringUtils.repeat('9', (exp - 8) / 2 - 1)) : 0;
-
-        Interval total = new Interval();
-
-        Interval empties = Interval.createEmpty(numBetween);
         
-        Interval palin = new Interval(1);
+        Interval total = new Interval();
+        
+        if (exp < 1) {
+            for(int i = 1; i <= num && i <= 9; ++i) {
+                total = Interval.combin(total, new Interval(1));
+            }
+            if (num == 10) {
+                total = Interval.combin(total, new Interval(10));
+            }
+            return total;
+          //  return BruteForce.createInterval(1, num);
+        }
+   
+
+        
 
         for (int n = 1; n < num; ++n) {
             
             Interval partial = getPartialRange(n, exp, BigInteger.TEN.pow(exp).multiply(BigInteger.valueOf(n+1)));
             total = Interval.combin(total,
                     partial);
-            /*
-            if (n == 1) {
-                total = new Interval(1);
-                total.left = BigInteger.TEN.pow(exp).add(BigInteger.ONE);
-                total.right = total.left;
-            } else {
-                // Get to first palin 1001 / 3003 / 9009 etc
-                total = Interval.combin(total, Interval.createEmpty(n - 1));
-
-                // Add first palin
-                total = Interval.combin(total, palin);
-            }
-
-            int t = 1; // already added 1
-            while (t < totalPerNum) {
-                if (t >= 100000 && t % 100000 == 0) {
-                    total = Interval.combin(total,
-                            Interval.createEmpty(numBetween_100000));
-                } else if (t >= 10000 && t % 10000 == 0) {
-                    total = Interval.combin(total,
-                            Interval.createEmpty(numBetween_10000));
-                } else if (t >= 1000 && t % 1000 == 0) {
-                    total = Interval.combin(total,
-                            Interval.createEmpty(numBetween_1000));
-                } else if (t >= 100 && t % 100 == 0) {
-                    total = Interval.combin(total,
-                            Interval.createEmpty(numBetween_100));
-                } else if (t >= 10 && (t) % 10 == 0) { // t = 11 / 21 / 31 put
-                                                       // the 10th empties
-                    total = Interval.combin(total, Interval.createEmpty(numBetween_10));
-                } else {
-                    total = Interval.combin(total, empties);
-                }
-                ++t;
-                total = Interval.combin(total, palin);
-                Preconditions.checkState(BruteForce.isPalin(total.right));
-            }
-
-            // Add the empty space to get to next round #
-
-            BigInteger spaceNeeded = BigInteger.valueOf(n).add(BigInteger.ONE)
-                    .multiply(BigInteger.TEN.pow(exp));
-            spaceNeeded = spaceNeeded.subtract(total.right);
-
-            total = Interval.combin(total,
-                    Interval.createEmpty(spaceNeeded.intValue()));
-*/
+            
         }
 
         return total;
