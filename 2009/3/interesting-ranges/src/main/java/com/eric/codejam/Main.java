@@ -67,6 +67,8 @@ public class Main {
             num = 10;
         }*/
         Preconditions.checkArgument(exp >= 0);
+        Preconditions.checkArgument(target.compareTo(BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp))) > 0 );
+        Preconditions.checkArgument(target.compareTo(BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp+1))) <= 0 );
         /*if (exp < 1) {
             Preconditions.checkArgument(BigInteger.TEN.compareTo(target) > 0);
             return BruteForce.createInterval(1, target.intValue());
@@ -99,10 +101,7 @@ public class Main {
 1000000000000  ; 9000000
 10000000000000  ; 9000000
 */
-        int numBetween = exp % 2 == 0 ? Integer.parseInt(
-                StringUtils.repeat('9', exp / 2), 10) : Integer.parseInt("10"
-                + StringUtils.repeat('9', exp / 2));
-
+        
                 //numBetween 10  = 10 
                 //1 0
                 //2 -2
@@ -111,16 +110,7 @@ public class Main {
                 //5 -8
                 
                 
-        int numBetween_10 = exp >= 2 ? Integer.parseInt("10"
-                + StringUtils.repeat('9', exp / 2 - 1)) : 0;
-        int numBetween_100 = exp >= 4 ? Integer.parseInt("10"
-                + StringUtils.repeat('9', (exp - 2) / 2 - 1)) : 0;
-        int numBetween_1000 = exp >= 6 ? Integer.parseInt("10"
-                + StringUtils.repeat('9', (exp - 4) / 2 - 1)) : 0;
-        int numBetween_10000 = exp >= 8 ? Integer.parseInt("10"
-                + StringUtils.repeat('9', (exp - 6) / 2 - 1)) : 0;
-        int numBetween_100000 = exp >= 10 ? Integer.parseInt("10"
-                + StringUtils.repeat('9', (exp - 8) / 2 - 1)) : 0;
+       
 
         Interval total = new Interval();
 
@@ -134,7 +124,7 @@ public class Main {
 
         Interval palin = new Interval(1);
 
-        for (int n = num; n <= 10; ++n) {
+        int n = num;
 
             if (n == 1) {
                 
@@ -242,7 +232,7 @@ public class Main {
             if (total.right.compareTo(target) == 0) {
                 return total;
             } 
-        }
+        
 
         return total;
 
@@ -256,6 +246,7 @@ public class Main {
      * @return
      */
     static Interval getRangeSlice(int num, final int exp) {
+       
         if (num == 1 && exp > 0) {
             return getRangeSlice(10, exp - 1);
         }
@@ -288,7 +279,11 @@ public class Main {
         Interval palin = new Interval(1);
 
         for (int n = 1; n < num; ++n) {
-
+            
+            Interval partial = getPartialRange(n, exp, BigInteger.TEN.pow(exp).multiply(BigInteger.valueOf(n+1)));
+            total = Interval.combin(total,
+                    partial);
+            /*
             if (n == 1) {
                 total = new Interval(1);
                 total.left = BigInteger.TEN.pow(exp).add(BigInteger.ONE);
@@ -334,7 +329,7 @@ public class Main {
 
             total = Interval.combin(total,
                     Interval.createEmpty(spaceNeeded.intValue()));
-
+*/
         }
 
         return total;
