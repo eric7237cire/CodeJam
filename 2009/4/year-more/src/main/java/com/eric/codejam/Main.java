@@ -16,7 +16,32 @@ public class Main {
     public static void handleCase(int caseNumber, Scanner scanner,
             PrintStream os) {
 
-        Main.buildMain(scanner);
+        //Main.buildMain(scanner);
+        Happiness hap = new Happiness(12, 3);
+        
+        Tournament t = new Tournament();
+        t.rounds = 3;
+        t.roundDays = new int[] {   0, 1, 3 };
+        
+        Tournament t2 = new Tournament();
+        t2.rounds = 3;
+        t2.roundDays = new int[] {   0, 2, 3 };
+        
+        Tournament t3 = new Tournament();
+        t3.rounds = 2;
+        t3.roundDays = new int[] {   0, 2  };
+        
+        hap.addTournament(t);
+        hap.addTournament(t2);
+        hap.addTournament(t3);
+        
+        for( int i = 13; i < 20; ++i) {
+            hap = new Happiness(i, 3);
+            hap.addTournament(t);
+            hap.addTournament(t2);
+            hap.addTournament(t3);
+            log.info("hap num {}", hap.getNumerator() );
+        }
 
         log.info("Starting case {}", caseNumber);
 

@@ -44,6 +44,11 @@ public class AppTest {
         
         assertEquals(1, h);
         
+        Happiness hap = new Happiness(1, 1);
+        hap.addTournament(t);
+        
+        assertEquals(1, hap.getNumerator());
+        
         h = BruteForce.bruteForceHappiness(list, 2, new int[2]);
         
         assertEquals(3, h);
@@ -51,6 +56,14 @@ public class AppTest {
         h = BruteForce.bruteForceHappiness(list, 7, new int[7]);
         
         assertEquals(17, h);
+        
+        h = BruteForce.bruteForceHappiness(list, 4, new int[4]);
+        
+        assertEquals(8, h);
+        
+        hap = new Happiness(4, 1);
+        hap.addTournament(t);
+        assertEquals(8, hap.getNumerator());
         
         t = new Tournament();
         t.rounds = 2;
@@ -61,6 +74,28 @@ public class AppTest {
         h = BruteForce.bruteForceHappiness(list, 4, new int[4]);
         
         assertEquals(16*5 + 2, h);
+        
+        hap = new Happiness(4, 2);
+        hap.addTournament(list.get(0));
+        hap.addTournament(list.get(1));
+        assertEquals(16*5+2, hap.getNumerator());
+        
+        t = new Tournament();
+        t.rounds = 2;
+        t.roundDays = new int[] { 0, 3 };
+        list.add(t);
+        BruteForce.debug = true;
+        h = BruteForce.bruteForceHappiness(list, 4, new int[4]);
+        
+        assertEquals(560, h);
+        
+        hap = new Happiness(4, 3);
+        hap.addTournament(list.get(2));
+        hap.addTournament(list.get(0));
+        hap.addTournament(list.get(1));
+        
+        assertEquals(560, hap.getNumerator());
+        
     }
     
 
