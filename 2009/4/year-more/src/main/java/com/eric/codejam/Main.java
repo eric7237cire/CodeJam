@@ -2,7 +2,6 @@ package com.eric.codejam;
 
 import java.io.File;
 import java.io.PrintStream;
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
