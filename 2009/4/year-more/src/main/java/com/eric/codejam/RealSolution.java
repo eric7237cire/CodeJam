@@ -64,7 +64,7 @@ public class RealSolution {
         //b*a + c (a + b) + d ( a+b+c )
         long[][] runningRoundCountMult = new long[tournaments.size()][maxTournamentSize];
         
-        long chTerm2 = 0;
+        long term2 = 0;
         
         //In order to add from maxTournamentSize to blocksize
         long lastDayTerm2 = 0;
@@ -92,7 +92,7 @@ public class RealSolution {
                     runningRoundCount[tNum][startDay] = runningRoundCount[tNum - 1][startDay]
                             + tournamentRoundCountsPerDay[tNum][startDay];
 
-                    chTerm2 = LongMath.checkedAdd(chTerm2, LongMath
+                    term2 = LongMath.checkedAdd(term2, LongMath
                             .checkedMultiply(2,
                                     runningRoundCountMult[tNum][startDay]));
 
@@ -108,47 +108,25 @@ public class RealSolution {
         
      //   long[] runningSum = new long[maxTournamentSize];
         long term1 = 0; //denom is maxTournSize 
-        long term2 = 0; //denom is maxTournSize^2
+       
         
         for(int day = 0; day < maxTournamentSize; ++day) {
-            for (int tNum = 0; tNum < tournaments.size(); ++tNum) {
-                term1 = LongMath.checkedAdd(term1, tournamentRoundCountsPerDay[tNum][day]); 
-            }
+            term1 = LongMath.checkedAdd(term1, 
+            runningRoundCount[tournaments.size()-1][day]);                  
         }
-        
-        long lastDaySum = 0;
-        for(int day = 0; day < maxTournamentSize; ++day) {
-            for (int i = 0; i < tournaments.size(); ++i) {
-                for (int j = i+1; j < tournaments.size(); ++j) {
-                    term2 = 
-                            LongMath.checkedAdd(term2, 
-                                    LongMath.checkedMultiply(2, 
-                                            LongMath.checkedMultiply(tournamentRoundCountsPerDay[i][day], tournamentRoundCountsPerDay[j][day])
-                                            ));
-                    
-                    if (day == maxTournamentSize -1 ) {
-                        lastDaySum = LongMath.checkedAdd(lastDaySum, LongMath.checkedMultiply(2, 
-                                            LongMath.checkedMultiply(tournamentRoundCountsPerDay[i][day], tournamentRoundCountsPerDay[j][day])));
-                    }
-                }
-            }
-        }
-        
-        Preconditions.checkState(chTerm2 == term2);
-        Preconditions.checkState(lastDaySum == lastDayTerm2);
-        
+                
         int rest = blockSize - maxTournamentSize;
         
-        for (int tNum = 0; tNum < tournaments.size(); ++tNum) {
-            term1 = LongMath.checkedAdd(term1,LongMath.checkedMultiply(rest, tournamentRoundCountsPerDay[tNum][maxTournamentSize-1])); 
-        }
-        
+        term1 = LongMath.checkedAdd(term1,
+                LongMath.checkedMultiply(rest, 
+                        runningRoundCount[tournaments.size()-1][maxTournamentSize-1])); 
+                
         long wn = term1 / blockSize;
         term1 -= LongMath.checkedMultiply(wn, blockSize);
         
         wholeNumber += wn;
                 
-        term2 = LongMath.checkedAdd(term2, LongMath.checkedMultiply(rest, lastDaySum));
+        term2 = LongMath.checkedAdd(term2, LongMath.checkedMultiply(rest, lastDayTerm2));
 
         denom = LongMath.checkedMultiply(blockSize, blockSize);
        
