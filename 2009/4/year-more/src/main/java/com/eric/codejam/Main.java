@@ -17,15 +17,15 @@ public class Main {
             PrintStream os) {
 
         //Main.buildMain(scanner);
-        Happiness hap = new Happiness(12, 3);
+        Happiness hap = new Happiness(12, 3, 1000);
         
         Tournament t = new Tournament();
         t.rounds = 3;
         t.roundDays = new int[] {   0, 1, 3 };
         
         Tournament t2 = new Tournament();
-        t2.rounds = 3;
-        t2.roundDays = new int[] {   0, 2, 3 };
+        t2.rounds = 5;
+        t2.roundDays = new int[] {   0, 2, 3,7, 11 };
         
         Tournament t3 = new Tournament();
         t3.rounds = 2;
@@ -36,7 +36,7 @@ public class Main {
         hap.addTournament(t3);
         
         for( int i = 13; i < 20; ++i) {
-            hap = new Happiness(i, 3);
+            hap = new Happiness(i, 3, 1000);
             hap.addTournament(t);
             hap.addTournament(t2);
             hap.addTournament(t3);
