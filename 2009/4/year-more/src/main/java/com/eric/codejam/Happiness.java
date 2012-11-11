@@ -3,9 +3,14 @@ package com.eric.codejam;
 import java.math.BigInteger;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.eric.codejam.Main.Tournament;
 
 public class Happiness {
+    
+    final static Logger log = LoggerFactory.getLogger(Happiness.class);
     
     /*
      * p[block][#] = numerator of probability
@@ -51,6 +56,7 @@ public class Happiness {
     }
     
     public void addTournament(Tournament t) {
+        log.info("Adding t ");
         //First calc probabilities of tournament
         int[][] tournProb =  new int[maxTournamentSize][2];        
         
@@ -62,10 +68,12 @@ public class Happiness {
 
                 tournProb[round + start][1]++;
             }
+            
+            tournProb[start][0] = blockSize - tournProb[start][1];
         }
         
         for(int i = 0; i < maxTournamentSize; ++i) {
-            tournProb[i][0] = blockSize - tournProb[i][1];
+            
         }
         
         if (currentTournNum == 0) {

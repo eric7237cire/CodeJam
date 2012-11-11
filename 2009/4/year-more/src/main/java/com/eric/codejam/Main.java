@@ -50,7 +50,7 @@ public class Main {
             tournaments.add(t);
         }
         
-        Happiness h = Happiness.create(N, 3, 10000, tournaments);
+        Happiness h = Happiness.create(N, 50, 10000, tournaments);
         
         BigInteger[] div = h.getNumerator().divideAndRemainder(h.denom);
         
