@@ -1,5 +1,8 @@
 package com.eric.codejam;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -14,15 +17,17 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import static org.junit.Assert.assertEquals;
+import ch.qos.logback.classic.Level;
 
 import com.eric.codejam.Main.Tournament;
 
@@ -47,7 +52,7 @@ public class AppTest {
         Happiness hap = new Happiness(1, 1, 1000);
         hap.addTournament(t);
         
-        assertEquals(1, hap.getNumerator());
+        assertEquals(1, hap.getNumerator().intValue());
         
         h = BruteForce.bruteForceHappiness(list, 2, new int[2]);
         
@@ -63,7 +68,7 @@ public class AppTest {
         
         hap = new Happiness(4, 1, 1000);
         hap.addTournament(t);
-        assertEquals(8, hap.getNumerator());
+        assertEquals(8, hap.getNumerator().intValue());
         
         t = new Tournament();
         t.rounds = 2;
@@ -78,7 +83,7 @@ public class AppTest {
         hap = new Happiness(4, 2, 100);
         hap.addTournament(list.get(0));
         hap.addTournament(list.get(1));
-        assertEquals(16*5+2, hap.getNumerator());
+        assertEquals(16*5+2, hap.getNumerator().intValue());
         
         t = new Tournament();
         t.rounds = 2;
@@ -91,17 +96,17 @@ public class AppTest {
         
         hap = Happiness.create(4, 3, 1000, list);
         
-        assertEquals(560, hap.getNumerator());
+        assertEquals(560, hap.getNumerator().intValue());
         
         h = BruteForce.bruteForceHappiness(list, 8, new int[8]);
         
         hap = Happiness.create(8, 3, 1000, list);
         
-        assertEquals(h, hap.getNumerator());
+        assertEquals(h, hap.getNumerator().intValue());
         
         hap = Happiness.create(8, 3, 4, list);
         
-        assertEquals(h, hap.getNumerator());
+        assertEquals(h, hap.getNumerator().intValue());
         
     }
     
@@ -145,11 +150,16 @@ public class AppTest {
 		return "Error";
 	}
 
-	private static Map<String, String> testData;
+	private static Map<String, String> testInputData;
+	private static Map<String, String> testOutputData;
 
 	@BeforeClass
 	public static void getTestData() {
-		testData = new HashMap<>();
+		testInputData = new HashMap<>();
+		testOutputData = new HashMap<>();
+		
+		ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+		root.setLevel(Level.DEBUG);
 
 		try {
 
@@ -163,12 +173,15 @@ public class AppTest {
 			NodeList nl = doc.getElementsByTagName("test");
 			for (int i = 0; i < nl.getLength(); ++i) {
 				Node n = nl.item(i);
-				String value = n.getTextContent();
-
+				Element e = (Element) n;
+				String input = e.getElementsByTagName("input").item(0).getTextContent();
+				String output = e.getElementsByTagName("output").item(0).getTextContent();
+				
 				String name = n.getAttributes().getNamedItem("name")
 						.getNodeValue();
 
-				testData.put(name, value);
+				testInputData.put(name, input);
+				testOutputData.put(name,  output);
 			}
 		} catch (Exception ex) {
 
@@ -179,10 +192,18 @@ public class AppTest {
 	
 
 	@Test
-	public void testS1() {
-		String testCase = testData.get("s1");
+	public void testMain() {
+	    for(String name : testInputData.keySet()) {
+	        String input = testInputData.get(name).trim();
+	        String output = testOutputData.get(name).trim();
+	        
+	        String actualOutput = extractAns(getOutput(input));
+	        
+	        assertTrue("\nInput " + input + "\nexpected output " + output + "\n Actual " + actualOutput,StringUtils.equalsIgnoreCase(output, actualOutput));
+	    }
+		
 
-		//double output = Double.parseDouble(extractAns(getOutput(testCase)));
+		//double output = Double.parseDouble();
 		
 		//assertEquals(7, output, DoubleComparator.TOLERANCE);
 	}

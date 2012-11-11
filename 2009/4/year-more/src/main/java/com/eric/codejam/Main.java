@@ -2,6 +2,8 @@ package com.eric.codejam;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -16,36 +18,12 @@ public class Main {
     public static void handleCase(int caseNumber, Scanner scanner,
             PrintStream os) {
 
-        //Main.buildMain(scanner);
-        Happiness hap = new Happiness(12, 3, 1000);
+        String ans = Main.buildMain(scanner);
         
-        Tournament t = new Tournament();
-        t.rounds = 3;
-        t.roundDays = new int[] {   0, 1, 3 };
-        
-        Tournament t2 = new Tournament();
-        t2.rounds = 5;
-        t2.roundDays = new int[] {   0, 2, 3,7, 11 };
-        
-        Tournament t3 = new Tournament();
-        t3.rounds = 2;
-        t3.roundDays = new int[] {   0, 2  };
-        
-        hap.addTournament(t);
-        hap.addTournament(t2);
-        hap.addTournament(t3);
-        
-        for( int i = 13; i < 20; ++i) {
-            hap = new Happiness(i, 3, 1000);
-            hap.addTournament(t);
-            hap.addTournament(t2);
-            hap.addTournament(t3);
-            log.info("hap num {}", hap.getNumerator() );
-        }
 
         log.info("Starting case {}", caseNumber);
 
-        os.println("Case #" + caseNumber + ": ");
+        os.println("Case #" + caseNumber + ": " + ans);
 
     }
     
@@ -54,11 +32,8 @@ public class Main {
         int[] roundDays;
     }
     
-    private class Block {
-        
-    }
 
-    private static void buildMain(Scanner scanner) {
+    private static String buildMain(Scanner scanner) {
         
         int N = scanner.nextInt();
         int T = scanner.nextInt();
@@ -68,12 +43,20 @@ public class Main {
             Tournament t = new Tournament();
             t.rounds = scanner.nextInt();
             t.roundDays = new int[t.rounds];
-            t.roundDays[0] = 1;
+            t.roundDays[0] = 0;
             for(int j =1; j < t.rounds; ++j) {
-                t.roundDays[j] = scanner.nextInt();
+                t.roundDays[j] = scanner.nextInt() - 1;
             }
             tournaments.add(t);
         }
+        
+        Happiness h = Happiness.create(N, 3, 10000, tournaments);
+        
+        BigInteger[] div = h.getNumerator().divideAndRemainder(h.denom);
+        
+        BigInteger divisor = div[1].gcd(h.denom);
+        
+        return "" + div[0].toString() + "+" + div[1].divide(divisor) + "/" + h.denom.divide(divisor);
         
     }
 

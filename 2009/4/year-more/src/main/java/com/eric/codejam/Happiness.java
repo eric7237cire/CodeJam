@@ -1,5 +1,6 @@
 package com.eric.codejam;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import com.eric.codejam.Main.Tournament;
@@ -9,8 +10,8 @@ public class Happiness {
     /*
      * p[block][#] = numerator of probability
      */
-    int probability[][];
-    int denom;
+    BigInteger probability[][];
+    BigInteger denom;
     
     int currentTournNum = 0;
     int blockSize;
@@ -31,7 +32,12 @@ public class Happiness {
          * 
          * Only store max tournament size because every day after that the probababilities are the same
          */
-        probability = new int[maxTournamentSize][maxTournamentCount+1];        
+        probability = new BigInteger[maxTournamentSize][maxTournamentCount+1];  
+        for(int i = 0; i < maxTournamentSize; ++i) {
+            for(int j = 0; j <= maxTournamentCount; ++j) {
+                probability[i][j] = BigInteger.ZERO;
+            }
+        }
     }
     
     public static Happiness create(int blockSize, int maxTournamentCount, int maxTournamentSize, List<Tournament> list) {
@@ -64,27 +70,35 @@ public class Happiness {
         
         if (currentTournNum == 0) {
             for(int i = 0; i < maxTournamentSize; ++i) {
-                probability[i][0] = tournProb[i][0];
-                probability[i][1] = tournProb[i][1];
+                probability[i][0] = BigInteger.valueOf( tournProb[i][0] );
+                probability[i][1] = BigInteger.valueOf(tournProb[i][1] );
             }
-            denom = blockSize;
+            denom = BigInteger.valueOf(blockSize);
             currentTournNum ++;
             return;
         }
         
+        denom = denom.multiply(BigInteger.valueOf(blockSize));
         currentTournNum ++;
       
-        int[][] newProbability = new int[maxTournamentSize][maxTournamentCount+1];
+        BigInteger[][] newProbability = new BigInteger[maxTournamentSize][maxTournamentCount+1];
+        
+        for(int i = 0; i < maxTournamentSize; ++i) {
+            for(int j = 0; j <= maxTournamentCount; ++j) {
+                newProbability[i][j] = BigInteger.ZERO;
+            }
+        }
         
         for(int i = 0; i < maxTournamentSize; ++i) {
             for(int simulRoundCount = 0; simulRoundCount <= currentTournNum; ++simulRoundCount) {
                 if (simulRoundCount == 0) {
-                    newProbability[i][0] = tournProb[i][0] * probability[i][0];
+                    newProbability[i][0] = probability[i][0].multiply(BigInteger.valueOf(tournProb[i][0]));
                 } else 
                 if (simulRoundCount == currentTournNum) {
-                    newProbability[i][simulRoundCount] = tournProb[i][1] * probability[i][simulRoundCount-1];
+                    newProbability[i][simulRoundCount] = probability[i][simulRoundCount-1].multiply(BigInteger.valueOf(tournProb[i][1])) ;
                 } else {
-                    newProbability[i][simulRoundCount] = tournProb[i][0] * probability[i][simulRoundCount] + tournProb[i][1] * probability[i][simulRoundCount-1];
+                    newProbability[i][simulRoundCount] = probability[i][simulRoundCount].multiply(BigInteger.valueOf(tournProb[i][0])).add(
+                             probability[i][simulRoundCount-1].multiply(BigInteger.valueOf( tournProb[i][1])));
                 }                
             }
         }
@@ -95,19 +109,20 @@ public class Happiness {
         
     }
     
-    public int getNumerator() {
-        int sum = 0;
+    public BigInteger getNumerator() {
+        BigInteger sum = BigInteger.ZERO;
         
         for(int i = 0; i < maxTournamentSize; ++i) {
             for(int roundCount = 1; roundCount <= maxTournamentCount; ++roundCount) {
-                sum += probability[i][roundCount] * roundCount*roundCount;
+                sum = sum.add(probability[i][roundCount].multiply(BigInteger.valueOf( roundCount*roundCount )));
             }
         }
         
         int rest = blockSize - maxTournamentSize;
         if (rest > 0) {
             for(int roundCount = 1; roundCount <= maxTournamentCount; ++roundCount) {
-                sum += rest * probability[maxTournamentSize-1][roundCount] * roundCount*roundCount;
+                sum = sum.add(BigInteger.valueOf(rest).multiply
+                        ( probability[maxTournamentSize-1][roundCount].multiply(BigInteger.valueOf( roundCount*roundCount ))));
             }
         }
             
