@@ -37,6 +37,50 @@ import com.eric.codejam.Main.Tournament;
 public class AppTest {
     
     @Test
+    public void testRealSolution() {
+        Tournament t = new Tournament();
+        t.rounds = 3;
+        t.roundDays = new int[] {   0, 1, 3 };
+        
+        List<Tournament> list = new ArrayList<>();
+        list.add(t);
+        
+        
+        Happiness hap = Happiness.create(1, 1, 1000, list);
+                
+        assertEquals(1, hap.getNumerator().intValue());
+        
+        RealSolution rs = RealSolution.create(1, 1, 10, list);
+        
+        assertEquals(1,  rs.wholeNumber);
+        
+        rs = RealSolution.create(7, 1, 10, list);
+        
+        //assertEquals(17 / 7,  rs.getNumerator() / rs.denom);
+        
+        
+        t = new Tournament();
+        t.rounds = 2;
+        t.roundDays = new int[] { 0, 2 };
+        
+        list.add(t);
+        
+        rs = RealSolution.create(4, 2, 1000, list);
+        
+        assertEquals(16*5 + 2, rs.wholeNumber * 16 + rs.getNumerator());
+        
+        hap = new Happiness(4, 2, 100);
+        hap.addTournament(list.get(0));
+        hap.addTournament(list.get(1));
+        assertEquals(16*5+2, hap.getNumerator().intValue());
+        
+        t = new Tournament();
+        t.rounds = 2;
+        t.roundDays = new int[] { 0, 3 };
+        list.add(t);
+    }
+    
+    @Test
     public void testCountTotalHapp() {
         Tournament t = new Tournament();
         t.rounds = 3;

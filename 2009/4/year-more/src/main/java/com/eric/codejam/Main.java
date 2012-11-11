@@ -49,13 +49,14 @@ public class Main {
             tournaments.add(t);
         }
         
-        Happiness h = Happiness.create(N, 50, 10000, tournaments);
+//        Happiness h = Happiness.create(N, 50, 10000, tournaments);
+        RealSolution h = RealSolution.create(N, 50, 10000, tournaments);
         
-        BigInteger[] div = h.getNumerator().divideAndRemainder(h.denom);
+        BigInteger[] div = BigInteger.valueOf(h.getNumerator()).divideAndRemainder(BigInteger.valueOf(h.denom));
         
-        BigInteger divisor = div[1].gcd(h.denom);
+        BigInteger divisor = div[1].gcd(BigInteger.valueOf(h.denom));
         
-        return "" + div[0].toString() + "+" + div[1].divide(divisor) + "/" + h.denom.divide(divisor);
+        return "" + new Integer(div[0].intValue() + h.wholeNumber).toString() + "+" + div[1].divide(divisor) + "/" + BigInteger.valueOf(h.denom).divide(divisor);
         
     }
 
@@ -68,7 +69,8 @@ public class Main {
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-            args = new String[] { "sample.txt" };
+          //  args = new String[] { "sample.txt" };
+            args = new String[] { "A-small-practice.in" };
         }
         log.info("Input file {}", args[0]);
 

@@ -1,0 +1,38 @@
+<testData>
+
+	<test name="s1">
+		<input>
+			1 1
+			2 2
+		</input>
+		<output>
+			1+0/1
+
+
+		</output>
+	</test>
+	<test name="s2">
+		<input>
+			4 2
+			3 2 4
+			2 3
+		</input>
+		<output>
+			5+1/8
+		</output>
+	</test>
+
+	<test name="s3">
+		<input>
+			10 3
+			4 2 5 9
+			3 4 8
+			5 2 3 9 12
+		</input>
+		<output>
+			11+19/25
+		</output>
+	</test>
+
+	<!-- <test name=""> <input> </input> <output> </output> </test> -->
+</testData>
