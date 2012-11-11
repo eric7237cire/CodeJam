@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eric.codejam.Main.Tournament;
+import com.google.common.base.Preconditions;
 import com.google.common.math.LongMath;
 
 public class RealSolution {
@@ -56,20 +57,53 @@ public class RealSolution {
         
         tournamentRoundCountsPerDay = new int[tournaments.size()][maxTournamentSize];
         
+        
+        //a + b + c + d
+        long[][] runningRoundCount = new long[tournaments.size()][maxTournamentSize];
+        
+        //b*a + c (a + b) + d ( a+b+c )
+        long[][] runningRoundCountMult = new long[tournaments.size()][maxTournamentSize];
+        
+        long chTerm2 = 0;
+        
+        //In order to add from maxTournamentSize to blocksize
+        long lastDayTerm2 = 0;
+        
         for (int tNum = 0; tNum < tournaments.size(); ++tNum) {
 
             Tournament t = tournaments.get(tNum);
 
             // First calc probabilities of tournament
-            for (int start = 0; start < maxTournamentSize; ++start) {
+            for (int startDay = 0; startDay < maxTournamentSize; ++startDay) {
                 for (int round : t.roundDays) {
-                    if (start + round >= maxTournamentSize) {
+                    if (startDay + round >= maxTournamentSize) {
                         break;
                     }
 
-                    tournamentRoundCountsPerDay[tNum][round + start]++;
+                    tournamentRoundCountsPerDay[tNum][round + startDay]++;
                 }
-            }
+
+                if (tNum == 0) {
+                    runningRoundCountMult[tNum][startDay] = 0;
+                    runningRoundCount[tNum][startDay] = tournamentRoundCountsPerDay[tNum][startDay];
+                } else {
+                    runningRoundCountMult[tNum][startDay] = runningRoundCount[tNum - 1][startDay]
+                            * tournamentRoundCountsPerDay[tNum][startDay];
+                    runningRoundCount[tNum][startDay] = runningRoundCount[tNum - 1][startDay]
+                            + tournamentRoundCountsPerDay[tNum][startDay];
+
+                    chTerm2 = LongMath.checkedAdd(chTerm2, LongMath
+                            .checkedMultiply(2,
+                                    runningRoundCountMult[tNum][startDay]));
+
+                    if (startDay == maxTournamentSize - 1) {
+                        lastDayTerm2 = LongMath.checkedAdd(lastDayTerm2,
+                                LongMath.checkedMultiply(2,
+                                        runningRoundCountMult[tNum][startDay]));
+                    }
+                }
+            }            
+            
         }
         
      //   long[] runningSum = new long[maxTournamentSize];
@@ -99,6 +133,9 @@ public class RealSolution {
                 }
             }
         }
+        
+        Preconditions.checkState(chTerm2 == term2);
+        Preconditions.checkState(lastDaySum == lastDayTerm2);
         
         int rest = blockSize - maxTournamentSize;
         

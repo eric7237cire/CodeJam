@@ -70,7 +70,8 @@ public class Main {
 
         if (args.length < 1) {
           //  args = new String[] { "sample.txt" };
-            args = new String[] { "A-small-practice.in" };
+            //args = new String[] { "A-small-practice.in" };
+            args = new String[] { "A-large-practice.in" };
         }
         log.info("Input file {}", args[0]);
 
