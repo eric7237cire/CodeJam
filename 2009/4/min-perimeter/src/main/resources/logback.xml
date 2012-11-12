@@ -19,12 +19,14 @@
   
    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>myApp.log</file>
+    <append>false</append>
     <encoder>
-      <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+      <pattern>%date [%file:%line] %msg%n</pattern>
     </encoder>
   </appender>
   
-  <root level="${root-level:-OFF}">
-    <appender-ref ref="console"/>
+  <root level="${root-level:-DEBUG}">
+   <!--  <appender-ref ref="console"/> -->
+    <appender-ref ref="FILE"/>
   </root>
 </configuration>

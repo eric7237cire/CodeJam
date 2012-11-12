@@ -42,7 +42,7 @@ public class BruteForce {
             
         };
         
-        SortedSet<PointInt> setY = new TreeSet<PointInt>(c);
+        TreeSet<PointInt> setY = new TreeSet<PointInt>(c);
         
         
         for(PointInt p : list) {
@@ -58,13 +58,15 @@ public class BruteForce {
             
             ++count;
             
-            SortedSet<PointInt> subSet = set.headSet(x).tailSet(new PointInt(x.getX()-maxDist, 0));
+            //SortedSet<PointInt> subSet = set.headSet(x).tailSet(new PointInt(x.getX()-maxDist, 0));
+            SortedSet<PointInt> subSet = set.headSet(x); //.tailSet(new PointInt(x.getX()-maxDist, 0));
             
             
-            SortedSet<PointInt> subSetY_a = setY.headSet(new PointInt(0, x.getY()+maxDist));
-            SortedSet<PointInt> subSetY = subSetY_a.tailSet(new PointInt(0, x.getY()-maxDist));
+            TreeSet<PointInt> subSetY_a = (TreeSet) setY.headSet(new PointInt(0, x.getY()+maxDist),true);
+            SortedSet<PointInt> subSetY = subSetY_a.tailSet(new PointInt(0, x.getY()-maxDist), true);
             
             Set<PointInt> inter = Sets.intersection(subSet, subSetY);
+           // inter = subSet;
             
             if (inter.size() < 2) {
                 continue;
@@ -73,11 +75,15 @@ public class BruteForce {
             List<PointInt> l = new ArrayList<PointInt>(inter);
             
             if (count % 1000 == 0)
-                log.debug("x = {} MinX = {} minP {}.  Total x {} subset size {} count {}", x, maxDist, minPerimeter, set.last(), subSet.size(),count);
+                log.debug("x = {} MinX = {} minP {}.  Last x {} subset size {} count {}", x, maxDist, minPerimeter, set.last(), subSet.size(),count);
                 
                         
             //log.debug("Checking set of size {}", l.size());
-            minPerimeter = minPerim(x, l);
+            double minP =   minPerim(x, l);
+            if (minP < minPerimeter) {
+                log.debug("New minimum {}", minP);
+                minPerimeter = minP;
+            }
             
             Preconditions.checkArgument(!Double.isNaN(minPerimeter ));
         }
