@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eric.codejam.geometry.PointInt;
+import com.eric.codejam.geometry.PointLong;
 
 public class Main {
 
@@ -36,11 +37,11 @@ public class Main {
         
         int n = scanner.nextInt();
         
-        List<PointInt> points = new ArrayList<>();
+        List<PointLong> points = new ArrayList<>();
         for(int i = 0; i < n; ++i) {
             int x = scanner.nextInt();
             int y = scanner.nextInt();
-            points.add(new PointInt(x,y));
+            points.add(new PointLong(x,y));
         }
 
         return BruteForce.minPerimUsingSort(points);
@@ -57,8 +58,8 @@ public class Main {
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-           args = new String[] { "sample.txt" };
-            //args = new String[] { "smallInput.txt" };
+           //args = new String[] { "sample.txt" };
+           args = new String[] { "smallInput.txt" };
         }
         log.info("Input file {}", args[0]);
 
