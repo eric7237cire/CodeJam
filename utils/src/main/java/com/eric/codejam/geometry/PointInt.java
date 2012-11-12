@@ -1,37 +1,35 @@
 package com.eric.codejam.geometry;
 
-import com.eric.codejam.utils.DoubleComparator;
 import com.google.common.base.Objects;
 
-public class Point {
-    private double x;
-    private double y;
+public class PointInt {
+    private int x;
+    private int y;
     /**
      * @return the x
      */
-    public double getX() {
+    public int getX() {
         return x;
     }
     /**
      * @param x the x to set
      */
-    public void setX(double x) {
+    public void setX(int x) {
         this.x = x;
     }
     /**
      * @return the y
      */
-    public double getY() {
+    public int getY() {
         return y;
     }
     /**
      * @param y the y to set
      */
-    public void setY(double y) {
+    public void setY(int y) {
         this.y = y;
     }
-    public Point(double x, double y) {
-        super();
+    public PointInt(int x, int y) {
         this.x = x;
         this.y = y;
     }
@@ -48,18 +46,18 @@ public class Point {
      * m = (y.p - y.s) / (x.p - x.s)
      * b = y.s-m*x.s
      */
-    double[] getSlopeAndYIntercept(Point other) {
+    int[] getSlopeAndYIntercept(PointInt other) {
         if (this.x == other.x) {
             throw new IllegalArgumentException("Vertical");
         }
         
-        double m = (other.y - y ) / (other.x - x);
-        double b = other.y - m * other.x;
+        int m = (other.y - y ) / (other.x - x);
+        int b = other.y - m * other.x;
         
-        return new double[] { m, b };
+        return new int[] { m, b };
     }
     
-    public double distance(Point other) {
+    public double distance(PointInt other) {
         return Math.sqrt( (x-other.x)*(x-other.x)+(y-other.y)*(y-other.y));
     }
     /* (non-Javadoc)
@@ -80,11 +78,8 @@ public class Point {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Point other = (Point) obj;
-        if (0 != new DoubleComparator().compare(x, other.x))
-            return false;
-        if (0 != new DoubleComparator().compare(y, other.y))
-            return false;
-        return true;
+        PointInt other = (PointInt) obj;
+        return x == other.x && y == other.y;
+        
     }
 }

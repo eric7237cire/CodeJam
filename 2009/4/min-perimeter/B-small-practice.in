@@ -1,0 +1,186 @@
+import java.util.*;
+import java.io.*;
+public strictfp class Input {
+static class Point {
+int x; int y; Point z; long t;
+public Point(int a, int b) {x = a; y=b;}
+@Override 
+public boolean equals(Object o) {
+Point point = (Point) o;
+if (x != point.x) return false;
+if (y != point.y) return false;
+return true;
+}
+@Override 
+public int hashCode() {
+int result = x;
+result = 31 * result + y;
+return result;
+}
+}
+static Point randomPoint(SimpleRandom r, int mc) {
+return new Point(r.nextInt(mc + 1), r.nextInt(mc + 1));
+}
+static class Testcase {
+Set<Point> points = new HashSet<Point>();
+}
+static class SimpleRandom {
+static final long MOD = 4294967291L;
+static final long MUL = 279470273L; 
+private long seed;
+SimpleRandom(long seed) {
+seed %= MOD;
+if (seed < 0)
+seed += MOD;
+if (seed == 0)
+seed = 57;
+this.seed = seed;
+}
+
+int nextInt(int max) {
+return (int) nextLong(max);
+}
+long nextLong(long max) {
+long maxMight = MOD / max * max;
+do {
+seed = (seed * MUL) % MOD;
+} while (seed > maxMight);
+return ((seed - 1) % max);
+}
+double nextDouble() {
+return nextLong(MOD - 1) / (double) (MOD - 1);
+}
+}
+public static void main(String[] args) throws Exception {
+PrintWriter wr = new PrintWriter(new BufferedOutputStream(System.out));
+wr.println(15);
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(2114297043L);
+for (int i = 0; i < 3; ++i) t.points.add(randomPoint(r, 10));
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(3241493371L);
+for (int i = 0; i < 3; ++i) t.points.add(randomPoint(r, 1000));
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(1592107896L);
+for (int i = 0; i < 3; ++i) t.points.add(randomPoint(r, 1000000000));
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(3806310323L);
+r.nextInt(33336);
+r.nextInt(19565);
+r.nextInt(33336);
+r.nextInt(3277);
+while (t.points.size() < 10000) {
+int z = r.nextInt(172532 + 1);
+t.points.add(new Point(z * 5796, z * 241));
+}
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(2465028241L);
+for (int i = 0; i < 39730; ++i) t.points.add(randomPoint(r, 100));
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(1119503125L);
+for (int i = 0; i < 10001; ++i) t.points.add(randomPoint(r, 10000));
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(241545948L);
+for (int i = 0; i < 10000; ++i) t.points.add(randomPoint(r, 1000000));
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(1248386821L);
+for (int i = 0; i < 10000; ++i) t.points.add(randomPoint(r, 1000000000));
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(1312650276L);
+for (int i = 0; i < 10000; ++i) t.points.add(randomPoint(r, 1000000000));
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(70327625L);
+for (int i = 0; i < 10000; ++i) t.points.add(randomPoint(r, 1000000000));
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(187903863L);
+for (int i = 0; i < 10000; ++i) t.points.add(randomPoint(r, 1000000000));
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(2792915033L);
+for (int i = 0; i < 10000; ++i) t.points.add(randomPoint(r, 1000000000));
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(2750811415L);
+for (int i = 0; i < 10000; ++i) t.points.add(randomPoint(r, 1000000000));
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(3160069001L);
+for (int i = 0; i < 10000; ++i) t.points.add(randomPoint(r, 1000000000));
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+{
+Testcase t = new Testcase();
+SimpleRandom r = new SimpleRandom(2726059419L);
+for (int i = 0; i < 10000; ++i) t.points.add(randomPoint(r, 1000000000));
+List<Point> l = new ArrayList<Point>(t.points);
+wr.println(l.size());
+for (Point p : l) wr.println(p.x + " " + p.y);
+}
+wr.close();
+}
+}

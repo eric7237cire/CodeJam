@@ -1,2 +1,2 @@
 @echo off
-java -jar .\target\year-more-1.0-SNAPSHOT-jar-with-dependencies.jar %1 %2 %3 
+java -cp .\target\classes eric.codejam.Main %1 %2 %3 

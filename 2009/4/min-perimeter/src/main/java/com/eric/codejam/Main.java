@@ -2,10 +2,14 @@ package com.eric.codejam;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.eric.codejam.geometry.PointInt;
 
 public class Main {
 
@@ -14,19 +18,27 @@ public class Main {
     public static void handleCase(int caseNumber, Scanner scanner,
             PrintStream os) {
 
-        Main m = Main.buildMain(scanner);
+        double ans = Main.buildMain(scanner);
 
         log.info("Starting case {}", caseNumber);
 
-        os.println("Case #" + caseNumber + ": ");
+        os.println("Case #" + caseNumber + ": " + ans);
 
     }
 
-    private static Main buildMain(Scanner scanner) {
-        // TODO build main from input
-        Main m = new Main();
+    private static double buildMain(Scanner scanner) {
+        
+        int n = scanner.nextInt();
+        
+        List<PointInt> points = new ArrayList<>();
+        for(int i = 0; i < n; ++i) {
+            int x = scanner.nextInt();
+            int y = scanner.nextInt();
+            points.add(new PointInt(x,y));
+        }
 
-        return m;
+        return BruteForce.minPerimUsingDiff(points);
+        //return BruteForce.minPerim(points);
     }
 
     public Main() {

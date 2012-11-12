@@ -1,2 +1,4 @@
 @echo off
-java -jar .\target\min-perimeter-1.0-SNAPSHOT-jar-with-dependencies.jar %1 %2 %3 
+set CLASSPATH=.\target\classes;C:\Users\thresh\AppData\.m2\repository\ch\qos\logback\logback-classic\1.0.7\logback-classic-1.0.7.jar;C:\Users\thresh\AppData\.m2\repository\ch\qos\logback\logback-core\1.0.7\logback-core-1.0.7.jar;C:\Users\thresh\AppData\.m2\repository\com\eric\codejam\utils\1.0-SNAPSHOT\utils-1.0-SNAPSHOT.jar;C:\Users\thresh\AppData\.m2\repository\com\google\guava\guava\13.0.1\guava-13.0.1.jar;C:\Users\thresh\AppData\.m2\repository\junit\junit\4.10\junit-4.10.jar;C:\Users\thresh\AppData\.m2\repository\org\apache\commons\commons-lang3\3.1\commons-lang3-3.1.jar;C:\Users\thresh\AppData\.m2\repository\org\apache\commons\commons-math3\3.0\commons-math3-3.0.jar;C:\Users\thresh\AppData\.m2\repository\org\hamcrest\hamcrest-core\1.1\hamcrest-core-1.1.jar;C:\Users\thresh\AppData\.m2\repository\org\slf4j\slf4j-api\1.7.2\slf4j-api-1.7.2.jar
+java com.eric.codejam.Main %1 %2 %3
+rem java -jar .\target\min-perimeter-1.0-SNAPSHOT-jar-with-dependencies.jar %1 %2 %3 
