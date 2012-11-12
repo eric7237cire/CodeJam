@@ -1,10 +1,14 @@
 package com.eric.codejam;
 
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,11 +16,45 @@ import org.slf4j.LoggerFactory;
 import com.eric.codejam.geometry.PointInt;
 import com.eric.codejam.utils.CombinationIterator;
 import com.google.common.base.Preconditions;
+import com.google.common.math.DoubleMath;
 
 
 public class BruteForce {
     final static Logger log = LoggerFactory.getLogger(BruteForce.class);
     
+    static double  minPerimUsingSort(List<PointInt> list) {
+        
+        SortedSet<PointInt> set = new TreeSet<>(); 
+        
+        
+        
+        for(PointInt p : list) {
+            set.add(p);
+        }
+        
+        double minPerimeter = Integer.MAX_VALUE;
+        
+        for(PointInt x : set) {
+            int minX =  DoubleMath.roundToInt(minPerimeter / 2d, RoundingMode.DOWN);
+            
+            log.debug("x = {} MinX = {} minP {}.  Total x {}", x, minX, minPerimeter, set.last());
+            
+            SortedSet subSet = set.headSet(x).tailSet(new PointInt(x.getX()-minX, 0));
+            
+            if (subSet.size() < 3) {
+                continue;
+            }
+            
+            List<PointInt> l = new ArrayList<PointInt>(subSet);
+            
+            log.debug("Checking set of size {}", l.size());
+            minPerimeter = minPerimUsingDiff(l);
+            
+            Preconditions.checkArgument(!Double.isNaN(minPerimeter ));
+        }
+        
+        return 3;
+    }
     static double  minPerimUsingDiff(List<PointInt> list) {
         log.info("Starting");
         //x y are indices to pointx and pointy
@@ -39,7 +77,7 @@ public class BruteForce {
         
         while(it.hasNext()) {
             ++counter;
-            if (counter % 100 == 0) {
+            if (counter % 10000 == 0) {
                 log.info("Counter is {}.  Min is {}", counter, minPerim);
             }
             Map.Entry<Double,PointInt> entry = it.next();
@@ -63,13 +101,18 @@ public class BruteForce {
     }
     
     static double  minPerim(List<PointInt> list) {
-        Preconditions.checkArgument(list.size() <= 200);
+        Preconditions.checkArgument(list.size() <= 62);
         
         Iterator<Long> comIt = new CombinationIterator(list.size(), 3);
         
         double min = Double.MAX_VALUE;
         
+        int count = 0;
+        
         while(comIt.hasNext()) {
+            ++count;
+            if (count % 1000000 ==0) 
+                log.debug("Count {}", count);
             Long com =  comIt.next();
             
             PointInt[] arr = new PointInt[3];

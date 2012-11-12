@@ -37,7 +37,8 @@ public class Main {
             points.add(new PointInt(x,y));
         }
 
-        return BruteForce.minPerimUsingDiff(points);
+        return BruteForce.minPerimUsingSort(points);
+        //return BruteForce.minPerimUsingDiff(points);
         //return BruteForce.minPerim(points);
     }
 
@@ -50,7 +51,8 @@ public class Main {
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-            args = new String[] { "sample.txt" };
+            //args = new String[] { "sample.txt" };
+            args = new String[] { "smallInput.txt" };
         }
         log.info("Input file {}", args[0]);
 

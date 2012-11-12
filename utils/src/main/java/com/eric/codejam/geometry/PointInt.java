@@ -1,8 +1,12 @@
 package com.eric.codejam.geometry;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.math.IntMath;
+import com.google.common.math.LongMath;
 
-public class PointInt {
+public class PointInt implements Comparable<PointInt>{
     private int x;
     private int y;
     /**
@@ -58,7 +62,12 @@ public class PointInt {
     }
     
     public double distance(PointInt other) {
-        return Math.sqrt( (x-other.x)*(x-other.x)+(y-other.y)*(y-other.y));
+        
+        long l = LongMath.checkedAdd( LongMath.checkedPow(x-other.x, 2), LongMath.checkedPow(y-other.y, 2) );
+        double r = Math.sqrt( l );
+        Preconditions.checkArgument(!Double.isNaN(r));
+        
+        return r;
     }
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
@@ -81,5 +90,9 @@ public class PointInt {
         PointInt other = (PointInt) obj;
         return x == other.x && y == other.y;
         
+    }
+    @Override
+    public int compareTo(PointInt o) {
+        return ComparisonChain.start().compare(x, o.x).compare(y, o.y).result();
     }
 }
