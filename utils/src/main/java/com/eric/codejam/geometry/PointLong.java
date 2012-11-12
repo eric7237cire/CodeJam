@@ -6,84 +6,100 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
 
-public class PointInt implements Comparable<PointInt>{
-    private int x;
-    private int y;
+public class PointLong implements Comparable<PointLong> {
+    private long x;
+    private long y;
+
     /**
      * @return the x
      */
-    public int getX() {
+    public long getX() {
         return x;
     }
+
     /**
-     * @param x the x to set
+     * @param x
+     *            the x to set
      */
-    public void setX(int x) {
+    public void setX(long x) {
         this.x = x;
     }
+
     /**
      * @return the y
      */
-    public int getY() {
+    public long getY() {
         return y;
     }
+
     /**
-     * @param y the y to set
+     * @param y
+     *            the y to set
      */
-    public void setY(int y) {
+    public void setY(long y) {
         this.y = y;
     }
-    public PointInt(int x, int y) {
+
+    public PointLong(long x, long y) {
         this.x = x;
         this.y = y;
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
         return "Point [x=" + x + ", y=" + y + "]";
     }
-    
+
     /*
-     *  y - y.s = (y.p - y.s) / (x.p - x.s)  (x - x.s)
-     * m = (y.p - y.s) / (x.p - x.s)
-     * b = y.s-m*x.s
+     * y - y.s = (y.p - y.s) / (x.p - x.s) (x - x.s) m = (y.p - y.s) / (x.p -
+     * x.s) b = y.s-m*x.s
      */
-    int[] getSlopeAndYIntercept(PointInt other) {
+    long[] getSlopeAndYIntercept(PointLong other) {
         if (this.x == other.x) {
             throw new IllegalArgumentException("Vertical");
         }
-        
-        int m = (other.y - y ) / (other.x - x);
-        int b = other.y - m * other.x;
-        
-        return new int[] { m, b };
+
+        long m = (other.y - y) / (other.x - x);
+        long b = other.y - m * other.x;
+
+        return new long[] { m, b };
     }
-    
-    public double distance(PointInt other) {
-        
-        long l = LongMath.checkedAdd( LongMath.checkedPow(x-other.x, 2), LongMath.checkedPow(y-other.y, 2) );
-        double r = Math.sqrt( l );
+
+    public double distance(PointLong other) {
+
+        long l = LongMath.checkedAdd(LongMath.checkedPow(x - other.x, 2),
+                LongMath.checkedPow(y - other.y, 2));
+        double r = Math.sqrt(l);
         Preconditions.checkArgument(!Double.isNaN(r));
-        
+
         return r;
     }
-    
-    public long distanceSq(PointInt other) {
-        
-        long l = LongMath.checkedAdd( LongMath.checkedPow(x-other.x, 2), LongMath.checkedPow(y-other.y, 2) );
+
+    public long distanceSq(PointLong other) {
+
+        long l = LongMath.checkedAdd(LongMath.checkedPow(x - other.x, 2),
+                LongMath.checkedPow(y - other.y, 2));
         return l;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
-       return Objects.hashCode(x, y);
+        return Objects.hashCode(x, y);
     }
-    /* (non-Javadoc)
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -94,12 +110,13 @@ public class PointInt implements Comparable<PointInt>{
             return false;
         if (getClass() != obj.getClass())
             return false;
-        PointInt other = (PointInt) obj;
+        PointLong other = (PointLong) obj;
         return x == other.x && y == other.y;
-        
+
     }
+
     @Override
-    public int compareTo(PointInt o) {
+    public int compareTo(PointLong o) {
         return ComparisonChain.start().compare(x, o.x).compare(y, o.y).result();
     }
 }
