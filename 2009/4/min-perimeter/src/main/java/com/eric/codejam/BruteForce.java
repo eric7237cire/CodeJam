@@ -2,9 +2,11 @@ package com.eric.codejam;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
@@ -16,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import com.eric.codejam.geometry.PointInt;
 import com.eric.codejam.utils.CombinationIterator;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Sets;
 import com.google.common.math.DoubleMath;
 
 
@@ -26,34 +30,59 @@ public class BruteForce {
         
         SortedSet<PointInt> set = new TreeSet<>(); 
         
+        Comparator<PointInt> c = new Comparator<PointInt>() {
+
+            /* (non-Javadoc)
+             * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+             */
+            @Override
+            public int compare(PointInt o1, PointInt o2) {
+                return ComparisonChain.start().compare(o1.getY(), o2.getY()).compare(o1.getX(), o2.getX()).result();
+            }
+            
+        };
+        
+        SortedSet<PointInt> setY = new TreeSet<PointInt>(c);
         
         
         for(PointInt p : list) {
             set.add(p);
+            setY.add(p);
         }
         
         double minPerimeter = Integer.MAX_VALUE;
         
+        int count = 0;
         for(PointInt x : set) {
-            int minX =  DoubleMath.roundToInt(minPerimeter / 2d, RoundingMode.DOWN);
+            int maxDist =  1+DoubleMath.roundToInt(minPerimeter / 2d, RoundingMode.DOWN);
             
-            log.debug("x = {} MinX = {} minP {}.  Total x {}", x, minX, minPerimeter, set.last());
+            ++count;
             
-            SortedSet subSet = set.headSet(x).tailSet(new PointInt(x.getX()-minX, 0));
+            SortedSet<PointInt> subSet = set.headSet(x).tailSet(new PointInt(x.getX()-maxDist, 0));
             
-            if (subSet.size() < 3) {
+            
+            SortedSet<PointInt> subSetY_a = setY.headSet(new PointInt(0, x.getY()+maxDist));
+            SortedSet<PointInt> subSetY = subSetY_a.tailSet(new PointInt(0, x.getY()-maxDist));
+            
+            Set<PointInt> inter = Sets.intersection(subSet, subSetY);
+            
+            if (inter.size() < 2) {
                 continue;
             }
             
-            List<PointInt> l = new ArrayList<PointInt>(subSet);
+            List<PointInt> l = new ArrayList<PointInt>(inter);
             
-            log.debug("Checking set of size {}", l.size());
-            minPerimeter = minPerimUsingDiff(l);
+            if (count % 1000 == 0)
+                log.debug("x = {} MinX = {} minP {}.  Total x {} subset size {} count {}", x, maxDist, minPerimeter, set.last(), subSet.size(),count);
+                
+                        
+            //log.debug("Checking set of size {}", l.size());
+            minPerimeter = minPerim(x, l);
             
             Preconditions.checkArgument(!Double.isNaN(minPerimeter ));
         }
         
-        return 3;
+        return minPerimeter;
     }
     static double  minPerimUsingDiff(List<PointInt> list) {
         log.info("Starting");
@@ -98,6 +127,30 @@ public class BruteForce {
         }
         
         return minPerim;
+    }
+    
+    static double  minPerim(PointInt p, List<PointInt> list) {
+        
+        
+        double min = Double.MAX_VALUE;
+        
+        int count = 0;
+        
+        for(int i = 0; i < list.size(); ++i) {
+            for(int j = i + 1; j < list.size(); ++j) {
+                ++count;
+            
+                double area = list.get(i).distance(p) 
+                        + list.get(j).distance(p) 
+                        + list.get(i).distance(list.get(j));
+                
+                min = Math.min(area, min);
+                
+            }
+        }
+        
+       
+        return min;
     }
     
     static double  minPerim(List<PointInt> list) {

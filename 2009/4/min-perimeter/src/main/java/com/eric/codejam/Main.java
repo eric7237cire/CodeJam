@@ -2,8 +2,11 @@ package com.eric.codejam;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -22,7 +25,10 @@ public class Main {
 
         log.info("Starting case {}", caseNumber);
 
-        os.println("Case #" + caseNumber + ": " + ans);
+        DecimalFormat decim = new DecimalFormat("0.00000000000");
+        decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
+        
+        os.println("Case #" + caseNumber + ": " + decim.format(ans));
 
     }
 
@@ -51,8 +57,8 @@ public class Main {
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-            //args = new String[] { "sample.txt" };
-            args = new String[] { "smallInput.txt" };
+           args = new String[] { "sample.txt" };
+            //args = new String[] { "smallInput.txt" };
         }
         log.info("Input file {}", args[0]);
 
@@ -61,7 +67,7 @@ public class Main {
         int t = scanner.nextInt();
 
         for (int i = 1; i <= t; ++i) {
-
+            
             handleCase(i, scanner, System.out);
 
         }
