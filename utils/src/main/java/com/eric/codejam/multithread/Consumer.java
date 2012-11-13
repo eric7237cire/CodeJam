@@ -29,8 +29,10 @@ public class Consumer<InputData extends AbstractInputData> implements Runnable {
     public void run() {
         try {
             while (true) {
+                log.info("Consumer thread loop");
                 InputData input = queue.take();
                 if (input.testCase < 0) {
+                    log.info("Consumer Thread ending");
                     return;
                 }
                 String ans = testCaseHandler.handleCase(input.testCase, input);

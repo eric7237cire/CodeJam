@@ -23,6 +23,41 @@ public class Runner {
     static int testCounter = 0;
     final static Logger log = LoggerFactory.getLogger(Runner.class);
 
+    public static <InputData extends AbstractInputData> void goSingleThread(
+            String inputFileName, TestCaseInputReader<InputData> inputReader,
+            TestCaseHandler<InputData> testCaseHandler) {
+        try {
+            InputStreamReader isr = new InputStreamReader(new FileInputStream(
+                    new File(inputFileName)));
+            final BufferedReader br = new BufferedReader(isr);
+            // final Scanner scanner = new Scanner(br);
+
+            String line = br.readLine();
+
+            final int t = Integer.parseInt(line);
+
+            OutputStream os = new FileOutputStream(inputFileName + ".out");
+            PrintStream pos = new PrintStream(os);
+
+
+
+            for (int test = 1; test <= t; test++) {
+                InputData input = inputReader.readInput(br, test);
+                String ans = testCaseHandler.handleCase(test, input);
+                log.info(ans);
+                pos.println(ans);
+            }
+
+            log.info("Finished");
+
+            os.close();
+            // scanner.close();
+            br.close();
+        } catch (Exception ex) {
+            log.error("Error", ex);
+        }
+    }
+    
     public static <InputData extends AbstractInputData> void go(
             String inputFileName, TestCaseInputReader<InputData> inputReader,
             TestCaseHandler<InputData> testCaseHandler, InputData poisonPill) {
@@ -47,7 +82,8 @@ public class Runner {
 
             long overAllStart = System.currentTimeMillis();
 
-            BlockingQueue<InputData> q = new ArrayBlockingQueue<InputData>(t);
+            //Plus ten for poison pills
+            BlockingQueue<InputData> q = new ArrayBlockingQueue<InputData>(t+10);
             Producer<InputData> p = new Producer<InputData>(q, t, br,
                     inputReader, poisonPill);
 
@@ -61,22 +97,7 @@ public class Runner {
             for (int i = 0; i < threads.length; i++) {
                 threads[i].start();
             }
-            /*
-             * for (int i = 0; i < threads.length; i++) { // final B inst = new
-             * B(); threads[i] = new Thread(new Runnable() { public void run() {
-             * while (true) { int ltest = 0; synchronized (answers) { ltest =
-             * test; test++; if (ltest >= t) { return; } try { input[ltest] =
-             * readInput(br); } catch (IOException ex) {
-             * 
-             * } } long t = System.currentTimeMillis(); String ans =
-             * handleCase(ltest + 1, input[ltest]); input[ltest] = null;
-             * 
-             * log.info("Test {} calc finished in {}", ltest, +
-             * (System.currentTimeMillis() - t)); answers[ltest] = ans;
-             * 
-             * } } }); //threads[i].setPriority(Thread.MIN_PRIORITY);
-             * threads[i].start(); }
-             */
+           
             for (int i = 0; i < threads.length; i++) {
                 threads[i].join();
             }

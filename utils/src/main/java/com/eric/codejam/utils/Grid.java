@@ -1,5 +1,7 @@
 package com.eric.codejam.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -7,12 +9,17 @@ import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.eric.codejam.multithread.Consumer;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 
 public class Grid<SquareType> {
+    
+    final static Logger log = LoggerFactory.getLogger(Grid.class);
     
     private final int rows;
     private final int cols;
@@ -30,13 +37,37 @@ public class Grid<SquareType> {
     public static<SquareType> Grid<SquareType>  buildFromScanner(Scanner scanner, int rows, int cols, final BiMap<Character, SquareType> mapping, SquareType invalidSq) {
         
         
+        
         Grid<SquareType> g = new Grid<>(rows, cols, invalidSq, mapping);
         
         for (int r = 0; r < rows; ++r) {
             String rowStr = scanner.next();
+            
             for(int c = 0; c < cols; ++c) {
                 char ch = rowStr.charAt(c);
                 g.grid.add(g.getIndex(r,c), mapping.get(ch) );
+            }
+            
+        }
+        
+        return g;
+    }
+    
+    public static<SquareType> Grid<SquareType>  buildFromBufferedReader(BufferedReader br, int rows, int cols, final BiMap<Character, SquareType> mapping, SquareType invalidSq) {
+        
+        
+        Grid<SquareType> g = new Grid<>(rows, cols, invalidSq, mapping);
+        
+        for (int r = 0; r < rows; ++r) {
+            try {
+            String rowStr = br.readLine();
+           // log.debug(rowStr);
+            for(int c = 0; c < cols; ++c) {
+                char ch = rowStr.charAt(c);
+                g.grid.add(g.getIndex(r,c), mapping.get(ch) );
+            }
+            } catch (IOException ex) {
+                log.error("ex", ex);
             }
             
         }
@@ -75,6 +106,10 @@ public class Grid<SquareType> {
         
         grid = new ArrayList<>(rows*cols);
         
+    }
+    
+    public int getSize() {
+        return grid.size();
     }
     
     
@@ -163,11 +198,11 @@ public class Grid<SquareType> {
     }
 
 
-
+/*
     private List<SquareType> getGrid() {
         return grid;
     }
-
+*/
 
     public SquareType getInvalidSquare() {
         return invalidSquare;

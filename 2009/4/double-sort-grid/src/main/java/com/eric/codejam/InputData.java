@@ -1,8 +1,7 @@
 package com.eric.codejam;
 
-import java.util.List;
-
 import com.eric.codejam.main.AbstractInputData;
+import com.eric.codejam.utils.Grid;
 
 public class InputData extends AbstractInputData {
     //Données
@@ -10,4 +9,16 @@ public class InputData extends AbstractInputData {
     InputData(int testCase) {
         super(testCase);
     }
+    
+    int R;
+    int C;
+    
+    Grid<Integer> grid;
+
+    @Override
+    public String toString() {
+        return "InputData [grid=" + grid + "]";
+    }
+    
+    
 }

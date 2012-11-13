@@ -24,7 +24,9 @@
     </encoder>
   </appender>
    -->
-  <root level="${root-level:-OFF}">
+  <root level="${root-level:-DEBUG}">
     <appender-ref ref="console"/>
   </root>
+  <logger name="com.eric.codejam.multithread" level="OFF"/>
+   
 </configuration>
