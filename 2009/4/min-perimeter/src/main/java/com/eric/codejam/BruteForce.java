@@ -6,11 +6,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.slf4j.Logger;
@@ -22,8 +19,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Sets;
 import com.google.common.math.DoubleMath;
-import com.google.common.math.IntMath;
-import com.google.common.math.LongMath;
 
 public class BruteForce {
     final static Logger log = LoggerFactory.getLogger(BruteForce.class);
@@ -122,54 +117,7 @@ public class BruteForce {
         return minPerimeter;
     }
 
-    static double minPerimUsingDiff(List<PointLong> list) {
-        log.info("Starting");
-        // x y are indices to pointx and pointy
-        SortedMap<Double, PointLong> diffsMap = new TreeMap<>();
-
-        for (int i = 0; i < list.size(); ++i) {
-            log.info("I {} of {}", i, list.size());
-            for (int j = i + 1; j < list.size(); ++j) {
-                PointLong x = list.get(i);
-                PointLong y = list.get(j);
-                double diff = x.distance(y);
-                diffsMap.put(diff, new PointLong(i, j));
-            }
-        }
-
-        double minPerim = Double.MAX_VALUE;
-
-        Iterator<Map.Entry<Double, PointLong>> it = diffsMap.entrySet()
-                .iterator();
-        int counter = 0;
-
-        while (it.hasNext()) {
-            ++counter;
-            if (counter % 10000 == 0) {
-                log.info("Counter is {}.  Min is {}", counter, minPerim);
-            }
-            Map.Entry<Double, PointLong> entry = it.next();
-            if (entry.getKey() * 2 >= minPerim) {
-                return minPerim;
-            }
-
-            int point1 = (int) entry.getValue().getX();
-            int point2 = (int) entry.getValue().getY();
-            for (int i = 0; i < list.size(); ++i) {
-                if (i == entry.getValue().getX()
-                        || i == entry.getValue().getY()) {
-                    continue;
-                }
-
-                double area = list.get(point1).distance(list.get(i))
-                        + list.get(point2).distance(list.get(i))
-                        + entry.getKey();
-                minPerim = Math.min(area, minPerim);
-            }
-        }
-
-        return minPerim;
-    }
+   
 
     static double minPerim(PointLong p, List<PointLong> list, double min) {
 

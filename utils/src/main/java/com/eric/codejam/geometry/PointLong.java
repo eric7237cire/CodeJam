@@ -3,7 +3,6 @@ package com.eric.codejam.geometry;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
-import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
 
 public class PointLong implements Comparable<PointLong> {

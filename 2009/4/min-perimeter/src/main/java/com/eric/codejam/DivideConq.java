@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,26 +16,22 @@ import com.google.common.math.DoubleMath;
 
 public class DivideConq {
     List<PointLong> list;
-    SortedSet<PointLong> setX;
-    SortedSet<PointLong> setY;
+    
+    static CompareX compX = new CompareX();
+    static CompareY compY = new CompareY();
     
     final static Logger log = LoggerFactory.getLogger(DivideConq.class);
     
     public DivideConq(List<PointLong> list) {
         super();
         this.list = list;
-        Collections.sort(this.list, new CompareX());
-        setX = new TreeSet<PointLong>(new CompareX());
-        setY = new TreeSet<PointLong>(new CompareY());
-        
-        setX.addAll(list);
-        setY.addAll(list);
+        Collections.sort(this.list, new CompareX());        
     }
 
     public static double findMinPerimTriangle(List<PointLong> list) {
         DivideConq dq = new DivideConq(list);
         List<PointLong> listSortedY = new ArrayList<>(list);
-        Collections.sort(listSortedY, new CompareY());
+        Collections.sort(listSortedY, compY);
         
         return dq.findMinPerim(0, list.size()-1, listSortedY);
     }
@@ -60,11 +54,12 @@ public class DivideConq {
         /*
          * In order to avoid having to do another sort by y, (taking n log n), we just split using the sortedY list
          */
-        List<PointLong> leftList = new ArrayList<>();
-        List<PointLong> rightList = new ArrayList<>();
+        List<PointLong> leftList = new ArrayList<>(leftHalfEndIndex - leftIndex + 1);
+        List<PointLong> rightList = new ArrayList<>(rightIndex - rightHalfStartIndex + 1);
         
         //We must compare x and y because though we are partitioning by a vertical line, we must also be able to partition if all points have the same x
-        //PointLong midPoint = PointLong.midPoint(list.get(leftHalfEndIndex), list.get(rightHalfStartIndex));
+        //Because the partition is strictly less and due to rounding error from longs,
+        //we use this as the division point
         PointLong midPoint = list.get(rightHalfStartIndex);
        
         
@@ -73,7 +68,7 @@ public class DivideConq {
             Preconditions.checkState(list.get(leftIndex).getX() <= pl.getX());
             Preconditions.checkState(list.get(rightIndex).getX() >= pl.getX());
             
-            if (new CompareX().compare(pl, midPoint) < 0) {
+            if (compX.compare(pl, midPoint) < 0) {
                 leftList.add(pl);
             } else {
                 rightList.add(pl);
@@ -87,14 +82,7 @@ public class DivideConq {
         Preconditions.checkState(leftHalfEndIndex != rightIndex);
         Preconditions.checkState(rightHalfStartIndex != leftIndex);
         
-        //Correct the indexes
-        //leftHalfEndIndex = leftIndex + leftList.size() - 1;
-       // rightHalfStartIndex = leftHalfEndIndex + 1;
         Preconditions.checkState(numberOfPoints == leftList.size() + rightList.size());
-
-        if (midPoint.getX() >= 4000 && midPoint.getX() < 5000) {
-            log.debug("Mid point is {}", midPoint);
-        }
         
         //Divide
         double minLeft = findMinPerim(leftIndex, leftHalfEndIndex, leftList);
@@ -118,9 +106,6 @@ public class DivideConq {
         for(int i = 0; i < listPointsSortedY.size(); ++i) {
             PointLong point = listPointsSortedY.get(i);
             
-            if (point.getX() == 4274 ) {
-                log.debug("p {}", point);
-            }
             if (Math.abs(point.getX() - midPoint.getX()) > boxMargin) {
                 continue;
             }
@@ -130,6 +115,26 @@ public class DivideConq {
             while(startBox < boxPoints.size() && point.getY() - boxPoints.get(startBox).getY() > boxMargin) {
                 startBox++;
             }
+            
+            /**
+             * To explain this, the box goes from -minP / 2 to + minP / 2 from the
+             * dividing vertical line.  Its height is also minP / 2.
+             * 
+             * Because we have the minimum with respect to the left and right
+             * sides, all triangles to the left and right have max perimiter <= minP.
+             * 
+             * The only way to cram 16 points is to have 2 points on each corner and in the middle
+             * 
+             *  PP-------PP--------PP
+             *  
+             *       PP       PP
+             *       
+             *  PP-------PP--------PP
+             *  
+             *  The perim of any triangle is >= minP.  Any other point would be 
+             *  a triangle of perim < minP.  
+             */
+            Preconditions.checkState(boxPoints.size() - startBox <= 16);
             
             //Consider all points in box (can be proved <= 16...Similar to most 6 for closest 2 points algorithm
             for(int bi=startBox; bi<boxPoints.size(); ++bi) {
@@ -148,15 +153,9 @@ public class DivideConq {
         return min;
         
     }
-    
+
     private static class CompareY implements Comparator<PointLong> {
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see java.util.Comparator#compare(java.lang.Object,
-         * java.lang.Object)
-         */
         @Override
         public int compare(PointLong o1, PointLong o2) {
             return ComparisonChain.start().compare(o1.getY(), o2.getY())
@@ -164,15 +163,9 @@ public class DivideConq {
         }
 
     };
-    
+
     private static class CompareX implements Comparator<PointLong> {
 
-        /*
-         * (non-Javadoc)
-         * 
-         * @see java.util.Comparator#compare(java.lang.Object,
-         * java.lang.Object)
-         */
         @Override
         public int compare(PointLong o1, PointLong o2) {
             return ComparisonChain.start().compare(o1.getX(), o2.getX())
