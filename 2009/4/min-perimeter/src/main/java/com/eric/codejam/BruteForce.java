@@ -202,10 +202,13 @@ public class BruteForce {
                     continue;
                 }
 
-                double area = oneSides + distP[j]
+                double perim = oneSides + distP[j]
                         + lowY.distance(highY);
 
-                min = Math.min(area, min);
+                if (perim < min) {
+                    log.debug("Min {}", perim);
+                    min = Math.min(perim, min);
+                }
 
             }
         }

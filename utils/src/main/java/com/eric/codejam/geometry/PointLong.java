@@ -79,6 +79,10 @@ public class PointLong implements Comparable<PointLong> {
 
         return r;
     }
+    
+    public static PointLong midPoint(PointLong a, PointLong b) {
+        return new PointLong( (a.x+b.x)/2, (a.y+b.y)/2 );
+    }
 
     public long distanceSq(PointLong other) {
 

@@ -1,6 +1,8 @@
 package com.eric.codejam;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -12,7 +14,6 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eric.codejam.geometry.PointInt;
 import com.eric.codejam.geometry.PointLong;
 
 public class Main {
@@ -30,6 +31,7 @@ public class Main {
         decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
         
         os.println("Case #" + caseNumber + ": " + decim.format(ans));
+                
 
     }
 
@@ -44,7 +46,9 @@ public class Main {
             points.add(new PointLong(x,y));
         }
 
-        return BruteForce.minPerimUsingSort(points);
+        //double m = BruteForce.minPerimUsingSort(points);
+        //log.debug("min bf {}", m);
+        return DivideConq.findMinPerimTriangle(points);
         //return BruteForce.minPerimUsingDiff(points);
         //return BruteForce.minPerim(points);
     }
@@ -58,21 +62,27 @@ public class Main {
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-           //args = new String[] { "sample.txt" };
-           args = new String[] { "smallInput.txt" };
+           args = new String[] { "sample.txt" };
+//           args = new String[] { "smallInput.txt" };
         }
         log.info("Input file {}", args[0]);
 
         Scanner scanner = new Scanner(new File(args[0]));
 
         int t = scanner.nextInt();
+        
+        OutputStream os = new FileOutputStream(args[0] + ".out");
+        PrintStream pos = new PrintStream(os);
 
-        for (int i = 1; i <= t; ++i) {
+        
+        for (int i = 1; i <= t; ++i) {  
             
-            handleCase(i, scanner, System.out);
-
+            handleCase(i, scanner, pos);
         }
 
+        log.info("Finished");
+        
+        os.close();
         scanner.close();
     }
 }

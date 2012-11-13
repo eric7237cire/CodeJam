@@ -4,6 +4,8 @@
 package ${package};
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
@@ -17,7 +19,7 @@ public class Main {
     public static void handleCase(int caseNumber, Scanner scanner,
             PrintStream os) {
 
-        Main m = Main.buildMain(scanner);
+        String ans = Main.solve(scanner);
 
         log.info("Starting case {}", caseNumber);
 
@@ -25,16 +27,12 @@ public class Main {
 
     }
 
-    private static Main buildMain(Scanner scanner) {
-        // TODO build main from input
-        Main m = new Main();
-
-        return m;
+    private static String solve(Scanner scanner) {
+        return "Ans";
     }
 
     public Main() {
 
-        // TODO Add test case vars
         super();
     }
 
@@ -47,11 +45,14 @@ public class Main {
 
         Scanner scanner = new Scanner(new File(args[0]));
 
+        OutputStream os = new FileOutputStream(args[0] + ".out");
+        PrintStream pos = new PrintStream(os);
+        
         int t = scanner.nextInt();
 
         for (int i = 1; i <= t; ++i) {
 
-            handleCase(i, scanner, System.out);
+            handleCase(i, scanner, pos);
 
         }
 

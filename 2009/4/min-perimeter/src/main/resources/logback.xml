@@ -25,8 +25,8 @@
     </encoder>
   </appender>
   
-  <root level="${root-level:-DEBUG}">
-   <!--  <appender-ref ref="console"/> -->
-    <appender-ref ref="FILE"/>
+  <root level="${root-level:-INFO}">
+     <appender-ref ref="console"/> 
+    <!-- <appender-ref ref="FILE"/>  -->
   </root>
 </configuration>
