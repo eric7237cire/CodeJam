@@ -126,16 +126,13 @@ public class Main {
 
         final String[] answers = new String[t];
         final InputData[] input = new InputData[t];
-        
-        for (int i = 0; i < t; ++i) {  
-            
-           // input[i] = readInput(scanner);
-        }
-        //scanner.close();
+                
         
         final int THREADS = 2;
         test = 0;
         Thread[] threads = new Thread[THREADS];
+        
+        long overAllStart = System.currentTimeMillis();
         
         for (int i = 0; i < threads.length; i++) {
             // final B inst = new B();
@@ -150,27 +147,23 @@ public class Main {
                                 return;
                             }
                             try {
-                            input[ltest] = readInput(br);
+                                input[ltest] = readInput(br);
                             } catch (IOException ex) {
-                                
+
                             }
                         }
                         long t = System.currentTimeMillis();
-                        String ans = null;
-                        try {
-                            ans = handleCase(ltest + 1, input[ltest]);
-                            input[ltest] = null;
-                        } catch (Throwable e) {
-                            e.printStackTrace();
-                        }
-                        synchronized (answers) {
-                            System.err.println(ltest + " "
-                                    + (System.currentTimeMillis() - t));
-                            answers[ltest] = ans;
-                        }
+                        String ans = handleCase(ltest + 1, input[ltest]);
+                        input[ltest] = null;
+
+                        log.info("Test {} calc finished in {}", ltest,
+                                + (System.currentTimeMillis() - t));
+                        answers[ltest] = ans;
+
                     }
                 }
             });
+            threads[i].setPriority(Thread.MIN_PRIORITY);
             threads[i].start();
         }
         for (int i = 0; i < threads.length; i++)
@@ -181,13 +174,11 @@ public class Main {
         {
             pos.println(answers[test - 1]);
         }
-        /*
-        for (int i = 1; i <= t; ++i) {  
-            
-            handleCase(i, scanner, pos);
-        }*/
 
         log.info("Finished");
+        
+        log.info("Total time {}", 
+                + (System.currentTimeMillis() - overAllStart));
         
         os.close();
         //scanner.close();
