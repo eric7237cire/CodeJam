@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,11 +32,6 @@ public class Main {
         
         
         log.info("Starting case {}", caseNumber);
-        
-
-       
-        
-        log.info("Done processing input case {}", caseNumber);
         
         double ans = DivideConq.findMinPerimTriangle(input.points);
 
@@ -57,7 +53,7 @@ public class Main {
         
     
         int n = scanner.nextInt();
-        log.info("Reading data...");
+        log.info("Reading data...scanner");
         
         for (int i = 0; i < n; ++i) {
             int x = scanner.nextInt();
@@ -72,28 +68,23 @@ public class Main {
     }
     
     static InputData readInput(BufferedReader br) throws IOException {
-        List<PointInt> points = new ArrayList<>();
+        
     
         String line = br.readLine();
         int n = Integer.parseInt(line);
         
-        /*
-        Scanner scanner = new Scanner(input.rawPointData);
-        for(int i = 0; i < input.numPoints; ++i) {
-        int x = scanner.nextInt();
-        int y = scanner.nextInt();
-        input.points.add(new PointLong(x, y));
-        }*/
+        List<PointInt> points = new ArrayList<>(n);
         
-        log.info("Reading data...");
+        log.info("Reading data...BR");
+        Pattern split = Pattern.compile(" ");
         for (int i = 0; i < n; ++i) {
-            line = br.readLine();
-            StringTokenizer st = new StringTokenizer(line);
-            int x = Integer.parseInt(st.nextToken());
-            int y = Integer.parseInt(st.nextToken());
+            String[] strArray = split.split(br.readLine());
+            
+            int x = Integer.parseInt(strArray[0]);
+            int y = Integer.parseInt(strArray[1]);
             points.add(new PointInt(x,y));
         }
-        
+        log.info("Done Reading data...BR");
         
         InputData  i = new InputData();
         i.points = points;
@@ -124,7 +115,7 @@ public class Main {
         
         InputStreamReader isr = new InputStreamReader(new FileInputStream(new File(args[0])));
         final BufferedReader br = new BufferedReader(isr);
-        //final Scanner scanner = new Scanner(br);
+       // final Scanner scanner = new Scanner(br);
 
         String line = br.readLine();
         
@@ -161,7 +152,7 @@ public class Main {
                             try {
                             input[ltest] = readInput(br);
                             } catch (IOException ex) {
-                                log.error("IO", ex);
+                                
                             }
                         }
                         long t = System.currentTimeMillis();
