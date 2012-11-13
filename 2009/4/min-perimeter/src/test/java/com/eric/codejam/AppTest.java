@@ -1,17 +1,17 @@
 package com.eric.codejam;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ import org.w3c.dom.NodeList;
 
 import ch.qos.logback.classic.Level;
 
-import com.eric.codejam.Main.InputData;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test for simple App.
@@ -42,24 +42,26 @@ public class AppTest {
         super();
     }
 
-    private String getOutput(String testCase) {
-        
-        Scanner sc = new Scanner(testCase);
-        InputData input = Main.readInput(sc);
-        
-        String output = Main.handleCase(1, input);
+    private String getOutput(String testCaseData) throws IOException {
+
+        Main m = new Main();
+
+        InputData input = m.readInput(new BufferedReader(new StringReader(
+                testCaseData)), 1);
+
+        String output = m.handleCase(1, input);
 
         log.info(output);
         return output.trim();
     }
-    
+
     private static String extractAns(String str) {
-        Pattern p = Pattern.compile("Case \\d: (.*)");
+        Pattern p = Pattern.compile("Case #\\d: (.*)");
         Matcher m = p.matcher(str);
         if (m.matches()) {
             return m.group(1);
         }
-        
+
         return "Error";
     }
 
@@ -70,8 +72,9 @@ public class AppTest {
     public static void getTestData() {
         testInputData = new HashMap<>();
         testOutputData = new HashMap<>();
-        
-        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger)LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+
+        ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
+                .getLogger(Logger.ROOT_LOGGER_NAME);
         root.setLevel(Level.DEBUG);
 
         try {
@@ -87,14 +90,16 @@ public class AppTest {
             for (int i = 0; i < nl.getLength(); ++i) {
                 Node n = nl.item(i);
                 Element e = (Element) n;
-                String input = e.getElementsByTagName("input").item(0).getTextContent();
-                String output = e.getElementsByTagName("output").item(0).getTextContent();
-                
+                String input = e.getElementsByTagName("input").item(0)
+                        .getTextContent();
+                String output = e.getElementsByTagName("output").item(0)
+                        .getTextContent();
+
                 String name = n.getAttributes().getNamedItem("name")
                         .getNodeValue();
 
                 testInputData.put(name, input);
-                testOutputData.put(name,  output);
+                testOutputData.put(name, output);
             }
         } catch (Exception ex) {
 
@@ -102,25 +107,19 @@ public class AppTest {
 
     }
 
-    
-
     @Test
-    public void testMain() {
-        for(String name : testInputData.keySet()) {
+    public void testMain() throws IOException {
+        for (String name : testInputData.keySet()) {
             String input = testInputData.get(name).trim();
             String output = testOutputData.get(name).trim();
-            
-            //String actualOutput = extractAns(getOutput(input));
-            
-           // assertTrue("\nInput " + input + "\nexpected output " + output + "\n Actual " + actualOutput,StringUtils.equalsIgnoreCase(output, actualOutput));
-        }
-        
 
-        //double output = Double.parseDouble();
-        
-        //assertEquals(7, output, DoubleComparator.TOLERANCE);
+            String actualOutput = extractAns(getOutput(input));
+
+            assertTrue("\nInput " + input + "\nexpected output " + output
+                    + "\n Actual " + actualOutput,
+                    StringUtils.equalsIgnoreCase(output, actualOutput));
+        }
+
     }
-    
-	
-	
+
 }
