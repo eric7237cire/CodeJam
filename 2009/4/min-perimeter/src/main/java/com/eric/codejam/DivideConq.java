@@ -9,34 +9,34 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eric.codejam.geometry.PointLong;
+import com.eric.codejam.geometry.PointInt;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.math.DoubleMath;
 
 public class DivideConq {
-    List<PointLong> list;
+    List<PointInt> list;
     
     static CompareX compX = new CompareX();
     static CompareY compY = new CompareY();
     
     final static Logger log = LoggerFactory.getLogger(DivideConq.class);
     
-    public DivideConq(List<PointLong> list) {
+    public DivideConq(List<PointInt> list) {
         super();
         this.list = list;
         Collections.sort(this.list, new CompareX());        
     }
 
-    public static double findMinPerimTriangle(List<PointLong> list) {
+    public static double findMinPerimTriangle(List<PointInt> list) {
         DivideConq dq = new DivideConq(list);
-        List<PointLong> listSortedY = new ArrayList<>(list);
+        List<PointInt> listSortedY = new ArrayList<>(list);
         Collections.sort(listSortedY, compY);
         
         return dq.findMinPerim(0, list.size()-1, listSortedY);
     }
     
-    public double findMinPerim(int leftIndex, int rightIndex, List<PointLong> listPointsSortedY) {
+    public double findMinPerim(int leftIndex, int rightIndex, List<PointInt> listPointsSortedY) {
         int numberOfPoints = rightIndex - leftIndex + 1;
         Preconditions.checkArgument(listPointsSortedY.size() == numberOfPoints);
         
@@ -54,16 +54,16 @@ public class DivideConq {
         /*
          * In order to avoid having to do another sort by y, (taking n log n), we just split using the sortedY list
          */
-        List<PointLong> leftList = new ArrayList<>(leftHalfEndIndex - leftIndex + 1);
-        List<PointLong> rightList = new ArrayList<>(rightIndex - rightHalfStartIndex + 1);
+        List<PointInt> leftList = new ArrayList<>(leftHalfEndIndex - leftIndex + 1);
+        List<PointInt> rightList = new ArrayList<>(rightIndex - rightHalfStartIndex + 1);
         
         //We must compare x and y because though we are partitioning by a vertical line, we must also be able to partition if all points have the same x
         //Because the partition is strictly less and due to rounding error from longs,
         //we use this as the division point
-        PointLong midPoint = list.get(rightHalfStartIndex);
+        PointInt midPoint = list.get(rightHalfStartIndex);
        
         
-        for(PointLong pl : listPointsSortedY) {
+        for(PointInt pl : listPointsSortedY) {
             //Verify the points are still between left and right index
             Preconditions.checkState(list.get(leftIndex).getX() <= pl.getX());
             Preconditions.checkState(list.get(rightIndex).getX() >= pl.getX());
@@ -101,10 +101,10 @@ public class DivideConq {
         Preconditions.checkState(min > Integer.MAX_VALUE || boxMargin < min);
         Preconditions.checkState(min > Integer.MAX_VALUE || boxMargin * 2 >= min);
         
-        List<PointLong> boxPoints = new ArrayList<>();
+        List<PointInt> boxPoints = new ArrayList<>();
         int startBox = 0;
         for(int i = 0; i < listPointsSortedY.size(); ++i) {
-            PointLong point = listPointsSortedY.get(i);
+            PointInt point = listPointsSortedY.get(i);
             
             if (Math.abs(point.getX() - midPoint.getX()) > boxMargin) {
                 continue;
@@ -154,20 +154,20 @@ public class DivideConq {
         
     }
 
-    private static class CompareY implements Comparator<PointLong> {
+    private static class CompareY implements Comparator<PointInt> {
 
         @Override
-        public int compare(PointLong o1, PointLong o2) {
+        public int compare(PointInt o1, PointInt o2) {
             return ComparisonChain.start().compare(o1.getY(), o2.getY())
                     .compare(o1.getX(), o2.getX()).result();
         }
 
     };
 
-    private static class CompareX implements Comparator<PointLong> {
+    private static class CompareX implements Comparator<PointInt> {
 
         @Override
-        public int compare(PointLong o1, PointLong o2) {
+        public int compare(PointInt o1, PointInt o2) {
             return ComparisonChain.start().compare(o1.getX(), o2.getX())
                     .compare(o1.getY(), o2.getY()).result();
         }
