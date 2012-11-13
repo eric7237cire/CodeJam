@@ -1,5 +1,9 @@
 package com.eric.codejam;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
@@ -12,6 +16,7 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -23,7 +28,8 @@ import org.w3c.dom.NodeList;
 
 import ch.qos.logback.classic.Level;
 
-import com.eric.codejam.Main.InputData;
+import com.eric.codejam.AppTest;
+import com.eric.codejam.Main;
 
 /**
  * Unit test for simple App.
@@ -43,14 +49,20 @@ public class AppTest {
     }
 
     private String getOutput(String testCase) {
-        
         Scanner sc = new Scanner(testCase);
-        InputData input = Main.readInput(sc);
-        
-        String output = Main.handleCase(1, input);
 
-        log.info(output);
-        return output.trim();
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        PrintStream pos = new PrintStream(os);
+
+        Main.handleCase(1, sc, pos);
+
+        try {
+            String output = new String(os.toString("UTF-8"));
+            log.info(output);
+            return output.trim();
+        } catch (UnsupportedEncodingException ex) {
+            return null;
+        }
     }
     
     private static String extractAns(String str) {
@@ -104,15 +116,15 @@ public class AppTest {
 
     
 
-    @Test
+//    @Test
     public void testMain() {
         for(String name : testInputData.keySet()) {
             String input = testInputData.get(name).trim();
             String output = testOutputData.get(name).trim();
             
-            //String actualOutput = extractAns(getOutput(input));
+            String actualOutput = extractAns(getOutput(input));
             
-           // assertTrue("\nInput " + input + "\nexpected output " + output + "\n Actual " + actualOutput,StringUtils.equalsIgnoreCase(output, actualOutput));
+            assertTrue("\nInput " + input + "\nexpected output " + output + "\n Actual " + actualOutput,StringUtils.equalsIgnoreCase(output, actualOutput));
         }
         
 
