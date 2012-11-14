@@ -28,5 +28,6 @@
     <appender-ref ref="console"/>
   </root>
   <logger name="com.eric.codejam.multithread" level="OFF"/>
+  <logger name="com.eric.codejam.SingleRowSolver" level="OFF" />
    
 </configuration>

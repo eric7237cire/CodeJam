@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -14,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eric.codejam.multithread.Consumer;
-import com.eric.codejam.multithread.Producer;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
+import com.eric.codejam.multithread.Producer;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 
 public class Runner {
@@ -53,7 +54,7 @@ public class Runner {
             os.close();
             // scanner.close();
             br.close();
-        } catch (Exception ex) {
+        } catch (IOException ex) {
             log.error("Error", ex);
         }
     }

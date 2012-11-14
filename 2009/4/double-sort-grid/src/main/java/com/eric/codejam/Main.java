@@ -64,11 +64,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         solve1d();
         
         //double ans = DivideConq.findMinPerimTriangle(input.points);
-        int count = count(input.grid, new Grid<Integer>(input.grid));
+        //int count = count(input.grid, new Grid<Integer>(input.grid));
         
-        int[][] count1d = solve1d();
+        //int[][] count1d = solve1d();
         
-        log.info("count 1 d {}", count1d[input.grid.getCols()-2][input.grid.getEntry(0)-1]);
+        //log.info("count 1 d {}", count1d[input.grid.getCols()-2][input.grid.getEntry(0)-1]);
+        
+        //SingleRowSolver ss = new SingleRowSolver(input.grid);
+        
+        int count = SingleRowSolver.solveGrid(input.grid);
+        //log.info("Count DP {}.  ans {}", caseNumber, countDP);
 
         log.info("Done calculating answer case {}.  ans {}", caseNumber, count);
         
