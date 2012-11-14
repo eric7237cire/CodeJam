@@ -20,13 +20,55 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
     
+    
+    public int[][] solve1d() {
+        
+        //int [Dimension][Letter]
+        /*
+         * counts[2][24-1] means
+         * 
+         * w..
+         * 
+         * abcde
+         * fghij
+         * klmno
+         * pqrst
+         * uvwxy
+         * z
+         */
+        int[][] counts = new int[10][26];
+        
+        for(int let = 1; let <= 26; ++let) {
+            counts[0][26-let] = let;
+        }
+        
+        for(int dim = 1; dim < 4; ++dim) {
+            int runningSum = 0;
+            for(int let = 26; let >= 1; --let) {
+                runningSum += counts[dim-1][let-1];
+                
+                counts[dim][let-1] = runningSum;
+                
+        //        log.info("Running counts {}", counts[dim]);
+            }
+        }
+        
+        return counts;
+    }
+    
     @Override
     public String handleCase(int caseNumber, InputData input) {
 
         log.info("Starting calculating case {}", caseNumber);
         
+        solve1d();
+        
         //double ans = DivideConq.findMinPerimTriangle(input.points);
         int count = count(input.grid, new Grid<Integer>(input.grid));
+        
+        int[][] count1d = solve1d();
+        
+        log.info("count 1 d {}", count1d[input.grid.getCols()-2][input.grid.getEntry(0)-1]);
 
         log.info("Done calculating answer case {}.  ans {}", caseNumber, count);
         

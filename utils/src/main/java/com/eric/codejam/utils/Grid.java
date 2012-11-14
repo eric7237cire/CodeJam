@@ -112,6 +112,14 @@ public class Grid<SquareType> {
         return grid.size();
     }
     
+    public int getRows() {
+        return rows;
+    }
+    
+    public int getCols() {
+        return cols;
+    }
+    
     
     private int getIndex(int row, int col) {
         return col + row * cols;
