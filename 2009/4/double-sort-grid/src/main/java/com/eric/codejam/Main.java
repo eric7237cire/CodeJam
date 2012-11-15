@@ -63,8 +63,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         solve1d();
         
-        //double ans = DivideConq.findMinPerimTriangle(input.points);
-        //int count = count(input.grid, new Grid<Integer>(input.grid));
+        
+        int countBF = count(input.grid, new Grid<Integer>(input.grid));
         
         //int[][] count1d = solve1d();
         
@@ -75,7 +75,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         int count = SingleRowSolver.solveGrid(input.grid);
         //log.info("Count DP {}.  ans {}", caseNumber, countDP);
 
-        log.info("Done calculating answer case {}.  ans {}", caseNumber, count);
+        log.info("Done calculating answer case # {}.  ans [ {} ] BF [ {} ]", caseNumber, count, countBF);
         
         //DecimalFormat decim = new DecimalFormat("0.00000000000");
         //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
@@ -83,19 +83,21 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         return ("Case #" + caseNumber + ": " );
     }
     
+    //Bruteforce
     public int count(Grid<Integer> grid, Grid<Integer> gridOrig) {
         //log.info("Count grid {}", grid);
         Ordering<Integer> o = Ordering.natural().nullsFirst();
         int count = 0;
         for(int i = 0; i < grid.getSize(); ++i) {
             
-            //Integer grid = gridOrig.getEntry(i);
             Integer current = grid.getEntry(i);
             Integer top = grid.getEntry(i, Direction.NORTH);
             Integer left = grid.getEntry(i, Direction.WEST);
             
+            //A flexible spot, compute all possibilities
             if (current == 0) {
                 for(int j = 26; j >= 1; --j) {
+                    //Must be non decreasing
                     if (o.compare(j, top) < 0) {
                         break;
                     }
@@ -110,9 +112,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 return count;
             }
             
-            
-            
-            
             //Can not decrease
             if (o.compare(current, top) < 0) {
                 return 0;
@@ -123,7 +122,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             }
         }
         
-        return count + 1;
+        //No variable squares
+        return 1;
     }
     
     

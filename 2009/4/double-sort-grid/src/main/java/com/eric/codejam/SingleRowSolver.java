@@ -30,6 +30,9 @@ public class SingleRowSolver {
     }
     
     public static int solveGrid(Grid<Integer> grid) {
+        if (grid.getRows() > 1) {
+            return - 1;
+        }
         SingleRowSolver ss = new SingleRowSolver(grid);
         
         if (grid.getEntry(0, 0) == 0) {
