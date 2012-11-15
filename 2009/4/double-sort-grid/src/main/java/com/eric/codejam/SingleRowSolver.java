@@ -12,16 +12,20 @@ public class SingleRowSolver {
     
     int[][] count;
     int lenMax;
+    int row;
     Grid<Integer> grid;
     
-    public SingleRowSolver(Grid<Integer> grid) {
-        Preconditions.checkArgument(grid.getRows() == 1);
+    int LETTER_MAX = 4;
+    
+    public SingleRowSolver(Grid<Integer> grid, int row) {
+        //Preconditions.checkArgument(grid.getRows() == 1);
         this.lenMax = grid.getCols();
         this.grid = grid;
-        count = new int[lenMax][26];
+        this.row = row;
+        count = new int[lenMax][LETTER_MAX];
         
         for(int i = 0; i < lenMax; ++i) {
-            for(int j = 0; j < 26; ++j) {
+            for(int j = 0; j < LETTER_MAX; ++j) {
                 count[i][j] = -1;
             }
         }
@@ -29,11 +33,9 @@ public class SingleRowSolver {
         
     }
     
-    public static int solveGrid(Grid<Integer> grid) {
-        if (grid.getRows() > 1) {
-            return - 1;
-        }
-        SingleRowSolver ss = new SingleRowSolver(grid);
+    public static int solveGrid(Grid<Integer> grid, int row) {
+        
+        SingleRowSolver ss = new SingleRowSolver(grid, row);
         
         if (grid.getEntry(0, 0) == 0) {
             return ss.solve(0, 1); // a
@@ -45,19 +47,19 @@ public class SingleRowSolver {
     /*
      * Returns sum @ index given the rest must be >= letter
      */
-    private int solve(int index, int letter) {
+     int solve(int colIndex, int letter) {
         int letterIndex = letter - 1;
-        if (count[index][letterIndex] >= 0) {
-            return count[index][letterIndex];
+        if (count[colIndex][letterIndex] >= 0) {
+            return count[colIndex][letterIndex];
         }
-        log.debug("Solve {} letter {}", index, letter);
-        int letterInGrid = grid.getEntry(0, index);
+        log.debug("Solve {} letter {}", colIndex, letter);
+        int letterInGrid = grid.getEntry(row, colIndex);
         int sum = 0;
-        if (index == lenMax - 1) {
+        if (colIndex == lenMax - 1) {
 
             if (0 == letterInGrid) {
                 //any letter
-                sum = 26-letter+1;
+                sum = LETTER_MAX-letter+1;
             } else if (letterInGrid >= letter) {
                 sum = 1;
             }
@@ -65,20 +67,20 @@ public class SingleRowSolver {
         } else {
             if (0 == letterInGrid ) {
 
-                for (int let = 26; let >= letter; --let) {
-                    sum += solve(index + 1, let);
-                    log.debug("Sum let counter {}  letter {} index {}", let, letter, index);
+                for (int let = LETTER_MAX; let >= letter; --let) {
+                    sum += solve(colIndex + 1, let);
+                    log.debug("Sum let counter {}  letter {} index {}", let, letter, colIndex);
                 }
                 
 
             } else if (letterInGrid >= letter){
-                sum = solve(index + 1, letterInGrid);
+                sum = solve(colIndex + 1, letterInGrid);
             } else {
                 sum = 0;
             }
         }
-        log.debug("Solve {} letter {} SUM {}", index, letter, sum);
-        count[index][letterIndex] = sum;
+        log.debug("Solve {} letter {} SUM {}", colIndex, letter, sum);
+        count[colIndex][letterIndex] = sum;
         return sum;
     }
 }

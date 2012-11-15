@@ -72,7 +72,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         //SingleRowSolver ss = new SingleRowSolver(input.grid);
         
-        int count = SingleRowSolver.solveGrid(input.grid);
+        //int count = SingleRowSolver.solveGrid(input.grid);
+        
+        int count = 0;
+        DoubleRowSolver ss = new DoubleRowSolver(input.grid);
+        if (input.grid.getEntry(0, 0) == 0) {
+            count = ss.solve(0, 0, 1); // a
+        } else {
+            count = ss.solve(0, 0, input.grid.getEntry(0));
+        }
         //log.info("Count DP {}.  ans {}", caseNumber, countDP);
 
         log.info("Done calculating answer case # {}.  ans [ {} ] BF [ {} ]", caseNumber, count, countBF);
@@ -84,7 +92,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     }
     
     //Bruteforce
-    public int count(Grid<Integer> grid, Grid<Integer> gridOrig) {
+    public static int count(Grid<Integer> grid, Grid<Integer> gridOrig) {
         //log.info("Count grid {}", grid);
         Ordering<Integer> o = Ordering.natural().nullsFirst();
         int count = 0;
@@ -96,7 +104,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             
             //A flexible spot, compute all possibilities
             if (current == 0) {
-                for(int j = 26; j >= 1; --j) {
+                for(int j = DoubleRowSolver.LETTER_MAX; j >= 1; --j) {
                     //Must be non decreasing
                     if (o.compare(j, top) < 0) {
                         break;
