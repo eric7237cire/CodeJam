@@ -39,14 +39,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     
     public int[][] genBubbleRight(int[][] bubble) {
         int[][] bubbleGen = new int[DoubleRowSolver.LETTER_MAX][DoubleRowSolver.LETTER_MAX];
-        
+        //Upper right is first index
         for(int bubbleLetter1 = 0; bubbleLetter1 < DoubleRowSolver.LETTER_MAX; ++bubbleLetter1) {
             for(int bubbleLetter2 = 0; bubbleLetter2 < DoubleRowSolver.LETTER_MAX; ++bubbleLetter2) {
                 for(int genBubbleLetter1 = 0; genBubbleLetter1 < DoubleRowSolver.LETTER_MAX; ++genBubbleLetter1) {
                     for(int genBubbleLetter2 = 0; genBubbleLetter2 < DoubleRowSolver.LETTER_MAX; ++genBubbleLetter2) {
-                        if (genBubbleLetter1 >= bubbleLetter1 && 
-                                genBubbleLetter1 >= bubbleLetter2 && 
-                                genBubbleLetter2 >= bubbleLetter2) {
+                        if (genBubbleLetter2 >= bubbleLetter1 && 
+                                genBubbleLetter2 >= bubbleLetter2 && 
+                                genBubbleLetter1 >= bubbleLetter2) {
                             bubbleGen[genBubbleLetter1][genBubbleLetter2]+=bubble[bubbleLetter1][bubbleLetter2];
                         }
                     }
@@ -60,6 +60,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     public int[][] genBubbleDown(int[][] bubble) {
         int[][] bubbleGen = new int[DoubleRowSolver.LETTER_MAX][DoubleRowSolver.LETTER_MAX];
         
+        //first index is down
         for(int bubbleLetter1 = 0; bubbleLetter1 < DoubleRowSolver.LETTER_MAX; ++bubbleLetter1) {
             for(int bubbleLetter2 = 0; bubbleLetter2 < DoubleRowSolver.LETTER_MAX; ++bubbleLetter2) {
                 for(int genBubbleLetter1 = 0; genBubbleLetter1 < DoubleRowSolver.LETTER_MAX; ++genBubbleLetter1) {
@@ -172,6 +173,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
    
     }
     
+    
+    
     public int someTest() {
         int[] startBubble = new int[DoubleRowSolver.LETTER_MAX];
         
@@ -198,6 +201,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         splitBubble3_to_2(bubble3Trip, sp1, sp2);
         
+ int[][] bubble3 = genBubbleRight(bubble2);
+        
+        int[][] bubble4 = genBubbleDown(bubble2);
+        
+        int[] sq6  = new int[DoubleRowSolver.LETTER_MAX];
+        int[] sq5 = new int[DoubleRowSolver.LETTER_MAX];
+        splitBubble2_to_1(bubble4, sq6, sq5);
+        
         sum = 0;
         int sumSplit = 0;
         for (int bubbleLetter1 = 0; bubbleLetter1 < DoubleRowSolver.LETTER_MAX; ++bubbleLetter1) {
@@ -214,9 +225,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         int[] twoByTwoFinal = genFinalBubble(bubble2);
         log.debug("{}", twoByTwoFinal);
         
-        int[][] bubble3 = genBubbleRight(bubble2);
-        
-        int[][] bubble4 = genBubbleDown(bubble2);
+       
         
         int[][] bubble3Inv = transpose(bubble3);
         
@@ -326,6 +335,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         log.info("Done calculating answer case # {}.  ans [ {} ] BF [ {} ]", caseNumber, count, countBF);
         
         int r = someTest();
+        
         
         if (r!=3333) {
             return "Error";
