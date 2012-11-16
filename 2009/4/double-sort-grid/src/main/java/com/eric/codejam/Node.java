@@ -1,6 +1,13 @@
 package com.eric.codejam;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Preconditions;
+
 public class Node {
+    final static Logger log = LoggerFactory.getLogger(Node.class);
+    
     static class SubNode {
         int letter;
         
@@ -21,10 +28,13 @@ public class Node {
     int[][] topBottomWeights;
     int[][] leftRightWeights;
     
+    int[][] prevNodeWeights;
+    int[][] nextNodeWeights;
+    
     int[] count;
     
-    int rightLeftConnectedNode;
-    int topBottomConnectedNode;
+    Node rightConnectedNode;
+    Node bottomConnectedNode;
     
     public static int LETTER_MAX = DoubleRowSolver.LETTER_MAX;
 
@@ -33,8 +43,6 @@ public class Node {
         this.nodeNumber = nodeNumber;
         subNodes = new SubNode[LETTER_MAX];
         
-        topBottomConnectedNode = -1;
-        rightLeftConnectedNode = -1;
         
         topBottomWeights = new int[LETTER_MAX][LETTER_MAX];
         leftRightWeights = new int[LETTER_MAX][LETTER_MAX];
@@ -50,18 +58,49 @@ public class Node {
         return sum;
     }
     
+    public void printDiagonalWeights() {
+        for (int letter = 0; letter < LETTER_MAX; ++letter) {
+
+            for (int otherLetter = 0; otherLetter < LETTER_MAX; ++otherLetter) {
+                if (prevNodeWeights != null) {
+                    log.info("Letter {}  top right {}  weight {}", letter,
+                            otherLetter, prevNodeWeights[letter][otherLetter]);
+
+                }
+                if (nextNodeWeights != null) {
+                    log.info("Letter {}  top right {}  weight {}", letter,
+                            otherLetter, nextNodeWeights[letter][otherLetter]);
+                }
+            }
+
+        }
+    }
+    
     public Node connectSingleNode(int nodeNum, boolean isRight) {
         Node singleNode = Node.createEmptyNode(nodeNum);
+        
+        if (isRight) {
+            this.rightConnectedNode = singleNode;
+            singleNode.leftRightWeights = leftRightWeights;
+        } else {
+            this.bottomConnectedNode = singleNode;
+            singleNode.topBottomWeights = topBottomWeights;
+        }
+        
         for (int letter = 0; letter < LETTER_MAX; ++letter) {
 
             for (int singleNodeLetter = 0; singleNodeLetter < LETTER_MAX; ++singleNodeLetter) {
                 if (singleNodeLetter >= letter) {
                     if (isRight) {
-                    singleNode.leftRightWeights[singleNodeLetter][letter] = count[letter];
-                    leftRightWeights[letter][singleNodeLetter] = count[letter];
+                        leftRightWeights[letter][singleNodeLetter] = count[letter];
+                        
+                        //Propogate increase
+                        topBottomWeights[letter][singleNodeLetter] *= count[letter];
                     } else {
-                        singleNode.topBottomWeights[singleNodeLetter][letter] = count[letter];
                         topBottomWeights[letter][singleNodeLetter] = count[letter];
+                        
+                      //Propogate increase
+                        leftRightWeights[letter][singleNodeLetter] *= count[letter];
                     }
                 }
             }
@@ -81,10 +120,52 @@ public class Node {
             }
 
             count[letter] = total;
+            
+            for (int singleLetter = 0; singleLetter < LETTER_MAX; ++singleLetter) {
+                //Update other connections weights
+                
+                if (!isRight ) {
+                   // leftRightWeights[letter][singleLetter] = count[letter] * leftRightWeights [letter][singleLetter];
+                } else {
+                  //  topBottomWeights[letter][singleLetter]  = count[letter] * topBottomWeights [letter][singleLetter];
+                }
+            }
         }
         
         return singleNode;
 
+    }
+    
+    public void mergeNode() {
+        
+        
+        this.rightConnectedNode.nextNodeWeights = new int[LETTER_MAX][LETTER_MAX];
+        this.bottomConnectedNode.prevNodeWeights  = new int[LETTER_MAX][LETTER_MAX];
+        
+        for (int letterToMerge = 0; letterToMerge < LETTER_MAX; ++letterToMerge) {
+            for (int rightLetter = 0; rightLetter < LETTER_MAX; ++rightLetter) {
+                
+                int leftRightWeight = rightConnectedNode.leftRightWeights[letterToMerge][rightLetter];
+
+                for (int bottomLetter = 0; bottomLetter < LETTER_MAX; ++bottomLetter) {
+                    int topBottomEdgeWeight = bottomConnectedNode.topBottomWeights[letterToMerge][bottomLetter];
+
+                    if (leftRightWeight > 0) {
+                    bottomConnectedNode.prevNodeWeights[bottomLetter][rightLetter]
+                            += topBottomEdgeWeight / leftRightWeight;
+                    
+                    rightConnectedNode.nextNodeWeights[bottomLetter][rightLetter]
+                            += topBottomEdgeWeight / leftRightWeight;
+                    }
+                }
+
+            }
+        }
+        
+        
+        
+        this.rightConnectedNode.leftRightWeights = new int[LETTER_MAX][LETTER_MAX];
+        this.bottomConnectedNode.topBottomWeights = new int[LETTER_MAX][LETTER_MAX];
     }
     
    
