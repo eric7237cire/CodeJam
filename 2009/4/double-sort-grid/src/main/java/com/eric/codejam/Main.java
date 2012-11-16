@@ -161,6 +161,17 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
    
     }
     
+    void splitBubble3_to_2(int[][][] bubble, int[][] bottomLeft, int[][] topRight) {
+        for (int bubbleLetter1 = 0; bubbleLetter1 < DoubleRowSolver.LETTER_MAX; ++bubbleLetter1) {
+            for (int bubbleLetter2 = 0; bubbleLetter2 < DoubleRowSolver.LETTER_MAX; ++bubbleLetter2) {
+                for (int bubbleLetter3 = 0; bubbleLetter3 < DoubleRowSolver.LETTER_MAX; ++bubbleLetter3) {
+               bottomLeft[bubbleLetter1][bubbleLetter2] += bubble[bubbleLetter1][bubbleLetter2][bubbleLetter3]; 
+               topRight[bubbleLetter2][bubbleLetter3] += bubble[bubbleLetter1][bubbleLetter2][bubbleLetter3];
+            }}
+        }
+   
+    }
+    
     public int someTest() {
         int[] startBubble = new int[DoubleRowSolver.LETTER_MAX];
         
@@ -182,9 +193,17 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         int[][] test2 = genBubble2(row1_col2);
         
+        int[][] sp1 = new int[DoubleRowSolver.LETTER_MAX][DoubleRowSolver.LETTER_MAX];
+        int[][] sp2 = new int[DoubleRowSolver.LETTER_MAX][DoubleRowSolver.LETTER_MAX];
+        
+        splitBubble3_to_2(bubble3Trip, sp1, sp2);
+        
         sum = 0;
+        int sumSplit = 0;
         for (int bubbleLetter1 = 0; bubbleLetter1 < DoubleRowSolver.LETTER_MAX; ++bubbleLetter1) {
             for (int bubbleLetter2 = 0; bubbleLetter2 < DoubleRowSolver.LETTER_MAX; ++bubbleLetter2) {
+                sumSplit += test[bubbleLetter1][bubbleLetter2];
+                sumSplit += test2[bubbleLetter1][bubbleLetter2];
                 for (int bubbleLetter3 = 0; bubbleLetter3 < DoubleRowSolver.LETTER_MAX; ++bubbleLetter3) {
                 sum += bubble3Trip[bubbleLetter1][bubbleLetter2][bubbleLetter3];
                 
