@@ -141,11 +141,12 @@ public class AppTest extends TesterBase {
         
         assertArrayEquals(node2.nextNodeWeights, node3.prevNodeWeights);
         
+        assertEquals(10, node2.count[3]);
+        assertEquals(9, node2.count[2]);
+        assertEquals(7, node2.count[1]);
+        assertEquals(4, node2.count[0]);
         
-        
-        node2.printDiagonalWeights();
-        
-        node3.printDiagonalWeights();
+        Node nodeSq = Node.connectSingleNode(node2, node3, 5);
         
     }
    

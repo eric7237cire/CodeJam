@@ -136,6 +136,60 @@ public class Node {
 
     }
     
+    public static Node connectSingleNode(Node topNode, Node leftNode, int nodeNum) {
+        Node singleNode = Node.createEmptyNode(nodeNum);
+        
+        topNode.bottomConnectedNode = singleNode;
+        leftNode.rightConnectedNode = singleNode;
+        
+        singleNode.leftRightWeights = leftNode.leftRightWeights;
+        singleNode.topBottomWeights = topNode.topBottomWeights;
+        
+        for (int leftLetter = 0; leftLetter < LETTER_MAX; ++leftLetter) {
+            for (int topLetter = 0; topLetter < LETTER_MAX; ++topLetter) {
+
+                for (int singleNodeLetter = 0; singleNodeLetter < LETTER_MAX; ++singleNodeLetter) {
+                    if (singleNodeLetter >= topLetter
+                            && singleNodeLetter >= leftLetter) {
+
+                        leftNode.leftRightWeights[leftLetter][singleNodeLetter] += leftNode.prevNodeWeights[topLetter][leftLetter];
+
+                        topNode.topBottomWeights[topLetter][singleNodeLetter] += topNode.nextNodeWeights[topLetter][leftLetter];
+                        // Propogate increase
+                        // topBottomWeights[topLetter][singleNodeLetter] *=
+                        // count[topLetter];
+                    } else {
+                       
+
+                        // Propogate increase
+                        // leftRightWeights[topLetter][singleNodeLetter] *=
+                        // count[topLetter];
+                    }
+                }
+            }
+        }
+
+        // Update node values
+        int total = 0;
+
+        for (int letter = 0; letter < LETTER_MAX; ++letter) {
+            total = 0;
+            for (int singleLetter = 0; singleLetter < LETTER_MAX; ++singleLetter) {
+                
+                    total += singleNode.leftRightWeights[letter][singleLetter];
+                
+                    total += singleNode.topBottomWeights[letter][singleLetter];
+                
+            }
+
+            singleNode.count[letter] = total;
+            
+        }
+        
+        return singleNode;
+
+    }
+    
     public void mergeNode() {
         
         
@@ -163,6 +217,21 @@ public class Node {
         }
         
         
+        for (int letter = 0; letter < LETTER_MAX; ++letter) {
+            int total = 0;
+            for (int singleLetter = 0; singleLetter < LETTER_MAX; ++singleLetter) {
+                
+                    total += bottomConnectedNode.prevNodeWeights[letter][singleLetter];
+                
+                  //  total += rightConnectedNode.nextNodeWeights[letter][singleLetter];
+                
+            }
+
+            count[letter] = total;    
+            //TODO wrong probably
+            rightConnectedNode.count[letter] = total;
+            bottomConnectedNode.count[letter] = total;
+        }
         
         this.rightConnectedNode.leftRightWeights = new int[LETTER_MAX][LETTER_MAX];
         this.bottomConnectedNode.topBottomWeights = new int[LETTER_MAX][LETTER_MAX];
