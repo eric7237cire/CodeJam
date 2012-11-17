@@ -48,7 +48,7 @@ public class AppTest extends TesterBase {
 
 
     @Test
-    public void testTree() {
+    public void testTree3by2() {
         Node.LETTER_MAX = 4;
         
         Node n = Node.createFirstNode();
@@ -146,13 +146,22 @@ public class AppTest extends TesterBase {
         assertEquals(7, node2.count[1]);
         assertEquals(4, node2.count[0]);
         
+        assertEquals(30, Node.getTotal(node2.nextNodeWeights));
+        assertEquals(30, Node.getTotal(node3.prevNodeWeights));
+        
         Node node5 = Node.connectSingleNode(node2, node3, 5);
         
         assertEquals(50, node5.getCount());
         assertEquals(50, node2.getCount());
         assertEquals(50, node3.getCount());
         
+        assertEquals(50, Node.getTotal(node2.nextNodeWeights));
+        assertEquals(50, Node.getTotal(node2.bottomWeights));
+        
         Node node4 = node2.connectSingleNode(4, true);
+        
+        assertEquals(125, Node.getTotal(node2.nextNodeWeights));
+        assertEquals(125, Node.getTotal(node2.rightWeights));
         
         assertEquals(125, node4.getCount());
         
@@ -165,5 +174,58 @@ public class AppTest extends TesterBase {
         
     }
    
+    
+    @Test
+    public void testTree3by3() {
+        Node.LETTER_MAX = 4;
+        
+        Node node1 = Node.createFirstNode();
+        
+        assertEquals(4, node1.getCount());
+        
+        Node node2 = node1.connectSingleNode(2, true);
+        
+        assertEquals(10, node1.getCount());
+                
+        Node node3 = node1.connectSingleNode(3, false);
+        
+        assertEquals(30, node1.getCount());
+        
+        node1.mergeNode();
+        
+        
+        Node node4 = node2.connectSingleNode(4, true);
+        
+        assertEquals(65, node4.getCount());
+        assertEquals(65, node3.getCount());
+        
+        Node node5 = Node.connectSingleNode(node2, node3, 5);
+        
+        assertEquals(125, node5.getCount());
+
+        assertEquals(125, Node.getTotal(node3.prevNodeWeights));
+        assertEquals(125, Node.getTotal(node3.rightWeights));
+        
+        Node node6 = node3.connectSingleNode(6, false);
+        
+        assertEquals(330, node6.getCount());
+        
+        node2.mergeNode();
+        node3.mergeNode();
+        
+        Node node7 = Node.connectSingleNode(node4, node5, 7);
+        
+        assertEquals(490, node6.getCount());
+        
+        Node node8 = Node.connectSingleNode(node3, node4, 8);
+        
+        assertEquals(805, node8.getCount());
+        
+        node5.mergeNode();
+        
+        Node node9 = Node.connectSingleNode(node7, node8, 9);
+        
+        assertEquals(980, node9.getCount());
+    }
 
 }

@@ -10,21 +10,8 @@ import com.google.common.base.Preconditions;
 public class Node {
     final static Logger log = LoggerFactory.getLogger(Node.class);
     
-    static class SubNode {
-        int letter;
-        
-        int parentNodeNumber;
-
-        public SubNode(int letter, int parentNodeNumber) {
-            super();
-            this.letter = letter;
-            this.parentNodeNumber = parentNodeNumber;
-                    
-        }
-    }
-    
-    
-    SubNode[] subNodes;
+   //aka Base, spoke, diagonal node
+    boolean isBubbleNode;
     
     int nodeNumber;
     int[][] bottomWeights;
@@ -46,7 +33,6 @@ public class Node {
     public Node(int nodeNumber) {
         super();
         this.nodeNumber = nodeNumber;
-        subNodes = new SubNode[LETTER_MAX];
         
         
         bottomWeights = new int[LETTER_MAX][LETTER_MAX];
@@ -55,6 +41,8 @@ public class Node {
         prevNodeWeights = new int[LETTER_MAX][LETTER_MAX];
         
         count = new int[LETTER_MAX];
+        
+        isBubbleNode = false;
     }
     
     public int getCount() {
@@ -115,7 +103,7 @@ public class Node {
             }
             
             prevNode.nextNodeWeights[letterFirst][letter] *= factor;
-            nextNode.prevNodeWeights[letterFirst][letter] *= factor;
+            //nextNode.prevNodeWeights[letterFirst][letter] *= factor;
             
             
         }
@@ -138,7 +126,9 @@ public class Node {
     }
 
     
-    public void propogateIncrease(int pivotLetter, int factor, From origin) {
+    public void propogateIncrease(int[] increases, From origin) {
+        for (int pivotLetter = 0; pivotLetter < LETTER_MAX; ++pivotLetter) {
+            int factor = increases[pivotLetter];
         for (int letter = 0; letter < LETTER_MAX; ++letter) {
 
             if (origin != From.BOTTOM) {
@@ -150,14 +140,16 @@ public class Node {
                 rightWeights[pivotLetter][letter] *= factor;
                 //rightConnectedNode.propogateIncrease(pivotLetter, factor, origin)
             }
-            if (prevNodeWeights != null && origin != From.PREV) {
-                prevNodeWeights[pivotLetter][letter] *= factor;
+            if (prevConnectedNode != null && origin != From.PREV) {
+               // prevNodeWeights[pivotLetter][letter] *= factor;
             }
-            if (nextNodeWeights != null && origin != From.NEXT) {
+            if ( nextConnectedNode != null && origin != From.NEXT) {
                 nextNodeWeights[pivotLetter][letter] *= factor;
             }
         }
 
+        }
+        
         if (origin != From.BOTTOM) {
             //bottomConnectedNode.propogateIncrease(pivotLetter, factor, From.BOTTOM);
         }
@@ -166,12 +158,15 @@ public class Node {
             //rightConnectedNode.propogateIncrease(pivotLetter, factor, origin)
         }
         if (origin != From.PREV && prevConnectedNode != null) {
-            prevConnectedNode.propogateIncrease(pivotLetter, factor, From.PREV);
+            prevConnectedNode.propogateIncrease(increases, From.NEXT);
             
         }
-        if (origin != From.NEXT) {
+        if (origin != From.NEXT && nextConnectedNode != null) {
             //nextNodeWeights[pivotLetter][letter] *= factor;
+            nextConnectedNode.propogateIncrease(increases, From.PREV);
         }
+        
+        updateCounts();
     }
     
     public Node connectSingleNode(int nodeNum, boolean isRight) {
@@ -199,10 +194,6 @@ public class Node {
                         //topBottomWeights[letter][singleNodeLetter] *= count[letter];
                     } else {
                         bottomWeights[letter][singleNodeLetter] = count[letter];
-                        
-                      //Propogate increase
-                        //leftRightWeights[letter][singleNodeLetter] *= count[letter];
-                        //increases[letter] += count[letter];
                     }
                     
                   //Propogate increase
@@ -211,12 +202,12 @@ public class Node {
             }
         }
 
-        for (int letter = 0; letter < LETTER_MAX; ++letter) {
-        propogateIncrease(letter, increases[letter], isRight ? From.RIGHT : From.BOTTOM);
-        }
+        
+        propogateIncrease(increases, isRight ? From.RIGHT : From.BOTTOM);
+        
         
         singleNode.updateCounts();
-        updateCounts();
+        //updateCounts();
         
         return singleNode;
 
@@ -305,11 +296,29 @@ public class Node {
         
     }
     
+    public static int getTotal(int[][] weights) {
+        int sum = 0;
+        
+    
+        for (int letter = 0; letter < LETTER_MAX; ++letter) {
+            int total1 = 0;
+            for (int singleLetter = 0; singleLetter < LETTER_MAX; ++singleLetter) {
+                
+                    total1 += weights[letter][singleLetter];
+                
+                
+            }
+
+            sum+= total1;
+        }
+        return sum;
+    }
+    
     public void mergeNode() {
         
         
         this.rightConnectedNode.nextNodeWeights = new int[LETTER_MAX][LETTER_MAX];
-        this.bottomConnectedNode.prevNodeWeights  = new int[LETTER_MAX][LETTER_MAX];
+        this.bottomConnectedNode.prevNodeWeights  =rightConnectedNode.nextNodeWeights ;// new int[LETTER_MAX][LETTER_MAX];
         
         for (int letterToMerge = 0; letterToMerge < LETTER_MAX; ++letterToMerge) {
             
@@ -333,8 +342,8 @@ public class Node {
                     int topBottomEdgeWeight = bottomConnectedNode.bottomWeights[letterToMerge][bottomLetter];
 
                     if (leftRightWeight > 0) {
-                    bottomConnectedNode.prevNodeWeights[rightLetter][bottomLetter]
-                            += topBottomEdgeWeight * leftRightWeight / totalRightWeight;
+                   // bottomConnectedNode.prevNodeWeights[rightLetter][bottomLetter]
+                     //       += topBottomEdgeWeight * leftRightWeight / totalRightWeight;
                     
                     rightConnectedNode.nextNodeWeights[rightLetter][bottomLetter]
                             += topBottomEdgeWeight * leftRightWeight / totalRightWeight;
@@ -364,23 +373,25 @@ public class Node {
         this.rightConnectedNode.nextConnectedNode = bottomConnectedNode;
         this.bottomConnectedNode.prevConnectedNode = rightConnectedNode;
         
-        this.rightConnectedNode.rightWeights = new int[LETTER_MAX][LETTER_MAX];
-        this.rightConnectedNode.bottomWeights = new int[LETTER_MAX][LETTER_MAX];
-        this.rightConnectedNode.rightConnectedNode = null;
-        this.rightConnectedNode.bottomConnectedNode = null;
-        this.bottomConnectedNode.bottomWeights = new int[LETTER_MAX][LETTER_MAX];
-        this.bottomConnectedNode.rightWeights = new int[LETTER_MAX][LETTER_MAX];
-        this.bottomConnectedNode.rightConnectedNode = null;
-        this.bottomConnectedNode.bottomConnectedNode = null;
+        
+        this.rightConnectedNode.makeBubbleNode();
+        
+        this.bottomConnectedNode.makeBubbleNode();
+    }
+    
+    private void makeBubbleNode() {
+        bottomWeights = new int[LETTER_MAX][LETTER_MAX];
+        rightWeights = new int[LETTER_MAX][LETTER_MAX];
+        rightConnectedNode = null;
+        bottomConnectedNode = null;
+        
+        this.isBubbleNode = true;
     }
     
    
 
     static Node createEmptyNode(int nodeNum) {
         Node n = new Node(nodeNum);
-        for(int i = 0; i < LETTER_MAX; ++i) {
-            n.subNodes[i] = new SubNode(i, n.nodeNumber);
-        }
         
         return n;
     }
@@ -388,7 +399,6 @@ public class Node {
     static Node createFirstNode() {
         Node n = new Node(1);
         for(int i = 0; i < LETTER_MAX; ++i) {
-            n.subNodes[i] = new SubNode(i, n.nodeNumber);
             n.count[i] = 1;
         }
         
