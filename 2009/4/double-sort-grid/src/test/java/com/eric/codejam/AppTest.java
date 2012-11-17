@@ -60,25 +60,25 @@ public class AppTest extends TesterBase {
         assertEquals(10, n.getCount());
         
         
-        assertEquals(1, n.leftRightWeights[3][3]);
-        assertEquals(0, n.leftRightWeights[3][2]);
-        assertEquals(0, n.leftRightWeights[3][1]);
-        assertEquals(0, n.leftRightWeights[3][0]);
+        assertEquals(1, n.rightWeights[3][3]);
+        assertEquals(0, n.rightWeights[3][2]);
+        assertEquals(0, n.rightWeights[3][1]);
+        assertEquals(0, n.rightWeights[3][0]);
         
-        assertEquals(1, n.leftRightWeights[2][3]);
-        assertEquals(1, n.leftRightWeights[2][2]);
-        assertEquals(0, n.leftRightWeights[2][1]);
-        assertEquals(0, n.leftRightWeights[2][0]);
+        assertEquals(1, n.rightWeights[2][3]);
+        assertEquals(1, n.rightWeights[2][2]);
+        assertEquals(0, n.rightWeights[2][1]);
+        assertEquals(0, n.rightWeights[2][0]);
         
-        assertEquals(1, n.leftRightWeights[1][3]);
-        assertEquals(1, n.leftRightWeights[1][2]);
-        assertEquals(1, n.leftRightWeights[1][1]);
-        assertEquals(0, n.leftRightWeights[1][0]);
+        assertEquals(1, n.rightWeights[1][3]);
+        assertEquals(1, n.rightWeights[1][2]);
+        assertEquals(1, n.rightWeights[1][1]);
+        assertEquals(0, n.rightWeights[1][0]);
         
-        assertEquals(1, n.leftRightWeights[0][3]);
-        assertEquals(1, n.leftRightWeights[0][2]);
-        assertEquals(1, n.leftRightWeights[0][1]);
-        assertEquals(1, n.leftRightWeights[0][0]);
+        assertEquals(1, n.rightWeights[0][3]);
+        assertEquals(1, n.rightWeights[0][2]);
+        assertEquals(1, n.rightWeights[0][1]);
+        assertEquals(1, n.rightWeights[0][0]);
         
         
         assertEquals(1, n.count[3]);
@@ -91,25 +91,25 @@ public class AppTest extends TesterBase {
         assertEquals(30, n.getCount());
         
         //The left right node should be updated
-        assertEquals(1, n.leftRightWeights[3][3]);
-        assertEquals(0, n.leftRightWeights[3][2]);
-        assertEquals(0, n.leftRightWeights[3][1]);
-        assertEquals(0, n.leftRightWeights[3][0]);
+        assertEquals(1, n.rightWeights[3][3]);
+        assertEquals(0, n.rightWeights[3][2]);
+        assertEquals(0, n.rightWeights[3][1]);
+        assertEquals(0, n.rightWeights[3][0]);
         
-        assertEquals(2, n.leftRightWeights[2][3]);
-        assertEquals(2, n.leftRightWeights[2][2]);
-        assertEquals(0, n.leftRightWeights[2][1]);
-        assertEquals(0, n.leftRightWeights[2][0]);
+        assertEquals(2, n.rightWeights[2][3]);
+        assertEquals(2, n.rightWeights[2][2]);
+        assertEquals(0, n.rightWeights[2][1]);
+        assertEquals(0, n.rightWeights[2][0]);
         
-        assertEquals(3, n.leftRightWeights[1][3]);
-        assertEquals(3, n.leftRightWeights[1][2]);
-        assertEquals(3, n.leftRightWeights[1][1]);
-        assertEquals(0, n.leftRightWeights[1][0]);
+        assertEquals(3, n.rightWeights[1][3]);
+        assertEquals(3, n.rightWeights[1][2]);
+        assertEquals(3, n.rightWeights[1][1]);
+        assertEquals(0, n.rightWeights[1][0]);
         
-        assertEquals(4, n.leftRightWeights[0][3]);
-        assertEquals(4, n.leftRightWeights[0][2]);
-        assertEquals(4, n.leftRightWeights[0][1]);
-        assertEquals(4, n.leftRightWeights[0][0]);
+        assertEquals(4, n.rightWeights[0][3]);
+        assertEquals(4, n.rightWeights[0][2]);
+        assertEquals(4, n.rightWeights[0][1]);
+        assertEquals(4, n.rightWeights[0][0]);
         
         
         assertEquals(1, n.count[3]);
@@ -147,6 +147,14 @@ public class AppTest extends TesterBase {
         assertEquals(4, node2.count[0]);
         
         Node nodeSq = Node.connectSingleNode(node2, node3, 5);
+        
+        assertEquals(50, nodeSq.getCount());
+        assertEquals(50, node2.getCount());
+        assertEquals(50, node3.getCount());
+        
+        Node node4 = node2.connectSingleNode(4, true);
+        
+        assertEquals(125, node4.getCount());
         
     }
    
