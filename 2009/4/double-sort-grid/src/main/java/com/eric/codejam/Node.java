@@ -16,8 +16,15 @@ public class Node {
     int[][] bottomWeights;
     int[][] rightWeights;
     
+    int[][] oldNextNodeWeights;
     int[][] prevNodeWeights;
     int[][] nextNodeWeights;
+    
+    int[][][] prevDoubleNodeWeights;
+    int[][][] nextDoubleNodeWeights;
+    
+    Node prevDoubleNode;
+    Node nextDoubleNode;
     
     int[] count;
     
@@ -140,33 +147,113 @@ public class Node {
 
     
     public void propogateIncrease(Rational[] increases, int origin) {
-        for (int increasedLetter = 0; increasedLetter < LETTER_MAX; ++increasedLetter) {
-            Rational factor = increases[increasedLetter];
-        for (int secondLetter = 0; secondLetter < LETTER_MAX; ++secondLetter) {
+        
+        int[] oldTopRightCount = new int[LETTER_MAX];
+        int[] oldBottomLeftCount = new int[LETTER_MAX];
 
-            if ( (origin & BOTTOM) == 0 ) {
-                bottomWeights[increasedLetter][secondLetter] = factor.multiplyToInt(bottomWeights[increasedLetter][secondLetter]);
-                //bottomConnectedNode.propogateIncrease(pivotLetter, factor, From.BOTTOM);
-            }
+        if (prevConnectedNode != null && (origin & PREV) == 0) {
+            prevConnectedNode.oldNextNodeWeights = copyArray(prevConnectedNode.nextNodeWeights);
+            
+            for (int topRightLetter = 0; topRightLetter < LETTER_MAX; ++topRightLetter) {
 
-            if ( (origin & RIGHT) == 0) {
-                rightWeights[increasedLetter][secondLetter] = factor.multiplyToInt(rightWeights[increasedLetter][secondLetter]);
-                //rightConnectedNode.propogateIncrease(pivotLetter, factor, origin)
-            }
-            if (prevConnectedNode != null && (origin & PREV) == 0) {
-                //increasedLetter   is the 2nd dimension in prevNodeWeights
-                prevNodeWeights[secondLetter][increasedLetter] = factor.multiplyToInt(prevNodeWeights[secondLetter][increasedLetter]);
-            }
-            if ( nextConnectedNode != null && (origin & NEXT) == 0) {
-                nextNodeWeights[increasedLetter][secondLetter] = factor.multiplyToInt(nextNodeWeights[increasedLetter][secondLetter]);
+                for (int bottomLeftLetter = 0; bottomLeftLetter < LETTER_MAX; ++bottomLeftLetter) {
+                    oldTopRightCount[topRightLetter] += prevConnectedNode.nextNodeWeights[topRightLetter][bottomLeftLetter];
+
+                    oldBottomLeftCount[bottomLeftLetter] += prevConnectedNode.nextNodeWeights[topRightLetter][bottomLeftLetter];
+                }
             }
         }
+        
+        for (int increasedLetter = 0; increasedLetter < LETTER_MAX; ++increasedLetter) {
+            Rational factor = increases[increasedLetter];
+            for (int secondLetter = 0; secondLetter < LETTER_MAX; ++secondLetter) {
+
+                
+                
+                /*
+                if ((origin & NEXT) == 0 && nextDoubleNode != null) {
+                    for (int thirdLetter = 0; thirdLetter < LETTER_MAX; ++thirdLetter) {
+                        Rational testR = null; 
+                        nextDoubleNodeWeights[increasedLetter][secondLetter][thirdLetter]
+                                = factor.multiplyToInt(nextDoubleNodeWeights[increasedLetter][secondLetter][thirdLetter]);
+                    }
+                }*/
+                
+                if ((origin & BOTTOM) == 0 && nextDoubleNode == null) {
+                    bottomWeights[increasedLetter][secondLetter] = factor
+                            .multiplyToInt(bottomWeights[increasedLetter][secondLetter]);
+                    // bottomConnectedNode.propogateIncrease(pivotLetter,
+                    // factor, From.BOTTOM);
+                }
+
+                if ((origin & RIGHT) == 0 && prevDoubleNode == null) {
+                    rightWeights[increasedLetter][secondLetter] = factor
+                            .multiplyToInt(rightWeights[increasedLetter][secondLetter]);
+                    // rightConnectedNode.propogateIncrease(pivotLetter, factor,
+                    // origin)
+                }
+                if (prevConnectedNode != null && (origin & PREV) == 0) {
+                    // increasedLetter is the 2nd dimension in prevNodeWeights
+                    prevNodeWeights[secondLetter][increasedLetter] = factor
+                            .multiplyToInt(prevNodeWeights[secondLetter][increasedLetter]);
+                }
+                if (nextConnectedNode != null && (origin & NEXT) == 0) {
+                    nextNodeWeights[increasedLetter][secondLetter] = factor
+                            .multiplyToInt(nextNodeWeights[increasedLetter][secondLetter]);
+                }
+            }
 
         }
         
      
+        int[] newTopRightCount = new int[LETTER_MAX];
+        int[] newBottomLeftCount = new int[LETTER_MAX];
+        if (prevConnectedNode != null) {
+
+            if (prevConnectedNode.nextDoubleNode != null) {
+            for (int increasedLetter = 0; increasedLetter < LETTER_MAX; ++increasedLetter) {
+                Rational factor = increases[increasedLetter];
+                for (int secondLetter = 0; secondLetter < LETTER_MAX; ++secondLetter) {
+
+                    if ((origin & PREV) == 0 && prevDoubleNode != null) {
+                        for (int thirdLetter = 0; thirdLetter < LETTER_MAX; ++thirdLetter) {
+                            Rational testR = new Rational(
+                                    prevConnectedNode.nextNodeWeights[increasedLetter][secondLetter],
+                                    prevConnectedNode.oldNextNodeWeights[increasedLetter][secondLetter]);
+
+                            prevConnectedNode.nextDoubleNodeWeights[increasedLetter][secondLetter][thirdLetter] = testR
+                                    .multiplyToInt(prevConnectedNode.nextDoubleNodeWeights[increasedLetter][secondLetter][thirdLetter]);
+                        }
+                    }
+                }
+            }
+            
+            updateVerticalHorizontalWeightsFromDoubleNodes(prevConnectedNode, this);
+            }
+
+        for (int topRightLetter = 0; topRightLetter < LETTER_MAX; ++topRightLetter) {
+            
+            
+            for (int bottomLeftLetter = 0; bottomLeftLetter < LETTER_MAX; ++bottomLeftLetter) {
+                newTopRightCount[topRightLetter] += prevConnectedNode.nextNodeWeights[topRightLetter][bottomLeftLetter];
+                
+                newBottomLeftCount[bottomLeftLetter]  += prevConnectedNode.nextNodeWeights[topRightLetter][bottomLeftLetter];
+            }
+        }
+        }
+        
+        Rational[] incRatTopRight = new Rational[LETTER_MAX];
+        for (int letter = 0; letter < LETTER_MAX; ++letter) {
+            incRatTopRight[letter] = new Rational(newTopRightCount[letter], oldTopRightCount[letter]);
+        }
+        
+        Rational[] incRatBottomLeft = new Rational[LETTER_MAX];
+        for (int letter = 0; letter < LETTER_MAX; ++letter) {
+            incRatBottomLeft[letter] = new Rational(newBottomLeftCount[letter], oldBottomLeftCount[letter]);
+        }
+        
         if ( (origin & PREV) == 0 && prevConnectedNode != null) {
-            prevConnectedNode.propogateIncrease(increases, NEXT);
+            prevConnectedNode.propogateIncrease(incRatTopRight, NEXT);
             
         }
         if ( (origin & NEXT) == 0 && nextConnectedNode != null) {
@@ -225,16 +312,34 @@ public class Node {
     }
     
     public static int[][] copyArray(int[][] matrix) {
-        int [][] myInt = new int[matrix.length][];
+        int [][] myInt = new int[matrix.length][matrix.length];
         for(int i = 0; i < matrix.length; i++)
         {
-          int[] aMatrix = matrix[i];
-          int   aLength = aMatrix.length;
-          myInt[i] = new int[aLength];
-          System.arraycopy(aMatrix, 0, myInt, 0, aLength);
+            for(int j  = 0; j < matrix.length; ++j) {
+                myInt[i][j] = matrix[i][j];
+            }
         }
         
+        
         return myInt;
+    }
+    
+    public static void updateVerticalHorizontalWeightsFromDoubleNodes(Node topNode, Node leftNode) {
+        topNode.bottomWeights = new int[LETTER_MAX][LETTER_MAX];
+        leftNode.rightWeights = new int[LETTER_MAX][LETTER_MAX];
+        
+        topNode.nextDoubleNode.bottomWeights = topNode.bottomWeights;
+        topNode.nextDoubleNode.rightWeights = leftNode.rightWeights;
+        
+        for (int leftLetter = 0; leftLetter < LETTER_MAX; ++leftLetter) {
+            for (int topLetter = 0; topLetter < LETTER_MAX; ++topLetter) {
+
+                for (int singleNodeLetter = 0; singleNodeLetter < LETTER_MAX; ++singleNodeLetter) {
+                    topNode.bottomWeights[topLetter][singleNodeLetter] += topNode.nextDoubleNodeWeights[topLetter][leftLetter][singleNodeLetter];
+                    leftNode.rightWeights[leftLetter][singleNodeLetter] += topNode.nextDoubleNodeWeights[topLetter][leftLetter][singleNodeLetter];
+                }
+            }
+        }
     }
     
     public static Node connectSingleNode(Node topNode, Node leftNode, int nodeNum) {
@@ -242,6 +347,13 @@ public class Node {
         
         topNode.bottomConnectedNode = singleNode;
         leftNode.rightConnectedNode = singleNode;
+        
+        topNode.nextDoubleNode = singleNode;
+        leftNode.prevDoubleNode = singleNode;
+        
+        int[][][] weights = new int[LETTER_MAX][LETTER_MAX][LETTER_MAX];
+        topNode.nextDoubleNodeWeights = weights;
+        leftNode.prevDoubleNodeWeights = weights;
         
         singleNode.rightWeights = leftNode.rightWeights;
         singleNode.bottomWeights = topNode.bottomWeights;
@@ -258,10 +370,10 @@ public class Node {
                     if (singleNodeLetter >= topLetter
                             && singleNodeLetter >= leftLetter) {
 
-                        leftNode.rightWeights[leftLetter][singleNodeLetter] += leftNode.prevNodeWeights[topLetter][leftLetter];
-
-                        topNode.bottomWeights[topLetter][singleNodeLetter] += topNode.nextNodeWeights[topLetter][leftLetter];
-                        // Propogate increase
+                        weights[topLetter][leftLetter][singleNodeLetter] += leftNode.prevNodeWeights[topLetter][leftLetter];
+                        
+                        Preconditions.checkState(leftNode.prevNodeWeights[topLetter][leftLetter] == topNode.nextNodeWeights[topLetter][leftLetter]);
+                                                // Propogate increase
                         // topBottomWeights[topLetter][singleNodeLetter] *=
                         // count[topLetter];
                         
@@ -272,7 +384,8 @@ public class Node {
                 }
             }
         }
-        
+    
+        updateVerticalHorizontalWeightsFromDoubleNodes(topNode, leftNode);
         
         Node.propogateIncrease(topNode, leftNode, increases);
                     

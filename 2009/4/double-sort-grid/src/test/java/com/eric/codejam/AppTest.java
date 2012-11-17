@@ -175,6 +175,7 @@ public class AppTest extends TesterBase {
     }
    
     
+    
     @Test
     public void testTree3by3() {
         Node.LETTER_MAX = 4;
@@ -240,12 +241,28 @@ public class AppTest extends TesterBase {
         assertArrayEquals(new int[] { 0, 0, 15, 15 }, node2.rightWeights[2]);
         assertArrayEquals(new int[] { 0, 0, 0, 10 }, node2.rightWeights[3]);
         
+        //2 to 5
+        //[[4, 8, 12, 16], [0, 9, 15, 21], [0, 0, 12, 18], [0, 0, 0, 10]]
+        assertArrayEquals(new int[] { 4, 8, 12, 16}, node2.bottomWeights[0]);
+        assertArrayEquals(new int[] { 0, 9, 15, 21 }, node2.bottomWeights[1]);
+        assertArrayEquals(new int[] { 0, 0, 12, 18 }, node2.bottomWeights[2]);
+        assertArrayEquals(new int[] {0, 0, 0, 10 }, node2.bottomWeights[3]);
+        
+        //3 to 5
+        //[[4, 7, 9, 10], [0, 10, 14, 16], [0, 0, 16, 19], [0, 0, 0, 20]]
+        assertArrayEquals(new int[] { 4, 7, 9, 10}, node3.rightWeights[0]);
+        assertArrayEquals(new int[] { 0, 10, 14, 16 }, node3.rightWeights[1]);
+        assertArrayEquals(new int[] { 0, 0, 16, 19 }, node3.rightWeights[2]);
+        assertArrayEquals(new int[] {0, 0, 0, 20 }, node3.rightWeights[3]);
         
         Node node6 = node3.connectSingleNode(6, false);
         
+        //2 to 3
         assertArrayEquals(new int[] { 64, 36, 16, 4 }, node2.nextNodeWeights[0]);
+        assertArrayEquals(new int[] { 36, 54, 24, 6 }, node2.nextNodeWeights[1]);
+        assertArrayEquals(new int[] { 16, 24, 24, 6 }, node2.nextNodeWeights[2]);
+        assertArrayEquals(new int[] { 4, 6, 6, 4 }, node2.nextNodeWeights[3]);
         
-        //        [[4, 4, 4, 4], [0, 7, 7, 7], [0, 0, 9, 9], [0, 0, 0, 10]]
         //2 4 -- [[30, 30, 30, 30], [0, 40, 40, 40], [0, 0, 35, 35], [0, 0, 0, 20]]
         
         //2 3 -- [[64, 36, 16, 4], [36, 54, 24, 6], [16, 24, 24, 6], [4, 6, 6, 4]]
@@ -261,6 +278,32 @@ public class AppTest extends TesterBase {
         assertEquals(330, Node.getTotal(node2.nextNodeWeights));
         assertEquals(330, Node.getTotal(node2.rightWeights));
         assertEquals(330, Node.getTotal(node2.bottomWeights));
+        
+        //2  4 
+        
+        assertArrayEquals(new int[] { 30, 30, 30, 30}, node2.rightWeights[0]);
+        assertArrayEquals(new int[] { 0, 40, 40, 40 }, node2.rightWeights[1]);
+        assertArrayEquals(new int[] { 0, 0, 35, 35 }, node2.rightWeights[2]);
+        assertArrayEquals(new int[] {0, 0, 0, 20 }, node2.rightWeights[3]);
+        
+        
+        //3 5
+        assertArrayEquals(new int[] { 16, 28, 36, 40}, node3.rightWeights[0]);
+        assertArrayEquals(new int[] { 0, 30, 42, 48 }, node3.rightWeights[1]);
+        assertArrayEquals(new int[] { 0, 0, 32, 38 }, node3.rightWeights[2]);
+        assertArrayEquals(new int[] {0, 0, 0, 20 }, node3.rightWeights[3]);
+        //[[16, 28, 36, 40], [0, 30, 42, 48], [0, 0, 32, 38], [0, 0, 0, 20]]
+        
+        //2 5
+        //[[16, 28, 36, 40], [0, 30, 42, 48], [0, 0, 32, 38], [0, 0, 0, 20]]
+        //[[16, 28, 36, 40], [0, 30, 42, 48], [0, 0, 32, 38], [0, 0, 0, 20]]
+        //[[16, 28, 36, 40], [0, 30, 42, 48], [0, 0, 32, 38], [0, 0, 0, 20]]
+        //old
+        //[[4, 8, 12, 16], [0, 9, 15, 21], [0, 0, 12, 18], [0, 0, 0, 10]]
+        assertArrayEquals(new int[] { 16, 28, 36, 40}, node2.bottomWeights[0]);
+        assertArrayEquals(new int[] { 0, 30, 42, 48 }, node2.bottomWeights[1]);
+        assertArrayEquals(new int[] { 0, 0, 32, 38 }, node2.bottomWeights[2]);
+        assertArrayEquals(new int[] {0, 0, 0, 20 }, node2.bottomWeights[3]);
         
         node2.mergeNode();
         node3.mergeNode();
