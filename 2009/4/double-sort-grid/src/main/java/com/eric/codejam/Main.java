@@ -350,6 +350,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     static int[][] specialCount4_5 = new int[Node.LETTER_MAX][Node.LETTER_MAX];
     static int[][] specialCount2_4 = new int[Node.LETTER_MAX][Node.LETTER_MAX];
     static int[][] specialCount2_5 = new int[Node.LETTER_MAX][Node.LETTER_MAX];
+    static int[][] specialCount3_6 = new int[Node.LETTER_MAX][Node.LETTER_MAX];
+    static int[][] specialCount2_3 = new int[Node.LETTER_MAX][Node.LETTER_MAX];
     
     //Bruteforce
     public static int count(Grid<Integer> grid, Grid<Integer> gridOrig) {
@@ -393,6 +395,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         specialCount4_5[grid.getEntry(0, 2) - 1][grid.getEntry(1,  1)-1] ++;
         specialCount2_4[grid.getEntry(0, 1) - 1][grid.getEntry(0,  2)-1] ++;
         specialCount2_5[grid.getEntry(0, 1) - 1][grid.getEntry(1,  1)-1] ++;
+        specialCount3_6[grid.getEntry(1, 0) - 1][grid.getEntry(2,  0)-1] ++;
+        specialCount2_3[grid.getEntry(0, 1) - 1][grid.getEntry(1,  0)-1] ++;
         //No variable squares
         return 1;
     }

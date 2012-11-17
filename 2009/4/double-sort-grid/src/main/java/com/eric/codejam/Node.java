@@ -127,24 +127,25 @@ public class Node {
 
     
     public void propogateIncrease(int[] increases, From origin) {
-        for (int pivotLetter = 0; pivotLetter < LETTER_MAX; ++pivotLetter) {
-            int factor = increases[pivotLetter];
-        for (int letter = 0; letter < LETTER_MAX; ++letter) {
+        for (int increasedLetter = 0; increasedLetter < LETTER_MAX; ++increasedLetter) {
+            int factor = increases[increasedLetter];
+        for (int secondLetter = 0; secondLetter < LETTER_MAX; ++secondLetter) {
 
             if (origin != From.BOTTOM) {
-                bottomWeights[pivotLetter][letter] *= factor;
+                bottomWeights[increasedLetter][secondLetter] *= factor;
                 //bottomConnectedNode.propogateIncrease(pivotLetter, factor, From.BOTTOM);
             }
 
             if (origin != From.RIGHT) {
-                rightWeights[pivotLetter][letter] *= factor;
+                rightWeights[increasedLetter][secondLetter] *= factor;
                 //rightConnectedNode.propogateIncrease(pivotLetter, factor, origin)
             }
             if (prevConnectedNode != null && origin != From.PREV) {
-               // prevNodeWeights[pivotLetter][letter] *= factor;
+                //increasedLetter   is the 2nd dimension in prevNodeWeights
+                prevNodeWeights[secondLetter][increasedLetter] *= factor;
             }
             if ( nextConnectedNode != null && origin != From.NEXT) {
-                nextNodeWeights[pivotLetter][letter] *= factor;
+                nextNodeWeights[increasedLetter][secondLetter] *= factor;
             }
         }
 
