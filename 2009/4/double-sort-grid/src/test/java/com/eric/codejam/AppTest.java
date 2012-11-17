@@ -296,19 +296,52 @@ public class AppTest extends TesterBase {
         
         //2 5
         //[[16, 28, 36, 40], [0, 30, 42, 48], [0, 0, 32, 38], [0, 0, 0, 20]]
-        //[[16, 28, 36, 40], [0, 30, 42, 48], [0, 0, 32, 38], [0, 0, 0, 20]]
-        //[[16, 28, 36, 40], [0, 30, 42, 48], [0, 0, 32, 38], [0, 0, 0, 20]]
-        //old
-        //[[4, 8, 12, 16], [0, 9, 15, 21], [0, 0, 12, 18], [0, 0, 0, 10]]
         assertArrayEquals(new int[] { 16, 28, 36, 40}, node2.bottomWeights[0]);
         assertArrayEquals(new int[] { 0, 30, 42, 48 }, node2.bottomWeights[1]);
         assertArrayEquals(new int[] { 0, 0, 32, 38 }, node2.bottomWeights[2]);
         assertArrayEquals(new int[] {0, 0, 0, 20 }, node2.bottomWeights[3]);
         
+        //2 4 -- [[30, 30, 30, 30], [0, 40, 40, 40], [0, 0, 35, 35], [0, 0, 0, 20]]
         node2.mergeNode();
+        
+        assertArrayEquals(new int[] { 30, 30, 30, 30}, node3.bottomWeights[0]);
+        assertArrayEquals(new int[] { 0, 40, 40, 40 }, node3.bottomWeights[1]);
+        assertArrayEquals(new int[] { 0, 0, 35, 35 }, node3.bottomWeights[2]);
+        assertArrayEquals(new int[] {0, 0, 0, 20 }, node3.bottomWeights[3]);
+        
         node3.mergeNode();
         
+        //4 to 5 [[4, 7, 9, 10], [4, 17, 23, 26], [4, 17, 39, 45], [4, 17, 39, 65]]
+        assertArrayEquals(new int[] { 4, 7, 9, 10 }, node4.nextNodeWeights[0]);
+        assertArrayEquals(new int[] { 4, 17, 23, 26 }, node4.nextNodeWeights[1]);
+        assertArrayEquals(new int[] { 4, 17, 39, 45 }, node4.nextNodeWeights[2]);
+        assertArrayEquals(new int[] { 4, 17, 39, 65 }, node4.nextNodeWeights[3]);
+        
+        //5 to 6
+        //[[4, 4, 4, 4], [7, 17, 17, 17], [9, 23, 39, 39], [10, 26, 45, 65]]
+        assertArrayEquals(new int[] { 4, 4, 4, 4 }, node5.nextNodeWeights[0]);
+        assertArrayEquals(new int[] { 7, 17, 17, 17 }, node5.nextNodeWeights[1]);
+        assertArrayEquals(new int[] { 9, 23, 39, 39 }, node5.nextNodeWeights[2]);
+        assertArrayEquals(new int[] { 10, 26, 45, 65 }, node5.nextNodeWeights[3]);
+        
         Node node7 = Node.connectSingleNode(node4, node5, 7);
+        
+        //4 to 5
+        //[[16, 21, 18, 10], [12, 51, 46, 26], [8, 34, 78, 45], [4, 17, 39, 65]]
+        
+        //5 to 6
+        //[[10, 10, 10, 10], [15, 36, 36, 36], [15, 38, 64, 64], [10, 26, 45, 65]]
+        
+        //4 to 7
+        //[[4, 11, 20, 30], [0, 21, 44, 70], [0, 0, 60, 105], [0, 0, 0, 125]]
+        
+        //good
+        //[[4, 11, 20, 30], [0, 21, 44, 70], [0, 0, 60, 105], [0, 0, 0, 125]]
+        
+        //5 to 7
+        //[[4, 8, 12, 16], [0, 24, 41, 58], [0, 0, 71, 110], [0, 0, 0, 146]]
+        //good
+        //[[4, 8, 12, 16], [0, 24, 41, 58], [0, 0, 71, 110], [0, 0, 0, 146]]
         
         assertEquals(490, node6.getCount());
         

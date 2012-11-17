@@ -461,28 +461,28 @@ public class Node {
             
             int totalRightWeight = 0;
             for (int rightLetter = 0; rightLetter < LETTER_MAX; ++rightLetter) {
-                totalRightWeight += rightConnectedNode.rightWeights[letterToMerge][rightLetter];
+                totalRightWeight += rightWeights[letterToMerge][rightLetter];
             }
             
             int totalBottomWeight = 0;
             for (int bottomLetter = 0; bottomLetter < LETTER_MAX; ++bottomLetter) {
-                totalBottomWeight += bottomConnectedNode.bottomWeights[letterToMerge][bottomLetter];
+                totalBottomWeight += bottomWeights[letterToMerge][bottomLetter];
             }
             
             Preconditions.checkState(totalBottomWeight == totalRightWeight);
             
             for (int rightLetter = 0; rightLetter < LETTER_MAX; ++rightLetter) {
                 
-                int leftRightWeight = rightConnectedNode.rightWeights[letterToMerge][rightLetter];
+                int leftRightWeight = rightWeights[letterToMerge][rightLetter];
 
                 for (int bottomLetter = 0; bottomLetter < LETTER_MAX; ++bottomLetter) {
-                    int topBottomEdgeWeight = bottomConnectedNode.bottomWeights[letterToMerge][bottomLetter];
+                    int topBottomEdgeWeight = bottomWeights[letterToMerge][bottomLetter];
 
                     if (leftRightWeight > 0) {
                    // bottomConnectedNode.prevNodeWeights[rightLetter][bottomLetter]
                      //       += topBottomEdgeWeight * leftRightWeight / totalRightWeight;
                     
-                    rightConnectedNode.nextNodeWeights[rightLetter][bottomLetter]
+                        rightConnectedNode.nextNodeWeights[rightLetter][bottomLetter]
                             += topBottomEdgeWeight * leftRightWeight / totalRightWeight;
                     }
                 }
