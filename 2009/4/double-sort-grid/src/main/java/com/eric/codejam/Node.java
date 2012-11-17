@@ -1,10 +1,9 @@
 package com.eric.codejam;
 
-import org.apache.commons.math3.stat.regression.UpdatingMultipleLinearRegression;
-import org.apache.commons.math3.util.MathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eric.codejam.utils.Rational;
 import com.google.common.base.Preconditions;
 
 public class Node {
@@ -71,12 +70,11 @@ public class Node {
         }
     }
     
-    enum From {
-        BOTTOM,
-        RIGHT,
-        NEXT,
-        PREV;
-    }
+    
+    public static int BOTTOM = 1;
+    public static int RIGHT = 2;
+    public static int NEXT = 4;
+    public static int PREV = 8;
     
     /**
      * 
@@ -85,86 +83,95 @@ public class Node {
      * @param increases
      * @param origin
      */
-    public static void propogateIncrease(Node prevNode, Node nextNode, int[][] increases, From origin) {
-        for (int letterFirst = 0; letterFirst < LETTER_MAX; ++letterFirst) {
-            
+    public static void propogateIncrease(Node prevNode, Node nextNode, int[][] increases) {
         
+        int[] oldTopRightCount = new int[LETTER_MAX];
+        int[] oldBottomLeftCount = new int[LETTER_MAX];
+        for (int topRightLetter = 0; topRightLetter < LETTER_MAX; ++topRightLetter) {
+            
+            
+            for (int bottomLeftLetter = 0; bottomLeftLetter < LETTER_MAX; ++bottomLeftLetter) {
+                oldTopRightCount[topRightLetter] += prevNode.nextNodeWeights[topRightLetter][bottomLeftLetter];
+                
+                oldBottomLeftCount[bottomLeftLetter]  += prevNode.nextNodeWeights[topRightLetter][bottomLeftLetter];
+            }
+        }
+
+        for (int letterFirst = 0; letterFirst < LETTER_MAX; ++letterFirst) {
+
+            for (int letter = 0; letter < LETTER_MAX; ++letter) {
+
+                int factor = increases[letterFirst][letter];
+
+                prevNode.nextNodeWeights[letterFirst][letter] *= factor;
+                // nextNode.prevNodeWeights[letterFirst][letter] *= factor;
+
+            }
+
+        }
+        
+        int[] newTopRightCount = new int[LETTER_MAX];
+        int[] newBottomLeftCount = new int[LETTER_MAX];
+        for (int topRightLetter = 0; topRightLetter < LETTER_MAX; ++topRightLetter) {
+            
+            
+            for (int bottomLeftLetter = 0; bottomLeftLetter < LETTER_MAX; ++bottomLeftLetter) {
+                newTopRightCount[topRightLetter] += prevNode.nextNodeWeights[topRightLetter][bottomLeftLetter];
+                
+                newBottomLeftCount[bottomLeftLetter]  += prevNode.nextNodeWeights[topRightLetter][bottomLeftLetter];
+            }
+        }
+
+        
+        Rational[] incRatTopRight = new Rational[LETTER_MAX];
         for (int letter = 0; letter < LETTER_MAX; ++letter) {
-
-            int factor = increases[letterFirst][letter];
-            if (origin != From.BOTTOM) {
-               // bottomWeights[pivotLetter][letter] *= factor;
-                //bottomConnectedNode.propogateIncrease(pivotLetter, factor, From.BOTTOM);
-            }
-
-            if (origin != From.RIGHT) {
-                //rightWeights[pivotLetter][letter] *= factor;
-                //rightConnectedNode.propogateIncrease(pivotLetter, factor, origin)
-            }
-            
-            prevNode.nextNodeWeights[letterFirst][letter] *= factor;
-            //nextNode.prevNodeWeights[letterFirst][letter] *= factor;
-            
-            
+            incRatTopRight[letter] = new Rational(newTopRightCount[letter], oldTopRightCount[letter]);
         }
-
+        
+        prevNode.propogateIncrease(incRatTopRight, BOTTOM | NEXT);
+        
+        Rational[] incRatBottomLeft = new Rational[LETTER_MAX];
+        for (int letter = 0; letter < LETTER_MAX; ++letter) {
+            incRatBottomLeft[letter] = new Rational(newBottomLeftCount[letter], oldBottomLeftCount[letter]);
         }
-        if (origin != From.BOTTOM) {
-            //bottomConnectedNode.propogateIncrease(pivotLetter, factor, From.BOTTOM);
-        }
-
-        if (origin != From.RIGHT) {
-            //rightConnectedNode.propogateIncrease(pivotLetter, factor, origin)
-        }
-        if (origin != From.PREV ) {
-            //prevConnectedNode.propogateIncrease(pivotLetter, factor, From.PREV);
-            
-        }
-        if (origin != From.NEXT) {
-            //nextNodeWeights[pivotLetter][letter] *= factor;
-        }
+        
+        nextNode.propogateIncrease(incRatBottomLeft, RIGHT | PREV);
     }
 
     
-    public void propogateIncrease(int[] increases, From origin) {
+    public void propogateIncrease(Rational[] increases, int origin) {
         for (int increasedLetter = 0; increasedLetter < LETTER_MAX; ++increasedLetter) {
-            int factor = increases[increasedLetter];
+            Rational factor = increases[increasedLetter];
         for (int secondLetter = 0; secondLetter < LETTER_MAX; ++secondLetter) {
 
-            if (origin != From.BOTTOM) {
-                bottomWeights[increasedLetter][secondLetter] *= factor;
+            if ( (origin & BOTTOM) == 0 ) {
+                bottomWeights[increasedLetter][secondLetter] = factor.multiplyToInt(bottomWeights[increasedLetter][secondLetter]);
                 //bottomConnectedNode.propogateIncrease(pivotLetter, factor, From.BOTTOM);
             }
 
-            if (origin != From.RIGHT) {
-                rightWeights[increasedLetter][secondLetter] *= factor;
+            if ( (origin & RIGHT) == 0) {
+                rightWeights[increasedLetter][secondLetter] = factor.multiplyToInt(rightWeights[increasedLetter][secondLetter]);
                 //rightConnectedNode.propogateIncrease(pivotLetter, factor, origin)
             }
-            if (prevConnectedNode != null && origin != From.PREV) {
+            if (prevConnectedNode != null && (origin & PREV) == 0) {
                 //increasedLetter   is the 2nd dimension in prevNodeWeights
-                prevNodeWeights[secondLetter][increasedLetter] *= factor;
+                prevNodeWeights[secondLetter][increasedLetter] = factor.multiplyToInt(prevNodeWeights[secondLetter][increasedLetter]);
             }
-            if ( nextConnectedNode != null && origin != From.NEXT) {
-                nextNodeWeights[increasedLetter][secondLetter] *= factor;
+            if ( nextConnectedNode != null && (origin & NEXT) == 0) {
+                nextNodeWeights[increasedLetter][secondLetter] = factor.multiplyToInt(nextNodeWeights[increasedLetter][secondLetter]);
             }
         }
 
         }
         
-        if (origin != From.BOTTOM) {
-            //bottomConnectedNode.propogateIncrease(pivotLetter, factor, From.BOTTOM);
-        }
-
-        if (origin != From.RIGHT) {
-            //rightConnectedNode.propogateIncrease(pivotLetter, factor, origin)
-        }
-        if (origin != From.PREV && prevConnectedNode != null) {
-            prevConnectedNode.propogateIncrease(increases, From.NEXT);
+     
+        if ( (origin & PREV) == 0 && prevConnectedNode != null) {
+            prevConnectedNode.propogateIncrease(increases, NEXT);
             
         }
-        if (origin != From.NEXT && nextConnectedNode != null) {
+        if ( (origin & NEXT) == 0 && nextConnectedNode != null) {
             //nextNodeWeights[pivotLetter][letter] *= factor;
-            nextConnectedNode.propogateIncrease(increases, From.PREV);
+            nextConnectedNode.propogateIncrease(increases, PREV);
         }
         
         updateCounts();
@@ -203,8 +210,11 @@ public class Node {
             }
         }
 
-        
-        propogateIncrease(increases, isRight ? From.RIGHT : From.BOTTOM);
+        Rational[] incRat = new Rational[LETTER_MAX];
+        for (int letter = 0; letter < LETTER_MAX; ++letter) {
+            incRat[letter] = Rational.fromInt(increases[letter]);
+        }
+        propogateIncrease(incRat, isRight ? RIGHT : BOTTOM);
         
         
         singleNode.updateCounts();
@@ -212,6 +222,19 @@ public class Node {
         
         return singleNode;
 
+    }
+    
+    public static int[][] copyArray(int[][] matrix) {
+        int [][] myInt = new int[matrix.length][];
+        for(int i = 0; i < matrix.length; i++)
+        {
+          int[] aMatrix = matrix[i];
+          int   aLength = aMatrix.length;
+          myInt[i] = new int[aLength];
+          System.arraycopy(aMatrix, 0, myInt, 0, aLength);
+        }
+        
+        return myInt;
     }
     
     public static Node connectSingleNode(Node topNode, Node leftNode, int nodeNum) {
@@ -251,7 +274,7 @@ public class Node {
         }
         
         
-        Node.propogateIncrease(topNode, leftNode, increases, null);
+        Node.propogateIncrease(topNode, leftNode, increases);
                     
 
         // Update node values
