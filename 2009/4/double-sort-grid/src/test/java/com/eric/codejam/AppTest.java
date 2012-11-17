@@ -146,15 +146,22 @@ public class AppTest extends TesterBase {
         assertEquals(7, node2.count[1]);
         assertEquals(4, node2.count[0]);
         
-        Node nodeSq = Node.connectSingleNode(node2, node3, 5);
+        Node node5 = Node.connectSingleNode(node2, node3, 5);
         
-        assertEquals(50, nodeSq.getCount());
+        assertEquals(50, node5.getCount());
         assertEquals(50, node2.getCount());
         assertEquals(50, node3.getCount());
         
         Node node4 = node2.connectSingleNode(4, true);
         
         assertEquals(125, node4.getCount());
+        
+        node2.mergeNode();
+       // node3.mergeNode();
+        
+        Node node6 = Node.connectSingleNode(node4, node5, 6);
+        
+        assertEquals(175, node6.getCount());
         
     }
    
