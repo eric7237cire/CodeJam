@@ -49,7 +49,6 @@ public class AppTest extends TesterBase {
     }
 
 
-    @Test
     public void testTree3by2() {
         Node.LETTER_MAX = 4;
         
@@ -162,6 +161,10 @@ public class AppTest extends TesterBase {
         assertArrayEquals(new int[] {0, 0, 2, 2}, n.rightWeights[2]);
         assertArrayEquals(new int[] {0, 0, 0, 1}, n.rightWeights[3]);
         
+        assertArrayEquals(new int[] {4,4,4,4}, n.bottomWeights[0]);
+        assertArrayEquals(new int[] {0, 3, 3, 3}, n.bottomWeights[1]);
+        assertArrayEquals(new int[] {0, 0, 2, 2}, n.bottomWeights[2]);
+        assertArrayEquals(new int[] {0, 0, 0, 1}, n.bottomWeights[3]);
         
         Node node5 = Node.connectSingleNode(node2, node3, 5);
         

@@ -39,6 +39,25 @@ public class Edge {
         
         throw new RuntimeException("hmm");
     }
+    
+    public void addWeight(int toAdd) {
+        
+        if (secondNode.equals(firstNode.rightConnectedNode)) {
+            firstNode.rightWeights[firstLetter][secondLetter] += 
+                     toAdd;
+            return;
+//            secondNode.leftWeights[firstLetter][secondLetter] 
+  //                  = res * secondNode.leftWeights[firstLetter][secondLetter] + mult * originalWeight;
+        } else if (secondNode.equals(firstNode.bottomConnectedNode)) {
+            firstNode.bottomWeights[firstLetter][secondLetter] += 
+                    
+                    toAdd;
+            //secondNode.leftWeights[firstLetter][secondLetter] *= mult;
+            return;
+        }
+        
+        throw new RuntimeException("hmm");
+    }
 
     @Override
     public String toString() {

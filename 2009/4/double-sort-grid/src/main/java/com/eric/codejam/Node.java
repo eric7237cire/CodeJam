@@ -347,7 +347,7 @@ public class Node {
                 continue;
             }
             
-            seenNodes.put(node, letters);
+            seenNodes.put(nodeToVisit, letters);
             
             List<Connection> conn = nodeToVisit.getConnections();
             
@@ -485,7 +485,8 @@ public class Node {
         
         
          //first node
-        if (topConnectedNode == null && leftConnectedNode == null) {
+        if (topConnectedNode == null && leftConnectedNode == null && rightConnectedNode == null && bottomConnectedNode == null) {
+            log.debug("Connecting first node");
             for(int i = 0; i < LETTER_MAX; ++i) {
                 
                 for(int j = i; j < LETTER_MAX; ++j) {
@@ -498,11 +499,14 @@ public class Node {
                 }
             }   
         } else {
+            
+            Connection conn = getConnections().get(0);
         for(int i = 0; i < LETTER_MAX; ++i) {
-            int count = getOutboundLetterCount(getAnyConnectedPrevNodeWeights(), i, false);
+            
+            int count = getOutboundLetterCount(conn.weights, i, conn.firstNode.equals(conn.firstNode));
             
             for(int j = i; j < LETTER_MAX; ++j) {
-                int numOutter = LETTER_MAX - i + 1;
+                int numOutter = LETTER_MAX - i;
                 if (isRight) {
                     rightWeights[i][j] = count / numOutter;
                 } else {
@@ -605,7 +609,7 @@ Node singleNode = new Node(nodeNum, topNode.masterList);
             List<Set<Edge>> topList = new ArrayList<Set<Edge>>();
             edgeSets.add(topList);
             
-            for (int letterLeft = 0; letterLeft <= letterTop; ++letterLeft) {
+            for (int letterLeft = 0; letterLeft <= LETTER_MAX; ++letterLeft) {
                 
                 /*
                 List<Edge> topEdges = new ArrayList<>();
@@ -626,12 +630,31 @@ Node singleNode = new Node(nodeNum, topNode.masterList);
                             leftNode));
 
                 }*/
+                
+                log.debug("Finding edges top {} left {} for new node {}", letterTop, letterLeft, nodeNum);
         
                 Set<Edge> topEdgeSet = Node.findAllEdges(topNode, letterTop);
                 
+                log.debug("Top set");
+                for(Edge e : topEdgeSet) {
+                    log.debug("edge {}", e);
+                }
+                
                 Set<Edge> leftEdgeSet = Node.findAllEdges(leftNode, letterLeft);
                 
+                log.debug("Left set");
+                for(Edge e : leftEdgeSet) {
+                    log.debug("edge {}", e);
+                }
+                
                 Set<Edge> actualSet = Sets.intersection(topEdgeSet, leftEdgeSet);
+                
+                log.debug("Actual set size {}", actualSet.size());
+               
+                log.debug("actual set  top {} left {} ", letterTop, letterLeft);
+                for(Edge e : actualSet) {
+                    log.debug("edge {}", e);
+                }
                 
                 topList.add(actualSet);
                 
@@ -656,9 +679,18 @@ Node singleNode = new Node(nodeNum, topNode.masterList);
         
                 int minLetter = Math.min(letterTop, letterLeft);
                 Set<Edge> allEdges = edgeSets.get(letterTop).get(letterLeft);
-                int mult = LETTER_MAX - minLetter;
+                int mult =  LETTER_MAX - minLetter;
+                
+                log.debug("Letter top {} left {} min {} \n\n", letterTop, letterLeft, minLetter);
                 for(Edge e : allEdges) {
-                    e.increaseWeight(mult);
+                    if (e.secondNode.equals(topNode)) {
+                        Preconditions.checkState(e.secondLetter == letterTop);
+                    }
+                    if (e.secondNode.equals(leftNode)) {
+                        Preconditions.checkState(e.secondLetter == letterLeft);
+                    }
+                    log.debug("Increasing edge from {} Letter {} to {} letter {} by {}", e.firstNode, e.firstLetter, e.secondNode, e.secondLetter, mult);
+                    e.addWeight(mult);
                 }
                 
                 
