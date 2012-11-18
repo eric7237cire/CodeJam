@@ -357,6 +357,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     static int[][] specialCount4_7 = new int[Node.LETTER_MAX][Node.LETTER_MAX];
     static int[][] specialCount5_7 = new int[Node.LETTER_MAX][Node.LETTER_MAX];
     
+    static int[][][][] specialCountr_c = new int[16][16][Node.LETTER_MAX][Node.LETTER_MAX];
+    
     //Bruteforce
     public static int count(Grid<Integer> grid, Grid<Integer> gridOrig) {
         //log.info("Count grid {}", grid);
@@ -396,6 +398,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             }
         }
         
+        for(int idx = 0; idx < 9; ++idx) {
+            for(int  idx2 = 0; idx2 < 9; ++idx2) {
+                specialCountr_c[idx][idx2][grid.getEntry(idx) - 1][grid.getEntry(idx2) - 1] ++;
+            }
+        }
         specialCount4_5[grid.getEntry(0, 2) - 1][grid.getEntry(1,  1)-1] ++;
         specialCount2_4[grid.getEntry(0, 1) - 1][grid.getEntry(0,  2)-1] ++;
         specialCount2_5[grid.getEntry(0, 1) - 1][grid.getEntry(1,  1)-1] ++;

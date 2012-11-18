@@ -146,14 +146,26 @@ public class AppTest extends TesterBase {
         assertEquals(7, node2.count[1]);
         assertEquals(4, node2.count[0]);
         
+        
+        
         assertEquals(30, Node.getTotal(node2.nextNodeWeights));
         assertEquals(30, Node.getTotal(node3.prevNodeWeights));
+        
+      //2 to 3 -- [[1, 1, 1, 1], [1, 2, 2, 2], [1, 2, 3, 3], [1, 2, 3, 4]] ==30
+        //1 to 2 -- [[4, 4, 4, 4], [0, 3, 3, 3], [0, 0, 2, 2], [0, 0, 0, 1]]
+        assertArrayEquals(new int[] {4,4,4,4}, n.rightWeights[0]);
+        assertArrayEquals(new int[] {0, 3, 3, 3}, n.rightWeights[1]);
+        assertArrayEquals(new int[] {0, 0, 2, 2}, n.rightWeights[2]);
+        assertArrayEquals(new int[] {0, 0, 0, 1}, n.rightWeights[3]);
+        
         
         Node node5 = Node.connectSingleNode(node2, node3, 5);
         
         assertEquals(50, node5.getCount());
         assertEquals(50, node2.getCount());
         assertEquals(50, node3.getCount());
+        
+        //1 2 [[10, 9, 7, 4], [0, 6, 5, 3], [0, 0, 3, 2], [0, 0, 0, 1]]
         
         assertEquals(50, Node.getTotal(node2.nextNodeWeights));
         assertEquals(50, Node.getTotal(node2.bottomWeights));
