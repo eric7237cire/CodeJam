@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 import com.eric.codejam.utils.Grid;
 import com.google.common.base.Preconditions;
 
-public class DoubleRowSolver {
+public class DynamicProgrammingSmall {
 
-    final static Logger log = LoggerFactory.getLogger(DoubleRowSolver.class);
+    final static Logger log = LoggerFactory.getLogger(DynamicProgrammingSmall.class);
 
     Grid<Integer> grid;
     int rows;
@@ -69,7 +69,7 @@ public class DoubleRowSolver {
     long count = 0;
     long memCount = 0;
     
-    public DoubleRowSolver(Grid<Integer> grid) {
+    public DynamicProgrammingSmall(Grid<Integer> grid) {
         // Preconditions.checkArgument(grid.getRows() == 1);
         this.grid = grid;
         this.rows = grid.getRows();
@@ -81,7 +81,7 @@ public class DoubleRowSolver {
 
     public static Integer solveGrid(Grid<Integer> grid) {
 
-        DoubleRowSolver ss = new DoubleRowSolver(grid);
+        DynamicProgrammingSmall ss = new DynamicProgrammingSmall(grid);
 
         int[] upperRowLimits = new int[grid.getCols()];
         return ss.solve(0, 1, upperRowLimits);

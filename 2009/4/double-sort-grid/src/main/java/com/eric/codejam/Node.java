@@ -52,7 +52,7 @@ public class Node {
     
     List<Node> masterList;
     
-    public static int LETTER_MAX = DoubleRowSolver.LETTER_MAX;
+    public static int LETTER_MAX = DynamicProgrammingSmall.LETTER_MAX;
 
     public Node(int nodeNumber, List<Node> masterList) {
         super();

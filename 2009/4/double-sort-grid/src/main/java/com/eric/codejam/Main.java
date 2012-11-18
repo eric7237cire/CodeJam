@@ -77,7 +77,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         log.info("Starting calculating case {}", caseNumber);
         
-        solve1d();
+       // solve1d();
         
         //int countBF = count(input.grid, new Grid<Integer>(input.grid));
         
@@ -92,9 +92,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         //int count = SingleRowSolver.solveGrid(input.grid);
         
         int count = 0;
-        DoubleRowSolver ss = new DoubleRowSolver(input.grid);
+        //DynamicProgrammingSmall ss = new DynamicProgrammingSmall(input.grid);
     
-        count = DoubleRowSolver.solveGrid(input.grid);
+        //count = DynamicProgrammingSmall.solveGrid(input.grid);
+        count = DynamicProgrammingLarge.solveGrid(input.grid);
         //log.info("Count DP {}.  ans {}", caseNumber, countDP);
 
         log.info("Done dp ");
@@ -111,57 +112,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     
     
     static int[][][][] specialCountr_c = new int[16][16][Node.LETTER_MAX][Node.LETTER_MAX];
-    
-    //Bruteforce
-    public static int count(Grid<Integer> grid, Grid<Integer> gridOrig) {
-        //log.info("Count grid {}", grid);
-        Ordering<Integer> o = Ordering.natural().nullsFirst();
-        int count = 0;
-        for(int i = 0; i < grid.getSize(); ++i) {
-            
-            Integer current = grid.getEntry(i);
-            Integer top = grid.getEntry(i, Direction.NORTH);
-            Integer left = grid.getEntry(i, Direction.WEST);
-            
-            //A flexible spot, compute all possibilities
-            if (current == 0) {
-                for(int j = DoubleRowSolver.LETTER_MAX; j >= 1; --j) {
-                    //Must be non decreasing
-                    if (o.compare(j, top) < 0) {
-                        break;
-                    }
-                    
-                    if (o.compare(j, left) < 0) {
-                        break;
-                    }
-                    Grid<Integer> copy = new Grid<Integer>(grid);
-                    copy.setEntry(i, j);
-                    count += count(copy, gridOrig);
-                    
-                    count %= 10007;
-                }
-                return count;
-            }
-            
-            //Can not decrease
-            if (o.compare(current, top) < 0) {
-                return 0;
-            }
-            
-            if (o.compare(current, left) < 0) {
-                return 0;
-            }
-        }
-        
-        /*
-        for(int idx = 0; idx < 9; ++idx) {
-            for(int  idx2 = 0; idx2 < 9; ++idx2) {
-                specialCountr_c[idx][idx2][grid.getEntry(idx) - 1][grid.getEntry(idx2) - 1] ++;
-            }
-        }*/
-        //No variable squares
-        return 1;
-    }
     
     
     @Override
