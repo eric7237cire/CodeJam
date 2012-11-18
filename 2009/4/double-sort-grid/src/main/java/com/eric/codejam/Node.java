@@ -1,8 +1,10 @@
 package com.eric.codejam;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -296,37 +298,95 @@ public class Node {
         updateCounts();*/
     }
     
-    static Set<Edge>  findAllEdges(List<Edge> initial) {
-        Set<Edge> seenEdges = new HashSet<Edge>();
-        List<Edge> toVisit = new ArrayList<>(initial);
+    static class Connection {
+        Node firstNode;
+        Node secondNode;
+        Node otherNode;
+        int[][] weights;
+        public Connection(Node firstNode, Node secondNode, int[][] weights, Node otherNode) {
+            super();
+            this.firstNode = firstNode;
+            this.secondNode = secondNode;
+            this.weights = weights;
+            this.otherNode = otherNode;
+        }
+    }
+    
+    List<Connection> getConnections() {
+        List<Connection> ret = new ArrayList<>();
+        if (topConnectedNode != null) {
+            ret.add(new Connection(topConnectedNode, this, topConnectedNode.bottomWeights, topConnectedNode));
+        }
+        if (leftConnectedNode != null) {
+            ret.add(new Connection(leftConnectedNode, this, leftConnectedNode.rightWeights, leftConnectedNode));
+        }
+        if (bottomConnectedNode != null) {
+            ret.add(new Connection(this, bottomConnectedNode, bottomWeights, bottomConnectedNode));
+        }
+        if (rightConnectedNode != null) {
+            ret.add(new Connection(this, rightConnectedNode, rightWeights, rightConnectedNode));
+        }
+        
+        return ret;
+    }
+    
+    static Set<Edge>  findAllEdges(Node node, int letter) {
+        Map<Node, Set<Integer>> seenNodes = new HashMap<>();
+        Map<Node, Set<Integer>> toVisit = new HashMap<>();
+        Set<Edge> retEdges = new HashSet<>();
+        
+        toVisit.put(node, Sets.newHashSet(letter));
         
         while(!toVisit.isEmpty()) {
-            Edge edge = toVisit.remove(0);
+            Node nodeToVisit = toVisit.keySet().iterator().next();
+            Set<Integer> letters = toVisit.get(nodeToVisit);
             
-            if (seenEdges.contains(edge)) {
+            toVisit.remove(nodeToVisit);
+            
+            if (seenNodes.containsKey(nodeToVisit)) {
                 continue;
             }
             
-            seenEdges.add(edge);
+            seenNodes.put(node, letters);
             
-            Node firstNode = edge.firstNode;
-            Node secondNode = edge.secondNode;
+            List<Connection> conn = nodeToVisit.getConnections();
             
-            for (int i = 0; i < LETTER_MAX; ++i) {
-            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, i, firstNode.topWeights, firstNode.topConnectedNode, firstNode));
-            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, i, firstNode.leftWeights, firstNode.leftConnectedNode, firstNode));
-            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, i, firstNode.rightWeights, firstNode, firstNode.rightConnectedNode));
-            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, i, firstNode.bottomWeights, firstNode, firstNode.bottomConnectedNode));
-            
-            toVisit.addAll(getAllConnectedEdges(i, edge.secondLetter, secondNode.topWeights, secondNode.topConnectedNode, secondNode));
-            toVisit.addAll(getAllConnectedEdges(i, edge.secondLetter, secondNode.leftWeights, secondNode.leftConnectedNode, secondNode));
-            toVisit.addAll(getAllConnectedEdges(i, edge.secondLetter, secondNode.rightWeights, secondNode, secondNode.rightConnectedNode));
-            toVisit.addAll(getAllConnectedEdges(i, edge.secondLetter, secondNode.bottomWeights, secondNode, secondNode.bottomConnectedNode));
-            
+            for(Connection c : conn) {
+                if (seenNodes.containsKey(c.otherNode)) {
+                    continue;
+                }
+                
+                Set<Integer> lettersOther = new HashSet<>();
+               // List<Edge> toRet = new ArrayList<>();
+                for(int fl = 0; fl < LETTER_MAX; ++fl) {
+                    for(int sl = 0; sl < LETTER_MAX; ++sl) {
+                        
+                        if (c.firstNode.equals(c.otherNode) && !letters.contains(sl)) {
+                            continue;
+                        }
+                        if (c.secondNode.equals(c.otherNode) && !letters.contains(fl)) {
+                            continue;
+                        }
+                        
+                        if (c.weights[fl][sl] > 0) {
+                            retEdges.add(new Edge(c.firstNode, c.secondNode, fl,sl,(c.weights[fl][sl])));
+                            
+                            if (c.firstNode.equals(c.otherNode)) {
+                                lettersOther.add(fl);
+                            } else {
+                                lettersOther.add(sl);
+                            }
+                        }
+                    }
+                }
+                
+                toVisit.put(c.otherNode, lettersOther);
+                
             }
+            
         }
         
-        return seenEdges;
+        return retEdges;
     }
     
     
@@ -398,16 +458,10 @@ public class Node {
         for(int cl = 0; cl < LETTER_MAX; ++cl) {
             List<Edge> aEdges = new ArrayList<>();
         
-        for(int i = 0; i < LETTER_MAX; ++i) {
-            aEdges.addAll( getAllConnectedEdges(i, cl, topWeights, topConnectedNode, this) ); 
-            aEdges.addAll( getAllConnectedEdges(i, cl, leftWeights, leftConnectedNode, this) );
-            aEdges.addAll( getAllConnectedEdges(cl, i, rightWeights, this, rightConnectedNode) );
-            aEdges.addAll( getAllConnectedEdges(cl, i, bottomWeights, this, bottomConnectedNode) );
-        }
         
         
        // boolean reset = cl == 0;
-        Set<Edge> allEdges = findAllEdges(aEdges);
+        Set<Edge> allEdges = findAllEdges(this, cl);
         
         edgeSets.add(allEdges);
         
@@ -553,6 +607,7 @@ Node singleNode = new Node(nodeNum, topNode.masterList);
             
             for (int letterLeft = 0; letterLeft <= letterTop; ++letterLeft) {
                 
+                /*
                 List<Edge> topEdges = new ArrayList<>();
                 List<Edge> leftEdges = new ArrayList<>();
                 
@@ -570,11 +625,11 @@ Node singleNode = new Node(nodeNum, topNode.masterList);
                             leftNode.topWeights, leftNode.topConnectedNode,
                             leftNode));
 
-                }
+                }*/
         
-                Set<Edge> topEdgeSet = Node.findAllEdges(topEdges);
+                Set<Edge> topEdgeSet = Node.findAllEdges(topNode, letterTop);
                 
-                Set<Edge> leftEdgeSet = Node.findAllEdges(topEdges);
+                Set<Edge> leftEdgeSet = Node.findAllEdges(leftNode, letterLeft);
                 
                 Set<Edge> actualSet = Sets.intersection(topEdgeSet, leftEdgeSet);
                 
