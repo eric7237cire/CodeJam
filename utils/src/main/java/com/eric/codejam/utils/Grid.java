@@ -121,7 +121,7 @@ public class Grid<SquareType> {
     }
     
     
-    private int getIndex(int row, int col) {
+    public int getIndex(int row, int col) {
         return col + row * cols;
     }
     

@@ -1,5 +1,10 @@
 package com.eric.codejam;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,18 +15,22 @@ public class Node {
     final static Logger log = LoggerFactory.getLogger(Node.class);
     
    //aka Base, spoke, diagonal node
-    boolean isBubbleNode;
+    //boolean isBubbleNode;
     
     int nodeNumber;
     int[][] bottomWeights;
-    int[][] rightWeights;
-    
+    int[][] rightWeights;    
     int[][] topWeights;
     int[][] leftWeights;
     
+    Node rightConnectedNode;
+    Node bottomConnectedNode;
+    Node leftConnectedNode;
+    Node topConnectedNode;
+    
     //int[][] oldNextNodeWeights;
-    int[][] prevNodeWeights;
-    int[][] nextNodeWeights;
+    //int[][] prevNodeWeights;
+   // int[][] nextNodeWeights;
     
     //int[][][] prevNodeWeightsComplete;
     //int[][][] nextNodeWeightsComplete;
@@ -29,23 +38,20 @@ public class Node {
     int[][][] prevDoubleNodeWeights;
     int[][][] nextDoubleNodeWeights;
     
-    Node prevDoubleNode;
-    Node nextDoubleNode;
+    //Node prevDoubleNode;
+    //Node nextDoubleNode;
     
     int[] count;
     
-    Node rightConnectedNode;
-    Node bottomConnectedNode;
     
-    Node prevConnectedNode;
-    Node nextConnectedNode;
+    //Node prevConnectedNode;
+    //Node nextConnectedNode;
     
-    Node leftConnectedNode;
-    Node topConnectedNode;
+    List<Node> masterList;
     
     public static int LETTER_MAX = DoubleRowSolver.LETTER_MAX;
 
-    public Node(int nodeNumber) {
+    public Node(int nodeNumber, List<Node> masterList) {
         super();
         this.nodeNumber = nodeNumber;
         
@@ -56,8 +62,8 @@ public class Node {
         topWeights = new int[LETTER_MAX][LETTER_MAX];
         
         count = new int[LETTER_MAX];
-        
-        isBubbleNode = false;
+        this.masterList = masterList;
+        //isBubbleNode = false;
     }
     
     public int getCount() {
@@ -142,7 +148,7 @@ public class Node {
 */
     
     public void propogateIncrease(Rational[] increases, int origin) {
-        
+        /*
         int[] oldTopCount = new int[LETTER_MAX];
         int[] oldBottomCount = new int[LETTER_MAX];
         int[] oldLeftCount = new int[LETTER_MAX];
@@ -195,7 +201,7 @@ public class Node {
             }
 
         }
-        
+        */
      
         //int[] newTopRightCount = new int[LETTER_MAX];
         //int[] newBottomLeftCount = new int[LETTER_MAX];
@@ -234,7 +240,7 @@ public class Node {
             }
         }
         }*/
-
+/*
             int[] newTopCount = new int[LETTER_MAX];
             int[] newBottomCount = new int[LETTER_MAX];
             int[] newLeftCount = new int[LETTER_MAX];
@@ -286,22 +292,172 @@ public class Node {
             bottomConnectedNode.propogateIncrease(incRatBottom, LEFT);
         }
         
-        updateCounts();
+        updateCounts();*/
     }
     
+    Set<Edge> findAllEdges(List<Edge> initial) {
+        Set<Edge> seenEdges = new HashSet<Edge>();
+        List<Edge> toVisit = new ArrayList<>(initial);
+        
+        while(!toVisit.isEmpty()) {
+            Edge edge = toVisit.remove(0);
+            
+            if (seenEdges.contains(edge)) {
+                continue;
+            }
+            
+            seenEdges.add(edge);
+            
+            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, edge.secondLetter, topWeights, topConnectedNode, this));
+            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, edge.secondLetter, leftWeights, leftConnectedNode, this));
+            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, edge.secondLetter, rightWeights, this, rightConnectedNode));
+            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, edge.secondLetter, bottomWeights, this, bottomConnectedNode));
+            
+        }
+        
+        return seenEdges;
+    }
+    
+    
+    //weights [ first ] [ second ]
+    static List<Edge>  getAllConnectedEdges(Integer firstLetter, Integer secondLetter, int[][] weights, Node firstNode, Node secondNode) {
+        if (firstNode == null || secondNode == null) {
+            return new ArrayList<>();
+        }
+        List<Edge> toRet = new ArrayList<>();
+        for(int fl = 0; fl < LETTER_MAX; ++fl) {
+            for(int sl = 0; sl < LETTER_MAX; ++sl) {
+                if (firstLetter != null && firstLetter != fl) {
+                    continue;
+                }
+                if (secondLetter != null && secondLetter != sl) {
+                    continue;
+                }
+                if (weights[fl][sl] > 0) {
+                    toRet.add(new Edge(firstNode,secondNode, fl, sl, weights[fl][sl]));
+                }
+            }
+        }
+        
+        return toRet;
+    }
+    
+    public void resetWeights() {
+        for(int i = 0; i < LETTER_MAX; ++i) {
+            
+        
+        for(int j = 0; j < LETTER_MAX; ++j) {
+            topWeights[i][j] = 0;
+            bottomWeights[i][j] = 0;
+            leftWeights[i][j] = 0;
+            rightWeights[i][j] = 0;
+        }
+        }
+    }
+    
+    public int[][] getAnyConnectedPrevNodeWeights() {
+        if (leftConnectedNode != null)
+            return leftConnectedNode.rightWeights;
+        
+        if (topConnectedNode != null)
+            return topConnectedNode.bottomWeights;
+        
+        /*
+        if (rightConnectedNode != null)
+            return rightConnectedNode;
+        
+     
+        
+        if (bottomConnectedNode != null)
+            return bottomConnectedNode;
+        */
+        return null;
+    }
+    
+    @Override
+    public String toString() {
+        return "Node [nodeNumber=" + nodeNumber + "]";
+    }
+
     public Node connectSingleNode(int nodeNum, boolean isRight) {
-        Node singleNode = Node.createEmptyNode(nodeNum);
+        Node singleNode = new Node(nodeNum, masterList);
+        
+        List<Set<Edge>> edgeSets = new ArrayList<>();
+        
+        for(int cl = 0; cl < LETTER_MAX; ++cl) {
+            List<Edge> aEdges = new ArrayList<>();
+        
+        for(int i = 0; i < LETTER_MAX; ++i) {
+            aEdges.addAll( getAllConnectedEdges(i, cl, topWeights, topConnectedNode, this) ); 
+            aEdges.addAll( getAllConnectedEdges(i, cl, leftWeights, leftConnectedNode, this) );
+            aEdges.addAll( getAllConnectedEdges(cl, i, rightWeights, this, rightConnectedNode) );
+            aEdges.addAll( getAllConnectedEdges(cl, i, bottomWeights, this, bottomConnectedNode) );
+        }
+        
+        
+       // boolean reset = cl == 0;
+        Set<Edge> allEdges = findAllEdges(aEdges);
+        
+        edgeSets.add(allEdges);
+        
+        
+        }
+        
+        //Reset all edges
+        for (Node n : masterList) {
+            n.resetWeights();
+        }
+        
+        log.info("Done resetting");
+        
+        for(int connectingLetter = 0; connectingLetter < LETTER_MAX; ++connectingLetter) {
+            Set<Edge> allEdges = edgeSets.get(connectingLetter);
+            int mult = LETTER_MAX - connectingLetter;
+            for(Edge e : allEdges) {
+                e.increaseWeight(mult);
+            }
+        }
+        
+        
+         //first node
+        if (topConnectedNode == null && leftConnectedNode == null) {
+            for(int i = 0; i < LETTER_MAX; ++i) {
+                
+                for(int j = i; j < LETTER_MAX; ++j) {
+                    
+                    if (isRight) {
+                        rightWeights[i][j] = 1;
+                    } else {
+                        bottomWeights[i][j] = 1;
+                    }
+                }
+            }   
+        } else {
+        for(int i = 0; i < LETTER_MAX; ++i) {
+            int count = getOutboundLetterCount(getAnyConnectedPrevNodeWeights(), i, false);
+            
+            for(int j = i; j < LETTER_MAX; ++j) {
+                int numOutter = LETTER_MAX - i + 1;
+                if (isRight) {
+                    rightWeights[i][j] = count / numOutter;
+                } else {
+                    bottomWeights[i][j] = count / numOutter;
+                }
+            }
+        }
+        }
         
         if (isRight) {
             this.rightConnectedNode = singleNode;
-            singleNode.rightConnectedNode = this;
-            singleNode.rightWeights = rightWeights;
+            singleNode.leftConnectedNode = this;
+            singleNode.leftWeights = rightWeights;
         } else {
-            this.bottomConnectedNode = singleNode;
-            singleNode.bottomConnectedNode = this;
-            singleNode.bottomWeights = bottomWeights;
+            this.bottomConnectedNode = singleNode;            
+            singleNode.topConnectedNode = this;
+            singleNode.topWeights = bottomWeights;
         }
         
+        /*
         int[] increases = new int[LETTER_MAX];
         for (int letter = 0; letter < LETTER_MAX; ++letter) {
 
@@ -327,10 +483,16 @@ public class Node {
             incRat[letter] = Rational.fromInt(increases[letter]);
         }
         propogateIncrease(incRat, isRight ? RIGHT : BOTTOM);
+        */
         
-        
-        singleNode.updateCounts();
+        masterList.add(singleNode);
+        for(Node n : masterList) {
+            n.updateCounts();
+        }
+        //singleNode.updateCounts();
         //updateCounts();
+        
+        
         
         return singleNode;
 
@@ -350,6 +512,7 @@ public class Node {
     }
     
     public static void updateVerticalHorizontalWeightsFromDoubleNodes(Node topNode, Node leftNode) {
+        /*
         topNode.bottomWeights = new int[LETTER_MAX][LETTER_MAX];
         leftNode.rightWeights = new int[LETTER_MAX][LETTER_MAX];
         
@@ -364,10 +527,11 @@ public class Node {
                     leftNode.rightWeights[leftLetter][singleNodeLetter] += topNode.nextDoubleNodeWeights[topLetter][leftLetter][singleNodeLetter];
                 }
             }
-        }
+        }*/
     }
     
     public static Node connectSingleNode(Node topNode, Node leftNode, int nodeNum) {
+        /*
         Node singleNode = Node.createEmptyNode(nodeNum);
         
         topNode.bottomConnectedNode = singleNode;
@@ -444,13 +608,15 @@ public class Node {
         singleNode.updateCounts();
         topNode.updateCounts();
         leftNode.updateCounts();
+        */
+        ///return singleNode;
         
-        return singleNode;
+        return null;
 
     }
     
     
-    private static int[] getCounts(int[][] weights) {
+    private static int[] getCounts(int[][] weights, boolean countFirstIndex) {
         int sum = 0;
         int[] counts = new int[LETTER_MAX];
     
@@ -458,34 +624,57 @@ public class Node {
             int total1 = 0;
             for (int singleLetter = 0; singleLetter < LETTER_MAX; ++singleLetter) {
                 
+                if (countFirstIndex)
                     total1 += weights[letter][singleLetter];
-                
-                
+                else 
+                    total1 += weights[singleLetter][letter];
             }
 
             counts[letter] = total1;
         }
         return counts;
     }
-    private void updateCounts() {
+    
+    
+    private static int getOutboundLetterCount(int[][] weights, int letter, boolean isFirstLetter) {
         
-        if (nextConnectedNode != null) {
-            Preconditions.checkArgument(leftConnectedNode != null);
+        
+    
+        int total1 = 0;
+        for (int singleLetter = 0; singleLetter < LETTER_MAX; ++singleLetter) {
+
+            if (isFirstLetter) {
+            total1 += weights[letter][singleLetter];
+            } else {
+                total1 += weights[singleLetter][letter];
+            }
             
-            nextNodeWeights = getDiagonalWeights(leftConnectedNode.rightWeights, leftConnectedNode.bottomWeights);
-         
+
         }
 
+        return total1;
+        
+    }
+
+    
+    private void updateCounts() {
+        
+        
         if (rightConnectedNode != null) {
-            count = getCounts(rightWeights);
+            count = getCounts(rightWeights, true);
         } else if (bottomConnectedNode != null) {
-            count = getCounts(bottomWeights);
-        } else if (prevConnectedNode != null) {
+            count = getCounts(bottomWeights, true);
+        } else if (topConnectedNode != null) {
+            count = getCounts(topWeights, false);
+        } else if (leftConnectedNode != null) {
+            count = getCounts(leftWeights, false);
+        }
+        /*else if (prevConnectedNode != null) {
             count = getCounts(prevNodeWeights);
         }else if (nextConnectedNode != null) {
          
             count = getCounts(nextNodeWeights);
-        }
+        }*/
         
         
     }
@@ -552,7 +741,7 @@ public class Node {
     
     public void mergeNode() {
         
-        
+        /*
         this.rightConnectedNode.nextNodeWeights = new int[LETTER_MAX][LETTER_MAX];
         //this.rightConnectedNode.nextNodeWeightsComplete = new int[LETTER_MAX][LETTER_MAX][LETTER_MAX];
         this.bottomConnectedNode.prevNodeWeights  =rightConnectedNode.nextNodeWeights ;// new int[LETTER_MAX][LETTER_MAX];
@@ -625,31 +814,28 @@ public class Node {
         
         this.leftConnectedNode = null;
         this.topConnectedNode = null;
+        */
     }
     
     private void makeBubbleNode() {
+        
         bottomWeights = new int[LETTER_MAX][LETTER_MAX];
         rightWeights = new int[LETTER_MAX][LETTER_MAX];
         rightConnectedNode = null;
         bottomConnectedNode = null;
         
-        this.isBubbleNode = true;
+        //this.isBubbleNode = true;
     }
     
    
 
-    static Node createEmptyNode(int nodeNum) {
-        Node n = new Node(nodeNum);
-        
-        return n;
-    }
     
-    static Node createFirstNode() {
-        Node n = new Node(1);
+    static Node createFirstNode(List<Node> masterList) {
+        Node n = new Node(1, masterList);
         for(int i = 0; i < LETTER_MAX; ++i) {
-            n.count[i] = 1;
+           // n.count[i] = 1;
         }
-        
+        masterList.add(n);
         return n;
     }
     
