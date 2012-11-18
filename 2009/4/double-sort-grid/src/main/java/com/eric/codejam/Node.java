@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.eric.codejam.utils.Rational;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 
 public class Node {
     final static Logger log = LoggerFactory.getLogger(Node.class);
@@ -295,7 +296,7 @@ public class Node {
         updateCounts();*/
     }
     
-    Set<Edge> findAllEdges(List<Edge> initial) {
+    static Set<Edge>  findAllEdges(List<Edge> initial) {
         Set<Edge> seenEdges = new HashSet<Edge>();
         List<Edge> toVisit = new ArrayList<>(initial);
         
@@ -308,11 +309,21 @@ public class Node {
             
             seenEdges.add(edge);
             
-            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, edge.secondLetter, topWeights, topConnectedNode, this));
-            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, edge.secondLetter, leftWeights, leftConnectedNode, this));
-            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, edge.secondLetter, rightWeights, this, rightConnectedNode));
-            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, edge.secondLetter, bottomWeights, this, bottomConnectedNode));
+            Node firstNode = edge.firstNode;
+            Node secondNode = edge.secondNode;
             
+            for (int i = 0; i < LETTER_MAX; ++i) {
+            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, i, firstNode.topWeights, firstNode.topConnectedNode, firstNode));
+            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, i, firstNode.leftWeights, firstNode.leftConnectedNode, firstNode));
+            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, i, firstNode.rightWeights, firstNode, firstNode.rightConnectedNode));
+            toVisit.addAll(getAllConnectedEdges(edge.firstLetter, i, firstNode.bottomWeights, firstNode, firstNode.bottomConnectedNode));
+            
+            toVisit.addAll(getAllConnectedEdges(i, edge.secondLetter, secondNode.topWeights, secondNode.topConnectedNode, secondNode));
+            toVisit.addAll(getAllConnectedEdges(i, edge.secondLetter, secondNode.leftWeights, secondNode.leftConnectedNode, secondNode));
+            toVisit.addAll(getAllConnectedEdges(i, edge.secondLetter, secondNode.rightWeights, secondNode, secondNode.rightConnectedNode));
+            toVisit.addAll(getAllConnectedEdges(i, edge.secondLetter, secondNode.bottomWeights, secondNode, secondNode.bottomConnectedNode));
+            
+            }
         }
         
         return seenEdges;
@@ -531,6 +542,163 @@ public class Node {
     }
     
     public static Node connectSingleNode(Node topNode, Node leftNode, int nodeNum) {
+        
+Node singleNode = new Node(nodeNum, topNode.masterList);
+        
+        List<List<Set<Edge>>> edgeSets = new ArrayList<>();
+        
+        for(int letterTop = 0; letterTop < LETTER_MAX; ++letterTop) {
+            List<Set<Edge>> topList = new ArrayList<Set<Edge>>();
+            edgeSets.add(topList);
+            
+            for (int letterLeft = 0; letterLeft <= letterTop; ++letterLeft) {
+                
+                List<Edge> topEdges = new ArrayList<>();
+                List<Edge> leftEdges = new ArrayList<>();
+                
+                for (int i = 0; i < LETTER_MAX; ++i) {
+                    topEdges.addAll(getAllConnectedEdges(i, letterTop,
+                            topNode.leftWeights, topNode.leftConnectedNode,
+                            topNode));
+                    topEdges.addAll(getAllConnectedEdges(i, letterTop,
+                            leftNode.topWeights, leftNode.topConnectedNode,
+                            leftNode));
+                    leftEdges.addAll(getAllConnectedEdges(i, letterLeft,
+                            topNode.leftWeights, topNode.leftConnectedNode,
+                            topNode));
+                    leftEdges.addAll(getAllConnectedEdges(i, letterLeft,
+                            leftNode.topWeights, leftNode.topConnectedNode,
+                            leftNode));
+
+                }
+        
+                Set<Edge> topEdgeSet = Node.findAllEdges(topEdges);
+                
+                Set<Edge> leftEdgeSet = Node.findAllEdges(topEdges);
+                
+                Set<Edge> actualSet = Sets.intersection(topEdgeSet, leftEdgeSet);
+                
+                topList.add(actualSet);
+                
+            }
+
+       // boolean reset = cl == 0;
+        
+        }
+        
+        //Reset all edges
+        for (Node n : topNode.masterList) {
+            n.resetWeights();
+        }
+        
+        log.info("Done resetting");
+        
+        for(int letterTop = 0; letterTop < LETTER_MAX; ++letterTop) {
+            List<Set<Edge>> topList = new ArrayList<Set<Edge>>();
+            edgeSets.add(topList);
+            
+            for (int letterLeft = 0; letterLeft <= letterTop; ++letterLeft) {
+        
+                int minLetter = Math.min(letterTop, letterLeft);
+                Set<Edge> allEdges = edgeSets.get(letterTop).get(letterLeft);
+                int mult = LETTER_MAX - minLetter;
+                for(Edge e : allEdges) {
+                    e.increaseWeight(mult);
+                }
+                
+                
+            }
+        }
+        
+        
+
+        singleNode.leftConnectedNode = leftNode;
+        singleNode.leftWeights = leftNode.rightWeights;
+        singleNode.topConnectedNode = topNode;
+        singleNode.topWeights = topNode.bottomWeights;
+        topNode.bottomConnectedNode = singleNode;
+        leftNode.rightConnectedNode = singleNode;
+    
+        
+        for(int i = 0; i < LETTER_MAX; ++i) {
+            int count = 0;
+            
+        for(int letterTop = 0; letterTop <= i; ++letterTop) {
+            
+            for (int letterLeft = 0; letterLeft <= i; ++letterLeft) {
+        
+                Set<Edge> allEdges = edgeSets.get(letterTop).get(letterLeft);
+        
+                int sum1 = 0;
+                int sum2 = 0;
+                //Find top -> left edges
+                for(Edge e : allEdges) {
+                    if (e.secondNode.equals(topNode) && 
+                            e.firstNode.equals(topNode.leftConnectedNode) ) {
+                        Preconditions.checkState(e.secondLetter == letterTop);
+                        sum1 += topNode.leftWeights[e.firstLetter][e.secondLetter];
+                    }
+                    
+                    if (e.secondNode.equals(leftNode) && 
+                            e.firstNode.equals(leftNode.topConnectedNode) ) {
+                        Preconditions.checkState(e.secondLetter == letterLeft);
+                        sum2 += topNode.leftWeights[e.firstLetter][e.secondLetter];
+                    }
+                }
+                
+                Preconditions.checkState(sum1 == sum2);
+                count += sum1;
+                singleNode.topWeights[letterTop][i] += sum1;
+                singleNode.leftWeights[letterLeft][i] += sum1;
+                
+            }
+        }
+        }
+        
+        
+        topNode.masterList.add(singleNode);
+        for(Node n : topNode.masterList) {
+            n.updateCounts();
+        }
+        
+        
+        
+        
+        /*
+        int[] increases = new int[LETTER_MAX];
+        for (int letter = 0; letter < LETTER_MAX; ++letter) {
+
+            for (int singleNodeLetter = 0; singleNodeLetter < LETTER_MAX; ++singleNodeLetter) {
+                if (singleNodeLetter >= letter) {
+                    if (isRight) {
+                        rightWeights[letter][singleNodeLetter] = count[letter];
+                        
+                        
+                        //topBottomWeights[letter][singleNodeLetter] *= count[letter];
+                    } else {
+                        bottomWeights[letter][singleNodeLetter] = count[letter];
+                    }
+                    
+                  //Propogate increase
+                    increases[letter] += 1;
+                }
+            }
+        }
+
+        Rational[] incRat = new Rational[LETTER_MAX];
+        for (int letter = 0; letter < LETTER_MAX; ++letter) {
+            incRat[letter] = Rational.fromInt(increases[letter]);
+        }
+        propogateIncrease(incRat, isRight ? RIGHT : BOTTOM);
+        */
+        
+        
+        //singleNode.updateCounts();
+        //updateCounts();
+        
+        
+        
+        return singleNode;
         /*
         Node singleNode = Node.createEmptyNode(nodeNum);
         
@@ -611,7 +779,7 @@ public class Node {
         */
         ///return singleNode;
         
-        return null;
+        //return null;
 
     }
     
