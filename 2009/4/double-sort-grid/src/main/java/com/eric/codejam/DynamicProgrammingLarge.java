@@ -48,8 +48,13 @@ public class DynamicProgrammingLarge {
     }
     
     
-    
-    public int solve(int pathKey, int maxCharacter) {
+    /*
+     * dp[P][c][k] := the number of ways one can fill all the squares above the path P,
+     *  using only the letters no greater than c, and the letter c does not occur anywhere
+     *   after column k,so that the upper part is doubly sorted, and any pre-filled letter
+     *    in the upper part is respected.
+     */
+    public int solve(int pathKey, int maxCharacter, int colLimit) {
         
         if (memoize[pathKey][maxCharacter] >= 0) {
             return memoize[pathKey][maxCharacter];
@@ -88,9 +93,10 @@ public class DynamicProgrammingLarge {
         //Basically when the path has a corner
         int numMaxPoints = 0;
         
+        int maxColumn = 0;
         int sum = 0;
                 
-        for(int pathRowIdx = 0; pathRowIdx < grid.getCols(); ++pathRowIdx ) {
+        for(int pathRowIdx = 0; pathRowIdx <= colLimit; ++pathRowIdx ) {
             //path row is one after the row
             int currentPathRow = path.get(pathRowIdx);
             int nextPathRow = pathRowIdx == grid.getCols() - 1 ? 0 : path.get(pathRowIdx+1);
@@ -115,6 +121,8 @@ public class DynamicProgrammingLarge {
                     // = pathRowIdx
                     ++numMaxPoints;
                     maxPointColumns.add(pathRowIdx);
+                    
+                    maxColumn = pathRowIdx;
                 }
             }
             
@@ -122,7 +130,7 @@ public class DynamicProgrammingLarge {
         
         
         
-        sum = solve(pathKey, maxCharacter - 1);
+        sum = solve(pathKey, maxCharacter - 1, grid.getCols() - 1);
        
         log.debug("Sum starting {} for path {}", sum, path);
        
@@ -136,10 +144,13 @@ public class DynamicProgrammingLarge {
                         
             List<Integer> intersectedPath = new ArrayList<>(path);
             
+            
+            
             //improve
             for(int j = 0; j < numMaxPoints; ++j ) {
                 if ( ((1 << j) & subSetsBitSet) > 0) {                    
                     int maxPointCol = maxPointColumns.get(j);
+                    //maxColumn = maxPointCol;
                     addOrSub *= -1;
                     intersectedPath.set(maxPointCol, intersectedPath.get(maxPointCol) - 1);
                 }
@@ -147,7 +158,7 @@ public class DynamicProgrammingLarge {
                                    
             int intPathIndex = pathToIndex.get(intersectedPath);            
           
-            int subSum = solve(intPathIndex, maxCharacter);
+            int subSum = solve(intPathIndex, maxCharacter, maxColumn);
             sum += addOrSub * subSum;
             sum %= MOD;
 
@@ -190,7 +201,7 @@ public class DynamicProgrammingLarge {
 
         DynamicProgrammingLarge ss = new DynamicProgrammingLarge(grid);
         
-        return ss.solve(0, LETTER_MAX);
+        return ss.solve(0, LETTER_MAX, grid.getCols() - 1);
 
     }
     
