@@ -22,7 +22,7 @@ public class DynamicProgrammingLarge {
     List<List<Integer>> paths; 
     Grid<Integer> grid;
     
-    int[][] memoize ;
+    int[][][] memoize ;
     Map<List<Integer>, Integer> pathToIndex;
     
     final static int MOD = 10007;
@@ -37,10 +37,12 @@ public class DynamicProgrammingLarge {
         createAllPaths(new ArrayList<Integer>(), grid.getRows(), grid.getCols());   
        // log.info("Done create all paths");
         
-        memoize = new int[paths.size()][LETTER_MAX+1];
+        memoize = new int[paths.size()][LETTER_MAX+1][grid.getCols()];
         for(int i= 0; i < paths.size(); ++i) {
             for(int j = 0; j <= LETTER_MAX; ++j) {
-                memoize[i][j] = -1;
+                for(int k = 0; k < grid.getCols(); ++k) {
+                    memoize[i][j][k] = -1;
+                }
             }
         }
         int totalPathNumber = IntMath.binomial(grid.getRows()+grid.getCols(), grid.getRows());
@@ -56,8 +58,8 @@ public class DynamicProgrammingLarge {
      */
     public int solve(int pathKey, int maxCharacter, int colLimit) {
         
-        if (memoize[pathKey][maxCharacter] >= 0) {
-            return memoize[pathKey][maxCharacter];
+        if (memoize[pathKey][maxCharacter][colLimit] >= 0) {
+            return memoize[pathKey][maxCharacter][colLimit];
         }
         
         if (pathKey == paths.size() - 2) {
@@ -72,12 +74,12 @@ public class DynamicProgrammingLarge {
             }
             //checkPath(pathKey, maxCharacter, sum);
             sum %= MOD;
-            memoize[pathKey][maxCharacter] = sum;
+            memoize[pathKey][maxCharacter][colLimit] = sum;
             return sum;
         }
         if (pathKey == paths.size() - 1) {
             int sum = 0;
-            memoize[pathKey][maxCharacter] = sum;
+            memoize[pathKey][maxCharacter][colLimit] = sum;
             //checkPath(pathKey, maxCharacter, sum);
             return 0;
         }
@@ -93,7 +95,7 @@ public class DynamicProgrammingLarge {
         //Basically when the path has a corner
         int numMaxPoints = 0;
         
-        int maxColumn = 0;
+       // int maxColumn = 0;
         int sum = 0;
                 
         for(int pathRowIdx = 0; pathRowIdx <= colLimit; ++pathRowIdx ) {
@@ -110,7 +112,7 @@ public class DynamicProgrammingLarge {
                 if (letter > maxCharacter) {
                     log.debug("Invalid letter ");
                     sum = 0;
-                    memoize[pathKey][maxCharacter] = sum;
+                    memoize[pathKey][maxCharacter][colLimit] = sum;
                     //checkPath(pathKey, maxCharacter, sum);
                     return 0;
                 }
@@ -122,7 +124,7 @@ public class DynamicProgrammingLarge {
                     ++numMaxPoints;
                     maxPointColumns.add(pathRowIdx);
                     
-                    maxColumn = pathRowIdx;
+                 //   maxColumn = pathRowIdx;
                 }
             }
             
@@ -132,7 +134,7 @@ public class DynamicProgrammingLarge {
         
         sum = solve(pathKey, maxCharacter - 1, grid.getCols() - 1);
        
-        log.debug("Sum starting {} for path {}", sum, path);
+        log.debug("Sum starting {} for path {} max char <= {}", sum, path, maxCharacter);
        
         
         int allSubSets = (1 << numMaxPoints) - 1; 
@@ -150,7 +152,7 @@ public class DynamicProgrammingLarge {
             for(int j = 0; j < numMaxPoints; ++j ) {
                 if ( ((1 << j) & subSetsBitSet) > 0) {                    
                     int maxPointCol = maxPointColumns.get(j);
-                    //maxColumn = maxPointCol;
+       //             maxColumn = maxPointCol;
                     addOrSub *= -1;
                     intersectedPath.set(maxPointCol, intersectedPath.get(maxPointCol) - 1);
                 }
@@ -158,7 +160,7 @@ public class DynamicProgrammingLarge {
                                    
             int intPathIndex = pathToIndex.get(intersectedPath);            
           
-            int subSum = solve(intPathIndex, maxCharacter, maxColumn);
+            int subSum = solve(intPathIndex, maxCharacter, colLimit);
             sum += addOrSub * subSum;
             sum %= MOD;
 
@@ -173,7 +175,7 @@ public class DynamicProgrammingLarge {
         }
         log.debug("Returning {} for path {} <= {}", sum, path, maxCharacter);
         
-        memoize[pathKey][maxCharacter] = sum;
+        memoize[pathKey][maxCharacter][colLimit] = sum;
         return sum;
     }
     
@@ -193,9 +195,9 @@ public class DynamicProgrammingLarge {
         
         int count = BruteForce.count(checkGrid, checkGrid);
         Preconditions.checkState(count == sum);
-    }
+    }*/
     
-    */
+    
     
     public static Integer solveGrid(Grid<Integer> grid) {
 

@@ -10,7 +10,6 @@ import java.io.StringReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eric.codejam.Node;
 import com.eric.codejam.test.TesterBase;
 
 /**
