@@ -48,7 +48,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             if (!remainer.equals(BigInteger.ZERO)) {
                 remainer = gcdCommon.subtract(remainer);
             }
-            log.debug("Remainder {}", remainer);
+           // log.debug("Remainder {}", remainer);
             firstCandidate = firstCandidate == null ? remainer : remainer.max(firstCandidate);
         }
         
@@ -78,21 +78,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 input.events[i] = input.events[i].add(gcdCommon) ;
             }
             
-            /*
-            BigInteger ti = BigInteger.valueOf(t);
-            BigInteger gcd = input.events[0].add(ti).gcd(input.events[1].add(ti)); 
-            for (int i = 2; i < input.events.length; ++i) {
-                gcd = gcd.gcd(input.events[i].add(ti));
-                
-            }
-            
-            if (gcd.compareTo(maxGcd) > 0) { 
-            maxGcd = maxGcd.max(gcd);
-            log.debug("Gcd is {} for t {}", gcd, t);
-            }*/
+          
         }
-        //double ans = DivideConq.findMinPerimTriangle(input.points);
-
+        
         log.info("Done calculating answer case {}", caseNumber);
         
         //DecimalFormat decim = new DecimalFormat("0.00000000000");
