@@ -125,6 +125,7 @@ template<class T> struct Fraction{T a,b;Fraction(T a=0,T b=1);string toString();
 const int MODE=10007;
 const int size=2;
 const int max_nstate=200000;
+const int LETTER_MAX = 4;
 
 int n,m;
 int A[size][size];
@@ -220,12 +221,12 @@ int main()
         for (int i=0;i<size;i++)
             for (int j=0;j<size;j++)
                 if (i>=n || j>=m)
-                    A[i][j]=25;
+                    A[i][j]=LETTER_MAX-1;
         vector<int> E;
         for (int i=0;i<size;i++) E.push_back(0);
         memset(F,0,sizeof(F));
         F[M[E]]=1;
-        for (int key=0;key<26;key++)
+        for (int key=0;key<LETTER_MAX;key++)
         {
             //column...
             for (int k=0;k<size;k++)
@@ -248,6 +249,8 @@ int main()
                     for (int p=current;p<prev;p++)
                     {
                     printf("P is %d k is %d\n", p, k);
+                    
+                    //Must not be = key,
                         if (A[p][k]>=0 && A[p][k]!=key) break;
                         //expand -- nstate, column, row
                         if (expand[i][k][p]<0)
@@ -268,7 +271,7 @@ int main()
                 }
                 memcpy(F,G,sizeof(F));
 
-                printf("key = %d   Col = %d\n",key,k);
+                printf("FINISHED WITH key = %d   Col = %d\n",key,k);
                 for (int i=0;i<nstate;i++) if (F[i]>0)
                 {
                     printf("path # %d ",i);

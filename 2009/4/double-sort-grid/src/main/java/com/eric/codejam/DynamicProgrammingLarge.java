@@ -105,7 +105,7 @@ public class DynamicProgrammingLarge {
                 
                 
                 //atLeastOneEqualMaxCharacter = true;
-                                
+                                if (letter == 0 || letter == maxCharacter) {
                 //We have found a maximal point.  Row = currentPathRow, Col = pathRowIdx
                 maximalPoints.add(grid.getIndex(currentPathRow-1, pathRowIdx));
                 List<Integer> newPathWithoutMaxPoint = new ArrayList<>(path);
@@ -113,7 +113,7 @@ public class DynamicProgrammingLarge {
                 Preconditions.checkState(newPathWithoutMaxPoint.get(pathRowIdx) >= 0);
                 
                 newPath.add(newPathWithoutMaxPoint);
-                
+                                }
             }
             
             
@@ -146,9 +146,9 @@ public class DynamicProgrammingLarge {
             return sum;
         }
         
-        if (!atLeasteOneNonZero) {
+        //if (!atLeasteOneNonZero) {
         sum = solve(pathKey, maxCharacter - 1);
-        }
+        //}
         log.debug("Sum starting {} for path {}", sum, path);
         /*
         if (maximalPoints.size() == 1 && grid.getEntry(maximalPoints.get(0)) == 0) {
