@@ -22,7 +22,7 @@ public class DynamicProgrammingLarge {
     List<List<Integer>> paths; 
     Grid<Integer> grid;
     
-    
+    int[][] memoize ;
     Map<List<Integer>, Integer> pathToIndex;
     
     public DynamicProgrammingLarge(Grid<Integer> grid) {
@@ -32,11 +32,23 @@ public class DynamicProgrammingLarge {
         pathToIndex = new HashMap<>();
         createAllPaths(new ArrayList<Integer>(), grid.getRows(), grid.getCols());   
         
+        memoize = new int[paths.size()][LETTER_MAX+1];
+        for(int i= 0; i < paths.size(); ++i) {
+            for(int j = 0; j <= LETTER_MAX; ++j) {
+                memoize[i][j] = -1;
+            }
+        }
         int totalPathNumber = IntMath.binomial(grid.getRows()+grid.getCols(), grid.getRows());
         Preconditions.checkState(totalPathNumber == paths.size());
     }
     
+    
+    
     public int solve(int pathKey, int maxCharacter) {
+        
+        if (memoize[pathKey][maxCharacter] >= 0) {
+            return memoize[pathKey][maxCharacter];
+        }
         
         if (pathKey == paths.size() - 2) {
             int letter = grid.getEntry(0);
@@ -209,6 +221,7 @@ public class DynamicProgrammingLarge {
         
         log.debug("Returning {} for path {} <= {}", sum, path, maxCharacter);
         checkPath(pathKey, maxCharacter, sum);
+        memoize[pathKey][maxCharacter] = sum;
         return sum;
         
         //
