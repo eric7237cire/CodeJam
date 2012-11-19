@@ -53,6 +53,9 @@ public class Grid<SquareType> {
         return g;
     }
     
+    public static interface Converter<SquareType> {
+        SquareType convert(char c);
+    }
     public static<SquareType> Grid<SquareType>  buildFromBufferedReader(BufferedReader br, int rows, int cols, final BiMap<Character, SquareType> mapping, SquareType invalidSq) {
         
         
@@ -64,7 +67,9 @@ public class Grid<SquareType> {
            // log.debug(rowStr);
             for(int c = 0; c < cols; ++c) {
                 char ch = rowStr.charAt(c);
+                
                 g.grid.add(g.getIndex(r,c), mapping.get(ch) );
+               
             }
             } catch (IOException ex) {
                 log.error("ex", ex);
@@ -74,6 +79,10 @@ public class Grid<SquareType> {
         
         return g;
     }
+    
+ 
+    
+
     
     public static<SquareType> Grid<SquareType>  buildEmptyGrid( int rows, int cols, SquareType invalidSq) {
         

@@ -26,6 +26,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         List<BigInteger> diffs = new ArrayList<>();
         
+        //Can just do all events - first because
+        //in gcd algorithm..see doc
         for (int i = 0; i < input.events.length; ++i) {
             for(int j = i + 1; j < input.events.length; ++j) {
                 diffs.add(input.events[i].subtract(input.events[j]).abs());
