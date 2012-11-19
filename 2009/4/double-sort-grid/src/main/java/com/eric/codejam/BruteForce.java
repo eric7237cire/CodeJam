@@ -5,6 +5,8 @@ import com.eric.codejam.utils.Grid;
 import com.google.common.collect.Ordering;
 
 public class BruteForce {
+    
+    public static int LETTER_MAX = DynamicProgrammingLarge.LETTER_MAX;
   //Bruteforce
     public static int count(Grid<Integer> grid, Grid<Integer> gridOrig) {
         //log.info("Count grid {}", grid);
@@ -18,7 +20,7 @@ public class BruteForce {
             
             //A flexible spot, compute all possibilities
             if (current == 0) {
-                for(int j = DynamicProgrammingSmall.LETTER_MAX; j >= 1; --j) {
+                for(int j = LETTER_MAX; j >= 1; --j) {
                     //Must be non decreasing
                     if (o.compare(j, top) < 0) {
                         break;

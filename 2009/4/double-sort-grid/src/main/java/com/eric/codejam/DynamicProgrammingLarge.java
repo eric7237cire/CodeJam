@@ -39,9 +39,17 @@ public class DynamicProgrammingLarge {
     public int solve(int pathKey, int maxCharacter) {
         
         if (pathKey == paths.size() - 2) {
-            int sum = maxCharacter;
+            int letter = grid.getEntry(0);
+            int sum = 0;
+            if (maxCharacter < letter) {
+                sum = 0;
+            } else if ( letter == 0) {
+                sum = maxCharacter;
+            } else {
+                sum = 1;
+            }
             checkPath(pathKey, maxCharacter, sum);
-            return maxCharacter;
+            return sum;
         }
         if (pathKey == paths.size() - 1) {
             int sum = 0;
@@ -125,6 +133,7 @@ public class DynamicProgrammingLarge {
             return sum;
         }
         
+        /*
         if (maximalPoints.size() == 1 && grid.getEntry(maximalPoints.get(0)) == 0) {
             int pathIndex = pathToIndex.get(newPath.get(0));
             for(int letter = maxCharacter ; letter >= 1; -- letter) {
@@ -132,7 +141,7 @@ public class DynamicProgrammingLarge {
             }
             checkPath(pathKey, maxCharacter, sum);
             return sum;
-        }
+        }*/
         
         int allSubSets = (1 << maximalPoints.size()) - 1; 
         
