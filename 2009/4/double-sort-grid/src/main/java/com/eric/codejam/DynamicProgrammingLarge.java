@@ -38,19 +38,33 @@ public class DynamicProgrammingLarge {
     
     public int solve(int pathKey, int maxCharacter) {
         
-        if (pathKey == 1) {
+        if (pathKey == paths.size() - 2) {
+            int sum = maxCharacter;
+            checkPath(pathKey, maxCharacter, sum);
             return maxCharacter;
         }
+        if (pathKey == paths.size() - 1) {
+            int sum = 0;
+            //checkPath(pathKey, maxCharacter, sum);
+            return 0;
+        }
+        if (maxCharacter <= 0) {
+            return 0;
+        }
+        Preconditions.checkArgument(pathKey < paths.size() - 2);
         //Find all maximal points
         List<Integer> path = paths.get(pathKey);
         
-        List<Integer> newPath = new ArrayList<>(path);
+        List<List<Integer>> newPath = new ArrayList<>();
         
         //Basically when the path has a corner
         List<Integer> maximalPoints = new ArrayList<>();
-        boolean foundMaxPoint = false;
         
         int sum = 0;
+        
+        boolean atLeastOneEqualMaxCharacter = false;
+        
+        List<Integer> pathWithoutPrefilled = new ArrayList<Integer>(path);
         
         for(int pathRowIdx = 0; pathRowIdx < grid.getCols(); ++pathRowIdx ) {
             //path row is one after the row
@@ -65,43 +79,129 @@ public class DynamicProgrammingLarge {
                 
                 if (letter > maxCharacter) {
                     log.debug("Invalid letter ");
+                    sum = 0;
+                    checkPath(pathKey, maxCharacter, sum);
                     return 0;
                 }
                 
-                if (letter != 0 && letter <= maxCharacter) {
-                    newPath.set(pathRowIdx, newPath.get(pathRowIdx) - 1);
-                    Preconditions.checkState(newPath.get(pathRowIdx) >= 0);
+                if (letter != 0 ) {
+                    Preconditions.checkState(letter <= maxCharacter);
+                  
+                    if (letter == maxCharacter) {
+                        atLeastOneEqualMaxCharacter = true;
+                    }
+                    pathWithoutPrefilled.set(pathRowIdx, pathWithoutPrefilled.get(pathRowIdx) - 1);
+                    Preconditions.checkState(pathWithoutPrefilled.get(pathRowIdx) >= 0);
                     continue;
                 }
                 
-                if (!foundMaxPoint) {
+                //atLeastOneEqualMaxCharacter = true;
+                                
                 //We have found a maximal point.  Row = currentPathRow, Col = pathRowIdx
-                maximalPoints.add(grid.getIndex(currentPathRow, pathRowIdx));
-                newPath.set(pathRowIdx, newPath.get(pathRowIdx) - 1);
-                Preconditions.checkState(newPath.get(pathRowIdx) >= 0);
-                foundMaxPoint = true;
-                }
+                maximalPoints.add(grid.getIndex(currentPathRow-1, pathRowIdx));
+                List<Integer> newPathWithoutMaxPoint = new ArrayList<>(path);
+                newPathWithoutMaxPoint.set(pathRowIdx, newPathWithoutMaxPoint.get(pathRowIdx) - 1);
+                Preconditions.checkState(newPathWithoutMaxPoint.get(pathRowIdx) >= 0);
+                
+                newPath.add(newPathWithoutMaxPoint);
                 
             }
             
             
         }
         
-        
-        int newPathIndex = pathToIndex.get(newPath);
-        
-        sum += solve(newPathIndex, maxCharacter);
-        
-        if (foundMaxPoint) {
-            for(int letter = maxCharacter - 1; letter >= 1; -- letter) {
-                sum += solve(newPathIndex, letter);
-            }
+        if (!atLeastOneEqualMaxCharacter && maximalPoints.size() == 0) {
+            sum = solve(pathKey, maxCharacter-1);
+            checkPath(pathKey, maxCharacter, sum);
+            return sum;
         }
         
-        log.debug("Returning {} for path {}", sum, path);
+        if (maximalPoints.size() == 0) {
+            int newPathIdx = pathToIndex.get(pathWithoutPrefilled);
+            Preconditions.checkState(newPathIdx != pathKey);
+            
+            sum = solve(newPathIdx, maxCharacter);
+            checkPath(pathKey, maxCharacter, sum);
+            return sum;
+        }
+        
+        if (maximalPoints.size() == 1 && grid.getEntry(maximalPoints.get(0)) == 0) {
+            int pathIndex = pathToIndex.get(newPath.get(0));
+            for(int letter = maxCharacter ; letter >= 1; -- letter) {
+                sum += solve(pathIndex, letter);
+            }
+            checkPath(pathKey, maxCharacter, sum);
+            return sum;
+        }
+        
+        int allSubSets = (1 << maximalPoints.size()) - 1; 
+        
+        for(int subSetsBitSet = 1; subSetsBitSet <= allSubSets; ++subSetsBitSet) {
+            int numBits = Integer.bitCount(subSetsBitSet);
+            int addOrSub = numBits % 2 == 0 ? -1 : 1;
+            
+            List<List<Integer>> pathsToIntersect = new ArrayList<>();
+            //improve
+            for(int j = 0; j < maximalPoints.size(); ++j ) {
+                if ( ((1 << j) & subSetsBitSet) > 0) {
+                    pathsToIntersect.add(newPath.get(j));
+                }
+            }
+            
+            Preconditions.checkState(pathsToIntersect.size() == numBits);
+            Preconditions.checkState(pathsToIntersect.size() > 0);
+            
+            List<Integer> intersectedPath = new ArrayList<>(pathWithoutPrefilled);
+            
+            for(List<Integer> pathToIntersect : pathsToIntersect) {
+                for(int ptoi = 0; ptoi < grid.getCols(); ++ptoi) {
+                    intersectedPath.set(ptoi, Math.min(pathToIntersect.get(ptoi), intersectedPath.get(ptoi)));
+                }
+                
+            }
+            
+            int intPathIndex = pathToIndex.get(intersectedPath);
+            
+            for(int maxChar = maxCharacter; maxChar >= 1; maxChar --) {
+               // if (maximalPoints.get)
+            //sum += addOrSub * solve(intPathIndex, maxCharacter);
+                sum += addOrSub * solve(intPathIndex, maxChar);
+            }
+            log.debug("Intersection {}, sum is now {}", intersectedPath, sum);
+        }
+        
+        //int newPathIndex = pathToIndex.get(newPath);
+        
+        //sum += solve(pathKey, maxCharacter-1);
+        
+        /*
+            for(int letter = maxCharacter-1 ; letter >= 1; -- letter) {
+                sum += solve(newPathIndex, letter);
+            }
+        */
+        
+        log.debug("Returning {} for path {} <= {}", sum, path, maxCharacter);
+        checkPath(pathKey, maxCharacter, sum);
         return sum;
         
         //
+    }
+    
+    public void checkPath(int pathKey, int maxLetter, int sum) {
+        Grid<Integer> checkGrid = new Grid<Integer>(grid);
+        checkGrid.addRow(maxLetter);
+        List<Integer> path = paths.get(pathKey);
+        for(int pathRowIdx = 0; pathRowIdx < grid.getCols(); ++pathRowIdx ) {
+            //path row is one after the row
+            int currentPathRow = path.get(pathRowIdx);
+            
+            for(int r = currentPathRow; r < checkGrid.getRows(); ++ r) {
+                checkGrid.setEntry(r,pathRowIdx, maxLetter);
+            }
+        }
+        
+        int count = BruteForce.count(checkGrid, checkGrid);
+        Preconditions.checkState(count == sum);
     }
     
     public static int LETTER_MAX = 4;

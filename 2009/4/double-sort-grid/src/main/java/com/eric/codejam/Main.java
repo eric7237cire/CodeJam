@@ -79,9 +79,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
        // solve1d();
         
-        //int countBF = count(input.grid, new Grid<Integer>(input.grid));
+        int countBF = BruteForce.count(input.grid, new Grid<Integer>(input.grid));
         
-        //log.info("Done brute force");
+        log.info("Done brute force");
         
         //int[][] count1d = solve1d();
         
@@ -100,7 +100,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
 
         log.info("Done dp ");
         
-        log.info("Done calculating answer case # {}.  ans [ {} ] BF [ {} ]", caseNumber, count);
+        log.info("Done calculating answer case # {}.  ans [ {} ] BF [ {} ]", caseNumber, count, countBF);
         
         
         

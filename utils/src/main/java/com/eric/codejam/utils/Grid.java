@@ -21,7 +21,7 @@ public class Grid<SquareType> {
     
     final static Logger log = LoggerFactory.getLogger(Grid.class);
     
-    private final int rows;
+    private int rows;
     private final int cols;
     
     private final List<SquareType> grid;
@@ -95,6 +95,13 @@ public class Grid<SquareType> {
         this.grid = new ArrayList<>(rhs.grid);
         this.invalidSquare = rhs.invalidSquare;
         this.mapping = rhs.mapping;
+    }
+    
+    public void addRow(SquareType valueDefault) {
+        ++rows;
+        for(int c = 0; c < cols; ++c) {
+            this.grid.add(valueDefault);
+        }
     }
     
     private Grid(int rows, int cols, SquareType invalidSq, BiMap<Character, SquareType> mapping) {
