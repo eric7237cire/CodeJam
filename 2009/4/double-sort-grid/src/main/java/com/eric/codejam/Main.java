@@ -79,30 +79,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
        // solve1d();
         
-        int countBF = 0;
         
-        //BruteForce.count(input.grid, new Grid<Integer>(input.grid));
-        
-        //log.info("Done brute force");
-        
-        //int[][] count1d = solve1d();
-        
-        //log.info("count 1 d {}", count1d[input.grid.getCols()-2][input.grid.getEntry(0)-1]);
-        
-        //SingleRowSolver ss = new SingleRowSolver(input.grid);
-        
-        //int count = SingleRowSolver.solveGrid(input.grid);
         
         int count = 0;
-        //DynamicProgrammingSmall ss = new DynamicProgrammingSmall(input.grid);
-    
-        //count = DynamicProgrammingSmall.solveGrid(input.grid);
+       
         count = DynamicProgrammingLarge.solveGrid(input.grid);
         //log.info("Count DP {}.  ans {}", caseNumber, countDP);
 
-        log.info("Done dp ");
+       // log.info("Done dp ");
         
-        log.info("Done calculating answer case # {}.  ans [ {} ] BF [ {} ]", caseNumber, count, countBF);
+        log.info("Done calculating answer case # {}.  ans [ {} ]", caseNumber, count);
         
         
         
@@ -140,7 +126,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         input.grid = Grid.buildFromBufferedReader(br, input.R, input.C, chMap, null);
         //log.info("Reading data...Test case # {} ", testCase);
-        log.info("Grid {}", input.grid);
+     //   log.info("Grid {}", input.grid);
         //log.info("Done Reading data...Test case # {} ", testCase);
         
      //   String line = br.readLine();
@@ -168,8 +154,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         log.info("Input file {}", args[0]);
 
         Main m = new Main();
-        //Runner.go(args[0], m, m, new InputData(-1));
-        Runner.goSingleThread(args[0], m, m);
+        Runner.go(args[0], m, m, new InputData(-1));
+        //Runner.goSingleThread(args[0], m, m);
         
        
     }
