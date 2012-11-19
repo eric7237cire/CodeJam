@@ -79,9 +79,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
        // solve1d();
         
-        int countBF = BruteForce.count(input.grid, new Grid<Integer>(input.grid));
+        int countBF = 0;
         
-        log.info("Done brute force");
+        //BruteForce.count(input.grid, new Grid<Integer>(input.grid));
+        
+        //log.info("Done brute force");
         
         //int[][] count1d = solve1d();
         
@@ -159,8 +161,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-           args = new String[] { "sample.txt" };
-           //args = new String[] { "smallInput.txt" };
+//           args = new String[] { "sample.txt" };
+           args = new String[] { "C-small-practice.in" };
            //args = new String[] { "largeInput.txt" };
         }
         log.info("Input file {}", args[0]);

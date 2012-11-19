@@ -29,7 +29,7 @@
   </root>
   <logger name="com.eric.codejam.multithread" level="OFF"/>
   <logger name="com.eric.codejam.SingleRowSolver" level="OFF" />
-  
+    <logger name="com.eric.codejam.DynamicProgrammingLarge" level="INFO" />
   <logger name="com.eric.codejam.DoubleRowSolver" level="INFO" />
   
    

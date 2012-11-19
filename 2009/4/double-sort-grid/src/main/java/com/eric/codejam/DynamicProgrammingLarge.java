@@ -25,6 +25,9 @@ public class DynamicProgrammingLarge {
     int[][] memoize ;
     Map<List<Integer>, Integer> pathToIndex;
     
+    final static int MOD = 10007;
+    public static int LETTER_MAX = 26;
+    
     public DynamicProgrammingLarge(Grid<Integer> grid) {
         this.grid = grid;
         
@@ -61,6 +64,7 @@ public class DynamicProgrammingLarge {
                 sum = 1;
             }
             checkPath(pathKey, maxCharacter, sum);
+            sum %= MOD;
             return sum;
         }
         if (pathKey == paths.size() - 1) {
@@ -154,6 +158,7 @@ public class DynamicProgrammingLarge {
             Preconditions.checkState(newPathIdx != pathKey);
             
             sum = solve(newPathIdx, maxCharacter);
+            sum %= MOD;
             checkPath(pathKey, maxCharacter, sum);
             return sum;
         }
@@ -204,6 +209,7 @@ public class DynamicProgrammingLarge {
                // if (maximalPoints.get)
             int subSum = solve(intPathIndex, maxCharacter);
             sum += addOrSub * subSum;
+            sum %= MOD;
               //  sum += addOrSub * solve(intPathIndex, maxChar);
            // }
             log.debug("Intersection {} for path {} has sum {}, cumul is now {}", intersectedPath, path, subSum,sum);
@@ -219,6 +225,12 @@ public class DynamicProgrammingLarge {
             }
         */
         
+        if (sum >= MOD) {
+            sum -= MOD;
+        }
+        if (sum < 0) {
+            sum += MOD;
+        }
         log.debug("Returning {} for path {} <= {}", sum, path, maxCharacter);
         checkPath(pathKey, maxCharacter, sum);
         memoize[pathKey][maxCharacter] = sum;
@@ -228,6 +240,8 @@ public class DynamicProgrammingLarge {
     }
     
     public void checkPath(int pathKey, int maxLetter, int sum) {
+        if (1==1) 
+                return;
         Grid<Integer> checkGrid = new Grid<Integer>(grid);
         checkGrid.addRow(maxLetter);
         List<Integer> path = paths.get(pathKey);
@@ -244,7 +258,7 @@ public class DynamicProgrammingLarge {
         Preconditions.checkState(count == sum);
     }
     
-    public static int LETTER_MAX = 4;
+    
     
     public static Integer solveGrid(Grid<Integer> grid) {
 
