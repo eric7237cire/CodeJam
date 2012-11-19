@@ -51,15 +51,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     public InputData readInput(BufferedReader br, int testCase) throws IOException {
         
     
-        String line = br.readLine();
+        String[] line = br.readLine().split(" ");
+        
+        InputData  input = new InputData(testCase);
         
         
-        log.info("Reading data...Test case ${symbol_pound} {} ", testCase);
-        
-        log.info("Done Reading data...Test case ${symbol_pound} {} ", testCase);
-        
-        InputData  i = new InputData(testCase);
-        return i;
+        return input;
         
     }
 
@@ -81,7 +78,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         log.info("Input file {}", args[0]);
 
         Main m = new Main();
-        Runner.go(args[0], m, m, new InputData(-1));
+        Runner.goSingleThread(args[0], m, m);
         
        
     }
