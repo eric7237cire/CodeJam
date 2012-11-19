@@ -92,16 +92,17 @@ public class DynamicProgrammingLarge {
                     return 0;
                 }
                 
-                if (letter != 0 ) {
+                if (letter != 0 && letter == maxCharacter) {
                     Preconditions.checkState(letter <= maxCharacter);
                   
                     if (letter == maxCharacter) {
                         atLeastOneEqualMaxCharacter = true;
                     }
-                    pathWithoutPrefilled.set(pathRowIdx, pathWithoutPrefilled.get(pathRowIdx) - 1);
-                    Preconditions.checkState(pathWithoutPrefilled.get(pathRowIdx) >= 0);
-                    continue;
+                    //pathWithoutPrefilled.set(pathRowIdx, pathWithoutPrefilled.get(pathRowIdx) - 1);
+                    //Preconditions.checkState(pathWithoutPrefilled.get(pathRowIdx) >= 0);
+                    //continue;
                 }
+                
                 
                 //atLeastOneEqualMaxCharacter = true;
                                 
@@ -118,7 +119,19 @@ public class DynamicProgrammingLarge {
             
         }
         
-        if (!atLeastOneEqualMaxCharacter && maximalPoints.size() == 0) {
+        boolean atLeastOneZeroOrMaxLetter = false;
+        boolean atLeasteOneNonZero = false;
+        for(Integer maxPointGridIdx : maximalPoints) {
+            int maxPointLetter = grid.getEntry(maxPointGridIdx);
+            if (maxPointLetter == 0 || maxPointLetter == maxCharacter) {
+                atLeastOneZeroOrMaxLetter = true;
+                break;
+            }
+            if (maxPointLetter != 0) {
+                atLeasteOneNonZero = true;
+            }
+        }
+        if (!atLeastOneZeroOrMaxLetter) {
             sum = solve(pathKey, maxCharacter-1);
             checkPath(pathKey, maxCharacter, sum);
             return sum;
@@ -133,6 +146,10 @@ public class DynamicProgrammingLarge {
             return sum;
         }
         
+        if (!atLeasteOneNonZero) {
+        sum = solve(pathKey, maxCharacter - 1);
+        }
+        log.debug("Sum starting {} for path {}", sum, path);
         /*
         if (maximalPoints.size() == 1 && grid.getEntry(maximalPoints.get(0)) == 0) {
             int pathIndex = pathToIndex.get(newPath.get(0));
@@ -171,12 +188,13 @@ public class DynamicProgrammingLarge {
             
             int intPathIndex = pathToIndex.get(intersectedPath);
             
-            for(int maxChar = maxCharacter; maxChar >= 1; maxChar --) {
+           // for(int maxChar = maxCharacter; maxChar >= 1; maxChar --) {
                // if (maximalPoints.get)
-            //sum += addOrSub * solve(intPathIndex, maxCharacter);
-                sum += addOrSub * solve(intPathIndex, maxChar);
-            }
-            log.debug("Intersection {}, sum is now {}", intersectedPath, sum);
+            int subSum = solve(intPathIndex, maxCharacter);
+            sum += addOrSub * subSum;
+              //  sum += addOrSub * solve(intPathIndex, maxChar);
+           // }
+            log.debug("Intersection {} for path {} has sum {}, cumul is now {}", intersectedPath, path, subSum,sum);
         }
         
         //int newPathIndex = pathToIndex.get(newPath);
