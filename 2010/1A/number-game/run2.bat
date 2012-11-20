@@ -1,3 +1,3 @@
 @echo off
-mvn  --quiet exec:java -Dexec.mainClass="com.eric.codejam.Main" -Dexec.args="%1"
+mvn  -e --quiet exec:java -Dexec.mainClass="com.eric.codejam.Main" -Dexec.args="%1"
 

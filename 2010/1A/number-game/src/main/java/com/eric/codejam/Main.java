@@ -24,6 +24,9 @@ import com.eric.codejam.geometry.PointInt;
 import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Range;
+import com.google.common.collect.Ranges;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<InputData> {
 
@@ -36,18 +39,61 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         //double ans = DivideConq.findMinPerimTriangle(input.points);
         
-        int count = 0;
+        long count = 0;
         int losing = 0;
-        for(int a = input.A1; a <= input.A2; ++a) {
-            for(int b = input.B1; b <= input.B2; ++b) {
-                if (isWinning(a,b)) {
-                    //log.debug("A {} B {} is winning", a, b);
-                    ++count;
-                } else {
-                    //log.debug("A {} B {} is losing", a, b);
-                    ++losing;
-                }
+        int lastWon = 1;
+        
+        int[] losingLB = new int[1000000];
+        int[] losingUP = new int[1000000];
+        
+        losingLB[0] = 1; losingUP[0] = 1;
+        List<Range<Integer>> ranges = new ArrayList<>();
+        
+        int lastUpperBound = 1;
+        int lastLowerBound = 1;
+        ranges.add(Ranges.closed(1, 1));
+        for(int i = 1; i<1000000; ++i ) {
+            int n = i + 1;
+            if (losingUP[lastLowerBound-1] < n ) {
+                ++lastLowerBound;
             }
+            losingLB[i] = lastLowerBound;
+            losingUP[i] = lastLowerBound + n - 1;
+            ranges.add(Ranges.closed(losingLB[i], losingUP[i]));
+            lastUpperBound = lastLowerBound + n - 1;
+           // log.debug(" for n {}  losing between {} and {}", n, losingLB[i], losingUP[i]);
+        }
+        
+        Range<Integer> bRange = Ranges.closed(input.B1, input.B2);
+        
+        for(int a = input.A1; a <= input.A2; ++a) {
+            
+            count += bRange.upperEndpoint() - bRange.lowerEndpoint() + 1;
+            
+            Range<Integer> losingRange = ranges.get(a-1);
+            Preconditions.checkState(losingRange != null);
+            if (losingRange.isConnected(bRange)) {
+            Range<Integer> inter = bRange.intersection(losingRange);
+            count -= (inter.upperEndpoint() - inter.lowerEndpoint() + 1);
+            }
+           //for(int b = lastWon; b <= input.B2; ++b) {
+            //for(int b = input.B1; b <= input.B2; ++b) {
+               //if (b < a) 
+                 //  continue;
+      //  for(int a = 1; a <= 1000000; ++a) {
+       //       for(int b = a; b <= 1000000; ++b) {
+                
+                /*
+                if (isWinning(a,b)) {
+                    log.debug("A {} B {} is winning diff {}", a, b, b - lastWon);
+                    lastWon = b;
+                    ++count;
+                    //break;
+                } else {
+                    log.debug("A {} B {} is losing", a, b);
+                    ++losing;
+                }*/
+            //}
         }
 
         log.info("Done calculating answer case {}.  w {}/losing {} total {}", caseNumber, count, losing, count+losing);
@@ -155,8 +201,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-            args = new String[] { "sample.txt" };
-           // args = new String[] { "B-small-practice.in" };
+         //  args = new String[] { "sample.txt" };
+            args = new String[] { "C-small-practice.in" };
 //            args = new String[] { "B-large-practice.in" };
          }
          log.info("Input file {}", args[0]);
