@@ -14,12 +14,12 @@ Case #13: 0
 Case #14: 27
 Case #15: 129
 Case #16: 109
-Case #17: 33
+Case #17: 26
 Case #18: 31
 Case #19: 0
 Case #20: 0
 Case #21: 0
-Case #22: 132
+Case #22: 122
 Case #23: 0
 Case #24: 18
 Case #25: 62
@@ -34,7 +34,7 @@ Case #33: 13
 Case #34: 114
 Case #35: 37
 Case #36: 9
-Case #37: 21
+Case #37: 19
 Case #38: 59
 Case #39: 96
 Case #40: 88
@@ -73,7 +73,7 @@ Case #72: 19
 Case #73: 6
 Case #74: 47
 Case #75: 136
-Case #76: 39
+Case #76: 34
 Case #77: 97
 Case #78: 44
 Case #79: 96
@@ -86,7 +86,7 @@ Case #85: 33
 Case #86: 11
 Case #87: 27
 Case #88: 29
-Case #89: 75
+Case #89: 68
 Case #90: 0
 Case #91: 0
 Case #92: 78

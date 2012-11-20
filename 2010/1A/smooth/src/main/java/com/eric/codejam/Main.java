@@ -91,14 +91,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
        // Preconditions.checkState(unsmoothCount < prevCount);
     }
     
+    int[][] memoize = new int[101][257];
     int getMinCost(int currentIndex, int previousValue, InputData input) {
         
-
+        
         
        // Preconditions.checkState(Math.abs(previousValue - currentValue)  <= input.minimumDist || previousValue == 256);
         
         if (currentIndex > input.pixels.size() - 1) {
             return 0;
+        }
+        
+        if (memoize[currentIndex][previousValue] >= 0) {
+            return memoize[currentIndex][previousValue];
         }
         
         int currentValue = input.pixels.get(currentIndex);
@@ -134,16 +139,43 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             }
         }
         
-        //Insert
-        for(int v = 0; v <= 255; ++v) {
-            if (previousValue == 256 || Math.abs(v - previousValue) <= input.minimumDist) {
-                int diff = Math.abs(currentValue - v);
-                if (diff )
-                cost = input.insertCost + getMinCost(currentIndex, v, input);
-                minCost = Math.min(cost, minCost);
+        //previous not valid
+        if (Math.abs(previousValue - currentValue) > input.minimumDist && 
+                previousValue != 256 &&
+                input.minimumDist > 0) {
+            
+            if (previousValue < currentValue) {
+                //add a node = prevVal + minDist to reduce distance
+                Preconditions.checkState(previousValue + input.minimumDist < currentValue);
+                cost = input.insertCost + getMinCost(currentIndex, previousValue + input.minimumDist, input);
+            } else {
+                Preconditions.checkState(previousValue - input.minimumDist > currentValue);
+                Preconditions.checkState(previousValue > currentValue);
+                cost = input.insertCost + getMinCost(currentIndex, previousValue - input.minimumDist, input);
             }
+            minCost = Math.min(cost, minCost);
         }
+            
+        //Insert
+        /*
+        for(int newPrevValue = 0; newPrevValue <= 255; ++newPrevValue) {
+            if (Math.abs(newPrevValue - previousValue) <= input.minimumDist
+                    && Math.abs(newPrevValue - currentValue) < Math.abs(previousValue - currentValue)) 
+                     {
+                int diff = Math.abs(currentValue - newPrevValue);
+                //if (diff )
+                
+                
+                if (cost < minCost) {
+                minCost = Math.min(cost, minCost);
+                }
+                
+            }
+        }*/
         
+        
+       // log.debug("Prev {} Cur idx {} cur val {} min cost {}", previousValue, currentIndex, currentValue, minCost);
+        memoize[currentIndex][previousValue] = minCost;
         return minCost;
     }
     
@@ -155,7 +187,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         //double ans = DivideConq.findMinPerimTriangle(input.points);
         
         if (1==1) {
-            int cost = getMinCost(0, input.pixels.get(0), input);
+            for(int i = 0; i < memoize.length; ++i) {
+                for(int j = 0; j < memoize[0].length; ++j) {
+                    memoize[i][j] = -1;
+                }
+            }
+            int cost = getMinCost(0, 256, input);
             return ("Case #" + caseNumber + ": " + cost);
         }
         SortedSet<Node> nodes = new TreeSet<>();
