@@ -27,6 +27,9 @@ public class Runner {
     public static <InputData extends AbstractInputData> void goSingleThread(
             String inputFileName, TestCaseInputReader<InputData> inputReader,
             TestCaseHandler<InputData> testCaseHandler) {
+
+        long overAllStart = System.currentTimeMillis();
+        
         try {
             InputStreamReader isr = new InputStreamReader(new FileInputStream(
                     new File(inputFileName)));
@@ -45,11 +48,11 @@ public class Runner {
             for (int test = 1; test <= t; test++) {
                 InputData input = inputReader.readInput(br, test);
                 String ans = testCaseHandler.handleCase(test, input);
-                log.info(ans);
+                log.debug(ans);
                 pos.println(ans);
             }
 
-            log.info("Finished");
+            log.debug("Finished");
 
             os.close();
             // scanner.close();
@@ -57,6 +60,10 @@ public class Runner {
         } catch (IOException ex) {
             log.error("Error", ex);
         }
+        
+        log.info("Total time {}",
+                +(System.currentTimeMillis() - overAllStart));
+
     }
     
     public static <InputData extends AbstractInputData> void go(
