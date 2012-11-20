@@ -93,23 +93,25 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     
     int getMinCost(int currentIndex, int previousValue, InputData input) {
         
-        int currentValue = input.pixels.get(currentIndex);
+
         
        // Preconditions.checkState(Math.abs(previousValue - currentValue)  <= input.minimumDist || previousValue == 256);
         
-        if (currentIndex == input.pixels.size() - 1) {
+        if (currentIndex > input.pixels.size() - 1) {
             return 0;
         }
+        
+        int currentValue = input.pixels.get(currentIndex);
         
         if (Math.abs(previousValue - currentValue) > input.minimumDist) {
             
         }
         
-        int nextValue = input.pixels.get(currentIndex+1);
+       // int nextValue = input.pixels.get(currentIndex+1);
         
-        if (Math.abs(nextValue - currentValue) <= input.minimumDist) {
+       /* if (Math.abs(nextValue - currentValue) <= input.minimumDist) {
             return getMinCost(currentIndex + 1, currentValue, input);
-        }
+        }*/
         
         int minCost = Integer.MAX_VALUE;
         
@@ -117,11 +119,32 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         int cost = input.deleteCost + getMinCost(currentIndex + 1, previousValue, input);
         minCost = Math.min(cost, minCost);
         
-        //next
-        cost = input.deleteCost + getMinCost(currentIndex + 2, currentValue, input);
-        minCost = Math.min(cost, minCost);
+        //not del current
+        if (Math.abs(previousValue - currentValue) <= input.minimumDist) {
+            cost = getMinCost(currentIndex + 1, currentValue, input);
+            minCost = Math.min(cost, minCost);
+        }
         
-        return cost;
+        //Change value current
+        for(int v = 0; v <= 255; ++v) {
+            if (previousValue == 256 || Math.abs(v - previousValue) <= input.minimumDist) {
+                int diff = Math.abs(currentValue - v);
+                cost = diff + getMinCost(currentIndex + 1, v, input);
+                minCost = Math.min(cost, minCost);
+            }
+        }
+        
+        //Insert
+        for(int v = 0; v <= 255; ++v) {
+            if (previousValue == 256 || Math.abs(v - previousValue) <= input.minimumDist) {
+                int diff = Math.abs(currentValue - v);
+                if (diff )
+                cost = input.insertCost + getMinCost(currentIndex, v, input);
+                minCost = Math.min(cost, minCost);
+            }
+        }
+        
+        return minCost;
     }
     
     @Override
@@ -288,7 +311,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
 
         if (args.length < 1) {
            args = new String[] { "sample.txt" };
-           args = new String[] { "B-small-practice.in" };
+          // args = new String[] { "B-small-practice.in" };
            //args = new String[] { "largeInput.txt" };
         }
         log.info("Input file {}", args[0]);
