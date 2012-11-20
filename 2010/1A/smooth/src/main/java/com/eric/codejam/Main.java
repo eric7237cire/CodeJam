@@ -91,6 +91,39 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
        // Preconditions.checkState(unsmoothCount < prevCount);
     }
     
+    int getMinCost(int currentIndex, int previousValue, InputData input) {
+        
+        int currentValue = input.pixels.get(currentIndex);
+        
+       // Preconditions.checkState(Math.abs(previousValue - currentValue)  <= input.minimumDist || previousValue == 256);
+        
+        if (currentIndex == input.pixels.size() - 1) {
+            return 0;
+        }
+        
+        if (Math.abs(previousValue - currentValue) > input.minimumDist) {
+            
+        }
+        
+        int nextValue = input.pixels.get(currentIndex+1);
+        
+        if (Math.abs(nextValue - currentValue) <= input.minimumDist) {
+            return getMinCost(currentIndex + 1, currentValue, input);
+        }
+        
+        int minCost = Integer.MAX_VALUE;
+        
+        //del current
+        int cost = input.deleteCost + getMinCost(currentIndex + 1, previousValue, input);
+        minCost = Math.min(cost, minCost);
+        
+        //next
+        cost = input.deleteCost + getMinCost(currentIndex + 2, currentValue, input);
+        minCost = Math.min(cost, minCost);
+        
+        return cost;
+    }
+    
     @Override
     public String handleCase(int caseNumber, InputData input) {
 
@@ -98,6 +131,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         //double ans = DivideConq.findMinPerimTriangle(input.points);
         
+        if (1==1) {
+            int cost = getMinCost(0, input.pixels.get(0), input);
+            return ("Case #" + caseNumber + ": " + cost);
+        }
         SortedSet<Node> nodes = new TreeSet<>();
         Set<List<Integer>> seen = new HashSet<>();
 
