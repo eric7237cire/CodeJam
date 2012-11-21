@@ -13,44 +13,66 @@ import com.eric.codejam.utils.Grid;
 import com.google.common.base.Preconditions;
 import com.google.common.math.IntMath;
 
+
 public class DynamicProgrammingLarge {
+    
+    private static class Memoize extends ThreadLocal<int[][][]> {
+
+        @Override
+        protected int[][][] initialValue() {
+            return new int[184756][LETTER_MAX+1][10];
+        }
+        
+    }
     
     final static Logger log = LoggerFactory.getLogger(DynamicProgrammingLarge.class);
 
     //A path goes from bottom left to top right, each step goes to the right one.
     //paths [ index of path ] [ row values ]
     //
-    List<List<Integer>> paths; 
+    static List<List<Integer>> paths; 
     Grid<Integer> grid;
     
-    static int[][][] memoize ;
-    Map<List<Integer>, Integer> pathToIndex;
+    static Memoize memoizeTL;
+    static Map<List<Integer>, Integer> pathToIndex;
     
     final static int MOD = 10007;
     public static int LETTER_MAX = 26;
     
+    final static int MAX_ROWS = 10;
+    final static int MAX_COLS = 10;
  
     static {
         //M+N choose M  M rows N cols
-        memoize = new int[184756][LETTER_MAX+1][10];
+//        memoize. = new int[184756][LETTER_MAX+1][10];
+        memoizeTL = new Memoize();
+        paths = new ArrayList<>(184756);
+        pathToIndex = new HashMap<>(184756);
+        
+        createAllPaths(new ArrayList<Integer>(), MAX_ROWS, MAX_COLS);
     }
     public DynamicProgrammingLarge(Grid<Integer> grid) {
-        this.grid = grid;
+        this.grid = Grid.buildEmptyGrid(MAX_ROWS, MAX_COLS, LETTER_MAX);
         
-        paths = new ArrayList<>(IntMath.binomial(grid.getRows()+grid.getCols(),grid.getRows()));
-        pathToIndex = new HashMap<>(IntMath.binomial(grid.getRows()+grid.getCols(),grid.getRows()));
+        for(int r = 0; r < grid.getRows(); ++r) {
+            for(int c = 0; c < grid.getCols(); ++c) {
+                this.grid.setEntry(r,c,  grid.getEntry(r,c));
+            }
+        }
+
         //log.info("Starting create all paths");
-        createAllPaths(new ArrayList<Integer>(), grid.getRows(), grid.getCols());   
+           
        // log.info("Done create all paths");
         
-        
+        int[][][] memoize = memoizeTL.get();
         for(int i= 0; i < paths.size(); ++i) {
             for(int j = 0; j <= LETTER_MAX; ++j) {
                 Arrays.fill(memoize[i][j], -1);
             }
         }
-        int totalPathNumber = IntMath.binomial(grid.getRows()+grid.getCols(), grid.getRows());
-        Preconditions.checkState(totalPathNumber == paths.size());
+        
+        //int totalPathNumber = IntMath.binomial(grid.getRows()+grid.getCols(), grid.getRows());
+        //Preconditions.checkState(totalPathNumber == paths.size());
         
         //2 2
         /*
@@ -82,6 +104,8 @@ public class DynamicProgrammingLarge {
      *    in the upper part is respected.
      */
     public int solve(int pathKey, int maxCharacter, int colLimit) {
+        
+        int[][][] memoize = memoizeTL.get();
         
         if (memoize[pathKey][maxCharacter][colLimit] >= 0) {
             return memoize[pathKey][maxCharacter][colLimit];
@@ -137,7 +161,7 @@ public class DynamicProgrammingLarge {
             int letter = grid.getEntry(currentPathRow - 1, colLimit);
 
             if (letter > maxCharacter) {
-                log.debug("Invalid letter ");
+            //    log.debug("Invalid letter ");
                 sum = 0;
                 memoize[pathKey][maxCharacter][colLimit] = sum;
                 
@@ -158,8 +182,8 @@ public class DynamicProgrammingLarge {
             sum = solve(pathKey, maxCharacter, colLimit - 1);
         }
         
-        log.debug("Sum starting {} for path {} max char <= {} col limit {} ", sum, path, 
-                maxCharacter, colLimit);
+        //log.debug("Sum starting {} for path {} max char <= {} col limit {} ", sum, path, 
+          //      maxCharacter, colLimit);
        
         //Only max point is considered, because if there is not a max point, then
         //solve(pathKey, maxCharacter, colLimit + X would have counted that case.
@@ -174,8 +198,8 @@ public class DynamicProgrammingLarge {
             int subSum = solve(intPathIndex, maxCharacter, colLimit);
             
             sum += subSum;
-            log.debug("Adding for path {} intersecting path {} w/ size {} <= {}.  col limit {}.  sum = {}", 
-                    path, intersectedPath, subSum, maxCharacter, colLimit, sum);
+        //    log.debug("Adding for path {} intersecting path {} w/ size {} <= {}.  col limit {}.  sum = {}", 
+          //          path, intersectedPath, subSum, maxCharacter, colLimit, sum);
             sum %= MOD;
 
             //log.debug("Intersection {} for path {} has sum {}, cumul is now {}", intersectedPath, path, subSum,sum);
@@ -188,7 +212,7 @@ public class DynamicProgrammingLarge {
         if (sum < 0) {
             sum += MOD;
         }
-        log.debug("Returning {} for path {} <= {}.  col limit {}", sum, path, maxCharacter, colLimit);
+      //  log.debug("Returning {} for path {} <= {}.  col limit {}", sum, path, maxCharacter, colLimit);
          
         memoize[pathKey][maxCharacter][colLimit] = sum;
        
@@ -201,7 +225,7 @@ public class DynamicProgrammingLarge {
 
         DynamicProgrammingLarge ss = new DynamicProgrammingLarge(grid);
         
-        return ss.solve(0, LETTER_MAX, grid.getCols() - 1);
+        return ss.solve(0, LETTER_MAX, MAX_COLS-1);
 
     }
     
@@ -221,9 +245,9 @@ public class DynamicProgrammingLarge {
      * @param afterRowValue
      * @param cols
      */
-    private void createAllPaths(List<Integer> pathSoFar, int afterRowValue, int cols) {
+    private static void createAllPaths(List<Integer> pathSoFar, int afterRowValue, int cols) {
         if (pathSoFar.size() == cols) {
-            log.debug("Path {} : {}", paths.size(), pathSoFar);
+            //log.debug("Path {} : {}", paths.size(), pathSoFar);
             paths.add(new ArrayList<Integer>(pathSoFar));
             pathToIndex.put(paths.get(paths.size()-1), paths.size()-1);
             return;
