@@ -26,7 +26,7 @@ public class DynamicProgrammingLarge {
     Map<List<Integer>, Integer> pathToIndex;
     
     final static int MOD = 10007;
-    public static int LETTER_MAX = 4;
+    public static int LETTER_MAX = 26;
     
     int[][][] check;
     
@@ -53,6 +53,7 @@ public class DynamicProgrammingLarge {
         Preconditions.checkState(totalPathNumber == paths.size());
         
         //2 2
+        /*
         check[0][4][1] = 30;
         //2 1
         check[1][4][0] = 20;
@@ -70,7 +71,7 @@ public class DynamicProgrammingLarge {
         check[2][3][1] = 6;
         check[2][3][0] = 6;
         check[2][2][1] = 3;
-        check[2][2][0] = 3;
+        check[2][2][0] = 3;*/
     }
     
     
@@ -224,7 +225,7 @@ public class DynamicProgrammingLarge {
         }
         
         if (numMaxPoints > 0 && maxCharacter == 1) {
-            sum =1;
+            //sum =1;
         }
         
         if (maxCharacter > 1) {
@@ -237,7 +238,7 @@ public class DynamicProgrammingLarge {
         memoize[pathKey][maxCharacter][colLimit] = sum;
         int checkSum = check[pathKey][maxCharacter][colLimit];
               
-        Preconditions.checkArgument(sum == checkSum || checkSum == -1);
+        //Preconditions.checkArgument(sum == checkSum || checkSum == -1);
         return sum;
     }
     
