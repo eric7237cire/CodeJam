@@ -35,40 +35,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     }
     
     
-    public int[][] solve1d() {
-        
-        //int [Dimension][Letter]
-        /*
-         * counts[2][24-1] means
-         * 
-         * w..
-         * 
-         * abcde
-         * fghij
-         * klmno
-         * pqrst
-         * uvwxy
-         * z
-         */
-        int[][] counts = new int[10][26];
-        
-        for(int let = 1; let <= 26; ++let) {
-            counts[0][26-let] = let;
-        }
-        
-        for(int dim = 1; dim < 4; ++dim) {
-            int runningSum = 0;
-            for(int let = 26; let >= 1; --let) {
-                runningSum += counts[dim-1][let-1];
-                
-                counts[dim][let-1] = runningSum;
-                
-        //        log.info("Running counts {}", counts[dim]);
-            }
-        }
-        
-        return counts;
-    }
     
     @Override
     public String handleCase(int caseNumber, InputData input) {
@@ -83,21 +49,21 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         int count = 0;
        
-        int testCount = DynamicProgrammingLarge.solveGrid(input.grid);
+         count = DynamicProgrammingLarge.solveGrid(input.grid);
         
         //count = DynamicProgrammingLargeNonOptimized.solveGrid(input.grid);
         //log.info("Count DP {}.  ans {}", caseNumber, countDP);
 
        // log.info("Done dp ");
         
-        log.info("Done calculating answer case # {}.  ans [ {} ] test [ {} ]", caseNumber, count, testCount);
+        log.info("Done calculating answer case # {}.  ans [ {} ] ", caseNumber, count);
         
         
         
         //DecimalFormat decim = new DecimalFormat("0.00000000000");
         //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
         
-        return ("Case #" + caseNumber + ": " + testCount);
+        return ("Case #" + caseNumber + ": " + count);
     }
     
     
