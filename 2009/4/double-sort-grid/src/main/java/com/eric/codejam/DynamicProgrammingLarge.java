@@ -23,14 +23,17 @@ public class DynamicProgrammingLarge {
     List<List<Integer>> paths; 
     Grid<Integer> grid;
     
-    int[][][] memoize ;
+    static int[][][] memoize ;
     Map<List<Integer>, Integer> pathToIndex;
     
     final static int MOD = 10007;
     public static int LETTER_MAX = 26;
     
-    //int[][][] check;
-    
+ 
+    static {
+        //M+N choose M  M rows N cols
+        memoize = new int[184756][LETTER_MAX+1][10];
+    }
     public DynamicProgrammingLarge(Grid<Integer> grid) {
         this.grid = grid;
         
@@ -40,13 +43,10 @@ public class DynamicProgrammingLarge {
         createAllPaths(new ArrayList<Integer>(), grid.getRows(), grid.getCols());   
        // log.info("Done create all paths");
         
-        memoize = new int[paths.size()][LETTER_MAX+1][grid.getCols()];
-       // check = new int[paths.size()][LETTER_MAX+1][grid.getCols()];
+        
         for(int i= 0; i < paths.size(); ++i) {
             for(int j = 0; j <= LETTER_MAX; ++j) {
                 Arrays.fill(memoize[i][j], -1);
-                  //  check[i][j][k] = -1;
-                
             }
         }
         int totalPathNumber = IntMath.binomial(grid.getRows()+grid.getCols(), grid.getRows());
@@ -98,7 +98,6 @@ public class DynamicProgrammingLarge {
                 sum = 1;
             }
             
-            sum %= MOD;
             memoize[pathKey][maxCharacter][colLimit] = sum;
             return sum;
         }
@@ -146,14 +145,11 @@ public class DynamicProgrammingLarge {
                 // We have found a maximal point. Row = currentPathRow, Col
                 // = colLimit
                 ++numMaxPoints;
-
-                // maxColumn = colLimit;
             }
         }
 
         if (colLimit == 0) {
             sum = solve(pathKey, maxCharacter - 1, grid.getCols() - 1);
-            // return sum;
         } else {
             sum = solve(pathKey, maxCharacter, colLimit - 1);
         }
@@ -188,10 +184,7 @@ public class DynamicProgrammingLarge {
             sum += MOD;
         }
         log.debug("Returning {} for path {} <= {}.  col limit {}", sum, path, maxCharacter, colLimit);
-        
-        
-        
-        
+         
         memoize[pathKey][maxCharacter][colLimit] = sum;
        
         return sum;

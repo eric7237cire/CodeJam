@@ -10,29 +10,14 @@ import org.slf4j.LoggerFactory;
 import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
-import com.eric.codejam.utils.Direction;
 import com.eric.codejam.utils.Grid;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Ordering;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<InputData> {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    
-    private static int[][]  transpose (int[][] arr) {
-        int[][] ret = new int[arr.length][arr[0].length];
-        
-        for(int i = 0; i < ret.length; ++i) {
-            for(int j = 0; j < ret[0].length; ++j) {
-                ret[i][j] = arr[j][i];
-            }
-        }
-        
-        return ret;
-    }
     
     
     
@@ -42,10 +27,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
        
         
         log.info("Starting calculating case {}", caseNumber);
-        
-       // solve1d();
-        
-        
         
         int count = 0;
        
@@ -66,9 +47,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         return ("Case #" + caseNumber + ": " + count);
     }
     
-    
-    static int[][][][] specialCountr_c = new int[16][16][Node.LETTER_MAX][Node.LETTER_MAX];
-    
+  
     
     @Override
     public InputData readInput(BufferedReader br, int testCase) throws IOException {
