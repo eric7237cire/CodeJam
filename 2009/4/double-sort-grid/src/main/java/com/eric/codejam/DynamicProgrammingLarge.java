@@ -116,9 +116,8 @@ public class DynamicProgrammingLarge {
         final List<Integer> path = paths.get(pathKey);
 
         // Basically when the path has a corner
-        int numMaxPoints = 0;
+        boolean isMaxPoint = false;
 
-        // int maxColumn = 0;
         int sum = 0;
 
         
@@ -129,6 +128,10 @@ public class DynamicProgrammingLarge {
 
         Preconditions.checkState(nextPathRow <= currentPathRow);
 
+        /*
+         * Find a maximal point either equal to maxCharacter or a variable.
+         * The other letters are counted below.
+         */
         if (nextPathRow < currentPathRow) {
 
             int letter = grid.getEntry(currentPathRow - 1, colLimit);
@@ -144,21 +147,23 @@ public class DynamicProgrammingLarge {
             if (letter == 0 || letter == maxCharacter) {
                 // We have found a maximal point. Row = currentPathRow, Col
                 // = colLimit
-                ++numMaxPoints;
+                isMaxPoint = true;
             }
         }
 
+        //Count previous letters
         if (colLimit == 0) {
             sum = solve(pathKey, maxCharacter - 1, grid.getCols() - 1);
         } else {
             sum = solve(pathKey, maxCharacter, colLimit - 1);
         }
         
-        log.debug("Sum starting {} for path {} max char <= {} col limit {} numMaxPoints {}", sum, path, 
-                maxCharacter, colLimit, numMaxPoints);
+        log.debug("Sum starting {} for path {} max char <= {} col limit {} ", sum, path, 
+                maxCharacter, colLimit);
        
-        
-        if (numMaxPoints > 0 ) {
+        //Only max point is considered, because if there is not a max point, then
+        //solve(pathKey, maxCharacter, colLimit + X would have counted that case.
+        if (isMaxPoint) {
         
             List<Integer> intersectedPath = new ArrayList<>(path);
 
@@ -200,7 +205,23 @@ public class DynamicProgrammingLarge {
 
     }
     
-    private void createAllPaths(List<Integer> pathSoFar, int beforeRowValue, int cols) {
+    /**
+     * Starts at top left.  ends above top right
+        ~
+     ****
+     ****
+     ****
+     ~
+     
+     3-2-1-0 
+     
+     Creates first 3 3 3 3 ; 3 3 3 2 ; etc
+      
+     * @param pathSoFar
+     * @param afterRowValue
+     * @param cols
+     */
+    private void createAllPaths(List<Integer> pathSoFar, int afterRowValue, int cols) {
         if (pathSoFar.size() == cols) {
             log.debug("Path {} : {}", paths.size(), pathSoFar);
             paths.add(new ArrayList<Integer>(pathSoFar));
@@ -208,7 +229,7 @@ public class DynamicProgrammingLarge {
             return;
         }
         
-        for(int i = beforeRowValue; i >= 0; --i) {
+        for(int i = afterRowValue; i >= 0; --i) {
             pathSoFar.add(i);
             createAllPaths(pathSoFar, i, cols);
             pathSoFar.remove(pathSoFar.size() -1);
