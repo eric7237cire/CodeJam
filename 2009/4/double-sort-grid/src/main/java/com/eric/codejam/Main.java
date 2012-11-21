@@ -83,19 +83,21 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         int count = 0;
        
-        count = DynamicProgrammingLarge.solveGrid(input.grid);
+        int testCount = DynamicProgrammingLarge.solveGrid(input.grid);
+        
+        count = DynamicProgrammingLargeNonOptimized.solveGrid(input.grid);
         //log.info("Count DP {}.  ans {}", caseNumber, countDP);
 
        // log.info("Done dp ");
         
-        log.info("Done calculating answer case # {}.  ans [ {} ]", caseNumber, count);
+        log.info("Done calculating answer case # {}.  ans [ {} ] test [ {} ]", caseNumber, count, testCount);
         
         
         
         //DecimalFormat decim = new DecimalFormat("0.00000000000");
         //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
         
-        return ("Case #" + caseNumber + ": " + count);
+        return ("Case #" + caseNumber + ": " + testCount);
     }
     
     

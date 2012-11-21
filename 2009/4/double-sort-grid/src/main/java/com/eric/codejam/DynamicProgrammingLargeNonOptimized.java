@@ -12,9 +12,8 @@ import com.eric.codejam.utils.Grid;
 import com.google.common.base.Preconditions;
 import com.google.common.math.IntMath;
 
-public class DynamicProgrammingLarge {
-    
-    final static Logger log = LoggerFactory.getLogger(DynamicProgrammingLarge.class);
+public class DynamicProgrammingLargeNonOptimized {
+    final static Logger log = LoggerFactory.getLogger(DynamicProgrammingLargeNonOptimized.class);
 
     //A path goes from bottom left to top right, each step goes to the right one.
     //paths [ index of path ] [ row values ]
@@ -22,15 +21,13 @@ public class DynamicProgrammingLarge {
     List<List<Integer>> paths; 
     Grid<Integer> grid;
     
-    int[][][] memoize ;
+    int[][] memoize ;
     Map<List<Integer>, Integer> pathToIndex;
     
     final static int MOD = 10007;
-    public static int LETTER_MAX = 4;
+    public static int LETTER_MAX = DynamicProgrammingLarge.LETTER_MAX;
     
-    int[][][] check;
-    
-    public DynamicProgrammingLarge(Grid<Integer> grid) {
+    public DynamicProgrammingLargeNonOptimized(Grid<Integer> grid) {
         this.grid = grid;
         
         paths = new ArrayList<>();
@@ -39,36 +36,16 @@ public class DynamicProgrammingLarge {
         createAllPaths(new ArrayList<Integer>(), grid.getRows(), grid.getCols());   
        // log.info("Done create all paths");
         
-        memoize = new int[paths.size()][LETTER_MAX+1][grid.getCols()];
-        check = new int[paths.size()][LETTER_MAX+1][grid.getCols()];
+        memoize = new int[paths.size()][LETTER_MAX+1];
         for(int i= 0; i < paths.size(); ++i) {
             for(int j = 0; j <= LETTER_MAX; ++j) {
                 for(int k = 0; k < grid.getCols(); ++k) {
-                    memoize[i][j][k] = -1;
-                    check[i][j][k] = -1;
+                    memoize[i][j] = -1;
                 }
             }
         }
         int totalPathNumber = IntMath.binomial(grid.getRows()+grid.getCols(), grid.getRows());
         Preconditions.checkState(totalPathNumber == paths.size());
-        
-        //2 2
-        check[0][4][1] = 30;
-        //2 1
-        check[1][4][0] = 20;
-        check[1][4][1] = 30;
-        check[1][3][1] = 14;
-        check[1][3][0] = 9;
-        check[1][2][1] = 4;
-        check[1][2][0] = 2;
-        check[1][1][1] = 1;
-      //  check[1][1][0] = 0;
-        //2 0
-        check[2][4][1] = 10;
-        check[2][3][1] = 6;
-        check[2][3][0] = 6;
-        check[2][2][1] = 2;
-        check[2][2][0] = 1;
     }
     
     
@@ -78,10 +55,10 @@ public class DynamicProgrammingLarge {
      *   after column k,so that the upper part is doubly sorted, and any pre-filled letter
      *    in the upper part is respected.
      */
-    public int solve(int pathKey, int maxCharacter, int colLimit) {
+    public int solve(int pathKey, int maxCharacter) {
         
-        if (memoize[pathKey][maxCharacter][colLimit] >= 0) {
-            return memoize[pathKey][maxCharacter][colLimit];
+        if (memoize[pathKey][maxCharacter]>= 0) {
+            return memoize[pathKey][maxCharacter];
         }
         
         if (pathKey == paths.size() - 2) {
@@ -96,24 +73,21 @@ public class DynamicProgrammingLarge {
             }
             //checkPath(pathKey, maxCharacter, sum);
             sum %= MOD;
-            memoize[pathKey][maxCharacter][colLimit] = sum;
+            memoize[pathKey][maxCharacter] = sum;
             return sum;
         }
         if (pathKey == paths.size() - 1) {
             int sum = 0;
-            memoize[pathKey][maxCharacter][colLimit] = sum;
+            memoize[pathKey][maxCharacter] = sum;
             //checkPath(pathKey, maxCharacter, sum);
             return 0;
-        }
-        if (colLimit == 0 && maxCharacter == 1) {
-            //return 0;
         }
         if (maxCharacter <= 0) {           
             return 0;
         }
         Preconditions.checkArgument(pathKey < paths.size() - 2);
         //Find all maximal points
-        final List<Integer> path = paths.get(pathKey);
+        List<Integer> path = paths.get(pathKey);
            
         List<Integer> maxPointColumns = new ArrayList<>(10);
         
@@ -123,7 +97,7 @@ public class DynamicProgrammingLarge {
        // int maxColumn = 0;
         int sum = 0;
                 
-        for(int pathRowIdx = 0; pathRowIdx <= colLimit; ++pathRowIdx ) {
+        for(int pathRowIdx = 0; pathRowIdx <= grid.getCols() - 1; ++pathRowIdx ) {
             //path row is one after the row
             int currentPathRow = path.get(pathRowIdx);
             int nextPathRow = pathRowIdx == grid.getCols() - 1 ? 0 : path.get(pathRowIdx+1);
@@ -137,7 +111,7 @@ public class DynamicProgrammingLarge {
                 if (letter > maxCharacter) {
                     log.debug("Invalid letter ");
                     sum = 0;
-                    memoize[pathKey][maxCharacter][colLimit] = sum;
+                    memoize[pathKey][maxCharacter] = sum;
                     //checkPath(pathKey, maxCharacter, sum);
                     return 0;
                 }
@@ -156,22 +130,15 @@ public class DynamicProgrammingLarge {
         }
         
         
-        if (colLimit == 0 ) {
-            sum = solve(pathKey, maxCharacter - 1 , grid.getCols() - 1 );
-//            return sum;
-        } else {
-        sum = solve(pathKey, maxCharacter , colLimit - 1);
-        }
         
-        log.debug("Sum starting {} for path {} max char <= {} col limit {} numMaxPoints {}", sum, path, 
-                maxCharacter, colLimit, numMaxPoints);
+        sum = solve(pathKey, maxCharacter - 1);
+       
+        log.debug("Sum starting {} for path {} max char <= {}", sum, path, maxCharacter);
        
         
-        if (numMaxPoints > 0 && maxPointColumns.get(numMaxPoints-1) == colLimit) {
-        int allSubSets = (1 << numMaxPoints) - 1;
-        allSubSets &= (1 << (numMaxPoints-1));
+        int allSubSets = (1 << numMaxPoints) - 1; 
         
-        for(int subSetsBitSet = allSubSets; subSetsBitSet <= allSubSets; ++subSetsBitSet) {
+        for(int subSetsBitSet = 1; subSetsBitSet <= allSubSets; ++subSetsBitSet) {
             
             //Inclusion / exclusion Principal 
             int addOrSub = -1;
@@ -192,14 +159,11 @@ public class DynamicProgrammingLarge {
                                    
             int intPathIndex = pathToIndex.get(intersectedPath);            
           
-            
-            int subSum = solve(intPathIndex, maxCharacter, colLimit);
-            log.debug("Adding intersecting path {} for path {} <= {}.  col limit {}.  sum = {}", intersectedPath, path, maxCharacter, colLimit, subSum);
+            int subSum = solve(intPathIndex, maxCharacter);
             sum += addOrSub * subSum;
             sum %= MOD;
 
             //log.debug("Intersection {} for path {} has sum {}, cumul is now {}", intersectedPath, path, subSum,sum);
-        }
         }
         
         if (sum >= MOD) {
@@ -208,32 +172,9 @@ public class DynamicProgrammingLarge {
         if (sum < 0) {
             sum += MOD;
         }
-        log.debug("Returning {} for path {} <= {}.  col limit {}", sum, path, maxCharacter, colLimit);
+        log.debug("Returning {} for path {} <= {}", sum, path, maxCharacter);
         
-        Grid<Integer> testGrid = new Grid<Integer>(this.grid);
-        testGrid.addRow(0);
-        for(int pathRowIdx = colLimit+1; pathRowIdx < grid.getCols(); ++pathRowIdx ) {
-            int currentPathRow = path.get(pathRowIdx);
-            for (int r = currentPathRow + 1; r < testGrid.getRows(); ++r) {
-                testGrid.setEntry(r, pathRowIdx, maxCharacter == 1 ? 1 : maxCharacter-1);
-            }
-        }
-        
-        if (numMaxPoints > 0 && maxCharacter == 1) {
-            sum =1;
-        }
-        
-        if (maxCharacter > 1) {
-      //  DynamicProgrammingLargeNonOptimized dlo = new DynamicProgrammingLargeNonOptimized(testGrid);
-       // int test = dlo.solve(pathKey, maxCharacter);
-        //int test = dlo.memoize[pathKey][maxCharacter];
-       // Preconditions.checkState(test==sum);
-        }
-        
-        memoize[pathKey][maxCharacter][colLimit] = sum;
-        int checkSum = check[pathKey][maxCharacter][colLimit];
-              
-        Preconditions.checkArgument(sum == checkSum || checkSum == -1);
+        memoize[pathKey][maxCharacter] = sum;
         return sum;
     }
     
@@ -259,9 +200,9 @@ public class DynamicProgrammingLarge {
     
     public static Integer solveGrid(Grid<Integer> grid) {
 
-        DynamicProgrammingLarge ss = new DynamicProgrammingLarge(grid);
+        DynamicProgrammingLargeNonOptimized ss = new DynamicProgrammingLargeNonOptimized(grid);
         
-        return ss.solve(0, LETTER_MAX, grid.getCols() - 1);
+        return ss.solve(0, LETTER_MAX);
 
     }
     
