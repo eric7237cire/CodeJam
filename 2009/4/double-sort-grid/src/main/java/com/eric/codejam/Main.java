@@ -85,7 +85,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
        
         int testCount = DynamicProgrammingLarge.solveGrid(input.grid);
         
-        count = DynamicProgrammingLargeNonOptimized.solveGrid(input.grid);
+        //count = DynamicProgrammingLargeNonOptimized.solveGrid(input.grid);
         //log.info("Count DP {}.  ans {}", caseNumber, countDP);
 
        // log.info("Done dp ");
@@ -150,7 +150,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
 
         if (args.length < 1) {
       //     args = new String[] { "sample.txt" };
-           args = new String[] { "C-small-practice.in" };
+           //args = new String[] { "C-small-practice.in" };
+           args = new String[] { "C-large-practice.in" };
            //args = new String[] { "largeInput.txt" };
         }
         log.info("Input file {}", args[0]);
