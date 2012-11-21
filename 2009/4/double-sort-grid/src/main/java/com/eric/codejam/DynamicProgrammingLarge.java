@@ -58,17 +58,19 @@ public class DynamicProgrammingLarge {
         check[1][4][0] = 20;
         check[1][4][1] = 30;
         check[1][3][1] = 14;
-        check[1][3][0] = 9;
-        check[1][2][1] = 4;
+        check[1][3][0] = 8;
+        //b
+        check[1][2][1] = 5;
         check[1][2][0] = 2;
+        //a
         check[1][1][1] = 1;
       //  check[1][1][0] = 0;
         //2 0
         check[2][4][1] = 10;
         check[2][3][1] = 6;
         check[2][3][0] = 6;
-        check[2][2][1] = 2;
-        check[2][2][0] = 1;
+        check[2][2][1] = 3;
+        check[2][2][0] = 3;
     }
     
     
@@ -194,8 +196,10 @@ public class DynamicProgrammingLarge {
           
             
             int subSum = solve(intPathIndex, maxCharacter, colLimit);
-            log.debug("Adding intersecting path {} for path {} <= {}.  col limit {}.  sum = {}", intersectedPath, path, maxCharacter, colLimit, subSum);
+            
             sum += addOrSub * subSum;
+            log.debug("Adding for path {} intersecting path {} w/ size {} <= {}.  col limit {}.  sum = {}", 
+                    path, intersectedPath, subSum, maxCharacter, colLimit, sum);
             sum %= MOD;
 
             //log.debug("Intersection {} for path {} has sum {}, cumul is now {}", intersectedPath, path, subSum,sum);
