@@ -3,8 +3,8 @@ package com.eric.codejam.utils;
 import com.google.common.base.Preconditions;
 
 public class Rational {
-    int numerator;
-    int denom;
+    final int numerator;
+    final int denom;
     public Rational(int numerator, int denom) {
         super();
         this.numerator = numerator;
@@ -15,6 +15,27 @@ public class Rational {
         return new Rational(numerator, 1);
     }
     
+    public Rational multiply(Rational r) {
+        return new Rational(numerator * r.numerator, denom * r.denom);
+    }
+    
+    public Rational divide(Rational r) {
+        return new Rational(numerator * r.denom, denom * r.numerator);
+    }
+    
+    public Rational minus(Rational r) {
+        Rational a = new Rational(numerator * r.denom, denom * r.denom);
+        Rational b = new Rational(r.numerator * denom, r.denom * denom);
+        
+        return new Rational(a.numerator - b.numerator, a.denom);
+    }
+    
+    public Rational add(Rational r) {
+        Rational a = new Rational(numerator * r.denom, denom * r.denom);
+        Rational b = new Rational(r.numerator * denom, r.denom * denom);
+        
+        return new Rational(a.numerator + b.numerator, a.denom);
+    }
     
     public int multiplyToInt(int num) {
         int numerator = num * this.numerator;
