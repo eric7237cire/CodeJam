@@ -2,7 +2,6 @@ package com.eric.codejam;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,6 @@ import org.slf4j.LoggerFactory;
 
 import com.eric.codejam.utils.Grid;
 import com.google.common.base.Preconditions;
-import com.google.common.math.IntMath;
 
 
 public class DynamicProgrammingLarge {
@@ -60,6 +58,8 @@ public class DynamicProgrammingLarge {
         createAllPaths(new ArrayList<Integer>(), MAX_ROWS, MAX_COLS);
         
         buildNextPaths();
+        
+        pathToIndex = null;
     }
     public DynamicProgrammingLarge(Grid<Integer> grid) {
         this.grid = Grid.buildEmptyGrid(MAX_ROWS, MAX_COLS, LETTER_MAX-1);
