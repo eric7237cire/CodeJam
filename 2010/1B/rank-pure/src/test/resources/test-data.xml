@@ -1,0 +1,31 @@
+<testData>
+
+<!-- 
+    <test name="s1">
+        <input>
+3
+0 1000000000
+1000000000 1000000000
+1000000000 0
+        </input>
+        <output>
+            3414213562.37309500000
+
+
+        </output>
+    </test>
+ -->
+    <!-- 
+    
+<test name=""> 
+    <input> 
+
+    </input> 
+    <output> 
+
+    </output> 
+</test>
+    
+    
+     -->
+</testData>

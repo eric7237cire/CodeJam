@@ -12,7 +12,7 @@
 #include <time.h>
 #include <assert.h>
 #include <boost/smart_ptr.hpp>
-#define SHOW_TIME 1
+#define SHOW_TIME 0
 #include "util.h" 
 #include "bipartite.h"
 #include <boost/math/common_factor.hpp>
@@ -21,6 +21,7 @@
 
 using namespace std;
 
+typedef unsigned int uint;
 
 //#define LOG_OFF LOG_OFF
 
@@ -40,6 +41,8 @@ int main(int argc, char** args)
   input >> T;
 
   SHOW_TIME_BEGIN(g) 
+  
+  LOG_OFF();
   	
   for (int test_case = 0; test_case < T; ++test_case) 
   {
@@ -138,7 +141,7 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
   uint denom_large = max(index, level-index);
   uint denom_small = min(index, level-index);
   
-  LOG_ON();
+  LOG_OFF();
   LOG(level);
   LOG(denom_large);
   LOG(denom_small);
@@ -167,7 +170,7 @@ int Calc::calculate_unique_paths(const uint& level, const uint& index)
     uint level_1 = level / 10007;
     uint index_0 = index % 10007;
     uint level_0 = level % 10007;
-    LOG_ON(); 
+    LOG_OFF(); 
     LOG(index_0);
     LOG(index_1);
     LOG(level_0);
@@ -378,7 +381,7 @@ void do_test_case(int test_case, ifstream& input)
   uint level, index;  
   bool possible = getLevelIndex(level, index, target);
   
-  LOG_ON();
+  LOG_OFF();
   LOG_STR("Possible " << possible);
   LOG_STR("Final Level: " << level);
   LOG_STR("Final index: " << index);

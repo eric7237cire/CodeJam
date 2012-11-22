@@ -572,9 +572,9 @@ Each vertex v ∈ S2j+1 must be adjacent to another vertex u via an edge e = ∈
     {
       const int unmatchedNode = *it;
       
-      GraphConnections::const_iterator it = connections.find(unmatchedNode);
-      assert(it != connections.end());
-      NodeConnectionsPtr nodeConnections = it->second;
+      GraphConnections::const_iterator gcit = connections.find(unmatchedNode);
+      assert(gcit != connections.end());
+      NodeConnectionsPtr nodeConnections = gcit->second;
       
       for(NodeConnections::const_iterator ncit = nodeConnections->begin();
         ncit != nodeConnections->end();
