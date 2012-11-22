@@ -50,7 +50,7 @@ public class DynamicProgrammingLarge {
  
     static {
         //M+N choose M  M rows N cols
-//        memoize. = new int[184756][LETTER_MAX+1][10];
+
         memoizeTL = new Memoize();
         paths = new int[ 184756 ][MAX_COLS];
                 
@@ -84,7 +84,7 @@ public class DynamicProgrammingLarge {
         //int totalPathNumber = IntMath.binomial(grid.getRows()+grid.getCols(), grid.getRows());
         //Preconditions.checkState(totalPathNumber == paths.size());
         
-        //2 2
+        //2 2.  Max let d
         /*
         check[0][4][1] = 30;
         //2 1
@@ -158,26 +158,24 @@ public class DynamicProgrammingLarge {
         int sum = 0;
 
         
-        // path row is one after the row
+        //The next monotone path not including the max point at colLimit
+        int nextPathKey = nextPath[pathKey][colLimit];
+        
         int currentPathRow = path[colLimit];
-        int nextPathRow = colLimit == MAX_COLS - 1 ? 0 : path[
-                colLimit + 1];
-
-        Preconditions.checkState(nextPathRow <= currentPathRow);
+        
 
         /*
          * Find a maximal point either equal to maxCharacter or a variable.
          * The other letters are counted below.
          */
-        if (nextPathRow < currentPathRow) {
+        if (nextPathKey >= 0) {
 
             int letter = grid.getEntry(currentPathRow - 1, colLimit);
 
             if (letter > maxCharacter && letter != LETTER_MAX) {
             //    log.debug("Invalid letter ");
                 sum = 0;
-                memoize[pathKey][maxCharacter][colLimit] = sum;
-                
+                memoize[pathKey][maxCharacter][colLimit] = sum;                
                 return 0;
             }
 
@@ -201,31 +199,23 @@ public class DynamicProgrammingLarge {
         //Only max point is considered, because if there is not a max point, then
         //solve(pathKey, maxCharacter, colLimit + X would have counted that case.
         if (isMaxPoint) {
-        
-            
+            int subSum = solve(nextPathKey, maxCharacter, colLimit);
 
-            int intPathIndex = nextPath[pathKey][colLimit];
-            
-            int subSum = solve(intPathIndex, maxCharacter, colLimit);
-            
             sum += subSum;
-        //    log.debug("Adding for path {} intersecting path {} w/ size {} <= {}.  col limit {}.  sum = {}", 
-          //          path, intersectedPath, subSum, maxCharacter, colLimit, sum);
-            sum %= MOD;
+            // log.debug("Adding for path {} intersecting path {} w/ size {} <= {}.  col limit {}.  sum = {}",
+            // path, intersectedPath, subSum, maxCharacter, colLimit, sum);
+            if (sum >= MOD) {
+                sum -= MOD;
+            }
 
-            //log.debug("Intersection {} for path {} has sum {}, cumul is now {}", intersectedPath, path, subSum,sum);
-        
+            // log.debug("Intersection {} for path {} has sum {}, cumul is now {}",
+            // intersectedPath, path, subSum,sum);
+
         }
         
-        if (sum >= MOD) {
-            sum -= MOD;
-        }
-        if (sum < 0) {
-            sum += MOD;
-        }
-        if (sum > 1) { 
-        log.debug("Returning {} for path {} <= {}.  col limit {}", sum, path, maxCharacter, colLimit);
-        }
+         
+        //log.debug("Returning {} for path {} <= {}.  col limit {}", sum, path, maxCharacter, colLimit);
+        
         memoize[pathKey][maxCharacter][colLimit] = sum;
        
         return sum;
