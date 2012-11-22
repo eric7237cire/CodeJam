@@ -2,6 +2,7 @@ package com.eric.codejam;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,8 @@ public class DynamicProgrammingLarge {
     //A path goes from bottom left to top right, each step goes to the right one.
     //paths [ index of path ] [ row values ]
     //
-    static List<List<Integer>> paths; 
+    static int[][] paths;
+    static int pathCount;
     Grid<Integer> grid;
     
     static Memoize memoizeTL;
@@ -47,7 +49,8 @@ public class DynamicProgrammingLarge {
         //M+N choose M  M rows N cols
 //        memoize. = new int[184756][LETTER_MAX+1][10];
         memoizeTL = new Memoize();
-        paths = new ArrayList<>(184756);
+        paths = new int[ 184756 ][MAX_COLS];
+        
         pathToIndex = new HashMap<>(184756);
         
         createAllPaths(new ArrayList<Integer>(), MAX_ROWS, MAX_COLS);
@@ -66,7 +69,7 @@ public class DynamicProgrammingLarge {
        // log.info("Done create all paths");
         
         int[][][] memoize = memoizeTL.get();
-        for(int i= 0; i < paths.size(); ++i) {
+        for(int i= 0; i < pathCount; ++i) {
             for(int j = 0; j < LETTER_MAX; ++j) {
                 Arrays.fill(memoize[i][j], -1);
             }
@@ -116,7 +119,7 @@ public class DynamicProgrammingLarge {
             return memoize[pathKey][maxCharacter][colLimit];
         }
         
-        if (pathKey == paths.size() - 2) {
+        if (pathKey == pathCount - 2) {
             int letter = grid.getEntry(0);
             int sum = 0;
             if ( letter == LETTER_MAX) {
@@ -131,7 +134,7 @@ public class DynamicProgrammingLarge {
             memoize[pathKey][maxCharacter][colLimit] = sum;
             return sum;
         }
-        if (pathKey == paths.size() - 1) {
+        if (pathKey == pathCount - 1) {
             int sum = 0;
             memoize[pathKey][maxCharacter][colLimit] = sum;
             
@@ -139,9 +142,9 @@ public class DynamicProgrammingLarge {
         }
 
         
-        Preconditions.checkArgument(pathKey < paths.size() - 2);
+        Preconditions.checkArgument(pathKey < pathCount - 2);
         // Find all maximal points
-        final List<Integer> path = paths.get(pathKey);
+        final int[] path = paths[pathKey];
 
         // Basically when the path has a corner
         boolean isMaxPoint = false;
@@ -150,9 +153,9 @@ public class DynamicProgrammingLarge {
 
         
         // path row is one after the row
-        int currentPathRow = path.get(colLimit);
-        int nextPathRow = colLimit == grid.getCols() - 1 ? 0 : path
-                .get(colLimit + 1);
+        int currentPathRow = path[colLimit];
+        int nextPathRow = colLimit == grid.getCols() - 1 ? 0 : path[
+                colLimit + 1];
 
         Preconditions.checkState(nextPathRow <= currentPathRow);
 
@@ -193,9 +196,18 @@ public class DynamicProgrammingLarge {
         //solve(pathKey, maxCharacter, colLimit + X would have counted that case.
         if (isMaxPoint) {
         
-            List<Integer> intersectedPath = new ArrayList<>(path);
+            //int[] intersectedPath = new int[MAX_COLS];
+            //System.arraycopy(path, 0, intersectedPath,0,MAX_COLS);
+            List<Integer>  intersectedPath = new ArrayList<Integer>();
+            
+            
+            for (int index = 0; index < MAX_COLS; index++)
+            {
+                intersectedPath.add(path[index]);
+            }
 
-            intersectedPath.set(colLimit, intersectedPath.get(colLimit) - 1);
+            //intersectedPath[colLimit]--;
+            intersectedPath.set(colLimit, path[colLimit] - 1);
 
             int intPathIndex = pathToIndex.get(intersectedPath);
             
@@ -253,8 +265,11 @@ public class DynamicProgrammingLarge {
     private static void createAllPaths(List<Integer> pathSoFar, int afterRowValue, int cols) {
         if (pathSoFar.size() == cols) {
             //log.debug("Path {} : {}", paths.size(), pathSoFar);
-            paths.add(new ArrayList<Integer>(pathSoFar));
-            pathToIndex.put(paths.get(paths.size()-1), paths.size()-1);
+            for(int c = 0; c < MAX_COLS; ++c)
+            paths[pathCount][c] = pathSoFar.get(c); //.add(new ArrayList<Integer>(pathSoFar));
+            pathToIndex.put(new ArrayList<Integer>(pathSoFar), pathCount);
+            pathCount++;
+            
             return;
         }
         
