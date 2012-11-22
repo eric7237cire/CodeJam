@@ -140,15 +140,9 @@ public class DynamicProgrammingLarge {
             memoize[pathKey][maxCharacter][colLimit] = sum;
             return sum;
         }
-        if (pathKey == pathCount - 1) {
-            int sum = 0;
-            memoize[pathKey][maxCharacter][colLimit] = sum;
-            
-            return 0;
-        }
-
         
-        Preconditions.checkArgument(pathKey < pathCount - 2);
+        //Preconditions.checkArgument(pathKey < pathCount - 2);
+        
         // Find all maximal points
         final int[] path = paths[pathKey];
 
