@@ -160,7 +160,7 @@ public class DynamicProgrammingLarge {
         
         // path row is one after the row
         int currentPathRow = path[colLimit];
-        int nextPathRow = colLimit == grid.getCols() - 1 ? 0 : path[
+        int nextPathRow = colLimit == MAX_COLS - 1 ? 0 : path[
                 colLimit + 1];
 
         Preconditions.checkState(nextPathRow <= currentPathRow);
@@ -202,23 +202,9 @@ public class DynamicProgrammingLarge {
         //solve(pathKey, maxCharacter, colLimit + X would have counted that case.
         if (isMaxPoint) {
         
-            //int[] intersectedPath = new int[MAX_COLS];
-            //System.arraycopy(path, 0, intersectedPath,0,MAX_COLS);
-            List<Integer>  intersectedPath = new ArrayList<Integer>();
             
-            
-            for (int index = 0; index < MAX_COLS; index++)
-            {
-                intersectedPath.add(path[index]);
-            }
 
-            //intersectedPath[colLimit]--;
-            intersectedPath.set(colLimit, path[colLimit] - 1);
-
-            int intPathIndex = pathToIndex.get(intersectedPath);
-            
-            int check = nextPath[pathKey][colLimit];
-            Preconditions.checkState(check == intPathIndex);
+            int intPathIndex = nextPath[pathKey][colLimit];
             
             int subSum = solve(intPathIndex, maxCharacter, colLimit);
             
