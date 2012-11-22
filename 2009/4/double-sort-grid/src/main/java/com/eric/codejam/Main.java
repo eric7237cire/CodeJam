@@ -65,11 +65,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 ls.close();
         
         BiMap<Character, Integer> chMap = HashBiMap.create();
-        for(int i = 1; i <= 26; ++i) {
-            chMap.put( (char) ((int) 'a' + i - 1), i);
+        for(int i = 0; i < DynamicProgrammingLarge.LETTER_MAX; ++i) {
+            chMap.put( (char) ((int) 'a' + i ), i);
         }
         
-        chMap.put('.', 0);
+        chMap.put('.', DynamicProgrammingLarge.LETTER_MAX);
         
         input.grid = Grid.buildFromBufferedReader(br, input.R, input.C, chMap, null);
         //log.info("Reading data...Test case # {} ", testCase);
@@ -96,7 +96,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         if (args.length < 1) {
            args = new String[] { "sample.txt" };
            //args = new String[] { "C-small-practice.in" };
-      //     args = new String[] { "C-large-practice.in" };
+         //  args = new String[] { "C-large-practice.in" };
            //args = new String[] { "largeInput.txt" };
         }
         log.info("Input file {}", args[0]);
