@@ -84,7 +84,7 @@ public class Runner {
 
             final String[] answers = new String[t];
 
-            final int THREADS = 5;
+            final int THREADS = 3;
             testCounter = 0;
             Thread[] threads = new Thread[THREADS];
 

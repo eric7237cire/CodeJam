@@ -48,7 +48,7 @@ public class Producer<InputData extends AbstractInputData> implements Runnable {
                 log.debug("Poison pill");
                 queue.put(poisonPill);
             }
-            log.debug("Producer thread ending");
+            log.info("Producer thread ending");
         } catch (InterruptedException ex) {
             log.error("prob", ex);
         }

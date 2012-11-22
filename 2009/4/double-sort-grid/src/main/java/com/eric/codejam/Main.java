@@ -95,15 +95,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
 
         if (args.length < 1) {
         //   args = new String[] { "sample.txt" };
-           //args = new String[] { "C-small-practice.in" };
-           args = new String[] { "C-large-practice.in" };
+           args = new String[] { "C-small-practice.in" };
+          // args = new String[] { "C-large-practice.in" };
            //args = new String[] { "largeInput.txt" };
         }
         log.info("Input file {}", args[0]);
 
         Main m = new Main();
-        //Runner.go(args[0], m, m, new InputData(-1));
-        Runner.goSingleThread(args[0], m, m);
+        Runner.go(args[0], m, m, new InputData(-1));
+        //Runner.goSingleThread(args[0], m, m);
         
        
     }
