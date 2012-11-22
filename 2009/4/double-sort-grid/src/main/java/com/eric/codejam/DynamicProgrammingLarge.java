@@ -33,6 +33,9 @@ public class DynamicProgrammingLarge {
     //paths [ index of path ] [ row values ]
     //
     static int[][] paths;
+    //Path without max point at column or -1
+    //[pathKey][Column]
+    static int[][] nextPath;
     static int pathCount;
     Grid<Integer> grid;
     
@@ -50,10 +53,13 @@ public class DynamicProgrammingLarge {
 //        memoize. = new int[184756][LETTER_MAX+1][10];
         memoizeTL = new Memoize();
         paths = new int[ 184756 ][MAX_COLS];
-        
+                
+        nextPath = new int [ 184756 ][MAX_COLS];
         pathToIndex = new HashMap<>(184756);
         
         createAllPaths(new ArrayList<Integer>(), MAX_ROWS, MAX_COLS);
+        
+        buildNextPaths();
     }
     public DynamicProgrammingLarge(Grid<Integer> grid) {
         this.grid = Grid.buildEmptyGrid(MAX_ROWS, MAX_COLS, LETTER_MAX-1);
@@ -211,6 +217,9 @@ public class DynamicProgrammingLarge {
 
             int intPathIndex = pathToIndex.get(intersectedPath);
             
+            int check = nextPath[pathKey][colLimit];
+            Preconditions.checkState(check == intPathIndex);
+            
             int subSum = solve(intPathIndex, maxCharacter, colLimit);
             
             sum += subSum;
@@ -278,5 +287,39 @@ public class DynamicProgrammingLarge {
             createAllPaths(pathSoFar, i, cols);
             pathSoFar.remove(pathSoFar.size() -1);
         }
+    }
+    
+    private static void buildNextPaths() {
+        
+    
+        for(int pathKey = 0; pathKey < pathCount; ++pathKey) {
+            int[] path = paths[pathKey];
+            
+            for(int c = 0; c < MAX_COLS; ++c) {
+                int currentPathRow = path[c];
+                
+                int nextPathRow = c == MAX_COLS - 1 ? 0 : path[c+1];
+                
+                if (nextPathRow < currentPathRow) {
+                    //its a max point!  Find path not including this point
+                    
+                    List<Integer>  intersectedPath = new ArrayList<Integer>();
+                    
+                    
+                    for (int index = 0; index < MAX_COLS; index++)
+                    {
+                        intersectedPath.add(path[index]);
+                    }
+                    intersectedPath.set(c, path[c] - 1);
+
+                    int intPathIndex = pathToIndex.get(intersectedPath);
+                    nextPath[pathKey][c] = intPathIndex;
+                } else {
+                    nextPath[pathKey][c] = -1;
+                }
+            }
+        }
+
+        
     }
 }
