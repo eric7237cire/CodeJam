@@ -157,7 +157,6 @@ public class DynamicProgrammingLarge {
         
         int currentPathRow = path[colLimit];
         
-
         /*
          * Find a maximal point either equal to maxCharacter or a variable.
          * The other letters are counted below.
@@ -187,8 +186,6 @@ public class DynamicProgrammingLarge {
             sum = solve(pathKey, maxCharacter, colLimit - 1);
         }
         
-        //log.debug("Sum starting {} for path {} max char <= {} col limit {} ", sum, path, 
-          //      maxCharacter, colLimit);
        
         //Only max point is considered, because if there is not a max point, then
         //solve(pathKey, maxCharacter, colLimit + X would have counted that case.
@@ -196,19 +193,11 @@ public class DynamicProgrammingLarge {
             int subSum = solve(nextPathKey, maxCharacter, colLimit);
 
             sum += subSum;
-            // log.debug("Adding for path {} intersecting path {} w/ size {} <= {}.  col limit {}.  sum = {}",
-            // path, intersectedPath, subSum, maxCharacter, colLimit, sum);
+            
             if (sum >= MOD) {
                 sum -= MOD;
             }
-
-            // log.debug("Intersection {} for path {} has sum {}, cumul is now {}",
-            // intersectedPath, path, subSum,sum);
-
         }
-        
-         
-        //log.debug("Returning {} for path {} <= {}.  col limit {}", sum, path, maxCharacter, colLimit);
         
         memoize[pathKey][maxCharacter][colLimit] = sum;
        
