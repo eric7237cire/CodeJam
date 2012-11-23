@@ -12,7 +12,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eric.codejam.multithread.Consumer;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
@@ -139,6 +138,10 @@ public class Grid<SquareType> {
     
     public int getIndex(int row, int col) {
         return col + row * cols;
+    }
+    
+    public int[] getRowCol(int index) {
+        return new int[] { index / cols,  index % cols };
     }
     
     public Integer getIndex(int index, Direction dir) {
