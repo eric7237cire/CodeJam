@@ -48,44 +48,64 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     }
     
     private static class PotentialSquares {
-        Set<Integer> indexSameColumn;
-        Set<Integer> indexSameRow;
-        SortedSet<Integer> indexNorthWest;
+        //Highest connected cell column, highest being all the way left;west; col 0
+        int topConnectedCount;
+        
+        //Highest in same row
+        int leftConnectedCount;
+        
+        //NW
+        int diagConnectedCount;
         Grid<Integer> grid;
         Square square;
         int idx;
+        int row;
+        int col;
         
         public PotentialSquares(int idx, Grid<Integer> grid) {
-            indexSameColumn = Sets.newHashSet(idx);
-            indexSameRow = Sets.newHashSet(idx);
-            indexNorthWest = Sets.newTreeSet();
-            indexNorthWest.add(idx);
+            diagConnectedCount = 1;
             this.idx = idx;
+            int[] rowCol = grid.getRowCol(this.idx);
+            row = rowCol[0];
+            col = rowCol[1];
+            topConnectedCount = 1;
+            leftConnectedCount = 1;            
             this.grid = grid;
         }
         public void calcSquare(Grid<PotentialSquares> gridPot) {
             square = null;
-            int[] rowCol = grid.getRowCol(idx);
-            for(Integer nwIdx : indexNorthWest) {
-                if (null == gridPot.getEntry(nwIdx)) {
-                    //TODO supprime index NW
-                    continue;
-                }
-                int[] nwRowCol = grid.getRowCol(nwIdx);
-                int rowDiff =  rowCol[0] - nwRowCol[0];
-                int colDiff = rowCol[1] - nwRowCol[1] ;
-                if (rowDiff == colDiff) {
-                    Square sq = new Square(rowDiff+1, nwRowCol[0], nwRowCol[1]);
-                    if (square == null || sq.compareTo(square) > 0) {
-                        square = sq;
+            
+            int squareSize = 1;
+            //Find biggest square still on the board
+            for(squareSize = 1; squareSize <= diagConnectedCount; ++squareSize) {
+                boolean valid = true;
+                int checkRow =  row - (squareSize - 1);
+                int checkCol = col  - (squareSize - 1); 
+                for(int n = checkCol; n <= col; ++n ) {
+                    if (null == gridPot.getEntry(checkRow, n)) {
+                        valid = false;
                     }
                 }
+                for(int m = checkRow; m <= row; ++m ) {
+                    if (null == gridPot.getEntry(m, checkCol)) {
+                        valid = false;
+                    }
+                }
+                
+                if (!valid) {
+                    break;
+                }
+                
             }
             
-            Preconditions.checkState(square != null);
+            squareSize--;
+            Preconditions.checkArgument(squareSize >= 1 && squareSize <= diagConnectedCount);
+            
+            square = new Square(squareSize, row - (squareSize - 1), col - (squareSize - 1));
+            
         }
         public String toString() {
-            return Integer.toString(square.size);
+            return Integer.toString(diagConnectedCount);
         }
     }
     @Override
@@ -114,21 +134,38 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 int westVal = grid.getEntry(idx, Direction.WEST);
                 
                 PotentialSquares topPs = potGrid.getEntry(idx, Direction.NORTH);
-                PotentialSquares westPs = potGrid.getEntry(idx, Direction.WEST);
-                
+                PotentialSquares leftPs = potGrid.getEntry(idx, Direction.WEST);
+                PotentialSquares topLeftPs = potGrid.getEntry(idx, Direction.NORTH_WEST);
                 PotentialSquares ps = new PotentialSquares(idx, grid);
                 
                 if (val == northVal) {
-                    ps.indexSameColumn.addAll( topPs.indexSameColumn );
+                    ps.topConnectedCount = topPs.topConnectedCount+1;
                 }
                 if (val == westVal) {
-                    ps.indexSameRow.addAll( westPs.indexSameRow );
+                    ps.leftConnectedCount =  leftPs.leftConnectedCount+1 ;
                 }
                 
                 if (val == northVal && val == westVal) {
-                    ps.indexNorthWest.addAll (
-                            Sets.intersection( Sets.union(topPs.indexSameRow, topPs.indexNorthWest) //to cover 2x2
-                                    , Sets.union(westPs.indexSameColumn, westPs.indexNorthWest) ) );
+                    
+                    if (topPs.diagConnectedCount >= 2 )  {
+                        
+                        Preconditions.checkState(grid.getEntry(idx, Direction.NORTH_WEST) == northVal);
+                        
+                        int minDiag = topLeftPs.diagConnectedCount;
+                        minDiag = Math.min(minDiag, topPs.diagConnectedCount);
+                        minDiag = Math.min(minDiag, leftPs.diagConnectedCount);
+                        
+                        //basically 3 squares make a bigger square
+                        ps.diagConnectedCount = minDiag + 1;
+                        
+                    } else if (topPs.leftConnectedCount > 1 && leftPs.topConnectedCount > 1) {
+                        Preconditions.checkState(grid.getEntry(idx, Direction.NORTH_WEST) == northVal);
+                        //a square
+                        ps.diagConnectedCount = 2;
+                    } else {
+                        //nothing
+                        ps.diagConnectedCount = 1;
+                    }
                 }
                 
                 potGrid.setEntry(idx, ps);
@@ -144,10 +181,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         TreeMultiset<Integer> counts =  TreeMultiset.create(Ordering.natural().reverse());
         
+        int lastSquareSize = squares.size();
+        
         while(!squares.isEmpty()) {
             Square square = squares.last();
             squares.remove(square);
             log.debug("Square {}.  Pot Grid {}", square, potGrid );
+           // log.info("Squares size " + squares.size());
+            Preconditions.checkArgument(squares.size() < lastSquareSize);
+            lastSquareSize = squares.size();
+            
             
             boolean allClear = true;
             for(int r = square.row; r < square.row + square.size; ++r) {
@@ -168,18 +211,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             for(int r = square.row; r < square.row + square.size; ++r) {
                 for(int c = square.col; c < square.col + square.size; ++c) {
                     Preconditions.checkState(null != potGrid.getEntry(r, c)); 
-                    potGrid.setEntry(r, c, null);
-                        
+                    potGrid.setEntry(r, c, null);                        
                 }
             }
             
-            squares.clear();
+           // squares.clear();
             
             //TODO efficace
-            for(int m = 0; m < input.M; ++m) {
-                for(int n = 0; n < input.N; ++n) {
+            
+            for(int m = square.row; m < square.row + 2 * square.size && m < input.M; ++m) {
+                for(int n = square.col; n < square.col + 2 * square.size && n < input.N; ++n) {
                     PotentialSquares ps = potGrid.getEntry(m, n);
                     if (ps != null) {
+                        squares.remove(ps.square);
                         ps.calcSquare(potGrid);
                         squares.add(ps.square);
                     }
@@ -225,8 +269,7 @@ shift   << >> >>>
 relational  < > <= >= instanceof
 equality    == !=
 bitwise AND &
-bitwise exclusive OR    ^
-bitwise inclusive OR    |
+bitwise exclusive OR    ^bitwise inclusive OR    |.
 logical AND &&
 logical OR  ||
 ternary ? :
@@ -284,7 +327,7 @@ assignment  = += -= *= /= %= &= ^= |= <<= >>= >>>=
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-            //args = new String[] { "sample.txt" };
+  //          args = new String[] { "sample.txt" };
             args = new String[] { "C-small-practice.in" };
 //            args = new String[] { "B-large-practice.in" };
          }
