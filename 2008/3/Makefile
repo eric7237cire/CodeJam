@@ -1,11 +1,11 @@
 CC = g++
 CFLAGS =  -g
 OLD = -g -O3 -Wall
-EXEC_NAME = endlessknight.exe 
-OLD_EXEC_NAME = endlessknight.exe pockets.exe test_util.exe portal.exe classroom.exe classroom_old.exe
+
+EXEC_NAME = endlessknight.exe pockets.exe test_util.exe portal.exe classroom.exe classroom_old.exe
 INCLUDES = -IC:\MinGW\boost_1_52_0
-LIBS =
-OBJ_FILES = star_wars.o simplex.o util.o
+LIBS = -LC:\MinGW\boost_1_52_0\stage\lib\
+
 INSTALL_DIR = /usr/bin
 
 ifeq ($(mode),release)
@@ -47,12 +47,12 @@ clean :
 	$(CC) $(CFLAGS) -o $@ $< util.o tri_logger.o $(LIBS)
 	
 test_util.exe : util_test.o util.o
-	$(CC) -static -o $@ $< util.o -lboost_unit_test_framework
+	$(CC) ${LIBS} -static -o $@ $< util.o -lboost_unit_test_framework-mgw47-1_52
 	
 graph_test.exe : graph_test.o graph.h graph_test.cxx
 	$(CC) -static -o $@ $< util.o tri_logger.o -lboost_unit_test_framework
 	
 %.o: %.cxx
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ -c $<
+	$(CC) $(CFLAGS) $(INCLUDES)  -o $@ -c $<
 
 

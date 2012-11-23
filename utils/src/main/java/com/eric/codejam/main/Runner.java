@@ -68,7 +68,7 @@ public class Runner {
     
     public static <InputData extends AbstractInputData> void go(
             String inputFileName, TestCaseInputReader<InputData> inputReader,
-            TestCaseHandler<InputData> testCaseHandler, InputData poisonPill) {
+            TestCaseHandler<InputData> testCaseHandler, InputData poisonPill, int numThreads) {
         try {
             InputStreamReader isr = new InputStreamReader(new FileInputStream(
                     new File(inputFileName)));
@@ -84,7 +84,7 @@ public class Runner {
 
             final String[] answers = new String[t];
 
-            final int THREADS = 3;
+            final int THREADS = numThreads;
             testCounter = 0;
             Thread[] threads = new Thread[THREADS];
 

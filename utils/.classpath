@@ -28,6 +28,6 @@
 			<attribute name="javadoc_location" value="jar:file:/C:/Users/thresh/AppData/.m2/repository/org/apache/commons/commons-math3/3.0/commons-math3-3.0-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.7.0_02"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
