@@ -2,7 +2,6 @@ package com.eric.codejam;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,11 +13,8 @@ import org.slf4j.LoggerFactory;
 import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
-import com.google.common.base.Preconditions;
+import com.eric.codejam.utils.LargeNumberUtils;
 import com.google.common.collect.ComparisonChain;
-import com.google.common.math.BigIntegerMath;
-import com.google.common.math.IntMath;
-import com.google.common.math.LongMath;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<InputData> {
 
@@ -63,6 +59,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     final static int MOD = 100003;
     final static int N_MAX = 500;
     static int[][] memoize = new int[N_MAX+1][N_MAX+1];
+    static int[][] combin = LargeNumberUtils.generateModedCombin(500, MOD);
     
     int solveSize(int size, int n) {
         
@@ -82,10 +79,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             // a b Size c d n
             // choose is # of vars right of size.
             // must multiply it by how many ways to make a b.  A b must also be perfect
-            int mult = solveSize(size - choose - 1, size);
-            BigInteger bin = BigIntegerMath.binomial(possible, choose);
-            
-            count = IntMath.checkedAdd(count, bin.multiply(BigInteger.valueOf(mult)).mod(BigInteger.valueOf(MOD)).intValue());
+            long mult = solveSize(size - choose - 1, size);
+            count += mult * combin[possible][choose] % MOD;
+           
             count %= MOD; 
         }
         }
