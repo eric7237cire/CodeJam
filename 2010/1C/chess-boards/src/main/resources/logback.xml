@@ -24,6 +24,9 @@
     </encoder>
   </appender>
    -->
+   <logger name="com.eric.codejam.main" level="DEBUG"/>
+  <logger name="com.eric.codejam.SingleRowSolver" level="OFF" />
+  <logger name="com.eric.codejam" level="INFO"/>
   <root level="${root-level:-DEBUG}">
     <appender-ref ref="console"/>
   </root>

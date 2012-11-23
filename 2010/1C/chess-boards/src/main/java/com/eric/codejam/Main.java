@@ -91,11 +91,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     @Override
     public String handleCase(int caseNumber, InputData input) {
 
-        log.info("Starting calculating case {}", caseNumber);
-        
+         
         log.debug("Grid {}", input.grid);
 
-        log.info("Done calculating answer case {}", caseNumber);
         
         //DecimalFormat decim = new DecimalFormat("0.00000000000");
         //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
@@ -148,7 +146,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         while(!squares.isEmpty()) {
             Square square = squares.last();
-            
+            squares.remove(square);
             log.debug("Square {}.  Pot Grid {}", square, potGrid );
             
             boolean allClear = true;
@@ -255,14 +253,19 @@ assignment  = += -= *= /= %= &= ^= |= <<= >>= >>>=
          */
         for(int m = 0; m < input.M; ++m) {
             parity = m % 2 == 0 ? 1 : 0;
-            int row = Integer.parseInt(br.readLine(), 16);
+            String hex = br.readLine();
+            
+            for(int hexIdx = 0; hexIdx < input.N / 4; ++hexIdx) {
+            int hexInt = Integer.parseInt("" + hex.charAt(hexIdx), 16);
             //log.debug("Row {}", StringUtils.leftPad(Integer.toBinaryString(row), input.N,'0'));
-            for(int n = 0; n < input.N; ++n) {
-                int value = (1 << input.N - n - 1 & row) != 0 ? 1 : 0;
+            for(int hexBit = 0; hexBit < 4; ++hexBit) {
+                int n = hexIdx * 4 + hexBit;
+                int value = (1 << 4 - hexBit - 1 & hexInt) != 0 ? 1 : 0;
                 
                 parity ^= 1;
                 //log.debug("r {} c {} value {} parity {}", m,n,value,parity);
                 input.grid.setEntry(m, n, value == parity ? 1 : 0);
+            }
             }
         }
         
@@ -281,8 +284,8 @@ assignment  = += -= *= /= %= &= ^= |= <<= >>= >>>=
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-            args = new String[] { "sample.txt" };
-           // args = new String[] { "B-small-practice.in" };
+            //args = new String[] { "sample.txt" };
+            args = new String[] { "C-small-practice.in" };
 //            args = new String[] { "B-large-practice.in" };
          }
          log.info("Input file {}", args[0]);

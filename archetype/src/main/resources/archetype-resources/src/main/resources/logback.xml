@@ -23,6 +23,9 @@
       <pattern>%date [%file:%line] %msg%n</pattern>
     </encoder>
   </appender>
+  
+  <logger name="com.eric.codejam.multithread" level="OFF"/>
+  <logger name="com.eric.codejam.SingleRowSolver" level="OFF" />
    -->
   <root level="${root-level:-DEBUG}">
     <appender-ref ref="console"/>
