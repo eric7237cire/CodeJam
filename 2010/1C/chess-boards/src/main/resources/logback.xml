@@ -26,7 +26,7 @@
    -->
    <logger name="com.eric.codejam.main" level="DEBUG"/>
   <logger name="com.eric.codejam.SingleRowSolver" level="OFF" />
-  <logger name="com.eric.codejamu" level="DEBUG"/>
+  <logger name="com.eric.codejamc" level="DEBUG"/>
   <root level="${root-level:-INFO}">
     <appender-ref ref="console"/>
   </root>

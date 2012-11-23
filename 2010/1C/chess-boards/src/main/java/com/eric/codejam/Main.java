@@ -2,8 +2,6 @@ package com.eric.codejam;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -18,7 +16,6 @@ import com.eric.codejam.utils.Grid;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
-import com.google.common.collect.Sets;
 import com.google.common.collect.TreeMultiset;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<InputData> {
@@ -48,11 +45,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     }
     
     private static class PotentialSquares {
-        //Highest connected cell column, highest being all the way left;west; col 0
-        int topConnectedCount;
         
-        //Highest in same row
-        int leftConnectedCount;
         
         //NW
         int diagConnectedCount;
@@ -67,9 +60,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             this.idx = idx;
             int[] rowCol = grid.getRowCol(this.idx);
             row = rowCol[0];
-            col = rowCol[1];
-            topConnectedCount = 1;
-            leftConnectedCount = 1;            
+            col = rowCol[1];        
             this.grid = grid;
         }
         public void calcSquare(Grid<PotentialSquares> gridPot) {
@@ -100,7 +91,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             
             squareSize--;
             Preconditions.checkArgument(squareSize >= 1 && squareSize <= diagConnectedCount);
-            
+            diagConnectedCount = squareSize;
             square = new Square(squareSize, row - (squareSize - 1), col - (squareSize - 1));
             
         }
@@ -132,18 +123,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 int val = grid.getEntry(idx);
                 int northVal = grid.getEntry(idx, Direction.NORTH);
                 int westVal = grid.getEntry(idx, Direction.WEST);
+                int northWestVal = grid.getEntry(idx, Direction.NORTH_WEST);
                 
                 PotentialSquares topPs = potGrid.getEntry(idx, Direction.NORTH);
                 PotentialSquares leftPs = potGrid.getEntry(idx, Direction.WEST);
                 PotentialSquares topLeftPs = potGrid.getEntry(idx, Direction.NORTH_WEST);
                 PotentialSquares ps = new PotentialSquares(idx, grid);
                 
-                if (val == northVal) {
-                    ps.topConnectedCount = topPs.topConnectedCount+1;
-                }
-                if (val == westVal) {
-                    ps.leftConnectedCount =  leftPs.leftConnectedCount+1 ;
-                }
                 
                 if (val == northVal && val == westVal) {
                     
@@ -158,7 +144,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                         //basically 3 squares make a bigger square
                         ps.diagConnectedCount = minDiag + 1;
                         
-                    } else if (topPs.leftConnectedCount > 1 && leftPs.topConnectedCount > 1) {
+                    } else if (val == northWestVal) {
                         Preconditions.checkState(grid.getEntry(idx, Direction.NORTH_WEST) == northVal);
                         //a square
                         ps.diagConnectedCount = 2;
@@ -196,6 +182,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             for(int r = square.row; r < square.row + square.size; ++r) {
                 for(int c = square.col; c < square.col + square.size; ++c) {
                     if (null == potGrid.getEntry(r, c)) {
+                        //Problem is when deleting the potGrid entries, the corresponding squares are not removed
+                        //TODO
                         allClear = false;
                         break;
                     }
@@ -327,8 +315,8 @@ assignment  = += -= *= /= %= &= ^= |= <<= >>= >>>=
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-  //          args = new String[] { "sample.txt" };
-            args = new String[] { "C-small-practice.in" };
+            args = new String[] { "sample.txt" };
+          //  args = new String[] { "C-small-practice.in" };
 //            args = new String[] { "B-large-practice.in" };
          }
          log.info("Input file {}", args[0]);
