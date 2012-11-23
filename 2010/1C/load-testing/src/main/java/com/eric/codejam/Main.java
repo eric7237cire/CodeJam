@@ -23,6 +23,8 @@ import com.eric.codejam.geometry.PointInt;
 import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
+import com.google.common.base.Preconditions;
+import com.google.common.math.IntMath;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<InputData> {
 
@@ -33,14 +35,28 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
 
         log.info("Starting calculating case {}", caseNumber);
         
-        //double ans = DivideConq.findMinPerimTriangle(input.points);
+        int numSteps = 0;
+        long step = (long)input.L * input.C;
+        while(step < (long)input.P) {
+            step *= input.C;
+            ++numSteps;
+            //log.debug("num steps {} case {} step {}", numSteps, caseNumber, step);
+        }
+        
+        int testsNeeded = 0;
+        
+        if (numSteps > 0) {
+            testsNeeded = 1;
+            while(IntMath.checkedPow(2, testsNeeded) - 1 < numSteps) {
+                ++testsNeeded;
+                log.debug("Tests needed {} for case {}", testsNeeded, caseNumber);
+            }
+        }
 
         log.info("Done calculating answer case {}", caseNumber);
         
-        //DecimalFormat decim = new DecimalFormat("0.00000000000");
-        //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
         
-        return ("Case #" + caseNumber + ": " );
+        return ("Case #" + caseNumber + ": " + testsNeeded);
     }
     
     
@@ -52,6 +68,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         InputData  input = new InputData(testCase);
         
+        input.L = Integer.parseInt(line[0]);
+        input.P = Integer.parseInt(line[1]);
+        input.C = Integer.parseInt(line[2]);
         
         return input;
         
