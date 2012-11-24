@@ -35,4 +35,36 @@ public class Rectangle {
                 || ( r1_x.isConnected(r2_x) && r1_y_ex.isConnected(r2_y) );
     }
     
+    public boolean intersects(Rectangle r2) {
+        Range<Integer> r1_x = Ranges.closed(x1, x2);
+        
+        Range<Integer> r2_x = Ranges.closed(r2.x1, r2.x2);
+        Range<Integer> r1_y = Ranges.closed(y1, y2);
+        
+        Range<Integer> r2_y = Ranges.closed(r2.y1, r2.y2);
+        
+        return ( r1_x.isConnected(r2_x) && r1_y.isConnected(r2_y) )
+                ;
+    }
+    
+    public int area() {
+        return (y2-y1+1) * (x2-x1+1);
+    }
+    
+    public Rectangle getIntersection(Rectangle r2) {
+        Range<Integer> r1_x = Ranges.closed(x1, x2);        
+        Range<Integer> r2_x = Ranges.closed(r2.x1, r2.x2);
+        
+        Range<Integer> r1_y = Ranges.closed(y1, y2);        
+        Range<Integer> r2_y = Ranges.closed(r2.y1, r2.y2);
+        
+        if (!( r1_x.isConnected(r2_x) && r1_y.isConnected(r2_y))) {
+            return null;
+        }
+                
+        Range<Integer> x_range = r1_x.intersection(r2_x);
+        Range<Integer> y_range = r1_y.intersection(r2_y);
+        return new Rectangle(x_range.lowerEndpoint(), y_range.lowerEndpoint(), x_range.upperEndpoint(), y_range.upperEndpoint());
+    }
+    
 }

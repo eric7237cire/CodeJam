@@ -22,8 +22,8 @@ public class Main implements TestCaseHandler<InputData>,
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    int RECT_MAX = 12;
-
+    static final int RECT_SIZE_MAX = 12;
+    static final int RECT_NUM_MAX = 10;
     
     static List<List<Integer>> getRectIntersections(InputData input) {
         List<List<Integer>> rectIntersections = new ArrayList<>();
@@ -76,7 +76,7 @@ public class Main implements TestCaseHandler<InputData>,
 
         log.info("Starting calculating case {}", caseNumber);
 
-        List<List<Integer>> rectIntersections = new ArrayList<>();
+        
         
         /*
         for(int rect1 = 0; rect1 < input.R; ++rect1) {
@@ -87,16 +87,100 @@ public class Main implements TestCaseHandler<InputData>,
         
         int rounds = getRoundsBruteForce(input);
                 
+        List<List<Integer>> rectIntersections = getRectIntersections(input);
         
+        int maxTime = 0;
+        
+        for(List<Integer> connectedRects : rectIntersections) {
+            int time = findTimeToDecay(connectedRects, input);
+            maxTime = Math.max(maxTime, time);
+        }
+        /*
+        for(Rectangle rect : input.rects) {
+            int x1 = Math.max(1, rect.x1-RECT_NUM_MAX);
+            int x2 = Math.min(RECT_SIZE_MAX, rect.x1+5);
+            int y1 = rect.y2;
+            int y2 = Math.min(RECT_SIZE_MAX, rect.y2+RECT_NUM_MAX);
+            
+            Rectangle subSlice = new Rectangle(x1, y1, x2, y2);
+            
+            Preconditions.checkState(subSlice.area() < 1200000);
+            
+            
+        }*/
+        
+        
+        int maxCreationDiag = 0;
+        
+        for(Rectangle rect : input.rects) {
+            int creationDiag1 = findLongestDiagonal(rect.x1, rect.y2+1, input);
+            int creationDiag2 = findLongestDiagonal(rect.x2, rect.y2+1, input);
+            int creationDiag = Math.max(creationDiag1, creationDiag2);
+            maxCreationDiag = Math.max(maxCreationDiag, creationDiag);
+        }
+        
+        //maxTime = Math.max(maxTime, maxCreationDiag);
         
         // DecimalFormat decim = new DecimalFormat("0.00000000000");
         // decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
 
-        return ("Case #" + caseNumber + ": " + rounds);
+        return ("Case #" + caseNumber + ": " + rounds + " New Method " + maxTime);
     }
     
-    int getRoundsBruteForce(InputData input) {
-        GridChar grid = GridChar.buildEmptyGrid(RECT_MAX, RECT_MAX, '0');
+    /**
+     * Assumption is r, c is the bottom of a rectangle
+     * @param r
+     * @param c
+     * @param input
+     * @return
+     */
+    static int findLongestDiagonal(int x, int y, InputData input) {
+        //r, c must be empty, north must be filled, west must be filled
+        int distance = 0;
+        
+        while(y <= RECT_SIZE_MAX && x >= 1) {
+            boolean foundBottomRightCorner = false;
+            
+            for(Rectangle rect : input.rects) {
+                if (rect.y2 == y && rect.x2 == x - 1) {
+                    foundBottomRightCorner = true;
+                }
+                if (rect.intersects(new Rectangle(x,y,x,y))) {
+                    return distance;
+                }
+            }
+            
+            if (!foundBottomRightCorner) {
+                break; //return distance;
+            }
+            
+            ++distance;
+            y++;
+            x--;
+        }
+        
+        return distance;
+    }
+    
+    static int findTimeToDecay(List<Integer> connectedRects, InputData input) {
+        //find most north line via y - intercept  (lowest row value)
+        int northYInt = Integer.MAX_VALUE;
+        int southYInt = 0;
+        
+        if (connectedRects.isEmpty()) {
+            return 0;
+        }
+        
+        for(Integer rectNum : connectedRects) {
+            northYInt = Math.min(northYInt, input.rects[rectNum].y1 - input.rects[rectNum].x1);
+            southYInt = Math.max(southYInt, input.rects[rectNum].y2 - input.rects[rectNum].x2);
+        }
+        
+        return southYInt - northYInt + 1;
+    }
+    
+    static int getRoundsBruteForce(InputData input) {
+        GridChar grid = GridChar.buildEmptyGrid(RECT_SIZE_MAX, RECT_SIZE_MAX, '0');
         for (Rectangle rect : input.rects) {
             for (int r = rect.y1; r <= rect.y2; ++r) {
                 for (int c = rect.x1; c <= rect.x2; ++c) {
@@ -134,7 +218,7 @@ public class Main implements TestCaseHandler<InputData>,
                 break;
             }
             grid = newGrid;
-           // log.debug("Grid {}", grid);
+            log.debug("Grid {}", grid);
         }
         
         return rounds;
