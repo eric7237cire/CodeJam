@@ -24,10 +24,38 @@ import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 import com.eric.codejam.utils.GridChar;
+import com.google.common.base.Preconditions;
+
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<InputData> {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
+
+    boolean testSize(int newSize, InputData input) {
+        if (newSize < input.k) {
+            return false;
+        }
+        for(int offsetRow = 0; offsetRow <= newSize-input.k; ++offsetRow) {
+            for(int offsetCol = 0; offsetCol <= newSize - input.k; ++offsetCol) {
+                GridChar grid = GridChar.buildEmptyGrid(newSize, newSize, '.');
+                
+                //copy input.grid
+                for(int r = 0; r < input.grid.getRows(); ++r) {
+                    for(int c = 0; c < input.grid.getCols(); ++c) {
+                        grid.setEntry(r+offsetRow, c+offsetCol, input.grid.getEntry(r,c));
+                    }
+                }
+                
+                //log.debug("Grid {}", grid);
+                if (isPerfect(grid)) {
+                    log.debug("Grid {}", grid);
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
     
     @Override
     public String handleCase(int caseNumber, InputData input) {
@@ -37,34 +65,69 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         log.debug("Grid {}", input.grid);
         //double ans = DivideConq.findMinPerimTriangle(input.points);
 
-        for(int newSize = input.k; newSize <= 3 * input.k; ++newSize) {
-            for(int offsetRow = 0; offsetRow <= newSize-input.k; ++offsetRow) {
-                for(int offsetCol = 0; offsetCol <= newSize - input.k; ++offsetCol) {
-                    GridChar grid = GridChar.buildEmptyGrid(newSize, newSize, '.');
-                    
-                    //copy input.grid
-                    for(int r = 0; r < input.grid.getRows(); ++r) {
-                        for(int c = 0; c < input.grid.getCols(); ++c) {
-                            grid.setEntry(r+offsetRow, c+offsetCol, input.grid.getEntry(r,c));
-                        }
-                    }
-                    
-                    log.debug("Grid {}", grid);
-                    if (isPerfect(grid)) {
-                        int cost = newSize * newSize - input.k * input.k;
-                        return ("Case #" + caseNumber + ": " + cost);
-                    }
+        /*
+         * Max size is k + 2(k - 1).  See sample
+         */
+        
+        int lowerBound = input.k;
+        int upperBound = input.k + 2 * (input.k-1);
+        
+        if (testSize(input.k,input)) {
+          //  upperBound = input.k;
+        }
+        
+        //lb <= ans <= up
+        while(upperBound > lowerBound) {
+            int midPoint = (upperBound + lowerBound) / 2;
+            log.debug("Mid point {} lb {} ub {}", midPoint, lowerBound, upperBound);
+            boolean hasMatchLower = testSize(midPoint - 1, input);
+            boolean hasMatch = testSize(midPoint, input);
+            boolean hasMatchUpper = testSize(midPoint + 1, input);
+            if (hasMatch && hasMatchUpper && hasMatchLower) {
+                upperBound = midPoint - 1;
+            } else if (hasMatch && hasMatchUpper && !hasMatchLower) {
+                upperBound = midPoint;
+            } else if (hasMatch && !hasMatchUpper && hasMatchLower) {
+                upperBound = midPoint-1;
+            } else if (hasMatch && !hasMatchUpper && !hasMatchLower) {
+                upperBound = midPoint;
+            } else if (!hasMatch && hasMatchUpper && hasMatchLower) {
+                upperBound = midPoint-1;
+            } else if (!hasMatch && hasMatchUpper && !hasMatchLower) {
+                upperBound = midPoint+1;
+                if (upperBound - lowerBound <= 2) {
+                    lowerBound = midPoint + 1;
                 }
+            } else if (!hasMatch && !hasMatchUpper && hasMatchLower) {
+                upperBound = midPoint-1;
+            } else if (!hasMatch && !hasMatchLower && !hasMatchUpper) {
+                lowerBound = midPoint+2;
+            } else {
+                return "Error";
             }
         }
         
-        log.debug("Is perfect {}", isPerfect(input.grid));
-        log.info("Done calculating answer case {}", caseNumber);
+        Preconditions.checkState(upperBound == lowerBound);
+        //test upperBound - 1 as a perfect diamond of size n does not fit in size n + 1
+        
+        int newSize = upperBound;
+        
+        if (newSize > 1 && testSize(newSize - 1, input)) {
+            //--newSize;
+        }
+        if (newSize > 2 && testSize(newSize - 2, input)) {
+           // newSize -= 2;
+        }
+        
+        int cost = newSize * newSize - input.k * input.k;
+        return ("Case #" + caseNumber + ": " + cost);
+        
+        //log.debug("Is perfect {}", isPerfect(input.grid));
         
         //DecimalFormat decim = new DecimalFormat("0.00000000000");
         //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
         
-        return ("Case #" + caseNumber + ": " + "ERROR");
+        
     }
     
     boolean isPerfect(GridChar grid) {
@@ -140,8 +203,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-            args = new String[] { "sample.txt" };
-           // args = new String[] { "B-small-practice.in" };
+           // args = new String[] { "sample.txt" };
+            args = new String[] { "A-small-practice.in" };
 //            args = new String[] { "B-large-practice.in" };
          }
          log.info("Input file {}", args[0]);
