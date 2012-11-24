@@ -39,6 +39,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         }
         @Override
         public String toString() {
+            if (1==1) throw new RuntimeException("ex");
             return "Size " + size + " R " + row + " C " + col;
         }
         
@@ -62,6 +63,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             row = rowCol[0];
             col = rowCol[1];        
             this.grid = grid;
+        }
+        public void calcSquare() {
+            int squareSize = diagConnectedCount;
+            square = new Square(squareSize, row - (squareSize - 1), col - (squareSize - 1));
         }
         public void calcSquare(Grid<PotentialSquares> gridPot) {
             square = null;
@@ -96,6 +101,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             
         }
         public String toString() {
+            if (1==1) throw new RuntimeException("ex");
             return Integer.toString(diagConnectedCount);
         }
     }
@@ -133,7 +139,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 
                 if (val == northVal && val == westVal) {
                     
-                    if (topPs.diagConnectedCount >= 2 )  {
+                    if ( val == northWestVal )  {
                         
                         Preconditions.checkState(grid.getEntry(idx, Direction.NORTH_WEST) == northVal);
                         
@@ -144,10 +150,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                         //basically 3 squares make a bigger square
                         ps.diagConnectedCount = minDiag + 1;
                         
-                    } else if (val == northWestVal) {
-                        Preconditions.checkState(grid.getEntry(idx, Direction.NORTH_WEST) == northVal);
-                        //a square
-                        ps.diagConnectedCount = 2;
                     } else {
                         //nothing
                         ps.diagConnectedCount = 1;
@@ -155,7 +157,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 }
                 
                 potGrid.setEntry(idx, ps);
-                ps.calcSquare(potGrid);
+                ps.calcSquare();
                 squares.add(ps.square);
                 
             }
@@ -173,39 +175,28 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             Square square = squares.last();
             squares.remove(square);
             log.debug("Square {}.  Pot Grid {}", square, potGrid );
-           // log.info("Squares size " + squares.size());
+            //log.info("Squares size " + squares.size());
             Preconditions.checkArgument(squares.size() < lastSquareSize);
             lastSquareSize = squares.size();
             
-            
-            boolean allClear = true;
-            for(int r = square.row; r < square.row + square.size; ++r) {
-                for(int c = square.col; c < square.col + square.size; ++c) {
-                    if (null == potGrid.getEntry(r, c)) {
-                        //Problem is when deleting the potGrid entries, the corresponding squares are not removed
-                        //TODO
-                        allClear = false;
-                        break;
-                    }
-                }
-            }
-            
-            if (!allClear) {
-                continue;
-            }
-            
+                       
             counts.add(square.size);
             
+            if (square.size == 1) {
+                counts.add(square.size, squares.size());
+                break;
+            }
+            
             for(int r = square.row; r < square.row + square.size; ++r) {
                 for(int c = square.col; c < square.col + square.size; ++c) {
-                    Preconditions.checkState(null != potGrid.getEntry(r, c)); 
-                    potGrid.setEntry(r, c, null);                        
+                    Preconditions.checkState(null != potGrid.getEntry(r, c));
+                    PotentialSquares ps = potGrid.getEntry(r, c);
+                    
+                    potGrid.setEntry(r, c, null);     
+                    squares.remove(ps.square);
                 }
             }
             
-           // squares.clear();
-            
-            //TODO efficace
             
             for(int m = square.row; m < square.row + 2 * square.size && m < input.M; ++m) {
                 for(int n = square.col; n < square.col + 2 * square.size && n < input.N; ++n) {
