@@ -37,13 +37,59 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         log.debug("Grid {}", input.grid);
         //double ans = DivideConq.findMinPerimTriangle(input.points);
 
+        for(int newSize = input.k; newSize <= 3 * input.k; ++newSize) {
+            for(int offsetRow = 0; offsetRow <= newSize-input.k; ++offsetRow) {
+                for(int offsetCol = 0; offsetCol <= newSize - input.k; ++offsetCol) {
+                    GridChar grid = GridChar.buildEmptyGrid(newSize, newSize, '.');
+                    
+                    //copy input.grid
+                    for(int r = 0; r < input.grid.getRows(); ++r) {
+                        for(int c = 0; c < input.grid.getCols(); ++c) {
+                            grid.setEntry(r+offsetRow, c+offsetCol, input.grid.getEntry(r,c));
+                        }
+                    }
+                    
+                    log.debug("Grid {}", grid);
+                    if (isPerfect(grid)) {
+                        int cost = newSize * newSize - input.k * input.k;
+                        return ("Case #" + caseNumber + ": " + cost);
+                    }
+                }
+            }
+        }
+        
+        log.debug("Is perfect {}", isPerfect(input.grid));
         log.info("Done calculating answer case {}", caseNumber);
         
         //DecimalFormat decim = new DecimalFormat("0.00000000000");
         //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
         
-        return ("Case #" + caseNumber + ": " );
+        return ("Case #" + caseNumber + ": " + "ERROR");
     }
+    
+    boolean isPerfect(GridChar grid) {
+        //r, c == c, r
+        //r, c == (k-1) - c, (k-1) - r
+        
+        for(int r = 0; r < grid.getRows(); ++r) {
+            for(int c = 0; c < grid.getCols(); ++c) {
+                char ch = grid.getEntry(r, c);
+                if (ch == '.')
+                    continue;
+                
+                //Via 'horizontal' in the diamond symmetry 0,0 to r,c
+                char chHorizontal =  grid.getEntry(c, r);
+                char chVertial = grid.getEntry(grid.getCols() - 1- c, grid.getRows() - 1 - r);
+                if ( (chHorizontal != '.' && ch != chHorizontal ) ||
+                        (chVertial != '.' && ch != chVertial) ) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+    
     
     
     @Override
