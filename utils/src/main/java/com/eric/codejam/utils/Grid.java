@@ -123,6 +123,10 @@ public class Grid<SquareType> {
         
     }
     
+    /**
+     * 
+     * @return total number of cells
+     */
     public int getSize() {
         return grid.size();
     }
