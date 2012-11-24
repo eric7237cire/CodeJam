@@ -46,9 +46,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                     }
                 }
                 
-                //log.debug("Grid {}", grid);
                 if (isPerfect(grid)) {
-                    log.debug("Grid {}", grid);
+                    //log.debug("Grid {}", grid);
                     return true;
                 }
             }
@@ -62,7 +61,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
 
         log.info("Starting calculating case {}", caseNumber);
         
-        log.debug("Grid {}", input.grid);
+        //log.debug("Grid {}", input.grid);
         //double ans = DivideConq.findMinPerimTriangle(input.points);
 
         /*
@@ -72,38 +71,27 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         int lowerBound = input.k;
         int upperBound = input.k + 2 * (input.k-1);
         
-        if (testSize(input.k,input)) {
-          //  upperBound = input.k;
-        }
         
         //lb <= ans <= up
         while(upperBound > lowerBound) {
             int midPoint = (upperBound + lowerBound) / 2;
             log.debug("Mid point {} lb {} ub {}", midPoint, lowerBound, upperBound);
+            //This is because we can have the situation where midPoint does not match but midPoint+1 does
             boolean hasMatchLower = testSize(midPoint - 1, input);
             boolean hasMatch = testSize(midPoint, input);
             boolean hasMatchUpper = testSize(midPoint + 1, input);
-            if (hasMatch && hasMatchUpper && hasMatchLower) {
+            if (hasMatchLower) {
                 upperBound = midPoint - 1;
-            } else if (hasMatch && hasMatchUpper && !hasMatchLower) {
+            } else if (hasMatch) {
                 upperBound = midPoint;
-            } else if (hasMatch && !hasMatchUpper && hasMatchLower) {
-                upperBound = midPoint-1;
-            } else if (hasMatch && !hasMatchUpper && !hasMatchLower) {
-                upperBound = midPoint;
-            } else if (!hasMatch && hasMatchUpper && hasMatchLower) {
-                upperBound = midPoint-1;
-            } else if (!hasMatch && hasMatchUpper && !hasMatchLower) {
+            } else if (hasMatchUpper) {
                 upperBound = midPoint+1;
+                //Make sure it terminates
                 if (upperBound - lowerBound <= 2) {
                     lowerBound = midPoint + 1;
                 }
-            } else if (!hasMatch && !hasMatchUpper && hasMatchLower) {
-                upperBound = midPoint-1;
             } else if (!hasMatch && !hasMatchLower && !hasMatchUpper) {
                 lowerBound = midPoint+2;
-            } else {
-                return "Error";
             }
         }
         
@@ -111,14 +99,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         //test upperBound - 1 as a perfect diamond of size n does not fit in size n + 1
         
         int newSize = upperBound;
-        
-        if (newSize > 1 && testSize(newSize - 1, input)) {
-            //--newSize;
-        }
-        if (newSize > 2 && testSize(newSize - 2, input)) {
-           // newSize -= 2;
-        }
-        
+          
         int cost = newSize * newSize - input.k * input.k;
         return ("Case #" + caseNumber + ": " + cost);
         
@@ -204,8 +185,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
 
         if (args.length < 1) {
            // args = new String[] { "sample.txt" };
-            args = new String[] { "A-small-practice.in" };
-//            args = new String[] { "B-large-practice.in" };
+        //    args = new String[] { "A-small-practice.in" };
+            args = new String[] { "A-large-practice.in" };
          }
          log.info("Input file {}", args[0]);
 

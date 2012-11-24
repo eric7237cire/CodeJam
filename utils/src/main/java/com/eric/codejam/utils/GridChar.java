@@ -2,6 +2,7 @@ package com.eric.codejam.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,11 +56,6 @@ public class GridChar {
         
         GridChar g = new GridChar(rows, cols, invalidSq);
         
-        for (int r = 0; r < rows; ++r) {
-            for(int c = 0; c < cols; ++c) {
-                g.grid[ g.getIndex(r,c) ] = invalidSq;
-            }            
-        }
         
         return g;
     }
@@ -83,6 +79,7 @@ public class GridChar {
        
         
         grid = new char[rows*cols];
+        Arrays.fill(grid, invalidSq);
         
     }
     
