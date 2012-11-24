@@ -2,9 +2,9 @@ package com.eric.codejam.test;
 
 
 
-import java.io.BufferedReader;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -22,10 +22,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Unit test for simple App.

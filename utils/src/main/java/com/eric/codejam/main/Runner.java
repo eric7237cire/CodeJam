@@ -97,7 +97,7 @@ public class Runner {
 
             threads[0] = new Thread(p);
             for (int i = 1; i < THREADS; ++i) {
-                Consumer c1 = new Consumer<InputData>(q, answers,
+                Consumer<InputData> c1 = new Consumer<InputData>(q, answers,
                         testCaseHandler);
                 threads[i] = new Thread(c1);
             }

@@ -72,6 +72,7 @@ import com.google.common.base.Objects;
             public int hashCode() {
                 return Objects.hashCode(data);
             }
+            @SuppressWarnings("unchecked")
             @Override
             public boolean equals(Object obj) {
                 if (this == obj)
