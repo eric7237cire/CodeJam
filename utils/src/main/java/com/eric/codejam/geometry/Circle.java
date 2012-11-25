@@ -54,42 +54,25 @@ public class Circle {
 
     }
     
-    public double findSegmentArea(Circle circle2) {
-        Circle circle1 = this;
+    //http://en.wikipedia.org/wiki/Circular_segment
+    public double findSegmentArea(double segmentLength) {
+
+        double arg = (2 * r * r - segmentLength * segmentLength)
+                / (2 * r * r);
         
-        Point[] intPoints = getIntersection(circle2);
-        
-        //find mid point
-        Point midPoint = Point.getMidPoint(intPoints[0],intPoints[1]);
-        
-        //find height of arc.  Height is between the midpoint of the
-        //intersections and the point on the line between the centers
-        //in the other circle
-        Line line = new Line(circle1.getCenter(), circle2.getCenter());
-        
-        //Point[] points = circle1.getPointsIntersectingLine(line);
-        
-        double c = intPoints[0].distance(intPoints[1]);
-        
-        double d = circle1.getCenter().distance(circle2.getCenter());
-        
-        double ang = Math.acos(( 2 * r * r - c * c) / (2 * r * r));
-        
-        double area = (r*r / 2d) * (ang - Math.sin(ang));
-        
-        
-        if (line.isBetween(circle2.getCenter(), midPoint, circle1.getCenter())) {
-        //double distMidToC2 = midPoint.distance(circle2.getCenter());
-        //Need to check if angle was really obtuse
-        
-        //if (distMidToC2 > d) {
-            area = circle1.getArea() - area;
+        //Correct if arg = -1.0000000002 for ex
+        if (arg < -1) {
+            Preconditions.checkState( arg >= -1.000001d);
+            arg = -1;
         }
         
-        
+        double ang = Math.acos(arg);
+
+        double area = (r * r / 2d) * (ang - Math.sin(ang));
+
         return area;
     }
-    
+
     public double findAreaIntersection(Circle circle2) {
         Circle circle1 = this;
         
@@ -105,45 +88,32 @@ public class Circle {
         
         Point[] points = circle1.getPointsIntersectingLine(line);
         
-        double h = 0, h2 = 0;
-        if (circle2.containsPoint(points[0])) {
-            h = points[0].distance(midPoint);
-        } else {
-            Preconditions.checkState(circle2.containsPoint(points[1]));
-            h = points[1].distance(midPoint);
-        }
-        double tryH = circle1.r - circle1.getCenter().distance(midPoint);
         
-        if ( Math.abs(tryH - h) < 0.0000001d  ) {
-            h = tryH;
+       
+        
+        double c = intPoints[0].distance(intPoints[1]);
+        double area1 = circle1.findSegmentArea(c);
+        double area2 = circle2.findSegmentArea(c);
+        
+        /*
+         * If the center of this circle is between the midpoint of the intersections and
+         * the center of the other circle, then we want  
+         */
+        if (Line.isBetween(circle2.getCenter(), midPoint, circle1.getCenter())) {       
+            area1 = circle1.getArea() - area1;
         }
+        
+        if (Line.isBetween(circle1.getCenter(), midPoint, circle2.getCenter())) {
+            area2 = circle2.getArea() - area2;
+        }
+        
         
         points = circle2.getPointsIntersectingLine(line);
         
         Preconditions.checkState(line.onLine(midPoint));
         
-        if (circle1.containsPoint(points[0])) {
-            h2 = points[0].distance(midPoint);
-        } else {
-            Preconditions.checkState(circle1.containsPoint(points[1]));
-            h2 = points[1].distance(midPoint);
-        }
-                
-        double area1 = findAreaCircleSegment(h,circle1.r);
-        double area2 = findAreaCircleSegment(h2,circle2.r);
         
-        double check = circle1.findSegmentArea(circle2);
-        double check2 = circle2.findSegmentArea(circle1);
-        
-        if (circle1.containsPoint(circle2.getCenter())) {
-           // return circle2.getArea() - area2 + area1;
-        }
-        
-        if (circle2.containsPoint(circle1.getCenter())) {
-            //return circle1.getArea() - area1 + area2;
-        }
-        
-        return check + check2;
+        return area1 + area2;
         
     }
     

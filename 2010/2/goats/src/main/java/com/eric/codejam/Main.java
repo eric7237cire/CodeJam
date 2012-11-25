@@ -105,8 +105,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-           args = new String[] { "sample.txt" };
-           // args = new String[] { "D-small-practice.in" };
+           //args = new String[] { "sample.txt" };
+            args = new String[] { "D-small-practice.in" };
 //            args = new String[] { "B-large-practice.in" };
          }
          log.info("Input file {}", args[0]);

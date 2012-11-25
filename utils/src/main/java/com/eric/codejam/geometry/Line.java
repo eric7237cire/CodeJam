@@ -39,7 +39,7 @@ public class Line {
         this.b = a.getY() - m * a.getX();
     }
     
-    public boolean isBetween(Point a, Point b, Point pointToTest) {
+    public static boolean isBetween(Point a, Point b, Point pointToTest) {
         //Assume all are on the line
         
         //crossproduct = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
