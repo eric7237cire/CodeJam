@@ -190,6 +190,22 @@ public class GridChar {
     
     
 
+    public static int getPrintWidth() {
+        return printWidth;
+    }
+
+
+
+
+
+    public static void setPrintWidth(int printWidth) {
+        GridChar.printWidth = printWidth;
+    }
+
+
+
+
+
     public boolean isyZeroOnTop() {
         return yZeroOnTop;
     }

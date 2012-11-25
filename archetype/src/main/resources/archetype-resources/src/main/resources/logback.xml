@@ -19,6 +19,7 @@
   <!-- 
    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>myApp.log</file>
+    <append>false</append>
     <encoder>
       <pattern>%date [%file:%line] %msg%n</pattern>
     </encoder>

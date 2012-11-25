@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.junit.Assert.*;
 import com.eric.codejam.test.TesterBase;
 
 /**
@@ -40,6 +42,16 @@ public class AppTest extends TesterBase {
         return output.trim();
     }
 
-    
+    @Test
+    public void testDiag() throws IOException {
+        String testCaseData = testInputData.get("testDiag").trim();
+        Main m = new Main();
+        InputData input = m.readInput(new BufferedReader(new StringReader(
+                testCaseData)), 1);
+        
+        int diag = Main.findLongestDiagonal(7, 3, input);
+        
+        assertEquals(5, diag);
+    }
 
 }

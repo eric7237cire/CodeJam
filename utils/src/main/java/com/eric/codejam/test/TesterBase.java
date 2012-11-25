@@ -56,7 +56,7 @@ public abstract class TesterBase {
     
     abstract protected String getOutput(String testCaseData) throws IOException;
 
-    private static Map<String, String> testInputData;
+    protected static Map<String, String> testInputData;
     private static Map<String, String> testOutputData;
 
     @BeforeClass
@@ -101,6 +101,9 @@ public abstract class TesterBase {
         for (String name : testInputData.keySet()) {
             String input = testInputData.get(name).trim();
             String output = testOutputData.get(name).trim();
+            
+            if (output.equals("")) 
+                continue;
 
             String actualOutput = extractAns(getOutput(input));
 

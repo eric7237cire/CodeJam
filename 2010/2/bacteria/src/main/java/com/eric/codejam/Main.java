@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,13 +18,14 @@ import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 import com.eric.codejam.utils.Direction;
 import com.eric.codejam.utils.GridChar;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ComparisonChain;
 
 public class Main implements TestCaseHandler<InputData>,
         TestCaseInputReader<InputData> {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    static final int RECT_SIZE_MAX = 12;
+    static final int RECT_SIZE_MAX = 100;
     static final int RECT_NUM_MAX = 10;
     
     static List<List<Integer>> getRectIntersections(InputData input) {
@@ -74,6 +77,7 @@ public class Main implements TestCaseHandler<InputData>,
     @Override
     public String handleCase(int caseNumber, InputData input) {
 
+        GridChar.setPrintWidth(1);
         log.info("Starting calculating case {}", caseNumber);
 
         
@@ -119,7 +123,9 @@ public class Main implements TestCaseHandler<InputData>,
             maxCreationDiag = Math.max(maxCreationDiag, creationDiag);
         }
         
-        //maxTime = Math.max(maxTime, maxCreationDiag);
+        maxTime = Math.max(maxTime, maxCreationDiag);
+        
+        Preconditions.checkState(maxTime == rounds);
         
         // DecimalFormat decim = new DecimalFormat("0.00000000000");
         // decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
@@ -136,30 +142,102 @@ public class Main implements TestCaseHandler<InputData>,
      */
     static int findLongestDiagonal(int x, int y, InputData input) {
         //r, c must be empty, north must be filled, west must be filled
-        int distance = 0;
+        int diagDistance = 0;
         
-        while(y <= RECT_SIZE_MAX && x >= 1) {
-            boolean foundBottomRightCorner = false;
+        int startX = x;
+        int startY = y;
+        
+        
+        
+        boolean doneCalcDiagDist = false;
+        while (y <= RECT_SIZE_MAX && x >= 1 && !doneCalcDiagDist) {
             
-            for(Rectangle rect : input.rects) {
-                if (rect.y2 == y && rect.x2 == x - 1) {
-                    foundBottomRightCorner = true;
+
+            //top filled ?  diagDist > 0 means must be a bottom right corner
+            boolean aboveFilled = false;
+            boolean currentSquareEmpty = true;
+            for (Rectangle rect : input.rects) {
+                if (diagDistance == 0 || rect.y2 == y-1 && rect.x2 == x) {
+                    aboveFilled = true;
                 }
-                if (rect.intersects(new Rectangle(x,y,x,y))) {
-                    return distance;
+                if (rect.intersects(new Rectangle(x, y, x, y))) {
+                    currentSquareEmpty = false;
                 }
             }
-            
-            if (!foundBottomRightCorner) {
-                break; //return distance;
+
+            if (!currentSquareEmpty || !aboveFilled) {
+                break; // return distance;
             }
-            
-            ++distance;
+
+            ++diagDistance;
             y++;
             x--;
         }
         
-        return distance;
+        //see if it can be extended
+        Rectangle maxTopExt = new Rectangle(startX, startY-1, RECT_SIZE_MAX, startY-1);
+        List<Rectangle> topRects = new ArrayList<>();
+        for(Rectangle rect : input.rects) {
+            Rectangle interRect = rect.getIntersection(maxTopExt);
+            if (interRect != null) {
+                topRects.add(interRect);
+            }
+        }
+        Collections.sort(topRects, new Comparator<Rectangle>() {
+
+            @Override
+            public int compare(Rectangle o1, Rectangle o2) {
+                return ComparisonChain.start().compare(o1.x1, o2.x1).compare(o1.x2, o2.x2).result();
+            }
+            
+        });
+        
+        int maxX = startX;
+        Preconditions.checkState(topRects.size() > 0);
+        
+        for(Rectangle rect : topRects) {
+            if (rect.x1 > maxX) {
+                break;
+            }
+            
+            maxX = Math.max(rect.x2, maxX);
+        }
+        
+        int upRightExtension = maxX - startX;
+        
+        int endX = startX - (diagDistance - 1);
+        int endY = startY - (diagDistance - 1);
+        
+        Rectangle maxWestExt = new Rectangle(endX-1, endY, endX-1,RECT_SIZE_MAX);
+        List<Rectangle> leftRects = new ArrayList<>();
+        for(Rectangle rect : input.rects) {
+            Rectangle interRect = rect.getIntersection(maxWestExt);
+            if (interRect != null) {
+                topRects.add(interRect);
+            }
+        }
+        Collections.sort(leftRects, new Comparator<Rectangle>() {
+
+            @Override
+            public int compare(Rectangle o1, Rectangle o2) {
+                return ComparisonChain.start().compare(o1.y1, o2.y1).compare(o1.y2, o2.y2).result();
+            }
+            
+        });
+        
+        int maxY = endY;
+        
+        for(Rectangle rect : leftRects) {
+            if (rect.y1 > maxY) {
+                break;
+            }
+            
+            maxY = Math.max(rect.y2, maxY);
+        }
+        
+        int westExtension = maxX;
+
+        return diagDistance + Math.max(upRightExtension, westExtension);
     }
     
     static int findTimeToDecay(List<Integer> connectedRects, InputData input) {
@@ -249,8 +327,8 @@ public class Main implements TestCaseHandler<InputData>,
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-            args = new String[] { "sample.txt" };
-            // args = new String[] { "C-small-practice.in" };
+            //args = new String[] { "sample.txt" };
+             args = new String[] { "C-small-practice.in" };
             // args = new String[] { "B-large-practice.in" };
         }
         log.info("Input file {}", args[0]);
