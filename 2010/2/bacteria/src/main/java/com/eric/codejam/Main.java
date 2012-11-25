@@ -16,6 +16,7 @@ import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 import com.eric.codejam.utils.Direction;
+import com.eric.codejam.utils.GraphAdjList;
 import com.eric.codejam.utils.GridChar;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
@@ -25,49 +26,34 @@ public class Main implements TestCaseHandler<InputData>,
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    static final int RECT_SIZE_MAX = 15;
-    static final int RECT_NUM_MAX = 10;
+    //static final int RECT_SIZE_MAX = 100;
+   // static final int RECT_NUM_MAX = 10;
+    
+    static final int RECT_SIZE_MAX = 1000000;
+    static final int RECT_NUM_MAX = 1000;
     
     static List<List<Integer>> getRectIntersections(InputData input) {
-        List<List<Integer>> rectIntersections = new ArrayList<>();
         
-
-        int[] rectGroupNum = new int[input.R];
-        Arrays.fill(rectGroupNum, -1);
         
-        int currentGroupNum = -1;
+        GraphAdjList graph = new GraphAdjList(input.rects.length);
+        
         for(int rect1 = 0; rect1 < input.R; ++rect1) {
-            if (rectGroupNum[rect1] == -1) {
-                rectGroupNum[rect1] = ++currentGroupNum;
-                rectIntersections.add(new ArrayList<Integer>());
-                rectIntersections.get(rectGroupNum[rect1]).add(rect1);
-            }
+            graph.addConnection(rect1, rect1);
+            
+            Rectangle rec1 = input.rects[rect1];
             
             for(int rect2 = rect1 + 1; rect2 < input.R; ++rect2) {
-                if (input.rects[rect1].touches(input.rects[rect2])) {
-                    
-                    if(rectGroupNum[rect2] == rectGroupNum[rect1]) {
-                        continue;
-                    } else
-                    if(rectGroupNum[rect2] != -1) {
-                        
-                        int currentGroupNumToKeep = Math.min(rectGroupNum[rect1], rectGroupNum[rect2]);
-                        int groupNumToRemove = Math.max(rectGroupNum[rect1], rectGroupNum[rect2]);
-                        Preconditions.checkState(currentGroupNumToKeep != groupNumToRemove);
-                        rectIntersections.get(currentGroupNumToKeep).addAll(rectIntersections.get(groupNumToRemove));
-                        
-                        for(int intRec : rectIntersections.get(currentGroupNumToKeep)) {
-                            rectGroupNum[intRec] = currentGroupNumToKeep;
-                        }
-                        rectIntersections.get(groupNumToRemove).clear();
-                        
-                    } else {
-                        rectIntersections.get(rectGroupNum[rect1]).add(rect2);
-                        rectGroupNum[rect2] = currentGroupNum;
-                    }                    
+                Rectangle rec2 = input.rects[rect2];
+                if (input.rects[rect1].touchesHorVer(input.rects[rect2]) ||
+                        (rec1.x2 == rec2.x1 - 1 && rec1.y1 == rec2.y2 + 1) ||
+                        (rec2.x2 == rec1.x1 - 1 && rec2.y1 == rec1.y2 + 1) 
+                        ) {
+                    graph.addConnection(rect1, rect2);                                        
                 }
             }
         }
+        
+        List<List<Integer>> rectIntersections = graph.getConnectedComponents();
 
         log.debug("Rect intersections {}", rectIntersections);
 
@@ -89,8 +75,15 @@ public class Main implements TestCaseHandler<InputData>,
             rectIntersections.add(inter);
         }*/
         
-        int rounds = getRoundsBruteForce(input);
+        int rounds = -1;
+        if (RECT_SIZE_MAX <= 100) { 
+            rounds = getRoundsBruteForce(input);
                 
+        for(Rectangle r : input.rects) {
+        log.info("Rects " + r);
+        }
+        }
+        
         List<List<Integer>> rectIntersections = getRectIntersections(input);
         
         int maxTime = 0;
@@ -113,7 +106,7 @@ public class Main implements TestCaseHandler<InputData>,
             
         }*/
         
-        
+        /*
         int maxCreationDiag = 0;
         
         for(Rectangle rect : input.rects) {
@@ -124,16 +117,17 @@ public class Main implements TestCaseHandler<InputData>,
         }
         
         maxTime = Math.max(maxTime, maxCreationDiag);
-        
+        */
         
         log.info("Case #" + caseNumber + ": " + rounds + " New Method " + maxTime);
         
-        Preconditions.checkState(maxTime == rounds);
+        if (rounds >= 0)
+            Preconditions.checkState(maxTime == rounds);
         
         // DecimalFormat decim = new DecimalFormat("0.00000000000");
         // decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
 
-        return ("Case #" + caseNumber + ": " + rounds + " New Method " + maxTime);
+        return ("Case #" + caseNumber + ": " + maxTime);
     }
     
     /**
@@ -252,10 +246,16 @@ public class Main implements TestCaseHandler<InputData>,
             return 0;
         }
         
+        int maxX = 0;
+        int maxY = 0;
         for(Integer rectNum : connectedRects) {
             northYInt = Math.min(northYInt, input.rects[rectNum].y1 + input.rects[rectNum].x1);
             southYInt = Math.max(southYInt, input.rects[rectNum].y2 + input.rects[rectNum].x2);
+            maxY = Math.max(maxY, input.rects[rectNum].y2);
+            maxX = Math.max(maxX, input.rects[rectNum].x2);
         }
+        
+        southYInt = Math.max(southYInt, maxY + maxX);
         
         return southYInt - northYInt + 1;
     }
@@ -299,7 +299,7 @@ public class Main implements TestCaseHandler<InputData>,
                 break;
             }
             grid = newGrid;
-            log.debug("Grid {}", grid);
+            //log.debug("Grid {}", grid);
         }
         
         return rounds;
@@ -331,7 +331,7 @@ public class Main implements TestCaseHandler<InputData>,
 
         if (args.length < 1) {
             args = new String[] { "sample.txt" };
-             //args = new String[] { "C-small-practice.in" };
+            // args = new String[] { "C-small-practice.in" };
             // args = new String[] { "B-large-practice.in" };
         }
         log.info("Input file {}", args[0]);

@@ -223,7 +223,7 @@ public class GridChar {
                 r = rows - rIdx - 1;
             }
             int index = getIndex(r,0);
-            gridStr.append(StringUtils.rightPad("" + index, 4));
+            gridStr.append(StringUtils.rightPad("" + index, 5));
             for(int c=0; c<cols; ++c) {
                 
                     String s = "" + getEntry(r,c);

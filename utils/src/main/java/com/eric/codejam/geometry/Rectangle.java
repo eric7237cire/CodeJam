@@ -23,7 +23,23 @@ public class Rectangle {
                 + y2 + "]";
     }
     
-    public boolean touches(Rectangle r2) {
+    //ALso diag ..
+    //          ..
+    //            ..
+    //            ..
+    public boolean touchesAny(Rectangle r2) {
+        
+        Range<Integer> r1_x_ex = Ranges.closed(x1-1, x2+1);
+        Range<Integer> r2_x = Ranges.closed(r2.x1, r2.x2);
+        
+        Range<Integer> r1_y_ex = Ranges.closed(y1-1, y2+1);
+        Range<Integer> r2_y = Ranges.closed(r2.y1, r2.y2);
+        
+        return ( r1_x_ex.isConnected(r2_x) && r1_y_ex.isConnected(r2_y) );
+    }
+    
+    //horizontal & vertical
+    public boolean touchesHorVer(Rectangle r2) {
         Range<Integer> r1_x = Ranges.closed(x1, x2);
         Range<Integer> r1_x_ex = Ranges.closed(x1-1, x2+1);
         Range<Integer> r2_x = Ranges.closed(r2.x1, r2.x2);
