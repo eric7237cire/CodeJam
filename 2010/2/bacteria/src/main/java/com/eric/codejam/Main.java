@@ -2,10 +2,6 @@ package com.eric.codejam;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -18,8 +14,6 @@ import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 import com.eric.codejam.utils.Direction;
 import com.eric.codejam.utils.GraphAdjList;
 import com.eric.codejam.utils.GridChar;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ComparisonChain;
 
 public class Main implements TestCaseHandler<InputData>,
         TestCaseInputReader<InputData> {
@@ -44,6 +38,7 @@ public class Main implements TestCaseHandler<InputData>,
             
             for(int rect2 = rect1 + 1; rect2 < input.R; ++rect2) {
                 Rectangle rec2 = input.rects[rect2];
+                //Also include north east to south west connections
                 if (input.rects[rect1].touchesHorVer(input.rects[rect2]) ||
                         (rec1.x2 == rec2.x1 - 1 && rec1.y1 == rec2.y2 + 1) ||
                         (rec2.x2 == rec1.x1 - 1 && rec2.y1 == rec1.y2 + 1) 
@@ -66,177 +61,44 @@ public class Main implements TestCaseHandler<InputData>,
         GridChar.setPrintWidth(1);
         log.info("Starting calculating case {}", caseNumber);
 
-        
-        
-        /*
-        for(int rect1 = 0; rect1 < input.R; ++rect1) {
-            List<Integer> inter = new ArrayList<>();
-            inter.add(rect1);
-            rectIntersections.add(inter);
-        }*/
-        
-        int rounds = -1;
-        if (RECT_SIZE_MAX <= 100) { 
-            rounds = getRoundsBruteForce(input);
-                
-        for(Rectangle r : input.rects) {
-        log.info("Rects " + r);
-        }
-        }
-        
         List<List<Integer>> rectIntersections = getRectIntersections(input);
-        
+
         int maxTime = 0;
-        
-        for(List<Integer> connectedRects : rectIntersections) {
+
+        for (List<Integer> connectedRects : rectIntersections) {
             int time = findTimeToDecay(connectedRects, input);
             maxTime = Math.max(maxTime, time);
         }
-        /*
-        for(Rectangle rect : input.rects) {
-            int x1 = Math.max(1, rect.x1-RECT_NUM_MAX);
-            int x2 = Math.min(RECT_SIZE_MAX, rect.x1+5);
-            int y1 = rect.y2;
-            int y2 = Math.min(RECT_SIZE_MAX, rect.y2+RECT_NUM_MAX);
-            
-            Rectangle subSlice = new Rectangle(x1, y1, x2, y2);
-            
-            Preconditions.checkState(subSlice.area() < 1200000);
-            
-            
-        }*/
-        
-        /*
-        int maxCreationDiag = 0;
-        
-        for(Rectangle rect : input.rects) {
-            int creationDiag1 = findLongestDiagonal(rect.x1, rect.y2+1, input);
-            int creationDiag2 = findLongestDiagonal(rect.x2, rect.y2+1, input);
-            int creationDiag = Math.max(creationDiag1, creationDiag2);
-            maxCreationDiag = Math.max(maxCreationDiag, creationDiag);
-        }
-        
-        maxTime = Math.max(maxTime, maxCreationDiag);
-        */
-        
-        log.info("Case #" + caseNumber + ": " + rounds + " New Method " + maxTime);
-        
-        if (rounds >= 0)
-            Preconditions.checkState(maxTime == rounds);
-        
-        // DecimalFormat decim = new DecimalFormat("0.00000000000");
-        // decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
 
         return ("Case #" + caseNumber + ": " + maxTime);
     }
     
+
     /**
-     * Assumption is r, c is the bottom of a rectangle
-     * @param r
-     * @param c
+     * The key idea.  Basically in a connected blob of rectangles, the
+     * time to live is equal to the difference in the y int of the top/left
+     * corner (first to be eaten) and bottom right corner.
+     * 
+     * The bottom right corner is either from a real rectangle or
+     * the rectangle needed to cover the blob.
+      
+       1
+     11 
+     1
+     
+     behaves like
+     
+       1
+     111
+     111
+     
+     because of the creation of bacteria
+     
+     * 
+     * @param connectedRects
      * @param input
      * @return
      */
-    static int findLongestDiagonal(int x, int y, InputData input) {
-        //r, c must be empty, north must be filled, west must be filled
-        int diagDistance = 0;
-        
-        int startX = x;
-        int startY = y;
-        
-        
-        
-        boolean doneCalcDiagDist = false;
-        while (y <= RECT_SIZE_MAX && x >= 1 && !doneCalcDiagDist) {
-            
-
-            //top filled ?  diagDist > 0 means must be a bottom right corner
-            boolean aboveFilled = false;
-            boolean currentSquareEmpty = true;
-            for (Rectangle rect : input.rects) {
-                if (diagDistance == 0 || rect.y2 == y-1 && rect.x2 == x) {
-                    aboveFilled = true;
-                }
-                if (rect.intersects(new Rectangle(x, y, x, y))) {
-                    currentSquareEmpty = false;
-                }
-            }
-
-            if (!currentSquareEmpty || !aboveFilled) {
-                break; // return distance;
-            }
-
-            ++diagDistance;
-            y++;
-            x--;
-        }
-        
-        //see if it can be extended
-        Rectangle maxTopExt = new Rectangle(startX, startY-1, RECT_SIZE_MAX, startY-1);
-        List<Rectangle> topRects = new ArrayList<>();
-        for(Rectangle rect : input.rects) {
-            Rectangle interRect = rect.getIntersection(maxTopExt);
-            if (interRect != null) {
-                topRects.add(interRect);
-            }
-        }
-        Collections.sort(topRects, new Comparator<Rectangle>() {
-
-            @Override
-            public int compare(Rectangle o1, Rectangle o2) {
-                return ComparisonChain.start().compare(o1.x1, o2.x1).compare(o1.x2, o2.x2).result();
-            }
-            
-        });
-        
-        int maxX = startX;
-        Preconditions.checkState(topRects.size() > 0);
-        
-        for(Rectangle rect : topRects) {
-            if (rect.x1 > maxX) {
-                break;
-            }
-            
-            maxX = Math.max(rect.x2, maxX);
-        }
-        
-        int upRightExtension = maxX - startX;
-        
-        int endX = startX - (diagDistance - 1);
-        int endY = startY - (diagDistance - 1);
-        
-        Rectangle maxWestExt = new Rectangle(endX-1, endY, endX-1,RECT_SIZE_MAX);
-        List<Rectangle> leftRects = new ArrayList<>();
-        for(Rectangle rect : input.rects) {
-            Rectangle interRect = rect.getIntersection(maxWestExt);
-            if (interRect != null) {
-                topRects.add(interRect);
-            }
-        }
-        Collections.sort(leftRects, new Comparator<Rectangle>() {
-
-            @Override
-            public int compare(Rectangle o1, Rectangle o2) {
-                return ComparisonChain.start().compare(o1.y1, o2.y1).compare(o1.y2, o2.y2).result();
-            }
-            
-        });
-        
-        int maxY = endY;
-        
-        for(Rectangle rect : leftRects) {
-            if (rect.y1 > maxY) {
-                break;
-            }
-            
-            maxY = Math.max(rect.y2, maxY);
-        }
-        
-        int westExtension = maxX;
-
-        return diagDistance + Math.max(upRightExtension, westExtension);
-    }
-    
     static int findTimeToDecay(List<Integer> connectedRects, InputData input) {
         //find most north line via y - intercept  (lowest row value)
         int northYInt = Integer.MAX_VALUE;

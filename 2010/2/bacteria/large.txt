@@ -26,12 +26,12 @@ Case #25: 145
 Case #26: 165
 Case #27: 175
 Case #28: 6
-Case #29: 199998
+Case #29: 199995
 Case #30: 133
 Case #31: 159
 Case #32: 135
 Case #33: 158
-Case #34: 40063
+Case #34: 30749
 Case #35: 172
 Case #36: 145
 Case #37: 150
