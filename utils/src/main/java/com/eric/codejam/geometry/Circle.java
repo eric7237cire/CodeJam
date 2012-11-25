@@ -31,7 +31,29 @@ public class Circle {
 	    this.y = c.y;
 	    this.r = c.r;
 	}
-	
+
+    public Point[] getIntersection(Circle circle2) {
+        Circle circle1 = this;
+
+        double d = circle1.getCenter().distance(circle2.getCenter());
+
+        double a = (circle1.getR() * circle1.getR() - circle2.getR()
+                * circle2.getR() + d * d)
+                / (2 * d);
+
+        double h = Math.sqrt(circle1.getR() * circle1.getR() - a * a);
+
+        double dx = circle2.x - circle1.x;
+        double dy = circle2.y - circle1.y;
+        Point intPoint1 = new Point(circle1.x + (a * dx - h * dy) / d,
+                circle1.y + (h * dx + a * dy) / d);
+        Point intPoint2 = new Point(circle1.x + (a * dx + h * dy) / d,
+                circle1.y + (-h * dx + a * dy) / d);
+
+        return new Point[] { intPoint1, intPoint2 };
+
+    }
+
 	private static Circle getCircleContaining_vertical(Circle circleA, Circle circleB) {
 		Circle top = circleA.getY() >= circleB.getY() ? circleA : circleB;
 		Circle bottom = circleA.getY() < circleB.getY() ? circleA : circleB;
@@ -202,6 +224,11 @@ angle = tan-1 (m)
 		return DoubleComparator.compareStatic(d, r - c.r) <= 0;
 	}
 	
+	/*
+	 * See apolonious in 2009 round 2 watering plants.
+	 * 
+	 * Algebraic solutions.  Tangent internally
+	 */
 	public static Circle getCircleContaining(Circle circle1, Circle circle2, Circle circle3) {
 		 
 		Line line12 = new Line(circle1.getCenter(), circle2.getCenter());

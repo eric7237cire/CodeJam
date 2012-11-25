@@ -6,6 +6,9 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eric.codejam.geometry.Circle;
+import com.eric.codejam.geometry.Point;
+import com.eric.codejam.geometry.PointInt;
 import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
@@ -20,6 +23,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         log.info("Starting calculating case {}", caseNumber);
         
         //double ans = DivideConq.findMinPerimTriangle(input.points);
+        for(PointInt bucketPos : input.bucketPositions) {
+            Circle[] circles = new Circle[input.goatPolePositions.length];
+            for(int gp = 0; gp < input.N; ++gp) {
+                PointInt goatPos = input.goatPolePositions[gp];
+                circles[gp] = new Circle(goatPos.getX(), goatPos.getY(), goatPos.distance(bucketPos));
+            }
+            
+            
+        }
 
         log.info("Done calculating answer case {}", caseNumber);
         
@@ -30,6 +42,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     }
     
     
+   
+    
     @Override
     public InputData readInput(BufferedReader br, int testCase) throws IOException {
         
@@ -38,6 +52,21 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         InputData  input = new InputData(testCase);
         
+        input.N = Integer.parseInt(line[0]);
+        input.M = Integer.parseInt(line[1]);
+        
+        input.goatPolePositions = new PointInt[input.N];
+        input.bucketPositions = new PointInt[input.M];
+        
+        for(int n = 0; n < input.N; ++n) {
+            line = br.readLine().split(" ");
+            input.goatPolePositions[n] = new PointInt(Integer.parseInt(line[0]),Integer.parseInt(line[1]));
+        }
+        
+        for(int m = 0; m < input.M; ++m) {
+            line = br.readLine().split(" ");
+            input.bucketPositions[m] = new PointInt(Integer.parseInt(line[0]),Integer.parseInt(line[1]));
+        }
         
         return input;
         

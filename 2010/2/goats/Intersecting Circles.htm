@@ -1,0 +1,287 @@
+
+<!-- saved from url=(0068)http://delphiforfun.org/programs/Math_Topics/IntersectingCircles.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta http-equiv="Content-Language" content="en-us">
+
+<title>Intersecting Circles</title>
+<meta name="GENERATOR" content="Microsoft FrontPage 6.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta name="Microsoft Theme" content="kidsplainbanner2 011, default">
+<meta name="Microsoft Border" content="tlb">
+</head>
+
+<body bgcolor="#FFFFDD" text="#000066" link="#0000FF" vlink="#009900" alink="#00FF00"><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td><!--mstheme--><font face="Arial">
+<p align="center">
+<img border="0" src="./Intersecting Circles_files/ChildDelphi.gif" align="left" vspace="20" width="146" height="113"><font size="6"><strong><img src="./Intersecting Circles_files/IntersectingCircles.htm_cmp_kidsplainbanner2010_bnr.gif" width="600" height="60" border="0" alt="Intersecting Circles"></strong></font></p>
+<h4 align="center"><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica" color="#000080">[<span style="font-weight: 400"><a href="http://delphiforfun.org/default.html">Home</a></span>]&nbsp;&nbsp; 
+[<span style="font-weight: 400"><a href="http://delphiforfun.org/programs/index.htm">Puzzles &amp; Projects</a></span>]&nbsp;&nbsp;&nbsp; 
+[<span style="font-weight: 400"><a href="http://delphiforfun.org/programs/Delphi_Techniques/index.htm">Delphi 
+Techniques</a></span>]&nbsp;&nbsp; [<span style="font-weight: 400"><a href="http://delphiforfun.org/programs/Math_Topics/index.htm">Math 
+Topics</a></span>]&nbsp;&nbsp; [<span style="font-weight: 400"><a href="http://delphiforfun.org/programs/Library/Default.htm">Library</a></span>]&nbsp;&nbsp; 
+[<span style="font-weight: 400"><a href="http://delphiforfun.org/programs/Utilities/index.htm">Utilities</a></span>]<!--mstheme--></font></h4>
+
+<!--mstheme--></font></td></tr><!--msnavigation--></tbody></table><!--msnavigation--><table dir="ltr" border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td valign="top" width="1%"><!--mstheme--><font face="Arial"><!--mstheme--></font><table border="0" width="91%" id="table1" cellspacing="5">
+	<tbody><tr>
+		<td><!--mstheme--><font face="Arial">
+		</font><div align="left"><font face="Arial">
+			<h3><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica" color="#0000FF"><img height="16" src="./Intersecting Circles_files/bd14710_.gif" width="266" border="0"><!--mstheme--></font></h3>
+			<h3><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica" color="#0000FF"><i><font face="Comic Sans MS"><b>Search</b></font></i><!--mstheme--></font></h3>
+			</font><form method="get" action="http://www.google.com/search"><font face="Arial">
+				</font><div style="width: 279px; height: 98px; border: 1px solid black; padding: 4px"><font face="Arial">
+					<!--mstheme--></font><table border="0" cellpadding="0" width="251">
+						<tbody><tr>
+							<td><!--mstheme--><font face="Arial">
+							<p style="text-align: center">
+							<input type="text" name="q" size="32" maxlength="255" value=""></p>
+							</font><p style="text-align: center"><font face="Arial">&nbsp;<input type="submit" value="Google Search"><!--mstheme--></font></p></td>
+						</tr>
+						<tr>
+							<td align="center" style="hyperlink  \l" font-size:75%"=""><!--mstheme--><font face="Arial">
+							<input type="checkbox" name="sitesearch" value="delphiforfun.org" checked=""> 
+							Search DelphiForFun.org only<br>
+							<!--mstheme--></font></td>
+						</tr>
+					</tbody></table><!--mstheme--><font face="Arial">
+				</font></div><font face="Arial">
+			
+			<h3><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica" color="#0000FF"><img height="16" src="./Intersecting Circles_files/bd14710_.gif" width="266" border="0"><!--mstheme--></font></h3>
+			<h3><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica" color="#0000FF"><i><b>Support DFF</b></i><!--mstheme--></font></h3>
+			<p><b>&nbsp;</b>If you shop at Amazon anyway,&nbsp; consider using this 
+			link. We receive a few cents from each purchase.&nbsp;&nbsp; Thanks.</p>
+			<p align="center">
+			<a href="http://www.amazon.com/exec/obidos/redirect-home/delphiforfun-20">
+			<img src="./Intersecting Circles_files/home-logo-130x60w.gif" border="0" alt="In Association with Amazon.com" width="130" height="60"></a>
+			</p>
+			<p style="margin-left: 0px; margin-top: 0px">&nbsp;</p>
+			<h3><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica" color="#0000FF"><i><b>Support DFF</b></i><!--mstheme--></font></h3>
+			<p><b>&nbsp;</b>If you benefit from the website,&nbsp; in terms of 
+			knowledge, entertainment value, or something otherwise useful, 
+			consider making a donation via PayPal&nbsp; to help defray the 
+			costs.&nbsp; (No PayPal account necessary to donate via credit 
+			card.)&nbsp; Transaction is secure.</p>
+			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+				<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----MIIHRwYJKoZIhvcNAQcEoIIHODCCBzQCAQExggEwMIIBLAIBADCBlDCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20CAQAwDQYJKoZIhvcNAQEBBQAEgYAyD6TEmTaMJPp2NMee2S/pE3q9e/WfSavlfngdDeShjjaVgUmzACMIi+HOQ9KkarpgvM6UhuJkycpU+EiwZbxn0pJBHGVcnysLf8PZuR9DD5dj0hQ4dOrhUX8mh2yd2kDwRszmJSZxFYapMDcgEHn0hQqgjrfms+7mS4GmB7lF6DELMAkGBSsOAwIaBQAwgcQGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQIRz17f4S3EduAgaC1svi6QayqZMJY7ef4n1xauxf4ef8OGtcHvmCsulPCz60y+k86n+qK2rUpxeydqFG9xQT3KX6DisaP8oN4Cxbyp+xMAsojAPkdDr/0kSzFRnFwu1GvA7BXaKbJ9FM/VrGKDpAS4ZzG5CZ/+vbBz0i/FzwEoQaReC6Nth5SKB3evpHbdczkAKM5/VYKcPIPeRSSF69Lt2rmIm+NFphfL/BaoIIDhzCCA4MwggLsoAMCAQICAQAwDQYJKoZIhvcNAQEFBQAwgY4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEUMBIGA1UEChMLUGF5UGFsIEluYy4xEzARBgNVBAsUCmxpdmVfY2VydHMxETAPBgNVBAMUCGxpdmVfYXBpMRwwGgYJKoZIhvcNAQkBFg1yZUBwYXlwYWwuY29tMB4XDTA0MDIxMzEwMTMxNVoXDTM1MDIxMzEwMTMxNVowgY4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEUMBIGA1UEChMLUGF5UGFsIEluYy4xEzARBgNVBAsUCmxpdmVfY2VydHMxETAPBgNVBAMUCGxpdmVfYXBpMRwwGgYJKoZIhvcNAQkBFg1yZUBwYXlwYWwuY29tMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDBR07d/ETMS1ycjtkpkvjXZe9k+6CieLuLsPumsJ7QC1odNz3sJiCbs2wC0nLE0uLGaEtXynIgRqIddYCHx88pb5HTXv4SZeuv0Rqq4+axW9PLAAATU8w04qqjaSXgbGLP3NmohqM6bV9kZZwZLR/klDaQGo1u9uDb9lr4Yn+rBQIDAQABo4HuMIHrMB0GA1UdDgQWBBSWn3y7xm8XvVk/UtcKG+wQ1mSUazCBuwYDVR0jBIGzMIGwgBSWn3y7xm8XvVk/UtcKG+wQ1mSUa6GBlKSBkTCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb22CAQAwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQUFAAOBgQCBXzpWmoBa5e9fo6ujionW1hUhPkOBakTr3YCDjbYfvJEiv/2P+IobhOGJr85+XHhN0v4gUkEDI8r2/rNk1m0GA8HKddvTjyGw/XqXa+LSTlDYkqI8OwR8GEYj4efEtcRpRYBxV8KxAW93YDWzFGvruKnnLbDAF6VR5w/cCMn5hzGCAZowggGWAgEBMIGUMIGOMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxFDASBgNVBAoTC1BheVBhbCBJbmMuMRMwEQYDVQQLFApsaXZlX2NlcnRzMREwDwYDVQQDFAhsaXZlX2FwaTEcMBoGCSqGSIb3DQEJARYNcmVAcGF5cGFsLmNvbQIBADAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDcwMzA5MjE1ODE1WjAjBgkqhkiG9w0BCQQxFgQUMxfkZRwM9KQt9NEb7UYrm5Cm6O0wDQYJKoZIhvcNAQEBBQAEgYC/GuSe2+cjQ/eLUmupB7jBSMy5l5K0ryJyU4fOu4m3KS2O3mBe5KOz9HSbXYkM0Yh5dwmv5eWu0op5Z1Uj15tALa0wxISrTyWFM9/K5iUPV75NiXJEJur+17/hjJHJM41EhCzbFT7pVNeU+SWhffd/WkdQbnAcUpbR0hIsyPePlw==-----END PKCS7-----
+"><input type="hidden" name="cmd" value="_s-xclick">
+			</form>
+			<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+				<input type="hidden" name="cmd" value="_s-xclick">
+				<p style="text-align: center">
+				<input type="image" src="./Intersecting Circles_files/x-click-but21.gif" border="0" name="submit" alt="Make payments with PayPal - it&#39;s fast, free and secure!">
+				<img alt="" border="0" src="./Intersecting Circles_files/pixel.gif" width="1" height="1">
+				<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+"></p>
+			</form>
+			<p style="margin-left: 0">&nbsp;</p>
+			<p style="margin-left: 0px; margin-top: 0px">&nbsp;</p>
+			<p style="margin-left: 0px; margin-top: 0px">
+			<img height="16" src="./Intersecting Circles_files/bd14710_.gif" width="266" border="0"></p>
+			<h3 align="left"><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica" color="#0000FF"><b><i><font size="4">Contact</font></i></b><!--mstheme--></font></h3>
+			<p><font color="#0000ff" size="2"><a href="http://delphiforfun.org/Feedback.htm">
+			Feedback</a>:</font><font face="Arial" color="#000000">&nbsp; </font>
+			<font face="Arial" color="#000000" size="2">Send an e-mail with your 
+			comments about this program (or anything else).</font></p>
+			<p>&nbsp;</p>
+			<p>
+			<!--
+//<form method="GET" target="_blank" action="http://www.google.com/search">
+// <p style="margin-bottom: 0"><img border="0" src="http://www.google.com/logos/Google_Safe.gif" width="115" height="45"></p>
+// <p style="margin-top: 0; margin-bottom: 0"><input type="text" name="q" size="25"> </p>
+// <p style="margin-top: 6"><input type="submit" value="Search" name="sa"></p>
+// <input type="hidden" name="safe" value="vss"><input type="hidden" name="vss" value="1">
+//</form>
+--><img height="16" src="./Intersecting Circles_files/bd14710_.gif" width="266" border="0"></p>
+			<p><a name="Search"></a></p>
+			</font></form><form method="get" action="http://www.google.com/search"><font face="Arial">
+				</font><div style="width: 238px; height: 84px; border: 1px solid black; padding: 4px"><font face="Arial">
+					<!--mstheme--></font><table border="0" cellpadding="0" width="243">
+						<tbody><tr>
+							<td><!--mstheme--><font face="Arial">
+							</font><p style="text-align: center"><font face="Arial">
+							<input type="text" name="q" size="31" maxlength="255" value="">
+							<input type="submit" value="Google Search"><!--mstheme--></font></p></td>
+						</tr>
+						<tr>
+							<td align="center" style="hyperlink  \l" font-size:75%"=""><!--mstheme--><font face="Arial">
+							<input type="checkbox" name="sitesearch" value="delphiforfun.org" checked=""> 
+							Search DelphiForFun.org only<!--mstheme--></font></td>
+						</tr>
+					</tbody></table><!--mstheme--><font face="Arial">
+				</font></div><font face="Arial">
+			
+			<p>&nbsp;</p>
+			<p>&nbsp;</p></font></form></div><font face="Arial">
+		</font><p><font face="Arial">&nbsp;<!--mstheme--></font></p></td>
+	</tr>
+</tbody></table><!--mstheme--><font face="Arial">
+<p>&nbsp;</p>
+
+<!--mstheme--></font></td><td valign="top" width="24"></td><!--msnavigation--><td valign="top"><!--mstheme--><font face="Arial">
+
+<!--mstheme--></font><table border="0" cellpadding="0" width="100%" cellspacing="0">
+  <tbody><tr>
+    <td width="73%" valign="top"><!--mstheme--><font face="Arial">
+      <h3 align="left"><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica" color="#0000FF">Problem Description<!--mstheme--></font></h3>
+      <p><font color="#000000">Write a program to investigate the math
+      behind to circles which intersect, specifically the points of
+      intersection .</font></p>
+      <h3><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica" color="#0000FF">Background &amp; Techniques<!--mstheme--></font></h3>
+      <p style="tab-stops:548.1pt">This problem came to mind while was
+      writing demo code to draw the Olympic rings and needed to redraw
+      small arcs around the points where the rings intersect to give
+      illusion of one ring passing over or under another.&nbsp; It
+      turns out that redrawing by quadrant was good enough for that
+      application, but the problem of determining exact points of
+      intersection&nbsp;&nbsp; sounded,&nbsp; and has been,&nbsp;
+      interesting.&nbsp;&nbsp; A good review of your high school
+      trigonometry if nothing else.&nbsp;&nbsp;</p>
+      <p style="tab-stops:548.1pt">The code for this program is based
+      on a description by Paul Bourke and C code by Tim Voght<span style="mso-spacerun:
+  yes">&nbsp; </span>found at<span style="mso-spacerun: yes">&nbsp; </span><a href="http://astronomy.swin.edu.au/~pbourke/geometry/2circle/" target="_blank"><span style="letter-spacing:0pt">http://astronomy.swin.edu.au/~pbourke/geometry/2circle/</span></a>.<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;&nbsp;
+      </span>All I added was the conversion of the code to Delphi, a
+      test program and<span style="mso-spacerun: yes">&nbsp; </span>an
+      expanded explanation of the math involved.<span style="mso-spacerun: yes">&nbsp;&nbsp;&nbsp;
+      </span>Mr. Bourke made several leaps that were not obvious to
+      me, but after several hours of enjoyable study, I think I
+      understand it.</p>
+      <p style="tab-stops:548.1pt">I modified Paul’s diagram with a
+      few extra labels like this:</p>
+      <p align="center" style="text-align:center;tab-stops:548.1pt">
+      <img border="0" src="./Intersecting Circles_files/ICircles.jpg" v:shapes="_x0000_i1036" width="309" height="247"></p>
+      <p style="tab-stops:548.1pt">P<sub>1</sub> and P<sub>2</sub> are
+      circle centers located at (x<sub>1</sub>,y<sub>1</sub>) and (x<sub>2</sub>,y<sub>2</sub>).<span style="mso-spacerun: yes">&nbsp;
+      <b>d</b></span><b>x</b> and <b>dy</b> are the x and y offsets of
+      P<sub>2</sub> from P<sub>1</sub>.</p>
+      <p align="center" style="text-align:center;tab-stops:548.1pt"><b>dx
+      = x<sub>2</sub>-x<sub>1</sub><br>
+      dy = y<sub>2</sub>-y<sub>1</sub></b></p>
+      <p style="tab-stops:548.1pt">Pythagoras tells us that the
+      distance between P<sub>1</sub> and P<sub>2</sub> is <b>d =
+      sqrt(dx*dx+dy*dy)</b>.<span style="mso-spacerun: yes">&nbsp;&nbsp;
+      </span>If <span style="mso-spacerun: yes">&nbsp;</span><b>d</b>
+      is less than then sum of the radii of the circles, <b>r<sub>1</sub>+r<sub>2</sub></b>,
+      then the circles may intersect.<span style="mso-spacerun:
+  yes">&nbsp; </span>(There is still the chance that P<sub>2</sub> is
+      so close to P<sub>1</sub> that it is entirely contained within
+      and still does not intersect.<span style="mso-spacerun: yes">&nbsp;
+      </span>This is true if and only&nbsp; <b>d&lt;|r<sub>1</sub>-r<sub>2</sub>|
+      </b>.<span style="mso-spacerun: yes">&nbsp; </span>Imagine that
+      the circles a concentric, share the same center.<span style="mso-spacerun: yes">&nbsp;
+      </span>Then the distance from the rim of the inner circle to the
+      outer is the absolute value of the difference in radii.<span style="mso-spacerun: yes">&nbsp;
+      </span>If <b>d</b> becomes greater than this distance the
+      circles again intersect until it exceeds the sum of the radii.)</p>
+      <p>Assuming the circles intersect, we want to find the
+      coordinates of the points or points of intersection, IP<sub>1</sub>
+      and IP<sub>2</sub>.&nbsp; (<span style="mso-spacerun: yes"> For
+      clarity, I left the label off of IP</span><sub>2</sub><span style="mso-spacerun: yes">
+      on the diagram above).</span></p>
+      <p class="MsoNormal" style="line-height:150%;tab-stops:548.1pt">So
+      we have enough information given to solve for <b>a</b> and <b>h</b>.&nbsp;&nbsp;&nbsp;
+      Considering the right triangle IP<sub>1</sub>P<sub>1</sub>P<sub>3,&nbsp;
+      </sub>we can write <b>cos(<font face="Symbol">a</font>)= a/r<sub>1
+      </sub></b>where <font face="Symbol"><b>a</b> </font>is the angle
+      at P<sub>1</sub> <sub>.</sub></p>
+      <p class="MsoNormal" style="line-height:150%;tab-stops:548.1pt">Also
+      by considering triangle P<sub>1</sub>P<sub>2</sub>IP<sub>1</sub>
+      , we can apply the "Cosine law" to get another
+      expression for <b>cos(<font face="Symbol">a</font>)</b>.</p>
+      <p class="MsoNormal" style="line-height:150%;tab-stops:548.1pt" align="center">&nbsp;&nbsp;<b>Law
+      of Cosines:<span style="mso-spacerun: yes">&nbsp; </span>Cos(<font face="Symbol">a</font>)=(r<sub>1</sub><sup>2</sup>+d<sup>2</sup>-r<sub>2</sub><sup>2</sup>)/(2r<sub>1</sub>d)</b></p>
+      <p style="tab-stops:275.6pt 548.1pt" align="left">Therefore<b>&nbsp;&nbsp;
+      cos(<font face="Symbol">a</font>)= a/r<sub>1</sub>= (r<sub>1</sub><sup>2</sup>+d<sup>2</sup>-r<sub>2</sub><sup>2</sup>)/(2r<sub>1</sub>d)
+      </b>and multiplying both sides by <b>r<sub>1</sub></b> leaves</p>
+      <p style="tab-stops:275.6pt 548.1pt" align="center"><b>a= (r<sub>1</sub><sup>2</sup>
+      - r<sub>2</sub><sup>2</sup> + d<sup>2</sup> ) / (2 d)<o:p>
+      </o:p>
+      </b></p>
+      <p style="tab-stops:548.1pt">If the circles touch at one point,
+      you can substitute <b>d=r<sub>1</sub>+r<sub>2</sub></b> in the
+      above equation and prove that <b>a=r<sub>1</sub></b> at the
+      single point of intersection.</p>
+      <p style="tab-stops:548.1pt">Once we know <b>a</b>, we can find
+      the value for <b>h</b> as<b> h=sqrt(r<sub>1</sub><sup>2</sup> -
+      a<sup>2</sup>).</b></p>
+      <p style="tab-stops:548.1pt">Whew, just one more critical step
+      to find the actual coordinates of the intersection
+      points&nbsp;&nbsp;&nbsp; The trick here is to conceptually
+      rotate point P<sub>3</sub> down so that it lies on the
+      x-axis.&nbsp; We don't know what that angle is yet, but we'll
+      call it,&nbsp; -beta, -<font face="Symbol"><b>b</b></font>.&nbsp;&nbsp;&nbsp;&nbsp;
+      Then the coordinates of P<sub>3</sub> relative to P<sub>1</sub>
+      would be <b>(a, h)</b>.&nbsp;&nbsp;&nbsp; Now if we rotate
+      through the point<b> (a, h)</b> back up by angle <b><font face="Symbol">b</font></b>,
+      it will be at the upper&nbsp; intersection point.&nbsp;&nbsp;
+      The other point if it exists, will be the result of rotating the
+      point<b> (a, -h).</b>&nbsp;&nbsp;&nbsp;</p>
+      <p>So if we look up 2D rotation equations (at <a href="http://www.siggraph.org/education/materials/HyperGraph/modeling/mod_tran/2drota.htm">this
+      site</a> , for example, we'll find the equations for rotating at
+      point through a given angle.&nbsp;</p>
+      <p align="center"><b>x' = x cos <font face="Symbol">b</font> - y
+      sin <font face="Symbol">b</font><br>
+      y' = y cos <font face="Symbol">b</font> + x sin <font face="Symbol">b</font></b></p>
+      <p>&nbsp;To apply the rotation up by <b><font face="Symbol">b</font></b>,
+      we need its value, or at least the values for <b>sin( <font face="Symbol">b</font>)</b>&nbsp;
+      and <b>cos(<font face="Symbol">b</font>)</b>.&nbsp;&nbsp;&nbsp;
+      These are defined by the triangle formed by sides <b>d</b>, <b>dx</b>
+      and <b>dy</b> in the above diagram&nbsp; so <b>Sin(<font face="Symbol">b</font>)
+      = dy/d</b> and <b>Cos(<font face="Symbol">b</font>) = dx/d.&nbsp;&nbsp;&nbsp;
+      </b>One final consideration, since the above equations assume
+      that we are rotating about the origin( (0,0) and we are actually
+      rotating about P<sub>1</sub>&nbsp; at (x<sub>1</sub>,y<sub>1</sub>),
+      we need to translate the final coordinates back by adding (x<sub>1</sub>,y<sub>1</sub>)
+      to the rotated values. .</p>
+      <p>Our intersection points are therefore:&nbsp;&nbsp; <b>IP<sub>1</sub>.x
+      = x<sub>1</sub> + a*dx/d - h*dy/d&nbsp; </b>and<b>&nbsp; IP<sub>1</sub>.y
+      = y<sub>1</sub> + h*dx/d + a*dy/d&nbsp;&nbsp;</b></p>
+      <p align="center">or</p>
+      <p align="center"><b>IP<sub>1</sub>.x = x<sub>1</sub> + (a*dx -
+      h*dy)/d&nbsp; </b>and<b> </b>,<b> IP<sub>1</sub>.y = y</b><sub>1</sub><b>
+      + (h*dx+a*dy)/d&nbsp;&nbsp;&nbsp;</b></p>
+      <p align="center">and for the lower intersection <b>(a,-h)</b>
+      rotated by <b><font face="Symbol">b</font></b>,</p>
+      <p align="center"><b>IP<sub>2</sub>.x&nbsp; = x<sub>1 </sub>+&nbsp;
+      (a*dx + h*dy)/d&nbsp; </b>and<b>&nbsp; IP<sub>2</sub>.y =&nbsp;
+      y<sub>1</sub> + (-h*dx+a*dy)/d</b></p>
+      <p>As they say in Latin.&nbsp; "Q.E.D.", which loosely
+      translates as "We have arrived at our destination" .</p>
+      <p>I'll skip coding notes on this one - not much special and the
+      math description wore me out!</p>
+      <h3><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica" color="#0000FF"><a name="Download"></a>Running/Exploring the Program&nbsp;<!--mstheme--></font></h3>
+      <!--mstheme--></font><!--msthemelist--><table border="0" cellpadding="0" cellspacing="0" width="100%">
+        <!--msthemelist--><tbody><tr><td valign="baseline" width="42"><img src="./Intersecting Circles_files/kdabull1.gif" width="15" height="15" hspace="13" alt="bullet"></td><td valign="top" width="100%"><!--mstheme--><font face="Arial"><font color="#000000"><a href="http://delphiforfun.org/programs/Intersecting%20CirclesSource.zip">Download
+          source</a></font><!--mstheme--></font><!--msthemelist--></td></tr>
+        <!--msthemelist--><tr><td valign="baseline" width="42"><img src="./Intersecting Circles_files/kdabull1.gif" width="15" height="15" hspace="13" alt="bullet"></td><td valign="top" width="100%"><!--mstheme--><font face="Arial"><font color="#000000"><a href="http://delphiforfun.org/programs/Download/Intersecting%20Circles.zip">Download&nbsp;
+          executable</a></font><!--mstheme--></font><!--msthemelist--></td></tr>
+      <!--msthemelist--></tbody></table><!--mstheme--><font face="Arial">
+      <h3><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica" color="#0000FF">Suggestions for Further Explorations<!--mstheme--></font></h3>
+      <p><font color="#000000">???</font></p>
+      <p>&nbsp;</p>
+      </font><div align="left"><font face="Arial">
+        <!--mstheme--></font><table border="0" cellpadding="2" width="100%">
+          <tbody><tr>
+            <td width="50%"><!--mstheme--><font face="Arial"><b><font size="2">Original Date: February
+              19, 2006&nbsp;</font></b><!--mstheme--></font></td>
+            <td width="50%"><!--mstheme--><font face="Arial">
+              </font><p align="right"><font face="Arial"><b><font size="2">Modified: <!--webbot
+              bot="Timestamp" s-type="EDITED" s-format="%B %d, %Y" startspan -->October 19, 2012<!--webbot
+              bot="Timestamp" endspan i-checksum="30288" --></font></b><!--mstheme--></font></p></td>
+          </tr>
+        </tbody></table><!--mstheme--><font face="Arial">
+      </font></div><font face="Arial">
+    <!--mstheme--></font></td>
+  </tr>
+</tbody></table><!--mstheme--><font face="Arial">
+&nbsp;
+
+<!--mstheme--></font><!--msnavigation--></td></tr><!--msnavigation--></tbody></table><!--msnavigation--><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td><!--mstheme--><font face="Arial"><!--msthemeseparator--><p align="center"><img src="./Intersecting Circles_files/kdarule.gif" width="600" height="10"></p>
+<h5 align="center"><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica" color="#CC0000"><font color="#0000FF">&nbsp; [<a href="http://delphiforfun.org/Feedback.htm">Feedback</a>]&nbsp;&nbsp; 
+[<a href="http://delphiforfun.org/newsletter.htm">Newsletters (subscribe/view</a>)] [</font><font color="#330033"><a href="http://delphiforfun.org/about_me.htm">About 
+me</a></font><font color="#0000FF">]</font><!--mstheme--></font></h5>
+<h5 align="center"><!--mstheme--><font face="Comic Sans MS, Arial, Helvetica" color="#CC0000"><font color="#000080">Copyright © 2000-2012, Gary Darby&nbsp;&nbsp;&nbsp; 
+All rights reserved.<br>
+</font><!--mstheme--></font></h5>
+
+<!--mstheme--></font></td></tr><!--msnavigation--></tbody></table>
+
+
+</body></html>
