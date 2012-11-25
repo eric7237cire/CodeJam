@@ -25,7 +25,7 @@ public class Main implements TestCaseHandler<InputData>,
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    static final int RECT_SIZE_MAX = 100;
+    static final int RECT_SIZE_MAX = 15;
     static final int RECT_NUM_MAX = 10;
     
     static List<List<Integer>> getRectIntersections(InputData input) {
@@ -124,6 +124,9 @@ public class Main implements TestCaseHandler<InputData>,
         }
         
         maxTime = Math.max(maxTime, maxCreationDiag);
+        
+        
+        log.info("Case #" + caseNumber + ": " + rounds + " New Method " + maxTime);
         
         Preconditions.checkState(maxTime == rounds);
         
@@ -250,8 +253,8 @@ public class Main implements TestCaseHandler<InputData>,
         }
         
         for(Integer rectNum : connectedRects) {
-            northYInt = Math.min(northYInt, input.rects[rectNum].y1 - input.rects[rectNum].x1);
-            southYInt = Math.max(southYInt, input.rects[rectNum].y2 - input.rects[rectNum].x2);
+            northYInt = Math.min(northYInt, input.rects[rectNum].y1 + input.rects[rectNum].x1);
+            southYInt = Math.max(southYInt, input.rects[rectNum].y2 + input.rects[rectNum].x2);
         }
         
         return southYInt - northYInt + 1;
@@ -327,8 +330,8 @@ public class Main implements TestCaseHandler<InputData>,
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-            //args = new String[] { "sample.txt" };
-             args = new String[] { "C-small-practice.in" };
+            args = new String[] { "sample.txt" };
+             //args = new String[] { "C-small-practice.in" };
             // args = new String[] { "B-large-practice.in" };
         }
         log.info("Input file {}", args[0]);
