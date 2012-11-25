@@ -19,6 +19,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eric.codejam.geometry.Circle;
+import com.eric.codejam.utils.CombinationIterator;
 import com.google.common.base.Preconditions;
 
 
@@ -74,7 +76,7 @@ public class Main {
 		// all pairs
 		for (int k = 2; k <= 3; ++k) {
 
-			Iterator<Long> it = new CombinationsIterator(n, k);
+			Iterator<Long> it = new CombinationIterator(n, k);
 
 			while (it.hasNext()) {
 				final long combin = it.next();

@@ -40,7 +40,8 @@ public class Runner {
 
             final int t = Integer.parseInt(line);
 
-            OutputStream os = new FileOutputStream(inputFileName + ".out");
+            
+            OutputStream os = new FileOutputStream(inputFileName.replaceAll("\\.in", "") + ".out");
             PrintStream pos = new PrintStream(os);
 
 

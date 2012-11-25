@@ -53,6 +53,107 @@ public class Circle {
         return new Point[] { intPoint1, intPoint2 };
 
     }
+    
+    public double findSegmentArea(Circle circle2) {
+        Circle circle1 = this;
+        
+        Point[] intPoints = getIntersection(circle2);
+        
+        //find mid point
+        Point midPoint = Point.getMidPoint(intPoints[0],intPoints[1]);
+        
+        //find height of arc.  Height is between the midpoint of the
+        //intersections and the point on the line between the centers
+        //in the other circle
+        Line line = new Line(circle1.getCenter(), circle2.getCenter());
+        
+        //Point[] points = circle1.getPointsIntersectingLine(line);
+        
+        double c = intPoints[0].distance(intPoints[1]);
+        
+        double d = circle1.getCenter().distance(circle2.getCenter());
+        
+        double ang = Math.acos(( 2 * r * r - c * c) / (2 * r * r));
+        
+        double area = (r*r / 2d) * (ang - Math.sin(ang));
+        
+        
+        if (line.isBetween(circle2.getCenter(), midPoint, circle1.getCenter())) {
+        //double distMidToC2 = midPoint.distance(circle2.getCenter());
+        //Need to check if angle was really obtuse
+        
+        //if (distMidToC2 > d) {
+            area = circle1.getArea() - area;
+        }
+        
+        
+        return area;
+    }
+    
+    public double findAreaIntersection(Circle circle2) {
+        Circle circle1 = this;
+        
+        Point[] intPoints = getIntersection(circle2);
+        
+        //find mid point
+        Point midPoint = Point.getMidPoint(intPoints[0],intPoints[1]);
+        
+        //find height of arc.  Height is between the midpoint of the
+        //intersections and the point on the line between the centers
+        //in the other circle
+        Line line = new Line(circle1.getCenter(), circle2.getCenter());
+        
+        Point[] points = circle1.getPointsIntersectingLine(line);
+        
+        double h = 0, h2 = 0;
+        if (circle2.containsPoint(points[0])) {
+            h = points[0].distance(midPoint);
+        } else {
+            Preconditions.checkState(circle2.containsPoint(points[1]));
+            h = points[1].distance(midPoint);
+        }
+        double tryH = circle1.r - circle1.getCenter().distance(midPoint);
+        
+        if ( Math.abs(tryH - h) < 0.0000001d  ) {
+            h = tryH;
+        }
+        
+        points = circle2.getPointsIntersectingLine(line);
+        
+        Preconditions.checkState(line.onLine(midPoint));
+        
+        if (circle1.containsPoint(points[0])) {
+            h2 = points[0].distance(midPoint);
+        } else {
+            Preconditions.checkState(circle1.containsPoint(points[1]));
+            h2 = points[1].distance(midPoint);
+        }
+                
+        double area1 = findAreaCircleSegment(h,circle1.r);
+        double area2 = findAreaCircleSegment(h2,circle2.r);
+        
+        double check = circle1.findSegmentArea(circle2);
+        double check2 = circle2.findSegmentArea(circle1);
+        
+        if (circle1.containsPoint(circle2.getCenter())) {
+           // return circle2.getArea() - area2 + area1;
+        }
+        
+        if (circle2.containsPoint(circle1.getCenter())) {
+            //return circle1.getArea() - area1 + area2;
+        }
+        
+        return check + check2;
+        
+    }
+    
+    public double getArea() {
+        return Math.PI * r * r;
+    }
+    
+    public double findAreaCircleSegment(double h, double r) {
+        return r*r * Math.acos( (r-h) / r) - (r-h) * Math.sqrt(2*r*h-h*h);
+    }
 
 	private static Circle getCircleContaining_vertical(Circle circleA, Circle circleB) {
 		Circle top = circleA.getY() >= circleB.getY() ? circleA : circleB;
@@ -148,6 +249,23 @@ Point[] ret = handleBaseCasesPointsIntersectingLineOriginatingAtP(p);
 	    return buildCloseFar(l.getPointGivenX(x1), l.getPointGivenX(x2), p);
 	    
 	}
+
+    public Point[] getPointsIntersectingLine(Line l) {
+
+        double m = l.getM();
+        double b = l.getB();
+        double c = b - y;
+
+        double A = 1 + m * m;
+        double B = 2 * m * c - 2 * x;
+        double C = x * x + c * c - r * r;
+
+        double x1 = (-B + Math.sqrt(B * B - 4 * A * C)) / (2 * A);
+        double x2 = (-B - Math.sqrt(B * B - 4 * A * C)) / (2 * A);
+
+        return new Point[] { l.getPointGivenX(x1), l.getPointGivenX(x2) };
+
+    }
 	
 	private Point[] buildCloseFar(Point a, Point b, Point ref) {
 	    double distA = a.distance(ref);
@@ -222,6 +340,12 @@ angle = tan-1 (m)
 		double d = c.getCenter().distance(getCenter());
 		
 		return DoubleComparator.compareStatic(d, r - c.r) <= 0;
+	}
+	
+	public boolean containsPoint(Point p) {
+	    double d = p.distance(getCenter());
+	    
+	    return DoubleComparator.compareStatic(d, r) <= 0;
 	}
 	
 	/*

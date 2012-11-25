@@ -38,7 +38,28 @@ public class Line {
         m = (a.getY() - b.getY()) / (a.getX() - b.getX());
         this.b = a.getY() - m * a.getX();
     }
+    
+    public boolean isBetween(Point a, Point b, Point pointToTest) {
+        //Assume all are on the line
+        
+        //crossproduct = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
+        //if abs(crossproduct) > epsilon : return False   # (or != 0 if using integers)
 
+        double dotproduct = (pointToTest.getX() - a.getX()) * (b.getX() - a.getX()) + (pointToTest.getY() - a.getY())*(b.getY() - a.getY());
+        
+        if (dotproduct < 0) {
+            return false;
+        }
+
+        double squaredlengthba = (b.getX() - a.getX())*(b.getX() - a.getX()) + (b.getY() - a.getY())*(b.getY() - a.getY());
+        
+        if (dotproduct > squaredlengthba) {
+            return false;
+        }
+
+        return true;
+
+    }
     /**
      * @return the m
      */

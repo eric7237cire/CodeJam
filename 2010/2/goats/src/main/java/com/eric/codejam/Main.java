@@ -2,6 +2,10 @@ package com.eric.codejam;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +16,8 @@ import com.eric.codejam.geometry.PointInt;
 import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
+import com.google.common.base.Preconditions;
+import com.google.common.math.DoubleMath;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<InputData> {
 
@@ -22,6 +28,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
 
         log.info("Starting calculating case {}", caseNumber);
         
+        StringBuffer sb = new StringBuffer();
+        
+        DecimalFormat decim = new DecimalFormat("0.00000000");
+        decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
+        
+        
         //double ans = DivideConq.findMinPerimTriangle(input.points);
         for(PointInt bucketPos : input.bucketPositions) {
             Circle[] circles = new Circle[input.goatPolePositions.length];
@@ -30,15 +42,25 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 circles[gp] = new Circle(goatPos.getX(), goatPos.getY(), goatPos.distance(bucketPos));
             }
             
+            Point[] intPoints = circles[0].getIntersection(circles[1]);
             
+            
+            Preconditions.checkState(
+                    (DoubleMath.roundToInt(intPoints[0].getX(), RoundingMode.HALF_UP ) == bucketPos.getX() &&
+                    DoubleMath.roundToInt(intPoints[0].getY(), RoundingMode.HALF_UP ) == bucketPos.getY() )  ||
+                    (DoubleMath.roundToInt(intPoints[1].getX(), RoundingMode.HALF_UP ) == bucketPos.getX() &&
+                    DoubleMath.roundToInt(intPoints[1].getY(), RoundingMode.HALF_UP ) == bucketPos.getY() ) );
+            
+            double area = circles[0].findAreaIntersection(circles[1]);
+
+            sb.append(decim.format(area));
+            sb.append(' ');
         }
 
         log.info("Done calculating answer case {}", caseNumber);
         
-        //DecimalFormat decim = new DecimalFormat("0.00000000000");
-        //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
         
-        return ("Case #" + caseNumber + ": " );
+        return ("Case #" + caseNumber + ": " + sb.toString().trim());
     }
     
     
@@ -83,8 +105,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-            args = new String[] { "sample.txt" };
-           // args = new String[] { "B-small-practice.in" };
+           args = new String[] { "sample.txt" };
+           // args = new String[] { "D-small-practice.in" };
 //            args = new String[] { "B-large-practice.in" };
          }
          log.info("Input file {}", args[0]);

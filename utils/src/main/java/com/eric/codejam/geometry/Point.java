@@ -35,6 +35,9 @@ public class Point {
         this.x = x;
         this.y = y;
     }
+    public static Point getMidPoint(Point a, Point b) {
+        return new Point((a.x+b.x)/2,(a.y+b.y)/2);
+    }
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
@@ -48,7 +51,7 @@ public class Point {
      * m = (y.p - y.s) / (x.p - x.s)
      * b = y.s-m*x.s
      */
-    double[] getSlopeAndYIntercept(Point other) {
+    public double[] getSlopeAndYIntercept(Point other) {
         if (this.x == other.x) {
             throw new IllegalArgumentException("Vertical");
         }

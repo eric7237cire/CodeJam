@@ -1,5 +1,6 @@
 package com.eric.codejam;
 
+import com.eric.codejam.geometry.Circle;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 
