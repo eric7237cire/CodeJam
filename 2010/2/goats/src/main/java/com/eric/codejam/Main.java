@@ -32,10 +32,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     private static class CircleWithAngle {
         Circle c;
         double polarAngle;
-        public CircleWithAngle(Circle c, double polarAngle) {
+        Point debugPoint;
+        public CircleWithAngle(Circle c, double polarAngle, Point bucket) {
             super();
             this.c = c;
             this.polarAngle = polarAngle;
+            this.debugPoint = new Point(c.getX() - bucket.getX(), c.getY() - bucket.getY());
+        }
+        @Override
+        public String toString() {
+            return "CircleWithAngle dp--" + debugPoint;
         }
         
         
@@ -63,6 +69,61 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
        
         
     }
+    
+    public static double makeAnglePositive(double angle) {
+        double posAngle = angle;
+        while(posAngle < 0) {
+            posAngle += 2d * Math.PI;
+        }
+        while(posAngle > 2*Math.PI) {
+            posAngle -= 2d * Math.PI;
+        }
+        return posAngle;
+    }
+    //Going counter clockwise
+    public static double angBetween(double fromPolar, double toPolar) {
+        fromPolar = makeAnglePositive(fromPolar);
+        toPolar = makeAnglePositive(toPolar);
+        
+        double diffFromTo = toPolar - fromPolar;
+        if (diffFromTo < 0) {
+            return Math.PI * 2 - fromPolar + toPolar;
+        }
+        
+        return diffFromTo;
+    }
+    public static int comparePolar(double minPolar, double maxPolar, double angle1, double angle2) {
+        //as angle goes counter clockwise from minPolar to maxPolar, which angle gets hit first?
+        
+        minPolar = makeAnglePositive(minPolar);
+        maxPolar = makeAnglePositive(maxPolar);
+        angle1 = makeAnglePositive(angle1);
+        angle2 = makeAnglePositive(angle2);
+        
+            double diffMinMax = maxPolar - minPolar;
+            double diffMinAng1 = angle1 - minPolar;
+            double diffMinAng2 = angle2 - minPolar;
+            
+            if (diffMinMax < 0) 
+                diffMinMax = Math.PI * 2 - minPolar + maxPolar;
+            
+            if (diffMinAng1 < 0)
+                diffMinAng1 = Math.PI * 2 - minPolar + angle1;
+            
+            if (diffMinAng2 < 0)
+                diffMinAng2 = Math.PI * 2 - minPolar + angle2;
+                
+            
+            //looking for least positive
+            if (diffMinMax < diffMinAng1 || diffMinMax < diffMinAng2) {
+                throw new IllegalArgumentException("angles not between min and max");
+            }
+
+        
+        
+        return Double.compare(diffMinAng1, diffMinAng2);
+    }
+    
     @Override
     public String handleCase(int caseNumber, InputData input) {
 
@@ -77,7 +138,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         shortDecim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
 
         if (caseNumber > 3) {
-            return "bee";
+            //return "bee";
         }
         
         int bucketPosIdx = -1;
@@ -120,7 +181,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 double a9 = Math.atan2(-0.00001d,-5);
                 
                 double ang =  Math.atan2(y,x) ;
-                circlesWithpolarAngles[c] = new CircleWithAngle( circles[c],  ang );
+                circlesWithpolarAngles[c] = new CircleWithAngle( circles[c],  ang , new Point(bucketPos));
                 
               
                 //     2 * Math.PI  >= circlesWithpolarAngles[c].polarAngle);
@@ -165,15 +226,18 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             });
            
             
+            double minPolAngleRange = -8*Math.PI;
+            double maxPolAngleRange = 8d * Math.PI;
+            
             double minPolAngle = -8*Math.PI;
             double maxPolAngle = 8d * Math.PI;
             
-            minPolAngle = circlesWithpolarAngles[0].polarAngle;
-            maxPolAngle  = circlesWithpolarAngles[circlesWithpolarAngles.length-1].polarAngle;
+            minPolAngleRange = circlesWithpolarAngles[0].polarAngle;
+            maxPolAngleRange  = circlesWithpolarAngles[circlesWithpolarAngles.length-1].polarAngle;
             boolean adjNegatives = false;
             
             boolean valid = false;
-            if (maxPolAngle - minPolAngle <= Math.PI) {
+            if (maxPolAngleRange - minPolAngleRange <= Math.PI) {
                 //All polar angles of circles intersections between minPolAngle and maxPolAngle.  This
                 //covers the case where min is in 1st quadrant / max 2nd
                 //min 3rd max 4th and min 4th max 1st
@@ -183,8 +247,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 //Third -PI to -PI / 2
                 //Fourth -PI / 2 to 0
                 
-                minPolAngle  = circlesWithpolarAngles[circlesWithpolarAngles.length-1].polarAngle - Math.PI / 2;
-                maxPolAngle = circlesWithpolarAngles[0].polarAngle + Math.PI / 2;
+                minPolAngleRange  = circlesWithpolarAngles[circlesWithpolarAngles.length-1].polarAngle - Math.PI / 2;
+                maxPolAngleRange = circlesWithpolarAngles[0].polarAngle + Math.PI / 2;
+                minPolAngle = circlesWithpolarAngles[0].polarAngle;
+                maxPolAngle = circlesWithpolarAngles[circlesWithpolarAngles.length-1].polarAngle;
                 
                 valid = true;
             } else {
@@ -204,8 +270,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                         //Then follows 0 to i to back of array
                         System.arraycopy(circlesWithpolarAngles, 0, newArray, circlesWithpolarAngles.length - i - 1, i + 1);
                         
+                        minPolAngleRange = circlesWithpolarAngles[i + 1].polarAngle;
+                        maxPolAngleRange = circlesWithpolarAngles[i].polarAngle + 2 * Math.PI;
                         minPolAngle = circlesWithpolarAngles[i + 1].polarAngle;
                         maxPolAngle = circlesWithpolarAngles[i].polarAngle + 2 * Math.PI;
+                        
                         
                         circlesWithpolarAngles = newArray;
                         valid = true;
@@ -219,13 +288,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                                 Preconditions.checkState(circlesWithpolarAngles[check].polarAngle > circlesWithpolarAngles[check-1].polarAngle);
                                 
                             }
-                            Preconditions.checkState(circlesWithpolarAngles[check].polarAngle >= minPolAngle);
-                            Preconditions.checkState(circlesWithpolarAngles[check].polarAngle <= maxPolAngle);
+                            Preconditions.checkState(circlesWithpolarAngles[check].polarAngle >= minPolAngleRange);
+                            Preconditions.checkState(circlesWithpolarAngles[check].polarAngle <= maxPolAngleRange);
                         }
                         
                         //Relax mins and maxes by PI / 2
-                        minPolAngle  = circlesWithpolarAngles[circlesWithpolarAngles.length-1].polarAngle - Math.PI / 2;
-                        maxPolAngle = circlesWithpolarAngles[0].polarAngle + Math.PI / 2;
+                        minPolAngleRange  = circlesWithpolarAngles[circlesWithpolarAngles.length-1].polarAngle - Math.PI / 2;
+                        maxPolAngleRange = circlesWithpolarAngles[0].polarAngle + Math.PI / 2;
                         
                         break;
                     }
@@ -240,7 +309,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             for (int circNum = 0; circNum < circlesWithpolarAngles.length; ++circNum) {
 
                 if (arcs.isEmpty()) {
-                    arcs.add(new Arc(minPolAngle, maxPolAngle, circNum, new Point(bucketPos)));
+                    arcs.add(new Arc(minPolAngleRange, maxPolAngleRange, circNum, new Point(bucketPos)));
                     continue;
                 }
                 double startingAngle = arcs.peek().fromAngle;
@@ -267,18 +336,28 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                         // Preconditions.checkState(angle <= maxPolAngle &&
                         // angle >= minPolAngle);
                     }
-
+                    
                     double stackAngleMin = arcs.peek().fromAngle;
                     double stackAngleMax = arcs.peek().toAngle;
-
-                    if (angle < stackAngleMin) {
+                    
+                    
+                    
+                    int compMin = comparePolar(minPolAngle - Math.PI / 2, maxPolAngle + Math.PI / 2,angle,stackAngleMin);
+                    int compMax = comparePolar(minPolAngle - Math.PI / 2, maxPolAngle + Math.PI / 2,angle,stackAngleMax);
+                    
+                    //if (angle < stackAngleMin) {
+                    if (-1 == compMin && -1 == compMax) {
+                        Preconditions.checkState(-1 == compMin && -1 == compMax);
                         // The intersection comes before the range, meaning as
                         // we increase
                         // the polar angle, the distance to the added circle
                         // will increase.
                         // the circle on stack is closest on the range
                         break;
-                    } else if (angle >= stackAngleMin && angle <= stackAngleMax) {
+                    //} else if (angle >= stackAngleMin && angle <= stackAngleMax) {
+                    } else if ((0 == compMin || 1 == compMin) && (-1 == compMax || 0 == compMax)) {
+                        Preconditions.checkState((0 == compMin || 1 == compMin) && (-1 == compMax || 0 == compMax));
+                        
                         // anything after angle, the added circle will be
                         // closest from stackAngleMin to angle
                         // the circle on stack closest from angle to
@@ -291,10 +370,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                         arcs.push(arc2);
                         break;
                     } else {
+                        Preconditions.checkState(1 == compMin && 1 == compMax);
+                        
                         arcs.pop();
                         if (arcs.isEmpty()) {
                            // log.error("Stack empty? ");
-                            arcs.add(new Arc(minPolAngle, maxPolAngle, circNum, intPoint));
+                            arcs.add(new Arc(minPolAngleRange, maxPolAngleRange, circNum, intPoint));
                             break;
                         }
                     }
@@ -310,10 +391,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             
             double area = 0;
             
-            if (maxPolAngle < minPolAngle) {
-                
-            }
-            
+            /*
             else if (arcsArray.length == 3) {
             Circle c1 = circlesWithpolarAngles[arcsArray[0].closestCircle].c;
             Circle c2 = circlesWithpolarAngles[arcsArray[1].closestCircle].c;
@@ -321,7 +399,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             double aaa = c2.getArea() - c1.findAreaIntersection(c2);
             double bbb = c2.getArea() - c2.findAreaIntersection(c3);
             area = c2.getArea() - aaa - bbb;
-            } else if (arcsArray.length == 2){
+            }*/  if (arcsArray.length == 2){
                 Circle c1 = circlesWithpolarAngles[arcsArray[0].closestCircle].c;
                 Circle c2 = circlesWithpolarAngles[arcsArray[1].closestCircle].c;
                 area = c1.findAreaIntersection(c2);
@@ -347,7 +425,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 
                 for(Arc arc : arcsArray) {
                     double segLength = fromPoint.distance(arc.intPointTo);
-                    area += circlesWithpolarAngles[arc.closestCircle].c.findSegmentArea(segLength);
+                    if ( angBetween(arc.fromAngle, arc.toAngle) > Math.PI / 2) {
+                        area += circlesWithpolarAngles[arc.closestCircle].c.getArea()-circlesWithpolarAngles[arc.closestCircle].c.findSegmentArea(segLength);
+                    } else {
+                        area += circlesWithpolarAngles[arc.closestCircle].c.findSegmentArea(segLength);
+                    }
                     
                     fromPoint = arc.intPointTo;
                 }
@@ -409,7 +491,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-         //  args = new String[] { "sample.txt" };
+          // args = new String[] { "sample.txt" };
            // args = new String[] { "D-small-practice.in" };
             args = new String[] { "D-large-practice.in" };
          }
