@@ -54,6 +54,37 @@ public class Circle {
 
     }
     
+    public Point getOtherIntersection(Circle circle2, Point intersectionPoint) {
+        Circle circle1 = this;
+        
+        Line lineBetweenCenters = new Line(circle1.getCenter(), circle2.getCenter());
+        
+        Point midPoint = null;
+        
+        if (lineBetweenCenters.getType() == Line.Type.HORIZONTAL) {
+            //perp line is a vertical line going through intersectionPoint
+            midPoint = lineBetweenCenters.getPointGivenX(intersectionPoint.getX());
+        } else if (lineBetweenCenters.getType() == Line.Type.VERTICAL) {
+            Preconditions.checkState(circle1.getCenter().getX() == circle2.getCenter().getX());
+            //Perp line is a horizontal line going through intersectionPoint
+            midPoint = new Point(circle1.getCenter().getX(), intersectionPoint.getY());
+            
+        } else {
+        //find line perpendicular to this line containing the first intersection point
+        
+            Line perpLine = new Line(intersectionPoint, -1d / lineBetweenCenters.getM());
+
+            midPoint = lineBetweenCenters.getIntersection(perpLine);
+        }
+        
+        //This point is the midpoint between the 2 intersections.  Since the
+        //midpoint = (x1 + x2) / 2, (y1+y2) / 2
+        
+        Point otherIntersection = new Point(2 * midPoint.getX() - intersectionPoint.getX(),
+                2 * midPoint.getY() - intersectionPoint.getY());
+        return otherIntersection;
+    }
+    
     //http://en.wikipedia.org/wiki/Circular_segment
     public double findSegmentArea(double segmentLength) {
 

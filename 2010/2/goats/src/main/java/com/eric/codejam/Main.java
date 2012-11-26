@@ -2,11 +2,12 @@ package com.eric.codejam;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Stack;
 
@@ -16,12 +17,13 @@ import org.slf4j.LoggerFactory;
 import com.eric.codejam.geometry.Circle;
 import com.eric.codejam.geometry.Point;
 import com.eric.codejam.geometry.PointInt;
+import com.eric.codejam.geometry.Polygon;
 import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
+import com.eric.codejam.utils.ArrayUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
-import com.google.common.math.DoubleMath;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<InputData> {
 
@@ -42,18 +44,23 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     private static class Arc {
         double fromAngle;
         double toAngle;
+        
+        Point intPointTo;
         int closestCircle;
-        public Arc(double fromAngle, double toAngle, int closestCircle) {
+        public Arc(double fromAngle, double toAngle, int closestCircle, Point intPointTo) {
             super();
             this.fromAngle = fromAngle;
             this.toAngle = toAngle;
             this.closestCircle = closestCircle;
+            this.intPointTo = intPointTo;
         }
         @Override
         public String toString() {
             return "Arc [fromAngle=" + fromAngle + ", toAngle=" + toAngle
-                    + ", closestCircle=" + closestCircle + "]";
+                    + ", intPointTo=" + intPointTo + ", closestCircle="
+                    + closestCircle + "]";
         }
+       
         
     }
     @Override
@@ -68,50 +75,68 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         DecimalFormat shortDecim = new DecimalFormat("0.00");
         shortDecim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
+
+        if (caseNumber > 3) {
+            return "bee";
+        }
         
-        
+        int bucketPosIdx = -1;
         //double ans = DivideConq.findMinPerimTriangle(input.points);
         for(PointInt bucketPos : input.bucketPositions) {
+            bucketPosIdx++;
             Circle[] circles = new Circle[input.goatPolePositions.length];
             for(int gp = 0; gp < input.N; ++gp) {
                 PointInt goatPos = input.goatPolePositions[gp];
                 circles[gp] = new Circle(goatPos.getX(), goatPos.getY(), goatPos.distance(bucketPos));
             }
             
-            Point[] intPoints = circles[0].getIntersection(circles[1]);
-            
-            
-            Preconditions.checkState(
-                    (DoubleMath.roundToInt(intPoints[0].getX(), RoundingMode.HALF_UP ) == bucketPos.getX() &&
-                    DoubleMath.roundToInt(intPoints[0].getY(), RoundingMode.HALF_UP ) == bucketPos.getY() )  ||
-                    (DoubleMath.roundToInt(intPoints[1].getX(), RoundingMode.HALF_UP ) == bucketPos.getX() &&
-                    DoubleMath.roundToInt(intPoints[1].getY(), RoundingMode.HALF_UP ) == bucketPos.getY() ) );
+          
             
            
             
             CircleWithAngle[] circlesWithpolarAngles = new CircleWithAngle[input.N];
-
-            double minPolAngle = -Math.PI;
-            double maxPolAngle = 2d * Math.PI;
+            
             
             for(int c = 0; c < circles.length; ++c) {
                 double x = circles[c].getX() - bucketPos.getX();
                 double y = circles[c].getY() - bucketPos.getY();
                 
-                circlesWithpolarAngles[c] = new CircleWithAngle( circles[c],  Math.atan2(y,x) );
+                //first quadrant
+                double a1 = Math.atan2(0,5);
+                double a2 = Math.atan2(5,5);
                 
-                if (circlesWithpolarAngles[c].polarAngle < -Math.PI / 2) {
-                    circlesWithpolarAngles[c].polarAngle += 2d * Math.PI;
+                //second
+                double a3 = Math.atan2(5,0);
+                double a4 = Math.atan2(5,-5);
+                
+                //third
+                double a5 = Math.atan2(0,-5);
+                double a6 = Math.atan2(-5,-5);
+                
+                //fourth
+                double a7 = Math.atan2(-5,0);
+                double a8 = Math.atan2(-5,5);
+                
+                double a9 = Math.atan2(-0.00001d,-5);
+                
+                double ang =  Math.atan2(y,x) ;
+                circlesWithpolarAngles[c] = new CircleWithAngle( circles[c],  ang );
+                
+              
+                //     2 * Math.PI  >= circlesWithpolarAngles[c].polarAngle);
+                
+                if (circlesWithpolarAngles[c].polarAngle < 0) {
+                    //circlesWithpolarAngles[c].polarAngle += 2d * Math.PI;
                 }
+                //move angle between -PI / 2 < angle <= 3PI / 2
                 
-                double min = circlesWithpolarAngles[c].polarAngle - Math.PI / 2;
-                double max = circlesWithpolarAngles[c].polarAngle + Math.PI / 2;
+                // min range is  -PI < min <= PI
+                // max range is  0 < max <= 2PI
                 
+                //Preconditions.checkState(0 < circlesWithpolarAngles[c].polarAngle + 1e-9 &&
+                  //     2 * Math.PI  >= circlesWithpolarAngles[c].polarAngle);
                 
-                
-                minPolAngle = Math.max(min, minPolAngle);
-                maxPolAngle = Math.min(max, maxPolAngle);
-                
+                /*
                 log.debug("Angle for circle {} : {} \n is rad {} deg {}." +
                 		"\n  Range for cirl {}/{} to {}/{}. " +
                 		"Range angles {}/{} - {}/{}", c, circles[c], 
@@ -126,6 +151,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 		shortDecim.format(maxPolAngle),
                 		shortDecim.format(maxPolAngle* 180d / Math.PI)
                 		);
+                */
+               // Preconditions.checkState(min >= 0 && max <= 2 * Math.PI);
             }
             
             Arrays.sort(circlesWithpolarAngles, new Comparator<CircleWithAngle>() {
@@ -136,40 +163,106 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 }
                 
             });
+           
+            
+            double minPolAngle = -8*Math.PI;
+            double maxPolAngle = 8d * Math.PI;
+            
+            minPolAngle = circlesWithpolarAngles[0].polarAngle;
+            maxPolAngle  = circlesWithpolarAngles[circlesWithpolarAngles.length-1].polarAngle;
+            boolean adjNegatives = false;
+            
+            boolean valid = false;
+            if (maxPolAngle - minPolAngle <= Math.PI) {
+                //All polar angles of circles intersections between minPolAngle and maxPolAngle.  This
+                //covers the case where min is in 1st quadrant / max 2nd
+                //min 3rd max 4th and min 4th max 1st
+                
+                //In the first the angle goes 0 to PI / 2
+                //Second PI / 2 to PI
+                //Third -PI to -PI / 2
+                //Fourth -PI / 2 to 0
+                
+                minPolAngle  = circlesWithpolarAngles[circlesWithpolarAngles.length-1].polarAngle - Math.PI / 2;
+                maxPolAngle = circlesWithpolarAngles[0].polarAngle + Math.PI / 2;
+                
+                valid = true;
+            } else {
+                //We need to check one more case.  If the min is in the 2nd quadrant
+                //and max is in the 3rd.  Our ordering will be off.  We look for a
+                //jump of pi from the minimums.  The jump goes past the 4th and 1st quadrants.
+                for (int i = 0; i < circlesWithpolarAngles.length - 1; i++)
+                {
+                    if (circlesWithpolarAngles[i + 1].polarAngle - circlesWithpolarAngles[i].polarAngle > Math.PI + 1e-9)
+                    {
+                        CircleWithAngle[] newArray = new CircleWithAngle[circlesWithpolarAngles.length];
+                        
+                        //System.arraycopy(circlesWithpolarAngles, 0, sortTmp2, 0, i + 1);
+                        //i + 1 to len goes to front of array
+                        System.arraycopy(circlesWithpolarAngles, i + 1, newArray, 0, circlesWithpolarAngles.length - (i + 1));
+                        
+                        //Then follows 0 to i to back of array
+                        System.arraycopy(circlesWithpolarAngles, 0, newArray, circlesWithpolarAngles.length - i - 1, i + 1);
+                        
+                        minPolAngle = circlesWithpolarAngles[i + 1].polarAngle;
+                        maxPolAngle = circlesWithpolarAngles[i].polarAngle + 2 * Math.PI;
+                        
+                        circlesWithpolarAngles = newArray;
+                        valid = true;
+                        adjNegatives = true;
+                                                
+                        for(int check = 0; check < circlesWithpolarAngles.length; ++check) {
+                            if (circlesWithpolarAngles[check].polarAngle < 0) {
+                                circlesWithpolarAngles[check].polarAngle += 2 * Math.PI;
+                            }
+                            if (check > 0) {
+                                Preconditions.checkState(circlesWithpolarAngles[check].polarAngle > circlesWithpolarAngles[check-1].polarAngle);
+                                
+                            }
+                            Preconditions.checkState(circlesWithpolarAngles[check].polarAngle >= minPolAngle);
+                            Preconditions.checkState(circlesWithpolarAngles[check].polarAngle <= maxPolAngle);
+                        }
+                        
+                        //Relax mins and maxes by PI / 2
+                        minPolAngle  = circlesWithpolarAngles[circlesWithpolarAngles.length-1].polarAngle - Math.PI / 2;
+                        maxPolAngle = circlesWithpolarAngles[0].polarAngle + Math.PI / 2;
+                        
+                        break;
+                    }
+                }
+            }
+            
+            
             
             Stack<Arc> arcs = new Stack<>();
 
+            if (valid) {
             for (int circNum = 0; circNum < circlesWithpolarAngles.length; ++circNum) {
 
                 if (arcs.isEmpty()) {
-                    arcs.add(new Arc(minPolAngle, maxPolAngle, circNum));
+                    arcs.add(new Arc(minPolAngle, maxPolAngle, circNum, new Point(bucketPos)));
                     continue;
                 }
                 double startingAngle = arcs.peek().fromAngle;
 
                 while (true) {
+                    
+                    
                     Circle circ = circlesWithpolarAngles[circNum].c;
                     // get intersection of circNum and circle on stack
                     int circStack = arcs.peek().closestCircle;
                     Circle stackCircl = circlesWithpolarAngles[circStack].c;
 
                     Point[] intersection = stackCircl.getIntersection(circ);
-
-                    Point intPoint = null;
-                    if (intersection[0].equalsPointInt(bucketPos)) {
-                        intPoint = intersection[1];
-                    } else {
-                        Preconditions.checkState(intersection[1]
-                                .equalsPointInt(bucketPos));
-                        intPoint = intersection[0];
-                    }
-
+                    
+                    Point intPoint = stackCircl.getOtherIntersection(circ, new Point( bucketPos) );
+                    
                     // Now get polar angle of intersection
                     double x = intPoint.getX() - bucketPos.getX();
                     double y = intPoint.getY() - bucketPos.getY();
 
                     double angle = Math.atan2(y, x);
-                    if (angle < 0) {
+                    if (angle < 0 && adjNegatives) {
                         angle += 2d * Math.PI;
                         // Preconditions.checkState(angle <= maxPolAngle &&
                         // angle >= minPolAngle);
@@ -192,25 +285,36 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                         // stackAngleMax
                         Arc arcToDelete = arcs.pop();
                         Arc arc1 = new Arc(angle, stackAngleMax,
-                                arcToDelete.closestCircle);
-                        Arc arc2 = new Arc(startingAngle, angle, circNum);
+                                arcToDelete.closestCircle, arcToDelete.intPointTo);
+                        Arc arc2 = new Arc(startingAngle, angle, circNum, intPoint);
                         arcs.push(arc1);
                         arcs.push(arc2);
                         break;
                     } else {
                         arcs.pop();
+                        if (arcs.isEmpty()) {
+                           // log.error("Stack empty? ");
+                            arcs.add(new Arc(minPolAngle, maxPolAngle, circNum, intPoint));
+                            break;
+                        }
                     }
 
                 }
+            }
             }
             
             //Loop through arcs, skipping first one and last one
             Arc[] arcsArray = new Arc[arcs.size()];
             arcs.toArray(arcsArray);
+            org.apache.commons.lang3.ArrayUtils.reverse(arcsArray);
             
             double area = 0;
             
-            if (arcsArray.length > 2) {
+            if (maxPolAngle < minPolAngle) {
+                
+            }
+            
+            else if (arcsArray.length == 3) {
             Circle c1 = circlesWithpolarAngles[arcsArray[0].closestCircle].c;
             Circle c2 = circlesWithpolarAngles[arcsArray[1].closestCircle].c;
             Circle c3 = circlesWithpolarAngles[arcsArray[2].closestCircle].c;
@@ -221,11 +325,41 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 Circle c1 = circlesWithpolarAngles[arcsArray[0].closestCircle].c;
                 Circle c2 = circlesWithpolarAngles[arcsArray[1].closestCircle].c;
                 area = c1.findAreaIntersection(c2);
+            } else if (arcsArray.length == 0) {
+                
+            } else {
+                log.info("Bucket pos {}", bucketPos);
+                for(Arc arc : arcsArray) {
+                    log.info("Circle {} in arc {}",arc.closestCircle, circlesWithpolarAngles[arc.closestCircle].c);
+                }
+                log.error("Interesting.  case num {}  bucket pos {}", caseNumber, bucketPos);
+                area = 69.0;
+                
+                List<Point> polygonPoints = new ArrayList<Point>();
+                //array is in counter clockwise, same order as polar angles
+                for(Arc arc : arcsArray) {
+                    polygonPoints.add(arc.intPointTo);
+                }
+                
+                area = Polygon.area(polygonPoints);
+                
+                Point fromPoint = new Point(bucketPos);
+                
+                for(Arc arc : arcsArray) {
+                    double segLength = fromPoint.distance(arc.intPointTo);
+                    area += circlesWithpolarAngles[arc.closestCircle].c.findSegmentArea(segLength);
+                    
+                    fromPoint = arc.intPointTo;
+                }
+                
             }
 
             sb.append(decim.format(area));
             sb.append(' ');
         }
+        
+        
+        
 
         log.info("Done calculating answer case {}", caseNumber);
         
@@ -275,9 +409,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-           args = new String[] { "sample.txt" };
-            //args = new String[] { "D-small-practice.in" };
-//            args = new String[] { "B-large-practice.in" };
+         //  args = new String[] { "sample.txt" };
+           // args = new String[] { "D-small-practice.in" };
+            args = new String[] { "D-large-practice.in" };
          }
          log.info("Input file {}", args[0]);
 

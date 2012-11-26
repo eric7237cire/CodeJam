@@ -7,11 +7,15 @@ public class Line {
     private double m;
     private double b;
 
-    private enum Type {
+    public enum Type {
         NORMAL, VERTICAL, HORIZONTAL
     }
 
     private Type type;
+
+    public Type getType() {
+        return type;
+    }
 
     public Line(double m, double b) {
         super();
@@ -20,6 +24,9 @@ public class Line {
         type = Type.NORMAL;
     }
 
+    public Line(Point a, double m) {
+        this(m, a.getY() - m * a.getX());
+    }
     public Line(Point a, Point b) {
         if (DoubleComparator.compareStatic(a.getX(), b.getX()) == 0) {
             type = Type.VERTICAL;
@@ -89,14 +96,19 @@ public class Line {
     }
 
     public Point getPointGivenX(double x) {
-        Preconditions.checkState(type == Type.NORMAL);
+        if (type == Type.NORMAL)
         return new Point(x, m * x + b);
+        else if (type == Type.HORIZONTAL) {
+            return new Point(x, b);
+        } else
+            return null;
 
     }
 
     public Point getPointGivenY(double y) {
-        Preconditions.checkState(type == Type.NORMAL);
+        if (type == Type.NORMAL)
         return new Point((y - b) / m, y);
+        else return null;
     }
 
     public boolean onLine(Point a) {
@@ -111,6 +123,16 @@ public class Line {
 
         throw new IllegalStateException("huh");
 
+    }
+    
+    public Point getIntersection(Line line2) {
+        double x = (line2.b - b) / (m - line2.m);
+        Point p = getPointGivenX(x);
+        Point p2 = line2.getPointGivenX(x);
+        
+        Preconditions.checkState(p.equals(p2));
+        
+        return p;
     }
 
 	@Override

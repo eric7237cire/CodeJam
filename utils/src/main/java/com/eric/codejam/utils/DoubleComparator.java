@@ -4,14 +4,23 @@ import java.util.Comparator;
 
 public class DoubleComparator implements Comparator<Double> {
 
-    public final static double TOLERANCE = 0.000002d;
+    public static final double TOLERANCE =  0.000002d;
+    
+    private final double tolerance ;
+    public DoubleComparator() {
+        tolerance = 0.000002d;
+    }
+    
+    public DoubleComparator(double tolerance) {
+        this.tolerance = tolerance;
+    }
     
     /* (non-Javadoc)
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
     @Override
     public int compare(Double o1, Double o2) {
-        if (Math.abs(o1 - o2) < TOLERANCE) {
+        if (Math.abs(o1 - o2) < tolerance) {
             return 0;
         }
         

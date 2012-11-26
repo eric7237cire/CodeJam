@@ -6,6 +6,11 @@ import com.google.common.base.Objects;
 public class Point {
     private double x;
     private double y;
+    
+    public Point(PointInt p) {
+        x = p.getX();
+        y = p.getY();
+    }
     /**
      * @return the x
      */
@@ -93,9 +98,10 @@ public class Point {
     
     public boolean equalsPointInt(PointInt obj) {
         
-        if (0 != new DoubleComparator().compare(x, (double)obj.getX()))
+         double tolerance = .000002d;
+        if (0 != new DoubleComparator(tolerance).compare(x, (double)obj.getX()))
             return false;
-        if (0 != new DoubleComparator().compare(y, (double)obj.getY()))
+        if (0 != new DoubleComparator(tolerance).compare(y, (double)obj.getY()))
             return false;
         return true;
     }
