@@ -90,4 +90,13 @@ public class Point {
             return false;
         return true;
     }
+    
+    public boolean equalsPointInt(PointInt obj) {
+        
+        if (0 != new DoubleComparator().compare(x, (double)obj.getX()))
+            return false;
+        if (0 != new DoubleComparator().compare(y, (double)obj.getY()))
+            return false;
+        return true;
+    }
 }

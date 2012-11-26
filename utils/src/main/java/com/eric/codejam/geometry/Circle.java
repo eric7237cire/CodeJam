@@ -84,12 +84,6 @@ public class Circle {
         //find height of arc.  Height is between the midpoint of the
         //intersections and the point on the line between the centers
         //in the other circle
-        Line line = new Line(circle1.getCenter(), circle2.getCenter());
-        
-        Point[] points = circle1.getPointsIntersectingLine(line);
-        
-        
-       
         
         double c = intPoints[0].distance(intPoints[1]);
         double area1 = circle1.findSegmentArea(c);
@@ -107,12 +101,6 @@ public class Circle {
             area2 = circle2.getArea() - area2;
         }
         
-        
-        points = circle2.getPointsIntersectingLine(line);
-        
-        Preconditions.checkState(line.onLine(midPoint));
-        
-        
         return area1 + area2;
         
     }
@@ -121,9 +109,6 @@ public class Circle {
         return Math.PI * r * r;
     }
     
-    public double findAreaCircleSegment(double h, double r) {
-        return r*r * Math.acos( (r-h) / r) - (r-h) * Math.sqrt(2*r*h-h*h);
-    }
 
 	private static Circle getCircleContaining_vertical(Circle circleA, Circle circleB) {
 		Circle top = circleA.getY() >= circleB.getY() ? circleA : circleB;

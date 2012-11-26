@@ -1,0 +1,1174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0063)http://code.google.com/codejam/contest/635102/dashboard#s=a&a=3 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="refresh" content="172795">
+  
+  <title>
+    Dashboard - Round 2 2010 - Google Code Jam
+  </title>
+  <link rel="stylesheet" type="text/css" href="./Solution_files/base.css">
+  <link rel="stylesheet" type="text/css" href="./Solution_files/dashboard.css">
+  
+  <script type="text/javascript" async="" src="./Solution_files/ga.js"></script><script type="text/javascript" src="./Solution_files/Dashboard_en.js"></script>
+  
+  <script type="text/javascript"><!--
+    /**
+     * Initializes GCJ.problems and GCJ.io from Django parameters.
+     * Also initializes the two user specific variables GCJ.isQualified and
+     * GCJ.lastClarSeenTime.
+     * This is the first function called once from GCJ.main().
+     */
+    GCJ.initContestVariables = function () {
+      // Convert Django's 'contest' to 'GCJ.contest'.
+      GCJ.contest.id = "635102";
+      GCJ.contest.name = "Round 2 2010";
+      GCJ.contest.version = 0;
+      
+        GCJ.contest.version = 3;
+      
+      GCJ.contest.start_int = 1275746400;
+      GCJ.contest.running = false;
+      GCJ.base_url = '/codejam/contest';
+      GCJ.scoreboardLink = ('<a target="new"' +
+                            'href="scoreboard?c=635102"' +
+                            '>Contest scoreboard</a>');
+    }
+
+    /**
+     * Returns the current splash page.
+     */
+    GCJ.getSplashPage = function () {
+      return "/codejam";
+    };
+  //--></script>
+</head>
+
+<body onload="GCJ.main()">
+
+<div id="logo-div">
+  <a href="http://code.google.com/codejam/">
+    <img src="./Solution_files/logo_image2.gif" id="logo" alt="Google Code Jam">
+  </a>
+</div>
+
+<div>
+
+<div id="dsb-page-body">
+
+<div id="left-panel">
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <!-- Problem Selection Panel -->
+  <div id="dsb-contest-title">Round 2 2010</div>
+  <hr class="dsb-hr">
+  <div id="dsb-problem-selection-area">
+    <div id="dsb-problem-selection-list" class="after-start-only" style="display: block;">
+    <div><div id="dsb-problem-tab0" class="dsb-problem-tab-close" tabindex="0" role="button">  <div id="dsb-problem-title0" class="dynamic-link">A. Elegant Diamond  </div></div></div><div><div id="dsb-problem-tab1" class="dsb-problem-tab-close" tabindex="0" role="button">  <div id="dsb-problem-title1" class="dynamic-link">B. World Cup 2010  </div></div></div><div><div id="dsb-problem-tab2" class="dsb-problem-tab-close" tabindex="0" role="button">  <div id="dsb-problem-title2" class="dynamic-link">C. Bacteria  </div></div></div><div><div id="dsb-problem-tab3" class="dsb-problem-tab-close" tabindex="0" role="button">  <div id="dsb-problem-title3" class="dynamic-link">D. Grazing Google Goats  </div></div></div></div>
+    <div id="dsb-problem-selection-list-pre-contest" class="dsb-pre-contest-text before-start-only" style="display: none;">
+      
+      The list of problems will appear here after the contest loads.
+      
+    </div>
+  </div>
+  <hr class="dsb-hr">
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div id="dsb-analysis-button" class="dsb-anal-tab-open" tabindex="0" role="button" style="display: block;">
+    <div class="dynamic-link">
+       <div id="dsb-analysis-tab">
+         Contest Analysis
+       </div>
+    </div>
+  </div>
+  <div id="dsb-ask-question-area">
+    <div id="dsb-ask-question-button" class="dsb-clar-tab-close" tabindex="0" role="button" style="display: block;">
+      <div class="dynamic-link">
+        <div id="dsb-ask-question-tab" class="">Questions asked</div>
+      </div>
+    </div>
+    <div class="dsb-pre-contest-text before-start-only" style="display: none;">
+      
+      You'll be able to ask questions about the problems, and view your
+      submissions, here.
+      
+    </div>
+  </div>
+  <div id="dsb-submissions-button" class="dsb-submissions-tab-close" tabindex="0" role="button" style="display: none;">
+    <div class="dynamic-link">
+      <div id="dsb-submissions-tab">
+        View my submissions
+      </div>
+    </div>
+  </div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div class="dsb-mini-tab-wrapper">
+  <div id="dsb-status-div-container">
+    <div id="dsb-status-header-div" onmouseover="this.style.cursor=&#39;pointer&#39;" onclick="GCJ.toggleStatusPanelVisibility();" style="cursor: pointer;">
+      <img id="dsb-status-panel-button" src="./Solution_files/minus.gif">
+      &nbsp; Submissions
+    </div>
+    <div id="dsb-status-tab" class="after-start-only" style="display: block;">
+      <div id="dsb-status-tab-loading-text" class="dsb-pre-contest-text" style="display: none;">
+        Loading...
+      </div>
+    <div id="dsb-status-tab-problems" style="display: block;"><div><div id="dsb-problem-status-wrapper0" class="problem-status-wrapper">  <div class="dsb-status-problem-title">Elegant Diamond</div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName0_0" class="inputName">4pt</td>      <td class="status">        <div id="selfStat0_0" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat0_0" class="globalStat" style="display: block;"><b>540/1183 users</b> correct (46%)</div>      </td>    </tr>  </tbody></table></div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName0_1" class="inputName">8pt</td>      <td class="status">        <div id="selfStat0_1" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat0_1" class="globalStat" style="display: block;"><b>472/531 users</b> correct (89%)</div>      </td>    </tr>  </tbody></table></div></div></div><div><div id="dsb-problem-status-wrapper1" class="problem-status-wrapper">  <div class="dsb-status-problem-title">World Cup 2010</div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName1_0" class="inputName">10pt</td>      <td class="status">        <div id="selfStat1_0" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat1_0" class="globalStat" style="display: block;"><b>1456/1614 users</b> correct (90%)</div>      </td>    </tr>  </tbody></table></div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName1_1" class="inputName">15pt</td>      <td class="status">        <div id="selfStat1_1" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat1_1" class="globalStat" style="display: block;"><b>848/972 users</b> correct (87%)</div>      </td>    </tr>  </tbody></table></div></div></div><div><div id="dsb-problem-status-wrapper2" class="problem-status-wrapper">  <div class="dsb-status-problem-title">Bacteria</div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName2_0" class="inputName">6pt</td>      <td class="status">        <div id="selfStat2_0" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat2_0" class="globalStat" style="display: block;"><b>1655/1870 users</b> correct (89%)</div>      </td>    </tr>  </tbody></table></div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName2_1" class="inputName">25pt</td>      <td class="status">        <div id="selfStat2_1" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat2_1" class="globalStat" style="display: block;"><b>60/294 users</b> correct (20%)</div>      </td>    </tr>  </tbody></table></div></div></div><div><div id="dsb-problem-status-wrapper3" class="problem-status-wrapper">  <div class="dsb-status-problem-title">Grazing Google Goats</div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName3_0" class="inputName">7pt</td>      <td class="status">        <div id="selfStat3_0" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat3_0" class="globalStat" style="display: block;"><b>194/333 users</b> correct (58%)</div>      </td>    </tr>  </tbody></table></div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName3_1" class="inputName">25pt</td>      <td class="status">        <div id="selfStat3_1" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat3_1" class="globalStat" style="display: block;"><b>2/11 users</b> correct (18%)</div>      </td>    </tr>  </tbody></table></div></div></div></div></div>
+    <div id="dsb-status-tab-pre-contest" class="dsb-pre-contest-text before-start-only" style="display: none;">
+      
+      Statistics about the problems will appear here.  They'll include your
+      status on each problem, and other contestants' attempts.
+      
+    </div>
+  </div>
+  </div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <!-- Mini Scoreboard -->
+  <div class="dsb-mini-tab-wrapper">
+    <div id="dsb-scoreboard-div">
+      <div id="dsb-scoreboard-header-div" onmouseover="this.style.cursor=&#39;pointer&#39;" onclick="GCJ.toggleVisibility(
+              &#39;dsb-scoreboard-table&#39;,
+              &#39;dsb-scoreboard-panel-button&#39;,
+              &#39;/codejam/contest/static/minus.gif&#39;,
+              &#39;/codejam/contest/static/plus.gif&#39;)" style="cursor: pointer;">
+          <img id="dsb-scoreboard-panel-button" src="./Solution_files/minus.gif">
+          &nbsp; Top Scores
+      </div>
+      <div id="dsb-scoreboard-table-wrap" class="after-start-only" style="display: block;"><table id="dsb-scoreboard-table"><tbody><tr class="dsb-scoreboard-row-even" id="sbRow_0" style="display: block;"><td class="dsb-name-td" id="sbName_0">bmerry</td><td class="dsb-score-td" id="sbScore_0">75</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_1" style="display: block;"><td class="dsb-name-td" id="sbName_1">ZhukovDmitry</td><td class="dsb-score-td" id="sbScore_1">75</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_2" style="display: block;"><td class="dsb-name-td" id="sbName_2">winger</td><td class="dsb-score-td" id="sbScore_2">75</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_3" style="display: block;"><td class="dsb-name-td" id="sbName_3">stgatilov</td><td class="dsb-score-td" id="sbScore_3">75</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_4" style="display: block;"><td class="dsb-name-td" id="sbName_4">Progbeat</td><td class="dsb-score-td" id="sbScore_4">75</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_5" style="display: block;"><td class="dsb-name-td" id="sbName_5">pashka</td><td class="dsb-score-td" id="sbScore_5">75</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_6" style="display: block;"><td class="dsb-name-td" id="sbName_6">halyavin</td><td class="dsb-score-td" id="sbScore_6">69</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_7" style="display: block;"><td class="dsb-name-td" id="sbName_7">Zhuojie</td><td class="dsb-score-td" id="sbScore_7">68</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_8" style="display: block;"><td class="dsb-name-td" id="sbName_8">wata</td><td class="dsb-score-td" id="sbScore_8">68</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_9" style="display: block;"><td class="dsb-name-td" id="sbName_9">rng..58</td><td class="dsb-score-td" id="sbScore_9">68</td></tr></tbody></table></div>
+      <div id="dsb-scoreboard-tab-pre-contest" class="dsb-pre-contest-text before-start-only" style="display: none;">
+        
+        The scores of the top 10 contestants will appear here, with a link to
+        the contest's scoreboard.
+        
+      </div>
+      <div class="dsb-mini-tab-link">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="right-panel">
+  <div id="dsb-status-msg-wrapper" class="dsb-status-msg-wrapper" role="alert" style="visibility: hidden;">
+    <div id="dsb-status-msg" class="dsb-status-msg">
+      <span id="dsb-status-msg-text">Judged response for input D-small: <font color="green"><b>Correct!</b></font></span>
+      <span id="dsb-view-it-link" style="display: none;">View it.</span>
+    </div>
+  </div>
+
+  <div id="dsb-contest-title-bar">
+    <div id="dsb-rank-etc">
+      <span id="dsb-time-remaining">Practice Mode</span>
+      <span class="after-start-only-inline" style="display: inline;">
+        <span id="dsb-current-rank-div" style="display: none;">
+          Rank: <span id="dsb-current-rank-span">--</span>
+        </span>
+        <span id="dsb-current-score-div" style="display: none;">
+          Score: <span id="dsb-current-score-span">--</span>
+        </span>
+      </span>
+    </div>
+    <div id="dsb-title-links"><a target="new" href="http://code.google.com/codejam/contest/635102/scoreboard?c=635102">Contest scoreboard</a> | <a href="https://www.google.com/accounts/ServiceLogin?service=ah&passive=true&continue=https://appengine.google.com/_ah/conflogin%3Fcontinue%3Dhttp://code.google.com/codejam/contest/dashboard%253Fc%253D635102&ltmpl=">Sign in</a></div>
+  </div>
+  <!-- Problem Statement -->
+  <div id="main-panel-border" class="dsb-green-border">
+  <div id="dsb-border-inner">
+   <!-- Problem Title -->
+    <h3 id="dsb-problem-title-area">
+      <span id="dsb-problem-title-div-pre-contest" class="problem-title before-start-only" style="display: none;">
+        <span style="color:#666">Problem.</span>
+        The problem's name goes here.
+      </span>
+      <span id="dsb-problem-title-div" class="problem-title after-start-only" style="display: block;">Contest Analysis</span>
+    </h3>
+
+    <div class="dsb-content-pages before-start-only" style="display: none;">
+      
+      We're now waiting for the contest to start.  Once the contest starts,
+      the problems will automatically load, and Problem A will display here.
+      You don't have to solve that problem first; you will be able to select
+      another problem from the list to the left.  Once you've solved one
+      problem, don't forget to work on the others!
+      
+    </div>
+
+    <div id="dsb-problem-pages"><div id="dsb-problem-page0" class="dsb-content-pages" style="display: none;"><!-- Problem Input File Selection --><div class="dsb-input-panel-text" id="dsb-input-panel-text0"><span style="color: #666666;">This contest is open for practice.  You can try every problem as many times as you like, though we won't keep track of which problems you solve.  Read the <a href="http://code.google.com/codejam/quickstart.html" target="_blank">Quick-Start Guide</a> to get started.</span></div><table><tbody id="dsb-input-form-table0"><tr><td class="dsb-input-table-description">Small input<br>4 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap0-0" class=""><div id="dsb-input-wrapper0-0" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button0-0" style="display: inline;">Solve A-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain0-0" style="display: none;"><img class="dsb-input-link-img" src="./Solution_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text0-0">Download A-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption0-0" style="display: block;">Judge's response for last submission: Correct.</span><span class="dsb-input-table-caption" id="dsb-resubmit-caption0-0" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link0-0">resubmit</span> for <span id="dsb-resubmit-timer0-0"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div0-0" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_0"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> A-small-practice.in.</div><form id="submit-formio_timer_0" action="http://code.google.com/codejam/contest/635102/dashboard/do" enctype="multipart/form-data" method="post" target="closure_frame2_0_inner"><input type="hidden" name="csrfmiddlewaretoken" value="M2IzNzc3MDM4ZDMyY2YyM2VhODkxZGU2ZTQzOWJlOTV8fDEzNTM3NDc1NTg0NTExNDg="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_0" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_0"><div id="input-file-divio_timer_0-0"><span id="source-fileio_timer_0-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_0-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_0" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_0" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_0" type="button" value="Hide"></div><div id="source-file-namesio_timer_0"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="694485"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_0" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>8 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap0-1" class=""><div id="dsb-input-wrapper0-1" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button0-1" style="display: inline;">Solve A-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain0-1" style="display: none;"><img class="dsb-input-link-img" src="./Solution_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text0-1">Download A-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption0-1" style="display: block;">Judge's response for last submission: Correct.</span><span class="dsb-input-table-caption" id="dsb-resubmit-caption0-1" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link0-1">resubmit</span> for <span id="dsb-resubmit-timer0-1"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div0-1" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_1"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_1" action="http://code.google.com/codejam/contest/635102/dashboard/do" enctype="multipart/form-data" method="post" target="closure_frame3_0_inner"><input type="hidden" name="csrfmiddlewaretoken" value="M2IzNzc3MDM4ZDMyY2YyM2VhODkxZGU2ZTQzOWJlOTV8fDEzNTM3NDc1NTg0NTExNDg="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_1" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_1"><div id="input-file-divio_timer_1-0"><span id="source-fileio_timer_1-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_1-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_1" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_1" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_1" type="button" value="Hide"></div><div id="source-file-namesio_timer_1"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="694485"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_1" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr></tbody></table><!-- Problem Statement --><div id="dsb-problem-content-div0" class="dsb-problem-content-div" style="width: 40em;"><h3>Problem</h3>
+<p>
+The king has hired you to make him an elegant diamond.  An elegant diamond is a two-dimensional object made out of digits that's symmetric about a horizontal and a vertical axis.  For example, the following four shapes are elegant diamonds:
+</p>
+<pre>   2       8      3     7
+  3 3     8 8    2 2
+ 4 1 4     8      3
+  3 3 
+   2
+</pre>
+<p>
+These three shapes are diamonds, but are not elegant:
+</p>
+<pre>  2       1        3
+ 1 1     1 2      1 1
+  1     1 1 1    3 1 3
+         2 1      1 1
+          1        2
+</pre>
+<p>
+These three shapes are not diamonds:
+</p><pre>  1     2     8   8
+ 1 1   222      0
+        2     00000
+</pre>
+<p>
+The king will start by giving you a diamond, which may not be elegant.  Your job is to make it elegant by  <i>enhancing</i> it, adding digits on to make a bigger diamond.  Because you don't want to spend too much money, you want to do it with as little <i>cost</i> as possible.
+</p>
+<h3>Definitions</h3>
+<p>
+A <b>diamond of size <i>k</i></b> is 2k-1 lines of digits, 0-9, separated by single spaces, organized in the following way:
+</p><ul>
+  <li>Line i (1 ≤ i ≤ k) contains k-i spaces, then i digits separated by single spaces.</li>
+  <li>Line i (k &lt; i &lt; 2k) contains i-k spaces, then 2k-i digits separated by single spaces.</li>
+</ul>
+<p></p>
+<p>
+An <b>elegant diamond of size <i>k</i></b> is a diamond of size k with the following two symmetry properties:
+</p><ul>
+  <li>Horizontal symmetry: Let c<sub>i</sub> be the number of digits on line i.  The j<sup>th</sup> digit on line i (where j=1 for the first digit) must be the same as the c<sub>i</sub>+1-j<sup>th</sup> digit.</li>
+  <li>Vertical symmetry: The j<sup>th</sup> digit on line i (where i=1 for the first line) must be the same as the j<sup>th</sup> digit on line 2k-i.</li>
+</ul>
+<p></p>
+<p>
+A diamond of size k can be <b>enhanced</b> by adding digits to it.  The result of enhancing a diamond of size k has the following properties:
+</p><ul>
+  <li>The result is a diamond of size ≥ k.</li>
+  <li>The original diamond is part of the result. In other words, there exist some X and some Y such that, for all values of i and j such that the j<sup>th</sup> character of the i<sup>th</sup> line of the original is a digit (as opposed to a space), the j+X<sup>th</sup> character on the i+Y<sup>th</sup> line of the result is also a digit and it's the same as the j<sup>th</sup> character on the i<sup>th</sup> line of the original.
+</li></ul>
+<p></p>
+<p>
+The <b>cost</b> of enhancing a diamond is equal to the number of digits in the result of the enhancement, minus the number of digits in the original diamond.
+</p>
+
+<h3>Input</h3>
+<p>
+The first line of the input gives the number of test cases, <b>T</b>.  <b>T</b> test cases follow.  Each test case consists of a single integer <b>k</b> in a line on its own, followed by a diamond of size <b>k</b>.
+</p>
+
+<h3>Output</h3>
+<p>
+For each test case, output one line containing "Case #x: y", where x is the case number (starting from 1) and y is the minimum cost required to enhance the given diamond into an elegant diamond.  If the diamond is already elegant, y=0.
+</p>
+
+<h3>Limits</h3>
+<p>
+1 ≤ <b>T</b> ≤ 100.<br>
+</p>
+
+<h4>Small dataset</h4>
+<p>
+1 ≤ <b>k</b> ≤ 10.<br>
+</p>
+
+<h4>Large dataset</h4>
+<p>
+1 ≤ <b>k</b> ≤ 51.<br>
+</p>
+
+<h3>Sample</h3>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="io-table-header">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="io-table-header">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+4<br>
+1<br>
+0<br>
+2<br>
+&nbsp;1<br>
+2 2<br>
+&nbsp;1<br>
+2<br>
+&nbsp;1<br>
+1 2<br>
+&nbsp;1<br>
+3<br>
+&nbsp;&nbsp;1<br>
+&nbsp;6 3<br>
+9 5 5<br>
+&nbsp;6 3<br>
+&nbsp;&nbsp;1<br>
+</code>
+</td>
+<td>
+<code>
+Case #1: 0<br>
+Case #2: 0<br>
+Case #3: 5<br>
+Case #4: 7<br>
+<br>
+</code>
+</td></tr></tbody></table>
+</div>
+
+<h3>Explanation</h3>
+<p>
+There are four cases.  The first two cases start as elegant diamonds of size 1 and 2, respectively, and don't need to be enhanced; so the cost is 0.  The third case can be enhanced to look like:
+</p><pre>  3
+ 1 1
+1 2 1
+ 1 1
+  3
+</pre>
+There are several possible enhancements, but this is one with the lowest possible cost, which is 5.  In the fourth case we can enhance the diamond into the following elegant diamond:
+<pre>   9
+  1 1
+ 6 3 6
+9 5 5 9
+ 6 3 6
+  1 1
+   9
+</pre>
+...for a cost of 7.
+<p></p></div></div><div id="dsb-problem-page1" class="dsb-content-pages" style="display: none;"><!-- Problem Input File Selection --><div class="dsb-input-panel-text" id="dsb-input-panel-text1"><span style="color: #666666;">This contest is open for practice.  You can try every problem as many times as you like, though we won't keep track of which problems you solve.  Read the <a href="http://code.google.com/codejam/quickstart.html" target="_blank">Quick-Start Guide</a> to get started.</span></div><table><tbody id="dsb-input-form-table1"><tr><td class="dsb-input-table-description">Small input<br>10 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap1-0" class=""><div id="dsb-input-wrapper1-0" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button1-0" style="display: inline;">Solve B-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain1-0" style="display: none;"><img class="dsb-input-link-img" src="./Solution_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text1-0">Download B-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption1-0" style="display: block;">Judge's response for last submission: Correct.</span><span class="dsb-input-table-caption" id="dsb-resubmit-caption1-0" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link1-0">resubmit</span> for <span id="dsb-resubmit-timer1-0"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div1-0" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_2"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> B-small-practice.in.</div><form id="submit-formio_timer_2" action="http://code.google.com/codejam/contest/635102/dashboard/do" enctype="multipart/form-data" method="post" target="closure_frame5_0_inner"><input type="hidden" name="csrfmiddlewaretoken" value="M2IzNzc3MDM4ZDMyY2YyM2VhODkxZGU2ZTQzOWJlOTV8fDEzNTM3NDc1NTg0NTExNDg="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_2" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_2"><div id="input-file-divio_timer_2-0"><span id="source-fileio_timer_2-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_2-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_2" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_2" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_2" type="button" value="Hide"></div><div id="source-file-namesio_timer_2"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="698485"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_2" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>15 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap1-1" class=""><div id="dsb-input-wrapper1-1" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button1-1" style="display: inline;">Solve B-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain1-1" style="display: none;"><img class="dsb-input-link-img" src="./Solution_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text1-1">Download B-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption1-1" style="display: block;">Judge's response for last submission: Correct.</span><span class="dsb-input-table-caption" id="dsb-resubmit-caption1-1" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link1-1">resubmit</span> for <span id="dsb-resubmit-timer1-1"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div1-1" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_3"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_3" action="http://code.google.com/codejam/contest/635102/dashboard/do" enctype="multipart/form-data" method="post" target="closure_frame6_0_inner"><input type="hidden" name="csrfmiddlewaretoken" value="M2IzNzc3MDM4ZDMyY2YyM2VhODkxZGU2ZTQzOWJlOTV8fDEzNTM3NDc1NTg0NTExNDg="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_3" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_3"><div id="input-file-divio_timer_3-0"><span id="source-fileio_timer_3-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_3-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_3" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_3" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_3" type="button" value="Hide"></div><div id="source-file-namesio_timer_3"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="698485"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_3" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr></tbody></table><!-- Problem Statement --><div id="dsb-problem-content-div1" class="dsb-problem-content-div" style="width: 40em;"><h3>Problem</h3>
+<p>
+After four years, it is the World Cup time again and Varva is on his way to South Africa, just in time to catch the second stage of the tournament.
+</p>
+<p>
+In the second stage (also called the knockout stage), each match always has a winner; the winning team proceeds to the next round while the losing team is eliminated from the tournament. There are 2<sup>P</sup> teams competing in this stage, identified with integers from 0 to 2<sup>P</sup> - 1. The knockout stage consists of P rounds. In each round, each remaining team plays exactly one match. The exact pairs and the order of matches are determined by successively choosing two remaining teams with lowest identifiers and pairing them in a match. After all matches in one round are finished, the next round starts.
+</p>
+<p>
+<br><br>
+&nbsp;&nbsp;&nbsp;<img src="./Solution_files/saved_resource">
+<br><br>
+</p>
+<p>
+In order to help him decide which matches to see, Varva has compiled a list of constraints based on how much he likes a particular team. Specifically, for each team <code>i</code> he is  <b>willing to miss at most</b> <code>M[i]</code> matches the team plays in the tournament.
+</p>
+<p>
+Varva needs to buy a set of tickets that will guarantee that his preferences are satisfied, regardless of how the matches turn out. Other than that, he just wants to spend as little money as possible. Your goal is to find the <b>minimal amount of money</b> he needs to spend on the tickets.
+</p>
+<p>
+Tickets for the matches need to be purchased in advance (before the tournament starts) and the ticket price for each match is known. Note that, in the small input, ticket prices for all matches will be equal, while in the large input, they may be different. 
+</p>
+<h3>Example</h3>
+<p>
+A sample tournament schedule along with the ticket prices is given in the figure above. Suppose that the constraints are given by the array <code>M = {1, 2, 3, 2, 1, 0, 1, 3}</code>, the optimal strategy is as follows: Since we can't miss any games of team 5, we'll need to spend  50, 400, and 800 to buy tickets to all the matches team 5 may play in. Now, the constrains for the other teams are also satisfied by these tickets, except for team 0. The best option to fix this is to buy the ticket for team 0's first round match, spending another 100, bringing the total to 1350.
+</p>
+
+<h3>Input</h3>
+<p>
+The first line of the input gives the number of test cases, <b>T</b>.  <b>T</b> test cases follow.  Each case starts with a line containing a single integer <b>P</b>. The next line contains 2<sup>P</sup> integers -- the constraints <code>M[0]</code>, ..., <code>M[2<sup>P</sup>-1]</code>.
+</p><p>
+</p>
+The following block of <b>P</b> lines contains the ticket prices for all matches: the first line of the block contains 2<sup>P-1</sup> integers -- ticket prices  for first round matches, the second line of the block contains 2<sup>P-2</sup> integers -- ticket prices for second round matches, etc. The last of the <b>P</b> lines contains a single integer -- ticket price for the final match of the World Cup. The prices are listed in the order the matches are played.
+<p></p>
+
+<h3>Output</h3>
+<p>
+For each test case, output one line containing "Case #x: y", where x is the case number (starting from 1) and y is the minimal amount of money Varva needs to spend on tickets as described above.
+</p>
+<h3>Limits</h3>
+<p>
+1 ≤ <b>T</b> ≤ 50<br>
+1 ≤ <b>P</b> ≤ 10<br>
+Each element of <b>M</b> is an integer between 0 and <b>P</b>, inclusive.
+</p>
+
+<h4>Small dataset</h4>
+<p>
+All the prices are equal to 1.<br>
+</p>
+
+<h4>Large dataset</h4>
+<p>
+All the prices are integers between 0 and 100000, inclusive.<br>
+</p>
+
+<h3>Sample</h3>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="io-table-header">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="io-table-header">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+2 <br>
+2 <br>
+1 1 0 1 <br>
+1 1 <br>
+1 <br>
+3 <br>
+1 2 3 2 1 0 1 3 <br>
+100 150 50 90 <br>
+500 400 <br>
+800 <br>
+</code>
+</td>
+<td>
+<code>
+Case #1: 2<br>
+Case #2: 1350<br>
+<br>
+</code>
+</td></tr></tbody></table>
+</div>
+</div></div><div id="dsb-problem-page2" class="dsb-content-pages" style="display: none;"><!-- Problem Input File Selection --><div class="dsb-input-panel-text" id="dsb-input-panel-text2"><span style="color: #666666;">This contest is open for practice.  You can try every problem as many times as you like, though we won't keep track of which problems you solve.  Read the <a href="http://code.google.com/codejam/quickstart.html" target="_blank">Quick-Start Guide</a> to get started.</span></div><table><tbody id="dsb-input-form-table2"><tr><td class="dsb-input-table-description">Small input<br>6 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap2-0" class=""><div id="dsb-input-wrapper2-0" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button2-0" style="display: inline;">Solve C-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain2-0" style="display: none;"><img class="dsb-input-link-img" src="./Solution_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text2-0">Download C-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption2-0" style="display: block;">Judge's response for last submission: Correct.</span><span class="dsb-input-table-caption" id="dsb-resubmit-caption2-0" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link2-0">resubmit</span> for <span id="dsb-resubmit-timer2-0"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div2-0" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_4"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> C-small-practice.in.</div><form id="submit-formio_timer_4" action="http://code.google.com/codejam/contest/635102/dashboard/do" enctype="multipart/form-data" method="post" target="closure_frame10_0_inner"><input type="hidden" name="csrfmiddlewaretoken" value="M2IzNzc3MDM4ZDMyY2YyM2VhODkxZGU2ZTQzOWJlOTV8fDEzNTM3NDc1NTg0NTExNDg="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_4" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_4"><div id="input-file-divio_timer_4-0"><span id="source-fileio_timer_4-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_4-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_4" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_4" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_4" type="button" value="Hide"></div><div id="source-file-namesio_timer_4"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="706485"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_4" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>25 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap2-1" class=""><div id="dsb-input-wrapper2-1" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button2-1" style="display: inline;">Solve C-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain2-1" style="display: none;"><img class="dsb-input-link-img" src="./Solution_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text2-1">Download C-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption2-1" style="display: block;">Judge's response for last submission: Correct.</span><span class="dsb-input-table-caption" id="dsb-resubmit-caption2-1" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link2-1">resubmit</span> for <span id="dsb-resubmit-timer2-1"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div2-1" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_5"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_5" action="http://code.google.com/codejam/contest/635102/dashboard/do" enctype="multipart/form-data" method="post" target="closure_frame14_0_inner"><input type="hidden" name="csrfmiddlewaretoken" value="M2IzNzc3MDM4ZDMyY2YyM2VhODkxZGU2ZTQzOWJlOTV8fDEzNTM3NDc1NTg0NTExNDg="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_5" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_5"><div id="input-file-divio_timer_5-0"><span id="source-fileio_timer_5-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_5-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_5" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_5" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_5" type="button" value="Hide"></div><div id="source-file-namesio_timer_5"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="706485"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_5" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr></tbody></table><!-- Problem Statement --><div id="dsb-problem-content-div2" class="dsb-problem-content-div" style="width: 40em;"><h3>Problem</h3>
+<p>
+A number of bacteria lie on an infinite grid of cells, each bacterium in its own cell.
+</p><p>
+Each second, the following transformations occur (all simultaneously):
+<br>
+</p><ol>
+<li> If a bacterium has no neighbor to its north and no neighbor to its west, then it will die.
+</li><li> If a cell has no bacterium in it, but there are bacteria in the neighboring cells to the north and to the west, then a new bacterium will be born in that cell.
+</li></ol>
+<p>
+Upon examining the grid, you note that there are a positive, finite number of bacteria in one or more rectangular regions of cells.
+</p><p>
+Determine how many seconds will pass before all the bacteria die.
+</p><p>
+Here is an example of a grid that starts with 6 cells containing bacteria, and takes 6 seconds for all the bacteria to die.  '1's represent cells with bacteria, and '0's represent cells without bacteria.
+</p><p>
+</p><pre>000010
+011100
+010000
+010000
+000000
+
+000000
+001110
+011000
+010000
+000000
+
+000000
+000110
+001100
+011000
+000000
+
+000000
+000010
+000110
+001100
+000000
+
+000000
+000000
+000010
+000110
+000000
+
+000000
+000000
+000000
+000010
+000000
+
+000000
+000000
+000000
+000000
+000000
+</pre>
+<p></p>
+
+<h3>Input</h3>
+<p>
+The input consists of:
+</p><ul>
+<li> One line containing <b>C</b>, the number of test cases.
+</li></ul>
+Then for each test case:
+<ul>
+<li> One line containing <b>R</b>, the number of rectangles of cells that initially contain bacteria.
+</li><li> <b>R</b> lines containing four space-separated integers <b>X</b><sub>1</sub> <b>Y</b><sub>1</sub> <b>X</b><sub>2</sub> <b>Y</b><sub>2</sub>.  This indicates that all the cells with X coordinate between X<sub>1</sub> and X<sub>2</sub>, inclusive, and Y coordinate between Y<sub>1</sub> and Y<sub>2</sub>, inclusive, contain bacteria.
+</li></ul>
+The rectangles may overlap.
+<p>
+North is in the direction of decreasing Y coordinate.
+<br>
+West is in the direction of decreasing X coordinate.
+<br>
+
+</p><h3>Output</h3>
+<p>
+For each test case, output one line containing "Case #N: T", where N is the case number (starting from 1), and T is the number of seconds until the bacteria all die.
+</p>
+
+<h3>Limits</h3>
+<p>
+1 ≤ <b>C</b> ≤ 100.
+</p>
+
+<h4>Small dataset</h4>
+<p>
+1 ≤ <b>R</b> ≤ 10 <br>
+1 ≤ <b>X<sub>1</sub></b> ≤ <b>X<sub>2</sub></b> ≤ 100 <br>
+1 ≤ <b>Y<sub>1</sub></b> ≤ <b>Y<sub>2</sub></b> ≤ 100 <br>
+</p>
+
+<h4>Large dataset</h4>
+<p>
+1 ≤ <b>R</b> ≤ 1000 <br>
+1 ≤ <b>X<sub>1</sub></b> ≤ <b>X<sub>2</sub></b> ≤ 1000000 <br>
+1 ≤ <b>Y<sub>1</sub></b> ≤ <b>Y<sub>2</sub></b> ≤ 1000000 <br>
+<br>
+The number of cells initially containing bacteria will be at most 1000000.
+</p>
+
+<h3>Sample</h3>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="io-table-header">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="io-table-header">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+
+1<br>
+3<br>
+5 1 5 1<br>
+2 2 4 2<br>
+2 3 2 4<br>
+
+
+</code></td>
+<td>
+<code>
+
+Case #1: 6<br>
+
+<br>
+</code>
+</td></tr></tbody></table>
+</div>
+</div></div><div id="dsb-problem-page3" class="dsb-content-pages" style="display: none;"><!-- Problem Input File Selection --><div class="dsb-input-panel-text" id="dsb-input-panel-text3"><span style="color: #666666;">This contest is open for practice.  You can try every problem as many times as you like, though we won't keep track of which problems you solve.  Read the <a href="http://code.google.com/codejam/quickstart.html" target="_blank">Quick-Start Guide</a> to get started.</span></div><table><tbody id="dsb-input-form-table3"><tr><td class="dsb-input-table-description">Small input<br>7 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap3-0" class=""><div id="dsb-input-wrapper3-0" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button3-0" style="display: inline;">Solve D-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain3-0" style="display: none;"><img class="dsb-input-link-img" src="./Solution_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text3-0">Download D-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption3-0" style="display: block;">Judge's response for last submission: Correct.</span><span class="dsb-input-table-caption" id="dsb-resubmit-caption3-0" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link3-0">resubmit</span> for <span id="dsb-resubmit-timer3-0"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div3-0" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_6"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> D-small-practice.in.</div><form id="submit-formio_timer_6" action="http://code.google.com/codejam/contest/635102/dashboard/do" enctype="multipart/form-data" method="post" target="closure_frame32_0_inner"><input type="hidden" name="csrfmiddlewaretoken" value="M2IzNzc3MDM4ZDMyY2YyM2VhODkxZGU2ZTQzOWJlOTV8fDEzNTM3NDc1NTg0NTExNDg="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_6" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_6"><div id="input-file-divio_timer_6-0"><span id="source-fileio_timer_6-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_6-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_6" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_6" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_6" type="button" value="Hide"></div><div id="source-file-namesio_timer_6"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="689485"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_6" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>25 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap3-1" class="dsb-action-box-open"><div id="dsb-input-wrapper3-1" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button3-1" style="display: none;">Solve D-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain3-1" style="display: inline;"><img class="dsb-input-link-img" src="./Solution_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text3-1">Download D-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption3-1" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption3-1" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link3-1">resubmit</span> for <span id="dsb-resubmit-timer3-1"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div3-1" style="display: block;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_7"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_7" action="http://code.google.com/codejam/contest/635102/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="M2IzNzc3MDM4ZDMyY2YyM2VhODkxZGU2ZTQzOWJlOTV8fDEzNTM3NDc1NTg0NTExNDg="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_7" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_7"><div id="input-file-divio_timer_7-0"><span id="source-fileio_timer_7-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_7-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_7" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_7" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_7" type="button" value="Hide"></div><div id="source-file-namesio_timer_7"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="689485"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_7" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr></tbody></table><!-- Problem Statement --><div id="dsb-problem-content-div3" class="dsb-problem-content-div" style="width: 40em;"><h3>Problem</h3>
+
+<p>
+Farmer John has recently acquired a nice herd of <b>N</b> goats for his field. Each goat <code>i</code> will be tied to a pole at some position <b>P</b><sub>i</sub> using a rope of length <b>L</b><sub>i</sub>. This means that the goat will be able to travel anywhere in the field that is within distance <b>L</b><sub>i</sub> of the point <b>P</b><sub>i</sub>, but nowhere else. (The field is large and flat, so you can think of it as an infinite two-dimensional plane.)</p>
+
+<p>Farmer John already has the pole positions picked out from his last herd of goats, but he has to choose the rope lengths. There are two factors that make this decision tricky:
+</p><ul>
+<li>
+The goats all need to be able to reach a single water bucket. Farmer John has not yet decided where to place this bucket. He has reduced the choice to a set of positions {<b>Q</b><sub>1</sub>, <b>Q</b><sub>2</sub>, ..., <b>Q</b><sub>M</sub>}, but he is not sure which one to use.
+</li>
+<li>
+The goats are ill-tempered, and when they get together, they sometimes get in noisy fights. For everyone's peace of mind, Farmer John wants to minimize the area <b>A</b> that can be reached by all the goats.
+</li>
+</ul>
+<p></p>
+
+<p>
+Unfortunately, Farmer John is not very good at geometry, and he needs your help for this part!
+</p>
+
+<p>
+For each bucket position <b>Q</b><sub>j</sub>, you should choose rope lengths so as to minimize the area <b>A</b><sub>j</sub> that can be reached by every goat when the bucket is located at position <b>Q</b><sub>j</sub>. You should then calculate each of these areas <b>A</b><sub>j</sub>.
+</p>
+
+<h3>Example</h3>
+
+<p>
+In the picture below, there are four blue points, corresponding to the pole positions: <b>P</b><sub>1</sub>, <b>P</b><sub>2</sub>, <b>P</b><sub>3</sub>, and <b>P</b><sub>4</sub>. There are also two red points, corresponding to the potential bucket positions: <b>Q</b><sub>1</sub> and <b>Q</b><sub>2</sub>. You need to calculate <b>A</b><sub>1</sub> and <b>A</b><sub>2</sub>, the areas of the two shaded regions.
+</p>
+<p>
+<br><br><br>
+&nbsp;&nbsp;&nbsp;<img src="./Solution_files/saved_resource(1)">
+<br><br><br>
+</p>
+
+<h3>Input</h3>
+<p>
+The first line of the input gives the number of test cases, <b>T</b>. <b>T</b> test cases follow. Each test case begins with a line containing the integers <b>N</b> and <b>M</b>.
+</p>
+
+<p>
+The next <b>N</b> lines contain the positions <b>P</b><sub>1</sub>, <b>P</b><sub>2</sub>, ..., <b>P</b><sub>N</sub>, one per line. This is followed by <b>M</b> lines, containing the positions <b>Q</b><sub>1</sub>, <b>Q</b><sub>2</sub>, ..., <b>Q</b><sub>M</sub>, one per line.
+</p>
+
+<p>
+Each of these <b>N</b> + <b>M</b> lines contains the corresponding position's <b>x</b> and <b>y</b> coordinates, separated by a single space.
+</p>
+
+<h3>Output</h3>
+<p>
+For each test case, output one line containing "Case #x: <b>A</b><sub>1</sub> <b>A</b><sub>2</sub> ... <b>A</b><sub>M</sub>", where x is the case number (starting from 1), and <b>A</b><sub>1</sub> <b>A</b><sub>2</sub> ... <b>A</b><sub>M</sub> are the values defined above. Answers with a relative or absolute error of at most 10<sup>-6</sup> will be considered correct.
+</p>
+
+<h3>Limits</h3>
+<p>
+All coordinates are integers between -10,000 and 10,000.<br>
+The positions <b>P</b><sub>1</sub>, <b>P</b><sub>2</sub>, ..., <b>P</b><sub>N</sub>, <b>Q</b><sub>1</sub>, <b>Q</b><sub>2</sub>, ..., <b>Q</b><sub>M</sub> are all distinct and no three are collinear.
+</p>
+
+<h4>Small dataset</h4>
+<p>
+1 ≤ <b>T</b> ≤ 100.<br>
+<b>N</b> = 2.<br>
+1 ≤ <b>M</b> ≤ 10.<br>
+</p>
+
+<h4>Large dataset</h4>
+<p>
+1 ≤ <b>T</b> ≤ 10.<br>
+2 ≤ <b>N</b> ≤ 5,000.<br>
+1 ≤ <b>M</b> ≤ 1,000.<br>
+</p>
+
+<h3>Sample (Small dataset)</h3>
+
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="io-table-header">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="io-table-header">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+1<br>
+2 3<br>
+0 20<br>
+20 0<br>
+-20 10<br>
+40 20<br>
+0 19
+</code>
+</td>
+<td>
+<code>
+Case #1: 1264.9865911 1713.2741229 0.2939440
+<br>
+</code>
+</td></tr></tbody></table>
+</div>
+
+<h3>Sample (Large dataset)</h3>
+
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="io-table-header">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="io-table-header">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+2<br>
+4 2<br>
+0 0<br>
+100 100<br>
+300 0<br>
+380 90<br>
+400 100<br>
+1000 5<br>
+3 1<br>
+0 0<br>
+10 10<br>
+20 0<br>
+10 5
+</code>
+</td>
+<td>
+<code>
+Case #1: 1518.9063729 1193932.9692206<br>
+Case #2: 0.0
+<br>
+</code>
+</td></tr></tbody></table>
+</div>
+</div></div></div>
+
+    <div id="dsb-analysis-page" class="dsb-content-pages" style="display: block;"><div id="dsb-analysis-selections"><span id="dsb-analysis-selection-p4" class="dsb-analysis-not-selected">Overview</span>&nbsp; | &nbsp;<span id="dsb-analysis-selection-p0" class="dsb-analysis-not-selected">Problem A</span>&nbsp; | &nbsp;<span id="dsb-analysis-selection-p1" class="dsb-analysis-not-selected">Problem B</span>&nbsp; | &nbsp;<span id="dsb-analysis-selection-p2" class="dsb-analysis-not-selected">Problem C</span>&nbsp; | &nbsp;<span id="dsb-analysis-selection-p3" class="dsb-analysis-selected">Problem D</span></div><div id="dsb-problem-analysis-div4" class="dsb-problem-content-div" style="display: none;"><p> Round 2 of the 2010 Google Code Jam was quite challenging - a big step up from some of the Round 1 problems!
+</p>
+<p>
+Problem A was not too hard conceptually, but the unusual diamond shape required our contestants to design their own way of implementation, and this proved to be difficult. Problem B was a dynamic programming puzzle about the upcoming FIFA world cup that required viewing it in the right way to make progress... Fortunately, our contestants were very good at this! Problem C is a wonderful mathematical puzzle with a simple depth first search solution. Our last problem has deep roots in computational geometry, and it required tremendous implementation skill to get everything right during a timed contest. A big congratulations is due to <b>halyavin</b> and <b>bsod</b> for their correct solutions!
+</p>
+<p>
+The top three contestants were <b>bmerry</b>, <b>ZhukovDmitry</b>, and <b>winger</b>, who all solved 3 and a half problems in around 2 hours. Congratulations to them, as well to all of the 500 advancers to Round 3. There is only one more round to go until the on-site finals in Dublin!
+</p>
+
+<h3>Cast</h3>
+<p>Problem A. <i>Elegant Diamond</i> Written and prepared by Bartholomew Furrow and Igor Naverniouk.</p>
+<p>Problem B. <i>World Cup 2010</i> Written by Xiaomin Chen. Prepared by Ante Derek.</p>
+<p>Problem C. <i>Bacteria</i> Written by Cosmin Negruseri. Prepared by Cosmin Negruseri and John Dethridge.</p>
+<p>Problem D. <i>Grazing Google Goats</i> Written by Cosmin Negruseri. Prepared by John Dethridge and David Arthur.</p>
+<p>Contest analysis presented by David Arthur, Xiaomin Chen, Petr Mitrichev, and Cosmin Negruseri</p>
+<p>Solutions and other problem preparation provided by Derek Kisman and Petr Mitrichev.</p>
+</div><div id="dsb-problem-analysis-div0" class="dsb-problem-content-div" style="display: none;"><p>
+On this very difficult round, even the first problem was pretty challenging. The constraints were fairly small, but it might not be clear how to even get started. After all, there are a lot of ways you can enhance a diamond!
+</p>
+
+<p>
+Let's start off with a slightly simpler question: given a position <code>(c<sub>x</sub>, c<sub>y</sub>)</code>, is it <i>possible</i> to enhance (i.e, extend) the given diamond into an elegant diamond centered at <code>(c<sub>x</sub>, c<sub>y</sub>)</code>? (Note that this center might be either at a number, or at a space between numbers, depending on whether the elegant diamond has even or odd side length.) The resulting diamond
+would have to be symmetrical about the lines <code>x = c<sub>x</sub></code> and <code>y = c<sub>y</sub></code>. Specifically, this means that for each <code>(x, y)</code>, the values in positions <code>(x, y)</code>, <code>(2c<sub>x</sub> - x, y)</code>, <code>(x, 2c<sub>y</sub> - y)</code>, and <code>(2c<sub>x</sub> - x, 2c<sub>y</sub> - y)</code> all have to be equal. If the starting diamond already has two different values in one of these quartets, there's nothing we can do to change that.
+</p>
+
+<p>
+Otherwise, it turns out that the diamond always can be extended to an elegant diamond with center at <code>(c<sub>x</sub>, c<sub>y</sub>)</code>. For each of the quartets above where we have one value, we have to fill out the remaining values to be equal. After that, we can just enclose everything in a diamond shape and fill all remaining squares with 0. Here's an example:
+</p>
+
+<pre>  1
+ 2 3
+5 6*6
+ 2 3
+  1
+</pre>
+
+<p>
+Let's try to extend this to an elegant diamond centered at the *. First, we fill in all quartets, and then we extend to a proper diamond by adding 0's:
+</p>
+
+<pre>                             0
+  1           1 1           1 1
+ 2 3         2 3 2         2 3 2
+5 6*6  --&gt;  5 6*6 5  --&gt;  5 6*6 5
+ 2 3         2 3 2         2 3 2
+  1           1 1           1 1
+                             0
+</pre>
+
+<p>
+Done!
+</p>
+
+<p>
+This is pretty clearly the smallest extension with the given center, so all we need to do is try each possible center, and choose the one that gives the
+smallest possible elegant diamond.
+</p>
+
+<p>
+Of course, there are a lot of possible centers, but there is no need to consider one completely outside of the bounding box of the original diamond. We can always move such a center onto the edge of the bounding box without creating any inconsistencies, and that will lead to a smaller diamond in the end.
+</p>
+
+<p>
+So in summary: we need to iterate over all possible centers contained within the
+original diamond, check if there is an elegant extension with that center, and
+then take the smallest of these. As always, please take a look at some of the
+correct submissions to see some full implementations!
+</p>
+
+<p>
+By the way, the solution presented here is O(n^4), which is fast enough for this problem. Faster solutions do exist though, and you might enjoy looking for them.
+</p></div><div id="dsb-problem-analysis-div1" class="dsb-problem-content-div" style="display: none;"><h3>Reformulation</h3>
+<p>
+In the analysis, we will turn the picture upside-down. This conforms to the usual convention that the root of a binary tree is drawn on top. This is actually easy to do implementation-wise. We just read the input numbers in reverse order; the element at position 0 is the root, i.e., the final match, and for any node <code>i</code>, its two children are indexed at <code>2i+1</code> and <code>2i+2</code>. In our particular solution, we include nodes for the teams as well as for the matches, so our graph is a rooted complete binary tree, where all the internal nodes are matches, and all the leaves are the teams.
+</p>
+<p>
+Perhaps it is clear that the solution will be dynamic programming on the tree. There are many ways to do it, but some can be much more complicated than others. Let us introduce one solution that is very simple. It is based on the following reformulation of our problem.
+</p>
+<p>
+Let us color a node yellow if we are going to buy the ticket for the corresponding match. For each leaf (a team), the path to it from the root has <code>P</code> internal nodes. We call a plan good if no matter what the outcomes of the matches are, we will never miss more than <code>M[i]</code> matches for team <code>i</code>. We have
+</p><blockquote>
+(*) A plan is good if and only if for every team <code>i</code>, the path from the root to the leaf corresponding to team i has at least <code>P-M[i]</code> yellow nodes.
+</blockquote>
+This is indeed a conceptual leap in solving the problem. For in the new form, we no longer need to worry about the outcome of any particular match. And once it is stated, it is very easy to justify. We leave the justification to the readers.
+<p></p>
+<p>
+Simple solutions for small inputs and large inputs both follow easily from this reformulation.
+</p>
+
+<h3>Small dataset</h3>
+<p>
+For the small dataset the best plan must be <i>upwards closed</i>, i.e., if a node is yellow, all the nodes on the path from the root to it must all be yellow. One can prove this by using (*) and noting that all the prices are the same, and you can always get a cheaper plan if you push some yellow node upwards.
+So, one solution for the small dataset looks like this: For each team <code>i</code>, we find the path from root to it, and color the topmost <code>P-M[i]</code> nodes yellow. It can be done in linear time by a simple modification of depth first search.
+</p>
+<p>
+The justification and the implementation details are a nice piece of dessert. We leave them to the readers.
+</p>
+
+
+<h3>Large dataset</h3>
+<p>
+We use dynamic programming on the tree. Let us just define the subproblems clearly. For any node <code>a</code> and any number <code>b</code> between 0 and <code>P</code>, let <code>P(a, b)</code> be the problem
+</p><blockquote>
+If there are <code>b</code> yellow nodes on the path from the root to <code>a</code> (not including <code>a</code>), what is the cheapest way to color the nodes in the sub-tree rooted at a, such that all the leaves in this sub-tree satisfy the condition in (*)?
+</blockquote>
+And we can use a impossibly big answer to indicate that the condition can not be satisfied.
+<p></p>
+<p>
+Once the DP is set up, the code follows easily. For each internal node there are just two choices, color it yellow or not. We provide an excerpt from one of the judges' solutions:
+</p><pre>i64 A[1&lt;&lt;11][11];  // answers for the dynamic programming.
+i64 inp[1&lt;&lt;11];    // input, in reversed order.
+int P;
+
+// rooted at a, already buy b tickets from above.
+i64 dp(int a, int b) {
+  i64&amp; r=A[a][b];
+  if(r&gt;=0) return r;
+  if(a&gt;=((1&lt;&lt;P)-1)) {r=(b&gt;=(P-inp[a]))?0:1LL&lt;&lt;40; return r;}
+  r=std::min(
+      inp[a]+dp(2*a+1,b+1)+dp(2*a+2,b+1), 
+      dp(2*a+1,b)+dp(2*a+2,b));
+  return r;
+}
+
+int main() {
+  int T;
+  cin&gt;&gt;T;
+  for (int cs=1; cs&lt;=T; ++cs) {
+    cin&gt;&gt;P; int M=(2&lt;&lt;P)-1;
+    for (int i=0; i&lt;M; i++) cin&gt;&gt;inp[M-1-i];
+    memset(A, -1, sizeof(A));
+    cout &lt;&lt; "Case #" &lt;&lt; cs &lt;&lt; ": " &lt;&lt; dp(0, 0) &lt;&lt;endl;
+  }
+  return 0;
+}
+</pre>
+<p></p>
+
+</div><div id="dsb-problem-analysis-div2" class="dsb-problem-content-div" style="display: none;"><p>
+The fact that the input is a set of rectangles is not essential to this problem. We just wanted to limit the amount of data you had to download to test your program. So let us forget about the rectangles, and instead consider any initial configuration of <code>n</code> bacteria on the grid. The challenge here is to compute the answer <i>fast</i>. A turn by turn simulation will not be good enough. We are going to aim for an <code>O(n)</code> solution instead.
+</p>
+
+<h3>Examples</h3>
+<p>
+One way to start attacking this problem is to look at examples. The Bacteria game is pretty fun to play around with after all! Here are some examples you can try:
+</p><ul>
+<li>A rectangle of <code>H</code> by <code>W</code> bacteria.</li>
+<li>A <code>H</code> by <code>W</code> rectangle where the bacteria only lie on the four boundary edges.</li>
+<li>Bacteria along a "type 1" diagonal (a southwest/northeast diagonal).</li>
+<li>Bacteria along a "type 2" diagonal (a northwest/southeast diagonal).</li>
+<li>A random path where each pair of bacteria are connected either horizontally, vertically, or along a type 1 diagonal.</li>
+</ul>
+If you work out these examples, you should get some inspiration for the general problem. We call a type 1 diagonal higher than another if it is to the north (and hence west) of the other. If the initial configuration is a "connected piece" (we will define this more precisely later), we can find the highest type 1 diagonal containing at least one bacterium <code>X + Y = C</code>, the right-most point containing a bacterium <code>X = X<sub>max</sub></code>, and the bottom-most point containing a bacterium <code>Y = Y<sub>max</sub></code>. We claim that after one turn, the configuration will still be a single connected piece, the highest diagonal will become <code>X + Y = C+1</code>, and the max <code>X</code> and <code>Y</code> coordinates will not change. This will continue until the final second when we come down to a single point <code>(X<sub>max</sub>, Y<sub>max</sub>)</code>. So the number of turns before everything disappears is <code>X<sub>max</sub> + Y<sub>max</sub> - C + 1</code>.
+<p></p>
+<p>
+One thing we note is that the 3rd and 4th examples behave very differently. In the 3rd example, the number of bacteria decreases by 1 in each turn, while in the 4th, all the bacteria disappear immediately.
+</p>
+<h3>Solution</h3>
+
+<p>
+Define a graph on the bacteria. Two bacteria are neighbors if they are adjacent on the grid via a horizontal line, a vertical line, or a type 1 diagonal. We begin by finding the connected components of this graph. 
+</p>
+<p>
+This may seem like a simple definition, but it is really the key to solving the whole problem. It is quite similar to the more common graph where each grid node has 8 neighbors, one in each compass direction, except we do not consider the 2 directions along a type 2 diagonal. Remember the 3rd and 4th examples above? If we start with <code>n</code> nodes, there is just one connected component in the former, but <code>n</code> connected components in the latter.
+</p>
+<p>
+We observe that after each turn, a connected component will give birth to a new connected component (unless it was a single point and disappears), and different components will not become connected together. See the details in the next section.
+</p>
+<p>
+So, the answer is the maximum elimination time over all the components. For a single piece (i.e., connected component), we find the highest type 1 diagonal <code>X + Y = C</code>, as well as the maximum coordinates <code>X<sub>max</sub></code> and <code>Y<sub>max</sub></code>. The number of turns for that piece to disappear is then <code>X<sub>max</sub> + Y<sub>max</sub> - C + 1</code>.
+</p>
+
+<h3>Justification</h3>
+<p>
+Our solution depends very heavily on several key observations. If you try some examples, you should be able to convince yourself empirically that these observations just have to be true. But in the interest of completeness, we will also sketch out a more formal proof here.
+</p>
+<p>
+In the following discussion, we will fix a configuration called the <i>old state</i>, and we will consider the <i>new state</i> obtained after one turn. When we talk about a connected piece, we will always assume the non-trivial case where there are at least 2 points in the piece.
+</p>
+<p>
+For each bacterium in the new state, let us consider the reason why it is there. If it was in the old state, we credit the reason for its existence to the set of itself and its north and/or west neighbor. If it was not in the old state, we credit the reason for its existence only to the set of its north and west neighbors. In both cases, we call such a set the credit set for that single bacterium.
+</p>
+<p>
+<b>Proposition 1.</b> If the old state is a single piece, and the highest type 1 diagonal is <code>X + Y = C</code>, then in the new state, the highest type 1 diagonal will become <code>X + Y = C+1</code>.
+</p>
+<p>
+<i>Proof.</i> Consider a bacterium at position <code>(X, Y)</code> on the top diagonal of the old state. Since this is the top diagonal, that bacterium does not have a north neighbor or a west neighbor, and it will die. In particular, the diagonal <code>X + Y = C</code> will be completely empty in the new state.<br>
+Now pick the south-most bacterium in the old state on the diagonal <code>X + Y = C</code>. Let its position be <code>(X, C-X)</code>. If there is also a bacterium at position <code>(X+1, C-X-1)</code> in the old state, there will be a bacterium at <code>(X+1, C-X)</code> in the new state (no matter whether it was in the old state or not). Otherwise, since <code>(X, C-X)</code> is part of a connected piece and it's on the highest diagonal, there will be a bacterium at either <code>(X, C-X+1)</code> or <code>(X+1, C-X)</code> in the old state, and by our rules, this bacterium will survive to the new state. Hence, in any case, we find at least one bacterium will be on the diagonal <code>X + Y = C+1</code> in the new state, which proves the proposition.
+</p>
+<p>
+The following two Propositions can be justified in the same way:
+</p>
+<p>
+<b>Proposition 2.</b> If the old state is a single piece, the maximum <code>X</code> coordinate and the maximum <code>Y</code> coordinate will be unchanged in the new state.
+</p>
+<b>Proposition 3.</b> If the old state is a single connected piece, the new state will be a single connected piece as well.
+<p></p>
+<p>
+To see Proposition 3, note that if the old state is connected, then any two credit sets can be joined by some path consisting of horizontal, vertical, and type 1 diagonal segments. As the following picture shows, any possible segment from such a path will give birth to connected segments in the new state:
+<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<img src="./Solution_files/saved_resource(2)">
+<br><br><br>
+</p>
+<p>
+Finally, we are going to prove that different pieces will not be merged together in a turn.
+</p><p>
+<b>Proposition 4.</b> If two bacteria are neighbors in the new state, then their credit set are all from the same piece in the old state.
+</p>
+<p>
+This is obviously true if both bacteria are also in the old state. Otherwise, it is one of the cases in the following picture. The two bacteria are the circled points. A blue point indicates that the bacterium was also in the old state, a red point indicates that the bacterium was only in the new state. Then the yellow stars represents the points in the credit sets. In any situation we either reach an impossible configuration, or get to a point where it is clear the credit sets are connected.
+<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;<img src="./Solution_files/saved_resource(3)">
+<br><br><br>
+</p>
+</div><div id="dsb-problem-analysis-div3" class="dsb-problem-content-div" style="display: block;"><p>
+This problem is tough from both the implementation side and the algorithm side.    In the analysis, we will begin by explaining some general concepts that show how the task is actually very similar to convex hull. We will then go into the particulars needed to build a solution and to prove that it is right. The resulting code isn't as scary as the length of the analysis makes you think.
+</p>
+<p>
+Let us just focus on one bucket <b>Q</b> at a time. The problem asks us to choose rope lengths: i.e., for each pole position, we need to choose the radius of the circle centered at that pole. The common area will be the intersection of all these circles. It is clear that decreasing the radius of any circle will not increase the intersection. Therefore, we want the lengths to be as small as possible. Obviously, for each pole <b>P</b><sub>i</sub>, <b>P</b><sub>i</sub><b>Q</b> is the smallest length we can pick so that the goat can still reach the bucket. Our main task is to efficiently compute the common intersection area of these circles.
+</p>
+<p>
+From the limits of this problem, it is also clear that computing the intersection in Ω(<b>N</b><sup>2</sup>) will be too slow. We are aiming for an algorithm that will, for each bucket, compute the intersection in time O(<b>N</b> log <b>N</b>).
+</p>
+<p>
+The intersection is a convex shape where the boundary consists of arcs of the circles. One can prove in various ways (some of the reason will be obvious below) that each circle will only contribute at most one such arc. We will mostly focus on how to compute these arcs -- to which circle does it belong, where does it stop and where does it start. Once all this is computed, it is relatively easy to get the area.
+</p>
+
+<h3>Some theoretical background</h3>
+<p>
+While this section is not absolutely necessary for solving the problem, it will provide some nice insights. Once we have seen the problem from a few different angles, the solution will be conceptually clear and very natural.
+</p>
+<p>
+So, first of all, note that all the circles we consider pass through a common point <b>Q</b>. If you have not seen it before, it is now our honor to introduce to you the beautiful geometric transformation called <i>inversion</i>. It takes <b>Q</b> as the center. And each point <b>X</b> ≠ <b>Q</b> is mapped to a point <b>X'</b> where <b>QX</b> and <b>QX'</b> are in the same direction, and the lengths satisfy <b>|QX|</b> <b>|QX'|</b> = 1.
+</p>
+<p>
+Here is one very nice property of inversion: Every circle passing through the center point <b>Q</b> is mapped to a line that does not pass <b>Q</b>, and vice versa. And the interior of the circle is mapped to a half-plane that does not include <b>Q</b>. For our problem, the intersection of the <b>N</b> circles is then mapped to the intersection of <b>N</b> half-planes. For more details on inversion, we refer you to the <a href="http://en.wikipedia.org/wiki/Inversive_geometry" target="_blank">Wikipedia page on inversive geometry</a>.
+</p>
+<p>
+We leave it to the reader to verify that, if the intersection is not empty, then we can rotate the plane such that <b>Q</b> is above all the half-planes. And the intersection of the half-planes is bounded by something called the <i>lower envelope of line arrangements</i>. The segments of the lower envelope are exactly the images of the arcs in the circle intersection from our original problem.
+</p>
+<p>
+Then there is a concept of <i>duality</i> in computational geometry that maps each line <code>y = ax + b</code> to the point <code>(a, -b)</code>. The lower envelope is mapped by this transformation to the upper convex hull of the set of corresponding points.
+</p>
+<p>
+So, our problem is indeed equivalent to the convex hull problem and the lower envelope of line arrangements problem. Both subjects are well studied and there are simple O(<b>N</b> log <b>N</b>) algorithms for both.
+</p>
+<p>
+Out of these three settings, perhaps the algorithm for line arrangement is the simplest to visualize: Sort the lines by their slopes, and add them one by one. In each step, the existing lower envelope will be cut by the new line in two parts. The time for sorting is O(<b>N</b> log <b>N</b>), and the amortized complexity for the rest is O(<b>N</b>).
+</p>
+
+<h3>Solution to our problem</h3>
+<p>
+The previous section suggests a couple approaches that begin with explicitly doing an inversion about <b>Q</b>. In this section, we will discuss a direct solution to the problem, where we do not need to view the problem using the transformations from the previous section. Note that it will be in some ways equivalent to the above algorithm we introduced for line arrangements.
+</p>
+<p>
+Let's look from <b>Q</b> along a straight ray. The intersection of this ray with each circle will be either just <b>Q</b>, or a segment between <b>Q</b> and the second intersection point of this ray with the boundary of the circle. That means that in order to build the area required in the problem statement, we need to find the circle "closest" to <b>Q</b> in each direction from it. Let's denote each direction by its polar angle, which is defined up to a multiple of 2π.
+</p>
+<p>
+We start by considering just one circle. Suppose the polar angle of a ray that goes from <b>Q</b> towards the center of that circle is φ. When the polar angle of a ray goes from φ-π/2 towards φ, the distance from <b>Q</b> to the second intersection point with that ray increases from 0 to 
+the diameter of the circle. When the polar angle continues from φ towards φ+π/2, the distance decreases back to 0. When the polar angle changes from φ+π/2 to φ+3π/2 (the latter is the same as φ-π/2, where we started), the intersection of the ray with the circle is just <b>Q</b>.
+</p>
+<p>
+Now consider two circles, one with center at polar angle φ (remember, all polar angles discussed here are relative to <b>Q</b>) , another one with center at polar angle ξ, and suppose 0 &lt; φ - ξ &lt; π. Then we'll see the following as we turn the ray originating from <b>Q</b>: starting from polar angle ξ-π/2 until φ-π/2 the ray will intersect only the second circle; from φ-π/2 the ray will intersect both circles, but the intersection point with the first circle will be closer to <b>Q</b> until the circles intersect; after the intersection and until ξ+π/2 the ray will still intersect both circles but the second is now closer; and from ξ+π/2 until φ+π/2 the ray will only intersect the first circle.
+</p>
+<p>
+The important thing about the two circles case discussed above is that in the range of polar angles where the ray intersects both circles (and that's exactly the range we care about in finding the intersection area). The situation is very simple: before the intersection point one circle is closer to <b>Q</b>, after the intersection point another circle is closer to <b>Q</b>.
+</p>
+<p>
+Now suppose we have many circles. First, we find the polar angle of the center of each circle, and thus also find the range of polar angles where a ray going from <b>Q</b> intersects each of the circles. We can then intersect all those ranges of polar angles to obtain a small range [α, β] of polar angles where the ray would intersect all circles. If this range is empty, then we already know there's no intersection.
+</p>
+<p>
+Now let's start adding circles one by one, starting from the one with the smallest polar angle. You might ask, what does "smallest" mean when we're on a circle? Luckily, here we have less than full circle: since all circles intersect all rays in [α, β] range, the polar angles of all centers are between β-π/2 and α+π/2. That leaves us a segment of length less than π where we have a definite order.
+</p>
+<p>
+As we're adding the circles, we'll maintain which circle is closest for each angle from [α, β]. For example, after adding the first circle it will be the closest for the entire [α, β] range. Now we add the second circle. Let's say the polar angle of the intersection point between two circles is γ. If you look carefully at the above analysis, you'll find that:</p><ul>
+<li>When γ is less than α, the first circle is still the closest for the entire [α, β] .
+</li><li>When γ is between α and β, the second circle is the closest for [α, γ], and the first circle is the closest for [γ, β].
+</li><li>When γ is more than β, the second circle is now closest for the entire [α, β] .
+</li></ul>
+<p>
+Here we rely on the fact that we process circles in increasing order of the polar angle of their center.
+</p>
+<p>
+Now look at the general case. Suppose before adding circle number <code>i</code> we have the following picture: on [α, γ<sub>1</sub>] circle <code>j<sub>1</sub></code> is the closest; on [γ<sub>1</sub>, γ<sub>2</sub>] circle <code>j<sub>2</sub></code> is the closest; ...; on [γ<sub>k-1</sub>, β] circle <code>j<sub>k</sub></code> is the closest.
+</p>
+<p>
+Consider the polar angle δ of the intersection point between circle <code>i</code> and circle <code>j<sub>1</sub></code>. There are 3 ways it could compare with the range where <code>j<sub>1</sub></code> is the closest:
+</p>
+<ul>
+<li>When δ is less than α, it means that circle <code>j<sub>1</sub></code> is closer than circle <code>i</code> on the entire [α β] segment, and we can just stop processing circle <code>i</code> since it doesn't affect the answer.
+</li><li>When δ is between α and γ<sub>1</sub>, we now have that circle <code>i</code> is the closest on [α, δ], and circle <code>j<sub>1</sub></code> is the closest on [δ, γ<sub>1</sub>]. After doing this change, we can also stop processing circle <code>i</code> since circle <code>j<sub>1</sub></code> will be closer to the center all the remaining way.
+</li><li>Finally, when δ is more than γ<sub>1</sub>, we can forget about circle <code>j<sub>1</sub></code> since circle <code>i</code> is closer than it on the entire [α, γ<sub>1</sub>]  segment. In that case we continue processing circle <code>i</code> by comparing it with circle <code>j<sub>2</sub></code>, and so on.
+</li></ul>
+<p>
+That's it! After we do this processing for all circles, we know the contour of the intersection figure, and we continue by computing its area.
+</p>
+<p>
+The above algorithm requires a data structure that maintains a list of arcs with integer tags, allowing us to change the first arc, remove the first arc, and add a new first arc. The simplest way to get this data structure is to just use a stack where the first ac would be on the top, and the last one would be on the bottom.
+</p>
+<p>
+The running time for the above algorithm can be estimated using amortized analysis as follows. When processing each circle, we do at most two "push to stack" operations, and one or more "pop from stack" operations. That means the total number of push operations is O(<b>N</b>), and since the number of pop operations can't be greater than the number of push operations (there'd be nothing to pop!), it's also O(<b>N</b>), giving us the total runtime of O(<b>N</b>). However, we must also remember the step where we sort all circles by the polar angle of their center, so overall runtime is O(<b>N</b> log <b>N</b>).
+</p>
+<p>
+We've so far avoided discussing the low-level computational geometry needed for this problem. In the above solution we required two geometric routines: find the polar angle of the other intersection point of two circles which have the first intersection point at origin; and find the area of a figure that is bounded by arcs.
+</p>
+<p>
+The first routine is straightforward if you can already intersect circles (a useful thing to know how to do!); alternatively, you could derive the formulas for the polar angle directly. The second one is slightly more tricky: first, we split the figure into "rounded triangles" with rays going from <b>Q</b> and having polar angles γ<sub>1</sub>, γ<sub>2</sub>, ..., γ<sub>k-1</sub>. Each rounded triangle has two straight sides (one of those might have zero length) and one circular side. We can then split the rounded triangle into the corresponding triangle plus the round part (a sliced off part of a circle). You have probably seen how to compute the area of a triangle before - one good approach is the "shoelace formula". To calculate the rounded area, it helps to start with a "pie slice" from the center, whose area is a simple fraction of the total circle area, and then add or subtract triangle areas.
+</p>
+<p>
+Of course there is a lot to do here, but that's why we made it Problem #4!
+</p></div></div>
+
+    <div id="dsb-clarification-page" class="dsb-content-pages" style="display: none;">
+      <!-- The clarifications table -->
+      <div id="clarTableDiv" class="clarTableWrapper"></div><div>
+        <table id="dsb-clarification-table" style="display: block;">
+          <colgroup span="9">
+            <col width="16%"><col width="2%">
+            <col width="10%"><col width="2%">
+            <col width="28%"><col width="2%">
+            <col width="10%"><col width="2%">
+            <col width="28%">
+          </colgroup>
+          <thead>
+            <tr>
+            <th>Category</th><th>&nbsp;</th>
+            <th class="clarTimeColumn">Asked</th><th>&nbsp;</th>
+            <th>Question</th><th>&nbsp;</th>
+            <th class="clarTimeColumn">Answered</th><th>&nbsp;</th>
+            <th>Answer</th>
+            </tr>
+          </thead>
+          <tbody id="dsb-clarification-tbody"><tr class="dsb-clar-tr dsb-clar-tr-announcement"><td class="clarProbTd">[Unknown]<br><span style="color: #666">Announcement</span></td><td></td><td class="clarTimeColumn">33:54</td><td></td><td><i>Suppose A is
+  1
+ 1 1
+2 1 2
+ 2 2
+  2
+and B is
+ 1
+1 1
+ 1
+Is B a part of A?
+According to the definition, B is not part of A, because the 1th digit of the 3th line of B is not as same as the 1th digit of the 3th line of A.</i></td><td></td><td class="clarTimeColumn" style="color: red;">55:18</td><td></td><td><i>The formal definition of enhancement was incorrect. It has been updated, please read the revised definition.</i></td></tr><tr class="dsb-clar-tr dsb-clar-tr-announcement"><td class="clarProbTd">[General]<br><span style="color: #666">Announcement</span></td><td></td><td class="clarTimeColumn">21:52</td><td></td><td><i>Is there any problem in submission system?</i></td><td></td><td class="clarTimeColumn" style="color: red;">25:01</td><td></td><td><i>Yes. The submission system was not working correctly for the first roughly 20 minutes of the contest. It is fixed now. The attempts where you failed to send a solution because of this issue will be ignored.</i></td></tr></tbody>
+        </table>
+      </div>
+      <div id="dsb-submit-clarification" style="display: none;">
+        <!-- The link to ask a clarification -->
+        <div style="padding: 0.5em 0 0.3em 0;">
+          <b>Ask a question:</b>
+        </div>
+        <!-- The form for asking clarification -->
+        <div>
+          <form onsubmit="return GCJ.submitClarification(this);"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="MTBhYjA4OTU2NWViMDY2ODY3MzU4MmIxYjM2NGJjNzF8fDEzNTM3NDc1NTc1NzczNDg="></div>
+            <div><textarea rows="5" cols="60" name="q"></textarea></div>
+            <div style="padding-top: 0.3em">
+              <select id="dsb-clarification-problem-select" name="problem">
+                <option value="_" selected="">[General]</option>
+              <option value="694485">A. Elegant Diamond</option><option value="698485">B. World Cup 2010</option><option value="706485">C. Bacteria</option><option value="689485">D. Grazing Google Goats</option></select>
+              &nbsp;
+              <input id="dsb-submit-clarification-button" type="submit" value="Ask">
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- Too many pending clarifications -->
+      <div id="dsb-cannot-ask-question-text" style="font-weight: bold; padding: 0.5em 0px 0.3em; display: block;">You cannot ask questions at this time. Please email us at codejam@google.com.</div>
+
+    </div>
+
+    <div id="dsb-submissions-page" class="dsb-content-pages">
+      <div id="dsb-submissions-status" class="dsb-sub-status-msg">
+        You have 0 submissions.
+      </div>
+      <table id="dsb-submissions-table" class="dsb-sub-main-table" style="display:none">
+      <thead>
+        <tr id="dsb-sub-main-table-header">
+          <th class="dsb-sub-row-id-width">ID</th>
+          <th class="dsb-sub-name-width">Problem</th>
+          <th class="dsb-sub-difficulty-width">Size</th>
+          <th class="dsb-sub-input-width">Input</th>
+          <th class="dsb-sub-output-width">Output</th>
+          <th class="dsb-sub-source-width">Solution</th>
+          <th class="dsb-sub-status-width">Status</th>
+          <th class="dsb-sub-time-width">Time</th>
+        </tr>
+      </thead>
+      <tbody id="dsb-submissions-rows">
+      </tbody>
+      </table>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+</div>
+
+<div style="height: 3em; clear: both;"></div>
+
+
+
+
+<div id="footer">
+  
+  
+  <p>
+    
+    All problem statements, input data and contest analyses are
+    licensed under the
+    <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution License</a>.
+    
+  </p>
+  
+  <span id="copyright">© 2008-2012 Google</span>
+  <a href="http://www.google.com/">Google Home</a> -
+  <a href="http://code.google.com/codejam/terms.html">Terms and Conditions</a><br><br>
+  <a href="http://developers.google.com/appengine"><img src="./Solution_files/appengine-noborder-120x30.gif"></a>
+  
+</div>
+
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-21302427-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script');
+    ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+<div style="height: 1em">&nbsp;</div>
+
+<script type="text/javascript">
+GCJ.initHistory();
+</script><input type="text" name="history_state0" id="history_state0" style="display:none">
+
+
+
+
+</div></body></html>

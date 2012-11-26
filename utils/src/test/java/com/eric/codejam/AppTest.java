@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.junit.Test;
 
 import com.eric.codejam.geometry.Line;
 import com.eric.codejam.geometry.Point;
+import com.eric.codejam.geometry.Polygon;
 import com.eric.codejam.geometry.Rectangle;
 import com.eric.codejam.utils.GraphAdjList;
 //import static org.junit.Assert.assertEquals;
@@ -33,16 +35,31 @@ public class AppTest
     }
     
     @Test
+    public void testPolygon() {
+        List<Point> points = new ArrayList<>();
+        points.add(new Point(3,4));
+        points.add(new Point(5,6));
+        points.add(new Point(9,5));
+        points.add(new Point(12,8));
+        points.add(new Point(5,11));
+        
+        
+        double area = Polygon.area(points);
+        
+        assertEquals(30, area, 0.00001d);
+    }
+    
+    @Test
     public void isBetween() {
         Line l = new Line(2, 1);
         Point a = l.getPointGivenX(3);
         Point b = l.getPointGivenX(-3);
         Point c = l.getPointGivenX(2);
         
-        assertTrue(l.isBetween(b,a,c));
-        assertFalse(l.isBetween(a,c,b));
-        assertTrue(l.isBetween(a,b,c));
-        assertFalse(l.isBetween(c,b,a));
+        assertTrue(Line.isBetween(b,a,c));
+        assertFalse(Line.isBetween(a,c,b));
+        assertTrue(Line.isBetween(a,b,c));
+        assertFalse(Line.isBetween(c,b,a));
     }
 
     @Test
