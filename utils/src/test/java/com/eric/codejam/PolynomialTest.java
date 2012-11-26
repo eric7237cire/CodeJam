@@ -10,6 +10,14 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eric.codejam.polynomial.AddTerms;
+import com.eric.codejam.polynomial.CoefficientTerm;
+import com.eric.codejam.polynomial.MultTerms;
+import com.eric.codejam.polynomial.Polynomial;
+import com.eric.codejam.polynomial.PowerTerm;
+import com.eric.codejam.polynomial.Term;
+import com.eric.codejam.polynomial.VariableTerm;
+
 public class PolynomialTest {
     final static Logger log = LoggerFactory.getLogger(PolynomialTest.class);
     

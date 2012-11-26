@@ -1,4 +1,4 @@
-package com.eric.codejam;
+package com.eric.codejam.polynomial;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -12,13 +12,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Ordering;
 
 public class Polynomial {
     Term addTerms;
     
-    Polynomial(Polynomial p) {
+    public Polynomial(Polynomial p) {
         if (addTerms instanceof AddTerms) {
             List<Term> terms = new ArrayList<>();
             terms.addAll( ((AddTerms) p.addTerms).getTerms() );
@@ -28,7 +27,7 @@ public class Polynomial {
         }
     }
     
-	Polynomial(String s) {
+	public Polynomial(String s) {
 		super();
 		List<Term> terms = new ArrayList<>();
 		String[] termStrList = s.split("\\+");
@@ -106,7 +105,7 @@ public class Polynomial {
 
     }
 
-	 static Term parseTerms(String str) {
+	 public static Term parseTerms(String str) {
 	        ArrayList<Term> terms = new ArrayList<>();
 
 	        String[] strList = new String[] { str };
@@ -147,7 +146,7 @@ public class Polynomial {
 	        
 	    }
 	
-	Polynomial() {
+	public Polynomial() {
 	    addTerms = new AddTerms();
 	}
 

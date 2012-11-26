@@ -12,6 +12,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eric.codejam.polynomial.AddTerms;
+import com.eric.codejam.polynomial.CoefficientTerm;
+import com.eric.codejam.polynomial.Polynomial;
+import com.eric.codejam.polynomial.Term;
+import com.eric.codejam.polynomial.VariableTerm;
+
 public class Main {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
@@ -23,14 +29,11 @@ public class Main {
 
     public static void handleCase(int caseNumber, Scanner scanner,
             PrintStream os) {
-        //os.println("thonetuhhu");
-        Main m = Main.buildMain(scanner);
-       // os.println("thonetuhhu");
-        //List<Integer> total = m.doPerms();
 
-        List<Integer> total = null;
+        Main m = Main.buildMain(scanner);
+
         List<Integer> total2 = m.usePoly();
-//os.println("thonetuhhu");
+
         log.info("Starting case {}\n total {}\n total poly {}", caseNumber,
                  total2);
 

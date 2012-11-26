@@ -1,4 +1,4 @@
-package com.eric.codejam;
+package com.eric.codejam.polynomial;
 
 import java.util.Map;
 
