@@ -27,7 +27,7 @@
   <logger name="com.eric.codejam.multithread" level="OFF"/>
   <logger name="com.eric.codejam.SingleRowSolver" level="OFF" />
    -->
-  <root level="${root-level:-DEBUG}">
+  <root level="${root-level:-INFO}">
     <appender-ref ref="console"/>
   </root>
 </configuration>

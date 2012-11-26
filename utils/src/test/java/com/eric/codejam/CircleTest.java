@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eric.codejam.geometry.Angle;
 import com.eric.codejam.geometry.Circle;
 import com.eric.codejam.geometry.Line;
 import com.eric.codejam.geometry.Point;
@@ -18,6 +19,24 @@ public class CircleTest {
     private final static double DOUBLE_THRESHOLD = 0.000001d;
 
     final static Logger log = LoggerFactory.getLogger(AppTest.class);
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPolar() {
+        Angle.comparePolar(1.57, 2.5, 1.8, 2.6);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testPolar2() {
+        Angle.comparePolar(Math.PI, -Math.PI / 2, Math.PI + .35, -Math.PI / 4);
+    }
+
+    public void testPolar3() {
+        int c = Angle.comparePolar(3, -3, -Math.PI - .03, Math.PI - .02);
+        assertEquals(-1, c);
+
+        c = Angle.comparePolar(3, -3, -Math.PI - .03, Math.PI - .04);
+        assertEquals(1, c);
+    }
 
     @Test
     public void testIntersectionCircles() {
