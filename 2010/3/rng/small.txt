@@ -1,0 +1,55 @@
+Case #1: 10
+Case #2: I don't know
+Case #3: 6
+Case #4: 14
+Case #5: 0
+Case #6: 0
+Case #7: 10
+Case #8: 10
+Case #9: I don't know
+Case #10: I don't know
+Case #11: I don't know
+Case #12: 445
+Case #13: I don't know
+Case #14: I don't know
+Case #15: I don't know
+Case #16: 0
+Case #17: I don't know
+Case #18: 5234
+Case #19: 0
+Case #20: 1
+Case #21: I don't know
+Case #22: 6511
+Case #23: 371
+Case #24: 1012
+Case #25: I don't know
+Case #26: 3246
+Case #27: 3750
+Case #28: 1464
+Case #29: 3627
+Case #30: 467
+Case #31: I don't know
+Case #32: I don't know
+Case #33: 76
+Case #34: 2936
+Case #35: 362
+Case #36: 259
+Case #37: I don't know
+Case #38: 522
+Case #39: I don't know
+Case #40: 2671
+Case #41: I don't know
+Case #42: 315
+Case #43: I don't know
+Case #44: 354
+Case #45: I don't know
+Case #46: 1746
+Case #47: I don't know
+Case #48: 504
+Case #49: I don't know
+Case #50: 2515
+Case #51: I don't know
+Case #52: 46
+Case #53: I don't know
+Case #54: 498
+Case #55: I don't know

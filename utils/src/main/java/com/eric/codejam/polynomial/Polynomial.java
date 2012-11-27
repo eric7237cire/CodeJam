@@ -40,6 +40,10 @@ public class Polynomial {
 	}
 	
 
+    public Term getAddTerms() {
+        return addTerms;
+    }
+
     static Term parseBinomialTerm(String[] strList) {
 
         Pattern binoPat = Pattern

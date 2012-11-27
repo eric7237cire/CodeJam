@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import com.eric.codejam.test.TesterBase;
 
+import static org.junit.Assert.*;
+
 /**
  * Unit test for simple App.
  */
