@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- For assistance related to logback-translator or configuration  -->
+<!-- files in general, please contact the logback user mailing list -->
+<!-- at http://www.qos.ch/mailman/listinfo/logback-user             -->
+<!--                                                                -->
+<!-- For professional support please see                            -->
+<!--    http://www.qos.ch/shop/products/professionalSupport         -->
+<!--                                                                -->
+<configuration>
+  <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss:SSS} %r - %m%n</pattern>
+    </encoder>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>DEBUG</level>
+    </filter>
+  </appender>
+  <!-- 
+   <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>myApp.log</file>
+    <append>false</append>
+    <encoder>
+      <pattern>%date [%file:%line] %msg%n</pattern>
+    </encoder>
+  </appender>
+  
+  <logger name="com.eric.codejam.multithread" level="OFF"/>
+  <logger name="com.eric.codejam.SingleRowSolver" level="OFF" />
+   -->
+      <logger name="com.eric.codejam.main" level="DEBUG"/>
+  <root level="${root-level:-DEBUG}">
+    <appender-ref ref="console"/>
+  </root>
+</configuration>

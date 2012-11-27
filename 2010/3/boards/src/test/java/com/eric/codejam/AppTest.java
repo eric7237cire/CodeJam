@@ -1,0 +1,66 @@
+package com.eric.codejam;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.eric.codejam.test.TesterBase;
+import static org.junit.Assert.*;
+
+/**
+ * Unit test for simple App.
+ */
+public class AppTest extends TesterBase {
+
+    final static Logger log = LoggerFactory.getLogger(AppTest.class);
+
+    /**
+     * Create the test case
+     * 
+     * @param testName
+     *            name of the test case
+     */
+    public AppTest() {
+        super();
+    }
+
+    @Override
+    protected String getOutput(String testCaseData) throws IOException {
+
+        Main m = new Main();
+
+        InputData input = m.readInput(new BufferedReader(new StringReader(
+                testCaseData)), 1);
+
+        String output = m.handleCase(1, input);
+
+        log.info(output);
+        return output.trim();
+    }
+
+    
+
+    @Test
+    public void testSolve() {
+        int[] coins = new int[] { 1, 5, 7 };
+        Main m = new Main();
+        int min = m.solve(11,coins.length-1,coins);
+        assertEquals(3, min);
+        
+        min = m.solve(12,2,coins);
+        
+        assertEquals(2, min);
+        
+        min = m.solve(30,coins.length-1,coins);
+        assertEquals(6, min);
+        
+        coins = new int[] { 7, 12, 14 };
+        min = m.solve(15,coins.length-1, coins);
+        
+        assertTrue("Min " + min, Main.INVALID <=  min);
+    }
+}
