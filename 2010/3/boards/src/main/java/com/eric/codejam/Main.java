@@ -49,14 +49,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             
             long sum = 0;
             int rest = Ints.checkedCast(input.L % input.boardLens[maxBoardIndex]);
+            sum = input.L / input.boardLens[maxBoardIndex];
             
-            int boardValues = solve_mod(0, input.boardLens[maxBoardIndex], maxBoardIndex-1, input.boardLens, false, rest);
             
-            if (boardValues >= INVALID)
-                continue;
+            //int boardValues = solve_mod(0, input.boardLens[maxBoardIndex], maxBoardIndex-1, input.boardLens, false, rest);
+            
+            
             
             int boardNum = solve_mod(0, input.boardLens[maxBoardIndex], maxBoardIndex-1, input.boardLens, true,rest);
-            sum = (input.L - boardValues) / input.boardLens[maxBoardIndex];
+            if (boardNum >= INVALID)
+                continue;
             sum += boardNum;
             //sum += solve(rest, maxBoardIndex-1, input.boardLens); 
             
@@ -77,7 +79,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     int[][] memoize_mod_board_len;
     int[][] memoize_mod_board_count;
     
-    public int solve_mod(int currentRemainder, int mod, int maxBoardIndex, int[] boardLengths, boolean boardCount, final int targetRemainder) {
+    public int solve_mod(int currentRemainder, final int mod, int maxBoardIndex, int[] boardLengths, boolean boardCount, final int targetRemainder) {
         
         
         if (currentRemainder < 0) {
@@ -107,8 +109,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         while(true) {
             addedSum += boardLengths[maxBoardIndex];
             numAdded++;
-            int newMod = addedSum % mod;
+            int newMod = addedSum;
+            if (newMod >= mod) {
+                //Here we take a board of length mod off the pile
+                newMod -= mod;
+                addedSum -= mod;
+                numAdded--;
+            }
             Preconditions.checkState(newMod >= 0);
+            Preconditions.checkState(newMod < mod);
             if (seenModValues.contains(newMod)) {
                 break;
             }
