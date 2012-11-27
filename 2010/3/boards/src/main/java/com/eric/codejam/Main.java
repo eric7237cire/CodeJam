@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
+import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<InputData> {
@@ -32,21 +33,28 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         long minSum = Long.MAX_VALUE;
         
-        memoize = new int[MAX_BOARD_LENGTH][MAX_N];
-        for(int i = 0; i < MAX_BOARD_LENGTH; ++i) {
-            for(int j = 0; j < MAX_N; ++j) {
-                memoize[i][j] = -1;
-            }
-        }
+        
         
         for(int maxBoardIndex = input.N - 1; maxBoardIndex >= 0; --maxBoardIndex) {
             
-            
+            log.debug("Case number {} max board index {}", caseNumber, maxBoardIndex);
+            memoize_mod_board_count = new int[MAX_BOARD_LENGTH][MAX_N];
+            memoize_mod_board_len = new int[MAX_BOARD_LENGTH][MAX_N];
+            for(int i = 0; i < MAX_BOARD_LENGTH; ++i) {
+                for(int j = 0; j < MAX_N; ++j) {
+                    memoize_mod_board_count[i][j] = -1;
+                    memoize_mod_board_len[i][j] = -1;
+                }
+            }
             
             long sum = 0;
             int rest = Ints.checkedCast(input.L % input.boardLens[maxBoardIndex]);
-            sum = (input.L ) / input.boardLens[maxBoardIndex];
+            
             int boardValues = solve_mod(0, input.boardLens[maxBoardIndex], maxBoardIndex-1, input.boardLens, false, rest);
+            
+            if (boardValues >= INVALID)
+                continue;
+            
             int boardNum = solve_mod(0, input.boardLens[maxBoardIndex], maxBoardIndex-1, input.boardLens, true,rest);
             sum = (input.L - boardValues) / input.boardLens[maxBoardIndex];
             sum += boardNum;
@@ -58,13 +66,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         //DecimalFormat decim = new DecimalFormat("0.00000000000");
         //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
         
-        return ("Case #" + caseNumber + ": " + minSum );
+        if ( minSum ==Long.MAX_VALUE)
+        return ("Case #" + caseNumber + ": IMPOSSIBLE");
+        else
+            return ("Case #" + caseNumber + ": " + minSum);
     }
     
-    final static int INVALID = 10000; 
-    int[][] memoize;
+    final static int INVALID = 10000000; 
+    //int[][] memoize;
+    int[][] memoize_mod_board_len;
+    int[][] memoize_mod_board_count;
     
     public int solve_mod(int currentRemainder, int mod, int maxBoardIndex, int[] boardLengths, boolean boardCount, final int targetRemainder) {
+        
         
         if (currentRemainder < 0) {
             return INVALID;
@@ -74,6 +88,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         } 
         if (maxBoardIndex < 0) {
             return INVALID;
+        }
+        
+        if (boardCount && memoize_mod_board_count[currentRemainder][maxBoardIndex] >= 0) {
+            return memoize_mod_board_count[currentRemainder][maxBoardIndex];
+        }
+        if (!boardCount && memoize_mod_board_len[currentRemainder][maxBoardIndex] >= 0) {
+            return memoize_mod_board_len[currentRemainder][maxBoardIndex];
         }
         
         Set<Integer> seenModValues = new HashSet<Integer>();
@@ -87,12 +108,20 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             addedSum += boardLengths[maxBoardIndex];
             numAdded++;
             int newMod = addedSum % mod;
+            Preconditions.checkState(newMod >= 0);
             if (seenModValues.contains(newMod)) {
                 break;
             }
             seenModValues.add(newMod);
             int cost = (boardCount ? numAdded : addedSum) + solve_mod( (currentRemainder + addedSum) % mod, mod, maxBoardIndex -1, boardLengths, boardCount, targetRemainder);
             minCost = Math.min(minCost,cost);
+        }
+        
+        if (boardCount ) {
+             memoize_mod_board_count[currentRemainder][maxBoardIndex] = minCost;
+        }
+        if (!boardCount) {
+             memoize_mod_board_len[currentRemainder][maxBoardIndex] = minCost;
         }
             
         return minCost;
@@ -161,8 +190,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-            args = new String[] { "sample.txt" };
-           // args = new String[] { "B-small-practice.in" };
+           // args = new String[] { "sample.txt" };
+            args = new String[] { "B-small-practice.in" };
 //            args = new String[] { "B-large-practice.in" };
          }
          log.info("Input file {}", args[0]);
