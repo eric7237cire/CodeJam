@@ -56,7 +56,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             
             
             
-            int boardNum = solve_mod(0, input.boardLens[maxBoardIndex], maxBoardIndex-1, input.boardLens, true,rest);
+            int boardNum = solve_mod(0, input.boardLens[maxBoardIndex], maxBoardIndex-1, input.boardLens, rest);
             if (boardNum >= INVALID)
                 continue;
             sum += boardNum;
@@ -79,7 +79,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     int[][] memoize_mod_board_len;
     int[][] memoize_mod_board_count;
     
-    public int solve_mod(int currentRemainder, final int mod, int maxBoardIndex, int[] boardLengths, boolean boardCount, final int targetRemainder) {
+    public int solve_mod(int currentRemainder, final int mod, int maxBoardIndex, int[] boardLengths,  final int targetRemainder) {
         
         
         if (currentRemainder < 0) {
@@ -92,17 +92,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             return INVALID;
         }
         
-        if (boardCount && memoize_mod_board_count[currentRemainder][maxBoardIndex] >= 0) {
+        if ( memoize_mod_board_count[currentRemainder][maxBoardIndex] >= 0) {
             return memoize_mod_board_count[currentRemainder][maxBoardIndex];
-        }
-        if (!boardCount && memoize_mod_board_len[currentRemainder][maxBoardIndex] >= 0) {
-            return memoize_mod_board_len[currentRemainder][maxBoardIndex];
         }
         
         Set<Integer> seenModValues = new HashSet<Integer>();
         int minCost = INVALID;
         
-        minCost = solve_mod(currentRemainder,mod,maxBoardIndex-1, boardLengths, boardCount,targetRemainder);
+        minCost = solve_mod(currentRemainder,mod,maxBoardIndex-1, boardLengths, targetRemainder);
         
         int addedSum = 0;
         int numAdded = 0;
@@ -122,16 +119,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 break;
             }
             seenModValues.add(newMod);
-            int cost = (boardCount ? numAdded : addedSum) + solve_mod( (currentRemainder + addedSum) % mod, mod, maxBoardIndex -1, boardLengths, boardCount, targetRemainder);
+            int cost =  numAdded  + solve_mod( (currentRemainder + addedSum) % mod, mod, maxBoardIndex -1, boardLengths, targetRemainder);
             minCost = Math.min(minCost,cost);
         }
         
-        if (boardCount ) {
-             memoize_mod_board_count[currentRemainder][maxBoardIndex] = minCost;
-        }
-        if (!boardCount) {
-             memoize_mod_board_len[currentRemainder][maxBoardIndex] = minCost;
-        }
+        memoize_mod_board_count[currentRemainder][maxBoardIndex] = minCost;
             
         return minCost;
     }
