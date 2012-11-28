@@ -3,9 +3,13 @@ package com.eric.codejam;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import mod.GCD;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +49,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         solve_mod_inner = 0;
         solve_mod_outer = 0;
     
-        for(int maxBoardIndex = input.N - 1; maxBoardIndex >= 0; --maxBoardIndex) {
+        for(int maxBoardIndex = input.N - 1; maxBoardIndex >= input.N - 1; --maxBoardIndex) {
             
          //   log.debug("Case number {} max board index {}", caseNumber, maxBoardIndex);
             
@@ -99,13 +103,18 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             
            // log.debug("Case number {} max board index {} sum {} boardNum {}", caseNumber, maxBoardIndex, sum, boardNum);
             
+            int maxBigBoardsToAdd = maxBoardIndex == 0 ? 0 : 1+(input.boardLens[maxBoardIndex] - rest) / (input.boardLens[maxBoardIndex] - input.boardLens[maxBoardIndex-1]); 
+            
+            maxBigBoardsToAdd = 100000;
+            
             int boardNum = solve_mod(rest, input.boardLens[maxBoardIndex],
-                    maxBoardIndex - 1, input.boardLens);
+                    maxBoardIndex - 1, input.boardLens, maxBigBoardsToAdd);
             if (boardNum >= INVALID)
                 continue;
             sum += boardNum;
 
-/*            
+            
+            if (caseNumber == 29) {
             int counter  = 0;
             while(counter < 1000) {
                 
@@ -120,7 +129,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 
                 ++counter;
             }
- */           
+            }
             
             //sum += solve(rest, maxBoardIndex-1, input.boardLens); 
            
@@ -145,7 +154,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     long solve_mod_outer;
     long solve_mod_inner;
     
-    public int solve_mod(final int boardLengthNeeded, final int mod, int maxBoardIndex, int[] boardLengths) {
+    public int solve_mod(final int boardLengthNeeded, final int mod, int maxBoardIndex, int[] boardLengths, final int maxBoardsToAdd) {
         
         if (boardLengthNeeded == 0) {
             return 0;
@@ -160,11 +169,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         ++solve_mod_outer;
         
+        int possibleBoardsToAdd = maxBoardsToAdd;
+        
         //log.debug("Solve mod board len needed {} board index {}  mod {}", boardLengthNeeded, maxBoardIndex, mod);
         //Set<Integer> seenModValues = new HashSet<Integer>();
         int minCost = INVALID;
         
-        minCost = solve_mod(boardLengthNeeded,mod,maxBoardIndex-1, boardLengths);
+        minCost = solve_mod(boardLengthNeeded,mod,maxBoardIndex-1, boardLengths, maxBoardsToAdd);
         
         //diff = current sum - L
         
@@ -175,8 +186,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         while(true) {
             ++solve_mod_inner;
             
-            if (solve_mod_inner % 100000 == 0) {
-             //log.debug("Outer {} inner {} Cycle length {} maxBoardIndex {}", solve_mod_outer, solve_mod_inner/solve_mod_outer,numAdded, maxBoardIndex);
+            if (solve_mod_inner % 10000000 == 0) {
+             log.debug("Outer {} inner {} Cycle length {} maxBoardIndex {}", solve_mod_outer, solve_mod_inner/solve_mod_outer,numAdded, maxBoardIndex);
             }
             currentLengthNeeded -= boardLengths[maxBoardIndex];
             numAdded++;
@@ -185,6 +196,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 //We added too many, take a big log off the pile
                 currentLengthNeeded += mod;
                 numAdded --;
+                possibleBoardsToAdd --;
             }
 //            Preconditions.checkState(newMod >= 0);
             //Preconditions.checkState(newMod < mod);
@@ -192,11 +204,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 //log.debug("Cycle length {}", numAdded);
                 break;
             }
+            
+            if (possibleBoardsToAdd < 0) {
+                break;
+            }
           //  seenModValues.add(currentLengthNeeded);
             
             //int numTakenAway = (currentLengthNeeded - boardLengthNeeded) / mod;
             
-            int cost =  numAdded + solve_mod( currentLengthNeeded , mod, maxBoardIndex -1, boardLengths);
+            int cost =  numAdded + solve_mod( currentLengthNeeded , mod, maxBoardIndex -1, boardLengths,possibleBoardsToAdd);
             minCost = Math.min(minCost,cost);
             
         }
@@ -259,7 +275,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
            
         }
         
-        Arrays.sort(input.boardLens);
+        List<Integer> ii = Arrays.asList(ArrayUtils.toObject(input.boardLens));
+        SortedSet<Integer> ss = new TreeSet<Integer>(ii);
+        
+        Integer[] array = new Integer[ss.size()];
+        ss.toArray(array);
+        input.boardLens = ArrayUtils.toPrimitive(array);
+        
+        input.N = input.boardLens.length;
         
         return input;
         
