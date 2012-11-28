@@ -56,7 +56,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             
             
             
-            int boardNum = solve_mod(0, input.boardLens[maxBoardIndex], maxBoardIndex-1, input.boardLens, rest);
+            int boardNum = solve_mod(rest, input.boardLens[maxBoardIndex], maxBoardIndex-1, input.boardLens, 0);
             if (boardNum >= INVALID)
                 continue;
             sum += boardNum;
@@ -79,7 +79,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     int[][] memoize_mod_board_len;
     int[][] memoize_mod_board_count;
     
-    public int solve_mod(int currentRemainder, final int mod, int maxBoardIndex, int[] boardLengths,  final int targetRemainder) {
+    public int solve_mod(final int currentRemainder, final int mod, int maxBoardIndex, int[] boardLengths,  final int targetRemainder) {
         
         
         if (currentRemainder < 0) {
@@ -106,12 +106,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         while(true) {
             addedSum += boardLengths[maxBoardIndex];
             numAdded++;
-            int newMod = addedSum;
+            int newMod = addedSum % mod;
             if (newMod >= mod) {
                 //Here we take a board of length mod off the pile
-                newMod -= mod;
-                addedSum -= mod;
-                numAdded--;
+                //newMod -= mod;
+                //addedSum -= mod;
+                //numAdded--;
             }
             Preconditions.checkState(newMod >= 0);
             Preconditions.checkState(newMod < mod);
@@ -119,7 +119,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 break;
             }
             seenModValues.add(newMod);
-            int cost =  numAdded  + solve_mod( (currentRemainder + addedSum) % mod, mod, maxBoardIndex -1, boardLengths, targetRemainder);
+            
+            int numTakenAway = (addedSum - currentRemainder) / mod;
+            
+            int cost =  numAdded - numTakenAway + solve_mod( (addedSum - currentRemainder ) % mod, mod, maxBoardIndex -1, boardLengths, targetRemainder);
             minCost = Math.min(minCost,cost);
         }
         
