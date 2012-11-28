@@ -79,54 +79,52 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     int[][] memoize_mod_board_len;
     int[][] memoize_mod_board_count;
     
-    public int solve_mod(final int currentRemainder, final int mod, int maxBoardIndex, int[] boardLengths,  final int targetRemainder) {
+    public int solve_mod(final int boardLengthNeeded, final int mod, int maxBoardIndex, int[] boardLengths,  final int targetRemainder) {
         
-        
-        if (currentRemainder < 0) {
-            return INVALID;
-        }
-        if (currentRemainder == targetRemainder) {
+        if (boardLengthNeeded == targetRemainder) {
             return 0;
         } 
         if (maxBoardIndex < 0) {
             return INVALID;
         }
         
-        if ( memoize_mod_board_count[currentRemainder][maxBoardIndex] >= 0) {
-            return memoize_mod_board_count[currentRemainder][maxBoardIndex];
+        if ( memoize_mod_board_count[boardLengthNeeded][maxBoardIndex] >= 0) {
+            return memoize_mod_board_count[boardLengthNeeded][maxBoardIndex];
         }
         
         Set<Integer> seenModValues = new HashSet<Integer>();
         int minCost = INVALID;
         
-        minCost = solve_mod(currentRemainder,mod,maxBoardIndex-1, boardLengths, targetRemainder);
+        minCost = solve_mod(boardLengthNeeded,mod,maxBoardIndex-1, boardLengths, targetRemainder);
         
-        int addedSum = 0;
+        //diff = current sum - L
+        
+        
+        int currentLengthNeeded = boardLengthNeeded;
         int numAdded = 0;
         while(true) {
-            addedSum += boardLengths[maxBoardIndex];
+            currentLengthNeeded -= boardLengths[maxBoardIndex];
             numAdded++;
-            int newMod = addedSum % mod;
-            if (newMod >= mod) {
-                //Here we take a board of length mod off the pile
-                //newMod -= mod;
-                //addedSum -= mod;
-                //numAdded--;
+            
+            if (currentLengthNeeded < 0) {
+                //We added too many, take a big log off the pile
+                currentLengthNeeded += mod;
+                numAdded --;
             }
-            Preconditions.checkState(newMod >= 0);
-            Preconditions.checkState(newMod < mod);
-            if (seenModValues.contains(newMod)) {
+//            Preconditions.checkState(newMod >= 0);
+            //Preconditions.checkState(newMod < mod);
+            if (seenModValues.contains(currentLengthNeeded)) {
                 break;
             }
-            seenModValues.add(newMod);
+            seenModValues.add(currentLengthNeeded);
             
-            int numTakenAway = (addedSum - currentRemainder) / mod;
+            //int numTakenAway = (currentLengthNeeded - boardLengthNeeded) / mod;
             
-            int cost =  numAdded - numTakenAway + solve_mod( (addedSum - currentRemainder ) % mod, mod, maxBoardIndex -1, boardLengths, targetRemainder);
+            int cost =  numAdded + solve_mod( currentLengthNeeded , mod, maxBoardIndex -1, boardLengths, targetRemainder);
             minCost = Math.min(minCost,cost);
         }
         
-        memoize_mod_board_count[currentRemainder][maxBoardIndex] = minCost;
+        memoize_mod_board_count[boardLengthNeeded][maxBoardIndex] = minCost;
             
         return minCost;
     }
