@@ -18,6 +18,7 @@ import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 import com.google.common.base.Preconditions;
 import com.google.common.math.IntMath;
+import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<InputData> {
@@ -26,6 +27,30 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     
     final static int MAX_BOARD_LENGTH = 100000;
     final static int MAX_N = 100;
+    
+    static public void solve(int a, int b, long L) {
+        int gcd_ab = IntMath.gcd(a,b);
+        int[] st = GCD.gcdExtended(a,b);
+        Preconditions.checkState(st[0] == gcd_ab);
+        int s = st[1];
+        int t = st[2];
+        
+        if (L % gcd_ab != 0) {
+            log.debug("No solutions");
+            return;
+        }
+        
+        long x_0 = s*L / gcd_ab;
+        long y_0 = t *L / gcd_ab;
+        
+        long start = LongMath.pow(10,8); 
+        for(long k = -start; k <= -start +15; ++k) {
+            long x = x_0 + b*k / gcd_ab;
+            long y = y_0 - a*k  / gcd_ab;
+            log.debug("Solution x: [{}] y: [{}] to {}x + {}y = {}",x,y,a,b,L);
+            Preconditions.checkState(a*x + b*y == L);
+        }
+    }
     
     @Override
     public String handleCase(int caseNumber, InputData input) {
@@ -37,7 +62,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         log.info("Done calculating answer case {}", caseNumber);
         
         long minSum = Long.MAX_VALUE;
-        
+        /*
         memoize_mod_board_count = new int[MAX_BOARD_LENGTH][MAX_N];
         memoize = new int[MAX_BOARD_LENGTH][MAX_N];
         for(int i = 0; i < MAX_BOARD_LENGTH; ++i) {
@@ -48,16 +73,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         }
         solve_mod_inner = 0;
         solve_mod_outer = 0;
-    
+    */
         for(int maxBoardIndex = input.N - 1; maxBoardIndex >= input.N - 1; --maxBoardIndex) {
             
          //   log.debug("Case number {} max board index {}", caseNumber, maxBoardIndex);
             
             
             
-            long sum = 0;
+            final long sum = input.L / input.boardLens[maxBoardIndex];
             int rest = Ints.checkedCast(input.L % input.boardLens[maxBoardIndex]);
-            sum = input.L / input.boardLens[maxBoardIndex];
+            
             
             
             //
@@ -105,37 +130,49 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             
             int maxBigBoardsToAdd = maxBoardIndex == 0 ? 0 : 1+(input.boardLens[maxBoardIndex] - rest) / (input.boardLens[maxBoardIndex] - input.boardLens[maxBoardIndex-1]); 
             
-            maxBigBoardsToAdd = 100000;
+            maxBigBoardsToAdd = 15;
             
+            /*
             int boardNum = solve_mod(rest, input.boardLens[maxBoardIndex],
                     maxBoardIndex - 1, input.boardLens, maxBigBoardsToAdd);
             if (boardNum >= INVALID)
                 continue;
-            sum += boardNum;
-
             
-            if (caseNumber == 29) {
-            int counter  = 0;
-            while(counter < 1000) {
+            long newSum = sum + boardNum;
+            minSum = Math.min(newSum,minSum);
+            */
+  
+            int maxLen =  300000000; //input.boardLens[maxBoardIndex] * 20;
+            solve_iter(maxLen, input.boardLens);
+            
+            int bigBoardsRemoved  = 0;
+            while(true) {
                 
-                Preconditions.checkState(counter < 1000);
-                int check = solve(rest, maxBoardIndex-1, input.boardLens);
-                log.debug("Rest {} k {} k rem {}.  check {}.  counter {}  diff {}", rest, k, k_rem,check,counter,check-counter);
+                //Preconditions.checkState(bigBoardsRemoved < 1000);
+                if (rest > maxLen)
+                    break;
+                
+                int boardsNeeded = memo[rest];//, maxBoardIndex-1, input.boardLens);
+                       
+                long newSum = sum + boardsNeeded - bigBoardsRemoved;
+                minSum = Math.min(newSum,minSum);
+            //    log.debug("Rest {} k {} k rem {}.  check {}.  counter {}  diff {}", rest, k, k_rem,boardsNeeded,bigBoardsRemoved,boardsNeeded-bigBoardsRemoved);
                 
                 rest += input.boardLens[maxBoardIndex];
                 k = rest / gcd;
                 k_rem = rest % gcd;
+            
                 
                 
-                ++counter;
+                ++bigBoardsRemoved;
             }
-            }
+            
             
             //sum += solve(rest, maxBoardIndex-1, input.boardLens); 
            
             
             
-            minSum = Math.min(sum,minSum);
+           // minSum = Math.min(sum,minSum);
         }
         
         //DecimalFormat decim = new DecimalFormat("0.00000000000");
@@ -187,7 +224,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             ++solve_mod_inner;
             
             if (solve_mod_inner % 10000000 == 0) {
-             log.debug("Outer {} inner {} Cycle length {} maxBoardIndex {}", solve_mod_outer, solve_mod_inner/solve_mod_outer,numAdded, maxBoardIndex);
+             log.debug("Outer {} inner {} Num added {} possible to add {} maxBoardIndex {}", 
+                     solve_mod_outer, solve_mod_inner/solve_mod_outer,numAdded, possibleBoardsToAdd, maxBoardIndex);
             }
             currentLengthNeeded -= boardLengths[maxBoardIndex];
             numAdded++;
@@ -221,6 +259,29 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             
         return minCost;
     }
+    
+    public int[] memo;
+    // f i n d t h e minimum number o f c o i n s nee de d t o make N
+    public int solve_iter(int targetLength, int[] boardLength) {
+
+        memo = new int[targetLength + 1];
+        // b a s e c a s e
+        memo[0] = 0;
+        // f i l l i n memo a r r a y
+
+        for (int i = 1; i <= targetLength; ++i) {
+            memo[i] = INVALID;
+
+            for (int j = 0; j < boardLength.length; ++j) {
+                if (boardLength[j] <= i) {
+                    memo[i] = Math.min(memo[i], 1 + memo[i - boardLength[j]]);
+                }
+            }
+        }
+    
+        return memo[targetLength];
+    }
+    
     
     public int solve(int targetLength, int maxBoardIndex, int[] boardLengths) {
         
@@ -301,7 +362,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         if (args.length < 1) {
            // args = new String[] { "sample.txt" };
             args = new String[] { "B-small-practice.in" };
-//            args = new String[] { "B-large-practice.in" };
+          //  args = new String[] { "B-large-practice.in" };
          }
          log.info("Input file {}", args[0]);
 

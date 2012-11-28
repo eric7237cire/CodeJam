@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eric.codejam.test.TesterBase;
+import com.google.common.math.LongMath;
+
 import static org.junit.Assert.*;
 
 /**
@@ -42,9 +44,21 @@ public class AppTest extends TesterBase {
         return output.trim();
     }
 
-    
-
     @Test
+    public void testEx() {
+        Main.solve(52,72, 40);
+        
+        Main.solve(1,99, LongMath.pow(10, 10));
+    }
+    
+    @Test
+    public void testSolveIt() {
+        Main m = new Main();
+        m.solve_iter(100, new int[] {23, 51, 100});
+        assertEquals(2, m.memo[46]);
+    }
+
+    
     public void testSolve() {
         int[] coins = new int[] { 1, 5, 7 };
         Main m = new Main();
