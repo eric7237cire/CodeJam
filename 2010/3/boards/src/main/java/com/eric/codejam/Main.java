@@ -19,7 +19,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
     
-    final static int MAX_BOARD_LENGTH = 100;
+    final static int MAX_BOARD_LENGTH = 100000;
     final static int MAX_N = 100;
     
     @Override
@@ -33,19 +33,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         long minSum = Long.MAX_VALUE;
         
-        
-        
+        memoize_mod_board_count = new int[MAX_BOARD_LENGTH][MAX_N];
+        for(int i = 0; i < MAX_BOARD_LENGTH; ++i) {
+            for(int j = 0; j < MAX_N; ++j) {
+                memoize_mod_board_count[i][j] = -1;
+
+            }
+        }
+    
         for(int maxBoardIndex = input.N - 1; maxBoardIndex >= 0; --maxBoardIndex) {
             
             log.debug("Case number {} max board index {}", caseNumber, maxBoardIndex);
-            memoize_mod_board_count = new int[MAX_BOARD_LENGTH][MAX_N];
-            memoize_mod_board_len = new int[MAX_BOARD_LENGTH][MAX_N];
-            for(int i = 0; i < MAX_BOARD_LENGTH; ++i) {
-                for(int j = 0; j < MAX_N; ++j) {
-                    memoize_mod_board_count[i][j] = -1;
-                    memoize_mod_board_len[i][j] = -1;
-                }
-            }
+            
+            
             
             long sum = 0;
             int rest = Ints.checkedCast(input.L % input.boardLens[maxBoardIndex]);
@@ -56,7 +56,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             
             
             
-            int boardNum = solve_mod(rest, input.boardLens[maxBoardIndex], maxBoardIndex-1, input.boardLens, 0);
+            int boardNum = solve_mod(rest, input.boardLens[maxBoardIndex], maxBoardIndex-1, input.boardLens);
             if (boardNum >= INVALID)
                 continue;
             sum += boardNum;
@@ -76,12 +76,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     
     final static int INVALID = 10000000; 
     //int[][] memoize;
-    int[][] memoize_mod_board_len;
+    
     int[][] memoize_mod_board_count;
     
-    public int solve_mod(final int boardLengthNeeded, final int mod, int maxBoardIndex, int[] boardLengths,  final int targetRemainder) {
+    public int solve_mod(final int boardLengthNeeded, final int mod, int maxBoardIndex, int[] boardLengths) {
         
-        if (boardLengthNeeded == targetRemainder) {
+        if (boardLengthNeeded == 0) {
             return 0;
         } 
         if (maxBoardIndex < 0) {
@@ -95,7 +95,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         Set<Integer> seenModValues = new HashSet<Integer>();
         int minCost = INVALID;
         
-        minCost = solve_mod(boardLengthNeeded,mod,maxBoardIndex-1, boardLengths, targetRemainder);
+        minCost = solve_mod(boardLengthNeeded,mod,maxBoardIndex-1, boardLengths);
         
         //diff = current sum - L
         
@@ -120,7 +120,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             
             //int numTakenAway = (currentLengthNeeded - boardLengthNeeded) / mod;
             
-            int cost =  numAdded + solve_mod( currentLengthNeeded , mod, maxBoardIndex -1, boardLengths, targetRemainder);
+            int cost =  numAdded + solve_mod( currentLengthNeeded , mod, maxBoardIndex -1, boardLengths);
             minCost = Math.min(minCost,cost);
         }
         
