@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import mod.GCD;
+
 import org.junit.Test;
 
 import com.eric.codejam.geometry.Line;
@@ -32,6 +34,14 @@ public class AppTest
     public AppTest(  )
     {
         super(  );
+    }
+    
+    @Test
+    public void testGCD() {
+        int[] gcdXY = GCD.gcdExtended(120, 23);
+        assertEquals(1, gcdXY[0]);
+        assertEquals(-9, gcdXY[1]);
+        assertEquals(47, gcdXY[2]);
     }
     
     @Test

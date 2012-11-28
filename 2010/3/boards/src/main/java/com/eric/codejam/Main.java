@@ -13,6 +13,7 @@ import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 import com.google.common.base.Preconditions;
+import com.google.common.math.IntMath;
 import com.google.common.primitives.Ints;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<InputData> {
@@ -40,6 +41,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
 
             }
         }
+        solve_mod_inner = 0;
+        solve_mod_outer = 0;
     
         for(int maxBoardIndex = input.N - 1; maxBoardIndex >= 0; --maxBoardIndex) {
             
@@ -74,10 +77,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             return ("Case #" + caseNumber + ": " + minSum);
     }
     
-    final static int INVALID = 10000000; 
+    final static int INVALID = IntMath.pow(10, 8); 
     //int[][] memoize;
     
     int[][] memoize_mod_board_count;
+    long solve_mod_outer;
+    long solve_mod_inner;
     
     public int solve_mod(final int boardLengthNeeded, final int mod, int maxBoardIndex, int[] boardLengths) {
         
@@ -92,7 +97,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             return memoize_mod_board_count[boardLengthNeeded][maxBoardIndex];
         }
         
-        Set<Integer> seenModValues = new HashSet<Integer>();
+        ++solve_mod_outer;
+        
+        //log.debug("Solve mod board len needed {} board index {}  mod {}", boardLengthNeeded, maxBoardIndex, mod);
+        //Set<Integer> seenModValues = new HashSet<Integer>();
         int minCost = INVALID;
         
         minCost = solve_mod(boardLengthNeeded,mod,maxBoardIndex-1, boardLengths);
@@ -102,7 +110,23 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         int currentLengthNeeded = boardLengthNeeded;
         int numAdded = 0;
+        
+        if (maxBoardIndex == 0) {
+            int canAdd = currentLengthNeeded / boardLengths[maxBoardIndex];
+            if (canAdd > 2) {
+            currentLengthNeeded = currentLengthNeeded - (canAdd - 1) * boardLengths[maxBoardIndex];
+            numAdded = canAdd - 1;
+            }
+        }
+        
+        boolean seenValid = false;
+        
         while(true) {
+            ++solve_mod_inner;
+            
+            if (solve_mod_inner % 100000 == 0) {
+              log.debug("Outer {} inner {} Cycle length {} maxBoardIndex {}", solve_mod_outer, solve_mod_inner/solve_mod_outer,numAdded, maxBoardIndex);
+            }
             currentLengthNeeded -= boardLengths[maxBoardIndex];
             numAdded++;
             
@@ -113,15 +137,28 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             }
 //            Preconditions.checkState(newMod >= 0);
             //Preconditions.checkState(newMod < mod);
-            if (seenModValues.contains(currentLengthNeeded)) {
+            if (currentLengthNeeded == boardLengthNeeded) { //seenModValues.contains(currentLengthNeeded)) {
+                //log.debug("Cycle length {}", numAdded);
                 break;
             }
-            seenModValues.add(currentLengthNeeded);
+          //  seenModValues.add(currentLengthNeeded);
             
             //int numTakenAway = (currentLengthNeeded - boardLengthNeeded) / mod;
             
             int cost =  numAdded + solve_mod( currentLengthNeeded , mod, maxBoardIndex -1, boardLengths);
             minCost = Math.min(minCost,cost);
+            
+           if (cost < INVALID) {
+               seenValid = true;
+           }
+           
+           if (seenValid && cost >= INVALID) {
+               break;
+           }
+            
+            if (maxBoardIndex == 0 && currentLengthNeeded == 0) {
+                break;
+            }
         }
         
         memoize_mod_board_count[boardLengthNeeded][maxBoardIndex] = minCost;
