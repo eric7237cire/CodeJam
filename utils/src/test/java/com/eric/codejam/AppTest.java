@@ -42,6 +42,9 @@ public class AppTest
         assertEquals(1, gcdXY[0]);
         assertEquals(-9, gcdXY[1]);
         assertEquals(47, gcdXY[2]);
+        
+        gcdXY = GCD.gcdExtended(100,2);
+        assertEquals(2, gcdXY[0]);
     }
     
     @Test

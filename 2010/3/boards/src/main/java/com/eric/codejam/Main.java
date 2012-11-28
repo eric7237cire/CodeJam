@@ -3,8 +3,8 @@ package com.eric.codejam;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+
+import mod.GCD;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,10 +35,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         long minSum = Long.MAX_VALUE;
         
         memoize_mod_board_count = new int[MAX_BOARD_LENGTH][MAX_N];
+        memoize = new int[MAX_BOARD_LENGTH][MAX_N];
         for(int i = 0; i < MAX_BOARD_LENGTH; ++i) {
             for(int j = 0; j < MAX_N; ++j) {
                 memoize_mod_board_count[i][j] = -1;
-
+                memoize[i][j] = -1;
             }
         }
         solve_mod_inner = 0;
@@ -46,7 +47,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     
         for(int maxBoardIndex = input.N - 1; maxBoardIndex >= 0; --maxBoardIndex) {
             
-            log.debug("Case number {} max board index {}", caseNumber, maxBoardIndex);
+         //   log.debug("Case number {} max board index {}", caseNumber, maxBoardIndex);
             
             
             
@@ -55,15 +56,75 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             sum = input.L / input.boardLens[maxBoardIndex];
             
             
-            //int boardValues = solve_mod(0, input.boardLens[maxBoardIndex], maxBoardIndex-1, input.boardLens, false, rest);
+            //
+                        
+            int gcd; 
+            if (maxBoardIndex > 1) {
+                gcd = IntMath.gcd(input.boardLens[maxBoardIndex - 1],
+                        input.boardLens[maxBoardIndex - 2]);
+            } else {
+                gcd = input.boardLens[0]; 
+            }
             
+            for (int i = maxBoardIndex - 3; i >= 0; --i) {
+                gcd = IntMath.gcd(gcd, input.boardLens[maxBoardIndex - i]);
+            }
+
+            int gcdMaxRest = IntMath.gcd(gcd,
+                    input.boardLens[maxBoardIndex]);
+
+            // find s and t
+            int[] st = GCD.gcdExtended(input.boardLens[maxBoardIndex], gcd);
+            Preconditions.checkState(gcdMaxRest == st[0]);
+            int s = st[1];
+            int t = st[2];
+
+            // find k
+            int k = rest / gcdMaxRest;
+            int k_rem = rest % gcdMaxRest;
+
+            if (k_rem != 0) {
+                log.debug("invalid {} gcdMaxRest {}", rest, gcdMaxRest);
+                Preconditions.checkState(k_rem != 0);
+                //boardNum >= INVALID
+                continue;
+            } else {
+                Preconditions.checkState(k_rem == 0);
+            }
+
+            if (k_rem == 0) {
+                // log.debug(" gcd[0..maxBoard-1] {} * {} + maxBoard {} * {} = {}",
+                // gcd,s,input.boardLens[maxBoardIndex], t,rest);
+            }
             
+           // log.debug("Case number {} max board index {} sum {} boardNum {}", caseNumber, maxBoardIndex, sum, boardNum);
             
-            int boardNum = solve_mod(rest, input.boardLens[maxBoardIndex], maxBoardIndex-1, input.boardLens);
+            int boardNum = solve_mod(rest, input.boardLens[maxBoardIndex],
+                    maxBoardIndex - 1, input.boardLens);
             if (boardNum >= INVALID)
                 continue;
             sum += boardNum;
+
+/*            
+            int counter  = 0;
+            while(counter < 1000) {
+                
+                Preconditions.checkState(counter < 1000);
+                int check = solve(rest, maxBoardIndex-1, input.boardLens);
+                log.debug("Rest {} k {} k rem {}.  check {}.  counter {}  diff {}", rest, k, k_rem,check,counter,check-counter);
+                
+                rest += input.boardLens[maxBoardIndex];
+                k = rest / gcd;
+                k_rem = rest % gcd;
+                
+                
+                ++counter;
+            }
+ */           
+            
             //sum += solve(rest, maxBoardIndex-1, input.boardLens); 
+           
+            
             
             minSum = Math.min(sum,minSum);
         }
@@ -78,7 +139,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     }
     
     final static int INVALID = IntMath.pow(10, 8); 
-    //int[][] memoize;
+    int[][] memoize;
     
     int[][] memoize_mod_board_count;
     long solve_mod_outer;
@@ -111,21 +172,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         int currentLengthNeeded = boardLengthNeeded;
         int numAdded = 0;
         
-        if (maxBoardIndex == 0) {
-            int canAdd = currentLengthNeeded / boardLengths[maxBoardIndex];
-            if (canAdd > 2) {
-            currentLengthNeeded = currentLengthNeeded - (canAdd - 1) * boardLengths[maxBoardIndex];
-            numAdded = canAdd - 1;
-            }
-        }
-        
-        boolean seenValid = false;
-        
         while(true) {
             ++solve_mod_inner;
             
             if (solve_mod_inner % 100000 == 0) {
-              log.debug("Outer {} inner {} Cycle length {} maxBoardIndex {}", solve_mod_outer, solve_mod_inner/solve_mod_outer,numAdded, maxBoardIndex);
+             //log.debug("Outer {} inner {} Cycle length {} maxBoardIndex {}", solve_mod_outer, solve_mod_inner/solve_mod_outer,numAdded, maxBoardIndex);
             }
             currentLengthNeeded -= boardLengths[maxBoardIndex];
             numAdded++;
@@ -148,17 +199,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             int cost =  numAdded + solve_mod( currentLengthNeeded , mod, maxBoardIndex -1, boardLengths);
             minCost = Math.min(minCost,cost);
             
-           if (cost < INVALID) {
-               seenValid = true;
-           }
-           
-           if (seenValid && cost >= INVALID) {
-               break;
-           }
-            
-            if (maxBoardIndex == 0 && currentLengthNeeded == 0) {
-                break;
-            }
         }
         
         memoize_mod_board_count[boardLengthNeeded][maxBoardIndex] = minCost;
@@ -177,18 +217,25 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         if (maxBoardIndex < 0) {
             return INVALID;
         }
+        if ( memoize[targetLength][maxBoardIndex] >= 0) {
+            return memoize[targetLength][maxBoardIndex];
+        }
         
+        int ret = 0;
         if (maxBoardIndex == 0) {
             if (targetLength % boardLengths[0] == 0) {
-                return targetLength / boardLengths[0];
+                ret = targetLength / boardLengths[0];
             } else {
-                return Integer.MAX_VALUE;
+                ret = Integer.MAX_VALUE;
             }
         } else {
             int s1 = 1 + solve(targetLength - boardLengths[maxBoardIndex], maxBoardIndex, boardLengths);
             int s2 = solve(targetLength, maxBoardIndex - 1, boardLengths);
-            return Math.min(s1,s2);
+            ret = Math.min(s1,s2);
         }
+        
+        memoize[targetLength][maxBoardIndex] = ret;
+        return ret;
     }
     
     
