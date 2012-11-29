@@ -59,7 +59,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         //double ans = DivideConq.findMinPerimTriangle(input.points);
 
-        log.info("Done calculating answer case {}", caseNumber);
+        
         
         long minSum = Long.MAX_VALUE;
         /*
@@ -74,9 +74,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         solve_mod_inner = 0;
         solve_mod_outer = 0;
     */
-        for(int maxBoardIndex = input.N - 1; maxBoardIndex >= input.N - 1; --maxBoardIndex) {
+        int maxLen =  100000000; //input.boardLens[maxBoardIndex] * 20;
+        solve_iter(maxLen, input.boardLens);
+        
+        for(int maxBoardIndex = input.N - 1; maxBoardIndex >= 0; --maxBoardIndex) {
             
-         //   log.debug("Case number {} max board index {}", caseNumber, maxBoardIndex);
+            log.debug("Case number {} max board index {}", caseNumber, maxBoardIndex);
             
             
             
@@ -142,8 +145,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             minSum = Math.min(newSum,minSum);
             */
   
-            int maxLen =  300000000; //input.boardLens[maxBoardIndex] * 20;
-            solve_iter(maxLen, input.boardLens);
+            
             
             int bigBoardsRemoved  = 0;
             while(true) {
@@ -360,8 +362,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-           // args = new String[] { "sample.txt" };
-            args = new String[] { "B-small-practice.in" };
+            args = new String[] { "sample.txt" };
+    //        args = new String[] { "B-small-practice.in" };
           //  args = new String[] { "B-large-practice.in" };
          }
          log.info("Input file {}", args[0]);
