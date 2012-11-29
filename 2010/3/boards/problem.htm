@@ -1,0 +1,939 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0064)http://code.google.com/codejam/contest/639102/dashboard#s=p1&a=1 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="refresh" content="172795">
+  
+  <title>
+    Dashboard - Round 3 2010 - Google Code Jam
+  </title>
+  <link rel="stylesheet" type="text/css" href="./problem_files/base.css">
+  <link rel="stylesheet" type="text/css" href="./problem_files/dashboard.css">
+  
+  <script type="text/javascript" async="" src="./problem_files/ga.js"></script><script type="text/javascript" src="./problem_files/Dashboard_en.js"></script>
+  
+  <script type="text/javascript"><!--
+    /**
+     * Initializes GCJ.problems and GCJ.io from Django parameters.
+     * Also initializes the two user specific variables GCJ.isQualified and
+     * GCJ.lastClarSeenTime.
+     * This is the first function called once from GCJ.main().
+     */
+    GCJ.initContestVariables = function () {
+      // Convert Django's 'contest' to 'GCJ.contest'.
+      GCJ.contest.id = "639102";
+      GCJ.contest.name = "Round 3 2010";
+      GCJ.contest.version = 0;
+      
+        GCJ.contest.version = 3;
+      
+      GCJ.contest.start_int = 1276351200;
+      GCJ.contest.running = false;
+      GCJ.base_url = '/codejam/contest';
+      GCJ.scoreboardLink = ('<a target="new"' +
+                            'href="scoreboard?c=639102"' +
+                            '>Contest scoreboard</a>');
+    }
+
+    /**
+     * Returns the current splash page.
+     */
+    GCJ.getSplashPage = function () {
+      return "/codejam";
+    };
+  //--></script>
+</head>
+
+<body onload="GCJ.main()">
+
+<div id="logo-div">
+  <a href="http://code.google.com/codejam/">
+    <img src="./problem_files/logo_image1.gif" id="logo" alt="Google Code Jam">
+  </a>
+</div>
+
+<div>
+
+<div id="dsb-page-body">
+
+<div id="left-panel">
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <!-- Problem Selection Panel -->
+  <div id="dsb-contest-title">Round 3 2010</div>
+  <hr class="dsb-hr">
+  <div id="dsb-problem-selection-area">
+    <div id="dsb-problem-selection-list" class="after-start-only" style="display: block;">
+    <div><div id="dsb-problem-tab0" class="dsb-problem-tab-close" tabindex="0" role="button">  <div id="dsb-problem-title0" class="dynamic-link">A. De-RNG-ed  </div></div></div><div><div id="dsb-problem-tab1" class="dsb-problem-tab-open" tabindex="0" role="button">  <div id="dsb-problem-title1" class="dynamic-link">B. Fence  </div></div></div><div><div id="dsb-problem-tab2" class="dsb-problem-tab-close" tabindex="0" role="button">  <div id="dsb-problem-title2" class="dynamic-link">C. Hot Dog Proliferation  </div></div></div><div><div id="dsb-problem-tab3" class="dsb-problem-tab-close" tabindex="0" role="button">  <div id="dsb-problem-title3" class="dynamic-link">D. Different Sum  </div></div></div></div>
+    <div id="dsb-problem-selection-list-pre-contest" class="dsb-pre-contest-text before-start-only" style="display: none;">
+      
+      The list of problems will appear here after the contest loads.
+      
+    </div>
+  </div>
+  <hr class="dsb-hr">
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div id="dsb-analysis-button" class="dsb-anal-tab-close" tabindex="0" role="button" style="display: block;">
+    <div class="dynamic-link">
+       <div id="dsb-analysis-tab">
+         Contest Analysis
+       </div>
+    </div>
+  </div>
+  <div id="dsb-ask-question-area">
+    <div id="dsb-ask-question-button" class="dsb-clar-tab-close" tabindex="0" role="button" style="display: block;">
+      <div class="dynamic-link">
+        <div id="dsb-ask-question-tab" class="">Questions asked</div>
+      </div>
+    </div>
+    <div class="dsb-pre-contest-text before-start-only" style="display: none;">
+      
+      You'll be able to ask questions about the problems, and view your
+      submissions, here.
+      
+    </div>
+  </div>
+  <div id="dsb-submissions-button" class="dsb-submissions-tab-close" tabindex="0" role="button" style="display: none;">
+    <div class="dynamic-link">
+      <div id="dsb-submissions-tab">
+        View my submissions
+      </div>
+    </div>
+  </div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div class="dsb-mini-tab-wrapper">
+  <div id="dsb-status-div-container">
+    <div id="dsb-status-header-div" onmouseover="this.style.cursor=&#39;pointer&#39;" onclick="GCJ.toggleStatusPanelVisibility();">
+      <img id="dsb-status-panel-button" src="./problem_files/minus.gif">
+      &nbsp; Submissions
+    </div>
+    <div id="dsb-status-tab" class="after-start-only" style="display: block;">
+      <div id="dsb-status-tab-loading-text" class="dsb-pre-contest-text" style="display: none;">
+        Loading...
+      </div>
+    <div id="dsb-status-tab-problems" style="display: block;"><div><div id="dsb-problem-status-wrapper0" class="problem-status-wrapper">  <div class="dsb-status-problem-title">De-RNG-ed</div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName0_0" class="inputName">4pt</td>      <td class="status">        <div id="selfStat0_0" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat0_0" class="globalStat" style="display: block;"><b>273/325 users</b> correct (84%)</div>      </td>    </tr>  </tbody></table></div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName0_1" class="inputName">10pt</td>      <td class="status">        <div id="selfStat0_1" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat0_1" class="globalStat" style="display: block;"><b>179/231 users</b> correct (77%)</div>      </td>    </tr>  </tbody></table></div></div></div><div><div id="dsb-problem-status-wrapper1" class="problem-status-wrapper">  <div class="dsb-status-problem-title">Fence</div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName1_0" class="inputName">7pt</td>      <td class="status">        <div id="selfStat1_0" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat1_0" class="globalStat" style="display: block;"><b>250/299 users</b> correct (84%)</div>      </td>    </tr>  </tbody></table></div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName1_1" class="inputName">22pt</td>      <td class="status">        <div id="selfStat1_1" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat1_1" class="globalStat" style="display: block;"><b>77/177 users</b> correct (44%)</div>      </td>    </tr>  </tbody></table></div></div></div><div><div id="dsb-problem-status-wrapper2" class="problem-status-wrapper">  <div class="dsb-status-problem-title">Hot Dog Proliferation</div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName2_0" class="inputName">6pt</td>      <td class="status">        <div id="selfStat2_0" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat2_0" class="globalStat" style="display: block;"><b>217/249 users</b> correct (87%)</div>      </td>    </tr>  </tbody></table></div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName2_1" class="inputName">22pt</td>      <td class="status">        <div id="selfStat2_1" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat2_1" class="globalStat" style="display: block;"><b>20/95 users</b> correct (21%)</div>      </td>    </tr>  </tbody></table></div></div></div><div><div id="dsb-problem-status-wrapper3" class="problem-status-wrapper">  <div class="dsb-status-problem-title">Different Sum</div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName3_0" class="inputName">7pt</td>      <td class="status">        <div id="selfStat3_0" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat3_0" class="globalStat" style="display: block;"><b>102/125 users</b> correct (82%)</div>      </td>    </tr>  </tbody></table></div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName3_1" class="inputName">22pt</td>      <td class="status">        <div id="selfStat3_1" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat3_1" class="globalStat" style="display: block;"><b>23/47 users</b> correct (49%)</div>      </td>    </tr>  </tbody></table></div></div></div></div></div>
+    <div id="dsb-status-tab-pre-contest" class="dsb-pre-contest-text before-start-only" style="display: none;">
+      
+      Statistics about the problems will appear here.  They'll include your
+      status on each problem, and other contestants' attempts.
+      
+    </div>
+  </div>
+  </div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <!-- Mini Scoreboard -->
+  <div class="dsb-mini-tab-wrapper">
+    <div id="dsb-scoreboard-div">
+      <div id="dsb-scoreboard-header-div" onmouseover="this.style.cursor=&#39;pointer&#39;" onclick="GCJ.toggleVisibility(
+              &#39;dsb-scoreboard-table&#39;,
+              &#39;dsb-scoreboard-panel-button&#39;,
+              &#39;/codejam/contest/static/minus.gif&#39;,
+              &#39;/codejam/contest/static/plus.gif&#39;)">
+          <img id="dsb-scoreboard-panel-button" src="./problem_files/minus.gif">
+          &nbsp; Top Scores
+      </div>
+      <div id="dsb-scoreboard-table-wrap" class="after-start-only" style="display: block;"><table id="dsb-scoreboard-table"><tbody><tr class="dsb-scoreboard-row-even" id="sbRow_0" style="display: block;"><td class="dsb-name-td" id="sbName_0">Burunduk1</td><td class="dsb-score-td" id="sbScore_0">100</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_1" style="display: block;"><td class="dsb-name-td" id="sbName_1">winger</td><td class="dsb-score-td" id="sbScore_1">100</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_2" style="display: block;"><td class="dsb-name-td" id="sbName_2">Eryx</td><td class="dsb-score-td" id="sbScore_2">100</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_3" style="display: block;"><td class="dsb-name-td" id="sbName_3">RAVEman</td><td class="dsb-score-td" id="sbScore_3">78</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_4" style="display: block;"><td class="dsb-name-td" id="sbName_4" title="Gennady.Korotkevich">Gennady.Korotkevich</td><td class="dsb-score-td" id="sbScore_4">78</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_5" style="display: block;"><td class="dsb-name-td" id="sbName_5">nika</td><td class="dsb-score-td" id="sbScore_5">78</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_6" style="display: block;"><td class="dsb-name-td" id="sbName_6">eatmore</td><td class="dsb-score-td" id="sbScore_6">78</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_7" style="display: block;"><td class="dsb-name-td" id="sbName_7">pashka</td><td class="dsb-score-td" id="sbScore_7">78</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_8" style="display: block;"><td class="dsb-name-td" id="sbName_8">Vasyl</td><td class="dsb-score-td" id="sbScore_8">78</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_9" style="display: block;"><td class="dsb-name-td" id="sbName_9">jakubr</td><td class="dsb-score-td" id="sbScore_9">72</td></tr></tbody></table></div>
+      <div id="dsb-scoreboard-tab-pre-contest" class="dsb-pre-contest-text before-start-only" style="display: none;">
+        
+        The scores of the top 10 contestants will appear here, with a link to
+        the contest's scoreboard.
+        
+      </div>
+      <div class="dsb-mini-tab-link">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="right-panel">
+  <div id="dsb-status-msg-wrapper" class="dsb-status-msg-wrapper" role="alert" style="visibility: hidden;">
+    <div id="dsb-status-msg" class="dsb-status-msg">
+      <span id="dsb-status-msg-text">Loading problem information...</span>
+      <span id="dsb-view-it-link" style="display: none;">View it.</span>
+    </div>
+  </div>
+
+  <div id="dsb-contest-title-bar">
+    <div id="dsb-rank-etc">
+      <span id="dsb-time-remaining">Practice Mode</span>
+      <span class="after-start-only-inline" style="display: inline;">
+        <span id="dsb-current-rank-div" style="display: none;">
+          Rank: <span id="dsb-current-rank-span">--</span>
+        </span>
+        <span id="dsb-current-score-div" style="display: none;">
+          Score: <span id="dsb-current-score-span">--</span>
+        </span>
+      </span>
+    </div>
+    <div id="dsb-title-links"><a target="new" href="http://code.google.com/codejam/contest/639102/scoreboard?c=639102">Contest scoreboard</a> | <a href="https://www.google.com/accounts/ServiceLogin?service=ah&passive=true&continue=https://appengine.google.com/_ah/conflogin%3Fcontinue%3Dhttp://code.google.com/codejam/contest/dashboard%253Fc%253D639102&ltmpl=">Sign in</a></div>
+  </div>
+  <!-- Problem Statement -->
+  <div id="main-panel-border" class="dsb-blue-border">
+  <div id="dsb-border-inner">
+   <!-- Problem Title -->
+    <h3 id="dsb-problem-title-area">
+      <span id="dsb-problem-title-div-pre-contest" class="problem-title before-start-only" style="display: none;">
+        <span style="color:#666">Problem.</span>
+        The problem's name goes here.
+      </span>
+      <span id="dsb-problem-title-div" class="problem-title after-start-only" style="display: block;"><span style="color:#666">Problem B.</span> Fence</span>
+    </h3>
+
+    <div class="dsb-content-pages before-start-only" style="display: none;">
+      
+      We're now waiting for the contest to start.  Once the contest starts,
+      the problems will automatically load, and Problem A will display here.
+      You don't have to solve that problem first; you will be able to select
+      another problem from the list to the left.  Once you've solved one
+      problem, don't forget to work on the others!
+      
+    </div>
+
+    <div id="dsb-problem-pages"><div id="dsb-problem-page0" class="dsb-content-pages"><!-- Problem Input File Selection --><div class="dsb-input-panel-text" id="dsb-input-panel-text0"><span style="color: #666666;">This contest is open for practice.  You can try every problem as many times as you like, though we won't keep track of which problems you solve.  Read the <a href="http://code.google.com/codejam/quickstart.html" target="_blank">Quick-Start Guide</a> to get started.</span></div><table><tbody id="dsb-input-form-table0"><tr><td class="dsb-input-table-description">Small input<br>4 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap0-0" class=""><div id="dsb-input-wrapper0-0" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button0-0" style="display: inline;">Solve A-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain0-0" style="display: none;"><img class="dsb-input-link-img" src="./problem_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text0-0">Download A-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption0-0" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption0-0" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link0-0">resubmit</span> for <span id="dsb-resubmit-timer0-0"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div0-0" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_0"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> A-small-practice.in.</div><form id="submit-formio_timer_0" action="http://code.google.com/codejam/contest/639102/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="YTRmZTRlMzllODliZjcxZDMxYjIwYmFlNmFhNTIyNDZ8fDEzNTQxNzQ3MTIzNDc0OTY="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_0" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_0"><div id="input-file-divio_timer_0-0"><span id="source-fileio_timer_0-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_0-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_0" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_0" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_0" type="button" value="Hide"></div><div id="source-file-namesio_timer_0"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="724485"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_0" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>10 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap0-1" class=""><div id="dsb-input-wrapper0-1" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button0-1" style="display: inline;">Solve A-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain0-1" style="display: none;"><img class="dsb-input-link-img" src="./problem_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text0-1">Download A-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption0-1" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption0-1" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link0-1">resubmit</span> for <span id="dsb-resubmit-timer0-1"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div0-1" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_1"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_1" action="http://code.google.com/codejam/contest/639102/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="YTRmZTRlMzllODliZjcxZDMxYjIwYmFlNmFhNTIyNDZ8fDEzNTQxNzQ3MTIzNDc0OTY="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_1" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_1"><div id="input-file-divio_timer_1-0"><span id="source-fileio_timer_1-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_1-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_1" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_1" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_1" type="button" value="Hide"></div><div id="source-file-namesio_timer_1"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="724485"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_1" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr></tbody></table><!-- Problem Statement --><div id="dsb-problem-content-div0" class="dsb-problem-content-div" style="width: 40em;"><h3>Problem</h3>
+<p>
+I want to make an online poker website. A very important component of such a system is the random number generator. It needs to be fast and random enough. Here is a compromise I came up with. I need a way to generate random numbers of length at most <b>D</b>. My plan is to select a prime number <nobr><b>P</b> ≤ 10<sup><b>D</b></sup></nobr>. I am also going to pick non-negative integers <b>A</b> and <b>B</b>. Finally, I'm going to pick an integer seed <b>S</b> between 0 and <nobr><b>P</b>-1</nobr>, inclusive.
+</p>
+
+<p>
+To output my sequence of pseudo-random numbers, I'm going to first output <b>S</b> and then compute the new value of <b>S</b> like this:<br>
+<code><b>S</b> := (<b>A</b>*<b>S</b> + <b>B</b>) mod <b>P</b>.</code>
+</p>
+
+<p>
+Then I will output the new value of <b>S</b> as the next number in the sequence and update <b>S</b> again by using the same formula. I can repeat this as many times as I want.
+</p>
+
+<p>
+Do you think that this is a good random number generator? Can you write a program that takes <b>K</b> consecutive elements of a sequence that was generated by my random number generator, and prints the next element of the sequence?
+</p>
+
+<h3>Input</h3>
+<p>
+The first line of the input gives the number of test cases, <b>T</b>.  <b>T</b> test cases follow.  Each one starts with a line containing <b>D</b> and <b>K</b>. The next line contains <b>K</b> consecutive elements generated by a random number generator of the kind described above.
+</p>
+
+<h3>Output</h3>
+<p>
+For each test case, output one line containing "Case #x: y", where x is the case number (starting from 1) and y is either the next number in the sequence, or the string "I don't know." if the answer is ambiguous.
+</p>
+
+<h3>Limits</h3>
+<p>
+1 ≤ <b>T</b> ≤ 100.<br>
+1 ≤ <b>K</b> ≤ 10.<br>
+The <b>K</b> integers will be consecutive elements of
+a sequence generated by a random number generator of
+the type described above.
+</p>
+
+<h4>Small dataset</h4>
+<p>
+1 ≤ <b>D</b> ≤ 4.<br>
+</p>
+
+<h4>Large dataset</h4>
+<p>
+1 ≤ <b>D</b> ≤ 6.<br>
+</p>
+
+<h3>Sample</h3>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="io-table-header">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="io-table-header">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+3<br>
+2 10<br>
+0 1 2 3 4 5 6 7 8 9<br>
+3 1<br>
+13<br>
+1 5<br>
+6 6 6 6 6<br>
+</code>
+</td>
+<td>
+<code>
+Case #1: 10<br>
+Case #2: I don't know.<br>
+Case #3: 6<br>
+<br>
+</code>
+</td></tr></tbody></table>
+</div>
+</div></div><div id="dsb-problem-page1" class="dsb-content-pages" style="display: block;"><!-- Problem Input File Selection --><div class="dsb-input-panel-text" id="dsb-input-panel-text1"><span style="color: #666666;">This contest is open for practice.  You can try every problem as many times as you like, though we won't keep track of which problems you solve.  Read the <a href="http://code.google.com/codejam/quickstart.html" target="_blank">Quick-Start Guide</a> to get started.</span></div><table><tbody id="dsb-input-form-table1"><tr><td class="dsb-input-table-description">Small input<br>7 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap1-0" class=""><div id="dsb-input-wrapper1-0" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button1-0" style="display: inline;">Solve B-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain1-0" style="display: none;"><img class="dsb-input-link-img" src="./problem_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text1-0">Download B-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption1-0" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption1-0" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link1-0">resubmit</span> for <span id="dsb-resubmit-timer1-0"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div1-0" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_2"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> B-small-practice.in.</div><form id="submit-formio_timer_2" action="http://code.google.com/codejam/contest/639102/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="YTRmZTRlMzllODliZjcxZDMxYjIwYmFlNmFhNTIyNDZ8fDEzNTQxNzQ3MTIzNDc0OTY="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_2" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_2"><div id="input-file-divio_timer_2-0"><span id="source-fileio_timer_2-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_2-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_2" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_2" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_2" type="button" value="Hide"></div><div id="source-file-namesio_timer_2"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="760487"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_2" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>22 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap1-1" class=""><div id="dsb-input-wrapper1-1" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button1-1" style="display: inline;">Solve B-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain1-1" style="display: none;"><img class="dsb-input-link-img" src="./problem_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text1-1">Download B-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption1-1" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption1-1" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link1-1">resubmit</span> for <span id="dsb-resubmit-timer1-1"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div1-1" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_3"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_3" action="http://code.google.com/codejam/contest/639102/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="YTRmZTRlMzllODliZjcxZDMxYjIwYmFlNmFhNTIyNDZ8fDEzNTQxNzQ3MTIzNDc0OTY="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_3" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_3"><div id="input-file-divio_timer_3-0"><span id="source-fileio_timer_3-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_3-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_3" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_3" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_3" type="button" value="Hide"></div><div id="source-file-namesio_timer_3"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="760487"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_3" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr></tbody></table><!-- Problem Statement --><div id="dsb-problem-content-div1" class="dsb-problem-content-div" style="width: 40em;"><h3>Problem</h3>
+
+<p>
+We are looking into building a very long fence. We have already found a nice place to build it, and all that remains is to collect the materials.
+</p>
+
+<p>
+From local hardware stores, we can buy unlimited numbers of wooden boards, each of which can come in a variety of different lengths. To avoid waste, we want to make sure that the total length of these boards is <i>exactly</i> equal to the length of the fence we are trying to build.
+</p>
+
+<p>Given the length of the fence, and the possible board lengths that we can use, what is the minimum number of boards that we need to purchase in order to get exactly the right length?</p>
+
+<p><i>Beware:</i> the fence is going to be very long!</p>
+
+<h3>Input</h3>
+
+<p>
+The first line of the input file contains the number of cases, <b>T</b>. <b>T</b> test cases follow.
+</p>
+
+<p>
+Each test case consists of two lines. The first line contains space-separated integers <b>L</b> and <b>N</b>. These represent the total length of the fence, and the number of different board lengths that can be purchased. The second line contains <b>N</b> space-separated integers <b>B<sub>1</sub></b>, <b>B<sub>2</sub></b>, ..., <b>B<sub>N</sub></b>, representing all the possible board lengths.
+</p>
+
+<h3>Output</h3>
+<p>
+For each test case, output one line containing "Case #x: M", where x is the case number (starting from 1) and M is as follows:
+</p><ul>
+<li> If it is possible to purchase one or more boards so that their total length is exactly equal to <b>L</b>, then M should be the minimum number of boards required to do this.
+</li><li> Otherwise, M should be the string "IMPOSSIBLE".
+</li></ul>
+<p></p>
+
+<h3>Limits</h3>
+<p>
+1 ≤ <b>T</b> ≤ 50.<br>
+10<sup>10</sup> ≤ <b>L</b> ≤ 10<sup>18</sup>.<br>
+1 ≤ <b>N</b> ≤ 100.<br>
+</p>
+
+<h3>Small dataset</h3>
+<p>
+1 ≤ <b>B<sub>i</sub></b> ≤ 100.<br>
+</p>
+
+<h3>Large dataset</h3>
+<p>
+1 ≤ <b>B<sub>i</sub></b> ≤ 100000.<br>
+</p>
+
+<h3>Sample</h3> 
+<div class="problem-io-wrapper"> 
+<table> 
+<tbody><tr> 
+<td> 
+<br> 
+<span class="io-table-header">Input</span> 
+<br>&nbsp;
+</td> 
+<td> 
+<br> 
+<span class="io-table-header">Output</span> 
+<br>&nbsp;
+</td> 
+</tr> 
+<tr> 
+<td> 
+
+<code> 
+2<br>
+10000000001 3<br>
+23 51 100<br> 
+10000000001 3<br>
+100 52 22 <br> 
+
+</code> 
+
+</td> 
+<td> 
+<code> 
+Case #1: 100000004<br> 
+Case #2: IMPOSSIBLE<br> 
+<br> 
+</code> 
+</td></tr></tbody></table> 
+</div> 
+
+<h3>Explanation</h3>
+
+<p>In the first example, the optimal strategy is to use 2 boards of length 23, 5 boards of length 51, and 99999997 boards of length 100. Of course, you could use just 100000001 boards of length 100 to get a total <i>greater</i> than <b>L</b>, but that is not allowed.</p>
+
+<p>In the second example, it is only possible to get even lengths.</p></div></div><div id="dsb-problem-page2" class="dsb-content-pages"><!-- Problem Input File Selection --><div class="dsb-input-panel-text" id="dsb-input-panel-text2"><span style="color: #666666;">This contest is open for practice.  You can try every problem as many times as you like, though we won't keep track of which problems you solve.  Read the <a href="http://code.google.com/codejam/quickstart.html" target="_blank">Quick-Start Guide</a> to get started.</span></div><table><tbody id="dsb-input-form-table2"><tr><td class="dsb-input-table-description">Small input<br>6 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap2-0" class=""><div id="dsb-input-wrapper2-0" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button2-0" style="display: inline;">Solve C-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain2-0" style="display: none;"><img class="dsb-input-link-img" src="./problem_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text2-0">Download C-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption2-0" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption2-0" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link2-0">resubmit</span> for <span id="dsb-resubmit-timer2-0"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div2-0" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_4"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> C-small-practice.in.</div><form id="submit-formio_timer_4" action="http://code.google.com/codejam/contest/639102/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="YTRmZTRlMzllODliZjcxZDMxYjIwYmFlNmFhNTIyNDZ8fDEzNTQxNzQ3MTIzNDc0OTY="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_4" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_4"><div id="input-file-divio_timer_4-0"><span id="source-fileio_timer_4-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_4-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_4" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_4" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_4" type="button" value="Hide"></div><div id="source-file-namesio_timer_4"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="746490"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_4" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>22 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap2-1" class=""><div id="dsb-input-wrapper2-1" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button2-1" style="display: inline;">Solve C-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain2-1" style="display: none;"><img class="dsb-input-link-img" src="./problem_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text2-1">Download C-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption2-1" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption2-1" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link2-1">resubmit</span> for <span id="dsb-resubmit-timer2-1"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div2-1" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_5"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_5" action="http://code.google.com/codejam/contest/639102/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="YTRmZTRlMzllODliZjcxZDMxYjIwYmFlNmFhNTIyNDZ8fDEzNTQxNzQ3MTIzNDc0OTY="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_5" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_5"><div id="input-file-divio_timer_5-0"><span id="source-fileio_timer_5-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_5-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_5" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_5" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_5" type="button" value="Hide"></div><div id="source-file-namesio_timer_5"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="746490"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_5" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr></tbody></table><!-- Problem Statement --><div id="dsb-problem-content-div2" class="dsb-problem-content-div" style="width: 40em;"><h3>Problem</h3>
+
+<p>A number of hot dog vendors have started selling hot dogs at corners (intersections) along a very long east-west street. The problem is that multiple vendors might be selling at the same corner, and then they will take each other's business. All is not lost though! The hot dog vendors have a plan.</p>
+
+<p>If there are ever two or more vendors at the same corner, then exactly two of the vendors can perform a <b>move</b>, which means:
+</p><ul>
+<li> One vendor moves one corner further to the east along the street.
+</li><li> The other vendor moves one corner further to the west along the street.
+</li></ul>
+Remember that the street is really long, so there is no danger of running out of corners. Given the starting positions of all hot dog vendors, you should find the minimum number of moves they need to perform before the vendors are all separated (meaning they are all on different corners).<p></p>
+
+<p>For example, suppose the street begins with the following number of hot dog vendors on each corner, listed in order from west to east:
+</p><pre>... 0 0 2 1 2 0 0 ...
+</pre>
+Then the vendors can be separated in three moves, as shown below:
+<pre>... 0 0 2 1 2 0 0 ...
+        |
+        +--- Do a move here
+
+... 0 1 0 2 2 0 0 ...
+          |
+          +--- Do a move here
+
+... 0 1 1 0 3 0 0 ...
+            |
+            +--- Do a move here
+
+... 0 1 1 1 1 1 0 ...
+</pre>
+<p></p>
+
+<h3>Input</h3>
+
+<p>
+Each street corner is labeled with an integer, positive or negative. For each <code>i</code>, corner <code>i+1</code> refers to the next corner to the east from corner <code>i</code>. We will use this labeling system to describe corners in the input file.
+</p>
+
+<p>
+The first line of the input file contains the number of cases, <b>T</b>. <b>T</b> test cases follow. Each case begins with the number of corners <b>C</b> that have at least one hot dog vendor in the starting configuration. The next <b>C</b> lines each contain a pair of space-separated integers <b>P</b>, <b>V</b>, indicating that there are <b>V</b> vendors at corner <b>P</b>.</p>
+
+<h3>Output</h3>
+<p>
+For each test case, output one line containing "Case #x: M", where x is the case number (starting from 1) and M is the minimum number of moves that need to be performed before the vendors all end up at different corners from each other.
+</p>
+
+<h3>Limits</h3>
+<p>
+1 ≤ <b>T</b> ≤ 50.<br>
+1 ≤ <b>C</b> ≤ 200.<br>
+All <b>P</b> values are in the range [-1000000, 1000000].<br>
+Within each test case, all <b>P</b> values are distinct and listed in increasing order.<br>
+All <b>V</b> values are positive integers. The limit on the sum of all <b>V</b> values is listed below. <br>
+It will always be possible to separate the hot dog vendors in a finite number of moves.
+</p>
+
+<h3>Small dataset</h3>
+<p>
+The total number of hot dog vendors in each test case is at most 200.
+</p>
+
+<h3>Large dataset</h3>
+<p>
+The total number of hot dog vendors in each test case is at most 100000.
+</p>
+
+<h3>Sample</h3> 
+<div class="problem-io-wrapper"> 
+<table> 
+<tbody><tr> 
+<td> 
+<br> 
+<span class="io-table-header">Input</span> 
+<br>&nbsp;
+</td> 
+<td> 
+<br> 
+<span class="io-table-header">Output</span> 
+<br>&nbsp;
+</td> 
+</tr> 
+<tr> 
+<td> 
+
+<code> 
+2<br> 
+3<br> 
+-1 2<br> 
+0 1<br> 
+1 2<br> 
+2<br>
+-1000 1<br>
+2000 1<br>
+</code> 
+
+</td> 
+<td> 
+<code> 
+Case #1: 3<br> 
+Case #2: 0<br> 
+<br> 
+</code> 
+</td></tr></tbody></table> 
+</div> </div></div><div id="dsb-problem-page3" class="dsb-content-pages"><!-- Problem Input File Selection --><div class="dsb-input-panel-text" id="dsb-input-panel-text3"><span style="color: #666666;">This contest is open for practice.  You can try every problem as many times as you like, though we won't keep track of which problems you solve.  Read the <a href="http://code.google.com/codejam/quickstart.html" target="_blank">Quick-Start Guide</a> to get started.</span></div><table><tbody id="dsb-input-form-table3"><tr><td class="dsb-input-table-description">Small input<br>7 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap3-0" class=""><div id="dsb-input-wrapper3-0" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button3-0" style="display: inline;">Solve D-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain3-0" style="display: none;"><img class="dsb-input-link-img" src="./problem_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text3-0">Download D-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption3-0" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption3-0" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link3-0">resubmit</span> for <span id="dsb-resubmit-timer3-0"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div3-0" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_6"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> D-small-practice.in.</div><form id="submit-formio_timer_6" action="http://code.google.com/codejam/contest/639102/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="YTRmZTRlMzllODliZjcxZDMxYjIwYmFlNmFhNTIyNDZ8fDEzNTQxNzQ3MTIzNDc0OTY="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_6" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_6"><div id="input-file-divio_timer_6-0"><span id="source-fileio_timer_6-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_6-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_6" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_6" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_6" type="button" value="Hide"></div><div id="source-file-namesio_timer_6"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="720485"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_6" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>22 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap3-1" class=""><div id="dsb-input-wrapper3-1" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button3-1" style="display: inline;">Solve D-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain3-1" style="display: none;"><img class="dsb-input-link-img" src="./problem_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text3-1">Download D-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption3-1" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption3-1" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link3-1">resubmit</span> for <span id="dsb-resubmit-timer3-1"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div3-1" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_7"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_7" action="http://code.google.com/codejam/contest/639102/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="YTRmZTRlMzllODliZjcxZDMxYjIwYmFlNmFhNTIyNDZ8fDEzNTQxNzQ3MTIzNDc0OTY="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_7" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_7"><div id="input-file-divio_timer_7-0"><span id="source-fileio_timer_7-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_7-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_7" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_7" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_7" type="button" value="Hide"></div><div id="source-file-namesio_timer_7"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="720485"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_7" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr></tbody></table><!-- Problem Statement --><div id="dsb-problem-content-div3" class="dsb-problem-content-div" style="width: 40em;"><h3>Problem</h3>
+<p>
+We have come up with a wonderful problem for Google Code Jam 2010 that involves contestants solving a cryptarithm. But we need your help in creating testcases for the problem; more precisely, we're concerned with addition equations that are good enough (in the sense defined below) for conversion into cryptarithms. 
+</p>
+<p>
+You don't need to know what a cryptarithm is to solve this problem, as we'll provide all required definitions. We define a <i>cryptarithm equation</i> to be an addition equation written in such a way that all summands (numbers being added) and the sum are aligned to the same right border like this:
+</p>
+<pre>124
+ 31
+ 25
+---
+180</pre>
+<p>Additionally, for each column of a cryptarithm equation, all digits of the summands in that column must be different. Note that we don't include the sum in this constraint. So for example in the above equation the first column contains only digit 1, the second column contains digits 2,3 and 2, and the third column contains digits 4, 1 and 5. This equation is not a cryptarithm equation since the second column contains two 2's. However, it would be a cryptarithm equation if we replaced the last summand with 15 (and the sum with 170).</p>
+<p>Note that summands in a cryptarithm equation are always positive and written without leading zeros. The order of summands is not important (in other words, two equations which differ only in the order of the summands are considered the same).</p>
+<p>The example above was in base 10, but we're also interested in cryptarithm equations in other bases. Note that a "digit" in base b could mean any integer between 0 and b-1. Here is a cryptarithm equation in base 23:</p>
+<pre> I7B
+ JJJ
+----
+1F47
+</pre>
+<p>In this example, "I" stands for digit 18, "B" stands for digit 11, "J" stands for digit 19, and "F" stands for digit 15. In decimal notation, the two summands are 18*23<sup>2</sup> + 7*23 + 11 = 9694 and 19*23<sup>2</sup> + 19*23 + 19 = 10507, and the sum is 1*23<sup>3</sup> + 15*23<sup>2</sup>  + 4*23 + 7 = 20201. Please note that denoting digits of 10 and more with letters was done purely for the clarity of the example; it doesn't really matter in this problem how exactly we denote such digits in writing.</p>
+<p>How many cryptarithm equations are there with the given sum <b>N</b> in the given base <b>B</b>?</p>
+<p>Since the answer might be very large, please output it modulo 1000000007.</p>
+
+<h3>Input</h3>
+<p>
+The first line of the input gives the number of test cases, <b>T</b>.  <b>T</b> lines follow.  Each contains two positive integers <b>N</b> and <b>B</b>. All input numbers are given in base 10.
+</p>
+
+<h3>Output</h3>
+<p>
+For each test case, output one line containing "Case #x: y", where x is the case number (starting from 1) and y is the number of different cryptarithm equations with the given sum. Since this number can be very big, please output it modulo 1000000007. Of course, the output itself should be in base 10.
+</p>
+
+<h3>Limits</h3>
+<p>
+1 ≤ <b>T</b> ≤ 20.
+</p>
+
+<h4>Small dataset</h4>
+<p>
+1 ≤ <b>N</b> ≤ 100.<br>
+2 ≤ <b>B</b> ≤ 10.
+</p>
+
+<h4>Large dataset</h4>
+<p>
+1 ≤ <b>N</b> ≤ 10<sup>18</sup>.<br>
+2 ≤ <b>B</b> ≤ 70.
+</p>
+
+<h3>Sample</h3>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="io-table-header">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="io-table-header">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+2<br>
+6 10<br>
+8 4<br>
+</code>
+</td>
+<td>
+<code>
+Case #1: 4<br>
+Case #2: 4<br>
+<br>
+</code>
+</td></tr></tbody></table>
+</div>
+<h3>Explanation</h3>
+<p>
+Here are the 4 cryptarithm equations with sum 6:
+</p>
+<pre>6   1   2   1
+-   5   4   2
+6   -   -   3
+    6   6   -
+            6
+</pre>
+<p>
+And here are the 4 cryptarithm equations in base 4 with sum 8=20<sub>4</sub>:
+</p>
+<pre>20   11   13   10
+--    3    1    3
+20   --   --    1
+     20   20   --
+               20
+</pre></div></div></div>
+
+    <div id="dsb-analysis-page" class="dsb-content-pages" style="display: none;"><div id="dsb-analysis-selections"><span id="dsb-analysis-selection-p4" class="dsb-analysis-not-selected">Overview</span>&nbsp; | &nbsp;<span id="dsb-analysis-selection-p0" class="dsb-analysis-not-selected">Problem A</span>&nbsp; | &nbsp;<span id="dsb-analysis-selection-p1" class="dsb-analysis-selected">Problem B</span>&nbsp; | &nbsp;<span id="dsb-analysis-selection-p2" class="dsb-analysis-not-selected">Problem C</span>&nbsp; | &nbsp;<span id="dsb-analysis-selection-p3" class="dsb-analysis-not-selected">Problem D</span></div><div id="dsb-problem-analysis-div4" class="dsb-problem-content-div" style="display: none;"><p>
+Round 3 was definitely the most difficult round of this year's Code Jam so far. Only the top 25 advanced to the Finals, and the problems were hellishly hard. Last year's winner, ACRush, struggled to stay in the top 25 after an incorrect submission of his B-large. Of course, none of the contestants knew that his submission was incorrect, as he stayed in the top spot on the scoreboard until the end of the round, when he dropped down to 24th place.
+</p>
+<p>
+The last 20 minutes of the contest were a race among RAVEman, Gennady.Korotkevich and Burunduk1 to finish their last remaining problems. nika, winger and pashka joined the race to first place, each having 78 points with 5 minutes to go. With less than one minute to go, winger pulled out ahead with a full 100 points -- a clear win. Amazingly, just a few seconds later, Burunduk1 and Eryx joined him, having solved their last remaining problems as well. Burunduk1 ended up winning the round with 2 incorrect submissions over winger's 3.
+</p>
+<p>
+Congratulations to all participants, and good luck to the top 25, who will compete in person at the World Finals in Google's Dublin office.
+</p>
+
+<h3>Cast</h3>
+<p>Problem A. <i>De-RNG-ed</i> Written by Igor Naverniouk. Prepared by Ante Derek and Igor Naverniouk</p>
+<p>Problem B. <i>Fence</i> Written by David Arthur.  Prepared by Xiaomin Chen and David Arthur.</p>
+<p>Problem C. <i>Hot Dog Proliferation</i> Written and prepared by David Arthur.</p>
+<p>Problem D. <i>Different Sum</i> Written and prepared by Petr Mitrichev.</p>
+<p>Contest analysis presented by David Arthur, Xiaomin Chen, Petr Mitrichev, and Igor Naverniouk.</p>
+<p>Solutions and other problem preparation provided by Marius Andrei, Xiaomin Chen, John Dethridge, and Bartholomew Furrow.</p>
+</div><div id="dsb-problem-analysis-div0" class="dsb-problem-content-div" style="display: none;">Finding the next integer in the sequence means figuring out the values of <b>A</b>, <b>B</b> and <b>P</b> that fit the given numbers and using them to generate the next number.
+
+<p>
+This problem has a few special cases. In all of them, it is important to note that the value of <b>P</b> must always be larger than every element of the "randomly" generated sequence. (8 can never be a remainder after dividing by 7.) Also, the problem statement requires that <b>P</b> be no larger than 10<sup><b>D</b></sup>. Let's call all primes that satisfy both of these bounds "valid primes". Now, let's look at the special cases.
+</p>
+
+<h3><b>K = 1</b></h3>
+<p>
+First of all, when <b>K</b> is 1, the answer is always "I don't know." This is because we can pick any valid prime <b>P</b>, set <b>A</b> to 0 and <b>B</b> to 0 or 1. This will give us two different answers.
+</p>
+
+<h3><b>K = 2 and the two sequence elements are the same</b></h3>
+<p>
+In this case, the answer is unique because the next element of the sequence depends only on the current element. If two consecutive elements are the same, then the entire sequence consists of a single repeated number.
+</p>
+
+<h3><b>K &gt; 2 and all the sequence elements are the same</b></h3>
+<p>
+Similarly, the next element must be the same as all other elements.
+</p>
+
+<h3><b>K = 2 and the two sequence elements are different</b></h3>
+<p>
+Here, the answer is always "I don't know." To see that, pick any valid prime and consider the cases <b>A</b>=0 and <b>A</b>=1. If we call the first element of the sequence <b>x</b> and the second element <b>y</b>, we can express <b>y</b> as a function of <b>x</b>, <b>A</b>, <b>B</b> and <b>P</b>:
+<nobr><b>y</b> = (<b>A*x</b> + <b>B</b>) % <b>P</b>.</nobr> In both cases, we can solve this equation for <b>B</b>. The next element, <b>z</b> is then
+<nobr><b>z</b> = (<b>A*y</b> + <b>B</b>) % <b>P</b>,</nobr> and it must be different in the two cases (<b>A</b>=0 and <b>A</b>=1) as long as <b>x</b> is different from <b>y</b>.
+</p>
+
+<h3><b>K = 3</b></h3>
+<p>
+We are going to brute force all valid primes and solve for <b>A</b> and <b>B</b>. We will then use these values to generate the next element of the sequence. If all the values we get this way are the same, then the answer is unique. If we get different valid answers, then the answer is "I don't know."
+</p>
+
+<p>
+Let's call the 3 elements <b>x</b>, <b>y</b> and <b>z</b>. By writing <b>y</b> as a function of <b>x</b> and <b>z</b> as a function of <b>y</b> and subtracting <b>y</b> from <b>z</b>, we get<br>
+<b>z</b> - <b>y</b> = (<b>A*y</b> + <b>B</b>) - (<b>A*x</b> + <b>B</b>)
+= <b>A</b>*(<b>y</b> - <b>x</b>) (mod <b>P</b>).
+</p>
+
+<p>
+We have already dealt with the case when <b>x</b> equals <b>y</b>, so we can assume that <b>x</b> and <b>y</b> are different, so we can divide by their difference. This lets us solve for <b>A</b>.<br>
+<b>A</b> = (<b>z</b> - <b>y</b>)*(<b>y</b> - <b>x</b>)<sup>-1</sup> (mod <b>P</b>).<br>
+Computing the inverse of <nobr>(<b>y</b> - <b>x</b>)</nobr> can be done using the <a href="http://www.google.com/search?q=euclidean+algorithm" target="_blank">Euclidean algorithm</a>, which runs in O(log(<b>P</b>)) time.
+</p>
+
+<p>
+Once we have <b>A</b>, solving for <b>B</b> is easy:<br>
+<b>B</b> = <b>y</b> - <b>A*x</b>.
+</p>
+
+<p>
+The answer is then <b>A*z</b> + <b>B</b>.
+</p>
+
+<h3><b>K &gt; 3</b></h3>
+<p>
+In this case, we brute force <b>P</b>, use the first 3 elements of the sequence to solve for <b>A</b> and <b>B</b>, and check whether the remaining elements fit the sequence generated with these parameters.
+</p></div><div id="dsb-problem-analysis-div1" class="dsb-problem-content-div" style="display: block;"><p>
+The basic scenario here is very similar to the traditional change-making problem, except that the input can be (and actually is guaranteed to be) very large. A condition on the minimum size of the input is very unusual for a programming contest problem, and we didn't add it just for fun. Our solution really, truly does require that the fence length be at least 10^10.
+</p>
+
+<h3>Small Input</h3>
+
+<p>
+Before getting into the real solution though, let's discuss a simpler approach that at least solves the small input. Let's suppose the longest board is of length <code>A ≤ 100</code>. The key idea is that we should never use more than <code>A</code> boards of any size less than <code>A</code>. If we did, we could replace <code>A</code> of those boards with a smaller number of length-<code>A</code> boards. And that would of course be a better solution.
+</p>
+
+<p>
+In particular, this means the total length of all shorter boards is at most <code>N * A * A ≤ 1000000</code>. Using a breadth-first search, we can find the optimal way of choosing these boards to get each length in that range. The cost of completing the fence using length-<code>A</code> boards can then be computed with a simple division.
+</p>
+
+<p>
+By the way, you can actually replace <code>N * A * A</code> with just <code>A * A</code> in the above solution. Hopefully you will see why after reading the rest of the solution!
+</p>
+
+<h3>Large Input</h3>
+
+<p>
+The small-input solution does not actually take advantage of the minimum length of the fence. So the big question is: how could we possibly do that?
+</p>
+
+<p>
+Well, the previous solution offers a bit of a hint. For a really long fence, it makes sense that in the end, we are going to want to make heavy use of the longest board just to cover up as much length as possible. So let's suppose the longest board has length <code>A</code>, and that <b>L</b> is equal to <code>p*A + q</code> for integers <code>p</code>, <code>q</code> with <code>q &lt; A</code>. (Note that the problem statement guarantees <code>p ≥ A</code>.) Then we need to do one of the following things:
+</p><ul>
+<li> Use a number <code>T<sub>0,q</sub></code> of shorter boards to create a fence of length <code>0*A + q</code>, then use <code>p</code> boards of length <code>A</code> to cover the rest.</li>
+<li> Use a number <code>T<sub>1,q</sub></code> of shorter boards to create a fence of length <code>1*A + q</code>, then use <code>p-1</code> boards of length <code>A</code> to cover the rest.</li>
+<li> ...
+</li><li> Use a number <code>T<sub>p,q</sub></code> of shorter boards to create a fence of length <code>p*A + q</code>, then use <code>0</code> boards of length <code>A</code> to cover the rest.</li>
+</ul>
+<p></p>
+
+<p>
+So we need to calculate <code>p + S<sub>p,q</sub></code> where <code>S<sub>p,q</sub></code> is defined to be <code>min(T<sub>0,q</sub> - 0, T<sub>1,q</sub> - 1, ..., T<sub>p,q</sub> - p)</code>. Intuitively, <code>S<sub>p,q</sub></code> can be thought of as measuring the minimal number of boards required to get a fence length of <code>q</code> mod <code>A</code>, subject to two modifications:
+</p><ul>
+<li>Every time the length increases by <code>A</code>, it means one less max-length board in the future, so you can subtract one from the total count.
+</li><li>The total length is not allowed to go over <code>p*A + q</code>.
+</li></ul>
+And now, we can make concrete how the condition that <b>L</b> is very large simplifies things:
+<p></p>
+
+<p>
+<b>Lemma:</b> The second condition in the definition of <code>S<sub>p,q</sub></code> is unnecessary.
+</p>
+
+<p>
+<i>Proof:</i> We claim that <code>T<sub>i,q</sub> - i</code> is minimized when <i>i ≤ p</i>, which will prove the lemma. So let's consider a minimal <code>T<sub>i,q</sub> - i</code>. Then we have a set of boards <code>b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>m</sub></code> making a length of <code>i*A + q</code>. If <code>i &gt; p</code>, then <code>m &gt; p ≥ A</code>. But then, the set <code>{b<sub>1</sub>, b<sub>1</sub> + b<sub>2</sub>, ..., b<sub>1</sub> + b<sub>2</sub> + ... b<sub>m</sub>}</code> contains at least <code>A+1</code> numbers, so two of these numbers are congruent modulo <code>A</code>. Subtracting them, we can find a non-empty subset of <code>{b<sub>1</sub>, b<sub>2</sub>, ..., b<sub>m</sub>}</code> whose sum is a multiple of <code>A</code>. Therefore, we can replace that subset with boards of length <code>A</code> to get a strictly better solution, implying <code>T<sub>i,q</sub> - i</code> could not have been optimal in the first place!
+</p>
+
+<p>
+Okay, that's all very nice, but what's the solution? Well the previous lemma implies we need to calculate the minimum number of boards required to get a fence of length <code>q</code> mod <code>A</code>, subject to the fact that each time the total goes up by <code>A</code>, we will need one fewer board in the future. (For shorter fences, this approach just does not work. Our algorithm would make a very long fence with length correct modulo <code>A</code>, and then try to subtract length-<code>A</code> boards, which of course is not allowed!)
+</p>
+
+<p>
+Anyway, once the problem has been reduced in this way, it can be done pretty straightforwardly with a breadth-first search. Our graph has one vertex for each residue modulo <code>A</code>. From each vertex, we add an edge for each possible board length. If adding that board involves wrapping past <code>A</code>, then it has weight 0. Otherwise, it has weight 1. So the final algorithm is: calculate the minimum distance in this graph to vertex <code>q</code> to get <code>S<sub>p,q</sub></code>, and finally add <code>p</code>.
+</p>
+</div><div id="dsb-problem-analysis-div2" class="dsb-problem-content-div" style="display: none;"><h3>Background</h3>
+<p>
+This analysis will have nothing to do with hot dogs. Instead of a long street with billions of corners, let's think of the line of integers; instead of vendors, let's think of chips -- after all, chips are much easier to maneuver than real people with hot dog stands!</p>
+
+<p>
+We denote the number of total chips by <code>n</code>. Also, let's call a configuration <i>stable</i> if no two chips occupy the same integer point.
+</p>
+<p>
+If you play around with the game for a while or if you have good (and brave!) intuition, you might realize that the problem statement is a little misleading. It turns out that no matter which move you do at each step, the final configuration, as well as the total number of moves you need to perform, will always be the same.
+</p>
+<p>
+Indeed, this is a famous theorem for "chip-firing games", and our scenario is a special kind of chip-firing game. Intuitively, the reason why your choices don't matter is that (a) if you ignore a move now, you will still have to do it later, and (b) one move will not change the effect of another move down the line. This means that while you can control the <i>order</i> of moves, you will always do the same set of moves in the end, and they will always have the same effect.
+</p>
+<p>
+This observation is enough to solve the small input. Just keep doing moves until the configuration stabilizes, and count how long it took. For the large input though, more insight is required. A configuration might require over 10^13 moves to stabilize, so simulating them one at a time is out of the question. The obvious optimization is to do several moves at once for very large piles. Surprisingly however, this does not help very much.
+</p>
+<p>
+There are a few different ways to proceed, and we will discuss two of them.
+</p>
+
+<h3>Preliminary Observations</h3>
+<p>
+One very useful way of understanding this game is in terms of <i>invariants</i>. The first of these is pretty obvious, but the other requires either some special insight or some experience to see. In each move, we take two chips at some position <code>x</code> and send them to positions <code>x-1</code> and <code>x+1</code>. Notice that:
+</p><blockquote>
+(x-1) + (x+1) = x + x <br>
+(x-1)<sup>2</sup> + (x+1)<sup>2</sup> = x<sup>2</sup> + x<sup>2</sup> + 2.
+</blockquote>
+This immediately leads to the following two observations:
+<p></p>
+<p>
+<b>Observation 1.</b> The sum of the positions of all the chips never changes.
+</p>
+<b>Observation 2.</b> The sum of the squared positions of all the chips increases by 2 during each move.
+<p></p>
+<p>
+So how do we use these observations? They aren't <i>necessary</i>, but they will have their uses as you will see. The former one will help us quickly construct a configuration with certain known properties from the initial configuration (more on this later). And with the latter observation, computing the number of steps becomes the same task as constructing the final configuration. For example, using Observation 2, we can easily estimate that the number of steps could be on the order of <code>n<sup>3</sup></code>, thereby verifying that straightforward simulation really is hopeless.
+</p>
+
+<h3>Adding one chip</h3>
+<p>
+One good approach is to add chips one at a time, at each step doing enough moves to completely stabilize the configuration. The question is: how do we do this last part efficiently? So let's consider adding a chip to a stable configuration.
+</p>
+<p>
+If the new chip arrives at a position where there was no chip before, we are done. Otherwise, it lands on a segment, and the picture looks something like this:
+</p><pre>             *
+?????????.***************.????????
+</pre>
+The two "<code>.</code>"s represents empty positions. If you play around with a couple examples, you should be able to see that the ending result will always be two segments, one starting from the position of the left "." in the picture, and the other ending at the position of the right ".". We might also view the result as a single segment with a hole. Furthermore, you might also realize that if there were <code>A</code> points to the left of our new chip in the original configuration, and <code>B</code> points to the right, then the two new segments will have lengths <code>B+1</code> and <code>A+1</code> respectively, and the total number of moves required will be <code>(A+1)*(B+1)</code>.
+<p></p>
+
+<p>
+We could also have computed the position of the hole using Observation 1. The sum of the positions in the initial configuration is (1+2+...+15)+4, and we know in the new configuration that the sum is (0+1+...+16)-H, where H is the position of the hole. Therefore, H must be 12. The final picture is
+</p><pre>?????????************.****????????
+</pre>
+We could then use Observation 2 to easily determine how many moves were required to get here.
+<p></p>
+
+<p>
+So here is one possible solution to the problem. Add the chips one by one. At each stage, we have up to <code>n</code> disjoint segments. If the new chip lands on an unoccupied position, it forms a segment unto itself; otherwise, it transforms one segment into two as described above. In either case, the new segments might touch the ones to their left and/or right, and we merge them if that happens.
+</p>
+
+<p>
+All that's left is to figure out how to store these segments in your program. If you are clever, you might realize that if we add the chips from left to right, then each new chip will always be on or next to one of the last two segments. You could then use a stack to store all the segments -- all the operations will be on the top two elements of the stack. This approach gives an <code>O(n)</code> solution. If you missed this last insight, you could also use a binary search tree (e.g. an STL set) to get an <code>O(n log n)</code> solution.
+</p>
+
+<h3>Adding one pile</h3>
+<p>
+In our problem, we have <code>C</code> piles of chips, and usually <code>C</code> is much smaller than <code>n</code>. We now sketch a lightning-fast solution that runs in <code>O(C)</code> time. This level of insight is not necessary to solve the problem, but it's still pretty interesting. As you will see, it is essential to understand the details of the above <code>O(n)</code> solution.
+</p>
+<p>
+Instead of adding one chip at a time, we will try to process all the chips from a single position at the same time.
+</p>
+<p>
+First let's resolve the case when there is only one pile of <code>n</code> chips at position <code>x</code>. By symmetry and the discussions in the previous section, it is easy to see that the stable configuration is a segment centered at <code>x</code> if <code>n</code> is odd; and a segment centered at <code>x</code> with a hole in the center if <code>n</code> is even.
+</p>
+<p>
+Let's define an <i>H-segment</i> to be a segment with a hole. It is a tuple <code>(x, y, z)</code>, where <code>x &lt; y ≤ z</code>, representing a segment of chips from position <code>x</code> to position <code>z</code>, inclusive, but with position <code>y</code> empty. Note that, when <code>y = z</code>, the hole is at the very end, and it is actually a normal segment.
+</p>
+<p>
+Our solution adds the piles one by one. And we keep a stack of existing H-segments from the left to the right. When a new pile comes, it is transformed into a new H-segment. If the H-segment does not overlap with any existing H-segments, we are done. Otherwise, it overlaps with the topmost H-segment in the stack; that is, it creates some positions with two chips. But using the observations from the last section, we know that if we resolve the conflicts one at a time, we will always have at most one hole. That means the result will be another H-segment. If the new one overlaps with the current top H-segment in the stack, we continue with the same resolving process. We do this until the stack is empty, or the H-segment is disjoint from the top of the stack. Then we push the new one and proceed to the next pile.
+</p>
+<p>
+It remains only to explain how to compute a new H-segment quickly. And the answer is: just use Observation 1 again! When resolving two H-segments, we know <code>S</code> -- the sum of the positions in them; we also know the total number of chips <code>K</code>, so (remember the hole), <code>z = x+K</code>. We need to decide the start position <code>x</code>. Depending on <code>y</code>, the sum <code>S</code> satisfies 
+</p><blockquote>
+<code>K(2x + K - 1) / 2 ≤ S &lt; K(2x + K + 1) / 2</code>
+</blockquote>
+There is a unique <code>x</code> satisfying this, and it can be solved in constant time. We can then find <code>y</code> exactly like we did in the <code>O(n)</code> solution.
+<p></p>
+<br>
+<br>
+
+<h3>More Information</h3>
+<p>
+If you liked this problem, you might also enjoy reading the following classical paper on chip-firing games:<br>
+- Anders Björner, László Lovász, and Peter Shor <i>Chip-firing games on graphs</i>. European Journal of Combinatorics, Volume 12 ,  Issue 4 (July 1991).
+</p>
+</div><div id="dsb-problem-analysis-div3" class="dsb-problem-content-div" style="display: none;"><h3>The small input</h3>
+<p>The solution for the small input of this problem was quite straightforward. One could iterate over all possible ways to partition <b>N</b> into a sum of positive integers, and verify that each column has distinct digits.</p>
+<p>Since there are 190569292 partitions of 100 into a sum of positive integers, this algorithm might not run fast enough. However, we can optimize it with an easy observation: the summands must be distinct. That brings the total number of partitions of 100 down to just 444793, which is small enough for our needs.</p>
+<p>But if you want to cut the search space down even further, you can use <i>backtracking</i>. This is a general technique that works as follows in this problem: as you're generating the partition, you can check if there's a column that has two equal digits after adding each number, not just in the end. That way, many bad partitions get filtered out early and you have even less possibilities to check.</p>
+<h3>The large input</h3>
+<p>In order to approach the large input, we need to rotate ourselves 90 degrees. In the above solution, we've generated our cryptarithm from top to bottom. Now, we will generate it from right to left.</p>
+<p>First, we check all possibilities for the digits in the rightmost (least significant) column such that the last digit of their sum matches the required one. Then, we continue with the digits for the next-to-rightmost column, and so on.</p>
+<p>Suppose we have already filled a few rightmost columns. We can note that the things that are relevant for us now is the value <b>V</b> of carry from the already filled columns to the next one, the amount <b>K</b> of summands in the column that was just filled, and the boolean flag <b>F</b> indicating whether there has been a zero in the column that was just filled (this flag is important since it affects whether we can terminate the corresponding number now). When we know the values of <b>V</b>, <b>K</b> and <b>F</b>, the actual digits in the already filled columns don't affect the further execution of the algorithm.</p>
+<p>This observation logically leads us to the following <i>Dynamic Programming</i> solution: let's calculate <b>Count</b>[<b>i</b>, <b>V</b>, <b>K</b>, <b>F</b>] which is defined as the number of ways to place the digits in the last <b>i</b> columns in such a way that the sum in those columns matches <b>N</b>, there's a carry of <b>V</b>, the number of summands that have at least <b>i</b> digits is <b>K</b>, and <b>F</b> is 1 when there's a summand that starts with zero, 0 otherwise.</p>
+<p>In order to calculate <b>Count</b>[<b>i</b>+1,...] given <b>Count</b>[<b>i</b>,...], we need to consider all possible ways to place up to <b>K</b> digits in the <b>i</b>+1-th rightmost column. <b>K</b> is up to <b>B</b> (since all digits in one column are different, the number of summands doesn't exceed the number of different digits), which can be up to 100 in the large input. From the first glance, this gives us at least 100! (factorial of 100) possibilities, rendering our idea still useless.</p>
+<p>But now's when another Dynamic Programming idea comes into play! One can notice that we don't need to know exactly all digits of the <b>i</b>+1-th column. The important thing for us is the amount of those digits, the sum of those digits, and whether one of them is zero. When we know those, we can multiply our answer by an appropriate number (which will be a product of binomial coefficients and factorials) to account for various ways to attach those digits to the already formed numbers in the first <b>i</b> columns.</p>
+<p>So we run a separate Dynamic Programming that calculates <b>Count2</b>[<b>K</b>, <b>S</b>, <b>F</b>] which is defined as the number of ways to place <b>K</b> distinct digits in a column such that their sum is <b>S</b> and <b>F</b> denotes whether one of them is zero. <b>K</b> is up to <b>B</b>, <b>S</b> is O(<b>B</b><sup>2</sup>), meaning we get O(<b>B</b><sup>3</sup>) states, which is small enough.</p>
+<p>The main Dynamic Programming has O(<b>B</b><sup>2</sup>*<b>number_of_digits</b>) states, and using the <b>Count2</b> table each state can be processed in O(<b>B</b><sup>2</sup>) by looking at the number of digits in the <b>i</b>+1-th column and the carry to the <b>i</b>+2-th column (the required sum in the <b>i</b>+1-th column is uniquely determined by the carry to it, the carry from it, and the corresponding digit of <b>N</b>). The total runtime of this solution is thus O(<b>B</b><sup>4</sup>*<b>number_of_digits</b>).
+</p></div></div>
+
+    <div id="dsb-clarification-page" class="dsb-content-pages">
+      <!-- The clarifications table -->
+      <div id="clarTableDiv" class="clarTableWrapper"></div><div>
+        <table id="dsb-clarification-table" style="display: none;">
+          <colgroup span="9">
+            <col width="16%"><col width="2%">
+            <col width="10%"><col width="2%">
+            <col width="28%"><col width="2%">
+            <col width="10%"><col width="2%">
+            <col width="28%">
+          </colgroup>
+          <thead>
+            <tr>
+            <th>Category</th><th>&nbsp;</th>
+            <th class="clarTimeColumn">Asked</th><th>&nbsp;</th>
+            <th>Question</th><th>&nbsp;</th>
+            <th class="clarTimeColumn">Answered</th><th>&nbsp;</th>
+            <th>Answer</th>
+            </tr>
+          </thead>
+          <tbody id="dsb-clarification-tbody"></tbody>
+        </table>
+      </div>
+      <div id="dsb-submit-clarification" style="display: none;">
+        <!-- The link to ask a clarification -->
+        <div style="padding: 0.5em 0 0.3em 0;">
+          <b>Ask a question:</b>
+        </div>
+        <!-- The form for asking clarification -->
+        <div>
+          <form onsubmit="return GCJ.submitClarification(this);"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="MDY5OTkwNzg5MTU4MjM3NWIzZGVlNzFhZGI1N2UyZmR8fDEzNTQxNzQ2ODQzNzg0OTE="></div>
+            <div><textarea rows="5" cols="60" name="q"></textarea></div>
+            <div style="padding-top: 0.3em">
+              <select id="dsb-clarification-problem-select" name="problem">
+                <option value="_" selected="">[General]</option>
+              <option value="724485">A. De-RNG-ed</option><option value="760487">B. Fence</option><option value="746490">C. Hot Dog Proliferation</option><option value="720485">D. Different Sum</option></select>
+              &nbsp;
+              <input id="dsb-submit-clarification-button" type="submit" value="Ask">
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- Too many pending clarifications -->
+      <div id="dsb-cannot-ask-question-text" style="font-weight: bold; padding: 0.5em 0px 0.3em; display: block;">You cannot ask questions at this time. Please email us at codejam@google.com.</div>
+
+    </div>
+
+    <div id="dsb-submissions-page" class="dsb-content-pages">
+      <div id="dsb-submissions-status" class="dsb-sub-status-msg">
+        You have 0 submissions.
+      </div>
+      <table id="dsb-submissions-table" class="dsb-sub-main-table" style="display:none">
+      <thead>
+        <tr id="dsb-sub-main-table-header">
+          <th class="dsb-sub-row-id-width">ID</th>
+          <th class="dsb-sub-name-width">Problem</th>
+          <th class="dsb-sub-difficulty-width">Size</th>
+          <th class="dsb-sub-input-width">Input</th>
+          <th class="dsb-sub-output-width">Output</th>
+          <th class="dsb-sub-source-width">Solution</th>
+          <th class="dsb-sub-status-width">Status</th>
+          <th class="dsb-sub-time-width">Time</th>
+        </tr>
+      </thead>
+      <tbody id="dsb-submissions-rows">
+      </tbody>
+      </table>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+</div>
+
+<div style="height: 3em; clear: both;"></div>
+
+
+
+
+<div id="footer">
+  
+  
+  <p>
+    
+    All problem statements, input data and contest analyses are
+    licensed under the
+    <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution License</a>.
+    
+  </p>
+  
+  <span id="copyright">© 2008-2012 Google</span>
+  <a href="http://www.google.com/">Google Home</a> -
+  <a href="http://code.google.com/codejam/terms.html">Terms and Conditions</a><br><br>
+  <a href="http://developers.google.com/appengine"><img src="./problem_files/appengine-noborder-120x30.gif"></a>
+  
+</div>
+
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-21302427-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script');
+    ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+<div style="height: 1em">&nbsp;</div>
+
+<script type="text/javascript">
+GCJ.initHistory();
+</script><input type="text" name="history_state0" id="history_state0" style="display:none">
+
+
+
+
+</div></body></html>

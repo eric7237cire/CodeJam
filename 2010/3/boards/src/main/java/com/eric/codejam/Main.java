@@ -3,9 +3,11 @@ package com.eric.codejam;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.math.RoundingMode;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -19,9 +21,8 @@ import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 import com.google.common.base.Preconditions;
-import com.google.common.math.DoubleMath;
+import com.google.common.collect.ComparisonChain;
 import com.google.common.math.IntMath;
-import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<InputData> {
@@ -31,6 +32,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     final static int MAX_BOARD_LENGTH = 100000;
     final static int MAX_N = 100;
     
+    //Solves ax + by = L.  Not used, mauvaise piste!
     static public void solve(int a, int b, long L) {
         int gcd_ab = IntMath.gcd(a,b);
         int[] st = GCD.gcdExtended(a,b);
@@ -80,6 +82,84 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         }
     }
     
+    private static class Node {
+        Integer residue;
+        int cost;
+        public Node(Integer residue, int distance) {
+            super();
+            this.residue = residue;
+            this.cost = distance;
+        }
+        
+    }
+    /*
+     * Finds shortest distance to a target leftover.
+     * 
+     * 
+     */
+    public Integer doBreadthFirstSearch(int boardLengths[], int largestBoardLength, int targetResidue) {
+        int[] distance = new int[largestBoardLength];
+        int[] previous = new int[largestBoardLength];
+        
+        Arrays.fill(distance, Integer.MAX_VALUE);
+        Arrays.fill(previous, -1);
+        
+        SortedSet<Node> toProcess = new TreeSet<>(new Comparator<Node>() {
+            public int compare(Node a, Node b) {
+                return ComparisonChain.start().compare(a.cost, b.cost).compare(a.residue,b.residue).result();
+            }
+        });
+        Set<Integer> visited = new HashSet<Integer>();
+        
+        toProcess.add(new Node(0,0));
+        distance[0] = 0;
+        
+        while(!toProcess.isEmpty()) {
+            Node currentNode = toProcess.first();
+            int currentResidue = currentNode.residue;
+            toProcess.remove(currentNode);
+            
+            //log.debug("Current residue {}  cost {}", currentResidue, currentNode.cost);
+            if (visited.contains(currentResidue)) {
+                continue;
+            }
+            
+            if (currentResidue == targetResidue) {
+                return currentNode.cost;
+            }
+            
+            for(int i = 0; i < boardLengths.length - 1; ++i) {
+                Integer newResidue = currentResidue + boardLengths[i];
+                //Costs 1 to add a new board
+                int cost = 1;
+                if (newResidue >= largestBoardLength) {
+                    //take away a larger board
+                    --cost;
+                    newResidue -= largestBoardLength; 
+                }
+                
+                Preconditions.checkState(distance[currentResidue] < Integer.MAX_VALUE);
+                int newCost = distance[currentResidue] + cost;
+                
+                if (newCost < distance[newResidue]) {
+                    distance[newResidue] = newCost;
+                    previous[newResidue] = currentResidue;
+                    toProcess.add(new Node(newResidue, newCost));
+                }               
+                                
+            }
+            
+            visited.add(currentResidue);
+            Preconditions.checkState(distance[currentResidue] >= currentNode.cost);
+            distance[currentResidue] = currentNode.cost;
+        }
+        
+        return null;
+        
+    }
+    
+    
+    
     
     
     @Override
@@ -92,22 +172,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         
         long minSum = Long.MAX_VALUE;
-        /*
-        memoize_mod_board_count = new int[MAX_BOARD_LENGTH][MAX_N];
-        memoize = new int[MAX_BOARD_LENGTH][MAX_N];
-        for(int i = 0; i < MAX_BOARD_LENGTH; ++i) {
-            for(int j = 0; j < MAX_N; ++j) {
-                memoize_mod_board_count[i][j] = -1;
-                memoize[i][j] = -1;
-            }
-        }
-        solve_mod_inner = 0;
-        solve_mod_outer = 0;
-    */
+       
         int maxLen =  100000000; //input.boardLens[maxBoardIndex] * 20;
-        solve_iter(maxLen, input.boardLens);
+        //solve_iter(maxLen, input.boardLens);
         
-        for(int maxBoardIndex = input.N - 1; maxBoardIndex >= 0; --maxBoardIndex) {
+        //We are forced to use the max index, see solution for explanation. 
+        
+        int maxBoardIndex = input.N - 1; 
             
             log.debug("Case number {} max board index {}", caseNumber, maxBoardIndex);
             
@@ -116,113 +187,27 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             final long sum = input.L / input.boardLens[maxBoardIndex];
             int rest = Ints.checkedCast(input.L % input.boardLens[maxBoardIndex]);
             
-            
-            
-            //
-                        
-            int gcd; 
-            if (maxBoardIndex > 1) {
-                gcd = IntMath.gcd(input.boardLens[maxBoardIndex - 1],
-                        input.boardLens[maxBoardIndex - 2]);
-            } else {
-                gcd = input.boardLens[0]; 
-            }
-            
-            for (int i = maxBoardIndex - 3; i >= 0; --i) {
-                gcd = IntMath.gcd(gcd, input.boardLens[maxBoardIndex - i]);
-            }
-
-            int gcdMaxRest = IntMath.gcd(gcd,
-                    input.boardLens[maxBoardIndex]);
-
-            // find s and t
-            int[] st = GCD.gcdExtended(input.boardLens[maxBoardIndex], gcd);
-            Preconditions.checkState(gcdMaxRest == st[0]);
-            int s = st[1];
-            int t = st[2];
-
-            // find k
-            int k = rest / gcdMaxRest;
-            int k_rem = rest % gcdMaxRest;
-
-            if (k_rem != 0) {
-                log.debug("invalid {} gcdMaxRest {}", rest, gcdMaxRest);
-                Preconditions.checkState(k_rem != 0);
-                //boardNum >= INVALID
-                continue;
-            } else {
-                Preconditions.checkState(k_rem == 0);
-            }
-
-            if (k_rem == 0) {
-                // log.debug(" gcd[0..maxBoard-1] {} * {} + maxBoard {} * {} = {}",
-                // gcd,s,input.boardLens[maxBoardIndex], t,rest);
-            }
-            
-           // log.debug("Case number {} max board index {} sum {} boardNum {}", caseNumber, maxBoardIndex, sum, boardNum);
-            
-            int maxBigBoardsToAdd = maxBoardIndex == 0 ? 0 : 1+(input.boardLens[maxBoardIndex] - rest) / (input.boardLens[maxBoardIndex] - input.boardLens[maxBoardIndex-1]); 
-            
-            maxBigBoardsToAdd = 15;
-            
-            /*
-            int boardNum = solve_mod(rest, input.boardLens[maxBoardIndex],
-                    maxBoardIndex - 1, input.boardLens, maxBigBoardsToAdd);
-            if (boardNum >= INVALID)
-                continue;
-            
-            long newSum = sum + boardNum;
-            minSum = Math.min(newSum,minSum);
-            */
-  
-            
-            
-            int bigBoardsRemoved  = 0;
-            while(true) {
-                
-                //Preconditions.checkState(bigBoardsRemoved < 1000);
-                if (rest > maxLen)
-                    break;
-                
-                int boardsNeeded = memo[rest];//, maxBoardIndex-1, input.boardLens);
-                       
-                long newSum = sum + boardsNeeded - bigBoardsRemoved;
-                minSum = Math.min(newSum,minSum);
-            //    log.debug("Rest {} k {} k rem {}.  check {}.  counter {}  diff {}", rest, k, k_rem,boardsNeeded,bigBoardsRemoved,boardsNeeded-bigBoardsRemoved);
-                
-                rest += input.boardLens[maxBoardIndex];
-                k = rest / gcd;
-                k_rem = rest % gcd;
-            
-                
-                
-                ++bigBoardsRemoved;
-            }
-            
-            
-            //sum += solve(rest, maxBoardIndex-1, input.boardLens); 
-           
-            
-            
-           // minSum = Math.min(sum,minSum);
-        }
+            Integer cost = doBreadthFirstSearch(input.boardLens,input.boardLens[maxBoardIndex],rest);
         
-        //DecimalFormat decim = new DecimalFormat("0.00000000000");
-        //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
-        
-        if ( minSum ==Long.MAX_VALUE)
-        return ("Case #" + caseNumber + ": IMPOSSIBLE");
-        else
-            return ("Case #" + caseNumber + ": " + minSum);
+            if (cost==null) {
+                return ("Case #" + caseNumber + ": IMPOSSIBLE");
+            }
+            long total = sum+cost;
+            
+            
+            return ("Case #" + caseNumber + ": " + total);
+            
     }
     
     final static int INVALID = IntMath.pow(10, 8); 
-    int[][] memoize;
-    
+        
     int[][] memoize_mod_board_count;
-    long solve_mod_outer;
-    long solve_mod_inner;
     
+    /*
+     * The right idea but the wrong implementation.  Was trying to find lowest mod count.
+     * 
+     * The shortest path search was better obviously.
+     */
     public int solve_mod(final int boardLengthNeeded, final int mod, int maxBoardIndex, int[] boardLengths, final int maxBoardsToAdd) {
         
         if (boardLengthNeeded == 0) {
@@ -236,7 +221,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
             return memoize_mod_board_count[boardLengthNeeded][maxBoardIndex];
         }
         
-        ++solve_mod_outer;
         
         int possibleBoardsToAdd = maxBoardsToAdd;
         
@@ -253,12 +237,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         int numAdded = 0;
         
         while(true) {
-            ++solve_mod_inner;
-            
-            if (solve_mod_inner % 10000000 == 0) {
-             log.debug("Outer {} inner {} Num added {} possible to add {} maxBoardIndex {}", 
-                     solve_mod_outer, solve_mod_inner/solve_mod_outer,numAdded, possibleBoardsToAdd, maxBoardIndex);
-            }
             currentLengthNeeded -= boardLengths[maxBoardIndex];
             numAdded++;
             
@@ -293,7 +271,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     }
     
     public int[] memo;
-    // f i n d t h e minimum number o f c o i n s nee de d t o make N
+    //Bottom up DP for once.  Did pretty well for most of large too
     public int solve_iter(int targetLength, int[] boardLength) {
 
         memo = new int[targetLength + 1];
@@ -315,37 +293,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     }
     
     
-    public int solve(int targetLength, int maxBoardIndex, int[] boardLengths) {
-        
-        if (targetLength < 0) {
-            return INVALID;
-        }
-        if (targetLength == 0) {
-            return 0;
-        } 
-        if (maxBoardIndex < 0) {
-            return INVALID;
-        }
-        if ( memoize[targetLength][maxBoardIndex] >= 0) {
-            return memoize[targetLength][maxBoardIndex];
-        }
-        
-        int ret = 0;
-        if (maxBoardIndex == 0) {
-            if (targetLength % boardLengths[0] == 0) {
-                ret = targetLength / boardLengths[0];
-            } else {
-                ret = Integer.MAX_VALUE;
-            }
-        } else {
-            int s1 = 1 + solve(targetLength - boardLengths[maxBoardIndex], maxBoardIndex, boardLengths);
-            int s2 = solve(targetLength, maxBoardIndex - 1, boardLengths);
-            ret = Math.min(s1,s2);
-        }
-        
-        memoize[targetLength][maxBoardIndex] = ret;
-        return ret;
-    }
     
     
     @Override
@@ -392,8 +339,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-            args = new String[] { "sample.txt" };
-    //        args = new String[] { "B-small-practice.in" };
+          //  args = new String[] { "sample.txt" };
+            args = new String[] { "B-small-practice.in" };
           //  args = new String[] { "B-large-practice.in" };
          }
          log.info("Input file {}", args[0]);
