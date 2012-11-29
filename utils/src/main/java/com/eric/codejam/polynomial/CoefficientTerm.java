@@ -1,7 +1,8 @@
 package com.eric.codejam.polynomial;
 
 import java.util.Map;
-import java.util.Objects;
+
+import com.google.common.base.Objects;
 
 public class CoefficientTerm extends AbstractTerm {
     private int value;

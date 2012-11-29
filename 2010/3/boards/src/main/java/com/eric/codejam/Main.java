@@ -43,14 +43,26 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         long x_0 = s*L / gcd_ab;
         long y_0 = t *L / gcd_ab;
         
-        long start = LongMath.pow(10,8); 
-        for(long k = -start; k <= -start +15; ++k) {
+        log.debug("{}", y_0 * gcd_ab / a);
+        
+        long start = y_0 * gcd_ab / a - 1; 
+        for(long k = start; k <= start +5; ++k) {
             long x = x_0 + b*k / gcd_ab;
             long y = y_0 - a*k  / gcd_ab;
-            log.debug("Solution x: [{}] y: [{}] to {}x + {}y = {}",x,y,a,b,L);
+            
+            //0 <= y_0 - a*k / gcd_ab
+            //-y_0 <= -a*k / gcd_ab
+            //y_0 >= a*k / gcd_ab
+            //y_0 * gcd_ab / a >= k
+            
+            log.debug("Solution x: [{}] y: [{}] to {}x + {}y = {}.   x+y  = {}",x,y,a,b,L, x+y);
             Preconditions.checkState(a*x + b*y == L);
+            
+            //10000653330
         }
     }
+    
+    
     
     @Override
     public String handleCase(int caseNumber, InputData input) {

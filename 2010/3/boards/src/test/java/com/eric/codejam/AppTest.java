@@ -57,6 +57,13 @@ public class AppTest extends TesterBase {
         m.solve_iter(100, new int[] {23, 51, 100});
         assertEquals(2, m.memo[46]);
     }
+    
+    @Test
+    public void test43() {
+        Main m = new Main();
+        Main.solve(88926, 88925,25898618514778333L);
+        
+    }
 
     
     public void testSolve() {
