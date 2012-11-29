@@ -50,7 +50,11 @@ public class GCD {
             
             Preconditions.checkState(r >= 0);
             if (r == 0) {
-                return new int[] {q, x, y};                
+                if (a == aa) {
+                return new int[] {q, x, y};
+                } else {
+                    return new int[] {q, y, x};
+                }
             }
         }
         

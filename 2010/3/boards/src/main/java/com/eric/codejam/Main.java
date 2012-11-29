@@ -2,6 +2,8 @@ package com.eric.codejam;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.SortedSet;
@@ -17,6 +19,7 @@ import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 import com.google.common.base.Preconditions;
+import com.google.common.math.DoubleMath;
 import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
@@ -43,17 +46,32 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         long x_0 = s*L / gcd_ab;
         long y_0 = t *L / gcd_ab;
         
-        log.debug("{}", y_0 * gcd_ab / a);
         
-        long start = y_0 * gcd_ab / a - 1; 
+        
+        //where x is first positive 
+        
+        // 0 <= x_0 + b*k / gcd_ab
+        //-x_0 <= b*k / gcd_ab
+        //-x_0 * gcd_ab / b <= k
+
+        //0 <= y_0 - a*k / gcd_ab
+        //-y_0 <= -a*k / gcd_ab
+        //y_0 >= a*k / gcd_ab
+        //y_0 * gcd_ab / a >= k
+        
+        //long start = y_0 * gcd_ab / a - 1;
+        BigInteger[] startBi = BigInteger.valueOf(-x_0 * gcd_ab).divideAndRemainder(BigInteger.valueOf(b));
+        long start = startBi[0].longValue();
+        if (startBi[1].longValue() > 0) {
+            start++;
+        }        
+        
+        log.debug("x_0 {} y_0 {} k {}", x_0, y_0, start);
+        
         for(long k = start; k <= start +5; ++k) {
             long x = x_0 + b*k / gcd_ab;
             long y = y_0 - a*k  / gcd_ab;
             
-            //0 <= y_0 - a*k / gcd_ab
-            //-y_0 <= -a*k / gcd_ab
-            //y_0 >= a*k / gcd_ab
-            //y_0 * gcd_ab / a >= k
             
             log.debug("Solution x: [{}] y: [{}] to {}x + {}y = {}.   x+y  = {}",x,y,a,b,L, x+y);
             Preconditions.checkState(a*x + b*y == L);
