@@ -3,6 +3,7 @@ package com.eric.codejam;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.Queue;
 import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +78,21 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         }
         
     }
+    
+    String printStreet(Multiset<Integer> vendors, int min, int max) {
+        int len = max - min + 1;
+        StringBuffer sb = new StringBuffer();
+        for(int i = min; i <= max; ++i) {
+            int count = vendors.count(i);
+            if (count == 0) {
+            sb.append(" - ");
+            } else {
+                sb.append(" ").append(StringUtils.rightPad(Integer.toString(count), 2));
+            }
+        }
+        
+        return sb.toString();
+    }
     /*
      * Finds shortest distance to a target leftover.
      * 
@@ -122,13 +139,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 }
             }
             if (possibleMoves.isEmpty()) {
-                log.debug("Solution \n {}", currentNode.vendors);
+                StringBuffer sb = new StringBuffer();
+                int min = Collections.min(currentNode.vendors.elementSet());
+                int max = Collections.max(currentNode.vendors.elementSet());
+                
+                
+                sb.append("\nSolution \n ")
+                .append(printStreet(currentNode.vendors,min,max));
                 Node node = currentNode;
                 while(node.prevNode != null) {
                     node = node.prevNode;
-                    log.debug("Previous step\n {}", node.vendors);
+                    sb.append("\n ").append(printStreet(node.vendors,min,max));
                 }
-                
+                log.debug(sb.toString());
                 return currentNode.cost;
             }
             
