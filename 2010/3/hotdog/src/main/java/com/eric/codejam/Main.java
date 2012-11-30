@@ -36,34 +36,37 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         //double ans = DivideConq.findMinPerimTriangle(input.points);
 
-        int cost = doBreadthFirstSearch(input.vendors);
+        //int cost = doBreadthFirstSearch(input.vendors);
+        int cost = 0;
+        
+        int cost2 = doBreadthFirstSearch2(input.vendors);
+        
+        log.debug("Case #" + caseNumber + ": " + cost + ", " + cost2);
         
         //DecimalFormat decim = new DecimalFormat("0.00000000000");
         //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
         
-        return ("Case #" + caseNumber + ": " + cost);
+        return ("Case #" + caseNumber + ": " +  cost2);
     }
     
-    
     @Override
-    public InputData readInput(BufferedReader br, int testCase) throws IOException {
-        
-    
-        
-        
-        InputData  input = new InputData(testCase);
-        
+    public InputData readInput(BufferedReader br, int testCase)
+            throws IOException {
+
+        InputData input = new InputData(testCase);
+
         input.C = Integer.parseInt(br.readLine());
-        
+
         input.vendors = new ArrayList<>(input.C);
-        
-        for(int i = 0; i < input.C; ++i) {
+
+        for (int i = 0; i < input.C; ++i) {
             String[] line = br.readLine().split(" ");
-            input.vendors.add(new Corner(Integer.parseInt(line[0]), Integer.parseInt(line[1])));
+            input.vendors.add(new Corner(Integer.parseInt(line[0]), Integer
+                    .parseInt(line[1])));
         }
-        
+
         return input;
-        
+
     }
 
     private static class Node {
@@ -177,6 +180,69 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     }
 
 
+    /*
+     * Finds shortest distance to a target leftover.
+     * 
+     * 
+     */
+    public Integer doBreadthFirstSearch2(List<Corner> vendors) {
+        
+        
+        Queue<Node> toProcess = new PriorityQueue<>(1, new Comparator<Node>() {
+            public int compare(Node a, Node b) {
+                return Integer.compare(a.cost, b.cost);
+            }
+        });
+        
+        
+        Multiset<Integer> vendorCounts = TreeMultiset.create();
+        for(int i = 0; i < vendors.size(); ++i) {
+            vendorCounts.add(vendors.get(i).location, vendors.get(i).count);
+        }
+        int cost = 0;
+        
+        while(true) {
+            
+            Multiset<Integer> currentVendors = vendorCounts;
+                        
+            Integer possibleMove = null;
+            for(int corner : currentVendors.elementSet() ) {
+                if (currentVendors.count(corner) > 1) {
+                    possibleMove = corner;
+                }
+            }
+            if (possibleMove == null) {
+                /*StringBuffer sb = new StringBuffer();
+                int min = Collections.min(currentVendors.elementSet());
+                int max = Collections.max(currentVendors.elementSet());
+                
+                
+                sb.append("\nSolution \n ")
+                .append(printStreet(currentVendors,min,max));
+                Node node = currentNode;
+                while(node.prevNode != null) {
+                    node = node.prevNode;
+                    sb.append("\n ").append(printStreet(node.vendors,min,max));
+                }
+                log.debug(sb.toString());*/
+                return cost;
+            }
+        
+            ++cost;
+            currentVendors.setCount(possibleMove, currentVendors.count(possibleMove) - 2);
+            currentVendors.add(possibleMove-1);
+            currentVendors.add(possibleMove+1);
+                
+                               
+                                
+            
+            
+            
+        }
+        
+        
+    }
+    
     public Main() {
         super();
     }
