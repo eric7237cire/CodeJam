@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -23,6 +24,54 @@ public class Runner {
 
     static int testCounter = 0;
     final static Logger log = LoggerFactory.getLogger(Runner.class);
+    
+    public interface TestCaseInputScanner<InputData> {
+        public InputData readInput(Scanner scanner, int testCase)
+                throws IOException;
+    }
+    
+    public static <InputData extends AbstractInputData> void goScanner(
+            String inputFileName, TestCaseInputScanner<InputData> inputReader,
+            TestCaseHandler<InputData> testCaseHandler) {
+
+        long overAllStart = System.currentTimeMillis();
+        
+        try {
+            InputStreamReader isr = new InputStreamReader(new FileInputStream(
+                    new File(inputFileName)));
+            final BufferedReader br = new BufferedReader(isr);
+            final Scanner scanner = new Scanner(br);
+
+            String line = br.readLine();
+
+            final int t = Integer.parseInt(line);
+
+            
+            OutputStream os = new FileOutputStream(inputFileName.replaceAll("\\.in", "") + ".out");
+            PrintStream pos = new PrintStream(os);
+
+
+
+            for (int test = 1; test <= t; test++) {
+                InputData input = inputReader.readInput(scanner, test);
+                String ans = testCaseHandler.handleCase(test, input);
+                log.debug(ans);
+                pos.println(ans);
+            }
+
+            log.debug("Finished");
+
+            os.close();
+            // scanner.close();
+            br.close();
+        } catch (IOException ex) {
+            log.error("Error", ex);
+        }
+        
+        log.info("Total time {}",
+                +(System.currentTimeMillis() - overAllStart));
+
+    }
 
     public static <InputData extends AbstractInputData> void goSingleThread(
             String inputFileName, TestCaseInputReader<InputData> inputReader,
