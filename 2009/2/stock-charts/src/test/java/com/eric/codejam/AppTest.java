@@ -2,9 +2,6 @@ package com.eric.codejam;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -38,20 +35,13 @@ public class AppTest {
 	}
 
 	private String getOutput(String testCase) {
+		Main m = new Main();
+		
 		Scanner sc = new Scanner(testCase);
-
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		PrintStream pos = new PrintStream(os);
-
-		Main.handleCase(1, sc, pos);
-
-		try {
-			String output = new String(os.toString("UTF-8"));
-			log.info(output);
-			return output.trim();
-		} catch (UnsupportedEncodingException ex) {
-			return null;
-		}
+		InputData input = m.readInput(sc,1);
+		
+		String output = m.handleCase(1,input);
+		return output;
 	}
 
 	private static Map<String, String> testData;
@@ -85,14 +75,7 @@ public class AppTest {
 
 	}
 
-	@Test
-	public void testSmall14() {
-		String testCase = testData.get("small14");
-
-		String output = getOutput(testCase);
-
-		//assertEquals("Case #1: 2", output);
-	}
+	
 	
 	@Test
 	public void testSample1() {

@@ -1,6 +1,5 @@
 package com.eric.codejam;
 
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +30,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 	//Right hand side of the bipartite graph
 	boolean[] seen;
 	
+	/**
+	 * Imagine a bi-partite graph.  Left and Right side are stocks
+	 * with an edge if the left vertex is stricly greater than the right.
+	 * 
+	 * @param input
+	 * @return
+	 */
 	public int findAllAugmentingPaths(InputData input) {
 		matchesMap = HashBiMap.create();
 		int count = 0;
@@ -44,7 +50,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 				++count;
 			}
 			
-			printAugmentingPaths(input);
+			//printAugmentingPaths(input);
 		}
 		
 		return count;
@@ -87,14 +93,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 			
 			seen[rhsVertex] = true;
 			
-			/*Here the edge is either already in M or not.
+			/*
+			 * Here the edge is either already in M or not.
 			 * If its not we are done, we found a path.  Otherwise
 			 * we try to rematch the connected lhsvertex to another greater rhsVertex .
 			 */
 			if (!matchesMap.containsKey(rhsVertex) || findAugmentingPath(matchesMap.get(rhsVertex),input)) {
 				
-				//If it exists, free the existing match edge
-				Integer removed = matchesMap.inverse().remove(lhsVertex);
+				//If it exists, free the existing match edge if it exists
+				matchesMap.inverse().remove(lhsVertex);
 				
 				matchesMap.put(rhsVertex,  lhsVertex);
 				return true;
@@ -104,24 +111,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 		return false;
 	}
 	
-	private void buildCanMatch(InputData input) {
-		canMatch = new boolean[input.n][input.n];
+    private void buildCanMatch(InputData input) {
+        canMatch = new boolean[input.n][input.n];
 
-		for (int i = 0; i < input.n; ++i) {
-			
-			for (int j = 0; j < input.n; ++j) {
-				boolean canMatchB = isStrictlyGreater(input.stocks.get(i), input.stocks.get(j));
-				canMatch[i][j] = canMatchB;
-				
-			}
-		}
-	}
-	
-	
+        for (int i = 0; i < input.n; ++i) {
 
-	
+            for (int j = 0; j < input.n; ++j) {
+                boolean canMatchB = isStrictlyGreater(input.stocks.get(i),
+                        input.stocks.get(j));
+                canMatch[i][j] = canMatchB;
 
-	
+            }
+        }
+    }
 
 	private boolean isStrictlyGreater(List<Integer> a, List<Integer> b) {
 		
@@ -133,12 +135,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 		}
 
 		return true;
-	}
-
-	public static void handleCase(int caseNumber, Scanner scanner,
-			PrintStream os) {
-
-		
 	}
 
 	
