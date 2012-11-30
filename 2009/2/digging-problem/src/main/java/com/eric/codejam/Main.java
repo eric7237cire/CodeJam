@@ -1,37 +1,37 @@
 package com.eric.codejam;
 
-import java.io.File;
-import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eric.codejam.Node.Direction;
+import com.eric.codejam.main.Runner;
+import com.eric.codejam.main.Runner.TestCaseInputScanner;
+import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.utils.Grid;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-public class Main {
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
     
-    Grid<Boolean> grid; //false #  true .
     
-    final int rows;
-    final int cols;
-    final int fallingDistance;
     
     int iterations;
     
-    final  Map<Node, Integer> minCostMap;
+    
+    int[][][][] memo;
      
-    int[] findOpenRange(int row, int col) {
-    	return findOpenRange(row, col, col, col);
+    int[] findOpenRange(int row, int col, InputData input) {
+    	return findOpenRange(row, col, col, col, input);
     }
     
-    int[] findOpenRange(int row, int col, int dugLeft, int dugRight) {
+    static int[] findOpenRange(int row, int col, int dugLeft, int dugRight, InputData input) {
+        
+        final int rows = input.rows;
+        final int cols = input.cols;
+        final Grid<Boolean> grid = input.grid;
         
         Preconditions.checkArgument(row >= 0 && row < rows );
         Preconditions.checkArgument(col >= 0 && col < cols);
@@ -73,11 +73,16 @@ public class Main {
         return new int[] { left, right };
     }
     
-    int[] findWalkableRange(int row, int col) {
-        return findWalkableRange(row, col, col, col);
+    int[] findWalkableRange(int row, int col, InputData input) {
+        return findWalkableRange(row, col, col, col, input);
     }
-    int[] findWalkableRange(int row, int col, int dugLeft, int dugRight) {
+    int[] findWalkableRange(int row, int col, int dugLeft, int dugRight, InputData input) {
     	
+
+        final int rows = input.rows;
+        final int cols = input.cols;
+        final Grid<Boolean> grid = input.grid;
+        
     	Preconditions.checkArgument(row < rows - 1);
     	Preconditions.checkArgument(col >= 0 && col < cols);
     	Preconditions.checkArgument(dugLeft >= 0 && dugLeft <= col);
@@ -124,7 +129,12 @@ public class Main {
     	return new int[] { left, right };
     }
     
-    Integer getFallRow(int row, int col) {
+    Integer getFallRow(int row, int col, InputData input) {
+
+        final int rows = input.rows;
+        final Grid<Boolean> grid = input.grid;
+        final int fallingDistance = input.fallingDistance;
+        
     	int r = row;
     	
     	while(r < rows - 1) {
@@ -143,8 +153,8 @@ public class Main {
     }
    
    
-    Node getNewNodeAfterDigging(Node n, int initialPosition, int digEntryCol) {
-        Integer row = getFallRow(n.row + 1, digEntryCol);             
+    Node getNewNodeAfterDigging(Node n, int initialPosition, int digEntryCol, InputData input) {
+        Integer row = getFallRow(n.row + 1, digEntryCol, input);             
         
         if (row == null) {
             log.debug("Fall rp mortel");
@@ -170,20 +180,25 @@ public class Main {
         
     }
     
-    private int getNewMin(int minCost, int costAddition, Node newNode) {
+    private int getNewMin(int minCost, int costAddition, Node newNode, InputData input) {
     	if (newNode == null) {
     		return minCost;
     	}
-        Integer toDig = getDepthOutOfCave(newNode);
+        Integer toDig = getDepthOutOfCave(newNode, input);
         
-        if (toDig == null) {
+        if (toDig < 0 || toDig == Integer.MAX_VALUE) {
             return minCost;
         }
         
         return Math.min(costAddition + toDig, minCost);
     }
     
-    Integer getDepthOutOfCave(final Node n) {
+    Integer getDepthOutOfCave(final Node n, InputData input) {
+        
+
+        final int rows = input.rows;
+        final int cols = input.cols;
+        final Grid<Boolean> grid = input.grid;
         
         int minCost = Integer.MAX_VALUE;
         
@@ -191,15 +206,16 @@ public class Main {
             return 0;
         }
         
-        if (minCostMap.containsKey(n)) {
-        	return minCostMap.get(n);
+        if (memo[n.row][n.col][n.dugToCol][n.direction == Direction.RIGHT ? 1 : 0] >= 0) {
+            minCost = memo[n.row][n.col][n.dugToCol][n.direction == Direction.RIGHT ? 1 : 0];
+            return minCost;
         }
         
         ++iterations;
         
         int[] walkableRange = n.direction == Direction.RIGHT ?
-        		findWalkableRange(n.row, n.col, n.col, n.dugToCol) :
-        			findWalkableRange(n.row, n.col, n.dugToCol, n.col);
+        		findWalkableRange(n.row, n.col, n.col, n.dugToCol, input) :
+        			findWalkableRange(n.row, n.col, n.dugToCol, n.col, input);
         
     	for(int position = walkableRange[0]; position <= walkableRange[1]; ++position) {
     		for(int rightPosition = position + 1; rightPosition <= walkableRange[1]; ++rightPosition) {
@@ -208,11 +224,11 @@ public class Main {
     			//p to rp - 1 dug ; fall in rp  - 1
     		    int digEntryCol = rightPosition - 1;
     		    
-    		    Node newNode = getNewNodeAfterDigging(n, position, digEntryCol);
+    		    Node newNode = getNewNodeAfterDigging(n, position, digEntryCol, input);
     		    
     		    int dug = 1 + Math.abs(digEntryCol - position);
     	        
-    	        minCost = getNewMin(minCost, dug,  newNode);
+    	        minCost = getNewMin(minCost, dug,  newNode, input);
     		}
     	   	
     	
@@ -221,11 +237,11 @@ public class Main {
                 //p to lp + 1 dug ; fall in lp  + 1
                 int digEntryCol = leftPosition + 1;
                 
-                Node newNode = getNewNodeAfterDigging(n, position, digEntryCol);
+                Node newNode = getNewNodeAfterDigging(n, position, digEntryCol, input);
                 
                 int dug = 1 + Math.abs(digEntryCol - position);
                 
-                minCost = getNewMin(minCost, dug,  newNode);
+                minCost = getNewMin(minCost, dug,  newNode, input);
             }
         }
     	
@@ -236,18 +252,18 @@ public class Main {
     	        
     	        ){
     	    int col = walkableRange[1] + 1;
-    	    Integer row = getFallRow(n.row + 1, col);   
+    	    Integer row = getFallRow(n.row + 1, col, input);   
     	    
     	    if (row != null) {
     	        if (row == rows - 1) {
-    	        	minCostMap.put(n, 0);
+    	        	memo[n.row][n.col][n.dugToCol][n.direction == Direction.RIGHT ? 1 : 0] = 0;
     	            return 0;
     	        }
     	        Preconditions.checkState(grid.getEntry(row, col));
     	        Preconditions.checkState(!grid.getEntry(row+1, col));
     	        //int[] range = findOpenRange(row, col);
     	        Node newNode = new Node(row, col, col);
-    	        minCost = getNewMin(minCost, 0,  newNode);
+    	        minCost = getNewMin(minCost, 0,  newNode, input);
     	        
     	        //newNode = new Node(row, col, range[1]);
     	        //minCost = getNewMin(minCost, 0,  newNode);
@@ -260,96 +276,99 @@ public class Main {
     	        || walkableRange[0] - 1 >= Math.min(n.dugToCol, n.col)        
     	        )) {
             int col = walkableRange[0] - 1;
-            Integer row = getFallRow(n.row + 1, col);   
+            Integer row = getFallRow(n.row + 1, col, input);   
             
             if (row != null) {
                 if (row == rows - 1) {
-                	minCostMap.put(n, 0);
+                	memo[n.row][n.col][n.dugToCol][n.direction == Direction.RIGHT ? 1 : 0] = 0;
                     return 0;
                 }
                 Preconditions.checkState(grid.getEntry(row, col));
     	        Preconditions.checkState(!grid.getEntry(row+1, col));
                 
                 Node newNode = new Node(row, col, col);
-    	        minCost = getNewMin(minCost, 0,  newNode);
+    	        minCost = getNewMin(minCost, 0,  newNode, input);
             }
         }
     	
     	if (minCost == Integer.MAX_VALUE) {
-    		minCostMap.put(n, null);
-    	    return null;
+    	    memo[n.row][n.col][n.dugToCol][n.direction == Direction.RIGHT ? 1 : 0] =Integer.MAX_VALUE;
+    	    return Integer.MAX_VALUE;
     	}
     	
     	log.debug("Returning {} for node {}", minCost, n);
-    	minCostMap.put(n, minCost);
+    	memo[n.row][n.col][n.dugToCol][n.direction == Direction.RIGHT ? 1 : 0] = minCost;
     	return minCost;
     }
 
-    static Main buildMain(Scanner scanner) {
-        
-        Main m = new Main(scanner.nextInt(), scanner.nextInt(), scanner.nextInt());
-        
-        BiMap<Character, Boolean> mapping = HashBiMap.create(2);
-        mapping.put('#', false);
-        mapping.put('.', true);
-               
-        Grid<Boolean> grid = Grid.buildFromScanner(scanner, m.rows, m.cols,  mapping, null);
-        m.grid = grid;
-        return m;
+    public Main() {
+        super();
+
+        iterations = 0;
     }
-
-    public static void handleCase(int caseNumber, Scanner scanner,
-            PrintStream os) {
-
-    	Main m = Main.buildMain(scanner);
-        
-        int[] range = m.findOpenRange(0, 0, 0, 0);
-        
-        Node n = new Node(0, 0, range[1]);
-
-        log.info("Starting case {}", caseNumber);
-        Integer cost = m.getDepthOutOfCave(n);
-        
-        if (cost == null) {
-            os.println("Case #" + caseNumber + ": No");
-        } else {
-            os.println("Case #" + caseNumber + ": Yes " + cost);
-        }
-        
-        log.info("Finished Starting case {}.  Iterations {}", caseNumber, m.iterations);
-    }
-
-
-    public Main( int rows, int cols, int fallingDistance
-			) {
-		super();
-		
-		this.rows = rows;
-		this.cols = cols;
-		this.fallingDistance = fallingDistance;
-		minCostMap = new HashMap<>();
-    	iterations = 0;
-	}
 
 	final static Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-            args = new String[] { "sample.txt" };
+           // args = new String[] { "sample.txt" };
+            args = new String[] { "B-large-practice.in" };
         }
         log.info("Input file {}", args[0]);
 
-        Scanner scanner = new Scanner(new File(args[0]));
+        Main m = new Main();
+        Runner.goScanner(args[0], m,m);
+    }
 
-        int t = scanner.nextInt();
+    
+    @Override
+    public InputData readInput(Scanner scanner, int testCase) {
+        InputData input = new InputData(testCase);
 
-        for (int i = 1; i <= t; ++i) {
+        input.rows = scanner.nextInt();
+        input.cols = scanner.nextInt();
+        input.fallingDistance = scanner.nextInt();
 
-            handleCase(i, scanner, System.out);
+        BiMap<Character, Boolean> mapping = HashBiMap.create(2);
+        mapping.put('#', false);
+        mapping.put('.', true);
 
+        Grid<Boolean> grid = Grid.buildFromScanner(scanner, input.rows,
+                input.cols, mapping, null);
+        input.grid = grid;
+        return input;
+
+    }
+
+    @Override
+    public String handleCase(int caseNumber, InputData data) {
+        
+        memo = new int[data.rows][data.cols][data.cols][2];
+        for(int r=0; r<data.rows; ++r) {
+            for(int c=0; c<data.cols; ++c) {
+                for(int dc=0; dc<data.cols; ++dc) {
+                    memo[r][c][dc][0] = -1;
+                    memo[r][c][dc][1] = -1;
+                }
+            }
         }
+        iterations=0;
+        
+        int[] range = findOpenRange(0, 0, 0, 0, data);
+        
+        Node n = new Node(0, 0, range[1]);
 
-        scanner.close();
+        log.info("Starting case {}", caseNumber);
+        Integer cost = getDepthOutOfCave(n, data);
+        
+        log.info("Finished Starting case {}.  Iterations {}", caseNumber, iterations);
+        
+        if (cost == Integer.MAX_VALUE) {
+            return("Case #" + caseNumber + ": No");
+        } else {
+            return("Case #" + caseNumber + ": Yes " + cost);
+        }
+        
     }
 }

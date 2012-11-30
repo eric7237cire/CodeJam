@@ -27,7 +27,7 @@ public class Runner {
     
     public interface TestCaseInputScanner<InputData> {
         public InputData readInput(Scanner scanner, int testCase)
-                throws IOException;
+                ;
     }
     
     public static <InputData extends AbstractInputData> void goScanner(

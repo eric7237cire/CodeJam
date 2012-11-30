@@ -3,9 +3,6 @@ package com.eric.codejam;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -39,22 +36,19 @@ public class AppTest {
 		super();
 	}
 
-	private String getOutput(String testCase) {
-		Scanner sc = new Scanner(testCase);
+    private String getOutput(String testCase) {
+        Scanner sc = new Scanner(testCase);
 
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		PrintStream pos = new PrintStream(os);
+        Main m = new Main();
+        InputData i;
 
-		Main.handleCase(1, sc, pos);
+        i = m.readInput(sc, 1);
 
-		try {
-			String output = new String(os.toString("UTF-8"));
-			log.info(output);
-			return output.trim();
-		} catch (UnsupportedEncodingException ex) {
-			return null;
-		}
-	}
+        String output = m.handleCase(1, i);
+
+        return output.trim();
+
+    }
 
 	private static Map<String, String> testData;
 
@@ -181,19 +175,23 @@ public class AppTest {
 		Scanner sc = new Scanner(testCase);
 
 
-		Main m = Main.buildMain(sc);
+		Main m = new Main();
+		InputData input;
+        
+            input = m.readInput(sc,1);
+        
 
 		int[] range = m.findWalkableRange(1, // row
 				2, // col
-				1, 2); // dug
+				1, 2,input); // dug
 
 		assertTrue(ArrayUtils.isEquals(new int[] { 2, 2 }, range));
 
-		range = m.findWalkableRange(1, 2, 2, 4);
+		range = m.findWalkableRange(1, 2, 2, 4,input);
 
 		assertTrue(ArrayUtils.isEquals(new int[] { 2, 4 }, range));
 
-		range = m.findWalkableRange(0, 3);
+		range = m.findWalkableRange(0, 3,input);
 
 		assertTrue(ArrayUtils.isEquals(new int[] { 0, 4 }, range));
 
