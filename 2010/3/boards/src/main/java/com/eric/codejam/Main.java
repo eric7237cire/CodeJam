@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -104,23 +106,22 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         Arrays.fill(distance, Integer.MAX_VALUE);
         Arrays.fill(previous, -1);
         
-        SortedSet<Node> toProcess = new TreeSet<>(new Comparator<Node>() {
+        Queue<Node> toProcess = new PriorityQueue<>(boardLengths.length, new Comparator<Node>() {
             public int compare(Node a, Node b) {
-                return ComparisonChain.start().compare(a.cost, b.cost).compare(a.residue,b.residue).result();
+                return Integer.compare(a.cost, b.cost);
             }
         });
-        Set<Integer> visited = new HashSet<Integer>();
-        
+                
         toProcess.add(new Node(0,0));
         distance[0] = 0;
         
         while(!toProcess.isEmpty()) {
-            Node currentNode = toProcess.first();
+            Node currentNode = toProcess.poll();
             int currentResidue = currentNode.residue;
-            toProcess.remove(currentNode);
-            
+                        
             //log.debug("Current residue {}  cost {}", currentResidue, currentNode.cost);
-            if (visited.contains(currentResidue)) {
+            if (distance[currentResidue] < currentNode.cost) {
+                //already visited.  Visited nodes have the minimum cost recorded
                 continue;
             }
             
@@ -149,7 +150,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                                 
             }
             
-            visited.add(currentResidue);
             Preconditions.checkState(distance[currentResidue] >= currentNode.cost);
             distance[currentResidue] = currentNode.cost;
         }
@@ -160,43 +160,31 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
     
     
     
-    
-    
     @Override
     public String handleCase(int caseNumber, InputData input) {
 
         log.info("Starting calculating case {}", caseNumber);
-        
-        //double ans = DivideConq.findMinPerimTriangle(input.points);
 
-        
-        
-        long minSum = Long.MAX_VALUE;
-       
-        int maxLen =  100000000; //input.boardLens[maxBoardIndex] * 20;
-        //solve_iter(maxLen, input.boardLens);
-        
-        //We are forced to use the max index, see solution for explanation. 
-        
-        int maxBoardIndex = input.N - 1; 
-            
-            log.debug("Case number {} max board index {}", caseNumber, maxBoardIndex);
-            
-            
-            
-            final long sum = input.L / input.boardLens[maxBoardIndex];
-            int rest = Ints.checkedCast(input.L % input.boardLens[maxBoardIndex]);
-            
-            Integer cost = doBreadthFirstSearch(input.boardLens,input.boardLens[maxBoardIndex],rest);
-        
-            if (cost==null) {
-                return ("Case #" + caseNumber + ": IMPOSSIBLE");
-            }
-            long total = sum+cost;
-            
-            
-            return ("Case #" + caseNumber + ": " + total);
-            
+        // We are forced to use the max index, see solution for explanation.
+
+        int maxBoardIndex = input.N - 1;
+
+        log.debug("Case number {} max board index {}", caseNumber,
+                maxBoardIndex);
+
+        final long sum = input.L / input.boardLens[maxBoardIndex];
+        int rest = Ints.checkedCast(input.L % input.boardLens[maxBoardIndex]);
+
+        Integer cost = doBreadthFirstSearch(input.boardLens,
+                input.boardLens[maxBoardIndex], rest);
+
+        if (cost == null) {
+            return ("Case #" + caseNumber + ": IMPOSSIBLE");
+        }
+        long total = sum + cost;
+
+        return ("Case #" + caseNumber + ": " + total);
+
     }
     
     final static int INVALID = IntMath.pow(10, 8); 
