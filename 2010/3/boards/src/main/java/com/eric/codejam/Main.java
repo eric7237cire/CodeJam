@@ -5,11 +5,9 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -23,7 +21,6 @@ import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ComparisonChain;
 import com.google.common.math.IntMath;
 import com.google.common.primitives.Ints;
 

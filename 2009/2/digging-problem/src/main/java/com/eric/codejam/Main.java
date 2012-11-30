@@ -23,55 +23,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     int[][][][] memo;
      
-    int[] findOpenRange(int row, int col, InputData input) {
-    	return findOpenRange(row, col, col, col, input);
-    }
-    
-    static int[] findOpenRange(int row, int col, int dugLeft, int dugRight, InputData input) {
-        
-        final int rows = input.rows;
-        final int cols = input.cols;
-        final Grid<Boolean> grid = input.grid;
-        
-        Preconditions.checkArgument(row >= 0 && row < rows );
-        Preconditions.checkArgument(col >= 0 && col < cols);
-        Preconditions.checkArgument(dugLeft >= 0 && dugLeft <= col);
-        Preconditions.checkArgument(dugRight < cols && dugRight >= col);
-        Preconditions.checkState(row == rows - 1 || !grid.getEntry(row+1, col));
-        int right = col;
-        int left = col;
-        
-        while(true) {
-            int next = right + 1;
-            if (next >= cols) {
-                break;
-            }
-            //space above
-            if (next > dugRight && !grid.getEntry(row, next)) {
-                break;
-            }
-            
-            
-            right = next;
-        }
-                
-        
-        while(true) {
-            int next = left - 1;
-            if (next < 0) {
-                break;
-            }
-            //space above
-            if (next < dugLeft && !grid.getEntry(row, next)) {
-                break;
-            }
-            
-            
-            left = next;
-        }
-        
-        return new int[] { left, right };
-    }
+   
     
     int[] findWalkableRange(int row, int col, InputData input) {
         return findWalkableRange(row, col, col, col, input);
@@ -160,8 +112,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             log.debug("Fall rp mortel");
             return null;
         }
-        
-        
+                
         //If n+1, range is extented by what has been dug
         int[] range = null;
         
@@ -207,20 +158,20 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         
         if (memo[n.row][n.col][n.dugToCol][n.direction == Direction.RIGHT ? 1 : 0] >= 0) {
-            minCost = memo[n.row][n.col][n.dugToCol][n.direction == Direction.RIGHT ? 1 : 0];
-            return minCost;
+            return memo[n.row][n.col][n.dugToCol][n.direction == Direction.RIGHT ? 1 : 0];
         }
         
         ++iterations;
         
         int[] walkableRange = n.direction == Direction.RIGHT ?
-        		findWalkableRange(n.row, n.col, n.col, n.dugToCol, input) :
-        			findWalkableRange(n.row, n.col, n.dugToCol, n.col, input);
+        	findWalkableRange(n.row, n.col, n.col, n.dugToCol, input) :
+        	findWalkableRange(n.row, n.col, n.dugToCol, n.col, input);
         
+        //For each position that is reachable on foot		
     	for(int position = walkableRange[0]; position <= walkableRange[1]; ++position) {
+    	    //Dig everything possible, need one square extra to the right before falling in
     		for(int rightPosition = position + 1; rightPosition <= walkableRange[1]; ++rightPosition) {
-    		
-    		    
+    		    		    
     			//p to rp - 1 dug ; fall in rp  - 1
     		    int digEntryCol = rightPosition - 1;
     		    
@@ -245,6 +196,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
         }
     	
+    	//Try walking to the right
     	if (walkableRange[1] < cols - 1 &&
     	        (grid.getEntry(n.row, walkableRange[1] + 1)
     	                || walkableRange[1] + 1 <= Math.max(n.dugToCol, n.col)
@@ -270,7 +222,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     	    }
     	}
     	
-    	
+    	//and left
     	if (walkableRange[0] > 0 && (
     	        grid.getEntry(n.row, walkableRange[0] - 1)
     	        || walkableRange[0] - 1 >= Math.min(n.dugToCol, n.col)        
@@ -355,7 +307,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         iterations=0;
         
-        int[] range = findOpenRange(0, 0, 0, 0, data);
+        int[] range = findWalkableRange(0, 0, 0, 0, data);
         
         Node n = new Node(0, 0, range[1]);
 

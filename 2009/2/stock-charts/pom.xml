@@ -18,18 +18,32 @@
       <version>4.10</version>
       <scope>test</scope>
     </dependency>
+    
     <dependency>
   <groupId>org.slf4j</groupId>
   <artifactId>slf4j-api</artifactId>
   <version>1.7.2</version>
 </dependency>
+
 <dependency>
-  <groupId>org.slf4j</groupId>
-  <artifactId>slf4j-log4j12</artifactId>
-  <version>1.7.2</version>
-  <scope>test</scope>
-</dependency>
-<dependency>
+            <groupId>com.eric.codejam</groupId>
+            <artifactId>utils</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.7</version>
+        </dependency>
+        
+        <dependency>
     <groupId>com.google.guava</groupId>
     <artifactId>guava</artifactId>
     <version>13.0.1</version>
