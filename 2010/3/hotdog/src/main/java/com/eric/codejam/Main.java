@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eric.codejam.InputData.Corner;
+import com.eric.codejam.datastructures.Gaps;
+import com.eric.codejam.datastructures.Gaps.Gap;
 import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
@@ -193,72 +194,131 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
     }
 
- public long takeAllMove(List<Corner> vendors) {
-                
-        
+    public long takeAllMove(List<Corner> vendors) {
+
         Multiset<Integer> currentVendors = TreeMultiset.create();
         LinkedList<Integer> toProcess = new LinkedList<Integer>();
-        
-        
-        
-        for(int i = 0; i < vendors.size(); ++i) {
+
+        Gaps gaps = new Gaps();
+
+        for (int i = 0; i < vendors.size(); ++i) {
             currentVendors.add(vendors.get(i).location, vendors.get(i).count);
+            gaps.mergeGap(vendors.get(i).location, vendors.get(i).location);
+
             if (vendors.get(i).count > 1) {
                 toProcess.add(vendors.get(i).location);
             }
         }
         long cost = 0;
-        
+
         int iterations = 0;
-        
-        while(!toProcess.isEmpty()) {
-            
-            
-           
-           
+
+        while (!toProcess.isEmpty()) {
+
             Integer corner = toProcess.pollFirst();
-            
-            
+
             int count = currentVendors.count(corner);
             if (count <= 1)
                 continue;
-            
+
             ++iterations;
-            if (iterations % 1000000 == 0) 
-                log.debug("Iterations {}.  Size {}  corner count {}", iterations/100000, currentVendors.elementSet().size(), count);
-            
+            if (iterations % 1000000 == 0)
+                log.debug("Iterations {}.  Size {}  corner count {}",
+                        iterations / 100000,
+                        currentVendors.elementSet().size(), count);
+
             int half = count / 2;
-            long costAdd = (long)half*(half+1)*(2*half+1)/6;
-            cost+=costAdd;
-            
-            for(int leftSide = corner - half; leftSide < corner; ++leftSide) {                
+            long costAdd = (long) half * ((long)half + 1) * (2L * half + 1) / 6L;
+            cost += costAdd;
+
+            for (int leftSide = corner - half; leftSide < corner; ++leftSide) {
                 int beforeCount = currentVendors.count(leftSide);
-                beforeCount ++;
-                if (beforeCount > 1)
-                    toProcess.add(leftSide);
-                currentVendors.setCount(leftSide,beforeCount);
+                beforeCount++;
+                //if (beforeCount > 1)
+                  //  toProcess.add(leftSide);
+                currentVendors.setCount(leftSide, beforeCount);
             }
-            for(int rightSide = corner + half; rightSide > corner; --rightSide) {                
+            gaps.mergeGap(corner-half, corner-1);
+            for (int rightSide = corner + half; rightSide > corner; --rightSide) {
                 int beforeCount = currentVendors.count(rightSide);
-                beforeCount ++;
-                if (beforeCount > 1)
-                    toProcess.add(rightSide);
-                currentVendors.setCount(rightSide,beforeCount);
+                beforeCount++;
+                //if (beforeCount > 1)
+                  //  toProcess.add(rightSide);
+                currentVendors.setCount(rightSide, beforeCount);
             }
-            
+            gaps.mergeGap(corner+1, corner+half);
+
             if (count % 2 == 0) {
                 currentVendors.setCount(corner, 0);
+                gaps.removeGap(corner,corner);
             } else {
                 currentVendors.setCount(corner, 1);
+                gaps.mergeGap(corner,corner);
             }
             
+            for(int sweep = corner - half; sweep <= corner + half; ++sweep) {
+                int sweepCount = currentVendors.count(sweep);
+                if (sweepCount <= 1)
+                    continue;
+                
+                //Will be taken into account by the loop
+                if (sweepCount > 2) {
+                    Preconditions.checkState(toProcess.contains(sweep));
+                    continue;
+                }
+                
+                Gap gap = gaps.getGap(sweep);
+                Preconditions.checkState(gap != null);
+                Preconditions.checkState(!currentVendors.contains(gap.lb-1));
+                Preconditions.checkState(!currentVendors.contains(gap.ub+1));
+                
+                /*Say we have      112111
+                  it will become 1 110111 1   offset -- 2
+                                 1 111011 1
+                  */
+                
+                int offset = sweep - gap.lb;
+                
+                //offset from left and right get decreased by 1, they may be the same number ie
+                //   121
+                // 1 101 1
+                // 1 101 1
+                
+                int cornerToDecrease = gap.lb + offset;
+                boolean r = currentVendors.remove(cornerToDecrease);
+                Preconditions.checkState(r);
+                if (!currentVendors.contains(cornerToDecrease)) {
+                    gaps.removeGap(cornerToDecrease, cornerToDecrease);
+                }
+                cornerToDecrease = gap.ub - offset;
+                
+                r = currentVendors.remove(cornerToDecrease);
+                Preconditions.checkState(r);
+                if (!currentVendors.contains(cornerToDecrease)) {
+                    gaps.removeGap(cornerToDecrease, cornerToDecrease);
+                }
+                
+                //Add 1's to left and right
+                Preconditions.checkState(!currentVendors.contains(gap.lb-1));
+                Preconditions.checkState(!currentVendors.contains(gap.ub+1));
+                
+                currentVendors.add(gap.lb-1);
+                gaps.mergeGap(gap.lb-1,gap.lb-1);
+                currentVendors.add(gap.ub+1);
+                gaps.mergeGap(gap.ub+1,gap.ub+1);
+                
+                //Length left side (including sweep) * length right side (including sweep)
+                long costAdded = (long)(sweep - gap.lb + 1) * (gap.ub - sweep + 1);
+                cost += costAdded;
+                
+            }
+
             if (cost % 1000000 == 0) {
                 log.debug("Cost is {}", cost);
             }
-            
-            
+
         }
-        
+
         return cost;
     }
 

@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 
 public class Gaps {
     final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -18,6 +19,7 @@ public class Gaps {
     TreeMap<Integer, Integer> blocks = new TreeMap<>();
     
     public void mergeGap(int lb, int ub) {
+        Preconditions.checkState(lb <= ub);
         //Check if there is anything directly before lb
         Gap blockLb = getGap(lb-1);
         
@@ -46,6 +48,8 @@ public class Gaps {
     }
     
     public void removeGap(int lb, int ub) {
+        Preconditions.checkState(lb <= ub);
+        
       //Check if there is anything directly before lb
         Gap blockLb = getGap(lb-1);
         
@@ -101,8 +105,8 @@ public class Gaps {
     
     // lb <= x <= up
     public static class Gap {
-        int lb;
-        int ub;
+        public final int lb;
+        public final int ub;
         public Gap(int lb, int up) {
             super();
             this.lb = lb;
