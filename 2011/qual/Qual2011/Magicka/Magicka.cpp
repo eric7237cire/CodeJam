@@ -103,8 +103,8 @@ void do_test_case(int test_case, ifstream& input, ofstream& output)
 		
 	}
 
-	cout << "Combinations ";
-	print(combinations);
+	//cout << "Combinations ";
+	//print(combinations);
 
 	int D;
 	input >> D;
@@ -121,8 +121,8 @@ void do_test_case(int test_case, ifstream& input, ofstream& output)
 		opposed.insert(opp);
 	}
 
-	cout << "Opposed ";
-	print(opposed);
+	//cout << "Opposed ";
+	//print(opposed);
 
 	int N;
 	input >> N;
@@ -132,7 +132,7 @@ void do_test_case(int test_case, ifstream& input, ofstream& output)
 
 	vector<char> elemList;
 
-	cout << elemToInvoke << endl;
+	//cout << elemToInvoke << endl;
 	for(string::const_iterator it = elemToInvoke.begin(); it != elemToInvoke.end(); ++it)
 	{
 		

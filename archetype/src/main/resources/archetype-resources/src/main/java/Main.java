@@ -24,10 +24,11 @@ import com.eric.codejam.InputData;
 import com.eric.codejam.Main;
 import com.eric.codejam.geometry.PointInt;
 import com.eric.codejam.main.Runner;
+import com.eric.codejam.main.Runner.TestCaseInputScanner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<InputData> {
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, TestCaseInputReader<InputData> {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
     
@@ -46,6 +47,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         return ("Case ${symbol_pound}" + caseNumber + ": " );
     }
     
+    @Override
+    public InputData readInput(Scanner scanner, int testCase) {
+        InputData  input = new InputData(testCase);
+        
+        
+        return input;
+    }
     
     @Override
     public InputData readInput(BufferedReader br, int testCase) throws IOException {
