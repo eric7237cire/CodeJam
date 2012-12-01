@@ -22,4 +22,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\B-large-practice.in">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\B-small-practice.in">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\B-small-practice.out">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

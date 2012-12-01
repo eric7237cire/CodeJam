@@ -7,6 +7,7 @@
 #include <fstream>
 #include <vector>
 #include <string> 
+#include <set>
 #include <map>
 #include "boost/algorithm/string/replace.hpp"
 
@@ -55,6 +56,33 @@ int main(int argc, char** args)
  
 }
 
+// print elements of an STL container
+template <typename T>
+void print (T const& coll)
+{
+    typename T::const_iterator pos;  // iterator to iterate over coll
+    typename T::const_iterator end(coll.end());  // end position
+
+    for (pos=coll.begin(); pos!=end; ++pos) {
+        std::cout << *pos << ' ';
+    }
+    std::cout << std::endl;
+}
+
+template <typename T> std::ostream& operator<<(std::ostream& os, const pair<T,T>& obj) 
+{ 
+	os << obj.first << ", " << obj.second ;
+  // write obj to stream
+  return os;
+} 
+
+ std::ostream& operator<<(std::ostream& os, const pair<string,char>& obj) 
+{ 
+	os << obj.first << ", " << obj.second ;
+  // write obj to stream
+  return os;
+} 
+
 void do_test_case(int test_case, ifstream& input, ofstream& output) 
 {
 	int C;
@@ -70,21 +98,31 @@ void do_test_case(int test_case, ifstream& input, ofstream& output)
 		combin.erase(2,1);
 
 		combinations[combin] = newElem;
-		cout << "Combo " << newElem << endl;
+		reverse(combin.begin(), combin.end());
+		combinations[combin] = newElem;
+		
 	}
+
+	cout << "Combinations ";
+	print(combinations);
 
 	int D;
 	input >> D;
 
-	map<char, char> opposed;
+	set<string> opposed;
 
 	for(int i = 0; i < D; ++i) 
 	{
 		string opp;
 		input >> opp;
-		opposed[opp[0]] = opp[1];
-		opposed[opp[1]] = opp[0];
+
+		opposed.insert(opp);
+		reverse(opp.begin(), opp.end());
+		opposed.insert(opp);
 	}
+
+	cout << "Opposed ";
+	print(opposed);
 
 	int N;
 	input >> N;
@@ -92,5 +130,59 @@ void do_test_case(int test_case, ifstream& input, ofstream& output)
 	string elemToInvoke;
 	input >> elemToInvoke;
 
+	vector<char> elemList;
+
 	cout << elemToInvoke << endl;
+	for(string::const_iterator it = elemToInvoke.begin(); it != elemToInvoke.end(); ++it)
+	{
+		
+		elemList.push_back(*it);
+		
+		//check combination
+		if (elemList.size() >= 2)
+		{
+			string check( elemList.begin() + elemList.size()  - 2, elemList.end());
+			//check += *it;
+
+			assert(check.size() == 2);
+			map<string, char>::const_iterator combCheck = combinations.find(check);
+
+			if (combCheck != combinations.end() ) 
+			{
+			//	continue;
+
+			elemList.pop_back();
+			elemList.pop_back();
+
+			elemList.push_back( combCheck->second );
+			continue;
+			}
+		}
+
+		//check opposition
+		for(vector<char>::const_iterator eIt = elemList.begin(); eIt != elemList.end(); ++eIt)
+		{
+			string check(1, *eIt);
+			check += *it;
+			if (opposed.find(check) != opposed.end()) 
+			{
+				elemList.clear();
+				break;
+			}
+
+		}
+
+	}
+
+	output << "Case #" << test_case+1 << ": [";
+	for(vector<char>::const_iterator it = elemList.begin(); it != elemList.end(); ++it)
+	{
+		output << *it;
+		if (it != --elemList.end() )
+			output << ", ";
+
+	}
+
+	output << "]" << endl;
+	
 }
