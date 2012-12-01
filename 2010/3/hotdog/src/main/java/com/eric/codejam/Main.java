@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.apache.commons.lang3.StringUtils;
@@ -197,6 +198,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
         Multiset<Integer> currentVendors = TreeMultiset.create();
         LinkedList<Integer> toProcess = new LinkedList<Integer>();
+        
+        
         
         for(int i = 0; i < vendors.size(); ++i) {
             currentVendors.add(vendors.get(i).location, vendors.get(i).count);

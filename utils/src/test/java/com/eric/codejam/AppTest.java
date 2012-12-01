@@ -13,13 +13,11 @@ import mod.GCD;
 
 import org.junit.Test;
 
+import com.eric.codejam.datastructures.GraphAdjList;
 import com.eric.codejam.geometry.Line;
 import com.eric.codejam.geometry.Point;
 import com.eric.codejam.geometry.Polygon;
 import com.eric.codejam.geometry.Rectangle;
-import com.eric.codejam.utils.GraphAdjList;
-//import static org.junit.Assert.assertEquals;
-//import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test for simple App.

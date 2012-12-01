@@ -1,4 +1,4 @@
-package com.eric.codejam.utils;
+package com.eric.codejam.datastructures;
 
 import java.util.ArrayList;
 import java.util.List;
