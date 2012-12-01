@@ -13,6 +13,7 @@ output.txt
 *.out
 *#
 Debug
+Release
 x64
 ipch
 *.sdf
