@@ -12,3 +12,8 @@ output.txt
 .project
 *.out
 *#
+Debug
+x64
+ipch
+*.sdf
+*.opensdf
