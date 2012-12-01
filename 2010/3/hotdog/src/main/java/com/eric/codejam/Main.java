@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -24,6 +23,7 @@ import com.eric.codejam.main.Runner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.TreeMultiset;
 
@@ -194,60 +194,58 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
         
     }
 
+    /**
+     * The main idea is that any move is an optimal move.  So we solve in 2 steps.
+     * 
+     * Exploding all the large corners from the input into 1's
+     * and then sweeping up to move any 2's created from the explosion
+     * to the edges.
+     * 
+     * @param vendors
+     * @return
+     */
     public long takeAllMove(List<Corner> vendors) {
 
-        Multiset<Integer> currentVendors = TreeMultiset.create();
-        LinkedList<Integer> toProcess = new LinkedList<Integer>();
+        Multiset<Integer> currentVendors = HashMultiset.create();
 
         Gaps gaps = new Gaps();
 
         for (int i = 0; i < vendors.size(); ++i) {
             currentVendors.add(vendors.get(i).location, vendors.get(i).count);
-            gaps.mergeGap(vendors.get(i).location, vendors.get(i).location);
-
-            if (vendors.get(i).count > 1) {
-                toProcess.add(vendors.get(i).location);
-            }
+            gaps.mergeGap(vendors.get(i).location, vendors.get(i).location);            
         }
+        
         long cost = 0;
 
-        int iterations = 0;
+        for (int vi = 0; vi < vendors.size(); ++vi) {
 
-        while (!toProcess.isEmpty()) {
-
-            Integer corner = toProcess.pollFirst();
+            Integer corner = vendors.get(vi).location;
 
             int count = currentVendors.count(corner);
             if (count <= 1)
                 continue;
 
-            ++iterations;
-            if (iterations % 1000000 == 0)
-                log.debug("Iterations {}.  Size {}  corner count {}",
-                        iterations / 100000,
-                        currentVendors.elementSet().size(), count);
 
             int half = count / 2;
-            long costAdd = (long) half * ((long)half + 1) * (2L * half + 1) / 6L;
+            //Found by observation   9 becomes 1111 1 1111 with a cost of the sum of the squares
+            long costAdd = (long) half * (half + 1) * (2 * half + 1) / 6;
             cost += costAdd;
 
+            //Add the 1's
             for (int leftSide = corner - half; leftSide < corner; ++leftSide) {
                 int beforeCount = currentVendors.count(leftSide);
                 beforeCount++;
-                //if (beforeCount > 1)
-                  //  toProcess.add(leftSide);
                 currentVendors.setCount(leftSide, beforeCount);
             }
             gaps.mergeGap(corner-half, corner-1);
             for (int rightSide = corner + half; rightSide > corner; --rightSide) {
                 int beforeCount = currentVendors.count(rightSide);
                 beforeCount++;
-                //if (beforeCount > 1)
-                  //  toProcess.add(rightSide);
                 currentVendors.setCount(rightSide, beforeCount);
             }
             gaps.mergeGap(corner+1, corner+half);
 
+            //Center is either 0 or 1
             if (count % 2 == 0) {
                 currentVendors.setCount(corner, 0);
                 gaps.removeGap(corner,corner);
@@ -256,14 +254,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 gaps.mergeGap(corner,corner);
             }
             
+            //Now do a sweep, removing any 2's created
             for(int sweep = corner - half; sweep <= corner + half; ++sweep) {
                 int sweepCount = currentVendors.count(sweep);
                 if (sweepCount <= 1)
                     continue;
                 
-                //Will be taken into account by the loop
+                //Will be taken into account by the loop as if the count > 2, then it
+                //came forcibly from the input vendor set
                 if (sweepCount > 2) {
-                    Preconditions.checkState(toProcess.contains(sweep));
+                   // Preconditions.checkState(toProcess.contains(sweep));
                     continue;
                 }
                 
@@ -307,15 +307,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
                 currentVendors.add(gap.ub+1);
                 gaps.mergeGap(gap.ub+1,gap.ub+1);
                 
+                
                 //Length left side (including sweep) * length right side (including sweep)
+                //Found by observation
                 long costAdded = (long)(sweep - gap.lb + 1) * (gap.ub - sweep + 1);
                 cost += costAdded;
                 
             }
 
-            if (cost % 1000000 == 0) {
-                log.debug("Cost is {}", cost);
-            }
+           
 
         }
 
@@ -396,8 +396,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputReader<Inp
          log.info("Input file {}", args[0]);
 
          Main m = new Main();
-         Runner.goSingleThread(args[0], m, m);
-         //Runner.go(args[0], m, m, new InputData(-1));
+         //Runner.goSingleThread(args[0], m, m);
+         Runner.go(args[0], m, m, new InputData(-1), 5);
 
         
        
