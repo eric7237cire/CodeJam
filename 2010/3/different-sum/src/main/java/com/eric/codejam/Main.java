@@ -1,6 +1,7 @@
 package com.eric.codejam;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +29,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         boolean[][] fd = new boolean[s.length()][base];
         
-        int count = count(n,base,fd);
+        int count = count(n,n, base,fd, new ArrayList<String>());
         for(int i = 0; i < s.length(); ++i){
             //Arrays.fill(fd[i], -1);
         }
@@ -38,19 +39,22 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return ("Case #" + caseNumber + ": " + count);
     }
     
-    public int count(long n, final int b, boolean[][] forbiddenDigits) {
+    public int count(long n, long maxNum, final int b, boolean[][] forbiddenDigits, List<String> prevNums) {
         int count = 0;
         
-        if (n == 0)
+        if (n == 0) {
+           // log.debug("Prev nums\n{}", StringUtils.join(prevNums, "\n"));
+            
             return 1;
+        }
         
         if (n < 0)
             return 0;
         
-        topLoop: for (long topNum = n - n / 2; topNum <= n; ++topNum) {
+        topLoop: for (long topNum = 1; topNum <= maxNum; ++topNum) {
             String s = StringUtils.leftPad(Long.toString(topNum, b),
                     forbiddenDigits.length);
-            log.debug("n {} topNum {}", n, topNum);
+           // log.debug("n {} topNum {} s [{}]", n, topNum,s);
             for (int c = 0; c < s.length(); ++c) {
                 if (!Character.isDigit(s.charAt(c)))
                     continue;
@@ -65,7 +69,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
                 forbiddenDigits[c][Character.digit(s.charAt(c), b)] = true;
             }
-            count = count + count(n - topNum, b, forbiddenDigits);
+            prevNums.add(s);
+            count = count + count(n - topNum, topNum, b, forbiddenDigits, prevNums);
+            prevNums.remove(s);
             for (int c = 0; c < s.length(); ++c) {
                 if (!Character.isDigit(s.charAt(c)))
                     continue;
