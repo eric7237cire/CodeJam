@@ -13,6 +13,8 @@ import com.eric.codejam.main.Runner;
 import com.eric.codejam.main.Runner.TestCaseInputScanner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
@@ -50,7 +52,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         int[] count = new int[] {0,0};
         
         if (n == 0) {
-            log.debug("Prev nums\n{}", StringUtils.join(prevNums, "\n"));
+            //log.debug("Prev nums\n{}", StringUtils.join(prevNums, "\n"));
             
             return new int[] {1, prevNums.size()};
         }
@@ -92,53 +94,64 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return count;
     }
     
-    final int MAX_DIMENSION = 10;
-    final int MAX_SINGLE_DIGIT_SUM = (MAX_DIMENSION-1) * MAX_DIMENSION / 2;
+    public static final int MAX_DIMENSION = 70;
+    public static final int MAX_SINGLE_DIGIT_SUM = (MAX_DIMENSION-1) * MAX_DIMENSION / 2;
     
-    public int[][][] getSumTermArray() {
+    public static final int MOD = 1000000007;
+    
+    public static class TokenCounts  {
+        public Multiset<Integer> set;
+        public TokenCounts() {
+            set = HashMultiset.create();
+        }
+        public TokenCounts(Multiset<Integer> set) {
+            this.set = set;
+        }
+    }
+    
+    public TokenCounts[][] getSumTermArray() {
         //int[][][] array
         
         //Determine max next digit
         
         //Sum all digits from 0 to base - 1
-
+         
         // [sum] [max digit] [token counts]
-        int[][][] array = new int[MAX_SINGLE_DIGIT_SUM+1][MAX_DIMENSION][0];
+        TokenCounts[][] array = new TokenCounts[MAX_SINGLE_DIGIT_SUM+1][MAX_DIMENSION];
 
         for (int total = 0; total <= MAX_SINGLE_DIGIT_SUM; ++total) {
 
-            List<Integer> tokenCount = new ArrayList<>();
+            Multiset<Integer> tokenCount = HashMultiset.create();
 
             for (int digit = 1; digit < MAX_DIMENSION; ++digit) {
                 int rest = total - digit;
-                if (rest < 0)
+                if (rest < 0) {
+                    array[total][digit] = new TokenCounts(tokenCount);
                     continue;
+                }
 
                 if (rest == 0) {
                     tokenCount.add(1);
 
                 } else {
 
-                    int[] subCount = array[rest][digit - 1];
+                    TokenCounts subCount = array[rest][digit - 1];
 
-                    if (subCount.length == 0)
+                    if (subCount == null)
                         continue;
 
-                    for (int tokens : subCount) {
-                        tokenCount.add(tokens + 1);
+                    for (Multiset.Entry<Integer> tokens : subCount.set.entrySet()) {
+                        if (tokenCount.count(tokens.getElement()+1) >= MOD) {
+                            tokenCount.setCount(tokens.getElement()+1,tokenCount.count(tokens.getElement()+1) % MOD);
+                        }
+                        tokenCount.add(tokens.getElement()+1,tokens.getCount() % MOD );
                     }
                 }
 
-                Integer[] tokenCountAsArray = new Integer[tokenCount.size()];
-                tokenCount.toArray(tokenCountAsArray);
-
-                int[] tokenCountAsIntArray = ArrayUtils
-                        .toPrimitive(tokenCountAsArray);
-
-                
-                for(int d = digit; d < MAX_DIMENSION; ++d) {
-                    array[total][d] = tokenCountAsIntArray;
-                }
+                array[total][digit] = new TokenCounts(HashMultiset.create(tokenCount));
+                //for(int d = digit; d < MAX_DIMENSION; ++d) {
+                   
+                //}
             }
 
         }

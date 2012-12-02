@@ -4,6 +4,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.eric.codejam.Main.TokenCounts;
+
 import static org.junit.Assert.*;
 
 /**
@@ -64,6 +66,10 @@ public class AppTest  {
         assertEquals(6, sumTermCount[0]); //sum count
         assertEquals(13, sumTermCount[1]); //term count
         
+        sumTermCount = m.getSumTermCount(1,0,9,9,BASE);
+        assertEquals(8, sumTermCount[0]); //sum count
+        assertEquals(18, sumTermCount[1]); //term count
+        
         sumTermCount = m.getSumTermCount(1,1,0,9,BASE);
         assertEquals(9, sumTermCount[0]); //sum count
         assertEquals(24, sumTermCount[1]); //term count
@@ -82,14 +88,22 @@ public class AppTest  {
     public void testUberArray() {
         Main m = new Main();
         
-        int[][][] array = m.getSumTermArray();
+        TokenCounts[][] array = m.getSumTermArray();
         
-        for(int total = 1; total <= 45; ++total) {
-            int[] terms = array[total][9];
-            log.debug("Total {} Sum count {}", total,terms.length);
-            for(int termCount : terms) {
-                log.debug("Term count {}",termCount);
+        for(int total = 1; total <= Main.MAX_SINGLE_DIGIT_SUM; ++total) {
+            TokenCounts terms = array[total][Main.MAX_DIMENSION-1];
+            
+            if (terms == null)
+                continue;
+            
+            long count = 0;
+            for (Integer termCount : terms.set.elementSet()) {
+                count += (long)termCount * terms.set.count(termCount);
             }
+            log.debug("Total {} distinct term lens {} total terms {}", total,terms.set.size(), count);
+            //for(int termCount : terms) {
+               // log.debug("Term count {}",termCount);
+            //}
         }
     }
 
