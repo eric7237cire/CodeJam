@@ -1,10 +1,13 @@
 package com.eric.codejam;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eric.codejam.Main.TokenCounts;
+import com.google.common.primitives.Ints;
 
 import static org.junit.Assert.*;
 
@@ -109,6 +112,29 @@ public class AppTest  {
         long a = m.count(38,array,10);
         
         log.debug("{}",a);
+        
+        final int base = 10;
+        
+        for(int i = 1; i < 100; ++i) {
+        int c = Ints.checkedCast(m.count(i,array,base));
+        int check = getCount(i,base);
+        assertEquals(check,c);
+        }
+        
+        log.debug("{}",a);
+    }
+    
+    public int getCount(int n, int base) {
+        Main m = new Main();
+        String s = Long.toString(n,base);
+    boolean[][] fd = new boolean[s.length()][base];
+    
+    int[] counts = m.count(n,n, base,fd, new ArrayList<String>());
+    
+    int termCount = counts[1];
+    int sumCount = counts[0];
+    
+    return sumCount;
     }
 
 }

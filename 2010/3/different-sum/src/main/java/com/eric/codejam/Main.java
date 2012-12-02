@@ -123,10 +123,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         int maxSum = (base-1)*base / 2;
         
+        if (maxSum >= Ints.checkedCast(n)) {
         TokenCounts start = termCounts[Ints.checkedCast(n)][base-1];
         
         if (start != null) {
             count += start.set.size();
+        }
         }
         
         for(int i = 1; i <= maxSum; ++i) {
@@ -139,7 +141,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             int sumSingleCol = Ints.checkedCast(n - sum);
             
+            if (sumSingleCol > maxSum) {
+                continue;
+            }
             TokenCounts ones = termCounts[sumSingleCol][base-1];
+            
+            if (sumSingleCol == 0) {
+                count += ten.set.count(1);
+                continue;
+            }
             
             for(Integer tenTokenCount : ten.set.elementSet()) {
                 for(Integer oneTokenCount : ones.set.elementSet()) {
