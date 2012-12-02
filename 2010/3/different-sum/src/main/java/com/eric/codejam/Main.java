@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,6 +92,59 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return count;
     }
     
+    final int MAX_DIMENSION = 10;
+    final int MAX_SINGLE_DIGIT_SUM = (MAX_DIMENSION-1) * MAX_DIMENSION / 2;
+    
+    public int[][][] getSumTermArray() {
+        //int[][][] array
+        
+        //Determine max next digit
+        
+        //Sum all digits from 0 to base - 1
+
+        // [sum] [max digit] [token counts]
+        int[][][] array = new int[MAX_SINGLE_DIGIT_SUM+1][MAX_DIMENSION][0];
+
+        for (int total = 0; total <= MAX_SINGLE_DIGIT_SUM; ++total) {
+
+            List<Integer> tokenCount = new ArrayList<>();
+
+            for (int digit = 1; digit < MAX_DIMENSION; ++digit) {
+                int rest = total - digit;
+                if (rest < 0)
+                    continue;
+
+                if (rest == 0) {
+                    tokenCount.add(1);
+
+                } else {
+
+                    int[] subCount = array[rest][digit - 1];
+
+                    if (subCount.length == 0)
+                        continue;
+
+                    for (int tokens : subCount) {
+                        tokenCount.add(tokens + 1);
+                    }
+                }
+
+                Integer[] tokenCountAsArray = new Integer[tokenCount.size()];
+                tokenCount.toArray(tokenCountAsArray);
+
+                int[] tokenCountAsIntArray = ArrayUtils
+                        .toPrimitive(tokenCountAsArray);
+
+                
+                for(int d = digit; d < MAX_DIMENSION; ++d) {
+                    array[total][d] = tokenCountAsIntArray;
+                }
+            }
+
+        }
+
+        return array;
+    }
     
     public int[] getSumTermCount(int maxColumn, int nextColumnDigit, int columnDigit, int maxDigit, final int base) {
         
