@@ -15,6 +15,9 @@ import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
+import com.google.common.math.IntMath;
+import com.google.common.math.LongMath;
+import com.google.common.primitives.Ints;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
@@ -94,7 +97,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return count;
     }
     
-    public static final int MAX_DIMENSION = 70;
+    public static final int MAX_DIMENSION = 10;
     public static final int MAX_SINGLE_DIGIT_SUM = (MAX_DIMENSION-1) * MAX_DIMENSION / 2;
     
     public static final int MOD = 1000000007;
@@ -107,6 +110,58 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         public TokenCounts(Multiset<Integer> set) {
             this.set = set;
         }
+    }
+    
+    long perm(int n, int k) {
+        return LongMath.factorial(n) / LongMath.factorial(n-k);
+    }
+    
+    public long count(long n, TokenCounts[][] termCounts, int base) {
+        
+        long count = 0;
+        int column = 2;
+        
+        int maxSum = (base-1)*base / 2;
+        
+        TokenCounts start = termCounts[Ints.checkedCast(n)][base-1];
+        
+        if (start != null) {
+            count += start.set.size();
+        }
+        
+        for(int i = 1; i <= maxSum; ++i) {
+            long sum = i * IntMath.pow(base, column-1);
+            
+            if (sum > n)
+                break;
+            
+            TokenCounts ten = termCounts[i][base-1];
+            
+            int sumSingleCol = Ints.checkedCast(n - sum);
+            
+            TokenCounts ones = termCounts[sumSingleCol][base-1];
+            
+            for(Integer tenTokenCount : ten.set.elementSet()) {
+                for(Integer oneTokenCount : ones.set.elementSet()) {
+                    //Tens must be <= ones + 1
+                    if (tenTokenCount > oneTokenCount + 1)
+                        continue;
+                    
+                    int countTen = ten.set.count(tenTokenCount);
+                    int countOne = ones.set.count(oneTokenCount);
+                    //n! / (n-k)!
+                    long p = perm(oneTokenCount+1,tenTokenCount);
+                    log.debug("10s [{}] 1s [{}] p {} 1s {} x {} 10s {} x {}",
+                            sum,sumSingleCol,p,oneTokenCount,countOne,tenTokenCount,countTen);
+                    count += p * countTen * countOne;
+                    
+ 
+                }
+            }
+        }
+        
+        return count;
+        
     }
     
     public TokenCounts[][] getSumTermArray() {

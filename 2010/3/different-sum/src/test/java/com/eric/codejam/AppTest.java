@@ -105,6 +105,10 @@ public class AppTest  {
                // log.debug("Term count {}",termCount);
             //}
         }
+        
+        long a = m.count(38,array,10);
+        
+        log.debug("{}",a);
     }
 
 }
