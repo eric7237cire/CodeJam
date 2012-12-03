@@ -39,7 +39,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         boolean[][] fd = new boolean[s.length()][base];
         
-        int[] counts = count(n,n, base,fd, new ArrayList<String>());
+        int[] counts = count(n,n, base,fd, new ArrayList<String>(), new int[10], n);
         
         int termCount = counts[1];
         int sumCount = counts[0];
@@ -54,12 +54,32 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return ("Case #" + caseNumber + ": " + sumCount);
     }
     
-    public int[] count(long n, long maxNum, final int b, boolean[][] forbiddenDigits, List<String> prevNums) {
+    
+    
+    public int[] count(long n, long maxNum, final int b, boolean[][] forbiddenDigits, List<String> prevNums, int[] checkTermCount, final long orig ) {
         int[] count = new int[] {0,0};
         
         if (n == 0) {
             //log.debug("Prev nums\n{}", StringUtils.join(prevNums, "\n"));
             
+            if (orig == 101) {
+            int singleDigitSum = 0;
+            int nextDigitSum = 0;
+            for(String s : prevNums) {
+                int singleDigit = Character.digit(s.charAt(s.length()-1), 10);
+                char nextDigitChar = s.length() > 1 ? s.charAt(s.length()-2) : ' '; 
+                int nextDigit = nextDigitChar == ' ' ? 0 : Character.digit(nextDigitChar, 10);
+                
+                nextDigitSum+=nextDigit;
+                singleDigitSum+=singleDigit;
+                
+                
+            }
+            
+            //Preconditions.checkState(singleDigitSum % 10 == 0);
+            
+            checkTermCount[singleDigitSum / 10]++;
+            }
             return new int[] {1, prevNums.size()};
         }
         
@@ -85,7 +105,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 forbiddenDigits[c][Character.digit(s.charAt(c), b)] = true;
             }
             prevNums.add(s);
-            int[] subCounts = count(n - topNum, topNum, b, forbiddenDigits, prevNums);
+            int[] subCounts = count(n - topNum, topNum, b, forbiddenDigits, prevNums, checkTermCount, orig);
             count[0] += subCounts[0];
             count[1] += subCounts[1];
             prevNums.remove(s);
@@ -172,6 +192,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 frequency.put(tc, count + frequency.get(tc));
             }
         }
+        
+        public long getSumCount() {
+            long count = 0;
+            for(TermCount tc : frequency.keySet() ) {
+                
+                count += frequency.get(tc);
+            }
+            return count;
+        }
     }
     
     static long perm(int n, int k) {
@@ -255,7 +284,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         if (columnCount.set.isEmpty()) {
             for(TermCount prevColTermCount : prevColumnCount.frequency.keySet()) {
                 long tcFreq = prevColumnCount.frequency.get(prevColTermCount);
-                tally.add(new TermCount(0, prevColTermCount.leadingZeroCount+prevColTermCount.termCount, true), tcFreq);
+                tally.add(new TermCount(0, prevColTermCount.leadingZeroCount+prevColTermCount.termCount, prevColTermCount.hasAnyZerosAsDigits), tcFreq);
             }
         }
       
@@ -317,6 +346,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     
                     combineCounts(singleColCount, incomingTermCount,outTermCount);
                     
+                    log.debug("n {} column {} next carry {} new sum count {}",n, column, outgoingCarry, outTermCount.getSumCount());
+                    
                 }
                 
                 outTermCounts[column-1][outgoingCarry] = outTermCount;
@@ -331,6 +362,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             
             for(TermCount tc : outTermCount.frequency.keySet() ) {
+                
                 count += outTermCount.frequency.get(tc);
             }
        // }

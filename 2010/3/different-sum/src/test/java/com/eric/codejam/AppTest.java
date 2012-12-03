@@ -113,11 +113,14 @@ public class AppTest  {
         
         log.debug("{}",a);
         
+        
+        
         final int base = 10;
         
         for(int i = 1; i < 9001; ++i) {
         int c = Ints.checkedCast(m.solve(i,array,base));
-        int check = getCount(i,base);
+        int[] checks = new int[5];
+        int check = getCount(i,base,checks);
         assertEquals(check,c);
         
         }
@@ -125,12 +128,12 @@ public class AppTest  {
         log.debug("{}",a);
     }
     
-    public int getCount(int n, int base) {
+    public int getCount(int n, int base, int[] checks) {
         Main m = new Main();
         String s = Long.toString(n,base);
     boolean[][] fd = new boolean[s.length()][base];
     
-    int[] counts = m.count(n,n, base,fd, new ArrayList<String>());
+    int[] counts = m.count(n,n, base,fd, new ArrayList<String>(), checks, n);
     
     int termCount = counts[1];
     int sumCount = counts[0];
