@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eric.codejam.Main.TokenCounts;
+import com.eric.codejam.Main.SingleColumnCounts;
 import com.google.common.primitives.Ints;
 
 import static org.junit.Assert.*;
@@ -91,10 +91,10 @@ public class AppTest  {
     public void testUberArray() {
         Main m = new Main();
         
-        TokenCounts[][] array = m.getSumTermArray();
+        SingleColumnCounts[][] array = m.getSumTermArray();
         
         for(int total = 1; total <= Main.MAX_SINGLE_DIGIT_SUM; ++total) {
-            TokenCounts terms = array[total][Main.MAX_DIMENSION-1];
+            SingleColumnCounts terms = array[total][Main.MAX_DIMENSION-1];
             
             if (terms == null)
                 continue;
@@ -115,10 +115,11 @@ public class AppTest  {
         
         final int base = 10;
         
-        for(int i = 1; i < 100; ++i) {
-        int c = Ints.checkedCast(m.count(i,array,base));
+        for(int i = 1; i < 9001; ++i) {
+        int c = Ints.checkedCast(m.solve(i,array,base));
         int check = getCount(i,base);
         assertEquals(check,c);
+        
         }
         
         log.debug("{}",a);

@@ -1,10 +1,12 @@
 package com.eric.codejam;
 
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
+import com.google.common.math.DoubleMath;
 import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
@@ -97,26 +100,246 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return count;
     }
     
-    public static final int MAX_DIMENSION = 10;
+    public static final int MAX_DIMENSION = 12;
     public static final int MAX_SINGLE_DIGIT_SUM = (MAX_DIMENSION-1) * MAX_DIMENSION / 2;
     
     public static final int MOD = 1000000007;
     
-    public static class TokenCounts  {
+    public static class SingleColumnCounts  {
         public Multiset<Integer> set;
-        public TokenCounts() {
+        public SingleColumnCounts() {
             set = HashMultiset.create();
         }
-        public TokenCounts(Multiset<Integer> set) {
+        public SingleColumnCounts(Multiset<Integer> set) {
             this.set = set;
         }
     }
     
-    long perm(int n, int k) {
+    public static class TermCount {
+        int termCount;
+        int leadingZeroCount;
+        boolean hasAnyZerosAsDigits;
+        
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + leadingZeroCount;
+            result = prime * result + termCount;
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            TermCount other = (TermCount) obj;
+            if (leadingZeroCount != other.leadingZeroCount)
+                return false;
+            if (termCount != other.termCount)
+                return false;
+            return true;
+        }
+        public TermCount(int termCount, int leadingZeroCount, boolean hasAnyZerosAsDigits) {
+            super();
+            this.termCount = termCount;
+            this.leadingZeroCount = leadingZeroCount;
+            this.hasAnyZerosAsDigits = hasAnyZerosAsDigits;
+        }
+        @Override
+        public String toString() {
+            return "TermCount [termCount=" + termCount + ", leadingZeroCount="
+                    + leadingZeroCount + ", hasAnyZerosAsDigits="
+                    + hasAnyZerosAsDigits + "]";
+        }
+        
+    }
+    
+    public static class OutgoingTermCount {
+        Map<TermCount, Long> frequency;
+        
+        public OutgoingTermCount() {
+            frequency = new HashMap<>();
+        }
+        
+        public void add(TermCount tc, long count) {
+            if (!frequency.containsKey(tc)) {
+                frequency.put(tc,count);
+            } else {
+                frequency.put(tc, count + frequency.get(tc));
+            }
+        }
+    }
+    
+    static long perm(int n, int k) {
+        Preconditions.checkArgument(k <= n);
         return LongMath.factorial(n) / LongMath.factorial(n-k);
     }
     
-    public long count(long n, TokenCounts[][] termCounts, int base) {
+    static  public int getMaxColumn(long n, int base) {
+        double l = Math.log10(n+1) / Math.log10(base);
+        
+        int maxCol = DoubleMath.roundToInt(l,RoundingMode.UP);
+        
+        return maxCol;
+    }
+    
+    static public int getMaxCarryOver(int base) {
+        //sum 1 to base-1
+        
+        int sum = (base-1) * (base) / 2;
+        sum /= base;
+        
+        return sum;
+    }
+    
+    static public int getDigitInColumn(long n, int column, int base) {
+       //n = base ^ col -1 * digit 
+        
+        //divide n by base ^ col
+        long div = n % LongMath.pow(base,column);
+        int digit = Ints.checkedCast(div / LongMath.pow(base, column-1));
+        
+        Preconditions.checkState(digit >= 0 && digit < base);
+        
+        return digit;
+        
+    }
+    
+    static public void combineCounts(SingleColumnCounts columnCount, OutgoingTermCount prevColumnCount, OutgoingTermCount tally) {
+        for(Integer colTermCount : columnCount.set.elementSet()) {
+            int colTermFreq = columnCount.set.count(colTermCount);
+            
+            for(TermCount prevColTermCount : prevColumnCount.frequency.keySet()) {
+                long tcFreq = prevColumnCount.frequency.get(prevColTermCount);
+                
+                /*Case 1.  Fix terms from this column to terms from previous column that do not have leading zeros
+                */
+                if (colTermCount <= prevColTermCount.termCount) {
+                    //Choose which prev column terms to attach a digit to the left 
+                    long p = perm(prevColTermCount.termCount, colTermCount);
+                    int zeroLeadingTerms = prevColTermCount.termCount - colTermCount;
+                    
+                    tally.add(new TermCount(colTermCount, zeroLeadingTerms, prevColTermCount.hasAnyZerosAsDigits), p * tcFreq * colTermFreq);
+                    
+                }
+                
+                //Case 2.  Create a term with trailing zeros.  This means any term with leading zeros cannot be used
+                if (colTermCount - 1 <= prevColTermCount.termCount && !prevColTermCount.hasAnyZerosAsDigits) {
+                    long p = colTermCount * perm(prevColTermCount.termCount, colTermCount-1);
+                    int zeroLeadingTerms = prevColTermCount.termCount - (colTermCount-1);
+                    
+                    tally.add(new TermCount(colTermCount, zeroLeadingTerms, true), p * tcFreq * colTermFreq);
+                }
+                
+                //Case 3.  Attach a term to a prev col term that had leading zeros
+                if (colTermCount - 1 <= prevColTermCount.termCount && prevColTermCount.leadingZeroCount > 0) {
+                    long p = perm(prevColTermCount.leadingZeroCount, 1) * perm(prevColTermCount.termCount, colTermCount-1);
+                    int zeroLeadingTerms = prevColTermCount.termCount - (colTermCount-1) - 1;
+                    
+                    tally.add(new TermCount(colTermCount, zeroLeadingTerms, true), p * tcFreq * colTermFreq);
+                }
+                
+                
+            }
+            
+          //Case 2 again in case prev column is completely empty.  Create a term with trailing zeros.  This means any term with leading zeros cannot be used
+            if (colTermCount == 1 && prevColumnCount.frequency.isEmpty()) {
+                tally.add(new TermCount(1,0, true), 1);
+            }
+        }
+        
+        if (columnCount.set.isEmpty()) {
+            for(TermCount prevColTermCount : prevColumnCount.frequency.keySet()) {
+                long tcFreq = prevColumnCount.frequency.get(prevColTermCount);
+                tally.add(new TermCount(0, prevColTermCount.leadingZeroCount+prevColTermCount.termCount, true), tcFreq);
+            }
+        }
+      
+    }
+    
+    public long solve(final long n, SingleColumnCounts[][] termCounts, final int base) {
+        
+        final int maxCol = getMaxColumn(n,base);
+        final int maxCarryOver = getMaxCarryOver(base);
+        final int maxColumnSum = (base-1)*base / 2;
+        
+        OutgoingTermCount[][] outTermCounts = new OutgoingTermCount[maxCol][maxCarryOver+1];
+        
+        //Initialize first column
+        
+        int columnDigit = Ints.checkedCast(n % base);
+        
+        for(int outgoingCarry = 0; outgoingCarry <= maxCarryOver; ++ outgoingCarry) {
+            int columnSum = outgoingCarry * base + columnDigit;
+            
+            SingleColumnCounts singleColCount = termCounts[columnSum][base-1];
+            
+            if (singleColCount == null)
+                break;
+            
+            if ( (long)columnSum > n)  {
+                break;
+            }
+            
+            OutgoingTermCount outTermCount = new OutgoingTermCount();
+            for(Integer termCount : singleColCount.set) {
+                outTermCount.frequency.put(new TermCount(termCount,0,false), (long) singleColCount.set.count(termCount));
+            }
+            
+            outTermCounts[0][outgoingCarry] = outTermCount;
+        }
+        
+        
+        for(int column = 2; column <= maxCol; ++column) {
+            
+            columnDigit = getDigitInColumn(n,column,base);
+            
+            for(int outgoingCarry = 0; outgoingCarry <= maxCarryOver; ++ outgoingCarry) {
+                
+                OutgoingTermCount outTermCount = new OutgoingTermCount();
+                                
+                for(int incomingCarry = 0; incomingCarry <= maxCarryOver; ++incomingCarry) {
+                    int columnSum = outgoingCarry * base + columnDigit - incomingCarry;
+                    
+                    if (columnSum < 0 || columnSum > maxColumnSum)
+                        continue;
+                    
+                    OutgoingTermCount incomingTermCount = outTermCounts[column-1 - 1][incomingCarry];
+                    
+                    if (incomingTermCount == null)
+                        continue;
+                    
+                    SingleColumnCounts singleColCount = termCounts[columnSum][base-1];
+                    
+                    combineCounts(singleColCount, incomingTermCount,outTermCount);
+                    
+                }
+                
+                outTermCounts[column-1][outgoingCarry] = outTermCount;
+            }
+        }
+        
+        long count = 0;
+        
+        int outgoingCarry = 0;
+       // for(int outgoingCarry = 0; outgoingCarry <= maxCarryOver; ++ outgoingCarry) {
+            OutgoingTermCount outTermCount = outTermCounts[maxCol-1][outgoingCarry];
+            
+            
+            for(TermCount tc : outTermCount.frequency.keySet() ) {
+                count += outTermCount.frequency.get(tc);
+            }
+       // }
+        
+        return count;
+        
+    }
+    
+    public long count(long n, SingleColumnCounts[][] termCounts, int base) {
         
         long count = 0;
         int column = 2;
@@ -124,7 +347,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         int maxSum = (base-1)*base / 2;
         
         if (maxSum >= Ints.checkedCast(n)) {
-        TokenCounts start = termCounts[Ints.checkedCast(n)][base-1];
+        SingleColumnCounts start = termCounts[Ints.checkedCast(n)][base-1];
         
         if (start != null) {
             count += start.set.size();
@@ -137,14 +360,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             if (sum > n)
                 break;
             
-            TokenCounts ten = termCounts[i][base-1];
+            SingleColumnCounts ten = termCounts[i][base-1];
             
             int sumSingleCol = Ints.checkedCast(n - sum);
             
             if (sumSingleCol > maxSum) {
                 continue;
             }
-            TokenCounts ones = termCounts[sumSingleCol][base-1];
+            SingleColumnCounts ones = termCounts[sumSingleCol][base-1];
             
             if (sumSingleCol == 0) {
                 count += ten.set.count(1);
@@ -174,7 +397,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     }
     
-    public TokenCounts[][] getSumTermArray() {
+    public SingleColumnCounts[][] getSumTermArray() {
         //int[][][] array
         
         //Determine max next digit
@@ -182,7 +405,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //Sum all digits from 0 to base - 1
          
         // [sum] [max digit] [token counts]
-        TokenCounts[][] array = new TokenCounts[MAX_SINGLE_DIGIT_SUM+1][MAX_DIMENSION];
+        SingleColumnCounts[][] array = new SingleColumnCounts[MAX_SINGLE_DIGIT_SUM+1][MAX_DIMENSION];
 
         for (int total = 0; total <= MAX_SINGLE_DIGIT_SUM; ++total) {
 
@@ -191,7 +414,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             for (int digit = 1; digit < MAX_DIMENSION; ++digit) {
                 int rest = total - digit;
                 if (rest < 0) {
-                    array[total][digit] = new TokenCounts(tokenCount);
+                    array[total][digit] = new SingleColumnCounts(tokenCount);
                     continue;
                 }
 
@@ -200,7 +423,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
                 } else {
 
-                    TokenCounts subCount = array[rest][digit - 1];
+                    SingleColumnCounts subCount = array[rest][digit - 1];
 
                     if (subCount == null)
                         continue;
@@ -213,7 +436,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     }
                 }
 
-                array[total][digit] = new TokenCounts(HashMultiset.create(tokenCount));
+                array[total][digit] = new SingleColumnCounts(HashMultiset.create(tokenCount));
                 //for(int d = digit; d < MAX_DIMENSION; ++d) {
                    
                 //}
