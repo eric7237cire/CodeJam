@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.eric.codejam.main.Runner;
 import com.eric.codejam.main.Runner.TestCaseInputScanner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
@@ -62,23 +63,28 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         if (n == 0) {
             //log.debug("Prev nums\n{}", StringUtils.join(prevNums, "\n"));
             
-            if (orig == 101) {
-            int singleDigitSum = 0;
-            int nextDigitSum = 0;
+            if (orig == 113) {
+            int col1DigitSum = 0;
+            int col2DigitSum = 0;
+            int col3DigitSum = 0;
             for(String s : prevNums) {
-                int singleDigit = Character.digit(s.charAt(s.length()-1), 10);
-                char nextDigitChar = s.length() > 1 ? s.charAt(s.length()-2) : ' '; 
-                int nextDigit = nextDigitChar == ' ' ? 0 : Character.digit(nextDigitChar, 10);
+                int digit1 = Character.digit(s.charAt(s.length()-1), 10);
+                char nextDigitChar = s.length() > 1 ? s.charAt(s.length()-2) : ' ';
                 
-                nextDigitSum+=nextDigit;
-                singleDigitSum+=singleDigit;
+                int digit2 = nextDigitChar == ' ' ? 0 : Character.digit(nextDigitChar, 10);
                 
+                char digit3Char = s.length() > 2 ? s.charAt(s.length()-3) : ' ';
+                int digit3 = digit3Char == ' ' ? 0 : Character.digit(digit3Char,10);
+                
+                col2DigitSum+=digit2;
+                col1DigitSum+=digit1;
+                col3DigitSum+=digit3;
                 
             }
             
             //Preconditions.checkState(singleDigitSum % 10 == 0);
-            
-            checkTermCount[singleDigitSum / 10]++;
+            if (col3DigitSum == 1)
+                checkTermCount[col1DigitSum / 10]++;
             }
             return new int[] {1, prevNums.size()};
         }
@@ -142,11 +148,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + leadingZeroCount;
-            result = prime * result + termCount;
-            return result;
+            return Objects.hashCode(termCount, leadingZeroCount, hasAnyZerosAsDigits);
         }
         @Override
         public boolean equals(Object obj) {
@@ -157,11 +159,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             if (getClass() != obj.getClass())
                 return false;
             TermCount other = (TermCount) obj;
-            if (leadingZeroCount != other.leadingZeroCount)
-                return false;
-            if (termCount != other.termCount)
-                return false;
-            return true;
+            return Objects.equal(leadingZeroCount, other.leadingZeroCount) &&
+                    Objects.equal(termCount, other.termCount) &&
+                    Objects.equal(hasAnyZerosAsDigits, other.hasAnyZerosAsDigits);
         }
         public TermCount(int termCount, int leadingZeroCount, boolean hasAnyZerosAsDigits) {
             super();
@@ -346,7 +346,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     
                     combineCounts(singleColCount, incomingTermCount,outTermCount);
                     
-                    log.debug("n {} column {} next carry {} new sum count {}",n, column, outgoingCarry, outTermCount.getSumCount());
+                    if (n>=113)
+                    log.debug("n {} column {} next carry {} in carry {} new sum count {}",n, column, 
+                            outgoingCarry, incomingCarry, outTermCount.getSumCount());
                     
                 }
                 
