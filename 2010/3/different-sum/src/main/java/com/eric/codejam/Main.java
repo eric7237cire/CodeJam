@@ -349,10 +349,17 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     
                     combineCounts(singleColCount, incomingTermCount,outTermCount);
                     
-                    if (n==47)
-                    log.debug("n {} column {} next carry {} in carry {} new sum count {}",n, column, 
-                            outgoingCarry, incomingCarry, outTermCount.getSumCount());
+                    OutgoingTermCount checkTermCount = new OutgoingTermCount();
+                    combineCounts(singleColCount, incomingTermCount,checkTermCount);
                     
+                    if (n==53)
+                    log.debug("n {} column {} next carry {} in carry {} count {} new total count {}",n, column, 
+                            outgoingCarry, incomingCarry, checkTermCount.getSumCount(), outTermCount.getSumCount());
+                    
+                }
+                
+                if (outTermCount.frequency.size() == 0 && columnDigit != 0) {
+                    outTermCount = null;
                 }
                 
                 outTermCounts[column-1][outgoingCarry] = outTermCount;
