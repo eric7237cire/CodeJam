@@ -40,12 +40,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         boolean[][] fd = new boolean[s.length()][base];
         
-        int[] counts = count(n,n, base,fd, new ArrayList<String>(), new int[10], n);
+        //int[] counts = count(n,n, base,fd, new ArrayList<String>(), new int[10], n);
         
-        int termCount = counts[1];
-        int sumCount = counts[0];
+        //int termCount = counts[1];
+        SingleColumnCounts[][] array = getSumTermArray();
+        int sumCount = Ints.checkedCast(solve(n,array,base));
         
-        log.debug("term count {} sum count {}", termCount, sumCount);
+        //log.debug("term count {} sum count {}", termCount, sumCount);
         for(int i = 0; i < s.length(); ++i){
             //Arrays.fill(fd[i], -1);
         }
