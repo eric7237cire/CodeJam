@@ -115,13 +115,15 @@ public class AppTest  {
         
         
         
-        final int base = 4;
+        final int base = 2;
         
-        for(int i = 1; i < 9001; ++i) {
-            log.debug("Checking {}", i);
-        int c = Ints.checkedCast(m.solve(i,array,base));
-        int[] checks = new int[5];
-        int check = getCount(i,base,checks);
+        for(int n = 1; n < 9001; ++n) {
+            log.debug("Checking {}", n);
+            int[] checks = new int[5];
+            int check = getCount(n,base,checks);
+            
+        int c = Ints.checkedCast(m.solve(n,array,base));
+        
         assertEquals(check,c);
         
         }

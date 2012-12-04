@@ -1,11 +1,12 @@
 package com.eric.codejam;
 
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
+import com.google.common.collect.Sets;
 import com.google.common.math.DoubleMath;
 import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
@@ -64,10 +66,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         if (n == 0) {
            // log.debug("Prev nums\n{}", StringUtils.join(prevNums, "\n"));
             
-            if (orig == 47 && b == 4) {
+            if (orig == 53 && b == 4) {
             int col1DigitSum = 0;
             int col2DigitSum = 0;
             int col3DigitSum = 0;
+            Set<Integer> col3Digits = new HashSet<>();
             for(String s : prevNums) {
                 int digit1 = Character.digit(s.charAt(s.length()-1), 10);
                 char nextDigitChar = s.length() > 1 ? s.charAt(s.length()-2) : ' ';
@@ -81,9 +84,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 col1DigitSum+=digit1;
                 col3DigitSum+=digit3;
                 
+                col3Digits.add(digit3);
+                
             }
             
-            checkTermCount[prevNums.size()]++;
+            if (col3Digits.containsAll(Sets.newHashSet(1,2))) {
+            checkTermCount[1]++;
+            } else if (col3Digits.containsAll(Sets.newHashSet(2))) {
+                checkTermCount[2]++;
+            } else if (col3Digits.containsAll(Sets.newHashSet(3))) {
+                checkTermCount[0]++;
+            } else {
+                throw new RuntimeException("bah");
+            }
             
             //Preconditions.checkState(singleDigitSum % 10 == 0);
             //if (col3DigitSum == 1)
@@ -269,7 +282,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
                 //Case 3.  Attach a term to a prev col term that had leading zeros
                 if (colTermCount - 1 <= prevColTermCount.termCount && prevColTermCount.leadingZeroCount > 0) {
-                    long p = perm(prevColTermCount.leadingZeroCount, 1) * perm(prevColTermCount.termCount, colTermCount-1);
+                    long p = colTermCount * perm(prevColTermCount.leadingZeroCount, 1) * perm(prevColTermCount.termCount, colTermCount-1);
                     int zeroLeadingTerms = prevColTermCount.termCount - (colTermCount-1) ;
                     
                     tally.add(new TermCount(colTermCount, zeroLeadingTerms, true), p * tcFreq * colTermFreq);
