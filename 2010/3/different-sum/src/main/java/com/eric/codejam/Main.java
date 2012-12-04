@@ -62,9 +62,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         int[] count = new int[] {0,0};
         
         if (n == 0) {
-            //log.debug("Prev nums\n{}", StringUtils.join(prevNums, "\n"));
+           // log.debug("Prev nums\n{}", StringUtils.join(prevNums, "\n"));
             
-            if (orig == 113) {
+            if (orig == 47 && b == 4) {
             int col1DigitSum = 0;
             int col2DigitSum = 0;
             int col3DigitSum = 0;
@@ -83,9 +83,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
             }
             
+            checkTermCount[prevNums.size()]++;
+            
             //Preconditions.checkState(singleDigitSum % 10 == 0);
-            if (col3DigitSum == 1)
-                checkTermCount[col1DigitSum / 10]++;
+            //if (col3DigitSum == 1)
+                //checkTermCount[col1DigitSum / 10]++;
             }
             return new int[] {1, prevNums.size()};
         }
@@ -253,7 +255,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     long p = perm(prevColTermCount.termCount, colTermCount);
                     int zeroLeadingTerms = prevColTermCount.termCount - colTermCount;
                     
-                    tally.add(new TermCount(colTermCount, zeroLeadingTerms, prevColTermCount.hasAnyZerosAsDigits), p * tcFreq * colTermFreq);
+                    tally.add(new TermCount(colTermCount, zeroLeadingTerms+prevColTermCount.leadingZeroCount, prevColTermCount.hasAnyZerosAsDigits), p * tcFreq * colTermFreq);
                     
                 }
                 
@@ -268,7 +270,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 //Case 3.  Attach a term to a prev col term that had leading zeros
                 if (colTermCount - 1 <= prevColTermCount.termCount && prevColTermCount.leadingZeroCount > 0) {
                     long p = perm(prevColTermCount.leadingZeroCount, 1) * perm(prevColTermCount.termCount, colTermCount-1);
-                    int zeroLeadingTerms = prevColTermCount.termCount - (colTermCount-1) - 1;
+                    int zeroLeadingTerms = prevColTermCount.termCount - (colTermCount-1) ;
                     
                     tally.add(new TermCount(colTermCount, zeroLeadingTerms, true), p * tcFreq * colTermFreq);
                 }
@@ -347,7 +349,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     
                     combineCounts(singleColCount, incomingTermCount,outTermCount);
                     
-                    if (n>=113)
+                    if (n==47)
                     log.debug("n {} column {} next carry {} in carry {} new sum count {}",n, column, 
                             outgoingCarry, incomingCarry, outTermCount.getSumCount());
                     
