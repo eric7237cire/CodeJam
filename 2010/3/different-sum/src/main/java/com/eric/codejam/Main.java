@@ -1,5 +1,7 @@
 package com.eric.codejam;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -16,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.eric.codejam.main.Runner;
 import com.eric.codejam.main.Runner.TestCaseInputScanner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
+import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 import com.eric.codejam.utils.LargeNumberUtils;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -28,7 +31,7 @@ import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, TestCaseInputReader<InputData> {
 
     
 
@@ -327,10 +330,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         //Initialize first column
         
-        boolean nonZeroDigit = false;
         int columnDigit = Ints.checkedCast(n % base);
-        if (columnDigit != 0)
-            nonZeroDigit = true;
         
         for(int outgoingCarry = 0; outgoingCarry <= maxCarryOver; ++ outgoingCarry) {
             int columnSum = outgoingCarry * base + columnDigit;
@@ -361,10 +361,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             log.debug("Column {} n {} base {} max carry over {}",column,n,base, maxCarryOver);
             
             columnDigit = getDigitInColumn(n,column,base);
-            if (columnDigit != 0)
-                nonZeroDigit = true;
-            
-            
             
             for(int outgoingCarry = 0; outgoingCarry <= maxCarryOver; ++ outgoingCarry) {
                 boolean atLeastOneValid = false;
@@ -401,6 +397,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 }
                 
                 outTermCounts[column-1][outgoingCarry] = outTermCount;
+            }
+            
+            for(int incomingCarry = 0; incomingCarry <= maxCarryOver; ++incomingCarry) {
+                outTermCounts[column-2][incomingCarry] = null;
             }
         }
         
@@ -578,6 +578,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
 
 
+    @Override
+    public InputData readInput(BufferedReader br, int testCase)
+            throws IOException {
+        InputData  input = new InputData(testCase);
+        String[] line = br.readLine().split(" ");
+        input.N = Long.parseLong(line[0]);
+        input.B = Integer.parseInt(line[1]);
+        return input;
+    }
+
     int[][] permutations;
     public Main() {
         singleColCounts = getSumTermArray();
@@ -595,8 +605,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
          log.info("Input file {}", args[0]);
 
          Main m = new Main();
-         Runner.goScanner(args[0], m, m);
-         //Runner.go(args[0], m, m, new InputData(-1));
+         //Runner.goScanner(args[0], m, m);
+         Runner.go(args[0], m, m, new InputData(-1), 5);
 
         
        
