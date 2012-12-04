@@ -1,5 +1,6 @@
 package com.eric.codejam;
 
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
+import com.google.common.math.BigIntegerMath;
 import com.google.common.math.DoubleMath;
 import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
@@ -250,7 +252,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
        //n = base ^ col -1 * digit 
         
         //divide n by base ^ col
-        long div = n % LongMath.pow(base,column);
+        long div = BigInteger.valueOf(n).mod( BigInteger.valueOf(base).pow(column) ).longValue();
         int digit = Ints.checkedCast(div / LongMath.pow(base, column-1));
         
         Preconditions.checkState(digit >= 0 && digit < base);
@@ -325,7 +327,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         //Initialize first column
         
+        boolean nonZeroDigit = false;
         int columnDigit = Ints.checkedCast(n % base);
+        if (columnDigit != 0)
+            nonZeroDigit = true;
         
         for(int outgoingCarry = 0; outgoingCarry <= maxCarryOver; ++ outgoingCarry) {
             int columnSum = outgoingCarry * base + columnDigit;
@@ -356,9 +361,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             log.debug("Column {} n {} base {} max carry over {}",column,n,base, maxCarryOver);
             
             columnDigit = getDigitInColumn(n,column,base);
+            if (columnDigit != 0)
+                nonZeroDigit = true;
+            
+            
             
             for(int outgoingCarry = 0; outgoingCarry <= maxCarryOver; ++ outgoingCarry) {
-                
+                boolean atLeastOneValid = false;
                 OutgoingTermCount outTermCount = new OutgoingTermCount();
                                 
                 for(int incomingCarry = 0; incomingCarry <= maxCarryOver; ++incomingCarry) {
@@ -371,6 +380,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     
                     if (incomingTermCount == null)
                         continue;
+                
+                    atLeastOneValid = true;
                     
                     SingleColumnCounts singleColCount = termCounts[columnSum][base-1];
                     
@@ -385,8 +396,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     
                 }
                 
-                if (outTermCount.frequency.size() == 0 && columnDigit != 0) {
-                    //outTermCount = null;
+                if (outTermCount.frequency.size() == 0 && !atLeastOneValid) {
+                    outTermCount = null;
                 }
                 
                 outTermCounts[column-1][outgoingCarry] = outTermCount;
