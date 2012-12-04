@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.eric.codejam.main.Runner;
 import com.eric.codejam.main.Runner.TestCaseInputScanner;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
+import com.eric.codejam.utils.LargeNumberUtils;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
@@ -36,7 +37,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     public String handleCase(int caseNumber, InputData input) {
 
         int base = input.B;
-        int n = input.N;
+        long n = input.N;
         
         String s = Long.toString(n,base);
         
@@ -45,8 +46,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //int[] counts = count(n,n, base,fd, new ArrayList<String>(), new int[10], n);
         
         //int termCount = counts[1];
-        SingleColumnCounts[][] array = getSumTermArray();
-        int sumCount = Ints.checkedCast(solve(n,array,base));
+        
+        int sumCount = Ints.checkedCast(solve(n,singleColCounts,base) % MOD);
         
         //log.debug("term count {} sum count {}", termCount, sumCount);
         for(int i = 0; i < s.length(); ++i){
@@ -58,7 +59,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return ("Case #" + caseNumber + ": " + sumCount);
     }
     
-    
+    SingleColumnCounts[][] singleColCounts;
     
     public int[] count(long n, long maxNum, final int b, boolean[][] forbiddenDigits, List<String> prevNums, int[] checkTermCount, final long orig ) {
         int[] count = new int[] {0,0};
@@ -142,7 +143,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return count;
     }
     
-    public static final int MAX_DIMENSION = 12;
+    public static final int MAX_DIMENSION = 70;
     public static final int MAX_SINGLE_DIGIT_SUM = (MAX_DIMENSION-1) * MAX_DIMENSION / 2;
     
     public static final int MOD = 1000000007;
@@ -219,9 +220,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
     }
     
-    static long perm(int n, int k) {
+    int perm(int n, int k) {
         Preconditions.checkArgument(k <= n);
-        return LongMath.factorial(n) / LongMath.factorial(n-k);
+        
+        return permutations[n][k];
+        
     }
     
     static  public int getMaxColumn(long n, int base) {
@@ -254,7 +257,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     }
     
-    static public void combineCounts(SingleColumnCounts columnCount, OutgoingTermCount prevColumnCount, OutgoingTermCount tally) {
+    public void combineCounts(SingleColumnCounts columnCount, OutgoingTermCount prevColumnCount, OutgoingTermCount tally) {
         for(Integer colTermCount : columnCount.set.elementSet()) {
             int colTermFreq = columnCount.set.count(colTermCount);
             
@@ -331,7 +334,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
             
             OutgoingTermCount outTermCount = new OutgoingTermCount();
-            for(Integer termCount : singleColCount.set) {
+            for(Integer termCount : singleColCount.set.elementSet()) {
                 outTermCount.frequency.put(new TermCount(termCount,0,false), (long) singleColCount.set.count(termCount));
             }
             
@@ -340,6 +343,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         
         for(int column = 2; column <= maxCol; ++column) {
+            
+            log.debug("Column {} n {} base {}",column,n,base);
             
             columnDigit = getDigitInColumn(n,column,base);
             
@@ -362,12 +367,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     
                     combineCounts(singleColCount, incomingTermCount,outTermCount);
                     
-                    OutgoingTermCount checkTermCount = new OutgoingTermCount();
-                    combineCounts(singleColCount, incomingTermCount,checkTermCount);
+                    //OutgoingTermCount checkTermCount = new OutgoingTermCount();
+                    //combineCounts(singleColCount, incomingTermCount,checkTermCount);
                     
-                    if (n==53)
+                   /* if (n==53)
                     log.debug("n {} column {} next carry {} in carry {} count {} new total count {}",n, column, 
-                            outgoingCarry, incomingCarry, checkTermCount.getSumCount(), outTermCount.getSumCount());
+                            outgoingCarry, incomingCarry, checkTermCount.getSumCount(), outTermCount.getSumCount());*/
                     
                 }
                 
@@ -547,23 +552,25 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
         InputData  input = new InputData(testCase);
-        input.N = scanner.nextInt();
+        input.N = scanner.nextLong();
         input.B = scanner.nextInt();
         return input;
     }
 
 
+    int[][] permutations;
     public Main() {
-        super();
+        singleColCounts = getSumTermArray();
+        permutations = LargeNumberUtils.generateModedPerum(70, MOD);
     }
     
     
     public static void main(String args[]) throws Exception {
 
         if (args.length < 1) {
-            args = new String[] { "sample.txt" };
+            //args = new String[] { "sample.txt" };
            // args = new String[] { "B-small-practice.in" };
-//            args = new String[] { "B-large-practice.in" };
+            args = new String[] { "D-large-practice.in" };
          }
          log.info("Input file {}", args[0]);
 

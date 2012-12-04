@@ -4,7 +4,7 @@ import com.eric.codejam.main.AbstractInputData;
 
 public class InputData extends AbstractInputData {
     //Données
-    int N;
+    long N;
     int B;
     
     InputData(int testCase) {

@@ -1,5 +1,7 @@
 package com.eric.codejam.utils;
 
+import com.google.common.primitives.Ints;
+
 public class LargeNumberUtils {
     public static int[][] generateModedCombin(int max, int modulo) {
         
@@ -16,5 +18,28 @@ public class LargeNumberUtils {
         }
         
         return combinations;
+    }
+    
+    public static int[][] generateModedPerum(int max, int modulo) {
+        int[][] permutations = new int[max+1][max+1];
+        
+        for(int n = 0; n <= max; ++n) {
+            for(int k = 0; k <= max; ++k)
+            {
+                
+                if (n < k)
+                    permutations[n][k] = 0;
+                
+                else if (k==0)
+                    permutations[n][k] = 1;
+                
+                else 
+                    permutations[n][k] =  Ints.checkedCast( ( (long) (n-k+1) * permutations[n][k-1] ) % modulo ); 
+                    
+                
+            }
+        }
+        
+        return permutations;
     }
 }

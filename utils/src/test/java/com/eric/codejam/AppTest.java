@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,6 +19,11 @@ import com.eric.codejam.geometry.Line;
 import com.eric.codejam.geometry.Point;
 import com.eric.codejam.geometry.Polygon;
 import com.eric.codejam.geometry.Rectangle;
+import com.eric.codejam.utils.LargeNumberUtils;
+import com.google.common.base.Preconditions;
+import com.google.common.math.BigIntegerMath;
+import com.google.common.math.LongMath;
+import com.google.common.primitives.Ints;
 
 /**
  * Unit test for simple App.
@@ -32,6 +38,25 @@ public class AppTest
     public AppTest(  )
     {
         super(  );
+    }
+    
+    int perm(int n, int k, int mod) {
+        Preconditions.checkArgument(k <= n);
+        
+        BigInteger p =  BigIntegerMath.factorial(n).divide(BigIntegerMath.factorial(n-k) );
+        
+        return p.mod(BigInteger.valueOf(mod)).intValue() ;
+    }
+    @Test
+    public void testPerm() {
+        int mod = 1000000007;
+        int[][] perms = LargeNumberUtils.generateModedPerum(70,mod);
+        
+        for(int n = 0; n <= 70; ++n) {
+            for(int k = 0; k <= n; ++k) {
+                assertEquals(perm(n,k, mod), perms[n][k]);
+            }
+        }
     }
     
     @Test
