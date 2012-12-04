@@ -202,19 +202,21 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             frequency = new HashMap<>();
         }
         
-        public void add(TermCount tc, long count) {
-            if (!frequency.containsKey(tc)) {
-                frequency.put(tc,count);
-            } else {
-                frequency.put(tc, count + frequency.get(tc));
+        public void add(TermCount tc, long countLong) {
+            
+            if (frequency.containsKey(tc)) {
+                countLong = LongMath.checkedAdd(countLong, frequency.get(tc));                
             }
+            
+            frequency.put(tc, countLong % Main.MOD);
+            
         }
         
         public long getSumCount() {
             long count = 0;
             for(TermCount tc : frequency.keySet() ) {
                 
-                count += frequency.get(tc);
+                count = LongMath.checkedAdd(count, frequency.get(tc));
             }
             return count;
         }
@@ -258,7 +260,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     public void combineCounts(SingleColumnCounts columnCount, OutgoingTermCount prevColumnCount, OutgoingTermCount tally) {
-        for(Integer colTermCount : columnCount.set.elementSet()) {
+       // log.debug("Combine {} {}", columnCount.set.elementSet().size(), prevColumnCount.frequency.size());
+        
+        for(int colTermCount : columnCount.set.elementSet()) {
             int colTermFreq = columnCount.set.count(colTermCount);
             
             for(TermCount prevColTermCount : prevColumnCount.frequency.keySet()) {
@@ -271,24 +275,26 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     long p = perm(prevColTermCount.termCount, colTermCount);
                     int zeroLeadingTerms = prevColTermCount.termCount - colTermCount;
                     
-                    tally.add(new TermCount(colTermCount, zeroLeadingTerms+prevColTermCount.leadingZeroCount, prevColTermCount.hasAnyZerosAsDigits), p * tcFreq * colTermFreq);
+                    tally.add(new TermCount(colTermCount, IntMath.checkedAdd(zeroLeadingTerms,prevColTermCount.leadingZeroCount), prevColTermCount.hasAnyZerosAsDigits), 
+                            LongMath.checkedMultiply(LongMath.checkedMultiply(p, tcFreq) % MOD, colTermFreq));
                     
                 }
                 
                 //Case 2.  Create a term with trailing zeros.  This means any term with leading zeros cannot be used
                 if (colTermCount - 1 <= prevColTermCount.termCount && !prevColTermCount.hasAnyZerosAsDigits) {
-                    long p = colTermCount * perm(prevColTermCount.termCount, colTermCount-1);
+                    long p = LongMath.checkedMultiply(colTermCount, perm(prevColTermCount.termCount, colTermCount-1)) % MOD;
                     int zeroLeadingTerms = prevColTermCount.termCount - (colTermCount-1);
                     
-                    tally.add(new TermCount(colTermCount, zeroLeadingTerms, true), p * tcFreq * colTermFreq);
+                    tally.add(new TermCount(colTermCount, zeroLeadingTerms, true), LongMath.checkedMultiply(LongMath.checkedMultiply(p, tcFreq) % MOD, colTermFreq));
                 }
                 
                 //Case 3.  Attach a term to a prev col term that had leading zeros
                 if (colTermCount - 1 <= prevColTermCount.termCount && prevColTermCount.leadingZeroCount > 0) {
-                    long p = colTermCount * perm(prevColTermCount.leadingZeroCount, 1) * perm(prevColTermCount.termCount, colTermCount-1);
+                    long p =LongMath.checkedMultiply( LongMath.checkedMultiply(colTermCount, perm(prevColTermCount.leadingZeroCount, 1)),
+                             perm(prevColTermCount.termCount, colTermCount-1) ) % MOD;
                     int zeroLeadingTerms = prevColTermCount.termCount - (colTermCount-1) ;
                     
-                    tally.add(new TermCount(colTermCount, zeroLeadingTerms, true), p * tcFreq * colTermFreq);
+                    tally.add(new TermCount(colTermCount, zeroLeadingTerms, true), LongMath.checkedMultiply(LongMath.checkedMultiply(p, tcFreq) % MOD, colTermFreq));
                 }
                 
                 
@@ -303,7 +309,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         if (columnCount.set.isEmpty()) {
             for(TermCount prevColTermCount : prevColumnCount.frequency.keySet()) {
                 long tcFreq = prevColumnCount.frequency.get(prevColTermCount);
-                tally.add(new TermCount(0, prevColTermCount.leadingZeroCount+prevColTermCount.termCount, prevColTermCount.hasAnyZerosAsDigits), tcFreq);
+                tally.add(new TermCount(0, IntMath.checkedAdd( prevColTermCount.leadingZeroCount,prevColTermCount.termCount), prevColTermCount.hasAnyZerosAsDigits), tcFreq);
             }
         }
       
@@ -323,6 +329,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         for(int outgoingCarry = 0; outgoingCarry <= maxCarryOver; ++ outgoingCarry) {
             int columnSum = outgoingCarry * base + columnDigit;
+            
+            if (columnSum > maxColumnSum)
+                break;
             
             SingleColumnCounts singleColCount = termCounts[columnSum][base-1];
             
@@ -344,7 +353,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         for(int column = 2; column <= maxCol; ++column) {
             
-            log.debug("Column {} n {} base {}",column,n,base);
+            log.debug("Column {} n {} base {} max carry over {}",column,n,base, maxCarryOver);
             
             columnDigit = getDigitInColumn(n,column,base);
             
@@ -377,7 +386,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 }
                 
                 if (outTermCount.frequency.size() == 0 && columnDigit != 0) {
-                    outTermCount = null;
+                    //outTermCount = null;
                 }
                 
                 outTermCounts[column-1][outgoingCarry] = outTermCount;
@@ -393,7 +402,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             for(TermCount tc : outTermCount.frequency.keySet() ) {
                 
-                count += outTermCount.frequency.get(tc);
+                count = LongMath.checkedAdd(count,outTermCount.frequency.get(tc));
             }
        // }
         
