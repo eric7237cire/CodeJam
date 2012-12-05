@@ -34,12 +34,12 @@ public class AppTest  {
         Main m = new Main();
         
         
-        final int base = 2;
+        final int base = 10;
         
         for(int n = 1; n < 9001; ++n) {
             log.debug("Checking {}", n);
-            int[] checks = new int[5];
-            int check = getCount(n,base,checks);
+            
+            int check = Ints.checkedCast( m.oldsolve(n,base) );
             
         int c = Ints.checkedCast(m.solve(n,base));
         
