@@ -552,58 +552,80 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     public int [][][] getSumTermArray() {
         
-        // [sum] [ base (0 index == base 2)] [distinct terms (0 index = 0 terms) ]
-        int [][][] array = new int [MAX_SINGLE_DIGIT_SUM+1][MAX_DIMENSION][];
+        int INVALID = -10;
+        //  [ base (0 index == base 2)] [sum] [distinct terms (0 index = 0 terms) ]
+        int [][][] array = new int [MAX_DIMENSION-1][][];
 
-        for (int total = 0; total <= MAX_SINGLE_DIGIT_SUM; ++total) {
-
-            int[] tokenCount = new int[MAX_DIMENSION];
+        //seed base 2
+        array[0] = new int[2][];
+        array[0][0] = new int[] {0};
+        array[0][1] = new int[] {INVALID, 1};
+        
+        for(int base = 3; base <= MAX_DIMENSION; ++base) {
+            int maxSum = (base-1)*base / 2;
+            array[base-2] = new int[maxSum+1][base+2];
             
-            if (total == 0) {
-                tokenCount[0] = 1;
+            for(int sum = 0; sum < array[base-2].length; ++sum) {
+                Arrays.fill(array[base-2][sum], INVALID);
             }
             
-            for (int digit = 1; digit < MAX_DIMENSION; ++digit) {
+            //Take all sums possible from previous base and add digit
+            int[][] prevBase = array[base-2-1];
+            for(int sum = 0; sum < prevBase.length; ++sum) {
                 
-                int rest = total - digit;
-                if (rest < 0) {
-                    array[total][digit-1] = Arrays.copyOf(tokenCount, digit+1);
-                    continue;
-                }
-
-                if (rest == 0) {
-                    tokenCount[1]++;
-
-                } else {
-
-                    if (digit == 1)
-                        continue;
-                    
-                    int[] subCount = array[rest][digit - 2];
-
-                    if (subCount == null)
-                        continue;
-
-                    for(int distinctDigitCount = 1; distinctDigitCount <= digit; ++distinctDigitCount)
-                    {
-                        if (tokenCount[distinctDigitCount]  >= MOD) {
-                            tokenCount[distinctDigitCount] %= MOD;
+                for(int termCount = 0; termCount < prevBase[sum].length; ++termCount) {
+                    if (prevBase[sum][termCount] != INVALID) {
+                        
+                        //Add digit
+                        if (array[base-2][sum+base-1][termCount+1] == INVALID) {
+                            array[base-2][sum+base-1][termCount+1] = prevBase[sum][termCount];
+                        } else {
+                            array[base-2][sum+base-1][termCount+1] += prevBase[sum][termCount];
+                            array[base-2][sum+base-1][termCount+1] %= MOD;
                         }
-                        //The plus 1 is because we are creating a new set of distinct digits that is 1 more
-                        tokenCount[distinctDigitCount+1] += subCount[distinctDigitCount] % MOD ;
+                        
+                        //What is possible in prev base still possible
+                        if (array[base-2][sum][termCount] == INVALID) {
+                            array[base-2][sum][termCount] = prevBase[sum][termCount];
+                        } else {
+                            array[base-2][sum][termCount] += prevBase[sum][termCount];
+                            array[base-2][sum][termCount] %= MOD;
+                        }
                     }
                 }
-
-                array[total][digit-1] = Arrays.copyOf(tokenCount, digit+1);
-                for(int distinctDigitCount = 1; distinctDigitCount <= digit; ++distinctDigitCount) {
-                    Preconditions.checkState(singleColCounts[total][digit].set.count(distinctDigitCount) == array[total][digit-1][distinctDigitCount]);
-                }
-                //for(int d = digit; d < MAX_DIMENSION; ++d) {
-                   
-                //}
             }
 
+            Preconditions.checkState(array[base - 2][base - 1][1] != INVALID);
+            array[base - 2][base - 1][1]++;
+            
+            //shorten all arrays
+            for(int sum = 0; sum < array[base-2].length; ++sum) {
+                int termCount = array[base-2][sum].length -1;
+                for( ;termCount >= 0; termCount--) {
+                    if (array[base-2][sum][termCount] != INVALID) {
+                        break;
+                    }
+                }
+                
+                //remove termCount + 1 to length
+                array[base-2][sum] = Arrays.copyOf(array[base-2][sum], termCount+1);
+            }
+            
+            for(int sum = 0; sum < array[base-2].length; ++sum) {
+                
+                for(int termCount = 1 ;termCount < array[base-2][sum].length; termCount++) {
+                    if (array[base-2][sum][termCount] != INVALID)
+                        Preconditions.checkState(singleColCounts[sum][base-1].set.count(termCount) ==array[base-2][sum][termCount]);
+                        
+                }
+            }
         }
+        
+
+              
+        
+                
+            
 
         
         return array;
