@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -54,7 +55,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return ("Case #" + caseNumber + ": " + sumCount);
     }
     
-    SingleColumnCounts[][] singleColCounts;
+    
     
     public int[] count(long n, long maxNum, final int b, boolean[][] forbiddenDigits, List<String> prevNums, int[] checkTermCount, final long orig ) {
         int[] count = new int[] {0,0};
@@ -243,18 +244,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return sum;
     }
     
-    static public int getDigitInColumn(long n, int column, int base) {
-       //n = base ^ col -1 * digit 
-        
-        //divide n by base ^ col
-        long div = BigInteger.valueOf(n).mod( BigInteger.valueOf(base).pow(column) ).longValue();
-        int digit = Ints.checkedCast(div / LongMath.pow(base, column-1));
-        
-        Preconditions.checkState(digit >= 0 && digit < base);
-        
-        return digit;
-        
-    }
     
     public void combineCounts(int[] distinctDigitCounts, OutgoingTermCount prevColumnCount, OutgoingTermCount tally) {
        // log.debug("Combine {} {}", columnCount.set.elementSet().size(), prevColumnCount.frequency.size());
@@ -334,6 +323,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         //Initialize first column
         
+        List<Integer> columnDigits = new ArrayList<>();
+        long cn = n;
+        
+        while(cn > 0) {
+            columnDigits.add( (int) (cn % base));
+            cn /= base;
+        }
+        
         int columnDigit = Ints.checkedCast(n % base);
         
         for(int outgoingCarry = 0; outgoingCarry <= maxCarryOver; ++ outgoingCarry) {
@@ -368,9 +365,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         for(int column = 2; column <= maxCol; ++column) {
             
-            log.debug("Column {} n {} base {} max carry over {}",column,n,base, maxCarryOver);
+            log.debug("Column {}",column);
             
-            columnDigit = getDigitInColumn(n,column,base);
+            columnDigit = columnDigits.get(column-1);
             
             for(int outgoingCarry = 0; outgoingCarry <= maxCarryOver; ++ outgoingCarry) {
                 boolean atLeastOneValid = false;
@@ -492,64 +489,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     }
 
-    /**
-     * [target sum][base][distinct digits] = count
-     * @return
-     */
-    public SingleColumnCounts[][] getSumTermArrayOld() {
-        //int[][][] array
-        
-        //Determine max next digit
-        
-        //Sum all digits from 0 to base - 1
-         
-        // [sum] [max digit] [token counts]
-        SingleColumnCounts[][] array = new SingleColumnCounts[MAX_SINGLE_DIGIT_SUM+1][MAX_DIMENSION];
-
-        for (int total = 0; total <= MAX_SINGLE_DIGIT_SUM; ++total) {
-
-            Multiset<Integer> tokenCount = HashMultiset.create();
-
-            for (int digit = 1; digit < MAX_DIMENSION; ++digit) {
-                int rest = total - digit;
-                if (rest < 0) {
-                    array[total][digit] = new SingleColumnCounts(tokenCount);
-                    continue;
-                }
-
-                if (rest == 0) {
-                    tokenCount.add(1);
-
-                } else {
-
-                    SingleColumnCounts subCount = array[rest][digit - 1];
-
-                    if (subCount == null)
-                        continue;
-
-                    for (Multiset.Entry<Integer> tokens : subCount.set.entrySet()) {
-                        if (tokenCount.count(tokens.getElement()+1) >= MOD) {
-                            tokenCount.setCount(tokens.getElement()+1,tokenCount.count(tokens.getElement()+1) % MOD);
-                        }
-                        tokenCount.add(tokens.getElement()+1,tokens.getCount() % MOD );
-                        if (tokenCount.count(tokens.getElement()+1) >= MOD) {
-                            tokenCount.setCount(tokens.getElement()+1,tokenCount.count(tokens.getElement()+1) % MOD);
-                        }
-                    }
-                }
-
-                array[total][digit] = new SingleColumnCounts(HashMultiset.create(tokenCount));
-                //for(int d = digit; d < MAX_DIMENSION; ++d) {
-                   
-                //}
-            }
-
-        }
-
-        return array;
-    }
-
-    public static final int INVALID = -10;
+    
+    public static final int INVALID = 0;
     public int [][][] getSumTermArray() {
         
         //  [ base (0 index == base 2)] [sum] [distinct terms (0 index = 0 terms) ]
@@ -567,31 +508,26 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             array[base-2] = new int[maxSum+1][base+1];
             
             for(int sum = 0; sum < array[base-2].length; ++sum) {
-                Arrays.fill(array[base-2][sum], INVALID);
+               // Arrays.fill(array[base-2][sum], INVALID);
             }
             
             //Take all sums possible from previous base and add digit
-            int[][] prevBase = array[base-2-1];
-            for(int sum = 0; sum < prevBase.length; ++sum) {
-                
-                for(int termCount = 0; termCount < prevBase[sum].length; ++termCount) {
+            int[][] prevBase = array[base - 2 - 1];
+            for (int sum = 0; sum < prevBase.length; ++sum) {
+
+                for (int termCount = 0; termCount < prevBase[sum].length; ++termCount) {
                     if (prevBase[sum][termCount] != INVALID) {
-                        
-                        //Add digit to previous bases counts
-                        if (array[base-2][sum+base-1][termCount+1] == INVALID) {
-                            array[base-2][sum+base-1][termCount+1] = prevBase[sum][termCount];
-                        } else {
-                            array[base-2][sum+base-1][termCount+1] += prevBase[sum][termCount];
-                            array[base-2][sum+base-1][termCount+1] %= MOD;
-                        }
-                        
-                        //What is possible in prev base still possible
-                        if (array[base-2][sum][termCount] == INVALID) {
-                            array[base-2][sum][termCount] = prevBase[sum][termCount];
-                        } else {
-                            array[base-2][sum][termCount] += prevBase[sum][termCount];
-                            array[base-2][sum][termCount] %= MOD;
-                        }
+
+                        // Add digit to previous bases counts
+
+                        array[base - 2][sum + base - 1][termCount + 1] += prevBase[sum][termCount];
+                        array[base - 2][sum + base - 1][termCount + 1] %= MOD;
+
+                        // What is possible in prev base still possible
+
+                        array[base - 2][sum][termCount] += prevBase[sum][termCount];
+                        array[base - 2][sum][termCount] %= MOD;
+
                     }
                 }
             }
@@ -609,17 +545,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 array[base-2][sum] = Arrays.copyOf(array[base-2][sum], termCount+1);
             }
             
-            // Verification
-            for (int sum = 1; sum < array[base - 2].length; ++sum) {
-
-                for (int termCount = 1; termCount < array[base - 2][sum].length; termCount++) {
-                    if (array[base - 2][sum][termCount] != INVALID)
-                        Preconditions
-                                .checkState(singleColCounts[sum][base - 1].set
-                                        .count(termCount) == array[base - 2][sum][termCount]);
-
-                }
-            }
         }
 
         return array;
@@ -648,7 +573,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     int[][][] singleColCountsNew;
     
     public Main() {
-        singleColCounts = getSumTermArrayOld();
         singleColCountsNew = getSumTermArray();
     
         permutations = LargeNumberUtils.generateModedPerum(70, MOD);

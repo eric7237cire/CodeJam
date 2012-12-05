@@ -40,7 +40,7 @@ public class AppTest  {
         long n = 268465676376382L;
         int base = 10;
         
-        int check = Ints.checkedCast( ols.solve(n,m.singleColCounts,base) % Main.MOD);
+        int check = Ints.checkedCast( ols.solve(n,ols.singleColCounts,base) % Main.MOD);
         
         int c = Ints.checkedCast(m.solve(n,base) % Main.MOD);
         
@@ -49,7 +49,7 @@ public class AppTest  {
         for(n = 1; n < 9001; ++n) {
             log.debug("Checking {}", n);
             
-            check = Ints.checkedCast( ols.solve(n,m.singleColCounts,base)  % Main.MOD );
+            check = Ints.checkedCast( ols.solve(n,ols.singleColCounts,base)  % Main.MOD );
             
         c = Ints.checkedCast(m.solve(n,base)  % Main.MOD);
         

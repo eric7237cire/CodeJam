@@ -1,5 +1,6 @@
 package com.eric.codejam;
 
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +9,9 @@ import org.slf4j.LoggerFactory;
 
 import com.eric.codejam.Main.SingleColumnCounts;
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multiset;
 import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
@@ -18,7 +22,22 @@ public class OldLargeSolution {
     final Main m;
     public OldLargeSolution(Main m) {
         this.m=m;
+        this.singleColCounts = getSumTermArrayOld();
     }
+    
+    static public int getDigitInColumn(long n, int column, int base) {
+        //n = base ^ col -1 * digit 
+         
+         //divide n by base ^ col
+         long div = BigInteger.valueOf(n).mod( BigInteger.valueOf(base).pow(column) ).longValue();
+         int digit = Ints.checkedCast(div / LongMath.pow(base, column-1));
+         
+         Preconditions.checkState(digit >= 0 && digit < base);
+         
+         return digit;
+         
+     }
+     
     
     public static class TermCount {
         int termCount;
@@ -138,7 +157,71 @@ public class OldLargeSolution {
          }
        
      }
-     
+    public static final int MAX_DIMENSION = 70;
+    public static final int MAX_SINGLE_DIGIT_SUM = (MAX_DIMENSION-1) * MAX_DIMENSION / 2;
+    
+    public static final int MOD = 1000000007;
+                                  
+    SingleColumnCounts[][] singleColCounts;
+    
+    /**
+     * [target sum][base][distinct digits] = count
+     * @return
+     */
+    public SingleColumnCounts[][] getSumTermArrayOld() {
+        //int[][][] array
+        
+        //Determine max next digit
+        
+        //Sum all digits from 0 to base - 1
+         
+        // [sum] [max digit] [token counts]
+        SingleColumnCounts[][] array = new SingleColumnCounts[MAX_SINGLE_DIGIT_SUM+1][MAX_DIMENSION];
+
+        for (int total = 0; total <= MAX_SINGLE_DIGIT_SUM; ++total) {
+
+            Multiset<Integer> tokenCount = HashMultiset.create();
+
+            for (int digit = 1; digit < MAX_DIMENSION; ++digit) {
+                int rest = total - digit;
+                if (rest < 0) {
+                    array[total][digit] = new SingleColumnCounts(tokenCount);
+                    continue;
+                }
+
+                if (rest == 0) {
+                    tokenCount.add(1);
+
+                } else {
+
+                    SingleColumnCounts subCount = array[rest][digit - 1];
+
+                    if (subCount == null)
+                        continue;
+
+                    for (Multiset.Entry<Integer> tokens : subCount.set.entrySet()) {
+                        if (tokenCount.count(tokens.getElement()+1) >= MOD) {
+                            tokenCount.setCount(tokens.getElement()+1,tokenCount.count(tokens.getElement()+1) % MOD);
+                        }
+                        tokenCount.add(tokens.getElement()+1,tokens.getCount() % MOD );
+                        if (tokenCount.count(tokens.getElement()+1) >= MOD) {
+                            tokenCount.setCount(tokens.getElement()+1,tokenCount.count(tokens.getElement()+1) % MOD);
+                        }
+                    }
+                }
+
+                array[total][digit] = new SingleColumnCounts(HashMultiset.create(tokenCount));
+                //for(int d = digit; d < MAX_DIMENSION; ++d) {
+                   
+                //}
+            }
+
+        }
+
+        return array;
+    }
+
+    
      public long solve(final long n, SingleColumnCounts[][] termCounts, final int base) {
          
          final int maxCol = Main.getMaxColumn(n,base);
@@ -179,7 +262,7 @@ public class OldLargeSolution {
              
              log.debug("Column {} n {} base {} max carry over {}",column,n,base, maxCarryOver);
              
-             columnDigit = Main.getDigitInColumn(n,column,base);
+             columnDigit = getDigitInColumn(n,column,base);
              
              for(int outgoingCarry = 0; outgoingCarry <= maxCarryOver; ++ outgoingCarry) {
                  boolean atLeastOneValid = false;
