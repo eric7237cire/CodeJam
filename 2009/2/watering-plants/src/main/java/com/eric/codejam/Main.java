@@ -75,7 +75,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 		
 		Set<Long> ignoreK3 = new HashSet<>();
 
-		// all pairs
+		// all pairs and all triples
 		for (int k = 2; k <= 3; ++k) {
 
 			Iterator<Long> it = new CombinationIterator(n, k);
@@ -139,48 +139,52 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
 		long goal = (1L << n) - 1;
 
-		for (int sizeOuter = 1; sizeOuter <= n; ++sizeOuter) {
+		//Choose best 2 splinklers that cover all plants
+		
+		//sizeOuter is how many plants the sprinkler covers
+        for (int sizeOuter = 1; sizeOuter <= n; ++sizeOuter) {
 
-			for (Sprinkler outer : sizeToSprinkler.get(sizeOuter-1)) {
+            for (Sprinkler outer : sizeToSprinkler.get(sizeOuter - 1)) {
 
-				if (sizeOuter >= n - 1 && outer.r < minRadius) {
-					minRadius = outer.r;
-					sprinklers = new Circle[] { outer.circle, outer.circle };
-					continue;
-				}
+                if (sizeOuter >= n - 1 && outer.r < minRadius) {
+                    minRadius = outer.r;
+                    sprinklers = new Circle[] { outer.circle, outer.circle };
+                    continue;
+                }
 
-				if (outer.r >= minRadius) {
-					continue;
-				}
+                if (outer.r >= minRadius) {
+                    continue;
+                }
 
-				int sizeNeeded = n - sizeOuter;
+                // plants left to cover
+                int sizeNeeded = n - sizeOuter;
 
-				for (int size = sizeNeeded; size <= n; ++size) {
-					for (Sprinkler inner : sizeToSprinkler.get(size-1)) {
-						++iterations;
-						if (iterations % ITERATION_PRINT == 0) {
-							log.debug("Iterations {} choose plants", iterations);
-						}
+                for (int size = sizeNeeded; size <= n; ++size) {
+                    for (Sprinkler inner : sizeToSprinkler.get(size - 1)) {
+                        ++iterations;
+                        if (iterations % ITERATION_PRINT == 0) {
+                            log.debug("Iterations {} choose plants", iterations);
+                        }
 
-						if (inner.r > outer.r) {
-							break;
-						}
+                        if (inner.r > outer.r) {
+                            break;
+                        }
 
-						long combined = outer.plantsCovered
-					| inner.plantsCovered;
+                        long combined = outer.plantsCovered
+                                | inner.plantsCovered;
 
-						if (combined != goal) {
-							continue;
-						}
+                        if (combined != goal) {
+                            continue;
+                        }
 
-						Preconditions.checkState(outer.r <= minRadius);
-						minRadius = outer.r;
-						sprinklers = new Circle[] { outer.circle, inner.circle };
-						break;
+                        Preconditions.checkState(outer.r <= minRadius);
+                        minRadius = outer.r;
+                        sprinklers = new Circle[] { outer.circle, inner.circle };
+                        break;
 
-					}
-				}
-			}
+                    }
+                }
+            }
 		}
 
 		return minRadius;
