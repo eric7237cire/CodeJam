@@ -1,7 +1,5 @@
 package com.eric.codejam;
 
-import java.io.File;
-import java.io.PrintStream;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -20,18 +18,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eric.codejam.geometry.Circle;
+import com.eric.codejam.main.Runner;
+import com.eric.codejam.main.Runner.TestCaseInputScanner;
+import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.utils.CombinationIterator;
 import com.google.common.base.Preconditions;
 
 
-public class Main {
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 
 	Display d;
 	
-	public void display() {
+	public void display(InputData input) {
 		d = new Display(600, 600);
 		
-		for(Circle p : plants) {
+		for(Circle p : input.plants) {
 			d.addCircle(p);
 		}
 		
@@ -45,14 +46,15 @@ public class Main {
 	
 	final static int ITERATION_PRINT = 500000;
 	
-	int n;
-	List<Circle> plants;
 	
 	Circle[] sprinklers;
 	
 	
-	public double bruteForce() {
+	public double bruteForce(InputData input) {
 
+	    int n = input.n;
+	    List<Circle> plants = input.plants;
+	    
 		int iterations = 0;
 
 		if (n == 1) {
@@ -186,50 +188,10 @@ public class Main {
 	
 	
 
-	public static void handleCase(int caseNumber, Scanner scanner,
-			PrintStream os) {
-
-		Main m = Main.buildMain(scanner);
-
-		double min = m.bruteForce();
-
-		log.info("Starting case {}", caseNumber);
-		
-		DecimalFormat df = new DecimalFormat("0.######");
-		df.setRoundingMode(RoundingMode.HALF_UP);
-		df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
-
-		os.println("Case #" + caseNumber + ": " + df.format(min));
-		
 	
-		/*
-		m.display();
-		m.d.toFront();
 
-		log.info("Finished Starting case {}.  ", caseNumber
-				);
+	public Main() {
 		
-		m.d.setVisible(false);
-		m.d.dispose();*/
-	}
-
-	private static Main buildMain(Scanner scanner) {
-		Main m = new Main(scanner.nextInt());
-
-
-		for(int i = 0; i < m.n; ++i) {
-			m.plants.add(new Circle(scanner.nextInt(),scanner.nextInt(),scanner.nextInt()));
-		}
-
-		return m;
-	}
-
-	public Main(int n) {
-		super();
-
-		this.n = n;
-		
-		this.plants = new ArrayList<>();
 
 	}
 
@@ -242,16 +204,49 @@ public class Main {
 		}
 		log.info("Input file {}", args[0]);
 
-		Scanner scanner = new Scanner(new File(args[0]));
-
-		int t = scanner.nextInt();
-
-		for (int i = 1; i <= t; ++i) {
-
-			handleCase(i, scanner, System.out);
-
-		}
-
-		scanner.close();
+		Main m = new Main();
+		Runner.go(args[0],m,m, new InputData(-1), 3);
+		
 	}
+
+
+
+    /* (non-Javadoc)
+     * @see com.eric.codejam.main.Runner.TestCaseInputScanner#readInput(java.util.Scanner, int)
+     */
+    @Override
+    public InputData readInput(Scanner scanner, int testCase) {
+        InputData input = new InputData(testCase);
+        
+        input.n = scanner.nextInt();
+
+        
+        for(int i = 0; i < input.n; ++i) {
+            input.plants.add(new Circle(scanner.nextInt(),scanner.nextInt(),scanner.nextInt()));
+        }
+
+        return input;
+    }
+
+
+
+    /* (non-Javadoc)
+     * @see com.eric.codejam.multithread.Consumer.TestCaseHandler#handleCase(java.lang.Object)
+     */
+    @Override
+    public String handleCase(InputData data) {
+        
+
+        double min = bruteForce(data);
+
+        log.info("Starting case {}", data.testCase);
+        
+        DecimalFormat df = new DecimalFormat("0.######");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
+
+        return("Case #" + data.testCase + ": " + df.format(min));
+        
+    
+    }
 }

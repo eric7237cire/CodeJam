@@ -2,18 +2,14 @@ package com.eric.codejam;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,12 +20,7 @@ import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 import com.eric.codejam.utils.LargeNumberUtils;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.HashMultiset;
-import com.google.common.collect.Multiset;
-import com.google.common.collect.Sets;
-import com.google.common.math.BigIntegerMath;
 import com.google.common.math.DoubleMath;
-import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
 
@@ -55,89 +46,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return ("Case #" + caseNumber + ": " + sumCount);
     }
     
-    
-    
-    public int[] count(long n, long maxNum, final int b, boolean[][] forbiddenDigits, List<String> prevNums, int[] checkTermCount, final long orig ) {
-        int[] count = new int[] {0,0};
-        
-        if (n == 0) {
-           // log.debug("Prev nums\n{}", StringUtils.join(prevNums, "\n"));
-            
-            if (orig == 53 && b == 4) {
-            int col1DigitSum = 0;
-            int col2DigitSum = 0;
-            int col3DigitSum = 0;
-            Set<Integer> col3Digits = new HashSet<>();
-            for(String s : prevNums) {
-                int digit1 = Character.digit(s.charAt(s.length()-1), 10);
-                char nextDigitChar = s.length() > 1 ? s.charAt(s.length()-2) : ' ';
-                
-                int digit2 = nextDigitChar == ' ' ? 0 : Character.digit(nextDigitChar, 10);
-                
-                char digit3Char = s.length() > 2 ? s.charAt(s.length()-3) : ' ';
-                int digit3 = digit3Char == ' ' ? 0 : Character.digit(digit3Char,10);
-                
-                col2DigitSum+=digit2;
-                col1DigitSum+=digit1;
-                col3DigitSum+=digit3;
-                
-                col3Digits.add(digit3);
-                
-            }
-            
-            if (col3Digits.containsAll(Sets.newHashSet(1,2))) {
-            checkTermCount[1]++;
-            } else if (col3Digits.containsAll(Sets.newHashSet(2))) {
-                checkTermCount[2]++;
-            } else if (col3Digits.containsAll(Sets.newHashSet(3))) {
-                checkTermCount[0]++;
-            } else {
-                throw new RuntimeException("bah");
-            }
-            
-            //Preconditions.checkState(singleDigitSum % 10 == 0);
-            //if (col3DigitSum == 1)
-                //checkTermCount[col1DigitSum / 10]++;
-            }
-            return new int[] {1, prevNums.size()};
-        }
-        
-        if (n < 0)
-            return new int[] {0,0};
-        
-        topLoop: for (long topNum = 1; topNum <= maxNum; ++topNum) {
-            String s = StringUtils.leftPad(Long.toString(topNum, b),
-                    forbiddenDigits.length);
-           // log.debug("n {} topNum {} s [{}]", n, topNum,s);
-            for (int c = 0; c < s.length(); ++c) {
-                if (!Character.isDigit(s.charAt(c)))
-                    continue;
-
-                if (forbiddenDigits[c][Character.digit(s.charAt(c), b)])
-                    continue topLoop;
-            }
-
-            for (int c = 0; c < s.length(); ++c) {
-                if (!Character.isDigit(s.charAt(c)))
-                    continue;
-
-                forbiddenDigits[c][Character.digit(s.charAt(c), b)] = true;
-            }
-            prevNums.add(s);
-            int[] subCounts = count(n - topNum, topNum, b, forbiddenDigits, prevNums, checkTermCount, orig);
-            count[0] += subCounts[0];
-            count[1] += subCounts[1];
-            prevNums.remove(s);
-            for (int c = 0; c < s.length(); ++c) {
-                if (!Character.isDigit(s.charAt(c)))
-                    continue;
-
-                forbiddenDigits[c][Character.digit(s.charAt(c), b)] = false;
-            }
-        }
-        
-        return count;
-    }
+   
     
     public static final int MAX_DIMENSION = 70;
     public static final int MAX_SINGLE_DIGIT_SUM = (MAX_DIMENSION-1) * MAX_DIMENSION / 2;
@@ -145,20 +54,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     public static final int MOD = 1000000007;
                                   
     
-    public static class SingleColumnCounts  {
-        public Multiset<Integer> set;
-        public SingleColumnCounts() {
-            set = HashMultiset.create();
-        }
-        public SingleColumnCounts(Multiset<Integer> set) {
-            this.set = set;
-        }
-    }
+    
     
     public static class TermCount {
         int termCount;
-        //int leadingZeroCount;
-        //boolean hasAnyZerosAsDigits;
         boolean hasALeadingZeroDigit;
         
         @Override
@@ -179,10 +78,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     Objects.equal(hasALeadingZeroDigit, other.hasALeadingZeroDigit);
         }
         public TermCount(int termCount, boolean hasALeadingZeroDigit) {
-            super();
             this.termCount = termCount;
-            //this.leadingZeroCount = leadingZeroCount;
-            //this.hasAnyZerosAsDigits = hasAnyZerosAsDigits;
             this.hasALeadingZeroDigit = hasALeadingZeroDigit;
         }
         @Override
@@ -206,18 +102,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 countLong = LongMath.checkedAdd(countLong, frequency.get(tc));                
             }
             
-            frequency.put(tc, countLong % Main.MOD);
-            
+            frequency.put(tc, countLong % Main.MOD);            
         }
-        
-        public long getSumCount() {
-            long count = 0;
-            for(TermCount tc : frequency.keySet() ) {
-                
-                count = LongMath.checkedAdd(count, frequency.get(tc));
-            }
-            return count;
-        }
+       
     }
     
     int perm(int n, int k) {
@@ -290,9 +177,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 } else {
                     
                     if (in_k >= cur_k) {
-                        //join with no current leading zero
+                        ////join current column with previous with no leading zero term in current column
                         
-                        long p = perm(in_k, cur_k); //attach rest of current columns digits
+                        int p = perm(in_k, cur_k); //attach rest of current columns digits
                         
                         tally.add(new TermCount(cur_k,false), 
                                 LongMath.checkedMultiply(LongMath.checkedMultiply(p, tcFreq) % MOD, colTermFreq));
@@ -300,7 +187,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     
                     if (in_k >= cur_k + 1) {
                         //join with current leading zero
-                        long p = perm(in_k, cur_k+1);  //attach rest of current columns digits (including leading zero digit) 
+                        int p = perm(in_k, cur_k+1);  //attach rest of current columns digits (including leading zero digit) 
                                  
                         tally.add(new TermCount(cur_k+1,true), 
                                 LongMath.checkedMultiply(LongMath.checkedMultiply(p, tcFreq) % MOD, colTermFreq));
@@ -338,8 +225,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             if (columnSum > maxColumnSum)
                 break;
-            
-                     
+                                 
             //  [ base (0 index == base 2)] [sum] [distinct terms (0 index = 0 terms) ]
             int[] distinctDigitCounts = singleColCountsNew[base-2][columnSum];
             
@@ -431,63 +317,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     }
     
-    public long count(long n, SingleColumnCounts[][] termCounts, int base) {
-        
-        long count = 0;
-        int column = 2;
-        
-        int maxSum = (base-1)*base / 2;
-        
-        if (maxSum >= Ints.checkedCast(n)) {
-        SingleColumnCounts start = termCounts[Ints.checkedCast(n)][base-1];
-        
-        if (start != null) {
-            count += start.set.size();
-        }
-        }
-        
-        for(int i = 1; i <= maxSum; ++i) {
-            long sum = i * IntMath.pow(base, column-1);
-            
-            if (sum > n)
-                break;
-            
-            SingleColumnCounts ten = termCounts[i][base-1];
-            
-            int sumSingleCol = Ints.checkedCast(n - sum);
-            
-            if (sumSingleCol > maxSum) {
-                continue;
-            }
-            SingleColumnCounts ones = termCounts[sumSingleCol][base-1];
-            
-            if (sumSingleCol == 0) {
-                count += ten.set.count(1);
-                continue;
-            }
-            
-            for(Integer tenTokenCount : ten.set.elementSet()) {
-                for(Integer oneTokenCount : ones.set.elementSet()) {
-                    //Tens must be <= ones + 1
-                    if (tenTokenCount > oneTokenCount + 1)
-                        continue;
-                    
-                    int countTen = ten.set.count(tenTokenCount);
-                    int countOne = ones.set.count(oneTokenCount);
-                    //n! / (n-k)!
-                    long p = perm(oneTokenCount+1,tenTokenCount);
-                    log.debug("10s [{}] 1s [{}] p {} 1s {} x {} 10s {} x {}",
-                            sum,sumSingleCol,p,oneTokenCount,countOne,tenTokenCount,countTen);
-                    count += p * countTen * countOne;
-                    
- 
-                }
-            }
-        }
-        
-        return count;
-        
-    }
+   
 
     
     public static final int INVALID = 0;

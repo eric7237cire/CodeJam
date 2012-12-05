@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import com.eric.codejam.multithread.Consumer;
 import com.eric.codejam.multithread.Consumer.TestCaseHandler;
 import com.eric.codejam.multithread.Producer;
-import com.eric.codejam.multithread.Producer.TestCaseInputReader;
 
 public class Runner {
 
@@ -30,7 +29,7 @@ public class Runner {
                 ;
     }
     
-    public static <InputData extends AbstractInputData> void goScanner(
+    public static <InputData extends AbstractInputData> void goSingleThread(
             String inputFileName, TestCaseInputScanner<InputData> inputReader,
             TestCaseHandler<InputData> testCaseHandler) {
 
@@ -54,7 +53,7 @@ public class Runner {
 
             for (int test = 1; test <= t; test++) {
                 InputData input = inputReader.readInput(scanner, test);
-                String ans = testCaseHandler.handleCase(test, input);
+                String ans = testCaseHandler.handleCase(input);
                 log.debug(ans);
                 pos.println(ans);
             }
@@ -73,57 +72,16 @@ public class Runner {
 
     }
 
-    public static <InputData extends AbstractInputData> void goSingleThread(
-            String inputFileName, TestCaseInputReader<InputData> inputReader,
-            TestCaseHandler<InputData> testCaseHandler) {
-
-        long overAllStart = System.currentTimeMillis();
-        
-        try {
-            InputStreamReader isr = new InputStreamReader(new FileInputStream(
-                    new File(inputFileName)));
-            final BufferedReader br = new BufferedReader(isr);
-            // final Scanner scanner = new Scanner(br);
-
-            String line = br.readLine();
-
-            final int t = Integer.parseInt(line);
-
-            
-            OutputStream os = new FileOutputStream(inputFileName.replaceAll("\\.in", "") + ".out");
-            PrintStream pos = new PrintStream(os);
-
-
-
-            for (int test = 1; test <= t; test++) {
-                InputData input = inputReader.readInput(br, test);
-                String ans = testCaseHandler.handleCase(test, input);
-                log.debug(ans);
-                pos.println(ans);
-            }
-
-            log.debug("Finished");
-
-            os.close();
-            // scanner.close();
-            br.close();
-        } catch (IOException ex) {
-            log.error("Error", ex);
-        }
-        
-        log.info("Total time {}",
-                +(System.currentTimeMillis() - overAllStart));
-
-    }
+    
     
     public static <InputData extends AbstractInputData> void go(
-            String inputFileName, TestCaseInputReader<InputData> inputReader,
+            String inputFileName, TestCaseInputScanner<InputData> inputReader,
             TestCaseHandler<InputData> testCaseHandler, InputData poisonPill, int numThreads) {
         try {
             InputStreamReader isr = new InputStreamReader(new FileInputStream(
                     new File(inputFileName)));
             final BufferedReader br = new BufferedReader(isr);
-            // final Scanner scanner = new Scanner(br);
+            final Scanner scanner = new Scanner(br);
 
             String line = br.readLine();
 
@@ -142,7 +100,7 @@ public class Runner {
 
             //Plus ten for poison pills
             BlockingQueue<InputData> q = new ArrayBlockingQueue<InputData>(t+10);
-            Producer<InputData> p = new Producer<InputData>(q, t, br,
+            Producer<InputData> p = new Producer<InputData>(q, t, scanner,
                     inputReader, poisonPill);
 
             threads[0] = new Thread(p);

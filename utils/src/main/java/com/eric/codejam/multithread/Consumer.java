@@ -10,7 +10,7 @@ import com.eric.codejam.main.AbstractInputData;
 public class Consumer<InputData extends AbstractInputData> implements Runnable {
 
     public static interface TestCaseHandler<InputData> {
-        String handleCase(int testCase, InputData data);
+        String handleCase(InputData data);
     }
 
     final static Logger log = LoggerFactory.getLogger(Consumer.class);
@@ -35,7 +35,7 @@ public class Consumer<InputData extends AbstractInputData> implements Runnable {
                     log.info("Consumer Thread ending");
                     return;
                 }
-                String ans = testCaseHandler.handleCase(input.testCase, input);
+                String ans = testCaseHandler.handleCase(input);
                 answers[input.testCase - 1] = ans;
             }
         } catch (InterruptedException ex) {

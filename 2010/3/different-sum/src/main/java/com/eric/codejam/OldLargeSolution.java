@@ -7,7 +7,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eric.codejam.Main.SingleColumnCounts;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.HashMultiset;
@@ -102,6 +101,17 @@ public class OldLargeSolution {
             return count;
         }
     }
+    
+    public static class SingleColumnCounts  {
+        public Multiset<Integer> set;
+        public SingleColumnCounts() {
+            set = HashMultiset.create();
+        }
+        public SingleColumnCounts(Multiset<Integer> set) {
+            this.set = set;
+        }
+    }
+    
     public void combineCounts(SingleColumnCounts columnCount, OutgoingTermCount prevColumnCount, OutgoingTermCount tally) {
         // log.debug("Combine {} {}", columnCount.set.elementSet().size(), prevColumnCount.frequency.size());
          
