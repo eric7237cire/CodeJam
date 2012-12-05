@@ -341,8 +341,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             if (columnSum > maxColumnSum)
                 break;
             
-            
-            
+                        
             int[] distinctDigitCounts = singleColCountsNew[columnSum][base-2];
             
             if (distinctDigitCounts == null)
@@ -550,9 +549,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return array;
     }
 
+    public static final int INVALID = -10;
     public int [][][] getSumTermArray() {
         
-        int INVALID = -10;
         //  [ base (0 index == base 2)] [sum] [distinct terms (0 index = 0 terms) ]
         int [][][] array = new int [MAX_DIMENSION-1][][];
 
@@ -563,7 +562,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         for(int base = 3; base <= MAX_DIMENSION; ++base) {
             int maxSum = (base-1)*base / 2;
-            array[base-2] = new int[maxSum+1][base+2];
+            
+            //We do not know what the # of max terms is.  We know it must be less than base + 1
+            array[base-2] = new int[maxSum+1][base+1];
             
             for(int sum = 0; sum < array[base-2].length; ++sum) {
                 Arrays.fill(array[base-2][sum], INVALID);
@@ -607,31 +608,25 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     }
                 }
                 
-                //remove termCount + 1 to length
+                //remove termCount + 1 to length.  so new length is termCount + 1
                 array[base-2][sum] = Arrays.copyOf(array[base-2][sum], termCount+1);
             }
             
-            for(int sum = 0; sum < array[base-2].length; ++sum) {
-                
-                for(int termCount = 1 ;termCount < array[base-2][sum].length; termCount++) {
-                    if (array[base-2][sum][termCount] != INVALID)
-                        Preconditions.checkState(singleColCounts[sum][base-1].set.count(termCount) ==array[base-2][sum][termCount]);
-                        
+            // Verification
+            for (int sum = 0; sum < array[base - 2].length; ++sum) {
+
+                for (int termCount = 1; termCount < array[base - 2][sum].length; termCount++) {
+                    if (array[base - 2][sum][termCount] != INVALID)
+                        Preconditions
+                                .checkState(singleColCounts[sum][base - 1].set
+                                        .count(termCount) == array[base - 2][sum][termCount]);
+
                 }
             }
         }
-        
 
-              
-        
-                
-            
-
-        
         return array;
     }
-    
-   
 
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
