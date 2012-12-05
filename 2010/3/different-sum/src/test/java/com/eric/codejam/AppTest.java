@@ -33,15 +33,25 @@ public class AppTest  {
     public void testUberArray() {
         Main m = new Main();
         
+        OldLargeSolution ols = new OldLargeSolution(m);
         
-        final int base = 10;
         
-        for(int n = 1; n < 9001; ++n) {
+        
+        long n = 268465676376382L;
+        int base = 10;
+        
+        int check = Ints.checkedCast( ols.solve(n,m.singleColCounts,base) % Main.MOD);
+        
+        int c = Ints.checkedCast(m.solve(n,base) % Main.MOD);
+        
+        assertEquals(check,c);
+        
+        for(n = 1; n < 9001; ++n) {
             log.debug("Checking {}", n);
             
-            int check = Ints.checkedCast( m.oldsolve(n,base) );
+            check = Ints.checkedCast( ols.solve(n,m.singleColCounts,base)  % Main.MOD );
             
-        int c = Ints.checkedCast(m.solve(n,base));
+        c = Ints.checkedCast(m.solve(n,base)  % Main.MOD);
         
         assertEquals(check,c);
         
