@@ -1,0 +1,103 @@
+<testData>
+
+
+<test name="s1">
+<input>
+5 4
+....
+#..#
+#xx#
+#oo#
+#..#
+</input>
+<output>
+2
+</output>
+</test>
+<test name="s2">
+<input>
+7 7
+.######
+.x....#
+.x....#
+..#oo.#
+..#...#
+.######
+.######
+</input>
+<output>
+8
+</output>
+</test>
+
+<test name="s2_b">
+<input>
+3 7
+.######
+.x..o.#
+.x..o.#
+</input>
+<output>
+6
+</output>
+</test>
+
+<test name="s3">
+<input>
+7 7
+#######
+#x....#
+#xx.o.#
+#..oo.#
+#.#...#
+#######
+#######
+</input>
+<output>
+12
+</output>
+</test>
+
+<test name="s4">
+<input>
+4 10
+##########
+#.x...o..#
+#.x...o..#
+##########
+</input>
+<output>
+8
+</output>
+</test>
+
+<test name="s5">
+<input>
+7 7
+#######
+#x....#
+#x..o.#
+#x#oo.#
+#.#...#
+#######
+#######
+</input>
+<output>
+-1
+</output>
+</test>
+
+
+<test name="s6">
+<input>
+3 4
+.#x.
+.oww
+....
+</input>
+<output>
+2
+</output>
+</test>
+
+</testData>
