@@ -1,8 +1,5 @@
 <testData>
 
-<test name="">
-
-</test>
 
 <test name="s1">
 <input>
@@ -17,7 +14,7 @@
 1 7
 </input>
 <output>
-12 12
+12
 </output>
 </test>
 
@@ -30,12 +27,5 @@
 </output>
 </test>
 
-<test name="s4">
-
-</test>
-
-<test name="s5">
-
-</test>
 
 </testData>

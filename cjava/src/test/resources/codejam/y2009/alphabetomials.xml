@@ -1,10 +1,8 @@
 <testData>
 
-<test name="">
-
-</test>
 
 <test name="s1">
+<input>
 ehw+hwww 5
 6
 where
@@ -13,26 +11,22 @@ what
 whether
 who
 whose
+</input>
+<output>
+15 1032 7522 6864 253
+</output>
 </test>
 <test name="s2">
+<input>
 a+e+i+o+u 3
 4
 apple
 orange
 watermelon
 banana
+</input>
+<output>12 96 576</output>
 </test>
 
-<test name="s3">
-
-</test>
-
-<test name="s4">
-
-</test>
-
-<test name="s5">
-
-</test>
 
 </testData>
