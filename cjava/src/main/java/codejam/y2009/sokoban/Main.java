@@ -2,8 +2,10 @@ package codejam.y2009.sokoban;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -24,7 +26,7 @@ public class Main implements TestCaseInputScanner<InputData>, TestCaseHandler<In
     final static Logger perfLog = LoggerFactory.getLogger("perf");
     
 
-    public int getMinSteps(Set<Node> seen, PriorityQueue<Node> nodesToProcess) {
+    public int getMinSteps(Set<Node> seen, Queue<Node> nodesToProcess) {
         int iterations = 0;
         seen = new HashSet<>();
 
@@ -89,7 +91,7 @@ public class Main implements TestCaseInputScanner<InputData>, TestCaseHandler<In
     }
     
     public void generateNodes(Node n, Set<Node> seen,
-    PriorityQueue<Node> nodesToProcess) {
+    Queue<Node> nodesToProcess) {
         //Diagonal
         //...
         //No.
@@ -164,9 +166,10 @@ public class Main implements TestCaseInputScanner<InputData>, TestCaseHandler<In
         
 
         Set<Node> seen = new HashSet<Node>();
-        PriorityQueue<Node> nodesToProcess;
+        Queue<Node> nodesToProcess;
         
-        nodesToProcess = new PriorityQueue<>(1, new Node.PriorityCompare());
+       // nodesToProcess = new PriorityQueue<>(1, new Node.PriorityCompare());
+        nodesToProcess = new LinkedList<>();
         
         Set<Integer> listBoxes = input.grid.getIndexesOf(SquareType.Box);
         listBoxes.addAll(input.grid.getIndexesOf(SquareType.BoxOnGoal));
