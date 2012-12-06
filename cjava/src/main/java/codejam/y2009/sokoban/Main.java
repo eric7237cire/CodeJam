@@ -10,7 +10,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.main.Runner;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.Direction;
@@ -24,21 +23,16 @@ public class Main implements TestCaseInputScanner<InputData>, TestCaseHandler<In
     final static Logger log = LoggerFactory.getLogger(Main.class);
     final static Logger perfLog = LoggerFactory.getLogger("perf");
     
-    private Set<Node> seen;
-    private PriorityQueue<Node> nodesToProcess;
 
-    
-    
-    public int getMinSteps() {
+    public int getMinSteps(Set<Node> seen, PriorityQueue<Node> nodesToProcess) {
         int iterations = 0;
         seen = new HashSet<>();
-        
-        while(!nodesToProcess.isEmpty()) {
+
+        while (!nodesToProcess.isEmpty()) {
             Node n = nodesToProcess.iterator().next();
-            
-            
+
             nodesToProcess.remove(n);
-            
+
             if (seen.contains(n)) {
                 continue;
             }
@@ -48,15 +42,15 @@ public class Main implements TestCaseInputScanner<InputData>, TestCaseHandler<In
                 perfLog.debug("Iterations {}", iterations);
             }
             log.debug("Processing {}", n);
-            
+
             if (n.grid.getIndexesOf(SquareType.Box).isEmpty()) {
                 return n.steps;
             }
-            
-            generateNodes(n);
-            
+
+            generateNodes(n, seen, nodesToProcess);
+
         }
-        
+
         return -1;
     }
     
@@ -94,7 +88,8 @@ public class Main implements TestCaseInputScanner<InputData>, TestCaseHandler<In
         return false;
     }
     
-    public void generateNodes(Node n) {
+    public void generateNodes(Node n, Set<Node> seen,
+    PriorityQueue<Node> nodesToProcess) {
         //Diagonal
         //...
         //No.
@@ -154,28 +149,12 @@ public class Main implements TestCaseInputScanner<InputData>, TestCaseHandler<In
                 }
                                 
                 log.debug("Adding node {}", newSteps);
-                this.nodesToProcess.add(newSteps);
+                nodesToProcess.add(newSteps);
                 
             }
         }
     }
 
-   
-    public Main() {
-
-        super();
-    }
-
-    public static void main(String args[]) throws Exception {
-
-        if (args.length < 1) {
-            args = new String[] { "sample.txt" };
-        }
-        log.info("Input file {}", args[0]);
-
-        Main m = new Main();
-        Runner.goSingleThread(args[0],m,m);
-    }
 
     /* (non-Javadoc)
      * @see codejam.utils.multithread.Consumer.TestCaseHandler#handleCase(java.lang.Object)
@@ -183,13 +162,17 @@ public class Main implements TestCaseInputScanner<InputData>, TestCaseHandler<In
     @Override
     public String handleCase(InputData input) {
         
+
+        Set<Node> seen = new HashSet<Node>();
+        PriorityQueue<Node> nodesToProcess;
+        
         nodesToProcess = new PriorityQueue<>(1, new Node.PriorityCompare());
         
         Set<Integer> listBoxes = input.grid.getIndexesOf(SquareType.Box);
         listBoxes.addAll(input.grid.getIndexesOf(SquareType.BoxOnGoal));
         nodesToProcess.add(new Node(listBoxes,0,input.grid));
         
-        int min = getMinSteps();
+        int min = getMinSteps(seen,nodesToProcess);
 
         log.info("Starting case {}", input.testCase);
 

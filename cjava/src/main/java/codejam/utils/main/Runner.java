@@ -41,12 +41,11 @@ public class Runner {
             final BufferedReader br = new BufferedReader(isr);
             final Scanner scanner = new Scanner(br);
 
-            String line = br.readLine();
+            final int t = scanner.nextInt();
 
-            final int t = Integer.parseInt(line);
-
+            File outFile = new File(inputFileName.replaceAll("\\.in", "") + ".out");
             
-            OutputStream os = new FileOutputStream(inputFileName.replaceAll("\\.in", "") + ".out");
+            OutputStream os = new FileOutputStream(outFile);
             PrintStream pos = new PrintStream(os);
 
 
@@ -59,10 +58,20 @@ public class Runner {
             }
 
             log.debug("Finished");
+            
+            
+            
 
             os.close();
             // scanner.close();
             br.close();
+            
+            String checkFilePath = outFile.getCanonicalPath().replaceAll("\\.out",".correct");
+            File checkFile = new File(checkFilePath);
+            if (checkFile.exists()) {
+                log.info("Running diff");
+                doDiff(outFile.getCanonicalPath(), checkFile.getCanonicalPath());
+            }
         } catch (IOException ex) {
             log.error("Error", ex);
         }
@@ -72,6 +81,31 @@ public class Runner {
 
     }
 
+    public static void doDiff(String outFile, String correctFile) {
+        try {
+        String cmd = "diff \"" + outFile + "\" \"" + correctFile + "\"";
+        Runtime rt = Runtime.getRuntime();
+        Process proc = rt.exec(cmd);
+        
+        // any error message?
+        StreamGobbler errorGobbler = new 
+            StreamGobbler(proc.getErrorStream(), "ERR");            
+        
+        // any output?
+        StreamGobbler outputGobbler = new 
+            StreamGobbler(proc.getInputStream(), "OUT");
+            
+        // kick them off
+        errorGobbler.start();
+        outputGobbler.start();
+                                
+        // any error???
+        int exitVal = proc.waitFor();
+        System.out.println("ExitValue: " + exitVal);
+        } catch (Exception ex) {
+            log.error("ex", ex);
+        }
+    }
     
     
     public static <InputData extends AbstractInputData> void go(
