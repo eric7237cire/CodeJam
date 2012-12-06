@@ -64,8 +64,7 @@ public class GapTest {
     @Test
     public void testAddDisjoint() {
         Gaps gaps = new Gaps();
-        int i = 0;
-        
+               
         
         gaps.mergeGap(-60, 17);
         gaps.mergeGap(19, 99);

@@ -1,8 +1,8 @@
 package codejam.y2009.football_team;
 
 public class Node<DataType> {
-    Node lhs;
-    Node rhs;
+    Node<DataType> lhs;
+    Node<DataType> rhs;
     
     DataType data;
 

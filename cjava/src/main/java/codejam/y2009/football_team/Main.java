@@ -1,7 +1,5 @@
 package codejam.y2009.football_team;
 
-import java.io.File;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,47 +12,26 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.main.Runner.TestCaseInputScanner;
+import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.Grid;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 
-public class Main {
+public class Main implements TestCaseHandler<InputData>,TestCaseInputScanner<InputData> {
 
 	final static Logger log = LoggerFactory.getLogger(Main.class);
 
-	Grid<Integer> grid;
-
-	public static void handleCase(int caseNumber, Scanner scanner,
-			PrintStream os) {
-
-		int min = Main.buildMain(scanner);
-
-		log.info("Starting case {}", caseNumber);
-
-		os.println("Case #" + caseNumber + ": " + min);
-
-	}
+	
 
 	final static int MAX_WIDTH = 1000;
 	final static int MAX_HEIGHT = 30;
 
-	private static int buildMain(Scanner scanner) {
-		// Main m = new Main();
+	private static int calcMin(InputData input) {
 
-		Grid<Integer> grid = Grid.buildEmptyGrid(MAX_HEIGHT, MAX_WIDTH, null);
-		grid.setyZeroOnTop(false);
-		int numPlayers = scanner.nextInt();
-
-		for (int playerNum = 0; playerNum < numPlayers; ++playerNum) {
-			int x = scanner.nextInt() - 1;
-			int y = scanner.nextInt() - 1;
-			grid.setEntry(y, x, x);
-
-		}
-
-		int minCol = 1;
-
+	    Grid<Integer> grid = input.grid;
+		
 
 		List<Node<List<Integer>>> lastNode = new ArrayList<>();
 
@@ -356,34 +333,36 @@ public class Main {
 	}
 
 
+    /* (non-Javadoc)
+     * @see codejam.utils.main.Runner.TestCaseInputScanner#readInput(java.util.Scanner, int)
+     */
+    @Override
+    public InputData readInput(Scanner scanner, int testCase) {
+        InputData input = new InputData(testCase);
+        
+        Grid<Integer> grid = Grid.buildEmptyGrid(MAX_HEIGHT, MAX_WIDTH, null);
+        grid.setyZeroOnTop(false);
+        int numPlayers = scanner.nextInt();
 
-	
+        for (int playerNum = 0; playerNum < numPlayers; ++playerNum) {
+            int x = scanner.nextInt() - 1;
+            int y = scanner.nextInt() - 1;
+            grid.setEntry(y, x, x);
 
-	public Main() {
+        }
+        input.grid = grid;
+        return input;
+    }
 
-		// TODO Add test case vars
-		super();
-	}
+    /* (non-Javadoc)
+     * @see codejam.utils.multithread.Consumer.TestCaseHandler#handleCase(java.lang.Object)
+     */
+    @Override
+    public String handleCase(InputData input) {
+        int min = calcMin(input);
 
-	public static void main(String args[]) throws Exception {
+        log.info("Starting case {}", input.testCase);
 
-		if (args.length < 1) {
-			// args = new String[] { "sample.txt" };
-			//args = new String[] { "C-small-practice.in" };
-			args = new String[] { "C-large-practice.in" };
-		}
-		log.info("Input file {}", args[0]);
-
-		Scanner scanner = new Scanner(new File(args[0]));
-
-		int t = scanner.nextInt();
-
-		for (int i = 1; i <= t; ++i) {
-
-			handleCase(i, scanner, System.out);
-
-		}
-
-		scanner.close();
-	}
+        return("Case #" + input.testCase + ": " + min);
+    }
 }

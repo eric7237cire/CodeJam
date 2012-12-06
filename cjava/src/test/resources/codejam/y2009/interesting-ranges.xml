@@ -5,14 +5,29 @@
 </test>
 
 <test name="s1">
+<input>
 1 2
+</input>
+<output>
+1
+</output>
 </test>
 <test name="s2">
+<input>
 1 7
+</input>
+<output>
+12 12
+</output>
 </test>
 
 <test name="s3">
+<input>
 12 110
+</input>
+<output>
+2466
+</output>
 </test>
 
 <test name="s4">

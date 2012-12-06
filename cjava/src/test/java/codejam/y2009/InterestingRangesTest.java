@@ -2,36 +2,25 @@ package codejam.y2009;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
+import codejam.utils.test.TesterBase;
 import codejam.y2009.interesting_ranges.BruteForce;
+import codejam.y2009.interesting_ranges.InputData;
 import codejam.y2009.interesting_ranges.Interval;
 import codejam.y2009.interesting_ranges.Main;
 import codejam.y2009.interesting_ranges.PalinSpace;
 
+
 /**
  * Unit test for simple App.
  */
-public class InterestingRangesTest {
+public class InterestingRangesTest extends TesterBase<InputData> {
 
 	final static Logger log = LoggerFactory.getLogger(InterestingRangesTest.class);
 
@@ -42,76 +31,22 @@ public class InterestingRangesTest {
 	 *            name of the test case
 	 */
 	public InterestingRangesTest() {
-		super();
+		super(new Main());
 	}
 
-	private String getOutput(String testCase) {
-		Scanner sc = new Scanner(testCase);
-
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		PrintStream pos = new PrintStream(os);
-
-		Main.handleCase(1, sc, pos);
-
-		try {
-			String output = new String(os.toString("UTF-8"));
-			log.info(output);
-			return output.trim();
-		} catch (UnsupportedEncodingException ex) {
-			return null;
-		}
-	}
-	
-	private static String extractAns(String str) {
-		Pattern p = Pattern.compile("Case #\\d: (.*)");
-		Matcher m = p.matcher(str);
-		if (m.matches()) {
-			return m.group(1);
-		}
-		
-		return "Error";
-	}
-
-	private static Map<String, String> testData;
 
 	@BeforeClass
-	public static void getTestData() {
-		testData = new HashMap<>();
-
-		try {
-
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-					.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(ClassLoader
-					.getSystemResourceAsStream("test-data.xml"));
-			doc.getDocumentElement().normalize();
-
-			NodeList nl = doc.getElementsByTagName("test");
-			for (int i = 0; i < nl.getLength(); ++i) {
-				Node n = nl.item(i);
-				String value = n.getTextContent();
-
-				String name = n.getAttributes().getNamedItem("name")
-						.getNodeValue();
-
-				testData.put(name, value);
-			}
-		} catch (Exception ex) {
-
-		}
-
-	}
+    public static void getTestData() {
+        initTestData(InterestingRangesTest.class.getResourceAsStream(
+                    "interesting-ranges.xml"));
+            
+    }
 	
 
 	@Test
 	public void testMainMethod() {
-	    //Interval i1 = BruteForce.createInterval(1, 1);
-	    Interval i2 = BruteForce.createInterval(1, 20);
-	    Interval i5 = BruteForce.createInterval(21, 22);
-	    Interval i3 = Interval.combin(i2, i5);
 	    
-	    Interval i4 = Main.calc(new BigInteger("22"));
+	    
 	    for(int i = 1; i < 200; ++i) {
 	        log.debug("i is {}", i);
 	        BigInteger check = BruteForce.countTotal(1, i, true);
@@ -151,7 +86,7 @@ public class InterestingRangesTest {
 
 	@Test
 	public void testPalinSpace() {
-	    Object o2 = Main.palinSpace.segments.get(3);
+	    
 	    
 	    Interval i = Main.palinSpace.segments.get(3).get(new BigInteger("990"));
 	    Interval check = Main.calcEvenPairRanges(new BigInteger("4005"), new BigInteger("4994"));
@@ -193,7 +128,7 @@ public class InterestingRangesTest {
         check = Main.calcEvenPairRanges(new BigInteger("10000002"), new BigInteger("99999999"));
         assertEquals(check, i);
         
-        Object o = Main.palinSpace.segments.get(6);
+        Main.palinSpace.segments.get(6);
         
 	    assertEquals(check, i);
 	}
@@ -344,33 +279,6 @@ public class InterestingRangesTest {
 	
 	
 
-	@Test
-	public void testS1() {
-	    String testCase = testData.get("s1");
-
-        int output = Integer.parseInt(extractAns(getOutput(testCase)));
-
-        assertEquals(1, output);
-	}
-
-	   @Test
-	    public void testS2() {
-	        String testCase = testData.get("s2");
-
-	        int output = Integer.parseInt(extractAns(getOutput(testCase)));
-
-	        assertEquals(12, output);
-	    }
-	   
-	    @Test
-	    public void testS3() {
-	        
-	        
-	        String testCase = testData.get("s3");
-
-	        int output = Integer.parseInt(extractAns(getOutput(testCase)));
-
-	        assertEquals(2466, output);
-	    }
+	
 	
 }

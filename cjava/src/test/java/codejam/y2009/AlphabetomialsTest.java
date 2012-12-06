@@ -22,12 +22,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import codejam.utils.test.TesterBase;
 import codejam.y2009.alphabetomials.Main;
+import codejam.y2009.sokoban.InputData;
 
 /**
  * Unit test for simple App.
  */
-public class AlphabetomialsTest {
+public class AlphabetomialsTest extends TesterBase<InputData> {
 
     final static Logger log = LoggerFactory.getLogger(AlphabetomialsTest.class);
 

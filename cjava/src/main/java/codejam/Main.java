@@ -3,6 +3,8 @@ package codejam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.main.Runner;
+
 public class Main  {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
@@ -26,8 +28,11 @@ public class Main  {
          }
          log.info("Input file {}", args[0]);
 
-        // Main m = new Main();
-         //Runner.goSingleThread(args[0], m, m);
+         //codejam.y2009.interesting_ranges.Main m = new codejam.y2009.interesting_ranges.Main();
+         //codejam.y2009.sokoban.Main m = new codejam.y2009.sokoban.Main();
+         //codejam.y2009.alphabetomials.Main m = new codejam.y2009.alphabetomials.Main();
+         codejam.y2009.football_team.Main m = new codejam.y2009.football_team.Main();
+         Runner.goSingleThread(args[0], m, m);
          //Runner.go(args[0], m, m, new InputData(-1));
 
         

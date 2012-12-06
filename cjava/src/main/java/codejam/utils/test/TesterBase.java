@@ -8,13 +8,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -24,27 +24,48 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import codejam.utils.main.AbstractInputData;
+import codejam.utils.main.Runner.TestCaseInputScanner;
+import codejam.utils.multithread.Consumer.TestCaseHandler;
+
 
 /**
  * Unit test for simple App.
  */
-public abstract class TesterBase {
+public abstract class TesterBase<InputData extends AbstractInputData> {
 
 
 
     final static Logger log = LoggerFactory.getLogger(TesterBase.class);
 
+    final TestCaseHandler<InputData> testCaseHandler;
+    final TestCaseInputScanner<InputData> testCaseInputScanner;
+    
     /**
      * Create the test case
      * 
      * @param testName
      *            name of the test case
      */
-    public TesterBase() {
+    public TesterBase(TestCaseHandler<InputData> testCaseHandler,
+            TestCaseInputScanner<InputData> testCaseInputScanner) {
         super();
+        this.testCaseHandler = testCaseHandler;        
+        this.testCaseInputScanner = testCaseInputScanner;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public TesterBase(Object o) {
+        this( (TestCaseHandler<InputData>) o, (TestCaseInputScanner<InputData>) o );
     }
 
-   
+    protected String getOutput(String testCase) {
+        Scanner sc = new Scanner(testCase);
+        
+        InputData input = testCaseInputScanner.readInput(sc,1);
+        String output = testCaseHandler.handleCase(input);
+        return output;
+    }
 
     private static String extractAns(String str) {
         Pattern p = Pattern.compile("Case #\\d: (.*)");
@@ -56,8 +77,7 @@ public abstract class TesterBase {
         return "Error";
     }
     
-    abstract protected String getOutput(String testCaseData) throws IOException;
-
+    
     protected static Map<String, String> testInputData;
     private static Map<String, String> testOutputData;
 
@@ -65,13 +85,6 @@ public abstract class TesterBase {
         testInputData = new HashMap<>();
         testOutputData = new HashMap<>();
 
-        String str = null;
-//        try {
-//       //     str = IOUtils.toString(testDataStream);
-//        } catch (IOException e1) {
-//            // TODO Auto-generated catch block
-//            e1.printStackTrace();
-//        }
         
         
         try {

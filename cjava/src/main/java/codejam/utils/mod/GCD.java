@@ -24,8 +24,8 @@ public class GCD {
         int x_back1 = 0; //x2
         int y_back1 = 1; //y2
                 
-        int r_back2 = aa;
-        int r_back1 = bb;
+        int r_back2 = a;
+        int r_back1 = b;
         
         while(true) {
             int q = r_back2 / r_back1;

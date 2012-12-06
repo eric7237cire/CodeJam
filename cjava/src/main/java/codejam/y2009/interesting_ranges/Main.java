@@ -1,7 +1,5 @@
 package codejam.y2009.interesting_ranges;
 
-import java.io.File;
-import java.io.PrintStream;
 import java.math.BigInteger;
 import java.util.Scanner;
 import java.util.SortedMap;
@@ -9,9 +7,12 @@ import java.util.SortedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.main.Runner.TestCaseInputScanner;
+import codejam.utils.multithread.Consumer.TestCaseHandler;
+
 import com.google.common.base.Preconditions;
 
-public class Main {
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
     
@@ -214,46 +215,39 @@ public class Main {
         return ans;
     }
 
-    public static void handleCase(int caseNumber, Scanner scanner,
-            PrintStream os) {
-
-        log.info("Starting case {}", caseNumber);
-
-        BigInteger L = scanner.nextBigInteger();
-        BigInteger R = scanner.nextBigInteger();
-        
-        Interval ans = calcEvenPairRanges(L, R);
-        
-        os.println("Case #" + caseNumber + ": "
-                + ans.totalEven.mod(BigInteger.valueOf(1000000007)));
-
-       
-    }
+   
 
     public Main() {
 
-        // TODO Add test case vars
         super();
     }
 
-    public static void main(String args[]) throws Exception {
+   
 
-        if (args.length < 1) {
-            args = new String[] { "sample.txt" };
-           // args = new String[] { "D-small-practice.in" };
-        }
-        log.info("Input file {}", args[0]);
+    /* (non-Javadoc)
+     * @see codejam.utils.main.Runner.TestCaseInputScanner#readInput(java.util.Scanner, int)
+     */
+    @Override
+    public InputData readInput(Scanner scanner, int testCase) {
+        InputData input = new InputData(testCase);
+        input.L = scanner.nextBigInteger();
+        input.R = scanner.nextBigInteger();
+        return input;
+    }
 
-        Scanner scanner = new Scanner(new File(args[0]));
+    /* (non-Javadoc)
+     * @see codejam.utils.multithread.Consumer.TestCaseHandler#handleCase(java.lang.Object)
+     */
+    @Override
+    public String handleCase(InputData input) {
+        log.info("Starting case {}", input.testCase);
 
-        int t = scanner.nextInt();
+        
+        
+        Interval ans = calcEvenPairRanges(input.L, input.R);
+        
+        return("Case #" + input.testCase + ": "
+                + ans.totalEven.mod(BigInteger.valueOf(1000000007)));
 
-        for (int i = 1; i <= t; ++i) {
-
-            handleCase(i, scanner, System.out);
-
-        }
-
-        scanner.close();
     }
 }

@@ -161,7 +161,7 @@ public class PolynomialTest {
     public void testSubCoeff() {
         Polynomial p = new Polynomial("E10^2+2*E10*E12+E11^2+2*E11*E12+6*E12^2");
         
-        Map<String, Integer> subs = new HashMap();
+        Map<String, Integer> subs = new HashMap<String,Integer>();
         subs.put("E10", 1);
         subs.put("E11", 3);
         subs.put("E12", 2);

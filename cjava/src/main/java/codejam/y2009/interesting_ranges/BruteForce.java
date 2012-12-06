@@ -33,6 +33,7 @@ public class BruteForce {
      */
     public static int countPalin(int lb, int up) {
         int count = 0;
+        @SuppressWarnings("unused")
         int countBlanks = 0;
         for(int i = lb; i <= up; ++i) {
             String s = Integer.toString(i, 10);
@@ -69,6 +70,7 @@ public class BruteForce {
      */
     public static BigInteger countTotal(int l, int r, boolean countEven) {
         int ret = 0;
+        @SuppressWarnings("unused")
         int rangeCount = 0;
         boolean[] isPalin = new boolean[r-l+1];
         for(int i = l; i <= r; ++i) {
@@ -101,10 +103,10 @@ public class BruteForce {
     
     public static int countLeftEdge(int l, int r,  boolean countEven) {
         int ret = 0;
-        int rangeCount = 0;
+        
         int lb = l;
             for(int up = lb; up <= r; ++up) {
-                rangeCount++;
+        
                 int count = 0;
                 for(int i = lb; i <= up; ++i) {
                     String s = Integer.toString(i, 10);

@@ -1,7 +1,5 @@
 package codejam.y2009.alphabetomials;
 
-import java.io.File;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,37 +10,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.main.Runner.TestCaseInputScanner;
+import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.polynomial.AddTerms;
 import codejam.utils.polynomial.CoefficientTerm;
 import codejam.utils.polynomial.Polynomial;
 import codejam.utils.polynomial.Term;
 import codejam.utils.polynomial.VariableTerm;
 
-public class Main {
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    public String polynomial;
-    int k;
-    int d;
-    List<String> dictWords;
-
-    public static void handleCase(int caseNumber, Scanner scanner,
-            PrintStream os) {
-
-        Main m = Main.buildMain(scanner);
-
-        List<Integer> total2 = m.usePoly();
-
-        log.info("Starting case {}\n total {}\n total poly {}", caseNumber,
-                 total2);
-
-//        os.println("Case #" + caseNumber + ": " + StringUtils.join(total, " "));
-        os.println("Case #" + caseNumber + ": " + StringUtils.join(total2, " "));
-
-    }
-
-    public List<Integer> usePoly() {
+    
+    public List<Integer> usePoly(InputData input) {
         List<Integer> totals = new ArrayList<>();
 
 //        Cloner c = new Cloner();
@@ -53,14 +34,14 @@ public class Main {
 
         List<Map<VariableTerm, Term>> subsList = new ArrayList<>();
         
-        for (int i = 0; i < d; ++i) {
+        for (int i = 0; i < input.d; ++i) {
             Map<VariableTerm, Term> subs = new HashMap<>();
             for (int chInt = 'a'; chInt <= 'z'; ++chInt) {
                 char ch = (char) chInt;
                 
                 String varName = "" + ch;
                 
-                int count = StringUtils.countMatches(dictWords.get(i), varName);
+                int count = StringUtils.countMatches(input.dictWords.get(i), varName);
                 
                 subs.put(new VariableTerm(varName), new AddTerms(
                         new CoefficientTerm(count),
@@ -72,22 +53,22 @@ public class Main {
             subsList.add(subs);
         }
 
-        Polynomial orig = new Polynomial(polynomial);
+        Polynomial orig = new Polynomial(input.polynomial);
         orig.doSimplify();
         
         Polynomial totalPoly = new Polynomial();
 
-        for (int eachK = 1; eachK <= k; ++eachK) {
+        for (int eachK = 1; eachK <= input.k; ++eachK) {
             //System.out.println("k " + eachK);
             totalPoly = new Polynomial();
 
-            for (int i = 0; i < d; ++i) {
+            for (int i = 0; i < input.d; ++i) {
                 //System.out.println("i " + i);
                 Polynomial p = new Polynomial(orig);
 
                 //log.info("Computing k {} before sub {}", eachK, p);
                 p.substitute(subsList.get(i));
-                log.info("Computing k {} after sub {}", eachK, p);
+                log.debug("Computing k {} after sub {}", eachK, p);
                 totalPoly.addSelf(p);
                 
                 //log.info("Computing k {} after add {}", eachK, totalPoly);
@@ -99,7 +80,7 @@ public class Main {
 
             totalPoly.doSimplify();
 
-            log.info("Poly obj {} k {}", totalPoly, eachK);
+            log.debug("Poly obj {} k {}", totalPoly, eachK);
             
             orig = new Polynomial(totalPoly);
             
@@ -110,14 +91,14 @@ public class Main {
         return totals;
     }
 
-    public List<Integer> doPerms() {
+    public List<Integer> doPerms(InputData input) {
         List<Integer> totals = new ArrayList<>();
 
-        for (int eachK = 1; eachK <= k; ++eachK) {
-            Integer[] dictArray = new Integer[d];
+        for (int eachK = 1; eachK <= input.k; ++eachK) {
+            Integer[] dictArray = new Integer[input.d];
             Integer[] combin = new Integer[eachK];
             int total = 0;
-            for (int i = 0; i < d; ++i) {
+            for (int i = 0; i < input.d; ++i) {
                 dictArray[i] = i;
             }
 
@@ -134,10 +115,10 @@ public class Main {
 
                 String word = "";
                 for (Integer comIndex : combin) {
-                    word += dictWords.get(comIndex) + " ";
+                    word += input.dictWords.get(comIndex) + " ";
                 }
 
-                final int wordEval = evalP(word);
+                final int wordEval = evalP(word,input);
                 total += wordEval;
 
                 total %= 10009;
@@ -152,7 +133,7 @@ public class Main {
                 boolean fullLoop = true;
                 for (int pos = 0; pos < eachK; ++pos) {
                     combin[pos]++;
-                    if (combin[pos] < d) {
+                    if (combin[pos] < input.d) {
                         fullLoop = false;
                         break;
                     }
@@ -171,11 +152,11 @@ public class Main {
         return totals;
     }
 
-    public int evalP(String word) {
+    public int evalP(String word, InputData input) {
         int total = 0;
         int term = 1;
-        for (int c = 0; c < polynomial.length(); ++c) {
-            char ch = polynomial.charAt(c);
+        for (int c = 0; c < input.polynomial.length(); ++c) {
+            char ch = input.polynomial.charAt(c);
             if (ch == '+') {
                 total += term;
                 term = 1;
@@ -189,45 +170,45 @@ public class Main {
         return total;
     }
 
-    private static Main buildMain(Scanner scanner) {
-        Main m = new Main();
-
-        m.polynomial = scanner.next();
-        m.k = scanner.nextInt();
-        m.d = scanner.nextInt();
-        m.dictWords = new ArrayList<>();
-        for (int i = 0; i < m.d; ++i) {
-            m.dictWords.add(scanner.next());
-        }
-       // log.info("k {} d {} poly {}", m.k, m.d, m.polynomial);
-
-        return m;
-    }
 
     public Main() {
 
-        // TODO Add test case vars
-        super();
     }
 
-    public static void main(String args[]) throws Exception {
 
-        if (args.length < 1) {
-            args = new String[] { "sample.txt" };
+    /* (non-Javadoc)
+     * @see codejam.utils.main.Runner.TestCaseInputScanner#readInput(java.util.Scanner, int)
+     */
+    @Override
+    public InputData readInput(Scanner scanner, int testCase) {
+        InputData input = new InputData(testCase);
+
+        input.polynomial = scanner.next();
+        input.k = scanner.nextInt();
+        input.d = scanner.nextInt();
+        input.dictWords = new ArrayList<>();
+        for (int i = 0; i < input.d; ++i) {
+            input.dictWords.add(scanner.next());
         }
-        log.info("Input file {}", args[0]);
+       // log.info("k {} d {} poly {}", m.k, m.d, m.polynomial);
 
-        Scanner scanner = new Scanner(new File(args[0]));
+        return input;
+    }
 
-        int t = scanner.nextInt();
+    /* (non-Javadoc)
+     * @see codejam.utils.multithread.Consumer.TestCaseHandler#handleCase(java.lang.Object)
+     */
+    @Override
+    public String handleCase(InputData input) {
         
-        
-        for (int i = 1; i <= t; ++i) {
 
-            handleCase(i, scanner, System.out);
+        List<Integer> total2 = usePoly(input);
 
-        }
+        log.info("Starting case {}\n total {}\n total poly {}", input.testCase,
+                 total2);
 
-        scanner.close();
+//        os.println("Case #" + caseNumber + ": " + StringUtils.join(total, " "));
+        return ("Case #" + input.testCase + ": " + StringUtils.join(total2, " "));
+
     }
 }

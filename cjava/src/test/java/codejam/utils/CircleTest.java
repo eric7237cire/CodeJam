@@ -255,18 +255,7 @@ public class CircleTest {
 
     }
 
-    @Test
-    public void testCircle3Circles_Impossible() {
-        Circle a = new Circle(216, 773, 61);
-
-        // Circle containing a and c covers b
-        Circle b = new Circle(926, 636, 75);
-
-        Circle c = new Circle(438, 738, 8);
-
-        Circle ans = Circle.getCircleContaining(a, b, c);
-
-    }
+    
 
     @Test
     public void testCircle2Points() {
@@ -304,22 +293,7 @@ public class CircleTest {
         assertEquals(2.5, ans.getR(), DoubleComparator.TOLERANCE);
     }
 
-    @Test
-    public void testInvalidCircle3Points() {
-        Circle a = new Circle(3, 5, 4);
-
-        Circle b = new Circle(2, 1, 5);
-
-        Circle c = new Circle(4, 3, 1);
-
-        Circle ans = Circle.getCircleContaining(a, b, c);
-
-        // d.setVisible(true);
-
-        // assertEquals(3, ans.getX(), DoubleComparator.TOLERANCE);
-        // assertEquals(3, ans.getY(), DoubleComparator.TOLERANCE);
-        // assertEquals(4, ans.getR(), DoubleComparator.TOLERANCE);
-    }
+   
 
     @Test
     public void testInside() {
