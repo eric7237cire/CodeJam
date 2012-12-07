@@ -1,0 +1,73 @@
+<testData>
+
+
+<test name="s1">
+
+<input>
+3
+20 10 2
+20 20 2
+40 10 3
+</input>
+<output tolerance=".0000001">
+7
+</output>
+</test>
+<test name="s2">
+<input>
+3
+20 10 3
+30 10 3
+40 10 3
+</input>
+<output tolerance=".0000001">
+8
+</output>
+</test>
+
+<test name="s3">
+<input>
+
+5
+100 100 1
+140 100 1
+100 130 1
+100 500 1
+150 500 1
+</input>
+<output tolerance=".0000001">
+26
+</output>
+</test>
+
+<test name="s4">
+<input>
+8
+100 100 1
+110 100 1
+100 110 1
+110 110 1
+200 200 1
+210 200 1
+200 210 1
+210 210 1
+</input>
+<output tolerance=".00001">
+8.071067
+</output>
+</test>
+
+<test name="s5">
+<input>
+4
+100 100 1
+200 100 1
+200 103 1
+300 103 1
+</input>
+<output tolerance=".0000001">
+51
+</output>
+</test>
+
+</testData>

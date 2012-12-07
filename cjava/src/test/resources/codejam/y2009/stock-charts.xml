@@ -1,0 +1,45 @@
+<testData>
+
+
+
+
+<test name="sample1">
+<input>
+3 4
+1 2 3 4
+2 3 4 6
+6 5 4 3
+</input>
+<output>
+2
+</output>
+</test>
+
+<test name="sample2">
+<input>
+3 3
+5 5 5
+4 4 6
+4 5 4
+</input>
+<output>
+3
+</output>
+</test>
+
+<test name="sample3">
+<input>
+5 2
+1 1
+2 2
+5 4
+4 4
+4 1
+</input>
+<output>
+2
+</output>
+</test>
+
+
+</testData>

@@ -3,6 +3,7 @@ package codejam.utils.test;
 
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,7 +68,7 @@ public abstract class TesterBase<InputData extends AbstractInputData> {
         return output;
     }
 
-    private static String extractAns(String str) {
+    protected static String extractAns(String str) {
         Pattern p = Pattern.compile("Case #\\d: (.*)");
         Matcher m = p.matcher(str);
         if (m.matches()) {
@@ -80,12 +81,14 @@ public abstract class TesterBase<InputData extends AbstractInputData> {
     
     protected static Map<String, String> testInputData;
     private static Map<String, String> testOutputData;
+    private static Map<String, Double> testOutputTolerance;
+    private static boolean noErrors;
 
     public static void initTestData(InputStream testDataStream) {
         testInputData = new HashMap<>();
         testOutputData = new HashMap<>();
-
-        
+        testOutputTolerance = new HashMap<>();
+        noErrors = false;
         
         try {
 
@@ -101,15 +104,28 @@ public abstract class TesterBase<InputData extends AbstractInputData> {
                 Element e = (Element) n;
                 String input = e.getElementsByTagName("input").item(0)
                         .getTextContent();
-                String output = e.getElementsByTagName("output").item(0)
+                
+                
+                Node outputNode = e.getElementsByTagName("output").item(0);
+                
+                String output = outputNode
                         .getTextContent();
+                
+                Node tolerance = outputNode.getAttributes().getNamedItem("tolerance");
+                
 
                 String name = n.getAttributes().getNamedItem("name")
                         .getNodeValue();
+                
+                if (tolerance != null) {
+                    testOutputTolerance.put(name, Double.parseDouble(tolerance.getNodeValue()));
+                }
 
                 testInputData.put(name, input);
                 testOutputData.put(name, output);
             }
+            
+            noErrors = true;
         } catch (Exception ex) {
             log.warn("ex",ex);
         }
@@ -117,6 +133,8 @@ public abstract class TesterBase<InputData extends AbstractInputData> {
     
     @Test
     public void testMain() throws IOException {
+        assertTrue(noErrors);
+        
         for (String name : testInputData.keySet()) {
             String input = testInputData.get(name).trim();
             String output = testOutputData.get(name).trim();
@@ -126,9 +144,17 @@ public abstract class TesterBase<InputData extends AbstractInputData> {
 
             String actualOutput = extractAns(getOutput(input));
 
+            Double tolerance = testOutputTolerance.get(name);
+            if (tolerance == null) {
             assertTrue("\nInput " + input + "\nexpected output " + output
                     + "\n Actual " + actualOutput,
                     StringUtils.equalsIgnoreCase(output, actualOutput));
+            } else {
+                assertEquals("\nInput " + input + "\nexpected output (double) " + output
+                        + "\n Actual " + actualOutput,
+                        Double.parseDouble(output), Double.parseDouble(actualOutput), tolerance);
+            }
+            
         }
 
     }

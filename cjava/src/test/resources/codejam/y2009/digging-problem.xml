@@ -1,0 +1,31 @@
+<testData>
+
+
+<test name="testBaseCase">
+<input>
+2 2 1
+..
+##
+</input>
+<output>
+Yes 1
+</output>
+</test>
+
+<test name="testMultistep">
+<input>
+5 8 3 
+........
+########
+...#.###
+####..##
+###.##..
+</input>
+<output>
+Yes 2
+</output>
+</test>
+
+
+
+</testData>

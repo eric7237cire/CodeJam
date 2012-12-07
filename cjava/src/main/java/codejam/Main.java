@@ -28,11 +28,14 @@ public class Main  {
          }
          log.info("Input file {}", args[0]);
 
-         //
-         codejam.y2009.sokoban.Main m = new codejam.y2009.sokoban.Main();
+         //Round 3
+         //codejam.y2009.sokoban.Main m = new codejam.y2009.sokoban.Main();
          //codejam.y2009.alphabetomials.Main m = new codejam.y2009.alphabetomials.Main();
          //codejam.y2009.football_team.Main m = new codejam.y2009.football_team.Main();
          //codejam.y2009.interesting_ranges.Main m = new codejam.y2009.interesting_ranges.Main();
+         
+         //Round 2
+         codejam.y2009.crazy_rows.Main m = new codejam.y2009.crazy_rows.Main();
          Runner.goSingleThread(args[0], m, m);
          //Runner.go(args[0], m, m, new InputData(-1));
 
