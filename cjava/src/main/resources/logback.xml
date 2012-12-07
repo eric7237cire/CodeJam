@@ -29,8 +29,9 @@
   <logger name="com.eric.codejam.SingleRowSolver" level="OFF" />
    -->
    <logger name="codejam.y2009" level="INFO"/>
+   <logger name="codejam" level="INFO"/>
    
-      <logger name="com.eric.codejam.main" level="DEBUG"/>
+      <logger name="codejam.utils.main" level="DEBUG"/>
   <root level="${root-level:-DEBUG}">
     <appender-ref ref="console"/>
   </root>

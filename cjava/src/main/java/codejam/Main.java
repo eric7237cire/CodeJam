@@ -28,18 +28,8 @@ public class Main  {
          }
          log.info("Input file {}", args[0]);
 
-         //Round 4 -- 2009
-         //codejam.y2009.year_more.Main m = new codejam.y2009.year_more.Main();
-         //codejam.y2009.min_perimeter.Main m = new codejam.y2009.min_perimeter.Main();
-       //Runner.go(args[0], m, m, new codejam.y2009.min_perimeter.InputData(-1), 3);
-        // codejam.y2009.double_sort_grid.Main m = new codejam.y2009.double_sort_grid.Main();
-      // Runner.go(args[0], m, m, new codejam.y2009.double_sort_grid.InputData(-1), 3);
-         
-         //Round 3
-         //codejam.y2009.sokoban.Main m = new codejam.y2009.sokoban.Main();
-         //codejam.y2009.alphabetomials.Main m = new codejam.y2009.alphabetomials.Main();
-         //codejam.y2009.football_team.Main m = new codejam.y2009.football_team.Main();
-         //codejam.y2009.interesting_ranges.Main m = new codejam.y2009.interesting_ranges.Main();
+         //Round 1C        
+ 
          
          //Round 2
          //codejam.y2009.crazy_rows.Main m = new codejam.y2009.crazy_rows.Main();
@@ -47,10 +37,46 @@ public class Main  {
          //codejam.y2009.stock_charts.Main m = new codejam.y2009.stock_charts.Main();
          //codejam.y2009.watering_plants.Main m = new codejam.y2009.watering_plants.Main();
          
+         //Round 3
+         //codejam.y2009.sokoban.Main m = new codejam.y2009.sokoban.Main();
+         //codejam.y2009.alphabetomials.Main m = new codejam.y2009.alphabetomials.Main();
+         //codejam.y2009.football_team.Main m = new codejam.y2009.football_team.Main();
+         //codejam.y2009.interesting_ranges.Main m = new codejam.y2009.interesting_ranges.Main();
+         
+       //Round 4 -- 2009
+         //codejam.y2009.year_more.Main m = new codejam.y2009.year_more.Main();
+         
+         //Both of these still a bit slow, especially min perimeter
+         //codejam.y2009.min_perimeter.Main m = new codejam.y2009.min_perimeter.Main();
+       //Runner.go(args[0], m, m, new codejam.y2009.min_perimeter.InputData(-1), 3);
+        // codejam.y2009.double_sort_grid.Main m = new codejam.y2009.double_sort_grid.Main();
+      // Runner.go(args[0], m, m, new codejam.y2009.double_sort_grid.InputData(-1), 3);
+
+         //2010 qual
+         //TODO .correct
+         //codejam.y2010.fair_warning.Main m = new codejam.y2010.fair_warning.Main();
+         codejam.y2010.theme_park.Main m = new codejam.y2010.theme_park.Main();
+         
          //2010 1A
+         //TODO Need to retest / correct files
          //codejam.y2010.rotate.Main m = new codejam.y2010.rotate.Main();
          //codejam.y2010.smooth.Main m = new codejam.y2010.smooth.Main();
-         codejam.y2010.number_game.Main m = new codejam.y2010.number_game.Main();
+         //codejam.y2010.number_game.Main m = new codejam.y2010.number_game.Main();
+         
+         //2010 1B
+         //TODO correct
+         //codejam.y2010.file_fix.Main m = new codejam.y2010.file_fix.Main();
+         //codejam.y2010.chicks.Main m = new codejam.y2010.chicks.Main();
+         //codejam.y2010.rank_pure.Main m = new codejam.y2010.rank_pure.Main();
+         
+         //2010 1C
+         //large a bit slow
+         //codejam.y2010.chess_boards.Main m = new codejam.y2010.chess_boards.Main();
+         //codejam.y2010.load_testing.Main m = new codejam.y2010.load_testing.Main();         
+         //TODO need correct
+         //codejam.y2010.rope_intranet.Main m = new codejam.y2010.rope_intranet.Main();
+         
+
          Runner.goSingleThread(args[0], m, m);
          
 

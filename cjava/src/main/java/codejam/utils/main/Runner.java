@@ -83,7 +83,7 @@ public class Runner {
 
     public static void doDiff(String outFile, String correctFile) {
         try {
-        String cmd = "diff \"" + outFile + "\" \"" + correctFile + "\"";
+        String cmd = "diff --ignore-all-space \"" + outFile + "\" \"" + correctFile + "\"";
         Runtime rt = Runtime.getRuntime();
         Process proc = rt.exec(cmd);
         
