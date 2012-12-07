@@ -121,7 +121,10 @@ public class Runner {
 
             final int t = Integer.parseInt(line);
 
-            OutputStream os = new FileOutputStream(inputFileName.replaceAll("\\.in", "") + ".out");
+            
+            File outFile = new File(inputFileName.replaceAll("\\.in", "") + ".out");
+            
+            OutputStream os = new FileOutputStream(outFile);
             PrintStream pos = new PrintStream(os);
 
             final String[] answers = new String[t];
@@ -164,6 +167,13 @@ public class Runner {
             os.close();
             // scanner.close();
             br.close();
+            
+            String checkFilePath = outFile.getCanonicalPath().replaceAll("\\.out",".correct");
+            File checkFile = new File(checkFilePath);
+            if (checkFile.exists()) {
+                log.info("Running diff");
+                doDiff(outFile.getCanonicalPath(), checkFile.getCanonicalPath());
+            }
         } catch (Exception ex) {
             log.error("Error", ex);
         }
