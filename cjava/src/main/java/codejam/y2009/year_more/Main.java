@@ -1,7 +1,5 @@
 package codejam.y2009.year_more;
 
-import java.io.File;
-import java.io.PrintStream;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,8 +55,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String handleCase(InputData input) {
         int N = input.N;
-        int T = input.T;
-        
+                
 
         log.info("Starting case {}", input.testCase);
         List<Tournament> tournaments = input.tournaments;

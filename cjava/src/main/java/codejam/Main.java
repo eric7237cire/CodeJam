@@ -32,8 +32,8 @@ public class Main  {
          //codejam.y2009.year_more.Main m = new codejam.y2009.year_more.Main();
          //codejam.y2009.min_perimeter.Main m = new codejam.y2009.min_perimeter.Main();
        //Runner.go(args[0], m, m, new codejam.y2009.min_perimeter.InputData(-1), 3);
-         codejam.y2009.double_sort_grid.Main m = new codejam.y2009.double_sort_grid.Main();
-       Runner.go(args[0], m, m, new codejam.y2009.double_sort_grid.InputData(-1), 3);
+        // codejam.y2009.double_sort_grid.Main m = new codejam.y2009.double_sort_grid.Main();
+      // Runner.go(args[0], m, m, new codejam.y2009.double_sort_grid.InputData(-1), 3);
          
          //Round 3
          //codejam.y2009.sokoban.Main m = new codejam.y2009.sokoban.Main();
@@ -47,7 +47,11 @@ public class Main  {
          //codejam.y2009.stock_charts.Main m = new codejam.y2009.stock_charts.Main();
          //codejam.y2009.watering_plants.Main m = new codejam.y2009.watering_plants.Main();
          
-        // Runner.goSingleThread(args[0], m, m);
+         //2010 1A
+         //codejam.y2010.rotate.Main m = new codejam.y2010.rotate.Main();
+         //codejam.y2010.smooth.Main m = new codejam.y2010.smooth.Main();
+         codejam.y2010.number_game.Main m = new codejam.y2010.number_game.Main();
+         Runner.goSingleThread(args[0], m, m);
          
 
         

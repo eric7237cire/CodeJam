@@ -8,7 +8,6 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.main.Runner;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
@@ -57,7 +56,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 		return count;
 	}
 	
-	private void printAugmentingPaths(InputData input) {
+	@SuppressWarnings("unused")
+    private void printAugmentingPaths(InputData input) {
 		Map<Integer, Integer> leftToRightMatches = matchesMap.inverse();
 		log.debug("Print all paths\n\n");
 		for(int lhsVertex = 0; lhsVertex < input.n; ++lhsVertex) {

@@ -3,7 +3,6 @@ package codejam.y2009.watering_plants;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -75,7 +74,7 @@ public class Display extends Frame {
 	
 	
 	private void drawCircle(Circle c, Graphics g) {
-		Rectangle r = getBounds();
+		
 		int x = (int) translateCoord(c.getX(),minX,maxX,minDisplayX, maxDisplayX);
 		int y = (int) translateCoord(c.getY(),minY,maxY,minDisplayY, maxDisplayY);
 		int width = (int)  (2*c.getR() / (maxX - minX) * (maxDisplayX - minDisplayX));

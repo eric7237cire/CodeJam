@@ -122,8 +122,6 @@ public class BruteForce {
 
     static double minPerim(PointLong p, List<PointLong> list, double min) {
 
-        int count = 0;
-
         Collections.sort(list, new CompareY());
         
         double[] distP = new double[list.size()];
@@ -141,8 +139,6 @@ public class BruteForce {
             PointLong lowY = list.get(i);
             
             for (int j = i + 1; j < list.size(); ++j) {
-                ++count;
-                
                 PointLong highY = list.get(j);
                 
                 Preconditions.checkState(highY.getY() >= lowY.getY());
