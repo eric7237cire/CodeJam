@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
 
 public class GridChar {
     
@@ -23,6 +25,25 @@ public class GridChar {
     
     private char invalidSquare;
     
+public static GridChar  buildFromScanner(Scanner scanner, int rows, int cols, char invalidSq) {
+        
+        
+        
+        GridChar g = new GridChar(rows, cols, invalidSq);
+        
+        for (int r = 0; r < rows; ++r) {
+            String rowStr = scanner.next();
+            
+            for(int c = 0; c < cols; ++c) {
+                char ch = rowStr.charAt(c);
+                g.grid[ g.getIndex(r,c) ] = ch ;
+            }
+            
+        }
+        
+        return g;
+    }
+
     public static GridChar  buildFromBufferedReader(BufferedReader br, int rows, int cols, char invalidSq) {
         
         
