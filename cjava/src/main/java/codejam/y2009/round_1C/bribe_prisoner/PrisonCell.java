@@ -1,4 +1,4 @@
-package codejam.y2009.bribe_prisoner;
+package codejam.y2009.round_1C.bribe_prisoner;
 
 public class PrisonCell {
 

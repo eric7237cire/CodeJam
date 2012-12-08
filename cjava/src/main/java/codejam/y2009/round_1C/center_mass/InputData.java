@@ -1,4 +1,4 @@
-package codejam.y2009.center_mass;
+package codejam.y2009.round_1C.center_mass;
 
 import codejam.utils.main.AbstractInputData;
 

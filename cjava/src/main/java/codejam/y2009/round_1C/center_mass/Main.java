@@ -1,4 +1,4 @@
-package codejam.y2009.center_mass;
+package codejam.y2009.round_1C.center_mass;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -44,6 +44,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
         }
         InputData input = new InputData(testCase);
+        input.numFireflies = numFireflies;
         input.coords = coords;
         input.velocity = velocity;
         input.coordsAvg = coordsAvg;
@@ -59,7 +60,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         int numFireflies = input.numFireflies;
 
         double[] coordsAvg = input.coordsAvg;
-        int[] coords = new int[3];
+        //int[] coords = new int[3];
 
         double[] velocityAvg = input.velocityAvg;
 //        int[] velocity = new int[3];

@@ -31,7 +31,9 @@ public class Main  {
          //Round 1B (2)
          
          //Round 1C (3)        
- 
+         //codejam.y2009.round_1C.all_your_base.Main m = new codejam.y2009.round_1C.all_your_base.Main();
+         //codejam.y2009.round_1C.center_mass.Main m = new codejam.y2009.round_1C.center_mass.Main();
+         codejam.y2009.round_1C.bribe_prisoner.Main m = new codejam.y2009.round_1C.bribe_prisoner.Main();
          
          //Round 2
          //codejam.y2009.crazy_rows.Main m = new codejam.y2009.crazy_rows.Main();
@@ -79,7 +81,7 @@ public class Main  {
          //codejam.y2010.rope_intranet.Main m = new codejam.y2010.rope_intranet.Main();
 
          //2011 1A
-         codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
+         //codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
 
          Runner.goSingleThread(args[0], m, m);
          

@@ -1,4 +1,4 @@
-package codejam.y2009.all_your_base;
+package codejam.y2009.round_1C.all_your_base;
 
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -15,11 +15,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
 	final static Logger log = LoggerFactory.getLogger(Main.class);
 	
-	
-
-    /* (non-Javadoc)
-     * @see codejam.utils.main.Runner.TestCaseInputScanner#readInput(java.util.Scanner, int)
-     */
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
        InputData input = new InputData(testCase);
@@ -27,15 +22,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
        return input;
     }
 
-    /* (non-Javadoc)
-     * @see codejam.utils.multithread.Consumer.TestCaseHandler#handleCase(java.lang.Object)
-     */
     @Override
     public String handleCase(InputData input) {
         String codedNum = input.codedNum;
 
         log.info("Case {} {}", input.testCase, codedNum);
-        
+    
+        /*to minimize the codednum, we read the symbols left to right
+         * assigning 1, 0, 2, 3, 4, etc
+         *  
+         */
         Map<Character, Character> trans = new HashMap<>();
 
         for (int i = 0; i < codedNum.length(); ++i) {
@@ -52,10 +48,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
         }
 
+        //Build up the new number
         StringBuilder transNum = new StringBuilder(codedNum);
         for(int i = 0; i < transNum.length(); ++i) {
             transNum.setCharAt(i, trans.get(transNum.charAt(i)));
         }
+        //Evaluate it in the minimal base possible
         String numVal = new BigInteger(transNum.toString(), Math.max(2, trans.size())).toString(10);
         
         return("Case #" + input.testCase + ": " + numVal);
