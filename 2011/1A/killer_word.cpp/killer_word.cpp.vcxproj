@@ -66,7 +66,11 @@
     <ClCompile Include="KillerWord.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\B-large-practice.in" />
     <None Include="..\B-small-practice.in" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\bsmall.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

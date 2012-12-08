@@ -24,7 +24,7 @@ public class Main  {
         if (args.length < 1) {
             //args = new String[] { "sample.txt" };
            // args = new String[] { "B-small-practice.in" };
-            args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2009\\4\\C-small-practice.in" };
+            args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1A\\B-small-practice.in" };
          }
          log.info("Input file {}", args[0]);
 
@@ -57,7 +57,7 @@ public class Main  {
          //2010 qual
          //TODO .correct
          //codejam.y2010.fair_warning.Main m = new codejam.y2010.fair_warning.Main();
-         codejam.y2010.theme_park.Main m = new codejam.y2010.theme_park.Main();
+         //codejam.y2010.theme_park.Main m = new codejam.y2010.theme_park.Main();
          
          //2010 1A
          //TODO Need to retest / correct files
@@ -77,7 +77,9 @@ public class Main  {
          //codejam.y2010.load_testing.Main m = new codejam.y2010.load_testing.Main();         
          //TODO need correct
          //codejam.y2010.rope_intranet.Main m = new codejam.y2010.rope_intranet.Main();
-         
+
+         //2011 1A
+         codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
 
          Runner.goSingleThread(args[0], m, m);
          

@@ -1,18 +1,20 @@
 package codejam.utils.datastructures;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.base.Objects;
 
-public class Tree<T> {
+public class TreeWithIds<T extends Identifiable> {
     private Node<T> root;
 
     public Node<T> getRoot() {
         return root;
     }
 
-    public Tree(T rootData) {
+    public TreeWithIds(T rootData) {
         root = new Node<T>(null);
         root.data = rootData;
 
@@ -23,22 +25,31 @@ public class Tree<T> {
         return "Tree [root=" + root + "]";
     }
 
-    public static class Node<T> {
+    public static class Node<T extends Identifiable> {
         private T data;
         private Node<T> parent;
-        private List<Node<T>> children;
+        private Map<Integer, Node<T>> children;
 
         public Node<T> getChild(T withData) {
-            for (Node<T> child : children) {
-                if (Objects.equal(child.data, withData)) {
-                    return child;
-                }
+            if (children.containsKey(withData.getId())) {
+                
+                return children.get(withData.getId());
+                
+            }
+            return null;
+        }
+        
+        public Node<T> getChildWithId(int id) {
+            if (children.containsKey(id)) {
+                
+                return children.get(id);
+                
             }
             return null;
         }
 
         public Node(Node<T> parent) {
-            children = new ArrayList<>();
+            children = new HashMap<>();
             this.parent = parent;
         }
 
@@ -63,13 +74,24 @@ public class Tree<T> {
         public void setParent(Node<T> parent) {
             this.parent = parent;
         }
-
-        public List<Node<T>> getChildren() {
-            return children;
+        public Node<T> addChild(T childData) {
+            Node<T> newNode = new Node<T>(childData, this);
+            children.put(childData.getId(), newNode);
+            return newNode;
+        }
+        public Collection<Node<T>> getChildren() {
+            return children.values();
         }
 
         public void setChildren(List<Node<T>> children) {
-            this.children = children;
+            this.children.clear();
+            
+            if (children == null)
+                return;
+            
+            for(Node<T> child : children) {
+                this.children.put(child.getData().getId(), child);
+            }
         }
 
         @Override

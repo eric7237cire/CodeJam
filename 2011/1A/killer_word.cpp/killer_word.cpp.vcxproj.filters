@@ -23,5 +23,13 @@
     <None Include="..\B-small-practice.in">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\B-large-practice.in">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\bsmall.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

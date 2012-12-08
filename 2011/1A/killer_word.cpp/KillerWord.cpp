@@ -54,6 +54,9 @@ int main(int argc, char** args)
 				//cout << "word " << words[n] << endl;
 				string word = words[n];
 				set<string> possibleWords = sizeToWords[words[n].size()-1];
+
+				
+				
 				vector<bool> blanks(word.size());
 				blanks.assign(blanks.size(), true);
 				int blanksLeft = word.size();
@@ -137,8 +140,16 @@ int main(int argc, char** args)
 				}
 				assert(blanksLeft == 0);
 			}
+			
+			cout << "List " << list << endl;
+			cout << "Possible " << endl << endl;
+			set<string> possibleWords = sizeToWords[maxWord.size()-1];
+
+			for(set<string>::const_iterator it = possibleWords.begin(); it != possibleWords.end(); ++it)
+					cout << *it << ", " << endl;
 
 			cout << maxWord << " ";
+			cout << "[" << maxPointsLost << "]" << endl;
 		}
 
 		cout << endl;
