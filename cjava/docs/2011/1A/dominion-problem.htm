@@ -1,0 +1,959 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0065)http://code.google.com/codejam/contest/1145485/dashboard#s=p2&a=2 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="refresh" content="172795">
+  
+  <title>
+    Dashboard - Round 1A 2011 - Google Code Jam
+  </title>
+  <link rel="stylesheet" type="text/css" href="./dominion-problem_files/base.css">
+  <link rel="stylesheet" type="text/css" href="./dominion-problem_files/dashboard.css">
+  
+  <script type="text/javascript" async="" src="./dominion-problem_files/ga.js"></script><script type="text/javascript" src="./dominion-problem_files/Dashboard_en.js"></script>
+  
+  <script type="text/javascript"><!--
+    /**
+     * Initializes GCJ.problems and GCJ.io from Django parameters.
+     * Also initializes the two user specific variables GCJ.isQualified and
+     * GCJ.lastClarSeenTime.
+     * This is the first function called once from GCJ.main().
+     */
+    GCJ.initContestVariables = function () {
+      // Convert Django's 'contest' to 'GCJ.contest'.
+      GCJ.contest.id = "1145485";
+      GCJ.contest.name = "Round 1A 2011";
+      GCJ.contest.version = 0;
+      
+        GCJ.contest.version = 3;
+      
+      GCJ.contest.start_int = 1305939600;
+      GCJ.contest.running = false;
+      GCJ.base_url = '/codejam/contest';
+      GCJ.scoreboardLink = ('<a target="new"' +
+                            'href="scoreboard?c=1145485"' +
+                            '>Contest scoreboard</a>');
+    }
+
+    /**
+     * Returns the current splash page.
+     */
+    GCJ.getSplashPage = function () {
+      return "/codejam";
+    };
+  //--></script>
+</head>
+
+<body onload="GCJ.main()">
+
+<div id="logo-div">
+  <a href="http://code.google.com/codejam/">
+    <img src="./dominion-problem_files/logo_image2.gif" id="logo" alt="Google Code Jam">
+  </a>
+</div>
+
+<div>
+
+<div id="dsb-page-body">
+
+<div id="left-panel">
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <!-- Problem Selection Panel -->
+  <div id="dsb-contest-title">Round 1A 2011</div>
+  <hr class="dsb-hr">
+  <div id="dsb-problem-selection-area">
+    <div id="dsb-problem-selection-list" class="after-start-only" style="display: block;">
+    <div><div id="dsb-problem-tab0" class="dsb-problem-tab-close" tabindex="0" role="button">  <div id="dsb-problem-title0" class="dynamic-link">A. FreeCell Statistics  </div></div></div><div><div id="dsb-problem-tab1" class="dsb-problem-tab-close" tabindex="0" role="button">  <div id="dsb-problem-title1" class="dynamic-link">B. The Killer Word  </div></div></div><div><div id="dsb-problem-tab2" class="dsb-problem-tab-open" tabindex="0" role="button">  <div id="dsb-problem-title2" class="dynamic-link">C. Pseudominion  </div></div></div></div>
+    <div id="dsb-problem-selection-list-pre-contest" class="dsb-pre-contest-text before-start-only" style="display: none;">
+      
+      The list of problems will appear here after the contest loads.
+      
+    </div>
+  </div>
+  <hr class="dsb-hr">
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div id="dsb-analysis-button" class="dsb-anal-tab-close" tabindex="0" role="button" style="display: block;">
+    <div class="dynamic-link">
+       <div id="dsb-analysis-tab">
+         Contest Analysis
+       </div>
+    </div>
+  </div>
+  <div id="dsb-ask-question-area">
+    <div id="dsb-ask-question-button" class="dsb-clar-tab-close" tabindex="0" role="button" style="display: block;">
+      <div class="dynamic-link">
+        <div id="dsb-ask-question-tab" class="">Questions asked</div>
+      </div>
+    </div>
+    <div class="dsb-pre-contest-text before-start-only" style="display: none;">
+      
+      You'll be able to ask questions about the problems, and view your
+      submissions, here.
+      
+    </div>
+  </div>
+  <div id="dsb-submissions-button" class="dsb-submissions-tab-close" tabindex="0" role="button" style="display: none;">
+    <div class="dynamic-link">
+      <div id="dsb-submissions-tab">
+        View my submissions
+      </div>
+    </div>
+  </div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <div class="dsb-mini-tab-wrapper">
+  <div id="dsb-status-div-container">
+    <div id="dsb-status-header-div" onmouseover="this.style.cursor=&#39;pointer&#39;" onclick="GCJ.toggleStatusPanelVisibility();" style="cursor: pointer;">
+      <img id="dsb-status-panel-button" src="./dominion-problem_files/minus.gif">
+      &nbsp; Submissions
+    </div>
+    <div id="dsb-status-tab" class="after-start-only" style="display: block;">
+      <div id="dsb-status-tab-loading-text" class="dsb-pre-contest-text" style="display: none;">
+        Loading...
+      </div>
+    <div id="dsb-status-tab-problems" style="display: block;"><div><div id="dsb-problem-status-wrapper0" class="problem-status-wrapper">  <div class="dsb-status-problem-title">FreeCell Statistics</div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName0_0" class="inputName">6pt</td>      <td class="status">        <div id="selfStat0_0" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat0_0" class="globalStat" style="display: block;"><b>3079/4262 users</b> correct (72%)</div>      </td>    </tr>  </tbody></table></div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName0_1" class="inputName">14pt</td>      <td class="status">        <div id="selfStat0_1" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat0_1" class="globalStat" style="display: block;"><b>2181/2997 users</b> correct (73%)</div>      </td>    </tr>  </tbody></table></div></div></div><div><div id="dsb-problem-status-wrapper1" class="problem-status-wrapper">  <div class="dsb-status-problem-title">The Killer Word</div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName1_0" class="inputName">10pt</td>      <td class="status">        <div id="selfStat1_0" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat1_0" class="globalStat" style="display: block;"><b>684/1855 users</b> correct (37%)</div>      </td>    </tr>  </tbody></table></div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName1_1" class="inputName">20pt</td>      <td class="status">        <div id="selfStat1_1" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat1_1" class="globalStat" style="display: block;"><b>181/542 users</b> correct (33%)</div>      </td>    </tr>  </tbody></table></div></div></div><div><div id="dsb-problem-status-wrapper2" class="problem-status-wrapper">  <div class="dsb-status-problem-title">Pseudominion</div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName2_0" class="inputName">15pt</td>      <td class="status">        <div id="selfStat2_0" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat2_0" class="globalStat" style="display: block;"><b>105/565 users</b> correct (19%)</div>      </td>    </tr>  </tbody></table></div><div><table class="problemStatus">  <tbody>    <tr class="inputSetStatus">      <td id="inputName2_1" class="inputName">35pt</td>      <td class="status">        <div id="selfStat2_1" class="dsb-mini-status-non-highlight">Not attempted</div>        <div id="globalStat2_1" class="globalStat" style="display: block;"><b>3/65 users</b> correct (5%)</div>      </td>    </tr>  </tbody></table></div></div></div></div></div>
+    <div id="dsb-status-tab-pre-contest" class="dsb-pre-contest-text before-start-only" style="display: none;">
+      
+      Statistics about the problems will appear here.  They'll include your
+      status on each problem, and other contestants' attempts.
+      
+    </div>
+  </div>
+  </div>
+  <div class="v-divider"></div>
+  <div class="v-divider"></div>
+  <!-- Mini Scoreboard -->
+  <div class="dsb-mini-tab-wrapper">
+    <div id="dsb-scoreboard-div">
+      <div id="dsb-scoreboard-header-div" onmouseover="this.style.cursor=&#39;pointer&#39;" onclick="GCJ.toggleVisibility(
+              &#39;dsb-scoreboard-table&#39;,
+              &#39;dsb-scoreboard-panel-button&#39;,
+              &#39;/codejam/contest/static/minus.gif&#39;,
+              &#39;/codejam/contest/static/plus.gif&#39;)" style="cursor: pointer;">
+          <img id="dsb-scoreboard-panel-button" src="./dominion-problem_files/minus.gif">
+          &nbsp; Top Scores
+      </div>
+      <div id="dsb-scoreboard-table-wrap" class="after-start-only" style="display: block;"><table id="dsb-scoreboard-table"><tbody><tr class="dsb-scoreboard-row-even" id="sbRow_0" style="display: block;"><td class="dsb-name-td" id="sbName_0">krijgertje</td><td class="dsb-score-td" id="sbScore_0">100</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_1" style="display: block;"><td class="dsb-name-td" id="sbName_1">Myth</td><td class="dsb-score-td" id="sbScore_1">100</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_2" style="display: block;"><td class="dsb-name-td" id="sbName_2">Progbeat</td><td class="dsb-score-td" id="sbScore_2">100</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_3" style="display: block;"><td class="dsb-name-td" id="sbName_3">SkidanovAlexander</td><td class="dsb-score-td" id="sbScore_3">65</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_4" style="display: block;"><td class="dsb-name-td" id="sbName_4">Eryx</td><td class="dsb-score-td" id="sbScore_4">65</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_5" style="display: block;"><td class="dsb-name-td" id="sbName_5">Khuc.Anh.Tuan</td><td class="dsb-score-td" id="sbScore_5">65</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_6" style="display: block;"><td class="dsb-name-td" id="sbName_6">Michael.Levin</td><td class="dsb-score-td" id="sbScore_6">65</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_7" style="display: block;"><td class="dsb-name-td" id="sbName_7">iwi</td><td class="dsb-score-td" id="sbScore_7">65</td></tr><tr class="dsb-scoreboard-row-even" id="sbRow_8" style="display: block;"><td class="dsb-name-td" id="sbName_8">Ahyangyi</td><td class="dsb-score-td" id="sbScore_8">65</td></tr><tr class="dsb-scoreboard-row-odd" id="sbRow_9" style="display: block;"><td class="dsb-name-td" id="sbName_9">cos</td><td class="dsb-score-td" id="sbScore_9">65</td></tr></tbody></table></div>
+      <div id="dsb-scoreboard-tab-pre-contest" class="dsb-pre-contest-text before-start-only" style="display: none;">
+        
+        The scores of the top 10 contestants will appear here, with a link to
+        the contest's scoreboard.
+        
+      </div>
+      <div class="dsb-mini-tab-link">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="right-panel">
+  <div id="dsb-status-msg-wrapper" class="dsb-status-msg-wrapper" role="alert" style="visibility: hidden;">
+    <div id="dsb-status-msg" class="dsb-status-msg">
+      <span id="dsb-status-msg-text">Loading problem information...</span>
+      <span id="dsb-view-it-link" style="display: none;">View it.</span>
+    </div>
+  </div>
+
+  <div id="dsb-contest-title-bar">
+    <div id="dsb-rank-etc">
+      <span id="dsb-time-remaining">Practice Mode</span>
+      <span class="after-start-only-inline" style="display: inline;">
+        <span id="dsb-current-rank-div" style="display: none;">
+          Rank: <span id="dsb-current-rank-span">--</span>
+        </span>
+        <span id="dsb-current-score-div" style="display: none;">
+          Score: <span id="dsb-current-score-span">--</span>
+        </span>
+      </span>
+    </div>
+    <div id="dsb-title-links"><a target="new" href="http://code.google.com/codejam/contest/1145485/scoreboard?c=1145485">Contest scoreboard</a> | <a href="https://www.google.com/accounts/ServiceLogin?service=ah&passive=true&continue=https://appengine.google.com/_ah/conflogin%3Fcontinue%3Dhttp://code.google.com/codejam/contest/dashboard%253Fc%253D1145485&ltmpl=">Sign in</a></div>
+  </div>
+  <!-- Problem Statement -->
+  <div id="main-panel-border" class="dsb-blue-border">
+  <div id="dsb-border-inner">
+   <!-- Problem Title -->
+    <h3 id="dsb-problem-title-area">
+      <span id="dsb-problem-title-div-pre-contest" class="problem-title before-start-only" style="display: none;">
+        <span style="color:#666">Problem.</span>
+        The problem's name goes here.
+      </span>
+      <span id="dsb-problem-title-div" class="problem-title after-start-only" style="display: block;"><span style="color:#666">Problem C.</span> Pseudominion</span>
+    </h3>
+
+    <div class="dsb-content-pages before-start-only" style="display: none;">
+      
+      We're now waiting for the contest to start.  Once the contest starts,
+      the problems will automatically load, and Problem A will display here.
+      You don't have to solve that problem first; you will be able to select
+      another problem from the list to the left.  Once you've solved one
+      problem, don't forget to work on the others!
+      
+    </div>
+
+    <div id="dsb-problem-pages"><div id="dsb-problem-page0" class="dsb-content-pages"><!-- Problem Input File Selection --><div class="dsb-input-panel-text" id="dsb-input-panel-text0"><span style="color: #666666;">This contest is open for practice.  You can try every problem as many times as you like, though we won't keep track of which problems you solve.  Read the <a href="http://code.google.com/codejam/quickstart.html" target="_blank">Quick-Start Guide</a> to get started.</span></div><table><tbody id="dsb-input-form-table0"><tr><td class="dsb-input-table-description">Small input<br>6 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap0-0" class=""><div id="dsb-input-wrapper0-0" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button0-0" style="display: inline;">Solve A-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain0-0" style="display: none;"><img class="dsb-input-link-img" src="./dominion-problem_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text0-0">Download A-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption0-0" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption0-0" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link0-0">resubmit</span> for <span id="dsb-resubmit-timer0-0"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div0-0" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_0"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> A-small-practice.in.</div><form id="submit-formio_timer_0" action="http://code.google.com/codejam/contest/1145485/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="MzExNTdjMGRhZTgwMzYwNTc5ODQ4ZDdiYWZmZjExY2R8fDEzNTQ5NjY3NjU2MzgxMzU="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_0" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_0"><div id="input-file-divio_timer_0-0"><span id="source-fileio_timer_0-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_0-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_0" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_0" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_0" type="button" value="Hide"></div><div id="source-file-namesio_timer_0"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="1040487"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_0" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>14 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap0-1" class=""><div id="dsb-input-wrapper0-1" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button0-1" style="display: inline;">Solve A-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain0-1" style="display: none;"><img class="dsb-input-link-img" src="./dominion-problem_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text0-1">Download A-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption0-1" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption0-1" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link0-1">resubmit</span> for <span id="dsb-resubmit-timer0-1"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div0-1" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_1"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_1" action="http://code.google.com/codejam/contest/1145485/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="MzExNTdjMGRhZTgwMzYwNTc5ODQ4ZDdiYWZmZjExY2R8fDEzNTQ5NjY3NjU2MzgxMzU="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_1" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_1"><div id="input-file-divio_timer_1-0"><span id="source-fileio_timer_1-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_1-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_1" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_1" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_1" type="button" value="Hide"></div><div id="source-file-namesio_timer_1"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="1040487"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_1" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr></tbody></table><!-- Problem Statement --><div id="dsb-problem-content-div0" class="dsb-problem-content-div" style="width: 40em;"><h3>Problem</h3>
+<p>
+I played <b>D</b> (<b>D</b> &gt; 0) games of FreeCell today. Each game of FreeCell ends in one of two ways -- I either win, or I lose. I've been playing for many years, and have so far played <b>G</b> games in total (obviously, <nobr><b>G</b> ≥ <b>D</b></nobr>).
+</p>
+
+<p>
+At the end of the day, I look at the game statistics to see how well I have played. It turns out that I have won exactly <b>P<sub>D</sub></b> percent of the <b>D</b> games today, and exactly <b>P<sub>G</sub></b> percent of <b>G</b> total games I had ever played. Miraculously, there is no rounding necessary -- both percentages are exact! Unfortunately, I don't remember the exact number of games that I have played today (<b>D</b>), or the exact number of games that I have played in total (<b>G</b>). I do know that I could not have played more than <b>N</b> games today (<nobr><b>D</b> ≤ <b>N</b></nobr>).
+</p>
+
+<p>
+Are the percentages displayed possible, or is the game statistics calculator broken?
+</p>
+
+<h3>Input</h3>
+<p>
+The first line of the input gives the number of test cases, <b>T</b>.  <b>T</b> lines follow.  Each line contains 3 integers -- <b>N</b>, <b>P<sub>D</sub></b> and <b>P<sub>G</sub></b>.
+</p>
+
+<h3>Output</h3>
+<p>
+For each test case, output one line containing "Case #x: y", where x is the case number (starting from 1) and y is either "Possible" or "Broken".
+</p>
+
+<h3>Limits</h3>
+<p>
+0 ≤ <b>P<sub>D</sub></b> ≤ 100;<br>
+0 ≤ <b>P<sub>G</sub></b> ≤ 100.
+</p>
+
+<h4>Small dataset</h4>
+<p>
+1 ≤ <b>T</b> ≤ 100;<br>
+1 ≤ <b>N</b> ≤ 10.
+</p>
+
+<h4>Large dataset</h4>
+<p>
+1 ≤ <b>T</b> ≤ 2000;<br>
+1 ≤ <b>N</b> ≤ 10<sup>15</sup>.
+</p>
+
+<h3>Sample</h3>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="io-table-header">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="io-table-header">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+3<br>
+1 100 50<br>
+10 10 100<br>
+9 80 56<br>
+</code>
+</td>
+<td>
+<code>
+Case #1: Possible<br>
+Case #2: Broken<br>
+Case #3: Possible<br>
+<br>
+</code>
+</td></tr></tbody></table>
+</div>
+
+<p>In Case #3, I could have played 5 games today <nobr>(<b>D</b> = 5)</nobr> and 25 games in total <nobr>(<b>G</b> = 25)</nobr>, and won 4 games today  <nobr>(80% of 5)</nobr> and 14 games in total <nobr>(56% of 25)</nobr>.
+</p></div></div><div id="dsb-problem-page1" class="dsb-content-pages" style="display: none;"><!-- Problem Input File Selection --><div class="dsb-input-panel-text" id="dsb-input-panel-text1"><span style="color: #666666;">This contest is open for practice.  You can try every problem as many times as you like, though we won't keep track of which problems you solve.  Read the <a href="http://code.google.com/codejam/quickstart.html" target="_blank">Quick-Start Guide</a> to get started.</span></div><table><tbody id="dsb-input-form-table1"><tr><td class="dsb-input-table-description">Small input<br>10 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap1-0" class=""><div id="dsb-input-wrapper1-0" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button1-0" style="display: inline;">Solve B-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain1-0" style="display: none;"><img class="dsb-input-link-img" src="./dominion-problem_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text1-0">Download B-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption1-0" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption1-0" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link1-0">resubmit</span> for <span id="dsb-resubmit-timer1-0"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div1-0" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_2"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> B-small-practice.in.</div><form id="submit-formio_timer_2" action="http://code.google.com/codejam/contest/1145485/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="MzExNTdjMGRhZTgwMzYwNTc5ODQ4ZDdiYWZmZjExY2R8fDEzNTQ5NjY3NjU2MzgxMzU="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_2" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_2"><div id="input-file-divio_timer_2-0"><span id="source-fileio_timer_2-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_2-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_2" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_2" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_2" type="button" value="Hide"></div><div id="source-file-namesio_timer_2"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="1062486"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_2" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>20 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap1-1" class=""><div id="dsb-input-wrapper1-1" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button1-1" style="display: inline;">Solve B-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain1-1" style="display: none;"><img class="dsb-input-link-img" src="./dominion-problem_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text1-1">Download B-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption1-1" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption1-1" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link1-1">resubmit</span> for <span id="dsb-resubmit-timer1-1"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div1-1" style="display: none;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_3"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_3" action="http://code.google.com/codejam/contest/1145485/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="MzExNTdjMGRhZTgwMzYwNTc5ODQ4ZDdiYWZmZjExY2R8fDEzNTQ5NjY3NjU2MzgxMzU="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_3" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_3"><div id="input-file-divio_timer_3-0"><span id="source-fileio_timer_3-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_3-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_3" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_3" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_3" type="button" value="Hide"></div><div id="source-file-namesio_timer_3"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="1062486"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_3" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr></tbody></table><!-- Problem Statement --><div id="dsb-problem-content-div1" class="dsb-problem-content-div" style="width: 40em;"><h3>Problem</h3>
+
+<p>
+You are playing Hangman with your friend Sean. And while you have
+heard that Sean is very good at taking candy from a baby, he is not as
+good at this game. Can you take advantage of Sean's imperfect
+strategy, and make him lose as badly as possible?
+</p>
+
+<pre> +--+
+ |  O
+ | /|\       Mystery word: _ a _ a _ a _
+ | / \
+ |
++-+---+
+</pre>
+
+<p>
+Hangman is played as follows:
+</p><ul>
+<li> There is a dictionary <b>D</b> of all valid words, which both you
+and Sean know. A word consists only of the characters <code>a</code> -
+<code>z</code>. In particular, there are no spaces.</li>
+<li> You begin by choosing any word from <b>D</b>, and writing it down
+on a blackboard with each letter replaced by a blank:
+<code>_</code>.</li>
+<li> On his turn, Sean can choose any letter and ask you if it is in
+the word. If it is, you reveal <i>all</i> locations of that letter.
+Otherwise, Sean loses a point.</li>
+<li> Once all letters in the word have been revealed, the round ends.</li>
+<li> The round never ends early, no matter how many points Sean loses.</li>
+</ul>
+<p></p>
+
+<p>
+Sean uses a very simple strategy. He makes a list <b>L</b> of the 26
+letters in some order, and goes through the list one letter at a time.
+If there is at least one word in <b>D</b> that (a) has the letter he
+is thinking of, and (b) is consistent with what you have written down
+so far <i>and the result of all of Sean's previous guesses</i>, then Sean guesses that letter. Otherwise, he skips it. No
+matter what, Sean then moves on to the next letter in his list.
+</p>
+
+<p>
+Given Sean's list, what word should you choose to make Sean lose as
+many as points as possible? If several choices are equally good, you
+should choose the one that appears first in <b>D</b>.
+</p>
+
+<h3>Example</h3>
+
+<p>
+Suppose Sean decides to guess the letters in alphabetical order (i.e.,
+<b>L</b> = "abcdefghijklmnopqrstuvwxyz"), and <b>D</b> contains the
+words <code>banana</code>, <code>caravan</code>, and
+<code>pajamas</code>. If you choose <code>pajamas</code>, the game
+would play out as follows:
+</p><ul>
+<li> You begin by writing 7 blanks <code>_ _ _ _ _ _ _</code> on the
+blackboard. Based on the number of blanks, Sean knows immediately that
+the word is either <code>caravan</code> or <code>pajamas</code>.</li>
+<li> Sean begins by guessing <code>a</code> since it is first in
+<b>L</b>, and you reveal all locations of the letter <code>a</code> on
+the blackboard: <code>_ a _ a _ a _</code>.</li>
+<li> Sean skips <code>b</code> even though it is used in
+<code>banana</code>. Sean already knows that is not your word. </li>
+<li> He then guesses <code>c</code> because it appears in
+<code>caravan</code>. It does not appear in the word you actually
+chose though, so Sean loses a point and nothing more is revealed.
+</li>
+<li> By process of elimination, Sean now knows your word has to be
+<code>pajamas</code>, so he proceeds to guess <code>j</code>,
+<code>m</code>, <code>p</code>, and <code>s</code> in order, without
+losing any more points.
+</li></ul>
+So Sean loses one point if you choose <code>pajamas</code>. He would
+have gotten either of the other words without losing any points.
+<p></p>
+
+<h3>Input</h3>
+<p>
+The first line of the input gives the number of test cases, <b>T</b>.
+<b>T</b> test cases follow. Each test case begins with a line
+containing integers <b>N</b> and <b>M</b>, representing the number of
+words in the dictionary and the number of lists to consider.
+</p>
+
+<p>
+The next <b>N</b> lines contain the words in the dictionary, one per
+line: <b>D</b><sub>1</sub>, <b>D</b><sub>2</sub>, ...,
+<b>D<sub>N</sub></b>. Each word is an arbitrary sequence of characters
+<code>a</code> - <code>z</code>.</p>
+
+<p>
+The final <b>M</b> lines contain all of the lists Sean will use, one per line: <b>L</b><sub>1</sub>, <b>L</b><sub>2</sub>, ..., <b>L<sub>M</sub></b>. Each list is exactly 26 letters long, containing each letter exactly once. Sean will use these lists to guess letters as described above.
+</p>
+
+<h3>Output</h3>
+<p>
+For each test case, output one line containing "Case #x:
+<b>w</b><sub>1</sub> <b>w</b><sub>2</sub> ...
+<b>w</b><sub><b>M</b></sub>", where x is the case number (starting
+from 1) and <b>w</b><sub>i</sub> is the word you should choose if Sean
+guesses the letters in order <b>L</b><sub>i</sub>. If multiple words
+cause Sean to lose the same number of points, you should choose the
+option that appears first in the dictionary.
+</p>
+
+<h3>Limits</h3>
+<p>
+1 ≤ <b>T</b> ≤ 10.<br>
+Each word in <b>D</b> will have between 1 and 10 characters inclusive.<br>
+No two words in <b>D</b> will be the same within a single test case.<br>
+</p>
+
+<h4>Small dataset</h4>
+<p>
+1 ≤ <b>N</b> ≤ 100.<br>
+1 ≤ <b>M</b> ≤ 10.
+</p>
+
+<h4>Large dataset</h4>
+<p>
+1 ≤ <b>N</b> ≤ 10000.<br>
+1 ≤ <b>M</b> ≤ 100.
+</p>
+
+<h3>Sample</h3>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="io-table-header">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="io-table-header">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+2<br>
+3 2<br>
+banana<br>
+caravan<br>
+pajamas<br>
+abcdefghijklmnopqrstuvwxyz<br>
+etaoisnhrdlcumwfgypbvkjxqz<br>
+4 1<br>
+potato<br>
+tomato<br>
+garlic<br>
+pepper<br>
+zyxwvutsrqponmlkjihgfedcba<br>
+</code>
+</td>
+<td>
+<code>
+Case #1: pajamas caravan<br>
+Case #2: garlic<br>
+</code>
+</td></tr></tbody></table>
+</div></div></div><div id="dsb-problem-page2" class="dsb-content-pages" style="display: block;"><!-- Problem Input File Selection --><div class="dsb-input-panel-text" id="dsb-input-panel-text2"><span style="color: #666666;">This contest is open for practice.  You can try every problem as many times as you like, though we won't keep track of which problems you solve.  Read the <a href="http://code.google.com/codejam/quickstart.html" target="_blank">Quick-Start Guide</a> to get started.</span></div><table><tbody id="dsb-input-form-table2"><tr><td class="dsb-input-table-description">Small input<br>15 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap2-0" class="dsb-action-box-open"><div id="dsb-input-wrapper2-0" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button2-0" style="display: none;">Solve C-small</button><span class="dsb-input-link-span" id="dsb-input-link-plain2-0" style="display: inline;"><img class="dsb-input-link-img" src="./dominion-problem_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text2-0">Download C-small.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption2-0" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption2-0" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link2-0">resubmit</span> for <span id="dsb-resubmit-timer2-0"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div2-0" style="display: block;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_4"></span>&nbsp;&nbsp;</div><div style="display:none"><b>Input:</b> C-small-practice.in.</div><form id="submit-formio_timer_4" action="http://code.google.com/codejam/contest/1145485/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="MzExNTdjMGRhZTgwMzYwNTc5ODQ4ZDdiYWZmZjExY2R8fDEzNTQ5NjY3NjU2MzgxMzU="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_4" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_4"><div id="input-file-divio_timer_4-0"><span id="source-fileio_timer_4-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_4-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_4" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_4" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_4" type="button" value="Hide"></div><div id="source-file-namesio_timer_4"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="1053485"><input type="hidden" name="input_id" value="0"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_4" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr><tr><td class="dsb-input-table-description">Large input<br>35 points</td><td class="dsb-input-table-linktd"><div id="dsb-action-box-wrap2-1" class="dsb-action-box-open"><div id="dsb-input-wrapper2-1" class="dsb-input-wrapper" style="display: inline;"><button class="dsb-input-start-button" id="dsb-input-start-button2-1" style="display: none;">Solve C-large</button><span class="dsb-input-link-span" id="dsb-input-link-plain2-1" style="display: inline;"><img class="dsb-input-link-img" src="./dominion-problem_files/file.gif"><span class="dsb-input-link-text" id="dsb-input-link-plain-text2-1">Download C-large.in</span></span></div><span class="dsb-input-table-caption" id="dsb-input-table-caption2-1" style="display: none;"></span><span class="dsb-input-table-caption" id="dsb-resubmit-caption2-1" style="display: none;">Your submission was received. You can still <span class="dsb-input-link-text" id="dsb-resubmit-link2-1">resubmit</span> for <span id="dsb-resubmit-timer2-1"></span>.<br>Only your last submission counts.</span><div><div class="dsb-submit-form-div" id="dsb-submit-form-div2-1" style="display: block;"><div style="display:none"><b>Time Remaining:</b> <span id="io_timer_5"></span>&nbsp;&nbsp;</div><div style="display:none">You may resubmit this multiple times within the remaining time-frame. Only your last submission will count.</div><form id="submit-formio_timer_5" action="http://code.google.com/codejam/contest/1145485/dashboard/do" enctype="multipart/form-data" method="post"><input type="hidden" name="csrfmiddlewaretoken" value="MzExNTdjMGRhZTgwMzYwNTc5ODQ4ZDdiYWZmZjExY2R8fDEzNTQ5NjY3NjU2MzgxMzU="><div class="dsb-submit-form-separator">your output file:<input id="output-fileio_timer_5" type="file" name="answer" class="submitFormFile"></div><div style="display: none"><table class="dsb-source-code-table"><tbody><tr><td style="padding:0.4em 0.2em 0 0">source code:&nbsp;&nbsp;</td><td><div id="source-filesio_timer_5"><div id="input-file-divio_timer_5-0"><span id="source-fileio_timer_5-0"><input type="file" name="source-file0" class="submitFormFile"></span><span id="remove-source-fileio_timer_5-0" class="dsb-submit-form-links" style="visibility: hidden;">remove</span></div></div><span id="add-source-fileio_timer_5" class="dsb-submit-form-links">Add another file</span></td></tr></tbody></table></div><div class="dsb-submit-form-separator" style="color:gray">source file(s): &nbsp;&nbsp;&nbsp;not needed for the practice contest</div><div class="dsb-submit-form-separator" style="text-align:center"><input id="submit-buttonio_timer_5" type="button" value="Submit file">&nbsp;&nbsp;<input id="dsb-hide-submissionio_timer_5" type="button" value="Hide"></div><div id="source-file-namesio_timer_5"></div><input type="hidden" name="cmd" value="SubmitAnswer"><input type="hidden" name="problem" value="1053485"><input type="hidden" name="input_id" value="1"><input type="hidden" name="num_source_files" id="num-source-filesio_timer_5" value="1"><input type="hidden" name="agent" value="website"></form></div></div></div></td></tr></tbody></table><!-- Problem Statement --><div id="dsb-problem-content-div2" class="dsb-problem-content-div" style="width: 40em;"><h3>Problem</h3>
+
+<p>
+You are playing a game with a fancy deck of cards. Each card has three bonus numbers: a <i>card bonus</i> <b>c</b>, a <i>score bonus</i> <b>s</b>, and a <i>turn bonus</i> <b>t</b>. Some of the cards start in your hand, while the rest are in a deck on the table.  You start with one turn.
+</p>
+
+<p>
+On each turn, you can choose any card from your hand and play it. If it has bonus numbers <b>c</b>, <b>s</b>, <b>t</b>, then the following happens:
+</p><ul>
+<li> The card is discarded from your hand, and it can never be used again.</li>
+<li> You draw the first <b>c</b> cards from the deck into your hand. If the deck has fewer than <b>c</b> cards in it, you draw all of them.</li>
+<li> Your total score increases by <b>s</b>.</li>
+<li> Your number of remaining turns increases by <b>t</b>.</li>
+</ul>
+If you do not have any cards in your hand at the start of a turn, then nothing happens on that turn. Your goal is to get as high a score as possible before running out of turns.
+<p></p>
+
+<p>
+For example, suppose your hand and deck contain the following cards:
+</p><pre>         +---+---+---+            +---+---+---+
+   HAND: | <b>c</b> | <b>s</b> | <b>t</b> |      DECK: | <b>c</b> | <b>s</b> | <b>t</b> |
+         +---+---+---+            +---+---+---+
+Card #1: | 0 | 0 | 2 |   Card #4: | 1 | 1 | 0 |
+Card #2: | 0 | 5 | 0 |   Card #5: | 0 | 1 | 1 |
+Card #3: | 2 | 1 | 1 |   Card #6: | 2 | 2 | 0 |
+         +---+---+---+            +---+---+---+
+</pre>
+The following table shows how you can get a score of 8 from these cards. The first three columns show your hand, the number of turns left, and your score before playing each card, and the final column shows which card to play.
+<pre>+---------+------------+-------+------+
+| Hand    | Turns left | Score | Play |
++---------+------------+-------+------+
+| 1, 2, 3 |      1     |   0   |   1  |
+| 2, 3    |      2     |   0   |   3  |
+| 2, 4, 5 |      2     |   1   |   2  |
+| 4, 5    |      1     |   6   |   5  |
+| 4       |      1     |   7   |   4  |
+| 6       |      0     |   8   |   -  |
++---------+------------+-------+------+
+</pre>
+As you can see, the card bonuses and turn bonuses allow you to chain together a long sequence of cards before you have to stop.
+<p></p>
+
+<h3>Input</h3>
+<p>
+The first line of the input gives the number of test cases, <b>T</b>. <b>T</b> test cases follow.
+</p>
+
+<p>
+Each test case begins with a single line containing <b>N</b>, the number of cards in your hand. The next <b>N</b> lines each contain three integers, <b>c</b>, <b>s</b>, and <b>t</b>, representing the bonus numbers for a single card in your hand.
+</p>
+
+<p>
+This is followed by a single line containing <b>M</b>, the number of cards in the deck. The next <b>M</b> lines each contain three integers, <b>c</b>, <b>s</b>, and <b>t</b>, representing the bonus numbers for a single card in the deck. These cards are listed in the same order in which you draw them.
+</p>
+
+<h3>Output</h3>
+<p>
+For each test case, output one line containing "Case #x: S", where S is the largest score you can obtain before running out of turns.
+</p>
+
+<h3>Limits</h3>
+<p>
+1 ≤ <b>T</b> ≤ 100.<br>
+1 ≤ <b>N</b>.<br>
+0 ≤ <b>M</b>.<br>
+<b>N + M</b> ≤ 80.
+</p>
+
+<h4>Small dataset</h4>
+<p>
+0 ≤ <b>c</b> ≤ 1.<br>
+0 ≤ <b>s</b> ≤ 20.<br>
+0 ≤ <b>t</b> ≤ 20.
+</p>
+
+<h4>Large dataset</h4>
+<p>
+0 ≤ <b>c</b> ≤ 2.<br>
+0 ≤ <b>s</b> ≤ 50.<br>
+0 ≤ <b>t</b> ≤ 50.
+</p>
+
+<h3>Sample (Small dataset)</h3>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="io-table-header">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="io-table-header">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+2<br>
+4<br>
+1 0 0<br>
+1 1 1<br>
+0 5 0<br>
+1 2 0<br>
+0<br>
+2<br>
+1 1 1<br>
+0 6 0<br>
+1<br>
+0 1 3<br>
+</code>
+</td>
+<td>
+<code>
+Case #1: 6<br>
+Case #2: 8<br>
+</code>
+</td></tr></tbody></table>
+</div>
+
+<h3>Sample (Large dataset)</h3>
+<div class="problem-io-wrapper">
+<table>
+<tbody><tr>
+<td>
+<br>
+<span class="io-table-header">Input</span>
+<br>&nbsp;
+</td>
+<td>
+<br>
+<span class="io-table-header">Output</span>
+<br>&nbsp;
+</td>
+</tr>
+<tr>
+<td>
+<code>
+1<br>
+3<br>
+0 0 2<br>
+0 5 0<br>
+2 1 1<br>
+3<br>
+1 1 0<br>
+0 1 1<br>
+2 2 0<br>
+</code>
+</td>
+<td>
+<code>
+Case #1: 8<br>
+</code>
+</td></tr></tbody></table>
+</div>
+</div></div></div>
+
+    <div id="dsb-analysis-page" class="dsb-content-pages" style="display: none;"><div id="dsb-analysis-selections"><span id="dsb-analysis-selection-p3" class="dsb-analysis-not-selected">Overview</span>&nbsp; | &nbsp;<span id="dsb-analysis-selection-p0" class="dsb-analysis-not-selected">Problem A</span>&nbsp; | &nbsp;<span id="dsb-analysis-selection-p1" class="dsb-analysis-not-selected">Problem B</span>&nbsp; | &nbsp;<span id="dsb-analysis-selection-p2" class="dsb-analysis-selected">Problem C</span></div><div id="dsb-problem-analysis-div3" class="dsb-problem-content-div" style="display: none;"><p>
+Round 1 was off to a rather brutal start. The scoreboard quickly started filling up with incorrect submissions on all three problems. It took almost 40 minutes for somebody to solve Problem B and over two hours for a correct solution to problem C to appear.
+</p>
+
+<p>
+At the end, a significant number of large submissions turned out to be incorrect as well, which caused a lot of reshuffling at the top of the score board.
+</p>
+
+<p>
+Some of the confusion in problem B was caused by a sentence that was not as clear as we would have liked. We are sorry that it took us almost two hours to understand the confusion, and we had to broadcast a clarification message.
+</p>
+
+<p>
+krijgertje ended up being the first to solve all problems correctly with 27 minutes to go. Progbeat followed soon after and took second place, only to be overtaken 15 minutes later by Myth. No one else managed to solve all of the problems.
+</p>
+
+<p>
+Congratulations to the top 1000 contestants. They have advanced to Round 2. Everyone else has two more chances in rounds 1B and 1C.
+</p>
+
+<br>
+<hr>
+<p class="problem-item">Cast</p>
+<p>Problem A. <i>FreeCell Statistics</i> Written by Igor Naverniouk and prepared by Onufry Wojtaszczyk.</p>
+<p>Problem B. <i>The Killer Word</i> Written by David Arthur and prepared by Tomek Czajka.</p>
+<p>Problem C. <i>Pseudominion</i> Written by David Arthur and prepared by Luka Kalinovcic.</p>
+<p>Contest analysis presented by Stephen Fulwider, David Arthur and Luka Kalinovcic.</p>
+<p>Solutions and other problem preparation by Jorge Bernadas Saragoza, Sean Henderson, Petr Mitrichev, Greg Tener, Cosmin Negruseri and John Dethridge.
+</p></div><div id="dsb-problem-analysis-div0" class="dsb-problem-content-div" style="display: none;"><p>
+The first thing to notice in this problem is that both <b>P<sub>D</sub></b> and <b>P<sub>G</sub></b> can range from 0 to 100, so let’s start by taking care of some easy cases. If our unnamed player has won 100% of his total games (<b>P<sub>G</sub></b> = 100) but not won 100% of his games today (<b>P<sub>D</sub></b> &lt; 100), then something has clearly gone wrong with the calculator. Similarly, if <b>P<sub>G</sub></b> = 0 but <b>P<sub>D</sub></b> &gt; 0, something is wonky.
+</p>
+
+<p>
+The cases where <b>P<sub>D</sub></b> = <b>P<sub>G</sub></b> = 0 or <b>P<sub>D</sub></b> = <b>P<sub>G</sub></b> = 100 are also easy, and the answer for both of them is "Possible" — they mean that all the games ever ended with the same result (loss or win, respectively).
+</p>
+
+<p>
+The trick now is that once we ruled out the case of <b>P<sub>G</sub></b> being zero or a hundred, we do not need to worry about it any more! Indeed, assume we have a solution that gives the correct daily percentage of wins, and it consists of <b>W</b> games won and <b>L</b> games lost today. To get a global win percentage of <b>P<sub>G</sub></b>, we can, for instance, assume we won a total of <b>(W + L) * P<sub>G</sub></b> and lost a total of <b>(W + L) * (100 - P<sub>G</sub></b>). As 1 ≤ <b>P<sub>G</sub></b> ≤ 99, the numbers are greater than <b>W</b> and <b>L</b>, respectively, so they are possible to achieve.
+</p>
+
+<p>
+The small data set can now be solved by brute force by simply trying all possible values of <b>D</b> from 1 to <b>N</b> and all possible number of games won from 0 to <b>D</b>, and seeing if any of them results in exactly <b>P<sub>D</sub></b> percentage of games being won.
+</p>
+
+<p>
+Solving the large date set can require some maths. One way to solve the problem is to directly solve for the minimum number of games we would need to play in order to get a win percentage of <b>P<sub>D</sub></b> and simply verify that this number is ≤ <b>N</b>. If we let <b>W</b> be the number of games we have won today, then we want to solve <b>W / D</b> = <b>P<sub>D</sub> / 100</b> for the minimum value of <b>D</b> such that <b>W</b> is integral.
+</p>
+
+<p>
+From here, it is easy to see <b>D</b> = <b>100 * W / P<sub>D</sub></b>. Thus, if we want to minimize <b>D</b>, then we need to find the smallest value <b>W</b> such that the right hand side is integral. In order to do this, we divide 100 and <b>P<sub>D</sub></b> by their <a href="http://en.wikipedia.org/wiki/Greatest_common_divisor" target="_blank">greatest common divisor</a> (let's call this value <b>G</b>) so that they are relatively prime and <b>W</b> is minimal when it is <b>P<sub>D</sub></b> / <b>G</b>. Plugging this in and cancelling terms tells us that <b>D</b> = <b>100 / G</b> is the fewest number of games we must be play.
+</p>
+
+<p>
+A simpler way to solve this problem is by brute force. We can just try all possible values of <b>D</b> from 1 to <b>N</b> and check if any of them could result in exactly <b>P<sub>D</sub></b> percentage of games being won by checking that <b>D</b> * <b>P<sub>D</sub></b> = 0 (mod 100), stopping the loop the first time we find a candidate value of <b>D</b> or we exceed <b>N</b> games. While at first this solution appears to be O(<b>N</b>) and would time out for the large data set, this loop will in fact run <i>at most</i> 100 times, regardless of the value of <b>N</b>, so this solution will be plenty fast enough. Coders who noticed this simpler solution early were rewarded with very fast submission times.
+</p></div><div id="dsb-problem-analysis-div1" class="dsb-problem-content-div" style="display: none;"><p>Every year, contestants come to us saying they implemented a program correctly but it ran too slowly. Unfortunately, being too slow is the same thing as being wrong. The Google Code Jam is an <i>algorithms</i> contest, and once you get past the early questions, coming up with a fast algorithm is often the whole point of the problem.</p>
+
+<p>Why do we bring this up? Because this problem is a trap. On first glance, it looks just like the first two problems from the Qualification Round. We tell you an algorithm, and you implement it exactly as described:
+</p><ul>
+<li>Loop through every one of Sean's lists.</li>
+<li>Loop through every word in the dictionary.</li>
+<li>See how many mistakes Sean makes while guessing this word.</li>
+</ul>
+Since the last step requires iterating over every word again, the running time here is O(<b>N</b><sup>2</sup><b>M</b>).<p></p>
+
+<p>We will always give you the hardest inputs we can fit within the stated limits, which means you <i>will</i> see <b>N</b> = 10000 and <b>M</b> = 100. Neither a fast computer nor a fast language will save you here - the whole approach is simply too slow. For example, our C++ implementation takes over 20 minutes for a single test case. To succeed on an algorithms contest, you need to see these issues in advance, either by looking at the Big O complexity or by trying a worst-case input of your own.</p>
+
+<p>Once you do see the issue, it isn't too hard to dramatically speed things up. The main idea is to combine the last two steps:
+</p><ul>
+<li> Loop through every one of Sean's lists.</li>
+<li> Divide the words into different classes by length. If you focus on a single class, Sean will make the same first guess for any word in that class. This is because he has exactly the same information in each case.</li>
+<li> For each class, figure out what letter Sean will guess, and further divide the class based on each of the different responses you could give to Sean's guess.</li>
+<li> Repeat for each of the sub-classes until you are down to a single word, at which point Sean will finish with no mistakes.</li>
+</ul>
+The running time here is O(<b>NM</b>), and it will go hundreds of times faster than the more straightforward algorithm.<p></p>
+
+<p>This technique is similar to Dynamic Programming - the game begins in the same way for many different words, so we should not have to redo all that work every time.
+</p>
+
+<p>Fun facts: this problem was originally called Bloodthirsty Executioner Man, but was renamed because the hangman is made out of paper, and has no blood.  Sean himself answered several of the clarifications for this problem.
+</p></div><div id="dsb-problem-analysis-div2" class="dsb-problem-content-div" style="display: block;"><p>
+Let's denote the bonus numbers of a card c by c.card_draw, c.score and c.turns. Let c.index be the (zero based) index of the card in the ordering from the input file.
+</p>
+
+<p>
+After looking at the problem constraints, we can classify a card c as:
+</p><ul>
+  <li>
+    a T card, if c.turns &gt; 0.
+  </li>
+  <li>
+    a C<sub>0</sub> card, if c.turns = 0 and c.card_draw = 0
+  </li>
+  <li>
+    a C<sub>1</sub> card, if c.turns = 0 and c.card_draw = 1
+  </li>
+  <li>
+    a C<sub>2</sub> card, if c.turns = 0 and c.card_draw = 2
+  </li>
+</ul>
+Let T[i] denote the i-th T card in the sequence of all T cards sorted by the index. We define C<sub>0</sub>[i],  C<sub>1</sub>[i] and C<sub>2</sub>[i] analogously.
+<p></p>
+
+<p>
+The first key observation is that it never hurts to play a T card whenever we have one in our hand. We never lose turns or score and we may draw new cards by doing so.
+</p>
+
+<p>
+Let's think about some arbitrary sequence of played cards. There are two observations we need to make before we can proceed.
+</p><ol>
+<li>
+Because C<sub>0</sub> cards do not add turns or cards to our hand, we can postpone playing them until we have no other cards we want to play. So we can transform any valid sequence of played cards into another sequence that has all C<sub>0</sub> cards at the very end. The total score, being the sum of individual scores of all played cards, will obviously remain the same.
+</li>
+<li>
+Let's say there are two C<sub>1</sub> cards a and b such that we played a before b, but b.index &lt; a.index. Because b.index &lt; a.index, we already had both cards in our hand when we played card a. So we can instead play card b first and card a second. The resulting sequence with a and b swapped will remain valid because a and b both have the same card bonus (1 card) and the same turn bonus (0 turns). Furthermore, the score will remain the same. We can do the same for two C<sub>2</sub> cards.
+</li>
+</ol>
+<p></p>
+
+<p>
+The first observation shows us that we don't care about C<sub>0</sub> cards until the very end when we can use our remaining turns on whatever C<sub>0</sub> cards we have already drawn. Obviously, we should sort the C<sub>0</sub> cards in our hand by decreasing score bonus and then play as many as we can.
+</p>
+
+<p>
+The second observation shows us that we can transform any optimal sequence of played cards into another one that has cards of the same type ordered by index. This means that we can play C<sub>1</sub> (and C<sub>2</sub>) cards in increasing order by index.
+</p>
+
+<p>
+So, whenever we have more than one C<sub>1</sub> (or C<sub>2</sub>) cards in our hand we can always look at the one with the smallest index and choose whether we will play it right now or never at all.
+</p>
+
+<p>
+These observations lead us to construct a directed acyclic weighted graph. A node represents a state of the game and is defined by these properties:
+</p><ul>
+  <li>
+    hand - the number of drawn cards.
+  </li>
+  <li>
+    turns - the number of turns left.
+  </li>
+  <li>
+    t - T[t] is the first T card that we haven't played yet.
+  </li>
+  <li>
+    c1 - C<sub>1</sub>[c1] is the first C<sub>1</sub> card which we are not yet sure if we are going to play.
+  </li>
+  <li>
+    c2 - C<sub>2</sub>[c2] is the first C<sub>2</sub> card which we are not yet sure if we are going to play.
+  </li>
+</ul>
+<p></p>
+<p>
+An edge represents a valid transition from one game state to another and is usually associated with playing a card or deciding not to play a certain card at all. The weight of an edge indicates how much your score goes up when you switch between the two game states. For each node (hand, turns, t, c1, c2), we add edges according to these rules:
+</p><ol>
+  <li>
+    If we have a T card in our hand, we can play it.
+    <ul>
+      <li>
+        Condition: T[t].index &lt; hand
+      </li>
+      <li>
+        Weight: T[t].score
+      </li>
+      <li>
+        Target node: (min(N, hand + T[t].card_draw), min(N, turns + T[t].turns - 1), t + 1, c1, c2)
+      </li> 
+    </ul>
+  </li>
+  <li>
+    If we have a C<sub>1</sub> card in our hand, we can play the first one.
+    <ul>
+      <li>
+        Condition: C<sub>1</sub>[c1].index &lt; hand
+      </li>
+      <li>
+        Weight: C<sub>1</sub>[c1].score
+      </li>
+      <li>
+        Target node: (min(N, hand + 1), turns - 1, t, c1 + 1, c2)
+      </li> 
+    </ul>
+  </li>
+  <li>
+    If we have a C<sub>1</sub> card in our hand, we can throw away the first one.
+    <ul>
+      <li>
+        Condition: C<sub>1</sub>[c1].index &lt; hand
+      </li>
+      <li>
+        Weight: 0
+      </li>
+      <li>
+        Target node: (hand, turns, t, c1 + 1, c2)
+      </li> 
+    </ul>
+  </li>
+  <li>
+    If we have a C<sub>2</sub> card in our hand, we can play the first one.
+    <ul>
+      <li>
+        Condition: C<sub>2</sub>[c2].index &lt; hand
+      </li>
+      <li>
+        Weight: C<sub>2</sub>[c2].score
+      </li>
+      <li>
+        Target node: (min(N, hand + 2), turns - 1, t, c1, c2 + 1)
+      </li> 
+    </ul>
+  </li>
+  <li>
+    If we have a C<sub>2</sub> card in our hand, we can throw away the first one.
+    <ul>
+      <li>
+        Condition: C<sub>2</sub>[c2].index &lt; hand
+      </li>
+      <li>
+        Weight: 0
+      </li>
+      <li>
+        Target node: (hand, turns, t, c1, c2 + 1)
+      </li> 
+    </ul>
+  </li>
+  <li>
+    We can always decide to finish the game by spending the remaining turns on C<sub>0</sub> cards. This edge leads to the special final node and the weight of the edge is defined by the greedy algorithm that spends all remaining turns picking the best C<sub>0</sub> cards.
+  </li>
+</ol>
+<p></p>
+
+<p>
+The answer to our problem is the length of the longest path in the graph described above. The graph is acyclic, so we can use dynamic programming or recursion with memoization to find the length of the longest path.
+</p>
+
+<p>
+The number of nodes in the graph is O(n<sup>5</sup>), so the asymptotic time complexity of the algorithm is O(n<sup>5</sup>) too. In practice, the runtime of the program is really small because the vast majority of these states are unreachable. You can speed things up even more if you use the preceding observations to their full power. For example, if there is an edge corresponding to a T card, you should always follow it first.
+</p>
+<br>
+<br>
+<i>Remark</i>: This problem is inspired by the game Dominion, published by Rio Grande Games. </div></div>
+
+    <div id="dsb-clarification-page" class="dsb-content-pages" style="display: none;">
+      <!-- The clarifications table -->
+      <div id="clarTableDiv" class="clarTableWrapper"></div><div>
+        <table id="dsb-clarification-table" style="display: block;">
+          <colgroup span="9">
+            <col width="16%"><col width="2%">
+            <col width="10%"><col width="2%">
+            <col width="28%"><col width="2%">
+            <col width="10%"><col width="2%">
+            <col width="28%">
+          </colgroup>
+          <thead>
+            <tr>
+            <th>Category</th><th>&nbsp;</th>
+            <th class="clarTimeColumn">Asked</th><th>&nbsp;</th>
+            <th>Question</th><th>&nbsp;</th>
+            <th class="clarTimeColumn">Answered</th><th>&nbsp;</th>
+            <th>Answer</th>
+            </tr>
+          </thead>
+          <tbody id="dsb-clarification-tbody"><tr class="dsb-clar-tr dsb-clar-tr-announcement"><td class="clarProbTd">[Unknown]<br><span style="color: #666">Announcement</span></td><td></td><td class="clarTimeColumn">2:06:30</td><td></td><td><i>"If there is at least one word in D that ... is consistent with what you have written down so far, then Sean guesses that letter."  Does it also have to be consistent with previous guesses?  For example: - The words are ab and cd.  - Sean's list is abcd.  - The right word is cd.  - Sean will guess 'a' first.  What should he guess next?</i></td><td></td><td class="clarTimeColumn" style="color: red;">2:08:13</td><td></td><td><i>This now reads "If there is at least one word in D that ... is consistent with what you have, and the result of all of Sean's previous guesses."  So Sean's next guess should be 'c'.</i></td></tr></tbody>
+        </table>
+      </div>
+      <div id="dsb-submit-clarification" style="display: none;">
+        <!-- The link to ask a clarification -->
+        <div style="padding: 0.5em 0 0.3em 0;">
+          <b>Ask a question:</b>
+        </div>
+        <!-- The form for asking clarification -->
+        <div>
+          <form onsubmit="return GCJ.submitClarification(this);"><div style="display:none;"><input type="hidden" name="csrfmiddlewaretoken" value="Yjk5OGY1YzIwMDBiNDc5MWI5MjJiZDFiZWUzYjM0OGV8fDEzNTQ5NjY3NjUwOTA0MTE="></div>
+            <div><textarea rows="5" cols="60" name="q"></textarea></div>
+            <div style="padding-top: 0.3em">
+              <select id="dsb-clarification-problem-select" name="problem">
+                <option value="_" selected="">[General]</option>
+              <option value="1040487">A. FreeCell Statistics</option><option value="1062486">B. The Killer Word</option><option value="1053485">C. Pseudominion</option></select>
+              &nbsp;
+              <input id="dsb-submit-clarification-button" type="submit" value="Ask">
+            </div>
+          </form>
+        </div>
+      </div>
+      <!-- Too many pending clarifications -->
+      <div id="dsb-cannot-ask-question-text" style="font-weight: bold; padding: 0.5em 0px 0.3em; display: block;">You cannot ask questions at this time. Please email us at codejam@google.com.</div>
+
+    </div>
+
+    <div id="dsb-submissions-page" class="dsb-content-pages">
+      <div id="dsb-submissions-status" class="dsb-sub-status-msg">
+        You have 0 submissions.
+      </div>
+      <table id="dsb-submissions-table" class="dsb-sub-main-table" style="display:none">
+      <thead>
+        <tr id="dsb-sub-main-table-header">
+          <th class="dsb-sub-row-id-width">ID</th>
+          <th class="dsb-sub-name-width">Problem</th>
+          <th class="dsb-sub-difficulty-width">Size</th>
+          <th class="dsb-sub-input-width">Input</th>
+          <th class="dsb-sub-output-width">Output</th>
+          <th class="dsb-sub-source-width">Solution</th>
+          <th class="dsb-sub-status-width">Status</th>
+          <th class="dsb-sub-time-width">Time</th>
+        </tr>
+      </thead>
+      <tbody id="dsb-submissions-rows">
+      </tbody>
+      </table>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+</div>
+
+<div style="height: 3em; clear: both;"></div>
+
+
+
+
+<div id="footer">
+  
+  
+  <p>
+    
+    All problem statements, input data and contest analyses are
+    licensed under the
+    <a href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution License</a>.
+    
+  </p>
+  
+  <span id="copyright">© 2008-2012 Google</span>
+  <a href="http://www.google.com/">Google Home</a> -
+  <a href="http://code.google.com/codejam/terms.html">Terms and Conditions</a><br><br>
+  <a href="http://developers.google.com/appengine"><img src="./dominion-problem_files/appengine-noborder-120x30.gif"></a>
+  
+</div>
+
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-21302427-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script');
+    ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+<div style="height: 1em">&nbsp;</div>
+
+<script type="text/javascript">
+GCJ.initHistory();
+</script><input type="text" name="history_state0" id="history_state0" style="display:none">
+
+
+
+
+</div></body></html>

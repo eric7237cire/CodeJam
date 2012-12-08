@@ -24,7 +24,7 @@ public class Main  {
         if (args.length < 1) {
             //args = new String[] { "sample.txt" };
            // args = new String[] { "B-small-practice.in" };
-            args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2009\\1B\\C-small-practice.in" };
+            args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1A\\sample.in" };
          }
          log.info("Input file {}", args[0]);
 
@@ -77,12 +77,11 @@ public class Main  {
          //large a bit slow
          //codejam.y2010.chess_boards.Main m = new codejam.y2010.chess_boards.Main();
          //codejam.y2010.load_testing.Main m = new codejam.y2010.load_testing.Main();         
-         //TODO need correct
-         codejam.y2010.rope_intranet.Main m = new codejam.y2010.rope_intranet.Main();
+         //codejam.y2010.rope_intranet.Main m = new codejam.y2010.rope_intranet.Main();
 
          //2011 1A
          //codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
-
+         codejam.y2011.round_1A.dominion.Main m = new codejam.y2011.round_1A.dominion.Main(); 
          Runner.goSingleThread(args[0], m, m);
          
 

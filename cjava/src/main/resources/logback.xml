@@ -31,6 +31,8 @@
    <logger name="codejam.y2009" level="INFO"/>
    <logger name="codejam" level="INFO"/>
    <logger name="codejam.y2011.round_1A.killer_word" level="DEBUG"/>
+   <logger name="gcodejam.y2011.round_1A.dominion" level="DEBUG"/>
+   
    
       <logger name="codejam.utils.main" level="DEBUG"/>
   <root level="${root-level:-DEBUG}">

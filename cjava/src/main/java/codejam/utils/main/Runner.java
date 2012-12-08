@@ -43,8 +43,8 @@ public class Runner {
 
             final int t = scanner.nextInt();
 
-            //File outFile = new File(inputFileName.replaceAll("\\.in", "") + ".out");
-            File outFile = new File(inputFileName.replaceAll("\\.in", "") + ".correct");
+            File outFile = new File(inputFileName.replaceAll("\\.in", "") + ".out");
+            //File outFile = new File(inputFileName.replaceAll("\\.in", "") + ".correct");
             
             OutputStream os = new FileOutputStream(outFile);
             PrintStream pos = new PrintStream(os);
