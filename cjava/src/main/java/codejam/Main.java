@@ -68,17 +68,17 @@ public class Main  {
          //codejam.y2010.number_game.Main m = new codejam.y2010.number_game.Main();
          
          //2010 1B
-         //TODO correct
+         
          //codejam.y2010.file_fix.Main m = new codejam.y2010.file_fix.Main();
          //codejam.y2010.chicks.Main m = new codejam.y2010.chicks.Main();
-         codejam.y2010.rank_pure.Main m = new codejam.y2010.rank_pure.Main();
+         //codejam.y2010.rank_pure.Main m = new codejam.y2010.rank_pure.Main();
          
          //2010 1C
          //large a bit slow
          //codejam.y2010.chess_boards.Main m = new codejam.y2010.chess_boards.Main();
          //codejam.y2010.load_testing.Main m = new codejam.y2010.load_testing.Main();         
          //TODO need correct
-         //codejam.y2010.rope_intranet.Main m = new codejam.y2010.rope_intranet.Main();
+         codejam.y2010.rope_intranet.Main m = new codejam.y2010.rope_intranet.Main();
 
          //2011 1A
          //codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
