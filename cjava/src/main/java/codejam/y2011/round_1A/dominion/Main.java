@@ -95,6 +95,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             visited.add(node);
             
+            if (node.turns == 0)
+                continue;
             
             Node newTNode = new Node(node.hand ,
                     node.turns,
@@ -124,8 +126,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 continue;
             }
             
-            if (node.turns == 0)
-                continue;
+           
             
             //c1. play it 
             if (node.c1 < c1_cards.size() && c1_cards.get(node.c1).index < node.hand ) {
@@ -137,7 +138,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             
                 //skip it            
-                Node newSkipNode = new Node(node.hand,node.turns-1, node.t, 1+node.c1, node.c2);
+                Node newSkipNode = new Node(node.hand,node.turns, node.t, 1+node.c1, node.c2);
                 newSkipNode.limit();
                 graph.addNode(newSkipNode);
                 graph.addEdge(node, newSkipNode, 0);
@@ -152,7 +153,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 graph.addEdge(node, newNode, c2_cards.get(node.c2).S);
                 nodesToProcess.add(newNode);
             
-                Node newSkipNode = new Node(node.hand,node.turns-1, node.t, node.c1, node.c2+1);
+                Node newSkipNode = new Node(node.hand,node.turns, node.t, node.c1, node.c2+1);
                 newSkipNode.limit();
                 graph.addNode(newSkipNode);
                 graph.addEdge(node, newSkipNode, 0);
