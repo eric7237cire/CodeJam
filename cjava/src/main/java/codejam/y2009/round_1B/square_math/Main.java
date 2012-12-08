@@ -1,4 +1,4 @@
-package codejam.y2009.square_math;
+package codejam.y2009.round_1B.square_math;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -23,11 +23,7 @@ import com.google.common.collect.Ordering;
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 
 	
-	public static void handleCase(int caseNumber, Scanner scanner,
-			PrintStream os) {
-		
-	}
-
+	
 
 	int expressionCount = 0;
 	
@@ -172,7 +168,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
 	final private Ordering<String> expressionOrder;
 
-	Main() {
+	public Main() {
 		minExpression = new String[400][265];
 
 		expressionOrder = new Ordering<String>() {
@@ -191,32 +187,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
 	final static Logger log = LoggerFactory.getLogger(Main.class);
 
-	public static void main(String args[]) throws Exception {
-
-		// String fileName = args.length >= 1 ? args[0] :
-		// args[0] = "C-small-practice.in";
-		log.info("Input file {}", args[0]);
-
-		Scanner scanner = new Scanner(new File(args[0]));
-
-		OutputStream os = new FileOutputStream("output.txt");
-
-		PrintStream pos = new PrintStream(os);
-
-		int t = scanner.nextInt();
-
-		for (int i = 1; i <= t; ++i) {
-
-			handleCase(i, scanner, pos);
-
-		}
-
-		scanner.close();
-	}
-
-    /* (non-Javadoc)
-     * @see codejam.utils.main.Runner.TestCaseInputScanner#readInput(java.util.Scanner, int)
-     */
+	
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
         
@@ -231,9 +202,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return input;
     }
 
-    /* (non-Javadoc)
-     * @see codejam.utils.multithread.Consumer.TestCaseHandler#handleCase(java.lang.Object)
-     */
     @Override
     public String handleCase(InputData input) {
         

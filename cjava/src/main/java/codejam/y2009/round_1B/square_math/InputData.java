@@ -1,4 +1,4 @@
-package codejam.y2009.square_math;
+package codejam.y2009.round_1B.square_math;
 
 import java.util.List;
 
