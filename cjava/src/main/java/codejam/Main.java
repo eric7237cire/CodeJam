@@ -59,14 +59,12 @@ public class Main  {
       // Runner.go(args[0], m, m, new codejam.y2009.double_sort_grid.InputData(-1), 3);
 
          //2010 qual
-         //TODO .correct
          //codejam.y2010.fair_warning.Main m = new codejam.y2010.fair_warning.Main();
-         codejam.y2010.theme_park.Main m = new codejam.y2010.theme_park.Main();
+         //codejam.y2010.theme_park.Main m = new codejam.y2010.theme_park.Main();
          
          //2010 1A
-         //TODO Need to retest / correct files
          //codejam.y2010.rotate.Main m = new codejam.y2010.rotate.Main();
-         //codejam.y2010.smooth.Main m = new codejam.y2010.smooth.Main();
+         codejam.y2010.smooth.Main m = new codejam.y2010.smooth.Main();
          //codejam.y2010.number_game.Main m = new codejam.y2010.number_game.Main();
          
          //2010 1B
