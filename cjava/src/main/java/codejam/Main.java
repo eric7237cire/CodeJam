@@ -64,8 +64,8 @@ public class Main  {
          
          //2010 1A
          //codejam.y2010.rotate.Main m = new codejam.y2010.rotate.Main();
-         codejam.y2010.smooth.Main m = new codejam.y2010.smooth.Main();
-         //codejam.y2010.number_game.Main m = new codejam.y2010.number_game.Main();
+         //codejam.y2010.smooth.Main m = new codejam.y2010.smooth.Main();
+         codejam.y2010.number_game.Main m = new codejam.y2010.number_game.Main();
          
          //2010 1B
          //TODO correct
