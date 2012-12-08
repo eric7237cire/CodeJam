@@ -29,11 +29,12 @@ public class Main  {
          log.info("Input file {}", args[0]);
 
          //Round 1B (2)
+         codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
          
-         //Round 1C (3)        
+         //Round 1C      
          //codejam.y2009.round_1C.all_your_base.Main m = new codejam.y2009.round_1C.all_your_base.Main();
          //codejam.y2009.round_1C.center_mass.Main m = new codejam.y2009.round_1C.center_mass.Main();
-         codejam.y2009.round_1C.bribe_prisoner.Main m = new codejam.y2009.round_1C.bribe_prisoner.Main();
+         //codejam.y2009.round_1C.bribe_prisoner.Main m = new codejam.y2009.round_1C.bribe_prisoner.Main();
          
          //Round 2
          //codejam.y2009.crazy_rows.Main m = new codejam.y2009.crazy_rows.Main();
