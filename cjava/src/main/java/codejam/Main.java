@@ -65,13 +65,13 @@ public class Main  {
          //2010 1A
          //codejam.y2010.rotate.Main m = new codejam.y2010.rotate.Main();
          //codejam.y2010.smooth.Main m = new codejam.y2010.smooth.Main();
-         codejam.y2010.number_game.Main m = new codejam.y2010.number_game.Main();
+         //codejam.y2010.number_game.Main m = new codejam.y2010.number_game.Main();
          
          //2010 1B
          //TODO correct
          //codejam.y2010.file_fix.Main m = new codejam.y2010.file_fix.Main();
          //codejam.y2010.chicks.Main m = new codejam.y2010.chicks.Main();
-         //codejam.y2010.rank_pure.Main m = new codejam.y2010.rank_pure.Main();
+         codejam.y2010.rank_pure.Main m = new codejam.y2010.rank_pure.Main();
          
          //2010 1C
          //large a bit slow
