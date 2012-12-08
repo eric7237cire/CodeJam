@@ -24,12 +24,13 @@ public class Main  {
         if (args.length < 1) {
             //args = new String[] { "sample.txt" };
            // args = new String[] { "B-small-practice.in" };
-            args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1A\\B-small-practice.in" };
+            args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2009\\1B\\C-small-practice.in" };
          }
          log.info("Input file {}", args[0]);
 
          //Round 1B (2)
-         codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
+         //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
+         codejam.y2009.round_1B.square_math.Main m = new codejam.y2009.round_1B.square_math.Main();
          
          //Round 1C      
          //codejam.y2009.round_1C.all_your_base.Main m = new codejam.y2009.round_1C.all_your_base.Main();

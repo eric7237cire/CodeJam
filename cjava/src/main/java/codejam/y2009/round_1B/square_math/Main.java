@@ -1,8 +1,4 @@
 package codejam.y2009.round_1B.square_math;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -193,8 +189,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         InputData input = new InputData(testCase);
         input.width = scanner.nextInt();
-        input.grid = GridChar.buildFromScanner(scanner,input.width,input.width,' ');
         input.queries = scanner.nextInt();
+        
+        input.grid = GridChar.buildFromScanner(scanner,input.width,input.width,' ');
+        
         input.targets = new ArrayList<>();
         for (int q = 0; q < input.queries; ++q) {
             input.targets.add(scanner.nextInt());
@@ -220,9 +218,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
             // String exp = findTarget(table, width, target);
             String exp = m.getExpression(target);
-            log.info("Exp {} Case {} Query {} / {}  ", new Object[] { exp,
+            log.debug("Exp {} Case {} Query {} / {}  ", new Object[] { exp,
                     input.testCase, q, input.queries });
+            sb.append("\n");
             sb.append(exp);
+            
         }
         
         return sb.toString();
