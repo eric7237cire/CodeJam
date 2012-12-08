@@ -30,7 +30,7 @@ public class Main  {
 
          //Round 1B (2)
          //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
-         codejam.y2009.round_1B.square_math.Main m = new codejam.y2009.round_1B.square_math.Main();
+         //codejam.y2009.round_1B.square_math.Main m = new codejam.y2009.round_1B.square_math.Main();
          
          //Round 1C      
          //codejam.y2009.round_1C.all_your_base.Main m = new codejam.y2009.round_1C.all_your_base.Main();
@@ -61,7 +61,7 @@ public class Main  {
          //2010 qual
          //TODO .correct
          //codejam.y2010.fair_warning.Main m = new codejam.y2010.fair_warning.Main();
-         //codejam.y2010.theme_park.Main m = new codejam.y2010.theme_park.Main();
+         codejam.y2010.theme_park.Main m = new codejam.y2010.theme_park.Main();
          
          //2010 1A
          //TODO Need to retest / correct files
