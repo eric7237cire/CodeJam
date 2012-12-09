@@ -4,11 +4,14 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -19,8 +22,10 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.DoubleComparator;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
+import com.google.common.primitives.Ints;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 
@@ -86,10 +91,70 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             vertexSets.add(set2);
         }
         
-        return "Case #" + input.testCase + ": " ;
+        int minVertexCount = Integer.MAX_VALUE;
+        
+        for(Set<Integer> set : vertexSets) {
+            minVertexCount = Math.min(minVertexCount, set.size());
+        }
+        
+        for(int colors = minVertexCount; colors >= 0; --colors) {
+            
+            int[] assignment = canAssign(vertexSets, colors, input.N);
+            
+            if (assignment != null) {
+                return "Case #" + input.testCase + ": " + colors + "\n" + Ints.join(" ",assignment);
+            }
+        }
+        
+        return null;
         
     }
     
+    int[] canAssign(List<Set<Integer>> vertexSets, int colors, int N) {
+        int[] assignment = new int[N];
+        Arrays.fill(assignment, 1);
+        
+        boolean incremented = true;
+        
+        while(incremented) {
+            incremented=false;
+            
+            for(int i = 0; i < N; ++i) {
+                assignment[i]++;
+                if (assignment[i] > colors) {
+                    assignment[i] = 1;
+                } else {
+                    incremented = true;
+                    break;
+                }
+            }
+            
+            if (!incremented) {
+                break;
+            }
+            
+            if (isValid(vertexSets, assignment, colors)) {
+                return assignment;
+            }
+        }
+        
+        return null;
+        
+    }
     
+    boolean isValid(List<Set<Integer>> vertexSets, int[] assignment, int colors) {
+        int hasAllColors = (1 << colors) - 1;
+        for(Set<Integer> set : vertexSets) {
+            int colorCheck = 0;
+            for(Integer v : set) {
+                int color = assignment[v-1];
+                colorCheck |= 1 << (color-1);
+            }
+            if (colorCheck != hasAllColors) 
+                return false;
+        }
+        
+        return true;
+    }
 
 }
