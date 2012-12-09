@@ -98,6 +98,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             if (node.turns == 0)
                 continue;
             
+            //TODO can improve by removing t from Node definition
             Node newTNode = new Node(node.hand ,
                     node.turns,
                     node.t,
@@ -162,6 +163,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             //play c0s
             
+            //TODO precomute like max[hand][index]
+            
             //Will be first index to large
             int max_c0_index = 0;
             while(max_c0_index < c0_cards.size() && c0_cards.get(max_c0_index).index < node.hand) {
@@ -187,12 +190,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
             }
             
-            Node newNode = new Node(node.hand, 0, node.t,node.c1,node.c2);
+            Node newNode = new Node(-1, 0, -1,-1,-1);
             graph.addNode(newNode);
             graph.addEdge(node,newNode,weight);
             
         }
         
+        
+        log.info("Nodes: " + graph.getNumNodes());
         memoize = new int[graph.getNumNodes()];
         Arrays.fill(memoize,-1);
         
@@ -200,6 +205,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return "Case #" + input.testCase + ": " + maxWeight;
     }
     
+    /**
+     * Doing a bottom up would require a topological sort
+     * @param graph
+     * @param nodeNum
+     * @return
+     */
     public int getMaxDistance(DAG<Node> graph, int nodeNum) {
         
         if (memoize[nodeNum] >= 0) 

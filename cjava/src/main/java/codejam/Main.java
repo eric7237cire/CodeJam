@@ -24,7 +24,7 @@ public class Main  {
         if (args.length < 1) {
             //args = new String[] { "sample.txt" };
            // args = new String[] { "B-small-practice.in" };
-            args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1A\\sample.in" };
+            args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1A\\C-large-practice.in" };
          }
          log.info("Input file {}", args[0]);
 

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
@@ -60,6 +61,15 @@ public class DAG<Node> {
         nextNodeNum++;
     }
     
+   /* public void addNode(Node node, int nodeNum) {
+        if (nodes.containsKey(node)) {
+            return;
+        }
+        
+        nodes.put(node,nodeNum);
+        
+    }*/
+    
     public boolean nodeExists(Node node) {
         return nodes.containsKey(node); 
     }
@@ -67,7 +77,10 @@ public class DAG<Node> {
     public void addEdge(Node from, Node to, int weight) {
         int fromNum = nodes.get(from);
         int toNum = nodes.get(to);
+               
         Edge edge = new Edge(fromNum,toNum);
+        
+        Preconditions.checkState(!edges.containsKey(edge));
         edges.put(edge,weight);
         
         if (!connections.containsKey(fromNum)) {
