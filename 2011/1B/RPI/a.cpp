@@ -33,33 +33,25 @@ int N;
 void run(int casenr) {
 	memset(winLoss, '.', sizeof(winLoss));
 	scanf("%d", &N);
-	//printf("N is %d\n", N);
 	
 	FOR(i,0,N) scanf("%s", winLoss[i]);
-	
-	//FOR(i,0,N) cout << winLoss[i] << endl;
 	
 	int wpNum[MAX_TEAM_NUM]; RESET(wpNum,0);
 	int wpDenom[MAX_TEAM_NUM]; RESET(wpDenom, 0);
 
 	//OWP [team] [opponnent]  is WP ignoring games against team
 	double owpNum[MAX_TEAM_NUM]; RESET(owpNum, 0);
-
 	double oowpNum[MAX_TEAM_NUM]; RESET(oowpNum, 0);
 	
+	char ch;
 	FOR(i,0,N)
 		FOR(j,i+1,N) 
-	{
-		char ch = winLoss[i][j];
-			if ( ch != '.') 
-	{
-		wpNum[i] += ch == '1' ? 1 : 0;
-		wpDenom[i] ++;
-		wpNum[j] += ch == '0' ? 1 : 0;
-		wpDenom[j] ++;
-	}
+			if ( (ch = winLoss[i][j]) != '.') 
+			{
+				wpNum[i] += ch == '1' ? 1 : 0; wpDenom[i] ++;
+				wpNum[j] += ch == '0' ? 1 : 0; wpDenom[j] ++;
+			}
 	
-	}
 
 	FOR(i,0,N)
 	{
@@ -67,20 +59,12 @@ void run(int casenr) {
 		double avgOpp = 0;
 		FOR(j,0,N) 
 		{
-			//team I, opponent is J
-			if (i==j) 
+			//team I, opponent is J.  They must have played against one another
+			if (i==j || (ch = winLoss[j][i]) == '.') 
 				continue;
-			char ch = winLoss[j][i];
-
-			//They must have played against one another
-			if (ch == '.')
-				continue;
-
-			int denom = wpDenom[j] - 1;
+			
 			numOpp++;
-			double opp = (denom == 0) ? 0 : (double) (wpNum[j] - (ch == '1' ? 1 : 0))  / denom;
-			avgOpp += opp;
-			 
+			avgOpp += wpDenom[j] - 1 == 0 ? 0 : (double) (wpNum[j] - (ch == '1' ? 1 : 0))  / (wpDenom[j] - 1);			 
 		}
 		owpNum[i] = numOpp > 0 ? avgOpp / numOpp : 0;
 	}
@@ -91,22 +75,14 @@ void run(int casenr) {
 		double avgOowp = 0;
 		FOR(j,0,N) 
 		{
-			//team I, opponent is J
-			if (i==j) 
-				continue;
-			char ch = winLoss[j][i];
-
-			//They must have played against one another
-			if (ch == '.')
+			if (i==j || winLoss[j][i] == '.') 
 				continue;
 
 			numOpp++;
 			avgOowp += owpNum[j];
-
 		}
 
-		oowpNum[i] = numOpp > 0 ? avgOowp / numOpp : 0;
-		
+		oowpNum[i] = numOpp > 0 ? avgOowp / numOpp : 0;		
 	}
 	
 	printf("Case #%d:\n",casenr);
@@ -116,11 +92,7 @@ void run(int casenr) {
 		double owp = owpNum[i];
 		double oowp = oowpNum[i];
 		printf("%.6f\n", winPer * 0.25 + owp * 0.5 + oowp * 0.25);
-
 	}
-	
-
-	//check(ret);
 }
 
 int main() {
