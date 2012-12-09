@@ -64,6 +64,7 @@ void run(int casenr) {
 				continue;
 			
 			numOpp++;
+			//Remove game between i and j
 			avgOpp += wpDenom[j] - 1 == 0 ? 0 : (double) (wpNum[j] - (ch == '1' ? 1 : 0))  / (wpDenom[j] - 1);			 
 		}
 		owpNum[i] = numOpp > 0 ? avgOpp / numOpp : 0;
