@@ -24,8 +24,8 @@ public class Main  {
         if (args.length < 1) {
             //args = new String[] { "sample.txt" };
            // args = new String[] { "B-small-practice.in" };
-            args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1B\\B-large-practice.in" };
-            //args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1B\\sample.in" };
+           // args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1B\\B-large-practice.in" };
+            args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1B\\sample.in" };
          }
          log.info("Input file {}", args[0]);
 
@@ -85,7 +85,9 @@ public class Main  {
          //codejam.y2011.round_1A.dominion.Main m = new codejam.y2011.round_1A.dominion.Main();
          
          //2011 1B
-         codejam.y2011.round_1B.hotdog_revenge.Main m = new codejam.y2011.round_1B.hotdog_revenge.Main();
+         //codejam.y2011.round_1B.hotdog_revenge.Main m = new codejam.y2011.round_1B.hotdog_revenge.Main();
+         codejam.y2011.round_1B.house_kittens.Main m = new codejam.y2011.round_1B.house_kittens.Main();
+         
          Runner.goSingleThread(args[0], m, m);
          
 
