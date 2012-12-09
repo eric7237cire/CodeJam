@@ -1,0 +1,6 @@
+document.write('<iframe allowtransparency=\"true\" scrolling=\"no\" marginwidth=\"0\" marginheight=\"0\" frameborder=\"0\" height=\"60\" width=\"468\" src=\"http://ib.adnxs.com/acb?member=541&width=468&height=60&pb=4&cb=1355088443&referrer=\"></iframe>');
+var rm_data = new Object();
+rm_data.creative_id = 7725234;
+rm_data.offer_type = 3;
+rm_data.entity_id = 385332;
+if (window.rm_crex_data) {rm_crex_data.push(7725234);}

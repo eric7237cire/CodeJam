@@ -1,18 +1,13 @@
 package codejam.y2011.round_1B.house_kittens;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 import java.util.Set;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -20,9 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
-import codejam.utils.utils.DoubleComparator;
 
-import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
@@ -50,10 +43,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String handleCase(InputData input) {
         
-        List<Set<Integer>> vertexSets = new ArrayList<>();
+        List<List<Integer>> vertexSets = new ArrayList<>();
         
         //generate first set
-        Set<Integer> allVertices = Sets.newHashSet();
+        List<Integer> allVertices = new ArrayList<>();
         for(int n = 1; n <= input.N; ++n) {
             allVertices.add(n);
         }
@@ -62,7 +55,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         for(Pair<Integer,Integer> pair : input.interiorWalls) {
             //find the set that contains both vertexes
             int setIndex = 0;
-            Set<Integer> set = vertexSets.get(setIndex);
+            List<Integer> set = vertexSets.get(setIndex);
             
             while(!set.contains(pair.getLeft()) || !set.contains(pair.getRight())) {
                 ++setIndex;
@@ -72,8 +65,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             vertexSets.remove(setIndex);
             //Now divide the set into 2
             
-            Set<Integer> set1  = Sets.newHashSet();
-            Set<Integer> set2 = Sets.newHashSet();
+            List<Integer> set1  = new ArrayList<>();
+            List<Integer> set2 = new ArrayList<>();
             //go from u to v
             for(int n = pair.getLeft(); n <= pair.getRight(); ++n) {
                 if (set.contains(n))
@@ -93,7 +86,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         int minVertexCount = Integer.MAX_VALUE;
         
-        for(Set<Integer> set : vertexSets) {
+        for(List<Integer> set : vertexSets) {
             minVertexCount = Math.min(minVertexCount, set.size());
         }
         
@@ -103,6 +96,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             if (assignment != null) {
                 return "Case #" + input.testCase + ": " + colors + "\n" + Ints.join(" ",assignment);
+            } else {
+                log.info("Invalid {}", colors);
             }
         }
         
@@ -110,7 +105,97 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     }
     
-    int[] canAssign(List<Set<Integer>> vertexSets, int colors, int N) {
+    int[] canAssign(List<List<Integer>> vertexSets, int colors, int N) {
+        int[] assignment = new int[N];
+        Arrays.fill(assignment, 0);
+        
+        Collections.sort(vertexSets, new Comparator<List<Integer>>() {
+
+            @Override
+            public int compare(List<Integer> o1, List<Integer> o2) {
+                return Integer.compare(o2.size(), o1.size());
+            }
+            
+        });
+        
+        
+        for(List<Integer> set : vertexSets) {
+            
+            int usedColors = 0; //(1 << colors) - 1;
+            int colorsLeftToUse = colors;
+            
+            //Find unassigned colors
+            for(Integer vertex : set) {
+                int color = assignment[vertex-1];
+                if (color > 0) {
+                    usedColors |= 1 << (color-1);                    
+                }
+            }
+            
+            for(int i = 0; i < set.size(); ++i) {
+                int vertex = set.get(i);
+                int prevVertex = set.get( i == 0 ? set.size() - 1 : i - 1);
+                int nextVertex = set.get( i == set.size() - 1 ? 0 : i + 1);
+                
+                int color = assignment[vertex-1];
+                int prevColor = assignment[prevVertex - 1];
+                int nextColor = assignment[nextVertex - 1];
+                
+                if (color == 0) {
+                    //Assign the rest
+                    int unusedColorBit = ~usedColors & (usedColors+1);
+                    usedColors |= unusedColorBit;
+                    color = Integer.numberOfTrailingZeros(unusedColorBit) + 1;
+                    Preconditions.checkState(1 <= color && color <= colors);
+                    assignment[vertex-1] = color;
+                }
+            }
+        }
+        
+        boolean incremented = true;
+        
+        while(incremented) {
+            incremented=false;
+            
+            for(int i = 0; i < N; ++i) {
+                assignment[i]++;
+                if (assignment[i] > colors) {
+                    assignment[i] = 1;
+                } else {
+                    incremented = true;
+                    break;
+                }
+            }
+            
+            if (!incremented) {
+                break;
+            }
+            
+            if (isValidList(vertexSets, assignment, colors)) {
+                return assignment;
+            }
+        }
+        
+        return null;
+        
+    }
+    
+    boolean isValidList(List<List<Integer>> vertexSets, int[] assignment, int colors) {
+        int hasAllColors = (1 << colors) - 1;
+        for(List<Integer> set : vertexSets) {
+            int colorCheck = 0;
+            for(Integer v : set) {
+                int color = assignment[v-1];
+                colorCheck |= 1 << (color-1);
+            }
+            if (colorCheck != hasAllColors) 
+                return false;
+        }
+        
+        return true;
+    }
+    
+    int[] canAssign2(List<Set<Integer>> vertexSets, int colors, int N) {
         int[] assignment = new int[N];
         Arrays.fill(assignment, 1);
         

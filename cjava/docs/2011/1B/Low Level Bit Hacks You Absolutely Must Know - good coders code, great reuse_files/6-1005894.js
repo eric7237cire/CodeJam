@@ -1,0 +1,1 @@
+document.writeln('<SCRIPT TYPE="text\/javascript" SRC="http:\/\/adserving.cpxinteractive.com\/st?ad_type=ad&ad_size=234x60&section=1517604&referrer=' + encodeURI(window.location.href) + '"><\/SCRIPT>');
