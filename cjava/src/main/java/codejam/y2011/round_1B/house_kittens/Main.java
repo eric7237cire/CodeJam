@@ -102,6 +102,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             int[] assignment = new int[input.N];
             
+            count = 0;
             boolean chk = backtrack(assignment, 0, vertexSets, colors);
             Preconditions.checkState(isValid(vertexSets,assignment,colors));
             
@@ -116,9 +117,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     }
     
+    private int count = 0;
+    
     private boolean backtrack(int[] solution, int verticesColored,
             List<List<Integer>> vertexSets, final int colors) {
 
+        ++count;
+        if (count % 10 == 0) {
+            log.info("Backtrack. count {}  vc {}", count, verticesColored);
+        }
         if (!isValidPartial(vertexSets, solution, colors)) {
             //solution[verticesColored+1] = 0;
             return false;
@@ -223,8 +230,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     colorCheck.set(color-1);
                     usedColors++;
                 }
-                
-                
             }
             
             if (usedColors + blanks < colors) 
