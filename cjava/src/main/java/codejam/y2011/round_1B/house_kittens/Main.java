@@ -3,19 +3,26 @@ package codejam.y2011.round_1B.house_kittens;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.datastructures.GraphInt;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
-import codejam.y2009.round_3.football_team.Graph;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import com.google.common.primitives.Ints;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
@@ -37,31 +44,50 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return input;
     }
     
-    
+    public boolean doesVertexSetContainInteriorWall(Pair<Integer, Integer> interiorWall, List<Integer> set) {
+        if (interiorWall != null  &&
+                set.contains(interiorWall.getLeft()) &&
+                set.contains(interiorWall.getRight())
+                ) {
+            return true;
+        }
+        return false;
+    }
     @Override
     public String handleCase(InputData input) {
         
-        List<List<Integer>> vertexSets = new ArrayList<>();
+        /*
+         * List of the pillars (vertices) of each room
+         * 
+         * index = roomIndex
+         */
+        List<List<Integer>> roomPillars = new ArrayList<>();
+        
+        /*
+         * List of the walls touching each room.
+         * 
+         * index = roomIndex
+         */
+        List<Set<Integer>> roomInteriorWalls = new ArrayList<>();
         
         //generate first set
         List<Integer> allVertices = new ArrayList<>();
         for(int n = 1; n <= input.N; ++n) {
             allVertices.add(n);
         }
-        vertexSets.add(allVertices);
-        
+        roomPillars.add(allVertices);
+        roomInteriorWalls.add( Sets.<Integer>newHashSet());
        
-        
-        for(Pair<Integer,Integer> pair : input.interiorWalls) {
-            
+        for(int wallIndex = 0; wallIndex < input.interiorWalls.size(); ++wallIndex) {
+            Pair<Integer,Integer> pair = input.interiorWalls.get(wallIndex);
            
             //find the set that contains both vertexes
             int setIndex = 0;
-            List<Integer> set = vertexSets.get(setIndex);
+            List<Integer> set = roomPillars.get(setIndex);
             
             while(!set.contains(pair.getLeft()) || !set.contains(pair.getRight())) {
                 ++setIndex;
-                set = vertexSets.get(setIndex);
+                set = roomPillars.get(setIndex);
             }
             
             
@@ -81,30 +107,115 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 if (set.contains(n))
                     set2.add(n);
             }
+        
+            //Find adjacent interior room walls of set we are going to remove
             
-            vertexSets.remove(setIndex);
+            //wall indexes that are adjacent to the set
+            Set<Integer> adjRemove = roomInteriorWalls.get(setIndex);
+            
+            //Determine which walls are adjacent to the new set split by the wall just added
+            Set<Integer> adjSet1 = Sets.newHashSet(wallIndex);
+            Set<Integer> adjSet2 = Sets.newHashSet(wallIndex);
+            
+            for(Integer wallIndexOfRemovedSet : adjRemove) {
+                Pair<Integer,Integer> wall = input.interiorWalls.get(wallIndexOfRemovedSet);
+                if (set1.contains(wall.getLeft()) && set1.contains(wall.getRight())) {
+                    adjSet1.add(wallIndexOfRemovedSet);
+                }
+                if (set2.contains(wall.getLeft()) && set2.contains(wall.getRight())) {
+                    adjSet2.add(wallIndexOfRemovedSet);
+                }
+            }
             
             
-            vertexSets.add(set1);
-            vertexSets.add(set2);
+            roomPillars.remove(setIndex);            
+            roomInteriorWalls.remove(setIndex);
+            
+            roomPillars.add(set1);
+            roomPillars.add(set2);
+            
+            roomInteriorWalls.add(adjSet1);
+            roomInteriorWalls.add(adjSet2);
             
         }
+        
+        
+        //Now create a map from wall index to room indexes
+        List<List<Integer>> wallToRooms = new ArrayList<>();
+        for(int wallIndex = 0; wallIndex < input.interiorWalls.size(); ++wallIndex) {
+            wallToRooms.add(new ArrayList<Integer>());
+        }
+        
+        for(int roomIndex = 0; roomIndex < roomInteriorWalls.size(); ++roomIndex) {
+            for(int wallIndex : roomInteriorWalls.get(roomIndex)) {
+                wallToRooms.get(wallIndex).add(roomIndex);
+            }
+        }
+        
+        //And finally a graph connecting all rooms that share a wall (ie, share 2 vertices)
+        GraphInt graph = new GraphInt();
+        
+        for(int wallIndex = 0; wallIndex < wallToRooms.size(); ++wallIndex) {
+            for(int roomIndex : wallToRooms.get(wallIndex)) {
+                for(int room2Index : wallToRooms.get(wallIndex)) {
+                    if (roomIndex != room2Index) {
+                        graph.addConnection(roomIndex,room2Index);
+                    }
+                }
+            }
+        }
+        
+        //Now do a breadth first ordering
+        Queue<Integer> queue = new LinkedList<>();
+        LinkedHashSet<Integer> visited = new LinkedHashSet<>();
+        queue.add(0);
+                
+        while(!queue.isEmpty()) {
+            int roomIndex = queue.remove();
+            
+            if (visited.contains(roomIndex))
+                continue;
+            
+            visited.add(roomIndex);
+            
+            Set<Integer> neighbors = graph.getNeighbors(roomIndex);
+            for(Integer neighRoomIndex : neighbors) {                
+                queue.add(neighRoomIndex);
+            }
+        }
+
+        List<List<Integer>> orderedRoomPillars = new ArrayList<>();
+        int index = 0;
+        for(Integer roomIndex : visited) {
+            orderedRoomPillars.add(roomPillars.get(roomIndex));
+        }
+        
+        //do breadth width search of sets
         
         int minVertexCount = Integer.MAX_VALUE;
         
         
-        for(int i = 0; i < vertexSets.size(); ++i) {
-            List<Integer> set = vertexSets.get(i);
+        for(int i = 0; i < roomPillars.size(); ++i) {
+            List<Integer> set = roomPillars.get(i);
             minVertexCount = Math.min(minVertexCount, set.size());
         }
+        
+        Collections.sort(roomPillars, new Comparator<List<Integer>>() {
+
+            @Override
+            public int compare(List<Integer> o1, List<Integer> o2) {
+                return Integer.compare(o2.size(), o1.size());
+            }
+            
+        });
         
         for(int colors = minVertexCount; colors >= 0; --colors) {
             
             int[] assignment = new int[input.N];
             
             count = 0;
-            boolean chk = backtrack(assignment, 0, vertexSets, colors);
-            Preconditions.checkState(isValid(vertexSets,assignment,colors));
+            boolean chk = backtrack(assignment, 0, 0, orderedRoomPillars, colors);
+            Preconditions.checkState(isValid(roomPillars,assignment,colors));
             
             if (chk) {
                 return "Case #" + input.testCase + ": " + colors + "\n" + Ints.join(" ",assignment);
@@ -119,28 +230,41 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     private int count = 0;
     
-    private boolean backtrack(int[] solution, int verticesColored,
+    private boolean backtrack(int[] solution, int currentSet, int currentVertex,
             List<List<Integer>> vertexSets, final int colors) {
 
         ++count;
-        if (count % 10 == 0) {
-            log.info("Backtrack. count {}  vc {}", count, verticesColored);
+        if (count % 10000 == 0) {
+            log.info("Backtrack. count {}  vc {}", count, currentSet);
         }
         if (!isValidPartial(vertexSets, solution, colors)) {
             //solution[verticesColored+1] = 0;
             return false;
         }
-        if (verticesColored == solution.length && isValid(vertexSets,solution,colors)) {
+        if (currentSet == vertexSets.size() && isValid(vertexSets,solution,colors)) {
             return true;
         }
+        
+        List<Integer> set = vertexSets.get(currentSet);
+        
+        if (currentVertex >= set.size()) {
+            return backtrack(solution,currentSet+1,0,vertexSets,colors);
+        }
+        
+        int vertex = set.get(currentVertex);
+        
+        if (solution[vertex-1] != 0) {
+            return backtrack(solution, currentSet,currentVertex+1, vertexSets, colors);
+        }
+        
         for (int i = 1; i <= colors; ++i) {
-            solution[verticesColored] = i;
-            boolean r = backtrack(solution, verticesColored+1, vertexSets, colors);
+            solution[vertex-1] = i;
+            boolean r = backtrack(solution, currentSet, currentVertex+1, vertexSets, colors);
             if (r) {
                 return true;
             }
         }
-        solution[verticesColored] = 0;
+        solution[vertex-1] = 0;
         
         return false;
     }
@@ -222,10 +346,21 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             BitSet colorCheck = new BitSet(colors);
             int blanks = 0;
             int usedColors = 0;
-            for(Integer v : set) {
+            for(int i = 0; i < set.size(); ++i) {
+                int v = set.get(i);
+                int prevVertex = set.get( i == 0 ? set.size() - 1 : i - 1);
+                int nextVertex = set.get( i == set.size() - 1 ? 0 : i + 1);
+
                 int color = assignment[v-1];
-                if (color == 0)
+                int prevColor = assignment[prevVertex - 1];
+                int nextColor = assignment[nextVertex - 1];
+                
+                
+                if (color == 0) {
                     blanks++;
+                } else if (color == prevColor || color == nextColor) {
+                    return false;
+                }
                 else if (!colorCheck.get(color-1)) {
                     colorCheck.set(color-1);
                     usedColors++;
