@@ -24,7 +24,7 @@ public class Main  {
         if (args.length < 1) {
             //args = new String[] { "sample.txt" };
            // args = new String[] { "B-small-practice.in" };
-           // args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1B\\B-large-practice.in" };
+            //args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1B\\C-small-practice.in" };
             args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1B\\sample.in" };
          }
          log.info("Input file {}", args[0]);
@@ -47,7 +47,7 @@ public class Main  {
          //Round 3
          //codejam.y2009.sokoban.Main m = new codejam.y2009.sokoban.Main();
          //codejam.y2009.alphabetomials.Main m = new codejam.y2009.alphabetomials.Main();
-         //codejam.y2009.football_team.Main m = new codejam.y2009.football_team.Main();
+        // codejam.y2009.round_3.football_team.Main m = new codejam.y2009.round_3.football_team.Main();
          //codejam.y2009.interesting_ranges.Main m = new codejam.y2009.interesting_ranges.Main();
          
        //Round 4 -- 2009

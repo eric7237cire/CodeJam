@@ -1,10 +1,11 @@
-package codejam.y2009.football_team;
+package codejam.y2009.round_3.football_team;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -96,12 +97,14 @@ public class Main implements TestCaseHandler<InputData>,TestCaseInputScanner<Inp
 			}
 		}
 
+		//Degree 0 nodes can be any color
 		graph.stripNodesOfDegreeLessThan(1);
 
 		if (graph.getNodes().isEmpty()) {
 			return 1;
 		}
 
+		//A degree 1 node will just be the color that is not the node it is connected to
 		graph.stripNodesOfDegreeLessThan(2);
 
 		if (graph.getNodes().isEmpty()) {
@@ -114,69 +117,70 @@ public class Main implements TestCaseHandler<InputData>,TestCaseInputScanner<Inp
 			return 2;
 		}
 
+		//Here we know we have at least 3 colors.  A node of degree 2 will just be the color that is not 
+		//one of the nodes it is connected to.  
 		graph.stripNodesOfDegreeLessThan(3);
 
-		//List<Graph<Integer>> connectedGraphs = graph.getAllConnectedGraphs();
+        Graph<Integer> g = graph;
 
-		//for (Graph<Integer> g : connectedGraphs) {
-		
-		Graph<Integer> g = graph;
-			
-			players = new ArrayList<Integer>(graph.getNodes());
-			Collections.sort(players);
-			
-			int[] partialSolutionArray = null;
-			
-			while(players.size() > 0) {
-				
-				partialSolutionArray = partialSolution(g, players);
+        players = new ArrayList<Integer>(graph.getNodes());
+        Collections.sort(players);
 
-				if (partialSolutionArray == null) {
-					return 4;
-				}
-				
-				boolean found = false;
-				for(int i = 0; i < partialSolutionArray.length; ++i) {
-					if (partialSolutionArray[i] != 0) {
-						g.removeNode(players.get(i));
-						found = true;
-					}
-				}
-				
-				
-				
-				if (!found) {
-					break;
-				}
-				graph.stripNodesOfDegreeLessThan(3);
-				players = new ArrayList<Integer>(g.getNodes());
-				Collections.sort(players);
-			
-			}
+        int[] partialSolutionArray = null;
 
-			re = backtrack(new int[0], partialSolutionArray, 3, g, players);
-			if (!re) {
-				return 4;
-			}
-			log.info("Re is {}", re);
+        while (players.size() > 0) {
 
-		//}
+            partialSolutionArray = partialSolution(g, players);
 
-		return 3;
+            if (partialSolutionArray == null) {
+                return 4;
+            }
 
-	}
+            boolean found = false;
+            for (int i = 0; i < partialSolutionArray.length; ++i) {
+                if (partialSolutionArray[i] != 0) {
+                    g.removeNode(players.get(i));
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                break;
+            }
+
+            // This speeds things up.
+            graph.stripNodesOfDegreeLessThan(3);
+            players = new ArrayList<Integer>(g.getNodes());
+            Collections.sort(players);
+
+        }
+
+        re = backtrack(new int[0], partialSolutionArray, 3, g, players);
+        if (!re) {
+            return 4;
+        }
+        log.info("Re is {}", re);
+
+        // }
+
+        return 3;
+
+    }
 
 	private static int[] partialSolution(Graph<Integer> graph, List<Integer> players) {
 		int[] ret = new int[players.size()];
 
+		/*
+		 * Fill in triangles that share at least 2 vertices.  The coloring is
+		 * forced.
+		 */
 
 		// Find starting triangle
-		List<Set<Integer>> toSee = new ArrayList<>();
+		LinkedList<Set<Integer>> toSee = new LinkedList<>();
 
 		for (int playerIndex = 0; playerIndex < players.size(); ++playerIndex) {
 			Integer player = players.get(playerIndex);
-			// Set<Integer> cpSet = graph.getConnectedGraphNodes(player);
-
+			
 			Set<Integer> coloredVertices = graph.getTriangle(player);
 
 			if (coloredVertices == null) {
@@ -188,7 +192,7 @@ public class Main implements TestCaseHandler<InputData>,TestCaseInputScanner<Inp
 
 			ret[players.indexOf(it.next())] = 1;
 			ret[players.indexOf(it.next())] = 2;
-			// ret[players.indexOf(it.next())] = 3;
+			// The 3rd color is not filled in
 			toSee.add(coloredVertices);
 			break;
 		}

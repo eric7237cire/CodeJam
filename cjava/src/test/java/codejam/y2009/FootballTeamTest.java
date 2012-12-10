@@ -5,8 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.test.TesterBase;
-import codejam.y2009.football_team.InputData;
-import codejam.y2009.football_team.Main;
+import codejam.y2009.round_3.football_team.InputData;
+import codejam.y2009.round_3.football_team.Main;
 
 /**
  * Unit test for simple App.

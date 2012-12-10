@@ -1,8 +1,8 @@
 package codejam.y2009.interesting_ranges;
 
 import java.math.BigInteger;
-import java.util.Objects;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 public class Interval {
@@ -201,7 +201,7 @@ public class Interval {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(evenLeft, evenRight, isEvenSpanning, oddLeft,
+        return Objects.hashCode(evenLeft, evenRight, isEvenSpanning, oddLeft,
                 oddRight, totalEven);
     }
 
@@ -219,12 +219,12 @@ public class Interval {
         if (getClass() != obj.getClass())
             return false;
         Interval other = (Interval) obj;
-        return Objects.equals(evenLeft, other.evenLeft)
-            && Objects.equals(evenRight, other.evenRight)
-            &&  Objects.equals(isEvenSpanning, other.isEvenSpanning)
-            &&  Objects.equals(oddLeft, other.oddLeft)
-            &&  Objects.equals(oddRight, other.oddRight)
-            &&  Objects.equals(totalEven, other.totalEven);
+        return Objects.equal(evenLeft, other.evenLeft)
+            && Objects.equal(evenRight, other.evenRight)
+            &&  Objects.equal(isEvenSpanning, other.isEvenSpanning)
+            &&  Objects.equal(oddLeft, other.oddLeft)
+            &&  Objects.equal(oddRight, other.oddRight)
+            &&  Objects.equal(totalEven, other.totalEven);
             
     }
 
