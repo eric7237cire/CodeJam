@@ -21,7 +21,7 @@ public class Main  {
     
     public static void main(String args[]) throws Exception {
 
-        String dir = ".";
+       // String dir = ".";
         String[] files = new String[] { "a", "b", "c" };
 
          //Round 1B (2)
@@ -76,7 +76,7 @@ public class Main  {
          //codejam.y2010.rope_intranet.Main m = new codejam.y2010.rope_intranet.Main();
 
          //2010 2
-         dir = ".\\src\\main\\resources\\y2010\\2";
+         //dir = ".\\src\\main\\resources\\y2010\\2";
          //TODO large slow
          //codejam.y2010.round_2.diamond.Main m = new codejam.y2010.round_2.diamond.Main();
          //files = new String[] { "A-small-practice.in", "A-large-practice.in" };
@@ -84,14 +84,21 @@ public class Main  {
          //codejam.y2010.round_2.world_cup.Main m = new codejam.y2010.round_2.world_cup.Main();
          //files = new String[] { "B-small-practice.in", "B-large-practice.in" };
          
-         codejam.y2010.round_2.bacteria.Main m = new codejam.y2010.round_2.bacteria.Main();
-         files = new String[] { "C-small-practice.in", "C-large-practice.in" };
+         //codejam.y2010.round_2.bacteria.Main m = new codejam.y2010.round_2.bacteria.Main();
+         //files = new String[] { "C-small-practice.in", "C-large-practice.in" };
          
          //codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
          //TODO correct
          //files = new String[] { "D-small-practice.in", "D-large-practice.in" };
          
+         //2010 3
+         String dir = ".\\src\\main\\resources\\y2010\\3";
          
+         //codejam.y2010.round_3.rng.Main m = new codejam.y2010.round_3.rng.Main();
+         //files = new String[] { "A-small-practice.in", "A-large-practice.in" };
+         
+         codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();
+         files = new String[] { "C-small-practice.in", "C-large-practice.in" };
          
          //2011 1A
          //codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
