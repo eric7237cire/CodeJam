@@ -22,8 +22,14 @@ public class Main  {
     public static void main(String args[]) throws Exception {
 
        // String dir = ".";
-        String[] files = new String[] { "a", "b", "c" };
+        //String[] files = new String[] { "a", "b", "c" };
 
+        String dir = ".\\src\\main\\resources\\y2008\\apac";
+        codejam.y2008.round_apac.millionaire.Main m = new codejam.y2008.round_apac.millionaire.Main();
+        //String[] files = new String[] { "sample.in" };
+        //String[] files = new String[] { "C-small-practice.in", "C-large-practice.in" };
+        String[] files = new String[] { "C-small-practice.in"  };
+        
          //Round 1B (2)
          //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
          //codejam.y2009.round_1B.square_math.Main m = new codejam.y2009.round_1B.square_math.Main();
@@ -92,13 +98,13 @@ public class Main  {
          //files = new String[] { "D-small-practice.in", "D-large-practice.in" };
          
          //2010 3
-         String dir = ".\\src\\main\\resources\\y2010\\3";
+         //String dir = ".\\src\\main\\resources\\y2010\\3";
          
          //codejam.y2010.round_3.rng.Main m = new codejam.y2010.round_3.rng.Main();
          //files = new String[] { "A-small-practice.in", "A-large-practice.in" };
          
-         codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();
-         files = new String[] { "C-small-practice.in", "C-large-practice.in" };
+         //codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();
+         //files = new String[] { "C-small-practice.in", "C-large-practice.in" };
          
          //2011 1A
          //codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();

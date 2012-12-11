@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -32,6 +33,8 @@ public class Runner {
     public static <InputData extends AbstractInputData> void goSingleThread(
             String inputFileName, TestCaseInputScanner<InputData> inputReader,
             TestCaseHandler<InputData> testCaseHandler) {
+        
+        Locale.setDefault(Locale.US);
 
         long overAllStart = System.currentTimeMillis();
         

@@ -1,7 +1,5 @@
 package codejam.y2010.round_2.diamond;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
