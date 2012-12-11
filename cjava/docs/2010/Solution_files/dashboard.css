@@ -1,0 +1,675 @@
+/* Copyright 2007 Google Inc. */
+/* All Rights Reserved. */
+
+/**
+ * High Impact Styles
+ */
+
+body {
+  min-width: 50em;
+}
+
+form {
+  margin: 0;
+}
+
+#dsb-page-body {
+  position: relative;
+  clear: both;
+  margin: 0 0 0.5em 0;
+  display: block;
+}
+
+table, th, tr, td {
+  border-collapse: collapse;
+  border-width: 0pt;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+div.main {
+  display: none;  /* Don't show initially */
+}
+
+
+#dsb-header-links {
+  text-align: right;
+}
+
+#dsb-contest-title-bar {
+  position: relative;
+  padding: 0.5em 0.3em 0.3em 0.3em;
+  text-align: right;
+}
+
+#dsb-rank-etc {
+  float: left;
+}
+
+/**
+ * ----------------------------------------------------------------------
+ * Menu (LEFT side of main panel)
+ * ----------------------------------------------------------------------
+ */
+
+#left-panel {
+  float: left;
+  width: 14.6em;
+  overflow: hidden;
+  display: inline;
+  padding-top: 5.3em;
+}
+
+/**
+ * Styles for controlling open/close problem links
+ */
+
+#dsb-analysis-button {
+  display: none
+}
+
+#dsb-contest-title {
+  color: #333333;
+  padding: 0 0 0 0.8em;
+}
+
+.before-start-only {
+  display: none
+}
+
+.before-start-only-inline {
+  display: none
+}
+
+.after-start-only {
+  display: none
+}
+
+.after-start-only-inline {
+  display: none
+}
+
+div.dsb-pre-contest-text {
+  color: black;
+  cursor: default;
+  text-decoration: none;
+  position: relative;
+  padding: 0.5em 1em 0.5em 1em;
+}
+
+div.dsb-problem-tab-open div.dynamic-link {
+  color: black;
+  cursor: default;
+  font-weight: bold;
+  text-decoration: none;
+  background-color: #c3d9ff;
+}
+
+div.dsb-clar-tab-open div.dynamic-link,
+div.dsb-submissions-tab-open div.dynamic-link,
+div.dsb-anal-tab-open div.dynamic-link {
+  color: black;
+  cursor: default;
+  font-weight: bold;
+  text-decoration: none;
+  background-color: #c9edcc;
+}
+
+div.dsb-clar-tab-close div.dynamic-link,
+div.dsb-submissions-tab-close div.dynamic-link,
+div.dsb-problem-tab-close div.dynamic-link,
+div.dsb-anal-tab-close div.dynamic-link {
+  background-color: white;
+  cursor: pointer;
+}
+
+/* Simulate links */
+div.dsb-problem-tab-open div.dynamic-link div,
+div.dsb-anal-tab-open div.dynamic-link div {
+  color: black;
+  text-decoration: none;
+  display: inline;
+}
+
+div.dsb-problem-tab-close div.dynamic-link div,
+div.dsb-anal-tab-close div.dynamic-link div {
+  color: blue;
+  text-decoration: underline;
+  display: inline;
+}
+
+/**
+ * Status for each problem
+ */
+div.problem-status-wrapper {
+  padding-top: 0.3em;
+  padding-bottom: 0.3em;
+  padding-right: 0.5em;
+  padding-left: 0.3em;
+}
+
+table.problemStatus {
+  margin: 0.3em 0 0.3em 0em;
+  color: #666666;
+  font-size: 90%;
+}
+
+table.problemStatus td.inputName {
+  width: 2em;
+  text-align: right;
+  padding-right: 0.4em;
+  border-right: 1px solid #b6caee;
+}
+
+table.problemStatus td.status {
+  padding-left: 0.4em;
+}
+
+.dsb-mini-status-highlight {
+  color: black;
+  display: inline;
+  background-color: #eefbce;
+}
+
+.dsb-mini-status-non-highlight {
+  color: black;
+}
+
+/**
+ * Submission Status Tab
+ */
+
+.dsb-mini-tab-wrapper {
+  border: 0.2em solid #c3d9ff;
+  margin: 0 0.9em 0 0.3em;
+  width: 13.5em;
+  -moz-border-radius: 0.3em;
+  -webkit-border-radius: 0.3em;
+  -khtml-border-radius: 0.3em;
+  border-radius: 0.3em;
+}
+
+.dsb-status-problem-title {
+  color: black;
+  font-size: 90%;
+  padding: 0.15em 0 0.25em 0;
+  border-bottom: 1px solid #cccccc;
+}
+
+/**
+ * Mini Scoreboard
+ */
+#dsb-scoreboard-div {
+  font-weight: 500;
+}
+
+#dsb-scoreboard-table {
+  width: 13.48em;
+  font-size: small;
+}
+
+#dsb-scoreboard-header-div,
+#dsb-status-header-div {
+  border-bottom: 1px solid #c3d9ff;
+  background-color: #c3d9ff;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+  padding-left: 0.5em;
+  font-size: 95%;
+}
+
+div.dsb-mini-tab-link {
+  padding: 0 0.5em 0.5em 0;
+  text-align: right;
+}
+
+.dsb-name-td {
+  width: 11em;
+  padding: 0.2em 0 0.2em 0.5em;
+}
+
+.dsb-score-td {
+  text-align: right;
+  width: 2.48em;
+  padding-right: 20px;
+  padding: 0.2em 0.5em 0.2em 0;
+}
+
+.dsb-scoreboard-row-odd {
+  background-color: #eeeeee;
+}
+
+hr.dsb-hr {
+  background-color: #c3d9ff;
+  color: #c3d9ff;
+  width: 90%;
+  height: 1px;
+  border: 0;
+}
+
+/**
+ * ----------------------------------------------------------------------
+ */
+
+
+/**
+ * ----------------------------------------------------------------------
+ * Problem Panel (RIGHT side of main panel)
+ * ----------------------------------------------------------------------
+ */
+
+#right-panel {
+  float: none;
+  margin-left: 14.5em;
+  z-index: 5;
+}
+
+/**
+ * Border - wraps everything about the current problem and clarifications inside
+ */
+div.dsb-blue-border {
+  position: relative;
+  padding: 0.45em;
+  background-color: #c3d9ff;
+  -moz-border-radius: 0.2em;
+  -webkit-border-radius: 0.2em;
+  -khtml-border-radius: 0.2em;
+  border-radius: 0.2em;
+}
+
+div.dsb-green-border {
+  position: relative;
+  padding: 0.45em;
+  background-color: #c9edcc;
+  -moz-border-radius: 0.2em;
+  -webkit-border-radius: 0.2em;
+  -khtml-border-radius: 0.2em;
+  border-radius: 0.2em;
+}
+
+#dsb-border-inner {
+  background-color: white;
+  padding: 0.5em;
+}
+
+/* Used for status message */
+div.dsb-status-msg-wrapper {
+  text-align: center;
+  visibility: hidden;
+}
+
+div.dsb-status-msg {
+  font-weight: bold;
+  display: inline;
+  padding: 0.4em 1em 0.4em 1em;
+  line-height: 1.75em;
+  background-color: #faeca5;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
+  -khtml-border-radius: 0.5em;
+  border-radius: 0.5em;
+}
+
+#dsb-view-it-link {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.dsb-content-pages {
+  padding: 1em;
+  display: none;
+  min-height: 45em;
+  height: auto !important;
+  height: 45em;
+}
+
+/* The table that displays all the clarifications */
+div.clarTableWrapper {
+  padding-top: 1em;
+  max-height: 40em;
+  overflow: auto;
+}
+
+tr.dsb-clar-tr td {
+  empty-cells: show;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  padding-left: 0.5em;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+tr.dsb-clar-tr-odd {
+  background-color: #efefef;
+}
+
+tr.dsb-clar-tr-announcement {
+  background-color: #ffffd4;
+}
+
+.clarTimeColumn {
+  text-align: right;
+}
+
+td.clarProbTd {
+  padding: 0.2em 0.5em 0.2em 0.5em;
+}
+
+/* Problem Title */
+div.problem-title {
+  color: #333333;
+  padding: 0.4em;
+  margin: 0 0.5em 0 0.5em;
+  border-bottom: 0.1em solid #e8f0ff;
+  font-size: 112%;
+  font-weight: bold;
+}
+
+/* Input Panel - Showing input files */
+.dsb-input-panel-text {
+  padding-bottom: 0.5em;
+}
+
+span.problemInput {
+  padding: 0.4em 0.4em 0.4em 0.4em;
+  /* position: absolute; */
+  /* visibility: hidden; */
+  height: 1em;
+}
+
+span.inputText {
+  display: inline;
+  padding-left: 0.3em;
+  vertical-align: middle;
+}
+
+span.inputText span.inputLink {
+  color: blue;
+  text-decoration: underline;
+}
+
+span.inputTextStatic {
+  display: inline;
+  padding-left: 0.3em;
+  vertical-align: middle;
+}
+
+input.submitFormFile {
+  margin: 0.1em 0.5em 0.1em 0.5em;
+}
+
+span.dsb-submit-form-links {
+  margin-left: 0.25em;
+  color: blue;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+span.dsb-submit-form-redownload-zipped-link {
+  margin-left: 0em;  /* A special case for the redownload button */
+}
+
+div.dsb-submit-form-separator {
+  margin-top: 0.5em;
+  padding-top:0.5em;
+  padding-bottom:0.2em;
+  border-top: 0.1em solid #fff8aa;
+}
+
+/* Problem Content - This is where the problem statement or analysis goes */
+.dsb-problem-content-div {
+  vertical-align: top;
+  margin-right: 6em;
+  margin-top: 2em;
+  max-width: 40em;
+  min-height: 45em;
+  height: auto !important;
+  height: 45em;
+}
+
+#dsb-clar-close-image-div {
+  position: absolute;
+  top: 0.1em;
+  left: 0.1em;
+  text-align: left;
+}
+
+/**
+ * ----------------------------------------------------------------------
+ */
+
+#dsb-time-remaining-before {
+  color: #999999;
+  display: inline;
+}
+
+#dsb-time-remaining {
+  color: #999999;
+  display: inline;
+}
+
+#dsb-current-score-div,
+#dsb-current-rank-div {
+  color: #333333;
+  padding-left: 0.5em;
+  display: inline;
+}
+
+#dsb-current-score-span,
+#dsb-current-rank-span {
+  color: #3f762c;
+}
+
+#dsb-clarification-table {
+  min-width: 30em;
+  display: none;
+}
+
+#dsb-clarification-table th,
+#dsb-clarification-table td,
+#dsb-submissions-table th,
+#dsb-submissions-table td {
+  padding: 0.3em;
+}
+
+#dsb-clarification-table th,
+#dsb-submissions-table th {
+  font-size: 90%;
+  font-weight: 500;
+}
+
+.problem-item,
+.problem-item-gray {
+  font-size: 110%;
+}
+
+.dsb-problem-content-div > h3,
+.dsb-problem-content-div > h4 {
+  font-size: 110%;
+  font-weight: normal;
+}
+
+.problem-item-gray {
+  font-size: 100%;
+}
+
+.dsb-problem-content-div > .problem-io-wrapper {
+  background-color: #efefef;
+  border: 1px solid #cccccc;
+  padding-bottom: 2em;
+  margin-bottom: 2em;
+  width: 90%;
+  overflow: auto;
+  overflow-y: hidden;
+}
+
+.problem-io-wrapper td{
+  padding: 0 1em 0 1em;
+}
+
+.problem-io-wrapper .io-table-header {
+  font-size: 100%;
+}
+
+.dsb-input-table-description {
+  padding: 0.5em;
+  color: #333333;
+  line-height: 1.5em;
+  border-right: 0.1em solid #cccccc;
+  white-space: nowrap;
+}
+
+.dsb-input-table-caption {
+  display: block;
+  margin-top: 0.4em;
+  padding-left: 0.5em;
+  color: #666666;
+}
+
+.dsb-input-table-linktd {
+  padding: 0.5em;
+}
+
+.dsb-input-link-span {
+  cursor: pointer;
+  display: inline;
+  text-decoration: none;
+}
+
+.dsb-input-link-text {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.dsb-input-link-img {
+  display: inline;
+  padding-right: 0.2em;
+}
+
+.dsb-no-image-link-text {
+  margin-left: 15px;
+  padding-left: 0.2em;
+}
+
+.dsb-action-box-open {
+  background-color: #faeca5;
+  padding: 0.5em;
+  max-width: 31em;
+  border-right: 1px solid #ddc850;
+  border-bottom: 1px solid #ddc850;
+  -moz-border-radius: 0.5em;
+  -webkit-border-radius: 0.5em;
+  -khtml-border-radius: 0.5em;
+  border-radius: 0.5em;
+}
+
+.dsb-input-wrapper {
+  padding: 0.4em;
+  display: inline;
+}
+
+.dsb-submit-form-div {
+  top: -0.2em;
+  display: none;
+  padding: 0.4em;
+  max-width: 30em;
+}
+
+.dsb-input-start-button {
+  font-size: 100%;
+}
+
+img {
+  vertical-align: middle;
+}
+
+.dsb-has-new-question-tab {
+  font-weight: bold;
+}
+
+pre, code {
+  color: black;
+}
+
+pre {
+  width: 86%;
+  font-size: 90%;
+}
+
+.dsb-sub-status-msg {
+  height: 1.2em;
+  font-size: 100%;
+  margin-bottom: 0.5em;
+  text-align: left;
+}
+
+.dsb-sub-row-id-width {
+  width: 2em;
+}
+
+.dsb-sub-name-width {
+  width: 12em;
+}
+
+.dsb-sub-difficulty-width {
+  width: 5em;
+}
+
+.dsb-sub-input-width, .dsb-sub-output-width, .dsb-sub-source-width {
+  width: 4.5em;
+}
+
+.dsb-sub-status-width {
+  width: 7.5em;
+  text-align: right;
+}
+
+.dsb-sub-time-width {
+  width: 7.5em;
+  text-align: right;
+}
+
+.dsb-sub-download-link-span {
+  display: block;
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+
+.dsb-sub-download-link-disabled-span {
+  cursor: default;
+}
+
+.dsb-sub-even-row {
+  background-color: #efefef;
+}
+
+.dsb-sub-odd-row {
+  background-color: #ffffff;
+}
+
+tr.dsb-sub-odd-row td,
+tr.dsb-sub-even-row td {
+  empty-cells: show;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  padding-left: 0.5em;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+}
+
+.dsb-analysis-selected {
+  color: black;
+  text-decoration: none;
+  cursor: default;
+}
+
+.dsb-analysis-not-selected {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}

@@ -131,13 +131,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         InputData  input = new InputData(testCase);
         
         input.k = scanner.nextInt();
-        
+        scanner.nextLine();
         //map to a grid.  
         GridChar grid = GridChar.buildEmptyGrid(input.k, input.k, '.');
         
         int startingRow = 0;
         for(int startingCol = input.k - 1; startingCol >= 0; --startingCol) {
-            String[] line = scanner.next().trim().split("\\s+");
+            String[] line = scanner.nextLine().trim().split("\\s+");
             for(int i = 0; i < line.length; ++i) {
                 int row = startingRow + i;
                 int col = startingCol + i;
@@ -147,7 +147,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         int startingCol = 0;
         for(startingRow = 1; startingRow < input.k; ++startingRow) {
-            String[] line = scanner.next().trim().split("\\s+");
+            String[] line = scanner.nextLine().trim().split("\\s+");
             for(int i = 0; i < line.length; ++i) {
                 int row = startingRow + i;
                 int col = startingCol + i;

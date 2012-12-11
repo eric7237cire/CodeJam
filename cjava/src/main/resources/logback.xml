@@ -29,12 +29,13 @@
   <logger name="com.eric.codejam.SingleRowSolver" level="OFF" />
    -->
    <logger name="codejam.y2009" level="INFO"/>
+   <logger name="codejam.y2010" level="WARN"/>
    <logger name="codejam" level="INFO"/>
    <logger name="codejam.y2011.round_1A.killer_word" level="DEBUG"/>
    <logger name="gcodejam.y2011.round_1A.dominion" level="DEBUG"/>
    
    
-      <logger name="codejam.utils.main" level="DEBUG"/>
+      <logger name="codejam.utils.main" level="INFO"/>
   <root level="${root-level:-DEBUG}">
     <appender-ref ref="console"/>
   </root>

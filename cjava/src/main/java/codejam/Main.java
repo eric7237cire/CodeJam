@@ -21,13 +21,8 @@ public class Main  {
     
     public static void main(String args[]) throws Exception {
 
-        if (args.length < 1) {
-            //args = new String[] { "sample.txt" };
-           // args = new String[] { "B-small-practice.in" };
-            //args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1B\\C-small-practice.in" };
-            args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1B\\sample.in" };
-         }
-         log.info("Input file {}", args[0]);
+        String dir = ".";
+        String[] files = new String[] { "a", "b", "c" };
 
          //Round 1B (2)
          //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
@@ -80,15 +75,44 @@ public class Main  {
          //codejam.y2010.load_testing.Main m = new codejam.y2010.load_testing.Main();         
          //codejam.y2010.rope_intranet.Main m = new codejam.y2010.rope_intranet.Main();
 
+         //2010 2
+         dir = ".\\src\\main\\resources\\y2010\\2";
+         //TODO large slow
+         //codejam.y2010.round_2.diamond.Main m = new codejam.y2010.round_2.diamond.Main();
+         //files = new String[] { "A-small-practice.in", "A-large-practice.in" };
+         
+         //codejam.y2010.round_2.world_cup.Main m = new codejam.y2010.round_2.world_cup.Main();
+         //files = new String[] { "B-small-practice.in", "B-large-practice.in" };
+         
+         codejam.y2010.round_2.bacteria.Main m = new codejam.y2010.round_2.bacteria.Main();
+         files = new String[] { "C-small-practice.in", "C-large-practice.in" };
+         
+         //codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
+         //TODO correct
+         //files = new String[] { "D-small-practice.in", "D-large-practice.in" };
+         
+         
+         
          //2011 1A
          //codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
          //codejam.y2011.round_1A.dominion.Main m = new codejam.y2011.round_1A.dominion.Main();
          
          //2011 1B
          //codejam.y2011.round_1B.hotdog_revenge.Main m = new codejam.y2011.round_1B.hotdog_revenge.Main();
-         codejam.y2011.round_1B.house_kittens.Main m = new codejam.y2011.round_1B.house_kittens.Main();
+         //codejam.y2011.round_1B.house_kittens.Main m = new codejam.y2011.round_1B.house_kittens.Main();
          
-         Runner.goSingleThread(args[0], m, m);
+        
+        if (args.length >= 1) {
+            //args = new String[] { "sample.txt" };
+           // args = new String[] { "B-small-practice.in" };
+            //args = new String[] { "C:\\codejam\\CodeJam\\cjava\\src\\main\\resources\\y2011\\1B\\C-small-practice.in" };
+            files = args;
+         }
+        for (String file : files) {
+         log.info("Input file {}", file);
+         
+         Runner.goSingleThread(dir + "\\" + file, m, m);
+        }
          
 
         
