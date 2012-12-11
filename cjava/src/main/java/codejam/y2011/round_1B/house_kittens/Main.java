@@ -1,10 +1,7 @@
 package codejam.y2011.round_1B.house_kittens;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,15 +41,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return input;
     }
     
-    public boolean doesVertexSetContainInteriorWall(Pair<Integer, Integer> interiorWall, List<Integer> set) {
-        if (interiorWall != null  &&
-                set.contains(interiorWall.getLeft()) &&
-                set.contains(interiorWall.getRight())
-                ) {
-            return true;
-        }
-        return false;
-    }
+    
     @Override
     public String handleCase(InputData input) {
         
@@ -79,30 +68,31 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         roomInteriorWalls.add( Sets.<Integer>newHashSet());
        
         for(int wallIndex = 0; wallIndex < input.interiorWalls.size(); ++wallIndex) {
-            Pair<Integer,Integer> pair = input.interiorWalls.get(wallIndex);
+            Pair<Integer,Integer> interiorWall = input.interiorWalls.get(wallIndex);
            
-            //find the set that contains both vertexes
+            //find the set that contains both vertexes.  This will be the set
+            //split by the wall
             int setIndex = 0;
             List<Integer> set = roomPillars.get(setIndex);
             
-            while(!set.contains(pair.getLeft()) || !set.contains(pair.getRight())) {
+            while(!set.contains(interiorWall.getLeft()) || !set.contains(interiorWall.getRight())) {
                 ++setIndex;
                 set = roomPillars.get(setIndex);
             }
             
             
-            //Now divide the set into 2
-            
+            //Now divide the set into 2            
             List<Integer> set1  = new ArrayList<>();
             List<Integer> set2 = new ArrayList<>();
+            
             //go from u to v
-            for(int n = pair.getLeft(); n <= pair.getRight(); ++n) {
+            for(int n = interiorWall.getLeft(); n <= interiorWall.getRight(); ++n) {
                 if (set.contains(n))
                     set1.add(n);
             }
             
             //go from v to u
-            for(int i = pair.getRight(); i <= pair.getLeft() + input.N; ++i) {
+            for(int i = interiorWall.getRight(); i <= interiorWall.getLeft() + input.N; ++i) {
                 int n = i > input.N ? i - input.N : i;
                 if (set.contains(n))
                     set2.add(n);
@@ -185,7 +175,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
 
         List<List<Integer>> orderedRoomPillars = new ArrayList<>();
-        int index = 0;
+        
         for(Integer roomIndex : visited) {
             orderedRoomPillars.add(roomPillars.get(roomIndex));
         }
@@ -200,43 +190,76 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             minVertexCount = Math.min(minVertexCount, set.size());
         }
         
-        Collections.sort(roomPillars, new Comparator<List<Integer>>() {
-
-            @Override
-            public int compare(List<Integer> o1, List<Integer> o2) {
-                return Integer.compare(o2.size(), o1.size());
-            }
-            
-        });
         
-        for(int colors = minVertexCount; colors >= 0; --colors) {
-            
-            int[] assignment = new int[input.N];
-            
-            count = 0;
-            boolean chk = backtrack(assignment, 0, 0, orderedRoomPillars, colors);
-            Preconditions.checkState(isValid(roomPillars,assignment,colors));
-            
-            if (chk) {
-                return "Case #" + input.testCase + ": " + colors + "\n" + Ints.join(" ",assignment);
-            } else {
-                log.info("Invalid {}", colors);
-            }
+        
+        int colors = minVertexCount; 
+        
+        int[] assignment = new int[input.N];
+        for(List<Integer> roomPillarIterator : orderedRoomPillars) {
+            assignRoom(roomPillarIterator, colors, assignment);
         }
-        
-        return null;
-        
+                
+                
+        return "Case #" + input.testCase + ": " + colors + "\n" + Ints.join(" ",assignment);
     }
     
-    private int count = 0;
+   
+        
+    void assignRoom(List<Integer> roomPillars, final int colors, int[] assignment) {
+
+        BitSet usedColors = new BitSet(colors);
+
+        // Find unassigned colors
+        for (Integer vertex : roomPillars) {
+            int color = assignment[vertex - 1];
+            if (color > 0) {
+                usedColors.set(color - 1);
+            }
+        }
+
+        for (int i = 0; i < roomPillars.size(); ++i) {
+            int vertex = roomPillars.get(i);
+            int prevVertex = roomPillars.get(i == 0 ? roomPillars.size() - 1 : i - 1);
+            int nextVertex = roomPillars.get(i == roomPillars.size() - 1 ? 0 : i + 1);
+
+            int color = assignment[vertex - 1];
+            int prevColor = assignment[prevVertex - 1];
+            int nextColor = assignment[nextVertex - 1];
+
+            // Color already assigned
+            if (color != 0) {
+                continue;
+            }
+
+            // Use an unused color if it exists
+            int unusedColor = usedColors.nextClearBit(0);
+
+            if (unusedColor < colors) {
+                // usedColors |= unusedColorBit;
+                color = unusedColor + 1;
+                Preconditions.checkState(1 <= color && color <= colors);
+                assignment[vertex - 1] = color;
+
+                usedColors.set(unusedColor);
+            } else {
+                // Use a color that is not the next or previous color
+                for (int tryColor = 1; tryColor <= colors; ++tryColor) {
+                    if (prevColor != tryColor && nextColor != tryColor) {
+                        assignment[vertex - 1] = tryColor;
+                        break;
+                    }
+                }
+            }
+
+        }
+
+    }
     
-    private boolean backtrack(int[] solution, int currentSet, int currentVertex,
+    /*
+    private boolean backtrack(int[] solution, int currentSet, 
             List<List<Integer>> vertexSets, final int colors) {
 
-        ++count;
-        if (count % 10000 == 0) {
-            log.info("Backtrack. count {}  vc {}", count, currentSet);
-        }
+        
         if (!isValidPartial(vertexSets, solution, colors)) {
             //solution[verticesColored+1] = 0;
             return false;
@@ -247,98 +270,20 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         List<Integer> set = vertexSets.get(currentSet);
         
-        if (currentVertex >= set.size()) {
-            return backtrack(solution,currentSet+1,0,vertexSets,colors);
-        }
         
-        int vertex = set.get(currentVertex);
         
-        if (solution[vertex-1] != 0) {
-            return backtrack(solution, currentSet,currentVertex+1, vertexSets, colors);
-        }
+        assignRoom(set, colors, solution);
         
-        for (int i = 1; i <= colors; ++i) {
-            solution[vertex-1] = i;
-            boolean r = backtrack(solution, currentSet, currentVertex+1, vertexSets, colors);
-            if (r) {
-                return true;
-            }
-        }
-        solution[vertex-1] = 0;
+        boolean r = backtrack(solution, currentSet+1, vertexSets, colors);
+        //boolean r = backtrack(solution, currentSet, currentVertex+1, vertexSets, colors);
+        Preconditions.checkState(r);
         
-        return false;
+        return true;
     }
-        
-    int[] canAssign(List<List<Integer>> vertexSets, final int colors, int N) {
-        int[] assignment = new int[N];
-        Arrays.fill(assignment, 0);
-        /*
-        Collections.sort(vertexSets, new Comparator<List<Integer>>() {
-
-            @Override
-            public int compare(List<Integer> o1, List<Integer> o2) {
-                return Integer.compare(o2.size(), o1.size());
-            }
-            
-        });
-        */
-        
-        for(List<Integer> set : vertexSets) {
-            
-            BitSet usedColors = new BitSet(colors); 
-                        
-            //Find unassigned colors
-            for(Integer vertex : set) {
-                int color = assignment[vertex-1];
-                if (color > 0) {
-                    usedColors.set(color-1);                    
-                }
-            }
-            
-            for(int i = 0; i < set.size(); ++i) {
-                int vertex = set.get(i);
-                int prevVertex = set.get( i == 0 ? set.size() - 1 : i - 1);
-                int nextVertex = set.get( i == set.size() - 1 ? 0 : i + 1);
-                
-                int color = assignment[vertex-1];
-                int prevColor = assignment[prevVertex - 1];
-                int nextColor = assignment[nextVertex - 1];
-                
-                //Color already assigned
-                if (color != 0) {
-                    continue;
-                }
-                
-                //Use an unused color if it exists
-                int unusedColor = usedColors.nextClearBit(0);
-                
-                if (unusedColor < colors) {
-                    // usedColors |= unusedColorBit;
-                    color = unusedColor + 1;
-                    Preconditions.checkState(1 <= color && color <= colors);
-                    assignment[vertex - 1] = color;
-                    
-                    usedColors.set(unusedColor);
-                } else {
-                    //Use a color that is not the next or previous color
-                    for(int tryColor = 1; tryColor <= colors; ++tryColor) {
-                        if (prevColor != tryColor && nextColor != tryColor) {
-                            assignment[vertex-1]=tryColor;
-                            break;
-                        }
-                    }
-                }
-                
-            }
-            
-            Preconditions.checkState(isValidPartial(vertexSets,assignment,colors));
-        }
-        
-       return assignment;
-        
-    }
+    */
     
-    boolean isValidPartial(List<List<Integer>> vertexSets, int[] assignment, int colors) {
+    /*
+    private boolean isValidPartial(List<List<Integer>> vertexSets, int[] assignment, int colors) {
         BitSet hasAllColors = new BitSet(colors);
         hasAllColors.set(0, colors, true);
         
@@ -374,6 +319,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return true;
     }
     
+    private
     boolean isValid(List<List<Integer>> vertexSets, int[] assignment, int colors) {
         BitSet hasAllColors = new BitSet(colors);
         hasAllColors.set(0, colors, true);
@@ -390,38 +336,5 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         return true;
     }
-    
-    int[] canAssign2(List<List<Integer>> vertexSets, int colors, int N) {
-        int[] assignment = new int[N];
-        Arrays.fill(assignment, 1);
-        
-        boolean incremented = true;
-        
-        while(incremented) {
-            incremented=false;
-            
-            for(int i = 0; i < N; ++i) {
-                assignment[i]++;
-                if (assignment[i] > colors) {
-                    assignment[i] = 1;
-                } else {
-                    incremented = true;
-                    break;
-                }
-            }
-            
-            if (!incremented) {
-                break;
-            }
-            
-            if (isValid(vertexSets, assignment, colors)) {
-                return assignment;
-            }
-        }
-        
-        return null;
-        
-    }
-    
-
+    */
 }

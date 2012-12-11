@@ -14,7 +14,7 @@
 #include <boost/numeric/conversion/bounds.hpp>
 #include <boost/limits.hpp>
 #include <boost/unordered_set.hpp>
-#define SHOW_TIME 1
+#define SHOW_TIME 0
 #include "util.h"
 //#include "grid.h"
 //#include <boost/math/common_factor.hpp>
