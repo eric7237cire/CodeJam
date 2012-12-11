@@ -12,8 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.test.TesterBase;
-import codejam.y2009.digging_problem.InputData;
-import codejam.y2009.digging_problem.Main;
+import codejam.y2009.round_2.digging_problem.InputData;
+import codejam.y2009.round_2.digging_problem.Main;
 
 /**
  * Unit test for simple App.

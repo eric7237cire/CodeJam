@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
-import codejam.y2009.round_3.football_team.Graph;
 
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;

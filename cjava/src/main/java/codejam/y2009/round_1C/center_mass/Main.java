@@ -79,11 +79,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         double a = 0;
         double b = 0;
 
-        double vSum = 0;
+        //double vSum = 0;
         for (int j = 0; j < 3; ++j) { 
             a += 2 * coordsAvg[j] * velocityAvg[j];
             b += 2 * velocityAvg[j] * velocityAvg[j] ;
-            vSum += velocityAvg[j];
+          //  vSum += velocityAvg[j];
         }
         double t = 0;
         

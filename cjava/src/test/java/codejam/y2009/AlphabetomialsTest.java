@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.test.TesterBase;
-import codejam.y2009.alphabetomials.InputData;
-import codejam.y2009.alphabetomials.Main;
+import codejam.y2009.round_3.alphabetomials.InputData;
+import codejam.y2009.round_3.alphabetomials.Main;
 
 /**
  * Unit test for simple App.

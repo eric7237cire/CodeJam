@@ -5,8 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.test.TesterBase;
-import codejam.y2009.min_perimeter.InputData;
-import codejam.y2009.min_perimeter.Main;
+import codejam.y2009.round_4.min_perimeter.InputData;
+import codejam.y2009.round_4.min_perimeter.Main;
 
 /**
  * Unit test for simple App.

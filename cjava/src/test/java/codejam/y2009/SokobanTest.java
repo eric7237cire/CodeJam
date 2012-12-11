@@ -5,8 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.test.TesterBase;
-import codejam.y2009.sokoban.InputData;
-import codejam.y2009.sokoban.Main;
+import codejam.y2009.round_3.sokoban.InputData;
+import codejam.y2009.round_3.sokoban.Main;
 
 /**
  * Unit test for simple App.

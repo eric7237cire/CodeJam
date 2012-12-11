@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import codejam.utils.geometry.Circle;
 import codejam.utils.test.TesterBase;
 import codejam.utils.utils.DoubleComparator;
-import codejam.y2009.watering_plants.InputData;
-import codejam.y2009.watering_plants.Main;
+import codejam.y2009.round_2.watering_plants.InputData;
+import codejam.y2009.round_2.watering_plants.Main;
 
 /**
  * Unit test for simple App.

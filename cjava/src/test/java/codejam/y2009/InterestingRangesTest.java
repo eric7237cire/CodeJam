@@ -10,11 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.test.TesterBase;
-import codejam.y2009.interesting_ranges.BruteForce;
-import codejam.y2009.interesting_ranges.InputData;
-import codejam.y2009.interesting_ranges.Interval;
-import codejam.y2009.interesting_ranges.Main;
-import codejam.y2009.interesting_ranges.PalinSpace;
+import codejam.y2009.round_3.interesting_ranges.BruteForce;
+import codejam.y2009.round_3.interesting_ranges.InputData;
+import codejam.y2009.round_3.interesting_ranges.Interval;
+import codejam.y2009.round_3.interesting_ranges.Main;
+import codejam.y2009.round_3.interesting_ranges.PalinSpace;
 
 
 /**

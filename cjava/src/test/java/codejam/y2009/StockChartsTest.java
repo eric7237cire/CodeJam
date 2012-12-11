@@ -5,8 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.test.TesterBase;
-import codejam.y2009.stock_charts.InputData;
-import codejam.y2009.stock_charts.Main;
+import codejam.y2009.round_2.stock_charts.InputData;
+import codejam.y2009.round_2.stock_charts.Main;
 
 /**
  * Unit test for simple App.
