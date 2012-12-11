@@ -1,10 +1,12 @@
 #include <time.h>
-#include "tri_logger.hpp"
+//#include "tri_logger.hpp"
+
 #include <vector>
 #include <map>
 #include <set>
 #ifndef UTIL_H
 #define UTIL_H
+
 
 #ifndef SHOW_TIME
 #define SHOW_TIME 0
@@ -25,6 +27,15 @@ double diffclock(clock_t clock1,clock_t clock2);
 
 
 using namespace std;
+
+
+#define LOG(name) \
+	do { cout << __FILE__ \
+	<< __LINE__ << #name \
+	<< " = " << (name) << endl; } while(false)
+
+
+#define LOG(name) do{}while(false)
 
 void trim(string& str);
 template<typename T> bool isBetween(T a, T b, T n);
