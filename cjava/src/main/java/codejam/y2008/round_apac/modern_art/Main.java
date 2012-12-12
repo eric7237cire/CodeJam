@@ -16,8 +16,6 @@ import codejam.utils.datastructures.TreeInt.Node;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-import com.google.common.base.Preconditions;
-
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
@@ -78,24 +76,24 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     // node_array<set<node> >& B
     ) {
 
-        int p = smallTreeNode.getChildren().size();
-        int q = largeTreeNode.getChildren().size();
+        int smallChildrenCount = smallTreeNode.getChildren().size();
+        int largeChildrenCount = largeTreeNode.getChildren().size();
 
-        if (p > q || smallTreeNode.getHeight() > largeTreeNode.getHeight()
+        if (smallChildrenCount > largeChildrenCount || smallTreeNode.getHeight() > largeTreeNode.getHeight()
                 || smallTreeNode.getSize() > largeTreeNode.getSize())
             return false;
 
-        GraphAdjList graph = new GraphAdjList(q + p);
+        GraphAdjList graph = new GraphAdjList(largeChildrenCount + smallChildrenCount);
         // Bipartite match from larger tree nodes children to smaller ones
 
         List<Integer> lhsNodes = new ArrayList<>();
         List<Integer> rhsNodes = new ArrayList<>();
 
-        for (int i = 0; i < q; ++i) {
+        for (int i = 0; i < largeChildrenCount; ++i) {
             lhsNodes.add(i);
         }
-        for (int i = 0; i < p; ++i) {
-            rhsNodes.add(i + q);
+        for (int i = 0; i < smallChildrenCount; ++i) {
+            rhsNodes.add(i + largeChildrenCount);
         }
 
         List<Node> lcChildNodes = new ArrayList<Node>(
@@ -103,15 +101,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         List<Node> smChildNodes = new ArrayList<Node>(
                 smallTreeNode.getChildren());
 
-        for (int largeChildNodeIdx = 0; largeChildNodeIdx < q; ++largeChildNodeIdx) {
-            for (int smallChildNodeIdx = 0; smallChildNodeIdx < p; ++smallChildNodeIdx) {
+        for (int largeChildNodeIdx = 0; largeChildNodeIdx < largeChildrenCount; ++largeChildNodeIdx) {
+            for (int smallChildNodeIdx = 0; smallChildNodeIdx < smallChildrenCount; ++smallChildNodeIdx) {
                 Node lc = lcChildNodes.get(largeChildNodeIdx);
                 Node sm = smChildNodes.get(smallChildNodeIdx);
 
                 if (top_down_unordered_subtree_isomorphism( sm,
                          lc)) {
                     graph.addConnection(largeChildNodeIdx, smallChildNodeIdx
-                            + q);
+                            + largeChildrenCount);
                 }
             }
         }
@@ -119,7 +117,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         List<Pair<Integer, Integer>> L = graph.getMaxMatching(lhsNodes,
                 rhsNodes);
 
-        if (L.size() == p) {
+        if (L.size() == smallChildrenCount) {
             return true;
         } else {
             return false;
