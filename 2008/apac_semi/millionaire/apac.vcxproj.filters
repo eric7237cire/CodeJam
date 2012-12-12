@@ -27,4 +27,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\C-large-practice.in">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\C-small-practice.in">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\sample.in">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

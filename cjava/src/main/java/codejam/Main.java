@@ -25,14 +25,14 @@ public class Main  {
         //String[] files = new String[] { "a", "b", "c" };
 
         String dir = ".\\src\\main\\resources\\y2008\\apac";
-        //codejam.y2008.round_apac.millionaire.Main m = new codejam.y2008.round_apac.millionaire.Main();
+        codejam.y2008.round_apac.millionaire.Main m = new codejam.y2008.round_apac.millionaire.Main();
         
-        //String[] files = new String[] { "C-small-practice.in", "C-large-practice.in" };
+        String[] files = new String[] { "C-small-practice.in", "C-large-practice.in" };
         //String[] files = new String[] { "C-small-practice.in"  };
         
-        codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
+        //codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
         //String[] files = new String[] { "sample.in" };
-        String[] files = new String[] { "D-small-practice.in"  };
+        //String[] files = new String[] { "D-small-practice.in", "D-large-practice.in"  };
         
          //Round 1B (2)
          //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
