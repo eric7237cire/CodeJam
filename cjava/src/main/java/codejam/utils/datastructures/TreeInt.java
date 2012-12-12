@@ -2,7 +2,9 @@ package codejam.utils.datastructures;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import com.google.common.base.Objects;
@@ -31,6 +33,47 @@ public class TreeInt {
             nodes = new HashMap<>();
             this.root = new Node(root);
 
+        }
+        
+        public TreeInt reroot(int newRoot) {
+            TreeInt newTree = new TreeInt(newRoot);
+            
+            //Set<Integer> visited = new HashSet<Integer>();
+            Queue<Integer> toVisit = new LinkedList<>();
+            
+            toVisit.add(newRoot);
+            
+            while(!toVisit.isEmpty()) {
+                Integer nodeId = toVisit.poll();
+                
+                //if (visited.contains(nodeId))
+                 //   continue;
+                
+                //visited.add(nodeId);
+                
+                Preconditions.checkState(newTree.getNodes().containsKey(nodeId));
+                Node newTreeNode = newTree.getNodes().get(nodeId);
+                Node oldTreeNode = nodes.get(nodeId);
+                //Get all new children from old tree
+                for(Node childNode : oldTreeNode.children) {
+                    //Add children to new tree node
+                    if (newTreeNode.getParent() == null || childNode.id != newTreeNode.getParent().id) {
+                        newTreeNode.addChild(childNode.id);
+                        toVisit.add(childNode.id);
+                    }
+                }
+                
+                if (oldTreeNode.getParent() == null)
+                    continue;
+                
+                //Also check parent
+                if (newTreeNode.getParent() == null || oldTreeNode.getParent().id != newTreeNode.getParent().id) {
+                    newTreeNode.addChild(oldTreeNode.getParent().id);
+                    toVisit.add(oldTreeNode.getParent().id);
+                }
+            }
+            
+            return newTree;
         }
 
         @Override
@@ -62,6 +105,12 @@ public class TreeInt {
             
             public Set<Node> getChildren() {
                 return children;
+            }
+
+            @Override
+            public String toString() {
+                return "Node [id=" + id + ", size=" + size + ", height="
+                        + height + ", childrenCount=" + children.size() + "]" ;
             }
 
             //Root

@@ -76,5 +76,57 @@ public class TreeTest {
         
         assertEquals(6, tree.getNodes().get(1).getHeight() );
         assertEquals(12, tree.getNodes().get(1).getSize() );
+        
+        TreeInt reRooted = tree.reroot(8);
+        
+        int nodeNum = 1;
+        //1
+        assertEquals(2, reRooted.getNodes().get(nodeNum).getHeight() );
+        assertEquals(2, reRooted.getNodes().get(nodeNum++).getSize() );
+        
+        //2
+        assertEquals(1, reRooted.getNodes().get(nodeNum).getHeight() );
+        assertEquals(1, reRooted.getNodes().get(nodeNum++).getSize() );
+        
+        //3
+        assertEquals(3, reRooted.getNodes().get(nodeNum).getHeight() );
+        assertEquals(4, reRooted.getNodes().get(nodeNum++).getSize() );
+        
+        //4
+        assertEquals(4, reRooted.getNodes().get(nodeNum).getHeight() );
+        assertEquals(9, reRooted.getNodes().get(nodeNum++).getSize() );
+        
+        //5
+        assertEquals(1, reRooted.getNodes().get(nodeNum).getHeight() );
+        assertEquals(1, reRooted.getNodes().get(nodeNum++).getSize() );
+        
+        //6
+        assertEquals(2, reRooted.getNodes().get(nodeNum).getHeight() );
+        assertEquals(3, reRooted.getNodes().get(nodeNum++).getSize() );
+        
+        //7
+        assertEquals(1, reRooted.getNodes().get(nodeNum).getHeight() );
+        assertEquals(1, reRooted.getNodes().get(nodeNum++).getSize() );
+        
+        //8
+        assertEquals(5, reRooted.getNodes().get(nodeNum).getHeight() );
+        assertEquals(12, reRooted.getNodes().get(nodeNum++).getSize() );
+        
+        //9
+        assertEquals(1, reRooted.getNodes().get(nodeNum).getHeight() );
+        assertEquals(1, reRooted.getNodes().get(nodeNum++).getSize() );
+        
+        //10
+        assertEquals(1, reRooted.getNodes().get(nodeNum).getHeight() );
+        assertEquals(1, reRooted.getNodes().get(nodeNum++).getSize() );
+        
+        //11
+        assertEquals(2, reRooted.getNodes().get(nodeNum).getHeight() );
+        assertEquals(2, reRooted.getNodes().get(nodeNum++).getSize() );
+        
+        //12
+        assertEquals(1, reRooted.getNodes().get(nodeNum).getHeight() );
+        assertEquals(1, reRooted.getNodes().get(nodeNum++).getSize() );
+        
     }
 }

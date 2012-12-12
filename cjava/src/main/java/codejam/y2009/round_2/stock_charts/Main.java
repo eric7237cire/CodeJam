@@ -2,147 +2,47 @@ package codejam.y2009.round_2.stock_charts;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.datastructures.GraphAdjList;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 
-	
-
-	//Left to right
-	boolean[][] canMatch;
-
-	int iterations;
-	
-	
-	
-	//Right to Left
-	BiMap<Integer, Integer> matchesMap;
-	//Right hand side of the bipartite graph
-	boolean[] seen;
-	
-	/**
-	 * Imagine a bi-partite graph.  Left and Right side are stocks
-	 * with an edge if the left vertex is stricly greater than the right.
-	 * 
-	 * @param input
-	 * @return
-	 */
-	public int findAllAugmentingPaths(InputData input) {
-		matchesMap = HashBiMap.create();
-		int count = 0;
-		for(int i = 0; i < input.n; ++i) {
-			seen = new boolean[input.n];
-			/*Is there an augmenting path?
-			 * If so, then the node belongs to a combined graph.
-			 * Otherwise, it is the lowest stock chart on a new combined graph
-			 */
-			if (!findAugmentingPath(i, input)) {
-				++count;
-			}
-			
-			//printAugmentingPaths(input);
-		}
-		
-		return count;
-	}
-	
-	@SuppressWarnings("unused")
-    private void printAugmentingPaths(InputData input) {
-		Map<Integer, Integer> leftToRightMatches = matchesMap.inverse();
-		log.debug("Print all paths\n\n");
-		for(int lhsVertex = 0; lhsVertex < input.n; ++lhsVertex) {
-			//Only looking for unmatched vertices
-			if (leftToRightMatches.containsKey(lhsVertex)) {
-				continue;
-			}
-			log.debug("Path Start");
-			//Check if another lhsVertex has a match ending on the vertex,
-			//which is why the right->left map is used
-			Integer nextLhsVertex = lhsVertex;
-			do {
-				log.debug("Path {}", nextLhsVertex);
-				nextLhsVertex = matchesMap.get(nextLhsVertex);
-				
-			} while (nextLhsVertex != null);
-			
-		}
-	}
-	
-	private boolean findAugmentingPath(int lhsVertex, InputData input) {
-		/* 
-		 * The vertex is part of the left hand side
-		 */
-		
-		//Loop through all right hand side vertices
-		for(int rhsVertex = 0; rhsVertex < input.n; ++rhsVertex) {
-			if (!canMatch[lhsVertex][rhsVertex]) {
-				continue;
-			}
-			if (seen[rhsVertex]) {
-				continue;
-			}
-			
-			seen[rhsVertex] = true;
-			
-			/*
-			 * Here the edge is either already in M or not.
-			 * If its not we are done, we found a path.  Otherwise
-			 * we try to rematch the connected lhsvertex to another greater rhsVertex .
-			 */
-			if (!matchesMap.containsKey(rhsVertex) || findAugmentingPath(matchesMap.get(rhsVertex),input)) {
-				
-				//If it exists, free the existing match edge if it exists
-				matchesMap.inverse().remove(lhsVertex);
-				
-				matchesMap.put(rhsVertex,  lhsVertex);
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-    private void buildCanMatch(InputData input) {
-        canMatch = new boolean[input.n][input.n];
+    private GraphAdjList buildCanMatch(InputData input) {
+        GraphAdjList graph = new GraphAdjList(input.n * 2);
 
         for (int i = 0; i < input.n; ++i) {
 
             for (int j = 0; j < input.n; ++j) {
                 boolean canMatchB = isStrictlyGreater(input.stocks.get(i),
                         input.stocks.get(j));
-                canMatch[i][j] = canMatchB;
-
+                if (canMatchB)
+                    graph.addConnection(i, j + input.n);
             }
         }
+
+        return graph;
     }
 
-	private boolean isStrictlyGreater(List<Integer> a, List<Integer> b) {
-		
-		//Preconditions.checkArgument(a.size() == k && b.size() == k);
-		for (int i = 0; i < a.size(); ++i) {
-			if (a.get(i) <= b.get(i)) {
-				return false;
-			}			
-		}
+    private boolean isStrictlyGreater(List<Integer> a, List<Integer> b) {
 
-		return true;
-	}
+        // Preconditions.checkArgument(a.size() == k && b.size() == k);
+        for (int i = 0; i < a.size(); ++i) {
+            if (a.get(i) <= b.get(i)) {
+                return false;
+            }
+        }
 
-	
+        return true;
+    }
 
-	final static Logger log = LoggerFactory.getLogger(Main.class);
-
-	
+    final static Logger log = LoggerFactory.getLogger(Main.class);
 
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
@@ -169,17 +69,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String handleCase(InputData data) {
 
-        iterations=0;
-        buildCanMatch(data);
+        GraphAdjList graph = buildCanMatch(data);
         
-
-        int min = findAllAugmentingPaths(data);
-
-
-
-        log.info("Finished Starting case {}.  Iterations {}", data.testCase,
-                iterations);
+        List<Integer> lhsNodes = new ArrayList<>();
+        List<Integer> rhsNodes = new ArrayList<>();
         
+        for(int n = 0; n < data.n; ++n) {
+            lhsNodes.add(n);
+            rhsNodes.add(n+data.n);
+        }
+        
+        List<Pair<Integer,Integer>> matches = graph.getMaxMatching(lhsNodes,rhsNodes);
+        int min = data.n - matches.size();
+
         return ("Case #" + data.testCase + ": " + min);
     }
 }

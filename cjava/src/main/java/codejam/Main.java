@@ -24,13 +24,13 @@ public class Main  {
        // String dir = ".";
         //String[] files = new String[] { "a", "b", "c" };
 
-        String dir = ".\\src\\main\\resources\\y2008\\apac";
+        //String dir = ".\\src\\main\\resources\\y2008\\apac";
         //codejam.y2008.round_apac.millionaire.Main m = new codejam.y2008.round_apac.millionaire.Main();
-        String[] files = new String[] { "sample.in" };
+        //String[] files = new String[] { "sample.in" };
         //String[] files = new String[] { "C-small-practice.in", "C-large-practice.in" };
         //String[] files = new String[] { "C-small-practice.in"  };
         
-        codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
+        //codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
         
          //Round 1B (2)
          //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
@@ -42,9 +42,12 @@ public class Main  {
          //codejam.y2009.round_1C.bribe_prisoner.Main m = new codejam.y2009.round_1C.bribe_prisoner.Main();
          
          //Round 2
+        String dir = ".\\src\\main\\resources\\y2009\\2";
          //codejam.y2009.crazy_rows.Main m = new codejam.y2009.crazy_rows.Main();
          //codejam.y2009.digging_problem.Main m = new codejam.y2009.digging_problem.Main();
-         //codejam.y2009.stock_charts.Main m = new codejam.y2009.stock_charts.Main();
+         codejam.y2009.round_2.stock_charts.Main m = new codejam.y2009.round_2.stock_charts.Main();
+        String[] files = new String[] { "C-small-practice.in", "C-large-practice.in" };
+        
          //codejam.y2009.watering_plants.Main m = new codejam.y2009.watering_plants.Main();
          
          //Round 3
