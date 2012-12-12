@@ -1,22 +1,8 @@
-//
 #include <fstream>
 #include <iostream>
-#include <vector>
-#include <set>
-#include <map>
-//#include <deque>
-//#include <queue>
-#include <sstream>
-#include <time.h>
-#include <assert.h>
 #include <iomanip>
 
-#define SHOW_TIME 0
-#include "util.h"
-
-
 using namespace std;
-
 
 void do_test_case(int test_case, istream& input);
 
@@ -32,22 +18,11 @@ int main(int argc, char** args)
   
   int T;
   input >> T;
-
-  SHOW_TIME_BEGIN(g) 
-  	
+    	
   for (int test_case = 0; test_case < T; ++test_case) 
   {
-    //try 
-    {
-      do_test_case(test_case, input);
-    } 
-    //catch(...) 
-    {
-      //error("Error exception caught\n"); 
-    }
-  }
-  
-  SHOW_TIME_END(g)
+     do_test_case(test_case, input);    
+  }  
 }
 
 const int MAX_ROUNDS = 15;
@@ -60,8 +35,7 @@ void do_test_case(int test_case, istream& input)
   double P;
   int X;
   input >> M >> P >> X;
-  
-  
+    
   memset(roundProb,0,sizeof(roundProb));
 
   roundProb[0][1] = 1;
@@ -78,22 +52,14 @@ void do_test_case(int test_case, istream& input)
 
 		  for(unsigned int lowIndex = 0; lowIndex < highIndex; ++lowIndex)
 		  {
-			  unsigned int thisRoundIdx = ( 2 * highIndex + 2 * lowIndex ) / 2;
+			  unsigned int thisRoundIdx = highIndex + lowIndex;
 			  roundProb[m][thisRoundIdx] = max(roundProb[m][thisRoundIdx], P * roundProb[m-1][highIndex] + (1-P) * roundProb[m-1][lowIndex]);
 		  }
 	  }	  
   }
-
-  const int GOAL = 1000000;
-
-  double stepSize = (double) GOAL / (1 << M);
-
-  int steps = (double) X / stepSize;
-
-  
+      
   cout << "Case #" << (test_case+1) << ": " 
-  << std::setprecision(6)
-    << roundProb[M][steps] << endl;
+  << std::setprecision(6) << roundProb[M][(unsigned int) (X / (1000000.0 / (1 << M)))] << endl;
   
   return;    
 }
