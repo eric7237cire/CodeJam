@@ -9,8 +9,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.Main;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -31,8 +29,8 @@ public class GraphAdjList {
     }
 
     public void addConnection(int n1, int n2) {
-         connected[n1][n1] = true;
-         connected[n2][n2] = true;
+        connected[n1][n1] = true;
+        connected[n2][n2] = true;
         connected[n1][n2] = true;
         connected[n2][n1] = true;
     }

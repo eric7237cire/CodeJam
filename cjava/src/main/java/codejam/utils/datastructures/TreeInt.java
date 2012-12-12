@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -78,14 +80,19 @@ public class TreeInt {
 
         @Override
         public String toString() {
-            return "Tree [root=" + root + "]";
+            return "Tree\n" + root.toString();
         }
 
         public class Node {
             private int id;
             private int size;
             private int height;
+            private int depth;
             
+            public int getDepth() {
+                return depth;
+            }
+
             public int getId() {
                 return id;
             }
@@ -107,10 +114,20 @@ public class TreeInt {
                 return children;
             }
 
+            private static final int INDENT = 3;
             @Override
             public String toString() {
-                return "Node [id=" + id + ", size=" + size + ", height="
-                        + height + ", childrenCount=" + children.size() + "]" ;
+                StringBuffer sb = new StringBuffer();
+                
+                sb.append( StringUtils.repeat(" ", getDepth() * INDENT) );
+                sb.append(id);
+                sb.append("\n");
+                for(Node child : children) {
+                    sb.append(child.toString());
+                }
+                return sb.toString();
+//                return "Node [id=" + id + ", size=" + size + ", height="
+//                        + height + ", childrenCount=" + children.size() + "]" ;
             }
 
             //Root
@@ -120,6 +137,7 @@ public class TreeInt {
                 this.id = id;
                 height = 1;
                 size = 1;
+                depth = 0;
                 nodes.put(id, this);
             }
             public Node(int id, Node parent) {
@@ -130,9 +148,11 @@ public class TreeInt {
                 
                 Node node = parent;
                 int h = 1;
+                this.depth = 0;
                 while(node != null) {
                     node.size++;
                     h++;
+                    ++depth;
                     node.height = Math.max(h, node.height);
                     node = node.parent;
                 }
