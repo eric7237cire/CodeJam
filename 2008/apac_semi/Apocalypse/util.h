@@ -1,10 +1,9 @@
 #include <time.h>
-#include "tri_logger.hpp"
+//#include "tri_logger.hpp"
 
 #include <vector>
 #include <map>
 #include <set>
-#include <string>
 #ifndef UTIL_H
 #define UTIL_H
 
@@ -37,6 +36,7 @@ using namespace std;
 
 
 #define LOG(name) do{}while(false)
+#define LOG_STR(name) do{}while(false)
 
 void trim(string& str);
 template<typename T> bool isBetween(T a, T b, T n);

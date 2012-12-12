@@ -1,0 +1,70 @@
+10
+3
+SOUP 3 STOCK salt water
+STOCK 2 chicken VEGETABLES
+VEGETABLES 2 celery onions
+5
+MILKSHAKE 4 milk icecream FLAVOR FRUIT
+CHOCOLATE 2 cocoa syrup
+FLAVOR 2 SPICES CHOCOLATE
+FRUIT 2 banana berries
+SPICES 2 nutmeg cinnamon
+1
+A 2 aa ab
+2
+B 2 A ba
+A 2 aa ab
+3
+C 2 A B
+A 2 aa ab
+B 2 ba bb
+8
+C 2 D E
+A 2 aa ab
+B 2 ba bb
+D 3 H G B
+E 2 F ea
+F 2 A fa
+G 2 ga gb
+H 2 ha hb
+10
+J 3 E F G
+A 2 aa ab
+B 2 ba bb
+C 2 ca cb
+D 2 da db
+E 2 C ea
+F 2 D B
+G 3 H I A
+H 2 ha hb
+I 2 ia ib
+7
+G 2 B C
+A 2 aa ab
+B 2 D E
+C 2 A F
+D 2 da db
+E 2 ea eb
+F 2 fa fb
+10
+B 2 D ba
+A 2 J aa
+C 2 I ca
+D 2 E da
+E 2 G ea
+F 2 C fa
+G 2 F ga
+H 2 ha hb
+I 2 A ia
+J 2 H ja
+10
+F 9 A J C E D I B G H
+A 2 aa ab
+B 2 ba bb
+C 2 ca cb
+D 2 da db
+E 2 ea eb
+G 2 ga gb
+H 2 ha hb
+I 2 ia ib
+J 2 ja jb

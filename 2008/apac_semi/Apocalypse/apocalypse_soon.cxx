@@ -21,6 +21,7 @@
 
 using namespace std;
 
+typedef unsigned int uint;
 
 void do_test_case(int test_case, ifstream& input);
 
@@ -56,7 +57,7 @@ int main(int argc, char** args)
 
 typedef pair<int, int> HW;
 
-typedef unsigned int uint;
+
 
 ostream& operator<<(ostream& os, const HW& hw) {
   os << "H: " << hw.first << " W: " << hw.second;
@@ -66,7 +67,7 @@ ostream& operator<<(ostream& os, const HW& hw) {
 bool do_turn(int meIndex, int indexToAttack, Grid<int>& grid) {
   Grid<int> diffs(grid.rows, grid.cols);
   diffs.reset(0);
- LOG_OFF();
+ //LOG_OFF();
   bool r = false;
   
   for(Grid<int>::iterator it = grid.begin(); it != grid.end(); ++it) 
@@ -147,7 +148,6 @@ void do_test_case(int test_case, ifstream& input)
   Queue q;
   q.push(Queue::value_type(0, g));
   //LOG(g);
-  LOG_OFF();
   int max_t = 0;
   
   const int meIndex = g->getIndex(r-1, c-1);
@@ -176,14 +176,13 @@ void do_test_case(int test_case, ifstream& input)
         continue;
       }
       GridPtr newGrid(new Grid<int>(*itemGrid));
-      LOG_OFF();
       LOG_STR("Grid before: " << *newGrid 
         << " turns: " << item.first
         << " Attacking: " << *adj_it);
       LOG(meIndex);
       bool r = do_turn(meIndex, 
         *adj_it, *newGrid);
-     LOG_OFF();
+     //LOG_OFF();
       LOG_STR("Grid after: " << *newGrid);
       q.push(Queue::value_type(item.first+1, newGrid));
       if (!r) {
