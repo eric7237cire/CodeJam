@@ -25,10 +25,12 @@ public class Main  {
         //String[] files = new String[] { "a", "b", "c" };
 
         String dir = ".\\src\\main\\resources\\y2008\\apac";
-        codejam.y2008.round_apac.millionaire.Main m = new codejam.y2008.round_apac.millionaire.Main();
-        //String[] files = new String[] { "sample.in" };
+        //codejam.y2008.round_apac.millionaire.Main m = new codejam.y2008.round_apac.millionaire.Main();
+        String[] files = new String[] { "sample.in" };
         //String[] files = new String[] { "C-small-practice.in", "C-large-practice.in" };
-        String[] files = new String[] { "C-small-practice.in"  };
+        //String[] files = new String[] { "C-small-practice.in"  };
+        
+        codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
         
          //Round 1B (2)
          //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
@@ -106,8 +108,14 @@ public class Main  {
          //codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();
          //files = new String[] { "C-small-practice.in", "C-large-practice.in" };
          
+       // String dir = ".\\src\\main\\resources\\y2011\\1A";
          //2011 1A
+
+        
+        //TODO large is quite slow 14 secs
          //codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
+        //String[] files = new String[] { "B-small-practice.in", "B-large-practice.in" };
+        
          //codejam.y2011.round_1A.dominion.Main m = new codejam.y2011.round_1A.dominion.Main();
          
          //2011 1B

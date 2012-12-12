@@ -55,6 +55,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String handleCase(InputData input) {
         // Create unattached nodes
+        
+        /**
+         * freeNodes[ wordIndex ] [ letter ] = bit set with bits set for each letter that occurs in word at wordindex
+         */
         BitSetInt[][] freeNodes = new BitSetInt[input.N][26];
         
         Map<Integer, TreeWithIds<NodeData>> treesForWordSize = new HashMap<>();
@@ -92,17 +96,20 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             String line = input.lists.get(m);
             List<Node<NodeData>> lastNodes = new ArrayList<>();
 
+            /*
+             * For each word, go through the sequence of guesses
+             * and add or increment nodes in the tree.
+             * 
+             * The idea is that he loses a point only if he guesses
+             * incorrectly and he would have guessed only if that eliminated
+             * another word.
+             */
             for (int n = 0; n < input.N; ++n) {
                 TreeWithIds<NodeData> tree = treesForWordSize.get(input.words.get(n).length());
                 
                 Node<NodeData> currentNode = tree.getRoot();
                 currentNode.getData().count++;
                 
-                if (input.words.get(n).length() == 1) {
-                    //log.debug("Word " + input.words.get(n));
-                    //log.debug("new count {}", currentNode.getData().count);
-                }
-
                 for (int c = 0; c < line.length(); ++c) {
                     char ch = line.charAt(c);
                     int idx = (int) ch - (int) 'a';
@@ -140,6 +147,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     BitSetInt wordLetter = freeNodes[n][currentNode.getData().letter];
                     if (currentNode.getParent().getData().count > currentNode
                             .getData().count && wordLetter.bits == 0) {
+                        //The point of it all.  If the total number of possible words 
+                        //decreased and the letter was not correct, he loses a point
                         ++cost;
                     }
                     currentNode = currentNode.getParent();
