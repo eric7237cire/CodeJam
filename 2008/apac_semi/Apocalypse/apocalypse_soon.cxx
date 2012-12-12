@@ -19,6 +19,7 @@
 
 #include <boost/shared_ptr.hpp>
 
+//Does not work compiled with msvc express
 using namespace std;
 
 typedef unsigned int uint;

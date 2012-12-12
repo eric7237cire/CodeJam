@@ -25,10 +25,10 @@ public class Main  {
         //String[] files = new String[] { "a", "b", "c" };
 
         //2008 amer semis
-        String dir = ".\\src\\main\\resources\\y2008\\amer";
+        //String dir = ".\\src\\main\\resources\\y2008\\amer";
         
-        codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
-        String[] files = new String[] { "A-small-practice.in"  };
+        //codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
+      //  String[] files = new String[] { "A-small-practice.in", "A-large-practice.in"  };
         //String[] files = new String[] { "sample.in" };
         //2008 apac semis
         
@@ -121,13 +121,14 @@ public class Main  {
          //codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();
          //files = new String[] { "C-small-practice.in", "C-large-practice.in" };
          
-       // String dir = ".\\src\\main\\resources\\y2011\\1A";
-         //2011 1A
-
         
-        //TODO large is quite slow 14 secs
-         //codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
-        //String[] files = new String[] { "B-small-practice.in", "B-large-practice.in" };
+         //2011 1A
+        String dir = ".\\src\\main\\resources\\y2011\\1A";
+        
+        //TODO large is quite slow 14 secs -- 30 secs.  Can improve the algorithm
+         codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
+         codejam.y2011.round_1A.killer_word.InputData poison = new codejam.y2011.round_1A.killer_word.InputData(-1);
+        String[] files = new String[] { "B-small-practice.in", "B-large-practice.in" };
         
          //codejam.y2011.round_1A.dominion.Main m = new codejam.y2011.round_1A.dominion.Main();
          
@@ -146,6 +147,7 @@ public class Main  {
          log.info("Input file {}", file);
          
          Runner.goSingleThread(dir + "\\" + file, m, m);
+        // Runner.go(dir + "\\" + file, m, m, poison,5 );
         }
          
 

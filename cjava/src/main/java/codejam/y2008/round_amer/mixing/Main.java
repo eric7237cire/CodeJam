@@ -80,31 +80,29 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             return String.format("Case #%d: %d", input.testCase, 1);
         }
         
-        TreeInt tree = graph.convertToTree(1);
+        TreeInt<Integer> tree = graph.convertToTree(1);
         
         Stack<Integer> toVisit = new Stack<>();
         Set<Integer> visited = new HashSet<>();
         
-        int[] maxNeeded = new int[strIndex.size()+1];
-        Arrays.fill(maxNeeded, -1);
-
+        
         toVisit.add(1);
         
         //int maxBowlsNeeded = 0;
         
         while(!toVisit.isEmpty()) {
             Integer nodeInt = toVisit.peek();
-            Node node = tree.getNodes().get(nodeInt);
+            TreeInt<Integer>.Node node = tree.getNodes().get(nodeInt);
             
             if (node.getChildren().isEmpty()) {
-                maxNeeded[nodeInt] = 1;
+                node.setData(1);
                 visited.add(nodeInt);
                 toVisit.pop();
                 continue;
             }
             
-            Iterator<Node> childIt = node.getChildren().iterator(); 
-            Node child = childIt.next(); 
+            Iterator<TreeInt<Integer>.Node> childIt = node.getChildren().iterator(); 
+            TreeInt<Integer>.Node child = childIt.next(); 
             if (!visited.contains(child.getId())) {
                 //Add all children to stack
                 toVisit.add(child.getId());
@@ -117,10 +115,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             //All children should be visited
             List<Integer> bowlsNeeded = new ArrayList<>();
-            bowlsNeeded.add(maxNeeded[child.getId()]);
+            bowlsNeeded.add(child.getData());
             while(childIt.hasNext()) {
                 child = childIt.next();
-                bowlsNeeded.add(maxNeeded[child.getId()]);
+                bowlsNeeded.add(child.getData());
             }
             
             Collections.sort(bowlsNeeded, Ordering.natural().reverse());
@@ -136,15 +134,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 bowlsUsed = Math.max(usedBowls, bowlsUsed);
             }
             
-            Preconditions.checkState(maxNeeded[node.getId()] == -1);
-            maxNeeded[node.getId()] = bowlsUsed;
+            Preconditions.checkState(node.getData() == null);
+            node.setData(bowlsUsed);
             
             visited.add(nodeInt);
             toVisit.pop();
         }
         
         
-        return String.format("Case #%d: %d", input.testCase, maxNeeded[tree.getRoot().getId()]);
+        return String.format("Case #%d: %d", input.testCase, tree.getRoot().getData());
     }
 
     final static Logger log = LoggerFactory.getLogger(Main.class);

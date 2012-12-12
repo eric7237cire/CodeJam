@@ -10,9 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.BitSetInt;
-import codejam.utils.datastructures.Identifiable;
-import codejam.utils.datastructures.TreeWithIds;
-import codejam.utils.datastructures.TreeWithIds.Node;
+import codejam.utils.datastructures.TreeInt;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
@@ -38,7 +36,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return input;
     }
     
-    static class NodeData implements Identifiable {
+    static class NodeData {
         int letter;
         char chLetter;
         BitSetInt letterPositions;
@@ -46,10 +44,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         NodeData() {
             letterPositions = new BitSetInt();
         }
-        @Override
+        
         public int getId() {
             return letterPositions.bits;
         }
+
+        
     }
 
     @Override
@@ -61,7 +61,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
          */
         BitSetInt[][] freeNodes = new BitSetInt[input.N][26];
         
-        Map<Integer, TreeWithIds<NodeData>> treesForWordSize = new HashMap<>();
+        
+        
+        Map<Integer, TreeInt<NodeData>> treesForWordSize = new HashMap<>();
         
         for (int n = 0; n < input.N; ++n) {
             for (int l = 0; l < 26; ++l) {
@@ -79,7 +81,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             if (!treesForWordSize.containsKey(word.length())) {
                 NodeData root = new NodeData();
                 root.letter = -1;
-                TreeWithIds<NodeData> tree = new TreeWithIds<>(root);
+                TreeInt<NodeData> tree = new TreeInt<>(1);
+                tree.setStats(false);
+                tree.getRoot().setData(root);
                 treesForWordSize.put(word.length(),tree);
             }
         }
@@ -88,13 +92,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         ans.append("Case #" + input.testCase + ": ");
         for (int m = 0; m < input.M; ++m) {
             
-            for(TreeWithIds<NodeData> tree : treesForWordSize.values()) {
-                tree.getRoot().getData().count=0;
-                tree.getRoot().setChildren(null);
+            for(TreeInt<NodeData> tree : treesForWordSize.values()) {
+                tree.reset();
+                NodeData root = new NodeData();
+                root.letter = -1;
+                root.count = 0;
+                tree.getRoot().setData(root);
             }
 
             String line = input.lists.get(m);
-            List<Node<NodeData>> lastNodes = new ArrayList<>();
+            List<TreeInt<NodeData>.Node> lastNodes = new ArrayList<>();
 
             /*
              * For each word, go through the sequence of guesses
@@ -105,10 +112,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
              * another word.
              */
             for (int n = 0; n < input.N; ++n) {
-                TreeWithIds<NodeData> tree = treesForWordSize.get(input.words.get(n).length());
+                TreeInt<NodeData> tree = treesForWordSize.get(input.words.get(n).length());
                 
-                Node<NodeData> currentNode = tree.getRoot();
+                TreeInt<NodeData>.Node currentNode = tree.getRoot();
                 currentNode.getData().count++;
+                
+                
                 
                 for (int c = 0; c < line.length(); ++c) {
                     char ch = line.charAt(c);
@@ -116,17 +125,28 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
                     BitSetInt currentLevelNodeData = freeNodes[n][idx];
 
-                    Node<NodeData> existingNode = currentNode
-                            .getChildWithId(currentLevelNodeData.bits);
+                    TreeInt<NodeData>.Node existingNode = null;
+                    
+                   
+                    
+                    for(TreeInt<NodeData>.Node cn : currentNode.getChildren()) {
+                        if(cn.getData().letterPositions.bits == currentLevelNodeData.bits) {
+                            existingNode = cn;
+                            break;
+                        }
+                    }
+                    
                     if (existingNode != null) {
                         existingNode.getData().count++;
+                        Preconditions.checkState(tree.getRoot().getData().count >= existingNode.getData().count);
                     } else {
                         NodeData newData = new NodeData();
                         newData.count = 1;
                         newData.letter = idx;
                         newData.chLetter = ch;
                         newData.letterPositions.bits = currentLevelNodeData.bits;
-                        existingNode = currentNode.addChild(newData);
+                        existingNode = currentNode.addChild(tree.getNodes().size()+1);
+                        existingNode.setData(newData);
                     }
 
                     currentNode = existingNode;
@@ -139,7 +159,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             String chosenWord = "gahou";
             for (int n = 0; n < input.N; ++n) {
                 int cost = 0;
-                Node<NodeData> currentNode = lastNodes.get(n);
+                TreeInt<NodeData>.Node currentNode = lastNodes.get(n);
                 while (currentNode.getParent() != null) {
                     Preconditions
                             .checkState(currentNode.getParent().getData().count >= currentNode

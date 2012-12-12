@@ -12,8 +12,17 @@ import org.apache.commons.lang3.StringUtils;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
-public class TreeInt {
+public class TreeInt<T> {
 
+    private boolean stats = true;
+    
+        public boolean isStats() {
+        return stats;
+    }
+
+    public void setStats(boolean stats) {
+        this.stats = stats;
+    }
 
         private Node root;
         
@@ -30,15 +39,19 @@ public class TreeInt {
         public Node getRoot() {
             return root;
         }
+        
+        public void reset() {
+            nodes = new HashMap<>();
+            this.root = new Node(root.id);
+        }
 
         public TreeInt(int root) {
             nodes = new HashMap<>();
             this.root = new Node(root);
-
         }
         
-        public TreeInt reroot(int newRoot) {
-            TreeInt newTree = new TreeInt(newRoot);
+        public TreeInt<T> reroot(int newRoot) {
+            TreeInt<T> newTree = new TreeInt<T>(newRoot);
             
             //Set<Integer> visited = new HashSet<Integer>();
             Queue<Integer> toVisit = new LinkedList<>();
@@ -88,7 +101,16 @@ public class TreeInt {
             private int size;
             private int height;
             private int depth;
+            private T data;
             
+            public T getData() {
+                return data;
+            }
+
+            public void setData(T data) {
+                this.data = data;
+            }
+
             public int getDepth() {
                 return depth;
             }
@@ -113,6 +135,8 @@ public class TreeInt {
             public Set<Node> getChildren() {
                 return children;
             }
+            
+            
 
             private static final int INDENT = 3;
             @Override
@@ -147,6 +171,10 @@ public class TreeInt {
                 this.size = 1;
                 
                 Node node = parent;
+                
+                if (!isStats())
+                    return ;
+                
                 int h = 1;
                 this.depth = 0;
                 while(node != null) {
@@ -164,8 +192,11 @@ public class TreeInt {
             }
 
             public Node addChild(int childId) {
+                Preconditions.checkState(!nodes.containsKey(childId));
+                
                 Node child = new Node(childId, this);
                 Preconditions.checkState(!children.contains(child));
+                
                 children.add(child);
                 return child;
             }

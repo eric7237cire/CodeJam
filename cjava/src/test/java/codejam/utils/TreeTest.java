@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 public class TreeTest {
     @Test
     public void testTreeIntBasic() {
-        TreeInt tree = new TreeInt(5);
+        TreeInt<Object> tree = new TreeInt<>(5);
         
         tree.getRoot().addChild(6);
         tree.getRoot().addChild(4);
@@ -77,7 +77,7 @@ public class TreeTest {
         assertEquals(6, tree.getNodes().get(1).getHeight() );
         assertEquals(12, tree.getNodes().get(1).getSize() );
         
-        TreeInt reRooted = tree.reroot(8);
+        TreeInt<Object> reRooted = tree.reroot(8);
         
         int nodeNum = 1;
         //1

@@ -21,6 +21,7 @@
 
 using namespace std;
 
+//Works compiled with g++
 
 void do_test_case(int test_case, ifstream& input);
 

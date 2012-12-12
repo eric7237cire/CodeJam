@@ -44,8 +44,8 @@ public class GraphInt {
         return nodeConnections.get(node);
     }
     
-    public TreeInt convertToTree(int root) {
-        TreeInt newTree = new TreeInt(root);
+    public <T> TreeInt<T>  convertToTree(int root) {
+        TreeInt<T> newTree = new TreeInt<T>(root);
         
         Queue<Integer> toVisit = new LinkedList<>();
         
