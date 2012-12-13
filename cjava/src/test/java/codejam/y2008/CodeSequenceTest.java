@@ -19,9 +19,10 @@ public class CodeSequenceTest {
     @Test
     public void testCodeSeq() {
         
-        int n = 424225488;
+        //int n = 424225488;
+        int n = 0;
  
-        int mod = 17;
+        int mod = 97;
         
         Generator g = new Generator(n, mod, 0);
         
@@ -37,15 +38,45 @@ public class CodeSequenceTest {
             buf.add(g.next());            
         }
         
-        Integer next = null;
-        for(int i = 0; i < 500; ++i) {
+        Integer next0 = null;
+        Integer next1 = null;
+        Integer next2 = null;
+        Integer next4 = null;
+        Integer next5 = null;
+        Integer next6 = null;
+        Integer next7 = null;
+        for(int i = 0; i < 50000; ++i) {
             if (i % 8 == 1) {
-                Preconditions.checkState(next == buf.getLast());
+                Preconditions.checkState(next1 == buf.getLast());
+                next2 = Decoder.calculateNextAssumingStart2(mod,buf);
             }
-            if (i % 8 == 0) {                
-                Decoder d = new Decoder(mod, buf);
-                next = d.next;
+            if (i % 8 == 2) {
+                Preconditions.checkState(next2 == buf.getLast());
+                Decoder.calculateNextAssumingStart3(mod,buf);
             }
+            if (i % 8 == 3) {
+                next4 = Decoder.calculateNextAssumingStart4(mod,buf);
+            }
+            if (i % 8 == 4) {
+                Preconditions.checkState(next4 == buf.getLast());
+                next5 = Decoder.calculateNextAssumingStart5(mod,buf);
+            }
+            if (i % 8 == 5) {
+                Preconditions.checkState(next5 == buf.getLast());
+                next6 = Decoder.calculateNextAssumingStart6(mod,buf);
+            }
+            if (i % 8 == 6) {
+                Preconditions.checkState(next6 == buf.getLast());
+            }
+            if (i % 8 == 7) {
+                next0 = Decoder.calculateNextAssumingStart0(mod,buf);
+            }
+            if (i % 8 == 0 ) {                
+                next1 = Decoder.calculateNextAssumingStart1(mod,buf);
+                
+                Preconditions.checkState(next0 == null || next0 == buf.getLast());
+            }
+            
             buf.add(g.next());
             buf.removeFirst();
             

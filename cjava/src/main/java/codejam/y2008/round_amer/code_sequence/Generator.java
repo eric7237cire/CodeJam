@@ -34,7 +34,7 @@ public class Generator {
         BitSet bs = BitSet.valueOf(new long[] {n});
         
         StringBuffer sb = new StringBuffer();
-        sb.append("Sum ").append(n).append(" ");
+        
         List<Integer> keysUsed = new ArrayList<>();
         
         int sum = 0;
@@ -45,6 +45,8 @@ public class Generator {
             }
         }
         
+        sb.append("Seq ").append(sum % MOD)
+        .append(" Sum ").append(n).append(" ");
         sb.append("Keys used: ").append(Joiner.on(", ").join(keysUsed));
         log.debug(sb.toString());
         return sum % MOD;
