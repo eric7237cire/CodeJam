@@ -7,22 +7,22 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
-	
+    @Override
+    public String[] getDefaultInputFiles() {
+        return new String[] { "C-small-practice.in", "C-large-practice.in" };
+    }
 
 	
 
 	final static Logger log = LoggerFactory.getLogger(Main.class);
 
 	
-
-    /* (non-Javadoc)
-     * @see codejam.utils.main.Runner.TestCaseInputScanner#readInput(java.util.Scanner, int)
-     */
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
         final int numCells = scanner.nextInt();
@@ -46,9 +46,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return input;
     }
 
-    /* (non-Javadoc)
-     * @see codejam.utils.multithread.Consumer.TestCaseHandler#handleCase(java.lang.Object)
-     */
+    
     @Override
     public String handleCase(InputData input) {
         final int numCells = input.numCells;
@@ -56,7 +54,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         List<Integer> listToBeFree = input.listToBeFree;
         
         PrisonSelectionAlgorithm alg ;
-        alg = new Dynamic();
+        alg = new Dynamic(numCells);
         int cost = 0;
         
         cost = alg.findMinCost(1, numCells , listToBeFree);

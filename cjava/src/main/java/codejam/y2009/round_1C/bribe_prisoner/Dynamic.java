@@ -4,77 +4,60 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Objects;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ComparisonChain;
 
 public class Dynamic implements PrisonSelectionAlgorithm {
 
-	private static class Segment implements Comparable<Segment> {
-		private int start;
-		private int stop;
-		@Override
-		public boolean equals(Object obj) {
-			if (obj == null) {
-				return false;
-			}
-			if (getClass() != obj.getClass()) {
-				return false;
-			}
-
-			Segment rhs = (Segment) obj;
-
-			return Objects.equal(rhs.start, start) && Objects.equal(rhs.stop, stop);
-		}
-		@Override
-		public int hashCode() {
-			return Objects.hashCode(start, stop);
-		}
-		@Override
-		public int compareTo(Segment arg0) {
-			return ComparisonChain.start().compare(start, arg0.start).compare(stop, arg0.stop).result();
-		}
-		public Segment(int start, int stop) {
-			super();
-			this.start = start;
-			this.stop = stop;
-		}
-		
-		
+	
+	public Dynamic(int maxLoc) {
+	    dp = new HashMap<>(maxLoc*20);
 	}
 	
-	public Dynamic() {
-		dp = new HashMap<>();
-	}
+	private Map<Pair<Integer,Integer>, Integer> dp;
 	
-	private Map<Segment, Integer> dp;
 	
 	private List<Integer> toBeFreed ;
 	
+	/**
+	 * segStart to segEnd are filled with prisoners
+	 * 
+	 * @param segStart 1 indexed
+	 * @param segEnd
+	 * @return
+	 */
 	public int findMinCost(int segStart, int segEnd) {
 		Preconditions.checkArgument(segStart >= 0);
 		Preconditions.checkArgument(segEnd >= segStart);
 		
-		Segment seg = new Segment(segStart, segEnd);
+		//int len = segEnd - segStart;
+		Pair<Integer,Integer> segment = new ImmutablePair<>(segStart,segEnd);
 		
-		if (dp.containsKey(seg)) {
-			return dp.get(seg);
+		
+		if (dp.containsKey(segment)) {
+			return dp.get(segment);
 		}
 		
 		Integer ret = null;
+		//Find the prisoner that costs the least to free
 		for(int i = 0; i < toBeFreed.size(); ++i) {
 			int position = toBeFreed.get(i);
 			
+			//This prisoner was already freed 
 			if (position < segStart || position > segEnd) {
 				continue;
 			}
 			
 			int minCost = segEnd - segStart;
 			
+			//Add costs to free prisoners to the left
 			if (position > segStart) {
 				minCost += findMinCost(segStart, position - 1) ;
 			}
 			
+			//And to the right
 			if (position < segEnd) {
 				minCost	+= findMinCost(position + 1, segEnd);
 			}
@@ -88,7 +71,7 @@ public class Dynamic implements PrisonSelectionAlgorithm {
 			ret = 0;
 		}
 		
-		dp.put(seg,  ret);
+		dp.put(segment, ret);
 		return ret;
 	}
 	

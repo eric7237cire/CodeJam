@@ -1,7 +1,7 @@
 package codejam.utils.utils;
 
 public class ArrayUtils {
-    public static void reset(int[] array) {
+    public static void reset(int[][] array) {
         
     }
     

@@ -34,7 +34,7 @@ public class Main  {
          //Round 1C -- 2009 
          //codejam.y2009.round_1C.all_your_base.Main m = new codejam.y2009.round_1C.all_your_base.Main();
          //codejam.y2009.round_1C.center_mass.Main m = new codejam.y2009.round_1C.center_mass.Main();
-         //codejam.y2009.round_1C.bribe_prisoner.Main m = new codejam.y2009.round_1C.bribe_prisoner.Main();
+         codejam.y2009.round_1C.bribe_prisoner.Main m = new codejam.y2009.round_1C.bribe_prisoner.Main();
          
          //Round 2 -- 2009
         
@@ -83,7 +83,7 @@ public class Main  {
          //codejam.y2010.round_2.world_cup.Main m = new codejam.y2010.round_2.world_cup.Main();         
          //codejam.y2010.round_2.bacteria.Main m = new codejam.y2010.round_2.bacteria.Main(); 
         //TODO corrections small
-         codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
+         //codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
                   
          //2010 3
          
@@ -118,7 +118,7 @@ public class Main  {
         for (String file : files) {
             log.info("Input file {}", file);
 
-            // Runner.goSingleThread(file, m, m);
+             //Runner.goSingleThread(file, m, m);
             Runner.go(file, m, m, 3);
         }       
     }
