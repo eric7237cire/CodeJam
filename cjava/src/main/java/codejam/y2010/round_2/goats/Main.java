@@ -18,6 +18,7 @@ import codejam.utils.geometry.Circle;
 import codejam.utils.geometry.Point;
 import codejam.utils.geometry.PointInt;
 import codejam.utils.geometry.Polygon;
+import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -25,8 +26,13 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
+    @Override
+    public String[] getDefaultInputFiles() {
+        return new String[] { "D-small-practice.in", "D-large-practice.in" };
+    }
+    
     final static Logger log = LoggerFactory.getLogger(Main.class);
     
     private static class CircleWithAngle {

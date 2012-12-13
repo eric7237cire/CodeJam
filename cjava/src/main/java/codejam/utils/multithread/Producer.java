@@ -22,21 +22,28 @@ public class Producer<InputData extends AbstractInputData> implements Runnable {
     private InputData poisonPill;
 
     public Producer(BlockingQueue<InputData> q, int testCaseTotal,
-            Scanner scanner, TestCaseInputScanner<InputData> inputReader, InputData poisonPill) {
+            Scanner scanner, TestCaseInputScanner<InputData> inputReader) {
         queue = q;
         this.testCaseTotal = testCaseTotal;
         this.br = scanner;
         this.inputReader = inputReader;
-        this.poisonPill = poisonPill;
+        //this.poisonPill = poisonPill;
     }
 
+    @SuppressWarnings("unchecked")
     public void run() {
         try {
-            for (int i = 0; i < testCaseTotal; ++i) {
+            InputData input = inputReader.readInput(br, 1);
+            queue.put(input);
+            this.poisonPill = (InputData) input.clone();
+            this.poisonPill.testCase = -1;
+            
+            for (int i = 1; i < testCaseTotal; ++i) {
                 
-                    InputData input = inputReader.readInput(br, i + 1);
+                    input = inputReader.readInput(br, i + 1);
                     queue.put(input);
                 
+                    
             }
 
             for (int i = 0; i < 10; ++i) {
@@ -45,6 +52,8 @@ public class Producer<InputData extends AbstractInputData> implements Runnable {
             }
             log.info("Producer thread ending");
         } catch (InterruptedException ex) {
+            log.error("prob", ex);
+        } catch (CloneNotSupportedException ex) {
             log.error("prob", ex);
         }
     }

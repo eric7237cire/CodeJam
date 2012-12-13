@@ -13,13 +13,19 @@ import codejam.utils.datastructures.GraphAdjList;
 import codejam.utils.datastructures.GraphInt;
 import codejam.utils.datastructures.TreeInt;
 import codejam.utils.datastructures.TreeInt.Node;
+import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
+    @Override
+    public String[] getDefaultInputFiles() {
+        return new String[] { "D-small-practice.in", "D-large-practice.in" };
+    }
+    
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
         InputData input = new InputData(testCase);

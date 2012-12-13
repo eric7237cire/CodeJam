@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import org.apache.commons.lang3.StringUtils;
 
+import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
@@ -14,8 +15,12 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
+    @Override
+    public String[] getDefaultInputFiles() {
+        return new String[] { "B-small-practice.in", "B-large-practice.in" };
+    }
 	@Override
     public InputData readInput(Scanner scanner, int testCase) {
        InputData input = new InputData(testCase);

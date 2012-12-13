@@ -14,6 +14,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.mod.GCD;
@@ -23,7 +24,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.math.IntMath;
 import com.google.common.primitives.Ints;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
     
@@ -334,6 +335,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
         
        
+    }
+
+
+
+    @Override
+    public String[] getDefaultInputFiles() {
+        return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
     

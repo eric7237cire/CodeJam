@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.geometry.Circle;
-import codejam.utils.main.Runner;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.CombinationIterator;
@@ -201,18 +200,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 	}
 
 	final static Logger log = LoggerFactory.getLogger(Main.class);
-
-	public static void main(String args[]) throws Exception {
-
-		if (args.length < 1) {
-			args = new String[] { "sample.txt" };
-		}
-		log.info("Input file {}", args[0]);
-
-		Main m = new Main();
-		Runner.go(args[0],m,m, new InputData(-1), 3);
-		
-	}
 
 
 

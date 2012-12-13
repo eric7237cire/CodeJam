@@ -3,6 +3,7 @@ package codejam.utils.main;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,13 +13,19 @@ import java.util.Locale;
 import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.multithread.Consumer;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.multithread.Producer;
+
+import com.google.common.base.Preconditions;
 
 public class Runner {
 
@@ -30,29 +37,24 @@ public class Runner {
                 ;
     }
     
+    
+    
     public static <InputData extends AbstractInputData> void goSingleThread(
             String inputFileName, TestCaseInputScanner<InputData> inputReader,
             TestCaseHandler<InputData> testCaseHandler) {
-        
-        Locale.setDefault(Locale.US);
 
         long overAllStart = System.currentTimeMillis();
-        
+
         try {
-            InputStreamReader isr = new InputStreamReader(new FileInputStream(
-                    new File(inputFileName)));
-            final BufferedReader br = new BufferedReader(isr);
-            final Scanner scanner = new Scanner(br);
 
-            final int t = scanner.nextInt();
+            Pair<Scanner, File> io = getInputOutput(inputFileName, inputReader);
+            final Scanner scanner = io.getLeft();
 
-            File outFile = new File(inputFileName.replaceAll("\\.in", "") + ".out");
-            //File outFile = new File(inputFileName.replaceAll("\\.in", "") + ".correct");
-            
+            File outFile = io.getRight();
             OutputStream os = new FileOutputStream(outFile);
             PrintStream pos = new PrintStream(os);
 
-
+            final int t = scanner.nextInt();
 
             for (int test = 1; test <= t; test++) {
                 InputData input = inputReader.readInput(scanner, test);
@@ -63,12 +65,8 @@ public class Runner {
 
             log.debug("Finished");
             
-            
-            
-
-            os.close();
-            // scanner.close();
-            br.close();
+            scanner.close();
+            pos.close();
             
             String checkFilePath = outFile.getCanonicalPath().replaceAll("\\.out",".correct");
             File checkFile = new File(checkFilePath);
@@ -111,25 +109,42 @@ public class Runner {
         }
     }
     
+    private static <InputData extends AbstractInputData> Pair<Scanner, File> getInputOutput(String inputFileName, TestCaseInputScanner<InputData> inputReader) throws FileNotFoundException {
+        
+
+        Locale.setDefault(Locale.US);
+        
+        String dir = inputReader.getClass().getPackage().getName();
+        Pattern match = Pattern.compile("codejam\\.(y\\d+)\\.round_([^\\.]+)\\..*");
+        Matcher m = match.matcher(dir);
+        Preconditions.checkState(m.matches());
+        dir = String.format(".\\src\\main\\resources\\%s\\%s\\", m.group(1), m.group(2));
+        
+        InputStreamReader isr = new InputStreamReader(new FileInputStream(
+                new File(dir + inputFileName)));
+        final BufferedReader br = new BufferedReader(isr);
+        final Scanner scanner = new Scanner(br);
+        
+        File outFile = new File(dir + inputFileName.replaceAll("\\.in", "") + ".out");
+        
+        
+        return new ImmutablePair<>(scanner, outFile);
+        
+    }
     
     public static <InputData extends AbstractInputData> void go(
             String inputFileName, TestCaseInputScanner<InputData> inputReader,
-            TestCaseHandler<InputData> testCaseHandler, InputData poisonPill, int numThreads) {
+            TestCaseHandler<InputData> testCaseHandler, int numThreads) {
         try {
-            InputStreamReader isr = new InputStreamReader(new FileInputStream(
-                    new File(inputFileName)));
-            final BufferedReader br = new BufferedReader(isr);
-            final Scanner scanner = new Scanner(br);
 
-            String line = br.readLine();
+            Pair<Scanner, File> io = getInputOutput(inputFileName, inputReader);
+            final Scanner scanner = io.getLeft();
 
-            final int t = Integer.parseInt(line);
-
-            
-            File outFile = new File(inputFileName.replaceAll("\\.in", "") + ".out");
-            
+            File outFile = io.getRight();
             OutputStream os = new FileOutputStream(outFile);
             PrintStream pos = new PrintStream(os);
+
+            final int t = scanner.nextInt();
 
             final String[] answers = new String[t];
 
@@ -142,7 +157,7 @@ public class Runner {
             //Plus ten for poison pills
             BlockingQueue<InputData> q = new ArrayBlockingQueue<InputData>(t+10);
             Producer<InputData> p = new Producer<InputData>(q, t, scanner,
-                    inputReader, poisonPill);
+                    inputReader);
 
             threads[0] = new Thread(p);
             for (int i = 1; i < THREADS; ++i) {
@@ -169,9 +184,8 @@ public class Runner {
                     +(System.currentTimeMillis() - overAllStart));
 
             os.close();
-            // scanner.close();
-            br.close();
-            
+            scanner.close();
+                        
             String checkFilePath = outFile.getCanonicalPath().replaceAll("\\.out",".correct");
             File checkFile = new File(checkFilePath);
             if (checkFile.exists()) {
