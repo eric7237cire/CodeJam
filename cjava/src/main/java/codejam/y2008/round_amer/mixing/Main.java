@@ -1,7 +1,6 @@
 package codejam.y2008.round_amer.mixing;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,15 +15,14 @@ import java.util.Stack;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Ordering;
-
 import codejam.utils.datastructures.GraphInt;
 import codejam.utils.datastructures.TreeInt;
-import codejam.utils.datastructures.TreeInt.Node;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Ordering;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 

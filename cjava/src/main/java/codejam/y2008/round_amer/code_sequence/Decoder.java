@@ -8,15 +8,16 @@ public class Decoder {
     final int MOD;
     List<Integer> sequence;
     
-    Integer next;
+    public Integer next;
 
-    public Decoder(int mod, List<Integer> sequence, Integer next) {
+    public Decoder(int mod, List<Integer> sequence) {
         super();
         
         Preconditions.checkState(sequence.size() == 5);
         this.MOD = mod;
         this.sequence = sequence;
-        this.next = next;
+        
+        next = calculateNextAssumingStart1();
     }
     
     int posMod(int i) {
@@ -26,11 +27,20 @@ public class Decoder {
         
         return m;
     }
-    private void calculateNextAssumingStart0() {
-        int k1 = sequence.get(2) - sequence.get(0);
-        int k0 = sequence.get(2) - sequence.get(1);
-        int kBig = sequence.get(0) - k0;
-        int kBig2 = sequence.get(1) - k1;
+    private int calculateNextAssumingStart1() {
+        int k1 = posMod(sequence.get(2) - sequence.get(0));
+        int k0 = posMod(sequence.get(2) - sequence.get(1));
+        int kBig = posMod(sequence.get(0) - k0);
+        int kBig2 = posMod(sequence.get(1) - k1);
         Preconditions.checkState(kBig == kBig2);
+        
+        int k2 = posMod(sequence.get(3)-kBig);
+        
+        int s4 = posMod(k0+k2+kBig);
+        Preconditions.checkState(s4==sequence.get(4));
+        
+        int s5 = posMod(k1+k2+kBig);
+        
+        return s5;
     }
 }

@@ -29,7 +29,8 @@
   <logger name="com.eric.codejam.SingleRowSolver" level="OFF" />
    -->
    
-   
+    <logger name="codejam.y2008" level = "DEBUG"/>
+       
   <root level="${root-level:-ERROR}">
     <appender-ref ref="console"/>
   </root>
