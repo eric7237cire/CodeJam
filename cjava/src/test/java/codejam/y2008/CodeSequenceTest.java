@@ -48,7 +48,6 @@ public class CodeSequenceTest {
         Integer next4 = null;
         Integer next5 = null;
         Integer next6 = null;
-        Integer next7 = null;
         for(int i = 0; i < 50000; ++i) {
             if (i % 8 == 1) {
                 Preconditions.checkState(next1 == buf.getLast());

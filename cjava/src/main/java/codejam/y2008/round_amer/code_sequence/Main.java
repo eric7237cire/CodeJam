@@ -1,7 +1,6 @@
 package codejam.y2008.round_amer.code_sequence;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -15,10 +14,6 @@ import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.y2008.round_amer.code_sequence.Decoder.OffsetData;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Iterables;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
