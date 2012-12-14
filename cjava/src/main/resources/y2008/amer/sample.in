@@ -1,11 +1,7 @@
-2
 3
-SOUP 3 STOCK salt water
-STOCK 2 chicken VEGETABLES
-VEGETABLES 2 celery onions
-5
-MILKSHAKE 4 milk icecream FLAVOR FRUIT
-FRUIT 2 banana berries
-FLAVOR 2 SPICES CHOCOLATE
-SPICES 2 nutmeg cinnamon
-CHOCOLATE 2 cocoa syrup
+7
+1 2 3 4 5 6 7
+4
+1 10 11 200
+4
+1000 1520 7520 7521

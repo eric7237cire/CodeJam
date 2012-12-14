@@ -47,11 +47,12 @@ public class Generator {
             }
         }
         
+        
         sb.append("Seq ").append(sum % MOD)
         .append(" n ").append(n).append(" ");
         sb.append("Keys used: ").append(Joiner.on(", ").join(keysUsed))
         .append("  Key Values: ").append(Joiner.on(", ").join(keyValsUsed));
-        log.debug(sb.toString());
+        //log.debug(sb.toString());
         
         ++n;
         

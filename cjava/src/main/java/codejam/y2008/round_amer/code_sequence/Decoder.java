@@ -342,18 +342,17 @@ public class Decoder {
     }
     
     public static class OffsetData {
-        public int k;
+        public List<Integer> keys;
         public int offset;
         public int next;
-        public OffsetData(int k, int offset, int next) {
+        public OffsetData(int k, List<Integer> prevKeys, int offset, int next) {
             super();
-            this.k = k;
+            this.keys = new ArrayList<>(prevKeys);
+            keys.add(k);
             this.offset = offset;
             this.next = next;
         }
-        public OffsetData() {
-            
-        }
+        
     }
     
     
@@ -362,7 +361,8 @@ public class Decoder {
         
         if (kPrevODList == null && keyIndex == 0) {
             kPrevODList = new ArrayList<>();
-            kPrevODList.add(new OffsetData(0,0,UNKNOWN));
+            kPrevODList.add(new OffsetData(0,new ArrayList<Integer>(),0,UNKNOWN));
+            kPrevODList.get(0).keys.clear();
         }
         
         int keyDiff = 1 << keyIndex;
@@ -371,18 +371,16 @@ public class Decoder {
         int prevKeyCycle = keyDiff;
         
         for (OffsetData kPrevOD : kPrevODList) {
-            if (kPrevOD.k == IMPOSSIBLE)
-                continue;
             
-            for (int possibleOffset = 0; possibleOffset <= keyCycle; ++possibleOffset) {
+            
+            for (int possibleOffset = 0; possibleOffset < keyCycle; ++possibleOffset) {
 
                 //offset must be compatablie with previous level
                 if (kPrevOD.offset != (possibleOffset % prevKeyCycle))
                     continue;
 
-                OffsetData od = new OffsetData();
-                od.offset = possibleOffset;
-
+                OffsetData od = new OffsetData(NON_INIT,kPrevOD.keys,possibleOffset,NON_INIT);
+                
                 int k = NON_INIT;
                 for (int n = keyDiff; n < sequence.size(); ++n) {
                     int prevN = (possibleOffset + n - keyDiff) % keyCycle;
@@ -401,8 +399,22 @@ public class Decoder {
                         }
                     }
                 }
+                
+                int lastN = (sequence.size() - 1+possibleOffset) % keyCycle;
+                if (lastN == keyDiff - 1 && k >= 0) {
+                    int prev = sequence.get(sequence.size()-1);
+                    for(int prevK : kPrevOD.keys) {
+                        prev = posMod(prev - prevK, mod);
+                    }
+                    od.next =  posMod(prev + k,mod); 
+                } else if (k==IMPOSSIBLE){
+                    od.next = IMPOSSIBLE;
+                    continue;
+                } else {
+                    od.next = UNKNOWN;
+                }
 
-                od.k = k;
+                od.keys.set(od.keys.size()-1, k);
                 r.add(od);
             }
         }

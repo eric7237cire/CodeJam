@@ -8,11 +8,14 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
-
 import codejam.y2008.round_amer.code_sequence.Decoder;
 import codejam.y2008.round_amer.code_sequence.Decoder.OffsetData;
 import codejam.y2008.round_amer.code_sequence.Generator;
+
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 public class CodeSequenceTest {
     final static Logger log = LoggerFactory.getLogger(CodeSequenceTest.class);
@@ -108,8 +111,15 @@ public class CodeSequenceTest {
             buf.add(g.next());            
         }
         
+        Function<Integer,String> formatStr = new Function<Integer,String>() {
+            public String apply(Integer input) {
+                return formatN(input);
+            }
+        };
         
-        for(int i = 0; i < 50; ++i) {
+        
+        for(int i = 0; i < 12; ++i) {
+            log.debug("\n\nStarting n={}  %2={}  %4={}", n, n%2, n%4);
             int n0 = Decoder.calculateNextAssumingStart0_size4(mod,buf);
             int n1 = Decoder.calculateNextAssumingStart1_size4(mod,buf);
             int n2 = Decoder.calculateNextAssumingStart2_size4(mod,buf);
@@ -122,13 +132,14 @@ public class CodeSequenceTest {
             int realNext = g.next();
             buf.add(realNext);
             buf.removeFirst();
+            ++n;
             
             log.debug("Assuming starting at n % 4 == 0,1,2,3\n [{}] {}  {}   {}   {}", realNext, formatN(n0),formatN(n1),formatN(n2),formatN(n3));
             for(OffsetData od : k0_od) {
-                log.debug("Offset data k0 off={} k1={} next={}", od.offset, formatN(od.k), formatN(od.next));
+                log.debug("Offset data k0 off={} keys={} next={}", od.offset, Joiner.on(", ").join(Lists.transform(od.keys,formatStr)), formatN(od.next));
             }
             for(OffsetData od : od2) {
-            log.debug("Offset data k1 off={} k1={} next={}", od.offset, formatN(od.k), formatN(od.next));
+            log.debug("Offset data k1 off={} keys={} next={}", od.offset, Joiner.on(", ").join(Lists.transform(od.keys,formatStr)), formatN(od.next));
             }
         }
         
