@@ -1,5 +1,6 @@
 package codejam.y2008.round_amer.code_sequence;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.Preconditions;
@@ -17,6 +18,7 @@ public class Decoder {
     
     public static final int IMPOSSIBLE = -2;
     public static final int UNKNOWN = -1;
+    public static final int NON_INIT = -3;
 
     
     public static int calculateNextAssumingStart0(int mod, List<Integer> sequence) {
@@ -274,4 +276,161 @@ public class Decoder {
         
         return s5;
     }
+    
+    public static int calculateNextAssumingStart0_size4(int mod, List<Integer> sequence) {
+    
+        int k1_a = posMod(sequence.get(2) - sequence.get(0),mod);
+        int k1_b = posMod(sequence.get(3) - sequence.get(1),mod);
+        
+        if (k1_a != k1_b) {
+            return IMPOSSIBLE;
+        }
+        
+        int k0_a = posMod(sequence.get(1) - sequence.get(0), mod);
+        int k0_b = posMod(sequence.get(3) - sequence.get(2), mod);
+        
+        if (k0_a != k0_b) {
+            return IMPOSSIBLE;
+        }
+        
+        return UNKNOWN;
+    }
+    
+    public static int calculateNextAssumingStart1_size4(int mod, List<Integer> sequence) {
+        
+        int k1 = posMod(sequence.get(2) - sequence.get(0),mod);
+        
+        int k0 = posMod(sequence.get(2) - sequence.get(1), mod);
+        
+        int kBig = posMod(sequence.get(0) - k0,mod);
+        
+        int s0 = posMod(kBig + k0,mod);
+        int s1 = posMod(kBig + k1,mod);
+        int s2 = posMod(kBig + k0 + k1,mod);
+        
+        if (s0 != sequence.get(0))
+            return IMPOSSIBLE;
+        
+        if (s1 != sequence.get(1))
+            return IMPOSSIBLE;
+        
+        if (s2 != sequence.get(2))
+            return IMPOSSIBLE;
+        
+        int s3 = posMod(sequence.get(3) + k0, mod);
+        return s3;
+    }
+    
+    public static int calculateNextAssumingStart2_size4(int mod, List<Integer> sequence) {
+        
+        int k0_a = posMod(sequence.get(1) - sequence.get(0), mod);
+        int k0_b = posMod(sequence.get(3) - sequence.get(2), mod);
+        
+        if (k0_a != k0_b) {
+            return IMPOSSIBLE;
+        }
+        
+        return UNKNOWN;
+    }
+    
+    public static int calculateNextAssumingStart3_size4(int mod, List<Integer> sequence) {
+        
+        int k0 = posMod(sequence.get(2) - sequence.get(1), mod);
+        
+        int s4 = posMod(sequence.get(3)+k0,mod);
+        return s4;
+    }
+    
+    public static class OffsetData {
+        public int k;
+        public int offset;
+        public int next;
+        public OffsetData(int k, int offset, int next) {
+            super();
+            this.k = k;
+            this.offset = offset;
+            this.next = next;
+        }
+        public OffsetData() {
+            
+        }
+    }
+    
+    
+    public static List<OffsetData> getPossibleOffset_kn(List<OffsetData> kPrevODList, int keyIndex, int mod, List<Integer> sequence) {
+        List<OffsetData> r = new ArrayList<>();
+        
+        if (kPrevODList == null && keyIndex == 0) {
+            kPrevODList = new ArrayList<>();
+            kPrevODList.add(new OffsetData(0,0,UNKNOWN));
+        }
+        
+        int keyDiff = 1 << keyIndex;
+        int keyCycle = 2*keyDiff;
+        
+        int prevKeyCycle = keyDiff;
+        
+        for (OffsetData kPrevOD : kPrevODList) {
+            if (kPrevOD.k == IMPOSSIBLE)
+                continue;
+            
+            for (int possibleOffset = 0; possibleOffset <= keyCycle; ++possibleOffset) {
+
+                //offset must be compatablie with previous level
+                if (kPrevOD.offset != (possibleOffset % prevKeyCycle))
+                    continue;
+
+                OffsetData od = new OffsetData();
+                od.offset = possibleOffset;
+
+                int k = NON_INIT;
+                for (int n = keyDiff; n < sequence.size(); ++n) {
+                    int prevN = (possibleOffset + n - keyDiff) % keyCycle;
+                    int currentN = (possibleOffset + n) % keyCycle;
+
+                    if (currentN - prevN == keyDiff) {
+                        int calculatedK = posMod(
+                                sequence.get(n) - sequence.get(n - keyDiff),
+                                mod);
+                        if (k == NON_INIT) {
+                            k = calculatedK;
+                        } else if (k != calculatedK) {
+                            //found an inconsistency
+                            k = IMPOSSIBLE;
+                            break;
+                        }
+                    }
+                }
+
+                od.k = k;
+                r.add(od);
+            }
+        }
+        return r;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

@@ -30,25 +30,31 @@ public class Generator {
     }
     
     public int next() {
-        ++n;
+        
         BitSet bs = BitSet.valueOf(new long[] {n});
         
         StringBuffer sb = new StringBuffer();
         
         List<Integer> keysUsed = new ArrayList<>();
+        List<Integer> keyValsUsed = new ArrayList<>();
         
         int sum = 0;
         for(int i = 0; i <= 29; ++i) {
             if (bs.get(i)) {
                 sum += keys[i];
                 keysUsed.add(i);
+                keyValsUsed.add(keys[i]);
             }
         }
         
         sb.append("Seq ").append(sum % MOD)
-        .append(" Sum ").append(n).append(" ");
-        sb.append("Keys used: ").append(Joiner.on(", ").join(keysUsed));
+        .append(" n ").append(n).append(" ");
+        sb.append("Keys used: ").append(Joiner.on(", ").join(keysUsed))
+        .append("  Key Values: ").append(Joiner.on(", ").join(keyValsUsed));
         log.debug(sb.toString());
+        
+        ++n;
+        
         return sum % MOD;
     }
 }

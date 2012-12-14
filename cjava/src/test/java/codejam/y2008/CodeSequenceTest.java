@@ -11,12 +11,13 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 
 import codejam.y2008.round_amer.code_sequence.Decoder;
+import codejam.y2008.round_amer.code_sequence.Decoder.OffsetData;
 import codejam.y2008.round_amer.code_sequence.Generator;
 
 public class CodeSequenceTest {
     final static Logger log = LoggerFactory.getLogger(CodeSequenceTest.class);
     
-    @Test
+    
     public void testCodeSeq() {
         
         //int n = 424225488;
@@ -82,5 +83,79 @@ public class CodeSequenceTest {
             
         }
         
+    }
+    
+    
+    @Test
+    public void testCodeSeq4() {
+        
+        //int n = 424225488;
+        int n = 0;
+ 
+        int mod = 17;
+        
+        Generator g = new Generator(n, mod, 0);
+        
+        for(int k = 29; k >= 0; --k) {
+            log.debug("K{}: {}", k, g.keys[k]);
+        }
+        
+        LinkedList<Integer> buf = new LinkedList<Integer>();
+        
+        
+        
+        for(int i = 0; i < 4; ++i) {
+            buf.add(g.next());            
+        }
+        
+        
+        for(int i = 0; i < 50; ++i) {
+            int n0 = Decoder.calculateNextAssumingStart0_size4(mod,buf);
+            int n1 = Decoder.calculateNextAssumingStart1_size4(mod,buf);
+            int n2 = Decoder.calculateNextAssumingStart2_size4(mod,buf);
+            int n3 = Decoder.calculateNextAssumingStart3_size4(mod,buf);
+            
+            List<OffsetData> k0_od = Decoder.getPossibleOffset_kn(null, 0, mod, buf);
+            List<OffsetData> od2 = Decoder.getPossibleOffset_kn(k0_od, 1,mod,buf);
+            
+            
+            int realNext = g.next();
+            buf.add(realNext);
+            buf.removeFirst();
+            
+            log.debug("Assuming starting at n % 4 == 0,1,2,3\n [{}] {}  {}   {}   {}", realNext, formatN(n0),formatN(n1),formatN(n2),formatN(n3));
+            for(OffsetData od : k0_od) {
+                log.debug("Offset data k0 off={} k1={} next={}", od.offset, formatN(od.k), formatN(od.next));
+            }
+            for(OffsetData od : od2) {
+            log.debug("Offset data k1 off={} k1={} next={}", od.offset, formatN(od.k), formatN(od.next));
+            }
+        }
+        
+        List<Integer> l = Arrays.asList(1, 10, 11, 200);
+        
+        mod = 10007;
+        int n0 = Decoder.calculateNextAssumingStart0_size4(mod,l);
+        int n1 = Decoder.calculateNextAssumingStart1_size4(mod,l);
+        int n2 = Decoder.calculateNextAssumingStart2_size4(mod,l);
+        int n3 = Decoder.calculateNextAssumingStart3_size4(mod,l);
+        log.debug("Assuming starting at n % 4 == 0,1,2,3\n  {}  {}   {}   {}", formatN(n0),formatN(n1),formatN(n2),formatN(n3));
+        l = Arrays.asList(1000, 1520, 7520, 7521);
+        n0 = Decoder.calculateNextAssumingStart0_size4(mod,l);
+        n1 = Decoder.calculateNextAssumingStart1_size4(mod,l);
+        n2 = Decoder.calculateNextAssumingStart2_size4(mod,l);
+        n3 = Decoder.calculateNextAssumingStart3_size4(mod,l);        
+        log.debug("Assuming starting at n % 4 == 0,1,2,3\n {}  {}   {}   {}", formatN(n0),formatN(n1),formatN(n2),formatN(n3));
+        
+    }
+    
+    String formatN(int n) {
+        if (n==Decoder.IMPOSSIBLE)
+            return "I";
+        
+        if (n==Decoder.UNKNOWN)
+            return "?";
+        
+        return Integer.toString(n);
     }
 }
