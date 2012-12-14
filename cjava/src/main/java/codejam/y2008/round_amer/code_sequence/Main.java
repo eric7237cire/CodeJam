@@ -28,8 +28,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     public String[] getDefaultInputFiles() {
         //return new String[] { "sample.in"};
         //return new String[] { "B-small-practice.in" };
-        return new String[] { "B-large-practice.in" };
-        //return new String[] { "B-small-practice.in", "B-large-practice.in" };
+        //return new String[] { "B-large-practice.in" };
+        return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
     @Override
@@ -54,11 +54,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         int mod = 10007;
         
-        Predicate<Integer> notImpossible = new Predicate<Integer>() {
-          public boolean apply(Integer i) {
-              return i != Decoder.IMPOSSIBLE;
-          }
-        };
+        
         
         List<OffsetData> od = null;
         for(int level = 0; 1 << level+1 <= buf.size(); ++level) {
@@ -76,23 +72,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         
         
-        if (buf.size() == 4) {
-            int n0 = Decoder.calculateNextAssumingStart0_size4(mod,buf);
-            int n1 = Decoder.calculateNextAssumingStart1_size4(mod,buf);
-            int n2 = Decoder.calculateNextAssumingStart2_size4(mod,buf);
-            int n3 = Decoder.calculateNextAssumingStart3_size4(mod,buf);
-            
-            List<Integer> nextPossible = Arrays.asList(n0,n1,n2,n3);
-            Collection<Integer> possible = Collections2.filter(nextPossible, notImpossible);
-            
-            Set<Integer> set = new HashSet<>(possible);
-            
-            if (set.size() == 1 && set.iterator().next() >= 0) {
-                return String.format("Case #%d: %d", input.testCase, set.iterator().next());
-            } else {
-                return String.format("Case #%d: UNKNOWN", input.testCase);
-            }
-        }
+       
         return String.format("Case #%d: UNKNOWN", input.testCase);
     }
     

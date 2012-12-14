@@ -355,37 +355,56 @@ public class Decoder {
         
     }
     
-    
+    /**
+     * 
+     * @param kPrevODList
+     * @param keyIndex  the index of the generator keys.  0 = smallest bit
+     * @param mod
+     * @param sequence list of sequences we are trying to find the next value
+     * @return
+     */
     public static List<OffsetData> getPossibleOffset_kn(List<OffsetData> kPrevODList, int keyIndex, int mod, List<Integer> sequence) {
         List<OffsetData> r = new ArrayList<>();
         
+        //Seed the first list
         if (kPrevODList == null && keyIndex == 0) {
             kPrevODList = new ArrayList<>();
             kPrevODList.add(new OffsetData(0,new ArrayList<Integer>(),0,UNKNOWN));
             kPrevODList.get(0).keys.clear();
         }
         
+        //Decimal value of the key.  
         int keyDiff = 1 << keyIndex;
+        
+        //How long a complete cycle
         int keyCycle = 2*keyDiff;
         
         int prevKeyCycle = keyDiff;
         
-        for (OffsetData kPrevOD : kPrevODList) {
+        for (OffsetData kPrevOD : kPrevODList) {            
             
-            
+            /*
+             * The goal is to guess where in the cycle the sequence starts
+             */
             for (int possibleOffset = 0; possibleOffset < keyCycle; ++possibleOffset) {
 
-                //offset must be compatablie with previous level
+                //offset must be compatible with previous level.  
                 if (kPrevOD.offset != (possibleOffset % prevKeyCycle))
                     continue;
 
                 OffsetData od = new OffsetData(NON_INIT,kPrevOD.keys,possibleOffset,NON_INIT);
                 
                 int k = NON_INIT;
+                
+                //Go through the sequence.  We start at keyDiff because it is the minimum we advace
+                //in order to calculate a potential key value
                 for (int n = keyDiff; n < sequence.size(); ++n) {
                     int prevN = (possibleOffset + n - keyDiff) % keyCycle;
                     int currentN = (possibleOffset + n) % keyCycle;
 
+                    //The only way to calculate a key value is to not have reset to 0's as then
+                    //we do not know which greater keys were triggered on or off.
+                    
                     if (currentN - prevN == keyDiff) {
                         int calculatedK = posMod(
                                 sequence.get(n) - sequence.get(n - keyDiff),
@@ -393,16 +412,23 @@ public class Decoder {
                         if (k == NON_INIT) {
                             k = calculatedK;
                         } else if (k != calculatedK) {
-                            //found an inconsistency
+                            //found an inconsistency.  We now know this offset is not possible
                             k = IMPOSSIBLE;
                             break;
                         }
                     }
                 }
                 
+                //Here we see if a guess is possible
                 int lastN = (sequence.size() - 1+possibleOffset) % keyCycle;
+                
+                //Looking for something like ...11111
+                //                             100000
+                // Example for k5
                 if (lastN == keyDiff - 1 && k >= 0) {
                     int prev = sequence.get(sequence.size()-1);
+                    
+                    //Subtract all the previous keys
                     for(int prevK : kPrevOD.keys) {
                         prev = posMod(prev - prevK, mod);
                     }
