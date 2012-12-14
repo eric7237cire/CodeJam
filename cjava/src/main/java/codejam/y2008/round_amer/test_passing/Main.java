@@ -2,13 +2,16 @@ package codejam.y2008.round_amer.test_passing;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
+import java.util.PriorityQueue;
 import java.util.Scanner;
+import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +19,6 @@ import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Ordering;
 import com.google.common.math.IntMath;
 
@@ -26,9 +28,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-       // return new String[] { "sample.in"};
-        return new String[] { "C-small-practice.in" };
-        //return new String[] { "B-large-practice.in" };
+      //  return new String[] { "sample.in"};
+        //return new String[] { "C-small-practice.in" };
+        return new String[] { "C-large-practice.in" };
         //return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
@@ -45,17 +47,110 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return input;
     }
 
+    
+    private static class Node {
+        List<Path> bestPaths;       
+        
+        Node(double prob, int ans, int maxQ) {
+            Path p = new Path(maxQ);
+            p.pathList[0] = ans;
+            p.weight = prob;
+            bestPaths = new ArrayList<>();
+            bestPaths.add(p);
+        }
+        
+        Node(List<Path> paths) {
+            bestPaths = paths;
+        }
+
+        @Override
+        public String toString() {
+            return "Node [bestPaths=" + bestPaths + "]";
+        }
+    }
+    
+    private static class Path implements Comparable<Path> {
+        //pair is question [0-29], response[0-3]
+        int[] pathList;
+        double weight;
+        
+        Path(int maxQ) {
+            pathList = new int[maxQ];
+            Arrays.fill(pathList, -1);
+        }
+
+        @Override
+        public int compareTo(Path o) {
+            return Double.compare(o.weight, weight);
+        }
+
+        @Override
+        public String toString() {
+            return "Path [pathList=" + Arrays.toString(pathList) + ", weight="
+                    + weight + "]";
+        }
+    }
+    
     @Override
     public String handleCase(InputData input) {
         
-        int[] currentQ = new int[input.Q];
+       // int[] currentQ = new int[input.Q];
         
-        for(int q = 0; q < input.Q; ++q) {
-            //Arrays.sort(input.prob[q], Ordering.<double>natural().reverse());
-           // Arrays.sort(input.prob[q]);
-           // currentQ[q] = 0;
+        Node[][] bestPaths = new Node[input.Q][4];
+        
+        for(int a = 0; a < 4; ++a) {
+            bestPaths[0][a] = new Node(input.prob[0][a], a, input.Q);
         }
         
+        for (int q = 1; q < input.Q; ++q) {
+            for (int ans = 0; ans < 4; ++ans) {
+                //Build a list of best paths
+                List<Path> paths = new ArrayList<>();
+                
+                for (int prevA = 0; prevA < 4; ++prevA) {
+                    Node node = bestPaths[q-1][prevA];
+                    for(Path prevPath : node.bestPaths) {
+                        Path newPath = new Path(input.Q);
+                        newPath.pathList = Arrays.copyOf(prevPath.pathList, input.Q);
+                        newPath.pathList[q] = ans;
+                        newPath.weight = prevPath.weight * input.prob[q][ans];
+                        paths.add(newPath);
+                    }
+                }
+                
+                if (paths.size() > input.M) { 
+                //Truncate to at most m paths
+                Collections.sort(paths);
+                paths = paths.subList(0,input.M);
+                }
+                
+                bestPaths[q][ans] = new Node(paths);
+            }
+        }
+        
+        //Combine last questions paths
+        //Build a list of best paths
+        List<Path> paths = new ArrayList<>();
+        
+        for (int ans = 0; ans < 4; ++ans) {
+            paths.addAll(bestPaths[input.Q-1][ans].bestPaths);            
+        }
+        if (paths.size() > input.M) { 
+            //Truncate to at most m paths
+            Collections.sort(paths);
+            paths = paths.subList(0,input.M);
+        }
+        
+        double ev = 0;
+        for(Path path : paths) {
+            double p = 1;
+            for(int q = 0; q < input.Q; ++q) {
+                p *= input.prob[q][path.pathList[q]];
+            }
+            ev+=p;
+        }
+        
+        /*
         int perms = IntMath.pow(4,input.Q);
         List<Double> evList = new ArrayList<>();
         
@@ -89,7 +184,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 break;
             
             
-        }
+        }*/
         
         /*
        Arrays.sort(input.prob, new Comparator<double[]>() {
