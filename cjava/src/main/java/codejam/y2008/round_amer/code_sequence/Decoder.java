@@ -14,6 +14,9 @@ public class Decoder {
         
         return m;
     }
+    
+    public static final int IMPOSSIBLE = -2;
+    public static final int UNKNOWN = -1;
 
     
     public static int calculateNextAssumingStart0(int mod, List<Integer> sequence) {
@@ -173,6 +176,9 @@ public class Decoder {
         //int k1 = posMod(sequence.get(2) - sequence.get(0));
         int k0 = posMod(sequence.get(1) - sequence.get(0), mod);
         int k1 = posMod(sequence.get(2) - sequence.get(0), mod);        
+        
+        int s3 = posMod(sequence.get(0) + k0 + k1, mod);
+        Preconditions.checkState(sequence.get(3) == s3);
         
         int s5 = posMod(sequence.get(4)+k0, mod);
         
