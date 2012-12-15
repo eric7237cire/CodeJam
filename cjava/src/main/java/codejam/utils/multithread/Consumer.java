@@ -29,8 +29,9 @@ public class Consumer<InputData extends AbstractInputData> implements Runnable {
     public void run() {
         try {
             while (true) {
-                log.debug("Consumer thread loop");
+                
                 InputData input = queue.take();
+                log.debug("Consumer thread loop.  TestCase #{}", input.testCase);
                 if (input.testCase < 0) {
                     log.info("Consumer Thread ending");
                     return;

@@ -15,8 +15,8 @@ import com.google.common.base.Preconditions;
 public class TreeInt<T> {
 
     private boolean stats = true;
-    
-        public boolean isStats() {
+
+    public boolean isStats() {
         return stats;
     }
 
@@ -24,208 +24,204 @@ public class TreeInt<T> {
         this.stats = stats;
     }
 
-        private Node root;
-        
-        private Map<Integer, Node> nodes;
+    private Node root;
 
-        public Map<Integer, Node> getNodes() {
-            return nodes;
-        }
+    private Map<Integer, Node> nodes;
 
-        public void setNodes(Map<Integer, Node> nodes) {
-            this.nodes = nodes;
-        }
+    public Map<Integer, Node> getNodes() {
+        return nodes;
+    }
 
-        public Node getRoot() {
-            return root;
-        }
-        
-        public void reset() {
-            nodes = new HashMap<>();
-            this.root = new Node(root.id);
-        }
+    public void setNodes(Map<Integer, Node> nodes) {
+        this.nodes = nodes;
+    }
 
-        public TreeInt(int root) {
-            nodes = new HashMap<>();
-            this.root = new Node(root);
-        }
-        
-        public TreeInt<T> reroot(int newRoot) {
-            TreeInt<T> newTree = new TreeInt<T>(newRoot);
-            
-            //Set<Integer> visited = new HashSet<Integer>();
-            Queue<Integer> toVisit = new LinkedList<>();
-            
-            toVisit.add(newRoot);
-            
-            while(!toVisit.isEmpty()) {
-                Integer nodeId = toVisit.poll();
-                
-                //if (visited.contains(nodeId))
-                 //   continue;
-                
-                //visited.add(nodeId);
-                
-                Preconditions.checkState(newTree.getNodes().containsKey(nodeId));
-                Node newTreeNode = newTree.getNodes().get(nodeId);
-                Node oldTreeNode = nodes.get(nodeId);
-                //Get all new children from old tree
-                for(Node childNode : oldTreeNode.children) {
-                    //Add children to new tree node
-                    if (newTreeNode.getParent() == null || childNode.id != newTreeNode.getParent().id) {
-                        newTreeNode.addChild(childNode.id);
-                        toVisit.add(childNode.id);
-                    }
-                }
-                
-                if (oldTreeNode.getParent() == null)
-                    continue;
-                
-                //Also check parent
-                if (newTreeNode.getParent() == null || oldTreeNode.getParent().id != newTreeNode.getParent().id) {
-                    newTreeNode.addChild(oldTreeNode.getParent().id);
-                    toVisit.add(oldTreeNode.getParent().id);
+    public Node getRoot() {
+        return root;
+    }
+
+    public void reset() {
+        nodes = new HashMap<>();
+        this.root = new Node(root.id);
+    }
+
+    public TreeInt(int root) {
+        nodes = new HashMap<>();
+        this.root = new Node(root);
+    }
+
+    public TreeInt<T> reroot(int newRoot) {
+        TreeInt<T> newTree = new TreeInt<T>(newRoot);
+
+        // Set<Integer> visited = new HashSet<Integer>();
+        Queue<Integer> toVisit = new LinkedList<>();
+
+        toVisit.add(newRoot);
+
+        while (!toVisit.isEmpty()) {
+            Integer nodeId = toVisit.poll();
+
+            // if (visited.contains(nodeId))
+            // continue;
+
+            // visited.add(nodeId);
+
+            Preconditions.checkState(newTree.getNodes().containsKey(nodeId));
+            Node newTreeNode = newTree.getNodes().get(nodeId);
+            Node oldTreeNode = nodes.get(nodeId);
+            // Get all new children from old tree
+            for (Node childNode : oldTreeNode.children) {
+                // Add children to new tree node
+                if (newTreeNode.getParent() == null
+                        || childNode.id != newTreeNode.getParent().id) {
+                    newTreeNode.addChild(childNode.id);
+                    toVisit.add(childNode.id);
                 }
             }
-            
-            return newTree;
+
+            if (oldTreeNode.getParent() == null)
+                continue;
+
+            // Also check parent
+            if (newTreeNode.getParent() == null
+                    || oldTreeNode.getParent().id != newTreeNode.getParent().id) {
+                newTreeNode.addChild(oldTreeNode.getParent().id);
+                toVisit.add(oldTreeNode.getParent().id);
+            }
         }
+
+        return newTree;
+    }
+
+    @Override
+    public String toString() {
+        return "Tree\n" + root.toString();
+    }
+
+    public class Node {
+        private int id;
+        private int size;
+        private int height;
+        private int depth;
+        private T data;
+
+        public T getData() {
+            return data;
+        }
+
+        public void setData(T data) {
+            this.data = data;
+        }
+
+        public int getDepth() {
+            return depth;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public int getSize() {
+            return size;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        private Node parent;
+        private Set<Node> children;
+
+        public Set<Node> getChildren() {
+            return children;
+        }
+
+        private static final int INDENT = 3;
 
         @Override
         public String toString() {
-            return "Tree\n" + root.toString();
+            StringBuffer sb = new StringBuffer();
+
+            sb.append(StringUtils.repeat(" ", getDepth() * INDENT));
+            sb.append(id);
+            sb.append("\n");
+            for (Node child : children) {
+                sb.append(child.toString());
+            }
+            return sb.toString();
+            // return "Node [id=" + id + ", size=" + size + ", height="
+            // + height + ", childrenCount=" + children.size() + "]" ;
         }
 
-        public class Node {
-            private int id;
-            private int size;
-            private int height;
-            private int depth;
-            private T data;
+        // Root
+        private Node(int id) {
+            children = new HashSet<>();
+            this.parent = null;
+            this.id = id;
+            height = 1;
+            size = 1;
+            depth = 0;
+            nodes.put(id, this);
+        }
+
+        public Node(int id, Node parent) {
+            this(id);
+            this.parent = parent;
+            this.height = 1;
+            this.size = 1;
+
+            if (!isStats())
+                return;
             
-            public T getData() {
-                return data;
+            Node node = parent;
+
+            int h = 1;
+            this.depth = 0;
+            while (node != null) {
+                node.size++;
+                h++;
+                ++depth;
+                node.height = Math.max(h, node.height);
+                node = node.parent;
             }
+        }
 
-            public void setData(T data) {
-                this.data = data;
-            }
+        public Node getParent() {
+            return parent;
+        }
 
-            public int getDepth() {
-                return depth;
-            }
+        public Node addChild(int childId) {
+            Preconditions.checkState(!nodes.containsKey(childId));
 
-            public int getId() {
-                return id;
-            }
+            Node child = new Node(childId, this);
+            Preconditions.checkState(!children.contains(child));
 
-            public int getSize() {
-                return size;
-            }
+            children.add(child);
+            return child;
+        }
 
-            public int getHeight() {
-                return height;
-            }
+        public void setChildren(Set<Node> children) {
+            this.children = children;
+        }
 
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(id);
+        }
 
-            private Node parent;
-            private Set<Node> children;
+        @SuppressWarnings("unchecked")
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            TreeInt<T>.Node other = (TreeInt<T>.Node) obj;
 
-            
-            public Set<Node> getChildren() {
-                return children;
-            }
-            
-            
+            return Objects.equal(id, other.id);
 
-            private static final int INDENT = 3;
-            @Override
-            public String toString() {
-                StringBuffer sb = new StringBuffer();
-                
-                sb.append( StringUtils.repeat(" ", getDepth() * INDENT) );
-                sb.append(id);
-                sb.append("\n");
-                for(Node child : children) {
-                    sb.append(child.toString());
-                }
-                return sb.toString();
-//                return "Node [id=" + id + ", size=" + size + ", height="
-//                        + height + ", childrenCount=" + children.size() + "]" ;
-            }
-
-            //Root
-            private Node(int id) {
-                children = new HashSet<>();
-                this.parent = null;
-                this.id = id;
-                height = 1;
-                size = 1;
-                depth = 0;
-                nodes.put(id, this);
-            }
-            public Node(int id, Node parent) {
-                this(id);
-                this.parent = parent;
-                this.height = 1;
-                this.size = 1;
-                
-                Node node = parent;
-                
-                if (!isStats())
-                    return ;
-                
-                int h = 1;
-                this.depth = 0;
-                while(node != null) {
-                    node.size++;
-                    h++;
-                    ++depth;
-                    node.height = Math.max(h, node.height);
-                    node = node.parent;
-                }
-            }
-
-            
-            public Node getParent() {                
-                return parent;
-            }
-
-            public Node addChild(int childId) {
-                Preconditions.checkState(!nodes.containsKey(childId));
-                
-                Node child = new Node(childId, this);
-                Preconditions.checkState(!children.contains(child));
-                
-                children.add(child);
-                return child;
-            }
-            
-            public void setChildren(Set<Node> children) {
-                this.children = children;
-            }
-            
-            
-
-            @Override
-            public int hashCode() {
-                return Objects.hashCode(id);
-            }
-
-            @Override
-            public boolean equals(Object obj) {
-                if (this == obj)
-                    return true;
-                if (obj == null)
-                    return false;
-                if (getClass() != obj.getClass())
-                    return false;
-                Node other = (Node) obj;
-
-                return Objects.equal(id, other.id);
-
-            }
         }
     }
-
-
+}

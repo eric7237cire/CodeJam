@@ -130,7 +130,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>com.eric.codejam.Main</mainClass>
+							<mainClass>codejam.Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

@@ -19,6 +19,7 @@ import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
+import com.google.common.collect.MinMaxPriorityQueue;
 import com.google.common.collect.Ordering;
 import com.google.common.math.IntMath;
 
@@ -52,7 +53,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         List<Path> bestPaths;       
         
         Node(double prob, int ans, int maxQ) {
-            Path p = new Path(maxQ);
+            Path p = new Path();
             p.pathList[0] = ans;
             p.weight = prob;
             bestPaths = new ArrayList<>();
@@ -74,9 +75,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         int[] pathList;
         double weight;
         
-        Path(int maxQ) {
-            pathList = new int[maxQ];
-            Arrays.fill(pathList, -1);
+        Path() {
+            pathList = new int[1];
+        }
+        
+        Path(int[] pathList) {
+            this.pathList = pathList;
         }
 
         @Override
@@ -105,24 +109,26 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         for (int q = 1; q < input.Q; ++q) {
             for (int ans = 0; ans < 4; ++ans) {
                 //Build a list of best paths
-                List<Path> paths = new ArrayList<>();
+                //List<Path> paths = new ArrayList<>();
+                MinMaxPriorityQueue<Path> mm = MinMaxPriorityQueue.maximumSize(input.M).expectedSize(input.M).create();
                 
                 for (int prevA = 0; prevA < 4; ++prevA) {
                     Node node = bestPaths[q-1][prevA];
                     for(Path prevPath : node.bestPaths) {
-                        Path newPath = new Path(input.Q);
-                        newPath.pathList = Arrays.copyOf(prevPath.pathList, input.Q);
+                        Path newPath = new Path(Arrays.copyOf(prevPath.pathList, q+1));
                         newPath.pathList[q] = ans;
                         newPath.weight = prevPath.weight * input.prob[q][ans];
-                        paths.add(newPath);
+                        if (mm.size() == input.M  && newPath.weight < mm.peekLast().weight) {
+                            break;
+                        }
+                        mm.add(newPath);
+                        //paths.add(newPath);
                     }
                 }
                 
-                if (paths.size() > input.M) { 
-                //Truncate to at most m paths
-                Collections.sort(paths);
-                paths = paths.subList(0,input.M);
-                }
+                List<Path> paths = new ArrayList<>(mm);
+                
+                Collections.sort(paths);                
                 
                 bestPaths[q][ans] = new Node(paths);
             }
@@ -130,24 +136,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         //Combine last questions paths
         //Build a list of best paths
-        List<Path> paths = new ArrayList<>();
+        MinMaxPriorityQueue<Path> paths = MinMaxPriorityQueue.maximumSize(input.M).expectedSize(input.M).create();
         
         for (int ans = 0; ans < 4; ++ans) {
             paths.addAll(bestPaths[input.Q-1][ans].bestPaths);            
         }
-        if (paths.size() > input.M) { 
-            //Truncate to at most m paths
-            Collections.sort(paths);
-            paths = paths.subList(0,input.M);
-        }
         
         double ev = 0;
-        for(Path path : paths) {
-            double p = 1;
-            for(int q = 0; q < input.Q; ++q) {
-                p *= input.prob[q][path.pathList[q]];
-            }
-            ev+=p;
+        for(Path path : paths) {            
+            ev+=path.weight;
         }
         
         /*

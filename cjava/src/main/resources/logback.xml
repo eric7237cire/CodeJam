@@ -35,7 +35,7 @@
    <logger name="codejam.y2011.round_1A.killer_word" level="DEBUG"/>
    <logger name="gcodejam.y2011.round_1A.dominion" level="DEBUG"/>
                  
-   <logger name="codejam.utils.multithread" level="INFO"/>
+   <logger name="codejam.utils.multithread" level="DEBUG"/>
       <logger name="codejam.utils.main" level="DEBUG"/>
   <root level="${root-level:-DEBUG}">
     <appender-ref ref="console"/>
