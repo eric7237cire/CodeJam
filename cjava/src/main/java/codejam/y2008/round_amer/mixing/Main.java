@@ -85,6 +85,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         TreeInt<Integer> tree = graph.convertToTree(1);
         
+        //Do a child first traversal
         Stack<Integer> toVisit = new Stack<>();
         Set<Integer> visited = new HashSet<>();
         

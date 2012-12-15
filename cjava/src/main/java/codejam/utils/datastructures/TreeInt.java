@@ -15,6 +15,15 @@ import com.google.common.base.Preconditions;
 public class TreeInt<T> {
 
     private boolean stats = true;
+    private boolean uniqueNodeIds = true;
+    
+    public boolean isUniqueNodeIds() {
+        return uniqueNodeIds;
+    }
+
+    public void setUniqueNodeIds(boolean uniqueNodeIds) {
+        this.uniqueNodeIds = uniqueNodeIds;
+    }
 
     public boolean isStats() {
         return stats;
@@ -144,6 +153,7 @@ public class TreeInt<T> {
 
             sb.append(StringUtils.repeat(" ", getDepth() * INDENT));
             sb.append(id);
+            sb.append(" [").append(data).append("] ");
             sb.append("\n");
             for (Node child : children) {
                 sb.append(child.toString());
@@ -161,7 +171,8 @@ public class TreeInt<T> {
             height = 1;
             size = 1;
             depth = 0;
-            nodes.put(id, this);
+            if (uniqueNodeIds)
+                nodes.put(id, this);
         }
 
         public Node(int id, Node parent) {
@@ -191,7 +202,8 @@ public class TreeInt<T> {
         }
 
         public Node addChild(int childId) {
-            Preconditions.checkState(!nodes.containsKey(childId));
+            if (uniqueNodeIds)
+                Preconditions.checkState(!nodes.containsKey(childId));
 
             Node child = new Node(childId, this);
             Preconditions.checkState(!children.contains(child));
@@ -206,12 +218,18 @@ public class TreeInt<T> {
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(id);
+            if (uniqueNodeIds)
+                return Objects.hashCode(id);
+            else
+                return super.hashCode();
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public boolean equals(Object obj) {
+            if (!uniqueNodeIds)
+                return super.equals(obj);
+            
             if (this == obj)
                 return true;
             if (obj == null)

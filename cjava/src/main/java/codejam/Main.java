@@ -17,7 +17,8 @@ public class Main  {
         
         //codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
         //codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
-        codejam.y2008.round_amer.test_passing.Main m = new codejam.y2008.round_amer.test_passing.Main();
+        //codejam.y2008.round_amer.test_passing.Main m = new codejam.y2008.round_amer.test_passing.Main();
+        codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();
         
         //2008 apac semis
         //A and B are in c++        
@@ -120,8 +121,8 @@ public class Main  {
         for (String file : files) {
             log.info("Input file {}", file);
 
-            // Runner.goSingleThread(file, m, m);
-            Runner.go(file, m, m, 5);
+             Runner.goSingleThread(file, m, m);
+          //  Runner.go(file, m, m, 5);
         }       
     }
 
