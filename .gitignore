@@ -19,3 +19,4 @@ ipch
 *.sdf
 *.suo
 *.opensdf
+*.log

@@ -60,6 +60,7 @@ public class KingTest {
         input.col = 4;
         
         Main m = new Main();
+        Main.skipDebug = true;
         
         int max = 1 << 16;
         for(int perm = 0; perm < max; ++perm) {

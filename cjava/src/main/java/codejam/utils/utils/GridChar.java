@@ -123,6 +123,19 @@ public static GridChar  buildFromScanner(Scanner scanner, int rows, int cols, ch
         return col + row * cols;
     }
     
+    public boolean isAdj8(int idx1, int idx2) {
+        int row1 = idx1 / cols;
+        int col1 = idx1 % cols;
+        
+        int row2 = idx2 / cols;
+        int col2 = idx2 % cols;
+        
+        if (Math.abs(row1-row2) <= 1 && Math.abs(col1-col2) <= 1)
+            return true;
+        
+        return false;
+    }
+    
     public Integer getIndex(int index, Direction dir) {
         int row = index / cols - dir.getDeltaY();
         int col = index % cols + dir.getDeltaX();

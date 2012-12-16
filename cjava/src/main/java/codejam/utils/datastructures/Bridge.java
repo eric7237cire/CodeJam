@@ -64,7 +64,7 @@ public class Bridge {
                 dfs(G, v, w);
                 low.put(v, Math.min(low.get(v), low.get(w)));
                 if (low.get(w) == pre.get(w)) {
-                    log.debug(v + "-" + w + " is a bridge");
+                    //log.debug(v + "-" + w + " is a bridge");
                     bridges.add(new ImmutablePair<>(v,w));
                 }
             }

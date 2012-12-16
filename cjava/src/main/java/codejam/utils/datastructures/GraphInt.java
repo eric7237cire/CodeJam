@@ -49,6 +49,19 @@ public class GraphInt {
         nodeANeighbors.add(nodeB);
         nodeBNeighbors.add(nodeA);
     }
+    
+    public void addOneWayConnection(int nodeA, int nodeB) {
+        Set<Integer> nodeANeighbors;
+        
+        if (!nodeConnections.containsKey(nodeA)) {
+            nodeANeighbors = Sets.newHashSet();
+            nodeConnections.put(nodeA,nodeANeighbors);
+        } else {
+            nodeANeighbors = nodeConnections.get(nodeA);
+        }
+        
+        nodeANeighbors.add(nodeB);
+    }
 
     /**
      * Gets connected nodes without using edge from u to v

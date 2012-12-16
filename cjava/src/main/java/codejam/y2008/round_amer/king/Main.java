@@ -44,6 +44,8 @@ public class Main implements TestCaseHandler<InputData>,
         return input;
     }
     
+    public static boolean skipDebug = false;
+    
     public boolean findLoserSquares(GridChar grid) {
         int maxIndex = grid.getRows() * grid.getCols() - 1;
         boolean r = false;
@@ -61,18 +63,18 @@ public class Main implements TestCaseHandler<InputData>,
 
                     char adjSq = grid.getEntry(childIdx);
 
-                    if (adjSq == 'K' || adjSq == '.' || adjSq == 'L' ) {
+                    if (adjSq == 'K' || adjSq == '.' || adjSq == 'V' ) {
                         ++count;
                     }
                 }
 
                 if (count == 1) {
-                    grid.setEntry(sq, 'L');
+                    grid.setEntry(sq, 'V');
                     r = true;
                 }
             }
             
-            if (ch == 'L') {
+            if (ch == 'V') {
                 for (Direction dir : Direction.values()) {
                     Integer childIdx = grid.getIndex(sq, dir);
                     if (childIdx == null)
@@ -92,9 +94,27 @@ public class Main implements TestCaseHandler<InputData>,
         return r;
     }
     
-    public boolean reduceGrid(GridChar grid, int startingLoc) {
+    public Integer getOpenNodeNextToKing(GridChar grid, int loc) {
+        for(Direction dir : Direction.values()) {
+            Integer childIdx = grid.getIndex(loc,dir);
+            if (childIdx == null)
+                continue;
+            
+            char sq = grid.getEntry(childIdx);
+            
+            if (sq == '.') {
+                return childIdx;
+            }
+        }
+        
+        return null;
+    }
+    
+    public boolean reduceGrid(GridChar grid, final int kingLoc) {
         //Create a graph corresponding to grid
         GraphInt graph = new GraphInt();
+        
+        int startingLoc = kingLoc; //getOpenNodeNextToKing(grid, kingLoc);
         
         Set<Integer> visitedNodes = Sets.newHashSet();
         
@@ -117,10 +137,15 @@ public class Main implements TestCaseHandler<InputData>,
                 
                 char sq = grid.getEntry(childIdx);
                 
-                if (sq == '#' || sq == 'K' || sq == 'L')
+                if (sq == '#' || sq == 'K' || sq == 'V')
                     continue;
                 
-                graph.addConnection(loc, childIdx);
+                if (loc == kingLoc)
+                    //graph.addOneWayConnection(loc,childIdx);
+                    graph.addConnection(loc, childIdx);
+                else
+                    graph.addConnection(loc, childIdx);
+                
                 toVisit.add(childIdx);
             }
         }
@@ -141,6 +166,10 @@ public class Main implements TestCaseHandler<InputData>,
         
         for(Pair<Integer,Integer> bEdge : bridges) {
             
+            //Special case as the king is not connected to the graph, so a false bridge can be found
+            if (grid.isAdj8(kingLoc, bEdge.getLeft()) && grid.isAdj8(kingLoc,bEdge.getRight()))
+                    continue;
+            
             Set<Integer> leftNodes = graph.getConnectedNodesWithoutEdge(bEdge.getLeft(), bEdge.getLeft(), bEdge.getRight());
             
             Set<Integer> rightNodes = graph.getConnectedNodesWithoutEdge(bEdge.getRight(), bEdge.getLeft(), bEdge.getRight());
@@ -155,7 +184,8 @@ public class Main implements TestCaseHandler<InputData>,
             if (Sets.intersection(bridgeEdgeNodes,leftNodes).size() == 1 && !leftNodes.contains(startingLoc)) {
                 isolatedSet = leftNodes;                
             }
-            if (Sets.intersection(bridgeEdgeNodes,rightNodes).size() == 1 && !rightNodes.contains(startingLoc)) {
+            if (Sets.intersection(bridgeEdgeNodes,rightNodes).size() == 1 && !rightNodes.contains(startingLoc) ) {
+                Preconditions.checkState(isolatedSet == null);
                 isolatedSet = rightNodes;                
             }
             
@@ -167,6 +197,8 @@ public class Main implements TestCaseHandler<InputData>,
                 Preconditions.checkState(!isolatedSet.contains(bEdge.getRight()));
             }
             if (isolatedSet.contains(bEdge.getRight())) {
+                if (grid.isAdj8(bEdge.getRight(), kingLoc)) 
+                    continue;
                 isoBridge = new ImmutablePair<Integer,Integer>(bEdge.getRight(), bEdge.getLeft());
                 Preconditions.checkState(!isolatedSet.contains(bEdge.getLeft()));
             }
@@ -186,7 +218,7 @@ public class Main implements TestCaseHandler<InputData>,
                 //ie, E is now blocked because whoever's move it is in an odd squared field loses
                 
                 if (grid.getEntry(isoBridge.getRight()) == 'K') {
-                    grid.setEntry(isoBridge.getLeft(), 'L');
+                    grid.setEntry(isoBridge.getLeft(), 'V');
                     //auto win
                     return false;
                 }
@@ -235,16 +267,78 @@ public class Main implements TestCaseHandler<InputData>,
         return visitedNodes.size();
     }
     
+    //Returns true if B wins
+    public boolean tryFirstMove(GridChar grid, int aKingLoc, int bKingLoc) {
+        
+        grid.setEntry(aKingLoc,  '#');
+        grid.setEntry(bKingLoc, 'K');
+        
+        boolean r = true;
+        while(r) {
+            //r = findLoserSquares(input.grid);
+            r = reduceGrid(grid, bKingLoc);
+        }
+        
+        for(Direction dir : Direction.values()) {
+            Integer childIdx = grid.getIndex(bKingLoc,dir);
+            if (childIdx == null)
+                continue;
+            
+            char sq = grid.getEntry(childIdx);
+            
+            if (sq == 'V') {
+                return true;
+            }
+            
+            if (sq == '#') {
+                continue;
+            }
+            
+            int size = 1 + getConnectedSquareCount(grid, childIdx);
+            
+            if (size % 2 == 0) {
+                return true;
+            }
+    
+        }
+        
+        
+        return false;
+
+    }
     public String awinsIfEven(InputData input) {
         Set<Integer> kingLocs = input.grid.getIndexesOf('K');
         int kingLoc = kingLocs.iterator().next();
         
         boolean r = true;
         
+        GridChar gridOrig = new GridChar(input.grid);
+        
+      //Further reduce the grid in case B can win after A's first move
+        for(Direction dir : Direction.values()) {
+            Integer childIdx = input.grid.getIndex(kingLoc,dir);
+            if (childIdx == null)
+                continue;
+            
+            char sq = input.grid.getEntry(childIdx);
+            
+            if (sq != '.') 
+                continue;
+        
+            GridChar gridTry = new GridChar(gridOrig);
+            
+            if (tryFirstMove(gridTry, kingLoc, childIdx)) {
+                input.grid.setEntry(childIdx, '#');
+            }
+            
+        }
+        
         while(r) {
             //r = findLoserSquares(input.grid);
             r = reduceGrid(input.grid, kingLoc);
         }
+        
+        
         
                         
         for(Direction dir : Direction.values()) {
@@ -254,7 +348,7 @@ public class Main implements TestCaseHandler<InputData>,
             
             char sq = input.grid.getEntry(childIdx);
             
-            if (sq == 'L') {
+            if (sq == 'V') {
                 return String.format("Case #%d: %s", input.testCase, "A" );
             }
             
