@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import codejam.utils.datastructures.TreeInt.Node;
+import codejam.utils.utils.Direction;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -15,9 +15,19 @@ public class GraphInt {
     
     Map<Integer, Set<Integer>> nodeConnections;
     
+    //Number of vertices
+    int V;
     public GraphInt() {
         nodeConnections = Maps.newHashMap();
+        V = 0;
     }
+    
+    public int V() {
+        return nodeConnections.keySet().size();
+    }
+    
+    public Set<Integer> getNodes() {return nodeConnections.keySet(); }
+    
     public void addConnection(int nodeA, int nodeB) {
         Set<Integer> nodeANeighbors;
         Set<Integer> nodeBNeighbors;
@@ -39,6 +49,50 @@ public class GraphInt {
         nodeANeighbors.add(nodeB);
         nodeBNeighbors.add(nodeA);
     }
+
+    /**
+     * Gets connected nodes without using edge from u to v
+     * @param startingNode where to start
+     * @param U
+     * @param V
+     * @return
+     */
+    public Set<Integer> getConnectedNodesWithoutEdge(int startingNode, int U, int V) {
+        
+    
+    Set<Integer> visitedNodes = Sets.newHashSet();
+    
+    LinkedList<Integer> toVisit = new LinkedList<>();
+    toVisit.add(startingNode);
+    
+    while(!toVisit.isEmpty()) {
+        
+        Integer loc = toVisit.poll();
+        
+        if (visitedNodes.contains(loc))
+            continue;
+        
+        visitedNodes.add(loc);
+                    
+        Set<Integer> adjNodes = getNeighbors(loc);
+        
+        if (loc == U) {
+            adjNodes = Sets.newHashSet(adjNodes);
+            adjNodes.remove(V);
+        } else if (loc == V) {
+            adjNodes = Sets.newHashSet(adjNodes);
+            adjNodes.remove(U);            
+        }
+        
+        for(Integer child : adjNodes) {
+            toVisit.add(child);
+        }
+    }
+    
+    return visitedNodes;
+    
+    }
+
     
     public Set<Integer> getNeighbors(int node) {
         return nodeConnections.get(node);
@@ -55,7 +109,7 @@ public class GraphInt {
             Integer nodeId = toVisit.poll();
             
             Preconditions.checkState(newTree.getNodes().containsKey(nodeId));
-            Node newTreeNode = newTree.getNodes().get(nodeId);
+            TreeInt<T>.Node newTreeNode = newTree.getNodes().get(nodeId);
             Set<Integer> connections = getNeighbors(nodeId);
             //Get all new children from old tree
             for(Integer childNode : connections) {

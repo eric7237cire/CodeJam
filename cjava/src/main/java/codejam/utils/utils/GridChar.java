@@ -33,6 +33,9 @@ public static GridChar  buildFromScanner(Scanner scanner, int rows, int cols, ch
         for (int r = 0; r < rows; ++r) {
             String rowStr = scanner.next();
             
+            while (rowStr.length() < cols) {
+                rowStr += scanner.next();
+            }
             for(int c = 0; c < cols; ++c) {
                 char ch = rowStr.charAt(c);
                 g.grid[ g.getIndex(r,c) ] = ch ;

@@ -16,15 +16,17 @@
       <level>DEBUG</level>
     </filter>
   </appender>
-  <!-- 
+  
    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
     <file>myApp.log</file>
     <append>false</append>
     <encoder>
-      <pattern>%date [%file:%line] %msg%n</pattern>
+    <pattern>%d{HH:mm:ss:SSS} %r - %m%n</pattern>
+      
     </encoder>
   </appender>
-  
+  <!--
+  <pattern>%date [%file:%line] %msg%n</pattern> 
   <logger name="com.eric.codejam.multithread" level="OFF"/>
   <logger name="com.eric.codejam.SingleRowSolver" level="OFF" />
    -->
@@ -39,5 +41,6 @@
       <logger name="codejam.utils.main" level="DEBUG"/>
   <root level="${root-level:-DEBUG}">
     <appender-ref ref="console"/>
+    <appender-ref ref="FILE"/>
   </root>
 </configuration>

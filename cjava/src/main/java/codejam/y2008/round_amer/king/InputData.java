@@ -5,9 +5,9 @@ import codejam.utils.utils.GridChar;
 
 public class InputData extends AbstractInputData {
 
-    GridChar grid;
-    int row;
-    int col;
+    public GridChar grid;
+    public int row;
+    public int col;
     
     public InputData(int testCase) {
         super(testCase);

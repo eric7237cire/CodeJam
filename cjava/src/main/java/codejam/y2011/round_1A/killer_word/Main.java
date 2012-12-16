@@ -46,7 +46,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         
         public int getId() {
-            return letterPositions.bits;
+            return letterPositions.getBits();
         }
 
         
@@ -130,7 +130,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                    
                     
                     for(TreeInt<NodeData>.Node cn : currentNode.getChildren()) {
-                        if(cn.getData().letterPositions.bits == currentLevelNodeData.bits) {
+                        if(cn.getData().letterPositions.getBits() == currentLevelNodeData.getBits()) {
                             existingNode = cn;
                             break;
                         }
@@ -144,7 +144,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         newData.count = 1;
                         newData.letter = idx;
                         newData.chLetter = ch;
-                        newData.letterPositions.bits = currentLevelNodeData.bits;
+                        newData.letterPositions.setBits(currentLevelNodeData.getBits());
                         existingNode = currentNode.addChild(tree.getNodes().size()+1);
                         existingNode.setData(newData);
                     }
@@ -166,7 +166,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                                     .getData().count);
                     BitSetInt wordLetter = freeNodes[n][currentNode.getData().letter];
                     if (currentNode.getParent().getData().count > currentNode
-                            .getData().count && wordLetter.bits == 0) {
+                            .getData().count && wordLetter.getBits() == 0) {
                         //The point of it all.  If the total number of possible words 
                         //decreased and the letter was not correct, he loses a point
                         ++cost;

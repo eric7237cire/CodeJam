@@ -60,11 +60,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             smallGraph.addConnection(edge.getLeft(), edge.getRight());
         }
         
-        TreeInt largeTree = largeGraph.convertToTree(1);
-        TreeInt smallTree = smallGraph.convertToTree(1);
+        TreeInt<?> largeTree = largeGraph.convertToTree(1);
+        TreeInt<?> smallTree = smallGraph.convertToTree(1);
         
         for(int largeRoot = 1; largeRoot <= input.N; ++largeRoot) {
-            TreeInt newTree = largeTree.reroot(largeRoot);
+            TreeInt<?> newTree = largeTree.reroot(largeRoot);
         
             boolean is = top_down_unordered_subtree_isomorphism(smallTree.getRoot(), newTree.getRoot());
             
@@ -77,6 +77,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
 
     //True if the subtrees at smallTreeNode and largeTreeNode are isomorphic
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     boolean top_down_unordered_subtree_isomorphism(
             Node smallTreeNode,  Node largeTreeNode
     // node_array<set<node> >& B

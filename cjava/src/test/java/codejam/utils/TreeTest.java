@@ -9,6 +9,7 @@ import static org.junit.Assert.*;
 
 
 public class TreeTest {
+    @SuppressWarnings("unchecked")
     @Test
     public void testTreeIntBasic() {
         TreeInt<Object> tree = new TreeInt<>(5);

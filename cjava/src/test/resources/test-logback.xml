@@ -29,6 +29,15 @@
   <logger name="com.eric.codejam.SingleRowSolver" level="OFF" />
    -->
    
+      <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>myAppTest.log</file>
+    <append>false</append>
+    <encoder>
+    <pattern>%d{HH:mm:ss:SSS} %r - %m%n</pattern>
+      
+    </encoder>
+  </appender>
+   
     <logger name="codejam" level = "DEBUG"/>
        
   <root level="${root-level:-ERROR}">

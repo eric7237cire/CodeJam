@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.Gaps;
 import codejam.utils.datastructures.Gaps.Gap;
-import codejam.utils.main.Runner;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.y2010.round_3.hotdog.InputData.Corner;
