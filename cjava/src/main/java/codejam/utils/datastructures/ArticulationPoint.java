@@ -1,5 +1,12 @@
 package codejam.utils.datastructures;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.google.common.collect.Maps;
+
 
 /*************************************************************************
  *  Compilation:  javac Biconnected.java
@@ -14,50 +21,51 @@ package codejam.utils.datastructures;
  *************************************************************************/
 
 public class ArticulationPoint {
-    private int[] low;
-    private int[] pre;
+    private Map<Integer,Integer> low;
+    private Map<Integer,Integer> pre;
     private int cnt;
-    private boolean[] articulation;
+    private List<Integer> articulation;
 
     public ArticulationPoint(GraphInt G) {
-        low = new int[G.V()];
-        pre = new int[G.V()];
-        articulation = new boolean[G.V()];
-        for (int v = 0; v < G.V(); v++) low[v] = -1;
-        for (int v = 0; v < G.V(); v++) pre[v] = -1;
+        Set<Integer> nodes = G.getNodes();
+        low = Maps.newHashMap();
+        pre = Maps.newHashMap();
+        articulation = new ArrayList<>();
+        for (int v : nodes) low.put(v, -1);
+        for (int v : nodes) pre.put(v,-1);
         
-        for (int v = 0; v < G.V(); v++)
-            if (pre[v] == -1)
+        for (int v : nodes)
+            if (pre.get(v) == -1)
                 dfs(G, v, v);
     }
 
     private void dfs(GraphInt G, int u, int v) {
         int children = 0;
-        pre[v] = cnt++;
-        low[v] = pre[v];
+        pre.put(v, cnt++);
+        low.put(v, pre.get(v));
         for (int w : G.getNeighbors(v)) {
-            if (pre[w] == -1) {
+            if (pre.get(w) == -1) {
                 children++;
                 dfs(G, v, w);
 
                 // update low number
-                low[v] = Math.min(low[v], low[w]);
+                low.put(v, Math.min(low.get(v), low.get(w)));
 
                 // non-root of DFS is an articulation point if low[w] >= pre[v]
-                if (low[w] >= pre[v] && u != v) 
-                    articulation[v] = true;
+                if (low.get(w) >= pre.get(v) && u != v) 
+                    articulation.add(v);
             }
 
             // update low number - ignore reverse of edge leading to v
             else if (w != u)
-                low[v] = Math.min(low[v], pre[w]);
+                low.put(v, Math.min(low.get(v), pre.get(w)));
         }
 
         // root of DFS is an articulation point if it has more than 1 child
         if (u == v && children > 1)
-            articulation[v] = true;
+            articulation.add(v);
     }
 
     // is vertex v an articulation point?
-    public boolean isArticulation(int v) { return articulation[v]; }
+    public List<Integer> getArticulationPoints() { return articulation; }
 }

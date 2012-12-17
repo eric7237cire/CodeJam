@@ -1,5 +1,7 @@
 package codejam.y2008;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,9 +44,9 @@ public class KingTest {
         List<Pair<Integer,Integer>> bridges = b.getBridges();
         
         ArticulationPoint ap = new ArticulationPoint(g);
-        
-        for(int v = 0; v <=8; ++v) {
-            log.info("Articulation point {} = {}", v, ap.isArticulation(v));
+        List<Integer> aPoints = ap.getArticulationPoints();
+        for(int v : aPoints) {
+            log.info("Articulation point {}", v);
         }
         
     }
@@ -53,30 +55,38 @@ public class KingTest {
     public void testOddTheory() {
         log.debug("Starting");
                
-        GridChar grid = GridChar.buildEmptyGrid(4,4,'#');
+        final int rows = 5;
+        final int cols = 5;
+        GridChar grid = GridChar.buildEmptyGrid(rows,cols,'#');
         InputData input = new InputData(1);
         input.grid = grid;
-        input.row = 4;
-        input.col = 4;
+        input.row = rows;
+        input.col = cols;
         
         Main m = new Main();
         Main.skipDebug = true;
         
-        int max = 1 << 16;
+        int max = 1 << rows * cols;
         for(int perm = 0; perm < max; ++perm) {
+            log.debug("Perm {}", perm);
             BitSetInt bs = new BitSetInt(perm);
-            bs.setBit(15);
-            bs.setBit(14);
+            //bs.setBit(15);
+            //bs.setBit(14);
             List<Integer> openSquares = new ArrayList<>(16);
             
-            for(int sq = 0; sq < 16; ++sq) {
+            int setCount = 0;
+            for(int sq = 0; sq < rows*cols; ++sq) {
                 if (bs.isSet(sq)) {
-                    grid.setEntry(sq,'#');                    
+                    grid.setEntry(sq,'#');
+                    setCount++;
                 } else {
                     grid.setEntry(sq, '.');
                     openSquares.add(sq);
                 }
             }
+            
+            if (setCount < 8)
+                continue;
            // log.debug("Grid prem{} {}", perm, grid);
             
             for(int i = 0; i < openSquares.size(); ++i) {
@@ -94,10 +104,11 @@ public class KingTest {
                 String r1 = m.awinsIfEven(id);
                 
                 //
-                //assertEquals(r2,r1);
                 if (!r1.equals(r2)) {
                     log.debug("Grid {}\n r1 {} r2 {}", grid, r1, r2);  
                 }
+                assertEquals(r2,r1);
+                
             }
         }
     }

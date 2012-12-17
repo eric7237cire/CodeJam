@@ -65,47 +65,83 @@ public class GraphInt {
 
     /**
      * Gets connected nodes without using edge from u to v
-     * @param startingNode where to start
+     * 
+     * @param startingNode
+     *            where to start
      * @param U
      * @param V
      * @return
      */
-    public Set<Integer> getConnectedNodesWithoutEdge(int startingNode, int U, int V) {
-        
-    
-    Set<Integer> visitedNodes = Sets.newHashSet();
-    
-    LinkedList<Integer> toVisit = new LinkedList<>();
-    toVisit.add(startingNode);
-    
-    while(!toVisit.isEmpty()) {
-        
-        Integer loc = toVisit.poll();
-        
-        if (visitedNodes.contains(loc))
-            continue;
-        
-        visitedNodes.add(loc);
-                    
-        Set<Integer> adjNodes = getNeighbors(loc);
-        
-        if (loc == U) {
-            adjNodes = Sets.newHashSet(adjNodes);
-            adjNodes.remove(V);
-        } else if (loc == V) {
-            adjNodes = Sets.newHashSet(adjNodes);
-            adjNodes.remove(U);            
-        }
-        
-        for(Integer child : adjNodes) {
-            toVisit.add(child);
-        }
-    }
-    
-    return visitedNodes;
-    
-    }
+    public Set<Integer> getConnectedNodesWithoutEdge(int startingNode, int U,
+            int V) {
 
+        Set<Integer> visitedNodes = Sets.newHashSet();
+
+        LinkedList<Integer> toVisit = new LinkedList<>();
+        toVisit.add(startingNode);
+
+        while (!toVisit.isEmpty()) {
+
+            Integer loc = toVisit.poll();
+
+            if (visitedNodes.contains(loc))
+                continue;
+
+            visitedNodes.add(loc);
+
+            Set<Integer> adjNodes = getNeighbors(loc);
+
+            if (loc == U) {
+                adjNodes = Sets.newHashSet(adjNodes);
+                adjNodes.remove(V);
+            } else if (loc == V) {
+                adjNodes = Sets.newHashSet(adjNodes);
+                adjNodes.remove(U);
+            }
+
+            for (Integer child : adjNodes) {
+                toVisit.add(child);
+            }
+        }
+
+        return visitedNodes;
+
+    }
+    
+    public Set<Integer> getConnectedNodesWithoutNode(int startingNode, 
+            int V) {
+
+        Set<Integer> visitedNodes = Sets.newHashSet();
+
+        LinkedList<Integer> toVisit = new LinkedList<>();
+        toVisit.add(startingNode);
+
+        while (!toVisit.isEmpty()) {
+
+            Integer loc = toVisit.poll();
+
+            if (visitedNodes.contains(loc))
+                continue;
+
+            visitedNodes.add(loc);
+
+            Set<Integer> adjNodes = getNeighbors(loc);
+
+            if (loc == V) {
+                continue;
+            }
+
+            for (Integer child : adjNodes) {
+                if (child == V)
+                    continue;
+                toVisit.add(child);
+            }
+        }
+
+        return visitedNodes;
+
+    }
+    
     
     public Set<Integer> getNeighbors(int node) {
         return nodeConnections.get(node);

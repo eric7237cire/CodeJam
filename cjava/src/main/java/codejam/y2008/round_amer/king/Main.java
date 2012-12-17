@@ -1,35 +1,45 @@
 package codejam.y2008.round_amer.king;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import codejam.utils.datastructures.ArticulationPoint;
 import codejam.utils.datastructures.Bridge;
 import codejam.utils.datastructures.GraphInt;
 import codejam.utils.datastructures.TreeInt;
+import codejam.utils.datastructures.TreeInt.Node;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.Direction;
 import codejam.utils.utils.GridChar;
+import codejam.y2008.KingTest;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 public class Main implements TestCaseHandler<InputData>,
         TestCaseInputScanner<InputData>, DefaultInputFiles {
 
+    final static Logger log = LoggerFactory.getLogger(Main.class);
+    
     @Override
     public String[] getDefaultInputFiles() {
         return new String[] { "sample.in"};
        // return new String[] { "D-small-practice.in" };
-        //return new String[] { "B-large-practice.in" };
+       // return new String[] { "D-large-practice.in" };
         //return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
@@ -46,53 +56,7 @@ public class Main implements TestCaseHandler<InputData>,
     
     public static boolean skipDebug = false;
     
-    public boolean findLoserSquares(GridChar grid) {
-        int maxIndex = grid.getRows() * grid.getCols() - 1;
-        boolean r = false;
-        for (int sq = 0; sq <= maxIndex; ++sq) {
-
-            char ch = grid.getEntry(sq);
-
-            if (ch == '.') {
-
-                int count = 0;
-                for (Direction dir : Direction.values()) {
-                    Integer childIdx = grid.getIndex(sq, dir);
-                    if (childIdx == null)
-                        continue;
-
-                    char adjSq = grid.getEntry(childIdx);
-
-                    if (adjSq == 'K' || adjSq == '.' || adjSq == 'V' ) {
-                        ++count;
-                    }
-                }
-
-                if (count == 1) {
-                    grid.setEntry(sq, 'V');
-                    r = true;
-                }
-            }
-            
-            if (ch == 'V') {
-                for (Direction dir : Direction.values()) {
-                    Integer childIdx = grid.getIndex(sq, dir);
-                    if (childIdx == null)
-                        continue;
-
-                    char Adjsq = grid.getEntry(childIdx);
-                    
-                    if (Adjsq == '.') {
-                        grid.setEntry(childIdx, '#');
-                        r = true;
-                    }
-                }
-            }
-
-        }
-        
-        return r;
-    }
+    
     
     public Integer getOpenNodeNextToKing(GridChar grid, int loc) {
         for(Direction dir : Direction.values()) {
@@ -137,7 +101,7 @@ public class Main implements TestCaseHandler<InputData>,
                 
                 char sq = grid.getEntry(childIdx);
                 
-                if (sq == '#' || sq == 'K' || sq == 'V')
+                if (sq == '#' || sq == 'K' || sq == 'V' || sq == 'T')
                     continue;
                 
                 if (loc == kingLoc)
@@ -150,80 +114,57 @@ public class Main implements TestCaseHandler<InputData>,
             }
         }
         
-        Bridge bridge = new Bridge(graph);
+        ArticulationPoint ap = new ArticulationPoint(graph);
         //Find bridges
-        List<Pair<Integer,Integer>> bridges = bridge.getBridges(); 
+        List<Integer> artPoints = ap.getArticulationPoints();
+        
+        
+        
+        for(Integer aPoint : artPoints) {
 
-        
-        //Must find a bridge that is isolated 
-        Set<Integer> bridgeEdgeNodes = Sets.newHashSet();
-        
-        for(Pair<Integer,Integer> bEdge : bridges) {
-            bridgeEdgeNodes.add(bEdge.getLeft());
-            bridgeEdgeNodes.add(bEdge.getRight());
-        }
-        
-        
-        for(Pair<Integer,Integer> bEdge : bridges) {
+            if (aPoint == kingLoc)
+                continue;
+            Set<Integer> adjNodes = graph.getNeighbors(aPoint);
             
-            //Special case as the king is not connected to the graph, so a false bridge can be found
-            if (grid.isAdj8(kingLoc, bEdge.getLeft()) && grid.isAdj8(kingLoc,bEdge.getRight()))
+            Set<Integer> isolatedNodes = Sets.newHashSet();
+            Set<Integer> nonIsolatedNodes = Sets.newHashSet();
+            
+            adjNodeLoop:
+            for(Integer adjNode : adjNodes) {
+                if (isolatedNodes.contains(adjNode) || nonIsolatedNodes.contains(adjNode))
                     continue;
-            
-            Set<Integer> leftNodes = graph.getConnectedNodesWithoutEdge(bEdge.getLeft(), bEdge.getLeft(), bEdge.getRight());
-            
-            Set<Integer> rightNodes = graph.getConnectedNodesWithoutEdge(bEdge.getRight(), bEdge.getLeft(), bEdge.getRight());
-            
-            //looking for the set that only contains 1 bridge node, that means it is isolated.  We want
-            //to reduce grid using only that bridge
-            
-            Set<Integer> isolatedSet = null;
-            
-            //First node is in the isolated set
-            Pair<Integer,Integer> isoBridge = null;
-            if (Sets.intersection(bridgeEdgeNodes,leftNodes).size() == 1 && !leftNodes.contains(startingLoc)) {
-                isolatedSet = leftNodes;                
-            }
-            if (Sets.intersection(bridgeEdgeNodes,rightNodes).size() == 1 && !rightNodes.contains(startingLoc) ) {
-                Preconditions.checkState(isolatedSet == null);
-                isolatedSet = rightNodes;                
+                
+                Set<Integer> nodes = graph.getConnectedNodesWithoutNode(adjNode, aPoint);
+                
+                //Isolated set must not contain other articulation points
+                for(Integer aPointToTest : artPoints) {
+                    if (nodes.contains(aPointToTest)) {
+                        nonIsolatedNodes.addAll(nodes);
+                        continue adjNodeLoop;
+                    }
+                }
+                
+                if (!nodes.contains(startingLoc)) {
+                    isolatedNodes = nodes;
+                    break;
+                }
             }
             
-            if (isolatedSet == null)
+            //No suitable isolated set found, continue to next articulation point
+            if (isolatedNodes == null || isolatedNodes.isEmpty())
                 continue;
             
-            if (isolatedSet.contains(bEdge.getLeft())) {
-                isoBridge = new ImmutablePair<Integer,Integer>(bEdge.getLeft(), bEdge.getRight());
-                Preconditions.checkState(!isolatedSet.contains(bEdge.getRight()));
-            }
-            if (isolatedSet.contains(bEdge.getRight())) {
-                if (grid.isAdj8(bEdge.getRight(), kingLoc)) 
-                    continue;
-                isoBridge = new ImmutablePair<Integer,Integer>(bEdge.getRight(), bEdge.getLeft());
-                Preconditions.checkState(!isolatedSet.contains(bEdge.getLeft()));
-            }
-            
-            if (isolatedSet.size() % 2 == 0) {
-                //block the node in the isolated set as even numbered # of nodes wins for whose move it is
-                //thus, we can never move to the square
-                grid.setEntry(isoBridge.getLeft(), '#');
+            if (isolatedNodes.size() % 2 == 0) {
+                //All the isolated nodes are traps
+                for(Integer isoNode : isolatedNodes) {
+                    grid.setEntry(isoNode, 'T');
+                }
                 return true;
             } else {
-                //We cannot move to the entrance as entering into to the isolated set is a winning move
-                
-                //..#
-                //.##
-                //E#
-                
-                //ie, E is now blocked because whoever's move it is in an odd squared field loses
-                
-                if (grid.getEntry(isoBridge.getRight()) == 'K') {
-                    grid.setEntry(isoBridge.getLeft(), 'V');
-                    //auto win
-                    return false;
-                }
-                else
-                    grid.setEntry(isoBridge.getRight(), '#');
+                //The articulation point itself is a trap, as moving to it means
+                //the other player can move into an odd numbered field, which is always
+                //losing
+                grid.setEntry(aPoint, 'T');
                 return true;
             }
         }
@@ -257,7 +198,7 @@ public class Main implements TestCaseHandler<InputData>,
                 
                 char sq = grid.getEntry(childIdx);
                 
-                if (sq == '#' || sq == 'K')
+                if (sq == '#' || sq == 'K' || sq == 'T')
                     continue;
                 
                 toVisit.add(childIdx);
@@ -290,7 +231,7 @@ public class Main implements TestCaseHandler<InputData>,
                 return true;
             }
             
-            if (sq == '#') {
+            if (sq == '#' || sq == 'T') {
                 continue;
             }
             
@@ -328,7 +269,9 @@ public class Main implements TestCaseHandler<InputData>,
             GridChar gridTry = new GridChar(gridOrig);
             
             if (tryFirstMove(gridTry, kingLoc, childIdx)) {
-                input.grid.setEntry(childIdx, '#');
+                input.grid.setEntry(childIdx, 'T');
+            } else {
+                return String.format("Case #%d: %s", input.testCase, "A" );
             }
             
         }
@@ -352,7 +295,7 @@ public class Main implements TestCaseHandler<InputData>,
                 return String.format("Case #%d: %s", input.testCase, "A" );
             }
             
-            if (sq == '#') {
+            if (sq == '#' || sq == 'T') {
                 continue;
             }
             
@@ -371,7 +314,8 @@ public class Main implements TestCaseHandler<InputData>,
 
     @Override
     public String handleCase(InputData input) {
-        return awinsIfEven(input);
+        return awinsIfEven(input) +
+         bruteForce(input);
     }
     public String bruteForce(InputData input) {
         Set<Integer> kingLocs = input.grid.getIndexesOf('K');
@@ -381,9 +325,18 @@ public class Main implements TestCaseHandler<InputData>,
         tree.setStats(true);
         tree.setUniqueNodeIds(false);
         
-        LinkedList<TreeInt<Boolean>.Node> toVisit = new LinkedList<>();
+        PriorityQueue<TreeInt<Boolean>.Node> toVisit = new PriorityQueue<>(1000, new Comparator<TreeInt<Boolean>.Node>() {
+
+            @Override
+            public int compare(Node o1, Node o2) {
+                return Integer.compare(o2.getDepth(), o1.getDepth());
+            }
+            
+        });
         
         toVisit.add(tree.getRoot());
+        
+        int maxDepth = 0;
         
         while(!toVisit.isEmpty()) {
             
@@ -415,6 +368,10 @@ public class Main implements TestCaseHandler<InputData>,
                     continue;
                 
                 TreeInt<Boolean>.Node child = thisNode.addChild(childIdx);
+                if (child.getDepth() > maxDepth) {
+                    log.debug("Child height {}", child.getDepth() );
+                    maxDepth = child.getDepth();
+                }
                 toVisit.add(child);
             }
         }
