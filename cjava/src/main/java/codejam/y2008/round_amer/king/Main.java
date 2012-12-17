@@ -38,6 +38,7 @@ public class Main implements TestCaseHandler<InputData>,
     @Override
     public String[] getDefaultInputFiles() {
         return new String[] { "sample.in"};
+     //   return new String[] { "p43.in"};
        // return new String[] { "D-small-practice.in" };
        // return new String[] { "D-large-practice.in" };
         //return new String[] { "B-small-practice.in", "B-large-practice.in" };
@@ -175,7 +176,7 @@ public class Main implements TestCaseHandler<InputData>,
 
     }
     
-    public int getConnectedSquareCount(GridChar grid, int startingLoc) {
+    public int getConnectedSquareCountOld(GridChar grid, int startingLoc) {
 
         Set<Integer> visitedNodes = Sets.newHashSet();
         
@@ -207,6 +208,65 @@ public class Main implements TestCaseHandler<InputData>,
 
         return visitedNodes.size();
     }
+    /**
+     * Returns the count of squares reachable by the first player
+     * @param grid
+     * @param startingLoc
+     * @return
+     */
+    public boolean getConnectedSquareCount(GridChar grid, int startingLoc) {
+
+        int oldCount = (1+getConnectedSquareCountOld(grid,startingLoc) );
+        
+        //The boolean means it is player 1, the connected square co
+        Set<Pair<Integer, Boolean>> visitedNodes = Sets.newHashSet();
+        
+        LinkedList<Pair<Integer, Boolean>> toVisit = new LinkedList<>();
+        toVisit.add(new ImmutablePair<>(startingLoc, true));
+        
+        while(!toVisit.isEmpty()) {
+            
+            Pair<Integer, Boolean> loc = toVisit.poll();
+            
+            if (visitedNodes.contains(loc))
+                continue;
+            
+            visitedNodes.add(loc);
+                        
+            for(Direction dir : Direction.values()) {
+                Integer childIdx = grid.getIndex(loc.getLeft(),dir);
+                if (childIdx == null)
+                    continue;
+                
+                char sq = grid.getEntry(childIdx);
+                
+                if (sq == '#' || sq == 'K' || sq == 'T')
+                    continue;
+                
+                toVisit.add(new ImmutablePair<>(childIdx, !loc.getRight()));
+            }
+        }
+
+        Set<Integer> fpPoints = Sets.newHashSet();
+        Set<Integer> spPoints = Sets.newHashSet();
+        for(Pair<Integer, Boolean> p : visitedNodes) {
+            if (p.getRight())
+                fpPoints.add(p.getLeft());
+            else 
+                spPoints.add(p.getLeft());
+        }
+        
+        Set<Integer> shared = Sets.intersection(fpPoints,spPoints);
+        Set<Integer> union = Sets.union(fpPoints, spPoints);
+        
+        if (!shared.isEmpty()) {
+            return (union.size() + 1 ) % 2 == 0;
+        } else {
+            log.debug("size {} size {}", fpPoints.size(), spPoints.size());
+            return spPoints.size() < fpPoints.size();
+        }
+        //return (countFP + countSP + 1) % 2 == 0;
+    }
     
     //Returns true if B wins
     public boolean tryFirstMove(GridChar grid, int aKingLoc, int bKingLoc) {
@@ -235,11 +295,12 @@ public class Main implements TestCaseHandler<InputData>,
                 continue;
             }
             
-            int size = 1 + getConnectedSquareCount(grid, childIdx);
-            
-            if (size % 2 == 0) {
+            //int size = 1 + getConnectedSquareCount(grid, childIdx);
+            if (getConnectedSquareCount(grid, childIdx))
                 return true;
-            }
+//            if (size % 2 == 0) {
+//                return true;
+//            }
     
         }
         
@@ -299,11 +360,14 @@ public class Main implements TestCaseHandler<InputData>,
                 continue;
             }
             
-            int size = 1 + getConnectedSquareCount(input.grid, childIdx);
+//            int size = 1 + getConnectedSquareCount(input.grid, childIdx);
+//            
+//            if (size % 2 == 0) {
+//                return String.format("Case #%d: %s", input.testCase, "A" );
+//            }
             
-            if (size % 2 == 0) {
+            if (getConnectedSquareCount(input.grid, childIdx))
                 return String.format("Case #%d: %s", input.testCase, "A" );
-            }
     
         }
         
@@ -314,9 +378,9 @@ public class Main implements TestCaseHandler<InputData>,
 
     @Override
     public String handleCase(InputData input) {
-        String str = awinsIfEven(input);
-        log.error(str);
-        return bruteForce(input);
+        return  awinsIfEven(input);
+        //log.error(str);
+        //return bruteForce(input);
     }
     public String bruteForce(InputData input) {
         Set<Integer> kingLocs = input.grid.getIndexesOf('K');
@@ -388,6 +452,8 @@ public class Main implements TestCaseHandler<InputData>,
             TreeInt<Boolean>.Node node = toVisitStack.peek();
             
             if (node.getChildren().isEmpty()) {
+                //false == victory node
+                //data is trap node
                 node.setData(false);
                 visited.add(node);
                 toVisitStack.pop();
@@ -406,13 +472,17 @@ public class Main implements TestCaseHandler<InputData>,
                 continue;
             }
             
-            boolean isLoserNode = child.getData();
+            boolean isSurroundedByTrapNode = child.getData();
             while(childIt.hasNext()) {
                 child = childIt.next();
-                isLoserNode = isLoserNode && child.getData();
+                isSurroundedByTrapNode = isSurroundedByTrapNode && child.getData();
             }
             
-            node.setData(!isLoserNode);
+            //If this node is completely booby trapped, then it is not a trap node
+            node.setData(!isSurroundedByTrapNode);
+            
+            //If there is at least 1 adjacent node that is not a trap (ie a victory node), then
+            //this node is not a trap node
             visited.add(node);
             toVisitStack.pop();
         }
