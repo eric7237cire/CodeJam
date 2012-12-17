@@ -314,8 +314,9 @@ public class Main implements TestCaseHandler<InputData>,
 
     @Override
     public String handleCase(InputData input) {
-        return awinsIfEven(input) +
-         bruteForce(input);
+        String str = awinsIfEven(input);
+        log.error(str);
+        return bruteForce(input);
     }
     public String bruteForce(InputData input) {
         Set<Integer> kingLocs = input.grid.getIndexesOf('K');
@@ -369,7 +370,7 @@ public class Main implements TestCaseHandler<InputData>,
                 
                 TreeInt<Boolean>.Node child = thisNode.addChild(childIdx);
                 if (child.getDepth() > maxDepth) {
-                    log.debug("Child height {}", child.getDepth() );
+                    //log.debug("Child height {}", child.getDepth() );
                     maxDepth = child.getDepth();
                 }
                 toVisit.add(child);
