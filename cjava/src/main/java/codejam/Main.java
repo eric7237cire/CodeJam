@@ -13,6 +13,9 @@ public class Main  {
     public static void main(String args[]) throws Exception {
 
 
+        //2008 emea semis
+        codejam.y2008.round_emea.scaled_triangle.Main m = new codejam.y2008.round_emea.scaled_triangle.Main();
+        
         //2008 amer semis
         
         //codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
@@ -21,7 +24,7 @@ public class Main  {
         
         //TODO implement the real solution and compare.
         //Ours was hacky cracky that worked most of the time
-        codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();
+        //codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();
         
         //2008 apac semis
         //A and B are in c++        

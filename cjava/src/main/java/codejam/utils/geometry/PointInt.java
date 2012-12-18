@@ -74,6 +74,14 @@ public class PointInt implements Comparable<PointInt>{
         long l = LongMath.checkedAdd( LongMath.checkedPow(x-other.x, 2), LongMath.checkedPow(y-other.y, 2) );
         return l;
     }
+    
+    public PointInt translate(PointInt newOrigin) {
+        return new PointInt(x - newOrigin.getX(), y - newOrigin.getY());
+    }
+    
+    public Point toPoint() {
+        return new Point(x, y);
+    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()

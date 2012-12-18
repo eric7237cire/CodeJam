@@ -1,12 +1,15 @@
 package codejam.utils.geometry;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import codejam.utils.utils.DoubleComparator;
 
 import com.google.common.base.Objects;
 
 public class Point {
-    private double x;
-    private double y;
+    final private double x;
+    final private double y;
     
     public Point(PointInt p) {
         x = p.getX();
@@ -18,24 +21,14 @@ public class Point {
     public double getX() {
         return x;
     }
-    /**
-     * @param x the x to set
-     */
-    public void setX(double x) {
-        this.x = x;
-    }
+    
     /**
      * @return the y
      */
     public double getY() {
         return y;
     }
-    /**
-     * @param y the y to set
-     */
-    public void setY(double y) {
-        this.y = y;
-    }
+    
     public Point(double x, double y) {
         super();
         this.x = x;
@@ -52,6 +45,20 @@ public class Point {
         return "Point [x=" + x + ", y=" + y + "]";
     }
     
+    public Point translate(Point newOrigin) {
+        return new Point(x - newOrigin.getX(), y - newOrigin.getY());
+    }
+    
+    public Point rotate(double ang) {
+        double cosTh = Math.cos(ang);
+        double sinTh = Math.sin(ang);
+        return new Point(getX() * cosTh - getY() * sinTh,
+                getX() * sinTh + getY() * cosTh);
+    }
+    
+    public Point scale(double factor) {
+        return new Point(getX() * factor, getY() * factor);
+    }
     /*
      *  y - y.s = (y.p - y.s) / (x.p - x.s)  (x - x.s)
      * m = (y.p - y.s) / (x.p - x.s)
