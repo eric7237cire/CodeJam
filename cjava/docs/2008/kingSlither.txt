@@ -1,0 +1,23 @@
+Look back at the games of Slither you have played. Do you see any ways that matchings might relate to the games? If you had a graph with a perfect matching could it help you win? What if a graph can't have a perfect matching?
+
+Matchings are the key to Slither. If a graph has a perfect matching, the second player has a winning strategy and can never lose. If the graph does not have a perfect matching, the first player has a winning strategy. Can you discover it?
+
+Both strategies rely on maximum matchings. Of course, if the graph has a perfect matching, this is also a maximum matching!
+
+Perfect Matchings 
+The second player knows a perfect matching for the graph, and whenever the first player makes a choice, he chooses an edge (and ending vertex) from the perfect matching he knows.
+
+Why does this work?
+
+Since the second player is following along edges of the perfect matching, the first player can never choose and edge and ending vertex which are in the matching. Therefore, whichever new vertex the first player chooses, there is an edge of the matching for the second player to follow (since every vertex is covered by a perfect matching!) Therefore, the second player is always guaranteed a move, and cannot lose.
+
+No Perfect Matching
+The first player knows a maximum matching to the graph and chooses a vertex to start which is not covered by this matching. Then each subsequent choice is made to follow along an edge of the maximum matching.
+
+Why does this work?
+
+First of all, the first choice the second player makes must be to a vertex covered by the matching. Otherwise the edge he had followed along could have been added to the maximum matching. If every other choice must result in the second player ending at a vertex which is covered by the matching, then the first player is guaranteed to win since he/she always has an edge from the matching to choose.
+
+Suppose the second player can choose a vertex which is not covered by the matching. Then looking at the game played so far, we have a snake of edges chosen alternately by the two players, starting and ending with the second player. All the edges chosen by the first player were in the maximum matching. Since neither the start or end vertex is covered by the matching, we can "switch" which edges along the path are in the matching and which aren't. But since the second player started AND finished, there are now more edges in the matching than previously. Therefore it was not a maximum matching. Contradiction. Therefore, every choice the second player makes ends in a vertex covered by the matching and the first player can always win.
+
+Note: This alternating snake which is switched is called an alternating path. Finding alternating paths provides a method to find maximum matchings.

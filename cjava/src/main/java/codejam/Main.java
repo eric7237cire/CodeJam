@@ -18,6 +18,9 @@ public class Main  {
         //codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
         //codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
         //codejam.y2008.round_amer.test_passing.Main m = new codejam.y2008.round_amer.test_passing.Main();
+        
+        //TODO implement the real solution and compare.
+        //Ours was hacky cracky that worked most of the time
         codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();
         
         //2008 apac semis
