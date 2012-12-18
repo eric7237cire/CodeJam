@@ -30,13 +30,8 @@ public class Main implements TestCaseHandler<InputData>,
         i.smallTriangle = new TriangleInt(scanner.nextInt(),scanner.nextInt(),scanner.nextInt(),scanner.nextInt(),scanner.nextInt(),scanner.nextInt());
         return i;
     }
-    
-    //x' = x cos(θ) - y sin(θ)
-
-    //y' = x \sin \theta + y \cos \theta\,
-    
-    
-    
+   
+  
     @Override
     public String handleCase(InputData input) {
         final PointInt origin = new PointInt(0,0);
