@@ -5,8 +5,13 @@ import codejam.utils.utils.DoubleComparator;
 import com.google.common.base.Preconditions;
 
 public class Line {
+    
+    public final static DoubleComparator dc = new DoubleComparator(0.000002);
     private double m;
     private double b;
+    
+    private Point p1;
+    private Point p2;
 
     public enum Type {
         NORMAL, VERTICAL, HORIZONTAL
@@ -23,20 +28,27 @@ public class Line {
         this.m = m;
         this.b = b;
         type = Type.NORMAL;
+        
+        //Just make up 2 points
+        p1 = getPointGivenX(0);
+        p2 = getPointGivenX(1);
     }
 
     public Line(Point a, double m) {
         this(m, a.getY() - m * a.getX());
     }
     public Line(Point a, Point b) {
-        if (DoubleComparator.compareStatic(a.getX(), b.getX()) == 0) {
+        this.p1 = a;
+        this.p2 = b;
+        
+        if (dc.compare(a.getX(), b.getX()) == 0) {
             type = Type.VERTICAL;
             this.b = a.getX();
             this.m = Double.POSITIVE_INFINITY;
             return;
         }
 
-        if (DoubleComparator.compareStatic(a.getY(), b.getY()) == 0) {
+        if (dc.compare(a.getY(), b.getY()) == 0) {
             type = Type.HORIZONTAL;
             this.b = a.getY();
             this.m = 0;
@@ -48,6 +60,9 @@ public class Line {
     }
     
     public static boolean isBetween(Point a, Point b, Point pointToTest) {
+        
+        if (pointToTest == null)
+            return false;
         //Assume all are on the line
         
         //crossproduct = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
@@ -127,6 +142,26 @@ public class Line {
     }
     
     public Point getIntersection(Line line2) {
+        
+        
+        if (this.type != Line.Type.NORMAL || line2.type != Line.Type.NORMAL) {
+            Point p3 = line2.p1;
+            Point p4 = line2.p2;
+            double numX = (p1.getX()*p2.getY() - p1.getY()*p2.getX()) * (p3.getX()-p4.getX()) - 
+                    (p1.getX() - p2.getX()) * (p3.getX()*p4.getY() - p3.getY()*p4.getX());
+            
+            double numY =(p1.getX()*p2.getY() - p1.getY()*p2.getX()) * (p3.getY()-p4.getY()) - 
+                    (p1.getY() - p2.getY()) * (p3.getX()*p4.getY() - p3.getY()*p4.getX());
+            
+            double denom = (p1.getX()-p2.getX())*(p3.getY()-p4.getY()) - (p1.getY()-p2.getY())*(p3.getX()-p4.getX());
+            
+            if (denom == 0) {
+                return null;
+            }
+            
+            return new Point(numX / denom, numY / denom);
+        }
+        
         double x = (line2.b - b) / (m - line2.m);
         Point p = getPointGivenX(x);
         Point p2 = line2.getPointGivenX(x);
@@ -158,9 +193,9 @@ public class Line {
 		if (getClass() != obj.getClass())
 			return false;
 		Line other = (Line) obj;
-		if (DoubleComparator.compareStatic(b, other.b) != 0)
+		if (dc.compare(b, other.b) != 0)
 			return false;
-		if (DoubleComparator.compareStatic(m, other.m) != 0)
+		if (dc.compare(m, other.m) != 0)
 			return false;
 		if (type != other.type)
 			return false;
@@ -172,5 +207,36 @@ public class Line {
 		return "Line [m=" + m + ", b=" + b + ", type=" + type + "]";
 	}
     
+	/**
+	 * 
+	 * Are p1 and p2 on the same side of line definde by a and b ?
+	 * @param p1
+	 * @param p2
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+    public static boolean sameSide(Point p1, Point p2, Point a, Point b) {
+        double cp = Point.crossProduct(b.translate(a), p1.translate(a));
+        double cp2 = Point.crossProduct(b.translate(a), p2.translate(a));
+        if (cp * cp2 >= 0)
+            return true;
+        else
+            return false;
+    }
     
+    /**
+     * 
+     * @param a segment start
+     * @param b segment end
+     * @return 
+     */
+    public Point intersectsSegment(Point a, Point b) {
+        Point intersection = getIntersection(new Line(a,b));
+        
+        if ( isBetween(a, b, intersection) )
+            return intersection;
+        
+        return null;
+    }
 }

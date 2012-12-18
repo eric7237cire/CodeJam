@@ -113,4 +113,9 @@ public class Point {
             return false;
         return true;
     }
+    
+    //Treating points as vectors from 0,0.  Return value is the z component of a 3d vector
+    static public double crossProduct(Point u, Point v) {
+        return u.getX() * v.getY() - u.getY() * v.getX();
+    }
 }

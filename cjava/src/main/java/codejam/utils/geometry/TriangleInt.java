@@ -1,6 +1,7 @@
 package codejam.utils.geometry;
 
 
+
 public class TriangleInt {
     //x, y
     final public PointInt p1;
@@ -17,4 +18,12 @@ public class TriangleInt {
     }
     
     
+    public boolean pointInTriangle(Point p) {
+        if (Line.sameSide(p, p3.toPoint(), p1.toPoint(), p2.toPoint())
+                && Line.sameSide(p, p2.toPoint(), p1.toPoint(), p3.toPoint())
+                && Line.sameSide(p, p1.toPoint(), p2.toPoint(), p3.toPoint()))
+            return true;
+        else
+            return false;
+    }
 }
