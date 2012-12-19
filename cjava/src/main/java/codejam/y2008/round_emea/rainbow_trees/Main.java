@@ -1,5 +1,6 @@
 package codejam.y2008.round_emea.rainbow_trees;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,7 +33,7 @@ public class Main implements TestCaseHandler<InputData>,
     @Override
     public String[] getDefaultInputFiles() {
         return new String[] {"sample.in"};
-    //    return new String[] {"C-small-practice.in"};
+        //return new String[] {"C-small-practice.in"};
        // return new String[] {"B-large-practice.in"};
      //   return new String[] {"A-small-practice.in", "A-large-practice.in"};
     }
@@ -60,6 +61,7 @@ public class Main implements TestCaseHandler<InputData>,
         long r = 1;
         for(int i = 0; i < k; ++i) {
             r *= (n-i);
+            r %= MOD;
         }
         return r;
     }
@@ -68,6 +70,8 @@ public class Main implements TestCaseHandler<InputData>,
         Set<Integer> vertices;
         long chromNum;
     }
+    
+    private static final int MOD = 1000000009;
   
     @Override
     public String handleCase(InputData input) {
@@ -114,18 +118,22 @@ public class Main implements TestCaseHandler<InputData>,
         
         toVisit.add(tree.getRoot());
         tree.getRoot().setData(null);
-        long numFact = 1L;
-        long divFact = 1L;
         
         while(!toVisit.isEmpty()) {
             TreeInt<NodeData>.Node node = toVisit.peek();
             
             //If node has height <= 2, then we can process it directly
-            if (node.getHeight() <= 3) {
-                Set<Integer> vertexSet = node.getNext2Levels();
+            //Add all edges connected to the edge connecting the 
+            //subtree rooted at node to the tree
+            if (node.getHeight() <= 2) {
+                Set<Integer> vertexSet = node.getNextLevel();
             
                 if (node.getParent() != null) {
-                    vertexSet.add(node.getParent().getId());
+                    vertexSet.addAll(node.getParent().getNextLevel());
+                    
+                    if (node.getParent().getParent() != null) {
+                        vertexSet.add(node.getParent().getParent().getId());
+                    }
                 }
             
                 NodeData data = new NodeData();
@@ -153,34 +161,46 @@ public class Main implements TestCaseHandler<InputData>,
             }
             
             //All children have been visited
-            Set<Integer> vertices = node.getNext2Levels();
+            Set<Integer> vertexSet = node.getNextLevel();
             
-            //Because this includes the edge north of the node
             if (node.getParent() != null) {
-                vertices.add(node.getParent().getId());
+                vertexSet.addAll(node.getParent().getNextLevel());
+                
+                if (node.getParent().getParent() != null) {
+                    vertexSet.add(node.getParent().getParent().getId());
+                }
             }
             
-            long cn = perm(input.k, vertices.size() - 1);
+            long cn = perm(input.k, vertexSet.size() - 1);
             
             childIt = node.getChildren().iterator();
             while(childIt.hasNext()) {
                 child = childIt.next();
                 
                 //It was already included by the vertices set
-                if (child.getHeight() <= 2)
+                if (child.getHeight() <= 1)
                     continue;
                 
-                Set<Integer> intersection = Sets.intersection(vertices,child.getData().vertices);
+                Set<Integer> intersection = Sets.intersection(vertexSet,child.getData().vertices);
                 long interSecCn = perm(input.k, intersection.size()-1);
                 cn *= child.getData().chromNum;
-                cn /= interSecCn;
+                cn %= MOD;
+                if (interSecCn == 0) {
+                    Preconditions.checkState(cn == 0);
+                } else {
+                    cn = BigInteger.valueOf(cn).
+                            multiply(
+                                    BigInteger.valueOf(interSecCn).modInverse(BigInteger.valueOf(MOD)))
+                                    .mod(BigInteger.valueOf(MOD)).longValue();
+                    
+                }
                 
-                vertices.addAll(child.getData().vertices);
+                vertexSet.addAll(child.getData().vertices);
             }
             
             NodeData data = new NodeData();
             data.chromNum = cn;
-            data.vertices = vertices;
+            data.vertices = vertexSet;
             node.setData(data);
             
             toVisit.pop();
@@ -207,8 +227,9 @@ public class Main implements TestCaseHandler<InputData>,
         }
         
         Map<GraphInt, Integer> memoize = Maps.newHashMap();
-        int r = getChromaticPolynomial(rainbowGraph, input.k, memoize);
-        return String.format("Case #%d: %d  ans %d", input.testCase, r, ans);
+        return String.format("Case #%d: %d", input.testCase, ans);
+     //   int r = getChromaticPolynomial(rainbowGraph, input.k, memoize);
+       // return String.format("Case #%d: %d %d", input.testCase, ans, r);
        
     }
     

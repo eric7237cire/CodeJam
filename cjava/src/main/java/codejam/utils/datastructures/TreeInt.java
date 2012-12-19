@@ -146,6 +146,15 @@ public class TreeInt<T> {
             return children;
         }
         
+        public Set<Integer> getNextLevel() {
+            Set<Integer> ret = Sets.newHashSet();
+            ret.add(getId());
+            for(Node node : children) {
+                ret.add(node.getId());
+            }
+            return ret;
+        }
+        
         public Set<Integer> getNext2Levels() {
             Set<Integer> ret = Sets.newHashSet();
             ret.add(getId());
