@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 
 public class TreeInt<T> {
 
@@ -143,6 +144,19 @@ public class TreeInt<T> {
 
         public Set<Node> getChildren() {
             return children;
+        }
+        
+        public Set<Integer> getNext2Levels() {
+            Set<Integer> ret = Sets.newHashSet();
+            ret.add(getId());
+            for(Node node : children) {
+                ret.add(node.getId());
+                for(Node grandChild : node.children) {
+                    ret.add(grandChild.getId());
+                }
+            }
+            
+            return ret;
         }
 
         private static final int INDENT = 3;
