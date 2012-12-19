@@ -1,5 +1,6 @@
 package codejam.utils.datastructures;
 
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -17,6 +18,7 @@ public class TreeInt<T> {
 
     private boolean stats = true;
     private boolean uniqueNodeIds = true;
+    public static boolean useBitSetsNodes = true;
     
     public boolean isUniqueNodeIds() {
         return uniqueNodeIds;
@@ -114,6 +116,9 @@ public class TreeInt<T> {
         private int height;
         private int depth;
         private T data;
+        private Node parent;
+        private Set<Node> children;
+        private BitSet childrenBits;
 
         public T getData() {
             return data;
@@ -139,8 +144,9 @@ public class TreeInt<T> {
             return height;
         }
 
-        private Node parent;
-        private Set<Node> children;
+        public BitSet getChildrenBits() {
+            return childrenBits;
+        }
 
         public Set<Node> getChildren() {
             return children;
@@ -189,6 +195,7 @@ public class TreeInt<T> {
         // Root
         private Node(int id) {
             children = new HashSet<>();
+            childrenBits = new BitSet();
             this.parent = null;
             this.id = id;
             height = 1;
@@ -232,6 +239,10 @@ public class TreeInt<T> {
             Preconditions.checkState(!children.contains(child));
 
             children.add(child);
+            
+            if (useBitSetsNodes)
+                childrenBits.set(childId);
+            
             return child;
         }
 

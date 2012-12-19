@@ -2,9 +2,9 @@ package codejam.y2008.round_emea.rainbow_trees;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -32,9 +32,9 @@ public class Main implements TestCaseHandler<InputData>,
 
     @Override
     public String[] getDefaultInputFiles() {
-        return new String[] {"sample.in"};
-        //return new String[] {"C-small-practice.in"};
-       // return new String[] {"B-large-practice.in"};
+ //       return new String[] {"sample.in"};
+        return new String[] {"C-small-practice.in", };
+       // return new String[] {"C-large-practice.in"};
      //   return new String[] {"A-small-practice.in", "A-large-practice.in"};
     }
 
@@ -67,11 +67,12 @@ public class Main implements TestCaseHandler<InputData>,
     }
     
     static class NodeData {
-        Set<Integer> vertices;
+        BitSet vertices;
         long chromNum;
     }
     
     private static final int MOD = 1000000009;
+    private static final BigInteger MOD_BI = BigInteger.valueOf(MOD);
   
     @Override
     public String handleCase(InputData input) {
@@ -87,6 +88,142 @@ public class Main implements TestCaseHandler<InputData>,
             
             vertexGraph.addConnection(edge.getLeft(), edge.getRight());
         }
+               
+        TreeInt<NodeData> tree = vertexGraph.convertToTree(1);
+        
+        Stack<TreeInt<NodeData>.Node> toVisit = new Stack<>();
+        Set<TreeInt<NodeData>.Node> visited = new HashSet<>();
+        
+        toVisit.add(tree.getRoot());
+        tree.getRoot().setData(null);
+        
+        while(!toVisit.isEmpty()) {
+            TreeInt<NodeData>.Node node = toVisit.peek();
+            
+            //If node has height <= 2, then we can process it directly
+            //Add all edges connected to the edge connecting the 
+            //subtree rooted at node to the tree
+            if (node.getHeight() <= 2) {
+                BitSet vertexSet = BitSet.valueOf(node.getChildrenBits().toLongArray());
+                vertexSet.set(node.getId());
+                if (node.getParent() != null) {
+                    vertexSet.or(node.getParent().getChildrenBits());
+                    vertexSet.set(node.getParent().getId());
+                    if (node.getParent().getParent() != null) {
+                        vertexSet.set(node.getParent().getParent().getId());
+                    }
+                }
+            
+                NodeData data = new NodeData();
+                data.chromNum = perm(input.k, vertexSet.cardinality() - 1);
+                data.vertices = vertexSet;
+                
+                node.setData(data);
+                visited.add(node);
+                toVisit.pop();
+                continue;
+            }
+            
+            //Have children been visited yet?
+            Iterator<TreeInt<NodeData>.Node> childIt = node.getChildren().iterator(); 
+            TreeInt<NodeData>.Node child = childIt.next(); 
+            if (!visited.contains(child)) {
+                //Add all children to stack
+                toVisit.add(child);
+                while(childIt.hasNext()) {
+                    child = childIt.next();
+                    toVisit.add(child);
+                }
+                continue;
+            }
+            
+            //All children have been visited
+            /*
+            Set<Integer> vertexSet = node.getNextLevel();
+            
+            if (node.getParent() != null) {
+                vertexSet.addAll(node.getParent().getNextLevel());
+                
+                if (node.getParent().getParent() != null) {
+                    vertexSet.add(node.getParent().getParent().getId());
+                }
+            }*/
+            
+            BitSet vertexSet = BitSet.valueOf(node.getChildrenBits().toLongArray());
+            
+            vertexSet.set(node.getId());
+            
+            if (node.getParent() != null) {
+                vertexSet.or(node.getParent().getChildrenBits());
+                vertexSet.set(node.getParent().getId());
+                
+                if (node.getParent().getParent() != null) {
+                    vertexSet.set(node.getParent().getParent().getId());
+                }
+            }
+            
+            //Combine this sub graph with children
+            long cn = perm(input.k, vertexSet.cardinality() - 1);
+            
+            childIt = node.getChildren().iterator();
+            while(childIt.hasNext()) {
+                child = childIt.next();
+                
+                //It was already included by the vertices set
+                if (child.getHeight() <= 1)
+                    continue;
+                
+                BitSet intersection = BitSet.valueOf(vertexSet.toLongArray());
+                //Set<Integer> intersection = Sets.intersection(vertexSet,child.getData().vertices);
+                intersection.and(child.getData().vertices);
+                long interSecCn = perm(input.k, intersection.cardinality()-1);
+                cn *= child.getData().chromNum;
+                cn %= MOD;
+                if (interSecCn == 0) {
+                    Preconditions.checkState(cn == 0);
+                } else {
+                    cn = BigInteger.valueOf(cn).
+                            multiply(
+                                    BigInteger.valueOf(interSecCn).modInverse(MOD_BI))
+                                    .mod(MOD_BI).longValue();
+                    
+                }
+                
+                //vertexSet.addAll(child.getData().vertices);
+                vertexSet.or(child.getData().vertices);
+            }
+            
+            NodeData data = new NodeData();
+            data.chromNum = cn;
+            data.vertices = vertexSet;
+            node.setData(data);
+            
+            toVisit.pop();
+            visited.add(node);
+        }
+        
+        long ans = tree.getRoot().getData().chromNum;
+        
+        
+        
+        return String.format("Case #%d: %d", input.testCase, ans);
+    
+       
+    }
+    
+    public String handleCaseBruteForce(InputData input) {
+        //First create the graph of vertices
+        GraphInt vertexGraph = new GraphInt();
+        List<Pair<Integer,Integer>>  edges = new ArrayList<>();
+        BiMap<Pair<Integer,Integer>, Integer> edgeIntMap = HashBiMap.create();
+        
+        for(Pair<Integer, Integer> edge : input.edges ) {
+            edges.add(createEdge(edge.getLeft(), edge.getRight()));
+            edgeIntMap.put(edges.get(edges.size()-1), edges.size()-1);
+            
+            vertexGraph.addConnection(edge.getLeft(), edge.getRight());
+        }
+        
         
         //Create edge graph
         GraphInt edgeGraph = new GraphInt();
@@ -111,105 +248,7 @@ public class Main implements TestCaseHandler<InputData>,
             }
         }
         
-        TreeInt<NodeData> tree = vertexGraph.convertToTree(1);
-        
-        Stack<TreeInt<NodeData>.Node> toVisit = new Stack<>();
-        Set<TreeInt<NodeData>.Node> visited = new HashSet<>();
-        
-        toVisit.add(tree.getRoot());
-        tree.getRoot().setData(null);
-        
-        while(!toVisit.isEmpty()) {
-            TreeInt<NodeData>.Node node = toVisit.peek();
-            
-            //If node has height <= 2, then we can process it directly
-            //Add all edges connected to the edge connecting the 
-            //subtree rooted at node to the tree
-            if (node.getHeight() <= 2) {
-                Set<Integer> vertexSet = node.getNextLevel();
-            
-                if (node.getParent() != null) {
-                    vertexSet.addAll(node.getParent().getNextLevel());
-                    
-                    if (node.getParent().getParent() != null) {
-                        vertexSet.add(node.getParent().getParent().getId());
-                    }
-                }
-            
-                NodeData data = new NodeData();
-                data.chromNum = perm(input.k, vertexSet.size() - 1);
-                data.vertices = vertexSet;
-                
-                node.setData(data);
-                visited.add(node);
-                toVisit.pop();
-                continue;
-            }
-            
-            //Have children been visited yet?
-            Iterator<TreeInt<NodeData>.Node> childIt = node.getChildren().iterator(); 
-            TreeInt<NodeData>.Node child = childIt.next(); 
-            if (!visited.contains(child)) {
-                //Add all children to stack
-                toVisit.add(child);
-                while(childIt.hasNext()) {
-                    child = childIt.next();
-                    toVisit.add(child);
-                   // Preconditions.checkState(child.getHeight() > 3);
-                }
-                continue;
-            }
-            
-            //All children have been visited
-            Set<Integer> vertexSet = node.getNextLevel();
-            
-            if (node.getParent() != null) {
-                vertexSet.addAll(node.getParent().getNextLevel());
-                
-                if (node.getParent().getParent() != null) {
-                    vertexSet.add(node.getParent().getParent().getId());
-                }
-            }
-            
-            long cn = perm(input.k, vertexSet.size() - 1);
-            
-            childIt = node.getChildren().iterator();
-            while(childIt.hasNext()) {
-                child = childIt.next();
-                
-                //It was already included by the vertices set
-                if (child.getHeight() <= 1)
-                    continue;
-                
-                Set<Integer> intersection = Sets.intersection(vertexSet,child.getData().vertices);
-                long interSecCn = perm(input.k, intersection.size()-1);
-                cn *= child.getData().chromNum;
-                cn %= MOD;
-                if (interSecCn == 0) {
-                    Preconditions.checkState(cn == 0);
-                } else {
-                    cn = BigInteger.valueOf(cn).
-                            multiply(
-                                    BigInteger.valueOf(interSecCn).modInverse(BigInteger.valueOf(MOD)))
-                                    .mod(BigInteger.valueOf(MOD)).longValue();
-                    
-                }
-                
-                vertexSet.addAll(child.getData().vertices);
-            }
-            
-            NodeData data = new NodeData();
-            data.chromNum = cn;
-            data.vertices = vertexSet;
-            node.setData(data);
-            
-            toVisit.pop();
-            visited.add(node);
-        }
-        
-        long ans = tree.getRoot().getData().chromNum;
-        
-        //Same as edgeGraph with edges added between neighbors of neighbors
+      //Same as edgeGraph with edges added between neighbors of neighbors
         GraphInt rainbowGraph = new GraphInt();
         for(int edgeNum = 0; edgeNum < input.n - 1; ++edgeNum) {
             Set<Integer> adjEdges = edgeGraph.getNeighbors(edgeNum);
@@ -226,11 +265,11 @@ public class Main implements TestCaseHandler<InputData>,
             }
         }
         
+        
         Map<GraphInt, Integer> memoize = Maps.newHashMap();
-        return String.format("Case #%d: %d", input.testCase, ans);
-     //   int r = getChromaticPolynomial(rainbowGraph, input.k, memoize);
-       // return String.format("Case #%d: %d %d", input.testCase, ans, r);
-       
+        
+         int r = getChromaticPolynomial(rainbowGraph, input.k, memoize);
+        return String.format("Case #%d: %d", input.testCase, r);
     }
     
     int getChromaticPolynomial(GraphInt graph, int k, Map<GraphInt, Integer> memoize) {
