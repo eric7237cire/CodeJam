@@ -24,7 +24,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.common.math.IntMath;
 
 public class Main implements TestCaseHandler<InputData>,
@@ -33,8 +32,8 @@ public class Main implements TestCaseHandler<InputData>,
     @Override
     public String[] getDefaultInputFiles() {
  //       return new String[] {"sample.in"};
-        return new String[] {"C-small-practice.in", };
-       // return new String[] {"C-large-practice.in"};
+        return new String[] {"C-small-practice.in", "C-large-practice.in"};
+       // return new String[] {};
      //   return new String[] {"A-small-practice.in", "A-large-practice.in"};
     }
 
