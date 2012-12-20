@@ -1,22 +1,20 @@
 package codejam.utils;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import codejam.utils.datastructures.TreeInt;
-import codejam.utils.datastructures.TreeInt.Node;
-
-import static org.junit.Assert.*;
 
 
 public class TreeTest {
-    @SuppressWarnings("unchecked")
     @Test
     public void testTreeIntBasic() {
         TreeInt<Object> tree = new TreeInt<>(5);
         
         tree.getRoot().addChild(6);
         tree.getRoot().addChild(4);
-        Node node3 = tree.getRoot().addChild(3);
+        TreeInt<Object>.Node node3 = tree.getRoot().addChild(3);
         node3.addChild(2);
         node3.addChild(1);
 
@@ -45,7 +43,7 @@ public class TreeTest {
         //9 10      11
         //           12
         
-        tree = new TreeInt(1);
+        tree = new TreeInt<Object>(1);
         tree.getNodes().get(1).addChild(2);
         tree.getNodes().get(1).addChild(3);
         

@@ -5,14 +5,12 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.ArticulationPoint;
 import codejam.utils.datastructures.BitSetInt;
-import codejam.utils.datastructures.Bridge;
 import codejam.utils.datastructures.GraphInt;
 import codejam.utils.utils.GridChar;
 import codejam.y2008.round_amer.king.InputData;
@@ -39,9 +37,9 @@ public class KingTest {
         g.addConnection(7,8);
         g.addConnection(3,8);
         
-        Bridge b = new Bridge(g);
+        //Bridge b = new Bridge(g);
         
-        List<Pair<Integer,Integer>> bridges = b.getBridges();
+       // List<Pair<Integer,Integer>> bridges = b.getBridges();
         
         ArticulationPoint ap = new ArticulationPoint(g);
         List<Integer> aPoints = ap.getArticulationPoints();

@@ -1,8 +1,5 @@
 package codejam.utils.geometry;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
 import codejam.utils.utils.DoubleComparator;
 
 import com.google.common.base.Objects;

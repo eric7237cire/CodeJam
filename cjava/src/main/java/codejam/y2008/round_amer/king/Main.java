@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.ArticulationPoint;
-import codejam.utils.datastructures.Bridge;
 import codejam.utils.datastructures.GraphInt;
 import codejam.utils.datastructures.TreeInt;
 import codejam.utils.datastructures.TreeInt.Node;
@@ -24,10 +23,7 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.Direction;
 import codejam.utils.utils.GridChar;
-import codejam.y2008.KingTest;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 
 public class Main implements TestCaseHandler<InputData>,
@@ -216,7 +212,7 @@ public class Main implements TestCaseHandler<InputData>,
      */
     public boolean getConnectedSquareCount(GridChar grid, int startingLoc) {
 
-        int oldCount = (1+getConnectedSquareCountOld(grid,startingLoc) );
+       // int oldCount = (1+getConnectedSquareCountOld(grid,startingLoc) );
         
         //The boolean means it is player 1, the connected square co
         Set<Pair<Integer, Boolean>> visitedNodes = Sets.newHashSet();
@@ -392,6 +388,7 @@ public class Main implements TestCaseHandler<InputData>,
         
         PriorityQueue<TreeInt<Boolean>.Node> toVisit = new PriorityQueue<>(1000, new Comparator<TreeInt<Boolean>.Node>() {
 
+            @SuppressWarnings("rawtypes")
             @Override
             public int compare(Node o1, Node o2) {
                 return Integer.compare(o2.getDepth(), o1.getDepth());

@@ -5,8 +5,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import codejam.utils.utils.Direction;
-
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
