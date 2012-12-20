@@ -1,10 +1,9 @@
 package codejam.y2008.round_emea.bus_stops;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import org.apache.commons.lang3.ArrayUtils;
+import com.google.common.primitives.Ints;
 
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
@@ -32,45 +31,45 @@ public class Main implements TestCaseHandler<InputData>,
         return i;
     }
    
-    public static int sumOfProductAllPermutations(List<Integer> numbers, int permLength) {
-        int[] lastRound = new int[numbers.size()];
-        for(int n = 0; n < numbers.size(); ++n) {
-            lastRound[n] = numbers.get(n);
+    public static int sumOfProductAllPermutations(Integer[] numbers, int permLength, int mod) {
+        int[] lastRound = new int[numbers.length];
+        for(int n = 0; n < numbers.length; ++n) {
+            lastRound[n] = numbers[n];
         }
         
-        int lastSum = 1;
+        long lastSum = 1;
         
         for(int i = 0; i < permLength; ++i) {
-            int sum = 0;
-            for(int n = 0; n < numbers.size(); ++n) {
-                sum += numbers.get(n) * lastSum;
+            long sum = 0;
+            for(int n = 0; n < numbers.length; ++n) {
+                sum += numbers[n] * lastSum;
+                sum %= mod;
             }
             lastSum = sum;            
         }
         
-        return lastSum;
+        return Ints.checkedCast(lastSum);
     }
     
-    public static int sumOfProductAllPermutationsBruteForce(List<Integer> numbers, int permLength) {
-        Integer[] numbersArray =  numbers.toArray(new Integer[] {}) ;
-        
+    public static int sumOfProductAllPermutationsBruteForce(Integer[] numbersArray, int permLength, int mod) {
         Integer[] perm = new Integer[permLength];
         
-        PermutationWithRepetition pr = PermutationWithRepetition.create(numbersArray, perm);
+        PermutationWithRepetition<Integer> pr = PermutationWithRepetition.create(numbersArray, perm);
         
-        int sum = 0;
-        do {
-            int product = 1;
+        long sum = 0;
+        while(pr.hasNext())
+         {
+            pr.next();
+            long product = 1;
             for(int i = 0; i < perm.length; ++i) {
                 product *= perm[i];
+                product %= mod;
             }
             sum+=product;
-            
-            pr.next();
-            
-        } while(pr.hasNext());
+            sum%=mod;
+        } 
         
-        return sum;
+        return Ints.checkedCast(sum);
     }
     
     @Override
