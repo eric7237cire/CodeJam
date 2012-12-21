@@ -19,7 +19,7 @@ public class BitSetInt {
         
         for(int i = 0; i < array.length; ++i) {
             if (array[i] == 1) 
-                bs.setBit(i);
+                bs.set(i);
             
         }
         
@@ -50,11 +50,11 @@ public class BitSetInt {
     }
     
     
-    public void setBit(int pos) {
+    public void set(int pos) {
         bits |= 1 << pos;
     }
     
-    public void unsetBit(int pos) {
+    public void unset(int pos) {
         bits &= ~(1 << pos);
     }
     
@@ -86,6 +86,10 @@ public class BitSetInt {
     }
     
     public void unsetLeastSignificantSetBit() {
+        bits &= bits - 1;
+    }
+    
+    public void setLeastSignificantUnSetBit() {
         bits |= bits + 1;
     }
     

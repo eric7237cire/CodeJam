@@ -75,7 +75,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             for (int c = 0; c < word.length(); ++c) {
                 char ch = word.charAt(c);
                 int idx = (int) ch - (int) 'a';
-                freeNodes[n][idx].setBit(c);
+                freeNodes[n][idx].set(c);
             }
             
             if (!treesForWordSize.containsKey(word.length())) {

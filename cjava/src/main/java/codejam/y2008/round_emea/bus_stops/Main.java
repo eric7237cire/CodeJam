@@ -4,10 +4,12 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.BitSetInt;
 import codejam.utils.main.DefaultInputFiles;
@@ -16,13 +18,14 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.PermutationWithRepetition;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.common.math.IntMath;
 import com.google.common.primitives.Ints;
 
 public class Main implements TestCaseHandler<InputData>,
         TestCaseInputScanner<InputData>, DefaultInputFiles {
 
+    final static Logger log = LoggerFactory.getLogger(Main.class);
     @Override
     public String[] getDefaultInputFiles() {
         return new String[] {"sample.in"};
@@ -176,10 +179,12 @@ public class Main implements TestCaseHandler<InputData>,
         
     }
     
-    private static String bsToStr(BitSetInt bs, int length) {
+    private static String bsToStr (BitSetInt bs, int length, int P) {
         String str = Integer.toBinaryString(bs.getBits());
         str = StringUtils.reverse(str);
-        return StringUtils.rightPad(str, length, '0');
+        str = StringUtils.rightPad(str, length, '0');
+        
+        return str.substring(0, P) + " | " + str.substring(P);
     }
     
     /**
@@ -187,11 +192,11 @@ public class Main implements TestCaseHandler<InputData>,
      * 
      * returns count of all valid end states (with a bus at most sig bit)
      */
-    public static int[] count(int startState, int P, int K, int finalLength, int mod) {
+    public static int[] count(int startState, int finalLength, int K, int P, int mod) {
         
         BitSetInt startStateBs = new BitSetInt(startState);
                 
-        int[] current = startStateBs.toIntArray(finalLength);
+        log.debug("Start state [{}]", bsToStr(startStateBs, finalLength, P));
         
         int firstUnvisitedBusStop = startStateBs.getMostSigBitIndex() + 1;
         int lastUnvisitedBusStop = finalLength - 1;        
@@ -200,26 +205,42 @@ public class Main implements TestCaseHandler<InputData>,
         int [] previousCounts = new int[1 << finalLength];
         previousCounts[startState] = 1;
         
-        final int maxPrevState = ( 1 << P ) - 1;
+        Set<Integer> previousStates = Sets.newHashSet();
+        previousStates.add(startState);
         
         for(int unvisitedStop = firstUnvisitedBusStop; unvisitedStop <= lastUnvisitedBusStop; ++unvisitedStop) {
             
+            log.debug("Processing unvisited stop {}", unvisitedStop);
+            
             int lenPrev = unvisitedStop;
+            
+            final int maxPrevState = ( 1 << Math.min(lenPrev,P) ) - 1;
+            
+            Set<Integer> states = Sets.newHashSet();
+            
             //Loop through all possible previous states
-            for(int prev = 0; prev <= maxPrevState; ++prev) {
+            for(int prev : previousStates) {
+                
+                
+                /*int prev = prevLoop;
+                
                 if (lenPrev < P) {
-                    prev >>= (P - lenPrev);
+                   // prev >>= (P - lenPrev);
                 } else if (lenPrev > P) {
                     prev <<= (lenPrev - P);
-                }
+                }*/
                 
-                if (Integer.bitCount(prev) != K) 
-                    continue;
+                Preconditions.checkState( Integer.bitCount(prev) == K); 
+                    
                 
                 //For each set bit, starting at lowest, move that bus to unvisited stop
                 //If the distance == P, we stop as going further would result in a 'stranded' bus
                 
                 BitSetInt busesLeft = new BitSetInt(prev);
+                
+                Preconditions.checkState(busesLeft.getMostSigBitIndex() == unvisitedStop - 1);
+                
+                log.debug("Previous state [{}]", bsToStr(busesLeft, finalLength, P));
                 
                 while(busesLeft.getBits() > 0) {
                     int bus = busesLeft.getLeastSignificantBitIndex();
@@ -227,22 +248,32 @@ public class Main implements TestCaseHandler<InputData>,
                     Preconditions.checkState(distance > 0 && distance <= P);
                     
                     BitSetInt newState = new BitSetInt(prev);
-                    newState.setBit(unvisitedStop);
-                    newState.unsetBit(bus);
+                    newState.set(unvisitedStop);
+                    newState.unset(bus);
+                
+                    log.debug("new state [{}]", bsToStr(newState, finalLength, P));
                     
-                    previousCounts[newState.getBits()] += previousCounts[prev]; 
+                    states.add(newState.getBits());
+                    
+                    previousCounts[newState.getBits()] += previousCounts[prev];
+                    previousCounts[newState.getBits()] %= mod;
+                    
+                    log.debug("count of {} + {} = {}", bsToStr(newState, finalLength, P), previousCounts[prev],previousCounts[newState.getBits()]);
                     
                     if (distance == P) {
                         break;
                     }
+                    
                     busesLeft.unsetLeastSignificantSetBit();
                 }
+                
+                previousStates = states;
                 
             }
         }
        
         
-        return sum;
+        return previousCounts;
         
         
     }
