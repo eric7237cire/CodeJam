@@ -7,18 +7,14 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.math3.fraction.BigFraction;
-import org.apache.commons.math3.linear.Array2DRowFieldMatrix;
-import org.apache.commons.math3.linear.FieldMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.BitSetInt;
+import codejam.utils.datastructures.MatrixModded;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
-import codejam.utils.utils.PermutationWithRepetition;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -32,10 +28,8 @@ public class Main implements TestCaseHandler<InputData>,
     final static Logger log = LoggerFactory.getLogger(Main.class);
     @Override
     public String[] getDefaultInputFiles() {
-        return new String[] {"sample.in"};
-        //return new String[] {"B-small-practice.in"};
-        //return new String[] {"B-large-practice.in"};
-     //   return new String[] {"A-small-practice.in", "A-large-practice.in"};
+     //   return new String[] {"sample.in"};
+        return new String[] {"D-small-practice.in", "D-large-practice.in"};
     }
 
     @Override
@@ -48,83 +42,7 @@ public class Main implements TestCaseHandler<InputData>,
         return i;
     }
    
-    public static int sumOfProductAllPermutationsFast(Integer[] numbers, int permLength, int mod) {
-        
-        long firstChunk = 0;
-        
-        for(int n = 0; n < numbers.length; ++n) {
-            firstChunk += numbers[n];
-            firstChunk %= mod;
-        }
-        
-        List<Integer> chunks = new ArrayList<Integer>();
-        chunks.add(Ints.checkedCast(firstChunk));
-        
-        int biggestChunkIndex = IntMath.log2(permLength, RoundingMode.DOWN) ;
-                
-        int chunkSize = 1;
-        for(int i = 1; i <= biggestChunkIndex; ++i) {
-            chunkSize *= 2;
-            int chunk = Ints.checkedCast((long) chunks.get(i-1) * chunks.get(i-1) % mod);
-            
-            
-            chunks.add( chunk ); 
-        }
-        
-        long sum = 1;
-        //Now use calculated chunks to finish the job
-        while(permLength > 0) {
-            int chunkIndex = IntMath.log2(permLength, RoundingMode.DOWN);
-            sum *= chunks.get(chunkIndex);
-            sum %= mod;
-            permLength -= 1 << chunkIndex;
-        }
-        
-        Preconditions.checkState(permLength == 0);
-        
-        return Ints.checkedCast(sum);
-    }
     
-    public static int sumOfProductAllPermutations(Integer[] numbers, int permLength, int mod) {
-        int[] lastRound = new int[numbers.length];
-        for(int n = 0; n < numbers.length; ++n) {
-            lastRound[n] = numbers[n];
-        }
-        
-        long lastSum = 1;
-        
-        for(int i = 0; i < permLength; ++i) {
-            long sum = 0;
-            for(int n = 0; n < numbers.length; ++n) {
-                sum += numbers[n] * lastSum;
-                sum %= mod;
-            }
-            lastSum = sum;            
-        }
-        
-        return Ints.checkedCast(lastSum);
-    }
-    
-    public static int sumOfProductAllPermutationsBruteForce(Integer[] numbersArray, int permLength, int mod) {
-        Integer[] perm = new Integer[permLength];
-        
-        PermutationWithRepetition<Integer> pr = PermutationWithRepetition.create(numbersArray, perm);
-        
-        long sum = 0;
-        while(pr.hasNext())
-         {
-            pr.next();
-            long product = 1;
-            for(int i = 0; i < perm.length; ++i) {
-                product *= perm[i];
-                product %= mod;
-            }
-            sum+=product;
-            sum%=mod;
-        } 
-        
-        return Ints.checkedCast(sum);
-    }
     
     //starting means before an interval of length P
     //starting | ending = 000111 |  00111
@@ -183,51 +101,56 @@ public class Main implements TestCaseHandler<InputData>,
         
     }
     
-    private static String bsToStr (BitSetInt bs, int length, int P) {
-        String str = Integer.toBinaryString(bs.getBits());
-        str = StringUtils.reverse(str);
-        str = StringUtils.rightPad(str, length, '0');
-        
-        return str.substring(0, P) + " | " + str.substring(P);
-    }
+//    private static String bsToStr (BitSetInt bs, int length, int P) {
+//        String str = Integer.toBinaryString(bs.getBits());
+//        str = StringUtils.reverse(str);
+//        str = StringUtils.rightPad(str, length, '0');
+//        
+//        return str.substring(0, P) + " | " + str.substring(P);
+//    }
     
     
     public static int countFast(int finalLength, int K, int P, int mod) {
         
-        BitSetInt startState = new BitSetInt();
-        for(int i = 0; i < K; ++i) {
-            startState.set(i);
-        }
+        BitSetInt startState = BitSetInt.createWithBitsSet(0, K-1);
         
+        /**
+         * If the inputs are small enough, just handle it directly
+         */
         if (finalLength <= K + P) {
-            BitSetInt finalState = new BitSetInt();
-            for(int i = finalLength - K; i < finalLength; ++i) {
-                finalState.set(i);
-            }
+            BitSetInt finalState = BitSetInt.createWithBitsSet(finalLength-K, finalLength-1);
             int[] r = count(startState.getBits(), finalLength, K, P, mod);
             return r[finalState.getBits()];
         }
         
-        //First step determine transitions from startState to an interval of P after start state
+        /**
+         * First step determine transitions from startState to an interval of P after start state
+         * 
+         * ie, K = 3, P = 5
+         * 
+         * 111 | 00000  ==>  000 | xxxxx
+         * 
+         * 
+         */
         List<Integer> stateList = Lists.newArrayList();
         
         int[] stateCounts = count(startState.getBits(), K+P, K, P, mod, stateList);
         
-        FieldMatrix<BigFraction> initialStateCountsMatrix = new Array2DRowFieldMatrix<BigFraction>(new BigFraction(1, 1).getField(), stateList.size(), 1);
-
-        // Multiply by initial state counts
+        int[][] stateCountsMatrix = new int[stateList.size()][1];
+        
+        //Calculate state counts, condensing it into a Sx1 matrix
         for (int i = 0; i < stateList.size(); ++i) {
-            initialStateCountsMatrix.setEntry(i, 0, new BigFraction(stateCounts[stateList.get(i)]));
+            stateCountsMatrix[i][0] = stateCounts[stateList.get(i)];
         }
        
         
         //stateList needs to be bitshifted K elements to the left to make it of size P
         for(int stateNum = 0; stateNum < stateList.size(); ++stateNum) {
             
-            log.debug("start.  transition from starting state {} to state #{} : {}.  Count {}", 
-                     bsToStr( startState, K+P, P),
-                    stateNum, bsToStr(new BitSetInt(stateList.get(stateNum)), K+P, P), 
-                    stateCounts[stateList.get(stateNum)]);
+//            log.debug("start.  transition from starting state {} to state #{} : {}.  Count {}", 
+//                     bsToStr( startState, K+P, P),
+//                    stateNum, bsToStr(new BitSetInt(stateList.get(stateNum)), K+P, P), 
+//                    stateCounts[stateList.get(stateNum)]);
             
             stateList.set(stateNum, stateList.get(stateNum) >> K);
         }
@@ -235,86 +158,69 @@ public class Main implements TestCaseHandler<InputData>,
         stateCounts = null;
         
         //Then we need a transition matrix, going from every possible state to every possible state
-        FieldMatrix<BigFraction> trans = new Array2DRowFieldMatrix<BigFraction>(new BigFraction(1,1).getField(), stateList.size(), stateList.size());
+        int[][] trans = new int[stateList.size()][stateList.size()];
         log.debug("Calculating transition matrix");
         
+        log.debug("Calculating transition count");
         for(int stateNum = 0; stateNum < stateList.size(); ++stateNum) {
             int transStartState = stateList.get(stateNum);
-            log.debug("starting at state #{} : {}", stateNum, bsToStr( new BitSetInt(transStartState), 2*P, P));
+            //log.debug("starting at state #{} : {}", stateNum, bsToStr( new BitSetInt(transStartState), 2*P, P));
+            
             int[] transCounts = count(transStartState, 2 * P, K, P, mod);
             
             for(int endingStateNum = 0; endingStateNum < stateList.size(); ++endingStateNum) {
                 int endingState = stateList.get(endingStateNum) << P;
-                log.debug("transition from state# {} : {} to state #{} : {}.  Count {}", 
-                        stateNum, bsToStr( new BitSetInt(transStartState), 2*P, P),
-                        endingStateNum, bsToStr(new BitSetInt(endingState), 2*P, P), 
-                        transCounts[endingState]);
-                trans.setEntry(endingStateNum, stateNum, new BigFraction(transCounts[endingState]));
+//                log.debug("transition from state# {} : {} to state #{} : {}.  Count {}", 
+//                        stateNum, bsToStr( new BitSetInt(transStartState), 2*P, P),
+//                        endingStateNum, bsToStr(new BitSetInt(endingState), 2*P, P), 
+//                        transCounts[endingState]);
+                trans[endingStateNum][stateNum] = transCounts[endingState];
             }
         }
+        log.debug("Done calculating transitions");
         
         //Done start
         
+        log.debug("Calculating transitions matrices.  Size matrix {} x {}", trans.length, trans[0].length);
         int lengthLeft = finalLength - K;
         
         int pChunks = (lengthLeft - 1) / P - 1;
         
-        List<FieldMatrix<BigFraction>> transformMatrices = new ArrayList<FieldMatrix<BigFraction>>();
+        List<int[][]> transformMatrices = new ArrayList<>();
         transformMatrices.add(trans);
         
-        int biggestChunkIndex = IntMath.log2(pChunks, RoundingMode.DOWN) ;
+        int biggestChunkIndex = pChunks > 0 ? IntMath.log2(pChunks, RoundingMode.DOWN) : 0;
                 
         for(int i = 1; i <= biggestChunkIndex; ++i) {            
-            FieldMatrix<BigFraction> matrix = transformMatrices.get(i-1).multiply(transformMatrices.get(i-1));
+            int[][]  matrix = MatrixModded.multiply(transformMatrices.get(i-1), transformMatrices.get(i-1), mod);
                         
-            //Mod that fo
-            for(int r = 0; r < matrix.getRowDimension(); ++r) {
-                for(int c = 0; c < matrix.getColumnDimension(); ++c) {
-                    matrix.setEntry(r, c, 
-                            new BigFraction(matrix.getEntry(r,c).getNumeratorAsLong() % mod));   
-                }
-            }
             transformMatrices.add(matrix); 
         }
         
-        FieldMatrix<BigFraction> stateCountsMatrix = //new Array2DRowFieldMatrix<BigFraction>(new BigFraction(1,1).getField(), stateList.size(), 1);
-                new Array2DRowFieldMatrix<BigFraction>(initialStateCountsMatrix.getData());
+        log.debug("Done Calculating transitions matrices");
         
-        for(int i = 0; i < stateList.size(); ++i) {
-           // stateCountsMatrix.setEntry(i, 0, new BigFraction(1, 1));
-        }
-        
+        log.debug("Chunking");
         while(pChunks > 0) {
             int matrixIndex = IntMath.log2(pChunks, RoundingMode.DOWN);
-            FieldMatrix<BigFraction> matrix = transformMatrices.get(matrixIndex);
+            int[][] matrix = transformMatrices.get(matrixIndex);
             
-            stateCountsMatrix = matrix.multiply(stateCountsMatrix);
-            
-            //mod it
-            for(int s = 0; s < stateList.size(); ++s) {
-                 stateCountsMatrix.setEntry(s, 0, 
-                         new BigFraction(stateCountsMatrix.getEntry(s,0).getNumeratorAsLong() % mod));
-             }
+            stateCountsMatrix = MatrixModded.multiply(matrix, stateCountsMatrix, mod);
             
             int pChunksTaken = 1 << matrixIndex;
             lengthLeft -= P * pChunksTaken;
             pChunks -= pChunksTaken;
         }
         
-        //Multiply by initial state counts
-        for(int i = 0; i < stateList.size(); ++i) {
-          //  stateCountsMatrix.multiplyEntry(i, 0, initialStateCountsMatrix.getEntry(i,0));
-        }
+        log.debug("Done Chunking");
         
-        //Done middle
-        
+       
         
                 
         //Figure out from the trans matrix which state is the good one
         Preconditions.checkState(lengthLeft <= 2 * P);
         
         BitSetInt finalState = BitSetInt.createWithBitsSet(lengthLeft - K,  lengthLeft-1);
-        log.debug("Final state {}", bsToStr(finalState, lengthLeft, P));
+        //log.debug("Final state {}", bsToStr(finalState, lengthLeft, P));
         
         //P to last stretch
         long finalSum = 0;
@@ -325,15 +231,17 @@ public class Main implements TestCaseHandler<InputData>,
             int transStartState = stateList.get(stateNum);
             int[] transCounts = count(transStartState, lengthLeft, K, P, mod);
             
-            log.debug("final transition from state# {} : {} to final state : {}.  Initial Count {} * trans count {}", 
-                    stateNum, bsToStr( new BitSetInt(transStartState), lengthLeft, P),
-                     bsToStr(finalState, lengthLeft, P),
-                     stateCountsMatrix.getEntry(stateNum,0).getNumeratorAsLong(),
-                     transCounts[finalState.getBits()]);
+//            log.debug("final transition from state# {} : {} to final state : {}.  Initial Count {} * trans count {}", 
+//                    stateNum, bsToStr( new BitSetInt(transStartState), lengthLeft, P),
+//                     bsToStr(finalState, lengthLeft, P),
+//                     stateCountsMatrix[stateNum][0],
+//                     transCounts[finalState.getBits()]);
             
-            finalSum += transCounts[finalState.getBits()] * (stateCountsMatrix.getEntry(stateNum,0).getNumeratorAsLong() % mod);
+            finalSum += transCounts[finalState.getBits()] * stateCountsMatrix[stateNum][0] % mod;
             finalSum %= mod;
         }
+        
+        //log.debug("Final transition finished");
         
         return Ints.checkedCast(finalSum % mod);
         
@@ -344,10 +252,16 @@ public class Main implements TestCaseHandler<InputData>,
         
         return count(startState, finalLength, K, P, mod, finalStates);
     }
+    
     /**
-     * startState is a bitArray of length 2 * P
      * 
-     * returns count of all valid end states (with a bus at most sig bit)
+     * @param startState in binary, initial configuration.  buses move from LSB to MSB
+     * @param finalLength how many bus stops there are
+     * @param K number of buses
+     * @param P how far the buses can go
+     * @param mod
+     * @param finalStates  will be all the states such that finalLength has been visited.  1 bus each stop
+     * @return the counts of all the configurations
      */
     public static int[] count(int startState, int finalLength, int K, int P, int mod, List<Integer> finalStates) {
         
@@ -358,6 +272,11 @@ public class Main implements TestCaseHandler<InputData>,
         int firstUnvisitedBusStop = startStateBs.getMostSigBitIndex() + 1;
         int lastUnvisitedBusStop = finalLength - 1;        
         
+        /**
+         * The idea is we go stop by stop, filling it in from previous rounds.
+         * 
+         * These vars hold the valid previous round states and their counts
+         */
         int [] previousCounts = new int[1 << finalLength];
         previousCounts[startState] = 1;
         

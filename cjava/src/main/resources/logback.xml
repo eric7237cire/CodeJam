@@ -30,7 +30,8 @@
   <logger name="com.eric.codejam.multithread" level="OFF"/>
   <logger name="com.eric.codejam.SingleRowSolver" level="OFF" />
    -->
-   <logger name="codejam.y2008" level="INFO"/>
+   <logger name="codejam.y2008" level="DEBUG"/>
+   <logger name="codejam.y2008.round_emea" level="INFO"/>
    <logger name="codejam.y2009" level="INFO"/>
    <logger name="codejam.y2010" level="WARN"/>
    <logger name="codejam" level="DEBUG"/>
