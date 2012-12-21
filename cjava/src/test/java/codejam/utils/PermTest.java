@@ -3,10 +3,18 @@ package codejam.utils;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.primitives.Ints;
 
 import codejam.utils.utils.PermutationWithRepetition;
+import codejam.y2008.KingTest;
 
 public class PermTest {
+    final static Logger log = LoggerFactory.getLogger(PermTest.class);
+    
+    
     @Test
     public void testPermsRepetition() {
         Integer[] possible = new Integer[] {3, 7, 12};
@@ -60,9 +68,44 @@ public class PermTest {
             assertEquals(s1,s2);
         }
         
-        int a1 = codejam.y2008.round_emea.bus_stops.Main.sumOfProductAllPermutations(possible, 4,mod);
-        int a2 = codejam.y2008.round_emea.bus_stops.Main.sumOfProductAllPermutations(possible, 8,mod);
+        //possible = new Integer[] {4, 2, 3, 5,0};
+        possible = new Integer[] {4, 0, 3, 27, 14, 18, 0, 4, 99, 17, 20, 30};
         
-        int a3 = (a1*a1) % mod;
+        int a1 = codejam.y2008.round_emea.bus_stops.Main.sumOfProductAllPermutations(possible, 2,mod);
+        int a2 = codejam.y2008.round_emea.bus_stops.Main.sumOfProductAllPermutations(possible, 4,mod);
+        
+        int a1_c = codejam.y2008.round_emea.bus_stops.Main.sumOfProductAllPermutationsBruteForce(possible,2,mod);
+        int a2_c = codejam.y2008.round_emea.bus_stops.Main.sumOfProductAllPermutationsBruteForce(possible,4,mod);
+        
+        assertEquals(a1_c, a1);
+        assertEquals(a2_c, a2);
+        int a3 = Ints.checkedCast(((long)a1*a1) % mod);
+        
+        assertEquals(a2, a3);
+        
+        long start = System.currentTimeMillis();
+        long stop = System.currentTimeMillis();
+        for(int i = 3000000; i < 10000000; i += 1000000) {
+            
+            if (i <= 6) {
+            start = System.currentTimeMillis();
+            int slo1 = codejam.y2008.round_emea.bus_stops.Main.sumOfProductAllPermutationsBruteForce(possible,i,mod);
+            stop = System.currentTimeMillis();
+            log.debug("Slowest {} took {} ms", slo1, stop-start);
+            }
+            
+            start = System.currentTimeMillis();
+        int s1 = codejam.y2008.round_emea.bus_stops.Main.sumOfProductAllPermutations(possible, i,mod);
+        stop = System.currentTimeMillis();
+        log.debug("Slow {} took {} ms", s1, stop-start);
+        
+        
+        start = System.currentTimeMillis();
+        int f1 = codejam.y2008.round_emea.bus_stops.Main.sumOfProductAllPermutationsFast(possible, i, mod);
+        stop = System.currentTimeMillis();
+        log.debug("Fast {} took {} ms\n", f1, stop-start);
+        
+        assertEquals(s1, f1);
+        }
     }
 }
