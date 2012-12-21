@@ -17,7 +17,7 @@ public class Main  {
         //codejam.y2008.round_emea.scaled_triangle.Main m = new codejam.y2008.round_emea.scaled_triangle.Main();
         //codejam.y2008.round_emea.painting_fence.Main m = new codejam.y2008.round_emea.painting_fence.Main();
         //codejam.y2008.round_emea.rainbow_trees.Main m = new codejam.y2008.round_emea.rainbow_trees.Main();
-        codejam.y2008.round_emea.bus_stops.Main m = new codejam.y2008.round_emea.bus_stops.Main();
+       // codejam.y2008.round_emea.bus_stops.Main m = new codejam.y2008.round_emea.bus_stops.Main();
         
         //2008 amer semis
         
@@ -108,7 +108,6 @@ public class Main  {
                  
          //2011 1A
         
-
          //A in C++
          //TODO large is quite slow 14 secs -- 30 secs.  Can improve the algorithm
         // codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
@@ -118,6 +117,9 @@ public class Main  {
          //A in C++
          //codejam.y2011.round_1B.hotdog_revenge.Main m = new codejam.y2011.round_1B.hotdog_revenge.Main();
          //codejam.y2011.round_1B.house_kittens.Main m = new codejam.y2011.round_1B.house_kittens.Main();
+        
+        //2011 1C
+        codejam.y2011.round_1C.square_tiles.Main m = new codejam.y2011.round_1C.square_tiles.Main();
         
         String[] files = {};
         if (m instanceof DefaultInputFiles) {
@@ -130,8 +132,8 @@ public class Main  {
         for (String file : files) {
             log.info("Input file {}", file);
 
-            // Runner.goSingleThread(file, m, m);
-           Runner.go(file, m, m, 5);
+             Runner.goSingleThread(file, m, m);
+           //Runner.go(file, m, m, 5);
         }       
     }
 

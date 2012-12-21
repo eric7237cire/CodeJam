@@ -21,58 +21,51 @@ public class GridChar {
     private final int cols;
     
     private final char[] grid;
-    
+
     private char invalidSquare;
-    
-public static GridChar  buildFromScanner(Scanner scanner, int rows, int cols, char invalidSq) {
-        
-        
-        
+
+    public static GridChar buildFromScanner(Scanner scanner, int rows, int cols, char invalidSq) {
+
         GridChar g = new GridChar(rows, cols, invalidSq);
-        
+
         for (int r = 0; r < rows; ++r) {
             String rowStr = scanner.next();
-            
+
             while (rowStr.length() < cols) {
                 rowStr += scanner.next();
             }
-            for(int c = 0; c < cols; ++c) {
+            for (int c = 0; c < cols; ++c) {
                 char ch = rowStr.charAt(c);
-                g.grid[ g.getIndex(r,c) ] = ch ;
+                g.grid[g.getIndex(r, c)] = ch;
             }
-            
+
         }
-        
+
         return g;
     }
 
-    public static GridChar  buildFromBufferedReader(BufferedReader br, int rows, int cols, char invalidSq) {
-        
-        
+    public static GridChar buildFromBufferedReader(BufferedReader br, int rows, int cols, char invalidSq) {
+
         GridChar g = new GridChar(rows, cols, invalidSq);
-        
+
         for (int r = 0; r < rows; ++r) {
             try {
-            String rowStr = br.readLine();
-           // log.debug(rowStr);
-            for(int c = 0; c < cols; ++c) {
-                char ch = rowStr.charAt(c);
-                
-                g.grid[ g.getIndex(r,c) ] = ch;
-               
-            }
+                String rowStr = br.readLine();
+                // log.debug(rowStr);
+                for (int c = 0; c < cols; ++c) {
+                    char ch = rowStr.charAt(c);
+
+                    g.grid[g.getIndex(r, c)] = ch;
+
+                }
             } catch (IOException ex) {
                 log.error("ex", ex);
             }
-            
+
         }
-        
+
         return g;
     }
-    
- 
-    
-
     
     public static GridChar  buildEmptyGrid( int rows, int cols, char invalidSq) {
         
@@ -253,30 +246,45 @@ public static GridChar  buildFromScanner(Scanner scanner, int rows, int cols, ch
     @Override
     public String toString() {
         StringBuffer gridStr = new StringBuffer();
-        for(int rIdx=0; rIdx<rows; ++rIdx) {
+        for (int rIdx = 0; rIdx < rows; ++rIdx) {
             int r = rIdx;
             if (!yZeroOnTop) {
                 r = rows - rIdx - 1;
             }
-            int index = getIndex(r,0);
+            int index = getIndex(r, 0);
             gridStr.append(StringUtils.rightPad("" + index, 5));
-            for(int c=0; c<cols; ++c) {
-                
-                    String s = "" + getEntry(r,c);
-                    
-                    s = StringUtils.rightPad(s,printWidth); 
-                    gridStr.append( s );
-                
-            
+            for (int c = 0; c < cols; ++c) {
+
+                String s = "" + getEntry(r, c);
+
+                s = StringUtils.rightPad(s, printWidth);
+                gridStr.append(s);
+
             }
             gridStr.append("\n");
         }
-        return "Grid [rows=" + rows + ", cols=" + cols 
-                + ", invalidSquare=" + invalidSquare + "]\n\n" + gridStr;
-        
-        
+        return "Grid [rows=" + rows + ", cols=" + cols + ", invalidSquare=" + invalidSquare + "]\n\n" + gridStr;
+
     }
 
+    public String toStringCompact() {
+        StringBuffer gridStr = new StringBuffer();
+        for (int rIdx = 0; rIdx < rows; ++rIdx) {
+            int r = rIdx;
+            if (!yZeroOnTop) {
+                r = rows - rIdx - 1;
+            }
+
+            for (int c = 0; c < cols; ++c) {
+
+                gridStr.append(getEntry(r, c));
+            }
+            if (rIdx != rows - 1)
+                gridStr.append("\n");
+        }
+        return gridStr.toString();
+
+    }
     
     
 }
