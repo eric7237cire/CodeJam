@@ -1,6 +1,9 @@
 package codejam.utils.datastructures;
 
+import java.math.RoundingMode;
+
 import com.google.common.base.Preconditions;
+import com.google.common.math.IntMath;
 
 public class BitSetInt {
     private int bits;
@@ -59,19 +62,30 @@ public class BitSetInt {
         bits ^= 1 << pos;
     }
     
-    public void turnOffRightmostBit() {
+    public void turnOffLeaseSignificantBit() {
         bits &= bits - 1;
     }
     
-    public int getRightmostBit() {
+    /*
+     * Returns value with that bit set
+     */
+    public int isolateLeastSignificantBit() {
         return bits & -bits;
     }
     
-    public int getRightmostUnsetBit() {
+    public int getLeastSignificantBitIndex() {
+        return IntMath.log2(bits & -bits, RoundingMode.UNNECESSARY);
+    }
+    
+    public int getMostSigBitIndex() {
+        return IntMath.log2(bits, RoundingMode.DOWN);
+    }
+    
+    public int isolateLeastSigUnsetBit() {
         return ~bits & (bits + 1);
     }
     
-    public void setRightmostZero() {
+    public void unsetLeastSignificantSetBit() {
         bits |= bits + 1;
     }
     

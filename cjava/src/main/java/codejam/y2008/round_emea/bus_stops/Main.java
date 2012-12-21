@@ -4,7 +4,10 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+
+import org.apache.commons.lang3.StringUtils;
 
 import codejam.utils.datastructures.BitSetInt;
 import codejam.utils.main.DefaultInputFiles;
@@ -13,6 +16,7 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.PermutationWithRepetition;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Maps;
 import com.google.common.math.IntMath;
 import com.google.common.primitives.Ints;
 
@@ -172,57 +176,71 @@ public class Main implements TestCaseHandler<InputData>,
         
     }
     
+    private static String bsToStr(BitSetInt bs, int length) {
+        String str = Integer.toBinaryString(bs.getBits());
+        str = StringUtils.reverse(str);
+        return StringUtils.rightPad(str, length, '0');
+    }
+    
     /**
-     * Every stop visited in start.  length all arrays = P * 2
+     * startState is a bitArray of length 2 * P
      * 
-     * in currentEnd, any 0 before a 1 has been visited
+     * returns count of all valid end states (with a bus at most sig bit)
      */
-    public static int count(int currentBits, int P, int[] memoize) {
+    public static int[] count(int startState, int P, int K, int finalLength, int mod) {
         
-        if (memoize[currentBits] >= 0) {
-            return memoize[currentBits];
-        }
-        
-        int[] current = new BitSetInt(currentBits).toIntArray(2 * P);
-        
-        int unvisitedBusStop = -1;
-        //Find first unvisited stop, which is directly after the last bus
-        //Remember, the assumption is that any stop before this bus is visited
-        for(int i = current.length - 1; i >= 0; --i) {
-            if (current[i] == 1) {
-                unvisitedBusStop = i + 1;
-                break;
-            }                
-        }
-        
-        //Are we done ?
-        if (unvisitedBusStop == current.length) {
-            memoize[currentBits] = 1;
-            return 1;
-        }
-        
-        int sum = 0;
-        
-        //Find something in currentStart
-        
-        for(int i = 0; i < unvisitedBusStop; ++i) {
-            if (current[i] == 1) {
-                int busStart = i;
+        BitSetInt startStateBs = new BitSetInt(startState);
                 
-                int length = unvisitedBusStop - busStart;
+        int[] current = startStateBs.toIntArray(finalLength);
+        
+        int firstUnvisitedBusStop = startStateBs.getMostSigBitIndex() + 1;
+        int lastUnvisitedBusStop = finalLength - 1;        
+        int stopsToFill = finalLength - firstUnvisitedBusStop;
+        
+        int [] previousCounts = new int[1 << finalLength];
+        previousCounts[startState] = 1;
+        
+        final int maxPrevState = ( 1 << P ) - 1;
+        
+        for(int unvisitedStop = firstUnvisitedBusStop; unvisitedStop <= lastUnvisitedBusStop; ++unvisitedStop) {
+            
+            int lenPrev = unvisitedStop;
+            //Loop through all possible previous states
+            for(int prev = 0; prev <= maxPrevState; ++prev) {
+                if (lenPrev < P) {
+                    prev >>= (P - lenPrev);
+                } else if (lenPrev > P) {
+                    prev <<= (lenPrev - P);
+                }
                 
-                if (length > P)
+                if (Integer.bitCount(prev) != K) 
                     continue;
                 
-                BitSetInt curCopy = new BitSetInt(currentBits);
-                Preconditions.checkState(curCopy.isSet(busStart) );
-                Preconditions.checkState(!curCopy.isSet(unvisitedBusStop));
-                curCopy.unsetBit(busStart);
-                curCopy.setBit(unvisitedBusStop);
-                sum = IntMath.checkedAdd(sum, count(curCopy.getBits(), P, memoize));
+                //For each set bit, starting at lowest, move that bus to unvisited stop
+                //If the distance == P, we stop as going further would result in a 'stranded' bus
+                
+                BitSetInt busesLeft = new BitSetInt(prev);
+                
+                while(busesLeft.getBits() > 0) {
+                    int bus = busesLeft.getLeastSignificantBitIndex();
+                    int distance = unvisitedStop - bus;
+                    Preconditions.checkState(distance > 0 && distance <= P);
+                    
+                    BitSetInt newState = new BitSetInt(prev);
+                    newState.setBit(unvisitedStop);
+                    newState.unsetBit(bus);
+                    
+                    previousCounts[newState.getBits()] += previousCounts[prev]; 
+                    
+                    if (distance == P) {
+                        break;
+                    }
+                    busesLeft.unsetLeastSignificantSetBit();
+                }
+                
             }
         }
-        
+       
         
         return sum;
         
