@@ -213,13 +213,12 @@ public class Main implements TestCaseHandler<InputData>,
         
         int[] stateCounts = count(startState.getBits(), K+P, K, P, mod, stateList);
         
-        FieldMatrix<BigFraction> initialStateCountsMatrix = new Array2DRowFieldMatrix<BigFraction>(new BigFraction(1,1).getField(), stateList.size(), 1);
-        
-        //Multiply by initial state counts
-        for(int i = 0; i < stateList.size(); ++i) {
+        FieldMatrix<BigFraction> initialStateCountsMatrix = new Array2DRowFieldMatrix<BigFraction>(new BigFraction(1, 1).getField(), stateList.size(), 1);
+
+        // Multiply by initial state counts
+        for (int i = 0; i < stateList.size(); ++i) {
             initialStateCountsMatrix.setEntry(i, 0, new BigFraction(stateCounts[stateList.get(i)]));
         }
-        
        
         
         //stateList needs to be bitshifted K elements to the left to make it of size P
@@ -260,6 +259,24 @@ public class Main implements TestCaseHandler<InputData>,
         
         int pChunks = (lengthLeft - 1) / P - 1;
         
+        List<FieldMatrix<BigFraction>> transformMatrices = new ArrayList<FieldMatrix<BigFraction>>();
+        transformMatrices.add(trans);
+        
+        int biggestChunkIndex = IntMath.log2(pChunks, RoundingMode.DOWN) ;
+                
+        for(int i = 1; i <= biggestChunkIndex; ++i) {            
+            FieldMatrix<BigFraction> matrix = transformMatrices.get(i-1).multiply(transformMatrices.get(i-1));
+                        
+            //Mod that fo
+            for(int r = 0; r < matrix.getRowDimension(); ++r) {
+                for(int c = 0; c < matrix.getColumnDimension(); ++c) {
+                    matrix.setEntry(r, c, 
+                            new BigFraction(matrix.getEntry(r,c).getNumeratorAsLong() % mod));   
+                }
+            }
+            transformMatrices.add(matrix); 
+        }
+        
         FieldMatrix<BigFraction> stateCountsMatrix = //new Array2DRowFieldMatrix<BigFraction>(new BigFraction(1,1).getField(), stateList.size(), 1);
                 new Array2DRowFieldMatrix<BigFraction>(initialStateCountsMatrix.getData());
         
@@ -267,13 +284,21 @@ public class Main implements TestCaseHandler<InputData>,
            // stateCountsMatrix.setEntry(i, 0, new BigFraction(1, 1));
         }
         
-        for(int i = 0; i < pChunks; ++i) {
-            stateCountsMatrix = trans.multiply(stateCountsMatrix);
+        while(pChunks > 0) {
+            int matrixIndex = IntMath.log2(pChunks, RoundingMode.DOWN);
+            FieldMatrix<BigFraction> matrix = transformMatrices.get(matrixIndex);
+            
+            stateCountsMatrix = matrix.multiply(stateCountsMatrix);
+            
+            //mod it
             for(int s = 0; s < stateList.size(); ++s) {
                  stateCountsMatrix.setEntry(s, 0, 
                          new BigFraction(stateCountsMatrix.getEntry(s,0).getNumeratorAsLong() % mod));
              }
-            lengthLeft -= P;
+            
+            int pChunksTaken = 1 << matrixIndex;
+            lengthLeft -= P * pChunksTaken;
+            pChunks -= pChunksTaken;
         }
         
         //Multiply by initial state counts
