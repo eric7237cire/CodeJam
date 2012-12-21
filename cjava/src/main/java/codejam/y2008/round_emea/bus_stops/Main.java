@@ -8,6 +8,9 @@ import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.math3.fraction.BigFraction;
+import org.apache.commons.math3.linear.Array2DRowFieldMatrix;
+import org.apache.commons.math3.linear.FieldMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +21,7 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.PermutationWithRepetition;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.math.IntMath;
 import com.google.common.primitives.Ints;
@@ -187,20 +191,142 @@ public class Main implements TestCaseHandler<InputData>,
         return str.substring(0, P) + " | " + str.substring(P);
     }
     
+    
+    public static int countFast(int finalLength, int K, int P, int mod) {
+        
+        BitSetInt startState = new BitSetInt();
+        for(int i = 0; i < K; ++i) {
+            startState.set(i);
+        }
+        
+        if (finalLength <= K + P) {
+            BitSetInt finalState = new BitSetInt();
+            for(int i = finalLength - K; i < finalLength; ++i) {
+                finalState.set(i);
+            }
+            int[] r = count(startState.getBits(), finalLength, K, P, mod);
+            return r[finalState.getBits()];
+        }
+        
+        //First step determine transitions from startState to an interval of P after start state
+        List<Integer> stateList = Lists.newArrayList();
+        
+        int[] stateCounts = count(startState.getBits(), K+P, K, P, mod, stateList);
+        
+        FieldMatrix<BigFraction> initialStateCountsMatrix = new Array2DRowFieldMatrix<BigFraction>(new BigFraction(1,1).getField(), stateList.size(), 1);
+        
+        //Multiply by initial state counts
+        for(int i = 0; i < stateList.size(); ++i) {
+            initialStateCountsMatrix.setEntry(i, 0, new BigFraction(stateCounts[stateList.get(i)]));
+        }
+        
+       
+        
+        //stateList needs to be bitshifted K elements to the left to make it of size P
+        for(int stateNum = 0; stateNum < stateList.size(); ++stateNum) {
+            
+            log.debug("start.  transition from starting state {} to state #{} : {}.  Count {}", 
+                     bsToStr( startState, K+P, P),
+                    stateNum, bsToStr(new BitSetInt(stateList.get(stateNum)), K+P, P), 
+                    stateCounts[stateList.get(stateNum)]);
+            
+            stateList.set(stateNum, stateList.get(stateNum) >> K);
+        }
+        
+        stateCounts = null;
+        
+        //Then we need a transition matrix, going from every possible state to every possible state
+        FieldMatrix<BigFraction> trans = new Array2DRowFieldMatrix<BigFraction>(new BigFraction(1,1).getField(), stateList.size(), stateList.size());
+        log.debug("Calculating transition matrix");
+        
+        for(int stateNum = 0; stateNum < stateList.size(); ++stateNum) {
+            int transStartState = stateList.get(stateNum);
+            log.debug("starting at state #{} : {}", stateNum, bsToStr( new BitSetInt(transStartState), 2*P, P));
+            int[] transCounts = count(transStartState, 2 * P, K, P, mod);
+            
+            for(int endingStateNum = 0; endingStateNum < stateList.size(); ++endingStateNum) {
+                int endingState = stateList.get(endingStateNum) << P;
+                log.debug("transition from state# {} : {} to state #{} : {}.  Count {}", 
+                        stateNum, bsToStr( new BitSetInt(transStartState), 2*P, P),
+                        endingStateNum, bsToStr(new BitSetInt(endingState), 2*P, P), 
+                        transCounts[endingState]);
+                trans.setEntry(endingStateNum, stateNum, new BigFraction(transCounts[endingState]));
+            }
+        }
+        
+        //Done start
+        
+        int lengthLeft = finalLength - K;
+        
+        int pChunks = (lengthLeft - 1) / P - 1;
+        
+        FieldMatrix<BigFraction> stateCountsMatrix = //new Array2DRowFieldMatrix<BigFraction>(new BigFraction(1,1).getField(), stateList.size(), 1);
+                new Array2DRowFieldMatrix<BigFraction>(initialStateCountsMatrix.getData());
+        
+        for(int i = 0; i < stateList.size(); ++i) {
+           // stateCountsMatrix.setEntry(i, 0, new BigFraction(1, 1));
+        }
+        
+        for(int i = 0; i < pChunks; ++i) {
+            stateCountsMatrix = trans.multiply(stateCountsMatrix);
+            lengthLeft -= P;
+        }
+        
+        //Multiply by initial state counts
+        for(int i = 0; i < stateList.size(); ++i) {
+          //  stateCountsMatrix.multiplyEntry(i, 0, initialStateCountsMatrix.getEntry(i,0));
+        }
+        
+        //Done middle
+        
+        
+                
+        //Figure out from the trans matrix which state is the good one
+        Preconditions.checkState(lengthLeft <= 2 * P);
+        
+        BitSetInt finalState = BitSetInt.createWithBitsSet(lengthLeft - K,  lengthLeft-1);
+        log.debug("Final state {}", bsToStr(finalState, lengthLeft, P));
+        
+        //P to last stretch
+        long finalSum = 0;
+        
+        //From all possible intermediate states to final state
+        
+        for(int stateNum = 0; stateNum < stateList.size(); ++stateNum) {
+            int transStartState = stateList.get(stateNum);
+            int[] transCounts = count(transStartState, lengthLeft, K, P, mod);
+            
+            log.debug("final transition from state# {} : {} to final state : {}.  Initial Count {} * trans count {}", 
+                    stateNum, bsToStr( new BitSetInt(transStartState), lengthLeft, P),
+                     bsToStr(finalState, lengthLeft, P),
+                     stateCountsMatrix.getEntry(stateNum,0).getNumeratorAsLong(),
+                     transCounts[finalState.getBits()]);
+            
+            finalSum += transCounts[finalState.getBits()] * (stateCountsMatrix.getEntry(stateNum,0).getNumeratorAsLong() % mod);
+        }
+        
+        return Ints.checkedCast(finalSum % mod);
+        
+    }
+    
+    public static int[] count(int startState, int finalLength, int K, int P, int mod) {
+        List<Integer> finalStates = Lists.newArrayList();
+        
+        return count(startState, finalLength, K, P, mod, finalStates);
+    }
     /**
      * startState is a bitArray of length 2 * P
      * 
      * returns count of all valid end states (with a bus at most sig bit)
      */
-    public static int[] count(int startState, int finalLength, int K, int P, int mod) {
+    public static int[] count(int startState, int finalLength, int K, int P, int mod, List<Integer> finalStates) {
         
         BitSetInt startStateBs = new BitSetInt(startState);
                 
-        log.debug("Start state [{}]", bsToStr(startStateBs, finalLength, P));
+       // log.debug("Start state [{}]", bsToStr(startStateBs, finalLength, P));
         
         int firstUnvisitedBusStop = startStateBs.getMostSigBitIndex() + 1;
         int lastUnvisitedBusStop = finalLength - 1;        
-        int stopsToFill = finalLength - firstUnvisitedBusStop;
         
         int [] previousCounts = new int[1 << finalLength];
         previousCounts[startState] = 1;
@@ -210,26 +336,13 @@ public class Main implements TestCaseHandler<InputData>,
         
         for(int unvisitedStop = firstUnvisitedBusStop; unvisitedStop <= lastUnvisitedBusStop; ++unvisitedStop) {
             
-            log.debug("Processing unvisited stop {}", unvisitedStop);
-            
-            int lenPrev = unvisitedStop;
-            
-            final int maxPrevState = ( 1 << Math.min(lenPrev,P) ) - 1;
-            
+           // log.debug("Processing unvisited stop {}", unvisitedStop);
+                        
             Set<Integer> states = Sets.newHashSet();
             
             //Loop through all possible previous states
             for(int prev : previousStates) {
-                
-                
-                /*int prev = prevLoop;
-                
-                if (lenPrev < P) {
-                   // prev >>= (P - lenPrev);
-                } else if (lenPrev > P) {
-                    prev <<= (lenPrev - P);
-                }*/
-                
+                                
                 Preconditions.checkState( Integer.bitCount(prev) == K); 
                     
                 
@@ -240,7 +353,7 @@ public class Main implements TestCaseHandler<InputData>,
                 
                 Preconditions.checkState(busesLeft.getMostSigBitIndex() == unvisitedStop - 1);
                 
-                log.debug("Previous state [{}]", bsToStr(busesLeft, finalLength, P));
+             //   log.debug("Previous state [{}]", bsToStr(busesLeft, finalLength, P));
                 
                 while(busesLeft.getBits() > 0) {
                     int bus = busesLeft.getLeastSignificantBitIndex();
@@ -251,14 +364,14 @@ public class Main implements TestCaseHandler<InputData>,
                     newState.set(unvisitedStop);
                     newState.unset(bus);
                 
-                    log.debug("new state [{}]", bsToStr(newState, finalLength, P));
+              //      log.debug("new state [{}]", bsToStr(newState, finalLength, P));
                     
                     states.add(newState.getBits());
                     
                     previousCounts[newState.getBits()] += previousCounts[prev];
                     previousCounts[newState.getBits()] %= mod;
                     
-                    log.debug("count of {} + {} = {}", bsToStr(newState, finalLength, P), previousCounts[prev],previousCounts[newState.getBits()]);
+             //       log.debug("count of {} + {} = {}", bsToStr(newState, finalLength, P), previousCounts[prev],previousCounts[newState.getBits()]);
                     
                     if (distance == P) {
                         break;
@@ -272,7 +385,7 @@ public class Main implements TestCaseHandler<InputData>,
             }
         }
        
-        
+        finalStates.addAll(previousStates);
         return previousCounts;
         
         

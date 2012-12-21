@@ -4,7 +4,13 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 
+import org.apache.commons.math3.fraction.BigFraction;
+import org.apache.commons.math3.fraction.Fraction;
+import org.apache.commons.math3.linear.Array2DRowFieldMatrix;
+import org.apache.commons.math3.linear.FieldMatrix;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.BitSetInt;
 import codejam.y2008.round_emea.bus_stops.Main;
@@ -58,7 +64,126 @@ public class BusStopTest {
     }
     
     @Test
-    public void test() {
+    public void testFast() {
+        int mod = 30031;
+        int[] results;
+        int c, r;
+        
+        int k = 2;
+        int p = 4;
+        int n = 7;
+        
+        BitSetInt startState = BitSetInt.createWithBitsSet(0, 1);
+        BitSetInt endState = BitSetInt.createWithBitsSet(n-k, n-1);
+        
+        results = Main.count(startState.getBits(), n, k, p, mod);
+        
+        c = results[endState.getBits()];
+        
+        r = Main.countFast(n,k,p,mod);
+        
+        assertEquals(c, r);
+        
+        //Start test
+        k = 2;
+        p = 4;
+        n = 8;
+        
+        startState = BitSetInt.createWithBitsSet(0, 1);
+        endState = BitSetInt.createWithBitsSet(n-k, n-1);
+        
+        results = Main.count(startState.getBits(), n, k, p, mod);
+        
+        c = results[endState.getBits()];
+        
+        r = Main.countFast(n,k,p,mod);
+        
+        assertEquals(c, r);
+        
+      //Start test
+        k = 2;
+        p = 4;
+        n = 9;
+        
+        startState = BitSetInt.createWithBitsSet(0, 1);
+        endState = BitSetInt.createWithBitsSet(n-k, n-1);
+        
+        results = Main.count(startState.getBits(), n, k, p, mod);
+        
+        c = results[endState.getBits()];
+        
+        r = Main.countFast(n,k,p,mod);
+        
+        assertEquals(c, r);
+        
+      //Start test
+        k = 2;
+        p = 4;
+        n = 10;
+        
+        startState = BitSetInt.createWithBitsSet(0, 1);
+        endState = BitSetInt.createWithBitsSet(n-k, n-1);
+        
+        results = Main.count(startState.getBits(), n, k, p, mod);
+        
+        c = results[endState.getBits()];
+        
+        r = Main.countFast(n,k,p,mod);
+        
+        assertEquals(c, r);
+        
+      //Start test
+        k = 2;
+        p = 4;
+        n = 11;
+        
+        startState = BitSetInt.createWithBitsSet(0, 1);
+        endState = BitSetInt.createWithBitsSet(n-k, n-1);
+        
+        results = Main.count(startState.getBits(), n, k, p, mod);
+        
+        c = results[endState.getBits()];
+        
+        r = Main.countFast(n,k,p,mod);
+        
+        //0123  45 6789 0
+        BitSetInt testState = new BitSetInt();
+        testState.set(9);
+        testState.set(8);
+        assertEquals(81, results[testState.getBits()]);
+        
+        testState = new BitSetInt();
+        testState.set(6);
+        testState.set(9);
+        assertEquals(24, results[testState.getBits()]);
+        
+        testState = new BitSetInt();
+        testState.set(7);
+        testState.set(9);
+        assertEquals(44, results[testState.getBits()]);
+        
+        assertEquals(c, r);
+        
+      //Start test
+        k = 2;
+        p = 4;
+        n = 12;
+        
+        startState = BitSetInt.createWithBitsSet(0, 1);
+        endState = BitSetInt.createWithBitsSet(n-k, n-1);
+        
+        results = Main.count(startState.getBits(), n, k, p, mod);
+        
+        c = results[endState.getBits()];
+        
+        r = Main.countFast(n,k,p,mod);
+        
+        assertEquals(c, r);
+        
+        
+    }
+    
+    public void testSolution() {
         
         int mod = 30031;
         int[] start;
@@ -182,6 +307,56 @@ public class BusStopTest {
         
         assertEquals(12893, r);
         
+//        results = Main.count(startState.getBits(),30,10,10,mod);
+//        
+//        endState = new BitSetInt();
+//        for(int i = 16; i >= 10; --i)
+//            endState.set(i);
+//        
+//        r = results[endState.getBits()];
+//        
+//        assertEquals(12893, r);
+        
+    }
+    
+    final static Logger log = LoggerFactory.getLogger(BusStopTest.class);
+    
+    @Test
+    public void testMatrixMult() {
+        FieldMatrix<BigFraction> trans = new Array2DRowFieldMatrix<BigFraction>( new BigFraction[][] {
+                { new BigFraction(3, 1), new BigFraction(6, 1), new BigFraction(8, 1) },
+                { new BigFraction(4, 1), new BigFraction(2, 1), new BigFraction(0, 1) },
+                { new BigFraction(1, 1), new BigFraction(7, 1), new BigFraction(3, 1)}                
+        });
+        
+        FieldMatrix<BigFraction> state = new Array2DRowFieldMatrix<BigFraction>( new BigFraction[][] {
+                { new BigFraction(1, 1) }, {new BigFraction(1, 1)}, {new BigFraction(1, 1) }                           
+        });
+        
+        FieldMatrix<BigFraction> s2 = trans.multiply(state);
+        FieldMatrix<BigFraction> s3 = trans.multiply(s2);
+        FieldMatrix<BigFraction> s4 = trans.multiply(s3);
+        FieldMatrix<BigFraction> s5 = trans.multiply(s4);
+        FieldMatrix<BigFraction> s6 = trans.multiply(s5);
+        FieldMatrix<BigFraction> s7 = trans.multiply(s6);
+        FieldMatrix<BigFraction> s8 = trans.multiply(s7);
+        FieldMatrix<BigFraction> s9 = trans.multiply(s8);
+        FieldMatrix<BigFraction> s10 = trans.multiply(s9);
+        
+        FieldMatrix<BigFraction> trans2 = new Array2DRowFieldMatrix<BigFraction>(trans.getData());
+        
+        trans2 = trans.multiply(trans);
+        FieldMatrix<BigFraction> trans4 = trans2.multiply(trans2);
+        
+        FieldMatrix<BigFraction> e3 = trans2.multiply(state);
+        FieldMatrix<BigFraction> e5 = trans2.multiply(e3);
+        
+        FieldMatrix<BigFraction> ee5 = trans4.multiply(state);
+        FieldMatrix<BigFraction> e7 = trans2.multiply(ee5);
+        FieldMatrix<BigFraction> ee9 = trans4.multiply(ee5);
+        FieldMatrix<BigFraction> e10 = trans.multiply(ee9);
+        
+        log.debug("{}", s4);
     }
 
 }

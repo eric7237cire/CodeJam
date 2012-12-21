@@ -49,6 +49,13 @@ public class BitSetInt {
         
     }
     
+    public static BitSetInt createWithBitsSet(int lower, int upper) {
+        BitSetInt r = new BitSetInt();
+        for(int i = lower; i <= upper; ++i) {
+            r.set(i);
+        }
+        return r;
+    }
     
     public void set(int pos) {
         bits |= 1 << pos;
