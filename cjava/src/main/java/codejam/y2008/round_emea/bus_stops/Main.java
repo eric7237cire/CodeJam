@@ -269,6 +269,10 @@ public class Main implements TestCaseHandler<InputData>,
         
         for(int i = 0; i < pChunks; ++i) {
             stateCountsMatrix = trans.multiply(stateCountsMatrix);
+            for(int s = 0; s < stateList.size(); ++s) {
+                 stateCountsMatrix.setEntry(s, 0, 
+                         new BigFraction(stateCountsMatrix.getEntry(s,0).getNumeratorAsLong() % mod));
+             }
             lengthLeft -= P;
         }
         
@@ -303,6 +307,7 @@ public class Main implements TestCaseHandler<InputData>,
                      transCounts[finalState.getBits()]);
             
             finalSum += transCounts[finalState.getBits()] * (stateCountsMatrix.getEntry(stateNum,0).getNumeratorAsLong() % mod);
+            finalSum %= mod;
         }
         
         return Ints.checkedCast(finalSum % mod);
@@ -394,9 +399,9 @@ public class Main implements TestCaseHandler<InputData>,
     @Override
     public String handleCase(InputData input) {
         
+        int ans = countFast(input.N, input.K, input.P, 30031);
         
-        
-        return String.format("Case #%d: IMPOSSIBLE", input.testCase);
+        return String.format("Case #%d: %d", input.testCase, ans);
         //        return String.format("Case #%d: %s %s", input.testCase, df.format(p.getX()), df.format(p.getY()));
     }
 
