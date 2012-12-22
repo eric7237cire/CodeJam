@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpeakingTongues", "Speaking
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DancingGooglers", "DancingGooglers\DancingGooglers.vcxproj", "{391E5CCA-3549-43B8-B458-165B6BE8C03E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RecycledNumbers", "RecycledNumbers\RecycledNumbers.vcxproj", "{86CCD546-0D5E-42DC-AA34-228BCA49B5FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +21,10 @@ Global
 		{391E5CCA-3549-43B8-B458-165B6BE8C03E}.Debug|Win32.Build.0 = Debug|Win32
 		{391E5CCA-3549-43B8-B458-165B6BE8C03E}.Release|Win32.ActiveCfg = Release|Win32
 		{391E5CCA-3549-43B8-B458-165B6BE8C03E}.Release|Win32.Build.0 = Release|Win32
+		{86CCD546-0D5E-42DC-AA34-228BCA49B5FF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{86CCD546-0D5E-42DC-AA34-228BCA49B5FF}.Debug|Win32.Build.0 = Debug|Win32
+		{86CCD546-0D5E-42DC-AA34-228BCA49B5FF}.Release|Win32.ActiveCfg = Release|Win32
+		{86CCD546-0D5E-42DC-AA34-228BCA49B5FF}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
