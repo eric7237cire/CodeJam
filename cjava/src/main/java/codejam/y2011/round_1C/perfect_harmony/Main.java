@@ -43,6 +43,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return in;
     }
     
+    public boolean isPrime (long n)
+    {
+       if (n<=1) return false;
+       if (n==2) return true;
+       if (n%2==0) return false;
+       long m=LongMath.sqrt(n, RoundingMode.UP);
+
+       for (long i=3; i<=m; i+=2)
+          if (n%i==0)
+             return false;
+
+       return true;
+    }
     
     @Override
     public String handleCase(InputData in) {
@@ -101,6 +114,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
                 long uppK1 = LongMath.divide(in.H, lcm.longValue(), RoundingMode.UP);
                 
+                log.info("Lower bound k1 {} upp {} ", lowK1, uppK1);
+                
                 for(long k1 = lowK1; k1 <= uppK1; ++k1) {
                     
                     BigInteger ans = lcm.multiply(BigInteger.valueOf(k1));
@@ -117,41 +132,84 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 //                }
 
             } else {
+                
+                if (BigInteger.valueOf(in.L).compareTo(gcd) > 0)
+                    continue; 
+                
+                if (BigInteger.valueOf(in.H).compareTo(lcm) < 0) 
+                    continue;
+                
                 BigInteger[] div = gcd.divideAndRemainder(lcm);
                 if (!div[1].equals(BigInteger.ZERO))
                     continue;
 
-                log.debug("In position {} lcm {} gcd {}.  div = {}", guessPosition, lcm, gcd, div[0]);
+                log.info("In position {} lcm {} gcd {}.  div = {}", guessPosition, lcm, gcd, div[0]);
 
                 //P = k1 * lcm
                 //P = gcd / k2
                 //C = k1 * k2
                 
                 long lowK1 = BigInteger.valueOf(in.L).divide(lcm).longValue();
+                long lowK2 = LongMath.divide(gcd.longValue(), in.H, RoundingMode.UP);
                 
                 if (lowK1 == 0)
                     lowK1 = 1;
                 
-                long uppK1 = LongMath.divide(in.H, lcm.longValue(), RoundingMode.UP);
+                if (lowK2 == 0)
+                    lowK2 = 1;
                 
+                long uppK1 = LongMath.divide(in.H, lcm.longValue(), RoundingMode.UP);
+                long uppK2 = LongMath.divide(gcd.longValue(), in.L, RoundingMode.UP);
                 long C = div[0].longValue();
                 
-                log.debug("Lower bound k1 {} upp {}", lowK1, uppK1);
-                for(long k1 = lowK1; k1 <= uppK1; ++k1) {
-                    if (C % k1 != 0)
-                        continue;
-                    
-                    long k2 = C / k1;
-                    
-                    BigInteger ans = lcm.multiply(BigInteger.valueOf(k1));
-                    
-                    if (BigInteger.valueOf(in.L).compareTo(ans) <= 0 && BigInteger.valueOf(in.H).compareTo(ans) >= 0) {
-                        return String.format("Case #%d: %s", in.testCase, ans.toString());
-                    }
-                }
-                              
-
+                long tryK2 = uppK2;
+                long tryK1 = lowK1;
                 
+                log.info("Lower bound k2 {} up {}  C {}", lowK2, uppK2, C);
+                log.info("Lower bound k1 {} upp {}  C {}", lowK1, uppK1, C);
+                
+                log.info("Is prime testing");
+                
+                boolean isPrime = isPrime(gcd.longValue());
+                
+                if (isPrime) {
+                    uppK2 = 1;
+                    tryK2 = 1;
+                }
+
+                while (tryK2 >= lowK2 && tryK1 <= uppK1) {
+                    //log.info("Tryk2 {} k1 {}", tryK2, tryK1);
+                    
+                    if (C % tryK2 != 0) {
+                        tryK2--;
+                    } else {
+                        long k1 = C / tryK2;
+
+                        BigInteger ans = lcm.multiply(BigInteger.valueOf(k1));
+
+                        if (BigInteger.valueOf(in.L).compareTo(ans) <= 0 && BigInteger.valueOf(in.H).compareTo(ans) >= 0) {
+                            return String.format("Case #%d: %s", in.testCase, ans.toString());
+                        }
+
+                        tryK2--;
+                    }
+
+                    
+                    if (C % tryK1 != 0) {
+                        tryK1++;
+                    } else {
+                        long k2 = C / tryK1;
+
+                        BigInteger ans = lcm.multiply(BigInteger.valueOf(tryK1));
+
+                        if (BigInteger.valueOf(in.L).compareTo(ans) <= 0 && BigInteger.valueOf(in.H).compareTo(ans) >= 0) {
+                            return String.format("Case #%d: %s", in.testCase, ans.toString());
+                        }
+                        
+                        tryK1++;
+                    }
+
+                }
 
             }
 
