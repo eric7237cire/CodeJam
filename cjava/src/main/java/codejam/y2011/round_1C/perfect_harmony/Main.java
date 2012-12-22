@@ -1,11 +1,15 @@
 package codejam.y2011.round_1C.perfect_harmony;
 
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.math.BigIntegerMath;
+import com.google.common.math.LongMath;
 
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
@@ -45,56 +49,115 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      
         //our frequency has to be <= anothers frequency
         
-        long[] gcdInc = new long[in.N];
+        BigInteger[] gcdDec = new BigInteger[in.N];
         //long[] gcdDes = new long[in.N];
         //BigInteger[] prodDes = new BigInteger[in.N];
-        BigInteger[] lcmDes  = new BigInteger[in.N];
+        BigInteger[] lcmAsc  = new BigInteger[in.N];
         
         Arrays.sort(in.freq);
         
-        gcdInc[0] = in.freq[0];
+        lcmAsc[0] = BigInteger.valueOf(in.freq[0]); 
         for(int freq = 1; freq < in.N; ++freq) {
-            gcdInc[freq] = BigInteger.valueOf(gcdInc[freq-1]).gcd(BigInteger.valueOf(in.freq[freq])).longValue();
+            
+            BigInteger gcd = BigInteger.valueOf(in.freq[freq]).gcd( lcmAsc[freq-1]);
+            lcmAsc[freq] = lcmAsc[freq-1].multiply(BigInteger.valueOf(in.freq[freq])).divide(gcd);
         }
         
-//        gcdDes[in.N - 1] = in.freq[in.N - 1];
-//        prodDes[in.N - 1] = BigInteger.valueOf(in.freq[in.N - 1]);
-        lcmDes[in.N - 1] = BigInteger.valueOf(in.freq[in.N - 1]);
+        gcdDec[in.N-1] = BigInteger.valueOf(in.freq[in.N - 1]);
         for(int freq = in.N - 2; freq >= 0; --freq) {
-//            gcdDes[freq] = BigInteger.valueOf(gcdDes[freq+1]).gcd(BigInteger.valueOf(in.freq[freq])).longValue();
-//            prodDes[freq] = BigInteger.valueOf(in.freq[freq]).multiply(prodDes[freq+1]);
-            
-            BigInteger gcd = BigInteger.valueOf(in.freq[freq]).gcd( lcmDes[freq+1]);
-            lcmDes[freq] = lcmDes[freq+1].multiply(BigInteger.valueOf(in.freq[freq])).divide(gcd);
+            gcdDec[freq] = gcdDec[freq+1].gcd(BigInteger.valueOf(in.freq[freq]));
         }
         
         //Position     0    1   2   3   4
         //Frequencies     0   1   2   3
-        log.debug("gcd asc: {}", gcdInc);
+        log.debug("gcd des: {}", (Object)gcdDec);
 //        log.debug("gcd des: {}", gcdDes);
 //        log.debug("Prod des: {}", (Object) prodDes);
-        log.debug("LCM des: {}", (Object) lcmDes);
+        log.debug("LCM asc: {}", (Object) lcmAsc);
         log.debug("Freq: {}", in.freq);
         for(int guessPosition = 0; guessPosition <= in.N; ++guessPosition) {
             //Try to find a    in.freq[other-1]  <= frequency <= in.freq[other]
             //long low = otherFreq == 0 ? in.L : Math.max(in.L, in.freq[otherFreq-1]);
             
-            //LCM of all frequences greater than our guess range
-            BigInteger lcm = guessPosition == in.N ? lcmDes[in.N - 1] : lcmDes[guessPosition];
+            //LCM of all frequences less than our position
+            BigInteger lcm = guessPosition == 0 ? BigInteger.ONE : lcmAsc[guessPosition-1];
             
-            //GCD of all frequences lesser
-            long gcd = guessPosition == 0 ? 1 : gcdInc[guessPosition - 1];
+            //GCD of all frequences greater
+            BigInteger gcd = guessPosition == in.N ? null : gcdDec[guessPosition];
+            
             
             log.debug("In position {} lcm {} gcd {}", guessPosition, lcm, gcd);
             
-            BigInteger[] div= lcm.divideAndRemainder(BigInteger.valueOf(gcd));
-            if (!div[1].equals(BigInteger.ZERO))
-                continue;
-            
-            BigInteger fac = BigInteger.valueOf(in.L).divide()
+            if (gcd == null) {
+//                BigInteger low = lcm.divide(BigInteger.valueOf(in.L));
+//                if (low.equals(BigInteger.ZERO)) {
+//                    return String.format("Case #%d: NO", in.testCase);
+//                }
+                
+                long lowK1 = BigInteger.valueOf(in.L).divide(lcm).longValue();
+                
+                if (lowK1 == 0)
+                    lowK1 = 1;
+                
+                long uppK1 = LongMath.divide(in.H, lcm.longValue(), RoundingMode.UP);
+                
+                for(long k1 = lowK1; k1 <= uppK1; ++k1) {
+                    
+                    BigInteger ans = lcm.multiply(BigInteger.valueOf(k1));
+                    
+                    if (BigInteger.valueOf(in.L).compareTo(ans) <= 0 && BigInteger.valueOf(in.H).compareTo(ans) >= 0) {
+                        return String.format("Case #%d: %s", in.testCase, ans.toString());
+                    }
+                }
+
+//                BigInteger ans = low.multiply(lcm);
+//
+//                if (BigInteger.valueOf(in.L).compareTo(ans) >= 0 && BigInteger.valueOf(in.H).compareTo(ans) <= 0) {
+//                    return String.format("Case #%d: %s", in.testCase, ans.toString());
+//                }
+
+            } else {
+                BigInteger[] div = gcd.divideAndRemainder(lcm);
+                if (!div[1].equals(BigInteger.ZERO))
+                    continue;
+
+                log.debug("In position {} lcm {} gcd {}.  div = {}", guessPosition, lcm, gcd, div[0]);
+
+                //P = k1 * lcm
+                //P = gcd / k2
+                //C = k1 * k2
+                
+                long lowK1 = BigInteger.valueOf(in.L).divide(lcm).longValue();
+                
+                if (lowK1 == 0)
+                    lowK1 = 1;
+                
+                long uppK1 = LongMath.divide(in.H, lcm.longValue(), RoundingMode.UP);
+                
+                long C = div[0].longValue();
+                
+                log.debug("Lower bound k1 {} upp {}", lowK1, uppK1);
+                for(long k1 = lowK1; k1 <= uppK1; ++k1) {
+                    if (C % k1 != 0)
+                        continue;
+                    
+                    long k2 = C / k1;
+                    
+                    BigInteger ans = lcm.multiply(BigInteger.valueOf(k1));
+                    
+                    if (BigInteger.valueOf(in.L).compareTo(ans) <= 0 && BigInteger.valueOf(in.H).compareTo(ans) >= 0) {
+                        return String.format("Case #%d: %s", in.testCase, ans.toString());
+                    }
+                }
+                              
+
+                
+
+            }
+
         }
-          
-        return String.format("Case #%d: ", in.testCase);
+
+        return String.format("Case #%d: NO", in.testCase);
         
     }
 
