@@ -3,18 +3,24 @@ package codejam.y2010.round_1B.chicks;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.apache.commons.math3.fraction.Fraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.main.Runner;
+import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
-import codejam.utils.utils.Rational;
 
 import com.google.common.base.Preconditions;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
+    @Override
+    public String[] getDefaultInputFiles() {
+       //return new String[] {"sample.in"};
+        return new String[] {"B-small-practice.in", "B-large-practice.in"};
+    }
+    
     final static Logger log = LoggerFactory.getLogger(Main.class);
     
     @Override
@@ -62,16 +68,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     
     
-    Rational[] getTimePosIntersection( int p1, int v1, int p2, int v2) {
-        return getTimePosIntersection(Rational.fromInt(p1), Rational.fromInt(v1), Rational.fromInt(p2), Rational.fromInt(v2));
+    Fraction[] getTimePosIntersection( int p1, int v1, int p2, int v2) {
+        return getTimePosIntersection(new Fraction(p1), new Fraction(v1), 
+                new Fraction(p2), new Fraction(v2));
     }
     
-    double getTimePosIntersection( double p1, double v1, double p2, double v2) {
-    return 3.0;    
-    }
+   
     
     
-    Rational[] getTimePosIntersection( Rational p1, Rational v1, Rational p2, Rational v2) {
+    Fraction[] getTimePosIntersection( Fraction p1, Fraction v1, Fraction p2, Fraction v2) {
         /*
          * p1b = p1 + t * v1
          * p2b = p2 + t * v2;
@@ -82,13 +87,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
          * (p1 - p2) / (v2 - v1) = t
          */
         
-        Rational t = p1.minus(p2).divide(v2.minus(v1));
-        Rational newP1 = t.multiply(v1);
-        Rational newP2 = t.multiply(v2);
+        Fraction t = p1.subtract(p2).divide(v2.subtract(v1));
+        Fraction newP1 = t.multiply(v1);
+        Fraction newP2 = t.multiply(v2);
         
         Preconditions.checkState(newP1.equals(newP2));
         
-        return new Rational[] { t, newP1 };
+        return new Fraction[] { t, newP1 };
     }
     
     
@@ -118,29 +123,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
 
     
-
-
-    public Main() {
-        super();
-    }
     
-    
-    public static void main(String args[]) throws Exception {
-
-        if (args.length < 1) {
-            args = new String[] { "sample.txt" };
-           // args = new String[] { "B-small-practice.in" };
-//            args = new String[] { "B-large-practice.in" };
-         }
-         log.info("Input file {}", args[0]);
-
-         Main m = new Main();
-         Runner.goSingleThread(args[0], m, m);
-         //Runner.go(args[0], m, m, new InputData(-1));
-
-        
-       
-    }
 
     
 }

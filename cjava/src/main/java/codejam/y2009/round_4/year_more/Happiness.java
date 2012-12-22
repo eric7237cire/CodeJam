@@ -56,7 +56,7 @@ public class Happiness {
     }
     
     public void addTournament(Tournament t) {
-        log.info("Adding t ");
+        log.debug("Adding t ");
         //First calc probabilities of tournament
         int[][] tournProb =  new int[maxTournamentSize][2];        
         

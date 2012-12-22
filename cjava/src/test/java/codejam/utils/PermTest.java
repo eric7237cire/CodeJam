@@ -1,6 +1,7 @@
 package codejam.utils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -10,12 +11,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.utils.PermutationWithRepetition;
+
 import com.google.common.base.Preconditions;
 import com.google.common.math.IntMath;
 import com.google.common.primitives.Ints;
-
-import codejam.utils.utils.PermutationWithRepetition;
-import codejam.y2008.KingTest;
 
 public class PermTest {
     final static Logger log = LoggerFactory.getLogger(PermTest.class);
@@ -34,12 +34,8 @@ public static int sumOfProductAllPermutationsFast(Integer[] numbers, int permLen
         
         int biggestChunkIndex = IntMath.log2(permLength, RoundingMode.DOWN) ;
                 
-        int chunkSize = 1;
         for(int i = 1; i <= biggestChunkIndex; ++i) {
-            chunkSize *= 2;
             int chunk = Ints.checkedCast((long) chunks.get(i-1) * chunks.get(i-1) % mod);
-            
-            
             chunks.add( chunk ); 
         }
         

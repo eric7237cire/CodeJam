@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 
 import org.apache.commons.math3.fraction.BigFraction;
-import org.apache.commons.math3.fraction.Fraction;
 import org.apache.commons.math3.linear.Array2DRowFieldMatrix;
 import org.apache.commons.math3.linear.FieldMatrix;
 import org.junit.Test;
@@ -321,6 +320,7 @@ public class BusStopTest {
     
     final static Logger log = LoggerFactory.getLogger(BusStopTest.class);
     
+    @SuppressWarnings("unused")
     @Test
     public void testMatrixMult() {
         FieldMatrix<BigFraction> trans = new Array2DRowFieldMatrix<BigFraction>( new BigFraction[][] {
