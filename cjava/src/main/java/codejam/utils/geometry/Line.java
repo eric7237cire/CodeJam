@@ -83,6 +83,31 @@ public class Line {
         return true;
 
     }
+    
+    public boolean isBetween(Point pointToTest) {
+        
+        if (pointToTest == null)
+            return false;
+        //Assume all are on the line
+        
+        //crossproduct = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
+        //if abs(crossproduct) > epsilon : return False   # (or != 0 if using integers)
+
+        double dotproduct = (pointToTest.getX() - p1.getX()) * (p2.getX() - p1.getX()) + (pointToTest.getY() - p1.getY())*(p2.getY() - p1.getY());
+        
+        if (dotproduct < 0) {
+            return false;
+        }
+
+        double squaredlengthba = (p2.getX() - p1.getX())*(p2.getX() - p1.getX()) + (p2.getY() - p1.getY())*(p2.getY() - p1.getY());
+        
+        if (dotproduct > squaredlengthba) {
+            return false;
+        }
+
+        return true;
+
+    }
     /**
      * @return the m
      */

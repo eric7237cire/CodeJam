@@ -1,5 +1,8 @@
 package codejam.utils.geometry;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 import codejam.utils.utils.DoubleComparator;
 
 import com.google.common.base.Objects;
@@ -7,6 +10,8 @@ import com.google.common.base.Objects;
 public class Point {
     final private double x;
     final private double y;
+    
+   
     
     public Point(PointInt p) {
         x = p.getX();
@@ -34,12 +39,20 @@ public class Point {
     public static Point getMidPoint(Point a, Point b) {
         return new Point((a.x+b.x)/2,(a.y+b.y)/2);
     }
+    
+    static DecimalFormat df;
+    
+    static {
+        df = new DecimalFormat("0.###");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+    }
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        return "Point [x=" + x + ", y=" + y + "]";
+        
+        return String.format("(%s, %s)", df.format(x), df.format(y));
     }
     
     public Point translate(Point newOrigin) {

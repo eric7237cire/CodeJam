@@ -62,7 +62,7 @@ public class Main  {
          //codejam.y2009.interesting_ranges.Main m = new codejam.y2009.interesting_ranges.Main();
          
          //Round 4 -- 2009
-         codejam.y2009.round_4.year_more.Main m = new codejam.y2009.round_4.year_more.Main();
+         //codejam.y2009.round_4.year_more.Main m = new codejam.y2009.round_4.year_more.Main();
          
          //Both of these still a bit slow, especially min perimeter
          //codejam.y2009.min_perimeter.Main m = new codejam.y2009.min_perimeter.Main();      
@@ -122,6 +122,8 @@ public class Main  {
         //codejam.y2011.round_1C.square_tiles.Main m = new codejam.y2011.round_1C.square_tiles.Main();
         //codejam.y2011.round_1C.space_emergency.Main m = new codejam.y2011.round_1C.space_emergency.Main();
         //codejam.y2011.round_1C.perfect_harmony.Main m = new codejam.y2011.round_1C.perfect_harmony.Main();
+         
+         codejam.y2012.round_qual.hall_of_mirrors.Main m = new codejam.y2012.round_qual.hall_of_mirrors.Main();
         
         String[] files = {};
         if (m instanceof DefaultInputFiles) {
