@@ -101,7 +101,7 @@ public class Line {
 
         double squaredlengthba = (p2.getX() - p1.getX())*(p2.getX() - p1.getX()) + (p2.getY() - p1.getY())*(p2.getY() - p1.getY());
         
-        if (dotproduct > squaredlengthba) {
+        if (Line.dc.compare(dotproduct, squaredlengthba) > 0) {
             return false;
         }
 
@@ -247,7 +247,8 @@ public class Line {
 
 	@Override
 	public String toString() {
-		return "Line [m=" + m + ", b=" + b + ", type=" + type + "]";
+		//return "Line [m=" + m + ", b=" + b + ", type=" + type + "]";
+	    return "[ " + p1.toString() + ", " + p2.toString() + " ]";
 	}
     
 	/**

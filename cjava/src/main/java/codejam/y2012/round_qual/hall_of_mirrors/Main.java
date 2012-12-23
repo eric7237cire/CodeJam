@@ -171,6 +171,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         ret[1] = TCorner;
         //Now calculate if we hit the corner wall first
         
+        a = isTargetY ? S.getY() - C.getY() : S.getX() - C.getX();
+        
+        //c is the same
+        //double c = isTargetY ? target - C.getY() : target - C.getX();
+        
+        a = Math.abs(a);
+        c = Math.abs(c);
+        
         b = a * delta / (2*numTriangles * c + a);        
         d = (delta - b) / (2 * numTriangles);
         
@@ -202,7 +210,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     
-    public String handleCase2(InputData in) {
+    public String handleCase(InputData in) {
+        
+        if (1==1)
+            return handleCase22(in);
+        
         List<Point> corners = Lists.newArrayList();
         
         //SW
@@ -232,16 +244,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         for(Line wall : walls) {
             Line perp = wall.getLinePerpendicular(self);
             Point intersection = perp.getIntersection(wall);
-            if (intersection.distance(self) <= in.D) {
+            if (2*intersection.distance(self) <= in.D) {
                 ++count;
             }
         }
         
         for(Point corner : corners) {
-            if (self.distance(corner) <= in.D) 
+            if (2*self.distance(corner) <= in.D) 
                 ++count;
             
-            
+            triangleLoop:
             for(int triangles = 1; triangles <= 50; ++triangles) {
                 
                 for(Line wall : walls) {
@@ -253,23 +265,27 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                                 
                     boolean one = false;
                     
-                    double distance = (2 * triangles - 1) * intP[1].distance(corner) + intP[0].distance(self);
+                    double distance = 2* ( (2 * triangles - 1) * intP[1].distance(corner) + intP[0].distance(self));
                     
+                    log.debug("Hitting (opp. wall first) corner {} from wall {} triangles {}  distance {}", corner,wall,triangles, distance);
                     if (distance <= in.D) {
                         ++count;
                         one = true;
                     }
                     
-                    distance = (2 * triangles ) * intP[2].distance(corner) + intP[1].distance(self);
+                    distance = 2 * ((2 * triangles ) * intP[3].distance(corner) + intP[2].distance(self));
                     
+                    log.debug("Hitting (corner wall first) corner {} from wall {} triangles {}  distance {}", corner,wall,triangles, distance);
                     if (distance <= in.D) {
                         ++count;
                         one = true;
                     }
                     
                     if (!one)
-                        break;
+                        break triangleLoop;
                 }
+                
+                
             }
             
         }
@@ -278,10 +294,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     }
     
-    public String handleCase(InputData in) {
+    public String handleCase22(InputData in) {
      
-       //.5 .5 
-        Point S = new Point(.5,.5);
+      
         
         int numTriangles = 1;
         //Bounce of west wall
@@ -291,30 +306,44 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //bounce off North wall
         //Point iP = getIntersectionPoint(new Point(1,-1), S, 1, true);
         
+        List<Point> corners = Lists.newArrayList();
+        
+        //SW
+        corners.add(new Point(1,1));
+        //SE
+        corners.add(new Point(in.W - 1,1));
+        //NE
+        corners.add(new Point(in.W - 1,in.H - 1));
+        //NW
+        corners.add(new Point(1,in.H - 1));
+        
+        int idx = in.grid.getIndexesOf('X').iterator().next();
+        int[] rowCol = in.grid.getRowCol(idx);
+        
+        Point self = new Point(rowCol[1] + .5 , rowCol[0] + .5);
+        
+        List<Line> walls = Lists.newArrayList();
+        for(int corner = 0; corner < 4; ++corner) {
+            int nextCorner = corner + 1 == 4 ? 0 : corner + 1;
+            walls.add(new Line(corners.get(corner), corners.get(nextCorner)));
+        }
+        
+        //wall [0]  SW SE  -- south
+        //wall [1]  SE NE  -- east
+        //wall [2]  NE NW  -- north
+        //wall [3]  NW SW  -- west
+        
+        Point[] iPs = getIntersectionPoints( corners.get(1), self, walls.get(2), numTriangles);
         
         
+        Point iP = iPs[2];
+        Line vec = new Line(self, iP);
         
-        Line[] walls = new Line[4];
+        List<Line> wallsToConsider = Arrays.asList(walls.get(0), walls.get(2));
         
-        //north
-        walls[0] = new Line(new Point(0,1), new Point(1,1));
+        //List<Line> wallsToConsider = Arrays.asList(walls.get(2), walls.get(0));
         
-        //east
-        walls[1] = new Line(new Point(1,1), new Point(1,-1));
-        
-        //south
-        walls[2] = new Line(new Point(1,-1), new Point(0,-1));
-        
-        //west
-        walls[3] = new Line(new Point(0,-1), new Point(0,1));
-        
-        Point iP = getIntersectionPoints(new Point(1,-1), S, walls[3], numTriangles)[2];
-        
-        Line vec = new Line(new Point(.5,.5), iP);
-        
-        List<Line> wallsToConsider = Arrays.asList(walls[1], walls[3]);
-        
-        Point from = S;
+        Point from = self;
         double fromAngle = Math.atan2(iP.getY() - from.getY(), iP.getX() - from.getX());
         fromAngle = Angle.makeAnglePositive(fromAngle);
         
