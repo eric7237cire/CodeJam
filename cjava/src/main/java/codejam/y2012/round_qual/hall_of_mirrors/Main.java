@@ -396,7 +396,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         one = true;
                     }
                     
-                    distance = 2 * ((2 * triangles ) * intP[3].distance(corner) + intP[2].distance(self));
+                    double d3 = intP[3].distance(corner);
+                    double d4 = intP[2].distance(self);
+                    distance = 2 * ( (2 * triangles ) * intP[3].distance(corner) + intP[2].distance(self) );
                     
                     if (distance <= in.D) {
                         log.debug("Hitting (corner wall first) corner {} from wall {} triangles {}  distance {}", corner,wall,triangles, distance);                        
@@ -446,6 +448,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
                 Point intersection = wall.getIntersection(vec);
                 if (intersection == null)
+                    continue;
+                
+                if (j==0 && !wall.onLine(firstPoint))
                     continue;
 
                 double angleIntersection = Math.atan2(intersection.getY() - from.getY(), intersection.getX() - from.getX());

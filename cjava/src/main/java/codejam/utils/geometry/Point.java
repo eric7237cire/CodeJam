@@ -2,6 +2,8 @@ package codejam.utils.geometry;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 import codejam.utils.utils.DoubleComparator;
 
@@ -45,6 +47,7 @@ public class Point {
     static {
         df = new DecimalFormat("0.###");
         df.setRoundingMode(RoundingMode.HALF_UP);
+        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
     }
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
