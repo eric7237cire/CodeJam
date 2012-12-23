@@ -1,5 +1,7 @@
 package codejam.y2012.round_qual.hall_of_mirrors;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -177,18 +179,18 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         if (isTargetY) {
             if (C.getX() > S.getX()) {
-                T = new Point(S.getX() + b, target);
+                T = new Point(S.getX() + b, C.getY());
                 TCorner = new Point(C.getX() - d, target);
             } else {
-                T = new Point(S.getX() - b, target);
+                T = new Point(S.getX() - b, C.getY());
                 TCorner = new Point(C.getX() + d, target);
             }
         } else {
             if (C.getY() > S.getY()) {
-                T = new Point(target, S.getY() + b);
+                T = new Point(C.getX(), S.getY() + b);
                 TCorner = new Point(target, C.getY() - d);
             } else {
-                T = new Point(target, S.getY() - b);
+                T = new Point(C.getX(), S.getY() - b);
                 TCorner = new Point(target, C.getY() + d);
             }
         }
@@ -200,7 +202,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     
-    public String handleCase(InputData in) {
+    public String handleCase2(InputData in) {
         List<Point> corners = Lists.newArrayList();
         
         //SW
@@ -276,12 +278,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     }
     
-    public String handleCase2(InputData in) {
+    public String handleCase(InputData in) {
      
        //.5 .5 
         Point S = new Point(.5,.5);
         
-        int numTriangles = 4;
+        int numTriangles = 1;
         //Bounce of west wall
         //Point iP = getIntersectionPoint(new Point(1,1), S, 0, false, numTriangles);
         
@@ -306,9 +308,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //west
         walls[3] = new Line(new Point(0,-1), new Point(0,1));
         
-        Point iP = getIntersectionPoints(new Point(1,-1), S, walls[0], numTriangles)[2];
+        Point iP = getIntersectionPoints(new Point(1,-1), S, walls[3], numTriangles)[2];
         
         Line vec = new Line(new Point(.5,.5), iP);
+        
+        List<Line> wallsToConsider = Arrays.asList(walls[1], walls[3]);
         
         Point from = S;
         double fromAngle = Math.atan2(iP.getY() - from.getY(), iP.getX() - from.getX());
@@ -318,60 +322,47 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         Point firstIntersection = null;
         
-        for (int j = 0; j <= 2*numTriangles; ++j) {
-            
-            int foundWall = -1;
-            
-            for(int i = 0; i < 4; ++i) {
-                
-                Point intersection = walls[i].getIntersection(vec);
-                if (intersection == null)
-                    continue;
-                double angleIntersection =  Math.atan2(intersection.getY() - from.getY(), intersection.getX() - from.getX());
-                angleIntersection = Angle.makeAnglePositive(angleIntersection);
-                
-                //other side of line
-                double angleIntersection2 = angleIntersection + Math.PI;
-                angleIntersection2 = Angle.makeAnglePositive(angleIntersection2);
-                
-                if (dc.compare(angleIntersection, fromAngle) != 0 && dc.compare(angleIntersection2, fromAngle) != 0) 
-                    continue;
-                
-                if (walls[i].isBetween(intersection)) {
-                    log.debug("Intersection found with wall {} = {}.  Angle is {}", i, intersection, angleIntersection * 180d / Math.PI);
-                    
-                    if (firstIntersection == null) {
-                        firstIntersection = intersection;
-                    } else if (Math.abs(intersection.getY() - firstIntersection.getY()) < .001 &&
-                            Math.abs(intersection.getX() - firstIntersection.getX()) < .001){
-                        log.debug("Close");
-                    }
-                    
-                    if (vec.onLine(new Point(0.5, 0.5))) {
-                        log.debug("Exact");
-                    }
-                    foundWall = i;
-                    from = intersection;
-                    fromAngle = -fromAngle;
-                    fromAngle = Angle.makeAnglePositive(fromAngle);
-                    
-                    //log.debug("New angle {}", fromAngle * 180 / Math.PI);
-                    
-                    double y = Math.sin(fromAngle) + from.getY();
-                    double x = Math.cos(fromAngle) + from.getX();
-                    
-                    vec = new Line(from, new Point(x,y));
-                    
-                    break;
+        for (int j = 0; j <= 2 * numTriangles + 1; ++j) {
+
+            boolean foundWall = false;
+            Line wall = wallsToConsider.get(j % 2);
+
+            Point intersection = wall.getIntersection(vec);
+            if (intersection == null)
+                continue;
+            double angleIntersection = Math.atan2(intersection.getY() - from.getY(), intersection.getX() - from.getX());
+            angleIntersection = Angle.makeAnglePositive(angleIntersection);
+
+            // other side of line
+            double angleIntersection2 = angleIntersection + Math.PI;
+            angleIntersection2 = Angle.makeAnglePositive(angleIntersection2);
+
+            if (dc.compare(angleIntersection, fromAngle) != 0 && dc.compare(angleIntersection2, fromAngle) != 0)
+                continue;
+
+            if (wall.isBetween(intersection)) {
+                log.debug("Intersection found with wall {} = {}.  Angle is {}", wall, intersection, angleIntersection * 180d / Math.PI);
+
+                if (firstIntersection == null) {
+                    firstIntersection = intersection;
+                } else if (Math.abs(intersection.getY() - firstIntersection.getY()) < .001 && Math.abs(intersection.getX() - firstIntersection.getX()) < .001) {
+                    log.debug("Close");
                 }
-                
-                
+
+                foundWall = true;
+                from = intersection;
+                fromAngle = -fromAngle;
+                fromAngle = Angle.makeAnglePositive(fromAngle);
+
+                // log.debug("New angle {}", fromAngle * 180 / Math.PI);
+
+                double y = Math.sin(fromAngle) + from.getY();
+                double x = Math.cos(fromAngle) + from.getX();
+
+                vec = new Line(from, new Point(x, y));
+
             }
-            
-            
-           Preconditions.checkState(foundWall >= 0 );
-            
-        
+
         }
         
         
