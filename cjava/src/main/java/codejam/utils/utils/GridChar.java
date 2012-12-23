@@ -43,6 +43,28 @@ public class GridChar {
 
         return g;
     }
+    
+    public static GridChar buildFromScannerYZeroBottom(Scanner scanner, int rows, int cols, char invalidSq) {
+
+        
+        GridChar g = new GridChar(rows, cols, invalidSq);
+        g.yZeroOnTop = false;
+
+        for (int y = rows-1; y >= 0; --y) {
+            String rowStr = scanner.next();
+
+            while (rowStr.length() < cols) {
+                rowStr += scanner.next();
+            }
+            for (int x = 0; x < cols; ++x) {
+                char ch = rowStr.charAt(x);
+                g.grid[g.getIndex(y, x)] = ch;
+            }
+
+        }
+
+        return g;
+    }
 
     public static GridChar buildFromBufferedReader(BufferedReader br, int rows, int cols, char invalidSq) {
 
@@ -111,6 +133,9 @@ public class GridChar {
         return cols;
     }
     
+    public int[] getRowCol(int index) {
+        return new int[] { index / cols,  index % cols };
+    }
     
     public int getIndex(int row, int col) {
         return col + row * cols;

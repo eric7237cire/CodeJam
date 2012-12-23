@@ -1,11 +1,10 @@
 package codejam.y2012.round_qual.hall_of_mirrors;
 
+import java.util.List;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Preconditions;
 
 import codejam.utils.geometry.Angle;
 import codejam.utils.geometry.Line;
@@ -14,6 +13,10 @@ import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.DoubleComparator;
+import codejam.utils.utils.GridChar;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles{
 
@@ -29,7 +32,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     public InputData readInput(Scanner scanner, int testCase) {
         
         InputData in = new InputData(testCase);
-        
+        in.H = scanner.nextInt();
+        in.W = scanner.nextInt();
+        in.D  = scanner.nextInt();
+        in.grid  = GridChar.buildFromScannerYZeroBottom(scanner,in.H,in.W, ' ');
         
         return in;
     }
@@ -80,7 +86,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     return T;
 }
     
-    Point getIntersectionPoint(Point C, Point S, double target, boolean isTargetY, int numTriangles) {
+    /**
+     * First is with the wall, next is from corner
+     * @param C
+     * @param S
+     * @param target
+     * @param isTargetY
+     * @param numTriangles
+     * @return
+     */
+    Point[] getIntersectionPoints(Point C, Point S, double target, boolean isTargetY, int numTriangles) {
         
         //Triangle between S and T has sides a and b
         //Triangle between C and T has sides c and d
@@ -115,29 +130,107 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         double b = a * delta / (2*numTriangles * c - c + a);
         
+        double d = (delta - b) / (2 * numTriangles - 1);
+        
         Point T = null;
+        Point TCorner = null;
+        
         if (isTargetY) {
             if (C.getX() > S.getX()) {
-                T = new Point(S.getX() + b, target); 
+                T = new Point(S.getX() + b, target);
+                TCorner = new Point(C.getX() - d, target);
             } else {
                 T = new Point(S.getX() - b, target);
+                TCorner = new Point(C.getX() + d, target);
             }
         } else {
             if (C.getY() > S.getY()) {
-                T = new Point(target, S.getY() + b); 
+                T = new Point(target, S.getY() + b);
+                TCorner = new Point(target, C.getY() - d);
             } else {
                 T = new Point(target, S.getY() - b);
+                TCorner = new Point(target, C.getY() + d);
             }
         }
         
 //        Line S_T = new Line(S, T);
 //        Line C_T = new Line(C, T);
 //        Preconditions.checkState(Line.dc.compare(S_T.getM(), - C_T.getM()) == 0);
-        return T;
+        return new Point[] {T, TCorner};
     }
     
     @Override
     public String handleCase(InputData in) {
+        List<Point> corners = Lists.newArrayList();
+        
+        //SW
+        corners.add(new Point(1,1));
+        //SE
+        corners.add(new Point(in.W - 1,1));
+        //NE
+        corners.add(new Point(in.W - 1,in.H - 1));
+        //NW
+        corners.add(new Point(1,in.H - 1));
+        
+        int idx = in.grid.getIndexesOf('X').iterator().next();
+        int[] rowCol = in.grid.getRowCol(idx);
+        
+        Point self = new Point(rowCol[1] + .5 , rowCol[0] + .5);
+        
+        List<Line> walls = Lists.newArrayList();
+        for(int corner = 0; corner < 4; ++corner) {
+            int nextCorner = corner + 1 == 4 ? 0 : corner + 1;
+            walls.add(new Line(corners.get(corner), corners.get(nextCorner)));
+        }
+        
+        //Hit walls and corners directly
+        
+        int count = 0;
+        
+        for(Line wall : walls) {
+            Line perp = wall.getLinePerpendicular(self);
+            Point intersection = perp.getIntersection(wall);
+            if (intersection.distance(self) <= in.D) {
+                ++count;
+            }
+        }
+        
+        for(Point corner : corners) {
+            if (self.distance(corner) <= in.D) 
+                ++count;
+            
+            
+            for(int triangles = 1; triangles <= 50; ++triangles) {
+                
+                for(Line wall : walls) {
+                    
+                    if (wall.onLine(corner))
+                        continue;
+                    
+                    Point[] intP = null;
+                    if (wall.getType() == Line.Type.HORIZONTAL) 
+                        intP = getIntersectionPoints(corner,self,wall.getPointGivenX(1).getY(), true, triangles);
+                    else
+                        if (wall.getType() == Line.Type.VERTICAL) 
+                            intP = getIntersectionPoints(corner,self,wall.getPointGivenY(1).getX(), false, triangles);
+                    
+                    
+                    double distance = (2 * triangles - 1) * intP[1].distance(corner) + intP[0].distance(self);
+                    
+                    if (distance <= in.D)
+                        ++count;
+                    else
+                        break;
+                }
+            }
+            
+        }
+        
+        return String.format("Case #%d: %d", in.testCase, count);
+        
+    }
+    
+    public String handleCase2(InputData in) {
      
        //.5 .5 
         Point S = new Point(.5,.5);
@@ -149,7 +242,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         //bounce off North wall
         //Point iP = getIntersectionPoint(new Point(1,-1), S, 1, true);
-        Point iP = getIntersectionPoint(new Point(1,-1), S, 1, true, numTriangles);
+        Point iP = getIntersectionPoints(new Point(1,-1), S, 1, true, numTriangles)[0];
         
         Line vec = new Line(new Point(.5,.5), iP);
         

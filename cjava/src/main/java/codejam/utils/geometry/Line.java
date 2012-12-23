@@ -138,7 +138,7 @@ public class Line {
 
     public Point getPointGivenX(double x) {
         if (type == Type.NORMAL)
-        return new Point(x, m * x + b);
+            return new Point(x, m * x + b);
         else if (type == Type.HORIZONTAL) {
             return new Point(x, b);
         } else
@@ -148,8 +148,12 @@ public class Line {
 
     public Point getPointGivenY(double y) {
         if (type == Type.NORMAL)
-        return new Point((y - b) / m, y);
-        else return null;
+            return new Point((y - b) / m, y);
+        else if (type == Type.VERTICAL) {
+            return new Point(p1.getX(),y);
+        } else {
+            return null;
+        }
     }
 
     public boolean onLine(Point a) {
@@ -164,6 +168,20 @@ public class Line {
 
         throw new IllegalStateException("huh");
 
+    }
+    
+    
+    public Line getLinePerpendicular(Point p) {
+        //Vector current line
+        Point vec = p2.translate(p1);
+        
+        if (vec.getY() == 0) {
+            return new Line(p, new Point(p.getX(), p.getY()+1));
+        }
+        
+        double mPerp = -vec.getX() / vec.getY();
+        return new Line(p, mPerp);
+        
     }
     
     public Point getIntersection(Line line2) {
