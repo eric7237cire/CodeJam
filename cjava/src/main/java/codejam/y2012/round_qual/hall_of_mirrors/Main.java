@@ -325,26 +325,61 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             walls.add(new Line(corners.get(corner), corners.get(nextCorner)));
         }
         
+
+        //wall [0]  SW SE  -- south
+        //wall [1]  SE NE  -- east
+        //wall [2]  NE NW  -- north
+        //wall [3]  NW SW  -- west
+        
         //Hit walls and corners directly
         
         int count = 0;
         
-        for(Line wall : walls) {
+        for(int w = 0; w < 4; ++w) {
+            Line wall = walls.get(w);
             Line perp = wall.getLinePerpendicular(self);
             Point intersection = perp.getIntersection(wall);
             if (2*intersection.distance(self) <= in.D) {
+                log.debug("Direct reflection with wall {}.  Int point {}", wall, intersection);
                 ++count;
+            }
+            
+            Line side1 = walls.get( (w+3) % 4);
+            Line side2 = walls.get( (w+1) % 4);
+            for(int triangles = 1; triangles <= 50; ++triangles) {
+                Point[] intPoints = getIntersectionPoints(self,wall,side1,side2,triangles);
+                
+                double dSide1 = intPoints[0].distance(self);
+                double dSide2 = intPoints[1].distance(self);
+                double distance = 2 * triangles * ( intPoints[0].distance(self) + intPoints[1].distance(self));
+                
+                if (distance <= in.D) {
+                    count += 2;
+                    
+                    log.debug("Bounced off wall to {}.  Int points {} {}", wall, intPoints[0], intPoints[1]);
+                    
+                    if (Line.dc.compare(dSide1,dSide2) != 0) {
+                        //log.debug("Non symmetric, get another 2");
+                       // count += 2;
+                    }
+                } else {
+                    break;
+                }
             }
         }
         
         for(Point corner : corners) {
-            if (2*self.distance(corner) <= in.D) 
+            if (2*self.distance(corner) <= in.D) {
+                log.debug("Hit corner {}", corner);
                 ++count;
+            }
             
+            for(Line wall : walls) {
+                
             triangleLoop:
             for(int triangles = 1; triangles <= 50; ++triangles) {
                 
-                for(Line wall : walls) {
+                
                     
                     if (wall.onLine(corner))
                         continue;
@@ -355,16 +390,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     
                     double distance = 2* ( (2 * triangles - 1) * intP[1].distance(corner) + intP[0].distance(self));
                     
-                    log.debug("Hitting (opp. wall first) corner {} from wall {} triangles {}  distance {}", corner,wall,triangles, distance);
                     if (distance <= in.D) {
+                        log.debug("Hitting (opp. wall first) corner {} from wall {} triangles {}  distance {}", corner,wall,triangles, distance);
                         ++count;
                         one = true;
                     }
                     
                     distance = 2 * ((2 * triangles ) * intP[3].distance(corner) + intP[2].distance(self));
                     
-                    log.debug("Hitting (corner wall first) corner {} from wall {} triangles {}  distance {}", corner,wall,triangles, distance);
                     if (distance <= in.D) {
+                        log.debug("Hitting (corner wall first) corner {} from wall {} triangles {}  distance {}", corner,wall,triangles, distance);                        
                         ++count;
                         one = true;
                     }
@@ -391,79 +426,64 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      */
     public List<Point> simulateLight(List<Point> corners,  List<Line> walls, Point self, Point firstPoint, int hops) {
      
-      
-        
         Point iP = firstPoint;
         Line vec = new Line(self, iP);
-        
-        
-        
+
         Point from = self;
         double fromAngle = Math.atan2(iP.getY() - from.getY(), iP.getX() - from.getX());
         fromAngle = Angle.makeAnglePositive(fromAngle);
-        
+
         DoubleComparator dc = new DoubleComparator(0.0001);
-        
-        Point firstIntersection = null;
-        
+
+
         List<Point> points = Lists.newArrayList();
-        
+
         for (int j = 0; j < hops; ++j) {
 
             boolean foundWall = false;
-            
-            for(Line wall : walls) {
-            
-            Point intersection = wall.getIntersection(vec);
-            if (intersection == null)
-                continue;
-            
-            
-            
-            double angleIntersection = Math.atan2(intersection.getY() - from.getY(), intersection.getX() - from.getX());
-            angleIntersection = Angle.makeAnglePositive(angleIntersection);
 
-            // other side of line
-            double angleIntersection2 = angleIntersection + Math.PI;
-            angleIntersection2 = Angle.makeAnglePositive(angleIntersection2);
+            for (Line wall : walls) {
 
-            if (dc.compare(angleIntersection, fromAngle) != 0 && dc.compare(angleIntersection2, fromAngle) != 0)
-                continue;
+                Point intersection = wall.getIntersection(vec);
+                if (intersection == null)
+                    continue;
 
-            if (wall.isBetween(intersection)) {
-                log.debug("Intersection found with wall {} = {}.  Angle is {}", wall, intersection, angleIntersection * 180d / Math.PI);
+                double angleIntersection = Math.atan2(intersection.getY() - from.getY(), intersection.getX() - from.getX());
+                angleIntersection = Angle.makeAnglePositive(angleIntersection);
 
-                points.add(intersection);
-                
-                if (firstIntersection == null) {
-                    firstIntersection = intersection;
-                } else if (Math.abs(intersection.getY() - firstIntersection.getY()) < .001 && Math.abs(intersection.getX() - firstIntersection.getX()) < .001) {
-                    log.debug("Close");
+                // other side of line
+                double angleIntersection2 = angleIntersection + Math.PI;
+                angleIntersection2 = Angle.makeAnglePositive(angleIntersection2);
+
+                if (dc.compare(angleIntersection, fromAngle) != 0 && dc.compare(angleIntersection2, fromAngle) != 0)
+                    continue;
+
+                if (wall.isBetween(intersection)) {
+                    log.debug("Intersection found with wall {} = {}.  Angle is {}", wall, intersection, angleIntersection * 180d / Math.PI);
+
+                    points.add(intersection);
+
+                    foundWall = true;
+                    from = intersection;
+                    fromAngle = -fromAngle;
+                    fromAngle = Angle.makeAnglePositive(fromAngle);
+
+                    // log.debug("New angle {}", fromAngle * 180 / Math.PI);
+
+                    double y = Math.sin(fromAngle) + from.getY();
+                    double x = Math.cos(fromAngle) + from.getX();
+
+                    vec = new Line(from, new Point(x, y));
+
+                    break;
+
                 }
 
-                foundWall = true;
-                from = intersection;
-                fromAngle = -fromAngle;
-                fromAngle = Angle.makeAnglePositive(fromAngle);
-
-                // log.debug("New angle {}", fromAngle * 180 / Math.PI);
-
-                double y = Math.sin(fromAngle) + from.getY();
-                double x = Math.cos(fromAngle) + from.getX();
-
-                vec = new Line(from, new Point(x, y));
-                
-                break;
-
             }
-            
-            }
-            
+
             Preconditions.checkState(foundWall);
 
         }
-        
-        
 
         return points;
         

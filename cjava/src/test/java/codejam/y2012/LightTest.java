@@ -17,6 +17,41 @@ public class LightTest {
 
 
     @Test
+    public void testSampleCase() {
+
+                
+        List<Point> corners = Lists.newArrayList();
+        
+        //SW
+        corners.add(new Point(1,1));
+        //SE
+        corners.add(new Point(2,1));
+        //NE
+        corners.add(new Point(2,3));
+        //NW
+        corners.add(new Point(1,3));
+        
+        List<Line> walls = Lists.newArrayList();
+        for(int corner = 0; corner < 4; ++corner) {
+            int nextCorner = corner + 1 == 4 ? 0 : corner + 1;
+            walls.add(new Line(corners.get(corner), corners.get(nextCorner)));
+        }
+        
+
+        Point self = new Point(1.5,2.5);
+
+        Main m = new Main();
+        Point[] iP = m.getIntersectionPoints(self, walls.get(1), walls.get(0), walls.get(2), 2);
+        
+        List<Point> points = m.simulateLight(corners,Arrays.asList(walls.get(1), walls.get(0), walls.get(2)),
+                self, iP[0],  6);
+        
+        assertEquals(6, points.size());
+        
+        Line l = new Line(points.get(4), points.get(5));
+        assertTrue(l.onLine(self));
+    }
+    @Test
     public void testReflectWalls() {
 List<Point> corners = Lists.newArrayList();
         
@@ -57,5 +92,10 @@ List<Point> corners = Lists.newArrayList();
         
         assertEquals(new Point(0,3), iP[0]);
         assertEquals(new Point(12,5), iP[1]);
+        
+        iP = m.getIntersectionPoints(self, walls.get(2), walls.get(3), walls.get(1), 2);
+        
+        points = m.simulateLight(corners,Arrays.asList(walls.get(3), walls.get(1), walls.get(2)),
+                self, iP[0],  2 * 2 + 2);
     }
 }
