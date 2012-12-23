@@ -88,6 +88,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     return T;
 }
     
+    
     /**
      * First is with the wall, next is from corner
      * @param C
@@ -97,7 +98,95 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      * @param numTriangles
      * @return
      */
-    Point[] getIntersectionPoints(Point C, Point S, Line targetWall, int numTriangles) {
+    public Point[] getIntersectionPoints(Point S, Line targetWall, Line sideWall1, Line sideWall2, int numTriangles) {
+        
+        double target;
+        boolean isTargetY;
+        
+        double side1 ;
+        double side2;
+        
+        //Assume there is a wall parralel 
+        if (targetWall.getType() == Line.Type.HORIZONTAL) {
+            isTargetY = true;
+            target = targetWall.getPointGivenX(1).getY();
+            side1 = sideWall1.getPointGivenY(1).getX();
+            side2 = sideWall1.getPointGivenY(1).getX();
+        } else {
+            isTargetY = false;
+            target  = targetWall.getPointGivenY(1).getX();
+            
+            side1 = sideWall1.getPointGivenX(1).getY();
+            side2 = sideWall1.getPointGivenX(1).getY();
+        }
+            
+        //Using graph.png
+        
+        /*
+         * c / d  == a / b
+         * cb = da
+         * 
+         * We also know that 
+         * 
+         * delta = k(b+d)
+         * 
+         * delta = kb + kd
+         * d = (delta - kb) / k
+         * 
+         * substituting
+         * 
+         * cb = a(delta - kb) / k
+         * kcb = a*delta - akb
+         * kcb + akb = a*delta
+         * b = a*delta / (kc + ak)
+         *  
+         */
+        double a = isTargetY ? side1 - S.getX() : side1 - S.getY();
+        double c = isTargetY ? side2 - S.getX() : side2 - S.getY();
+        
+        a = Math.abs(a);
+        c = Math.abs(c);
+        
+        double delta = isTargetY ? target - S.getY() : target  - S.getX();
+        
+        delta = Math.abs(delta);
+        
+        double b = a * delta / (numTriangles * c + a*numTriangles);        
+        double d = (delta - numTriangles* b) / numTriangles;
+        
+        Point tSide1 = null;
+        Point tSide2 = null;
+        
+        if (isTargetY) {
+            if (target > S.getY()) {
+                tSide1 = new Point(side1, S.getY() + b);
+                tSide2 = new Point(side2, S.getY() + d);
+            } else {
+                tSide1 = new Point(side1, S.getY() - b);
+                tSide2 = new Point(side2, S.getY() - d);
+            }
+        } else {
+            if (target > S.getX()) {
+                tSide1 = new Point(S.getX() + b, side1);
+                tSide2 = new Point(S.getX() + d, side2);
+            } else {
+                tSide1 = new Point(S.getX() - b, side1);
+                tSide2 = new Point(S.getX() - d, side2);
+            }
+        }
+        
+        return new Point[] {tSide1, tSide2};
+    }
+    /**
+     * First is with the wall, next is from corner
+     * @param C
+     * @param S
+     * @param target
+     * @param isTargetY
+     * @param numTriangles
+     * @return
+     */
+    public Point[] getIntersectionPointsCorner(Point C, Point S, Line targetWall, int numTriangles) {
         
         double target;
         boolean isTargetY;
@@ -115,6 +204,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //Triangle between C and T has sides c and d
         
         /*
+         * a / b == c / d
+         * da == cb
+         * d/b ==c /a 
+         * 
          * c / a == d / b
          * 
          * We also know that 
@@ -212,7 +305,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     public String handleCase(InputData in) {
         
-        if (1==1)
+        if (1==41)
             return handleCase22(in);
         
         List<Point> corners = Lists.newArrayList();
@@ -261,7 +354,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     if (wall.onLine(corner))
                         continue;
                     
-                    Point[] intP = getIntersectionPoints(corner,self,wall, triangles);
+                    Point[] intP = getIntersectionPointsCorner(corner,self,wall, triangles);
                                 
                     boolean one = false;
                     
@@ -294,7 +387,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     }
     
-    public String handleCase22(InputData in) {
+    /**
+     * 
+     * @param corners SW, SE, NE, NW
+     * @param self
+     * @param firstPoint
+     * @return
+     */
+    public List<Point> simulateLight(List<Point> corners, Point self, Point firstPoint) {
      
       
         
@@ -306,21 +406,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //bounce off North wall
         //Point iP = getIntersectionPoint(new Point(1,-1), S, 1, true);
         
-        List<Point> corners = Lists.newArrayList();
-        
-        //SW
-        corners.add(new Point(1,1));
-        //SE
-        corners.add(new Point(in.W - 1,1));
-        //NE
-        corners.add(new Point(in.W - 1,in.H - 1));
-        //NW
-        corners.add(new Point(1,in.H - 1));
-        
-        int idx = in.grid.getIndexesOf('X').iterator().next();
-        int[] rowCol = in.grid.getRowCol(idx);
-        
-        Point self = new Point(rowCol[1] + .5 , rowCol[0] + .5);
         
         List<Line> walls = Lists.newArrayList();
         for(int corner = 0; corner < 4; ++corner) {
@@ -333,7 +418,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //wall [2]  NE NW  -- north
         //wall [3]  NW SW  -- west
         
-        Point[] iPs = getIntersectionPoints( corners.get(1), self, walls.get(2), numTriangles);
         
         
         Point iP = iPs[2];
