@@ -8,7 +8,6 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.y2008.CodeSequenceTest;
 
 import com.google.common.base.Joiner;
 
@@ -17,7 +16,7 @@ public class Generator {
     public int[] keys = new int[30];
     final int MOD;
     
-    final static Logger log = LoggerFactory.getLogger(CodeSequenceTest.class);
+    final static Logger log = LoggerFactory.getLogger(Generator.class);
     
     public Generator(int n, int mod, int seed) {
         this.n = n;
