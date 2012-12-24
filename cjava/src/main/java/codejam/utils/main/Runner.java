@@ -118,7 +118,8 @@ public class Runner {
         Pattern match = Pattern.compile("codejam\\.(y\\d+)\\.round_([^\\.]+)\\..*");
         Matcher m = match.matcher(dir);
         Preconditions.checkState(m.matches());
-        dir = String.format(".\\src\\main\\resources\\%s\\%s\\", m.group(1), m.group(2));
+        dir = String.format("." + File.separator + "src" + File.separator + "main" + File.separator +
+            "resources" + File.separator + "%s" + File.separator + "%s" + File.separator + "", m.group(1), m.group(2));
         
         InputStreamReader isr = new InputStreamReader(new FileInputStream(
                 new File(dir + inputFileName)));

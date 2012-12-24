@@ -205,7 +205,8 @@ public class GridChar {
     }
     
     public char getEntry(final int index, Direction dir) {
-        int row = index / cols - dir.getDeltaY();
+        int row = yZeroOnTop ? index / cols - dir.getDeltaY()
+        : index / cols + dir.getDeltaY();
         int col = index % cols + dir.getDeltaX();
         
         if (row < 0 || row >= rows) {

@@ -64,7 +64,10 @@ public class Line {
         if (pointToTest == null)
             return false;
         //Assume all are on the line
-        
+     
+//        crossproduct = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
+  //  if abs(crossproduct) > epsilon : return False   # (or != 0 if using integers)
+
         //crossproduct = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
         //if abs(crossproduct) > epsilon : return False   # (or != 0 if using integers)
 
@@ -88,24 +91,16 @@ public class Line {
         
         if (pointToTest == null)
             return false;
-        //Assume all are on the line
         
-        //crossproduct = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
-        //if abs(crossproduct) > epsilon : return False   # (or != 0 if using integers)
-
-        double dotproduct = (pointToTest.getX() - p1.getX()) * (p2.getX() - p1.getX()) + (pointToTest.getY() - p1.getY())*(p2.getY() - p1.getY());
-        
-        if (dotproduct < 0) {
+        if (!onLine(pointToTest)) 
             return false;
-        }
-
-        double squaredlengthba = (p2.getX() - p1.getX())*(p2.getX() - p1.getX()) + (p2.getY() - p1.getY())*(p2.getY() - p1.getY());
         
-        if (Line.dc.compare(dotproduct, squaredlengthba) > 0) {
-            return false;
-        }
-
-        return true;
+        return (
+            
+            dc.compare(Math.min(p1.getX(), p2.getX()), pointToTest.getX()) <= 0 &&
+        dc.compare(Math.max(p1.getX(), p2.getX()), pointToTest.getX()) >= 0 &&
+        dc.compare(Math.min(p1.getY(), p2.getY()), pointToTest.getY()) <= 0 && 
+        dc.compare(Math.max(p1.getY(), p2.getY()), pointToTest.getY()) >= 0) ;
 
     }
     /**

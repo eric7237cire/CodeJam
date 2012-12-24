@@ -5,11 +5,14 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
+import com.google.common.math.DoubleMath;
 import codejam.utils.utils.DoubleComparator;
+import java.math.*;
+import java.lang.*;
 
 import com.google.common.base.Objects;
 
-public class Point {
+public class Point implements Comparable<Point> {
     final private double x;
     final private double y;
     
@@ -62,6 +65,10 @@ public class Point {
         return new Point(x - newOrigin.getX(), y - newOrigin.getY());
     }
     
+    public Point add(Point point) {
+        return new Point(x + point.getX(), y + point.getY());   
+    }
+    
     public Point rotate(double ang) {
         double cosTh = Math.cos(ang);
         double sinTh = Math.sin(ang);
@@ -96,8 +103,20 @@ public class Point {
      */
     @Override
     public int hashCode() {
-       return Objects.hashCode(x, y);
+        
+       return Objects.hashCode(roundDouble(x), roundDouble(y));
     }
+    
+    //TODO
+    public static double roundDouble(double d) {
+        if (Double.isInfinite(d) || Double.isNaN(d)) 
+            return d;
+        BigDecimal bd = new BigDecimal(d);
+        int decimalPlace = 3;
+    bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+    return bd.doubleValue();
+    }
+    
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
      */
@@ -110,19 +129,29 @@ public class Point {
         if (getClass() != obj.getClass())
             return false;
         Point other = (Point) obj;
-        if (0 != new DoubleComparator().compare(x, other.x))
-            return false;
-        if (0 != new DoubleComparator().compare(y, other.y))
-            return false;
-        return true;
+        
+        return DoubleMath.fuzzyEquals(x, other.x, tolerance)
+        && DoubleMath.fuzzyEquals(y, other.y, tolerance);
     }
+    
+    @Override
+    public int compareTo(Point other) {
+        int yc = DoubleMath.fuzzyCompare(x, other.x, tolerance);
+        
+        if (yc != 0) 
+            return yc;
+        
+        return DoubleMath.fuzzyCompare(y, other.y, tolerance);
+    }
+    
+    public static double tolerance = .00002d;
     
     public boolean equalsPointInt(PointInt obj) {
         
-         double tolerance = .000002d;
-        if (0 != new DoubleComparator(tolerance).compare(x, (double)obj.getX()))
+         
+        if (!DoubleMath.fuzzyEquals(x, obj.getX(), tolerance))
             return false;
-        if (0 != new DoubleComparator(tolerance).compare(y, (double)obj.getY()))
+        if (!DoubleMath.fuzzyEquals(y, obj.getY(), tolerance))
             return false;
         return true;
     }
@@ -130,5 +159,10 @@ public class Point {
     //Treating points as vectors from 0,0.  Return value is the z component of a 3d vector
     static public double crossProduct(Point u, Point v) {
         return u.getX() * v.getY() - u.getY() * v.getX();
+    }
+    
+    public Point normalize() {
+        double len = new Point(0,0).distance(this);
+        return new Point(getX() / len, getY() / len);
     }
 }

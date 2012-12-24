@@ -49,7 +49,6 @@ public class KingTest {
         
     }
     
-    @Test
     public void testOddTheory() {
         log.debug("Starting");
                

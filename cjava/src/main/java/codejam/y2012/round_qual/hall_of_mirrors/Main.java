@@ -15,9 +15,14 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.DoubleComparator;
 import codejam.utils.utils.GridChar;
-
+import codejam.utils.utils.DoubleComparator;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.Locale;
+import java.text.DecimalFormatSymbols;
+import java.util.*;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles{
 
@@ -25,7 +30,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     @Override
     public String[] getDefaultInputFiles() {
-       return new String[] {"sample.in"};
+    //   return new String[] {"sample.in"};
+       return new String[] {"D-small-practice.in"};
         //return new String[] {"C-small-practice.in", "C-large-practice.in"};
     }
     
@@ -36,7 +42,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         in.H = scanner.nextInt();
         in.W = scanner.nextInt();
         in.D  = scanner.nextInt();
-        in.grid  = GridChar.buildFromScannerYZeroBottom(scanner,in.H,in.W, ' ');
+        in.grid  = GridChar.buildFromScannerYZeroBottom(scanner,in.H,in.W, '#');
         
         return in;
     }
@@ -305,6 +311,41 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     
+    private static class SpecialCorner {
+        public Point location;
+        int absorbYSign;
+        int absorbXSign;
+        
+    }
+        
+    public void parseCorners(InputData in, List<Point> corners, List<SpecialCorner> special) {
+        for(int r = 0; r < in.grid.getRows(); ++r) {
+            for(int c = 0; c < in.grid.getCols(); ++c) {
+                
+                //Not a wall, so no corners
+                if (in.grid.getEntry(r,c) != '#') {
+                    continue;
+                }
+                
+                for(int d = 0; d < 4; ++d) {
+                    //get corner direction
+                    Direction dir = NORTH_EAST.turn(2 * d);
+                    
+                    if(in.grid.getEntry(r,c,dir) == '#' &&
+                        in.grid.getEntry(r,c,dir.turn(1)) == '#' &&
+                    in.grid.getEntry(r,c,dir.turn(-1)) == '#') {
+                        //not a corner, completely encased in wall
+                        continue;
+                    }
+                    
+                }
+                
+                
+            }
+        }
+           
+    }
+    
     public String handleCase(InputData in) {
         
         List<Point> corners = Lists.newArrayList();
@@ -338,6 +379,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //Hit walls and corners directly
         
         int count = 0;
+        
+        count = count(corners, walls, self, in);
+        
+        if (count >= 0) {
+        return String.format("Case #%d: %d", in.testCase, count);
+        }
+        
         
         for(int w = 0; w < 4; ++w) {
             Line wall = walls.get(w);
@@ -401,7 +449,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     }
                     
                     double d3 = intP[3].distance(corner);
-                    double d4 = intP[2].distance(self);
+                       double d4 = intP[2].distance(self);
                     distance = 2 * ( (2 * triangles ) * intP[3].distance(corner) + intP[2].distance(self) );
                     
                     if (distance <= in.D) {
@@ -422,6 +470,169 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return String.format("Case #%d: %d", in.testCase, count);
         
     }
+    
+    public Point[] getNextIntersectionAndDirection(List<Point> corners,  List<Line> walls, Point point, Point direction, Point self, InputData in)
+    {
+        //Create a line with point and direction
+        Line line = new Line(point, point.add(direction));
+        
+        //List<Point> iPoints = new ArrayList<>();
+        
+        //Intersect with all lines
+        for(Line wall : walls)
+        {
+            Point intersection = wall.getIntersection(line);
+            
+            //iPoints.add(intersection);
+            if (intersection == null)
+                continue;
+            
+            if (!wall.isBetween(intersection)) {
+               // log.debug("Intersection {} not between {}", intersection, wall);
+                continue;
+            }
+            
+            if (point.equals(intersection)) {
+                continue;
+            }
+            
+            //Check that the slope is the same as direction
+            Point checkDir = intersection.translate(point);
+            
+            /*
+            if (Line.dc.compare( Math.atan2(checkDir.getY(), checkDir.getX()),
+                Math.atan2(direction.getY(), direction.getX())) != 0) 
+            {
+                continue;
+            }*/
+            
+            if (!checkDir.normalize().equals(direction.normalize())) {
+                continue;
+            }
+            
+            Point newDirection = null;
+            //log.debug("Intersection {} check dir {}", intersection, checkDir);
+            
+            Line checkLine = new Line(point, intersection);
+            if (checkLine.isBetween(self) && !point.equals(self)) {
+                //log.debug("Self {} checkline {}", self, checkLine);
+                intersection = self;
+            }
+            
+            if (corners.contains(intersection)) {
+                log.debug("Hit corner {} {}", intersection.getX(), intersection.getY());                
+                newDirection = new Point(-direction.getX(), -direction.getY()) ;
+            } else {
+               newDirection = wall.getType() == Line.Type.HORIZONTAL ?
+                new Point(direction.getX(), -direction.getY()) :
+                new Point(-direction.getX(), direction.getY());
+            }
+            return new Point[] { intersection, newDirection };
+        }
+        
+        log.error("Intersection not found.  pt {}  dir {}", point, direction);
+        /*for(Point iPoint : iPoints) {
+            log.error("Intersection point potential {}", iPoint);   
+        }*/
+        return null;
+    }
+    
+    public boolean tracePath(List<Point> corners,  List<Line> walls, Point self, Point initialDir, InputData in)
+    {
+        List<Point> points = Lists.newArrayList();
+        double distance = 0;
+        
+        points.add(self);
+        
+        Point dir = initialDir;
+        Point point = self;
+        
+        int iter = 0;
+        //log.debug("Beginning tracePath point {}  direction {}", point, dir);
+        while(distance <= in.D && iter < 100)
+        {
+            ++iter;
+            Point[] ptDir = getNextIntersectionAndDirection(corners, walls, point, dir, self, in);
+            
+            if (ptDir == null) {
+                log.error ("Null path dir.  self {}  initial dir {}", self, initialDir);
+                for(Point p : points) {
+                    log.debug("Error path {}", p);
+                }
+                return false;
+            }
+            
+            
+            
+            points.add(ptDir[0]);
+            double addDistance = points.get(points.size() - 1).distance(points.get(points.size() - 2));
+            Preconditions.checkState(addDistance > 0);
+            distance += addDistance;
+            
+            //log.debug("tracepath intersection.  Point {}  direction {} distance + {} = {}", ptDir[0], ptDir[1], df.format(addDistance), df.format(distance));
+            
+            if (ptDir[0].equals(self)) {
+          //      log.debug("Line crosses self");
+                break;                
+            }
+            
+            point = ptDir[0];
+            dir = ptDir[1];
+        }
+        
+        //log.debug("Tracepath done, distance {}", distance);
+        if (distance <= in.D) {
+            log.debug("Printing winning path distance {}  self {}  initial dir {}", distance, self, initialDir);
+            for(Point p : points) {
+                log.debug("Winning path {} {}", p.getX(), p.getY());
+            }
+            return true;   
+        }
+        
+        return false;
+    }
+    
+    
+    static DecimalFormat df;
+    
+    
+    static {
+        df = new DecimalFormat("0.###");
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
+    }
+    
+    
+    public int count(List<Point> corners,  List<Line> walls, Point self, InputData in) 
+    {
+            
+        int count = 0;
+        int max = in.D;
+        
+        Set<Point> dirs = new TreeSet<>();
+        dirs.add(new Point(0,0));
+        
+        for(int y = -max; y <= max; ++y) {
+            //log.info("count y {}", y);
+            for(int x = -max; x <= max; ++x) {
+                Point dir = new Point(x,y);
+                Point norm = dir.normalize();
+                if (dirs.contains(norm) || dirs.contains(dir)) {
+                    continue;
+                }
+                dirs.add(norm);
+
+                if (tracePath(corners, walls, self, dir, in)) {
+                   // log.debug("Path counts !");
+                    ++count;
+                }                
+            }
+        }
+        
+
+        return count;
+    }
+
     
     /**
      * 
