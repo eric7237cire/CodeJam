@@ -3,6 +3,7 @@ package codejam.y2012.round_qual.hall_of_mirrors;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.commons.math3.fraction.Fraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -296,6 +297,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 //      
         ret[2] = T;
         ret[3] = TCorner;
+        
+        Line l = new Line(ret[0], S);
+        Fraction f = new Fraction(l.getM());
         
         return ret;
     }

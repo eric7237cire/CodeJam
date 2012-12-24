@@ -1,10 +1,12 @@
 package codejam.y2012;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.math3.fraction.Fraction;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,15 +86,25 @@ public class LightTest {
         l = new Line(points.get(5), points.get(4));
         assertTrue(l.onLine(self));
         
+        int numTriangles = 12;
+        iP = m.getIntersectionPointsCorner(corners.get(2), self, walls.get(3), numTriangles);
+        
+        points = m.simulateLight(corners, Arrays.asList(walls.get(1), walls.get(3)), self, iP[0], 2 * numTriangles);
+        
         points.add(0, self);
-        points.set(6, self);
         double d = 0;
         
         for(int i = 0; i < points.size() - 1; ++i) {
             d += points.get(i).distance(points.get(i+1));
+            l = new Line(points.get(i), points.get(i+1));
+            Fraction f = new Fraction(l.getM());
+            log.debug("Slope {}", f);
         }
         
+        
         log.debug("D is {}", d);
+        
+        iP = m.getIntersectionPointsCorner(corners.get(2), self, walls.get(3), 25);
     }
     
     final static Logger log = LoggerFactory.getLogger(Main.class);
