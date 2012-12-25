@@ -27,6 +27,10 @@ public class GraphAdjList {
         this.maxNodeNum = maxNodeNum;
         connected = new boolean[maxNodeNum][maxNodeNum];
     }
+    
+    public int getMaxNodes() {
+        return maxNodeNum;
+    }
 
     public void addConnection(int n1, int n2) {
         connected[n1][n1] = true;
