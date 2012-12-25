@@ -34,7 +34,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     public String[] getDefaultInputFiles() {
        return new String[] {"sample.in"};
        //return new String[] {"D-small-practice.in"};
-   //    return new String[] {"D-large-practice.in"};
+       //return new String[] {"D-large-practice.in"};
         //return new String[] {"C-small-practice.in", "C-large-practice.in"};
     }
     
@@ -335,10 +335,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     }
     
-    private static class LineObj {
-           Line line;
+    public static class LineObj {
+           public Line line;
            
-           Direction orientation;
+           public Direction orientation;
            
            LineObj(Line line, Direction dir) {
                 this.line=line;
@@ -381,44 +381,110 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         REFLECT
     };
     
-    Point closestVertical(List<Corner> corners, Corner corner) {
-        double closestDis = Double.MAX_VALUE;
-        Corner ret = null;
+    
+    public void parseWalls(GridChar grid, List<LineObj> walls) {
         
-        for(Corner other : corners) {
-            double dis = Math.abs(other.location.getY() - 
-                corner.location.getY());
-            if (!other.location.equals(corner.location) 
-                && other.location.getX() == corner.location.getX() 
-            && dis < closestDis) {
-                closestDis = dis;
-                ret = other;
-            }
+        int x = grid.getIndexesOf('X').iterator().next();
+        grid.setEntry(x, '.');
+        
+        /*
+         * east wall
+         * ##
+         * #.
+         * #.
+         * #.
+         * ##
+         * 
+         * r,c == 1,1 to (stops at) 4,1
+         * Line  1,1 to 4, 1
+         * #######
+         *  ###.
+         *  .##.
+         *  .###
+         *  #.#.#
+         *  #.#..
+         *  ######
+         *  
+         *  ###
+         *  ..#
+         *  .##
+         *  ..#
+         *  ###  
+         *  west wall
+         */
+        Integer startRowEastWall = null;
+        Integer startRowWestWall = null;
+        
+        for(int c = 0; c < grid.getCols(); ++c) {
+            for(int r = 0; r < grid.getRows(); ++r) {
+              
+                //Pattern #.
+                if (startRowEastWall == null && grid.getEntry(r,c) == '#' &&
+                        grid.getEntry(r,c,Direction.EAST) == '.') {
+                    startRowEastWall = r;
+                } else 
                 
+                if (startRowEastWall != null && 
+                        ((grid.getEntry(r,c,Direction.EAST) != '.') ||
+                        (grid.getEntry(r,c) != '#')))
+                        {
+                    walls.add(new LineObj(new Line(
+                            new Point(c+1,startRowEastWall),
+                            new Point(c+1, r)),
+                            Direction.EAST));
+                    startRowEastWall = null;
+                }
+                
+                if (startRowWestWall == null && grid.getEntry(r,c) == '#' &&
+                        grid.getEntry(r,c,Direction.WEST) == '.') {
+                    startRowWestWall = r;
+                }
+                else
+                if (startRowWestWall != null && ((
+                        grid.getEntry(r,c,Direction.WEST) != '.') ||
+                        (grid.getEntry(r,c) != '#')))
+                {
+                    walls.add(new LineObj(new Line(
+                            new Point(c,startRowWestWall),
+                            new Point(c, r)),
+                            Direction.WEST));
+                    startRowWestWall = null;
+                }
+            }
         }
         
-        return ret.location; 
-    }
-    
-    Point closestHorizontal(List<Corner> corners, Corner corner) {
-        double closestDis = Double.MAX_VALUE;
-        Corner ret = null;
-        
-        for(Corner other : corners) {
-            double dis = Math.abs(other.location.getX() - corner.location.getX());
-            if (!other.location.equals(corner.location) 
-                && other.location.getY() == corner.location.getY() 
-                && dis < closestDis) {
-                closestDis = dis;
-                ret = other;
-            }
+        Integer startColNorthWall = null;
+        Integer startColSouthWall = null;
                 
+        for (int r = 0; r < grid.getRows(); ++r) {
+            for (int c = 0; c < grid.getCols(); ++c) {
+
+                if (startColNorthWall == null &&
+                        grid.getEntry(r, c) == '#' && 
+                        grid.getEntry(r, c, Direction.NORTH) == '.') {
+                    startColNorthWall = c;
+                } else if (startColNorthWall != null &&
+                        ((grid.getEntry(r, c, Direction.NORTH) != '.') 
+                                || (grid.getEntry(r, c) != '#'))) {
+                    walls.add(new LineObj(new Line(new Point(startColNorthWall,r+1), new Point(c, r+1)), Direction.NORTH));
+                    startColNorthWall = null;
+                }
+
+                if (startColSouthWall == null &&
+                        grid.getEntry(r, c) == '#' &&
+                        grid.getEntry(r, c, Direction.SOUTH) == '.') {
+                    startColSouthWall = c;
+                } else if (startColSouthWall != null &&
+                        ((grid.getEntry(r, c, Direction.SOUTH) != '.') ||
+                                (grid.getEntry(r, c) != '#'))) {
+                    walls.add(new LineObj(new Line(new Point(startColSouthWall, r), new Point(c, r)), Direction.SOUTH));
+                    startColSouthWall = null;
+                }
+            }
         }
         
-        return ret.location;
+        grid.setEntry(x, 'X');
     }
-    
-    public void parseWalls(
     
 
     public void parseGrid(InputData in, List<Corner> corners, List<LineObj> walls) 
@@ -453,33 +519,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             corners.addAll(subCorners);
             
-            for(Corner corner : subCorners) {            
-                Point closestVert = closestVertical(subCorners, corner); 
-                Point closestHor = closestHorizontal(subCorners, corner);
-                log.debug("Corner {} ver {} hor {}", corner, closestVert, closestHor);
-                if (closestVert.getY() > corner.location.getY()) {
-                    walls.add(new LineObj(new Line(corner.location, closestVert),
-                        in.grid.getEntry((int)corner.location.getY(), (int)corner.location.getX()) == '#' ? 
-                        Direction.WEST : Direction.EAST));
-                }
-                //...#.
-                //...#.
-                //.###.
-                //.....
-                //line 1,1 to 4,1
-                //line 1,2 to 4,2
-                
-                //Line 4,1 to 4,4
-                //Line 3.1 to 3,4
-                if (closestHor.getX() > corner.location.getX()) { 
-                    walls.add(new LineObj(new Line(corner.location, closestHor),
-                        in.grid.getEntry((int)corner.location.getY(), (int)corner.location.getX()) == '#' ?
-                        Direction.SOUTH : Direction.NORTH
-                        ));
-                }
-            }
+            
         
         }
+        
+        parseWalls(in.grid, walls);
         
     }
     
@@ -774,7 +818,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
             
             Point newDirection = null;
-            log.debug("Intersection {} check dir {}  wall {}", intersection, checkDir, wall);
+            log.debug("Intersection {} dir {} check dir {}  wall {}", intersection, direction, checkDir, wall);
             
             Line checkLine = new Line(point, intersection);
             if (checkLine.isBetween(self) && !point.equals(self)) {
@@ -785,15 +829,17 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             CornerCase cc = matchesCorner(corners, intersection, direction);
             
             if (cc == CornerCase.REFLECT) {
-               // log.debug("Hit corner {} {}", intersection.getX(), intersection.getY());                
+                log.debug("Hit corner {} {}", intersection.getX(), intersection.getY());                
                 newDirection = new Point(-direction.getX(), -direction.getY()) ;
             } else if (cc == CornerCase.NOTHING) {
                newDirection = wall.getType() == Line.Type.HORIZONTAL ?
                 new Point(direction.getX(), -direction.getY()) :
                 new Point(-direction.getX(), direction.getY());
             } else if (cc == CornerCase.ABSORB) {
+                log.debug("Absorb corner {} {}", intersection.getX(), intersection.getY());
                 newDirection = new Point(0,0);
             } else if (cc == CornerCase.PASSTHRU) {
+                log.debug("Pass thru corner {} {}", intersection.getX(), intersection.getY());
                 continue;   
             }
             
@@ -801,6 +847,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             log.debug("Wall {} type {} dis {}", wall, wall.getType(), dis);
             if (dis < closestDis) {
                 retVal = new Point[] { intersection, newDirection };    
+                closestDis = dis;
             }
         }
         

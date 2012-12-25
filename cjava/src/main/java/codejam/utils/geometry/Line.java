@@ -59,6 +59,14 @@ public class Line {
         this.b = a.getY() - m * a.getX();
     }
     
+    public Point getP1() {
+        return p1;
+    }
+
+    public Point getP2() {
+        return p2;
+    }
+
     public static boolean isBetween(Point a, Point b, Point pointToTest) {
         
         if (pointToTest == null)
