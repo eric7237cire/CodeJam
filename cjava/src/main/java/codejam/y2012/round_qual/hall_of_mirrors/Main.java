@@ -33,7 +33,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String[] getDefaultInputFiles() {
        return new String[] {"sample.in"};
-     //  return new String[] {"D-small-practice.in"};
+       //return new String[] {"D-small-practice.in"};
+   //    return new String[] {"D-large-practice.in"};
         //return new String[] {"C-small-practice.in", "C-large-practice.in"};
     }
     
@@ -416,6 +417,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         return ret.location;
     }
+    
+    public void parseWalls(
+    
 
     public void parseGrid(InputData in, List<Corner> corners, List<LineObj> walls) 
     {
@@ -714,7 +718,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //Create a line with point and direction
         Line line = new Line(point, point.add(direction));
         
-        //log.debug("Get intersection.  pt {} dir {} line {}", point, direction, line);
+        log.debug("Get intersection.  pt {} dir {} line {}", point, direction, line);
 
         Point[] retVal = null;
         double closestDis = Double.MAX_VALUE;
@@ -770,7 +774,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
             
             Point newDirection = null;
-            //log.debug("Intersection {} check dir {}  wall {}", intersection, checkDir, wall);
+            log.debug("Intersection {} check dir {}  wall {}", intersection, checkDir, wall);
             
             Line checkLine = new Line(point, intersection);
             if (checkLine.isBetween(self) && !point.equals(self)) {
@@ -794,6 +798,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
             
             double dis = intersection.distance(point);
+            log.debug("Wall {} type {} dis {}", wall, wall.getType(), dis);
             if (dis < closestDis) {
                 retVal = new Point[] { intersection, newDirection };    
             }
