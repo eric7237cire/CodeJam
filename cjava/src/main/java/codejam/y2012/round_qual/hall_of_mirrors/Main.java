@@ -23,6 +23,7 @@ import java.text.DecimalFormat;
 import java.util.Locale;
 import java.text.DecimalFormatSymbols;
 import java.util.*;
+import codejam.utils.utils.*;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles{
 
@@ -30,8 +31,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     @Override
     public String[] getDefaultInputFiles() {
-    //   return new String[] {"sample.in"};
-       return new String[] {"D-small-practice.in"};
+       return new String[] {"sample.in"};
+     //  return new String[] {"D-small-practice.in"};
         //return new String[] {"C-small-practice.in", "C-large-practice.in"};
     }
     
@@ -311,14 +312,97 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     
-    private static class SpecialCorner {
+    private static class Corner {
         public Point location;
-        int absorbYSign;
-        int absorbXSign;
+        
+        //Within 45 degrees, in other words same component sines get absorbed
+        Point absorbVector;
+        public String toString() {
+            return location.toString() + " absorb " + absorbVector;
+        }
+        
+        Corner(double x, double y) {
+            location = new Point(x, y);
+            absorbVector = null;
+        }
+        
+        Corner(double x, double y, int aX, int aY) {
+            this(x, y);
+            absorbVector = new Point(aX, aY);
+        }
         
     }
+    
+    CornerCase matchesCorner(List<Corner> corners, Point point, Point direction) 
+    {
+        for(Corner corner : corners) {
+            if (!corner.location.equals(point))
+                continue;
+            
+            if (corner.absorbVector == null)
+                return CornerCase.REFLECT;
+            
+            int cmpY = Double.compare(0, direction.getY());
+            int cmpY2 = Double.compare(0, corner.absorbVector.getY());
+            
+            int cmpX = Double.compare(0, direction.getX());
+            int cmpX2 = Double.compare(0, corner.absorbVector.getX());
+            
+            if (cmpY == cmpY2 && cmpX == cmpX2) 
+                return CornerCase.ABSORB;
+            else
+                return CornerCase.PASSTHRU;
+        }
         
-    public void parseCorners(InputData in, List<Point> corners, List<SpecialCorner> special) {
+        return CornerCase.NOTHING;
+    }
+    
+    private enum CornerCase {
+        NOTHING,
+        PASSTHRU,
+        ABSORB,
+        REFLECT
+    };
+    
+    Point closestVertical(List<Corner> corners, Corner corner) {
+        double closestDis = Double.MAX_VALUE;
+        Corner ret = null;
+        
+        for(Corner other : corners) {
+            double dis = Math.abs(other.location.getY() - 
+                corner.location.getY());
+            if (!other.location.equals(corner.location) 
+                && other.location.getX() == corner.location.getX() 
+            && dis < closestDis) {
+                closestDis = dis;
+                ret = other;
+            }
+                
+        }
+        
+        return ret.location; 
+    }
+    
+    Point closestHorizontal(List<Corner> corners, Corner corner) {
+        double closestDis = Double.MAX_VALUE;
+        Corner ret = null;
+        
+        for(Corner other : corners) {
+            double dis = Math.abs(other.location.getX() - corner.location.getX());
+            if (!other.location.equals(corner.location) 
+                && other.location.getY() == corner.location.getY() 
+                && dis < closestDis) {
+                closestDis = dis;
+                ret = other;
+            }
+                
+        }
+        
+        return ret.location;
+    }
+
+        
+    public void parseCorners(InputData in, List<Corner> corners) {
         for(int r = 0; r < in.grid.getRows(); ++r) {
             for(int c = 0; c < in.grid.getCols(); ++c) {
                 
@@ -329,13 +413,68 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
                 for(int d = 0; d < 4; ++d) {
                     //get corner direction
-                    Direction dir = NORTH_EAST.turn(2 * d);
+                    Direction dir = Direction.NORTH_EAST.turn(2 * d);
                     
+                    if(in.grid.getEntry(r,c,dir) == '#' &&
+                        in.grid.getEntry(r,c,dir.turn(1)) == '#' &&
+                    in.grid.getEntry(r,c,dir.turn(-1)) != '#') {
+                        //a reglular corner, but will be handled by the other class
+                        continue;
+                    } else if(in.grid.getEntry(r,c,dir) == '#' &&
+                        in.grid.getEntry(r,c,dir.turn(1)) != '#' &&
+                    in.grid.getEntry(r,c,dir.turn(-1)) == '#') {
+                    //a reglular corner, but will be handled by the other class
+                        continue;
+                    } 
                     if(in.grid.getEntry(r,c,dir) == '#' &&
                         in.grid.getEntry(r,c,dir.turn(1)) == '#' &&
                     in.grid.getEntry(r,c,dir.turn(-1)) == '#') {
                         //not a corner, completely encased in wall
                         continue;
+                    } else if (in.grid.getEntry(r,c,dir) != '#' &&
+                        in.grid.getEntry(r,c,dir.turn(1)) == '#' &&
+                    in.grid.getEntry(r,c,dir.turn(-1)) == '#')
+                    {
+                        //log.debug("Regular corner r {} c {} dir {}", r, c, dir);
+                        //regular corner
+                        //##
+                        //#.
+                        corners.add(new Corner( c+ (dir.getDeltaX() + 1) / 2, r+ 
+                            (dir.getDeltaY() + 1) / 2) );
+                    } else if (in.grid.getEntry(r,c,dir) != '#' &&
+                        in.grid.getEntry(r,c,dir.turn(1)) == '#' &&
+                        in.grid.getEntry(r,c,dir.turn(-1)) != '#') {
+                        //flat, no corner
+                        continue;
+                    }                        
+                    else if (in.grid.getEntry(r,c,dir) != '#' &&
+                        in.grid.getEntry(r,c,dir.turn(1)) != '#' &&
+                    in.grid.getEntry(r,c,dir.turn(-1)) == '#') {
+                        //other case that is flat
+                        continue;
+                    } else if (in.grid.getEntry(r,c,dir) != '#' &&
+                        in.grid.getEntry(r,c,dir.turn(1)) != '#' &&
+                        in.grid.getEntry(r,c,dir.turn(-1)) != '#') {
+                        //isolated corner
+                        corners.add( new Corner( c+(dir.getDeltaX() + 1) / 2, 
+                            r+(dir.getDeltaY() + 1) / 2, -dir.getDeltaX(),
+                            -dir.getDeltaY()) );
+                    } else
+                    if (in.grid.getEntry(r,c,dir) == '#' &&
+                        in.grid.getEntry(r,c,dir.turn(1)) != '#' &&
+                    in.grid.getEntry(r,c,dir.turn(-1)) != '#') {
+                        corners.add( new Corner( c+(dir.getDeltaX() + 1) / 2, 
+                            r+(dir.getDeltaY() + 1) / 2, -dir.getDeltaX(),
+                            -dir.getDeltaY()) );
+                    } else {
+                        log.debug("Dir {} left {} right {} sq {} {} {}",
+                            dir,
+                            dir.turn(1),
+                            dir.turn(-1),
+                            in.grid.getEntry(r,c,dir),
+                            in.grid.getEntry(r,c,dir.turn(1)),
+                            in.grid.getEntry(r,c,dir.turn(-1)));
+                        Preconditions.checkState(false);   
                     }
                     
                 }
@@ -348,8 +487,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     public String handleCase(InputData in) {
         
-        List<Point> corners = Lists.newArrayList();
+        List<Corner> corners = Lists.newArrayList();
         
+        parseCorners(in, corners);
+        
+        
+        /*
         //SW
         corners.add(new Point(1,1));
         //SE
@@ -357,7 +500,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //NE
         corners.add(new Point(in.W - 1,in.H - 1));
         //NW
-        corners.add(new Point(1,in.H - 1));
+        corners.add(new Point(1,in.H - 1));*/
+        
+        for(Corner corner : corners) {
+            log.debug("Corner {}", corner);
+        }
+        
         
         int idx = in.grid.getIndexesOf('X').iterator().next();
         int[] rowCol = in.grid.getRowCol(idx);
@@ -365,11 +513,20 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         Point self = new Point(rowCol[1] + .5 , rowCol[0] + .5);
         
         List<Line> walls = Lists.newArrayList();
-        for(int corner = 0; corner < 4; ++corner) {
-            int nextCorner = corner + 1 == 4 ? 0 : corner + 1;
-            walls.add(new Line(corners.get(corner), corners.get(nextCorner)));
+        for(Corner corner : corners) {            
+            Point closestVert = closestVertical(corners, corner); 
+            Point closestHor = closestHorizontal(corners, corner);
+            log.debug("Corner {} ver {} hor {}", corner, closestVert, closestHor);
+            if (closestVert.getY() > corner.location.getY())
+                walls.add(new Line(corner.location, closestVert));
+            
+            if (closestHor.getX() > corner.location.getX()) 
+                walls.add(new Line(corner.location, closestHor));
         }
         
+        for(Line wall : walls) {
+            log.debug("Wall {}", wall);   
+        }
 
         //wall [0]  SW SE  -- south
         //wall [1]  SE NE  -- east
@@ -382,11 +539,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         count = count(corners, walls, self, in);
         
-        if (count >= 0) {
         return String.format("Case #%d: %d", in.testCase, count);
-        }
         
         
+/*        
         for(int w = 0; w < 4; ++w) {
             Line wall = walls.get(w);
             Line perp = wall.getLinePerpendicular(self);
@@ -465,17 +621,20 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
             }
             
-        }
+        }*/
         
-        return String.format("Case #%d: %d", in.testCase, count);
+        //return String.format("Case #%d: %d", in.testCase, count);
         
     }
     
-    public Point[] getNextIntersectionAndDirection(List<Point> corners,  List<Line> walls, Point point, Point direction, Point self, InputData in)
+    public Point[] getNextIntersectionAndDirection(List<Corner> corners,  List<Line> walls, Point point, Point direction, Point self, InputData in)
     {
         //Create a line with point and direction
         Line line = new Line(point, point.add(direction));
-        
+
+        Point[] retVal = null;
+        double closestDis = Double.MAX_VALUE;
+        double closestAbsorbDis = Double.MAX_VALUE;        
         //List<Point> iPoints = new ArrayList<>();
         
         //Intersect with all lines
@@ -519,25 +678,47 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 intersection = self;
             }
             
-            if (corners.contains(intersection)) {
+            CornerCase cc = matchesCorner(corners, intersection, direction);
+            
+            if (cc == CornerCase.REFLECT) {
                 log.debug("Hit corner {} {}", intersection.getX(), intersection.getY());                
                 newDirection = new Point(-direction.getX(), -direction.getY()) ;
-            } else {
+            } else if (cc == CornerCase.NOTHING) {
                newDirection = wall.getType() == Line.Type.HORIZONTAL ?
                 new Point(direction.getX(), -direction.getY()) :
                 new Point(-direction.getX(), direction.getY());
+            } else if (cc == CornerCase.ABSORB) {
+                double dis = intersection.distance(point);
+                if (dis < closestAbsorbDis) {
+                    closestAbsorbDis = dis;   
+                }
+                continue;
+            } else if (cc == CornerCase.PASSTHRU) {
+                continue;   
             }
-            return new Point[] { intersection, newDirection };
+            
+            double dis = intersection.distance(point);
+            if (dis < closestDis) {
+                retVal = new Point[] { intersection, newDirection };    
+            }
         }
         
-        log.error("Intersection not found.  pt {}  dir {}", point, direction);
+        if (retVal == null) {
+            log.error("Intersection not found.  pt {}  dir {}", point, direction);
+        }
+        
+        if (closestAbsorbDis < closestDis) {
+            log.debug("Absorbed  pt {}  dir {}", point, direction);
+            return null;
+        }
+        
         /*for(Point iPoint : iPoints) {
             log.error("Intersection point potential {}", iPoint);   
         }*/
-        return null;
+        return retVal;
     }
     
-    public boolean tracePath(List<Point> corners,  List<Line> walls, Point self, Point initialDir, InputData in)
+    public boolean tracePath(List<Corner> corners,  List<Line> walls, Point self, Point initialDir, InputData in)
     {
         List<Point> points = Lists.newArrayList();
         double distance = 0;
@@ -603,7 +784,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     
-    public int count(List<Point> corners,  List<Line> walls, Point self, InputData in) 
+    public int count(List<Corner> corners,  List<Line> walls, Point self, InputData in) 
     {
             
         int count = 0;
