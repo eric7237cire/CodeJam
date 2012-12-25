@@ -123,6 +123,9 @@ public class Main  {
         //codejam.y2011.round_1C.space_emergency.Main m = new codejam.y2011.round_1C.space_emergency.Main();
         //codejam.y2011.round_1C.perfect_harmony.Main m = new codejam.y2011.round_1C.perfect_harmony.Main();
          
+        //2012 qual
+        //A,B,C  in c++
+        //TODO a bit slow
          codejam.y2012.round_qual.hall_of_mirrors.Main m = new codejam.y2012.round_qual.hall_of_mirrors.Main();
         
         String[] files = {};

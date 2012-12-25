@@ -1,6 +1,5 @@
 package codejam.y2009.round_4.year_more;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;

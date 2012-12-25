@@ -1,16 +1,13 @@
 package codejam.utils.geometry;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-import com.google.common.math.DoubleMath;
-import codejam.utils.utils.DoubleComparator;
-import java.math.*;
-import java.lang.*;
-
 import com.google.common.base.Objects;
+import com.google.common.math.DoubleMath;
 
 public class Point implements Comparable<Point> {
     final private double x;
@@ -144,7 +141,7 @@ public class Point implements Comparable<Point> {
         return DoubleMath.fuzzyCompare(y, other.y, tolerance);
     }
     
-    public static double tolerance = .00002d;
+    public static double tolerance = .000002d;
     
     public boolean equalsPointInt(PointInt obj) {
         
