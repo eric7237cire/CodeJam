@@ -126,7 +126,12 @@ public class Main  {
         //2012 qual
         //A,B,C  in c++
         //TODO a bit slow
-         codejam.y2012.round_qual.hall_of_mirrors.Main m = new codejam.y2012.round_qual.hall_of_mirrors.Main();
+       //  codejam.y2012.round_qual.hall_of_mirrors.Main m = new codejam.y2012.round_qual.hall_of_mirrors.Main();
+        
+        //2012 1A
+        //codejam.y2012.round_1A.password.Main m = new codejam.y2012.round_1A.password.Main();
+        //codejam.y2012.round_1A.kingdom_rush.Main m = new codejam.y2012.round_1A.kingdom_rush.Main();
+        codejam.y2012.round_1A.cruise_control.Main m = new codejam.y2012.round_1A.cruise_control.Main();
         
         String[] files = {};
         if (m instanceof DefaultInputFiles) {

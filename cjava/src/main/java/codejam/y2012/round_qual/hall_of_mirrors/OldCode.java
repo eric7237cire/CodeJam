@@ -7,9 +7,7 @@ import com.google.common.base.Preconditions;
 
 public class OldCode {
 
-    public OldCode() {
-        // TODO Auto-generated constructor stub
-    }
+    
 
     /**
      * 
