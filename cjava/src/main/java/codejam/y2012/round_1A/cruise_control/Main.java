@@ -218,31 +218,55 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         for(int i = 0; i < in.N; ++i) {
             for(int j = i + 1; j < in.N; ++j) {
                 
-                int passingCar = ( (in.initialPosition[i] < in.initialPosition[j]) || 
-                        (in.initialPosition[i] == in.initialPosition[j] && in.speed[i] > in.speed[j])) ? i : j;
-                int passedCar = passingCar == i ? j : i;
-                
-                
+
                 //Same speed means they will never double or undouble each other,
                 //important to avoid false doubling events
                 if (in.speed[i] == in.speed[j])
                     continue;
                 
-                //The order doesn't matter because i + 5 with j is the same intersection as j +5, i
-                Pair<Fraction, Fraction> timePosIntersecFB = 
-                        getTimePosIntersection(in.initialPosition[passingCar]+5, in.speed[passingCar], 
-                                in.initialPosition[passedCar], in.speed[passedCar]);
-                
-                Pair<Fraction, Fraction> timePosIntersecBF = getTimePosIntersection(in.initialPosition[passingCar], in.speed[passingCar], 
-                        in.initialPosition[passedCar]+5, in.speed[passedCar]); 
-                
-                
-                
-                if (timePosIntersecFB != null)
-                events.add(new Event(passingCar,passedCar,Event.Type.DOUBLING, timePosIntersecFB.getLeft(), timePosIntersecFB.getRight()));
-                
-                if (timePosIntersecBF != null)
-                events.add(new Event(passingCar,passedCar,Event.Type.UNDOUBLING, timePosIntersecBF.getLeft(), timePosIntersecBF.getRight()));
+                if ( Math.abs(in.initialPosition[i] - in.initialPosition[j] ) < 5 ) {
+                    //cars are doubled up
+                    int passingCar = (in.speed[i] > in.speed[j]) ? i : j;
+                    int passedCar = passingCar == i ? j : i;
+                    
+                    Pair<Fraction, Fraction> timePosIntersecBF = getTimePosIntersection(in.initialPosition[passingCar], in.speed[passingCar], 
+                            in.initialPosition[passedCar]+5, in.speed[passedCar]); 
+                    
+                    if (timePosIntersecBF != null)
+                        events.add(new Event(passingCar,passedCar,Event.Type.UNDOUBLING, timePosIntersecBF.getLeft(), timePosIntersecBF.getRight()));
+                    
+                } else {
+                    int passingCar = (in.initialPosition[i] < in.initialPosition[j]) ? i : j;
+                    int passedCar = passingCar == i ? j : i;
+                                    
+                    
+                    if (in.initialPosition[passedCar] - 5 < in.initialPosition[passingCar] ) {
+                        //cars are already doubled, just find Undoubling event
+                        Pair<Fraction, Fraction> timePosIntersecBF = getTimePosIntersection(
+                                in.initialPosition[passingCar], in.speed[passingCar], 
+                                in.initialPosition[passedCar]+5, in.speed[passedCar]);
+                        
+                        
+                        events.add(new Event(passingCar,passedCar,Event.Type.UNDOUBLING, timePosIntersecBF.getLeft(), timePosIntersecBF.getRight()));
+                        continue;
+                    }
+                    
+                    //The order doesn't matter because i + 5 with j is the same intersection as j +5, i
+                    Pair<Fraction, Fraction> timePosIntersecFB = 
+                            getTimePosIntersection(in.initialPosition[passingCar]+5, in.speed[passingCar], 
+                                    in.initialPosition[passedCar], in.speed[passedCar]);
+                    
+                    Pair<Fraction, Fraction> timePosIntersecBF = getTimePosIntersection(in.initialPosition[passingCar], in.speed[passingCar], 
+                            in.initialPosition[passedCar]+5, in.speed[passedCar]); 
+                    
+                    
+                    
+                    if (timePosIntersecFB != null)
+                    events.add(new Event(passingCar,passedCar,Event.Type.DOUBLING, timePosIntersecFB.getLeft(), timePosIntersecFB.getRight()));
+                    
+                    if (timePosIntersecBF != null)
+                    events.add(new Event(passingCar,passedCar,Event.Type.UNDOUBLING, timePosIntersecBF.getLeft(), timePosIntersecBF.getRight()));
+                }
             }
         }
         
