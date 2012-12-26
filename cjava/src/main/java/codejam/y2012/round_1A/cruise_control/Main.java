@@ -115,7 +115,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         @Override
         public int compareTo(Event o) {
-            return ComparisonChain.start().compare(type,o.type).compare(car1, o.car1).result();            
+            return ComparisonChain.start().compare(type,o.type).compare(car1, o.car1).compare(car2,o.car2).result();            
         }
         
     }
@@ -142,21 +142,24 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             return sb.toString();
         }
         
-        // -1 for already left, 0 for no, 1 for already right (ie cannot change to left)
-        public int exists(int car) {
+        public boolean validPairing(int leftCar, int rightCar, InputData in, Fraction time) {
             Iterator<Pair<Integer,Integer>> pairIt = doubledUp.iterator();
             
             //Find the pair
             while(pairIt.hasNext()) {
                 Pair<Integer,Integer> pair = pairIt.next();
-                if (pair.getLeft() == car)
-                    return -1;
+                if (pair.getLeft() == rightCar) {
+                    return false;                    
+                }
                 
-                if (pair.getRight() == car)
-                    return 1;
+                if (pair.getRight() == leftCar) {
+                    return false;
+                }
+                
+                
             }
             
-            return 0;
+            return true;
         }
         
         public void handleUndouble(Event event) {
@@ -266,7 +269,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         log.debug("Double up state\n{}", ds);
        //in.levelMin.subList()
 
-        Fraction max = minTime(timeEvents, ds, eventList, firstTime); 
+        Fraction max = minTime(timeEvents, in, ds, eventList, firstTime); 
         
         if (max == null)
             return String.format("Case #%d: Possible", in.testCase);
@@ -275,7 +278,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     }
     
-    Fraction minTime(TreeMultimap<Fraction, Event> timeEvents, DoubleUpState ds, 
+    Fraction minTime(TreeMultimap<Fraction, Event> timeEvents,  InputData in, DoubleUpState ds, 
             List<Event> currentEvents, Fraction currentTime) {
         //base cases
         if (currentEvents.isEmpty()) {
@@ -293,7 +296,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             Fraction nextTime = timeIterator.next();
             List<Event> events =  new ArrayList<>(timeEvents.get(nextTime));
-            return minTime(timeEvents, ds, events, nextTime);
+            return minTime(timeEvents, in, ds, events, nextTime);
         }
         
         Event event = currentEvents.get(0);
@@ -301,46 +304,38 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         if (event.type == Event.Type.UNDOUBLING) {
             DoubleUpState dsNew = new DoubleUpState(ds);
             dsNew.handleUndouble(event);
-            return minTime(timeEvents, dsNew, currentEvents.subList(1, currentEvents.size()), currentTime);
+            return minTime(timeEvents, in, dsNew, currentEvents.subList(1, currentEvents.size()), currentTime);
         }
         
         //Doubling event
         
-        //Check if one of the cars is already doubled
-        int car1_pos = ds.exists(event.car1);
-        int car2_pos = ds.exists(event.car2);
-        
-        if (car1_pos == -1 && car2_pos == -1) {
-            return currentTime;
-        }
-        if (car1_pos == 1 && car2_pos == 1) {
-            return currentTime;
-        }
-        if (car1_pos == 1 || car2_pos == -1) {
-            DoubleUpState dsNew = new DoubleUpState(ds);
-            dsNew.doubledUp.add(new ImmutablePair<>(event.car2, event.car1));
-            return minTime(timeEvents, dsNew, currentEvents.subList(1, currentEvents.size()), currentTime);
-        }
-        if (car1_pos == -1 || car2_pos == 1) {
-            DoubleUpState dsNew = new DoubleUpState(ds);
-            dsNew.doubledUp.add(new ImmutablePair<>(event.car1, event.car2));
-            return minTime(timeEvents, dsNew, currentEvents.subList(1, currentEvents.size()), currentTime);
-        }
      
-        //Have a choice
+        Fraction f1 = new Fraction(-1);
+        Fraction f2 = new Fraction(-1);
+        
+        if (ds.validPairing(event.car1, event.car2, in, currentTime)) {
         DoubleUpState dsNew = new DoubleUpState(ds);
         dsNew.doubledUp.add(new ImmutablePair<>(event.car1, event.car2));
-        Fraction f1 = minTime(timeEvents, dsNew, currentEvents.subList(1, currentEvents.size()), currentTime);
+         f1 = minTime(timeEvents, in, dsNew, currentEvents.subList(1, currentEvents.size()), currentTime);
+        }
         
+        if (ds.validPairing(event.car2, event.car1, in, currentTime)) {
         DoubleUpState dsNew2 = new DoubleUpState(ds);
         dsNew2.doubledUp.add(new ImmutablePair<>(event.car2, event.car1));
         
-        Fraction f2 =  minTime(timeEvents, dsNew2, currentEvents.subList(1, currentEvents.size()), currentTime);
+        f2 =  minTime(timeEvents, in, dsNew2, currentEvents.subList(1, currentEvents.size()), currentTime);
+        }
         
         if (f1 == null || f2 == null) 
             return null;
         
-        return f1.compareTo(f2) >= 0 ? f1 : f2;
+        Fraction max = f1.compareTo(f2) >= 0 ? f1 : f2;
+        
+        if (max.compareTo(Fraction.ZERO) < 0) {
+            return currentTime;
+        } else {
+            return max;
+        }
     }
 
 }
