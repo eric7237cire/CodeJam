@@ -19,6 +19,7 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.DoubleFormat;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
@@ -31,8 +32,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-        return new String[] {"sample.in"};
-    //  return new String[] { "B-small-practice.in", "B-large-practice.in" };
+      //  return new String[] {"sample.in"};
+      return new String[] { "C-small-practice.in", "C-large-practice.in" };
     }
 
     @Override
@@ -52,12 +53,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             in.initialPosition[i] = scanner.nextInt();
         }
 
-        // log.info("TestCase {} Grid {}", testCase, in.grid);
         return in;
     }
 
     
-    Pair<Fraction,Fraction> getTimePosIntersection(int p1, int s1, int p2, int s2) {
+    Fraction getTimeIntersection(int p1, int s1, int p2, int s2) {
         /*
          * p1 + s1 * t = pos1
          * p2 + s2 * t = pos2
@@ -70,7 +70,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
          */
         
         if (p1 == p2) {
-            return new ImmutablePair<>(new Fraction(0), new Fraction(p1));
+            return new Fraction(0);
         }
         
         if (s2 == s1)
@@ -86,7 +86,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         Fraction pos2 = t.multiply(s2).add(p2);
         Preconditions.checkState(pos1.equals(pos2));
         
-        return new ImmutablePair<>(t, pos1);
+        return t;
     }
     
     private static class Event implements Comparable<Event> {
@@ -99,20 +99,17 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         Type type;
         
         Fraction time;
-        Fraction position;
-        public Event(int car1, int car2, Type type, Fraction time, Fraction position) {
+        public Event(int car1, int car2, Type type, Fraction time) {
             super();
             this.car1 = car1;
             this.car2 = car2;
             this.type = type;
             this.time = time;
-            this.position = position;
         }
         @Override
         public String toString() {
             return "Event [cars=(" + car1 + ", " + car2 + ") " 
-        + type + ", time=" + DoubleFormat.df3.format(time.doubleValue()) +
-        ", position=" + DoubleFormat.df3.format(position) + "]";
+        + type + ", time=" + DoubleFormat.df3.format(time.doubleValue())  + "]";
         }
         @Override
         public int compareTo(Event o) {
@@ -127,12 +124,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         @Override
         public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + getOuterType().hashCode();
-            result = prime * result + ((doubledUp == null) ? 0 : doubledUp.hashCode());
-            result = prime * result + ((time == null) ? 0 : time.hashCode());
-            return result;
+            return Objects.hashCode(doubledUp, time);
         }
 
         @Override
@@ -144,19 +136,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             if (getClass() != obj.getClass())
                 return false;
             DoubleUpState other = (DoubleUpState) obj;
-            if (!getOuterType().equals(other.getOuterType()))
-                return false;
-            if (doubledUp == null) {
-                if (other.doubledUp != null)
-                    return false;
-            } else if (!doubledUp.equals(other.doubledUp))
-                return false;
-            if (time == null) {
-                if (other.time != null)
-                    return false;
-            } else if (!time.equals(other.time))
-                return false;
-            return true;
+            
+            return Objects.equal(doubledUp, other.doubledUp) &&
+                    Objects.equal(time, other.time);
         }
 
         public DoubleUpState(List<Pair<Integer, Integer>> doubledUp, Fraction time) {
@@ -181,7 +163,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             return sb.toString();
         }
         
-        public boolean validPairing(int leftCar, int rightCar, InputData in, Fraction time) {
+        public boolean validPairing(int leftCar, int rightCar) {
             Iterator<Pair<Integer,Integer>> pairIt = doubledUp.iterator();
             
             //Find the pair
@@ -194,8 +176,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 if (pair.getRight() == leftCar) {
                     return false;
                 }
-                
-                
             }
             
             return true;
@@ -229,38 +209,20 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     public String handleCase(InputData in) {
 
-        //Find all doubled up cars
-        
-        TreeMap<Integer,Integer> leftLane = new TreeMap<>();
-        TreeMap<Integer,Integer> rightLane = new TreeMap<>();
-        
         List<Pair<Integer,Integer>> doubledUp = Lists.newArrayList();
-        
-        for(int i = 0; i < in.N; ++i) {
-            int pos = in.initialPosition[i];
-            if (in.initialLane[i] == 'L') {
-                leftLane.put(pos, i);
-                //want initialPos - 5 < p < initialPos + 5
-                Map<Integer,Integer> inter = rightLane.subMap(pos - 5, false, pos + 5, false);
-                for(int carIdx : inter.values()) {
-                    doubledUp.add(new ImmutablePair<>(i, carIdx));
-                }
-            }
-            
-            if (in.initialLane[i] == 'R') {
-                rightLane.put(pos, i);
-                Map<Integer,Integer> inter = leftLane.subMap(pos - 5, false, pos + 5, false);
-                for(int carIdx : inter.values()) {
-                    doubledUp.add(new ImmutablePair<>(carIdx, i));
-                }
-            }
-        }
         
         List<Event> events = Lists.newArrayList();
         
         for(int i = 0; i < in.N; ++i) {
             for(int j = i + 1; j < in.N; ++j) {
                 
+                if ( Math.abs(in.initialPosition[i] - in.initialPosition[j] ) < 5 ) {
+                    if (in.initialLane[i] == 'L') {
+                        doubledUp.add(new ImmutablePair<>(i, j));
+                    } else {
+                        doubledUp.add(new ImmutablePair<>(j, i));
+                    }
+                }
 
                 //Same speed means they will never double or undouble each other,
                 //important to avoid false doubling events
@@ -271,44 +233,37 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     //cars are doubled up
                     int passingCar = (in.speed[i] > in.speed[j]) ? i : j;
                     int passedCar = passingCar == i ? j : i;
-                    
-                    Pair<Fraction, Fraction> timePosIntersecBF = getTimePosIntersection(in.initialPosition[passingCar], in.speed[passingCar], 
+        
+                    //Just find the undoubling
+                    Fraction timePosIntersecBF = getTimeIntersection(in.initialPosition[passingCar], in.speed[passingCar], 
                             in.initialPosition[passedCar]+5, in.speed[passedCar]); 
                     
-                    if (timePosIntersecBF != null)
-                        events.add(new Event(passingCar,passedCar,Event.Type.UNDOUBLING, timePosIntersecBF.getLeft(), timePosIntersecBF.getRight()));
+                    Preconditions.checkState(timePosIntersecBF != null);
+                    
+                    events.add(new Event(passingCar,passedCar,Event.Type.UNDOUBLING, timePosIntersecBF));
                     
                 } else {
                     int passingCar = (in.initialPosition[i] < in.initialPosition[j]) ? i : j;
                     int passedCar = passingCar == i ? j : i;
-                                    
-                    
-                    if (in.initialPosition[passedCar] - 5 < in.initialPosition[passingCar] ) {
-                        //cars are already doubled, just find Undoubling event
-                        Pair<Fraction, Fraction> timePosIntersecBF = getTimePosIntersection(
-                                in.initialPosition[passingCar], in.speed[passingCar], 
-                                in.initialPosition[passedCar]+5, in.speed[passedCar]);
-                        
-                        
-                        events.add(new Event(passingCar,passedCar,Event.Type.UNDOUBLING, timePosIntersecBF.getLeft(), timePosIntersecBF.getRight()));
-                        continue;
-                    }
+                      
                     
                     //The order doesn't matter because i + 5 with j is the same intersection as j +5, i
-                    Pair<Fraction, Fraction> timePosIntersecFB = 
-                            getTimePosIntersection(in.initialPosition[passingCar]+5, in.speed[passingCar], 
+                    Fraction timePosIntersecFB = 
+                            getTimeIntersection(in.initialPosition[passingCar]+5, in.speed[passingCar], 
                                     in.initialPosition[passedCar], in.speed[passedCar]);
                     
-                    Pair<Fraction, Fraction> timePosIntersecBF = getTimePosIntersection(in.initialPosition[passingCar], in.speed[passingCar], 
+                    Fraction timePosIntersecBF = getTimeIntersection(in.initialPosition[passingCar], in.speed[passingCar], 
                             in.initialPosition[passedCar]+5, in.speed[passedCar]); 
                     
+                    if (timePosIntersecFB == null || timePosIntersecBF == null) 
+                        continue;
+                    
+                    events.add(new Event(passingCar,passedCar,Event.Type.DOUBLING, timePosIntersecFB));
                     
                     
-                    if (timePosIntersecFB != null)
-                    events.add(new Event(passingCar,passedCar,Event.Type.DOUBLING, timePosIntersecFB.getLeft(), timePosIntersecFB.getRight()));
+                    events.add(new Event(passingCar,passedCar,Event.Type.UNDOUBLING, timePosIntersecBF));
                     
-                    if (timePosIntersecBF != null)
-                    events.add(new Event(passingCar,passedCar,Event.Type.UNDOUBLING, timePosIntersecBF.getLeft(), timePosIntersecBF.getRight()));
+                    
                 }
             }
         }
@@ -337,7 +292,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         log.debug("Double up state\n{}", ds);
        //in.levelMin.subList()
 
-        Fraction max = minTime(timeEvents, in, memoize, ds, eventList, firstTime); 
+        Fraction max = minTime(timeEvents, memoize, ds, eventList, firstTime); 
         
         if (max == null)
             return String.format("Case #%d: Possible", in.testCase);
@@ -346,18 +301,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     }
     
-    static int iterations = 0;
-    Fraction minTime(TreeMultimap<Fraction, Event> timeEvents,  InputData in, Map<DoubleUpState, Fraction> memoize, DoubleUpState ds, 
+    Fraction minTime(TreeMultimap<Fraction, Event> timeEvents,  Map<DoubleUpState, Fraction> memoize, DoubleUpState ds, 
             List<Event> currentEvents, Fraction currentTime) {
-        ++iterations;
         
         if (memoize.containsKey(ds) ) {
             return memoize.get(ds);
         }
             
-        if (iterations % 1000000 == 0) {
-            log.info("Iterations {} current time {}", iterations, DoubleFormat.df3.format(currentTime.doubleValue()));
-        }
         //base cases
         if (currentEvents.isEmpty()) {
             //fetch next 
@@ -376,7 +326,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             List<Event> events =  new ArrayList<>(timeEvents.get(nextTime));
             DoubleUpState dsNew = new DoubleUpState(ds);
             dsNew.time = nextTime;
-            Fraction f = minTime(timeEvents, in, memoize, dsNew, events, nextTime);
+            Fraction f = minTime(timeEvents, memoize, dsNew, events, nextTime);
             memoize.put(dsNew,f);
             return f;
         }
@@ -386,41 +336,36 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         if (event.type == Event.Type.UNDOUBLING) {
             DoubleUpState dsNew = new DoubleUpState(ds);
             dsNew.handleUndouble(event);
-            Fraction f = minTime(timeEvents, in, memoize, dsNew, currentEvents.subList(1, currentEvents.size()), currentTime);
+            Fraction f = minTime(timeEvents, memoize, dsNew, currentEvents.subList(1, currentEvents.size()), currentTime);
             memoize.put(dsNew,f);
             return f;
         }
         
         //Doubling event
         
-     
         Fraction f1 = new Fraction(-1);
         Fraction f2 = new Fraction(-1);
-        
-        if (ds.validPairing(event.car1, event.car2, in, currentTime)) {
-        DoubleUpState dsNew = new DoubleUpState(ds);
-        dsNew.doubledUp.add(new ImmutablePair<>(event.car1, event.car2));
-         f1 = minTime(timeEvents, in, memoize, dsNew, currentEvents.subList(1, currentEvents.size()), currentTime);
-         memoize.put(dsNew,f1);
-         if (f1==null) {
-             
-             return null;
-         }
+
+        if (ds.validPairing(event.car1, event.car2)) {
+            DoubleUpState dsNew = new DoubleUpState(ds);
+            dsNew.doubledUp.add(new ImmutablePair<>(event.car1, event.car2));
+            f1 = minTime(timeEvents, memoize, dsNew, currentEvents.subList(1, currentEvents.size()), currentTime);
+            memoize.put(dsNew, f1);
         }
-        
-        if (ds.validPairing(event.car2, event.car1, in, currentTime)) {
-        DoubleUpState dsNew2 = new DoubleUpState(ds);
-        dsNew2.doubledUp.add(new ImmutablePair<>(event.car2, event.car1));
-        
-        f2 =  minTime(timeEvents, in, memoize, dsNew2, currentEvents.subList(1, currentEvents.size()), currentTime);
-        memoize.put(dsNew2,f2);
-        if (f2==null)
+
+        if (ds.validPairing(event.car2, event.car1)) {
+            DoubleUpState dsNew2 = new DoubleUpState(ds);
+            dsNew2.doubledUp.add(new ImmutablePair<>(event.car2, event.car1));
+
+            f2 = minTime(timeEvents, memoize, dsNew2, currentEvents.subList(1, currentEvents.size()), currentTime);
+            memoize.put(dsNew2, f2);
+        }
+
+        if (f1 == null || f2 == null)
             return null;
-        }
-        
+
         Fraction max = f1.compareTo(f2) >= 0 ? f1 : f2;
-        
-        
+
         if (max.compareTo(Fraction.ZERO) < 0) {
             return currentTime;
         } else {
