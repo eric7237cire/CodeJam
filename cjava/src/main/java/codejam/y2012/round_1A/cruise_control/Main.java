@@ -22,6 +22,7 @@ import codejam.utils.utils.DoubleFormat;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.TreeMultimap;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
@@ -122,15 +123,53 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     public class DoubleUpState {
         List<Pair<Integer,Integer>> doubledUp;
+        Fraction time;
         
-        public DoubleUpState(List<Pair<Integer, Integer>> doubledUp) {
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + getOuterType().hashCode();
+            result = prime * result + ((doubledUp == null) ? 0 : doubledUp.hashCode());
+            result = prime * result + ((time == null) ? 0 : time.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            DoubleUpState other = (DoubleUpState) obj;
+            if (!getOuterType().equals(other.getOuterType()))
+                return false;
+            if (doubledUp == null) {
+                if (other.doubledUp != null)
+                    return false;
+            } else if (!doubledUp.equals(other.doubledUp))
+                return false;
+            if (time == null) {
+                if (other.time != null)
+                    return false;
+            } else if (!time.equals(other.time))
+                return false;
+            return true;
+        }
+
+        public DoubleUpState(List<Pair<Integer, Integer>> doubledUp, Fraction time) {
             super();
             this.doubledUp = doubledUp;
+            this.time = time;
         }
         
         public DoubleUpState(DoubleUpState ds) {
             super();
             this.doubledUp = new ArrayList<>(ds.doubledUp);
+            this.time = ds.time;
+            
         }
 
         public String toString() {
@@ -181,6 +220,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
             
             Preconditions.checkState(deleted);
+        }
+
+        private Main getOuterType() {
+            return Main.this;
         }
     }
     
@@ -288,12 +331,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         Fraction firstTime = timeEvents.keySet().first();
         List<Event> eventList =  new ArrayList<>(timeEvents.get(firstTime));
         
-        DoubleUpState ds = new DoubleUpState(doubledUp);
+        DoubleUpState ds = new DoubleUpState(doubledUp, firstTime);
+        Map<DoubleUpState, Fraction> memoize = Maps.newHashMap();
         
         log.debug("Double up state\n{}", ds);
        //in.levelMin.subList()
 
-        Fraction max = minTime(timeEvents, in, ds, eventList, firstTime); 
+        Fraction max = minTime(timeEvents, in, memoize, ds, eventList, firstTime); 
         
         if (max == null)
             return String.format("Case #%d: Possible", in.testCase);
@@ -302,8 +346,18 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     }
     
-    Fraction minTime(TreeMultimap<Fraction, Event> timeEvents,  InputData in, DoubleUpState ds, 
+    static int iterations = 0;
+    Fraction minTime(TreeMultimap<Fraction, Event> timeEvents,  InputData in, Map<DoubleUpState, Fraction> memoize, DoubleUpState ds, 
             List<Event> currentEvents, Fraction currentTime) {
+        ++iterations;
+        
+        if (memoize.containsKey(ds) ) {
+            return memoize.get(ds);
+        }
+            
+        if (iterations % 1000000 == 0) {
+            log.info("Iterations {} current time {}", iterations, DoubleFormat.df3.format(currentTime.doubleValue()));
+        }
         //base cases
         if (currentEvents.isEmpty()) {
             //fetch next 
@@ -320,7 +374,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             Fraction nextTime = timeIterator.next();
             List<Event> events =  new ArrayList<>(timeEvents.get(nextTime));
-            return minTime(timeEvents, in, ds, events, nextTime);
+            DoubleUpState dsNew = new DoubleUpState(ds);
+            dsNew.time = nextTime;
+            Fraction f = minTime(timeEvents, in, memoize, dsNew, events, nextTime);
+            memoize.put(dsNew,f);
+            return f;
         }
         
         Event event = currentEvents.get(0);
@@ -328,7 +386,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         if (event.type == Event.Type.UNDOUBLING) {
             DoubleUpState dsNew = new DoubleUpState(ds);
             dsNew.handleUndouble(event);
-            return minTime(timeEvents, in, dsNew, currentEvents.subList(1, currentEvents.size()), currentTime);
+            Fraction f = minTime(timeEvents, in, memoize, dsNew, currentEvents.subList(1, currentEvents.size()), currentTime);
+            memoize.put(dsNew,f);
+            return f;
         }
         
         //Doubling event
@@ -340,20 +400,26 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         if (ds.validPairing(event.car1, event.car2, in, currentTime)) {
         DoubleUpState dsNew = new DoubleUpState(ds);
         dsNew.doubledUp.add(new ImmutablePair<>(event.car1, event.car2));
-         f1 = minTime(timeEvents, in, dsNew, currentEvents.subList(1, currentEvents.size()), currentTime);
+         f1 = minTime(timeEvents, in, memoize, dsNew, currentEvents.subList(1, currentEvents.size()), currentTime);
+         memoize.put(dsNew,f1);
+         if (f1==null) {
+             
+             return null;
+         }
         }
         
         if (ds.validPairing(event.car2, event.car1, in, currentTime)) {
         DoubleUpState dsNew2 = new DoubleUpState(ds);
         dsNew2.doubledUp.add(new ImmutablePair<>(event.car2, event.car1));
         
-        f2 =  minTime(timeEvents, in, dsNew2, currentEvents.subList(1, currentEvents.size()), currentTime);
+        f2 =  minTime(timeEvents, in, memoize, dsNew2, currentEvents.subList(1, currentEvents.size()), currentTime);
+        memoize.put(dsNew2,f2);
+        if (f2==null)
+            return null;
         }
         
-        if (f1 == null || f2 == null) 
-            return null;
-        
         Fraction max = f1.compareTo(f2) >= 0 ? f1 : f2;
+        
         
         if (max.compareTo(Fraction.ZERO) < 0) {
             return currentTime;
