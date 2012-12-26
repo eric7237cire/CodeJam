@@ -131,7 +131,10 @@ public class Main  {
         //2012 1A
         //codejam.y2012.round_1A.password.Main m = new codejam.y2012.round_1A.password.Main();
         //codejam.y2012.round_1A.kingdom_rush.Main m = new codejam.y2012.round_1A.kingdom_rush.Main();
-        codejam.y2012.round_1A.cruise_control.Main m = new codejam.y2012.round_1A.cruise_control.Main();
+        //codejam.y2012.round_1A.cruise_control.Main m = new codejam.y2012.round_1A.cruise_control.Main();
+        
+        //2012 1B
+        codejam.y2012.round_1B.safety_numbers.Main m = new codejam.y2012.round_1B.safety_numbers.Main();
         
         String[] files = {};
         if (m instanceof DefaultInputFiles) {

@@ -1,4 +1,4 @@
-package codejam.y2012.round_1A.cruise_control;
+package codejam.y2012.round_1B.safety_numbers;
 
 import codejam.utils.main.AbstractInputData;
 
@@ -6,9 +6,7 @@ public class InputData
     extends AbstractInputData {
         
         int N;
-        char[] initialLane;
-        int [] speed;
-        int [] initialPosition;
+        int score[];
         
         public InputData(int testCase) {
             super(testCase);

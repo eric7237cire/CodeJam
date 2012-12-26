@@ -5,8 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.SortedSet;
-import java.util.TreeMap;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -118,7 +116,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     }
     
-    public class DoubleUpState {
+    private static class DoubleUpState {
         List<Pair<Integer,Integer>> doubledUp;
         Fraction time;
         
@@ -200,10 +198,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
             
             Preconditions.checkState(deleted);
-        }
-
-        private Main getOuterType() {
-            return Main.this;
         }
     }
     
