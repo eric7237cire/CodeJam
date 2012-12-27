@@ -135,8 +135,8 @@ public class Main  {
         
         //2012 1B
         //codejam.y2012.round_1B.safety_numbers.Main m = new codejam.y2012.round_1B.safety_numbers.Main();
-        codejam.y2012.round_1B.tide.Main m = new codejam.y2012.round_1B.tide.Main();
-        
+        //codejam.y2012.round_1B.tide.Main m = new codejam.y2012.round_1B.tide.Main();
+        codejam.y2012.round_1B.equal_sums.Main m = new codejam.y2012.round_1B.equal_sums.Main();
         
         String[] files = {};
         if (m instanceof DefaultInputFiles) {
