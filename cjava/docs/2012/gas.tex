@@ -1,0 +1,25 @@
+ \documentclass{article} 
+  \begin{document}
+Take a parabola rooted at a point $t_0, p_0$ and we
+are going to a point $t_2, p_2$ via an intermediary point $t_1,p_1$
+
+Basically we keep acceleration at 0 just as long as necesary to keep full
+acceleration.
+
+$p_1 = p_0 + v_0 (t_1 - t_0)$
+
+$p_2 = p_1 + v_0 (t_2 - t_1) + .5a(t_2-t_1)^2$
+
+$p_1$ and $t_1$ are the unknowns, solve for $t_1$ first.
+
+$p_2 = p_0 + v_0 (t_1 - t_0) + v_0 (t_2 - t_1) + .5a(t_2-t_1)^2$
+
+$p_2 = p_0 + v_0t_1 - v_0t_0 + v_0t_2 - v_0t_1 + .5a(t_2^2-2t_1t_2+t_1^2)$
+
+$0 = p_0 - p_2 - v_0t_0 + v_0t_2 + .5a{t_2}^2-at_1t_2+.5{at_1}^2$
+
+$0 = .5{at_1}^2  -at_1t_2 + p_0 - p_2 - v_0t_0 + v_0t_2 + .5a{t_2}^2$
+
+
+
+  \end{document}

@@ -20,3 +20,5 @@ ipch
 *.suo
 *.opensdf
 *.log
+*.dvi
+*.aux
