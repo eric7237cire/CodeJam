@@ -1,19 +1,19 @@
 package codejam.y2012.round_1C.out_of_gas;
 
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Sets;
-
-import codejam.utils.datastructures.GraphInt;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.DoubleFormat;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.common.math.DoubleMath;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
@@ -61,7 +61,77 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return in;
     }
     
-    double intersection(double a, double v0, double pi, double vi) {
+    static class Node {
+        double initialPosition;
+        double initialTime;
+        double initialVelocity;
+        double acceleration;
+        /*
+         * p = ip + iv(t - ti) + .5 * acc * (t-ti)
+         */
+        
+        double getIntersectionForPosition(double p) {
+            //Expanding out p = ip + iv(t - ti) + .5 * acc * (t-ti)
+            double a = .5 * acceleration;
+            double b = initialVelocity - acceleration * initialTime;
+            double c = -initialVelocity * initialTime + initialPosition + .5 * acceleration * initialTime*initialTime;
+            
+            //Setting equation = p and moving everything to 1 side
+            c -= p;
+            
+            double t = solveQuadractic(a,b,c,initialTime);
+            
+            double pCheck = initialPosition + initialVelocity * (t - initialTime) + .5 * acceleration * (t-initialTime) * (t-initialTime);
+            
+            Preconditions.checkState(DoubleMath.fuzzyEquals(p, pCheck, 0.000001));
+            return t;
+            
+        }
+        
+        double getIntersectionWithOtherCar(double otherCarInitialPosition, double otherCarInitialTime, double otherCarVelocity) {
+          //Expanding out p = ip + iv(t - ti) + .5 * acc * (t-ti)
+            double a = .5 * acceleration;
+            double b = initialVelocity - acceleration * initialTime;
+            double c = -initialVelocity * initialTime + initialPosition + .5 * acceleration * initialTime*initialTime;
+            
+            //Other equation p = p_oc0 + oc_v*(t - oc_t0)
+            
+            //Setting them equal and moving all to 1 side
+            c =  c - otherCarInitialPosition + otherCarVelocity * otherCarInitialTime;
+            b -= otherCarVelocity;
+            
+            double t = solveQuadractic(a,b,c,initialTime);
+            
+            double pCheck1 = initialPosition + initialVelocity * (t - initialTime) + .5 * acceleration * (t-initialTime) * (t-initialTime);
+            double pCheck2 = otherCarInitialPosition + otherCarVelocity * (t - otherCarInitialTime);
+            
+            Preconditions.checkState(DoubleMath.fuzzyEquals(pCheck1, pCheck2, 0.000001));
+            Preconditions.checkState( pCheck1 >= otherCarInitialPosition );
+            Preconditions.checkState( pCheck1 >= initialPosition );
+            return t;
+        }
+
+        public Node(double initialPosition, double initialTime, double initialVelocity, double acceleration) {
+            super();
+            this.initialPosition = initialPosition;
+            this.initialTime = initialTime;
+            this.initialVelocity = initialVelocity;
+            this.acceleration = acceleration;
+        }
+    }
+    
+    static double solveQuadractic(double a, double b, double c, double minY) {
+        double y1 = (-b + Math.sqrt(b*b - 4 * a * c)) / (2*a);
+        double y2 = (-b - Math.sqrt(b*b - 4 * a * c)) / (2*a);
+        
+        if (DoubleMath.fuzzyCompare(y1, minY, 0.000001) >= 0)
+            return y1;
+        
+        return y2;
+                    
+    }
+    
+    double intersection(double a, double v0, double otherCarInitialPosition, double otherCarVelocity) {
         /*v0*t + 0.5a*t^2 == p
         //pi + vi * t = p
         v0*t + 0.5a*t^2 == pi + vi * t
@@ -69,8 +139,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         */
         
         double A = 0.5*a;
-        double B = v0-vi;
-        double C = -pi;
+        double B = v0-otherCarVelocity;
+        double C = -otherCarInitialPosition;
         
         double t1 = (-B + Math.sqrt(B*B - 4 * A * C)) / (2*A);
         double t2 = (-B - Math.sqrt(B*B - 4 * A * C)) / (2*A);
@@ -84,22 +154,47 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return -10000;
     }
 
+    public void testIntersections() {
+        double j = 300;
+        double h = 200;
+        double i = 14;
+        double g = 6;
+        Node node = new Node(j, i, (j-h) / (i-g), 3);
+        log.info("At 1000 : {}", node.getIntersectionForPosition(1000));
+        
+        
+        node = new Node(j, i, (j-h) / (i-g), 9);
+        double l = 600;
+        double m = 24;
+        double k = 15;
+        double n = 800;
+        log.info("At line : {}", node.getIntersectionWithOtherCar(l, k, (n-l)/(m-k)));
+    }
+    
     public String handleCase(InputData in) {
 
+        
+        
+        
+        
         double[] v = new double[in.N-1];
-        for(int n = 1; n < in.N; ++n) {
-            v[n-1] = (in.pos[n] - in.pos[n-1]) / (in.time[n] - in.time[n-1]);
+        for(int otherCarIdx = 1; otherCarIdx < in.N; ++otherCarIdx) {
+            v[otherCarIdx-1] = (in.pos[otherCarIdx] - in.pos[otherCarIdx-1]) / (in.time[otherCarIdx] - in.time[otherCarIdx-1]);
         }
         StringBuffer sb = new StringBuffer();
         sb.append(String.format("Case #%d:\n", in.testCase));
         
         for(int aIdx = 0; aIdx < in.A; ++aIdx) {
             double a = in.acc[aIdx];
+            List<Node> nodes = Lists.newArrayList();
+            nodes.add(new Node(0,0,0, a));
             
             if (in.N == 1) {
-                double tIntersection = intersection(a,0,in.D, 0);
-                double pos = 0.5*a*tIntersection * tIntersection;
+                double tIntersection = nodes.get(0).getIntersectionForPosition(in.D);
                 sb.append(DoubleFormat.df6.format(tIntersection));
+                
+                double tIntersectionCheck = intersection(a,0,in.D, 0);
+                Preconditions.checkState(DoubleMath.fuzzyEquals(tIntersection, tIntersectionCheck,1e-7));
                 sb.append('\n');
                 continue;
             }
