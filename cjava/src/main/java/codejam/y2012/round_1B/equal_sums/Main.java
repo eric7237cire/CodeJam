@@ -1,7 +1,6 @@
 package codejam.y2012.round_1B.equal_sums;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;

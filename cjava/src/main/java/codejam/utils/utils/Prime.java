@@ -2,31 +2,44 @@ package codejam.utils.utils;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.BitSet;
 import java.util.List;
 
 import com.google.common.math.DoubleMath;
 
 public class Prime {
+    /**
+     * Generate all primes between 1 and n inclusive
+     * @param n
+     * @return the list of primes
+     */
     public static List<Integer> generatePrimes(int n) {
-        boolean[] isPrime = new boolean[n+1];
-        Arrays.fill(isPrime,true);
-        List<Integer> primes = new ArrayList<Integer>(80000);
+        BitSet isPrime = new BitSet();
+        isPrime.flip(0, n+1);
+        isPrime.set(0, 2, false);
         
+        List<Integer> primes = new ArrayList<Integer>();
+
+        //Since we are eliminating via prime factors, a factor is at most sqrt(n)
         int upperLimit = DoubleMath.roundToInt(Math.sqrt(n), RoundingMode.UP);
         for(int i = 2; i <= upperLimit; ++i) {
-            if (!isPrime[i]) {
+            if (!isPrime.get(i)) {
                 continue;
             }
+            
+            //Loop through all multiples of the prime factor i.  Start with i*i, because the rest
+            //were already covered by previous factors.  Ex, i == 7, we start at 49 because 7*2 through 7*6 
+            //we already covered by previous prime factors.
             for(int j = i * i; j <= n; j += i) {
-                isPrime[j] = false;
+                isPrime.set(j, false);
             }
         }
         
-        for(int j = 2; j <= n; ++j) {
-            if (isPrime[j])
-                primes.add(j);
+        //Use BitSet suggestion for looping through set bits
+        for (int i = isPrime.nextSetBit(0); i >= 0; i = isPrime.nextSetBit(i+1)) {
+            primes.add(i);
         }
+        
         
         return primes;
     }

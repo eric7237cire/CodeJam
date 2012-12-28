@@ -64,6 +64,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 ans[i] = 0;
                 ++neverLoseCount;
                 neverLoseSum += in.score[i];
+                
+                //Adjust the average to be distributed over the vulnerable places
                 avg = (2.0d * sum - neverLoseSum) / (in.N - neverLoseCount);
                 i=-1;
                 continue;
