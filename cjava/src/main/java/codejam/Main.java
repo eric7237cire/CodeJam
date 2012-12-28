@@ -140,7 +140,8 @@ public class Main  {
         
         //2012 1C
         //codejam.y2012.round_1C.diamond_inheritance.Main m = new codejam.y2012.round_1C.diamond_inheritance.Main();
-        codejam.y2012.round_1C.out_of_gas.Main m = new codejam.y2012.round_1C.out_of_gas.Main();
+        //codejam.y2012.round_1C.out_of_gas.Main m = new codejam.y2012.round_1C.out_of_gas.Main();
+        codejam.y2012.round_1C.boxes.Main m = new codejam.y2012.round_1C.boxes.Main();
         
         
         String[] files = {};

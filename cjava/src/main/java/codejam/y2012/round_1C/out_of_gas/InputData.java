@@ -1,6 +1,5 @@
 package codejam.y2012.round_1C.out_of_gas;
 
-import codejam.utils.datastructures.GraphInt;
 import codejam.utils.main.AbstractInputData;
 
 public class InputData 

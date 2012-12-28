@@ -6,14 +6,19 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.joda.time.DateTimeConstants;
+import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.utils.Prime;
 
 import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Sets;
+import com.google.common.math.BigIntegerMath;
+import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
 
@@ -277,7 +282,7 @@ public class Prob1 {
         
         log.info("Prob 11.  Sum {}", max);
         
-        
+        /*
         
         for(n = 1; n < 10000000; ++n) {
             long triangle = n * (n+1) / 2;
@@ -298,7 +303,7 @@ public class Prob1 {
                 break;
             }
             
-        }
+        }*/
     
         
         ///
@@ -314,6 +319,7 @@ public class Prob1 {
         log.info("Prob 13. Sum {}", sumBI.toString().substring(0, 10));
         scanner.close();
         
+        /*
         int maxCount = 0;
         
         for(long start = 1; start < 1000000; ++start ) {
@@ -325,9 +331,9 @@ public class Prob1 {
             }
             if (count > maxCount) {
                 maxCount = count;
-                log.info("Prob 14.  Seq length {}  start {}", count, start);
+               // log.info("Prob 14.  Seq length {}  start {}", count, start);
             }
-        }
+        }*/
         
         s = BigInteger.valueOf(2).pow(1000).toString();
         
@@ -337,7 +343,135 @@ public class Prob1 {
         }
         
         log.info("Prob 16  sum {}", sum);
+
+        //1 to 10
+        int wordCounts[] = {3, 3, 5, 4, 4, 3, 5, 5, 4, 3, 6, "twelve".length(), "thirteen".length(),
+                8, 7, 7, 9, "eighteen".length(), 8};
+        int tenCounts[] = {"twenty".length(), "thirty".length(), "forty".length(), "fifty".length(),
+                "sixty".length(), "seventy".length(), "eighty".length(), "ninety".length() };
+        int hundred = "hundred".length();
+        int thousand = "thousand".length();
         
+        sum = 0;
+        for(int i = 1; i <= 1000; ++i) {            
+            if (i >= 1000) {
+                sum += wordCounts[0] + thousand;
+                continue;
+            }
+            
+            int rest = i;
+            if (i >= 100) {
+                int hundredsDigit = wordCounts[i / 100 - 1] + hundred;
+                sum += hundredsDigit;
+                rest = i % 100;
+            }
+            
+            if (rest == 0)
+                continue;
+            
+            if (i >= 100) {
+                sum += 3; //and
+            }
+            
+            if (rest < 20) {
+                sum += wordCounts[rest-1];
+                continue;
+            }
+            
+            int tensDigit = rest / 10;
+            sum += tenCounts[tensDigit - 2];
+            
+            int onesDigit = rest % 10;
+            
+            if (onesDigit > 0) {
+                sum += wordCounts[onesDigit-1];
+            }
+            
+            
+        }
+        
+        log.info("Prob 17 : sum {}", sum);
+        
+        //scanner = new Scanner(Prob1.class.getResourceAsStream("prob18.txt"));
+        scanner = new Scanner(Prob1.class.getResourceAsStream("prob67.txt"));
+        
+        int nodeNum = 1;
+        
+        List<Integer> maximumPath  = Lists.newArrayList();
+        maximumPath.add(scanner.nextInt());
+        final int maxRow = 100;
+        int globalMaxVal = 0;
+        for(int r = 2; r <= maxRow; ++r) {
+            for(int c = 1; c <= r; ++c) {
+                ++nodeNum;
+                int val = scanner.nextInt();
+                
+                int maxValue = 0;
+                //subtract length of previous row
+                if (c > 1) {
+                    maxValue = Math.max(maxValue, val+maximumPath.get( nodeNum-r-1));
+                }
+                if (c < r) {
+                    maxValue = Math.max(maxValue, val+maximumPath.get( nodeNum-r));
+                }
+                maximumPath.add(maxValue);
+                globalMaxVal = Math.max(globalMaxVal,maxValue);
+            }
+        }
+        
+        log.info("Prob 18.  max sum {}", globalMaxVal);
+        
+        sum = 0;
+        for (int y = 1901; y <= 2000; ++y) {
+            for(int m = 1; m <= 12; ++m) {
+                LocalDate dt = new LocalDate(y, m, 1);
+                if (dt.getDayOfWeek() == DateTimeConstants.SUNDAY) {
+                    sum++;
+                }
+                //log.info("Date time {}", dt.getDayOfWeek());
+            }
+        }
+        
+        log.info("Prob 19 {}", sum);
+        
+        
+        String hugeFactorial = BigIntegerMath.factorial(100).toString();
+        
+        sum = 0;
+        
+        for(int i = 0; i < hugeFactorial.length(); ++i) {
+            sum += Character.digit(hugeFactorial.charAt(i),10);
+        }
+        
+        log.info("Prob 20 {}", sum);
+        
+        int amiable = 0;
+        int[] sums = new int[10000];
+        for(int i = 1; i < 10000; ++i) {
+            
+            int upperLimit = IntMath.sqrt(i,RoundingMode.UP);
+            
+            sum = 0;
+            for(int factor = 1; factor <= upperLimit; ++factor) {
+                if (i % factor == 0) {
+                    sum += factor;
+                    sum += i / factor;
+                }
+            }
+            
+            //Only proper factors
+            sum -= i;
+            
+            sums[i-1] = sum;
+            if (sum < i && sum > 0 && sums[sum-1] == i ) {
+                log.info("Found amiable pair n {} : {} and {} : {}", i, sum, sum, sums[sum-1]);
+                amiable+=i;
+                amiable += sum;
+            }
+            
+        }
+        
+        log.info("prob 21 : {}", amiable);
     }
 
 }
