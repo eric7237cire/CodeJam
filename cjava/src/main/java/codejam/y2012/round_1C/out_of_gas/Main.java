@@ -68,9 +68,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
 
     static class Node {
-        double initialPosition; //always 0
         double initialTime; 
-        double initialVelocity; //not needed always 0
         double acceleration; //always max
         /*
          * p = ip + iv(t - ti) + .5 * acc * (t-ti)
@@ -79,8 +77,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         double getIntersectionForPosition(double p) {
             //Expanding out p = ip + iv(t - ti) + .5 * acc * (t-ti)
             double a = .5 * acceleration;
-            double b = initialVelocity - acceleration * initialTime;
-            double c = -initialVelocity * initialTime + initialPosition + .5 * acceleration * initialTime*initialTime;
+            double b =  - acceleration * initialTime;
+            double c =  .5 * acceleration * initialTime*initialTime;
             
             //Setting equation = p and moving everything to 1 side
             c -= p;
@@ -88,7 +86,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             double[] tBoth = solveQuadractic(a,b,c);
             double t = tBoth[1];
             
-            double pCheck = initialPosition + initialVelocity * (t - initialTime) + .5 * acceleration * (t-initialTime) * (t-initialTime);
+            double pCheck = + .5 * acceleration * (t-initialTime) * (t-initialTime);
             
             Preconditions.checkState(DoubleMath.fuzzyEquals(p, pCheck, 1e-5));
             return t;
@@ -99,8 +97,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         double[] getIntersectionWithOtherCar( double otherCarInitialTime, double otherCarInitialPosition, double otherCarVelocity) {
           //Expanding out p = ip + iv(t - ti) + .5 * acc * (t-ti)
             double a = .5 * acceleration;
-            double b = initialVelocity - acceleration * initialTime;
-            double c = -initialVelocity * initialTime + initialPosition + .5 * acceleration * initialTime*initialTime;
+            double b =  - acceleration * initialTime;
+            double c = .5 * acceleration * initialTime*initialTime;
             
             //Other equation p = p_oc0 + oc_v*(t - oc_t0)
             
@@ -117,13 +115,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 return null;
             }
             
-            double pCheck1 = initialPosition + initialVelocity * (t - initialTime) + .5 * acceleration * (t-initialTime) * (t-initialTime);
+            double pCheck1 =  .5 * acceleration * (t-initialTime) * (t-initialTime);
             double pCheck2 = otherCarInitialPosition + otherCarVelocity * (t - otherCarInitialTime);
             
-            log.debug("check1 - check2 {}", pCheck1 - pCheck2);
-            Preconditions.checkState(DoubleMath.fuzzyEquals(pCheck1, pCheck2, 0.0003));
+           // log.info("check1 - check2 {}", pCheck1 - pCheck2);
+            Preconditions.checkState(DoubleMath.fuzzyEquals(pCheck1, pCheck2, 0.003));
             Preconditions.checkState(DoubleMath.fuzzyCompare(pCheck1, otherCarInitialPosition, 0003 ) >= 0);
-            Preconditions.checkState( pCheck1 >= initialPosition );
+            Preconditions.checkState( pCheck1 >= 0 );
             return new double[] {t, pCheck1};
         }
         
@@ -137,9 +135,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         double[] findIntermediatePoint(double t2, double p2) {
             double a = .5 * acceleration;
             double b = -t2*acceleration ;
-            double c = initialPosition - p2 + 
-                    -initialVelocity*initialTime 
-                    + initialVelocity*t2 +
+            double c =  - p2 + 
                     .5 * acceleration * t2*t2;
             
             double[] tBoth = solveQuadractic(a,b,c);
@@ -154,26 +150,24 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 return null;
             }
             
-            double p1 = initialPosition + initialVelocity * (t1 - initialTime);
+            double p1 = 0;
             
-            double pCheck1 = p1 + initialVelocity * (t2 - t1) + .5 * acceleration * (t2-t1) * (t2-t1);
+            double pCheck1 = p1 + .5 * acceleration * (t2-t1) * (t2-t1);
             Preconditions.checkState(DoubleMath.fuzzyEquals(pCheck1, p2, .0003));
             
             return new double[] { t1, p1 };
         }
 
-        public Node(double initialTime,double initialPosition, double initialVelocity, double acceleration) {
+        public Node(double initialTime, double acceleration) {
             super();
-            this.initialPosition = initialPosition;
             this.initialTime = initialTime;
-            this.initialVelocity = initialVelocity;
             this.acceleration = acceleration;
         }
 
         @Override
         public String toString() {
-            return "Node [pos=" + initialPosition + ", tStart=" + initialTime + 
-                    ", vStart=" + initialVelocity + ", acc="
+            return "Node [tStart=" + initialTime + 
+                    ", acc="
                     + acceleration + "]";
         }
     }
@@ -220,7 +214,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         for(int aIdx = 0; aIdx < in.A; ++aIdx) {
             double acc = in.acc[aIdx];
-            Node node = new Node(0,0,0, acc);
+            Node node = new Node(0, acc);
             
            
             
@@ -242,7 +236,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
                 log.debug("Extending line from node {} to time {}, pos {}", node, timePos[0], timePos[1]);
 
-                Node replaceNode = new Node(timePos[0], timePos[1], node.initialVelocity, acc);
+                Node replaceNode = new Node(timePos[0], acc);
                 node = replaceNode;
 
             }    
