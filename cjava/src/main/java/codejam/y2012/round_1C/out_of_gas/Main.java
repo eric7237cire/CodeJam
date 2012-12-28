@@ -1,5 +1,6 @@
 package codejam.y2012.round_1C.out_of_gas;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Scanner;
@@ -22,9 +23,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-         return new String[] {"sample.in"};
-     //   return new String[] {"B-small-practice.in"};
-        //return new String[] { "A-small-practice.in", "A-large-practice.in" };
+      //   return new String[] {"sample.in"};
+       // return new String[] {"B-small-practice.in"};
+      //  return new String[] {"B-large-practice.in"};
+        return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
     @Override
@@ -104,13 +106,25 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             c =  c - otherCarInitialPosition + otherCarVelocity * otherCarInitialTime;
             b -= otherCarVelocity;
             
-            double t = solveQuadractic(a,b,c,otherCarInitialTime);
+            double[] tBoth = solveQuadractic(a,b,c);
+            
+            double t;
+            if (DoubleMath.fuzzyCompare(tBoth[0], otherCarInitialTime, 0.0001) > 0) {
+                t = tBoth[0];
+            } else if (DoubleMath.fuzzyCompare(tBoth[1], otherCarInitialTime, 0.0001) > 0) {
+                t = tBoth[1];
+            } else if (DoubleMath.fuzzyCompare(tBoth[1], otherCarInitialTime, 0.0001) == 0) {
+                t = tBoth[1];
+            } else {
+                return null;
+            }
             
             double pCheck1 = initialPosition + initialVelocity * (t - initialTime) + .5 * acceleration * (t-initialTime) * (t-initialTime);
             double pCheck2 = otherCarInitialPosition + otherCarVelocity * (t - otherCarInitialTime);
             
-            Preconditions.checkState(DoubleMath.fuzzyEquals(pCheck1, pCheck2, 0.000001));
-            Preconditions.checkState( pCheck1 >= otherCarInitialPosition );
+            log.debug("check1 - check2 {}", pCheck1 - pCheck2);
+            Preconditions.checkState(DoubleMath.fuzzyEquals(pCheck1, pCheck2, 0.0003));
+            Preconditions.checkState(DoubleMath.fuzzyCompare(pCheck1, otherCarInitialPosition, 0003 ) >= 0);
             Preconditions.checkState( pCheck1 >= initialPosition );
             return new double[] {t, pCheck1};
         }
@@ -135,7 +149,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             double p1 = initialPosition + initialVelocity * (t1 - initialTime);
             
             double pCheck1 = p1 + initialVelocity * (t2 - t1) + .5 * acceleration * (t2-t1) * (t2-t1);
-            Preconditions.checkState(DoubleMath.fuzzyEquals(pCheck1, p2, 1e-5));
+            Preconditions.checkState(DoubleMath.fuzzyEquals(pCheck1, p2, .0003));
             
             return new double[] { t1, p1 };
         }
@@ -172,6 +186,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     
     }
     
+    
+    static double[] solveQuadractic(double a, double b, double c) {
+        double y1 = (-b + Math.sqrt(b*b - 4 * a * c)) / (2*a);
+        double y2 = (-b - Math.sqrt(b*b - 4 * a * c)) / (2*a);
+        
+        return new double[] { Math.min(y1,y2), Math.max(y1,y2)};
+                    
+    }
     
     static double solveQuadractic(double a, double b, double c, double minY) {
         double y1 = (-b + Math.sqrt(b*b - 4 * a * c)) / (2*a);
@@ -245,6 +267,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         boolean hitD = false;
         for(int i = 1; i < in.N; ++i) {
             if (in.pos[i] > in.D) {
+                if (i != in.N - 1) {
+                    in.N = i + 1;
+                    v = Arrays.copyOf(v, in.N - 1);
+                    in.pos = Arrays.copyOf(in.pos, in.N);
+                    in.time = Arrays.copyOf(in.time, in.N);
+                }
                 Preconditions.checkState(i == in.N - 1);
                 in.pos[i] = in.D;
                 in.time[i] = in.time[i-1] + (in.pos[i] - in.pos[i-1]) / v[i-1];
@@ -271,7 +299,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     //Determine if the node doesn't intersect the car at all
                     double[] timePos = node.getIntersectionWithOtherCar(in.time[otherCarIdx], in.pos[otherCarIdx], v[otherCarIdx]);
                     
-                    
+                    if (timePos == null) {
+                        continue;
+                    }
                     if (timePos[1] >= in.pos[otherCarIdx+1] || timePos[0] >= in.time[otherCarIdx+1]) {
                         //no intersection
                         log.debug("No intersection between node {} and car {}", node, otherCarIdx);
@@ -280,8 +310,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     if (DoubleMath.fuzzyEquals(timePos[1], in.pos[otherCarIdx], 1e-5) &&
                             DoubleMath.fuzzyEquals(timePos[0], in.time[otherCarIdx], 1e-5)) {
                         //no intersection
-                          log.debug("No intersection 2nd check between node {} and car {}", node, otherCarIdx);
-                          continue;
+                         // log.debug("No intersection 2nd check between node {} and car {}", node, otherCarIdx);
+                          //continue;
                       }
                     
                     timePos = node.findIntermediatePoint(in.time[otherCarIdx+1], in.pos[otherCarIdx+1]);
