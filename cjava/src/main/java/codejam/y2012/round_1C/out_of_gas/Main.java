@@ -174,8 +174,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     
     private static double[] solveQuadractic(double a, double b, double c) {
-        double y1 = (-b + Math.sqrt(b*b - 4 * a * c)) / (2*a);
-        double y2 = (-b - Math.sqrt(b*b - 4 * a * c)) / (2*a);
+        double det = Math.sqrt(b*b - 4 * a * c);
+        double y1 = (-b + det) / (2*a);
+        double y2 = (-b - det) / (2*a);
         
         return new double[] { Math.min(y1,y2), Math.max(y1,y2)};
                     
