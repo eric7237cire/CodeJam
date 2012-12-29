@@ -171,9 +171,65 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         row.put(blockEndIndex, blockEndCount);
         
         long checkRowIndex = nextBlockRowIndex ;
+        
+        log.debug("Update row.  changing start index {} to {} and increasing by 1 until {} to {}", 
+                blockStartIndex, blockStartCount, blockEndIndex, blockEndCount
+                );
+        
+        log.debug("Brute force checks at row index {}. \nStart index {} should be {}, end index {} should be {}",
+                checkRowIndex,
+                blockStartIndex, 
+                bruteForce[(int)checkRowIndex][(int) blockStartIndex],
+                blockEndIndex,
+                bruteForce[(int)checkRowIndex][(int) blockEndIndex]
+                );
         Preconditions.checkState(bruteForce[(int)checkRowIndex][(int) blockStartIndex] == (int)blockStartCount);            
         Preconditions.checkState(bruteForce[(int)checkRowIndex][(int) blockEndIndex] == (int)blockEndCount);
         
+    }
+    
+    
+    static class UpdateRowInfo {
+        long startIndex;
+        long stopIndex;
+        long startIndexCount;
+        public UpdateRowInfo(long startIndex, long stopIndex, long startIndexCount) {
+            super();
+            this.startIndex = startIndex;
+            this.stopIndex = stopIndex;
+            this.startIndexCount = startIndexCount;
+        }
+    }
+    
+    private static UpdateRowInfo getMidBlockStart(TreeMap<Long,Long> prevRow, 
+            long maxLength, Block blockOfB) {
+        //Find defined points in the block, we are looking for a point that 
+        //means the count is no longer increasing.  We dont need to worry
+        //about points outside because either it means the #'s are constant or they
+        //are increasing.  Both mean that we cannot improve further by matching mid block.
+        
+        //-1 since if increasing stops at end of block, we cannot improve
+        NavigableSet<Long> keys = prevRow.subMap(blockOfB.startingIndex, 
+                true, blockOfB.startingIndex + blockOfB.count - 1, false).navigableKeySet();
+        
+        //Should be at most 2 key, when increasing starts at front of block (possible) and 1 
+        //when the increasing stops
+        Preconditions.checkState(keys.size() <= 2);
+        
+        if (keys.isEmpty())
+            return null;
+        
+        long index = keys.last() + 1;
+        
+        Preconditions.checkState(index < blockOfB.startingIndex+blockOfB.count);
+        
+        long count = prevRow.get(keys.last()) + 1;
+            
+        long stopIndex = Math.min(blockOfB.startingIndex+blockOfB.count - 1, index + maxLength - 1);
+        
+        UpdateRowInfo uri = new UpdateRowInfo(index, stopIndex, count);
+        
+        return uri;
     }
     
     /**
@@ -361,6 +417,10 @@ long currentColIndex = 0;
         TreeMap<Long, Integer> bIndexType = new TreeMap<>();
 
         long[] maxes = buildIndexTypeArrays(aIndexType, bIndexType, in);
+        
+        log.debug("A index ==> type {}", aIndexType);
+        
+        log.debug("B index ==> type {}", bIndexType);
 
         long aMaxIndex = maxes[0];
         long bMaxIndex = maxes[1];
@@ -392,6 +452,8 @@ long currentColIndex = 0;
             for (int mbIndex = 0; mbIndex < matchingBlocks.size(); ++mbIndex) {
 
                 Block blockOfB = matchingBlocks.get(mbIndex);
+                
+                log.debug("Matching block B {}", blockOfB);
 
                 // Long nextBlockStartCount = mbIndex == matchingBlocks.size() - 1 ? null :
                 // getBlockStartCount(prevRow, matchingBlocks.get(mbIndex + 1));
@@ -412,6 +474,13 @@ long currentColIndex = 0;
                     // blockA fits exactly in blockB
                     continue;
                 }
+                
+                UpdateRowInfo uri = getMidBlockStart(prevBlockRow, blockOfA.count, blockOfB);
+                
+                if (uri == null)
+                    continue;
+                
+                updateRow(blockRow, uri.startIndex, uri.stopIndex, uri.startIndexCount, endBlockOfARowIndex, bruteForce);
 
                 /*
                 // Block A is smaller
