@@ -162,14 +162,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return prevCountLastRow;
     }
     
-    private static void updateRow(TreeMap<Long,Long> row, long blockStartIndex, long blockEndIndex, long blockStartCount, long nextBlockRowIndex, int[][] bruteForce) {
+    private static void updateRow(TreeMap<Long,Long> row, long blockStartIndex, long blockEndIndex,
+            long blockStartCount, long nextBlockRowIndex, int[][] bruteForce) {
         long blockLength = blockEndIndex - blockStartIndex + 1;
         long blockEndCount = blockStartCount + blockLength - 1;
                 
         row.put(blockStartIndex, blockStartCount);
         row.put(blockEndIndex, blockEndCount);
         
-        long checkRowIndex = nextBlockRowIndex - 1;
+        long checkRowIndex = nextBlockRowIndex ;
         Preconditions.checkState(bruteForce[(int)checkRowIndex][(int) blockStartIndex] == (int)blockStartCount);            
         Preconditions.checkState(bruteForce[(int)checkRowIndex][(int) blockEndIndex] == (int)blockEndCount);
         
@@ -204,6 +205,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             if (lenNeededStartBlock > maxLength) {
                 searchIndexStart += lenNeededStartBlock - maxLength;
+                lenNeededStartBlock -= lenNeededStartBlock - maxLength;
             }
             
             //Check directly the beginning and end of the block
@@ -382,7 +384,7 @@ long currentColIndex = 0;
 
             //TreeMap<Long, Long> prevRow = new TreeMap<Long, Long>();
 
-            log.debug("Processing block A {} ", blockOfA);
+            log.debug("Processing block A {}  end at lcs row index {} ", blockOfA, endBlockOfARowIndex);
 
             List<Block> matchingBlocks = getMatchingBlocksOfB(bMaxIndex, bIndexType, blockOfA);
 
@@ -411,12 +413,17 @@ long currentColIndex = 0;
                     continue;
                 }
 
+                /*
                 // Block A is smaller
                 long offset = blockOfB.startingIndex + bBlockLengthRemaining - aBlockLengthRemaining;
 
-                startCount = getMaximumBlockStart(prevBlockRow, blockOfA.count, blockOfB.startingIndex + offset, matchingBlocks.subList(0, mbIndex));
+                //Check that offset finishes at the end index
+                
+                Preconditions.checkState(offset + overlap == blockOfB.startingIndex + blockOfB.count - 1);
+                startCount = getMaximumBlockStart(prevBlockRow, blockOfA.count, offset, matchingBlocks.subList(0, mbIndex));
 
-                updateRow(blockRow, blockOfB.startingIndex, blockOfB.startingIndex + overlap, startCount[0], endBlockOfARowIndex, bruteForce);
+                updateRow(blockRow, offset, offset + overlap, startCount[0], endBlockOfARowIndex, bruteForce);
+                */
             }
 
             log.info("Row {} ", blockRow);
