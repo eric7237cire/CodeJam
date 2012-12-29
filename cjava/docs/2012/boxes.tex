@@ -1,0 +1,156 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage[top=2mm, bottom=2mm, left=2mm, right=30mm]{geometry}
+\begin{document}
+
+
+\noindent
+Modify the LCS algorithm to instead store for each row an index:value 
+
+$(2 \rightarrow 10)$ means type 2 repeated 10 times.\vspace{5mm}
+
+\noindent
+
+\begin{tabular}{ l || l | c | r }
+\hline
+  & $(2 \rightarrow 10)$ & $(3 \rightarrow 30)$ & $(1 \rightarrow 20)$ \\
+\hline
+ $(1 \rightarrow 10)$ &   0 & 0 & row[40] = 1; row[49] = 10 \\
+ $(2 \rightarrow 20)$ &   0 & 0 & 0 \\
+ $(3 \rightarrow 25)$ &   0 & 0 & 0 \\
+\end{tabular}
+
+\vspace{5mm}Space is saved since we do not store the intermediate values.
+\newline 
+
+For the next row, we even delete the entries for row[40] and row[49] because they are redundant.
+\vspace{5mm}
+
+\begin{tabular}{ l || l | c | r }
+\hline
+  & $(2 \rightarrow 10)$ & $(3 \rightarrow 30)$ & $(1 \rightarrow 20)$ \\
+\hline
+ $(1 \rightarrow 10)$ &   0 & 0 & row[40] = 1; row[49] = 10 \\
+ $(2 \rightarrow 20)$ &   row[0]=1; row[9]=10 & ... & ... \\
+ $(3 \rightarrow 25)$ &   0 & 0 & 0 \\
+\end{tabular}
+
+\vspace{5mm}
+Last row
+\vspace{5mm}
+
+\begin{tabular}{ l || l | c | r }
+\hline
+  & $(2 \rightarrow 10)$ & $(3 \rightarrow 30)$ & $(1 \rightarrow 20)$ \\
+\hline
+ $(1 \rightarrow 10)$ &   0 & 0 & row[40] = 1; row[49] = 10 \\
+ $(2 \rightarrow 20)$ &   row[0]=1; row[9]=10 & ... & ... \\
+ $(3 \rightarrow 25)$ &   row[0]=1; row[9]=10 & row[10] = 11 ; row[34] = 35 & 0 \\
+\end{tabular}
+
+\vspace{5mm}
+The actual row index we don't keep track of.  
+\vspace{5mm}
+
+
+
+
+In the regular algorithm, if we have a match, we add 1 from top/left.
+
+Here, we want to only use the match if it will increase the starting point for the
+next matching block.
+
+\vspace{5mm}
+
+\begin{tabular}{ l || l | l | l | c | r }
+\hline 
+Column start index & 0 & 3 & 5 & 9 & 13 \\
+\hline
+B "string" & aaa & bb & aa & bbbb & aaa \\
+\hline
+Previous block row & br[0] = 0 & & br[5] = 0 \\
+\hline
+A element 20 x a \\
+\end{tabular}
+
+
+\vspace{5mm}
+
+When matching at br[5], we add one to the pbr[4].  In the case above, that is
+0.  So we can use 3 of a's length and update pr, which stores intermediary values after block rows index.
+
+\vspace{5mm}
+
+\begin{tabular}{ l || l | l | l | c | r }
+\hline 
+Column start index & 0 & 3 & 5 & 9 & 13 \\
+\hline
+B "string" & aaa & bb & aa & bbbb & aaa \\
+\hline
+Previous block row & br[0] = 0 & & br[5] = 0 \\
+\hline
+Previous row & pr[0] = 1 ; pr[2] = 2 & &  \\
+\hline
+A element 17 x a \\
+\end{tabular}
+
+
+\vspace{15mm}
+
+Different example. The second block of a's, the previous block row
+says we start at 5, but we could have matched 6 'a's, so we use that 
+instead.
+
+\vspace{5mm}
+
+\begin{tabular}{ l || l | l | l | c | r }
+\hline 
+Column start index & 0 & 6 & 11 &  &  \\
+\hline
+B "string" & $6 \cdotp a$  & $5 \cdotp b$  & $8 \cdotp a$ &  &  \\
+\hline
+Previous block row & pbr[0] = 0 & pbr[3] = 1 ; pbr[7] = 5 &  \\
+\hline
+Previous row & ;  & &  \\
+\hline
+A element $10 \cdotp a$ \\
+\end{tabular}
+
+say the LCS matrix looked like
+
+To build the next row, * will be $\max( lcs_{r,i+5} + 1 \| aa, lcs_{r,i+2} + 2 \| a,  lcs_{r,i+1} + 3 \| \emptyset )$
+
+
+It is as if we ignored the b's entirely
+
+Example :
+5 5
+
+A -- 3 1 4 5 3 3 5 1 2 3
+B -- 2 5 3 1 4 5 4 1 4 2
+\newline 
+
+
+
+\[ \left| \begin{array}{l | l*{9}{p{16mm}} }
+ & ... & c & a & a & a & b & b & a & a & a  \\
+\hline 
+& ... & $lcs_{0,i}$ & $lcs_{0,i+1}$ & $lcs_{0,i+2}$ & ... & ... & ... & ... & ... & ... \\
+ & ... & $lcs_{1,i}$ & $lcs_{1,i+1}$ & $lcs_{1,i+2}$ & ... & ... & ... & ...  & ... & ...\\
+ & ... & $lcs_{r,i}$ & $lcs_{r,i+1}$ & $lcs_{r,i+2}$ & $lcs_{r,i+3}$ & $lcs_{r,i+4}$  & $lcs_{2,i+5}$ & ... & ...  & ... \\
+aaa  &   &   &   & &  & & & * &  &  \\
+ \end{array} \right|\] 
+
+\[ \begin{tabular} {l | l*{10}{p{16mm}}}
+& $2 \cdotp e$ & $3 \cdotp a$ & $4 \cdotp e$ & $4 \cdotp a$ & $4 \cdotp b$  \\
+\hline 
+$3 \cdotp a$ & $lcs_{0,0}=1, lcs_{0,2}=3$ & $lcs_{0,i+1}$ & $lcs_{0,i+2}$ & ... & ... & ... & ... & ... & ... \\
+$4 \cdotp e$ & ... & $lcs_{1,i}$ & $lcs_{1,i+1}$ & $lcs_{1,i+2}$ & ... & ... & ... & ...  & ... & ...\\
+$3 \cdotp c$ & ... & $lcs_{r,i}$ & $lcs_{r,i+1}$ & $lcs_{r,i+2}$ & $lcs_{r,i+3}$ & $lcs_{r,i+4}$  & $lcs_{2,i+5}$ & ... & ...  & ... \\
+$5 \cdotp a$ & ... & $lcs_{1,i}$ & $lcs_{1,i+1}$ & $lcs_{1,i+2}$ & ... & ... & ... & ...  & ... & ...\\
+$2 \cdotp c$ & ... & $lcs_{1,i}$ & $lcs_{1,i+1}$ & $lcs_{1,i+2}$ & ... & ... & ... & ...  & ... & ...\\
+aaa  &   &   &   & &  & & & * &  &  \\
+\end{tabular} \]
+
+
+\end{document}
