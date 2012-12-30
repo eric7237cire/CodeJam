@@ -162,11 +162,21 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return prevCountLastRow;
     }
     
+    /**
+     * 
+     * @param row index ==> count
+     * @param blockStartIndex
+     * @param blockEndIndex
+     * @param blockStartCount
+     * @param nextBlockRowIndex
+     * @param bruteForce
+     */
     private static void updateRow(TreeMap<Long,Long> row, long blockStartIndex, long blockEndIndex,
             long blockStartCount, long nextBlockRowIndex, int[][] bruteForce) {
         long blockLength = blockEndIndex - blockStartIndex + 1;
         long blockEndCount = blockStartCount + blockLength - 1;
-                
+
+        
         row.put(blockStartIndex, blockStartCount);
         row.put(blockEndIndex, blockEndCount);
         
@@ -293,6 +303,107 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
         
        return maxStart; 
+    }
+    
+    /**
+     * 
+     * @param row index -> count
+     */
+    static void removeRedundantEntries(TreeMap<Long, Long> row) {
+        log.debug("Remove redundant {}", row);
+        //slope between 2 points should alternate between flat and increasing 1 by 1
+        
+        //change in count over change in index
+        if (row.size() < 3)
+            return;
+        
+        Iterator<Map.Entry<Long, Long>> it = row.entrySet().iterator();
+        
+        Map.Entry<Long, Long> firstEntry = it.next();
+        Map.Entry<Long, Long> entry = it.next();
+        long currentSlope = (entry.getValue() - firstEntry.getValue()) / (entry.getKey() - firstEntry.getKey());
+        
+        List<Long> toRemove = Lists.newArrayList();
+        
+        while(it.hasNext()) {
+        
+            Map.Entry<Long, Long> nextEntry = it.next();
+            
+            long changeCount = (nextEntry.getValue() - entry.getValue()); 
+            long changeIndex = (nextEntry.getKey() - entry.getKey());
+            
+            Preconditions.checkArgument(changeCount % changeIndex == 0);
+            
+            long nextSlope = changeCount / changeIndex;
+            
+            Preconditions.checkState(nextSlope == 0 || nextSlope == 1);
+            
+            if (nextSlope == currentSlope) {
+                toRemove.add(entry.getKey());
+            } else {
+                currentSlope = nextSlope;
+            }
+            
+            firstEntry = entry;
+            entry = nextEntry;
+        }
+        
+        for(Long key : toRemove) {
+            log.debug("Removing key {}", key);
+            row.remove(key);
+        }
+        
+        log.debug("Row cleaned up to {}", row);
+    }
+    
+    
+    //Index -> count
+    static void processPrevRow(TreeMap<Long,Long> prevBlockRow, TreeMap<Long,Long> blockRow, int[][] bruteForce, long rowIndex) {
+        // Remove all previousRow entries that have been improved
+        Iterator<Map.Entry<Long, Long>> prevRowIt = prevBlockRow.entrySet().iterator();
+        while (prevRowIt.hasNext()) {
+
+            Map.Entry<Long, Long> entry = prevRowIt.next();
+            long count = getMaxBeforeIndex(blockRow, entry.getKey() + 1);
+            if (count > entry.getValue()) {
+                log.debug("Removing {} from prev row.  Count was {}", entry, count);
+                //add entry to row corresponding to entry removed
+                
+                long index = entry.getKey() + (count-entry.getValue());
+                updateRow(blockRow, index, index, count, rowIndex, bruteForce );
+                
+                prevRowIt.remove();
+            }
+        }
+
+        // Now add all row entries
+        for (Map.Entry<Long, Long> entry : blockRow.entrySet()) {
+            Preconditions.checkState(!prevBlockRow.containsKey(entry.getKey()) || prevBlockRow.get(entry.getKey()).equals(entry.getValue()));
+
+            prevBlockRow.put(entry.getKey(), entry.getValue());
+        }
+        
+        Long[] prevRowKey = new Long[] {};
+        prevRowKey = prevBlockRow.keySet().toArray(prevRowKey);
+        
+        //Go through all row entries, add starting points
+        for (Long index : prevRowKey) {
+            
+            long count = prevBlockRow.get(index);
+                        
+            long prevValue = getMaxBeforeIndex(blockRow, index);
+            
+            if (prevValue == 0)
+                continue;
+            
+            long diffCount = count - prevValue;
+            if (diffCount > 0) {
+                updateRow(prevBlockRow, index - diffCount, index - diffCount,
+                        count - diffCount, rowIndex, bruteForce);
+            }
+        }
+        
+        removeRedundantEntries(prevBlockRow);
     }
     
     static List<Block> getMatchingBlocksOfB(long bMaxIndex, TreeMap<Long,Integer> bIndexType, Block blockOfA) {
@@ -444,7 +555,7 @@ long currentColIndex = 0;
 
             //TreeMap<Long, Long> prevRow = new TreeMap<Long, Long>();
 
-            log.debug("Processing block A {}  end at lcs row index {} ", blockOfA, endBlockOfARowIndex);
+            log.debug("\nProcessing block A {}  end at lcs row index {}\n ", blockOfA, endBlockOfARowIndex);
 
             List<Block> matchingBlocks = getMatchingBlocksOfB(bMaxIndex, bIndexType, blockOfA);
 
@@ -498,24 +609,10 @@ long currentColIndex = 0;
             log.info("Row {} ", blockRow);
             // Index --> count
 
-            // Remove all previousRow entries that have been improved
-            Iterator<Map.Entry<Long, Long>> prevRowIt = prevBlockRow.entrySet().iterator();
-            while (prevRowIt.hasNext()) {
-
-                Map.Entry<Long, Long> entry = prevRowIt.next();
-                long count = getMaxBeforeIndex(blockRow, entry.getKey() + 1);
-                if (count >= entry.getValue()) {
-                    prevRowIt.remove();
-                }
-            }
-
-            // Now add all row entries
-            for (Map.Entry<Long, Long> entry : blockRow.entrySet()) {
-                Preconditions.checkState(!prevBlockRow.containsKey(entry.getKey()) || prevBlockRow.get(entry.getKey()).equals(entry.getValue()));
-
-                prevBlockRow.put(entry.getKey(), entry.getValue());
-            }
-            log.info("New prev row {}", prevBlockRow);
+            processPrevRow(prevBlockRow, blockRow, bruteForce, endBlockOfARowIndex);
+            
+            
+            log.info("\nNew prev row {}\n", prevBlockRow);
             blockRow = new TreeMap<>();
         }
 
