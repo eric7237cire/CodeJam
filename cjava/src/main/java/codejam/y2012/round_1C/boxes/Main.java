@@ -1,7 +1,11 @@
 package codejam.y2012.round_1C.boxes;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Scanner;
@@ -17,6 +21,7 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
@@ -199,18 +204,63 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     
-    static class UpdateRowInfo {
+    static class UpdateRowInfo implements Comparable<UpdateRowInfo> {
         long startIndex;
-        long stopIndex;
         long startIndexCount;
-        public UpdateRowInfo(long startIndex, long stopIndex, long startIndexCount) {
+        public UpdateRowInfo(long startIndex, long startIndexCount) {
             super();
             this.startIndex = startIndex;
-            this.stopIndex = stopIndex;
             this.startIndexCount = startIndexCount;
+        }
+        @Override
+        public int compareTo(UpdateRowInfo o) {
+            
+            return ComparisonChain.start()
+                    .compare( 
+                    o.startIndex - o.startIndexCount,
+                     startIndex - startIndexCount)
+                     //.compare(startIndex, o.startIndex)
+                     .result()
+                     ;
+        }
+        @Override
+        public String toString() {
+            return "UpdateRowInfo [startIndex=" + startIndex + ", startIndexCount=" + startIndexCount + "]";
         }
     }
     
+    void addToUpList(UpdateRowInfo point, List<UpdateRowInfo> listSoFar) {
+        listSoFar.add(point);
+    }
+    
+    void checkList(List<UpdateRowInfo> list) {
+        Collections.sort(list, new Comparator<UpdateRowInfo>() {
+
+            @Override
+            public int compare(UpdateRowInfo o1, UpdateRowInfo o2) {
+                return Long.compare(o1.startIndex, o2.startIndex);
+            }
+            
+        });
+        
+        ListIterator<UpdateRowInfo> it = list.listIterator();
+        
+        UpdateRowInfo prev = it.next();
+        while(it.hasNext()) {
+            UpdateRowInfo next = it.next();
+            
+            if (prev.startIndex - prev.startIndexCount >
+            next.startIndex - next.startIndexCount) {
+                log.debug("Discarding point {}", next);
+                it.remove();
+            } else {
+                prev = next;
+            }
+        }
+    }
+    
+    
+    /*
     private static UpdateRowInfo getMidBlockStart(TreeMap<Long,Long> prevRow, 
             long maxLength, Block blockOfB) {
         //Find defined points in the block, we are looking for a point that 
@@ -240,70 +290,112 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         UpdateRowInfo uri = new UpdateRowInfo(index, stopIndex, count);
         
         return uri;
-    }
+    }*/
     
     /**
      * 
-     * @return the maximum start, how much length remaining
+     * @return index --> count
      */
-    private static long[] getMaximumBlockStart(TreeMap<Long,Long> prevRow,
-            long maxLength, long currentIndex, List<Block> prevMatchingBlocks) {
+    private static List<UpdateRowInfo> getMaxBegEnd(TreeMap<Long,Long> prevRow,
+            Block blockOfA, Block blockOfB) {
         
-        //Check maxLength through 1 and all defined points 
+        List<UpdateRowInfo> ret = Lists.newArrayList();
+        
+        /*
+         * Find value at start of B block and matching end of A block to end of B block
+         * 
+         *  if A block is larger, then we will make the entire block increasing
+         *  
+         *  if A block is smaller, find max value matching A end to B end
+         */
+        
         
         //Intialize with -1
-        long[] maxStart = new long[] { 1 + getMaxBeforeIndex(prevRow, currentIndex), 1 };
+        long countBeginning = 1 + getMaxBeforeIndex(prevRow, blockOfB.startingIndex);
         
-        long prevBlockCombinedLen = 1;
-        for(int prevBlockIdx = prevMatchingBlocks.size() - 1; prevBlockIdx >= 0; --prevBlockIdx) {
-            Block prevBlock = prevMatchingBlocks.get(prevBlockIdx);
-            
-            prevBlockCombinedLen += prevBlock.count;
-            
-            long lenNeededStartBlock = prevBlockCombinedLen;            
-            long lenNeededEndBlock = lenNeededStartBlock - prevBlock.count;
-            
-            long searchIndexStart = prevBlock.startingIndex - 1;
-            long searchIndexEnd = searchIndexStart + prevBlock.count;
-            
-            if (lenNeededEndBlock > maxLength)
-                break;
-            
-            if (lenNeededStartBlock > maxLength) {
-                searchIndexStart += lenNeededStartBlock - maxLength;
-                lenNeededStartBlock -= lenNeededStartBlock - maxLength;
-            }
-            
-            //Check directly the beginning and end of the block
-            long count = getMaxBeforeIndex(prevRow, searchIndexStart+1) + lenNeededStartBlock;
-            
-            if (count > maxStart[0]) {
-                maxStart = new long[] { count, lenNeededStartBlock };
-            }
-            
-            count = getMaxBeforeIndex(prevRow, searchIndexEnd+1) + lenNeededEndBlock;
-            
-            if (count > maxStart[0]) {
-                maxStart = new long[] { count, lenNeededEndBlock };
-            }
-            
-            NavigableSet<Long> keys = prevRow.subMap(searchIndexStart, true, searchIndexEnd, true).descendingKeySet();
+        ret.add( new UpdateRowInfo(blockOfB.startingIndex, 
+                countBeginning ) );
         
-            for(Long index : keys) {
-                long lengthUsed = lenNeededStartBlock - (index - searchIndexStart);
-                count = prevRow.get(index) + lengthUsed;
-                
-                if (count > maxStart[0]) {
-                    log.debug("!!! Found a higher start");
-                    maxStart = new long[] { count, lengthUsed };
-                }
+             
+        if (blockOfA.count >= blockOfB.count) {
+            long countEnd = countBeginning + blockOfB.count - 1;
+            long endIndex = blockOfB.startingIndex + blockOfB.count - 1;
+            
+            ret.add( new UpdateRowInfo(endIndex, countEnd) );            
+            return ret;
+        }
+
+        //blockA is smaller, so we add this point
+        ret.add(new UpdateRowInfo(blockOfB.startingIndex + blockOfA.count - 1, 
+                countBeginning + blockOfA.count -1
+                ));
+        
+        //find any keys between start of block inclusive and end of block index exclusive
+        NavigableSet<Long> keys = prevRow.subMap(blockOfB.startingIndex, 
+                true, blockOfB.startingIndex + blockOfB.count - 1, false).navigableKeySet();
+        
+        if (!keys.isEmpty()) {
+            long startIndex = keys.last();
+            long countAtStart = prevRow.get(startIndex);
+            long stopIndex = Math.min(blockOfB.startingIndex + blockOfB.count - 1, 
+                    startIndex + blockOfA.count);
+            
+            long countEnd = countAtStart + stopIndex - startIndex;
+            
+            //Not a new high if point indicates start of an increase
+            if (countAtStart > ret.get(0).startIndexCount) {
+                ret.add( new UpdateRowInfo(stopIndex, countEnd) );
+                return ret;
             }
         }
+
+        
+        return ret;
+    }
+    
+    
+    private static UpdateRowInfo[] getMaxBegEndCurRow(TreeMap<Long,Long> prevRow,
+            TreeMap<Long,Long> curRow,
+            Block blockOfA, Block blockOfB) {
+        
+        /*
+         * Find value at start of B block and matching end of A block to end of B block
+         * 
+         *  if A block is larger, then we will make the entire block increasing
+         *  
+         *  if A block is smaller, find max value matching A end to B end
+         */
         
                 
+        //Intialize with -1
         
-       return maxStart; 
+        long countPrevRow = getMaxBeforeIndex(prevRow, blockOfB.startingIndex);
+        long countCurRow = getMaxBeforeIndex(curRow, blockOfB.startingIndex);
+        
+        if (countCurRow <= countPrevRow) {
+            return null;
+        }
+        
+        UpdateRowInfo[] ret = new UpdateRowInfo[2];
+        
+        ret[0] = new UpdateRowInfo(blockOfB.startingIndex, countCurRow);
+        
+        long lengthUsed = countCurRow - countPrevRow;
+        
+        long aBlockLengthRemaining = blockOfA.count - lengthUsed;
+        
+        long countEnd  = -1;
+        if (aBlockLengthRemaining >= blockOfB.count) {
+            countEnd = countCurRow + blockOfB.count - 1;
+            ret[1] = new UpdateRowInfo( blockOfB.startingIndex + countEnd - countCurRow, countEnd);
+        } else {        
+            countEnd = countCurRow + aBlockLengthRemaining;
+            ret[1] = new UpdateRowInfo( blockOfB.startingIndex + countEnd - countCurRow, countEnd);
+        }
+        
+        return ret;
     }
+     
     
     /**
      * 
@@ -359,29 +451,47 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     //Index -> count
     static void processPrevRow(TreeMap<Long,Long> prevBlockRow, TreeMap<Long,Long> blockRow, int[][] bruteForce, long rowIndex) {
-        // Remove all previousRow entries that have been improved
-        Iterator<Map.Entry<Long, Long>> prevRowIt = prevBlockRow.entrySet().iterator();
-        while (prevRowIt.hasNext()) {
-
-            Map.Entry<Long, Long> entry = prevRowIt.next();
-            long count = getMaxBeforeIndex(blockRow, entry.getKey() + 1);
-            if (count > entry.getValue()) {
-                log.debug("Removing {} from prev row.  Count was {}", entry, count);
-                //add entry to row corresponding to entry removed
-                
-                long index = entry.getKey() + (count-entry.getValue());
-                updateRow(blockRow, index, index, count, rowIndex, bruteForce );
-                
-                prevRowIt.remove();
-            }
-        }
-
+        
+        
+        log.debug("\n\nProcess prev row {}  current row {}\n\n", prevBlockRow, blockRow);
+        
         // Now add all row entries
         for (Map.Entry<Long, Long> entry : blockRow.entrySet()) {
             Preconditions.checkState(!prevBlockRow.containsKey(entry.getKey()) || prevBlockRow.get(entry.getKey()).equals(entry.getValue()));
 
             prevBlockRow.put(entry.getKey(), entry.getValue());
         }
+        
+        
+        if (!prevBlockRow.isEmpty()) {
+            // Remove all previousRow entries that have been improved
+            Iterator<Map.Entry<Long, Long>> prevRowIt = prevBlockRow.entrySet().iterator();
+            
+            Map.Entry<Long, Long> prevEntry = prevRowIt.next();
+            
+            while (prevRowIt.hasNext()) {
+    
+                Map.Entry<Long, Long> entry = prevRowIt.next();
+                
+                //log.debug("Prev Entry {} Entry {}", prevEntry, entry);
+                
+                if ( (prevEntry.getKey() - prevEntry.getValue() >
+                entry.getKey() - entry.getValue() )
+                || entry.getValue() < prevEntry.getValue()) {
+                
+                    log.debug("Removing {} from prev row. ",
+                            entry);
+                    //add entry to row corresponding to entry removed
+                    
+                    prevRowIt.remove();
+                } else {
+                    prevEntry = entry;
+                }
+            }
+        }
+
+       
+        log.debug("\nContinue Process prev row {}  current row {}\n\n", prevBlockRow, blockRow);
         
         Long[] prevRowKey = new Long[] {};
         prevRowKey = prevBlockRow.keySet().toArray(prevRowKey);
@@ -555,7 +665,8 @@ long currentColIndex = 0;
 
             //TreeMap<Long, Long> prevRow = new TreeMap<Long, Long>();
 
-            log.debug("\nProcessing block A {}  end at lcs row index {}\n ", blockOfA, endBlockOfARowIndex);
+            log.debug("\nProcessing block A {} i {} end at lcs row index {}\n ", blockOfA, i, 
+                    endBlockOfARowIndex);
 
             List<Block> matchingBlocks = getMatchingBlocksOfB(bMaxIndex, bIndexType, blockOfA);
 
@@ -566,44 +677,42 @@ long currentColIndex = 0;
                 
                 log.debug("Matching block B {}", blockOfB);
 
-                // Long nextBlockStartCount = mbIndex == matchingBlocks.size() - 1 ? null :
-                // getBlockStartCount(prevRow, matchingBlocks.get(mbIndex + 1));
+                
+                //Build 2 ranges.  Best match previous row and best match current row
 
-                long[] startCount = getMaximumBlockStart(prevBlockRow, blockOfA.count, blockOfB.startingIndex, matchingBlocks.subList(0, mbIndex));
+                //List<UpdateRowInfo> maxBegEnd =
+                        
+                List<UpdateRowInfo> maxBegEnd = getMaxBegEnd(prevBlockRow, blockOfA, blockOfB);
 
-                long aBlockLengthRemaining = blockOfA.count - startCount[1];
-                long bBlockLengthRemaining = blockOfB.count - 1;
-
-                long overlap = Math.min(aBlockLengthRemaining, bBlockLengthRemaining);
-
-                updateRow(blockRow, blockOfB.startingIndex, blockOfB.startingIndex + overlap, 
-                        startCount[0], endBlockOfARowIndex, bruteForce);
-
-
-                // also match at the end
-                if (bBlockLengthRemaining <= aBlockLengthRemaining) {
-                    // blockA fits exactly in blockB
-                    continue;
+                
+                UpdateRowInfo[] maxBegEndCurRow = getMaxBegEndCurRow(prevBlockRow, blockRow, blockOfA, blockOfB);
+                
+                
+                //Preconditions.checkState(maxBegEnd[0].compareTo(maxBegEnd[1]) == 0);
+                
+                //Preconditions.checkState(maxBegEndCurRow[0].compareTo(maxBegEndCurRow[1]) == 0);
+                
+                List<UpdateRowInfo> list = Lists.newArrayList();
+                
+                list.addAll(maxBegEnd);
+                
+                
+                if (maxBegEndCurRow != null) {
+                    list.addAll(Arrays.asList(maxBegEndCurRow));
                 }
+                    
+                checkList(list);
                 
-                UpdateRowInfo uri = getMidBlockStart(prevBlockRow, blockOfA.count, blockOfB);
+                log.debug("List to add {}", list);
                 
-                if (uri == null)
-                    continue;
-                
-                updateRow(blockRow, uri.startIndex, uri.stopIndex, uri.startIndexCount, endBlockOfARowIndex, bruteForce);
+                for (UpdateRowInfo ui : list) {
 
-                /*
-                // Block A is smaller
-                long offset = blockOfB.startingIndex + bBlockLengthRemaining - aBlockLengthRemaining;
+                    updateRow(blockRow, ui.startIndex, 
+                            ui.startIndex, ui.startIndexCount, 
+                            endBlockOfARowIndex, bruteForce);
 
-                //Check that offset finishes at the end index
-                
-                Preconditions.checkState(offset + overlap == blockOfB.startingIndex + blockOfB.count - 1);
-                startCount = getMaximumBlockStart(prevBlockRow, blockOfA.count, offset, matchingBlocks.subList(0, mbIndex));
+                }
 
-                updateRow(blockRow, offset, offset + overlap, startCount[0], endBlockOfARowIndex, bruteForce);
-                */
             }
 
             log.info("Row {} ", blockRow);
