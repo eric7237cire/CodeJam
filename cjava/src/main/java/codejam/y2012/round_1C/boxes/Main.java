@@ -238,10 +238,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
             @Override
             public int compare(UpdateRowInfo o1, UpdateRowInfo o2) {
-                return Long.compare(o1.startIndex, o2.startIndex);
+                
+                //Put indexes first and lower count first
+                return ComparisonChain.start().compare(o1.startIndex, o2.startIndex)
+                        .compare(o2.startIndexCount, o1.startIndexCount).result()
+                        ;
             }
             
         });
+        
+        log.debug("List to add {}", list);
         
         ListIterator<UpdateRowInfo> it = list.listIterator();
         
@@ -249,8 +255,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         while(it.hasNext()) {
             UpdateRowInfo next = it.next();
             
-            if (prev.startIndex - prev.startIndexCount >
-            next.startIndex - next.startIndexCount) {
+            if ( (prev.startIndex - prev.startIndexCount >
+            next.startIndex - next.startIndexCount) || prev.startIndexCount > next.startIndexCount) {
                 log.debug("Discarding point {}", next);
                 it.remove();
             } else {
@@ -356,7 +362,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     private static UpdateRowInfo[] getMaxBegEndCurRow(TreeMap<Long,Long> prevRow,
             TreeMap<Long,Long> curRow,
-            Block blockOfA, Block blockOfB) {
+            Block blockOfA, Block blockOfB, Block lastBlockOfB) {
         
         /*
          * Find value at start of B block and matching end of A block to end of B block
@@ -366,6 +372,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
          *  if A block is smaller, find max value matching A end to B end
          */
         
+        //TODO length used is wrong
                 
         //Intialize with -1
         
@@ -376,11 +383,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             return null;
         }
         
+        long maxEndLastBlockPrev = getMaxBeforeIndex(prevRow, lastBlockOfB.startingIndex+ lastBlockOfB.count);
+        long maxEndLastBlockCur = getMaxBeforeIndex(curRow, lastBlockOfB.startingIndex+ lastBlockOfB.count);
+        
         UpdateRowInfo[] ret = new UpdateRowInfo[2];
         
         ret[0] = new UpdateRowInfo(blockOfB.startingIndex, countCurRow);
         
-        long lengthUsed = countCurRow - countPrevRow;
+        long lengthUsed = maxEndLastBlockCur - maxEndLastBlockPrev;
         
         long aBlockLengthRemaining = blockOfA.count - lengthUsed;
         
@@ -457,7 +467,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         // Now add all row entries
         for (Map.Entry<Long, Long> entry : blockRow.entrySet()) {
-            Preconditions.checkState(!prevBlockRow.containsKey(entry.getKey()) || prevBlockRow.get(entry.getKey()).equals(entry.getValue()));
+            Preconditions.checkState(!prevBlockRow.containsKey(entry.getKey()) 
+                    || prevBlockRow.get(entry.getKey()) <= (entry.getValue()));
 
             prevBlockRow.put(entry.getKey(), entry.getValue());
         }
@@ -684,8 +695,11 @@ long currentColIndex = 0;
                         
                 List<UpdateRowInfo> maxBegEnd = getMaxBegEnd(prevBlockRow, blockOfA, blockOfB);
 
-                
-                UpdateRowInfo[] maxBegEndCurRow = getMaxBegEndCurRow(prevBlockRow, blockRow, blockOfA, blockOfB);
+                UpdateRowInfo[] maxBegEndCurRow =  null;
+                if (mbIndex > 0) {
+                 maxBegEndCurRow = getMaxBegEndCurRow
+                        (prevBlockRow, blockRow, blockOfA, blockOfB, matchingBlocks.get(mbIndex-1));
+                }
                 
                 
                 //Preconditions.checkState(maxBegEnd[0].compareTo(maxBegEnd[1]) == 0);
@@ -700,10 +714,12 @@ long currentColIndex = 0;
                 if (maxBegEndCurRow != null) {
                     list.addAll(Arrays.asList(maxBegEndCurRow));
                 }
-                    
+                
+                
+                
                 checkList(list);
                 
-                log.debug("List to add {}", list);
+                
                 
                 for (UpdateRowInfo ui : list) {
 
