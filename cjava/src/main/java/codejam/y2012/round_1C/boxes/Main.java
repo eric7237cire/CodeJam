@@ -184,6 +184,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         long checkRowIndex = nextBlockRowIndex ;
         
+        long startIndex = ri.startIndex;
+        long countStart = ri.startIndexCount;
+        
+        if (startIndex == 0) {
+            ++startIndex;
+            ++countStart;
+        }
+        
+        startIndex--;
+        
         log.debug("Update current block row. adding row info {}", 
                 ri
                 );
@@ -191,11 +201,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         log.debug("Brute force checks at row index {}. \nStart index {} should be {}, end index {} should be {}",
                 checkRowIndex,
                 ri.startIndex, 
-                bruteForce[(int)checkRowIndex][(int) ri.startIndex-1],
+                bruteForce[(int)checkRowIndex][(int) startIndex],
                 ri.stopIndex,
                 bruteForce[(int)checkRowIndex][(int) ri.stopIndex-1]
                 );
-        Preconditions.checkState(bruteForce[(int)checkRowIndex][(int) ri.startIndex-1] == (int)ri.startIndexCount);            
+        Preconditions.checkState(bruteForce[(int)checkRowIndex][(int) startIndex] == (int)countStart);            
         Preconditions.checkState(bruteForce[(int)checkRowIndex][(int) ri.stopIndex-1] == (int)ri.stopIndexCount);
         
     }
@@ -210,11 +220,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         public UpdateRowInfo(long startIndex, long startIndexCount, long stopIndex, long stopIndexCount) {
             super();
             
-            if(startIndex == 0)
-                startIndex = 1;
-            
-            if  (startIndexCount == 0)
-                startIndexCount = 1;
             
             this.startIndex = startIndex;
             this.startIndexCount = startIndexCount;
@@ -230,17 +235,17 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
             return ComparisonChain.start()
                     .compare(startIndex, o.startIndex)
+                    .compare(o.startIndexCount, startIndexCount)
                     .compare(stopIndex, o.stopIndex)
-                    .compare(startIndexCount, o.startIndexCount)
+                    
                     .compare(stopIndexCount, o.stopIndexCount)
                     .result();
         }
 
         @Override
         public String toString() {
-            return "Uri [ idx=" + startIndex + " cnt=" + startIndexCount + 
-                    ", stopIdx=" + stopIndex + " cnt="
-                    + stopIndexCount + "]\n";
+            return "Uri [ " + startIndexCount + " @ idx " + startIndex + "; " + stopIndexCount 
+                    + " @ idx " + stopIndex +  "]\n";
         }
        
     }
@@ -333,14 +338,18 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         
         //Intialize with -1
-        long countBeginning =  getMaxBeforeIndex(prevRow, blockOfB.startingIndex);
+        long countStart =  getMaxBeforeIndex(prevRow, blockOfB.startingIndex);
         
                      
         if (blockOfA.count >= blockOfB.count) {
-            long countEnd = countBeginning + blockOfB.count ;
-            long endIndex = blockOfB.startingIndex + blockOfB.count ;
+            long startIndex = blockOfB.startingIndex - 1;
             
-            ret.add( new UpdateRowInfo(blockOfB.startingIndex, countBeginning, endIndex, countEnd) );            
+            long endIndex = startIndex + blockOfB.count  ;
+            long countEnd = countStart + blockOfB.count ;
+            
+            UpdateRowInfo uri = new UpdateRowInfo(startIndex, countStart, endIndex, countEnd); 
+            log.debug("Block A covers all of block B.  Returning {}", uri);
+            ret.add( uri );            
             return ret;
         }
 
@@ -351,12 +360,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             //blockA is smaller, so we add this point
             long startIndex = blockOfB.startingIndex-1;
             long endIndex = blockOfB.startingIndex + blockOfA.count - 1;
-            long countEnd = countBeginning + blockOfA.count; 
+            long countEnd = countStart + blockOfA.count; 
             if (getMaxBeforeIndex(prevRow, endIndex + 1) < countEnd) {
-                ret.add(new UpdateRowInfo(startIndex, countBeginning, 
-                endIndex, 
-                countEnd
-                ));
+                UpdateRowInfo uri = new UpdateRowInfo(startIndex, countStart, 
+                        endIndex, countEnd); 
+                log.debug("Block A smaller, adding beginning match  {}", uri);
+                ret.add(uri);
             }
         }
         
@@ -373,7 +382,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         startIndex + blockOfA.count);
                 
                 long countEnd = countAtStart + stopIndex - startIndex;
-                ret.add( new UpdateRowInfo(startIndex, countAtStart, stopIndex, countEnd) );
+                UpdateRowInfo uri = new UpdateRowInfo(startIndex, countAtStart, stopIndex, countEnd) ;
+                log.debug("Block A smaller, improving match within block  B {}", uri);
+                ret.add( uri );
                 return ret;
             }
         }
@@ -406,6 +417,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         long countCurRow = getMaxBeforeIndex(curRow, blockOfB.startingIndex);
         
         if (countCurRow <= countPrevRow) {
+            log.debug("No potential match current row");
             return null;
         }
         
@@ -418,22 +430,32 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         long aBlockLengthRemaining = blockOfA.count - lengthUsed;
         
+        log.debug("Current row, aBlock length used {} len remaining {}", lengthUsed, aBlockLengthRemaining);
         
         long startIndex = blockOfB.startingIndex-1;
         long countStart = countCurRow;
         
         long countEnd  = -1;
         if (aBlockLengthRemaining >= blockOfB.count) {
-            countEnd = countStart + blockOfB.count - 1;            
+            countEnd = countStart + blockOfB.count ;            
         } else {        
             countEnd = countStart + aBlockLengthRemaining;            
         }
         
-        return  new UpdateRowInfo( startIndex, countStart, 
+        UpdateRowInfo uri =  new UpdateRowInfo( startIndex, countStart, 
                 startIndex + countEnd - countStart, countEnd);
+        
+        log.debug("uri from CURRENT row {}", uri);
+        
+        return uri;
         
     }
      
+    
+//    List<UpdateRowInfo> merge(UpdateRowInfo ui1, UpdateRowInfo ui2) {
+//        
+//        long startFirst = Math.min(ui1.startIndex, ui2.startIndex);
+//    }
     
     /**
      * 
@@ -457,6 +479,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             UpdateRowInfo riPrev = row.get(li.previousIndex());
             UpdateRowInfo riCurrent = li.next();
            
+            
             
             Preconditions.checkState(riCurrent.startIndexCount <= riPrev.stopIndexCount);
             
@@ -674,18 +697,21 @@ long currentColIndex = 1;
         long bMaxIndex = maxes[1];
 
         // Index --> Count
-        List<UpdateRowInfo> blockRow = buildFirstBlockRow(in, bIndexType, bMaxIndex, bruteForce);
+        //List<UpdateRowInfo> blockRow = buildFirstBlockRow(in, bIndexType, bMaxIndex, bruteForce);
+        
+        List<UpdateRowInfo> blockRow = Lists.newArrayList();
 
         // Index in bruteForceArray corresponding to when blockOfA has been fully processed
-        long endBlockOfARowIndex = in.a.get(0).getLeft() - 1;
+        long endBlockOfARowIndex =  - 1;
 
-        log.debug("After first row {}", blockRow);
+       // log.debug("After first row {}", blockRow);
 
         List<UpdateRowInfo> prevBlockRow = blockRow;
         blockRow = Lists.newArrayList();
+        //blockRow.add(new UpdateRowInfo(0,0,0,0));
 
         // Go through each A block
-        for (int i = 1; i < in.N; ++i) {
+        for (int i = 0; i < in.N; ++i) {
 
             Block blockOfA = getBlock(aIndexType, aMaxIndex, endBlockOfARowIndex+2);
             endBlockOfARowIndex += blockOfA.count;
@@ -754,6 +780,7 @@ long currentColIndex = 1;
             
             log.info("\nNew prev row {}\n", prevBlockRow);
             blockRow = Lists.newArrayList();
+            //blockRow.add(new UpdateRowInfo(0,0,0,0));
         }
 
         long max = prevBlockRow.isEmpty() ? 0 : prevBlockRow.get(prevBlockRow.size() - 1).stopIndexCount;
