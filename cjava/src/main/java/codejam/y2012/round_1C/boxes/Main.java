@@ -718,7 +718,7 @@ long currentColIndex = 1;
 
             //TreeMap<Long, Long> prevRow = new TreeMap<Long, Long>();
 
-            log.debug("\nProcessing block A {} i {} end at lcs row index {}\n ", blockOfA, i, 
+            log.debug("\n !!!@@@ Processing block A {} i {} end at lcs row index {}\n ", blockOfA, i, 
                     endBlockOfARowIndex);
 
             List<Block> matchingBlocks = getMatchingBlocksOfB(bMaxIndex, bIndexType, blockOfA);
@@ -728,7 +728,7 @@ long currentColIndex = 1;
 
                 Block blockOfB = matchingBlocks.get(mbIndex);
                 
-                log.debug("Matching block B {}", blockOfB);
+                log.debug("\n @@ Matching block B {}", blockOfB);
 
                 
                 //Build 2 ranges.  Best match previous row and best match current row
