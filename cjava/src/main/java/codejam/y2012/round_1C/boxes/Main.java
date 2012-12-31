@@ -222,7 +222,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             this.stopIndexCount = stopIndexCount;
             
             Preconditions.checkArgument(stopIndex - startIndex == stopIndexCount - startIndexCount);
-            Preconditions.checkArgument(stopIndex > startIndex);
+            Preconditions.checkArgument(stopIndex >= startIndex);
             Preconditions.checkArgument(startIndex >= 0);
         }
         
@@ -238,8 +238,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
         @Override
         public String toString() {
-            return "UpdateRowInfo [startIndex=" + startIndex + ", startIndexCount=" + startIndexCount + ", stopIndex=" + stopIndex + ", stopIndexCount="
-                    + stopIndexCount + "]";
+            return "Uri [ idx=" + startIndex + " cnt=" + startIndexCount + 
+                    ", stopIdx=" + stopIndex + " cnt="
+                    + stopIndexCount + "]\n";
         }
        
     }
@@ -343,11 +344,21 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             return ret;
         }
 
-        //blockA is smaller, so we add this point
-        ret.add(new UpdateRowInfo(blockOfB.startingIndex-1, countBeginning, 
-                blockOfB.startingIndex + blockOfA.count - 1, 
-                countBeginning + blockOfA.count
+
+        
+        
+        {
+            //blockA is smaller, so we add this point
+            long startIndex = blockOfB.startingIndex-1;
+            long endIndex = blockOfB.startingIndex + blockOfA.count - 1;
+            long countEnd = countBeginning + blockOfA.count; 
+            if (getMaxBeforeIndex(prevRow, endIndex + 1) < countEnd) {
+                ret.add(new UpdateRowInfo(startIndex, countBeginning, 
+                endIndex, 
+                countEnd
                 ));
+            }
+        }
         
         //find any keys between start of block inclusive and end of block index exclusive
         
@@ -401,21 +412,25 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         long maxEndLastBlockPrev = getMaxBeforeIndex(prevRow, lastBlockOfB.startingIndex+ lastBlockOfB.count);
         long maxEndLastBlockCur = getMaxBeforeIndex(curRow, lastBlockOfB.startingIndex+ lastBlockOfB.count);
         
-        UpdateRowInfo[] ret = new UpdateRowInfo[2];
         
         
         long lengthUsed = maxEndLastBlockCur - maxEndLastBlockPrev;
         
         long aBlockLengthRemaining = blockOfA.count - lengthUsed;
         
+        
+        long startIndex = blockOfB.startingIndex-1;
+        long countStart = countCurRow;
+        
         long countEnd  = -1;
         if (aBlockLengthRemaining >= blockOfB.count) {
-            countEnd = countCurRow + blockOfB.count - 1;
-            return  new UpdateRowInfo( blockOfB.startingIndex, countCurRow, blockOfB.startingIndex + countEnd - countCurRow, countEnd);
+            countEnd = countStart + blockOfB.count - 1;            
         } else {        
-            countEnd = countCurRow + aBlockLengthRemaining;
-            return  new UpdateRowInfo( blockOfB.startingIndex, countCurRow, blockOfB.startingIndex + countEnd - countCurRow, countEnd);
+            countEnd = countStart + aBlockLengthRemaining;            
         }
+        
+        return  new UpdateRowInfo( startIndex, countStart, 
+                startIndex + countEnd - countStart, countEnd);
         
     }
      
