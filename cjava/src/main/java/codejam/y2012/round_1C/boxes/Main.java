@@ -403,7 +403,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     
-    private static UpdateRowInfo getMaxBegEndCurRow(List<UpdateRowInfo> prevRow,
+    private static List<UpdateRowInfo> getMaxBegEndCurRow(List<UpdateRowInfo> prevRow,
             List<UpdateRowInfo> curRow,
             Block blockOfA, Block blockOfB, Block lastBlockOfB) {
         
@@ -419,31 +419,64 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
         //Intialize with -1
         
-        long countPrevRow = getMaxBeforeIndex(prevRow, blockOfB.startingIndex);
-        long countCurRow = getMaxBeforeIndex(curRow, blockOfB.startingIndex);
+//        long countPrevRow = getMaxBeforeIndex(prevRow, blockOfB.startingIndex);
+//        long countCurRow = getMaxBeforeIndex(curRow, blockOfB.startingIndex);
+//        
+//        if (countCurRow <= countPrevRow) {
+//            log.debug("No potential match current row");
+//            return null;
+//        }
         
-        if (countCurRow <= countPrevRow) {
-            log.debug("No potential match current row");
-            return null;
+        List<UpdateRowInfo> ret = Lists.newArrayList();
+        
+        for(int i = 0; i < curRow.size(); ++i) {
+            UpdateRowInfo uriCurrentRow = curRow.get(i);
+            
+            long lengthUsed = uriCurrentRow.lengthUsed;
+            
+            Preconditions.checkState(lengthUsed >= 0 && lengthUsed <= blockOfA.count);
+            
+            long aBlockLengthRemaining = blockOfA.count - lengthUsed;
+            
+            if (aBlockLengthRemaining <= 0)
+                continue;
+            
+            log.debug("Current row, aBlock length used {} len remaining {}", lengthUsed, aBlockLengthRemaining);
+            
+            long startIndex = blockOfB.startingIndex-1;
+            long countStart = uriCurrentRow.stopIndexCount;
+            
+            long countEnd  = -1;
+            if (aBlockLengthRemaining >= blockOfB.count) {
+                countEnd = countStart + blockOfB.count ;            
+            } else {        
+                countEnd = countStart + aBlockLengthRemaining;            
+            }
+            
+            UpdateRowInfo uri =  new UpdateRowInfo( startIndex, countStart, 
+                    startIndex + countEnd - countStart, countEnd, uriCurrentRow.lengthUsed - (countEnd-countStart));
+            
+            log.debug("uri from CURRENT row {} built using {}", uri, uriCurrentRow);
+            ret.add(uri);
         }
         
+        return ret;
         
-        UpdateRowInfo uriCurrentRow = curRow.get(curRow.size() - 1);
-        Preconditions.checkState(uriCurrentRow.stopIndexCount == countCurRow);
+        
         
         //find same uri from last row (with same start index)
         
-        UpdateRowInfo uriPrevRow = null;
+//        UpdateRowInfo uriPrevRow = null;
+//        
+//        for(int i = prevRow.size() - 1; i >= 0; --i) {
+//            UpdateRowInfo candidate = prevRow.get(i);
+//            if (candidate.startIndex == uriCurrentRow.startIndex) {
+//                uriPrevRow = candidate;
+//                break;
+//            }
+//        }
         
-        for(int i = prevRow.size() - 1; i >= 0; --i) {
-            UpdateRowInfo candidate = prevRow.get(i);
-            if (candidate.startIndex == uriCurrentRow.startIndex) {
-                uriPrevRow = candidate;
-                break;
-            }
-        }
         
-        long lengthUsed = uriCurrentRow.lengthUsed;
         
         /*
         if (uriPrevRow == null) {
@@ -455,28 +488,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             lengthUsed = uriCurrentRow.lengthUsed; //.stopIndexCount - uriPrevRow.stopIndexCount;
         }*/
         
-        Preconditions.checkState(lengthUsed >= 0 && lengthUsed <= blockOfA.count);
         
-        long aBlockLengthRemaining = blockOfA.count - lengthUsed;
-        
-        log.debug("Current row, aBlock length used {} len remaining {}", lengthUsed, aBlockLengthRemaining);
-        
-        long startIndex = blockOfB.startingIndex-1;
-        long countStart = countCurRow;
-        
-        long countEnd  = -1;
-        if (aBlockLengthRemaining >= blockOfB.count) {
-            countEnd = countStart + blockOfB.count ;            
-        } else {        
-            countEnd = countStart + aBlockLengthRemaining;            
-        }
-        
-        UpdateRowInfo uri =  new UpdateRowInfo( startIndex, countStart, 
-                startIndex + countEnd - countStart, countEnd, countEnd-countStart);
-        
-        log.debug("uri from CURRENT row {}", uri);
-        
-        return uri;
         
     }
      
@@ -491,11 +503,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      * @param row index -> count
      */
     static void removeAndMergeRedundantEntries(List<UpdateRowInfo> row) {
-        log.debug("Cleaning / merging row {}", row);
+        
         //slope between 2 points should alternate between flat and increasing 1 by 1
         
         
         Collections.sort(row);
+        
+        log.debug("Cleaning / merging row {}", row);
 
         if (row.size() <= 1)
             return;
@@ -552,14 +566,22 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }    
     
     //Index -> count
-    static void processPrevRow(List<UpdateRowInfo> prevBlockRow, List<UpdateRowInfo> blockRow, int[][] bruteForce, long rowIndex) {
+    static void processPrevRow(List<UpdateRowInfo> prevBlockRow, List<UpdateRowInfo> blockRow, int[][] bruteForce, 
+            long endBlockOfARowIndex) {
         
         
-        log.debug("\n\nProcess prev row {}  current row {}\n\n", prevBlockRow, blockRow);
+        //log.debug("\n\nProcess prev row {}  current row {}\n\n", prevBlockRow, blockRow);
         
         prevBlockRow.addAll(blockRow);
         
         removeAndMergeRedundantEntries(prevBlockRow);
+        
+        for (UpdateRowInfo ui : prevBlockRow) {
+
+            updateRow(blockRow, ui, 
+                    endBlockOfARowIndex, bruteForce);
+
+        }
         
         
     }
@@ -661,8 +683,8 @@ long currentColIndex = 1;
             Pair<Long,Integer> pair = in.b.get(m);
             
             if (m > 0 && in.b.get(m-1).getValue() == pair.getValue()) {
-                currentColIndex += pair.getLeft();
-                continue;
+                //currentColIndex += pair.getLeft();
+                //continue;
             }
             bIndexType.put(currentColIndex, pair.getValue());
                 
@@ -773,7 +795,7 @@ long currentColIndex = 1;
                         
                 List<UpdateRowInfo> maxBegEnd = getMaxBegEnd(prevBlockRow, blockOfA, blockOfB);
 
-                UpdateRowInfo maxBegEndCurRow =  null;
+                List<UpdateRowInfo> maxBegEndCurRow =  Lists.newArrayList();
                 if (mbIndex > 0) {
                  maxBegEndCurRow = getMaxBegEndCurRow
                         (prevBlockRow, blockRow, blockOfA, blockOfB, matchingBlocks.get(mbIndex-1));
@@ -787,28 +809,15 @@ long currentColIndex = 1;
                 List<UpdateRowInfo> list = Lists.newArrayList();
                 
                 list.addAll(maxBegEnd);
+                list.addAll(maxBegEndCurRow);
                 
                 
-                if (maxBegEndCurRow != null) {
-                    list.addAll(Arrays.asList(maxBegEndCurRow));
-                }
+                blockRow.addAll(list);
                 
-                
-                
-                removeAndMergeRedundantEntries(list);
-                
-                
-                
-                for (UpdateRowInfo ui : list) {
-
-                    updateRow(blockRow, ui, 
-                            endBlockOfARowIndex, bruteForce);
-
-                }
 
             }
 
-            log.info("Row {} ", blockRow);
+            //log.info("Row {} ", blockRow);
             // Index --> count
 
             processPrevRow(prevBlockRow, blockRow, bruteForce, endBlockOfARowIndex);
@@ -820,7 +829,7 @@ long currentColIndex = 1;
             Preconditions.checkState( prevBlockRow.get(prevBlockRow.size() - 1).stopIndexCount ==
                     bruteForce[(int)endBlockOfARowIndex][bruteForce[0].length - 1]);
             
-            log.info("\nNew prev row {}\n", prevBlockRow);
+            log.info("\n@@@!!!New prev row {}\n", prevBlockRow);
             blockRow = Lists.newArrayList();
             //blockRow.add(new UpdateRowInfo(0,0,0,0));
         }
