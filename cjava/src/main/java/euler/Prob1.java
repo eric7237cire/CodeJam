@@ -2,6 +2,8 @@ package euler;
 
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -11,8 +13,13 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.utils.Direction;
+import codejam.utils.utils.Grid;
+import codejam.utils.utils.Permutations;
 import codejam.utils.utils.Prime;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multiset;
@@ -27,6 +34,336 @@ public class Prob1 {
     final static Logger log = LoggerFactory.getLogger(Prob1.class);
     
     public static void main(String args[]) throws Exception {
+        long start = System.currentTimeMillis();
+        main31(args);
+        long end = System.currentTimeMillis();
+        
+        log.info("Elapsed time {} ms", end - start);
+        
+    }
+    
+    public static void main31(String args[]) throws Exception
+    {
+      List<Integer> values = Arrays.asList(1, 2, 5, 10, 20, 50, 100, 200);
+        //List<Integer> values = Arrays.asList(1, 5, 10, 25, 50, 100);
+        int total = 200;
+        /*
+         * 1  -- (1) 1
+         * 2  -- (2) 1,1 ; 2
+         * 3  -- (2) 1,1,1 ; 2,1 
+         * 4  -- (3) 1x4 ; 2,1,1 ; 2,2
+         * 5  -- (4)  ; 5
+         * 6  -- (5)  ; 2,2,2
+         * 7          ; 5,2
+         * 8          ; 2,2,2,2
+         * A new way every time the sum % coin == 0
+         */
+                
+        log.debug("Ways {}", countWays(values, values.size() - 1, total));
+        
+        int[] ways = new int[total+1];
+        ways[0] = 1;
+        for(int coinIndex = 0; coinIndex < values.size(); ++coinIndex) {
+            int coin = values.get(coinIndex);
+            for(int j = coin; j <= total; ++j) {
+                ways[j] = ways[j] + ways[j - coin];
+            }
+        }
+        
+        log.debug("Ways {}", ways[total]);
+        
+    }
+    
+    static int countWays(List<Integer> values, int maxCoin, int sum) {
+        
+        int value = values.get(maxCoin);
+        
+        if (maxCoin == 0) {
+            if (sum % value == 0) 
+                return 1;
+            else 
+                return 0;
+        }
+        
+        int max = sum / value;
+        
+        int ways = 0;
+        for(int coinsUsed = 0; coinsUsed <= max; ++coinsUsed) {
+            ways += countWays(values, maxCoin - 1, sum - coinsUsed * value);
+        }
+        
+        return ways;
+    }
+    
+    
+    
+    public static void main30(String args[]) throws Exception {
+        int pow = 5;
+                
+        int total = 0;
+        
+        for(int i = 2; i < 2000000; ++i) {
+            String s = Integer.toString(i);
+            
+            int sum = 0;
+            
+            for(int c = 0; c < s.length(); ++c) {
+                sum += IntMath.pow(Character.digit(s.charAt(c), 10), pow);
+            }
+            
+            if (sum == i) {
+                log.debug("Num {}", i);
+                total += i;
+            }
+        }
+        
+        log.debug("Sum {}", total);
+    }
+    
+    public static void main29(String args[]) throws Exception {
+        Set<BigInteger> set = Sets.newHashSet();
+        
+        int max = 100;
+        for(int a = 2; a <= max; ++a) {
+            for(int b = 2; b <= max; ++b) {
+                set.add(BigInteger.valueOf(a).pow(b));
+            }
+        }
+        
+        log.debug("Set size {}", set.size());
+    }
+    public static void main28(String args[]) throws Exception {
+        int size = 1001;
+        
+        Grid<Integer> grid = Grid.buildEmptyGrid(size, size, 0);
+        
+        Integer index = grid.getIndex(size / 2, size / 2);
+        
+        Direction dir = Direction.EAST;
+        
+        int max = size * size;
+        
+        int movements = 1;
+        int movementsLeft = 1;
+        
+        for(int i = 1; i <= max; ++i) {
+            grid.setEntry(index, i);
+            
+            if (i == max)
+                break;
+            
+            index = grid.getIndex(index, dir);
+            
+            --movementsLeft;
+            
+            if (movementsLeft == 0) {
+                dir = dir.turn(2);
+                
+                if (dir == Direction.WEST || dir == Direction.EAST) {
+                    ++movements;
+                }
+                
+                movementsLeft = movements;
+            }
+        }
+        
+        index = 0;
+        
+        int sum = 0;
+        for(int i = 0; i < size; ++i) {
+            sum += grid.getEntry(index);
+            
+            index = grid.getIndex(index, Direction.SOUTH_EAST);
+        }
+        
+        index = grid.getIndex(0, size - 1);
+        for(int i = 0; i < size; ++i) {
+            sum += grid.getEntry(index);
+            
+            index = grid.getIndex(index, Direction.SOUTH_WEST);
+        }
+        
+        sum -= grid.getEntry(size / 2, size / 2);
+        
+        log.debug("Sum {}", sum);
+    }
+    public static void main27(String args[]) throws Exception {
+        List<Integer> primes = Prime.generatePrimes(1000*1000 * 2);
+        
+        int max = 0;
+        
+        List<Integer> bPrimes = Prime.generatePrimes(1000);
+        
+        
+        for(int a = -100; a <= 100; ++a) {
+            //log.debug("A is {}", a);
+            for(int b : bPrimes) {
+                Preconditions.checkState(primes.contains(Math.abs(b)));
+                
+                int n = 0;
+                for(n = 0; n < 100; ++n) {
+                    int val = n * n + a * n  + b;
+                    if (!primes.contains(val)) {
+                        break;
+                    }
+                }
+                if (n > max) {
+                    max = n;
+                    log.debug("a {} b {} num primes {}.  product {}", a,b, n, a*b);
+                }
+            }
+        }
+    }
+    
+    /*
+     * dividend / divisor
+     */
+    static int getRepetitionLength(final int divisor, int dividend) {
+        double ans = 0;
+
+        int origDividend = dividend;
+        int factor = 1;
+
+        List<Integer> remainders = Lists.newArrayList();
+        while (true) {
+
+            while (dividend < divisor) {
+                factor *= 10;
+                dividend *= 10;
+            }
+            
+            int index = remainders.indexOf(dividend);
+            
+            if (index != -1) {
+                
+                /*
+                log.debug("Ans {} rep len {} for {} / {}", ans, 
+                        remainders.size() - index,
+                        origDividend, divisor);
+                        */
+                        
+                return remainders.size() - index;
+            }
+            
+            remainders.add(dividend);
+            
+            int d = dividend / divisor;
+            
+            //Too inaccurate
+            ans += (double) d / factor;
+            int remainer = dividend - d * divisor;
+            
+            dividend = remainer;
+
+            if (dividend == 0) {
+                return 0;
+            }
+        }
+    }
+    
+    public static void main26(String args[]) throws Exception {
+        
+        int max = 0;
+        
+        for(int i = 2; i < 1000; ++i) {
+            int rl = getRepetitionLength(i, 1);
+            if (rl > max) {
+                max = rl;
+                log.debug("New max {} for num {}", max, i);
+            }
+        }
+        
+        
+        
+        
+    }
+    public static void main25(String args[]) throws Exception {
+        BigInteger x = BigInteger.ONE;
+        BigInteger y = BigInteger.ONE;
+        
+        int digits = 1000;
+        
+        BigInteger min = BigInteger.TEN.pow(digits-1);
+        
+        int term = 2;
+        while(y.compareTo(min) < 0) {
+            ++term;
+            BigInteger next = x.add(y);
+            x = y;
+            y = next;
+        }
+        
+        log.debug("Prob 25.  {}", term);
+    }
+    public static void main24(String args[]) throws Exception {
+        Integer[] arr = new Integer[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+        
+        Integer[] out = new Integer[10];
+        
+        Permutations<Integer> p = Permutations.create(arr, out);
+        
+        int i = 0;
+        while(p.next()) {
+            ++i;
+            if (i==1000000) {
+            log.debug("out {}", (Object)out);
+            break;
+            }
+        }
+    }
+    
+    public static void main23(String args[]) throws Exception {
+        
+        long l = System.currentTimeMillis();
+        
+        int maxNum = 28123;
+        
+        boolean[] abundant = new boolean[1+maxNum];
+        
+        for(int num = 1; num <= maxNum; ++num) {
+            
+            int sum = 0;
+            
+            int upperLimit = IntMath.sqrt(num, RoundingMode.DOWN);
+            
+            for(int factor = 1; factor <= upperLimit; ++factor) {
+                if (num % factor == 0) {
+                    sum += factor;
+                    int otherFactor = num / factor;
+                    
+                    if (otherFactor != factor && otherFactor != num)
+                        sum += otherFactor;
+                }
+            }
+            
+            
+            if (sum > num) {
+                abundant[num] = true;
+            }
+        }
+        
+        int sum = 0;
+        
+        num :
+        for(int num = 1; num <= maxNum; ++num) {
+            
+            for(int smaller = 1; smaller <= num / 2; ++smaller) {
+                int larger = num - smaller;
+                if (abundant[smaller] && abundant[larger]) {
+                    continue num;
+                }
+            }
+            
+            //log.debug("Num {} cannot be expressed as abundant", num);
+            sum += num;
+        }
+        
+        long elapsed = System.currentTimeMillis() - l ;
+        log.debug("Prob 23.  Elapsed ms {} Sum {}", elapsed, sum);
+    }
+    
+    
+    public static void main1_22(String args[]) throws Exception {
         ///////////////////////////////////////
         //1
         int sum = 0;
@@ -472,6 +809,28 @@ public class Prob1 {
         }
         
         log.info("prob 21 : {}", amiable);
+        
+        
+        scanner = new Scanner(Prob1.class.getResourceAsStream("prob22.txt"));
+        
+        Iterable<String> names = Splitter.on(",").split(scanner.next().replace("\"", ""));
+        
+        List<String> nameList = Lists.newArrayList(names);
+        Collections.sort(nameList);
+        
+        sum = 0;
+        for(int i = 0; i < nameList.size(); ++i) {
+            String name = nameList.get(i);
+            int alpha = 0;
+           for(int c = 0; c < name.length(); ++c) {
+               alpha += 1 + name.charAt(c) - 'A';
+           }
+           sum += (i+1) * alpha;
+        }
+        
+        log.info("Prob 22 sum {}", sum);
+        
+        
     }
 
 }
