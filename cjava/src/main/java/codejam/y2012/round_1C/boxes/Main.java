@@ -197,7 +197,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         log.debug("Update current block row. adding row info {}", 
                 ri
                 );
-        
+
+        if (bruteForce != null) {
         log.debug("Brute force checks at row index {}. \nStart index {} should be {}, end index {} should be {}",
                 checkRowIndex,
                 ri.startIndex, 
@@ -207,7 +208,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 );
         Preconditions.checkState(bruteForce[(int)checkRowIndex][(int) startIndex] == (int)countStart);            
         Preconditions.checkState(bruteForce[(int)checkRowIndex][(int) ri.stopIndex-1] == (int)ri.stopIndexCount);
-        
+        }
     }
     
     
@@ -434,6 +435,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             if (aBlockLengthRemaining <= 0)
                 continue;
             
+            if (uriCurrentRow.stopIndex < lastBlockOfB.startingIndex) {
+                continue;
+            }
+            
             log.debug("Current row, aBlock length used {} len remaining {}", lengthUsed, aBlockLengthRemaining);
             
             long startIndex = blockOfB.startingIndex-1;
@@ -517,7 +522,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
            
             
             
-            Preconditions.checkState(riCurrent.startIndexCount <= riPrev.stopIndexCount);
+           // Preconditions.checkState(riCurrent.startIndexCount <= riPrev.stopIndexCount);
             
             if (riCurrent.stopIndexCount <= riPrev.stopIndexCount) {
                 log.debug("Removing {} ", riCurrent);
@@ -582,6 +587,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             currentMax = prevBlockRow.get(prevBlockRow.size() - 1).stopIndexCount; 
         }
         
+        if (bruteForce != null) {
+        
         log.debug("Checking row id {} maximum {} should be {}",
                 endBlockOfARowIndex,
                 currentMax,
@@ -589,7 +596,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         Preconditions.checkState( currentMax ==
                 bruteForce[(int)endBlockOfARowIndex][bruteForce[0].length - 1]);
-        
+        }
         
     }
     
@@ -648,6 +655,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      * @param currentRowIndex
      * @return
      */
+    /*
     static long getMaxBeforeIndexOld(TreeMap<Long,Long> row, long currentRowIndex) {
         Map.Entry<Long,Long> indexCount  = row.floorEntry(currentRowIndex - 1);
         Map.Entry<Long,Long> nextIndexCount = row.ceilingEntry(currentRowIndex);
@@ -670,7 +678,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         
         return max;
-    }
+    }*/
     
     private long[] buildIndexTypeArrays(TreeMap<Long,Integer> aIndexType, TreeMap<Long,Integer> bIndexType, InputData in) {
 long currentColIndex = 1;
@@ -746,7 +754,8 @@ long currentColIndex = 1;
     
     public String handleCase(InputData in) {
 
-        int[][] bruteForce = bruteForce(in);
+      // int[][] bruteForce = bruteForce(in);
+        int[][] bruteForce  = null;
 
         // Count --> type
         TreeMap<Long, Integer> aIndexType = new TreeMap<>();
@@ -793,7 +802,7 @@ long currentColIndex = 1;
 
                 Block blockOfB = matchingBlocks.get(mbIndex);
                 
-                log.debug("\n @@ Matching block B {}", blockOfB);
+                log.info("\n @@ Matching block B {}  cur row size {}", blockOfB, blockRow.size());
 
                 
                 //Build 2 ranges.  Best match previous row and best match current row
@@ -838,10 +847,12 @@ long currentColIndex = 1;
 
         long max = prevBlockRow.isEmpty() ? 0 : prevBlockRow.get(prevBlockRow.size() - 1).stopIndexCount;
 
-        long maxBF = bruteForce[bruteForce.length - 1][bruteForce[0].length - 1];
+        if (bruteForce != null) {
+            long maxBF = bruteForce[bruteForce.length - 1][bruteForce[0].length - 1];
 
-        Preconditions.checkState(max == maxBF);
-        return String.format("Case #%d: No", in.testCase);
+            Preconditions.checkState(max == maxBF);
+        }
+        return String.format("Case #%d: %d", in.testCase, max);
     }
 
 }
