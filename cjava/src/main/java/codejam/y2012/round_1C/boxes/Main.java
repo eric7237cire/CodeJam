@@ -217,7 +217,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         final long stopIndex;
         final long stopIndexCount;
         
-        public UpdateRowInfo(long startIndex, long startIndexCount, long stopIndex, long stopIndexCount) {
+        final long lengthUsed;
+        
+        public UpdateRowInfo(long startIndex, long startIndexCount, long stopIndex, long stopIndexCount,
+                long lengthUsed
+                ) {
             super();
             
             
@@ -225,6 +229,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             this.startIndexCount = startIndexCount;
             this.stopIndex = stopIndex;
             this.stopIndexCount = stopIndexCount;
+            
+            this.lengthUsed = lengthUsed;
             
             Preconditions.checkArgument(stopIndex - startIndex == stopIndexCount - startIndexCount);
             Preconditions.checkArgument(stopIndex >= startIndex);
@@ -347,7 +353,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             long endIndex = startIndex + blockOfB.count  ;
             long countEnd = countStart + blockOfB.count ;
             
-            UpdateRowInfo uri = new UpdateRowInfo(startIndex, countStart, endIndex, countEnd); 
+            UpdateRowInfo uri = new UpdateRowInfo(startIndex, countStart, endIndex, countEnd, blockOfB.count); 
             log.debug("Block A covers all of block B.  Returning {}", uri);
             ret.add( uri );            
             return ret;
@@ -363,7 +369,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             long countEnd = countStart + blockOfA.count; 
             if (getMaxBeforeIndex(prevRow, endIndex + 1) < countEnd) {
                 UpdateRowInfo uri = new UpdateRowInfo(startIndex, countStart, 
-                        endIndex, countEnd); 
+                        endIndex, countEnd, blockOfA.count); 
                 log.debug("Block A smaller, adding beginning match  {}", uri);
                 ret.add(uri);
             }
@@ -382,10 +388,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         startIndex + blockOfA.count);
                 
                 long countEnd = countAtStart + stopIndex - startIndex;
-                UpdateRowInfo uri = new UpdateRowInfo(startIndex, countAtStart, stopIndex, countEnd) ;
+                UpdateRowInfo uri = new UpdateRowInfo(startIndex, countAtStart, stopIndex, countEnd, countEnd-countAtStart) ;
                 log.debug("Block A smaller, improving match within block  B {}", uri);
                 ret.add( uri );
-                return ret;
+               // return ret;
             }
         }
         
@@ -421,12 +427,35 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             return null;
         }
         
-        long maxEndLastBlockPrev = getMaxBeforeIndex(prevRow, lastBlockOfB.startingIndex+ lastBlockOfB.count);
-        long maxEndLastBlockCur = getMaxBeforeIndex(curRow, lastBlockOfB.startingIndex+ lastBlockOfB.count);
         
+        UpdateRowInfo uriCurrentRow = curRow.get(curRow.size() - 1);
+        Preconditions.checkState(uriCurrentRow.stopIndexCount == countCurRow);
         
+        //find same uri from last row (with same start index)
         
-        long lengthUsed = maxEndLastBlockCur - maxEndLastBlockPrev;
+        UpdateRowInfo uriPrevRow = null;
+        
+        for(int i = prevRow.size() - 1; i >= 0; --i) {
+            UpdateRowInfo candidate = prevRow.get(i);
+            if (candidate.startIndex == uriCurrentRow.startIndex) {
+                uriPrevRow = candidate;
+                break;
+            }
+        }
+        
+        long lengthUsed = uriCurrentRow.lengthUsed;
+        
+        /*
+        if (uriPrevRow == null) {
+            //will be the case at the first match
+            lengthUsed = uriCurrentRow.stopIndexCount - uriCurrentRow.startIndexCount;
+        } else {        
+            Preconditions.checkState(uriPrevRow != null);
+        
+            lengthUsed = uriCurrentRow.lengthUsed; //.stopIndexCount - uriPrevRow.stopIndexCount;
+        }*/
+        
+        Preconditions.checkState(lengthUsed >= 0 && lengthUsed <= blockOfA.count);
         
         long aBlockLengthRemaining = blockOfA.count - lengthUsed;
         
@@ -443,7 +472,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         
         UpdateRowInfo uri =  new UpdateRowInfo( startIndex, countStart, 
-                startIndex + countEnd - countStart, countEnd);
+                startIndex + countEnd - countStart, countEnd, countEnd-countStart);
         
         log.debug("uri from CURRENT row {}", uri);
         
@@ -495,14 +524,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
                 UpdateRowInfo replaceCur = new UpdateRowInfo(riCurrent.startIndex+diff, 
                         riCurrent.startIndexCount+diff, 
-                        riCurrent.stopIndex, riCurrent.stopIndexCount);
+                        riCurrent.stopIndex, riCurrent.stopIndexCount, riCurrent.lengthUsed);
                 
                 log.debug("Sliding {} to {}", riCurrent, replaceCur);
                 
                 if (replaceCur.startIndex == riPrev.stopIndex) {
+                    //TODO length used correct?
                     UpdateRowInfo replacePrev = new UpdateRowInfo(riPrev.startIndex,
                             riPrev.startIndexCount,
-                            replaceCur.stopIndex, replaceCur.stopIndexCount);
+                            replaceCur.stopIndex, replaceCur.stopIndexCount, riCurrent.lengthUsed);
                     li.previous();
                     li.previous();
                     li.set(replacePrev);
@@ -629,6 +659,11 @@ long currentColIndex = 1;
         currentColIndex = 1;
         for(int m = 0; m < in.M; ++m) {
             Pair<Long,Integer> pair = in.b.get(m);
+            
+            if (m > 0 && in.b.get(m-1).getValue() == pair.getValue()) {
+                currentColIndex += pair.getLeft();
+                continue;
+            }
             bIndexType.put(currentColIndex, pair.getValue());
                 
             currentColIndex += pair.getLeft();
@@ -638,6 +673,7 @@ long currentColIndex = 1;
         return new long[] {aMaxIndex, bMaxIndex};
     }
     
+    /*
     private List<UpdateRowInfo> buildFirstBlockRow(InputData in, TreeMap<Long,Integer> bIndexType, long bMaxIndex, int[][] bruteForce) {
       //Initialize first row
         List<UpdateRowInfo> blockRow = Lists.newArrayList();
@@ -676,7 +712,7 @@ long currentColIndex = 1;
         }
         
         return blockRow;
-    }
+    }*/
     
     
     public String handleCase(InputData in) {
@@ -777,6 +813,12 @@ long currentColIndex = 1;
 
             processPrevRow(prevBlockRow, blockRow, bruteForce, endBlockOfARowIndex);
             
+            log.debug("Checking row maximum {} should be {}", 
+                    prevBlockRow.get(prevBlockRow.size() - 1).stopIndexCount,
+                    bruteForce[(int)endBlockOfARowIndex][bruteForce[0].length - 1]);
+            
+            Preconditions.checkState( prevBlockRow.get(prevBlockRow.size() - 1).stopIndexCount ==
+                    bruteForce[(int)endBlockOfARowIndex][bruteForce[0].length - 1]);
             
             log.info("\nNew prev row {}\n", prevBlockRow);
             blockRow = Lists.newArrayList();
