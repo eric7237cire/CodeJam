@@ -355,14 +355,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             UpdateRowInfo uri = new UpdateRowInfo(startIndex, countStart, endIndex, countEnd, blockOfB.count); 
             log.debug("Block A covers all of block B.  Returning {}", uri);
-            ret.add( uri );            
-            return ret;
-        }
-
-
-        
-        
-        {
+            ret.add( uri );
+        } else  {
             //blockA is smaller, so we add this point
             long startIndex = blockOfB.startingIndex-1;
             long endIndex = blockOfB.startingIndex + blockOfA.count - 1;
@@ -375,8 +369,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
         }
         
-        //find any keys between start of block inclusive and end of block index exclusive
-        
+        //find any keys between start of block inclusive and end of block index exclusive        
         for(int riIdx = 0; riIdx < prevRow.size(); ++riIdx) {
             UpdateRowInfo ri = prevRow.get(riIdx);
             
@@ -589,7 +582,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             currentMax = prevBlockRow.get(prevBlockRow.size() - 1).stopIndexCount; 
         }
         
-        log.debug("Checking row maximum {} should be {}",
+        log.debug("Checking row id {} maximum {} should be {}",
+                endBlockOfARowIndex,
                 currentMax,
                 bruteForce[(int)endBlockOfARowIndex][bruteForce[0].length - 1]);
         
