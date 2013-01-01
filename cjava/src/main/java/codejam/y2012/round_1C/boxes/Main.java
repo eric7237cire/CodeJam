@@ -251,7 +251,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         @Override
         public String toString() {
             return "Uri [ " + startIndexCount + " @ idx " + startIndex + "; " + stopIndexCount 
-                    + " @ idx " + stopIndex +  "]\n";
+                    + " @ idx " + stopIndex +  "] len " + lengthUsed + "\n";
         }
        
     }
@@ -454,7 +454,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
             
             UpdateRowInfo uri =  new UpdateRowInfo( startIndex, countStart, 
-                    startIndex + countEnd - countStart, countEnd, uriCurrentRow.lengthUsed - (countEnd-countStart));
+                    startIndex + countEnd - countStart, countEnd, uriCurrentRow.lengthUsed + (countEnd-countStart));
             
             log.debug("uri from CURRENT row {} built using {}", uri, uriCurrentRow);
             ret.add(uri);
