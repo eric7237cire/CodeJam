@@ -583,6 +583,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
         }
         
+        long currentMax = 0;
+        
+        if (!prevBlockRow.isEmpty()) {
+            currentMax = prevBlockRow.get(prevBlockRow.size() - 1).stopIndexCount; 
+        }
+        
+        log.debug("Checking row maximum {} should be {}",
+                currentMax,
+                bruteForce[(int)endBlockOfARowIndex][bruteForce[0].length - 1]);
+        
+        Preconditions.checkState( currentMax ==
+                bruteForce[(int)endBlockOfARowIndex][bruteForce[0].length - 1]);
+        
         
     }
     
@@ -822,12 +835,7 @@ long currentColIndex = 1;
 
             processPrevRow(prevBlockRow, blockRow, bruteForce, endBlockOfARowIndex);
             
-            log.debug("Checking row maximum {} should be {}", 
-                    prevBlockRow.get(prevBlockRow.size() - 1).stopIndexCount,
-                    bruteForce[(int)endBlockOfARowIndex][bruteForce[0].length - 1]);
             
-            Preconditions.checkState( prevBlockRow.get(prevBlockRow.size() - 1).stopIndexCount ==
-                    bruteForce[(int)endBlockOfARowIndex][bruteForce[0].length - 1]);
             
             log.info("\n@@@!!!New prev row {}\n", prevBlockRow);
             blockRow = Lists.newArrayList();
