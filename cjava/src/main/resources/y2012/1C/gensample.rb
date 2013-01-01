@@ -1,11 +1,11 @@
 
-TOTAL  = [10, 8]
+TOTAL  = [200, 180]
 
-MAX_BLOCK = [4, 5]
+MAX_BLOCK = [30, 20]
 
-TYPES = [2, 2]
+TYPES = [3, 3]
 
-ITERATIONS = 10
+ITERATIONS = 100
 r = Random.new
 puts ITERATIONS
 
