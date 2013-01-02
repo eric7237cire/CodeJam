@@ -24,8 +24,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-         return new String[] {"sample.in"};
-       //return new String[] { "A-small-practice.in", "A-large-practice.in" };
+        // return new String[] {"sample.in"};
+       return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
     @Override
@@ -36,20 +36,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         in.N = scanner.nextInt();
         in.M = scanner.nextInt();
 
-        in.ceiling = Grid.buildEmptyGrid(in.N, in.M, -1);
-        in.floor = Grid.buildEmptyGrid(in.N, in.M, -1);
+        in.ceiling = Grid.buildFromScanner(scanner, in.N, in.M,Grid.fromScannerInt, -1);
+        in.floor = Grid.buildFromScanner(scanner, in.N, in.M, Grid.fromScannerInt, -1);
         
-        for(int r = 0; r < in.N; ++r) {
-            for(int c = 0; c < in.M; ++c) {
-                in.ceiling.setEntry(r,c,scanner.nextInt());
-            }
-        }
-        for(int r = 0; r < in.N; ++r) {
-            for(int c = 0; c < in.M; ++c) {
-                in.floor.setEntry(r,c,scanner.nextInt());
-            }
-        }
-
+        
         return in;
     }
 

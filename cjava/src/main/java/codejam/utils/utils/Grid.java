@@ -29,11 +29,21 @@ public class Grid<SquareType> {
     
     final BiMap<Character, SquareType> mapping;
     
+    public final static FromScanner<Integer> fromScannerInt = new FromScanner<Integer>() {
+
+        @Override
+        public Integer getFromScanner(Scanner scanner) {
+            return scanner.nextInt();
+        }
+        
+    };
+    
     //Builds character grid
     //..#
     //.O#
     //.OO
-    public static<SquareType> Grid<SquareType>  buildFromScanner(Scanner scanner, int rows, int cols, final BiMap<Character, SquareType> mapping, SquareType invalidSq) {
+    public static<SquareType> Grid<SquareType>  buildFromScanner(Scanner scanner, int rows, int cols, 
+            final BiMap<Character, SquareType> mapping, SquareType invalidSq) {
         
         
         
@@ -45,8 +55,26 @@ public class Grid<SquareType> {
             for(int c = 0; c < cols; ++c) {
                 char ch = rowStr.charAt(c);
                 g.grid.add(g.getIndex(r,c), mapping.get(ch) );
-            }
+            }            
+        }
+        
+        return g;
+    }
+    
+    public static<SquareType> Grid<SquareType>  buildFromScanner(Scanner scanner, int rows, int cols, 
+            final FromScanner<SquareType> reader, SquareType invalidSq) {
+        
+        
+        
+        Grid<SquareType> g = new Grid<>(rows, cols, invalidSq, null);
+        
+        for (int r = 0; r < rows; ++r) {
             
+            
+            for(int c = 0; c < cols; ++c) {
+                SquareType sq = reader.getFromScanner(scanner);
+                g.grid.add(g.getIndex(r,c), sq );
+            }            
         }
         
         return g;
@@ -55,6 +83,11 @@ public class Grid<SquareType> {
     public static interface Converter<SquareType> {
         SquareType convert(char c);
     }
+    
+    public static interface FromScanner<SquareType> {
+        SquareType getFromScanner(Scanner scanner);
+    }
+    
     public static<SquareType> Grid<SquareType>  buildFromBufferedReader(BufferedReader br, int rows, int cols, final BiMap<Character, SquareType> mapping, SquareType invalidSq) {
         
         

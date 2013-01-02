@@ -112,9 +112,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         log.debug("Grid {}", input.grid);
 
         
-        //DecimalFormat decim = new DecimalFormat("0.00000000000");
-        //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
-        
         
         //Build another grid which stocks the top left corner of a connected rectangle
         Grid<PotentialSquares> potGrid = Grid.buildEmptyGrid(input.M, input.N, null);
@@ -271,21 +268,24 @@ assignment  = += -= *= /= %= &= ^= |= <<= >>= >>>=
          * Define a parity.  Basically, divide the squares into 2 sets.  Any square
          * in the set builds a chessboard.  
          */
-        for(int m = 0; m < input.M; ++m) {
+        for (int m = 0; m < input.M; ++m) {
             parity = m % 2 == 0 ? 1 : 0;
             String hex = scanner.next();
-            
-            for(int hexIdx = 0; hexIdx < input.N / 4; ++hexIdx) {
-            int hexInt = Integer.parseInt("" + hex.charAt(hexIdx), 16);
-            //log.debug("Row {}", StringUtils.leftPad(Integer.toBinaryString(row), input.N,'0'));
-            for(int hexBit = 0; hexBit < 4; ++hexBit) {
-                int n = hexIdx * 4 + hexBit;
-                int value = (1 << 4 - hexBit - 1 & hexInt) != 0 ? 1 : 0;
-                
-                parity ^= 1;
-                //log.debug("r {} c {} value {} parity {}", m,n,value,parity);
-                input.grid.setEntry(m, n, value == parity ? 1 : 0);
-            }
+
+            for (int hexIdx = 0; hexIdx < input.N / 4; ++hexIdx) {
+                int hexInt = Integer.parseInt("" + hex.charAt(hexIdx), 16);
+                // log.debug("Row {}",
+                // StringUtils.leftPad(Integer.toBinaryString(row),
+                // input.N,'0'));
+                for (int hexBit = 0; hexBit < 4; ++hexBit) {
+                    int n = hexIdx * 4 + hexBit;
+                    int value = (1 << 4 - hexBit - 1 & hexInt) != 0 ? 1 : 0;
+
+                    parity ^= 1;
+                    // log.debug("r {} c {} value {} parity {}",
+                    // m,n,value,parity);
+                    input.grid.setEntry(m, n, value == parity ? 1 : 0);
+                }
             }
         }
         
