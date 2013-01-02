@@ -1,6 +1,5 @@
 package codejam.y2012.round_1C.boxes;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -176,9 +175,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      */
     private static void updateRow(List<UpdateRowInfo> row,  UpdateRowInfo ri, 
             long nextBlockRowIndex, int[][] bruteForce) {
-        
-        long blockLength = ri.stopIndex - ri.startIndex + 1;
-        long blockEndCount = ri.stopIndexCount;
         
         row.add(ri);
         
