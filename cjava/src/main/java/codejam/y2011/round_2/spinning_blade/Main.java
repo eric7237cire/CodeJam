@@ -124,6 +124,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         double centerMassX;
         double centerMassY;
         
+        public int getIndex() {
+            return getIndex(centerX, centerY, size);
+        }
+        
         static int getIndex(double centerX, double centerY, int size) {
             int centerXInt = DoubleMath.roundToInt(2 * centerX, RoundingMode.HALF_UP);
             int centerYInt = DoubleMath.roundToInt(2 * centerY, RoundingMode.HALF_UP);
@@ -137,6 +141,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         int largestSize = Math.min(in.R, in.C);
         
         int size = 3;
+        
+        int maxSize = 0;
         
         Map< Integer, Blade > centers = Maps.newHashMap();  
             
@@ -172,22 +178,63 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 blade.mass = totalMass;
                 blade.centerX = centerCol;
                 blade.centerY = centerRow;
+                blade.size = size;
                 blade.centerMassX = blade.centerX + sumCol / blade.mass;
                 blade.centerMassY = blade.centerY + sumRow / blade.mass;
                 
-                Pair<Double, Double> center = new ImmutablePair<>(centerRow, centerCol);
-                 
+                //Pair<Double, Double> center = new ImmutablePair<>(centerRow, centerCol);
                 
-                
-                if (DoubleMath.fuzzyCompare(sumCol, 0, 1e-5) == 0 &&
-                        DoubleMath.fuzzyCompare(sumRow, 0, 1e-5) == 0 
+                if (DoubleMath.fuzzyCompare(blade.centerMassX, blade.centerX, 1e-5) == 0 &&
+                        DoubleMath.fuzzyCompare(blade.centerMassY, blade.centerY, 1e-5) == 0 
                         ) {
-                    return size;
+                    maxSize = size;
+                }
+                
+                centers.put(blade.getIndex(), blade);
+            }
+        }
+        
+        
+        for(size = 4; size <= largestSize; ++size) {
+            
+            for(int topRow = 0; topRow <= in.R - size; ++topRow ) {
+                for(int leftCol = 0; leftCol <= in.C - size; ++leftCol) {
+                    int bottomRow = topRow + size - 1;
+                    int rightCol = leftCol + size - 1;
+                    
+                    double centerCol = (rightCol + leftCol) / 2d;
+                    double centerRow = (topRow + bottomRow) / 2d;
+                                        
+                    double sumCol = 0;
+                    double sumRow = 0;
+                    for(double deltar = -0.5; deltar <= .5; deltar += 1) {
+                        for(double deltac = -0.5; deltac <= .5; deltac += 1) { {
+                            double c
+                            
+                            if ( (r == topRow || r == bottomRow) &&
+                                    (c == leftCol || c == rightCol) ) {
+                                //dont count corners
+                                continue;
+                            }
+                            
+                            sumCol += (centerCol - c) * mass;
+                            sumRow += (centerRow - r) * mass;
+                        }
+                    }
+                    
+                    
+                    
+                    if (DoubleMath.fuzzyCompare(sumCol, 0, 1e-5) == 0 &&
+                            DoubleMath.fuzzyCompare(sumRow, 0, 1e-5) == 0 
+                            ) {
+                        return size;
+                    }
                 }
             }
         }
     
 
+        return maxSize;
     }
     
     public String handleCase(InputData in) {
