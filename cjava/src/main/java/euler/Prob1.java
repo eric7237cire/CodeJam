@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.fraction.Fraction;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
@@ -37,11 +38,152 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        main34_faster(args);
+        problem38();
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
         
+    }
+    
+    public static void problem38() {
+      
+        int max = 0;
+        
+        outer:
+        for(int num = 1; num < 10000; ++num) {
+            int i = 1;
+            String s = "";
+            
+            while (s.length() < 9) {
+                s = s + i * num;
+                ++i;
+            }
+            
+            if (s.length() > 9)
+                continue;
+            
+            for(int d = 1; d <= 9; ++d) {
+                if (!s.contains(Integer.toString(d))) {
+                    continue outer;
+                }
+            }
+            
+            int pan = Integer.parseInt(s);
+            
+            if (pan > max) {
+                max = pan;
+            log.debug("Found {} makes {}", num, s);
+            }
+        }
+        /*
+        Integer[] digits = new Integer[9];
+        for(int i = 1; i <= 9; ++i) {
+            digits[i-1] = i;
+        }
+        
+        Integer[] perm = new Integer[9];
+        
+        int max = 0;
+        Permutations<Integer> p = Permutations.create(digits, perm);
+        
+        while(p.next()) {
+            int panNum  = 0;
+            for(int i = 0; i < 9; ++i) {
+                panNum *= 10;
+                panNum += perm[i];                
+            }
+            
+            for(int n = 12; n >= 2; --n) {
+                int trial = panNum;
+                boolean ok = true;
+                for(int i = n; i >= 1; --i) {
+                    if (trial % i != 0) {
+                        ok = false;
+                        break;
+                    }
+                    
+                    trial /= i;
+                        
+                }
+                
+                if (ok && panNum > max) {
+                    max = panNum;
+                    log.debug("Found pan {} from {} multiplying 1 to {}", panNum, trial, n);
+                }
+            }
+        }*/
+    }
+    
+    public static void problem37() {
+        List<Integer> primes = Prime.generatePrimes(1000000);
+
+        Set<Integer> primeSet = Sets.newHashSet(primes);
+        
+        int[] powTen = new int[8];
+        
+        powTen[0] = 10;
+        
+        for(int i = 1; i < powTen.length; ++i) {
+            powTen[i] = 10 * powTen[i-1];
+        }
+        
+        int sum = 0;
+        for(int p : primes) {
+            if (p < 10)
+                continue;
+            
+            boolean isTruncable = true;
+            int truncP = p;
+            
+            for(int lastDigit = powTen.length - 1; lastDigit >= 0; --lastDigit) {
+                truncP %= powTen[lastDigit];
+                
+                if (!primeSet.contains(truncP)) {
+                    isTruncable = false;
+                    break;
+                }
+            }
+            
+            truncP = p;
+            
+            while(truncP > 0 && isTruncable) {
+                if (!primeSet.contains(truncP)) {
+                    isTruncable = false;
+                    break;
+                }
+                
+                truncP /= 10;
+            }
+        
+            
+            if (isTruncable) {
+                log.debug("{} is truncable", p);
+                sum += p;
+            }
+        }
+        
+        log.debug("Sum is {}", sum);
+    }
+    
+    public static void main36() {
+        int sum = 0;
+        for(int i = 1; i < 1000000; ++i) {
+            String s10 = Integer.toString(i, 10);
+            String s2 = Integer.toString(i, 2);
+            
+            String chk = s2.substring(s2.length() - s2.length() / 2);
+            //s10 len 4
+            //0 1 2 3  with beg
+            //len 5
+            //4 5
+            if ((s10.startsWith(StringUtils.reverse(s10.substring(s10.length() - s10.length() / 2)))) &&
+            s2.startsWith(StringUtils.reverse(s2.substring(s2.length() - s2.length() / 2)))) {
+                    log.debug("Found {} {} ", s10, s2);
+                    sum += i;
+            }
+        }
+        
+        log.debug("Sum {}", sum);
     }
     
     public static void main35(String args[]) throws Exception {
@@ -59,6 +201,10 @@ public class Prob1 {
 
         List<Integer> primes = Prime.generatePrimes(1000000);
 
+        Set<Integer> primeSet = Sets.newHashSet();
+        
+        primeSet.addAll(primes);
+        
         int count = 0;
         
         int numDigits = 1;
@@ -68,10 +214,21 @@ public class Prob1 {
                 ++numDigits;
             }
             
+            boolean ok = true;
+            
             for(int shift = 0; shift < numDigits; ++shift) {
                 int digit = prime % 10;
                 prime /= 10;
                 prime += digit * powTen[numDigits - 1];
+                if (!primeSet.contains(prime)) {
+                    ok = false;
+                    break;
+                }
+            }
+            
+            if (ok) {
+                log.debug("Circular prime {}  count {}", prime, count);
+                ++count;
             }
             
         }
