@@ -37,11 +37,130 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        main33(args);
+        main34_faster(args);
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
         
+    }
+    
+    public static void main35(String args[]) throws Exception {
+        //10987654321
+
+        long[] powTen;
+
+        int powers = 8;
+        powTen = new long[powers];
+        long pt = 1;
+        for (int i = 0; i < powers; ++i) {
+            powTen[i] = pt;
+            pt *= 10;
+        }
+
+        List<Integer> primes = Prime.generatePrimes(1000000);
+
+        int count = 0;
+        
+        int numDigits = 1;
+        
+        for(int prime : primes) {
+            if (prime >= powTen[numDigits]) {
+                ++numDigits;
+            }
+            
+            for(int shift = 0; shift < numDigits; ++shift) {
+                int digit = prime % 10;
+                prime /= 10;
+                prime += digit * powTen[numDigits - 1];
+            }
+            
+        }
+                        
+
+        log.debug("Count is {}", count);
+    }
+    
+    public static void main34_faster(String args[]) throws Exception {
+        // 10987654321
+
+        int[] factorials = new int[10];
+
+        factorials[0] = 1;
+        for (int i = 1; i <= 9; ++i) {
+            factorials[i] = i * factorials[i-1];
+        }
+
+        int sum = 0;
+        for (int num = 10; num < 10000000; ++num) {
+
+            int digits = num;
+            int fac = 0;
+            
+            while(digits > 0) {
+                int digit = digits % 10;
+                fac += factorials[digit];
+                digits /= 10;
+            }                
+
+            if (fac == num) {
+                log.debug("Found {}", num);
+                sum += num;
+            }
+        
+
+        }
+
+        log.debug("Sum is {}", sum);
+    }
+    
+    public static void main34(String args[]) throws Exception {
+                 //10987654321
+        
+        long[] powTen;
+        
+        int powers = 15;
+        powTen = new long[powers];
+        long pt = 1;
+        for(int i = 0; i < powers; ++i) {
+            powTen[i] = pt;
+            pt *= 10;
+        }
+    
+        
+        int[] factorials = new int[10];
+        
+        for(int i = 0; i <= 9; ++i) {
+            factorials[i] = IntMath.factorial(i);
+        }
+        
+        long sum = 0;
+        for (int numDigits = 2; numDigits <= 7; ++numDigits) {
+            
+            for(long num = powTen[numDigits-1]; num < powTen[numDigits]; ++num) {
+                long fac = 0;
+                for(int d = 1; d <= numDigits; ++d) {
+                    fac += factorials[getDigit(num, d, powTen)];
+                }
+                
+                if (fac == num) {
+                    log.debug("Found {}", num);
+                    sum += num;
+                }
+            }
+            
+        }
+        
+        log.debug("Sum is {}", sum);
+    }
+    
+    
+    
+    static int getDigit(long num, int digit, long[] powTen) {
+    
+        num %= powTen[digit];
+        num /= powTen[digit - 1];
+        
+        return Ints.checkedCast(num);
     }
     
     public static void main33(String args[]) throws Exception {
