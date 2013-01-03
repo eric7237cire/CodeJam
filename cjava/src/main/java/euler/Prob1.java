@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.apache.commons.math3.fraction.Fraction;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import codejam.utils.utils.Direction;
 import codejam.utils.utils.Grid;
+import codejam.utils.utils.PermutationWithRepetition;
 import codejam.utils.utils.Permutations;
 import codejam.utils.utils.Prime;
 
@@ -35,12 +37,151 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        main31(args);
+        main33(args);
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
         
     }
+    
+    public static void main33(String args[]) throws Exception {
+        
+        Fraction product = new Fraction(1);
+        
+        for (int num = 10; num <= 99; ++num) {
+            for(int denom = 11; denom <= 99; ++denom) {
+                int numSimp = num / 10;
+                int denomSimp = denom % 10;
+                
+                int numElim = num % 10;
+                int denomElim = denom / 10;
+
+                if (denomSimp == 0)
+                    continue;
+
+                if (numElim != denomElim)
+                    continue;
+
+                Fraction f = new Fraction(num, denom);
+                Fraction f2 = new Fraction(numSimp, denomSimp);
+                
+                if (f2.getDenominator() == 1)
+                    continue;
+                
+                if (f.equals(f2)) {
+                    log.debug("Fractions {} / {} == {}", num, denom, f2);
+                    product = product.multiply(f);
+                }
+            }
+        }
+        
+        log.debug("Product {}", product);
+    }
+    
+    public static void main32(String args[]) throws Exception {
+        //Iterator<Long> it = new CombinationIterator(n, k);
+        
+        int[] powTen = new int[] { 1, 10, 100, 1000, 
+            10000, 
+            100000, 
+            1000000, 
+            10000000, 
+            100000000 };
+        
+        Set<Integer> panDigital = Sets.newHashSet();
+        
+        Integer choice[] = new Integer[] { 0, 1, 2 };
+        Integer output[] = new Integer[9];
+        
+        PermutationWithRepetition<Integer> perm = PermutationWithRepetition.create(choice, output);
+        
+        while(perm.hasNext()) {
+            perm.next();
+            
+            List<Integer> aDigits = Lists.newArrayList();
+            List<Integer> bDigits = Lists.newArrayList();
+            List<Integer> pDigits = Lists.newArrayList();
+            
+            for(int d = 1; d <= 9; ++d) {
+                if (output[d-1] == 0) {
+                    aDigits.add(d);
+                } else if (output[d-1] == 1) {
+                    bDigits.add(d);
+                } else if (output[d-1] == 2) {
+                    pDigits.add(d);
+                } else {
+                    Preconditions.checkState(false);
+                }
+            }
+            
+            if (pDigits.size() < 3 || pDigits.size() > 6)
+                continue;
+            
+            if (aDigits.isEmpty() || bDigits.isEmpty())
+                continue;
+            
+            Integer[] aDigitsArray = new Integer[aDigits.size()];
+            aDigitsArray = aDigits.toArray(aDigitsArray);
+            Integer[] bDigitsArray = new Integer[bDigits.size()];
+            bDigitsArray = bDigits.toArray(bDigitsArray);
+            
+            Integer[] aDigitsOut = new Integer[aDigitsArray.length];
+            Integer[] bDigitsOut = new Integer[bDigitsArray.length];
+            
+            Permutations<Integer> permA = Permutations.create(aDigitsArray, aDigitsOut);
+            
+            while(permA.next()) {
+                
+                
+                int a = 0;
+                for(int i = 0; i < aDigitsOut.length; ++i) {
+                    a+=aDigitsOut[i] * powTen[i];
+                }
+                
+                Permutations<Integer> permB = Permutations.create(bDigitsArray, bDigitsOut);
+                
+                while(permB.next()) {
+                int b = 0;
+                for(int i = 0; i < bDigitsOut.length; ++i) {
+                    b+=bDigitsOut[i] * powTen[i];
+                }
+                
+                int p = a * b;
+                
+                String pStr = Integer.toString(p);
+                
+                if (pStr.length() != pDigits.size())
+                    continue;
+                
+                boolean match = true;
+                for(int pDigit : pDigits) {
+                    if (!pStr.contains(Integer.toString(pDigit))) {
+                        match = false;
+                        break;
+                    }
+                }
+                
+                if (match) {
+                    log.debug("Unusual number {} * {} = {}", a, b, p);
+                    panDigital.add(p);
+                }
+                
+                }
+            }
+            
+            
+            
+            //log.debug("output {}", (Object) output);
+        }
+        
+        int sum = 0;
+        for(int pan : panDigital) {
+            sum += pan;
+        }
+        
+        log.debug("Sum is {}", sum);
+    }
+    
     
     public static void main31(String args[]) throws Exception
     {

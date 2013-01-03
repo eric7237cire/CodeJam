@@ -2,7 +2,6 @@ package codejam.y2011.round_2.spinning_blade;
 
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -16,7 +15,6 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.Grid;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.math.DoubleMath;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
@@ -25,8 +23,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-         return new String[] {"sample.in"};
-      //  return new String[] { "A-small-practice.in", "A-large-practice.in" };
+      //   return new String[] {"sample.in"};
+        return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
     @Override
@@ -115,26 +113,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return 0;
     }
     
-    static class Blade {
-        double centerX;
-        double centerY;
-        double mass;
-        int size;
-        
-        double centerMassX;
-        double centerMassY;
-        
-        public int getIndex() {
-            return getIndex(centerX, centerY, size);
-        }
-        
-        static int getIndex(double centerX, double centerY, int size) {
-            int centerXInt = DoubleMath.roundToInt(2 * centerX, RoundingMode.HALF_UP);
-            int centerYInt = DoubleMath.roundToInt(2 * centerY, RoundingMode.HALF_UP);
-            
-            return centerYInt * size + centerXInt;
-        }
-    }
     
     static class Square {
         long totalMass;
@@ -142,8 +120,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         long colMassSum;
         long rowMassSum;
         
-        int topRow;
-        int leftCol;
         int size;
         
         
@@ -156,8 +132,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             square.totalMass = totalMass;
             square.colMassSum = col * totalMass;
             square.rowMassSum = row * totalMass;
-            square.topRow = row;
-            square.leftCol = col;
             square.size = 1;
             
             return square;
@@ -166,8 +140,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         static Square from2d(Square[][] squares_1, int row, int col) {
             Square square = new Square();
             
-            square.topRow = row;
-            square.leftCol = col;
             square.size = 2;
             
             for(int deltaRow = 0; deltaRow <= 1; ++deltaRow) {
@@ -187,8 +159,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                  int row, int col) {
             Square square = new Square();
             
-            square.topRow = row;
-            square.leftCol = col;
             square.size = centerSquare.size + 2;
             
             square.totalMass = upperRight.totalMass + lowerLeft.totalMass - centerSquare.totalMass
@@ -233,6 +203,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         squares.add(squares_1);
         squares.add(squares_2);
         
+        squares_2 = null;
+        
         for(int size = 3; size <= largestSize; ++size) {
             
             Square[][] centerSquares = squares.get(squares.size() - 2);
@@ -255,6 +227,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     int newSquareTopRow = topRow - 1;
                     int newSquareLeftCol = leftCol - 1;
                     
+                    //Really the double
                     int centerX = (leftCol - 1 + leftCol - 1 + size - 1) ; // /2d
                     int centerY = (topRow - 1 + topRow - 1 + size - 1) ;   // / 2d
                     
