@@ -126,6 +126,8 @@ public class Runner {
         final BufferedReader br = new BufferedReader(isr);
         final Scanner scanner = new Scanner(br);
         
+       // scanner.useDelimiter("\\p{javaWhitespace}+");
+        
         File outFile = new File(dir + inputFileName.replaceAll("\\.in", "") + ".out");
         
         
