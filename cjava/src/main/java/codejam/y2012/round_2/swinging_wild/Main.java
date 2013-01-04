@@ -97,7 +97,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 return String.format("Case #%d: YES", in.testCase);
             }
             
-            NavigableMap<Integer,Integer> visitable = locLenMap.subMap(locRange.getKey() - locRange.getValue(),true, locRange.getKey() + locRange.getValue(), true);
+            //NavigableMap<Integer,Integer> visitable = locLenMap.subMap(locRange.getKey() - locRange.getValue(),true, locRange.getKey() + locRange.getValue(), true);
+            
+            NavigableMap<Integer,Integer> visitable = locLenMap.subMap(locRange.getKey(), false, locRange.getKey() + locRange.getValue(), true);
+            
             
             for(Map.Entry<Integer,Integer> locLen : visitable.entrySet()) {
                 int interval = Math.abs(locLen.getKey() - locRange.getKey());
