@@ -43,4 +43,18 @@ public class Prime {
         
         return primes;
     }
+    
+    public static boolean isPrime(int n, List<Integer> knownPrimes) {
+        int upperLimit = DoubleMath.roundToInt(Math.sqrt(n), RoundingMode.DOWN);
+        
+        for(int prime : knownPrimes) {
+            if (prime > upperLimit) 
+                return true;
+            
+            if (n % prime == 0)
+                return false;
+        }
+        
+        return true;
+    }
 }

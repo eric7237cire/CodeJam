@@ -38,11 +38,127 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem38();
+        problem42();
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
         
+    }
+    
+    public static void problem42() {
+        Set<Integer> triangleNums = Sets.newHashSet();
+        
+        int tNum = 0;
+        
+        int max = 26 * 26;
+        
+        int next = 1;
+        
+        while(tNum < max) {
+            tNum += next;
+            triangleNums.add(tNum);
+            next++;
+        }
+        
+        Scanner scanner = new Scanner(Prob1.class.getResourceAsStream("prob42.txt"));
+        
+        String[] s = scanner.next().replace("\"", "").split(",");
+        
+        int count = 0;
+        
+        for (String str : s) {
+            //log.debug(str);
+            int num = 0;
+            for(int c = 0; c < str.length(); ++c) {
+                num += str.charAt(c) - 'A' + 1;
+            }
+            
+            if (triangleNums.contains(num)) {
+                log.debug("Found triangle word {}", str);
+                ++count;
+            }
+        }
+        
+        log.debug("Count is {}", count);
+        
+    }
+    
+    public static void problem41() {
+        List<Integer> knownPrimes = Prime.generatePrimes(1000000);
+        
+        for(int digits = 2; digits <= 9; ++digits) {
+            Integer[] digitsArray = new Integer[digits];
+            
+            for(int d = 1; d <= digits; ++d) {
+                digitsArray[d-1] = d;
+            }
+            
+            Integer[] out = new Integer[digits];
+            
+            Permutations<Integer> p = Permutations.create(digitsArray, out);
+            
+            while(p.next()) {
+                
+                int num = 0;
+                
+                for(int d = 0; d < digits; ++d) {
+                    num *= 10;
+                    num += out[d];
+                }
+        
+                if (Prime.isPrime(num, knownPrimes)) {
+                    log.debug("pandigital prime {}", num);
+                }
+                
+            }
+        }
+    }
+    
+    public static void problem40() {
+        StringBuffer sb = new StringBuffer();
+        
+        int i = 1;
+        
+        while(sb.length() < 1000000) {
+            sb.append(Integer.toString(i));
+            ++i;
+        }
+        
+        int digit = 1;
+        int product = 1;
+        for(i = 0; i < 7; ++i) {
+            log.debug("Taking {} digit", digit);
+            product *= Character.digit(sb.charAt(digit - 1), 10);
+            digit *= 10;
+            
+        }
+        
+        log.debug("Product p {}", product);
+    }
+    
+    public static void problem39() {
+        int max = 0;
+        for(int p = 3; p <= 1000; ++p) {
+            int num = 0;
+            
+            for(int a = 1; a < p; ++a) {
+                for(int b = a ; b < p; ++b) {
+                    int c = p - a - b;
+                    int ab = a*a + b*b;
+                    int cc = c*c;
+                    if (ab == cc) {
+                        //log.debug("Found {} {} {} with p {}", a,b,c,p);
+                        num ++;
+                    }
+                
+                }
+            }
+            
+            if (num > max) {
+                max = num;
+                log.debug("New max {} for p {}", max, p);
+            }
+        }
     }
     
     public static void problem38() {

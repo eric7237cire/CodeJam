@@ -1,5 +1,6 @@
 package codejam.y2011.round_2.ai_wars;
 
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -138,6 +139,68 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
         }
     }
+    
+    static class DijkstraNode {
+        int nodeId;
+        int distance;
+        Integer previous;
+        public DijkstraNode(int nodeId, int distance) {
+            super();
+            this.nodeId = nodeId;
+            this.distance = distance;
+        }
+    }
+    
+    /**
+     * Indexes in graph go from 0 to nodeCount - 1
+     */
+    public DijkstraNode[] doDijkstra(GraphInt graph, int sourceNodeId, int nodeCount) {
+        
+        
+        DijkstraNode[] dijNodes = new DijkstraNode[nodeCount];
+        
+        for(int n = 0; n < dijNodes.length; ++n) {
+            dijNodes[n] = new DijkstraNode(n, Integer.MAX_VALUE);
+        }
+        
+        
+        PriorityQueue<DijkstraNode> toProcess = new PriorityQueue<>(1, new Comparator<DijkstraNode>() {
+
+            @Override
+            public int compare(DijkstraNode o1, DijkstraNode o2) {
+                return Integer.compare(o1.distance, o2.distance);
+            }
+        });
+        
+        dijNodes[sourceNodeId].distance = 0;
+        toProcess.add(dijNodes[sourceNodeId]);
+        
+        while(!toProcess.isEmpty()) {
+            DijkstraNode nodeU = toProcess.poll();
+            
+            if (nodeU.distance == Integer.MAX_VALUE) {
+             // all remaining vertices are inaccessible from source
+                break;
+            }
+            
+            Set<Integer> neighbors = graph.getNeighbors(nodeU.nodeId);
+            
+            for(int neighbor : neighbors) {
+                int alt = 1 + nodeU.distance;
+                DijkstraNode nodeV = dijNodes[neighbor];
+                if (alt < nodeV.distance) {
+                    toProcess.remove(nodeV);
+                    nodeV.distance = alt;
+                    nodeV.previous = nodeU.nodeId;
+                    toProcess.add(nodeV);
+                    
+                }
+            }
+        }
+        
+        return dijNodes;
+                             
+    }
     public String handleCase(InputData in) {
 
         GraphInt graph = new GraphInt();
@@ -146,6 +209,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             Pair<Integer,Integer> edge = in.wormHoles.get(i);
             graph.addConnection(edge.getLeft(), edge.getRight());
         }
+        
+        DijkstraNode[] dijNodes = doDijkstra(graph, 1, in.P);
+        
         
         Set<Node> visited = Sets.newHashSet();
         
@@ -171,6 +237,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         while(!toVisit.isEmpty()) {
             Node node = toVisit.poll();
             
+            DijkstraNode curDijNode = dijNodes[node.planetId];
+            
             if (visited.contains(node)) {
                 continue;
             }
@@ -184,10 +252,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
             
             for(int adjNodeId : neighbors) {
-                if (!node.path.get(adjNodeId)) {
+                
+                DijkstraNode adjDijNode = dijNodes[adjNodeId];
+                
+                if (adjDijNode.distance != curDijNode.distance - 1)
+                    continue;
+                
+                //if (!node.path.get(adjNodeId)) {
                     Node adjNode = Node.createNode(node, graph.getNeighbors(adjNodeId), adjNodeId);
                     toVisit.add(adjNode);
-                }
+                //}
             }
             
         }
