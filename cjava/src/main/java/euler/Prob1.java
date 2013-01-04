@@ -38,11 +38,59 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem42();
+        problem43();
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
         
+    }
+    
+    public static void problem43() {
+        Integer[] digits = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        
+        Integer[] out = new Integer[digits.length];
+        
+        Permutations<Integer> p = Permutations.create(digits,out);
+        
+        List<Integer> primes = Prime.generatePrimes(17);
+        
+        long sum = 0;
+        
+        while(p.next()) {
+            boolean special = true;
+            
+            for(int i = 0; i < 7; ++i) {
+                int start = i + 1;
+                
+                int num = 0;
+                
+                for(int d = start; d < start + 3; ++d) {
+                    num *= 10;
+                    num += out[d];
+                }
+            
+                if (num % primes.get(i) != 0) {
+                    special = false;
+                    break;
+                }
+                
+            }
+            
+            if (special) {
+                
+                long num = 0;
+                
+                for(int d = 0; d < out.length; ++d) {
+                    num *= 10;
+                    num += out[d];
+                }
+                
+                sum += num;
+                log.debug("Num {} or {} has the property", (Object)out, num);
+            }
+        }
+        
+        log.debug("Sum is {}", sum);
     }
     
     public static void problem42() {
