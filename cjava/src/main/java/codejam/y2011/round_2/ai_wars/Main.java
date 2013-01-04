@@ -1,8 +1,9 @@
 package codejam.y2011.round_2.ai_wars;
 
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Set;
@@ -19,6 +20,7 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -29,7 +31,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-         return new String[] {"sample.in"};
+        // return new String[] {"sample.in"};
+         return new String[] { "D-large-practice.in" };
         //return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
@@ -54,22 +57,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         Pattern delim = scanner.delimiter();
         
         InputData in = new InputData(testCase);
-        //scanner.useDelimiter(Pattern.compile(",|\n|\r\n"));
+       
         scanner.useDelimiter("\\p{javaWhitespace}+|,");
-        //\p{javaWhitespace}+
-        //\p{javaWhitespace}+
         in.P = scanner.nextInt();        
         in.W = scanner.nextInt();
 
         in.wormHoles = Lists.newArrayList();
         
-        
-        
-        //String l = scanner.nextLine();
-       // scanner.useDelimiter("\\s+,?");
        
         for(int i = 0; i < in.W; ++i) {
-            //String s = scanner.findInLine("\\d+,\\d+");
+           
             int p1 = scanner.nextInt();
             int p2 = scanner.nextInt();
             
@@ -82,43 +79,76 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
 
     static class Node {
-        BitSet planetsThreatened;
-        BitSet path;
-        int planetId;
-        int numPlanetsThreatened;
-        int pathLength;
+        final BitSet planetsThreatened;
+        final BitSet path;
+        final int planetId;
+        final int numPlanetsThreatened;
+        final int pathLength;
         
-        Node() {
-            planetsThreatened = new BitSet();
-            path = new BitSet();
-        }
-        void addPlanetsThreatened(Set<Integer> neighbors) {
+//        private Node() {
+//            planetsThreatened = new BitSet();
+//            path = new BitSet();
+//        }
+        
+        private static void addPlanetsThreatened(BitSet planetsThreatened, Set<Integer> neighbors) {
             for(int n : neighbors) {
                 planetsThreatened.set(n);
             }
             
         }
+
+        private Node(BitSet planetsThreatened, BitSet path, int planetId,
+                int numPlanetsThreatened, int pathLength) {
+            super();
+            this.planetsThreatened = planetsThreatened;
+            this.path = path;
+            this.planetId = planetId;
+            this.numPlanetsThreatened = numPlanetsThreatened;
+            this.pathLength = pathLength;
+        }
+
+        static Node createRootNode(Set<Integer> neighbors, int planetId) {
+            BitSet planetsThreatened = new BitSet();
+            BitSet path = new BitSet();
+            int numPlanetsThreatened = 0;
+            int pathLength = 0;
+            
+
+            addPlanetsThreatened(planetsThreatened, neighbors);
+            numPlanetsThreatened = neighbors.size();
+            path.set(0);
+            
+            return new Node(planetsThreatened,path,planetId,numPlanetsThreatened, pathLength);
+            
+            
+        }
         
-        static Node createNode(Node parentNode, Set<Integer> neighbors, int planetId) {
-            Node node = new Node();
-            node.planetsThreatened = BitSet.valueOf(parentNode.planetsThreatened.toLongArray());
-            node.path = BitSet.valueOf(parentNode.path.toLongArray());
+        static Node createNode(Node parentNode, Set<Integer> neighbors, BitSet neighborhoodsFurtherDownPath, int planetId) {
             
-            node.path.set(planetId);
-            node.addPlanetsThreatened(neighbors);
+            BitSet planetsThreatened = BitSet.valueOf(parentNode.planetsThreatened.toLongArray());
+            BitSet path = BitSet.valueOf(parentNode.path.toLongArray());
             
-            node.planetsThreatened.andNot(node.path);
+            path.set(planetId);
             
-            node.numPlanetsThreatened = node.planetsThreatened.cardinality();
+            int numPlanetsThreatened = parentNode.numPlanetsThreatened;
+            int pathLength = parentNode.pathLength + 1;
+                        
+            for(int n : neighbors) {
+                planetsThreatened.set(n);
+            }
             
-            node.planetId = planetId;
-            node.pathLength = parentNode.pathLength + 1;
-            return node;
+            planetsThreatened.andNot(path);
+            
+            numPlanetsThreatened += planetsThreatened.cardinality() - parentNode.planetsThreatened.cardinality();
+            
+            planetsThreatened.and(neighborhoodsFurtherDownPath);
+            
+            return new Node(planetsThreatened,path,planetId,numPlanetsThreatened, pathLength);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hashCode(planetId, planetsThreatened, path);
+            return Objects.hashCode(planetId, planetsThreatened);
         }
 
         @Override
@@ -133,8 +163,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             if (planetId != other.planetId)
                 return false;
             
-            return planetsThreatened.equals(other.planetsThreatened) &&
-                    path.equals(other.path);
+            return planetsThreatened.equals(other.planetsThreatened) ;
             
             
         }
@@ -201,6 +230,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return dijNodes;
                              
     }
+    
     public String handleCase(InputData in) {
 
         GraphInt graph = new GraphInt();
@@ -211,6 +241,44 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         
         DijkstraNode[] dijNodes = doDijkstra(graph, 1, in.P);
+        
+        
+        
+        int maxDistance = 0;
+        for(DijkstraNode node : dijNodes) {
+            if(node.distance == Integer.MAX_VALUE)
+                continue;
+            
+            maxDistance = Math.max(maxDistance, node.distance);
+        }
+        
+        //log.info("Max distance {}", maxDistance);
+        
+        BitSet[] neighborhoodsAtDistanceK = new BitSet[maxDistance+1];
+        BitSet[] neighborhoodsAtDistance1toK = new BitSet[maxDistance+1];
+        
+        for(int dis = 0; dis <= maxDistance; ++dis) {
+            neighborhoodsAtDistanceK[dis] = new BitSet();
+            neighborhoodsAtDistance1toK[dis] = new BitSet();
+        }
+        
+        for(DijkstraNode node : dijNodes) {
+            if(node.distance == Integer.MAX_VALUE)
+                continue;
+            
+            Set<Integer> n = graph.getNeighbors(node.nodeId);
+            
+            for(int neighbor : n) {
+                neighborhoodsAtDistanceK[node.distance].set(neighbor);
+            }            
+        }
+        
+        neighborhoodsAtDistance1toK[0].or(neighborhoodsAtDistanceK[0]);
+        
+        for(int dis = 1; dis <= maxDistance; ++dis) {
+            neighborhoodsAtDistance1toK[dis].or(neighborhoodsAtDistance1toK[dis-1]);
+            neighborhoodsAtDistance1toK[dis].or(neighborhoodsAtDistanceK[dis]);
+        }
         
         
         Set<Node> visited = Sets.newHashSet();
@@ -226,11 +294,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }            
         });
         
-        Node root = new Node();
-        root.planetId = 0;
-        root.addPlanetsThreatened(graph.getNeighbors(0));
-        root.numPlanetsThreatened = graph.getNeighbors(0).size();
-        root.path.set(0);
+        Node root = Node.createRootNode(graph.getNeighbors(0), 0);
         
         toVisit.add(root);
         
@@ -241,6 +305,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             if (visited.contains(node)) {
                 continue;
+            }
+            
+            if (toVisit.size() > 1000000) {
+                return "Too large" + toVisit.size();
             }
             
             visited.add(node);
@@ -258,10 +326,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 if (adjDijNode.distance != curDijNode.distance - 1)
                     continue;
                 
-                //if (!node.path.get(adjNodeId)) {
-                    Node adjNode = Node.createNode(node, graph.getNeighbors(adjNodeId), adjNodeId);
-                    toVisit.add(adjNode);
-                //}
+                
+                Node adjNode = Node.createNode(node, graph.getNeighbors(adjNodeId),
+                        neighborhoodsAtDistance1toK[adjDijNode.distance-1],
+                        adjNodeId);
+                toVisit.add(adjNode);
+            
+                //remove from adjNode.planetsThreatened any node that is not connected further along the path
             }
             
         }
