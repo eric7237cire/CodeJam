@@ -1,0 +1,24 @@
+\documentclass[fleqn]{article}
+
+\usepackage{amsmath}
+\usepackage[top=2mm, bottom=2mm, left=2mm, right=30mm]{geometry}
+\begin{document}
+
+Example 
+\begin{flalign}
+\begin{tabular}{|*{20}{c|}}
+\hline
+X coord & 1 & 2 & 3 & 4 & 5 & 6  \\
+\hline
+Max Visible & 3 & 3 & 6 & 5 & 6  \\
+\hline
+\end{tabular}
+\end{flalign}
+
+\begin{flalign}
+\forall_i \forall_{j : i < j < mv} \frac{y_{mv} - y_i}{x_{mv} - x_i} > \frac{y_j-y_i}{x_j-x_i},
+ \forall_{j : j > mv} \frac{y_{mv} - y_i}{x_{mv} - x_i} \ge \frac{y_j-y_i}{x_j-x_i} \\
+\end{flalign}
+
+
+\end{document}
