@@ -152,7 +152,9 @@ public class Main  {
         //codejam.y2012.round_1C.boxes.Main m = new codejam.y2012.round_1C.boxes.Main();
         
         //2012 2
-        codejam.y2012.round_2.swinging_wild.Main m = new codejam.y2012.round_2.swinging_wild.Main();
+        //codejam.y2012.round_2.swinging_wild.Main m = new codejam.y2012.round_2.swinging_wild.Main();
+        codejam.y2012.round_2.aerobics.Main m = new codejam.y2012.round_2.aerobics.Main();
+        
         
         String[] files = {};
         if (m instanceof DefaultInputFiles) {

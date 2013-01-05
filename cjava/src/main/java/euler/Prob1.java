@@ -38,11 +38,22 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem43();
+        problem48();
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
         
+    }
+    
+    public static void problem48() {
+        BigInteger sum  = BigInteger.ZERO;
+        for(int i = 1; i <= 1000; ++i) {
+            sum  = sum.add(BigInteger.valueOf(i).pow(i));
+        }
+        
+        sum = sum.mod(BigInteger.valueOf(10000000000L));
+        
+        log.debug("Sum {} ", sum);
     }
     
     public static void problem43() {
