@@ -14,6 +14,18 @@ using namespace boost;
 
 typedef unsigned long long ull;
 
+template<typename T, typename InputIterator>  
+void Print(std::ostream& ostr,   
+           InputIterator itbegin,   
+           InputIterator itend,   
+           const std::string& delimiter)  
+{  
+    std::copy(itbegin,   
+              itend,   
+              std::ostream_iterator<T>(ostr, delimiter.c_str()));  
+}  
+
+
 ull getPentagonal(int n) 
 {
 	return 1ull * n * (3*n - 1) / 2;
@@ -110,16 +122,7 @@ void problem45()
 	}
 }
 
-template<typename T, typename InputIterator>  
-void Print(std::ostream& ostr,   
-           InputIterator itbegin,   
-           InputIterator itend,   
-           const std::string& delimiter)  
-{  
-    std::copy(itbegin,   
-              itend,   
-              std::ostream_iterator<T>(ostr, delimiter.c_str()));  
-}  
+
 
 void generatePrimes(int n, vector<unsigned int>& primes);
 
@@ -215,9 +218,171 @@ void problem47()
 		
 	}
 }
+
+uint getUsedDigits(uint num)
+{
+	uint ret = 0;
+	while(num > 0)
+	{
+		uint digit = num % 10;
+		ret |= 1 << digit;
+
+		num /= 10;
+	}
+
+	return ret;
+}
+
+void problem49() 
+{
+	vector<uint> primes;
+	generatePrimes(10000, primes);
+
+	for(vector<uint>::const_reverse_iterator largest = primes.rbegin();
+		largest != primes.rend() && *largest >= 1000; ++largest)
+	{
+		for(vector<uint>::const_reverse_iterator middle = 1 + largest;
+			middle != primes.rend() && *middle >= 1000;
+			++middle)
+		{
+			if (getUsedDigits(*middle) != getUsedDigits(*largest))
+				continue;
+			
+			for(vector<uint>::const_reverse_iterator smallest = 1 + middle;
+				smallest != primes.rend() && *smallest >= 1000; ++smallest)
+			{
+				if (getUsedDigits(*middle) != getUsedDigits(*smallest) || *largest - *middle != *middle - *smallest)
+					continue;
+			
+				cout << *smallest << " " << *middle << " " << *largest << endl;
+			}
+
+		}		
+	}
+}
+
+
+void problem50()
+{
+	const int upperLimit = 1000000;
+	vector<uint> primes;
+	generatePrimes(upperLimit, primes);
+
+	set<uint> primeSet;
+	primeSet.insert(primes.begin(), primes.end());
+
+	uint currentMaxTerms = 0;
+
+	for(vector<uint>::const_iterator pStart = primes.begin();
+		pStart != primes.end();
+		++pStart)
+	{
+		uint sum = *pStart;
+		uint terms = 1;
+
+		for(vector<uint>::const_iterator pStop = 1 + pStart;
+		pStop != primes.end();
+		++pStop) 
+		{
+			++terms;
+			sum += *pStop;
+
+			if (sum >= upperLimit)
+				break;
+
+			if (terms > currentMaxTerms && primeSet.find(sum) != primeSet.end())
+			{
+				currentMaxTerms = terms;
+				cout << "New max "<< currentMaxTerms << " sum " << sum 
+					<< " adding " << *pStart << " to " << *pStop << endl;
+			}
+		}
+	}
+	
+}
+
+/*
+I solved it for non consecutive primes!
+*/
+
+void problem50_wrong()
+{
+	const int upperLimit = 1000000;
+	vector<uint> primes;
+	generatePrimes(upperLimit, primes);
+
+	vector<int> maxTerms(upperLimit+1, -1);
+	vector<int> prevTerm(upperLimit+1, -1);
+
+	//Print<uint, vector<uint>::iterator>(cout, prevTerm.begin(), prevTerm.end(), ", ");
+	//Print<int, vector<int>::iterator>(cout, prevTerm.begin(), prevTerm.end(), ", ");
+
+	prevTerm[0] = -1;
+	maxTerms[0] = 0;
+	
+	for(vector<uint>::const_iterator pIt = primes.begin(); pIt != primes.end(); ++pIt)
+	{
+		vector<int> nextTerms(maxTerms);
+
+		uint prime = *pIt;
+
+		cout << "Processing prime " << prime << endl;
+
+		for(int prev = 0; prev+prime <= upperLimit; ++prev) 
+		{
+			if(maxTerms[prev] < 0)
+				continue;
+
+			int terms = 1 + maxTerms[prev];
+
+			if (terms > maxTerms[prev + prime])
+			{
+				nextTerms[prev + prime] = terms;
+				prevTerm[prev + prime] = prev;
+			}
+		}
+
+		maxTerms = nextTerms;
+		/*
+		cout << "\n\nAfter prime " << prime << endl;
+		cout << "Max " << endl;
+		Print<int, vector<int>::iterator>(cout, maxTerms.begin(), maxTerms.end(), ", ");
+		cout << "\n\nPrev " << endl;
+		Print<int, vector<int>::iterator>(cout, prevTerm.begin(), prevTerm.end(), ", ");
+		*/
+	}
+
+	int maxTermCount = 0;
+
+	cout << endl << endl;
+	for(vector<uint>::const_iterator pIt = primes.begin(); pIt != primes.end(); ++pIt)
+	{
+		uint prime = *pIt;
+		if (maxTerms[prime] > maxTermCount)
+		{
+			maxTermCount = maxTerms[prime];
+
+			cout << "New maximum with " << maxTermCount << " terms. " << prime << " = ";
+			int next = prevTerm[prime];
+			int prev = prime;
+			while(next >= 0)
+			{
+				cout << prev - next;
+				prev = next;
+				next = prevTerm[next];
+				if (next >= 0) {
+					cout << " + ";
+				}
+			}
+
+			cout << endl;
+		}
+	}
+}
+
 int main() {
 	ull start = GetTickCount64();
-	problem47();
+	problem50();
 	ull end = GetTickCount64();
 
 	cout << "Elapsed ms " << end-start << endl;
