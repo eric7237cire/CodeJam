@@ -20,5 +20,21 @@ Max Visible & 3 & 3 & 6 & 5 & 6  \\
  \forall_{j : j > mv} \frac{y_{mv} - y_i}{x_{mv} - x_i} \ge \frac{y_j-y_i}{x_j-x_i} \\
 \end{flalign}
 
+All terms are positive
+\begin{flalign}
+({x_j-x_i})(y_{mv} - y_i) > (y_j-y_i)(x_{mv} - x_i), \\
+ (x_j-x_i)y_{mv} - (x_j-x_i)y_i > (y_j-y_i)(x_{mv} - x_i), \\
+ (x_j-x_i)y_{mv} - (x_j-x_i)y_i > (x_{mv} - x_i)y_j-(x_{mv} - x_i)y_i, \\
+  0  > -(x_j-x_i)y_{mv} + (x_j-x_i)y_i + (x_{mv} - x_i)y_j-(x_{mv} - x_i)y_i, \\
+  0  > (-x_j+x_i)y_{mv} + (x_j-x_i-x_{mv} + x_i)y_i + (x_{mv} - x_i)y_j \\
+  0  > (-x_j+x_i)y_{mv} + (x_j-x_{mv} )y_i + (x_{mv} - x_i)y_j \\
+  (x_j-x_i)y_{mv}  >  (x_j-x_{mv} )y_i + (x_{mv} - x_i)y_j \\
+  (x_j-x_i)y_{mv} + (x_{mv}-x_j)y_i >  (x_{mv} - x_i)y_j \\
+\end{flalign}
+
+For the peaks after the maximum
+\begin{flalign}
+  (x_j-x_i)y_{mv}  >  (x_{mv} - x_i)y_j + (x_j - x_{mv})y_i\\
+\end{flalign}
 
 \end{document}
