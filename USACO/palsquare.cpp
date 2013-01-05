@@ -1,6 +1,6 @@
 /*
 ID: eric7231
-PROG: namenum
+PROG: palsquare
 LANG: C++
 */
 #include <iostream>
@@ -15,47 +15,45 @@ using namespace std;
 
 typedef unsigned int uint;
 
+string convert(int num, int base)
+{
+	string ret;
+
+	while(num > 0)
+	{
+		int remainder = num % base;
+
+		if (remainder <= 9) 
+			ret.insert(ret.begin(), '0' + remainder);
+		else
+			ret.insert(ret.begin(), 'A' + remainder - 10);
+
+		num /= base;
+	}
+
+	return ret;
+}
 int main() {
-	ofstream fout ("namenum.out");
-    ifstream fin ("namenum.in");
+	ofstream fout ("palsquare.out");
+    ifstream fin ("palsquare.in");
 
-	ifstream dictIn("dict.txt");
+	
+	int B;
+    fin >> B;
 
-	string N;
-    fin >> N;
-
-	std::string line;
-	bool any = false;
-
-	while (std::getline(dictIn, line))
+	for(int i = 1; i <= 300; ++i)
 	{
-		string orig = line;
+		string num = convert(i, B);
+		string conv = convert(i*i, B);
+		string rev = conv;
+		reverse(rev.begin(), rev.end());
 
-		for(uint c = 0; c < line.length(); ++c)
+		if (conv == rev)
 		{
-			if(line[c] >= 'Z')
-				continue;
-
-			if(line[c] == 'Q')
-				continue;
-
-			if(line[c] > 'Q')
-				line[c]--;
-
-			line[c] = '0' + 2 + (line[c] - 'A') / 3;
-		}
-
-		if (line == N) 
-		{
-			fout << orig << endl;
-			any = true;
+			fout << num << " " << conv << endl;
 		}
 	}
 
-	if (!any)
-	{
-		fout << "NONE" << endl;
-	}
 
     return 0;
 }

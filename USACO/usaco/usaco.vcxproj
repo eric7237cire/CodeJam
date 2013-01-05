@@ -63,13 +63,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\namenum.cpp" />
+    <ClCompile Include="..\palsquare.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\namenum.in" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\dict.txt" />
+    <None Include="..\palsquare.in" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
