@@ -64,11 +64,13 @@ public class Simplex {
      * 
      * if RHS > 0 we have
      * 
-     * c_1 * x_1 + c_2 * x_2 + c_3 * x_3 - z + a = RHS
+     * c_1 * x_1 + c_2 * x_2 + c_3 * x_3 - slack + a = RHS
      * 
      * if 0
      * 
      * c_1 * x_1 + c_2 * x_2 + c_3 * x_3 - z = 0
+     * 
+     * c_1 * x_1 + c_2 * x_2 + c_3 * x_3 - z = -RHS
      */
     
     public void addConstraintGTE(List<Double> coeff, Double rhs) {
@@ -96,6 +98,8 @@ public class Simplex {
             });
             
             eq.slackVar.setValue(1);
+            
+            eq.rhs = -rhs;
         }
     }
     
