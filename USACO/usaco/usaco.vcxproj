@@ -63,10 +63,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\dualpal.cpp" />
+    <ClCompile Include="..\milk.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\dualpal.in" />
+    <None Include="..\milk.in" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

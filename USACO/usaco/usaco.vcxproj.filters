@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\dualpal.cpp">
+    <ClCompile Include="..\milk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\dualpal.in">
-      <Filter>Resource Files</Filter>
+    <None Include="..\milk.in">
+      <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
 </Project>

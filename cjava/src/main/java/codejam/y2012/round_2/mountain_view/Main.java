@@ -1,8 +1,11 @@
 package codejam.y2012.round_2.mountain_view;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Scanner;
 
 import org.apache.commons.math3.fraction.Fraction;
@@ -50,7 +53,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     
     
-    private void addConstraints(Simplex s, Map<Integer,Integer> assigned, InputData in) {
+    private boolean addConstraints(Simplex s, Map<Integer,Integer> assigned, InputData in) {
         List<Double> zeroCoef = Collections.nCopies(in.N, 0d);
         
         for(int i = 0; i < in.N - 1; ++i) {
@@ -107,8 +110,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     }
                 }
                 
-                if (cof == 3) {
-                    Preconditions.checkState(rhs > 0);
+                if (cof == 3 && rhs < 0) {
+                    return false;
                 }
                 
                 
@@ -125,6 +128,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
         }
 
+        return true;
     }
     
     public String handleCase(InputData in) {
@@ -133,22 +137,34 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         List<Double> zeroCoef = Collections.nCopies(in.N, 0d);
                 
-        Map<Integer,Integer> assigned = Maps.newHashMap();
+        
         
         //8 0 1 2 0
         //assigned.put(2, 1);
         //assigned.put(3, 2);
+        Queue<Map<Integer,Integer>> assignementsToTry = new LinkedList<>();
+        assignementsToTry.add(new HashMap<Integer,Integer>());
         
+        int tries = 0;
         
-        for(int tries = 0; tries < 10; ++tries) {
+        while(!assignementsToTry.isEmpty()) 
+        {
+            ++tries;
+        
+            Map<Integer,Integer> assigned = assignementsToTry.poll();
         
             Simplex s = new Simplex(in.N);
-            addConstraints(s, assigned, in);                
+            boolean ok = addConstraints(s, assigned, in);
+            
+            if (!ok) 
+                continue;
+            
             List<Double> solution = Lists.newArrayList();        
             boolean f = s.doPhase1(solution);
             
             if (!f) {
-                return String.format("Case #%d: Impossible", in.testCase, solution.subList(0, in.N));            
+                //return String.format("Case #%d: Impossible", in.testCase, solution.subList(0, in.N));
+                continue;
             }
             
             int smallestNonInt  = -1;
@@ -171,10 +187,24 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             if (smallestNonInt == -1) {
                 return String.format("Case #%d: %s", in.testCase, Joiner.on(' ').join(solInt));
             } else {
-                assigned.put(smallestNonInt, (int) Math.ceil(solution.get(smallestNonInt)));
+                Map<Integer,Integer> try1 = Maps.newHashMap(assigned);
+                Map<Integer,Integer> try2 = Maps.newHashMap(assigned);
+                
+                double nonIntSolution = solution.get(smallestNonInt);
+                
+                Preconditions.checkState(nonIntSolution >= 0d);
+                int  intSolution1 = (int) Math.ceil(nonIntSolution);
+                int intSolution2 = (int) Math.floor(nonIntSolution);
+                try1.put(smallestNonInt, intSolution1);
+                try2.put(smallestNonInt, intSolution2);
+                
+                assignementsToTry.add(try1);
+                assignementsToTry.add(try2);
             }
         }
         
+        if (1==1)
+        return String.format("Case #%d: Impossible", in.testCase);
         
         List<Double> solution = Lists.newArrayList();
         List<Double> solutions = solution.subList(0, in.N);
