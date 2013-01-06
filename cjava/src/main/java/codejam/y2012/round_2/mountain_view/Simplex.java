@@ -1,5 +1,6 @@
 package codejam.y2012.round_2.mountain_view;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -46,16 +47,31 @@ public class Simplex {
      
     }
     
+    public Simplex(Simplex o) {
+        equations = Lists.newArrayList(o.equations);
+        variableCount = o.variableCount;
+        artificialVariableCount = o.artificialVariableCount;
+        slackVariableCount = o.slackVariableCount;
+    }
+    
     static class Equation
     {
-        List<Double> coeff;
+        final List<Double> coeff;
         
         //slack var index and initial value
-        Pair<Integer, Integer> slackVar;
+        final ImmutablePair<Integer, Integer> slackVar;
         
-        Pair<Integer, Integer> artificialVar;
+        final ImmutablePair<Integer, Integer> artificialVar;
         
-        Double rhs;
+        final Double rhs;
+
+        public Equation(List<Double> coeff, ImmutablePair<Integer, Integer> slackVar, ImmutablePair<Integer, Integer> artificialVar, Double rhs) {
+            super();
+            this.coeff = Collections.unmodifiableList(coeff);
+            this.slackVar = slackVar;
+            this.artificialVar = artificialVar;
+            this.rhs = rhs;
+        }
     }
     
     
@@ -76,35 +92,29 @@ public class Simplex {
     public void addConstraintGTE(List<Double> coeff, Double rhs) {
         
         
-        Equation eq = new Equation();
-        eq.rhs = rhs;
-        eq.coeff = coeff;
-        
-        equations.add(eq);
-        
-        eq.slackVar = new MutablePair<>(slackVariableCount, -1);
-        ++slackVariableCount;
-        
         if (rhs > 0) {
-            eq.artificialVar = new ImmutablePair<>(artificialVariableCount, 1);
+            equations.add(new Equation(coeff, new ImmutablePair<>(slackVariableCount, -1), 
+                    new ImmutablePair<>(artificialVariableCount, 1), rhs));
+            
             ++artificialVariableCount;
+            
         } else {
             //Multiply the everything by -1 to make the slack variable coeff = 1
             //since it is in the basis
-            eq.coeff = Lists.transform(eq.coeff, new Function<Double,Double>(){
+            coeff = Lists.transform(coeff, new Function<Double,Double>(){
                 public Double apply(Double arg) {
                     return -arg;
                 }
             });
             
-            eq.slackVar.setValue(1);
-            
-            eq.rhs = -rhs;
+            equations.add(new Equation(coeff, new ImmutablePair<>(slackVariableCount, 1), null, -rhs));
         }
+        
+        ++slackVariableCount;
     }
     
     public void addConstraintEquals(List<Double> coeff, Double rhs) {
-        
+        /*
         Equation eq = new Equation();
         eq.rhs = rhs;
         eq.coeff = coeff;
@@ -114,17 +124,15 @@ public class Simplex {
         if (rhs > 0) {
             eq.artificialVar = new ImmutablePair<>(artificialVariableCount, 1);
             ++artificialVariableCount;
-        }
+        }*/
     }
     
+    //c_1 * x_1 + c_2 * x_2 + c_3 * x_3 + z = RHS
     public void addConstraintLTE(List<Double> coeff, Double rhs) {
-        Equation eq = new Equation();
-        eq.rhs = rhs;
-        eq.coeff = coeff;
+        Preconditions.checkState(rhs >= 0);
         
-        equations.add(eq);
+        equations.add(new Equation(coeff, new ImmutablePair<>(slackVariableCount, 1), null, rhs));
         
-        eq.slackVar = new ImmutablePair<>(slackVariableCount, 1);
         ++slackVariableCount;        
     }
 

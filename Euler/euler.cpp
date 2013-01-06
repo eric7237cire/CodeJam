@@ -219,19 +219,7 @@ void problem47()
 	}
 }
 
-uint getUsedDigits(uint num)
-{
-	uint ret = 0;
-	while(num > 0)
-	{
-		uint digit = num % 10;
-		ret |= 1 << digit;
-
-		num /= 10;
-	}
-
-	return ret;
-}
+uint getUsedDigits(uint num);
 
 void problem49() 
 {
@@ -380,9 +368,108 @@ void problem50_wrong()
 	}
 }
 
+uint replaceDigit(uint num, uint digitToReplace, uint newDigit)
+{
+	uint ret = 0;
+	uint powTen = 1;
+
+	while(num > 0)
+	{
+		uint digit = num % 10;
+		
+		digit = digit == digitToReplace ? newDigit : digit;
+
+		ret += digit * powTen;
+
+		powTen *= 10;
+		num /= 10;
+	}
+
+	return ret;
+}
+
+void problem51() 
+{
+	const uint upperLimit = 1000000;
+	const int replaceUpTo = 2;
+
+	vector<uint> primes;
+	generatePrimes(upperLimit, primes);
+
+	set<uint> primeSet;
+	primeSet.insert(primes.begin(), primes.end());
+
+	uint currentMax = 0;
+
+	uint maxCount = 0;
+
+	for(vector<uint>::const_iterator pIt = primes.begin(); pIt != primes.end(); ++pIt)
+	{
+		const uint prime = *pIt;
+
+		for(int digitToReplace = 0; digitToReplace <= replaceUpTo; ++digitToReplace)
+		{
+			uint count = 1;
+			for(int newDigit = digitToReplace+1; newDigit <= 9; ++newDigit)
+			{
+				uint rep = replaceDigit(prime, digitToReplace, newDigit);
+
+				if (rep == prime)
+					break;
+
+				if (primeSet.find(rep) != primeSet.end()) 
+					++count;
+			}
+
+			if (count > maxCount) 
+			{
+				cout << "New max " << count << " with prime " << prime << " and digit " << digitToReplace << endl;
+				maxCount = count;
+			}
+		}
+	}
+}
+
+void problem52()
+{
+	uint multTarget = 6;
+
+	for(uint num = 1; ; ++num)
+	{
+		uint digits = getUsedDigits(num);
+		for(uint m = 2; m <= multTarget; ++m) 
+		{
+			uint digitsM = getUsedDigits(num * m);
+
+			if (digitsM != digits) 
+				break;
+
+			if (m >= multTarget) 
+			{
+				cout << "num= " << num << " up to m " << m << endl;
+				return;
+			} 
+		}
+	}
+}
+
+uint getUsedDigits(uint num)
+{
+	uint ret = 0;
+	while(num > 0)
+	{
+		uint digit = num % 10;
+		ret |= 1 << digit;
+
+		num /= 10;
+	}
+
+	return ret;
+}
+
 int main() {
 	ull start = GetTickCount64();
-	problem50();
+	problem52();
 	ull end = GetTickCount64();
 
 	cout << "Elapsed ms " << end-start << endl;
@@ -418,3 +505,4 @@ void generatePrimes(int n, vector<unsigned int>& primes)
     }
  
 }
+

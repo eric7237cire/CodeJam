@@ -2,11 +2,10 @@ package codejam.y2012.round_2.mountain_view;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Scanner;
+import java.util.Stack;
 
 import org.apache.commons.math3.fraction.Fraction;
 import org.slf4j.Logger;
@@ -20,8 +19,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.math.DoubleMath;
 import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
 
@@ -142,8 +139,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //8 0 1 2 0
         //assigned.put(2, 1);
         //assigned.put(3, 2);
-        Queue<Map<Integer,Integer>> assignementsToTry = new LinkedList<>();
-        assignementsToTry.add(new HashMap<Integer,Integer>());
+        Stack<Simplex> assignementsToTry = new Stack<>();
+        Simplex s2 = new Simplex(in.N);
+        boolean ok = addConstraints(s2, new HashMap<Integer,Integer>(), in);
+                
+        assignementsToTry.add(s2);
+        Map<Integer,Integer> assigned = new HashMap<Integer,Integer>();
         
         int tries = 0;
         
@@ -151,52 +152,56 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         {
             ++tries;
         
-            Map<Integer,Integer> assigned = assignementsToTry.poll();
+            Simplex simplex = assignementsToTry.pop();
         
-            Simplex s = new Simplex(in.N);
-            boolean ok = addConstraints(s, assigned, in);
-            
-            if (!ok) 
-                continue;
             
             List<Double> solution = Lists.newArrayList();        
-            boolean f = s.doPhase1(solution);
+            boolean f = simplex.doPhase1(solution);
             
             if (!f) {
                 //return String.format("Case #%d: Impossible", in.testCase, solution.subList(0, in.N));
                 continue;
             }
             
-            int smallestNonInt  = -1;
+            int smallestNonIntIndex  = -1;
             double smallest = Double.MAX_VALUE;
             List<Integer> solInt = Lists.newArrayList();
             
-            for(int sol = 0; sol < in.N; ++sol) {
-                if (!DoubleMath.isMathematicalInteger(solution.get(sol)) && solution.get(sol) < smallest) {
-                    smallestNonInt = sol;
-                    smallest = solution.get(sol);
+            for(int solIndex = 0; solIndex < in.N; ++solIndex) {
+                
+                double sol = solution.get(solIndex);
+                double solAsInt = Math.rint(sol);
+                if (Math.abs(solAsInt - sol) > 1e-5 && sol < smallest) {
+                    smallestNonIntIndex = solIndex;
+                    smallest = solution.get(solIndex);
                 }
                 
-                if (assigned.containsKey(sol)) {
-                    solInt.add(assigned.get(sol));
+                if (assigned.containsKey(solIndex)) {
+                    solInt.add(assigned.get(solIndex));
                 } else {
-                    solInt.add((int) Math.rint(solution.get(sol))); 
+                    solInt.add((int) Math.rint(solution.get(solIndex))); 
                 }
             }
         
-            if (smallestNonInt == -1) {
+            if (smallestNonIntIndex == -1) {
                 return String.format("Case #%d: %s", in.testCase, Joiner.on(' ').join(solInt));
             } else {
-                Map<Integer,Integer> try1 = Maps.newHashMap(assigned);
-                Map<Integer,Integer> try2 = Maps.newHashMap(assigned);
+                Simplex try1 = new Simplex(simplex);
+                Simplex try2 = new Simplex(simplex);
                 
-                double nonIntSolution = solution.get(smallestNonInt);
+                double nonIntSolution = solution.get(smallestNonIntIndex);
                 
                 Preconditions.checkState(nonIntSolution >= 0d);
-                int  intSolution1 = (int) Math.ceil(nonIntSolution);
-                int intSolution2 = (int) Math.floor(nonIntSolution);
-                try1.put(smallestNonInt, intSolution1);
-                try2.put(smallestNonInt, intSolution2);
+                double  intSolutionLB =  Math.ceil(nonIntSolution);
+                double  intSolutionUP =  Math.floor(nonIntSolution);
+                
+                List<Double> coeffsTry1 = Lists.newArrayList(zeroCoef);                
+                List<Double> coeffsTry2 = Lists.newArrayList(zeroCoef);
+                coeffsTry1.set(smallestNonIntIndex, 1d);
+                coeffsTry2.set(smallestNonIntIndex, 1d);
+                
+                try2.addConstraintLTE(coeffsTry2, intSolutionUP);
+                try1.addConstraintGTE(coeffsTry1, intSolutionLB);
                 
                 assignementsToTry.add(try1);
                 assignementsToTry.add(try2);
