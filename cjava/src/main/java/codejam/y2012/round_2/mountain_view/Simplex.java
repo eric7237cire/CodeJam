@@ -151,6 +151,7 @@ public class Simplex {
             for(int c = 0; c < columns - 1; ++c) {
                 
                 if (matrix.getEntry(rows-1, c) < 0) {
+                    foundNegValue = true;
                     double lowestRatio = Double.MAX_VALUE;
                     int pivotCol = c;
                     int pivotRow = -1;
@@ -167,6 +168,10 @@ public class Simplex {
                     }
                     
                     Preconditions.checkState(pivotRow >= 0);
+                    
+                    basicVarRowLabels.set(pivotRow, pivotCol);
+                    
+                    matrix.setRowVector(pivotRow, matrix.getRowVector(pivotRw))
                 }
             }
             
