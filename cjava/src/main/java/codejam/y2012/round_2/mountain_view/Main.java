@@ -28,8 +28,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-         return new String[] {"sample.in"};
-        //return new String[] {"C-small-practice.in"};
+     //    return new String[] {"sample.in"};
+       // return new String[] {"C-small-practice.in"};
+        return new String[] {"C-large-practice.in"};
        // return new String[] { "A-small-practice.in", "A-large-practice.in" };
     }
 
@@ -154,7 +155,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
             Simplex simplex = assignementsToTry.pop();
         
-            
+            log.info("Tries {}", tries);
             List<Double> solution = Lists.newArrayList();        
             boolean f = simplex.doPhase1(solution);
             
