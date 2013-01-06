@@ -453,6 +453,39 @@ void problem52()
 	}
 }
 
+void problem53()
+{
+	const int limit = 100;
+	const int goal = 1000000;
+
+	uint combinations[limit+1][limit+1];
+    for(int n = 0; n <= limit; ++n)
+        for(int k = 0; k <= limit; ++k)
+    {
+        if (n<k)
+            combinations[n][k] =0;
+        else if (n==k || k==0 )
+            combinations[n][k] = 1;
+        else
+            combinations[n][k] = (combinations[n-1][k] + combinations[n-1][k-1]);
+
+		combinations[n][k] = min(goal+1, combinations[n][k]);
+    }
+
+	uint count = 0;
+
+	for(int n = 1; n <= limit; ++n)
+		for(int r = 0; r <= n; ++r)
+		{
+			uint cr = combinations[n][r];
+			//printf("%d C %d = %d\n", n, r, cr);
+			if (cr > goal)
+				++count;
+		}
+
+	cout << "Count is " << count << endl;
+}
+
 uint getUsedDigits(uint num)
 {
 	uint ret = 0;
@@ -469,7 +502,7 @@ uint getUsedDigits(uint num)
 
 int main() {
 	ull start = GetTickCount64();
-	problem52();
+	problem53();
 	ull end = GetTickCount64();
 
 	cout << "Elapsed ms " << end-start << endl;
