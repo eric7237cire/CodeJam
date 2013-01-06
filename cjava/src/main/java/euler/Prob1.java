@@ -11,6 +11,7 @@ import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.fraction.BigFraction;
 import org.apache.commons.math3.fraction.Fraction;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
@@ -40,13 +41,89 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem54();
+        problem57();
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
         
     }
     
+    static int countDigits(int num) {
+        int ret = 0;
+        while(num > 0) {
+            ++ret;
+            num /= 10;
+        }
+        return ret;
+    }
+    
+    static void problem57() {
+        BigFraction denom = new BigFraction(2);
+                        
+        int count = 0;
+        
+        for(int i = 2; i <= 1000; ++i) {
+            denom = new BigFraction(1).divide(denom).add(2);
+            BigFraction frac = new BigFraction(1).divide(denom).add(1);
+            
+            if (frac.getNumerator().toString().length() > 
+            frac.getDenominator().toString().length()) {
+                ++count;
+                log.debug("Fraction {} = {}", i, frac);
+            }
+        }
+        
+        log.debug("Count is {}", count);
+        
+    }
+    
+    static void problem56() {
+        int max =0;
+        for(int a = 1; a < 100; ++a) {
+            for(int b = 1; b < 100; ++b) {
+                String s = BigInteger.valueOf(a).pow(b).toString();
+                
+                int sum = 0;
+                for(int i = 0; i < s.length(); ++i) {
+                    sum += Character.digit(s.charAt(i),10);
+                }
+                
+                if (sum > max) {
+                    log.debug("New max a {} b {} max {} ", a, b, sum);
+                    max = sum;
+                }
+            }
+        }
+
+        
+        
+    }
+    
+    static void problem55() {
+        int count = 0;
+        
+        for (int i = 1; i < 10000; ++i) {
+            BigInteger num = BigInteger.valueOf(i);
+            boolean isLychrel = true;
+            for (int tri = 0; tri < 50; ++tri) {
+                num = num.add(new BigInteger(StringUtils.reverse(num.toString())));
+                String numStr = num.toString();
+                String numStrRev = StringUtils.reverse(numStr);
+                if (numStr.equals(numStrRev)) {
+                    isLychrel = false;
+                    break;
+                }
+            }
+            
+            if (isLychrel) {
+                log.debug("Is Lychrel {}", i);
+                ++count;
+            }
+        }
+        
+        log.debug("Count is {}", count);
+    }
+
     static Pair<Integer, Integer> strToCard(String str) {
         Integer card = -1;
         Integer suit = -1;
@@ -176,6 +253,7 @@ public class Prob1 {
             return THREE_KIND + threeKind * kickerLevels[0] + singleCard.get(0) * kickerLevels[1] + singleCard.get(1) * kickerLevels[2];
         }
         
+        //2 pair
         if (firstPair >= 0 && secondPair >= 0) {
             return score = TWO_PAIR + firstPair * kickerLevels[0] + secondPair * kickerLevels[1] +  singleCard.get(0) * kickerLevels[2] ;
         }

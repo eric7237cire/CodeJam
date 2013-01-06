@@ -8,6 +8,63 @@ public class PokerTest {
 
     @Test
     public void testPoker() {
+        /*
+         * from collections import Counter
+
+def PE54():
+    def hand(cards):
+        rankVals = {r:v for v,r in enumerate("23456789TJQKA")}
+        ranks = sorted([card[:1] for card in cards])
+        rankNums = sorted([rankVals[i] for i in ranks])
+        suits = sorted([card[1:] for card in cards])
+        
+        if len(set(suits))==1 and ranks==['A','J','K','Q','T']:
+            return 10, sorted(Counter(rankNums).most_common())[::-1], "Royal Flush"
+        
+        if len(set(suits))==1 and "23456789AJKQT".find(''.join(ranks))>-1:
+            return 9, sorted(Counter(rankNums).most_common())[::-1], "Straight Flush"
+        
+        if ranks.count(ranks[0])==4 or ranks.count(ranks[-1])==4:
+            return 8, Counter(rankNums).most_common(), "Four of a Kind"
+        
+        if ranks.count(ranks[0])*ranks.count(ranks[-1])==6:
+            return 7, Counter(rankNums).most_common(), "Full House"
+        
+        if len(set(suits))==1:
+            return 6, sorted(Counter(rankNums).most_common())[::-1], "Flush"
+        
+        if "23456789AJKQT".find(''.join(ranks))>-1:
+            return 5, sorted(Counter(rankNums).most_common())[::-1], "Straight"
+        
+        if ranks.count(ranks[0])==3 or ranks.count(ranks[1])==3 or ranks.count(ranks[2])==3:
+            hierarchy=sorted(Counter(rankNums).most_common(1))[::-1]
+            hierarchy+=sorted(Counter(rankNums).most_common()[1:])[::-1]
+            return 4, hierarchy, "Three of a Kind"
+        
+        if len(set(ranks))==3:
+            hierarchy=sorted(Counter(rankNums).most_common(2))[::-1] 
+            hierarchy.append(Counter(rankNums).most_common()[2])
+            return 3, hierarchy, "Two Pair"
+        
+        if len(set(ranks))==4:
+            hierarchy=sorted(Counter(rankNums).most_common(1))[::-1]
+            hierarchy+=sorted(Counter(rankNums).most_common()[1:])[::-1]
+            return 2, hierarchy, "One Pair"
+        
+        return 1, [max(Counter(rankNums).most_common())], "High Card"
+    
+    c=0
+    for line in open("poker.txt"):
+        cards = line.replace('\n','').split(' ')
+        p1,p2=hand(sorted(cards[:5])),hand(sorted(cards[5:]))
+        if p1[0]>p2[0]: c+=1
+        elif p1[0]==p2[0]:
+            for i in range(0,len(p1[1])):
+                if p1[1][i][0] > p2[1][i][0]: c+=1
+                if p1[1][i][0] != p2[1][i][0]: break
+    return c
+
+         */
       /*
        * High Card: Highest value card.
 One Pair: Two cards of the same value.
