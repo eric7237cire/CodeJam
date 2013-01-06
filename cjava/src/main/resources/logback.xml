@@ -35,7 +35,7 @@
    <logger name="codejam.y2009" level="INFO"/>
    <logger name="acodejam.y2012" level="DEBUG"/>
    <logger name="codejam.y2012" level="WARN"/>
-   
+   <logger name="acodejam.y2012.round_2.mountain_view" level="DEBUG" />
    <logger name="codejam.y2010" level="WARN"/>
    <logger name="codejam" level="INFO"/>
    <logger name="codejam.y2011.round_1A.killer_word" level="DEBUG"/>

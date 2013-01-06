@@ -1,15 +1,10 @@
 package codejam.y2012.round_2.mountain_view;
 
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.Queue;
+import java.util.Collections;
+import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
-import java.util.TreeMap;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.fraction.Fraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,8 +12,12 @@ import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+import com.google.common.math.IntMath;
+import com.google.common.math.LongMath;
+import com.google.common.primitives.Ints;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
@@ -26,8 +25,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-      //   return new String[] {"sample.in"};
-        return new String[] { "A-small-practice.in", "A-large-practice.in" };
+         return new String[] {"sample.in"};
+        //return new String[] {"C-small-practice.in"};
+       // return new String[] { "A-small-practice.in", "A-large-practice.in" };
     }
 
     @Override
@@ -35,26 +35,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
         InputData in = new InputData(testCase);
         
-        /*
-         * The first line of each test case contains the number N of vines.
-         *  N lines describing the vines follow, each with a pair of integers
-         *   di and li - the distance of the vine from your ledge, and
-         *    the length of the vine, respectively. The last line of the 
-         *    test case contains the distance D to the ledge with your one 
-         *    true love. You start by holding the first vine in hand.
-         */
-        
         in.N = scanner.nextInt();
-        in.d = new int[in.N];
-        in.l = new int[in.N];
+        in.highest = new int[in.N-1];
         
-        for(int n = 0; n < in.N; ++n) {
-            in.d[n] = scanner.nextInt();
-            in.l[n] = scanner.nextInt();
+        for(int n = 0; n < in.N - 1; ++n) {
+            in.highest[n] = scanner.nextInt();
         }
         
-        in.D = scanner.nextInt();
-
         return in;
     }
 
@@ -62,64 +49,83 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     public String handleCase(InputData in) {
 
-        TreeMap<Integer, Integer> locLenMap = new TreeMap<>();
+        Simplex s = new Simplex(in.N);
         
-        Map<Integer, Integer> maxLocationRange = Maps.newHashMap();
+        List<Double> zeroCoef = Collections.nCopies(in.N, 0d);
         
-        for(int n = 0; n < in.N; ++n) {
-            locLenMap.put(in.d[n], in.l[n]);
-            maxLocationRange.put(in.d[n], 0);
+        
+        for(int i = 0; i < in.N - 1; ++i) {
+            int max = in.highest[i] - 1;
+            
+            for(int j = i+1; j < max; ++j) {
+                List<Double> coeffs = Lists.newArrayList(zeroCoef);
+                
+                coeffs.set(max, (double) j-i);
+                coeffs.set(i, (double) max-j);
+                coeffs.set(j, (double) i - max);
+                
+                s.addConstraintGTE(coeffs, 1d);
+                
+                log.debug("Eq : {}Y{} + {}Y{} + {}Y{} >= 1",
+                        j-i,
+                        max,
+                        max-j,
+                        i,
+                        i-max,
+                        j);
+            }
+            
+            for(int j = max + 1; j < in.N; ++j) {
+                List<Double> coeffs = Lists.newArrayList(zeroCoef);
+                
+                coeffs.set(max, (double) j-i);
+                coeffs.set(i, (double) max-j);
+                coeffs.set(j, (double) i - max);
+                
+                s.addConstraintGTE(coeffs, 0d);
+                
+
+                log.debug("Eq : {}Y{} + {}Y{} + {}Y{} >= 0",
+                        j-i,
+                        max,
+                        max-j,
+                        i,
+                        i-max,
+                        j);
+            }
         }
         
-        //Pair means location, +/- range
+        List<Double> solution = Lists.newArrayList();
         
-        Map<Integer, Integer> toVisitLocRange = Maps.newHashMap();
-                
+        boolean f = s.doPhase1(solution);
         
-        toVisitLocRange.put(in.d[0], in.d[0]);
+        if (!f) {
+            return String.format("Case #%d: Impossible", in.testCase, solution.subList(0, in.N));            
+        }
         
-        while(!toVisitLocRange.isEmpty()) {
-            Map.Entry<Integer,Integer> locRange = toVisitLocRange.entrySet().iterator().next();
-            
-            toVisitLocRange.remove(locRange.getKey());
-            
-            if (maxLocationRange.get(locRange.getKey()) >= locRange.getValue())
+        List<Double> solutions = solution.subList(0, in.N);
+        
+        List<Fraction> solutionFra = Lists.transform(solutions, new Function<Double,Fraction>(){
+           public Fraction apply(Double arg) {
+               return new Fraction(arg);
+           }
+        });
+        
+        long lcm = 1;
+        
+        for(Fraction fr : solutionFra) {
+            if (fr.getNumerator() == 0)
                 continue;
             
-            maxLocationRange.put(locRange.getKey(), locRange.getValue());
-            
-            //We are at the maximum length possible for this location
-            if (locRange.getValue() == locLenMap.get(locRange.getKey())) {
-                locLenMap.remove(locRange.getKey());
-            }
-            
-            if (in.D - locRange.getKey() <= locRange.getValue()) {
-                return String.format("Case #%d: YES", in.testCase);
-            }
-            
-            //NavigableMap<Integer,Integer> visitable = locLenMap.subMap(locRange.getKey() - locRange.getValue(),true, locRange.getKey() + locRange.getValue(), true);
-            
-            NavigableMap<Integer,Integer> visitable = locLenMap.subMap(locRange.getKey(), false, locRange.getKey() + locRange.getValue(), true);
-            
-            
-            for(Map.Entry<Integer,Integer> locLen : visitable.entrySet()) {
-                int interval = Math.abs(locLen.getKey() - locRange.getKey());
-                int length = locLen.getValue();
-                
-                int range = Math.min(interval, length);
-                
-                Integer currentRange = toVisitLocRange.get(locLen.getKey());
-                
-                int currentMax = maxLocationRange.get(locLen.getKey());
-                
-                if (range > currentMax && (currentRange == null || range > currentRange)) {
-                    toVisitLocRange.put(locLen.getKey(), range);
-                }
-            }
-            
+            lcm = LongMath.checkedMultiply(lcm, fr.getDenominator() / LongMath.gcd(lcm, fr.getDenominator()));
         }
-       
-        return String.format("Case #%d: NO", in.testCase);
+        
+        List<Integer> solInt = Lists.newArrayList();
+        for(Fraction fr : solutionFra) {
+            solInt.add( Ints.checkedCast(LongMath.checkedMultiply(lcm, fr.getNumerator()) / fr.getDenominator()));
+        }
+        
+        return String.format("Case #%d: %s", in.testCase, Joiner.on(' ').join(solInt));
     }
 
 }

@@ -153,7 +153,8 @@ public class Main  {
         
         //2012 2
         //codejam.y2012.round_2.swinging_wild.Main m = new codejam.y2012.round_2.swinging_wild.Main();
-        codejam.y2012.round_2.aerobics.Main m = new codejam.y2012.round_2.aerobics.Main();
+        //codejam.y2012.round_2.aerobics.Main m = new codejam.y2012.round_2.aerobics.Main();
+        codejam.y2012.round_2.mountain_view.Main m = new codejam.y2012.round_2.mountain_view.Main();
         
         
         String[] files = {};
