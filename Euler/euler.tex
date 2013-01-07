@@ -1,0 +1,64 @@
+\documentclass[fleqn]{article}
+
+\usepackage{amsmath}
+\usepackage[top=2mm, bottom=2mm, left=2mm, right=30mm]{geometry}
+\usepackage{forloop}
+\begin{document}
+
+Problem 44.  
+
+Pentagon number.  Given a number, is it a pentagon ?
+
+\begin{flalign}
+P_n = \frac{n(3n-1)}{2}, \\
+2*P_n = n(3n-1), \\
+2*P_n = 3n^2-n, \\
+0 = 3n^2-n-2*P_n, \\
+\frac{1+\sqrt{1^2 - 4 * 3 * -2*P_n }}{2 * 3}, \\
+\frac{1+\sqrt{1^2 + 24P_n }}{6}
+\end{flalign}
+
+Problem 50.
+
+
+\newcounter{index}
+\begin{flalign}
+\begin{tabular}{*{20}{c|}}
+ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\
+\hline
+Max  & 0 & 0 & 1 & 1 & 0 & 1 & 0 & 1 & 0 & 0 & 0 & 1  \\
+Prev & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\
+\end{tabular}
+\end{flalign}
+Then loop through each prime starting at lowest.  2
+Only update if it is a new maximum.  Keep old array
+\begin{flalign}
+\begin{tabular}{*{20}{c|}}
+ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\
+\hline
+Max  & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0  \\
+Prev & 0 & -1& 0& -1& -1& -1& -1& -1& -1& -1& -1& -1  \\
+\end{tabular}
+\end{flalign}
+
+3
+\begin{flalign}
+\begin{tabular}{*{20}{c|}}
+ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\
+\hline
+Max  & 0 & 0 & 1 & 1 & 0 & 2 & 0 & 0 & 0 & 0 & 0 & 0  \\
+Prev & 0 & -1& 0& 0& -1& 2& -1& -1& -1& -1& -1& -1  \\
+\end{tabular}
+\end{flalign}
+
+5
+\begin{flalign}
+\begin{tabular}{*{20}{c|}}
+ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\
+\hline
+Max  & 0 & 0 & 1 & 1 & 0 & 2 & 0 & 2 & 2 & 0 & 3 & 0  \\
+Prev & 0 & -1& 0& 0& -1& 2& -1& 2& 3 & -1& 5& -1  \\
+\end{tabular}
+\end{flalign}
+
+\end{document}

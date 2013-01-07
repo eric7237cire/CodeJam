@@ -9,6 +9,9 @@ import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.math3.fraction.BigFraction;
 import org.apache.commons.math3.fraction.Fraction;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
@@ -38,11 +41,338 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem42();
+        problem57();
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
         
+    }
+    
+    static int countDigits(int num) {
+        int ret = 0;
+        while(num > 0) {
+            ++ret;
+            num /= 10;
+        }
+        return ret;
+    }
+    
+    static void problem57() {
+        BigFraction denom = new BigFraction(2);
+                        
+        int count = 0;
+        
+        for(int i = 2; i <= 1000; ++i) {
+            denom = new BigFraction(1).divide(denom).add(2);
+            BigFraction frac = new BigFraction(1).divide(denom).add(1);
+            
+            if (frac.getNumerator().toString().length() > 
+            frac.getDenominator().toString().length()) {
+                ++count;
+                log.debug("Fraction {} = {}", i, frac);
+            }
+        }
+        
+        log.debug("Count is {}", count);
+        
+    }
+    
+    static void problem56() {
+        int max =0;
+        for(int a = 1; a < 100; ++a) {
+            for(int b = 1; b < 100; ++b) {
+                String s = BigInteger.valueOf(a).pow(b).toString();
+                
+                int sum = 0;
+                for(int i = 0; i < s.length(); ++i) {
+                    sum += Character.digit(s.charAt(i),10);
+                }
+                
+                if (sum > max) {
+                    log.debug("New max a {} b {} max {} ", a, b, sum);
+                    max = sum;
+                }
+            }
+        }
+
+        
+        
+    }
+    
+    static void problem55() {
+        int count = 0;
+        
+        for (int i = 1; i < 10000; ++i) {
+            BigInteger num = BigInteger.valueOf(i);
+            boolean isLychrel = true;
+            for (int tri = 0; tri < 50; ++tri) {
+                num = num.add(new BigInteger(StringUtils.reverse(num.toString())));
+                String numStr = num.toString();
+                String numStrRev = StringUtils.reverse(numStr);
+                if (numStr.equals(numStrRev)) {
+                    isLychrel = false;
+                    break;
+                }
+            }
+            
+            if (isLychrel) {
+                log.debug("Is Lychrel {}", i);
+                ++count;
+            }
+        }
+        
+        log.debug("Count is {}", count);
+    }
+
+    static Pair<Integer, Integer> strToCard(String str) {
+        Integer card = -1;
+        Integer suit = -1;
+        
+        Character cardChar = str.charAt(0);
+        Character suitChar = str.charAt(1);
+        
+        switch(cardChar) {
+        case 'A': card = 14; break;
+        case 'T': card = 10; break;
+        case 'J': card = 11; break;
+        case 'Q': card = 12; break;
+        case 'K': card = 13; break;
+        default: card = Character.digit(cardChar, 10);
+        }
+        
+        switch(suitChar) {
+        case 'D': suit = 2; break;
+        case 'S': suit = 4; break;
+        case 'H': suit = 8; break;
+        case 'C': suit = 16; break;
+        }
+        
+        Preconditions.checkState(card >= 0);
+        Preconditions.checkState(suit >= 0);
+        
+        return new ImmutablePair<Integer, Integer>(card, suit);
+    }
+    
+    final static int PAIR = 1000000;
+    final static int STRAIGHT_FLUSH = 8*PAIR;
+    final static int FOUR_KIND = 7*PAIR;
+    final static int FULL_HOUSE = 6*PAIR;
+    final static int FLUSH = 5*PAIR;
+    final static int STRAIGHT = 4*PAIR;
+    final static int THREE_KIND = 3*PAIR;
+    final static int TWO_PAIR = 2*PAIR;
+    
+        
+    static int[] kickerLevels = {50675, 3375, 225, 15, 1};
+    static int[] straightBitMasks = {4111, 31, 31 << 1, 31 << 2, 31 << 3, 31 << 4, 31 << 5, 31 << 6, 31 << 7, 31 << 8};
+    public  static int evalHand(List<Pair<Integer, Integer>> hand) {
+        
+        Collections.sort(hand);
+        
+        int suits = 0;
+        int ranks = 0;
+        
+        int[] freqCard = new int[15];
+        
+        for(Pair<Integer,Integer> card : hand) {
+            suits |= card.getRight();
+            ranks |= (1 << card.getLeft() - 2);
+            freqCard[card.getLeft()]++;
+        }
+        
+        boolean flush = IntMath.isPowerOfTwo(suits);
+        
+        int straight = -1;
+        
+        for(int sbmIdx = 0; sbmIdx < straightBitMasks.length; ++sbmIdx) {
+            if (ranks == straightBitMasks[sbmIdx]) {
+                straight = sbmIdx;
+            }
+        }
+                
+        int fourKind = -1;
+        int threeKind = -1;
+        int firstPair = -1;
+        int secondPair = -1;
+        List<Integer> singleCard = Lists.newArrayList();
+        
+        
+        for(int r = 14; r >= 0; --r) {
+            if (freqCard[r] == 4) {
+                fourKind = r;
+            } else if (freqCard[r] == 3) {
+                threeKind = r;
+            } else if (freqCard[r] == 2 && firstPair == -1) {
+                firstPair = r;
+            } else if (freqCard[r] == 2 ) {
+                secondPair = r;
+            } else if (freqCard[r] == 1) {
+                singleCard.add(r);
+            }
+        }
+        
+        int score = 0;
+        int kickerLevel = 0;
+        
+        //straight flush
+        if (straight >= 0 && flush) {
+            return STRAIGHT_FLUSH + kickerLevels[0] * straight;
+        }
+        
+                
+        //4 kind
+        if (fourKind >= 0) {
+            return FOUR_KIND + kickerLevels[0] * fourKind + kickerLevels[1] * singleCard.get(0);
+        }
+        
+        //full house
+        if (threeKind >= 0 && firstPair >= 0) {
+            return FULL_HOUSE + kickerLevels[0] * threeKind + kickerLevels[1] * firstPair;
+        }
+        
+        if(flush) {
+            kickerLevel = 0;
+            score = FLUSH;
+            for(int cardIdx = 4; cardIdx >= 0; --cardIdx) {
+                Pair<Integer,Integer> card = hand.get(cardIdx);
+                
+                score += kickerLevels[kickerLevel] * card.getLeft();
+                ++kickerLevel;
+            }
+            return score;
+        }
+        
+        //straight
+        if (straight >= 0) {
+            return STRAIGHT + kickerLevels[0] * straight;
+        }
+        
+        
+        //3 kind
+        if (threeKind >= 0) {
+            return THREE_KIND + threeKind * kickerLevels[0] + singleCard.get(0) * kickerLevels[1] + singleCard.get(1) * kickerLevels[2];
+        }
+        
+        //2 pair
+        if (firstPair >= 0 && secondPair >= 0) {
+            return score = TWO_PAIR + firstPair * kickerLevels[0] + secondPair * kickerLevels[1] +  singleCard.get(0) * kickerLevels[2] ;
+        }
+        
+        //Pair
+        if (firstPair >= 0) {
+            return PAIR + firstPair * kickerLevels[0] +  singleCard.get(0) * kickerLevels[1] +
+                    singleCard.get(1) * kickerLevels[2] +  singleCard.get(2) * kickerLevels[3];
+                   
+        }
+        
+        //High card        
+        kickerLevel = 0;
+        score = 0;
+        for(int cardIdx = 4; cardIdx >= 0; --cardIdx) {
+            Pair<Integer,Integer> card = hand.get(cardIdx);
+            
+            score += kickerLevels[kickerLevel] * card.getLeft();
+            ++kickerLevel;
+        }
+        
+        return score;
+        
+    }
+    
+    public static List<Pair<Integer, Integer>> stringToHand(String str) {
+        Scanner scanner = new Scanner(str);
+        List<Pair<Integer, Integer>> hand = Lists.newArrayList();
+        
+        for(int j = 0; j < 5; ++j) {
+            hand.add(strToCard(scanner.next()));
+        }
+        
+        return hand;
+    }
+    
+    public static void problem54() {
+        Scanner scanner = new Scanner(Prob1.class.getResourceAsStream("poker.txt"));
+        int count = 0;
+        
+        for(int i = 0; i < 1000; ++i) {
+            List<Pair<Integer, Integer>> player1 = Lists.newArrayList();
+            List<Pair<Integer, Integer>> player2 = Lists.newArrayList();
+            
+            for(int j = 0; j < 5; ++j) {
+                player1.add(strToCard(scanner.next()));
+            }
+            
+            for(int j = 0; j < 5; ++j) {
+                player2.add(strToCard(scanner.next()));
+            }
+            
+            if (evalHand(player1) > evalHand(player2)) {
+                ++count;
+            }
+        }
+        
+        log.debug("Count is {}", count);
+        
+        
+    }
+    
+    public static void problem48() {
+        BigInteger sum  = BigInteger.ZERO;
+        for(int i = 1; i <= 1000; ++i) {
+            sum  = sum.add(BigInteger.valueOf(i).pow(i));
+        }
+        
+        sum = sum.mod(BigInteger.valueOf(10000000000L));
+        
+        log.debug("Sum {} ", sum);
+    }
+    
+    public static void problem43() {
+        Integer[] digits = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        
+        Integer[] out = new Integer[digits.length];
+        
+        Permutations<Integer> p = Permutations.create(digits,out);
+        
+        List<Integer> primes = Prime.generatePrimes(17);
+        
+        long sum = 0;
+        
+        while(p.next()) {
+            boolean special = true;
+            
+            for(int i = 0; i < 7; ++i) {
+                int start = i + 1;
+                
+                int num = 0;
+                
+                for(int d = start; d < start + 3; ++d) {
+                    num *= 10;
+                    num += out[d];
+                }
+            
+                if (num % primes.get(i) != 0) {
+                    special = false;
+                    break;
+                }
+                
+            }
+            
+            if (special) {
+                
+                long num = 0;
+                
+                for(int d = 0; d < out.length; ++d) {
+                    num *= 10;
+                    num += out[d];
+                }
+                
+                sum += num;
+                log.debug("Num {} or {} has the property", (Object)out, num);
+            }
+        }
+        
+        log.debug("Sum is {}", sum);
     }
     
     public static void problem42() {

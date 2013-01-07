@@ -2,8 +2,6 @@ package codejam.y2011.round_2.ai_wars;
 
 import java.util.BitSet;
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.Set;
@@ -20,7 +18,6 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -141,6 +138,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             numPlanetsThreatened += planetsThreatened.cardinality() - parentNode.planetsThreatened.cardinality();
             
+            //The key time saver.  We do only need to store planets that are reachable 
             planetsThreatened.and(neighborhoodsFurtherDownPath);
             
             return new Node(planetsThreatened,path,planetId,numPlanetsThreatened, pathLength);
@@ -240,10 +238,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             graph.addConnection(edge.getLeft(), edge.getRight());
         }
         
+        //Calculate distances from target planet
         DijkstraNode[] dijNodes = doDijkstra(graph, 1, in.P);
         
-        
-        
+                
         int maxDistance = 0;
         for(DijkstraNode node : dijNodes) {
             if(node.distance == Integer.MAX_VALUE)
@@ -252,14 +250,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             maxDistance = Math.max(maxDistance, node.distance);
         }
         
-        //log.info("Max distance {}", maxDistance);
-        
+        //Calculate neighbor sets with a distance exactly k and 0 to k
         BitSet[] neighborhoodsAtDistanceK = new BitSet[maxDistance+1];
-        BitSet[] neighborhoodsAtDistance1toK = new BitSet[maxDistance+1];
+        BitSet[] neighborhoodsAtDistanceUptoK = new BitSet[maxDistance+1];
         
         for(int dis = 0; dis <= maxDistance; ++dis) {
             neighborhoodsAtDistanceK[dis] = new BitSet();
-            neighborhoodsAtDistance1toK[dis] = new BitSet();
+            neighborhoodsAtDistanceUptoK[dis] = new BitSet();
         }
         
         for(DijkstraNode node : dijNodes) {
@@ -273,20 +270,24 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }            
         }
         
-        neighborhoodsAtDistance1toK[0].or(neighborhoodsAtDistanceK[0]);
+        neighborhoodsAtDistanceUptoK[0].or(neighborhoodsAtDistanceK[0]);
         
         for(int dis = 1; dis <= maxDistance; ++dis) {
-            neighborhoodsAtDistance1toK[dis].or(neighborhoodsAtDistance1toK[dis-1]);
-            neighborhoodsAtDistance1toK[dis].or(neighborhoodsAtDistanceK[dis]);
+            neighborhoodsAtDistanceUptoK[dis].or(neighborhoodsAtDistanceUptoK[dis-1]);
+            neighborhoodsAtDistanceUptoK[dis].or(neighborhoodsAtDistanceK[dis]);
         }
         
-        
+        //Do another BFS
         Set<Node> visited = Sets.newHashSet();
         
         PriorityQueue<Node> toVisit = new PriorityQueue<>(in.P, new Comparator<Node>() {
 
             @Override
             public int compare(Node o1, Node o2) {
+                /*
+                 * Prioritize short path length but 
+                 * maximum planets threatened
+                 */
                 return ComparisonChain.start().
                         compare(o1.pathLength, o2.pathLength)
                         .compare(o2.numPlanetsThreatened, o1.numPlanetsThreatened)
@@ -307,14 +308,18 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 continue;
             }
             
+            //Sanity check
             if (toVisit.size() > 1000000) {
                 return "Too large" + toVisit.size();
             }
             
+            //Visited equals specially tuned to only check location and planets threatened
+            //due to the queue, we will visit the one with the most planets threatened
             visited.add(node);
             
             Set<Integer> neighbors = graph.getNeighbors(node.planetId);
             
+            //We threaten their home world --> we are done
             if (neighbors.contains(1)) {
                 return String.format("Case #%d: %d %d", in.testCase, node.pathLength, node.numPlanetsThreatened);
             }
@@ -323,16 +328,17 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
                 DijkstraNode adjDijNode = dijNodes[adjNodeId];
                 
+                //Time saver, only consider nodes that can be on the shortest path
                 if (adjDijNode.distance != curDijNode.distance - 1)
                     continue;
                 
+                //Nodes further down path means 1 less distance to target world
                 
                 Node adjNode = Node.createNode(node, graph.getNeighbors(adjNodeId),
-                        neighborhoodsAtDistance1toK[adjDijNode.distance-1],
+                        neighborhoodsAtDistanceUptoK[adjDijNode.distance-1],
                         adjNodeId);
                 toVisit.add(adjNode);
             
-                //remove from adjNode.planetsThreatened any node that is not connected further along the path
             }
             
         }

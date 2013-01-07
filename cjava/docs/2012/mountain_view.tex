@@ -1,0 +1,45 @@
+\documentclass[fleqn]{article}
+
+\usepackage{amsmath}
+\usepackage[top=2mm, bottom=2mm, left=2mm, right=30mm]{geometry}
+\begin{document}
+
+Example 
+\begin{flalign}
+\begin{tabular}{|*{20}{c|}}
+\hline
+X coord & 1 & 2 & 3 & 4 & 5 & 6  \\
+\hline
+Max Visible & 3 & 3 & 6 & 5 & 6  \\
+\hline
+\end{tabular}
+\end{flalign}
+
+\begin{flalign}
+\forall_i \forall_{j : i < j < mv} \frac{y_{mv} - y_i}{x_{mv} - x_i} > \frac{y_j-y_i}{x_j-x_i},
+ \forall_{j : j > mv} \frac{y_{mv} - y_i}{x_{mv} - x_i} \ge \frac{y_j-y_i}{x_j-x_i} \\
+\end{flalign}
+
+All terms are positive
+\begin{flalign}
+({x_j-x_i})(y_{mv} - y_i) > (y_j-y_i)(x_{mv} - x_i), \\
+ (x_j-x_i)y_{mv} - (x_j-x_i)y_i > (y_j-y_i)(x_{mv} - x_i), \\
+ (x_j-x_i)y_{mv} - (x_j-x_i)y_i > (x_{mv} - x_i)y_j-(x_{mv} - x_i)y_i, \\
+  0  > -(x_j-x_i)y_{mv} + (x_j-x_i)y_i + (x_{mv} - x_i)y_j-(x_{mv} - x_i)y_i, \\
+  0  > (-x_j+x_i)y_{mv} + (x_j-x_i-x_{mv} + x_i)y_i + (x_{mv} - x_i)y_j \\
+  0  > (-x_j+x_i)y_{mv} + (x_j-x_{mv} )y_i + (x_{mv} - x_i)y_j \\
+  (x_j-x_i)y_{mv}  >  (x_j-x_{mv} )y_i + (x_{mv} - x_i)y_j \\
+  (x_j-x_i)y_{mv} + (x_{mv}-x_j)y_i >  (x_{mv} - x_i)y_j \\
+  (x_j-x_i)y_{mv} + (x_{mv}-x_j)y_i \ge  (x_{mv} - x_i)y_j + 1 \\
+  (x_j-x_i)y_{mv} + (x_{mv}-x_j)y_i - (x_{mv} - x_i)y_j \ge   1 \\
+  (x_j-x_i)y_{mv} + (x_{mv}-x_j)y_i + ( x_i - x_{mv})y_j \ge   1 \\
+\end{flalign}
+
+For the peaks after the maximum
+\begin{flalign}
+  (x_j-x_i)y_{mv}  \ge  (x_{mv} - x_i)y_j + (x_j - x_{mv})y_i\\
+  (x_j-x_i)y_{mv}  -(x_{mv} - x_i)y_j -(x_j - x_{mv})y_i \ge 0 \\
+  (x_j-x_i)y_{mv} + (x_{mv}-x_j)y_i +( x_i - x_{mv})y_j \ge 0 \\
+\end{flalign}
+
+\end{document}
