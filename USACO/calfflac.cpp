@@ -13,6 +13,7 @@ LANG: C++
 #include <cassert>
 #include <iterator>
 #include <cctype>
+#include <functional>
 using namespace std;
 
 typedef unsigned int uint;
@@ -26,152 +27,112 @@ char toLowerCase(char c)
     return tolower(c);
 }
 
-// trim from start
-static inline std::string &ltrim(std::string &s) {
-        s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::ptr_fun<int, int>(std::isalpha)));
-        return s;
-}
-
-// trim from end
-static inline std::string &rtrim(std::string &s) {
-     s.erase(std::find_if(s.rbegin(), s.rend(), std::ptr_fun<int, int>(std::isalpha)).base(), s.end());
-     
-       // s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isalpha))).base(), s.end());
-        return s;
-}
-
-// trim from both ends
-static inline std::string &trim(std::string &s) {
-        return ltrim(rtrim(s));
-}
-
-template<typename T, typename InputIterator>  
-void Print(std::ostream& ostr,   
-           InputIterator itbegin,   
-           InputIterator itend,   
-           const std::string& delimiter)  
-{  
-    std::copy(itbegin,   
-              itend,   
-              std::ostream_iterator<T>(ostr, delimiter.c_str()));  
-}  
 
 int main() {
 	ofstream fout ("calfflac.out");
     ifstream fin ("calfflac.in");
 		
     string line;
-	string all;
+	string orig;
 	
     while (std::getline(fin, line))
 	{
-	    copy(line.begin(), line.end(), back_inserter(all));
-	    all.append(1, '\n');
+	    copy(line.begin(), line.end(), back_inserter(orig));
+	    orig.append(1, '\n');
 	}
 	
+	string clean;
+	vector<uint> cleanToOrig;
+
+	for(uint origIdx = 0; origIdx < orig.length(); ++origIdx)
+	{
+		if (!isalpha(orig[origIdx])) 
+			continue;
+
+		cleanToOrig.push_back(origIdx);
+		clean.append(1, tolower(orig[origIdx]));
+	}
+
 	int maxPalinLen = 0;
 	string palin;
 	
-	vector<int> nextChange(all.length());
+	vector<int> nextChange(clean.length());
 	vector<int> nextChangeRev;
 	
 	nextChangeRev.push_back(0);
-	char lastChar = tolower(all[0]);
-	//cout << all.length() << endl;
-	for(int p = 1; p < all.length(); ++p) 
+	char lastChar = tolower(clean[0]);
+	
+	for(uint p = 1; p < clean.length(); ++p) 
 	{
-	    //cout << p << ", " << all[p] << endl;
-	    if (!isalpha(all[p]) || tolower(all[p]) == lastChar) {
+	    if (clean[p] == lastChar) {
 	         nextChangeRev.push_back(nextChangeRev[p-1]);   
 	    } else {
 	        nextChangeRev.push_back(p);
-	        lastChar = tolower(all[p]);
+	        lastChar = clean[p];
 	    }
 	}
 	
-	cout << "Next change rev ";
-	Print<int, vector<int>::iterator>(cout, nextChangeRev.begin(), nextChangeRev.end(), ", ");
-	cout << endl;
+	lastChar = clean[clean.length() - 1];
+	nextChange[clean.length() - 1] = clean.length() - 1;
 	
-	lastChar = tolower(all[all.length() - 1]);
-	nextChange[all.length() - 1] = all.length() - 1;
-	
-	for(int p = all.length() - 2; p >= 0; --p)
+	for(int p = clean.length() - 2; p >= 0; --p)
 	{
-	    if (!isalpha(all[p]) || tolower(all[p]) == lastChar) {
+	    if (clean[p] == lastChar) {
 	         nextChange[p] = nextChange[p+1];   
 	    } else {
 	        nextChange[p] = p;
-	        lastChar = tolower(all[p]);
+	        lastChar = clean[p];
 	    }
 	}
-	cout << "Next change " ;
-	Print<int, vector<int>::iterator>(cout, nextChange.begin(), nextChange.end(), ", ");
-cout << endl;    
-	
-	for(int start = 0; start < all.length(); ++start)
+		
+	for(uint start = 0; start < clean.length(); ++start)
 	{
-	    int left = start;
-	     
-	     for(int offset = 0; offset <= 1; ++offset)
-	     {
-	         int right = start + offset;
-	     
-             int palinLen = offset;
-             
-             while(true)
-             {
-                  if (left < 0 || right >= all.length()) {
-                      break;
-                  }
-                  
-                  if(!isalpha(all[left])) {
-                      --left;
-                      continue;
-                  }
-                  
-                  if (!isalpha(all[right])) {
-                      ++right;
-                      continue;
-                  }
-                  
-                  if (tolower(all[left]) == tolower(all[right])) {
-                      int nextToRight = nextChange[right];
-                      int nextToLeft = nextChangeRev[left];
-                      
-                      int blockRight = nextToRight - right;
-                      int blockLeft = left - nextToLeft;
-                      
-                      int minBlock = min(blockRight, blockLeft);
-                      
-                      cout << "Min block " << minBlock << endl;
-                      left -= minBlock;
-                      left --;
-                      ++right;
-                      right += minBlock;
-                      palinLen+=2+2*minBlock;
-                      
-                      string substr = std::string(all.begin() + left + 1, all.begin() + right);
-             
-                      if (palinLen > maxPalinLen)
-                      {
-                          maxPalinLen = palinLen;
-                          palin = substr;
-                      }
-             //cout << "Substr " << substr << endl;
-             
-                      continue;
-                  }
-                  
-                  break;
-             }
-             
-             
-         }
+		for(int offset = 0; offset <= 1; ++offset)
+		{
+			uint left = start;
+			uint right = start + offset;
+
+			int palinLen = offset == 0 ? 1 : 2;
+
+			while(true)
+			{
+				if (left < 0 || right >= clean.length()) {
+					break;
+				}
+
+				if (clean[left] == clean[right]) {
+					int blockRight = nextChange[right] - right;
+					int blockLeft = left - nextChangeRev[left];
+
+					int minBlock = min(blockRight, blockLeft);
+
+					left -= minBlock;
+					right += minBlock;
+					palinLen+=2*minBlock;
+
+					if (palinLen > maxPalinLen)
+					{
+						string substr = std::string(orig.begin() + cleanToOrig[left] ,
+							orig.begin() + cleanToOrig[right]+1);
+						maxPalinLen = palinLen;
+						palin = substr;
+					}
+					
+					left --;
+					right ++;
+					palinLen+=2;
+					continue;
+				}
+
+				break;
+			}
+
+
+		}
 	}
-	    
+
 	fout << maxPalinLen << endl;
 	fout << palin << endl;
 
-    return 0;
+	return 0;
 }
