@@ -41,40 +41,96 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem57();
+        problem58();
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
         
     }
     
-    static int countDigits(int num) {
-        int ret = 0;
-        while(num > 0) {
-            ++ret;
-            num /= 10;
+    static void problem58() {
+        
+        findPrimeRatioInSpiral(30009);
+        
+    }
+    
+    static boolean findPrimeRatioInSpiral(int size) {
+        
+        
+        //Initial direction
+        Direction dir = Direction.EAST;
+        
+        int max = size * size;
+        
+        int movements = 1;
+        int movementsLeft = 1;
+        
+        int total = 0;
+        int primeCount = 0;
+        int curSize = -1;
+        
+        for(int i = 1; i <= max; ++i) {
+            
+            if (movementsLeft == movements && dir != Direction.NORTH &&
+                    Prime.isPrime(i)) {
+                ++primeCount;                
+            } 
+
+            --movementsLeft;
+            
+            if (movementsLeft == 0) {
+                
+                
+                //Turn counter clockwise
+                dir = dir.turn(-2);
+                
+                if (dir == Direction.NORTH) {
+                   // log.debug("Sq ? Entry diag {}", i);
+                    //curSize = IntMath.sqrt(i, RoundingMode.UNNECESSARY);
+                    curSize += 2;
+                    total = 2 * curSize - 1;
+                    
+                    double ratio = (double) primeCount / total;
+                    //log.debug("Ratio pc {} / {} = {}.  size {}  i {}", primeCount, total, ratio, curSize, i );
+                    if (ratio < .1d && i > 1) {
+                        
+                        
+                        log.info("Found it {}", curSize);
+                        return true;
+                    }
+                }
+                
+                //Each time we are going again east or west, the spiral has grownn
+                if (dir == Direction.WEST || dir == Direction.EAST) {
+                    ++movements;
+                }
+                
+                movementsLeft = movements;
+            }
         }
-        return ret;
+        
+            
+        return false;
+     
     }
     
     static void problem57() {
         BigFraction denom = new BigFraction(2);
-                        
+
         int count = 0;
-        
-        for(int i = 2; i <= 1000; ++i) {
+
+        for (int i = 2; i <= 1000; ++i) {
             denom = new BigFraction(1).divide(denom).add(2);
             BigFraction frac = new BigFraction(1).divide(denom).add(1);
-            
-            if (frac.getNumerator().toString().length() > 
-            frac.getDenominator().toString().length()) {
+
+            if (frac.getNumerator().toString().length() > frac.getDenominator().toString().length()) {
                 ++count;
                 log.debug("Fraction {} = {}", i, frac);
             }
         }
-        
+
         log.debug("Count is {}", count);
-        
+
     }
     
     static void problem56() {
