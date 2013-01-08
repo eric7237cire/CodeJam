@@ -70,7 +70,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //heights = new int[] {100,0,0,0,0, 44,67,84,99,100 };
         //heights = new int[] {1000,992,951,827,702, 826,950,991,999,1000 };
         
-        assignSolution(in.highest, heights, 1, in.N, 1000);
+        assignSolution(in.highest, heights, in.N);
         
         boolean check = checkSolution(in.highest, heights);
         Preconditions.checkState(check);
@@ -80,11 +80,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     }
     
-    void assignSolution(int[] perceivedHighest, int heights[], int currentMtn, int N, int nextSeed) {
-        Preconditions.checkState(currentMtn <= N);
-        
-        if (currentMtn == N)
-            return;
+    void assignSolution(int[] perceivedHighest, int heights[], int N) {
         
         /*
          * Set currentMax = N
@@ -97,54 +93,57 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
          * The lowest of these values becomes the next seed
          * 
          */
+    
+        int seed = 1000;
         
-        //Assign next seed value to current mountain and its maximum
-        int percievedMax = perceivedHighest[currentMtn-1];
-        
-        Preconditions.checkState(heights[currentMtn - 1] == 0);
-        heights[currentMtn - 1] = nextSeed;
-        
-        if (heights[percievedMax - 1] == 0)
-            heights[percievedMax - 1] = nextSeed;
-        
-        //Adjust current mtn
-
-        //Line from current to percievedMax
-        Line line = new Line(new Point(currentMtn, heights[currentMtn-1]),
-                new Point(percievedMax, heights[percievedMax-1]));
-        
-        for(int mtn = percievedMax + 1; mtn <= N; ++mtn) {
-            double limit = line.getPointGivenX(mtn).getY();
+        for(int currentMax = N; currentMax >= 1; --currentMax) {
             
-            if (heights[mtn-1] > limit) {
-                log.info("Adjusting.  found peak {} after cur peak {} and max {} is too high.  Must be strictly <= {}", 
-                        mtn, currentMtn, percievedMax, DoubleFormat.df3.format(limit));
+
+            int nextSeed = seed - 1;
+            
+            for(int currentMtn = currentMax - 1; currentMtn >= 1; --currentMtn) {
+                int percievedMax = perceivedHighest[currentMtn-1];
                 
-                Line maxPointLine = new Line(new Point(mtn, heights[mtn-1]),
+                if (percievedMax != currentMax)
+                    continue;
+                
+                heights[currentMax-1] = seed;
+                
+                heights[currentMtn - 1] = seed - 1;
+                
+                //Line from current to percievedMax
+                Line line = new Line(new Point(currentMtn, heights[currentMtn-1]),
                         new Point(percievedMax, heights[percievedMax-1]));
                 
-                double cur = maxPointLine.getPointGivenX(currentMtn).getY();
+                for(int mtn = percievedMax + 1; mtn <= N; ++mtn) {
+                    double limit = line.getPointGivenX(mtn).getY();
+                    
+                    if (heights[mtn-1] > limit) {
+                        log.info("Adjusting.  found peak {} after cur peak {} and max {} is too high.  Must be strictly <= {}", 
+                                mtn, currentMtn, percievedMax, DoubleFormat.df3.format(limit));
+                        
+                        Line maxPointLine = new Line(new Point(mtn, heights[mtn-1]),
+                                new Point(percievedMax, heights[percievedMax-1]));
+                        
+                        double cur = maxPointLine.getPointGivenX(currentMtn).getY();
+                        
+                        log.info("Can change current mtn {} to <= {}", currentMtn, DoubleFormat.df3.format(cur));
+            
+                        int heightInt = (int) Math.floor(cur) - 1;
+                        heights[currentMtn - 1] = heightInt;
+                        
+                        nextSeed = heightInt -1 ;
+                        //No other mountains can get in the way
+                        break;
+                    }
+                }
+
                 
-                log.info("Can change current mtn {} to <= {}", currentMtn, DoubleFormat.df3.format(cur));
-                
-                heights[currentMtn - 1] = (int) Math.floor(cur);
-                
-                //No other mountains can get in the way
-                break;
             }
+            
+            seed = nextSeed - 1;
         }
         
-        //Peak preceding max
-        if (heights[percievedMax-1-1] == 0)
-            assignSolution(perceivedHighest, heights, percievedMax-1, N, heights[currentMtn-1] - 1);
-        
-        //Peak behind current
-        if (currentMtn > 1 && heights[currentMtn-1-1] == 0)
-            assignSolution(perceivedHighest, heights, currentMtn-1, N, heights[currentMtn-1] - 1);
-        
-        //Also assign after max
-        if (percievedMax < N && heights[percievedMax-1+1] == 0)
-            assignSolution(perceivedHighest, heights, percievedMax+1, N, nextSeed);
     }
     
     boolean checkSolution(int[] perceivedHighest, int heights[]) {
@@ -172,7 +171,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 double limit = line.getPointGivenX(mtn).getY();
                 
                 if (heights[mtn-1] > limit) {
-                    log.info("Failure peak {} after peak {} and max {} is too high.  Must be strictly <= {}", mtn, currentMtn, percievedMax, DoubleFormat.df3.format(limit));
+                    log.info("Failure peak {} after peak {} and max {} is too high.  Must be <= {}", mtn, currentMtn, percievedMax, DoubleFormat.df3.format(limit));
                     
                     Line maxPointLine = new Line(new Point(mtn, heights[mtn-1]),
                             new Point(percievedMax, heights[percievedMax-1]));
