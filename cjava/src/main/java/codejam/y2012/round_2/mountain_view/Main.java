@@ -34,8 +34,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String[] getDefaultInputFiles() {
          return new String[] {"sample.in"};
-    //   return new String[] {"C-small-practice.in"};
-       // return new String[] {"C-large-practice.in"};
+     //  return new String[] {"C-small-practice.in"};
+      //  return new String[] {"C-large-practice.in"};
        // return new String[] { "A-small-practice.in", "A-large-practice.in" };
     }
 
@@ -71,8 +71,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //heights = new int[] {1000,992,951,827,702, 826,950,991,999,1000 };
         
         assignSolution(in.highest, heights, in.N);
+        //3 3 6 6 6 7
         
         boolean check = checkSolution(in.highest, heights);
+        
+        log.debug("Highest {}", in.highest);
+        log.debug("Heights {}", heights);
+        
         Preconditions.checkState(check);
         
         return String.format("Case #%d: %s", in.testCase, Ints.join(" ", heights));
@@ -94,12 +99,21 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
          * 
          */
     
-        int seed = 1000;
+        int seed = 1000000000;
         
         for(int currentMax = N; currentMax >= 1; --currentMax) {
             
 
             int nextSeed = seed - 1;
+            //log.debug("Iteration currentMax {} heights {}", currentMax, heights);
+            log.info("Iteration currentMax {} nextSeed {}", currentMax, nextSeed);
+            
+            if ( heights[currentMax-1] == 0) {
+                heights[currentMax-1] = seed;
+            }
+            
+            //Find the minimum height needed at this level
+            int min = seed - 1; 
             
             for(int currentMtn = currentMax - 1; currentMtn >= 1; --currentMtn) {
                 int percievedMax = perceivedHighest[currentMtn-1];
@@ -107,19 +121,35 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 if (percievedMax != currentMax)
                     continue;
                 
-                heights[currentMax-1] = seed;
-                
                 heights[currentMtn - 1] = seed - 1;
                 
                 //Line from current to percievedMax
                 Line line = new Line(new Point(currentMtn, heights[currentMtn-1]),
                         new Point(percievedMax, heights[percievedMax-1]));
                 
+                for(int mtn = currentMtn+1; mtn < percievedMax; ++mtn) {
+                    double limit = line.getPointGivenX(mtn).getY();
+                    
+                    if (heights[mtn-1] >= limit) {
+                        log.debug("Adjusting on SAME level peak {} between peak {} and max {} is too high.  Must be strictly less than {}", 
+                                mtn, currentMtn, percievedMax, DoubleFormat.df3.format(limit));
+                        
+                        double cur = line.getPointGivenX(mtn).getY();
+                        
+                        int heightInt = (int) Math.floor(cur) - 1;
+                        heights[currentMtn - 1] = heightInt;
+                    }
+                }
+                
                 for(int mtn = percievedMax + 1; mtn <= N; ++mtn) {
                     double limit = line.getPointGivenX(mtn).getY();
                     
+                    if (limit < 0) {
+                        log.debug("Limit less than 0");
+                    }
+                    
                     if (heights[mtn-1] > limit) {
-                        log.info("Adjusting.  found peak {} after cur peak {} and max {} is too high.  Must be strictly <= {}", 
+                        log.debug("Adjusting.  found peak {} after cur peak {} and max {} is too high.  Must be  <= {}", 
                                 mtn, currentMtn, percievedMax, DoubleFormat.df3.format(limit));
                         
                         Line maxPointLine = new Line(new Point(mtn, heights[mtn-1]),
@@ -127,12 +157,18 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         
                         double cur = maxPointLine.getPointGivenX(currentMtn).getY();
                         
-                        log.info("Can change current mtn {} to <= {}", currentMtn, DoubleFormat.df3.format(cur));
-            
-                        int heightInt = (int) Math.floor(cur) - 1;
-                        heights[currentMtn - 1] = heightInt;
+                        if (cur < 0) {
+                            log.debug("New point < 0");
+                        }
                         
-                        nextSeed = heightInt -1 ;
+                        if (seed - cur > 1000000) {
+                            log.debug("Large change");
+                        }
+                        log.debug("Can change current mtn {} to <= {}", currentMtn, DoubleFormat.df3.format(cur));
+            
+                        int heightInt = (int) Math.floor(cur);
+                        heights[currentMtn - 1] = heightInt;
+                        min = Math.min(heightInt, min);
                         //No other mountains can get in the way
                         break;
                     }
@@ -140,6 +176,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
                 
             }
+            
+            //Reloop setting all at the level
+            for(int currentMtn = currentMax - 1; currentMtn >= 1; --currentMtn) {
+                int percievedMax = perceivedHighest[currentMtn-1];
+                
+                if (percievedMax != currentMax)
+                    continue;
+                
+                //heights[currentMtn - 1] = min;
+            }
+            
+
+            nextSeed = min -1 ;
             
             seed = nextSeed - 1;
         }
