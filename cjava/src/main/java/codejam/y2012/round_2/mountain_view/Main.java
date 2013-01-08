@@ -17,6 +17,7 @@ import codejam.utils.geometry.Point;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
+import codejam.utils.utils.DoubleFormat;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -31,8 +32,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-      //   return new String[] {"sample.in"};
-        return new String[] {"C-small-practice.in"};
+         return new String[] {"sample.in"};
+      // return new String[] {"C-small-practice.in"};
        // return new String[] {"C-large-practice.in"};
        // return new String[] { "A-small-practice.in", "A-large-practice.in" };
     }
@@ -64,13 +65,21 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         int[] heights = new int[in.N];
         Arrays.fill(heights, -1);
         
+        //                    10,9 , 8, 7,6,7 , 8, 9,10
+        //heights = new int[] {100,0,0,0,0, 44,67,84,99,100 };
+        heights = new int[] {1000,992,951,827,702, 826,950,991,999,1000 };
+        
+        boolean check = checkSolution(in.highest, heights);
+        
         return String.format("Case #%d: 0 1 2 3", in.testCase);
         
         
     }
     
     boolean checkSolution(int[] perceivedHighest, int heights[]) {
-        for(int currentMtn = 1; currentMtn <= heights.length; ++currentMtn) {
+        Preconditions.checkArgument(perceivedHighest.length == heights.length - 1);
+        
+        for(int currentMtn = 1; currentMtn < heights.length; ++currentMtn) {
             
             //Make a line from currentMtn to its max
             int percievedMax = perceivedHighest[currentMtn-1];
@@ -81,15 +90,28 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             for(int mtn = currentMtn+1; mtn < percievedMax; ++mtn) {
                 double limit = line.getPointGivenX(mtn).getY();
                 
-                if (perceivedHighest[mtn-1] >= limit)
+                if (heights[mtn-1] >= limit) {
+                    log.info("Failure peak {} between peak {} and max {} is too high.  Must be strictly less than {}", 
+                            mtn, currentMtn, percievedMax, DoubleFormat.df3.format(limit));
                     return false;
+                }
             }
             
             for(int mtn = percievedMax + 1; mtn <= heights.length; ++mtn) {
                 double limit = line.getPointGivenX(mtn).getY();
                 
-                if (perceivedHighest[mtn-1] > limit)
+                if (heights[mtn-1] > limit) {
+                    log.info("Failure peak {} after peak {} and max {} is too high.  Must be strictly <= {}", mtn, currentMtn, percievedMax, DoubleFormat.df3.format(limit));
+                    
+                    Line maxPointLine = new Line(new Point(mtn, heights[mtn-1]),
+                            new Point(percievedMax, heights[percievedMax-1]));
+                    
+                    double cur = maxPointLine.getPointGivenX(currentMtn).getY();
+                    
+                    log.info("Can change current mtn {} to <= {}", currentMtn, DoubleFormat.df3.format(cur));
+                    
                     return false;
+                }
             }
         }
         
