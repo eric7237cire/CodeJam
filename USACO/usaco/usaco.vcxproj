@@ -63,10 +63,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\calfflac.cpp" />
+    <ClCompile Include="..\crypt1.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\calfflac.in" />
+    <None Include="..\crypt1.in" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

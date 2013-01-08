@@ -1,5 +1,6 @@
 package codejam.y2012.round_2.mountain_view;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +12,8 @@ import org.apache.commons.math3.fraction.Fraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.geometry.Line;
+import codejam.utils.geometry.Point;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -28,9 +31,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-     //    return new String[] {"sample.in"};
-       // return new String[] {"C-small-practice.in"};
-        return new String[] {"C-large-practice.in"};
+      //   return new String[] {"sample.in"};
+        return new String[] {"C-small-practice.in"};
+       // return new String[] {"C-large-practice.in"};
        // return new String[] { "A-small-practice.in", "A-large-practice.in" };
     }
 
@@ -49,6 +52,76 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return in;
     }
 
+    public String handleCase(InputData in) {
+        /*
+         * Once maximum has been established, cannot go past it until we go past that point
+         */
+        boolean f = feasible(in.highest, 2, in.highest[0]);
+        
+        if (!f) 
+            return String.format("Case #%d: Impossible", in.testCase);
+        
+        int[] heights = new int[in.N];
+        Arrays.fill(heights, -1);
+        
+        return String.format("Case #%d: 0 1 2 3", in.testCase);
+        
+        
+    }
+    
+    boolean checkSolution(int[] perceivedHighest, int heights[]) {
+        for(int currentMtn = 1; currentMtn <= heights.length; ++currentMtn) {
+            
+            //Make a line from currentMtn to its max
+            int percievedMax = perceivedHighest[currentMtn-1];
+            
+            Line line = new Line(new Point(currentMtn, heights[currentMtn-1]),
+                    new Point(percievedMax, heights[percievedMax-1]));
+            
+            for(int mtn = currentMtn+1; mtn < percievedMax; ++mtn) {
+                double limit = line.getPointGivenX(mtn).getY();
+                
+                if (perceivedHighest[mtn-1] >= limit)
+                    return false;
+            }
+            
+            for(int mtn = percievedMax + 1; mtn <= heights.length; ++mtn) {
+                double limit = line.getPointGivenX(mtn).getY();
+                
+                if (perceivedHighest[mtn-1] > limit)
+                    return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    void feasible(int[] highest, int heights[], int currentElem, int previousMax) {
+        
+    }
+    
+    boolean feasible(int[] perceivedHighest, int currentElem, int previousMax) {
+        
+        //Always feasible at the end
+        if (currentElem == perceivedHighest.length + 1)
+            return true;
+        
+        int currentElemMax = perceivedHighest[currentElem-1];
+        
+        //Sanity check, max cannot be on or behind us
+        if (currentElemMax <= currentElem)
+            return false;
+        
+        //Once we get to a local maximum, it can be increased again
+        if (currentElem == previousMax)
+            previousMax = currentElemMax;
+        
+        //Current max cannot "go past" next mountain
+        if (currentElemMax > previousMax) 
+            return false;
+        
+        return feasible(perceivedHighest, currentElem+1, currentElemMax);
+    }
     
     
     private boolean addConstraints(Simplex s, Map<Integer,Integer> assigned, InputData in) {
@@ -129,7 +202,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return true;
     }
     
-    public String handleCase(InputData in) {
+    public String handleCase2(InputData in) {
 
         
         

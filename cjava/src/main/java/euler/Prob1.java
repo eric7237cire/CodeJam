@@ -85,16 +85,13 @@ public class Prob1 {
                 dir = dir.turn(-2);
                 
                 if (dir == Direction.NORTH) {
-                   // log.debug("Sq ? Entry diag {}", i);
-                    //curSize = IntMath.sqrt(i, RoundingMode.UNNECESSARY);
+
                     curSize += 2;
                     total = 2 * curSize - 1;
                     
                     double ratio = (double) primeCount / total;
-                    //log.debug("Ratio pc {} / {} = {}.  size {}  i {}", primeCount, total, ratio, curSize, i );
+
                     if (ratio < .1d && i > 1) {
-                        
-                        
                         log.info("Found it {}", curSize);
                         return true;
                     }
