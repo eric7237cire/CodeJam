@@ -35,8 +35,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     public String[] getDefaultInputFiles() {
         // return new String[] {"sample.in"};
    //    return new String[] {"C-small-practice.in"};
-        return new String[] {"C-large-practice.in"};
-       // return new String[] { "A-small-practice.in", "A-large-practice.in" };
+       // return new String[] {"C-large-practice.in"};
+        return new String[] { "C-small-practice.in", "C-large-practice.in" };
     }
 
     @Override
@@ -66,9 +66,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         int[] heights = new int[in.N];
         Arrays.fill(heights, 0);
         
-        //                    10,9 , 8, 7,6,7 , 8, 9,10
-        //heights = new int[] {100,0,0,0,0, 44,67,84,99,100 };
-        //heights = new int[] {1000,992,951,827,702, 826,950,991,999,1000 };
         
         assignSolution(in.highest, heights, in.N);
         //3 3 6 6 6 7
