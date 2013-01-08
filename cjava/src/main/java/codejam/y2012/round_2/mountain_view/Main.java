@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.fraction.Fraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,8 +33,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String[] getDefaultInputFiles() {
       //   return new String[] {"sample.in"};
-       return new String[] {"C-small-practice.in"};
-      //  return new String[] {"C-large-practice.in"};
+     //  return new String[] {"C-small-practice.in"};
+        return new String[] {"C-large-practice.in"};
        // return new String[] { "A-small-practice.in", "A-large-practice.in" };
     }
 
@@ -99,8 +98,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
          * 
          */
     
-        //int seed = 1000000000;
-        int seed = 1000;
+        int seed = 1000000000;
+        //int seed = 1000;
         
         for(int currentMax = N; currentMax >= 1; --currentMax) {
             
