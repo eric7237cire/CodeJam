@@ -63,10 +63,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\crypt1.cpp" />
+    <ClCompile Include="..\packrec.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\crypt1.in" />
+    <None Include="..\packrec.in" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

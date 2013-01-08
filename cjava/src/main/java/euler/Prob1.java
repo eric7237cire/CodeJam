@@ -41,11 +41,83 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem58();
+        problem59();
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
         
+    }
+    
+    static void problem59() {
+        Scanner scanner = new Scanner(Prob1.class.getResourceAsStream("cipher1.txt"));
+        
+        //for(int i = 1; i <= 127; ++i) {
+        int i = 32;
+            for(int j = 1; j <= 127; ++j) {
+                log.debug("{} xor {} = {}", i, j, i ^ j);
+            }
+        //}
+        List<Integer> o1 = Lists.newArrayList();
+        List<Integer> o2 = Lists.newArrayList();
+        List<Integer> o3 = Lists.newArrayList();
+        
+        List<List<Integer>> chars = Lists.newArrayList();
+        List<Integer> allChars = Lists.newArrayList();
+        chars.add(o1);
+        chars.add(o2);
+        chars.add(o3);
+        
+        List<Multiset<Integer>> freq = Lists.newArrayList();
+        freq.add(HashMultiset.<Integer>create());
+        freq.add(HashMultiset.<Integer>create());
+        freq.add(HashMultiset.<Integer>create());
+        
+        int[] maxChar = {0,0,0};
+        int[] maxCount = {0, 0, 0};
+        
+        int offset = 0;
+        for(String str : Splitter.on(',').split(scanner.next())) {
+            Integer anInt = Integer.parseInt(str);
+            allChars.add(anInt);
+            chars.get(offset).add(anInt);
+            
+            freq.get(offset).add(anInt);
+            
+            if (freq.get(offset).count(anInt) > maxCount[offset]) {
+                maxCount[offset] = freq.get(offset).count(anInt);
+                maxChar[offset] = anInt;
+            }
+            
+            ++offset;
+            
+            if (offset == 3)
+                offset = 0;
+            
+            
+        }
+        
+        
+        int[] key = {103, 111, 100}; 
+        
+        offset = 0;
+        
+        StringBuffer sb = new StringBuffer();
+
+        int count = 0;
+        
+        for (Integer anInt : allChars) {
+            sb.append(Character.toString((char) (anInt ^ key[offset])));
+            count += anInt ^ key[offset];
+            ++offset;
+
+            
+
+            if (offset == 3)
+                offset = 0;
+        }
+
+
+        log.debug("Message {}\nCount {}", sb.toString(), count);
     }
     
     static void problem58() {
