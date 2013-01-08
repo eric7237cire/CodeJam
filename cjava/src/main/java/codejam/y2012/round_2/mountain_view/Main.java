@@ -190,12 +190,20 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 }
                 
                 heights[currentMtn - 1] = currentMaxHeight;
-                //Do a second pass, verify peaks on same level
+            }
+
+            //Do a second pass, verify peaks on same level
+            for(int currentMtn = 1; currentMtn < currentPercievedMax; ++currentMtn) {
+                int percievedMax = perceivedHighest[currentMtn-1];
+                
+                if (percievedMax != currentPercievedMax)
+                    continue;
                 
                 //Line could have changed
-                line = new Line(new Point(currentMtn, heights[currentMtn-1]),
+                Line line = new Line(new Point(currentMtn, heights[currentMtn-1]),
                         new Point(percievedMax, heights[percievedMax-1]));
                 
+                //peaks between currentMtn and its percieved max, make sure none are in the way
                 for(int mtn = currentMtn+1; mtn < percievedMax; ++mtn) {
                     double limit = line.getPointGivenX(mtn).getY();
                     
@@ -213,8 +221,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     }
                 }
 
-                
             }
+            
             
 
         }
