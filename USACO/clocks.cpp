@@ -27,18 +27,20 @@ void changeNum(uint& num)
 		num = 3;
 }
 
+#define MAX_CLOCK 262144
+
 class node {
 public:
 	vector<uint> clock;
 	uint steps;
-	vector<uint> moves;
-
+	uint index;
+		
 	node() : steps(0) 
 	{
 
 	}
 
-	node(const node& rhs) : clock(rhs.clock), steps(rhs.steps), moves(rhs.moves)
+	node(const node& rhs) : clock(rhs.clock), steps(rhs.steps), index(rhs.index)
 	{
 
 	}
@@ -49,23 +51,30 @@ public:
 		return *this;
 	}
 
-	uint getIndex() 
+	uint getIndex() const
 	{
 		uint ret = 0;
 
 		uint pow4 = 1;
 		for(uint c = 0; c < 9; ++c)
 		{
-			ret += pow4 * clock[c];
+			ret += pow4 * (clock[c] - 3) / 4;
 			pow4 *= 4;
 		}
+		if (ret >= MAX_CLOCK) {
+		    cout << "ret " << ret << endl;
+		}
+		assert(ret < MAX_CLOCK);
 		return ret;
 	}
 
 };
 
-
+uint prev[MAX_CLOCK];
+uint lastMove[MAX_CLOCK];
+	
 int main() {
+    
 	ofstream fout ("clocks.out");
     ifstream fin ("clocks.in");
 	
@@ -82,98 +91,111 @@ int main() {
 
 	node start;
 	start.clock = clockStart;
-
+	start.index = start.getIndex();
+	
 	toVisit.push(start);
 
-	set<uint> visited;
+	node doneNode;
+	doneNode.clock = done;
+	doneNode.index = doneNode.getIndex();
 	
-	int iter = 0;
-
-	while(!toVisit.empty() && iter <= 500000)
+	
+	for(int p = 0; p < MAX_CLOCK; ++p) 
 	{
-		node top = toVisit.front();
-		++iter;
+	    prev[p] = -1;
+	    lastMove[p] = -1;
+	}
+	
+	prev[start.index] = start.index; 
+
+	while(!toVisit.empty() )
+	{
+	    node top = toVisit.front();
+		
 		toVisit.pop();
 
-		const uint index = top.getIndex();
-		if (visited.find(index) != visited.end()) {
-			continue;
-		}
-
-		visited.insert(index);
-		/*
-		cout << "Steps " << top.steps << " iter " << iter << endl;
-		for(vector<uint>::const_iterator it = top.clock.begin();
-				it != top.clock.end();
-				++it)
-			{
-				cout << *it << " ";
-			}
-			cout << endl;
-			*/
-		if (top.clock == done)
+		//assert(top.index == top.getIndex());
+		
+		if (top.index == doneNode.index)
 		{
-			for(vector<uint>::const_iterator it = top.moves.begin();
-				it != top.moves.end();
+			uint indexPtr = top.index;
+			vector<uint> moves;
+			
+			while(prev[indexPtr] != indexPtr) {
+			     moves.push_back(lastMove[indexPtr]);			     
+			     indexPtr = prev[indexPtr];
+			}
+			
+			sort(moves.begin(), moves.end());
+			
+			for(vector<uint>::const_iterator it = moves.begin();
+				it != moves.end();
 				++it)
 			{
 				fout << *it;
-				if (top.moves.end() - it > 1)
+				if (moves.end() - it > 1)
 					fout << " ";
 			}
-			fout << endl;
+			fout << endl;			
 			break;
 		}
 
-		vector<node> moves; 
-
+		vector<node*> moves; 
 
 		node move1(top);
 		move1.change(0).change(1).change(3).change(4);
-		moves.push_back(move1);
+		moves.push_back(&move1);
 
 		node move2(top);
 		move2.change(0).change(1).change(2);
-		moves.push_back(move2);
+		moves.push_back(&move2);
 
 		//ABCD EFG HI
 	    //0123 456 78
 
 		node move3(top);
 		move3.change(1).change(2).change(4).change(5);
-		moves.push_back(move3);
+		moves.push_back(&move3);
 
 		node move4(top);
 		move4.change(0).change(3).change(6);
-		moves.push_back(move4);
+		moves.push_back(&move4);
 
 		node move5(top);
 		move5.change(1).change(3).change(4).change(5).change(7);
-		moves.push_back(move5);
+		moves.push_back(&move5);
 
 		node move6(top);
 		move6.change(2).change(5).change(8);
-		moves.push_back(move6);
+		moves.push_back(&move6);
 
 		node move7(top);
 		move7.change(3).change(4).change(6).change(7);
-		moves.push_back(move7);
+		moves.push_back(&move7);
 
 		node move8(top);
 		move8.change(6).change(7).change(8);
-		moves.push_back(move8);
+		moves.push_back(&move8);
 
 		node move9(top);
 		move9.change(4).change(5).change(7).change(8);
-		moves.push_back(move9);
+		moves.push_back(&move9);
 
 		for(uint m = 0; m < 9; ++m)
 		{
-			moves[m].moves.push_back(m+1);
-			moves[m].steps = top.steps + 1;
-			toVisit.push(moves[m]);
+			//moves[m].moves.push_back(m+1);
+			moves[m]->steps = top.steps + 1;
+			
+			uint index = moves[m]->getIndex();
+			moves[m]->index = index;
+			
+			if (prev[index] == -1) {
+			    prev[index] = top.index;
+			    assert(index != top.index);
+			    lastMove[index] = m + 1;
+			    toVisit.push(*moves[m]);
+			}			
 		}
-
 	}
 
 	return 0;
