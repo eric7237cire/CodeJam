@@ -156,7 +156,9 @@ public class Main  {
         //codejam.y2012.round_2.swinging_wild.Main m = new codejam.y2012.round_2.swinging_wild.Main();
         //codejam.y2012.round_2.aerobics.Main m = new codejam.y2012.round_2.aerobics.Main();
         //TODO implement their simpler approach
-        codejam.y2012.round_2.mountain_view.Main m = new codejam.y2012.round_2.mountain_view.Main();
+       // codejam.y2012.round_2.mountain_view.Main m = new codejam.y2012.round_2.mountain_view.Main();
+        
+        codejam.y2012.round_2.descending_dark.Main m = new codejam.y2012.round_2.descending_dark.Main();
         
         
         String[] files = {};
