@@ -486,6 +486,279 @@ void problem53()
 	cout << "Count is " << count << endl;
 }
 
+uint concatNums(uint left, uint right);
+
+void problem60() 
+{
+	const int upperLimit = 99999999;
+
+	vector<unsigned int> primes;
+	generatePrimes(upperLimit, primes);
+
+	map<uint, uint> primeToIdx;
+
+	set<uint> primeSet(primes.begin(), primes.end());
+
+	for(uint pIdx = 0; pIdx < primes.size(); ++pIdx) 
+	{
+		primeToIdx.insert( make_pair(primes[pIdx], pIdx) );
+	}
+	for(auto p = primeSet.begin(); p != primeSet.end(); ++p) {
+		//cout << *p << endl;
+	}
+
+	vector<set<uint>> pairablePrimes(primes.size());
+
+	for(auto p = primes.begin(); p != primes.end(); ++p)
+	{
+		pairablePrimes[ primeToIdx[*p] ].insert(*p);
+
+		uint cutPoint = 10;
+
+		while(*p > cutPoint)
+		{
+			uint left = *p / cutPoint;
+			uint right = *p % cutPoint;
+
+			//avoid leading zeros
+			if (right < cutPoint / 10) {
+				cutPoint *= 10;
+				continue;
+			}
+
+			//% 10 >= 1
+			//% 100 >= 10
+
+			cutPoint *= 10;
+
+			if (primeSet.find(left) == primeSet.end())
+				continue;
+
+			if (primeSet.find(right) == primeSet.end())
+				continue;
+
+			uint other = concatNums(right, left);
+
+			if (primeSet.find(other) != primeSet.end()) {				
+				pairablePrimes[ primeToIdx[left] ].insert(right);
+				pairablePrimes[ primeToIdx[right] ].insert(left);
+			}
+		}
+	}
+
+	/*for(uint pIdx = 0; pIdx < pairablePrimes.size(); ++pIdx)
+	{
+		if (primes[pIdx] > 100)
+			break;
+
+		//printf("Prime %d.  Pairable -- ", primes[pIdx]);
+
+		for(const uint& pairable : pairablePrimes[pIdx]) {
+			cout << pairable << " ";
+		}
+
+		cout << endl;
+	}*/
+
+	/*
+	const int kSize = 4;
+	uint indexes[kSize] = {0, 1, 2, 3};
+
+	const int primeLimit = 150;
+
+	while(true) 
+	{
+		for(int toInc = 0; toInc < kSize; ++toInc)
+		{
+			indexes[toInc] ++;
+			if ( primes[indexes[toInc] ] > primeLimit) {
+				indexes[toInc] = 0;
+
+			while( 
+		}
+
+	}*/
+
+	/*
+	pairablePrimes.erase(
+		std::remove_if(pairablePrimes.begin(), 
+		pairablePrimes.end(), 
+		[](const set<uint>& pSet) { return pSet.size() < 4; }), 
+						  pairablePrimes.end());
+
+	
+	*/
+
+	int limit = 3;
+
+	for(uint pIdx = 0; pIdx < pairablePrimes.size(); ++pIdx)
+	{
+		if (pairablePrimes[pIdx].size() < limit) {
+			pairablePrimes[pIdx].clear();
+			continue; 
+		}
+	}
+	
+	for(uint pIdx = 0; pIdx < pairablePrimes.size(); ++pIdx)
+	{
+		auto setIt = pairablePrimes[pIdx].begin();
+
+		while(setIt !=  pairablePrimes[pIdx].end())
+		{
+			if ( pairablePrimes[ primeToIdx[*setIt] ].size() < limit ) {
+				pairablePrimes[pIdx].erase(setIt++);
+			} else {
+				++setIt;
+			}
+		}
+	}
+
+	for(uint pIdx = 0; pIdx < pairablePrimes.size(); ++pIdx)
+	{
+		auto setIt = pairablePrimes[pIdx].begin();
+
+		while(setIt !=  pairablePrimes[pIdx].end())
+		{
+			vector<uint> intersection;
+
+			//Itersection of setIts pair list and this one must be size >= 3
+			set_intersection(pairablePrimes[pIdx].begin(), pairablePrimes[pIdx].end(),
+				pairablePrimes[ primeToIdx[*setIt] ].begin(), pairablePrimes[ primeToIdx[*setIt] ].end(),
+				back_inserter(intersection));
+
+			if ( intersection.size() < limit-1 ) {
+				pairablePrimes[pIdx].erase(setIt++);
+			} else {
+				++setIt;
+			}
+		}
+	}
+
+	map<uint, vector<uint>> remaining;
+
+	for(uint pIdx = 0; pIdx < pairablePrimes.size(); ++pIdx)
+	{
+		if (pairablePrimes[pIdx].size() < limit) {
+			pairablePrimes[pIdx].clear();
+			continue; 
+		}
+
+		vector<uint> vec(pairablePrimes[pIdx].begin(), pairablePrimes[pIdx].end());
+
+		remaining.insert(make_pair(primes[pIdx], vec));
+
+		/*printf("Prime %d.  Pairable -- ", primes[pIdx]);
+
+		for(const uint& pairable : pairablePrimes[pIdx]) {
+			cout << pairable << " ";
+		}
+
+		cout << endl;*/
+	}
+
+	int minsum = 1000000;
+
+	for(auto it = remaining.begin(); it != remaining.end(); ++it)
+	{
+		const vector<uint>& pairs = it->second;
+		
+		for(int a = 0; a < pairs.size(); ++a) {
+			for(int b = a+1; b < pairs.size(); ++b) {
+
+				
+
+				vector<uint> intAB;
+
+				set_intersection(remaining[pairs[a]].begin(), remaining[pairs[a]].end(),
+				remaining[pairs[b]].begin(), remaining[pairs[b]].end(),
+				back_inserter(intAB));
+
+				if (intAB.size() < 5) continue;
+
+				for(int c = b+1; c < pairs.size(); ++c) {
+
+					vector<uint> intABC;
+
+					set_intersection(intAB.begin(), intAB.end(),
+					remaining[pairs[c]].begin(), remaining[pairs[c]].end(),
+					back_inserter(intABC));
+
+					if (intABC.size() < 5) {
+						continue;
+						
+					}
+
+					for(int d = c+1; d < pairs.size(); ++ d) {
+						vector<uint> intABCD;
+
+					set_intersection(intABC.begin(), intABC.end(),
+					remaining[pairs[d]].begin(), remaining[pairs[d]].end(),
+					back_inserter(intABCD));
+
+					if (intABCD.size() >= 4) {
+						//cout << "Int " << " " << pairs[a] << " " << pairs[b] << " " << pairs[c] << " " << pairs[d] << endl;
+
+					}
+
+					if (intABCD.size() < 5) {
+						continue;
+					}
+
+					for(int e = d+1; e < pairs.size(); ++e) {
+							vector<uint> intABCDE;
+
+					set_intersection(intABCD.begin(), intABCD.end(),
+					remaining[pairs[e]].begin(), remaining[pairs[e]].end(),
+					back_inserter(intABCDE));
+
+					if (intABCDE.size() >= 5) {
+						cout << "Int " << " " << pairs[a] << " " << pairs[b] << " " << pairs[c] << " " << pairs[d] << " "<< pairs[e] << endl;
+						cout << pairs[a] + pairs[b] + pairs[c] + pairs[d] + pairs[e] << endl;
+
+					}
+					}
+
+					}
+				}
+			}
+		}
+
+
+	}
+
+	/*
+	prime ==> pairable primes
+	*/
+	
+	/*
+	take prime from pairable prime,
+	take next
+	*/
+
+}
+
+int main() {
+	ull start = GetTickCount64();
+	problem60();
+	ull end = GetTickCount64();
+
+	cout << "Elapsed ms " << end-start << endl;
+}
+
+uint concatNums(uint left, uint right)
+{
+	//123 ; 456
+	uint rightDigits = right;
+
+	while(rightDigits > 0)
+	{
+		rightDigits /= 10;
+		left *= 10;
+	}
+
+	return left+right;
+}
+
 uint getUsedDigits(uint num)
 {
 	uint ret = 0;
@@ -500,13 +773,6 @@ uint getUsedDigits(uint num)
 	return ret;
 }
 
-int main() {
-	ull start = GetTickCount64();
-	problem53();
-	ull end = GetTickCount64();
-
-	cout << "Elapsed ms " << end-start << endl;
-}
 
 void generatePrimes(int n, vector<unsigned int>& primes) 
 {
