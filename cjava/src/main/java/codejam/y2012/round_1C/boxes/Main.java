@@ -843,11 +843,12 @@ long currentColIndex = 1;
 
         long max = prevBlockRow.isEmpty() ? 0 : prevBlockRow.get(prevBlockRow.size() - 1).stopIndexCount;
 
+        /*
         if (bruteForce != null) {
             long maxBF = bruteForce[bruteForce.length - 1][bruteForce[0].length - 1];
 
             Preconditions.checkState(max == maxBF);
-        }
+        }*/
         return String.format("Case #%d: %d", in.testCase, max);
     }
 

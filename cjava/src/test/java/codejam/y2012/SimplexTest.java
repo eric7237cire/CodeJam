@@ -1,15 +1,13 @@
 package codejam.y2012;
 
-import static org.junit.Assert.*;
-
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 
-import com.google.common.collect.Lists;
-
 import codejam.y2012.round_2.mountain_view.Simplex;
+
+import com.google.common.collect.Lists;
 
 public class SimplexTest {
 
@@ -44,7 +42,7 @@ public class SimplexTest {
         
         s.addConstraintEquals(Arrays.asList(1d, 1d, 1d, 0d), 5d);
         
-        boolean f2 = s.doPhase1(solutions);
+        s.doPhase1(solutions);
         
     }
 

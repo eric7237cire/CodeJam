@@ -1,15 +1,10 @@
 package codejam.y2012.round_2.swinging_wild;
 
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Queue;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.TreeMap;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +13,6 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 

@@ -742,7 +742,7 @@ public class Prob1 {
             String s10 = Integer.toString(i, 10);
             String s2 = Integer.toString(i, 2);
             
-            String chk = s2.substring(s2.length() - s2.length() / 2);
+            //String chk = s2.substring(s2.length() - s2.length() / 2);
             //s10 len 4
             //0 1 2 3  with beg
             //len 5
@@ -1206,6 +1206,7 @@ public class Prob1 {
     /*
      * dividend / divisor
      */
+    @SuppressWarnings("unused")
     static int getRepetitionLength(final int divisor, int dividend) {
         double ans = 0;
 

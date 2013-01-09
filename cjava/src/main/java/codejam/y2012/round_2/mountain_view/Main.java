@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
 
-import org.apache.commons.math3.fraction.Fraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,12 +18,10 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.DoubleFormat;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
-import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
@@ -388,7 +385,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //assigned.put(3, 2);
         Stack<Simplex> assignementsToTry = new Stack<>();
         Simplex s2 = new Simplex(in.N);
-        boolean ok = addConstraints(s2, new HashMap<Integer,Integer>(), in);
+        addConstraints(s2, new HashMap<Integer,Integer>(), in);
                 
         assignementsToTry.add(s2);
         Map<Integer,Integer> assigned = new HashMap<Integer,Integer>();
@@ -455,7 +452,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
         }
         
-        if (1==1)
+        return String.format("Case #%d: Impossible", in.testCase);
+        
+        /*if (1==1)
         return String.format("Case #%d: Impossible", in.testCase);
         
         List<Double> solution = Lists.newArrayList();
@@ -483,7 +482,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             solInt.add( Ints.checkedCast(LongMath.checkedMultiply(lcm, fr.getNumerator()) / fr.getDenominator()));
         }
         
-        return String.format("Case #%d: %s", in.testCase, Joiner.on(' ').join(solInt));
+        return String.format("Case #%d: %s", in.testCase, Joiner.on(' ').join(solInt));*/
     }
 
 }

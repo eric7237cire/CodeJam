@@ -1,6 +1,5 @@
 package codejam.y2011.round_2.spinning_blade;
 
-import java.math.RoundingMode;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Pattern;
