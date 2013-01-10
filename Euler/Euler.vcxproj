@@ -115,6 +115,9 @@
   <ItemGroup>
     <ClCompile Include="euler.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="prettyprint.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

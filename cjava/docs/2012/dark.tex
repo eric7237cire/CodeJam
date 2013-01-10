@@ -1,0 +1,117 @@
+\documentclass[fleqn]{article}
+
+\usepackage{amsmath}
+\usepackage[top=2mm, bottom=2mm, left=2mm, right=30mm]{geometry}
+\begin{document}
+
+All reachable squares in horizontal intervals.  Let $X_i$ be the offset within an interval of
+length $i$.
+
+$\forall_{i : i < j} x_i\le x_j \le x_i + j - i$
+
+Start with each xi = 0.
+Loop from i = largest interval length down to 2.
+Move $ i-2 + xi - x_{i-1} $ times to the right, and then i-2 times to the left.
+
+\begin{flalign}
+\begin{tabular}{|*{20}{c|}}
+\hline
+$X_1$ & 0 & Goal : 0 \\
+\hline
+$X_2$ & 0 & Goal : 1 \\
+\hline
+$X_3$ & 0 & Goal : 2 \\
+\hline
+$X_4$ & 0 & Goal : 2 \\
+\hline
+$X_5$ & 0 & Goal : 3 \\
+\hline
+\end{tabular}
+\end{flalign}
+
+i = 5
+Move $ i-2 + xi - x_{i-1} $ times to the right, and then i-2 times to the left.
+
+Moving 5 - 2 + 3 - 2 = 4 right ; 3 left
+
+
+\begin{flalign}
+\begin{tabular}{|*{20}{c|}}
+\hline
+$X_1$ & 0 & Goal : 0 \\
+\hline
+$X_2$ & 0 & Goal : 1 \\
+\hline
+$X_3$ & 0 & Goal : 2 \\
+\hline
+$X_4$ & 0 & Goal : 2 \\
+\hline
+$X_5$ & 1 & Goal : 3 \\
+\hline
+\end{tabular}
+\end{flalign}
+
+i = 4
+Move $ i-2 + xi - x_{i-1} $ times to the right, and then i-2 times to the left.
+4 - 2 + 2 - 2 = 2 right ; 2 left
+
+\begin{flalign}
+\begin{tabular}{|*{20}{c|}}
+\hline
+$X_1$ & 0 & Goal : 0 \\
+\hline
+$X_2$ & 0 & Goal : 1 \\
+\hline
+$X_3$ & 0 & Goal : 2 \\
+\hline
+$X_4$ & 0 & Goal : 2 \\
+\hline
+$X_5$ & 1 & Goal : 3 \\
+\hline
+\end{tabular}
+\end{flalign}
+
+i = 3
+Move $ i-2 + xi - x_{i-1} $ times to the right, and then i-2 times to the left.
+3 - 2 + 2 - 1 = 2 right ; 1 left
+
+\begin{flalign}
+\begin{tabular}{|*{20}{c|}}
+\hline
+$X_1$ & 0 & Goal : 0 \\
+\hline
+$X_2$ & 0 & Goal : 1 \\
+\hline
+$X_3$ & 1 & Goal : 2 \\
+\hline
+$X_4$ & 1 & Goal : 2 \\
+\hline
+$X_5$ & 2 & Goal : 3 \\
+\hline
+\end{tabular}
+\end{flalign}
+
+
+i = 2
+Move $ i-2 + xi - x_{i-1} $ times to the right, and then i-2 times to the left.
+2 - 2 + 1 - 0 = 1 right ; 0 left
+
+\begin{flalign}
+\begin{tabular}{|*{20}{c|}}
+\hline
+$X_1$ & 0 & Goal : 0 \\
+\hline
+$X_2$ & 1 & Goal : 1 \\
+\hline
+$X_3$ & 2 & Goal : 2 \\
+\hline
+$X_4$ & 2 & Goal : 2 \\
+\hline
+$X_5$ & 3 & Goal : 3 \\
+\hline
+\end{tabular}
+\end{flalign}
+
+
+
+\end{document}

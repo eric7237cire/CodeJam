@@ -9,8 +9,6 @@
 #include <vector>
 #include <algorithm>
 #include <cassert>
-#include <queue>
-#include <functional>
 #include <cmath>
 using namespace std;
 using namespace boost;
@@ -459,7 +457,7 @@ void problem52()
 void problem53()
 {
 	const int limit = 100;
-	const uint goal = 1000000;
+	const int goal = 1000000;
 
 	uint combinations[limit+1][limit+1];
     for(int n = 0; n <= limit; ++n)
@@ -491,12 +489,27 @@ void problem53()
 
 uint concatNums(uint left, uint right);
 
-bool miller_rabin_32(uint n);
-bool isPrime(uint n);
+void problem60() 
+{
+	const int upperLimit = 99999999;
+	const int primeLimit = 20000;
+	vector<unsigned int> primes;
+	generatePrimes(upperLimit, primes);
 
-void cutInt() {
-    /*
-    uint cutPoint = 10;
+	map<uint, uint> primeToIdx;
+
+	set<uint> primeSet(primes.begin(), primes.end());
+
+	map<uint, set<uint>> pairablePrimes;
+
+	vector<set<uint>> k2;
+
+	for(auto p = primes.begin(); p != primes.end(); ++p)
+	{
+		//if (*p > primeLimit)
+		//	break;
+
+		uint cutPoint = 10;
 
 		while(*p > cutPoint)
 		{
@@ -513,228 +526,100 @@ void cutInt() {
 			//% 100 >= 10
 
 			cutPoint *= 10;
-			*/
-}
 
-void printK(const vector<set<uint>>& ki, int kSize)
-{
-	cout << "Printing k" << kSize << endl;
-	for( auto kIt = ki.begin(); kIt != ki.end(); ++kIt)
-	{
-		cout << "Elems  ";
-		for(auto kElemIt = kIt->begin(); kElemIt != kIt->end(); ++kElemIt)
-		{
-			cout << *kElemIt << " ";
-		}
-		cout << endl;
-	}
-}
-
-void buildNextK( const vector<set<uint>>& k, vector<set<uint>>& kNext, const uint kSize, const map<uint, set<uint>> & pairablePrimes)
-{
-	//Build K_n+1 by trying to combine 2 of K_n that share all but the last element
-	for(auto kIt_a = k.begin(); kIt_a != k.end(); ++kIt_a)
-	{
-		for(auto kIt_b = kIt_a+1; kIt_b != k.end(); ++kIt_b)
-		{
-			//attempt to pair AB and AC with A < B and  A < C
-
-			assert(kIt_a->size() == kIt_b->size());
-			assert(kIt_a->size() == kSize);
-
-			auto oneBeforeEnd = kIt_a->rbegin();
-			oneBeforeEnd++;
-
-			bool eq = equal(kIt_a->begin(), oneBeforeEnd.base(), kIt_b->begin());
-
-			/*
-			* We can break here because the k sets are sorted. 
-			*/
-			if (!eq)
-				break;
-
-			uint b = *kIt_a->rbegin();
-			uint c = *kIt_b->rbegin();
-
-			auto ppIt = pairablePrimes.find(b);
-
-			//Are b and c connected
-			if (ppIt->second.find(c) == ppIt->second.cend())
+			if (left > primeLimit || right > primeLimit)
 				continue;
 
-			set<uint> kEntry(kIt_a->begin(), oneBeforeEnd.base());
-			kEntry.insert(b);
-			kEntry.insert(c);
-			kNext.push_back(kEntry);
-
-		}
-	}
-}
-
-void problem60() 
-{
-	const int primeLimit = 10000;
-	vector<unsigned int> primes;
-	generatePrimes(primeLimit, primes);
-
-	set<uint> primeSet(primes.begin(), primes.end());
-
-	map<uint, set<uint>> pairablePrimes;
-
-	vector<set<uint>> k2;	
-
-	for(auto p = primes.begin(); p != primes.end(); ++p)
-	{
-		for(auto p2 = p + 1; p2 != primes.end(); ++p2)
-		{
-
-			uint left = *p;
-			uint right = *p2;
-
-			uint c1 = concatNums(right, left);
-			uint c2 = concatNums(left, right);
-
-			if (!isPrime(c1))
+			if (primeSet.find(left) == primeSet.end())
 				continue;
 
-			if (!isPrime(c2))
+			if (primeSet.find(right) == primeSet.end())
 				continue;
 
+			uint other = concatNums(right, left);
 
-			pairablePrimes[ left ].insert(right);
-			pairablePrimes[ right ].insert(left);
+			if (primeSet.find(other) != primeSet.end()) {				
+				pairablePrimes[ left ].insert(right);
+				pairablePrimes[ right ].insert(left);
 
-			k2.push_back( set<uint>() );
-			( *k2.rbegin() ).insert(left);
-			( *k2.rbegin() ).insert(right);
-
-		}
-	}
-
-	vector<set<uint>> k3, k4, k5;
-
-	buildNextK(k2, k3, 2, pairablePrimes);
-	buildNextK(k3, k4, 3, pairablePrimes);
-	buildNextK(k4, k5, 4, pairablePrimes);
-
-	printK(k5, 5);
-
-	return;
-}
-
-#include "prettyprint.h"
-
-vector<uint> genFigurateNumberSet( function< uint(uint)> genFunc )
-{
-	vector<uint> ret;
-
-	uint n = 0;
-	uint val = 0;
-
-	while(val < 10000)
-	{
-		if (val >= 1000)
-			ret.push_back(val);
-
-		++n;
-		val = genFunc(n);
-	}
-
-	return ret;
-	
-}
-
-class node61
-{
-public:
-	vector<uint> sequence;
-	uint visited;
-
-	node61() : visited(0) {}
-};
-
-void problem61() 
-{
-	vector<uint> pSet[] = {
-	 genFigurateNumberSet( [](uint n) { return n * (n+1) / 2; } ),
-	 genFigurateNumberSet( [](uint n) { return n * n; } ),
-	genFigurateNumberSet( [](uint n) { return n * (3*n-1) / 2; } ),
-	 genFigurateNumberSet( [](uint n) { return n * (2*n-1); } ),
-	genFigurateNumberSet( [](uint n) { return n * (5*n-3) / 2; } ),
-	genFigurateNumberSet( [](uint n) { return n * (3*n-2) ; } )
-	};
-
-	for(int i = 0; i < 6; ++i) {
-	cout << "P" << 3+i << pSet[i] << endl << endl;
-	}
-
-	//Initialize with p5 
-	queue<node61> toVisit;
-
-	for(uint p5 : pSet[2])
-	{
-		node61 node;
-		node.visited |= 1 << 2;
-		node.sequence.push_back(p5);
-		toVisit.push(node);
-	}
-
-	while(!toVisit.empty())
-	{
-		node61 top = toVisit.front();
-
-		toVisit.pop();
-
-		uint firstSeq = top.sequence[0];
-
-		if (firstSeq == 2882)
-			cout << endl;
-		// (P3,127=8128), square (P4,91=8281), and pentagonal (P5,44=2882)
-
-		for(int pSetIdx = 0; pSetIdx <= 1; ++pSetIdx)
-		{
-			//Already have a number from that set
-			if ( (top.visited & (1 << pSetIdx)) != 0)
-				continue;
-
-			//Last 2 digits of previous num in sequence
-			uint last2 = *top.sequence.rbegin() % 100;
-
-			for(uint num : pSet[pSetIdx])
-			{
-				if (firstSeq == 2882 && num == 8281) {
-					cout << endl;
-				}
-				uint firstTwo = num / 100;
-
-				if (last2 != firstTwo)
-					continue;
-
-				if (top.sequence.size() == 2) {
-					//must also match beginning of sequence
-					uint last2 = num % 100;
-					uint first2Seq = top.sequence[0] / 100;
-
-					if (last2 != first2Seq)
-						continue;
-				}
-
-				node61 newNode(top);
-				newNode.sequence.push_back(num);
-				newNode.visited |= 1 << pSetIdx;
-				toVisit.push(newNode);
-
-				if (newNode.sequence.size() == 3) {
-					cout << "Found it ! " << newNode.sequence << endl;
-				}
+				k2.push_back( set<uint>() );
+				( *k2.rbegin() ).insert(left);
+				( *k2.rbegin() ).insert(right);
 			}
 		}
 	}
+
+	//Print<uint, set<uint>::iterator>(cout, pairablePrimes[ 673 ].begin(), pairablePrimes[ 673 ].end(),  ", ");
+
+	set<set<uint>> kPrev(k2.begin(), k2.end());
+	set<set<uint>> ki;
+
+	for(int i = 3; i <= 5; ++i) 
+	{
+		
+
+		for( auto kPrevIt = kPrev.begin(); kPrevIt != kPrev.end(); ++kPrevIt)
+		{
+			boolean found = false;
+
+			for(auto p = primes.begin(); p != primes.end() && found == false; ++p)
+			{
+				if (*p > primeLimit)
+					break;
+
+				if (kPrevIt->find(*p) != kPrevIt->end()) 
+					continue;
+
+				//Loop through kSet, making sure that the prime is pairable with each one
+
+				uint primeNum = *p;
+				boolean matchesEveryElem = true;
+
+				for( auto kElemIt = kPrevIt->begin(); kElemIt != kPrevIt->end(); ++kElemIt)
+				{
+					if (pairablePrimes[ *p ].find( *kElemIt ) == pairablePrimes[ *p ].end() ) 
+					{
+						matchesEveryElem = false;
+						break;
+					}
+				}
+
+				if (matchesEveryElem) {
+					set<uint> copy = *kPrevIt;
+					copy.insert(*p);
+					ki.insert(copy);
+					found = true;
+				}
+			}
+
+		}
+
+		if (i >= 5) {
+		cout << "Printing k" << i << endl;
+		for( auto kIt = ki.begin(); kIt != ki.end(); ++kIt)
+		{
+			cout << "Elems  ";
+			for(auto kElemIt = kIt->begin(); kElemIt != kIt->end(); ++kElemIt)
+			{
+				cout << *kElemIt << " ";
+			}
+			cout << endl;
+		}
+		}
+
+		kPrev = ki;
+		ki.clear();
+
+	}
+	
+	
+	
+
 }
 
 int main() {
 	ull start = GetTickCount64();
-	problem61();
+	problem60();
 	ull end = GetTickCount64();
 
 	cout << "Elapsed ms " << end-start << endl;
@@ -768,53 +653,6 @@ uint getUsedDigits(uint num)
 	return ret;
 }
 
-bool isPrime(uint n) {
-	return miller_rabin_32(n);
-}
-
-int modular_exponent_32(int base, int power, int modulus) {
-	unsigned long long result = 1;
-	for (int i = 31; i >= 0; i--) {
-		result = (result*result) % modulus;
-		if ((power & (1 << i)) != 0) {
-			result = (result*base) % modulus;
-		}
-	}
-	return (int)result; // Will not truncate since modulus is an int
-}
-
-
-
-
-bool miller_rabin_pass_32(int a, int n) {
-	int d = n - 1;
-	int s = 0;
-
-	while ((d % 2) == 0) {
-		d /= 2;
-		s++;
-	}
-
-	int a_to_power = modular_exponent_32(a, d, n);
-	if (a_to_power == 1) return true;
-	for (int i = 0; i < s-1; i++) {
-		if (a_to_power == n-1) return true;
-		a_to_power = modular_exponent_32(a_to_power, 2, n);
-	}
-	if (a_to_power == n-1) return true;
-	return false;
-}
-
-bool miller_rabin_32(uint n) {
-	if (n <= 1) return false;
-	else if (n == 2) return true;
-	else if (miller_rabin_pass_32( 2, n) &&
-		(n <= 7  || miller_rabin_pass_32( 7, n)) &&
-		(n <= 61 || miller_rabin_pass_32(61, n)))
-		return true;
-	else
-		return false;
-}
 
 void generatePrimes(int n, vector<unsigned int>& primes) 
 {
@@ -822,28 +660,28 @@ void generatePrimes(int n, vector<unsigned int>& primes)
 	isPrime.flip();
 	isPrime[0] = 0;
 	isPrime[1] = 0;
-
+        
 	primes.clear();
 
-	//Since we are eliminating via prime factors, a factor is at most sqrt(n)
-	unsigned int upperLimit = static_cast<unsigned int>(sqrt(n));
-
+    //Since we are eliminating via prime factors, a factor is at most sqrt(n)
+    unsigned int upperLimit = static_cast<unsigned int>(sqrt(n));
+    
 	for(unsigned int i = 2; i <= upperLimit; ++i) {
-		if (!isPrime[i]) {
-			continue;
-		}
-
-		//Loop through all multiples of the prime factor i.  Start with i*i, because the rest
-		//were already covered by previous factors.  Ex, i == 7, we start at 49 because 7*2 through 7*6 
-		//we already covered by previous prime factors.
-		for(int j = i * i; j <= n; j += i) {
-			isPrime.set(j, false);
-		}
-	}
-
-	for (size_t i = isPrime.find_first(); i != boost::dynamic_bitset<>::npos; i = isPrime.find_next(i)) {
+        if (!isPrime[i]) {
+            continue;
+        }
+            
+        //Loop through all multiples of the prime factor i.  Start with i*i, because the rest
+        //were already covered by previous factors.  Ex, i == 7, we start at 49 because 7*2 through 7*6 
+        //we already covered by previous prime factors.
+        for(int j = i * i; j <= n; j += i) {
+            isPrime.set(j, false);
+        }
+    }
+        
+    for (size_t i = isPrime.find_first(); i != boost::dynamic_bitset<>::npos; i = isPrime.find_next(i)) {
 		primes.push_back(static_cast<unsigned int>(i));
-	}
-
+    }
+ 
 }
 
