@@ -641,13 +641,14 @@ vector<uint> genFigurateNumberSet( function< uint(uint)> genFunc )
 	}
 
 	return ret;
-	
+
 }
 
 class node61
 {
 public:
 	vector<uint> sequence;
+	vector<uint> pOrigin;
 	uint visited;
 
 	node61() : visited(0) {}
@@ -656,26 +657,27 @@ public:
 void problem61() 
 {
 	vector<uint> pSet[] = {
-	 genFigurateNumberSet( [](uint n) { return n * (n+1) / 2; } ),
-	 genFigurateNumberSet( [](uint n) { return n * n; } ),
-	genFigurateNumberSet( [](uint n) { return n * (3*n-1) / 2; } ),
-	 genFigurateNumberSet( [](uint n) { return n * (2*n-1); } ),
-	genFigurateNumberSet( [](uint n) { return n * (5*n-3) / 2; } ),
-	genFigurateNumberSet( [](uint n) { return n * (3*n-2) ; } )
+		genFigurateNumberSet( [](uint n) { return n * (n+1) / 2; } ),
+		genFigurateNumberSet( [](uint n) { return n * n; } ),
+		genFigurateNumberSet( [](uint n) { return n * (3*n-1) / 2; } ),
+		genFigurateNumberSet( [](uint n) { return n * (2*n-1); } ),
+		genFigurateNumberSet( [](uint n) { return n * (5*n-3) / 2; } ),
+		genFigurateNumberSet( [](uint n) { return n * (3*n-2) ; } )
 	};
 
 	for(int i = 0; i < 6; ++i) {
-	cout << "P" << 3+i << pSet[i] << endl << endl;
+		cout << "P" << 3+i << pSet[i] << endl << endl;
 	}
 
-	//Initialize with p5 
+	//Initialize with p8 
 	queue<node61> toVisit;
 
-	for(uint p5 : pSet[2])
+	for(uint p8 : pSet[5])
 	{
 		node61 node;
-		node.visited |= 1 << 2;
-		node.sequence.push_back(p5);
+		node.visited |= 1 << 5;
+		node.sequence.push_back(p8);
+		node.pOrigin.push_back(8);
 		toVisit.push(node);
 	}
 
@@ -684,14 +686,8 @@ void problem61()
 		node61 top = toVisit.front();
 
 		toVisit.pop();
-
-		uint firstSeq = top.sequence[0];
-
-		if (firstSeq == 2882)
-			cout << endl;
-		// (P3,127=8128), square (P4,91=8281), and pentagonal (P5,44=2882)
-
-		for(int pSetIdx = 0; pSetIdx <= 1; ++pSetIdx)
+		
+		for(int pSetIdx = 0; pSetIdx <= 5; ++pSetIdx)
 		{
 			//Already have a number from that set
 			if ( (top.visited & (1 << pSetIdx)) != 0)
@@ -702,15 +698,13 @@ void problem61()
 
 			for(uint num : pSet[pSetIdx])
 			{
-				if (firstSeq == 2882 && num == 8281) {
-					cout << endl;
-				}
+
 				uint firstTwo = num / 100;
 
 				if (last2 != firstTwo)
 					continue;
 
-				if (top.sequence.size() == 2) {
+				if (top.sequence.size() == 5) {
 					//must also match beginning of sequence
 					uint last2 = num % 100;
 					uint first2Seq = top.sequence[0] / 100;
@@ -722,19 +716,60 @@ void problem61()
 				node61 newNode(top);
 				newNode.sequence.push_back(num);
 				newNode.visited |= 1 << pSetIdx;
+				newNode.pOrigin.push_back(3+pSetIdx);
 				toVisit.push(newNode);
 
-				if (newNode.sequence.size() == 3) {
+				if (newNode.sequence.size() == 6) {
 					cout << "Found it ! " << newNode.sequence << endl;
+					cout << newNode.pOrigin << endl << endl;
+
+					uint sum_of_elems=0;
+					std::for_each(newNode.sequence.begin(),newNode.sequence.end(),[&](int n){
+						sum_of_elems += n;
+					});
+
+					cout << "Sum " << sum_of_elems << endl;
 				}
 			}
 		}
 	}
 }
 
+typedef unsigned long long ull;
+
+void problem62()
+{
+	map<string, vector<pair<uint,ull>>> digitsToNum;
+
+	for(uint num = 1; num <= 400000; ++num)
+	{
+		ull cube = (ull)num*num*num;
+		string digits = to_string(cube);
+
+		sort(digits.begin(), digits.end());
+
+		digitsToNum[digits].push_back(make_pair(num,cube));
+
+		
+	}
+	
+	uint minCub = 100000000;
+
+
+	for (auto it = digitsToNum.begin(); it != digitsToNum.end(); ++it)
+	{
+		if (it->second.size() == 5 && it->second[0].first < minCub)
+		{
+			minCub = it->second[0].first;
+			cout << "Perm groupe " << it->second << endl;
+		}
+	}
+
+}
+
 int main() {
 	ull start = GetTickCount64();
-	problem61();
+	problem62();
 	ull end = GetTickCount64();
 
 	cout << "Elapsed ms " << end-start << endl;
