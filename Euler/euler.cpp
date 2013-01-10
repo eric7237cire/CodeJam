@@ -457,7 +457,7 @@ void problem52()
 void problem53()
 {
 	const int limit = 100;
-	const int goal = 1000000;
+	const uint goal = 1000000;
 
 	uint combinations[limit+1][limit+1];
     for(int n = 0; n <= limit; ++n)
@@ -489,27 +489,12 @@ void problem53()
 
 uint concatNums(uint left, uint right);
 
-void problem60() 
-{
-	const int upperLimit = 99999999;
-	const int primeLimit = 20000;
-	vector<unsigned int> primes;
-	generatePrimes(upperLimit, primes);
+bool miller_rabin_32(uint n);
+bool isPrime(uint n);
 
-	map<uint, uint> primeToIdx;
-
-	set<uint> primeSet(primes.begin(), primes.end());
-
-	map<uint, set<uint>> pairablePrimes;
-
-	vector<set<uint>> k2;
-
-	for(auto p = primes.begin(); p != primes.end(); ++p)
-	{
-		//if (*p > primeLimit)
-		//	break;
-
-		uint cutPoint = 10;
+void cutInt() {
+    /*
+    uint cutPoint = 10;
 
 		while(*p > cutPoint)
 		{
@@ -526,35 +511,117 @@ void problem60()
 			//% 100 >= 10
 
 			cutPoint *= 10;
+			*/
+}
 
-			if (left > primeLimit || right > primeLimit)
-				continue;
+void problem60() 
+{
+	//const int upperLimit = 999999;
+	const int primeLimit = 20000;
+	vector<unsigned int> primes;
+	generatePrimes(primeLimit, primes);
 
-			if (primeSet.find(left) == primeSet.end())
-				continue;
+	set<uint> primeSet(primes.begin(), primes.end());
+	/*
+	for(uint p = 1; p < upperLimit; ++p)
+	{
+	    bool isPCheck = primeSet.find(p) != primeSet.end();
+	    
+	    bool isP = isPrime(p);
+	    
+	    if (isPCheck != isP) {
+	        cout << p << endl;
+	        cout << "Is prime check " << isPCheck << endl;
+	        cout << "Is prime " << isP << endl;
+	    }
+	    
+	    assert(isPCheck == isP);
+	}
+	
+	assert(false);*/
 
-			if (primeSet.find(right) == primeSet.end())
-				continue;
+	map<uint, set<uint>> pairablePrimes;
 
-			uint other = concatNums(right, left);
+	vector<set<uint>> k2;
+	
+	
+	for(auto p = primes.begin(); p != primes.end(); ++p)
+	{
+	    for(auto p2 = p + 1; p2 != primes.end(); ++p2)
+	    {
+		
+			uint left = *p;
+			uint right = *p2;
 
-			if (primeSet.find(other) != primeSet.end()) {				
-				pairablePrimes[ left ].insert(right);
-				pairablePrimes[ right ].insert(left);
+			uint c1 = concatNums(right, left);
+			uint c2 = concatNums(left, right);
 
-				k2.push_back( set<uint>() );
-				( *k2.rbegin() ).insert(left);
-				( *k2.rbegin() ).insert(right);
-			}
+			if (!isPrime(c1))
+			    continue;
+			
+			if (!isPrime(c2))
+			    continue;
+			
+							
+            pairablePrimes[ left ].insert(right);
+            pairablePrimes[ right ].insert(left);
+
+           // inK.insert(right);
+            //inK.insert(left);
+            
+            k2.push_back( set<uint>() );
+            ( *k2.rbegin() ).insert(left);
+            ( *k2.rbegin() ).insert(right);
+			
 		}
 	}
+	
+	cout << "done with k2" << endl;
+	
+	vector<set<uint>> k3;
+	set<uint> inK;
+	
+	for(auto k2It_a = k2.begin(); k2It_a != k2.end(); ++k2It_a)
+	{
+	    for(auto k2It_b = k2It_a+1; k2It_b != k2.end(); ++k2It_b)
+	    {
+	        //attempt to pair AB and AC with A < B and  A < C
+	        
+	        uint a = *k2It_a->begin();
+	        uint a2 = *k2It_b->begin();
+	        
+	        assert(a2 >= a);
+	        
+	        if (a2 > a)
+	            break;
+	        
+	        uint b = *k2It_a->rbegin();
+	        uint c = *k2It_b->rbegin();
+	        
+	        //Are b and c connected
+	        if (pairablePrimes[ b ].find(c) == pairablePrimes[ b ].end())
+	            continue;
+	        
+	        set<uint> k3Entry;
+	        k3Entry.insert(a);
+	        k3Entry.insert(b);
+	        k3Entry.insert(c);
+	        
+	        k3.push_back(k3Entry);
+	        inK.insert(a);
+	        inK.insert(b);
+	        inK.insert(c);
+	    }
+	}
 
-	Print<uint, set<uint>::iterator>(cout, pairablePrimes[ 673 ].begin(), pairablePrimes[ 673 ].end(),  ", ");
+	cout << "Done with k3" << endl;
+	//Print<uint, set<uint>::iterator>(cout, pairablePrimes[ 673 ].begin(), pairablePrimes[ 673 ].end(),  ", ");
 
-	set<set<uint>> kPrev(k2.begin(), k2.end());
+	set<set<uint>> kPrev(k3.begin(), k3.end());
 	set<set<uint>> ki;
+	set<uint> nextInK;
 
-	for(int i = 3; i <= 5; ++i) 
+	for(int i = 4; i <= 5; ++i) 
 	{
 		
 
@@ -562,7 +629,7 @@ void problem60()
 		{
 			boolean found = false;
 
-			for(auto p = primes.begin(); p != primes.end() && found == false; ++p)
+			for(auto p = inK.begin(); p != inK.end() && found == false; ++p)
 			{
 				if (*p > primeLimit)
 					break;
@@ -587,6 +654,7 @@ void problem60()
 				if (matchesEveryElem) {
 					set<uint> copy = *kPrevIt;
 					copy.insert(*p);
+					nextInK.insert(copy.begin(), copy.end());
 					ki.insert(copy);
 					found = true;
 				}
@@ -594,7 +662,7 @@ void problem60()
 
 		}
 
-		if (i >= 4) {
+		if (i >= 5) {
 		cout << "Printing k" << i << endl;
 		for( auto kIt = ki.begin(); kIt != ki.end(); ++kIt)
 		{
@@ -608,6 +676,8 @@ void problem60()
 		}
 
 		kPrev = ki;
+		inK = nextInK;
+		nextInK.clear();
 		ki.clear();
 
 	}
@@ -618,11 +688,11 @@ void problem60()
 }
 
 int main() {
-	ull start = GetTickCount64();
+	//ull start = GetTickCount64();
 	problem60();
-	ull end = GetTickCount64();
+	//ull end = GetTickCount64();
 
-	cout << "Elapsed ms " << end-start << endl;
+	//cout << "Elapsed ms " << end-start << endl;
 }
 
 uint concatNums(uint left, uint right)
@@ -653,6 +723,53 @@ uint getUsedDigits(uint num)
 	return ret;
 }
 
+bool isPrime(uint n) {
+    return miller_rabin_32(n);
+}
+    
+     int modular_exponent_32(int base, int power, int modulus) {
+        unsigned long long result = 1;
+        for (int i = 31; i >= 0; i--) {
+            result = (result*result) % modulus;
+            if ((power & (1 << i)) != 0) {
+                result = (result*base) % modulus;
+            }
+        }
+        return (int)result; // Will not truncate since modulus is an int
+    }
+
+    
+
+
+     bool miller_rabin_pass_32(int a, int n) {
+        int d = n - 1;
+    int s = 0;
+    
+    while ((d % 2) == 0) {
+        d /= 2;
+        s++;
+    }
+    
+        int a_to_power = modular_exponent_32(a, d, n);
+        if (a_to_power == 1) return true;
+        for (int i = 0; i < s-1; i++) {
+            if (a_to_power == n-1) return true;
+            a_to_power = modular_exponent_32(a_to_power, 2, n);
+        }
+        if (a_to_power == n-1) return true;
+        return false;
+    }
+
+    bool miller_rabin_32(uint n) {
+        if (n <= 1) return false;
+        else if (n == 2) return true;
+        else if (miller_rabin_pass_32( 2, n) &&
+            (n <= 7  || miller_rabin_pass_32( 7, n)) &&
+            (n <= 61 || miller_rabin_pass_32(61, n)))
+            return true;
+        else
+            return false;
+    }
 
 void generatePrimes(int n, vector<unsigned int>& primes) 
 {
