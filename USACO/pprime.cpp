@@ -43,20 +43,6 @@ uint getDigitCount(uint num)
 	return ret;
 }
 
-uint concatNums(uint left, uint right)
-{
-	//123 ; 456
-	uint rightDigits = right;
-
-	while(rightDigits > 0)
-	{
-		rightDigits /= 10;
-		left *= 10;
-	}
-
-	return left+right;
-}
-
 bool miller_rabin_32(uint n);
 
 bool isPrime(uint n) {
@@ -149,7 +135,7 @@ int main() {
             //cout <<  "half " << half << endl;
             
             if (d % 2 == 0) {
-                uint palin = concatNums(half, reverse(half));
+                uint palin = half * digitLB[dHalf-1] + reverse(half);
                // cout << "Palin even " << palin << endl;
                 if (a <= palin && b >= palin && isPrime(palin))
                     palinPrimes.insert(palin);
