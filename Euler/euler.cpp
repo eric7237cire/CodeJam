@@ -5,6 +5,7 @@
 #include <string>
 #include <map>
 #include <set>
+#include <boost/assign/list_of.hpp>
 #include <vector>
 #include <algorithm>
 #include <cassert>
@@ -491,7 +492,7 @@ uint concatNums(uint left, uint right);
 void problem60() 
 {
 	const int upperLimit = 99999999;
-
+	const int primeLimit = 20000;
 	vector<unsigned int> primes;
 	generatePrimes(upperLimit, primes);
 
@@ -499,19 +500,14 @@ void problem60()
 
 	set<uint> primeSet(primes.begin(), primes.end());
 
-	for(uint pIdx = 0; pIdx < primes.size(); ++pIdx) 
-	{
-		primeToIdx.insert( make_pair(primes[pIdx], pIdx) );
-	}
-	for(auto p = primeSet.begin(); p != primeSet.end(); ++p) {
-		//cout << *p << endl;
-	}
+	map<uint, set<uint>> pairablePrimes;
 
-	vector<set<uint>> pairablePrimes(primes.size());
+	vector<set<uint>> k2;
 
 	for(auto p = primes.begin(); p != primes.end(); ++p)
 	{
-		pairablePrimes[ primeToIdx[*p] ].insert(*p);
+		//if (*p > primeLimit)
+		//	break;
 
 		uint cutPoint = 10;
 
@@ -531,6 +527,9 @@ void problem60()
 
 			cutPoint *= 10;
 
+			if (left > primeLimit || right > primeLimit)
+				continue;
+
 			if (primeSet.find(left) == primeSet.end())
 				continue;
 
@@ -540,200 +539,81 @@ void problem60()
 			uint other = concatNums(right, left);
 
 			if (primeSet.find(other) != primeSet.end()) {				
-				pairablePrimes[ primeToIdx[left] ].insert(right);
-				pairablePrimes[ primeToIdx[right] ].insert(left);
+				pairablePrimes[ left ].insert(right);
+				pairablePrimes[ right ].insert(left);
+
+				k2.push_back( set<uint>() );
+				( *k2.rbegin() ).insert(left);
+				( *k2.rbegin() ).insert(right);
 			}
 		}
 	}
 
-	/*for(uint pIdx = 0; pIdx < pairablePrimes.size(); ++pIdx)
+	Print<uint, set<uint>::iterator>(cout, pairablePrimes[ 673 ].begin(), pairablePrimes[ 673 ].end(),  ", ");
+
+	set<set<uint>> kPrev(k2.begin(), k2.end());
+	set<set<uint>> ki;
+
+	for(int i = 3; i <= 5; ++i) 
 	{
-		if (primes[pIdx] > 100)
-			break;
-
-		//printf("Prime %d.  Pairable -- ", primes[pIdx]);
-
-		for(const uint& pairable : pairablePrimes[pIdx]) {
-			cout << pairable << " ";
-		}
-
-		cout << endl;
-	}*/
-
-	/*
-	const int kSize = 4;
-	uint indexes[kSize] = {0, 1, 2, 3};
-
-	const int primeLimit = 150;
-
-	while(true) 
-	{
-		for(int toInc = 0; toInc < kSize; ++toInc)
-		{
-			indexes[toInc] ++;
-			if ( primes[indexes[toInc] ] > primeLimit) {
-				indexes[toInc] = 0;
-
-			while( 
-		}
-
-	}*/
-
-	/*
-	pairablePrimes.erase(
-		std::remove_if(pairablePrimes.begin(), 
-		pairablePrimes.end(), 
-		[](const set<uint>& pSet) { return pSet.size() < 4; }), 
-						  pairablePrimes.end());
-
-	
-	*/
-
-	int limit = 3;
-
-	for(uint pIdx = 0; pIdx < pairablePrimes.size(); ++pIdx)
-	{
-		if (pairablePrimes[pIdx].size() < limit) {
-			pairablePrimes[pIdx].clear();
-			continue; 
-		}
-	}
-	
-	for(uint pIdx = 0; pIdx < pairablePrimes.size(); ++pIdx)
-	{
-		auto setIt = pairablePrimes[pIdx].begin();
-
-		while(setIt !=  pairablePrimes[pIdx].end())
-		{
-			if ( pairablePrimes[ primeToIdx[*setIt] ].size() < limit ) {
-				pairablePrimes[pIdx].erase(setIt++);
-			} else {
-				++setIt;
-			}
-		}
-	}
-
-	for(uint pIdx = 0; pIdx < pairablePrimes.size(); ++pIdx)
-	{
-		auto setIt = pairablePrimes[pIdx].begin();
-
-		while(setIt !=  pairablePrimes[pIdx].end())
-		{
-			vector<uint> intersection;
-
-			//Itersection of setIts pair list and this one must be size >= 3
-			set_intersection(pairablePrimes[pIdx].begin(), pairablePrimes[pIdx].end(),
-				pairablePrimes[ primeToIdx[*setIt] ].begin(), pairablePrimes[ primeToIdx[*setIt] ].end(),
-				back_inserter(intersection));
-
-			if ( intersection.size() < limit-1 ) {
-				pairablePrimes[pIdx].erase(setIt++);
-			} else {
-				++setIt;
-			}
-		}
-	}
-
-	map<uint, vector<uint>> remaining;
-
-	for(uint pIdx = 0; pIdx < pairablePrimes.size(); ++pIdx)
-	{
-		if (pairablePrimes[pIdx].size() < limit) {
-			pairablePrimes[pIdx].clear();
-			continue; 
-		}
-
-		vector<uint> vec(pairablePrimes[pIdx].begin(), pairablePrimes[pIdx].end());
-
-		remaining.insert(make_pair(primes[pIdx], vec));
-
-		/*printf("Prime %d.  Pairable -- ", primes[pIdx]);
-
-		for(const uint& pairable : pairablePrimes[pIdx]) {
-			cout << pairable << " ";
-		}
-
-		cout << endl;*/
-	}
-
-	int minsum = 1000000;
-
-	for(auto it = remaining.begin(); it != remaining.end(); ++it)
-	{
-		const vector<uint>& pairs = it->second;
 		
-		for(int a = 0; a < pairs.size(); ++a) {
-			for(int b = a+1; b < pairs.size(); ++b) {
 
-				
+		for( auto kPrevIt = kPrev.begin(); kPrevIt != kPrev.end(); ++kPrevIt)
+		{
+			boolean found = false;
 
-				vector<uint> intAB;
+			for(auto p = primes.begin(); p != primes.end() && found == false; ++p)
+			{
+				if (*p > primeLimit)
+					break;
 
-				set_intersection(remaining[pairs[a]].begin(), remaining[pairs[a]].end(),
-				remaining[pairs[b]].begin(), remaining[pairs[b]].end(),
-				back_inserter(intAB));
+				if (kPrevIt->find(*p) != kPrevIt->end()) 
+					continue;
 
-				if (intAB.size() < 5) continue;
+				//Loop through kSet, making sure that the prime is pairable with each one
 
-				for(int c = b+1; c < pairs.size(); ++c) {
+				uint primeNum = *p;
+				boolean matchesEveryElem = true;
 
-					vector<uint> intABC;
-
-					set_intersection(intAB.begin(), intAB.end(),
-					remaining[pairs[c]].begin(), remaining[pairs[c]].end(),
-					back_inserter(intABC));
-
-					if (intABC.size() < 5) {
-						continue;
-						
-					}
-
-					for(int d = c+1; d < pairs.size(); ++ d) {
-						vector<uint> intABCD;
-
-					set_intersection(intABC.begin(), intABC.end(),
-					remaining[pairs[d]].begin(), remaining[pairs[d]].end(),
-					back_inserter(intABCD));
-
-					if (intABCD.size() >= 4) {
-						//cout << "Int " << " " << pairs[a] << " " << pairs[b] << " " << pairs[c] << " " << pairs[d] << endl;
-
-					}
-
-					if (intABCD.size() < 5) {
-						continue;
-					}
-
-					for(int e = d+1; e < pairs.size(); ++e) {
-							vector<uint> intABCDE;
-
-					set_intersection(intABCD.begin(), intABCD.end(),
-					remaining[pairs[e]].begin(), remaining[pairs[e]].end(),
-					back_inserter(intABCDE));
-
-					if (intABCDE.size() >= 5) {
-						cout << "Int " << " " << pairs[a] << " " << pairs[b] << " " << pairs[c] << " " << pairs[d] << " "<< pairs[e] << endl;
-						cout << pairs[a] + pairs[b] + pairs[c] + pairs[d] + pairs[e] << endl;
-
-					}
-					}
-
+				for( auto kElemIt = kPrevIt->begin(); kElemIt != kPrevIt->end(); ++kElemIt)
+				{
+					if (pairablePrimes[ *p ].find( *kElemIt ) == pairablePrimes[ *p ].end() ) 
+					{
+						matchesEveryElem = false;
+						break;
 					}
 				}
+
+				if (matchesEveryElem) {
+					set<uint> copy = *kPrevIt;
+					copy.insert(*p);
+					ki.insert(copy);
+					found = true;
+				}
 			}
+
 		}
 
+		if (i >= 4) {
+		cout << "Printing k" << i << endl;
+		for( auto kIt = ki.begin(); kIt != ki.end(); ++kIt)
+		{
+			cout << "Elems  ";
+			for(auto kElemIt = kIt->begin(); kElemIt != kIt->end(); ++kElemIt)
+			{
+				cout << *kElemIt << " ";
+			}
+			cout << endl;
+		}
+		}
+
+		kPrev = ki;
+		ki.clear();
 
 	}
-
-	/*
-	prime ==> pairable primes
-	*/
 	
-	/*
-	take prime from pairable prime,
-	take next
-	*/
+	
+	
 
 }
 
