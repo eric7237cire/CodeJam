@@ -65,6 +65,19 @@ public class BitSetLong {
         bits &= ~(1L << pos);
     }
     
+    /**
+     * Bits in bitsRhs are unset
+     * @param bitsRhs
+     */
+    public void unsetMultiple(long bitsRhs) {
+        bits &= ~bitsRhs;
+    }
+    
+    public void restrictToSet(long bitsRhs) {
+        bits &= bitsRhs;
+    }
+    
+    
     public void toggleBit(int pos) {
         bits ^= 1L << pos;
     }

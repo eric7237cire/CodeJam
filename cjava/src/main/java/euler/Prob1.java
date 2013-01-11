@@ -41,10 +41,73 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem63();
+        problem65();
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
+        
+    }
+    
+    
+    static void problem65() 
+    {
+        List<Integer> a = Lists.newArrayList();
+        
+        List<Integer> repeating = Arrays.asList(2, 1, 3, 1, 2, 8);
+        
+        List<BigInteger> p = Lists.newArrayList();
+        List<BigInteger> q = Lists.newArrayList(); 
+        
+        
+        a.add(2);
+        
+        int offset = 0;
+        for(int n = 1; n < 100; ++n) {
+            //for e
+            if (n % 3 == 2) {
+                a.add( (n/3 + 1) * 2 );
+            } else {
+                a.add( 1 );
+            }
+            //a.add(repeating.get(offset));
+            ++offset;
+            if (offset == repeating.size())
+                offset = 0;
+                        
+        }
+        
+        p.add(BigInteger.valueOf(a.get(0)));
+        q.add(BigInteger.valueOf(1));
+        
+        p.add(BigInteger.valueOf(a.get(1)).multiply(p.get(0)).add(BigInteger.ONE));
+        q.add(BigInteger.valueOf(a.get(1)));
+        
+        for(int n = 2; n < 100; ++n) {
+            p.add(BigInteger.valueOf(a.get(n)).multiply(p.get(n-1)).add(p.get(n-2)));
+        }
+        
+        for(int n = 2; n < 100; ++n) {
+            q.add(BigInteger.valueOf(a.get(n)).multiply(q.get(n-1)).add(q.get(n-2)));
+        }
+        
+        for(int n = 0; n < 100; ++n) {
+            double d = p.get(n).doubleValue() / q.get(n).doubleValue();
+            log.debug("n {} = {}.  {} / {} Sum numerator : {} ", n, d,  p.get(n), q.get(n), findSumDigits(p.get(n)));
+        }
+        
+    }
+    
+    static int findSumDigits(BigInteger bi) {
+        BigInteger sum = BigInteger.ZERO;
+        
+        while(bi.compareTo(BigInteger.ZERO) > 0) {
+            BigInteger digit = bi.mod(BigInteger.TEN);
+            sum = sum.add(digit);
+            
+            bi = bi.divide(BigInteger.TEN);
+        }
+        
+        return sum.intValue();
         
     }
     
@@ -122,6 +185,7 @@ start again from Step 1 but using the expression at the end of Step 3
        return xList;
    }
     
+  //See tex
     static void problem63() {
         
         //4, 2,1,3,1,2,8

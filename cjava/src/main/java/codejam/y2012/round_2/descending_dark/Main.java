@@ -257,12 +257,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 /*
                  * Build up possible moves starting at smallest segment
                  */
-                long[] possible = new long[maxLen + 1];
-                possible[1] = 1;
+                BitSetLong[] possible = new BitSetLong[maxLen + 1];
+                possible[1] = new BitSetLong(1);
                 for (int len = 1; len <= maxLen; ++len) {
                     
                     //Weed out squares unsafe to go down
-                    possible[len] &= ~badByLen[len];
+                    possible[len].unsetMultiple(badByLen[len]);
                     
                     /*Say we have len = 3 and
                      * possible[3] = 101
@@ -281,19 +281,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                      */
                     
                     if (len < maxLen) {
-                        possible[len + 1] = possible[len] | (possible[len] << 1);
+                        possible[len + 1] = new BitSetLong( possible[len].getBits() | (possible[len].getBits() << 1) );
                     }
                 }
                 
                 //Do the same logic but from the top ... TODO Why?
                 //maybe to cover the badByLen in the other direction
                 for (int len = maxLen; len > 1; --len) {
-                    possible[len - 1] &= possible[len] | (possible[len] >> 1);
+                    possible[len - 1].restrictToSet( possible[len].getBits() | (possible[len].getBits() >> 1) );
                 }
                 List<Segment> remaining = new ArrayList<Segment>();
                 for (Segment s : segments)
                     //If we are still in the segment
-                    if ((s.safeToGoDown.getBits() & possible[s.length]) == 0) {
+                    if ((s.safeToGoDown.getBits() & possible[s.length].getBits()) == 0) {
                         remaining.add(s);
                     }
                 if (remaining.size() == segments.size())
