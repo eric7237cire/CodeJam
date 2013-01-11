@@ -15,12 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\clocks.cpp">
+    <ClCompile Include="..\sprime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\clocks.in">
+    <None Include="..\sprime.in">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

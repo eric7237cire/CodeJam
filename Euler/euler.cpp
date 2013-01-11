@@ -767,9 +767,42 @@ void problem62()
 
 }
 
+uint countDigits(ull num);
+
+void problem63() 
+{
+	uint lb = 1;
+
+	uint power = 1;
+	uint count = 0;
+	for(uint power = 1; power <= 19; ++power)
+	{
+		for(uint base = 1; base < 10; ++base)
+		{
+			ull num = base;
+			for(uint p = 1; p < power; ++p)
+			{
+				num *= base;
+			}
+			uint dc = countDigits(num);
+
+			if (dc > power)
+				break;
+
+			if (dc < power)
+				continue;
+
+			cout << "Found " << base << " ^ " << power << endl;
+			++count;
+		}
+	}
+
+	cout << "Count " << count << endl;
+}
+
 int main() {
 	ull start = GetTickCount64();
-	problem62();
+	problem63();
 	ull end = GetTickCount64();
 
 	cout << "Elapsed ms " << end-start << endl;
@@ -787,6 +820,18 @@ uint concatNums(uint left, uint right)
 	}
 
 	return left+right;
+}
+
+uint countDigits(ull num)
+{
+	uint ret = 0;
+	while(num > 0)
+	{
+		ret ++;
+		num /= 10;
+	}
+
+	return ret;
 }
 
 uint getUsedDigits(uint num)
