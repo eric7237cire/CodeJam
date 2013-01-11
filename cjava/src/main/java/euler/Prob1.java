@@ -41,11 +41,102 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem59();
+        problem63();
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
         
+    }
+    
+    /*
+     * The steps in the algorithm for √n are:
+Step 1:
+Find the nearest square number less than n, let's call it m2, so that m2<n and n<(m+1)2. 
+For example, if n=14 and we are trying to find the CF for √14, then 9 is the nearest square below 14, so m is 3 and n lies between m2=9 and (m+1)2=16.
+The whole number part starts off your list of numbers for the continued fraction.
+The easy way to find the largest square number below n is to use your calculator:
+Find √n and just ignore the part after the decimal point! The number showing is m.
+
+Now, √n = m + 1/x
+
+where n and m are whole numbers.
+
+Step 2:
+Rearrange the equation of Step 1 into the form of x equals an expression involving the square root which will appear as the denominator of a fraction: x = 1 / (√n - m)
+Step 3:
+We now have a fraction with a square-root in the denominator. Use the method above to convert it into a fraction with whole numbers in the denominator. 
+In this case, multiply top and bottom by (√ n + m) and simplify.
+either Step 4A:
+stop if this expression is the original square root plus an integer.
+or Step 4B:
+start again from Step 1 but using the expression at the end of Step 3
+
+
+     */
+   static int findM(int rad, int num, int denom) {
+        double v = (Math.sqrt(rad) + num) / denom;
+        int m = (int) v;
+        
+        return m;
+    }
+   
+  static List<Integer> findConFrac(int rad) {
+       int prevStep1Numerator = 0;
+       int prevStep1Denom = 1;
+       
+       List<Integer> xList = Lists.newArrayList();
+       
+       for(int i = 0; i < 50000; ++i) {
+           int xi = findM(rad, prevStep1Numerator, prevStep1Denom);
+           
+           
+           xList.add(xi);
+           //Prefect square
+           if (i==0 && xi * xi == rad) {
+               return xList;
+           }
+           
+           /**
+            * The radical is not represented, so
+            * 5 / ( Sqrt(14) - 2) is just 5 / -2
+            */
+           int step2Numerator = prevStep1Denom;
+           int step2Denom = prevStep1Numerator - xi * prevStep1Denom;
+           
+           //Again radical is missing
+           int step3Numerator = -step2Denom;
+           
+           int step3Denom = (rad - step2Denom*step2Denom) / step2Numerator;
+           
+           if (step3Denom == 1) {
+               xList.add(step3Numerator+xList.get(0));
+               break;
+           }
+           
+           prevStep1Denom = step3Denom;
+           prevStep1Numerator = step3Numerator;
+           
+           //log.debug("x{}={} frac={}", i, xi);
+       }
+       
+       return xList;
+   }
+    
+    static void problem63() {
+        
+        //4, 2,1,3,1,2,8
+        findConFrac(19);
+        
+        int count = 0;
+       for(int rad = 2; rad <= 10000; ++rad) {
+        List<Integer> xList = findConFrac(rad);
+        int period = xList.size() - 1;
+        if (period % 2 == 1)
+            ++count;
+       // log.debug("Rad {}  list {}", rad, xList);
+       }
+       
+       log.debug(" count is {}", count);
     }
     
     static void problem59() {
