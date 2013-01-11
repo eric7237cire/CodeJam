@@ -41,10 +41,75 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem59();
+        problem63();
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
+        
+    }
+    
+    /*
+     * The steps in the algorithm for √n are:
+Step 1:
+Find the nearest square number less than n, let's call it m2, so that m2<n and n<(m+1)2. 
+For example, if n=14 and we are trying to find the CF for √14, then 9 is the nearest square below 14, so m is 3 and n lies between m2=9 and (m+1)2=16.
+The whole number part starts off your list of numbers for the continued fraction.
+The easy way to find the largest square number below n is to use your calculator:
+Find √n and just ignore the part after the decimal point! The number showing is m.
+
+Now, √n = m + 1/x
+
+where n and m are whole numbers.
+
+Step 2:
+Rearrange the equation of Step 1 into the form of x equals an expression involving the square root which will appear as the denominator of a fraction: x = 1 / (√n - m)
+Step 3:
+We now have a fraction with a square-root in the denominator. Use the method above to convert it into a fraction with whole numbers in the denominator. 
+In this case, multiply top and bottom by (√ n + m) and simplify.
+either Step 4A:
+stop if this expression is the original square root plus an integer.
+or Step 4B:
+start again from Step 1 but using the expression at the end of Step 3
+     */
+   static int findM(int rad, BigFraction frac) {
+        double v = Math.sqrt(rad) + frac.getNumeratorAsLong();
+        v /= frac.getDenominatorAsLong();
+        v = Math.floor(v);
+        int num = (int) v;
+        
+        return num;
+    }
+    
+    static void problem63() {
+        
+        int rad = 14;
+        
+        BigFraction frac = new BigFraction(0, 1);
+        int x0 = findM(rad, frac);
+        
+        BigFraction nextFrac = frac.subtract(x0).reciprocal();
+        BigInteger num = nextFrac.getNumerator().abs().multiply(BigInteger.valueOf(x0));
+        BigInteger denom = nextFrac.getDenominator().multiply(
+                BigInteger.valueOf(-x0)).add(BigInteger.valueOf(rad)); 
+        nextFrac = new BigFraction(num, denom);
+        frac = nextFrac;
+        
+        log.debug("x0={} frac={}", x0, frac);
+        
+        for(int i = 1; i < 5; ++i) {
+            int xi = findM(rad, frac);
+            
+            nextFrac = frac.subtract(xi).reciprocal();
+            num = nextFrac.getNumerator().abs().multiply(BigInteger.valueOf(xi));
+            denom = nextFrac.getDenominator().multiply(
+                    BigInteger.valueOf(-xi)).add(BigInteger.valueOf(rad)); 
+            
+            nextFrac = new BigFraction(num, denom);
+            frac = nextFrac;
+            
+            log.debug("x{}={} frac={}", i, xi, frac);
+        }
+        
         
     }
     
