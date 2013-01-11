@@ -1,5 +1,6 @@
 package codejam.y2012.round_2.descending_dark;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -9,11 +10,13 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.datastructures.BitSetLong;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.Direction;
 import codejam.utils.utils.GridChar;
+import codejam.y2012.round_2.descending_dark.SolutionGiven.Segment;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -25,8 +28,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-        // return new String[] {"sample.in"};
-        return new String[] {"D-small-practice.in"};
+         return new String[] {"sample.in"};
+        //return new String[] {"D-small-practice.in"};
        // return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
@@ -123,6 +126,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     final static int LEFT = 1;
     final static int DOWN = 0;
     
+    /**
+     * Used when treating this problem as an intersection of 
+     * state machines.  Basically for a grid index and a direction,
+     * we return the next grid index.
+     * @param in
+     * @return
+     */
     int[][] buildTransitions(InputData in) {
         int[][] transitions = new int[in.C*in.R][3];
         GridChar grid = in.grid; 
@@ -158,7 +168,148 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return transitions;
     }
     
+    static class Segment
+    {
+        int length;
+        //Moving down remains in reachable squares
+        BitSetLong safeToGoDown;
+        
+        //Moving down leaves reachable squares, index from start of segment
+        BitSetLong unsafeToGoDownBitSet;
+        
+        Segment() {
+            length = 0;
+            safeToGoDown = new BitSetLong();
+            unsafeToGoDownBitSet = new BitSetLong();
+        }
+
+        @Override
+        public String toString() {
+            return "Segment [length=" + length + ", safeToGoDown=" + safeToGoDown + ", unsafeToGoDownBitSet=" + unsafeToGoDownBitSet + "]";
+        }
+    }
+    
+    void buildSegments(GridChar grid, Set<Integer> reachableSquares, List<Segment> segments) {
+        
+        for(int reachableSquareGridIndex : reachableSquares) 
+        {
+            //To be the start of a segment, directly to the left must not be reachable
+            Integer leftGridIndex = grid.getIndex(reachableSquareGridIndex, Direction.WEST);
+            if (reachableSquares.contains(leftGridIndex))
+                continue;
+            
+            Integer currentIndex = reachableSquareGridIndex;
+            int currentOffset = 0;
+            
+            Segment s = new Segment();
+            
+            while(reachableSquares.contains(currentIndex)) {
+                Integer belowIndex = grid.getIndex(currentIndex, Direction.SOUTH);
+                char sqBelow = grid.getEntry(belowIndex);
+                
+                if (sqBelow == '#') {
+                    //neither safe to go down nor unsafe
+                } else if (reachableSquares.contains(belowIndex)) {
+                    //Safe to go down
+                    s.safeToGoDown.set(currentOffset);
+                } else {
+                    //Not safe to go down, we leave the set of reachable squares
+                    s.unsafeToGoDownBitSet.set(currentOffset);
+                }
+                
+                ++currentOffset;
+                currentIndex = grid.getIndex(currentIndex, Direction.EAST);
+            }
+            
+            s.length = currentOffset;
+            segments.add(s);
+            
+        }
+    }
+    
     public String handleCase(InputData in) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(String.format("Case #%d:\n", in.testCase));
+        
+        for(int d = 0; d <= 9; ++d) {
+            Set<Integer> caveSquares = Sets.newHashSet();
+            Integer caveLoc = getCaveSquares(in.grid, d, caveSquares);
+            
+            if (caveLoc == null)
+                continue;
+            
+            List<Segment> segments = Lists.newArrayList();
+            
+            buildSegments(in.grid, caveSquares, segments);
+            
+            while (true) {
+                int maxLen = 0;
+                for (Segment s : segments)
+                    maxLen = Math.max(maxLen, s.length);
+                
+                //Go through each segment, for each length we combine
+                //which squares are not safe to go down
+                long[] badByLen = new long[maxLen + 1];
+                for (Segment s : segments) {
+                    badByLen[s.length] |= s.unsafeToGoDownBitSet.getBits();
+                }
+                
+                /*
+                 * Build up possible moves starting at smallest segment
+                 */
+                long[] possible = new long[maxLen + 1];
+                possible[1] = 1;
+                for (int len = 1; len <= maxLen; ++len) {
+                    
+                    //Weed out squares unsafe to go down
+                    possible[len] &= ~badByLen[len];
+                    
+                    /*Say we have len = 3 and
+                     * possible[3] = 101
+                     *      offset 2 1 0
+                     *      
+                     * This means for the next interval we can be either
+                     * in what is possible or 1 to the right
+                     *  101
+                     * 101-
+                     * 
+                     * This is explained better by the proof.  Basically
+                     * len 3 [] [] [] 
+                     * len 4 [] [] [] []
+                     * in len 4 I can do moves to be either same offset as len 3
+                     * or 1 to the right.  
+                     */
+                    
+                    if (len < maxLen) {
+                        possible[len + 1] = possible[len] | (possible[len] << 1);
+                    }
+                }
+                
+                //Do the same logic but from the top ... TODO Why?
+                //maybe to cover the badByLen in the other direction
+                for (int len = maxLen; len > 1; --len) {
+                    possible[len - 1] &= possible[len] | (possible[len] >> 1);
+                }
+                List<Segment> remaining = new ArrayList<Segment>();
+                for (Segment s : segments)
+                    //If we are still in the segment
+                    if ((s.safeToGoDown.getBits() & possible[s.length]) == 0) {
+                        remaining.add(s);
+                    }
+                if (remaining.size() == segments.size())
+                    break;
+                segments = remaining;
+            }
+            
+            //One segment remaining means we are in the horizontal segment containing the cave
+            boolean lucky = segments.size() == 1; 
+            
+            sb.append(String.format("%d: %d %s\n", d, caveSquares.size(), lucky ? "Lucky" : "Unlucky" ));
+        }
+        
+        return sb.toString();
+    }
+    public String handleCaseBruteForce(InputData in) {
 
         
         int[][] transitions = buildTransitions(in);
@@ -173,6 +324,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             if (caveLoc == null)
                 continue;
             
+            //State is the cross product of each individual state machine
             List<Integer> startState = Lists.newArrayList(caveSquares);
             
             List<Integer> finalState = Lists.newArrayList(startState);

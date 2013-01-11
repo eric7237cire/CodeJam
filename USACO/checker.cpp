@@ -18,7 +18,9 @@ LANG: C++
 using namespace std;
 
 typedef unsigned int uint;
+typedef unsigned long long ull;
 
+//No longer used too slow
 bool reject(const vector<uint>& sol)
 {
     uint usedColumns = 0;
@@ -27,10 +29,9 @@ bool reject(const vector<uint>& sol)
     {
         uint col = sol[row];
         
-        if (  (usedColumns & 1 << col ) != 0 )
-            return true;
-        
-        usedColumns |= 1 << col;
+        assert (  (usedColumns & 1 << col ) == 0 );
+
+		usedColumns |= 1 << col;
         
         //Check diagonals
         for(uint lowerRow = row + 1; lowerRow < sol.size(); ++lowerRow)
@@ -53,23 +54,11 @@ bool reject(const vector<uint>& sol)
  */
 void findSolutions(vector<uint>& partial, uint N,
 				   const vector<vector<pair<uint, uint> > >&rowColDiag,
-				   const uint usedDiags,
+				   const ull usedDiags,
 				   const uint usedColumns,
 				   vector<vector<uint> >& solutions, 
 				   uint& solutionCount)
 {
-    if(reject(partial)) {
-		/*
-        cout << "Reject " << endl;
-        for(uint solIdx = 0; solIdx < partial.size(); ++solIdx)
-        {
-            if (solIdx > 0)
-                cout << " ";
-            cout << partial[solIdx];            
-        }
-        cout << endl;*/
-        return;
-    }
     
     if(partial.size() == N) {
 		//cout << "Solution found ! " << endl;
@@ -77,17 +66,40 @@ void findSolutions(vector<uint>& partial, uint N,
 		    solutions.push_back(partial);
 		
 		++solutionCount;
+
+		//Count 2x if we have symetry
+		if (N > 6 && partial[0] < N/2) solutionCount++;
+
         return;
     }
     
+	const uint row = partial.size();
+
+
+
     //for next val
     for(uint col = 0; col < N; ++col)
     {
 		if (  (usedColumns & 1 << col ) != 0 )
 			continue;
 
+		if ( (usedDiags & 1ull << (ull)rowColDiag[row][col].first) != 0 )
+			continue;
+
+		if ( (usedDiags & 1ull << (ull)rowColDiag[row][col].second) != 0 )
+			continue;
+
+		//Take advantage of symetry, only consider first 4 in the row
+		if (N > 6 && col >= (N+1) / 2 && row == 0)
+			continue;
+
+		ull nextUsedDiags = usedDiags;
+		nextUsedDiags |= 1ull << (ull)rowColDiag[row][col].first;
+		nextUsedDiags |= 1ull << (ull)rowColDiag[row][col].second;
+
         partial.push_back(col);
-		findSolutions(partial, N, rowColDiag, usedDiags, usedColumns | 1 << col, solutions, solutionCount);
+		findSolutions(partial, N, rowColDiag, nextUsedDiags,
+			usedColumns | 1 << col, solutions, solutionCount);
         partial.erase(partial.begin() + partial.size() - 1);
     }
 }
@@ -124,6 +136,7 @@ int main() {
 	uint diagIndex = 0;
 
 	//start with diag that goes bottom left to top right
+	//starting in column 0
 	for(uint startRow = 0; startRow < N; ++startRow, ++diagIndex)
 	{
 		updateRowColDiag(rowColDiag, startRow, 0, -1, 1, N, diagIndex, true);
@@ -146,6 +159,8 @@ int main() {
 	{
 		updateRowColDiag(rowColDiag, startRow, 0, 1, 1, N, diagIndex, false);
 	}
+
+	cout << "Last diag index " << diagIndex << endl;
 
 	vector<uint> partial;
     vector< vector<uint> > allSolutions;
