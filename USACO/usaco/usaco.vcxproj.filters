@@ -15,12 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\sprime.cpp">
+    <ClCompile Include="..\checker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\sprime.in">
+    <None Include="..\checker.in">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
