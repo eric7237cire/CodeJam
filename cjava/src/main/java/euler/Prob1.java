@@ -70,47 +70,73 @@ either Step 4A:
 stop if this expression is the original square root plus an integer.
 or Step 4B:
 start again from Step 1 but using the expression at the end of Step 3
+
+
      */
-   static int findM(int rad, BigFraction frac) {
-        double v = Math.sqrt(rad) + frac.getNumeratorAsLong();
-        v /= frac.getDenominatorAsLong();
-        v = Math.floor(v);
-        int num = (int) v;
+   static int findM(int rad, int num, int denom) {
+        double v = (Math.sqrt(rad) + num) / denom;
+        int m = (int) v;
         
-        return num;
+        return m;
     }
+   
+  static List<Integer> findConFrac(int rad) {
+       int prevStep1Numerator = 0;
+       int prevStep1Denom = 1;
+       
+       List<Integer> xList = Lists.newArrayList();
+       
+       for(int i = 0; i < 50000; ++i) {
+           int xi = findM(rad, prevStep1Numerator, prevStep1Denom);
+           
+           
+           xList.add(xi);
+           //Prefect square
+           if (i==0 && xi * xi == rad) {
+               return xList;
+           }
+           
+           /**
+            * The radical is not represented, so
+            * 5 / ( Sqrt(14) - 2) is just 5 / -2
+            */
+           int step2Numerator = prevStep1Denom;
+           int step2Denom = prevStep1Numerator - xi * prevStep1Denom;
+           
+           //Again radical is missing
+           int step3Numerator = -step2Denom;
+           
+           int step3Denom = (rad - step2Denom*step2Denom) / step2Numerator;
+           
+           if (step3Denom == 1) {
+               xList.add(step3Numerator+xList.get(0));
+               break;
+           }
+           
+           prevStep1Denom = step3Denom;
+           prevStep1Numerator = step3Numerator;
+           
+           //log.debug("x{}={} frac={}", i, xi);
+       }
+       
+       return xList;
+   }
     
     static void problem63() {
         
-        int rad = 14;
+        //4, 2,1,3,1,2,8
+        findConFrac(19);
         
-        BigFraction frac = new BigFraction(0, 1);
-        int x0 = findM(rad, frac);
-        
-        BigFraction nextFrac = frac.subtract(x0).reciprocal();
-        BigInteger num = nextFrac.getNumerator().abs().multiply(BigInteger.valueOf(x0));
-        BigInteger denom = nextFrac.getDenominator().multiply(
-                BigInteger.valueOf(-x0)).add(BigInteger.valueOf(rad)); 
-        nextFrac = new BigFraction(num, denom);
-        frac = nextFrac;
-        
-        log.debug("x0={} frac={}", x0, frac);
-        
-        for(int i = 1; i < 5; ++i) {
-            int xi = findM(rad, frac);
-            
-            nextFrac = frac.subtract(xi).reciprocal();
-            num = nextFrac.getNumerator().abs().multiply(BigInteger.valueOf(xi));
-            denom = nextFrac.getDenominator().multiply(
-                    BigInteger.valueOf(-xi)).add(BigInteger.valueOf(rad)); 
-            
-            nextFrac = new BigFraction(num, denom);
-            frac = nextFrac;
-            
-            log.debug("x{}={} frac={}", i, xi, frac);
-        }
-        
-        
+        int count = 0;
+       for(int rad = 2; rad <= 10000; ++rad) {
+        List<Integer> xList = findConFrac(rad);
+        int period = xList.size() - 1;
+        if (period % 2 == 1)
+            ++count;
+       // log.debug("Rad {}  list {}", rad, xList);
+       }
+       
+       log.debug(" count is {}", count);
     }
     
     static void problem59() {
