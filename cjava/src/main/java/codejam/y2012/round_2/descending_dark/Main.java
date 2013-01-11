@@ -56,6 +56,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return in;
     }
     
+    /*
+    old_safety = [SAFE] * (n+1)
+            for length in {n, n-1, ..., 1}:
+              for i in [0, length-1]:
+                pos_safety[i] = best(old_safety[i], old_safety[i+1])
+                if moving down leaves SC:
+                  pos_safety[i] = UNSAFE
+                elif moving down is legal and pos_safety[i] == SAFE:
+                  pos_safety[i] = SAFE_WITH_PROGRESS
+              old_safety = pos_safety
+            return (pos_safety[0] == SAFE_WITH_PROGRESS)
+            */
+                    
     Integer getCaveSquares(GridChar grid, int caveNum, Set<Integer> caveSquares) {
         
         Preconditions.checkArgument(caveNum >=0 && caveNum < 10);
