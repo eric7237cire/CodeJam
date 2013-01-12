@@ -18,6 +18,9 @@
     <ClCompile Include="euler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="problem68.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="prettyprint.h">

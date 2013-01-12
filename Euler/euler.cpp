@@ -803,12 +803,13 @@ void problem63()
 
 
 
-int main() {
+int main2() {
 	ull start = GetTickCount64();
 	problem63();
 	ull end = GetTickCount64();
 
 	cout << "Elapsed ms " << end-start << endl;
+	return 0;
 }
 
 uint concatNums(uint left, uint right)

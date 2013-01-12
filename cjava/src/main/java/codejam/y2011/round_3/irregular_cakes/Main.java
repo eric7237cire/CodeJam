@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import codejam.utils.geometry.Line;
 import codejam.utils.geometry.Point;
-import codejam.utils.geometry.PointInt;
 import codejam.utils.geometry.Polygon;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;

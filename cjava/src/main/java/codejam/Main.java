@@ -133,8 +133,10 @@ public class Main  {
 
         //2011 round 3
         //A discrete binary search problem
-        codejam.y2011.round_3.irregular_cakes.Main m = new codejam.y2011.round_3.irregular_cakes.Main();
+        //codejam.y2011.round_3.irregular_cakes.Main m = new codejam.y2011.round_3.irregular_cakes.Main();
         
+        //Greedy algorithm
+        codejam.y2011.round_3.dire_straights.Main m = new codejam.y2011.round_3.dire_straights.Main();
         //2012 qual
         //A,B,C  in c++
         //TODO a bit slow

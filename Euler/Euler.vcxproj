@@ -114,6 +114,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="euler.cpp" />
+    <ClCompile Include="problem68.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="prettyprint.h" />
