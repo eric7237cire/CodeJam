@@ -4,7 +4,9 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -41,13 +43,97 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem65();
+        problem66();
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
         
     }
     
+    static boolean isSquare(long n) {
+        long sr = (long) Math.sqrt(n);
+        return sr * sr == n;
+    }
+    
+    static void problem66() 
+    {
+        Map<Long, Integer> squares = new HashMap<>();
+        for(int sq = 1; sq < 1000; ++sq) {
+            squares.put(LongMath.checkedMultiply(sq,sq), sq);
+        }
+        BigInteger maxX = BigInteger.ZERO;
+        int maxD = -1;
+        
+        for(int D = 1; D <= 1000; ++D) {
+            if (isSquare(D))
+                continue;
+            
+            List<Integer> contFrac = findConFrac(D);
+            
+            List<BigInteger> p = Lists.newArrayList();
+            List<BigInteger> q = Lists.newArrayList();
+            
+            int indexWanted = contFrac.size() % 2 == 1 ?
+                    contFrac.size() - 2 :
+                        2 * (contFrac.size() - 2) + 1
+                    ;
+            
+            calculatePandQ(contFrac, p, q, indexWanted+1);
+            boolean found = false;
+            
+            BigInteger xBI = p.get(indexWanted);
+            BigInteger yBI = q.get(indexWanted);
+            
+            //log.debug("D = {}.  Maybe {} ^ 2 - {} * {} ^ 2 = 1", D, xBI, D, yBI);
+            
+            if (xBI.compareTo(maxX) > 0) {
+                maxD = D;
+                maxX = xBI;
+            }
+            
+            
+            
+        }
+        
+        log.debug("Max x {} when D = {}", maxX, maxD);
+    }
+    
+    static void calculatePandQ(List<Integer> repFrac,
+            List<BigInteger> p,
+        List<BigInteger> q, int upTo) 
+    {
+        List<Integer> a = Lists.newArrayList();
+        
+        List<Integer> repeating = repFrac.subList(1, repFrac.size());
+        
+        
+        a.add(repFrac.get(0));
+        
+        int offset = 0;
+        for(int n = 1; n < upTo; ++n) {
+            a.add(repeating.get(offset));
+            ++offset;
+            if (offset == repeating.size())
+                offset = 0;
+                        
+        }
+        
+        p.add(BigInteger.valueOf(a.get(0)));
+        q.add(BigInteger.valueOf(1));
+        
+        p.add(BigInteger.valueOf(a.get(1)).multiply(p.get(0)).add(BigInteger.ONE));
+        q.add(BigInteger.valueOf(a.get(1)));
+        
+        for(int n = 2; n < upTo; ++n) {
+            p.add(BigInteger.valueOf(a.get(n)).multiply(p.get(n-1)).add(p.get(n-2)));
+        }
+        
+        for(int n = 2; n < upTo; ++n) {
+            q.add(BigInteger.valueOf(a.get(n)).multiply(q.get(n-1)).add(q.get(n-2)));
+        }
+        
+        
+    }
     
     static void problem65() 
     {
