@@ -822,7 +822,6 @@ uint concatNums(uint left, uint right)
 		rightDigits /= 10;
 		left *= 10;
 	}
-
 	return left+right;
 }
 

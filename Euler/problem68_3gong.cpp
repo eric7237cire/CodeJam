@@ -37,17 +37,6 @@ typedef pair<uint,uint> uu;
 #define cpresent(c,x) (find(all(c),x) != (c).end()) 
 
 
-bool rejectRow(const uvi& sol,uint a1, uint a2, uint a3,
-    uint b1, uint b2, uint b3)
-{
-    uint checkRow1 = sol[a1] + sol[a2] + sol[a3];
-    uint checkRow2 = sol[b1] + sol[b2] + sol[b3];
-
-    if (checkRow1 != checkRow2)
-        return true;
-    
-    return false;    
-}
 
 //No longer used too slow
 bool reject(const vector<uint>& sol)
@@ -59,59 +48,30 @@ bool reject(const vector<uint>& sol)
         if (  (usedDigits & 1 << sol[solIdx] ) != 0 )
 			return true;
 		
-		usedDigits |= 1 << sol[solIdx];		
+		usedDigits |= 1 << sol[solIdx];
+		
     }
 
 	if (sol.size() >= 5) {
-		bool rejRow = rejectRow(sol, 0,1,2, 3,2,4);
-		
-		if (rejRow)
+		uint checkRow1 = sol[0] + sol[1] + sol[2];
+		uint checkRow2 = sol[1] + sol[3] + sol[4];
+
+		if (checkRow1 != checkRow2)
 			return true;
 		
 		//0 must be lowest external
-		if (sol[0] > sol[3])
-		    return true;
-		
-		//10 external
-		if (sol[1] == 10 || sol[2] == 10 || sol[4] == 10) 
+		if (sol[0] > sol[4])
 		    return true;
 	}
 
-	if (sol.size() >= 7) {
-		bool rejRow = rejectRow(sol, 0,1,2, 6,4,5);
-		
-		if (rejRow)
+	if (sol.size() >= 6) {
+		uint checkRow1 = sol[3] + sol[2] + sol[5];
+		uint checkRow2 = sol[1] + sol[3] + sol[4];
+
+		if (checkRow1 != checkRow2)
 			return true;
 		
 		if (sol[0] > sol[5])
-		    return true;
-		
-		//10 external
-		if (sol[6] == 10) 
-		    return true;
-	}
-	
-	if (sol.size() >= 9) {
-		bool rejRow = rejectRow(sol, 0,1,2, 6,7,8);
-		
-		if (rejRow)
-			return true;
-		
-		if (sol[0] > sol[7])
-		    return true;
-		
-		if (sol[8] == 10) 
-		    return true;
-	}
-	
-	
-	if (sol.size() >= 10) {
-		bool rejRow = rejectRow(sol, 0,1,2, 1,8,9);
-		
-		if (rejRow)
-			return true;
-		
-		if (sol[0] > sol[9])
 		    return true;
 	}
 
@@ -151,23 +111,6 @@ void findSolutions(vector<uint>& partial, uint N,
 }
 
 
-ull concatNums(ull left, ull right)
-{
-   // cout << "Concat " << left << " + "	<< right;
-	//123 ; 456
-	ull rightDigits = right;
-
-	while(rightDigits > 0)
-	{
-		rightDigits /= 10;
-		left *= 10;
-	}
-
-	// cout << " = " << left+right << endl;
-	
-	return left+right;
-}
-
 int main() {
     
 
@@ -175,43 +118,38 @@ int main() {
     vector< vector<uint> > allSolutions;
     uint solutionCount = 0;
     
-    findSolutions(partial, 10, allSolutions, solutionCount);
+    findSolutions(partial, 6, allSolutions, solutionCount);
     
-    ull maxSol = 0;
+    uint maxSol = 0;
     
     for(auto solIt = allSolutions.begin();
         solIt != allSolutions.end();
         ++solIt)
     {
         const uvi& sol = *solIt;
-        ull num = 0;
-        num = concatNums(num,sol[0]);
-        num = concatNums(num,sol[1]);
-        num = concatNums(num,sol[2]);
+        uint num = 0;
+        num += sol[0];
+        num *= 10;
+        num += sol[1];
+        num *= 10;
+        num += sol[2];
+        num *= 10;
         
-        num = concatNums(num,sol[3]);
-        num = concatNums(num,sol[2]);
-        num = concatNums(num,sol[4]);
+        num += sol[5];
+        num *= 10;
+        num += sol[2];
+        num *= 10;
+        num += sol[3];
+        num *= 10;
         
-        num = concatNums(num,sol[5]);
-        num = concatNums(num,sol[4]);
-        num = concatNums(num,sol[6]);
-        
-        num = concatNums(num,sol[7]);
-        num = concatNums(num,sol[6]);
-        num = concatNums(num,sol[8]);
-        
-        num = concatNums(num,sol[9]);
-        num = concatNums(num,sol[8]);
-        num = concatNums(num,sol[1]);
-        
-        
+        num += sol[4];
+        num *= 10;
+        num += sol[3];
+        num *= 10;
+        num += sol[1];
         
         cout << num << endl;
-        
-        maxSol = max(num, maxSol);
     }
 	
-    cout << "Max : " << maxSol << endl;
 	return 0;
 }
