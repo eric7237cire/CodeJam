@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\hamming.cpp" />
+    <ClCompile Include="..\runround.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\frac1.in" />
