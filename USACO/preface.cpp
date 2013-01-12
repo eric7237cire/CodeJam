@@ -62,8 +62,6 @@ int main() {
             assert(countOffset >= 0 && countOffset < 7);
             uint digit = nRem / powTen;
             
-            //cout << digit << endl;
-            
             assert(digit >= 0 && digit < 10);
             
             if (digit >= 0 && digit <= 3)
