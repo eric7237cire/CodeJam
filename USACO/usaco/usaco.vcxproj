@@ -19,10 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\frac1.cpp" />
+    <ClCompile Include="..\hamming.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\frac1.in" />
+    <None Include="..\hamming.in" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{899CB317-940A-4C4D-B045-76EF3A24D746}</ProjectGuid>
