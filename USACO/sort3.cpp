@@ -1,6 +1,6 @@
 /*
 ID: eric7231
-PROG: frac1
+PROG: sort3
 LANG: C++
 */
 #include <iostream>
@@ -54,35 +54,51 @@ typedef set<fraction, fracCompare> fracSet;
 
 int main() {
     
-	ofstream fout ("frac1.out");
-    ifstream fin ("frac1.in");
+	ofstream fout ("sort3.out");
+    ifstream fin ("sort3.in");
 	
     uint N;
     fin >> N;
     
-    set<fraction, fracCompare> fractions;
+    vector<uint> records;
     
-    for(uint den = 1; den <= N; ++den) 
+    for(uint r = 0; r < N; ++r) 
 	{
-        for(uint num = 0; num <= den; ++num)
-        {
-            uint gcdFrac = gcd(num, den);
-			fraction f = make_pair(num, den);
-
-            f.first /= gcdFrac;
-            f.second /= gcdFrac;
-            
-			fractions.insert(f);
-		}
-	}	
+		uint rec;
+		fin >> rec;
+		
+		records.push_back(rec);
+	}
 	
-	for(fracSet::const_iterator it = fractions.begin();
-		it != fractions.end();
-		++it) 
+	vector<uint> sorted = records;
+	sort(sorted.begin(), sorted.end());
+	
+	uint startOf2 = lower_bound(sorted.begin(), sorted.end(), 2) - sorted.begin();	
+	
+	uint nEx = 0;
+	for(int i = 0; i < records.size(); ++i)
 	{
-		fout << it->first << "/" << it->second << endl;
+		if (records[i] == sorted[i])
+			continue;
+			
+		bool startAtBack = records[i] == 3;
+		assert( records[i] == 3 || startOf2 > i);
+		uint searchStart = startAtBack ? records.size() - 1 : startOf2;
+		uint delta =  startAtBack ? -1 : 1;
+		for(int j = searchStart; j > i; j += delta)
+		{
+			if (records[j] == sorted[i]) 
+			{
+				//cout << "Swapping index " << j << " with index " << i << endl;
+				swap(records[i], records[j]);
+				++nEx;
+				break;
+			}
+		}
 	}
 
+	cout << nEx << endl;
+	fout << nEx << endl;
     
 	return 0;
 }

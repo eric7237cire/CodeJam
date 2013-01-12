@@ -95,6 +95,12 @@ public class Line {
 
     }
     
+    /**
+     * Is point on the line segment between p1 and p2.
+     * 
+     * @param pointToTest
+     * @return
+     */
     public boolean isBetween(Point pointToTest) {
         
         if (pointToTest == null)

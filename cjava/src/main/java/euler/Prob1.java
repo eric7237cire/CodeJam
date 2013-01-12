@@ -43,11 +43,66 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem66();
+        //problem66();
+        testMergeSort();
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
         
+    }
+    
+    static void testMergeSort()
+    {
+        int[] toSort = new int[] {2,
+        2,
+        1,
+        3,
+        3,
+        3,
+        2,
+        3,
+        1};
+        
+        int iCount = invCount(toSort);
+        
+    }
+    
+    static int merge(int[] arr, int[] left, int[] right) {
+        int i = 0, j = 0, count = 0;
+        while (i < left.length || j < right.length) {
+            if (i == left.length) {
+                arr[i+j] = right[j];
+                j++;
+            } else if (j == right.length) {
+                arr[i+j] = left[i];
+                i++;
+            } else if (left[i] <= right[j]) {
+                arr[i+j] = left[i];
+                i++;                
+            } else {
+                arr[i+j] = right[j];
+                count += left.length-i;
+                j++;
+            }
+        }
+        log.debug("merge {} ; {} ; {} returning count {}", arr, left, right, count);
+        return count;
+    }
+
+    static int invCount(int[] arr) {
+        if (arr.length < 2)
+            return 0;
+
+        int m = (arr.length + 1) / 2;
+        int left[] = Arrays.copyOfRange(arr, 0, m);
+        int right[] = Arrays.copyOfRange(arr, m, arr.length);
+
+        int invCountLeft = invCount(left);
+        int invCountRight = invCount(right);
+        int mergeCount = merge(arr, left, right);
+        int ret = invCountLeft+invCountRight+mergeCount;
+        log.debug("Returning {} + {} + {} = {}", invCountLeft, invCountRight, mergeCount, ret);
+        return ret;
     }
     
     static boolean isSquare(long n) {
@@ -98,6 +153,9 @@ public class Prob1 {
         log.debug("Max x {} when D = {}", maxX, maxD);
     }
     
+    /*
+     * convergents of a continued fraction, p/q is the decimal value approx
+     */
     static void calculatePandQ(List<Integer> repFrac,
             List<BigInteger> p,
         List<BigInteger> q, int upTo) 

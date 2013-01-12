@@ -130,7 +130,10 @@ public class Main  {
         
         //codejam.y2011.round_2.ai_wars.Main m = new codejam.y2011.round_2.ai_wars.Main();
 
-        
+
+        //2011 round 3
+        //A discrete binary search problem
+        codejam.y2011.round_3.irregular_cakes.Main m = new codejam.y2011.round_3.irregular_cakes.Main();
         
         //2012 qual
         //A,B,C  in c++
@@ -160,7 +163,8 @@ public class Main  {
         //TODO implement their simpler approach
        // codejam.y2012.round_2.mountain_view.Main m = new codejam.y2012.round_2.mountain_view.Main();
         
-        codejam.y2012.round_2.descending_dark.Main m = new codejam.y2012.round_2.descending_dark.Main();
+        //Did not solve.  FSM intersection / dynamic programming.  TODO Look again why it works        
+        //codejam.y2012.round_2.descending_dark.Main m = new codejam.y2012.round_2.descending_dark.Main();
         
         
         String[] files = {};

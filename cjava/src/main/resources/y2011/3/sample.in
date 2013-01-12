@@ -1,0 +1,58 @@
+1
+9 6 6 4
+
+0 6
+0 3
+2 2
+4 4
+7 4
+9 2
+
+0 6
+2 9
+4 7
+6 7
+7 9
+9 7
+
+2
+15 3 3 3
+0 6
+10 8
+15 9
+0 10
+5 11
+15 13
+8 3 4 2
+0 2
+5 4
+8 3
+0 5
+3 4
+4 7
+8 5
+
+
+
+1
+10
+2
+3
+4
+0 5
+10 5
+0 10
+3 10
+10 10
+
+case begins with a line containing four integers: W (the cake's width),
+ L (the number of points on the lower boundary), 
+ U (the number of points on the upper boundary) and
+  G (the number of guests at the party).
+
+This is followed by L lines specifying the lower boundary.
+ The i-th line contains two integers xi and yi, representing
+  the coordinates of the i-th point on the lower boundary. 
+  This is followed by U more lines specifying the upper boundary.
+   The j-th line here contains two integers xj and yj, representing
+    the coordinates of the j-th point on the upper boundary.
