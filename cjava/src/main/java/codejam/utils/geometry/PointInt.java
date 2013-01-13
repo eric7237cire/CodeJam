@@ -44,6 +44,10 @@ public class PointInt implements Comparable<PointInt>{
         return "Point [x=" + x + ", y=" + y + "]";
     }
     
+    public static PointInt add(PointInt a, PointInt b) {
+        return new PointInt(a.getX() + b.getX(), a.getY() + b.getY());   
+    }
+    
     /*
      *  y - y.s = (y.p - y.s) / (x.p - x.s)  (x - x.s)
      * m = (y.p - y.s) / (x.p - x.s)

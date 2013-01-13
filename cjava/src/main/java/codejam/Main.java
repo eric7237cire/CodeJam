@@ -35,6 +35,10 @@ public class Main  {
         //codejam.y2008.round_apac.millionaire.Main m = new codejam.y2008.round_apac.millionaire.Main();
         //codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
         
+        //codejam.y2008.round_final.juice.Main m = new codejam.y2008.round_final.juice.Main();
+        codejam.y2008.round_final.ping_pong_balls.Main m = new codejam.y2008.round_final.ping_pong_balls.Main();
+        
+        
         //Round 1A -- 2009
         //In C++
         
@@ -136,7 +140,7 @@ public class Main  {
         //codejam.y2011.round_3.irregular_cakes.Main m = new codejam.y2011.round_3.irregular_cakes.Main();
         
         //Greedy algorithm
-        codejam.y2011.round_3.dire_straights.Main m = new codejam.y2011.round_3.dire_straights.Main();
+        //codejam.y2011.round_3.dire_straights.Main m = new codejam.y2011.round_3.dire_straights.Main();
         //2012 qual
         //A,B,C  in c++
         //TODO a bit slow
