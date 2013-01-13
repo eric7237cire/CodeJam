@@ -36,7 +36,8 @@ public class Main  {
         //codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
         
         //codejam.y2008.round_final.juice.Main m = new codejam.y2008.round_final.juice.Main();
-        codejam.y2008.round_final.ping_pong_balls.Main m = new codejam.y2008.round_final.ping_pong_balls.Main();
+        //codejam.y2008.round_final.ping_pong_balls.Main m = new codejam.y2008.round_final.ping_pong_balls.Main();
+        codejam.y2008.round_final.mine_layer.Main m = new codejam.y2008.round_final.mine_layer.Main();
         
         
         //Round 1A -- 2009
