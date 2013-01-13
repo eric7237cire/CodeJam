@@ -75,8 +75,13 @@ int main() {
             if (companies[compIdx][c2] >= 50) {
                 //controls[c2] = true;
                 toVisit.push(c2);
+                
+            } else {
+                sec[c2] +=  companies[compIdx][c2];
             }
         }
+        
+        
         
         while(!toVisit.empty())
         {
