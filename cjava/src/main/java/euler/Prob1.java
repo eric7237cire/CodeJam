@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.utils.Direction;
+import codejam.utils.utils.DoubleFormat;
 import codejam.utils.utils.Grid;
 import codejam.utils.utils.PermutationWithRepetition;
 import codejam.utils.utils.Permutations;
@@ -43,12 +44,205 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        //problem66();
-        test();
+        problem70();
+        //test();
         long end = System.currentTimeMillis();
         
         log.info("Elapsed time {} ms", end - start);
         
+    }
+    
+    static int getUsedDigits(int num)
+    {
+        int ret = 0;
+        while(num > 0)
+        {
+            int digit = num % 10;
+            ret |= 1 << digit;
+
+            num /= 10;
+        }
+
+        return ret;
+    }
+    
+    static boolean isPrem(int num, int num2) {
+        int[] digitCounts = new int[10] ;
+        
+        while(num > 0)
+        {
+            int digit = num % 10;
+            digitCounts[ digit ] ++;
+
+            num /= 10;
+        }
+        
+        while(num2 > 0)
+        {
+            int digit = num2 % 10;
+            digitCounts[ digit ] --;
+
+            num2 /= 10;
+        }
+        
+        for(int d = 0; d <= 9; ++d) {
+            if (digitCounts[d] != 0)
+                return false;
+        }
+
+        return true;
+    }
+    
+
+static void problem70() {
+        
+        List<Integer> primes = Prime.generatePrimes((int) (2* Math.sqrt(10000000)));
+        
+        double ratioMin = Double.MAX_VALUE;
+        int minN = -1;
+        int minPhi = 0;
+        
+        for(int p1Idx = 0; p1Idx < primes.size(); ++p1Idx) {
+            for(int p2Idx = p1Idx+1; p2Idx < primes.size(); ++p2Idx) {
+                int p1 = primes.get(p1Idx);
+                int p2 = primes.get(p2Idx);
+                
+                int num = p1 * p2;
+                if (num > 10000000)
+                    break;
+                
+                int phi = (p1 - 1) * (p2 - 1);
+                
+                double ratio = (double) num / phi;
+                
+                if (ratio > ratioMin)
+                    continue;
+                
+                if (!isPrem(phi, num))
+                    continue;
+                
+
+                if (ratio < ratioMin) {
+                    ratioMin = ratio;
+                    minN = num;
+                    minPhi = phi;
+                //  log.debug("n {} Phi {} rat {}", num, result, DoubleFormat.df3.format(ratio));
+                    log.debug("Current min is {} num {} phi {}", ratioMin, minN, minPhi);
+                }
+                
+            }
+        }
+       
+        
+        
+        log.debug("Max is {} num {} phi {}", ratioMin, minN, minPhi);
+    }
+static void problem70_slow() {
+        
+        List<Integer> primes = Prime.generatePrimes(1000000);
+        
+        double ratioMin = Double.MAX_VALUE;
+        int minN = -1;
+        int minPhi = 0;
+        
+        for(int num = 1000000; num <= 10000000; ++num) {
+            
+            int upperLimit = IntMath.sqrt(num, RoundingMode.DOWN);
+            
+            //List<Integer> primeFactors = Lists.newArrayList();
+            
+            int numToFactor = num;
+            int phi = num;
+            
+            //Prime factorization
+            for(int prime : primes  )
+            {
+                if (prime > upperLimit || prime > numToFactor)
+                    break;
+                
+                if (numToFactor % prime == 0) {
+              //      primeFactors.add(prime);
+                    
+                    phi -= phi / prime;
+                    
+                    while(numToFactor % prime == 0) 
+                        numToFactor /= prime;
+                    
+                }
+            }
+            
+            //If num is prime
+            if (numToFactor > 1) {
+                phi -= phi / numToFactor;
+            }
+            
+            double ratio = (double)num / phi;
+            
+            if (ratio > ratioMin)
+                continue;
+            
+            if (!isPrem(phi, num))
+                continue;
+            
+            
+          
+            if (ratio < ratioMin) {
+                ratioMin = ratio;
+                minN = num;
+                minPhi = phi;
+            //  log.debug("n {} Phi {} rat {}", num, result, DoubleFormat.df3.format(ratio));
+                log.debug("Current min is {} num {} phi {}", ratioMin, minN, minPhi);
+            }
+            
+            
+        }
+        
+        log.debug("Max is {} num {} phi {}", ratioMin, minN, minPhi);
+    }
+
+    static void problem69() {
+        
+        List<Integer> primes = Prime.generatePrimes(1000000);
+        
+        double ratioMax = 0;
+        int maxN = -1;
+        
+        for(int num = 1; num <= 1000000; ++num) {
+            
+            //int upperLimit = IntMath.sqrt(num, RoundingMode.DOWN);
+            
+            //List<Integer> primeFactors = Lists.newArrayList();
+            
+            int numToFactor = num;
+            int result = num;
+            
+            //Prime factorization
+            for(int prime : primes  )
+            {
+                if (prime > numToFactor)
+                    break;
+                
+                if (numToFactor % prime == 0) {
+              //      primeFactors.add(prime);
+                    
+                    result -= result / prime;
+                    
+                    while(numToFactor % prime == 0) 
+                        numToFactor /= prime;
+                    
+                }
+            }
+            double ratio = (double)num / result;
+          //  log.debug("n {} Phi {} rat {}", num, result, DoubleFormat.df3.format(ratio));
+            if (ratio > ratioMax) {
+                ratioMax = ratio;
+                maxN = num;
+            }
+            
+            
+        }
+        
+        log.debug("Max is {} num {}", ratioMax, maxN);
     }
     
     static void test() {

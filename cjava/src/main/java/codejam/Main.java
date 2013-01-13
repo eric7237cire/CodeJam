@@ -35,8 +35,13 @@ public class Main  {
         //codejam.y2008.round_apac.millionaire.Main m = new codejam.y2008.round_apac.millionaire.Main();
         //codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
         
+        //Psuedo linear optimization.  Visualing solution 2d line
         //codejam.y2008.round_final.juice.Main m = new codejam.y2008.round_final.juice.Main();
+        
+        //Defining a coord system, recognizing non decreasing sequence
         //codejam.y2008.round_final.ping_pong_balls.Main m = new codejam.y2008.round_final.ping_pong_balls.Main();
+        
+        //A clever trick, also understanding there are not really multiple solutions to watch out for
         codejam.y2008.round_final.mine_layer.Main m = new codejam.y2008.round_final.mine_layer.Main();
         
         
