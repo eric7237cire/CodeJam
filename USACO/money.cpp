@@ -63,7 +63,7 @@ int main() {
     for(int coinIndex = 0; coinIndex < coins; ++coinIndex) {
         int coin = coinVal[coinIndex];
         for(int j = coin; j <= target; ++j) {
-            ways[j] = ways[j] + ways[j - coin];
+            ways[j] += ways[j - coin];
         }
     }
     
