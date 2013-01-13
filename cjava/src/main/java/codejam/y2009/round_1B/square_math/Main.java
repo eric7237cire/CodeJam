@@ -61,6 +61,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 		
 	}
 
+	/**
+	 * Looking again it looks like I find min arith expressions
+	 * and use those to calculate new ones.  That way it is 
+	 * assured that the minimum is found.
+	 * 
+	 * @param table
+	 */
 	private void calculateExpression(
 			GridChar table) {
 

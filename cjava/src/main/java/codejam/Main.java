@@ -45,6 +45,8 @@ public class Main  {
          //Round 1B -- 2009
         //A in c++
          //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
+        
+        //A Breadth first search, did not really do what solution suggested, used a sortedSet instead of queue
          //codejam.y2009.round_1B.square_math.Main m = new codejam.y2009.round_1B.square_math.Main();
          
          //Round 1C -- 2009 
