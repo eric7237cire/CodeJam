@@ -19,11 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\lamps.cpp" />
+    <ClCompile Include="..\nocows.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\frac1.in" />
-    <None Include="..\hamming.in" />
+    <None Include="..\nocows.in" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{899CB317-940A-4C4D-B045-76EF3A24D746}</ProjectGuid>
