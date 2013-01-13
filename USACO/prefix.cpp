@@ -57,8 +57,6 @@ int main() {
     {
         primitives.pb(primitive);
         fin >> primitive;
-        
-        //cout << primitive << endl;
     }
     
     string line;
@@ -66,61 +64,41 @@ int main() {
     while( getline(fin, line) ) {
         constituents += line;
     }
-    //fin >> constituents;
     
-    uint globalStartIndex = 0;
-    uint maxLen = 0;
     
-    while(globalStartIndex < constituents.size())
+    queue<uint> toVisit;
+    toVisit.push(0);
+    
+    set<uint> visited;
+    
+    while(!toVisit.empty())
     {
-        cout << globalStartIndex << endl;
-        queue<uint> toVisit;
-        toVisit.push(globalStartIndex);
+        uint startIndex = toVisit.front();
+
+        toVisit.pop();
         
-        set<uint> visited;
+        if (contains(visited, startIndex))
+            continue;
+
+        visited.insert(startIndex);
         
-        while(!toVisit.empty())
+        uint maxPrimitiveLen = constituents.size() - startIndex;
+        
+        FOR(pIdx, 0, primitives.size())
         {
-            uint startIndex = toVisit.front();
-    
-            //if (startIndex >= constituents.size())
-              //  break;
-    
-            toVisit.pop();
-            
-            if (contains(visited, startIndex))
+            const string& prim = primitives[pIdx];
+            if (prim.length() > maxPrimitiveLen)
                 continue;
-    
-            visited.insert(startIndex);
             
-            uint maxPrimitiveLen = constituents.size() - startIndex;
+            if (!equal( all(prim), constituents.begin() + startIndex ))
+                continue;
             
-            FOR(pIdx, 0, primitives.size())
-            {
-                const string& prim = primitives[pIdx];
-                if (prim.length() > maxPrimitiveLen)
-                    continue;
-                
-                if (!equal( all(prim), constituents.begin() + startIndex ))
-                    continue;
-                
-                toVisit.push(startIndex + prim.length());
-            }
-            
+            toVisit.push(startIndex + prim.length());
         }
-     
-        uint lastIndex = *visited.rbegin() - 1;
-        uint localMaxLen = lastIndex - globalStartIndex  + 1;
-        globalStartIndex = 1 + *visited.rbegin();
         
-         cout << "Len " << localMaxLen << " bet " << globalStartIndex
-        << " and " << lastIndex << endl;
-       
-        maxLen = max(maxLen, localMaxLen);
     }
-    
-    //uint maxLen = *visited.rbegin();
-	
+         
+    uint maxLen = *visited.rbegin();
     fout << maxLen << endl;
 	 
 	return 0;
