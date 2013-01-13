@@ -15,10 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\hamming.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\runround.cpp">
+    <ClCompile Include="..\lamps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
