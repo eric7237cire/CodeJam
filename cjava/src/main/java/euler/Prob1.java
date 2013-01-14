@@ -66,7 +66,7 @@ public class Prob1 {
         return ret;
     }
     
-    static boolean isPrem(int num, int num2) {
+    static boolean isPerm(int num, int num2) {
         int[] digitCounts = new int[10] ;
         
         while(num > 0)
@@ -93,48 +93,44 @@ public class Prob1 {
         return true;
     }
     
+    static void problem70() {
 
-static void problem70() {
-        
-        List<Integer> primes = Prime.generatePrimes((int) (2* Math.sqrt(10000000)));
-        
+        List<Integer> primes = Prime.generatePrimes((int) (2 * Math.sqrt(10000000)));
+
         double ratioMin = Double.MAX_VALUE;
         int minN = -1;
         int minPhi = 0;
-        
-        for(int p1Idx = 0; p1Idx < primes.size(); ++p1Idx) {
-            for(int p2Idx = p1Idx+1; p2Idx < primes.size(); ++p2Idx) {
+
+        for (int p1Idx = 0; p1Idx < primes.size(); ++p1Idx) {
+            for (int p2Idx = p1Idx + 1; p2Idx < primes.size(); ++p2Idx) {
                 int p1 = primes.get(p1Idx);
                 int p2 = primes.get(p2Idx);
-                
+
                 int num = p1 * p2;
                 if (num > 10000000)
                     break;
-                
+
                 int phi = (p1 - 1) * (p2 - 1);
-                
+
                 double ratio = (double) num / phi;
-                
+
                 if (ratio > ratioMin)
                     continue;
-                
-                if (!isPrem(phi, num))
+
+                if (!isPerm(phi, num))
                     continue;
-                
 
                 if (ratio < ratioMin) {
                     ratioMin = ratio;
                     minN = num;
                     minPhi = phi;
-                //  log.debug("n {} Phi {} rat {}", num, result, DoubleFormat.df3.format(ratio));
+                    // log.debug("n {} Phi {} rat {}", num, result, DoubleFormat.df3.format(ratio));
                     log.debug("Current min is {} num {} phi {}", ratioMin, minN, minPhi);
                 }
-                
+
             }
         }
-       
-        
-        
+
         log.debug("Max is {} num {} phi {}", ratioMin, minN, minPhi);
     }
 static void problem70_slow() {
@@ -181,7 +177,7 @@ static void problem70_slow() {
             if (ratio > ratioMin)
                 continue;
             
-            if (!isPrem(phi, num))
+            if (!isPerm(phi, num))
                 continue;
             
             
