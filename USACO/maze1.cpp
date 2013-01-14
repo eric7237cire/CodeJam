@@ -96,7 +96,7 @@ Location getNewLoc(Location curLoc, const vector<string>& grid)
 uint getIndex(int row, int col, uint width)
 {
     //Taking into account 2 extra rows and columns
-    return (1+row) * (width + 2) + col+1;   
+    return (row) * (width ) + col;   
 }
 int main() {
     
@@ -111,55 +111,119 @@ int main() {
     
     //Add nodes for just outside of maze
     uint numNodes = (H+2)*(W+2);
-    uvvi connected(numNodes, uvi(numNodes, 0));
+    uvvi connected(numNodes);
+    
+    uvi exits;
     
     string lineStr;
+    getline(fin, lineStr); //eat newline after height
     FOR(line, 0, 2 * H + 1) 
     {
         
-        fin >> lineStr;
+        getline(fin, lineStr);
         cout << "Line " << line << " " << lineStr << endl;
         if (line % 2 == 0) {
-            //0 -1 0
-            //2 0 1
-            //4 1 2
-            //6 2 3
-            int rowAbove = line / 2;
-            int rowBelow = rowAbove - 1;
+            //0 -1 
+            //2 0 
+            //4 1 
+            //6 2 
+            int rowAbove = line / 2 - 1;
+            int rowBelow = rowAbove + 1;
+            cout << rowAbove << endl;
+            cout << rowBelow << endl;
             FOR(col, 0, W) {
                 char wallCh = lineStr[1+2*col];
                 if (wallCh == '-')
                     continue;
                 
                 assert(wallCh == ' ');
-                connected[ getIndex(rowBelow, col, W) ]
-                [ getIndex(rowAbove, col, W) ] = 1;
-                connected
-                [ getIndex(rowAbove, col, W) ]
-                [ getIndex(rowBelow, col, W) ]= 1;
+                uint sq1 = getIndex(rowAbove, col, W);
+                uint sq2 = getIndex(rowBelow, col, W);
+                                
+                if (rowAbove == -1) {
+                    exits.pb( sq2 );
+                    continue;
+                }
+                
+                if (rowBelow == H) {
+                    exits.pb( sq1 );
+                    continue;
+                }
+                 
+                connected[ sq1 ].pb(sq2);
+                connected[ sq2 ].pb(sq1);
             }
         } else {
             int row = line / 2;
-            FOR(col, 0, W) {
+            FORE(col, 0, W) {
                 char wallCh = lineStr[2 * col];
-                if (wallCh == '-')
+                if (wallCh == '|')
                     continue;
                 
-                assert(wallCh == '|');
+                assert(wallCh == ' ');
                 
-                connected[ getIndex(row, col-1, W) ]
-                [ getIndex(row, col, W) ] = 1;
-                connected
-                [ getIndex(row, col, W) ]
-                [ getIndex(row, col-1, W) ]= 1;
+                if (col == 0) {
+                    exits.pb( getIndex(row, col,W) );
+                    continue;
+                }
+                if (col == W) {
+                    exits.pb( getIndex(row, col-1,W) );
+                    continue;
+                }
+                
+                uint sq1 = getIndex(row, col-1, W);
+                uint sq2 = getIndex(row, col, W); 
+                connected[ sq1 ].pb(sq2);
+                connected[ sq2 ].pb(sq1);
                 
             }
         }
     }
+    /*
+    cout << "Exit 1 " << exits[0] << endl;
+    cout << "Exit 2 " << exits[1] << endl;
+    cout << exits.size() << endl;
+    FOR(i, 0, W*H) {
+        cout << "Neighbors " << i << endl;
+        FOR(j, 0, connected[i].size()) {
+            cout << connected[i][j] << ", ";   
+        }
+        cout << endl;
+    }*/
   
-   
-    fout << 0 << endl;
     
+    vector<bool> visited(W*H, false);
+    vector<uint> distTo(W*H, 100000000);
     
+    queue<uint> toVisit;
+    
+    assert(exits.size() == 2);
+  
+    FORE(e, 0, 1) 
+    {
+        visited[exits[e]] = true;
+        distTo[exits[e]] = 1;
+        toVisit.push(exits[e]);
+    }
+    
+    while(!toVisit.empty())
+    {
+        uint v = toVisit.front();
+        toVisit.pop();
+        
+        FOR(adjIdx, 0, connected[v].size())
+        {
+            uint adj = connected[v][adjIdx];
+            if (visited[adj])
+                continue;
+            
+            distTo[adj] = distTo[v] + 1;
+            visited[adj] = true;
+            toVisit.push(adj);
+        }
+    }
+    
+    uint maxDist = *max_element(all(distTo));
+    fout << maxDist << endl;
 	return 0;
 }
