@@ -16,6 +16,7 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.Direction;
 import codejam.utils.utils.GridChar;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
@@ -57,83 +58,87 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         boolean doSwitch = true;
         
+        /*
+         * The overall strategy is this : The only squares 
+         * that can generate perimiter are # and ?.  
+         * 
+         * Each of these has a potential of 4 to add to perimiter.
+         * 
+         * This score flows out as # or ? are next to each other
+         */
+        int potential = 0;
+        
         for(int vertex = 0; vertex <= lastVertex; ++vertex) {
             
             char ch = in.grid.getEntry(vertex);
-            
             int[] rowCol = in.grid.getRowCol(vertex);
             int row = rowCol[0];
             int col = rowCol[1];
-            
-            int outwardEdges = 0;
-            if (row == 0 || row == in.grid.getRows() - 1)
-                ++outwardEdges;
-            
-            if (col == 0 || col == in.grid.getCols() - 1)
-                ++outwardEdges;
-            
-            if (outwardEdges > 0 && vertex % 2 == 0) {
-                //Create edge from external white vertex to this one
-                fn.addEdge(new FlowEdge(s, vertex, outwardEdges));
-            } else if (outwardEdges > 0 && vertex % 2 == 1) {
-                //Create edge from external flipped to blue vertex to this one
-                //fn.addEdge(new FlowEdge(s, vertex, 1));
-                fn.addEdge(new FlowEdge(s, vertex, outwardEdges));
-                //fn.addEdge(new FlowEdge(vertex, t, outwardEdges));
-            }
+        
+            boolean switched = (row+col) % 2 == 0;
     
-            
-            for(int dirIdx = 0; dirIdx <= 3; ++dirIdx) {
-                Direction dir = Direction.NORTH.turn(dirIdx * 2);
-                
-                Integer adj = in.grid.getIndex(vertex, dir);
-                
-                if (adj == null)
-                    continue;
-                
-                
-                //Create edge to adj vertex
-                fn.addEdge(new FlowEdge(vertex, adj, 1));
-            
-            }
-            
-            if (ch == '?')
+            if (ch == '.')
                 continue;
             
-            //Flip if even
-            if (doSwitch) {
-            if (vertex % 2 == 0) {
-                if (ch == '#')
-                    ch = '.';
-                else
-                    ch = '#';
-            }
+            potential += 4;
+    
+            int capacity = 0;
+            if (ch == '#')
+                capacity = 10000;
+            else if (ch == '?')
+                capacity = 4;
+            else 
+                Preconditions.checkState(false);
+            
+            if (switched) {
+                fn.addEdge(new FlowEdge(s, vertex, capacity));
+            } else {
+                fn.addEdge(new FlowEdge(vertex, t, capacity));
             }
             
-            if (ch == '#') {
-                // blue edge
-                fn.addEdge(new FlowEdge(vertex, t, 4));
-            } else if (ch == '.') {
-                //white edge
-                fn.addEdge(new FlowEdge(s, vertex, 4));
+            if (switched) {
+                for(int dirIdx = 0; dirIdx <= 3; ++dirIdx) {
+                    Direction dir = Direction.NORTH.turn(dirIdx * 2);
+                    
+                    Integer adjIdx = in.grid.getIndex(vertex, dir);
+                    
+                    if (adjIdx == null)
+                        continue;
+                    
+                    char adjCh = in.grid.getEntry(adjIdx);
+                    
+                    //Being next to a white square never will reduce the potential
+                    //if (adjCh == '.')
+                      //  continue;
+                    
+                    //Create edge to adj vertex.  2 capacity as it can reduce the
+                    //potential by 2.  2 squares adjacent 8 ==> 6
+                    fn.addEdge(new FlowEdge(vertex, adjIdx, 2));
+                    //fn.addEdge(new FlowEdge(adjIdx, vertex, 2));
+                
+                }
             }
+            
+            
         }
         
         //fn.addEdge(new FlowEdge(s, borderVertex, in.R * in.C));
         
         FordFulkerson ff = new FordFulkerson(fn, s, t);
         
-        log.debug("Max flow from " + s + " to " + t);
+        //log.debug("Max flow from s {} to t {} = {}.  Potential {} " ,s,t, ff.value(), potential);
+        
+        /*
         for (int v = 0; v < fn.V(); v++) {
             for (FlowEdge e : fn.adj(v)) {
                 if ((v == e.from()) && e.flow() > 0)
                     log.debug("   " + e);
             }
-        }
+        }*/
 
-        int ans = (int) ff.value();
+        int ans = potential - (int) ff.value();
         
-        
+        /*
         Set<Integer> inCut = Sets.newHashSet();
         
         // print min-cut
@@ -159,7 +164,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         log.debug("");
 
         log.debug("Max flow value = {}.  Ans adjusted for border {}", ff.value(), ans);
-        
+        /*
         GridChar switched = new GridChar(in.grid);
         for (int v = 0; v < in.grid.getSize(); v++) {
             if (in.grid.getEntry(v) != '?')
@@ -199,9 +204,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
         }
         
-        //
+        //*/
                         
-        return String.format("Case #%d: %d ", in.testCase, total);        
+        return String.format("Case #%d: %d", in.testCase, ans);        
     }
 
 }
