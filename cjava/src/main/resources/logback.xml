@@ -10,7 +10,10 @@
 <configuration>
   <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>%d{HH:mm:ss:SSS} %r - %m%n</pattern>
+    <!-- 
+    %d{HH:mm:ss:SSS} %r - 
+     -->
+      <pattern>%m%n</pattern>
     </encoder>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
       <level>DEBUG</level>

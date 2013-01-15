@@ -46,8 +46,10 @@ public class Main  {
         
         //A clever trick, also understanding there are not really multiple solutions to watch out for
         //codejam.y2008.round_final.mine_layer.Main m = new codejam.y2008.round_final.mine_layer.Main();
-        
-        codejam.y2008.round_final.bridge_builders.Main m = new codejam.y2008.round_final.bridge_builders.Main();
+       
+        //Using minimum spanning tree MST primms algorithm
+        //codejam.y2008.round_final.bridge_builders.Main m = new codejam.y2008.round_final.bridge_builders.Main();
+        codejam.y2008.round_final.year_code_jam.Main m = new codejam.y2008.round_final.year_code_jam.Main();
         
         //Round 1A -- 2009
         //In C++
