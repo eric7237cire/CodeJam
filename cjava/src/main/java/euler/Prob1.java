@@ -1,14 +1,21 @@
 package euler;
 
+import static euler.Util.calculatePhi;
+import static euler.Util.isPerm;
+
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -20,8 +27,9 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.datastructures.Tree;
+import codejam.utils.mod.GCD;
 import codejam.utils.utils.Direction;
-import codejam.utils.utils.DoubleFormat;
 import codejam.utils.utils.Grid;
 import codejam.utils.utils.PermutationWithRepetition;
 import codejam.utils.utils.Permutations;
@@ -44,7 +52,7 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem70();
+        problem75();
         //test();
         long end = System.currentTimeMillis();
         
@@ -52,46 +60,273 @@ public class Prob1 {
         
     }
     
-    static int getUsedDigits(int num)
-    {
+    static void problem75() {
+        int limit = 50;
+        int[] counts = new int[1500001];
+        
+        int lenLimit = 1500000;
+        
+        for(long v = 1; v <= limit; ++v) {
+            for(long u = v+1; u <= limit; ++u) {
+                long a = 2 * u * v;
+                long b = u*u - v*v;
+                long c = u*u + v*v;
+                
+                
+                if (a+b+c > lenLimit)
+                    break;
+                
+                if (a > 100 || b > 100 || c > 100)
+                    continue;
+                
+                counts[ (int)(a+b+c) ] ++;
+                
+                log.debug("{} + {} = {}", a,b,c);
+                Preconditions.checkState( a*a + b*b == c*c);
+            }
+        }
+        
+        log.debug("Counts 120 {}", counts[120]);
+    }
+    
+    static int getNext(int num, int[] fac) {
         int ret = 0;
         while(num > 0)
         {
             int digit = num % 10;
-            ret |= 1 << digit;
+            ret += fac[digit];
 
             num /= 10;
         }
-
         return ret;
     }
     
-    static boolean isPerm(int num, int num2) {
-        int[] digitCounts = new int[10] ;
-        
-        while(num > 0)
-        {
-            int digit = num % 10;
-            digitCounts[ digit ] ++;
-
-            num /= 10;
+    static void problem74()
+    {
+        int[] fac = new int[10];
+        fac[0] = 1;
+        for(int i = 1; i <= 9; ++i) {
+            fac[i] = fac[i-1] * i;
         }
         
-        while(num2 > 0)
-        {
-            int digit = num2 % 10;
-            digitCounts[ digit ] --;
+        int count = 0;
+        int max = 0;
+        
+        int[] chainLen  = new int[2177280+1];
+        
+        outer:
+        for(int num = 3; num <= 1000000; ++num) {
+            
+            Set<Integer> nums = Sets.newHashSet();
+            
+            int next = num;
+            
+            while(!nums.contains(next)) {
+                nums.add(next);
+                next = getNext(next, fac);
+                
+                if (chainLen[next] != 0) {
+                    int chainLenSC = nums.size() + chainLen[next];
+                    chainLen[num] = chainLenSC;
+                    if (chainLenSC == 60)
+                        ++count;
+                    continue outer;
+                }
+                
+                max = Math.max(next, max);
+            }
+            
+            if (nums.size() == 60)
+                ++count;
+            
+            chainLen[num] = nums.size();
+            //log.debug("Num {} has cycle {}", num, nums.size());
 
-            num2 /= 10;
         }
         
-        for(int d = 0; d <= 9; ++d) {
-            if (digitCounts[d] != 0)
-                return false;
-        }
-
-        return true;
+        log.debug("Count is {} max {}", count, max);
     }
+    
+    static void problem73_b() {
+        //Next in farey sequence
+        final int n = 12000;
+        
+        int a = 0;
+        int b = 1;
+        int c = 1;
+        int d = n;
+        
+        //try stern-brocot
+        
+        TreeSet<Fraction> tree = new TreeSet<>();
+
+        Fraction min = new Fraction(1, 3);
+        Fraction max = new Fraction(1, 2);
+        
+        while(true) {
+            int p = ((n+b) / d) * c -a;
+            int q = ((n+b) / d) * d  - b;
+           // log.debug("{} / {}", p, q);
+            Fraction f = new Fraction(p,q);
+            tree.add(f);
+            
+            if (f.compareTo(max) > 0)
+                break;
+            
+            a = c;
+            b = d;
+            c = p;
+            d = q;
+        }
+        
+NavigableSet<Fraction> sub = tree.subSet(min,false,max,false);
+        
+        /*
+        for(Fraction f : sub) {
+            log.debug("F {} ", f);
+        }*/
+        log.debug("Size {}", sub.size());
+    }
+    
+    static void problem73() {
+        
+        //TreeSet<Fraction> tree = new TreeSet<>();
+        long count = 0;
+        
+        Fraction min = new Fraction(1, 3);
+        Fraction max = new Fraction(1, 2);
+        for(int den = 4; den <= 12000; ++den ) {
+            //Integer numStart = findNumeratorLTE(min, den);
+            //Integer numStop = findNumeratorLTE(max, den);
+            
+            for(int num = (den/3)-1; num < (den/2)+1; ++num) {
+                if (IntMath.gcd(num,den) != 1)
+                    continue;
+                
+                Fraction f = new Fraction(num, den);
+                if (f.compareTo(min) > 0 && f.compareTo(max) < 0)
+                    ++count;
+                
+                //tree.add(f);
+            }
+            //log.debug("Den {} start {} stop {}", den, numStart, numStop);
+        }
+        
+        //NavigableSet<Fraction> sub = tree.subSet(min,false,max,false);
+        
+        /*
+        for(Fraction f : sub) {
+            log.debug("F {} ", f);
+        }*/
+        log.debug("Count {}", count);
+        //log.debug("Size {}", sub.size());
+    }
+    
+    static void problem72() {
+       // for(int den)
+        List<Integer> primes = Prime.generatePrimes(1000000);
+        //Farey sequence
+        
+        long fPrev = 2;
+        
+        for(int i = 2; i <= 1000000; ++i) {
+            long f = fPrev + calculatePhi(primes, i);
+            if (i > 999990)
+                log.debug("f{} = {}", i, f-2);
+            fPrev = f;
+        }
+    }
+    
+    static Integer findNumeratorLTE(Fraction targetFrac, int den) {
+
+        double minDistance = Double.MAX_VALUE;
+        double target = targetFrac.doubleValue();
+        int  minNum = -1;
+        
+        if (den % targetFrac.getDenominator() == 0) {
+            return targetFrac.getNumerator() * den / targetFrac.getDenominator();
+        }
+                
+            
+        int nMin = 1;
+        int nMax = den;
+
+        while (true) {
+            int mid = nMin + (nMax - nMin) / 2;
+
+            double frac = (double) mid / den;
+
+            if (frac >= target) {
+                nMax = mid;
+            } else {
+                nMin = mid;
+            }
+
+            Preconditions.checkState(nMax >= nMin);
+
+            if (nMax - nMin <= 1)
+                break;
+        }
+        
+        double distance = target - (double) nMin / den;
+
+        if (distance < minDistance) {
+            minDistance = distance;
+            minNum = nMin;
+           // log.debug("n min {} / {} dist {}", nMin, den, distance);
+        }
+        
+        return minNum;
+
+    
+
+    }
+    
+    static void problem71() {
+        
+        double minDistance = Double.MAX_VALUE;
+        double target = 3d / 7;
+        int  minNum = -1;
+        
+        for (int den = 10; den <= 10; ++den) {
+
+            if (den % 7 == 0)
+                continue;
+            
+            int nMin = 1;
+            int nMax = den;
+
+            while (true) {
+                int mid = nMin + (nMax - nMin) / 2;
+
+                double frac = (double) mid / den;
+
+                if (frac >= target) {
+                    nMax = mid;
+                } else {
+                    nMin = mid;
+                }
+
+                Preconditions.checkState(nMax >= nMin);
+
+                if (nMax - nMin <= 1)
+                    break;
+            }
+            
+            double distance = target - (double) nMin / den;
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                minNum = nMin;
+                log.debug("n min {} / {} dist {}", nMin, den, distance);
+            }
+
+        }
+        
+        log.debug("n min {}", minNum);
+    }
+    
+    
     
     static void problem70() {
 
@@ -133,6 +368,8 @@ public class Prob1 {
 
         log.debug("Max is {} num {} phi {}", ratioMin, minN, minPhi);
     }
+    
+   
 static void problem70_slow() {
         
         List<Integer> primes = Prime.generatePrimes(1000000);
