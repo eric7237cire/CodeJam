@@ -90,7 +90,7 @@ int main() {
 	vd maxDist(N, 0);
 	FOR(i, 0, N) FOR(j, 0, N)
 	{
-	    if(dist[i][j] >= notConnected)
+	    if(dist[i][j] + 0.001 >= notConnected)
 	        continue;
 	    
 	    maxDist[i] = max(maxDist[i], dist[i][j]);
@@ -101,20 +101,22 @@ int main() {
 	
 	FOR(i, 0, N) FOR(j, 0, N)
 	{
-	    if (dist[i][j] < notConnected)
+	    if (dist[i][j] + .000001 < notConnected)
 	        continue;
 	    
 	    double distBet = maxDist[i] + maxDist[j] 
 	    + distance(x[i], y[i], x[j], y[j]);
 	    
+	    cout << "Distance " << i << ", " << j << " : " << distance(x[i], y[i], x[j], y[j]) << endl;
+	    cout << "Dist bet " << distBet << " maxdist i " << maxDist[i] << " maxj " << maxDist[j] << endl;
 	    minConnectionDistance = min(minConnectionDistance, distBet);
 	}
 		
-	//FOR(i, 0, N) FOR(j, 0, N)
-	  //  cout << i << ", " << j << " dist " << dist[i][j] << endl;
+//FOR(i, 0, N) FOR(j, 0, N)
+	//    cout << i << ", " << j << " dist " << dist[i][j] << endl;
 	
-	//FOR(i, 0, N)
-	  //  cout << "Max distance node = " << i << " = " << maxDist[i] << endl;
+	FOR(i, 0, N)
+	    cout << "Max distance node = " << i << " = " << maxDist[i] << endl;
 	
 	fout.precision(6);
 	fout << fixed << minConnectionDistance << endl;
