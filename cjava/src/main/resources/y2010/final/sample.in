@@ -1,0 +1,26 @@
+1
+ACABA
+
+
+1) Push A  ;  ;Stack A  (type 0)
+2) Print A  ; A ;Stack A
+3) Push C   ; A ; Stack C A  (type 4)
+4) Print C  ; AC ; Stack C A
+5) Pop C    ; AC ; Stack A
+6) Print A  ; ACA ; Stack A
+7) Push B   ; ACA ; Stack B A
+8) Print B  ; ACAB ; Stack B A
+9) Pop B    ; ACAB ; Stack A
+10) Print A ; ACABA ; Stack A
+11) Pop A   ; ACABA
+
+ACABA
+
+ACABACBABABCACBABCBABCABACABCBCABCABACACABCBCBCBA
+
+AAABAAB
+
+ABCCBA
+
+
+AAABBB

@@ -1,14 +1,9 @@
 package codejam.y2009.round_4.wifi_towers;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
-import org.apache.commons.math3.fraction.BigFraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.math.DoubleMath;
 
 import codejam.utils.datastructures.FlowEdge;
 import codejam.utils.datastructures.FlowNetwork;
@@ -17,8 +12,8 @@ import codejam.utils.geometry.PointInt;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
-import codejam.y2009.round_4.year_more.Main.Tournament;
-import codejam.y2009.round_4.year_more.RealSolution;
+
+import com.google.common.math.DoubleMath;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles{
 

@@ -90,7 +90,7 @@ public class Main  {
         //Using lattice paths to make a complex Dynamic programming DP
         // codejam.y2009.double_sort_grid.Main m = new codejam.y2009.double_sort_grid.Main();
         
-        codejam.y2009.round_4.wifi_towers.Main m = new codejam.y2009.round_4.wifi_towers.Main(); 
+     //   codejam.y2009.round_4.wifi_towers.Main m = new codejam.y2009.round_4.wifi_towers.Main(); 
       
          //2010 qual
          //codejam.y2010.fair_warning.Main m = new codejam.y2010.fair_warning.Main();
@@ -129,6 +129,8 @@ public class Main  {
         //TODO large is slow
         //codejam.y2010.round_3.different_sum.Main m = new codejam.y2010.round_3.different_sum.Main();
        
+        //2010 final
+        codejam.y2010.round_final.letter_stamper.Main m = new codejam.y2010.round_final.letter_stamper.Main();
                  
          //2011 1A
         
