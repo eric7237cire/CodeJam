@@ -1,7 +1,7 @@
 package euler;
 
 import static euler.Util.calculatePhi;
-import static euler.Util.isPerm;
+import static euler.Util.*;
 
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -52,7 +52,28 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem75();
+        //problem75();
+        for(int i = 1; i < 50; ++i) {
+            //log.debug(" {} / {} = ",i, 3);
+       // getRepetitionLength(3,i);
+        }
+        
+        getRepetitionLength(3,1);
+        getRepetitionLength(5, 22);
+        getRepetitionLength(7,1);
+        getRepetitionLength(2,2);
+        getRepetitionLength(8,3);
+        getRepetitionLength(56,45);
+        /*
+        1/3     =  0.(3)
+                22/5    =  4.4
+                1/7     =  0.(142857)
+                2/2     =  1.0
+                3/8     =  0.375
+                45/56   =  0.803(571428)
+                */
+//        getRepetitionLength(5,22);
+        
         //test();
         long end = System.currentTimeMillis();
         
@@ -596,6 +617,9 @@ static void problem70_slow() {
         return sr * sr == n;
     }
     
+    /**
+     * Listing out a continued fraction
+     */
     static void problem66() 
     {
         Map<Long, Integer> squares = new HashMap<>();
@@ -741,79 +765,9 @@ static void problem70_slow() {
         
     }
     
-    /*
-     * The steps in the algorithm for √n are:
-Step 1:
-Find the nearest square number less than n, let's call it m2, so that m2<n and n<(m+1)2. 
-For example, if n=14 and we are trying to find the CF for √14, then 9 is the nearest square below 14, so m is 3 and n lies between m2=9 and (m+1)2=16.
-The whole number part starts off your list of numbers for the continued fraction.
-The easy way to find the largest square number below n is to use your calculator:
-Find √n and just ignore the part after the decimal point! The number showing is m.
-
-Now, √n = m + 1/x
-
-where n and m are whole numbers.
-
-Step 2:
-Rearrange the equation of Step 1 into the form of x equals an expression involving the square root which will appear as the denominator of a fraction: x = 1 / (√n - m)
-Step 3:
-We now have a fraction with a square-root in the denominator. Use the method above to convert it into a fraction with whole numbers in the denominator. 
-In this case, multiply top and bottom by (√ n + m) and simplify.
-either Step 4A:
-stop if this expression is the original square root plus an integer.
-or Step 4B:
-start again from Step 1 but using the expression at the end of Step 3
-
-
-     */
-   static int findM(int rad, int num, int denom) {
-        double v = (Math.sqrt(rad) + num) / denom;
-        int m = (int) v;
-        
-        return m;
-    }
+    
    
-  static List<Integer> findConFrac(int rad) {
-       int prevStep1Numerator = 0;
-       int prevStep1Denom = 1;
-       
-       List<Integer> xList = Lists.newArrayList();
-       
-       for(int i = 0; i < 50000; ++i) {
-           int xi = findM(rad, prevStep1Numerator, prevStep1Denom);
-           
-           
-           xList.add(xi);
-           //Prefect square
-           if (i==0 && xi * xi == rad) {
-               return xList;
-           }
-           
-           /**
-            * The radical is not represented, so
-            * 5 / ( Sqrt(14) - 2) is just 5 / -2
-            */
-           int step2Numerator = prevStep1Denom;
-           int step2Denom = prevStep1Numerator - xi * prevStep1Denom;
-           
-           //Again radical is missing
-           int step3Numerator = -step2Denom;
-           
-           int step3Denom = (rad - step2Denom*step2Denom) / step2Numerator;
-           
-           if (step3Denom == 1) {
-               xList.add(step3Numerator+xList.get(0));
-               break;
-           }
-           
-           prevStep1Denom = step3Denom;
-           prevStep1Numerator = step3Numerator;
-           
-           //log.debug("x{}={} frac={}", i, xi);
-       }
-       
-       return xList;
-   }
+  
     
   //See tex
     static void problem63() {
@@ -1988,52 +1942,7 @@ start again from Step 1 but using the expression at the end of Step 3
         }
     }
     
-    /*
-     * dividend / divisor
-     */
-    @SuppressWarnings("unused")
-    static int getRepetitionLength(final int divisor, int dividend) {
-        double ans = 0;
-
-        int origDividend = dividend;
-        int factor = 1;
-
-        List<Integer> remainders = Lists.newArrayList();
-        while (true) {
-
-            while (dividend < divisor) {
-                factor *= 10;
-                dividend *= 10;
-            }
-            
-            int index = remainders.indexOf(dividend);
-            
-            if (index != -1) {
-                
-                /*
-                log.debug("Ans {} rep len {} for {} / {}", ans, 
-                        remainders.size() - index,
-                        origDividend, divisor);
-                        */
-                        
-                return remainders.size() - index;
-            }
-            
-            remainders.add(dividend);
-            
-            int d = dividend / divisor;
-            
-            //Too inaccurate
-            ans += (double) d / factor;
-            int remainer = dividend - d * divisor;
-            
-            dividend = remainer;
-
-            if (dividend == 0) {
-                return 0;
-            }
-        }
-    }
+   
     
     public static void main26(String args[]) throws Exception {
         

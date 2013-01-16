@@ -11,6 +11,7 @@ LANG: C++
 #include <vector>
 #include <algorithm>
 #include <cassert>
+#include <iomanip>
 #include <iterator>
 #include <sstream>
 #include <bitset>
@@ -74,6 +75,8 @@ int main() {
        fout << ansSb.str() << endl;
        return 0;
     }
+    
+    cout << "Start " << ansSb.str() << endl;
         
     while (true) 
     {
@@ -84,7 +87,7 @@ int main() {
             ansLen ++;
         }
             
-        int remIt = find( all(remainders), dividend) ;
+        uvi::iterator remIt = find( all(remainders), dividend) ;
             // 0.803(571428)
         if (remIt != remainders.end()) 
         {
@@ -101,9 +104,11 @@ int main() {
             
         int d = dividend / divisor;
          
+        cout << "D " << endl;
+        cout << d << endl;
         ansSb << setfill('0') << setw(ansLen) << d;
         ansSb << resetiosflags ;
-    
+        cout << "Ans " << ansSb.str() << endl;
         ansLen = 0;
         
         int remainer = dividend - d * divisor;
