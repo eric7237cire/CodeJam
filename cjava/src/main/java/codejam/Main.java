@@ -49,7 +49,9 @@ public class Main  {
        
         //Using minimum spanning tree MST primms algorithm
         //codejam.y2008.round_final.bridge_builders.Main m = new codejam.y2008.round_final.bridge_builders.Main();
-        codejam.y2008.round_final.year_code_jam.Main m = new codejam.y2008.round_final.year_code_jam.Main();
+        
+        //Using maxflow to find a maximum perimeter, switches nodes in a bipartite graph to turn a maxcut to a mincut
+        //codejam.y2008.round_final.year_code_jam.Main m = new codejam.y2008.round_final.year_code_jam.Main();
         
         //Round 1A -- 2009
         //In C++
@@ -83,8 +85,12 @@ public class Main  {
          //codejam.y2009.round_4.year_more.Main m = new codejam.y2009.round_4.year_more.Main();
          
          //Both of these still a bit slow, especially min perimeter
-         //codejam.y2009.min_perimeter.Main m = new codejam.y2009.min_perimeter.Main();      
+         //codejam.y2009.min_perimeter.Main m = new codejam.y2009.min_perimeter.Main();
+        
+        //Using lattice paths to make a complex Dynamic programming DP
         // codejam.y2009.double_sort_grid.Main m = new codejam.y2009.double_sort_grid.Main();
+        
+        codejam.y2009.round_4.wifi_towers.Main m = new codejam.y2009.round_4.wifi_towers.Main(); 
       
          //2010 qual
          //codejam.y2010.fair_warning.Main m = new codejam.y2010.fair_warning.Main();

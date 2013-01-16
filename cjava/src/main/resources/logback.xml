@@ -35,15 +35,12 @@
    -->
    <logger name="codejam.y2008" level="DEBUG"/>
    <logger name="codejam.y2008.round_emea" level="INFO"/>
-   <logger name="codejam.y2009" level="INFO"/>
+   <logger name="codejam.y2009" level="DEBUG"/>
    <logger name="codejam.y2012" level="INFO"/>
-   <logger name="acodejam.y2012.round_2.mountain_view" level="DEBUG" />
+   
    <logger name="codejam.y2010" level="WARN"/>
    <logger name="codejam" level="INFO"/>
-   <logger name="codejam.y2011.round_1A.killer_word" level="DEBUG"/>
-   <logger name="gcodejam.y2011.round_1A.dominion" level="DEBUG"/>
    
-   <logger name="codejam.y2011.round_1C.perfect_harmony" level="INFO"/>
                  
    <logger name="codejam.utils.multithread" level="DEBUG"/>
    <logger name="codejam.utils" level="DEBUG"/>
