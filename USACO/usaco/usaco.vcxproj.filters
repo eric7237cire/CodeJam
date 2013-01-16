@@ -15,12 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\nocows.cpp">
+    <ClCompile Include="..\cowtour.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\nocows.in">
+    <None Include="..\cowtour.in">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

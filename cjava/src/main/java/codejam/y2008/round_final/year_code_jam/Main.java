@@ -26,7 +26,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String[] getDefaultInputFiles() {
          return new String[] {"sample.in"};
-        // return new String[] { "D-small-practice.in" };
+     //    return new String[] { "D-small-practice.in" };
    //    return new String[] { "D-small-practice.in", "D-large-practice.in" };
     }
 
@@ -84,7 +84,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
             int capacity = 0;
             if (ch == '#')
-                capacity = 10000;
+                capacity = 8; //aka infinity
             else if (ch == '?')
                 capacity = 4;
             else 
@@ -114,7 +114,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     //Create edge to adj vertex.  2 capacity as it can reduce the
                     //potential by 2.  2 squares adjacent 8 ==> 6
                     fn.addEdge(new FlowEdge(vertex, adjIdx, 2));
-                    //fn.addEdge(new FlowEdge(adjIdx, vertex, 2));
                 
                 }
             }
@@ -125,10 +124,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //fn.addEdge(new FlowEdge(s, borderVertex, in.R * in.C));
         
         FordFulkerson ff = new FordFulkerson(fn, s, t);
-        
-        //log.debug("Max flow from s {} to t {} = {}.  Potential {} " ,s,t, ff.value(), potential);
-        
         /*
+        log.debug("Max flow from s {} to t {} = {}.  Potential {} " ,s,t, ff.value(), potential);
+        
+        
         for (int v = 0; v < fn.V(); v++) {
             for (FlowEdge e : fn.adj(v)) {
                 if ((v == e.from()) && e.flow() > 0)

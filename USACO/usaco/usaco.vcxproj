@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\nocows.cpp" />
+    <ClCompile Include="..\cowtour.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\nocows.in" />
+    <None Include="..\cowtour.in" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{899CB317-940A-4C4D-B045-76EF3A24D746}</ProjectGuid>
