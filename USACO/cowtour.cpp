@@ -69,12 +69,11 @@ int main() {
 	FOR(n, 0, N) 
 		fin >> x[n] >> y[n];
 
-	const double notConnected = 1000000000 ;
+	const double notConnected = 1e15;
+	const double notConnectedThresh = 1e14;
+	
 	vvd dist(N, vd(N, notConnected));
 
-	FOR(n, 0, N)
-	    dist[n][n] = 0;
-	
 	FOR(nodeFrom, 0, N) FOR(nodeTo, 0, N)
 	{
 	    char connected;
@@ -83,17 +82,23 @@ int main() {
 	        continue;
 		dist[nodeFrom][nodeTo] = distance(x[nodeFrom],y[nodeFrom], x[nodeTo],y[nodeTo]);
 	}
+	
+	FOR(n, 0, N)
+	    dist[n][n] = 0;
 		
-	FOR(k, 0, N) FOR(i, 0, N) FOR(j, 0, N)
+	FOR(k, 0, N) FOR(i, 0, N) FOR(j, 0, N) {
+	    if (j==k || j==i)
+	        continue;
 	    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
+	}
 
-	vd maxDist(N, 0);
+	vd maxDist(N+1, 0);
 	FOR(i, 0, N) FOR(j, 0, N)
 	{
-	    if(dist[i][j] + 0.001 >= notConnected)
+	    if(dist[i][j] > notConnectedThresh)
 	        continue;
 	    
-	    maxDist[i] = max(maxDist[i], dist[i][j]);
+	    maxDist[i] = max<double>(maxDist[i], dist[i][j]);
 	    
 	}
 	
@@ -101,25 +106,26 @@ int main() {
 	
 	FOR(i, 0, N) FOR(j, 0, N)
 	{
-	    if (dist[i][j] + .000001 < notConnected)
+	    if (dist[i][j] < notConnectedThresh)
 	        continue;
 	    
 	    double distBet = maxDist[i] + maxDist[j] 
 	    + distance(x[i], y[i], x[j], y[j]);
 	    
-	    cout << "Distance " << i << ", " << j << " : " << distance(x[i], y[i], x[j], y[j]) << endl;
-	    cout << "Dist bet " << distBet << " maxdist i " << maxDist[i] << " maxj " << maxDist[j] << endl;
+	    //cout << "Distance " << i << ", " << j << " : " << distance(x[i], y[i], x[j], y[j]) << endl;
+	    //cout << "Dist bet " << distBet << " maxdist " << i << " : " << maxDist[i] << " maxj " << j << " : " << maxDist[j] << endl;
 	    minConnectionDistance = min(minConnectionDistance, distBet);
 	}
 		
+	maxDist[N] = minConnectionDistance;
 //FOR(i, 0, N) FOR(j, 0, N)
 	//    cout << i << ", " << j << " dist " << dist[i][j] << endl;
 	
-	FOR(i, 0, N)
-	    cout << "Max distance node = " << i << " = " << maxDist[i] << endl;
+	//FOR(i, 0, N)
+	  //  cout << "Max distance node = " << i << " = " << maxDist[i] << endl;
 	
 	fout.precision(6);
-	fout << fixed << minConnectionDistance << endl;
+	fout << fixed << *max_element(all(maxDist)) << endl;
 	
     return 0;
 }
