@@ -95,6 +95,9 @@ int main() {
               string ansStr = ansSb.str();
               ansStr.insert(strIdx, "(");
               ansStr.insert(ansStr.length(), ")");
+              for(int lrIdx = 76; lrIdx < ansStr.length(); lrIdx += 77) {
+                  ansStr.insert(lrIdx, "\n");
+              }
               fout << ansStr << endl;
               return 0;
         }
@@ -104,11 +107,11 @@ int main() {
             
         int d = dividend / divisor;
          
-        cout << "D " << endl;
-        cout << d << endl;
+        //cout << "D " << d << " Ans len " << ansLen << endl;
+        //cout << d << endl;
         ansSb << setfill('0') << setw(ansLen) << d;
-        ansSb << resetiosflags ;
-        cout << "Ans " << ansSb.str() << endl;
+        //ansSb << resetiosflags ;
+        //cout << "Ans " << ansSb.str() << endl;
         ansLen = 0;
         
         int remainer = dividend - d * divisor;
