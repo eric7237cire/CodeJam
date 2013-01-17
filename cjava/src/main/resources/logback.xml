@@ -38,7 +38,7 @@
    <logger name="codejam.y2009" level="DEBUG"/>
    <logger name="codejam.y2012" level="INFO"/>
    
-   <logger name="acodejam.y2010" level="DEBUG"/>
+   <logger name="codejam.y2010" level="DEBUG"/>
    <logger name="codejam" level="INFO"/>
    
                  

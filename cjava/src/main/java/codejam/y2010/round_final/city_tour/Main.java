@@ -19,9 +19,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-     //  return new String[] {"sample.in"};
+       return new String[] {"sample.in"};
         //return new String[] {"B-small-practice.in"};
-        return new String[] {"B-small-practice.in", "B-large-practice.in"};
+      // return new String[] {"B-small-practice.in", "B-large-practice.in"};
     }
     
 
@@ -86,8 +86,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
               int lenXZ = best(x, i, N, a);
               int lenZY = best(y, i, N, a);
               
-              log.debug("best x={}, y={} best path x={} -> z={} is {}", x+1, y+1, x+1, i+1, lenXZ);
-              log.debug("best x={}, y={} best path z={} -> y={} is {}", x+1, y+1, i+1, y+1, lenZY);
+           //   log.debug("best x={}, y={} best path x={} -> z={} is {}", x+1, y+1, x+1, i+1, lenXZ);
+           //   log.debug("best x={}, y={} best path z={} -> y={} is {}", x+1, y+1, i+1, y+1, lenZY);
               
             int len =  lenXZ + lenZY  - 1;
             if (len > max_len) {
@@ -103,6 +103,18 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
           }
         }
         
+        /**
+         * Here we merge the 2 paths together.  One that contains x-y
+         * and another that does not contain x-y (explaining the - 2)
+         * 
+         * We know they do not intersect because the lengths of the paths are not
+         * the same.  Or perhaps it seems like one path goes down one end of
+         * the tree decomposition and the other path goes.
+         * 
+         * In the tree decomposition, each "node" has three nodes, like a triangle.
+         * Given we always look for nodes > i, we know we are going down different
+         * paths in the decomp tree...
+         */
         best_so_far = Math.max(max_len, best_so_far);
         best_so_far = Math.max(max_len + second_max_len - 2,
                                best_so_far);
