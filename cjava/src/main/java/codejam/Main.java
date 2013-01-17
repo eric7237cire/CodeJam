@@ -134,7 +134,10 @@ public class Main  {
         //codejam.y2010.round_final.letter_stamper.Main m = new codejam.y2010.round_final.letter_stamper.Main();
         
         //Partial 2 trees, decomposition to find longest path that does not intersect nodes twice
-        codejam.y2010.round_final.city_tour.Main m = new codejam.y2010.round_final.city_tour.Main(); 
+      //  codejam.y2010.round_final.city_tour.Main m = new codejam.y2010.round_final.city_tour.Main();
+        
+        //Greedy algorithm, proof by induction.  Very easy implementation to a seemingly hard problem
+        codejam.y2010.round_final.candy_store.Main m = new codejam.y2010.round_final.candy_store.Main();
                  
          //2011 1A
         
