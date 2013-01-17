@@ -46,7 +46,36 @@ typedef pair<uint,uint> uu;
 #define cpresent(c,x) (find(all(c),x) != (c).end()) 
 
 
+uint getNext( const uvi& sequence, uint lastIndex, uint prime) 
+{
+        int idxMin = lastIndex;
+        int idxMax = sequence.size() - 1;
+        
+        ull last = *sequence.rbegin();
+        
+        //printf("getNext min %d max %d last %d lastindex %d\n ",idxMin,idxMax, last,lastIndex);
+        
+        if ( (sequence[idxMin] * prime) > last)
+            return idxMin;
 
+        // prime * idxMin always lower, prime * idxMax always higher
+        while (true) {
+            int idxMid = idxMin + (idxMax - idxMin) / 2;
+
+            ull num = (ull) sequence[idxMid] * prime;
+
+            if (num > last) {
+                idxMax = idxMid;
+            } else {
+                idxMin = idxMid;
+            }
+
+            if (idxMax - idxMin <= 1)
+                break;
+        }
+        
+        return idxMax;
+}
 
 
 int main() {
@@ -58,69 +87,45 @@ int main() {
     
     fin >> K >> N;
         
-    typedef set<uu> Set_t;
 
-    Set_t factPrime;
+    uvi primes;
     uint prime;
     FOR(k, 0, K) 
     {
         fin >> prime;
-        factPrime.insert( mp(prime, prime) );   
+        primes.pb(prime);
     }
     
-    //uvi sequence(1, 1);
-    set<uint> sequence;
-    sequence.insert(1);
-    uint iter = 0;
-    while( iter < 1000) //sequence.size() < N + 1) 
+    uvi lastIndex(K, 0);
+    
+    uvi sequence(1, 1);
+    
+    FORE(n, 0, N)
     {
-        ++iter;
-        Set_t::iterator it = factPrime.begin();
-        uu factPrimeElem = *it;
-        uint lastFactor = factPrimeElem.first;
-        cout << "Min prime factor " << factPrimeElem.second << " " << factPrimeElem.first << endl;
+        uint last = sequence[sequence.size() - 1];
+        uint pIndex = getNext(sequence, lastIndex[0], primes[0]);
+        //cout << "PIndex k0 " << pIndex << endl;
+        lastIndex[0] = pIndex;
+        uint minNext = sequence[pIndex] * primes[0]; 
         
-        factPrimeElem.first *= factPrimeElem.second;
-        
-        factPrime.erase(it);
-        factPrime.insert(factPrimeElem);
-        
-        //uint curSize = sequence.size();
-        uvi newElems;
-        uint index = 0;
-        bool stop = false;
-        for(set<uint>::const_iterator it = sequence.begin(); it != sequence.end(); ++it) 
-        {
-            cout << *it << endl;
-            newElems.pb( *it * factPrimeElem.second);
-            //sequence.pb(sequence[n] * factPrimeElem.second);
-            
-            ++index;
-            
-            if (index == N+1 && lastFactor > *it)
-                stop = true;
+        FOR(k, 1, K) {
+            pIndex = getNext(sequence, lastIndex[k], primes[k]);
+           // cout << "PIndex k " << pIndex << endl;
+            uint nextForPrime = sequence[pIndex] * primes[k];
+            lastIndex[k] = pIndex;
+            assert(nextForPrime > last);
+            //printf( "Next prime %d = %d \n", primes[k], nextForPrime);
+            minNext = min(minNext, nextForPrime);
         }
         
-        sequence.insert( all(newElems) );
+        assert(minNext > last);
         
-        if (stop)
-            break;
+        sequence.pb(minNext);
+        //printf("%d: %d\n", n+1, minNext);
     }
     
-    //sort( all(sequence) );
-    //FOR(i, 0, sequence.size() )
-      //  cout << sequence[i] << endl;
     
-      uint index = 0;
-      for(set<uint>::const_iterator it = sequence.begin(); it != sequence.end(); ++it) {
-          ++index;
-           //cout << *it << endl;
-           if (index == N+1) {
-    fout << *it << endl; //sequence[N] << endl;               
-           }
-      }
-    
-    
+    fout << sequence[N] << endl;
         
     return 0;
 }
