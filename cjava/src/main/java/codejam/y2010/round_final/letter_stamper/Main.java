@@ -38,40 +38,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return in;
     }
     
-    /*
-     * 0 empty
-     * 1 ABC
-     * 2 ACB
-     * 3 BAC
-     * 4 BCA
-     * 5 CAB
-     * 6 CBA
-     * 
-     * left is top of stack
-     */
-    
-    int getStackType(char first, char second) {
-        if (first == 'A' && second == 'B')            
-            return 0;
-        
-        if (first == 'A' && second == 'C')
-            return 1;
-        
-        if (first == 'B' && second == 'A')
-            return 2;
-        
-        if (first == 'B' && second == 'C')
-            return 3;
-        
-        if (first == 'C' && second == 'A')
-            return 4;
-        
-        if (first == 'C' && second == 'B')
-            return 5;
-        
-        Preconditions.checkState(false);
-        return -1;
-    }
+  
     
     /*
      * 0 ABC ABC ==> C AB CAB (4)
@@ -180,6 +147,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return memo[currentIndex][stackType][stackHeight] = Math.min(costPop, costPush);
         
         
+    }
+    
+    public String handleCaseBottomUp(InputData in) {
+        return "todo";
     }
 
     @Override
