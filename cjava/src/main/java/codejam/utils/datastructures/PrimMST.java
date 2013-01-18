@@ -70,6 +70,7 @@ public class PrimMST {
     }
 
     // scan vertex v
+    @SuppressWarnings("deprecation")
     private void scan(EdgeWeightedGraph G, int v) {
         marked[v] = true;
         for (Edge e : G.adj(v)) {
@@ -107,6 +108,7 @@ public class PrimMST {
 
 
     // check optimality conditions (takes time proportional to E V lg* V)
+    @SuppressWarnings("unused")
     private boolean check(EdgeWeightedGraph G) {
 
         // check weight

@@ -71,6 +71,7 @@ public class Simplex {
     }
 
    // index of a non-basic column with most positive cost
+    @SuppressWarnings("unused")
     private int dantzig() {
         int q = 0;
         for (int j = 1; j < M + N; j++)

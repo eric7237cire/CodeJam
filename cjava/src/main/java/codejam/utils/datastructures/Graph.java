@@ -55,6 +55,7 @@ public class Graph {
      * Create an empty graph with V vertices.
      * @throws java.lang.IllegalArgumentException if V < 0
      */
+    @SuppressWarnings("unchecked")
     public Graph(int V) {
         if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
         this.V = V;

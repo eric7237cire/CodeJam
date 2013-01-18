@@ -2,7 +2,6 @@ package codejam.y2008.round_final.year_code_jam;
 
 
 import java.util.Scanner;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import codejam.utils.utils.Direction;
 import codejam.utils.utils.GridChar;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Sets;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
@@ -55,8 +53,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         int s = lastVertex + 1;
         int t = lastVertex + 2;
-        
-        boolean doSwitch = true;
         
         /*
          * The overall strategy is this : The only squares 
@@ -105,7 +101,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     if (adjIdx == null)
                         continue;
                     
-                    char adjCh = in.grid.getEntry(adjIdx);
+                    //char adjCh = in.grid.getEntry(adjIdx);
                     
                     //Being next to a white square never will reduce the potential
                     //if (adjCh == '.')

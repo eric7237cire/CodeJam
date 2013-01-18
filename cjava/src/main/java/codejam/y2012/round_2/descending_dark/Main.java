@@ -16,7 +16,6 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.Direction;
 import codejam.utils.utils.GridChar;
-import codejam.y2012.round_2.descending_dark.SolutionGiven.Segment;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;

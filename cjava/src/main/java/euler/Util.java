@@ -91,7 +91,7 @@ public class Util {
     /*
      * dividend / divisor
      */
-    @SuppressWarnings("unused")
+    
     static int getRepetitionLength(final int divisor, int dividend) {
         double ans = 0;
 

@@ -1,18 +1,18 @@
 package euler;
 
 import static euler.Util.calculatePhi;
-import static euler.Util.*;
+import static euler.Util.findConFrac;
+import static euler.Util.getRepetitionLength;
+import static euler.Util.isPerm;
 
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableSet;
-import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
@@ -27,8 +27,6 @@ import org.joda.time.LocalDate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.datastructures.Tree;
-import codejam.utils.mod.GCD;
 import codejam.utils.utils.Direction;
 import codejam.utils.utils.Grid;
 import codejam.utils.utils.PermutationWithRepetition;
@@ -570,7 +568,7 @@ static void problem70_slow() {
         3,
         1};
         
-        int iCount = invCount(toSort);
+        invCount(toSort);
         
     }
     
@@ -644,10 +642,10 @@ static void problem70_slow() {
                     ;
             
             calculatePandQ(contFrac, p, q, indexWanted+1);
-            boolean found = false;
+            
             
             BigInteger xBI = p.get(indexWanted);
-            BigInteger yBI = q.get(indexWanted);
+           // BigInteger yBI = q.get(indexWanted);
             
             //log.debug("D = {}.  Maybe {} ^ 2 - {} * {} ^ 2 = 1", D, xBI, D, yBI);
             
@@ -855,7 +853,7 @@ static void problem70_slow() {
                 offset = 0;
         }
 
-
+        scanner.close();
         log.debug("Message {}\nCount {}", sb.toString(), count);
     }
     
@@ -1150,7 +1148,7 @@ static void problem70_slow() {
         for(int j = 0; j < 5; ++j) {
             hand.add(strToCard(scanner.next()));
         }
-        
+        scanner.close();
         return hand;
     }
     
@@ -1174,6 +1172,7 @@ static void problem70_slow() {
                 ++count;
             }
         }
+        scanner.close();
         
         log.debug("Count is {}", count);
         
@@ -1272,7 +1271,7 @@ static void problem70_slow() {
                 ++count;
             }
         }
-        
+        scanner.close();
         log.debug("Count is {}", count);
         
     }
@@ -2327,7 +2326,10 @@ static void problem70_slow() {
     
         
         ///
-        Scanner scanner = new Scanner(Prob1.class.getResourceAsStream("prob12.txt"));
+        @SuppressWarnings("resource")
+        Scanner scanner = null;
+        try {
+        scanner = new Scanner(Prob1.class.getResourceAsStream("prob12.txt"));
         
         BigInteger sumBI = BigInteger.ZERO;
         
@@ -2336,8 +2338,11 @@ static void problem70_slow() {
             sumBI = sumBI.add(next);
         }
         
+        
         log.info("Prob 13. Sum {}", sumBI.toString().substring(0, 10));
-        scanner.close();
+        } finally {
+            scanner.close();
+        }
         
         /*
         int maxCount = 0;

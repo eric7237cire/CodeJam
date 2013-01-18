@@ -7,17 +7,11 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.geometry.Line;
-import codejam.utils.geometry.Point;
-import codejam.utils.geometry.Polygon;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
-import codejam.utils.utils.DoubleFormat;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.math.DoubleMath;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
@@ -46,7 +40,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return in;
     }
 
-    
+    /**
+     * Looked at the solution.  Basically you can never have
+     * a straight that encompasses another, so use a greedy strategy
+     * to add the card to the shortest straight.
+     */
     public String handleCase(InputData in) {
 
         List<List<Integer>> straights = Lists.newArrayList();

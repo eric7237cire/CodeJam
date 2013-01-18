@@ -95,6 +95,7 @@ public class LazyPrimMST {
     }
 
     // check optimality conditions (takes time proportional to E V lg* V)
+    @SuppressWarnings("unused")
     private boolean check(EdgeWeightedGraph G) {
 
         // check weight

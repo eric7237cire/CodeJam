@@ -29,6 +29,7 @@ public class EdgeWeightedDigraph {
     /**
      * Create an empty edge-weighted digraph with V vertices.
      */
+    @SuppressWarnings("unchecked")
     public EdgeWeightedDigraph(int V) {
         if (V < 0) throw new RuntimeException("Number of vertices must be nonnegative");
         this.V = V;

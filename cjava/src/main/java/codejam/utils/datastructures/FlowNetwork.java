@@ -14,6 +14,7 @@ public class FlowNetwork {
     private Bag<FlowEdge>[] adj;
     
     // empty graph with V vertices
+    @SuppressWarnings("unchecked")
     public FlowNetwork(int V) {
         this.V = V;
         this.E = 0;

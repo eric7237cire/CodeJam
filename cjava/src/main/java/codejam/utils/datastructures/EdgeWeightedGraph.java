@@ -46,6 +46,7 @@ public class EdgeWeightedGraph {
    /**
      * Create an empty edge-weighted graph with V vertices.
      */
+    @SuppressWarnings("unchecked")
     public EdgeWeightedGraph(int V) {
         if (V < 0) throw new RuntimeException("Number of vertices must be nonnegative");
         this.V = V;

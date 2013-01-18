@@ -15,7 +15,6 @@ import codejam.utils.datastructures.Edge;
 import codejam.utils.datastructures.EdgeWeightedGraph;
 import codejam.utils.datastructures.GraphAdjList;
 import codejam.utils.datastructures.PrimMST;
-import codejam.y2008.KingTest;
 
 public class GraphTest {
     
