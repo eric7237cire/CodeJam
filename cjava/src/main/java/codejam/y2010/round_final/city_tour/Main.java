@@ -83,6 +83,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
              */
           if (a[x][i] * a[y][i] > 0) {
               log.debug("best x={}, y={} checking intermediate node z {}", x+1, y+1, i+1);
+              /**
+               * Because the way the tree decomposition works, these 2 paths do not intersect, each new node
+               * is attached to 2...?
+               */
               int lenXZ = best(x, i, N, a);
               int lenZY = best(y, i, N, a);
               
