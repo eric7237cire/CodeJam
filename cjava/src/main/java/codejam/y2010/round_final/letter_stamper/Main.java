@@ -17,9 +17,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-       //return new String[] {"sample.in"};
+       return new String[] {"sample.in"};
        // return new String[] {"A-small-practice.in"};
-        return new String[] {"A-small-practice.in", "A-large-practice.in"};
+       // return new String[] {"A-small-practice.in", "A-large-practice.in"};
     }
     
 
@@ -203,6 +203,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
             curChar = (int) in.S.charAt(curIdx) - 'A';
             int maxCurrentStackHeight = Math.min(in.S.length() - curIdx+1, in.S.length()-1);
+           // int maxCurrentStackHeight = in.S.length() - 1;
             
             //Height 0
             for(int stackState = 0; stackState < 6; ++stackState) {
