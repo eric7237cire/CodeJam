@@ -21,7 +21,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String[] getDefaultInputFiles() {
          return new String[] {"sample.in"};
-        // return new String[] {"B-small-practice.in"};
+        // return new String[] {"D-small-practice.in"};
         //return new String[] { "C-small-practice.in", "C-large-practice.in" };
     }
 
@@ -61,6 +61,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         if (curIdx == 0) {
             long len = 0;
+            Preconditions.checkState( t[0] == 2);
+            
             //Done, now calculate length
             for(int i = 0; i < t.length; ++i) {
                 len += t[i] * intervals[i];
@@ -74,7 +76,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         int nextIdx = curIdx - 1;
         int maxTimes = 2 + nextIdx * 2;
         
-        for( int tNext = Math.max(t[curIdx] - 2, 2); tNext < t[curIdx] + 2 && tNext <= maxTimes; tNext += 2 )
+        for( int tNext = Math.max(t[curIdx] - 2, 2); tNext <= t[curIdx] + 2 && tNext <= maxTimes; tNext += 2 )
         {
             t[nextIdx] = tNext;
             calcLeft( t, intervals, nextIdx, leftPossible);
@@ -93,6 +95,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         int realIdx = startIdx + curIdx;
         
         if (realIdx == intervals.length - 1) {
+            Preconditions.checkState( t[t.length-1] == 2);
             long len = 0;
             //Done, now calculate length, skipping middle interval which was already counted
             for(int i = 1; i < t.length; ++i) {
@@ -104,10 +107,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         //First save some time by calculating a max and min based on distance to t[0] which
         //must be equal 2.  t[ last ] = 2, t[ last - 1] = {2, 4}
-        int maxTimes = 2 + (intervals.length - 1 - realIdx) * 2;
+        int maxTimes = (intervals.length - 1 - realIdx) * 2;
         int nextIdx = curIdx + 1;
         
-        for( int tNext = Math.max(2, t[curIdx] - 2); tNext < t[curIdx] + 2 && tNext <= maxTimes; tNext += 2 )
+        for( int tNext = Math.max(2, t[curIdx] - 2); tNext <= t[curIdx] + 2 && tNext <= maxTimes; tNext += 2 )
         {
             t[nextIdx] = tNext;
             calcRight( t, intervals, nextIdx, startIdx, rightPossible);
@@ -122,14 +125,20 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         long[] intervals = new long[in.N - 1];
         
+        long minSolutionCheck = 0;
+        
         for(int p = 1; p < in.N; ++p) {
             intervals[p-1] = in.X[p] - in.X[p-1];
+            minSolutionCheck += 2 * intervals[p-1];
         }
+        
+        if (minSolutionCheck > in.F)
+            return String.format("Case #%d: NO SOLUTION", in.testCase);
         
         int midIndex = intervals.length / 2;
         //  1 -- 0 ; 2 -- 01* 3 -- 01*2  4 -- 012*3 5 -- 012*34
-        
-        int maxMiddleTimes = (in.N - midIndex) * 2;
+        // 9 -- 0123 4 5678
+        int maxMiddleTimes = (intervals.length - midIndex) * 2;
         
         long globalBest = 0;
         
