@@ -1,6 +1,6 @@
 /*
 ID: eric7231
-PROG: humble
+PROG: rect1
 LANG: C++
 */
 #include <iostream>
@@ -45,87 +45,163 @@ typedef pair<uint,uint> uu;
 #define contains(c,x) ((c).find(x) != (c).end()) 
 #define cpresent(c,x) (find(all(c),x) != (c).end()) 
 
+struct Rect;
 
-uint getNext( const uvi& sequence, uint lastIndex, uint prime) 
-{
-        int idxMin = lastIndex;
-        int idxMax = sequence.size() - 1;
+ostream& operator<<( ostream& os, const Rect& r);
+
+struct Rect {
+    uint x1, x2, y1, y2;
+    uint color;
+    
+    Rect( uint llx, uint lly, uint urx, uint ury, uint _color) :
+        x1(llx),
+        y1(lly),
+        x2(urx),
+        y2(ury),
+        color(_color)
+    {
+        assert(y2 > y1);
+        assert(x2 > x1);
+    }
+    
+    uint getArea() const
+    {
+        return (x2-x1) * (y2-y1);
+    }
+    
+    bool intersects(const Rect& o) const
+    {
+        //Equals because we do not care about 0 width / 0 height rectangles
+        if (x1 >= o.x2)
+            return false;
         
-        ull last = *sequence.rbegin();
+        if (x2 <= o.x1)
+            return false;
         
-        //printf("getNext min %d max %d last %d lastindex %d\n ",idxMin,idxMax, last,lastIndex);
+        if (y1 >= o.y2)
+            return false;
         
-        if ( (sequence[idxMin] * prime) > last)
-            return idxMin;
-
-        // prime * idxMin always lower, prime * idxMax always higher
-        while (true) {
-            int idxMid = idxMin + (idxMax - idxMin) / 2;
-
-            ull num = (ull) sequence[idxMid] * prime;
-
-            if (num > last) {
-                idxMax = idxMid;
-            } else {
-                idxMin = idxMid;
-            }
-
-            if (idxMax - idxMin <= 1)
-                break;
+        if (y2 <= o.y1)
+            return false;
+        
+        return true;
+    }
+    
+    //Top rectangle
+    void addNewRects(const Rect& tr, vector<Rect>& newRects) const
+    {
+       // cout << "AddNewRects --\n" << *this << "\ntop rectangle:\n" << tr << endl;
+        
+        assert(intersects(tr));
+        
+        uint iX1 = max(tr.x1, x1);
+        uint iX2 = min(tr.x2, x2);
+        uint iY1 = max(tr.y1, y1);
+        uint iY2 = min(tr.y2, y2);
+        
+       // cout << "Intersection X: " << iX1 << ", " << iX2 << endl;
+        //cout << "Intersection Y: " << iY1 << ", " << iY2 << endl;
+        //Create a rectangle immediately to the left 
+        
+        if (iX1 > x1)
+        {
+            
+            newRects.pb( Rect( x1, iY1, iX1, iY2, color) );
+            //cout << "Creating new rect left of intersection " << *newRects.rbegin() << endl;
         }
         
-        return idxMax;
-}
+        if (iX2 < x2)
+        {
+            newRects.pb( Rect( iX2, iY1, x2, iY2, color) );
+            //cout << "Creating new rect right of intersection " << *newRects.rbegin() << endl;
+        }
+        
+        //The rectangles above are the same width as rectangle 
+        if (iY1 > y1)
+        {
+            newRects.pb( Rect( x1, y1, x2, iY1, color) );
+            //cout << "Creating new rect below of intersection " << *newRects.rbegin() << endl;
+            
+        }
 
+        if (iY2 < y2)
+        {
+            newRects.pb( Rect( x1, iY2, x2, y2, color) );
+           // cout << "Creating new rect below of intersection " << *newRects.rbegin() << endl;
+            
+        }
+        
+    }
+
+};
+
+ostream& operator<<( ostream& os, const Rect& r)
+{
+    os << "top left (" << r.x1 << ", " << r.y2 << ") "
+    << " top right (" << r.x2 << ", " << r.y2 << ") "
+    << " bot right (" << r.x2 << ", " << r.y1 << ") "
+    << " bot left (" << r.x1 << ", " << r.y1 << ") ";
+
+    return os;
+}
 
 int main() {
     
-	ofstream fout ("humble.out");
-    ifstream fin ("humble.in");
+	ofstream fout ("rect1.out");
+    ifstream fin ("rect1.in");
 	
-    uint K, N;
+    uint W, H, N;
     
-    fin >> K >> N;
+    fin >> W >> H >> N;
         
+    vector<Rect> rects;
+    
+    rects.pb( Rect( 0, 0, W, H, 1) );
+    
+    vector<Rect> newRects;
+    
+    uint llx, lly, urx, ury, color;
+    
+    FOR(r, 0, N)
+    {
+        fin >> llx >> lly >> urx >> ury >> color;
 
-    uvi primes;
-    uint prime;
-    FOR(k, 0, K) 
-    {
-        fin >> prime;
-        primes.pb(prime);
-    }
-    
-    uvi lastIndex(K, 0);
-    
-    uvi sequence(1, 1);
-    
-    FORE(n, 0, N)
-    {
-        uint last = sequence[sequence.size() - 1];
-        uint pIndex = getNext(sequence, lastIndex[0], primes[0]);
-        //cout << "PIndex k0 " << pIndex << endl;
-        lastIndex[0] = pIndex;
-        uint minNext = sequence[pIndex] * primes[0]; 
+        Rect topRect(llx, lly, urx, ury, color);
         
-        FOR(k, 1, K) {
-            pIndex = getNext(sequence, lastIndex[k], primes[k]);
-           // cout << "PIndex k " << pIndex << endl;
-            uint nextForPrime = sequence[pIndex] * primes[k];
-            lastIndex[k] = pIndex;
-            assert(nextForPrime > last);
-            //printf( "Next prime %d = %d \n", primes[k], nextForPrime);
-            minNext = min(minNext, nextForPrime);
+        newRects.clear();
+        
+        vector<Rect>::iterator it = rects.begin();
+        while( it != rects.end() )
+            
+        {
+            const Rect rect = *it;
+            if (rect.intersects(topRect)) {
+                rect.addNewRects(topRect, newRects);
+                it = rects.erase(it);
+            } else {
+                ++it;
+            }
         }
-        
-        assert(minNext > last);
-        
-        sequence.pb(minNext);
-        //printf("%d: %d\n", n+1, minNext);
+        rects.pb(topRect);
+        rects.insert( rects.end(), all(newRects) );
+    }
+            
+    uvi colorCount( 2500, 0 );
+    
+    for(vector<Rect>::iterator it = rects.begin();
+        it != rects.end();
+        ++it)
+    {
+        colorCount[ it->color - 1 ] += it->getArea();
     }
     
-    
-    fout << sequence[N] << endl;
+    FOR( color, 0, 2500 )
+    {
+        if (colorCount[color] == 0)
+            continue;
         
+        fout << color+1 << " " << colorCount[color] << endl;
+    }
+            
     return 0;
 }

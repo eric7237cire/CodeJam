@@ -17,9 +17,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-       return new String[] {"sample.in"};
+  //     return new String[] {"sample.in"};
        // return new String[] {"A-small-practice.in"};
-       // return new String[] {"A-small-practice.in", "A-large-practice.in"};
+        return new String[] {"A-small-practice.in", "A-large-practice.in"};
     }
     
 
@@ -151,7 +151,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     }
     
-    public String handleCaseBottomUp(InputData in) {
+    public String handleCase(InputData in) {
         
         //index -- state -- stack height
         int[][][] bottUp = new int[in.S.length()][6][Math.max(3,in.S.length())];
@@ -286,12 +286,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     }
 
-    @Override
-    public String handleCase(InputData in) {
+    public String handleCaseTopDown(InputData in) {
         
-        
-        if (in.testCase > 0)
-           return handleCaseBottomUp(in);
         
         int[][][] memo = new int[in.S.length()][6][in.S.length()];
         for(int i = 0; i < in.S.length(); ++i)
@@ -302,6 +298,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         int min = solve(in.S, 0, 0, 0, memo);
         
         
-        return String.format("Case #%d: %d", in.testCase, min) + "\n" + handleCaseBottomUp(in);
+        return String.format("Case #%d: %d", in.testCase, min);
     }
 }

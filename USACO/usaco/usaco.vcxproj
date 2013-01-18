@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\cowtour.cpp" />
+    <ClCompile Include="..\rect1.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\cowtour.in" />
