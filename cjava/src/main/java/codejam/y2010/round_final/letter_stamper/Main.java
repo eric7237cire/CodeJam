@@ -5,16 +5,11 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.datastructures.FlowEdge;
-import codejam.utils.datastructures.FlowNetwork;
-import codejam.utils.datastructures.FordFulkerson;
-import codejam.utils.geometry.PointInt;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
-import com.google.common.math.DoubleMath;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles{
 
@@ -23,8 +18,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String[] getDefaultInputFiles() {
        //return new String[] {"sample.in"};
-        return new String[] {"A-small-practice.in"};
-       // return new String[] {"A-small-practice.in", "A-large-practice.in"};
+       // return new String[] {"A-small-practice.in"};
+        return new String[] {"A-small-practice.in", "A-large-practice.in"};
     }
     
 
@@ -159,11 +154,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     public String handleCaseBottomUp(InputData in) {
         
         //index -- state -- stack height
-        int[][][] bottUp = new int[in.S.length()][6][in.S.length()];
+        int[][][] bottUp = new int[in.S.length()][6][Math.max(3,in.S.length())];
         for(int i = 0; i < in.S.length(); ++i)
             for(int j = 0; j < in.S.length(); ++j)
                 for(int k = 0; k < 6; ++k)
-                    bottUp[i][k][j] = -1;
+                    bottUp[i][k][j] = 1000000000;
         
         int curIdx = in.S.length() - 1;
         int curChar = (int) in.S.charAt(curIdx) - 'A';
@@ -207,6 +202,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         for( curIdx = in.S.length() - 2; curIdx >= 0; --curIdx) {
         
             curChar = (int) in.S.charAt(curIdx) - 'A';
+            int maxCurrentStackHeight = Math.min(in.S.length() - curIdx+1, in.S.length()-1);
             
             //Height 0
             for(int stackState = 0; stackState < 6; ++stackState) {
@@ -243,15 +239,58 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     bottUp[curIdx][stackState][1] = Math.min(pushCost, popCost);
                 }
             }
+            
+            //Height 2+
+            for(int stackHeight = 2; stackHeight <= maxCurrentStackHeight; ++stackHeight) {
+                for(int stackState = 0; stackState < 6; ++stackState) {
+                    
+                    //Letter is on top, shortest path is to print 
+                    if (popsNeeded[stackState][curChar] == 0)
+                    {
+                        //print
+                        bottUp[curIdx][stackState][stackHeight] = 1 + bottUp[curIdx+1][stackState][stackHeight];
+                        continue;
+                    }
+                    
+                    int popsNeededForNextChar = popsNeeded[stackState][curChar];
+                    int stackStateAfterPop = popsNeededForNextChar == 2 ? popTransition[popTransition[stackState]] : popTransition[stackState];
+
+                    //We use the state already calculated since we are going in order of height
+                    int costPop = popsNeededForNextChar 
+                            + bottUp[curIdx][stackStateAfterPop][stackHeight-popsNeededForNextChar];
+                    
+                    //We can always push the 3rd character of a stack
+                    int pushChoice1 = pushable[ curChar ][0];
+                    int pushChoice2 = pushable[ curChar ][1];
+                    
+                    int costPush = 100000000;
+                    
+                    //Pushing is restricted based on the stack type.  If we push, we push and print
+                    if (stackState == pushChoice1 && stackHeight < in.S.length() - 1) {
+                        costPush = 2 + 
+                                bottUp[curIdx+1][ pushTransition[pushChoice1] ][ stackHeight+1 ];
+                    } else if (stackState == pushChoice2  && stackHeight < in.S.length() - 1) {
+                        costPush = 2 + bottUp[curIdx+1][ pushTransition[pushChoice2] ] [ stackHeight+1 ];
+                    }
+                    
+                    bottUp[curIdx][stackState][stackHeight] = Math.min(costPop,costPush);
+                    
+                }
+            }
         }
         
         
-        return "a";
+
+        return String.format("Case #%d: %d", in.testCase, bottUp[0][0][0]);
 
     }
 
     @Override
     public String handleCase(InputData in) {
+        
+        
+        if (in.testCase > 0)
+           return handleCaseBottomUp(in);
         
         int[][][] memo = new int[in.S.length()][6][in.S.length()];
         for(int i = 0; i < in.S.length(); ++i)
@@ -261,6 +300,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         int min = solve(in.S, 0, 0, 0, memo);
         
-        return String.format("Case #%d: %d", in.testCase, min);
+        
+        return String.format("Case #%d: %d", in.testCase, min) + "\n" + handleCaseBottomUp(in);
     }
 }

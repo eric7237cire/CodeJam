@@ -62,8 +62,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         int maxMiddleTimes = (in.N - midIndex) * 2;
         
         
-        
-        return String.format("Case #%d: %d", in.testCase, num_boxes);
+        return "";
+        //return String.format("Case #%d: %d", in.testCase, num_boxes);
 
     }
 }
