@@ -47,12 +47,16 @@ import com.google.common.primitives.Ints;
 public class Prob1 {
 
     final static Logger log = LoggerFactory.getLogger(Prob1.class);
+
+    
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
         //problem75();
-        for(int i = 1; i < 50; ++i) {
-            //log.debug(" {} / {} = ",i, 3);
+        for(int i = 1; i < 155; ++i) {
+            BigInteger fac = BigIntegerMath.factorial(i);
+            
+            log.debug(" {} = {} ",i, fac);
        // getRepetitionLength(3,i);
         }
         
