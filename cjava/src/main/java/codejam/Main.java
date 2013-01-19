@@ -178,6 +178,7 @@ public class Main  {
         //Dynamic programming, combinatorics stars and bars counting (distributing n stars in k buckets )
         //codejam.y2011.round_final.runs.Main m = new codejam.y2011.round_final.runs.Main(); 
         
+        //Simulation with a trick to do batch processing.  TODO look at proof via paths / tree justifying the algo
         codejam.y2011.round_final.rains_atlantis.Main m = new codejam.y2011.round_final.rains_atlantis.Main();
         
         

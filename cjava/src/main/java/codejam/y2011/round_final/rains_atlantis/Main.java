@@ -1,5 +1,6 @@
 package codejam.y2011.round_final.rains_atlantis;
 
+import java.math.RoundingMode;
 import java.util.ArrayDeque;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -18,6 +19,7 @@ import codejam.utils.utils.Direction;
 import codejam.utils.utils.Grid;
 
 import com.google.common.base.Preconditions;
+import com.google.common.math.LongMath;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
@@ -27,7 +29,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     public String[] getDefaultInputFiles() {
         return new String[] { "sample.in" };
      //    return new String[] { "B-small-practice.in" };
-       //  return new String[] { "B-small-practice.in", "B-large-practice.in" };
+       // return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
     @Override
@@ -140,14 +142,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     static class RetInfo {
         long minErosionAmount;
         long minWaterOnTop;
-        boolean existEmergedFields;
+        boolean existSubmergedFields;
         long maxLandHeight;
         
         RetInfo() {
             minErosionAmount = Long.MAX_VALUE;
             minWaterOnTop = Long.MAX_VALUE;
             
-            existEmergedFields = false;
+            existSubmergedFields = false;
             maxLandHeight = 0;
         }
     }
@@ -181,7 +183,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             Preconditions.checkState(curWaterLevel >= minWaterLevel);
             Preconditions.checkState(curWaterLevel >= curLandLevel);
             
-            if (curWaterLevel == curLandLevel) {
+            if (curLandLevel == 0 && curWaterLevel == 0) {
+                //Do nothing
+            }            
+            else if (curWaterLevel.equals( curLandLevel) ) {
                 //not submerged
                 long erosion = curWaterLevel - minWaterLevel;
                 
@@ -189,11 +194,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
                 nextGrid.setEntry(index, Math.max(0, curLandLevel - erosion));
                 r.minErosionAmount = Math.min(r.minErosionAmount, erosion);
+                
+                r.maxLandHeight = Math.max(curLandLevel, r.maxLandHeight);
             } else {
                 //Submerged means that no adj square has a lower water level
                 Preconditions.checkState(curWaterLevel == minWaterLevel);
                 
-                r.existEmergedFields = true;
+                long waterOnTop = curWaterLevel - curLandLevel;
+                
+                r.minWaterOnTop = Math.min(r.minWaterOnTop, waterOnTop);
+                r.existSubmergedFields = true;
             }
             
                        
@@ -204,6 +214,48 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         return r;
     }
+
+    void doErosionBatch(Grid<Long> land, Grid<Long> waterLevel, Grid<Long> nextGrid, long batchSteps, long maxErosion) {
+                
+        for(int index = 0; index < waterLevel.getSize(); ++index) {
+            
+            long minWaterLevel = Long.MAX_VALUE;
+            
+            //Find minimum adjacent square
+            for(int dir = 0; dir <= 3; ++dir) {
+                // Integer adjIndex = waterLevel.getIndex(index, Direction.NORTH.turn(2*dir));
+                
+                Long adjWaterLevel = waterLevel.getEntry(index, Direction.NORTH.turn(2*dir));
+                
+                minWaterLevel = Math.min(minWaterLevel, adjWaterLevel);
+            }
+            
+            Long curWaterLevel = waterLevel.getEntry(index);
+            Long curLandLevel = land.getEntry(index);
+            
+            Preconditions.checkState(curWaterLevel >= minWaterLevel);
+            Preconditions.checkState(curWaterLevel >= curLandLevel);
+            
+            if (curLandLevel == 0 && curWaterLevel == 0) {
+                //Do nothing
+            }  else
+            if (curWaterLevel.equals( curLandLevel) ) {
+                //not submerged
+                long erosion = curWaterLevel - minWaterLevel;
+                
+                erosion = Math.min(maxErosion, erosion);
+                
+                Preconditions.checkState(erosion == maxErosion);
+                
+                nextGrid.setEntry(index, Math.max(0, curLandLevel - erosion * batchSteps));
+        
+            } 
+            
+            
+        
+        }
+        
+    }
     
     
     public String bruteForce(InputData in) {
@@ -212,7 +264,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         for(int iter = 0; iter < 600; ++iter) {
             
-            log.debug("Grid land {}", land);
+            log.debug("Grid day {} land {} ", iter, land);
             
             Set<Integer> zeros = land.getIndexesOf(0l);
             
@@ -224,43 +276,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             determineWaterLevel(land, waterLevel);
             
-           /* Grid<Long> oldWaterLevel = new Grid<>(land);
             
-            for(int index = 0; index < waterLevel.getSize(); ++index) {
-                oldDetermineWaterLevel(oldWaterLevel, index);
-            }*/
-            
-            //log.debug("Old water level. is equals? {} {}", oldWaterLevel.equals(waterLevel), oldWaterLevel);
-            
-            /*
-            int maxDistEdge = Math.max( waterLevel.getRows() / 2, waterLevel.getCols() / 2); 
-            
-            //go outside in
-            for(int distEdge = 0; distEdge < maxDistEdge; ++distEdge )
-            {
-                int startCol = distEdge;
-                int stopCol = waterLevel.getCols() - 1 - distEdge;
-                int startRow = distEdge;
-                int stopRow = waterLevel.getRows() - 1 - distEdge;
-                
-                for( int col = startCol; col <= stopCol; ++col) {
-                    determineWaterLevel(waterLevel, startRow, col);
-                    determineWaterLevel(waterLevel, stopRow, col);
-                }
-                
-                for( int row = startRow; row <= stopRow; ++row) {
-                    determineWaterLevel(waterLevel, row, startCol);
-                    determineWaterLevel(waterLevel, row, stopCol);
-                }
-            }*/
-            
-            log.debug("Water level {}", waterLevel);
+          //  log.debug("Water level {}", waterLevel);
             
             Grid<Long> nextLand = new Grid<Long>(land);
             
             doErosion(land,waterLevel,nextLand, in.M);
             
-            log.debug("After erosion {}", nextLand);
+           // log.debug("After erosion {}", nextLand);
             
             land = nextLand;
             
@@ -270,12 +293,67 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         return "g";
     }
-    
+
     public String handleCase(InputData in) {
 
-        //        return String.format("Case #%d: %d", in.testCase, minSize == Integer.MAX_VALUE ? 0 : minSize);
+        //bruteForce(in);
         
-        return bruteForce(in);
+        Grid<Long> land = new Grid<Long>(in.grid);
+
+        long days = 0;
+        while(true) {
+
+           // log.debug("Grid batch day {} land {}", days, land);
+           //
+
+            Set<Integer> zeros = land.getIndexesOf(0l);
+
+            if (zeros.size() == land.getSize()) {
+                return String.format("Case #%d: %d", in.testCase, days);
+            }
+
+            Grid<Long> waterLevel = Grid.buildEmptyGrid(land.getRows(), land.getCols(), 0l);
+
+            determineWaterLevel(land, waterLevel);
+            //log.debug("Water level {}", waterLevel);
+
+            Grid<Long> nextLand = new Grid<Long>(land);
+
+            RetInfo r = doErosion(land, waterLevel, nextLand, in.M);
+            
+            log.debug("Grid batch day {} case {}.  Min erosion height {} M {}", days, in.testCase, r.minErosionAmount, in.M);
+            
+            //Determine if we can do a multistep
+            if (!r.existSubmergedFields && r.minErosionAmount == in.M) {
+                days += LongMath.divide(r.maxLandHeight, in.M, RoundingMode.UP);
+                return String.format("Case #%d: %d", in.testCase, days);
+            } else
+            if (r.minErosionAmount == (long) in.M) {                
+                long batchSteps = r.minWaterOnTop / in.M;
+                
+                if (batchSteps == 0) {
+                    //Then just use the regular one
+                    ++days;
+                    land = nextLand;
+                } else {
+                
+                nextLand = new Grid<Long>(land);
+                doErosionBatch(land, waterLevel, nextLand, batchSteps, in.M);
+                days += batchSteps;
+                land = nextLand;
+                }
+            } else {
+                ++days;
+                land = nextLand;
+            }
+
+            //log.debug("After erosion {}", nextLand);
+
+            
+
+        }
+
+
     }
 
 }
