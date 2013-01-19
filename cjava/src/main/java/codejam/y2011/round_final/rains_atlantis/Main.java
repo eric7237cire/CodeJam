@@ -137,9 +137,31 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         
         
-    
-    
-    void doErosion(Grid<Long> land, Grid<Long> waterLevel, Grid<Long> nextGrid, long maxErosion) {
+    static class RetInfo {
+        long minErosionAmount;
+        long minWaterOnTop;
+        boolean existEmergedFields;
+        long maxLandHeight;
+        
+        RetInfo() {
+            minErosionAmount = Long.MAX_VALUE;
+            minWaterOnTop = Long.MAX_VALUE;
+            
+            existEmergedFields = false;
+            maxLandHeight = 0;
+        }
+    }
+    /**
+     * 
+     * @param land
+     * @param waterLevel
+     * @param nextGrid
+     * @param maxErosion
+     * @return smallest submerged water level
+     */
+    RetInfo doErosion(Grid<Long> land, Grid<Long> waterLevel, Grid<Long> nextGrid, long maxErosion) {
+        RetInfo r = new RetInfo();
+                
         for(int index = 0; index < waterLevel.getSize(); ++index) {
             
             long minWaterLevel = Long.MAX_VALUE;
@@ -150,24 +172,40 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
                 Long adjWaterLevel = waterLevel.getEntry(index, Direction.NORTH.turn(2*dir));
                 
-                //if (adjIndex == null)
-                  //  continue;
-                
                 minWaterLevel = Math.min(minWaterLevel, adjWaterLevel);
             }
             
-            Long curWaterLevel = waterLevel.getEntry(index);            
-            Preconditions.checkState(curWaterLevel >= minWaterLevel);
-            
+            Long curWaterLevel = waterLevel.getEntry(index);
             Long curLandLevel = land.getEntry(index);
             
-            long erosion = curWaterLevel - minWaterLevel; 
-            erosion = Math.min(maxErosion, erosion);
+            Preconditions.checkState(curWaterLevel >= minWaterLevel);
+            Preconditions.checkState(curWaterLevel >= curLandLevel);
             
-            nextGrid.setEntry(index, Math.max(0, curLandLevel - erosion));
+            if (curWaterLevel == curLandLevel) {
+                //not submerged
+                long erosion = curWaterLevel - minWaterLevel;
+                
+                erosion = Math.min(maxErosion, erosion);
+                
+                nextGrid.setEntry(index, Math.max(0, curLandLevel - erosion));
+                r.minErosionAmount = Math.min(r.minErosionAmount, erosion);
+            } else {
+                //Submerged means that no adj square has a lower water level
+                Preconditions.checkState(curWaterLevel == minWaterLevel);
+                
+                r.existEmergedFields = true;
+            }
+            
+                       
+            
+            
         
         }
+        
+        return r;
     }
+    
+    
     public String bruteForce(InputData in) {
         
         Grid<Long> land = new Grid<Long>(in.grid);
