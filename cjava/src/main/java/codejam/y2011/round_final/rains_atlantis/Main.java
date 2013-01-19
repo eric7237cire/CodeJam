@@ -1,6 +1,7 @@
 package codejam.y2011.round_final.rains_atlantis;
 
-import java.util.PriorityQueue;
+import java.util.ArrayDeque;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -43,45 +44,48 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return in;
     }
 
-    void determineWaterLevel(Grid<Long> grid, int gridIndex)
+    void determineWaterLevel(Grid<Long> land, Grid<Long> waterLevel)
     {
         //Find cheapest path to edge
         
         //level location
-        PriorityQueue< Pair<Long, Integer> > toVisit = new PriorityQueue<>();
+        Queue< Integer > toVisit = new ArrayDeque<Integer>();
         
-        boolean[] seen = new boolean[grid.getSize()];
-        
-        toVisit.add(new ImmutablePair<>(grid.getEntry(gridIndex), gridIndex));
+        for(int gi = 0; gi < land.getSize(); ++gi) {
+            waterLevel.setEntry(gi, Long.MAX_VALUE);
+            toVisit.add( gi );
+        }
         
         while(!toVisit.isEmpty()) {
-            Pair<Long, Integer> levelIndex = toVisit.poll();
+            Integer gridIndex = toVisit.poll();
             
-            if (seen[levelIndex.getRight()])
-                continue;
+            long nLevel = Long.MAX_VALUE;
             
-            
-            seen[levelIndex.getRight()] = true;
-            
-            if (grid.minDistanceToEdge(levelIndex.getRight()) == 0) 
-            {
-                grid.setEntry(gridIndex, Math.max(grid.getEntry(gridIndex), levelIndex.getLeft()));
-                return;
+            for(int d = 0; d < 4; ++d) {
+                //The grid will return 0 for adj to edge
+                nLevel = Math.min(nLevel, waterLevel.getEntry( gridIndex, waterLevel.directions[d]) );
             }
             
-            for(int dir = 0; dir <= 3; ++dir) {
-                Integer index = grid.getIndex(levelIndex.getRight(), Direction.NORTH.turn(2*dir));
-                if (index == null)
+            //Level can not be lower than the land
+            nLevel = Math.max(nLevel, land.getEntry(gridIndex));
+            
+            //If we have not improved the square, move on
+            if (nLevel >= waterLevel.getEntry(gridIndex))
+                continue;
+            
+            //Improve entry
+            waterLevel.setEntry(gridIndex, nLevel);
+            
+            //Recheck the adjacent squares
+            for(int dir = 0; dir < 4; ++dir) {
+                Integer index = waterLevel.getIndex(gridIndex, waterLevel.directions[dir]);
+                if (index == null) 
                     continue;
-                
-                //Max because the water 
-                toVisit.add(new ImmutablePair<>( Math.max( levelIndex.getLeft(), grid.getEntry(index)), index));
             }
             
         }
         
         
-        log.error("ERror");
         
     }
     
@@ -128,11 +132,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 return String.format("Case #%d: %d", in.testCase, iter);
             }
             
-            Grid<Long> waterLevel = new Grid<>(land);
+            Grid<Long> waterLevel = Grid.buildEmptyGrid(land.getRows(),land.getCols(), 0l);
             
-            for(int index = 0; index < waterLevel.getSize(); ++index) {
-                determineWaterLevel(waterLevel, index);
-            }
+            determineWaterLevel(land, waterLevel);
+            
             
             /*
             int maxDistEdge = Math.max( waterLevel.getRows() / 2, waterLevel.getCols() / 2); 

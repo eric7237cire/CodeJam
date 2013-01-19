@@ -25,6 +25,11 @@ public class Grid<SquareType> {
     private int rows;
     private final int cols;
     
+    public final int maxIndex;
+    
+    public final Direction[] directions = new Direction[] { Direction.NORTH, 
+            Direction.EAST, Direction.SOUTH, Direction.WEST };
+    
     private final List<SquareType> grid;
     
     private SquareType invalidSquare;
@@ -145,6 +150,7 @@ public class Grid<SquareType> {
         this.rows = rhs.rows;
         this.cols = rhs.cols;
         this.grid = new ArrayList<>(rhs.grid);
+        this.maxIndex = rhs.maxIndex;
         this.invalidSquare = rhs.invalidSquare;
         this.mapping = rhs.mapping;
     }
@@ -162,8 +168,10 @@ public class Grid<SquareType> {
         this.cols = cols;
         this.invalidSquare = invalidSq;
         this.mapping = mapping;
+        this.maxIndex = rows*cols - 1;
+        grid = new ArrayList<>(maxIndex + 1);
         
-        grid = new ArrayList<>(rows*cols);
+    
         
     }
     
@@ -246,8 +254,13 @@ public class Grid<SquareType> {
     }
     
     public SquareType getEntry(final int index) {
+        if (index < 0 || index > maxIndex)
+            return invalidSquare;
+        
         return grid.get(index);
     }
+    
+    
     
     public SquareType getEntry(final int index, Direction dir) {
         int row = index / cols - dir.getDeltaY();
