@@ -3,6 +3,8 @@ package codejam.utils.utils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -38,6 +40,15 @@ public class Grid<SquareType> {
         
     };
     
+    public final static FromScanner<Long> fromScannerLong = new FromScanner<Long>() {
+
+        @Override
+        public Long getFromScanner(Scanner scanner) {
+            return scanner.nextLong();
+        }
+        
+    };
+
     //Builds character grid
     //..#
     //.O#
@@ -181,6 +192,12 @@ public class Grid<SquareType> {
         return new int[] { index / cols,  index % cols };
     }
     
+    public int minDistanceToEdge(int index) {
+        int row = index / cols;
+        int col = index % cols;
+        return Collections.min( Arrays.asList( row - 0, rows - 1 - row, col - 0, cols - 1 - col));
+    }
+    
     public Integer getIndex(int index, Direction dir) {
         int row = index / cols - dir.getDeltaY();
         int col = index % cols + dir.getDeltaX();
@@ -299,7 +316,8 @@ public class Grid<SquareType> {
                 r = rows - rIdx - 1;
             }
             int index = getIndex(r,0);
-            gridStr.append(StringUtils.rightPad("" + index, 4));
+            String indexStr = "Idx " + index ;
+            gridStr.append(StringUtils.rightPad("" + indexStr, 6) + " | ");
             for(int c=0; c<cols; ++c) {
                 if (mapping != null) {
                     gridStr.append(mapping.inverse().get(getEntry(r,c) ));

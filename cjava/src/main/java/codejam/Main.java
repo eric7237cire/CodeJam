@@ -173,7 +173,12 @@ public class Main  {
         //Greedy algorithm (used solution)
         //codejam.y2011.round_3.dire_straights.Main m = new codejam.y2011.round_3.dire_straights.Main();
         
-        codejam.y2011.round_final.runs.Main m = new codejam.y2011.round_final.runs.Main(); 
+        //2011 final round
+        
+        //Dynamic programming, combinatorics stars and bars counting (distributing n stars in k buckets )
+        //codejam.y2011.round_final.runs.Main m = new codejam.y2011.round_final.runs.Main(); 
+        
+        codejam.y2011.round_final.rains_atlantis.Main m = new codejam.y2011.round_final.rains_atlantis.Main();
         
         
         //2012 qual
