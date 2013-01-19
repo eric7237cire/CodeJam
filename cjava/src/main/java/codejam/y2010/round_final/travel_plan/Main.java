@@ -1,6 +1,7 @@
 package codejam.y2010.round_final.travel_plan;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -10,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
+import codejam.utils.utils.ArrayUtils;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -116,6 +118,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             calcRight( t, intervals, nextIdx, startIdx, rightPossible);
         }
     }
+    
+    
 
     @Override
     public String handleCase(InputData in) {
@@ -163,15 +167,27 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             calcRight( rightT, intervals, 0, midIndex, rightPossible);
             
+            Collections.sort(leftPossible);
+            Collections.sort(rightPossible);
+            
+            
+            int loRightIdx = 0;
+            int hiRightIdx = rightPossible.size()-1;
+            
             for(int lIdx = 0; lIdx < leftPossible.size(); ++lIdx) {
-                for(int rIdx = 0; rIdx < rightPossible.size(); ++rIdx) {
-                    long distance = leftPossible.get(lIdx) + rightPossible.get(rIdx);
+                
+                Long target = in.F - leftPossible.get(lIdx);
+                int rIdx = ArrayUtils.binarySearch(loRightIdx, hiRightIdx, rightPossible, target);
+            
+                hiRightIdx = rIdx;
+                
+                long distance = leftPossible.get(lIdx) + rightPossible.get(rIdx);
                     
-                    if (distance > in.F)
-                        continue;
-                    
-                    globalBest = Math.max(distance, globalBest);
-                }
+                if (distance > in.F)
+                    continue;
+                
+                globalBest = Math.max(distance, globalBest);
+            
             }
         }
         

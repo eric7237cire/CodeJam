@@ -139,7 +139,7 @@ public class Main  {
         //Greedy algorithm, proof by induction.  Very easy implementation to a seemingly hard problem
        // codejam.y2010.round_final.candy_store.Main m = new codejam.y2010.round_final.candy_store.Main();
         
-        codejam.y2010.round_final.travel_plan.Main m = new codejam.y2010.round_final.travel_plan.Main();
+        //codejam.y2010.round_final.travel_plan.Main m = new codejam.y2010.round_final.travel_plan.Main();
                  
          //2011 1A
         
@@ -170,8 +170,12 @@ public class Main  {
         //A discrete binary search problem
        // codejam.y2011.round_3.irregular_cakes.Main m = new codejam.y2011.round_3.irregular_cakes.Main();
         
-        //Greedy algorithm
+        //Greedy algorithm (used solution)
         //codejam.y2011.round_3.dire_straights.Main m = new codejam.y2011.round_3.dire_straights.Main();
+        
+        codejam.y2011.round_final.runs.Main m = new codejam.y2011.round_final.runs.Main(); 
+        
+        
         //2012 qual
         //A,B,C  in c++
         //TODO a bit slow

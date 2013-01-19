@@ -18,6 +18,7 @@ import codejam.utils.geometry.Point;
 import codejam.utils.geometry.Polygon;
 import codejam.utils.geometry.Rectangle;
 import codejam.utils.mod.GCD;
+import codejam.utils.utils.ArrayUtils;
 import codejam.utils.utils.LargeNumberUtils;
 
 import com.google.common.base.Preconditions;
@@ -53,6 +54,22 @@ public class UtilsTest
         for(int n = 0; n <= 70; ++n) {
             for(int k = 0; k <= n; ++k) {
                 assertEquals(perm(n,k, mod), perms[n][k]);
+            }
+        }
+    }
+    
+    @Test 
+    public void testCombin() {
+        int mod = 1000003;
+        int max = 450;
+        int[] fact = LargeNumberUtils.generateModFactorial(max, mod);
+        
+        int[][] combin = LargeNumberUtils.generateModedCombin(max, mod);
+        
+        for(int n = 1; n <= max; ++n) {
+            for(int k = 0; k <= n; ++k) {
+                int check = combin[n][k];
+                assertEquals(check, LargeNumberUtils.choose(n,k,mod,fact));
             }
         }
     }
@@ -157,5 +174,32 @@ public class UtilsTest
         assertEquals(Arrays.asList(5), cc.get(3));
     }
     
+    
+    @Test
+    public void testBinarySearch() {
+        List<Integer> list = Arrays.asList(1, 3, 5, 7 ,9 , 12, 12, 14, 
+                15, 19, 21, 30, 31, 31, 31, 40, 40, 41, 42, 50, 51,52,52,54);
+        
+        int index = ArrayUtils.binarySearch(0, list.size()-1, list, 13);
+        assertEquals(12, (int) list.get(index));
+        
+        index = ArrayUtils.binarySearch(0, 0, list, 13);
+        assertEquals(0, index);
+        
+        index = ArrayUtils.binarySearch(10, list.size()-1, list, 13);
+        assertEquals(10, index);
+        
+        index = ArrayUtils.binarySearch(10, list.size()-1, list, 51);
+        assertEquals(51, (int) list.get(index));
+        
+        index = ArrayUtils.binarySearch(1, 10, list, 3);
+        assertEquals(3, (int) list.get(index));
+        
+        index = ArrayUtils.binarySearch(3, 5, list, 12);
+        assertEquals(12, (int) list.get(index));
+        
+        index = ArrayUtils.binarySearch(3, 6, list, 10);
+        assertEquals(9, (int) list.get(index));
+    }
 
 }
