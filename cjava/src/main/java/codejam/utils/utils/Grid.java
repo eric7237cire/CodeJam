@@ -221,6 +221,38 @@ public class Grid<SquareType> {
         return getIndex(row, col);
     }
     
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + cols;
+        
+        result = prime * result + ((grid == null) ? 0 : grid.hashCode());
+        result = prime * result + ((invalidSquare == null) ? 0 : invalidSquare.hashCode());
+        
+        result = prime * result + rows;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Grid other = (Grid) obj;
+        if (cols != other.cols)
+            return false;
+        
+        return Objects.equal(rows, other.rows)
+                && Objects.equal(cols, other.cols) &&
+                Objects.equal(grid, other.grid) &&
+                Objects.equal(invalidSquare, other.invalidSquare);
+                
+    }
+
     public Set<Integer> getIndexesOf(SquareType type) {
         Set<Integer> ret = new HashSet<>();
         for(int i = 0; i < grid.size(); ++i) {

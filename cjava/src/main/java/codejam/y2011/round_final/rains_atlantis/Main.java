@@ -1,6 +1,7 @@
 package codejam.y2011.round_final.rains_atlantis;
 
 import java.util.ArrayDeque;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
@@ -81,6 +82,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 Integer index = waterLevel.getIndex(gridIndex, waterLevel.directions[dir]);
                 if (index == null) 
                     continue;
+                
+                toVisit.add(index);
             }
             
         }
@@ -88,6 +91,53 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         
     }
+    
+    
+        void oldDetermineWaterLevel(Grid<Long> grid, int gridIndex)
+        {
+            //Find cheapest path to edge
+            
+            //level location
+            PriorityQueue< Pair<Long, Integer> > toVisit = new PriorityQueue<>();
+            
+            boolean[] seen = new boolean[grid.getSize()];
+            
+            toVisit.add(new ImmutablePair<>(grid.getEntry(gridIndex), gridIndex));
+            
+            while(!toVisit.isEmpty()) {
+                Pair<Long, Integer> levelIndex = toVisit.poll();
+                
+                if (seen[levelIndex.getRight()])
+                    continue;
+                
+                
+                seen[levelIndex.getRight()] = true;
+                
+                if (grid.minDistanceToEdge(levelIndex.getRight()) == 0) 
+                {
+                    grid.setEntry(gridIndex, Math.max(grid.getEntry(gridIndex), levelIndex.getLeft()));
+                    return;
+                }
+                
+                for(int dir = 0; dir <= 3; ++dir) {
+                    Integer index = grid.getIndex(levelIndex.getRight(), Direction.NORTH.turn(2*dir));
+                    if (index == null)
+                        continue;
+                    
+                    //Max because the water 
+                    toVisit.add(new ImmutablePair<>( Math.max( levelIndex.getLeft(), grid.getEntry(index)), index));
+                }
+                
+            }
+            
+            
+            log.error("ERror");
+            
+        }
+        
+        
+        
+    
     
     void doErosion(Grid<Long> land, Grid<Long> waterLevel, Grid<Long> nextGrid, long maxErosion) {
         for(int index = 0; index < waterLevel.getSize(); ++index) {
@@ -136,6 +186,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             determineWaterLevel(land, waterLevel);
             
+           /* Grid<Long> oldWaterLevel = new Grid<>(land);
+            
+            for(int index = 0; index < waterLevel.getSize(); ++index) {
+                oldDetermineWaterLevel(oldWaterLevel, index);
+            }*/
+            
+            //log.debug("Old water level. is equals? {} {}", oldWaterLevel.equals(waterLevel), oldWaterLevel);
             
             /*
             int maxDistEdge = Math.max( waterLevel.getRows() / 2, waterLevel.getCols() / 2); 
