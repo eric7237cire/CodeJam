@@ -16,6 +16,7 @@ import codejam.utils.utils.DoubleFormat;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
@@ -91,17 +92,43 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         return probWokenUp;
     }
+    
+    class RetInfo {
+        double probWokenUpIfStartAwake;
+        
+        double probWokenUpIfStartAsleep;
+    }
+    
+    public RetInfo evalSuffix(List<Fraction> suffix) {
+        
+        
+        return null;
+    }
+    
+    /**
+     * 
+     * @param in
+     * @return list of probabilities awake, sorted by noisiest/greatest first
+     */
+    List<Fraction> createCombinedActivityList(InputData in)
+    {
+        List<Fraction> ret = Lists.newArrayList();
+        
+        for(int i = 0; i < in.activityList.size(); ++i) {
+            Activity activ = in.activityList.get(i);
+            for(int j = 0; j < activ.limit; ++j) {
+                ret.add(activ.probAwake);
+            }
+        }
+        
+        Collections.sort(ret, Ordering.natural().reverse());
+        
+        return ret;
+    }
 
     public String handleCase(InputData in) {
 
-        Collections.sort(in.activityList, new Comparator<Activity>(){
 
-            @Override
-            public int compare(Activity o1, Activity o2) {
-                return o2.probAwake.compareTo(o1.probAwake);
-            }
-            
-        });
         
        
         double minProbWokenUp = 1;

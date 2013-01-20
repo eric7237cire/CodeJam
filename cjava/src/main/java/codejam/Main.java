@@ -220,6 +220,7 @@ public class Main  {
         //Dijkstras using an indexed priority queue
         //codejam.y2012.round_final.zombie_smash.Main m = new codejam.y2012.round_final.zombie_smash.Main();
         
+        //Probability, optimizing 
         codejam.y2012.round_final.upstairs_downstairs.Main m = new codejam.y2012.round_final.upstairs_downstairs.Main();
         
         String[] files = {};
