@@ -11,7 +11,16 @@ $p_0p_1\dots p_{i-1} p_i (1 - p_{i+1}) * (1 - (1-p_{i+2})*\dots*(1-p_k))$ \newli
 
 $p_0p_1\dots p_{i-1} * [ (1 - p_i) * (1 - (1-p_{i+1})(1-p_{i+2})*\dots*(1-p_k)) + p_i (1 - p_{i+1}) * (1 - (1-p_{i+2})*\dots*(1-p_k)) ] $ \newline
 
-$p_0p_1\dots p_{i-1} * [ (1 - p_i) * (1 - (1-p_{i+1})(1-p_{i+2})*\dots*(1-p_k)) + p_i (1 - p_{i+1}) * (1 - (1-p_{i+2})*\dots*(1-p_k)) ] $
+$p_0p_1\dots p_{i-1} * [ (1 - p_i) - (1 - p_i)(1-p_{i+1})(1-p_{i+2})*\dots*(1-p_k)) + p_i (1 - p_{i+1}) * (1 - (1-p_{i+2})*\dots*(1-p_k)) ] $ \newline
 
+$p_0p_1\dots p_{i-1} * [ (1 - p_i) - (1 - p_i)(1-p_{i+1})(1-p_{i+2})*\dots*(1-p_k)) + p_i (1 - p_{i+1})   - p_i (1 - p_{i+1})(1-p_{i+2})*\dots*(1-p_k)) ] $ \newline
+
+$p_0p_1\dots p_{i-1} * [ (1 - p_i) + p_i (1 - p_{i+1}) - (1 - p_i)(1-p_{i+1})(1-p_{i+2})*\dots*(1-p_k)    - p_i (1 - p_{i+1})(1-p_{i+2})*\dots*(1-p_k)) ] $ \newline
+
+$p_0p_1\dots p_{i-1} * [ (1 - p_ip_{i+1}) - (1 - p_i)(1-p_{i+1})(1-p_{i+2})*\dots*(1-p_k)    - p_i (1 - p_{i+1})(1-p_{i+2})*\dots*(1-p_k)) ] $ \newline
+
+$1-p_i and p_i$ cancel out \newline
+
+$p_0p_1\dots p_{i-1} * [ 1 - p_ip_{i+1} -(1-p_{i+1})(1-p_{i+2})*\dots*(1-p_k)  ] $ \newline
 
 \end{document}
