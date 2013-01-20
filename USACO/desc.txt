@@ -7,3 +7,5 @@ kimbits -- 2d DP, interesting counting problem
 comehome -- dijkstras
 
 cowtour -- all pairs shortest paths
+
+butter -- dijkstras all pairs ; adj list

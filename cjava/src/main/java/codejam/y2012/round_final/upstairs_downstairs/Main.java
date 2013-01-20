@@ -12,7 +12,9 @@ import org.slf4j.LoggerFactory;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
+import codejam.utils.utils.DoubleFormat;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
@@ -21,9 +23,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-       // return new String[] { "sample.in" };
+        return new String[] { "sample.in" };
      //    return new String[] { "B-small-practice.in" };
-         return new String[] { "B-small-practice.in", "B-large-practice.in" };
+       //  return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
     @Override
@@ -57,8 +59,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
     }
     
-    public void evalProbWokenUp(List<Fraction> probAwakeList)
+    public double evalProbWokenUp(List<Fraction> probAwakeList)
     {
+        double probWokenUp = 0;
+        
         for(int i = 0; i < probAwakeList.size(); ++i) {
             double m = 1;
             
@@ -81,7 +85,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             //Any of the subsequent activies woke hero up
             m *= (1 - stayAsleep);
+            
+            probWokenUp += m;
         }
+        
+        return probWokenUp;
     }
 
     public String handleCase(InputData in) {
@@ -90,14 +98,70 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
             @Override
             public int compare(Activity o1, Activity o2) {
-                return o1.probAwake.compareTo(o2.probAwake);
+                return o2.probAwake.compareTo(o1.probAwake);
             }
             
         });
         
        
+        double minProbWokenUp = 1;
         
-        return String.format("Case #%d: %d", in.testCase, 0);
+        for(int q = 0; q <= in.K; ++q) {
+            //Take K-q noisiest activities
+            
+            List<Fraction> chosenActivies = Lists.newArrayList();
+            
+            int noisyLeft = in.K - q;
+            int curActivity = 0;
+            
+            while(noisyLeft > 0) {
+                Activity loudActivity = in.activityList.get(curActivity);
+                int repeats = Math.min(noisyLeft, loudActivity.limit);
+                
+                for(int r = 0; r < repeats; ++r) {
+                    chosenActivies.add(loudActivity.probAwake);
+                }
+                
+                noisyLeft -= repeats;
+                ++curActivity;
+            }
+            
+            int quietLeft = q;
+            curActivity = in.activityList.size() - 1;
+            
+            List<Fraction> chosenQuiet = Lists.newArrayList();
+            
+            while(quietLeft > 0) {
+                Activity quietActivity = in.activityList.get(curActivity);
+                int repeats = Math.min(quietLeft, quietActivity.limit);
+                
+                for(int r = 0; r < repeats; ++r) {
+                    chosenQuiet.add(quietActivity.probAwake);
+                }
+                
+                quietLeft -= repeats;
+                --curActivity;
+            }
+            
+            //Put them in order from loudest to quietest
+            ;
+            
+            chosenActivies.addAll(Lists.reverse(chosenQuiet));
+            
+            for(int ca = 0; ca < chosenActivies.size(); ++ca) {
+                log.debug("ca {} = {}", ca, DoubleFormat.df3.format(chosenActivies.get(ca).doubleValue()));
+            }
+            
+            Preconditions.checkState(chosenActivies.size() == in.K);
+            
+            double probWoken = evalProbWokenUp(chosenActivies);
+            
+            log.debug("Prob {}", probWoken);
+            
+            minProbWokenUp = Math.min(minProbWokenUp, probWoken);
+        }
+        
+        return String.format("Case #%d: %s", in.testCase, DoubleFormat.df6.format(minProbWokenUp));
         
     }
 
