@@ -48,10 +48,7 @@ typedef pair<uint,uint> uu;
 struct node 
 {
 	uvi state;
-	uint distance;
-	string moves;
-
-	node() : state(8, -1), distance(0) {}
+	string moves;	
 };
 
 struct NodeCompByState
@@ -66,11 +63,8 @@ struct NodeCompByDistance
 {
 	bool operator()( const node& lhs, const node& rhs)
 	{
-		assert(lhs.distance == lhs.moves.length() );
-		assert(rhs.distance == rhs.moves.length() );
-
-		if (lhs.distance != rhs.distance)
-			return lhs.distance < rhs.distance;
+		if (lhs.moves.length() != rhs.moves.length())
+			return lhs.moves.length() < rhs.moves.length();
 
 		if (lhs.moves != rhs.moves)
 			return lhs.moves < rhs.moves;
@@ -95,7 +89,7 @@ int main() {
 
 	node start;
 
-	FORE(i, 1,8) start.state[i-1] = i;
+	FORE(i, 1,8) start.state.pb( i );
 
 	toVisit.insert(start);
 
@@ -111,17 +105,15 @@ int main() {
 		if (top.state == target)
 		{
 		    for(int lrIdx = 61; lrIdx < top.moves.length(); lrIdx += 62) {
-                  top.moves.insert(lrIdx, "\n");
-              }
+		        top.moves.insert(lrIdx, "\n");
+            }
               
-			fout << top.distance << endl;
+			fout << top.moves.length() << endl;
 			fout << top.moves << endl;
 			return 0;
 		}
 
-
 		visited.insert(top);
-
 		node topBotSwitch(top);
 
 		//0 1 2 3
@@ -130,9 +122,8 @@ int main() {
 			topBotSwitch.state[i] = top.state[7 - i];
 		FORE(i, 4, 7)
 			topBotSwitch.state[i] = top.state[i - 2*(i-4) - 1];
-		topBotSwitch.distance = top.distance + 1;
+		
 		topBotSwitch.moves.insert( topBotSwitch.moves.end(), 'A');
-
 		toVisit.insert(topBotSwitch);
 
 		node rightShift(top);
@@ -145,13 +136,11 @@ int main() {
 			rightShift.state[i] = top.state[i + 1];
 		rightShift.state[7] = top.state[4];
 
-		rightShift.distance++;
 		rightShift.moves.insert( rightShift.moves.end(), 'B');
 
 		toVisit.insert(rightShift);
 
 		node middleShift(top);
-		middleShift.state = top.state;
 
 		//0 1 2 3  ==>   0 6 1 3  
 		//7 6 5 4  ==>   7 5 2 4
@@ -160,11 +149,9 @@ int main() {
 		middleShift.state[5] = top.state[2];
 		middleShift.state[6] = top.state[5];
 
-		middleShift.distance++;
 		middleShift.moves.insert( middleShift.moves.end(), 'C' );
 
 		toVisit.insert(middleShift);
-
 	}
             
     return 0;
