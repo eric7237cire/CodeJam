@@ -1,9 +1,11 @@
 package codejam.y2012.round_final.upstairs_downstairs;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.math.Fraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,56 +32,72 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         InputData in = new InputData(testCase);
 
         in.N = scanner.nextInt();
-
-        in.cards = Lists.newArrayList();
-
+        in.K = scanner.nextInt();
+        
+        in.prob = new Fraction[in.N];
+        in.limit = new int[in.N];
+        in.activityList = Lists.newArrayList();
+        
         for (int i = 0; i < in.N; ++i) {
-
-            in.cards.add(scanner.nextInt());
+            String[] s = scanner.next().split("/");
+            in.prob[i] =  Fraction.getFraction(Integer.parseInt(s[0]),Integer.parseInt(s[1]));
+            in.limit[i] = scanner.nextInt();
+            in.activityList.add(new Activity(in.prob[i], in.limit[i]));
         }
         return in;
     }
+    
+    class Activity {
+        Fraction probAwake;
+        int limit;
+        public Activity(Fraction probAwake, int limit) {
+            super();
+            this.probAwake = probAwake;
+            this.limit = limit;
+        }
+    }
+    
+    public void evalProbWokenUp(List<Fraction> probAwakeList)
+    {
+        for(int i = 0; i < probAwakeList.size(); ++i) {
+            double m = 1;
+            
+            //Activities before i kept our hero awake
+            for(int j = 0; j < i; ++j ) 
+            {
+                m *= probAwakeList.get(j).doubleValue();
+            }
+            
+            //Activity i put hero asleep
+            m *= (1-probAwakeList.get(i).doubleValue());
+            
+            //Calculate probability that rest of activities
+            //keep hero asleep
+            double stayAsleep = 1;
+            for(int j = i+1; j < probAwakeList.size(); ++j ) 
+            {
+                stayAsleep *= (1-probAwakeList.get(j).doubleValue());
+            }
+            
+            //Any of the subsequent activies woke hero up
+            m *= (1 - stayAsleep);
+        }
+    }
 
-    /**
-     * Looked at the solution.  Basically you can never have
-     * a straight that encompasses another, so use a greedy strategy
-     * to add the card to the shortest straight.
-     */
     public String handleCase(InputData in) {
 
-        List<List<Integer>> straights = Lists.newArrayList();
-        
-        Collections.sort(in.cards);
-        
-        for(int card : in.cards) {
-            
-            List<Integer> shortestStraight = null;
-            int shortestStraightLen = Integer.MAX_VALUE;
-            
-            for( List<Integer> straight : straights) {
-                if (straight.get(straight.size() - 1) == card - 1 && straight.size() < shortestStraightLen)
-                {
-                    shortestStraightLen = straight.size();
-                    shortestStraight = straight;
-                }
+        Collections.sort(in.activityList, new Comparator<Activity>(){
+
+            @Override
+            public int compare(Activity o1, Activity o2) {
+                return o1.probAwake.compareTo(o2.probAwake);
             }
             
-            if (shortestStraight == null) {
-                List<Integer> newStraight = Lists.newArrayList();
-                newStraight.add(card);
-                straights.add(newStraight);
-            } else {
-                
-                shortestStraight.add(card);
-            }
-        }
-    
-        int minSize = Integer.MAX_VALUE;
-        for( List<Integer> straight : straights) {
-            minSize = Math.min(straight.size(), minSize);
-        }
+        });
         
-        return String.format("Case #%d: %d", in.testCase, minSize == Integer.MAX_VALUE ? 0 : minSize);
+       
+        
+        return String.format("Case #%d: %d", in.testCase, 0);
         
     }
 

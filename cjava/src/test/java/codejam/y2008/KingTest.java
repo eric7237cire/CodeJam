@@ -12,8 +12,10 @@ import codejam.utils.datastructures.ArticulationPoint;
 import codejam.utils.datastructures.BitSetInt;
 import codejam.utils.datastructures.GraphInt;
 import codejam.utils.utils.GridChar;
+import codejam.y2008.round_amer.king.BruteForce;
 import codejam.y2008.round_amer.king.InputData;
 import codejam.y2008.round_amer.king.Main;
+import codejam.y2008.round_amer.king.OldSolution;
 
 public class KingTest {
     final static Logger log = LoggerFactory.getLogger(KingTest.class);
@@ -59,7 +61,7 @@ public class KingTest {
         input.row = rows;
         input.col = cols;
         
-        Main m = new Main();
+        
         Main.skipDebug = true;
         
         int max = 1 << rows * cols;
@@ -92,12 +94,12 @@ public class KingTest {
                 
                 grid.setEntry(openSquares.get(i), 'K');
                 
-                String r2 = m.bruteForce(input);
+                String r2 = BruteForce.bruteForce(input);
                 InputData id = new InputData(1);
                 id.col=4;
                 id.row =4;
                 id.grid = new GridChar(grid);
-                String r1 = m.awinsIfEven(id);
+                String r1 = OldSolution.awinsIfEven(id);
                 
                 //
                 if (!r1.equals(r2)) {
