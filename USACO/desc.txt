@@ -3,3 +3,7 @@ agrinet -- Minimum spanning tree
 inflate - 1d DP
 
 kimbits -- 2d DP, interesting counting problem
+
+comehome -- dijkstras
+
+cowtour -- all pairs shortest paths
