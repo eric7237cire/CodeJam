@@ -90,6 +90,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 || smallTreeNode.getSize() > largeTreeNode.getSize())
             return false;
 
+        
+        //Create a bipartite graph that matches children of one sub tree to another
         GraphAdjList graph = new GraphAdjList(largeChildrenCount + smallChildrenCount);
         // Bipartite match from larger tree nodes children to smaller ones
 
@@ -108,6 +110,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         List<Node> smChildNodes = new ArrayList<Node>(
                 smallTreeNode.getChildren());
 
+        //For all combinations of children, find out if their children are isomorphic
         for (int largeChildNodeIdx = 0; largeChildNodeIdx < largeChildrenCount; ++largeChildNodeIdx) {
             for (int smallChildNodeIdx = 0; smallChildNodeIdx < smallChildrenCount; ++smallChildNodeIdx) {
                 Node lc = lcChildNodes.get(largeChildNodeIdx);

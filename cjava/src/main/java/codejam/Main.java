@@ -31,8 +31,11 @@ public class Main  {
         
         //2008 apac semis
         //A and B are in c++        
-        //C++ for millionaire exists that is very fast 
+        //C++ for millionaire exists that is very fast
+        //Probability ; Making a problem discrete that appears continous
         //codejam.y2008.round_apac.millionaire.Main m = new codejam.y2008.round_apac.millionaire.Main();
+        
+        //Subtree isomorhisme.  Requires multiple bipartite matchings recursively down the tree
         //codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
         
         

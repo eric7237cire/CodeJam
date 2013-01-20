@@ -56,31 +56,32 @@ public class GraphAdjList {
      * @param input
      * @return
      */
-    public List<Pair<Integer,Integer>> getMaxMatching(List<Integer> lhsNodes, List<Integer> rhsNodes) {
-      //Right to Left
+    public List<Pair<Integer, Integer>> getMaxMatching(List<Integer> lhsNodes, List<Integer> rhsNodes) {
+        // Right to Left
         BiMap<Integer, Integer> matchesMap = HashBiMap.create();
 
-        //Right hand side of the bipartite graph
+        // Right hand side of the bipartite graph
         boolean[] seen;
-        
+
         int count = 0;
-        for(int lhsNodeIdx = 0; lhsNodeIdx < lhsNodes.size(); ++lhsNodeIdx) {
+        for (int lhsNodeIdx = 0; lhsNodeIdx < lhsNodes.size(); ++lhsNodeIdx) {
             seen = new boolean[rhsNodes.size()];
-            
+
             if (findAugmentingPath(lhsNodes.get(lhsNodeIdx), rhsNodes, seen, matchesMap)) {
                 ++count;
             }
-            
-            //printAugmentingPaths(input);
+
+            // printAugmentingPaths(input);
         }
-        
-        List<Pair<Integer,Integer>> matches = new ArrayList<>();
-        for(Map.Entry<Integer,Integer> entry : matchesMap.entrySet()) {
+
+        List<Pair<Integer, Integer>> matches = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : matchesMap.entrySet()) {
             matches.add(new ImmutablePair<>(entry.getValue(), entry.getKey()));
         }
         Preconditions.checkState(count == matches.size());
         return matches;
     }
+    
     private boolean findAugmentingPath(int lhsVertex, List<Integer> rhsNodes, boolean[] seen, BiMap<Integer, Integer> matchesMap) {
         /* 
          * The vertex is part of the left hand side

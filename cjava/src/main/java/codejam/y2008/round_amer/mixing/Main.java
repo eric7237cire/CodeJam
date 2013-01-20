@@ -66,19 +66,28 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         for(String mixture : input.ingredients.keySet()) {
             List<String> ingredients = input.ingredients.get(mixture);
             
+            /**
+             * Assign a number to each mixture if necesary
+             * and return it
+             */
             int mixNum = getNum(mixture, strIndex);
             
             for(String ingredient : ingredients) {
+                //Not a mixture
                 if (ingredient.matches("[a-z]*")) {
                     continue;
                 }
                 
                 int ingNum = getNum(ingredient, strIndex);
+                /**
+                 * Create a connection in the graph
+                 */
                 graph.addConnection(mixNum,ingNum);
             }
             
         }
         
+        //The first node is the mixture we are making
         if (graph.getNeighbors(1) == null || graph.getNeighbors(1).isEmpty()) {
             return String.format("Case #%d: %d", input.testCase, 1);
         }
@@ -92,12 +101,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         toVisit.add(1);
         
-        //int maxBowlsNeeded = 0;
         
         while(!toVisit.isEmpty()) {
             Integer nodeInt = toVisit.peek();
             TreeInt<Integer>.Node node = tree.getNodes().get(nodeInt);
             
+            /**
+             * Base case, we know we need 1 bowl
+             */
             if (node.getChildren().isEmpty()) {
                 node.setData(1);
                 visited.add(nodeInt);
@@ -105,6 +116,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 continue;
             }
             
+            /**
+             * Make sure children have been visited first
+             */
             Iterator<TreeInt<Integer>.Node> childIt = node.getChildren().iterator(); 
             TreeInt<Integer>.Node child = childIt.next(); 
             if (!visited.contains(child.getId())) {
@@ -132,7 +146,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             //Mix most demanding ingredient first
             for(int ing = 0; ing < bowlsNeeded.size(); ++ing) {
                 Preconditions.checkState(bowlsNeeded.get(ing) > 0);
-                //To mix this ingredient, we need ing bowls to stock prereqs already mixed + 
+                //To mix this ingredient, we need ing bowls to stock prereqs ingredients already mixed + 
                 //the temporary need
                 int usedBowls = ing + bowlsNeeded.get(ing);
                 bowlsUsed = Math.max(usedBowls, bowlsUsed);
