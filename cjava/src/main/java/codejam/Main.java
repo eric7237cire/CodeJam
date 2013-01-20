@@ -21,13 +21,13 @@ public class Main  {
         
         //2008 amer semis
         
-        //codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
-        //codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
+       // codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
+       // codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
         //codejam.y2008.round_amer.test_passing.Main m = new codejam.y2008.round_amer.test_passing.Main();
         
         //TODO implement the real solution and compare.  Try polynomial matching algo for non bipartite
         //Ours was hacky cracky that worked most of the time
-        //codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();
+        codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();
         
         //2008 apac semis
         //A and B are in c++        
@@ -219,7 +219,7 @@ public class Main  {
         //2012 Final
         
         //Dijkstras using an indexed priority queue
-        codejam.y2012.round_final.zombie_smash.Main m = new codejam.y2012.round_final.zombie_smash.Main();
+        //codejam.y2012.round_final.zombie_smash.Main m = new codejam.y2012.round_final.zombie_smash.Main();
         
         
         

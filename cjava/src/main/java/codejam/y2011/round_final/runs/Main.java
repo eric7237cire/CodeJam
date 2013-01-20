@@ -13,8 +13,6 @@ import codejam.utils.utils.LargeNumberUtils;
 
 import com.google.common.base.Preconditions;
 import com.google.common.math.IntMath;
-import com.google.common.math.LongMath;
-import com.google.common.primitives.Ints;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 

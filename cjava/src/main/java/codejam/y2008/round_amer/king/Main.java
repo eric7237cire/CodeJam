@@ -15,8 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.ArticulationPoint;
+import codejam.utils.datastructures.EdmondsMatching;
+import codejam.utils.datastructures.Graph;
 import codejam.utils.datastructures.GraphInt;
 import codejam.utils.datastructures.TreeInt;
+import codejam.utils.datastructures.UndirectedGraph;
 import codejam.utils.datastructures.TreeInt.Node;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
@@ -374,10 +377,69 @@ public class Main implements TestCaseHandler<InputData>,
 
     @Override
     public String handleCase(InputData input) {
-        return  awinsIfEven(input);
+        return  tryCorrectSolution(input);
         //log.error(str);
         //return bruteForce(input);
     }
+    
+    public String tryCorrectSolution(InputData in) {
+        /**
+         * Build graph
+         */
+        //Graph graph = new Graph(in.grid.getSize());
+        UndirectedGraph<Integer> unGraph = new UndirectedGraph<>();
+        UndirectedGraph<Integer> unGraphWithoutKing = new UndirectedGraph<>();
+                
+        for(int gridIndex = 0; gridIndex < in.grid.getSize(); ++gridIndex) 
+        {
+            unGraph.addNode(gridIndex);
+            unGraphWithoutKing.addNode(gridIndex);
+            char curSq = in.grid.getEntry(gridIndex);
+        
+            if (curSq == '#')
+                continue;
+            
+            for(Direction dir : Direction.values()) {
+                Integer childIdx = in.grid.getIndex(gridIndex,dir);
+                if (childIdx == null)
+                    continue;
+                
+                unGraph.addNode(childIdx);
+                unGraphWithoutKing.addNode(childIdx);
+                
+                char adjSq = in.grid.getEntry(childIdx);
+                
+                if (adjSq == '#')
+                    continue;
+                
+                unGraph.addEdge(gridIndex, childIdx);
+                
+                if (curSq != 'K' && adjSq != 'K')
+                    unGraphWithoutKing.addEdge(gridIndex, childIdx);
+            }
+        }
+        
+         
+        UndirectedGraph<Integer> match = EdmondsMatching.maximumMatching(unGraph);
+        UndirectedGraph<Integer> matchNoKing = EdmondsMatching.maximumMatching(unGraphWithoutKing);
+        
+        int matchCount = countEdgesInMatching(match);
+        int matchCountNoKing = countEdgesInMatching(matchNoKing);
+        return String.format("Case #%d: %s", in.testCase, matchCount > matchCountNoKing ? "A" : "B");
+        
+        
+    }
+    
+    int countEdgesInMatching(UndirectedGraph<Integer> uGraph) {
+        Iterator<Integer> it = uGraph.iterator();
+        int count = 0;
+        while(it.hasNext()) {
+            count += uGraph.edgesFrom(it.next()).size();
+        }
+        
+        return count / 2;
+    }
+    
     public String bruteForce(InputData input) {
         Set<Integer> kingLocs = input.grid.getIndexesOf('K');
         int kingLoc = kingLocs.iterator().next();
@@ -400,6 +462,7 @@ public class Main implements TestCaseHandler<InputData>,
         
         int maxDepth = 0;
         
+        //Build list of possibilities
         while(!toVisit.isEmpty()) {
             
             TreeInt<Boolean>.Node thisNode = toVisit.poll();

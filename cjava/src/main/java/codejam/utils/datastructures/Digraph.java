@@ -49,6 +49,7 @@ public class Digraph {
      * Create an empty digraph with V vertices.
      * @throws java.lang.IllegalArgumentException if V < 0
      */
+    @SuppressWarnings("unchecked")
     public Digraph(int V) {
         if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
         this.V = V;
