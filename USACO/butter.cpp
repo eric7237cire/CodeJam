@@ -46,12 +46,13 @@ typedef pair<uint,uint> uu;
 
 class edge
 {
+public:
     uint weight;
     uint to;
     
     edge(uint tto, uint wweight) : to(tto), weight(wweight) 
     {}
-}
+};
 
 int main() {
     
@@ -80,23 +81,23 @@ int main() {
 	FOR(conPath, 0, C)
 	{
 	    fin >> p1 >> p2 >> d;
-	    adjList[p1-1].pb( edge( p2, d ) );
-	    adjList[p2-1].pb( edge( p1, d ) );
+		//Convert to 0 based index
+	    adjList[p1-1].pb( edge( p2-1, d ) );
+	    adjList[p2-1].pb( edge( p1-1, d ) );
 	}
 	
 	
 	
-	uint minTotal = notConnected*10;
+	uint minTotal = notConnected;
 	
-    FOR(cIdx, 0, N)
+    FOR(butterPasture, 0, P)
     {
-        uint cowPasture = cowLocs[cIdx] - 1;
         uvi distToPast(P, notConnected);
         
-        distToPast[ cowPasture ] = 0;
+        distToPast[ butterPasture ] = 0;
         
         set < uu > toVisit;
-        toVisit.insert( mp(0, cowPasture) );
+        toVisit.insert( mp(0, butterPasture) );
         
         while(!toVisit.empty())
         {
@@ -127,20 +128,14 @@ int main() {
         
         FOR(cIdx, 0, N)
         {
-            total += distToPast[ 
-        
-        uint distToPast = dist[p][ cowLocs[cowLocIdx] - 1 ];
-        total += distToPast;
-        
-        //if (p==3)
-        {
-         //   cout << " cow " << cowLocIdx+1 << " dist " << distToPast << endl;
+            total += distToPast[ cowLocs[cIdx] - 1 ];
         }
+        
+        minTotal = min(minTotal, total);
+        
+        
     }
-    
-    minTotal = min(minTotal, total);
-
-	
+    	
 	fout << minTotal << endl;
 	
 	
