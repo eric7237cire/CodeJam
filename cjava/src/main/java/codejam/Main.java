@@ -179,7 +179,7 @@ public class Main  {
         //codejam.y2011.round_final.runs.Main m = new codejam.y2011.round_final.runs.Main(); 
         
         //Simulation with a trick to do batch processing.  TODO look at proof via paths / tree justifying the algo
-        codejam.y2011.round_final.rains_atlantis.Main m = new codejam.y2011.round_final.rains_atlantis.Main();
+        //codejam.y2011.round_final.rains_atlantis.Main m = new codejam.y2011.round_final.rains_atlantis.Main();
         
         
         //2012 qual
@@ -212,6 +212,11 @@ public class Main  {
         
         //Did not solve.  FSM intersection / dynamic programming.  TODO Look again why it works        
         //codejam.y2012.round_2.descending_dark.Main m = new codejam.y2012.round_2.descending_dark.Main();
+        
+        //2012 Final
+        
+        codejam.y2012.round_final.zombie_smash.Main m = new codejam.y2012.round_final.zombie_smash.Main();
+        
         
         
         String[] files = {};

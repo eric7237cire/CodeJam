@@ -1,4 +1,4 @@
-package codejam.y2011.round_3.dire_straights;
+package codejam.y2012.round_final.shifting_paths;
 
 import java.util.Collections;
 import java.util.List;
@@ -19,9 +19,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-        return new String[] { "sample.in" };
+       // return new String[] { "sample.in" };
      //    return new String[] { "B-small-practice.in" };
-       // return new String[] { "B-small-practice.in", "B-large-practice.in" };
+         return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
     @Override
