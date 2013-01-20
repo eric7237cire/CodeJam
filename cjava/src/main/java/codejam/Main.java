@@ -215,6 +215,7 @@ public class Main  {
         
         //2012 Final
         
+        //Dijkstras using an indexed priority queue
         codejam.y2012.round_final.zombie_smash.Main m = new codejam.y2012.round_final.zombie_smash.Main();
         
         
