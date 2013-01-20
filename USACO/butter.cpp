@@ -44,6 +44,14 @@ typedef pair<uint,uint> uu;
 #define contains(c,x) ((c).find(x) != (c).end()) 
 #define cpresent(c,x) (find(all(c),x) != (c).end()) 
 
+class edge
+{
+    uint weight;
+    uint to;
+    
+    edge(uint tto, uint wweight) : to(tto), weight(wweight) 
+    {}
+}
 
 int main() {
     
@@ -55,9 +63,10 @@ int main() {
     fin >> N >> P >> C;
     
 	const uint notConnected = 1000000000;
-	int nodeCount = P;
 	
-	uvvi dist(nodeCount, uvi(nodeCount, notConnected));
+	typedef vector< vector< edge > > AdjList;
+	
+	AdjList adjList(P);
 	
 	uvi cowLocs(N, 0);
 	
@@ -71,49 +80,66 @@ int main() {
 	FOR(conPath, 0, C)
 	{
 	    fin >> p1 >> p2 >> d;
-	    dist[p1-1][p2-1] = d;
-	    dist[p2-1][p1-1] = d;
+	    adjList[p1-1].pb( edge( p2, d ) );
+	    adjList[p2-1].pb( edge( p1, d ) );
 	}
 	
-	FOR(n, 0, P)
-	    dist[n][n] = 0;
 	
-cout << "Start " << endl;	
-FOR(k, 0, P) {
-    cout << "k: " << k << endl;
-    FOR(i, 0, P) FOR(j, 0, P) {
-	    if (j==k || j==i)
-	        continue;
-	    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
-	}
-}
-
-cout << "Start 2" << endl;	
-	FOR(i, 0, P) FOR(j, 0, P) 
-	{
-	    //cout << "Distance " << i+1 << " " << j+1 << " dist " << dist[i][j] << endl;    
-	}
 	
 	uint minTotal = notConnected*10;
 	
-	//for all pastures, calculate max distance to cows
-	FOR(p, 0, P)
-	{
-	    uint total = 0;
-	    //cout << "Pasture " << p << endl;
-	    FOR(cowLocIdx, 0, N)
-	    {
-	        uint distToPast = dist[p][ cowLocs[cowLocIdx] - 1 ];
-	        total += distToPast;
-	        
-	        //if (p==3)
-	        {
-	         //   cout << " cow " << cowLocIdx+1 << " dist " << distToPast << endl;
-	        }
-	    }
-	    
-	    minTotal = min(minTotal, total);
-	}
+    FOR(cIdx, 0, N)
+    {
+        uint cowPasture = cowLocs[cIdx] - 1;
+        uvi distToPast(P, notConnected);
+        
+        distToPast[ cowPasture ] = 0;
+        
+        set < uu > toVisit;
+        toVisit.insert( mp(0, cowPasture) );
+        
+        while(!toVisit.empty())
+        {
+            set<uu>::iterator top = toVisit.begin();
+            
+            uint distCurToCow = top->first;
+            uint curPasture = top->second;
+            
+            toVisit.erase(top);
+            
+            FOR(adjIdx, 0, adjList[curPasture].size())
+            {
+                const edge& curEdge = adjList[curPasture][adjIdx];
+                
+                uint distAdjToCow = distCurToCow + curEdge.weight;
+                
+                if (distAdjToCow < distToPast[curEdge.to])
+                {
+                    //replace node in queue
+                    toVisit.erase( mp( distToPast[curEdge.to], curEdge.to ) );
+                    distToPast[ curEdge.to ] = distAdjToCow;
+                    toVisit.insert( mp( distToPast[curEdge.to], curEdge.to ) );
+                }
+            }
+        }
+        
+        uint total = 0;
+        
+        FOR(cIdx, 0, N)
+        {
+            total += distToPast[ 
+        
+        uint distToPast = dist[p][ cowLocs[cowLocIdx] - 1 ];
+        total += distToPast;
+        
+        //if (p==3)
+        {
+         //   cout << " cow " << cowLocIdx+1 << " dist " << distToPast << endl;
+        }
+    }
+    
+    minTotal = min(minTotal, total);
+
 	
 	fout << minTotal << endl;
 	
