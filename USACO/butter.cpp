@@ -77,13 +77,18 @@ int main() {
 	
 	FOR(n, 0, P)
 	    dist[n][n] = 0;
-		
-	FOR(k, 0, P) FOR(i, 0, P) FOR(j, 0, P) {
+	
+cout << "Start " << endl;	
+FOR(k, 0, P) {
+    cout << "k: " << k << endl;
+    FOR(i, 0, P) FOR(j, 0, P) {
 	    if (j==k || j==i)
 	        continue;
 	    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
 	}
-	
+}
+
+cout << "Start 2" << endl;	
 	FOR(i, 0, P) FOR(j, 0, P) 
 	{
 	    //cout << "Distance " << i+1 << " " << j+1 << " dist " << dist[i][j] << endl;    
