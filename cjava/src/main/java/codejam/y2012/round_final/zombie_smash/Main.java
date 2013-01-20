@@ -146,15 +146,18 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 if (s.lastZombieSmashed != null && z == s.lastZombieSmashed)
                     continue;
 
-                PointInt loc = s.
+                PointInt fromLoc = s.lastZombieSmashed == null ? new PointInt(0,0) : in.zombieLoc[s.lastZombieSmashed];
                 
-                int earliest_arrival_time = s.timeLastZombieSmashed + Math.max(750, gridTimeToTravel(in.zombieLoc[s.lastZombieSmashed], in.zombieLoc[z]));
+                int earliest_arrival_time = s.timeLastZombieSmashed +
+                Math.max(750, gridTimeToTravel( fromLoc, in.zombieLoc[z]));
                 if (earliest_arrival_time <= in.zombieAppearance[z] + 1000) {
                     int earliest_smash_time = Math.max(in.zombieAppearance[z], earliest_arrival_time);
 
                     State updatedState = new State(earliest_smash_time, z, s.numberZombiesAlreadySmashed + 1);
                     int index = stateToIndex[updatedState.lastZombieSmashed][updatedState.numberZombiesAlreadySmashed];
-                    Q.decreaseKey(index, updatedState);
+                    
+                    if (Q.contains(index) && Q.keyOf(index).timeLastZombieSmashed > earliest_smash_time)
+                        Q.decreaseKey(index, updatedState);
                 }
 
             }
