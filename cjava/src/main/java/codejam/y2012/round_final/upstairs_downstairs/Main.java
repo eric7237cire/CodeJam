@@ -129,6 +129,50 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     public String handleCase(InputData in) {
 
 
+        List<Fraction> combinedList = createCombinedActivityList(in);
+        
+        //Prefixes size 0 to k
+        
+        double[] prefixProbKeptAwake = new double[in.K+1];
+        
+        prefixProbKeptAwake[0] = 1;
+        
+        for(int prefixSize = 1; prefixSize <= in.K; ++prefixSize)
+        {
+            double p = combinedList.get(prefixSize-1).doubleValue(); 
+            prefixProbKeptAwake[prefixSize] = prefixProbKeptAwake[prefixSize-1] 
+                    * p;
+            
+        }
+        
+        /**
+         * Precalulate for the quitest activities at the end.
+         * Calculate the probability if already asleep, hero is woken up.
+         * 
+         * To do that, we need the probability that he stays asleep which
+         * is (1-p0)(1-p1)(1-p2)...
+         * 
+         * 1 - that is the probability he will be woken up
+         *         
+         */
+ 
+        double[] suffixProbSleepToWokenUp = new double[in.K+1];
+        
+        //  (1-p0)(1-p1)...
+        double[] suffixProbStayAsleep = new double[in.K+1];
+        suffixProbStayAsleep[0] = 1;
+        suffixProbSleepToWokenUp[0] = 0;
+        
+        for(int suffixSize = 1; suffixSize <= in.K; ++suffixSize)
+        {
+            Fraction p = combinedList.get(combinedList.size() - suffixSize);
+            suffixProbStayAsleep[suffixSize] = suffixProbStayAsleep[suffixSize-1] * p.doubleValue();
+            
+            suffixProbSleepToWokenUp[suffixSize] = 1 - suffixProbStayAsleep[suffixSize]; 
+        }
+        
+        double[] suffixProbAwakeToWokenUp = new double[in.K+1];
+        
         
        
         double minProbWokenUp = 1;
