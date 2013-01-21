@@ -36,7 +36,7 @@
    <logger name="codejam.y2008" level="DEBUG"/>
    <logger name="codejam.y2008.round_emea" level="INFO"/>
    <logger name="codejam.y2009" level="DEBUG"/>
-   <logger name="rcodejam.y2012" level="DEBUG"/>
+   <logger name="codejam.y2012" level="DEBUG"/>
    <logger name="codejam.y2011" level="DEBUG"/>
    <logger name="codejam.y2010" level="DEBUG"/>
    <logger name="codejam" level="INFO"/>

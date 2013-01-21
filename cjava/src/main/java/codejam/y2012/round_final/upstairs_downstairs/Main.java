@@ -133,6 +133,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         //Prefixes size 0 to k
         
+        
         double[] prefixProbKeptAwake = new double[in.K+1];
         
         prefixProbKeptAwake[0] = 1;
@@ -154,83 +155,53 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
          * 
          * 1 - that is the probability he will be woken up
          *         
-         */
- 
+         */ 
         double[] suffixProbSleepToWokenUp = new double[in.K+1];
+        
+
+        /**
+         * This will be 
+         * 
+         * p(falls alseep) * p(woken up later) +
+         * p(stays awake) * p( awake->woken up later)
+         */
+        double[] suffixProbAwakeToWokenUp = new double[in.K+1];
         
         //  (1-p0)(1-p1)...
         double[] suffixProbStayAsleep = new double[in.K+1];
+        double[] sufficProbStayAwake   = new double[in.K+1];
+        
+        double[] suffixProbAwakeToNotWokeup = new double[in.K+1];
+        
+        
         suffixProbStayAsleep[0] = 1;
         suffixProbSleepToWokenUp[0] = 0;
+        suffixProbAwakeToWokenUp[0] = 0;
+        suffixProbAwakeToNotWokeup[0] = 1;
         
         for(int suffixSize = 1; suffixSize <= in.K; ++suffixSize)
         {
             Fraction p = combinedList.get(combinedList.size() - suffixSize);
-            suffixProbStayAsleep[suffixSize] = suffixProbStayAsleep[suffixSize-1] * p.doubleValue();
+            suffixProbStayAsleep[suffixSize] = suffixProbStayAsleep[suffixSize-1] * (1-p.doubleValue());
             
-            suffixProbSleepToWokenUp[suffixSize] = 1 - suffixProbStayAsleep[suffixSize]; 
+            suffixProbSleepToWokenUp[suffixSize] = 1 - suffixProbStayAsleep[suffixSize];
+            
+
+            suffixProbAwakeToWokenUp[suffixSize] = (1-p.doubleValue()) * suffixProbSleepToWokenUp[suffixSize-1]
+                    + p.doubleValue() * suffixProbAwakeToWokenUp[suffixSize-1];
+            
+            suffixProbAwakeToNotWokeup[suffixSize] = (1-p.doubleValue()) * suffixProbStayAsleep[suffixSize-1]
+                    + p.doubleValue() * suffixProbAwakeToNotWokeup[suffixSize-1];
+            
+            log.debug("Prob awke-->woken up {}  awake -> not woken up {}",
+                    suffixProbAwakeToWokenUp[suffixSize],
+                    suffixProbAwakeToNotWokeup[suffixSize]        
+                    );
+            
         }
         
-        double[] suffixProbAwakeToWokenUp = new double[in.K+1];
         
-        
-       
-        double minProbWokenUp = 1;
-        
-        for(int q = 0; q <= in.K; ++q) {
-            //Take K-q noisiest activities
-            
-            List<Fraction> chosenActivies = Lists.newArrayList();
-            
-            int noisyLeft = in.K - q;
-            int curActivity = 0;
-            
-            while(noisyLeft > 0) {
-                Activity loudActivity = in.activityList.get(curActivity);
-                int repeats = Math.min(noisyLeft, loudActivity.limit);
-                
-                for(int r = 0; r < repeats; ++r) {
-                    chosenActivies.add(loudActivity.probAwake);
-                }
-                
-                noisyLeft -= repeats;
-                ++curActivity;
-            }
-            
-            int quietLeft = q;
-            curActivity = in.activityList.size() - 1;
-            
-            List<Fraction> chosenQuiet = Lists.newArrayList();
-            
-            while(quietLeft > 0) {
-                Activity quietActivity = in.activityList.get(curActivity);
-                int repeats = Math.min(quietLeft, quietActivity.limit);
-                
-                for(int r = 0; r < repeats; ++r) {
-                    chosenQuiet.add(quietActivity.probAwake);
-                }
-                
-                quietLeft -= repeats;
-                --curActivity;
-            }
-            
-            //Put them in order from loudest to quietest
-            ;
-            
-            chosenActivies.addAll(Lists.reverse(chosenQuiet));
-            
-            for(int ca = 0; ca < chosenActivies.size(); ++ca) {
-                log.debug("ca {} = {}", ca, DoubleFormat.df3.format(chosenActivies.get(ca).doubleValue()));
-            }
-            
-            Preconditions.checkState(chosenActivies.size() == in.K);
-            
-            double probWoken = evalProbWokenUp(chosenActivies);
-            
-            log.debug("Prob {}", probWoken);
-            
-            minProbWokenUp = Math.min(minProbWokenUp, probWoken);
-        }
+        double minProbWokenUp = 37;
         
         return String.format("Case #%d: %s", in.testCase, DoubleFormat.df6.format(minProbWokenUp));
         
