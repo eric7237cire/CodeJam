@@ -4,6 +4,8 @@
 \usepackage[top=2mm, bottom=2mm, left=2mm, right=30mm]{geometry}
 \begin{document}
 
+In the example, showing why prefix/suffix works
+
 
 $p_0p_1\dots p_{i-1} (1 - p_i) * (1 - (1-p_{i+1})(1-p_{i+2})*\dots*(1-p_k)) + $ \newline
 
@@ -22,5 +24,16 @@ $p_0p_1\dots p_{i-1} * [ (1 - p_ip_{i+1}) - (1 - p_i)(1-p_{i+1})(1-p_{i+2})*\dot
 $1-p_i and p_i$ cancel out \newline
 
 $p_0p_1\dots p_{i-1} * [ 1 - p_ip_{i+1} -(1-p_{i+1})(1-p_{i+2})*\dots*(1-p_k)  ] $ \newline
+
+Prefix/suffix
+
+$ (1-p_0) * ( 1 - (1-p_1)(1-p_2)(1-p_3)(1-p_4)(1-p_5) $ \newline
+$ p0(1-p_1) * ( 1 - (1-p_2)(1-p_3)(1-p_4)(1-p_5) $ \newline
+$ p0p1(1-p_2) * ( 1 - (1-p_3)(1-p_4)(1-p_5) $ \newline
+$ p0p1p2(1-p_3) * ( 1 - (1-p_4)(1-p_5) $ \newline
+$ p0p1p2p3(1-p_4) * ( 1 - (1-p_5) $ \newline
+
+
+If suffix is $p_3,p_4,p_5$ then we multiply $1-p_0, p0*1-p_1*p0p1*(1-p2)$
 
 \end{document}

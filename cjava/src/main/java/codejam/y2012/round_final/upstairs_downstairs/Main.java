@@ -60,50 +60,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
     }
     
-    public double evalProbWokenUp(List<Fraction> probAwakeList)
-    {
-        double probWokenUp = 0;
-        
-        for(int i = 0; i < probAwakeList.size(); ++i) {
-            double m = 1;
-            
-            //Activities before i kept our hero awake
-            for(int j = 0; j < i; ++j ) 
-            {
-                m *= probAwakeList.get(j).doubleValue();
-            }
-            
-            //Activity i put hero asleep
-            m *= (1-probAwakeList.get(i).doubleValue());
-            
-            //Calculate probability that rest of activities
-            //keep hero asleep
-            double stayAsleep = 1;
-            for(int j = i+1; j < probAwakeList.size(); ++j ) 
-            {
-                stayAsleep *= (1-probAwakeList.get(j).doubleValue());
-            }
-            
-            //Any of the subsequent activies woke hero up
-            m *= (1 - stayAsleep);
-            
-            probWokenUp += m;
-        }
-        
-        return probWokenUp;
-    }
     
-    class RetInfo {
-        double probWokenUpIfStartAwake;
-        
-        double probWokenUpIfStartAsleep;
-    }
-    
-    public RetInfo evalSuffix(List<Fraction> suffix) {
-        
-        
-        return null;
-    }
     
     /**
      * 
@@ -133,18 +90,46 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         //Prefixes size 0 to k
         
+        /**
+         * We will calculate for each prefix the probability of 
+         * the 3 possible states, awake, asleep, and awoke.
+         * 
+         * Awake means he was never asleep.
+         * Asleep means he was awake at most once
+         * Awoke is when he goes from asleep to awake
+         */
+        double[] prefixProbAwake = new double[in.K+1];
+        double[] prefixProbAsleep = new double[in.K+1];
+        double[] prefixProbAwoke  = new double[in.K+1];
         
-        double[] prefixProbKeptAwake = new double[in.K+1];
-        
-        prefixProbKeptAwake[0] = 1;
+        prefixProbAwake[0] = 1;
+        prefixProbAsleep[0] = 0;
+        prefixProbAwoke[0] = 0;
         
         for(int prefixSize = 1; prefixSize <= in.K; ++prefixSize)
         {
-            double p = combinedList.get(prefixSize-1).doubleValue(); 
-            prefixProbKeptAwake[prefixSize] = prefixProbKeptAwake[prefixSize-1] 
-                    * p;
+            double p = combinedList.get(prefixSize-1).doubleValue();
             
+            prefixProbAwake[prefixSize] =
+                    prefixProbAwake[prefixSize-1] * p;             
+            
+            prefixProbAsleep[prefixSize] = (1 - p) * prefixProbAwake[prefixSize-1]
+                    + (1-p) * prefixProbAsleep[prefixSize-1];
+            
+            prefixProbAwoke[prefixSize] = prefixProbAsleep[prefixSize-1]*p +
+                    prefixProbAwoke[prefixSize-1];
+            
+            /*log.debug("Prefix size {}.  p act {} pAsleep {} pAwake {} pAwoke {}",
+                    prefixSize,
+                    DoubleFormat.df3.format(p),
+                   DoubleFormat.df3.format( prefixProbAsleep[prefixSize] ),
+                   DoubleFormat.df3.format(prefixProbAwake[prefixSize]),
+                           DoubleFormat.df3.format(prefixProbAwoke[prefixSize]));
+            */
+                        
         }
+        
+      
         
         /**
          * Precalulate for the quitest activities at the end.
@@ -169,15 +154,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         //  (1-p0)(1-p1)...
         double[] suffixProbStayAsleep = new double[in.K+1];
-        double[] sufficProbStayAwake   = new double[in.K+1];
-        
-        double[] suffixProbAwakeToNotWokeup = new double[in.K+1];
         
         
         suffixProbStayAsleep[0] = 1;
         suffixProbSleepToWokenUp[0] = 0;
         suffixProbAwakeToWokenUp[0] = 0;
-        suffixProbAwakeToNotWokeup[0] = 1;
         
         for(int suffixSize = 1; suffixSize <= in.K; ++suffixSize)
         {
@@ -190,20 +171,38 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             suffixProbAwakeToWokenUp[suffixSize] = (1-p.doubleValue()) * suffixProbSleepToWokenUp[suffixSize-1]
                     + p.doubleValue() * suffixProbAwakeToWokenUp[suffixSize-1];
             
-            suffixProbAwakeToNotWokeup[suffixSize] = (1-p.doubleValue()) * suffixProbStayAsleep[suffixSize-1]
-                    + p.doubleValue() * suffixProbAwakeToNotWokeup[suffixSize-1];
             
-            log.debug("Prob awke-->woken up {}  awake -> not woken up {}",
-                    suffixProbAwakeToWokenUp[suffixSize],
-                    suffixProbAwakeToNotWokeup[suffixSize]        
+            log.debug("Prob awke-->woken up {} ",
+                    suffixProbAwakeToWokenUp[suffixSize]        
                     );
             
         }
         
         
-        double minProbWokenUp = 37;
+        double minProbWokenUp = 9000;
         
-        return String.format("Case #%d: %s", in.testCase, DoubleFormat.df6.format(minProbWokenUp));
+        /**
+         * Where the magic happens.
+         * 
+         * We take the probability of each state from the prefix and 
+         * multiply it by the values calculated for suffix asleep-->woken and awake-->woken
+         * to get pisto presto, the probability he is woken.
+         * 
+         * We also add in the probability that the prefix itself woke him up 
+         */
+        for(int prefixSize = 0; prefixSize < in.K; ++prefixSize) {
+            int suffixSize = in.K - prefixSize;
+            
+            double prob = prefixProbAwake[prefixSize] * suffixProbAwakeToWokenUp[suffixSize]
+                    + prefixProbAsleep[prefixSize] * suffixProbSleepToWokenUp[suffixSize]
+                            + prefixProbAwoke[prefixSize];
+            
+            minProbWokenUp = Math.min(minProbWokenUp, prob);
+        }
+        
+        String ret =  String.format("Case #%d: %s", in.testCase, DoubleFormat.df6.format(minProbWokenUp));
+      
+        return ret;
         
     }
 
