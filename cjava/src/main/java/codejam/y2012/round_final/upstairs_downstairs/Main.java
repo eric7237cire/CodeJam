@@ -1,7 +1,6 @@
 package codejam.y2012.round_final.upstairs_downstairs;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -14,7 +13,6 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.DoubleFormat;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
@@ -24,9 +22,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-        return new String[] { "sample.in" };
+      //  return new String[] { "sample.in" };
      //    return new String[] { "B-small-practice.in" };
-       //  return new String[] { "B-small-practice.in", "B-large-practice.in" };
+        return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
     @Override

@@ -86,6 +86,16 @@ public class PointInt implements Comparable<PointInt>{
     public Point toPoint() {
         return new Point(x, y);
     }
+    
+    public int getManhattanDistance()
+    {
+        return Math.abs(getX()) + Math.abs(getY());
+    }
+    
+    public int getKingDistance(PointInt rhs) {
+        return Math.max( Math.abs(getX()-rhs.getX()) ,
+                Math.abs(getY()-rhs.getY()) );
+    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
