@@ -44,6 +44,16 @@ typedef pair<uint,uint> uu;
 #define contains(c,x) ((c).find(x) != (c).end()) 
 #define cpresent(c,x) (find(all(c),x) != (c).end()) 
 
+
+template <class K, class V> 
+V getMapValue( const map<K,V>& aMap, const K& key, const K& defaultValue )
+{
+    typename map<K, V>::const_iterator it = aMap.find(key);
+    if ( it == aMap.end() )
+        return defaultValue;
+    return it->second;
+}
+
 class Offer;
 
 istream& operator>>(istream& in, Offer& rhs);
@@ -209,8 +219,16 @@ int main() {
             {
                 uint code = prodIdxToCode[pcIdx];
                 
-                uint amt = offers[offerIdx].productAmount[code];
+                uint amt = getMapValue(offers[offerIdx].productAmount, code, 0u);
+                
+                prevQuantity[pcIdx] = prevQuantity[pcIdx] > amt ?
+                prevQuantity[pcIdx] - amt : 0;
             }
+            
+            uint prevState = stateToIndex[ prevQuantity ];
+            
+            minPrice[state] = min(minPrice[state], 
+                minPrice[prevState] + offers[offerIdx].p);
             
         }
         
