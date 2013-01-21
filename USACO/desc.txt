@@ -9,3 +9,7 @@ comehome -- dijkstras
 cowtour -- all pairs shortest paths
 
 butter -- dijkstras all pairs ; adj list
+
+fence - eulerian tour 
+
+
