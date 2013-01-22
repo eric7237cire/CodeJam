@@ -36,6 +36,11 @@ public class Main implements TestCaseHandler<InputData>,
     public String handleCase(InputData input) {
         final PointInt origin = new PointInt(0,0);
         
+        /**
+         * I think in the problem, the p1's always correspond.
+         * 
+         * Make p1 the origin.
+         */
         PointInt p2LargeTranslated = input.largeTriangle.p2.translate(input.largeTriangle.p1);
         PointInt p2SmallTranslated = input.smallTriangle.p2.translate(input.smallTriangle.p1);
         

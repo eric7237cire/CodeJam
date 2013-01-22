@@ -137,21 +137,15 @@ public class Main implements TestCaseHandler<InputData>,
             }
             
             //All children have been visited
-            /*
-            Set<Integer> vertexSet = node.getNextLevel();
-            
-            if (node.getParent() != null) {
-                vertexSet.addAll(node.getParent().getNextLevel());
-                
-                if (node.getParent().getParent() != null) {
-                    vertexSet.add(node.getParent().getParent().getId());
-                }
-            }*/
-            
+                        
             BitSet vertexSet = BitSet.valueOf(node.getChildrenBits().toLongArray());
             
             vertexSet.set(node.getId());
             
+            /**
+             * include edges from parent to its children as well as
+             * the edge from parent to grand - parent.
+             */
             if (node.getParent() != null) {
                 vertexSet.or(node.getParent().getChildrenBits());
                 vertexSet.set(node.getParent().getId());
@@ -161,7 +155,11 @@ public class Main implements TestCaseHandler<InputData>,
                 }
             }
             
-            //Combine this sub graph with children
+            /**
+             * Combine this sub graph with children.  Combine all the vertices
+             * and the chromatic number.  Divide by the intersection between
+             * this node and the children.
+             */
             long cn = perm(input.k, vertexSet.cardinality() - 1);
             
             childIt = node.getChildren().iterator();
@@ -173,7 +171,7 @@ public class Main implements TestCaseHandler<InputData>,
                     continue;
                 
                 BitSet intersection = BitSet.valueOf(vertexSet.toLongArray());
-                //Set<Integer> intersection = Sets.intersection(vertexSet,child.getData().vertices);
+                
                 intersection.and(child.getData().vertices);
                 long interSecCn = perm(input.k, intersection.cardinality()-1);
                 cn *= child.getData().chromNum;
@@ -188,7 +186,7 @@ public class Main implements TestCaseHandler<InputData>,
                     
                 }
                 
-                //vertexSet.addAll(child.getData().vertices);
+                
                 vertexSet.or(child.getData().vertices);
             }
             

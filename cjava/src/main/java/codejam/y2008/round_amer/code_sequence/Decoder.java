@@ -352,6 +352,14 @@ public class Decoder {
             this.offset = offset;
             this.next = next;
         }
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+            return "OffsetData [keys=" + keys + ", offset=" + offset
+                    + ", next=" + next + "]";
+        }
         
     }
     
@@ -388,7 +396,12 @@ public class Decoder {
              */
             for (int possibleOffset = 0; possibleOffset < keyCycle; ++possibleOffset) {
 
-                //offset must be compatible with previous level.  
+                /**
+                 * offset must be compatible with previous level.  Since the previous cycle
+                 * will be smaller than this cyle, mod works.  For example
+                 * if this cyle length is 16, and we have a previous cyle of length 4 with
+                 * offset 3.  Then valid offsets are now 3, 7, 11, and 15  
+                 */
                 if (kPrevOD.offset != (possibleOffset % prevKeyCycle))
                     continue;
 
@@ -397,15 +410,22 @@ public class Decoder {
                 int k = NON_INIT;
                 
                 //Go through the sequence.  We start at keyDiff because it is the minimum we advace
-                //in order to calculate a potential key value
+                //in order to calculate a potential key value.  And we need to know the previous value
                 for (int n = keyDiff; n < sequence.size(); ++n) {
-                    int prevN = (possibleOffset + n - keyDiff) % keyCycle;
-                    int currentN = (possibleOffset + n) % keyCycle;
+                    int prevPosInCycle = (possibleOffset + n - keyDiff) % keyCycle;
+                    int currentPosInCycle = (possibleOffset + n) % keyCycle;
 
-                    //The only way to calculate a key value is to not have reset to 0's as then
-                    //we do not know which greater keys were triggered on or off.
-                    
-                    if (currentN - prevN == keyDiff) {
+                    /**
+                     * The only way to calculate a key value is to not have reset to 0's as then
+                     * we do not know which greater keys were triggered on or off.                    
+                     * 
+                     * For example, lets say the keyDiff is 100 (4 in binary).
+                     * 
+                     * We could attempt to calculate the key if we go from 101 0 11 to 101 1 11
+                     * 
+                     * 
+                     */
+                    if (currentPosInCycle - prevPosInCycle == keyDiff) {
                         int calculatedK = posMod(
                                 sequence.get(n) - sequence.get(n - keyDiff),
                                 mod);
@@ -420,12 +440,12 @@ public class Decoder {
                 }
                 
                 //Here we see if a guess is possible
-                int lastN = (sequence.size() - 1+possibleOffset) % keyCycle;
+                int lastPosInCycle = (sequence.size() - 1+possibleOffset) % keyCycle;
                 
                 //Looking for something like ...11111
                 //                             100000
                 // Example for k5
-                if (lastN == keyDiff - 1 && k >= 0) {
+                if (lastPosInCycle == keyDiff - 1 && k >= 0) {
                     int prev = sequence.get(sequence.size()-1);
                     
                     //Subtract all the previous keys

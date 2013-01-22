@@ -14,15 +14,26 @@ public class Main  {
 
 
         //2008 emea semis
+        //Geometry triangles -- rotation / translation / scaling of triangle.  Finding a point that transforms to itself
         //codejam.y2008.round_emea.scaled_triangle.Main m = new codejam.y2008.round_emea.scaled_triangle.Main();
+        
+        //Breadth first search
         //codejam.y2008.round_emea.painting_fence.Main m = new codejam.y2008.round_emea.painting_fence.Main();
+        
+        //Chromatic number of a tree
         //codejam.y2008.round_emea.rainbow_trees.Main m = new codejam.y2008.round_emea.rainbow_trees.Main();
+        
+        // State transitions / matrix multiplication / binary manipulation
        // codejam.y2008.round_emea.bus_stops.Main m = new codejam.y2008.round_emea.bus_stops.Main();
         
         //2008 amer semis
-        
+        // Tree traversal depth first
        // codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
+        
+        //
        // codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
+        codejam.y2008.round_amer.code_sequence.Main.example();
+        
         //codejam.y2008.round_amer.test_passing.Main m = new codejam.y2008.round_amer.test_passing.Main();
         
        //Non bipartite matching using Edmonds algorithm (code found...)

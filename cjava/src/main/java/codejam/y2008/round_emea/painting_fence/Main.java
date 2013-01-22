@@ -171,6 +171,7 @@ public class Main implements TestCaseHandler<InputData>,
                 BitSet bs =  BitSet.valueOf(node.colorsUsed.toLongArray());
                 bs.set(offer.color);
                                 
+                //Limited to 3 colors
                 if (bs.cardinality() > 3)
                     continue;
                 

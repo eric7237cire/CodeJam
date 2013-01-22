@@ -10,6 +10,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
+
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -37,6 +39,43 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         return input;
     }
+    
+    public static void example() {
+        /**
+         * Generates a sequence that has a key for each bit.  The next
+         * number in the sequence is the sum of the keys that have a 1 bit
+         * in n.
+         * 
+         */
+        int mod = 1007;
+        Generator g = new Generator(10, mod, 0);
+        
+        List<Integer> buf = Lists.newArrayList();
+        
+        // Generate a sequenc
+        for(int i = 0; i < 10; ++i) {
+            buf.add(g.next());
+        }
+        
+
+        List<OffsetData> od = null;
+        
+        /**
+         * "Level" is power of 2.   
+         */
+        for(int level = 0; 1 << level+1 <= buf.size(); ++level) {
+            od = Decoder.getPossibleOffset_kn(od, level, mod, buf);
+            
+            Set<Integer> set = new HashSet<>();
+            for(OffsetData o : od) {
+                set.add(o.next);
+            }
+            if (set.size() == 1 && set.iterator().next() >= 0) {
+                log.debug("Level {}", level);
+                log.debug("Found next in sequence : " + set.iterator().next());
+            }
+        }
+    }
 
     @Override
     public String handleCase(InputData input) {
@@ -52,6 +91,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         
         List<OffsetData> od = null;
+        
+        /**
+         * "Level" is power of 2.   
+         */
         for(int level = 0; 1 << level+1 <= buf.size(); ++level) {
             od = Decoder.getPossibleOffset_kn(od, level, mod, buf);
             

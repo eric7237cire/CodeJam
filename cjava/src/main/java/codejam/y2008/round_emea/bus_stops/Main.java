@@ -101,14 +101,6 @@ public class Main implements TestCaseHandler<InputData>,
         
     }
     
-//    private static String bsToStr (BitSetInt bs, int length, int P) {
-//        String str = Integer.toBinaryString(bs.getBits());
-//        str = StringUtils.reverse(str);
-//        str = StringUtils.rightPad(str, length, '0');
-//        
-//        return str.substring(0, P) + " | " + str.substring(P);
-//    }
-    
     
     public static int countFast(int finalLength, int K, int P, int mod) {
         
@@ -346,7 +338,6 @@ public class Main implements TestCaseHandler<InputData>,
         int ans = countFast(input.N, input.K, input.P, 30031);
         
         return String.format("Case #%d: %d", input.testCase, ans);
-        //        return String.format("Case #%d: %s %s", input.testCase, df.format(p.getX()), df.format(p.getY()));
     }
 
 }
