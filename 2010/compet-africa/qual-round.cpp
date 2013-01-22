@@ -160,7 +160,7 @@ void do_test_case(int test_case, ifstream& in, ofstream& fout)
     
     cout << "P " << P << endl;
     
-    fout << "bf " << count_brute_force(S, C) << endl;
+    //fout << "bf " << count_brute_force(S, C) << endl;
     
     
     //vector<ll> buckets(C, 0);
@@ -175,8 +175,8 @@ void do_test_case(int test_case, ifstream& in, ofstream& fout)
         cout << "S " << S << endl;
       //  cout << "Buckets " << buckets << endl;
       
-      uint left = 0;
       
+      /*
       if (C > 1) {
         while( S[C-1] + S[C] <= S[C-2] && S[C] > 0)
         {
@@ -185,13 +185,12 @@ void do_test_case(int test_case, ifstream& in, ofstream& fout)
             S.erase( S.begin() + C );
         }
       }
-      
-        while( S[left] == S[left+1] )
-            ++left;
+      */
+        
         
         //0 to left inclusive is set of max sized prob counts
       
-        uint right = left;
+        uint right = C - 1;
         
         
         while( right < S.size() - 1 && ( right < C - 1 || S[right] == S[right+1] ) )
@@ -199,12 +198,15 @@ void do_test_case(int test_case, ifstream& in, ofstream& fout)
 
 		if ( S[right] == 0)
             break;
-        
+      
+        uint left = right;
+        while( left >= 1 && S[left] == S[right] )
+            --left;
         
         //Reduce a maximum of diff * size taking set
         ll diffNext = S[right] - S[right+1];
         
-        if (left < C-1) {
+        if (left < C-1 && left > 0) {
             ll diffMaxNext = S[left] - S[left+1];
             assert(diffMaxNext > 0);
             diffNext = min(diffNext, diffMaxNext);
