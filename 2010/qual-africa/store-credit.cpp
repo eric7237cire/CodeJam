@@ -63,7 +63,7 @@ int main(int argc, char** args)
 
 
 template <class K, class V> 
-V getMapValue( const map<K,V>& aMap, const K& key, const K& defaultValue )
+V getMapValue( const map<K,V>& aMap, const K& key, const V& defaultValue )
 {
     typename map<K, V>::const_iterator it = aMap.find(key);
     if ( it == aMap.end() )
@@ -86,7 +86,7 @@ void do_test_case(int test_case, ifstream& in)
         P.pb(p);
         
         if (!contains(pToIdx, p)) {
-            pToIdx.insert(p, i)
+            pToIdx.insert( mp(p, i) );
         }
     }
     
@@ -94,10 +94,14 @@ void do_test_case(int test_case, ifstream& in)
     {
         int pRem = C - P[i-1];
         
-        uint idx = getMapValue( pToIdx, pRem, pb.size() + 5);
+        uint idx = getMapValue( pToIdx, pRem, (uint) (P.size() + 5));
      
+        if (idx == i) {
+            idx = find( P.begin() +i, P.end(), pRem ) - P.begin() + 1;   
+        }
+        
         if (idx <= I) {
-            cout << i << " " << idx << endl;
+            cout << "Case #" << test_case+1 << ": " << i << " " << idx << endl;
             return;
         }
     }
