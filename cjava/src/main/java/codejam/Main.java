@@ -30,10 +30,11 @@ public class Main  {
         // Tree traversal depth first
        // codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
         
-        //
+        // Iteratively guessing a code sequence, binary / using incomplete information / assumptions
        // codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
-        codejam.y2008.round_amer.code_sequence.Main.example();
+        //codejam.y2008.round_amer.code_sequence.Main.example();
         
+        // Maintain a list of N best paths ; Probability
         //codejam.y2008.round_amer.test_passing.Main m = new codejam.y2008.round_amer.test_passing.Main();
         
        //Non bipartite matching using Edmonds algorithm (code found...)

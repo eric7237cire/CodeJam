@@ -141,58 +141,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             ev+=path.weight;
         }
         
-        /*
-        int perms = IntMath.pow(4,input.Q);
-        List<Double> evList = new ArrayList<>();
         
-        for(int i = 0; i < perms; ++i) {
-            double p = 1;
-            
-            for(int q = 0; q < input.Q; ++q) {
-                p *= input.prob[q][currentQ[q]];
-            }
-            evList.add(p);
-            
-            //Increment
-            for(int q = 0; q < input.Q; ++q) {
-                currentQ[q]++;
-                if (currentQ[q] > 3) {
-                    currentQ[q] = 0;
-                } else {
-                    break;
-                }
-            }
-        }
-        
-        Collections.sort(evList, Ordering.natural().reverse());
-        
-        double ev = 0;
-        for(int m = 0; m < input.M; ++m) {
-            
-            ev += evList.get(m);
-            
-            if (ev + 0.0000001d >= 1)
-                break;
-            
-            
-        }*/
-        
-        /*
-       Arrays.sort(input.prob, new Comparator<double[]>() {
-
-        @Override
-        public int compare(double[] o1, double[] o2) {
-            ComparisonChain cc = ComparisonChain.start();
-            for(int i = 0; i < 4; ++i) {
-                cc = cc.compare(o1[i], o2[i]);
-                if (cc.result() != 0)
-                    return cc.result();
-            }
-            
-            return cc.result();
-        }
-           
-       });*/
         
         
         DecimalFormat df = new DecimalFormat("0.######");
