@@ -52,7 +52,7 @@ public class Prob1 {
     
     public static void main(String args[]) throws Exception {
         long start = System.currentTimeMillis();
-        problem75();
+        problem78();
         
         long end = System.currentTimeMillis();
         
@@ -60,7 +60,158 @@ public class Prob1 {
         
     }
     
-   
+    static public long pentagonal(int n) {
+        return (n * (3 * n - 1) ) >> 1; // # the nth pentagonal number is given by (3n^2 - n)/2
+    }
+            
+    static public long generalised_pentagonal(int n) //: # 0, -1, 1, -2, 2
+    {
+        if ((n & 1) == 0)
+            return pentagonal((n >> 1) + 1); // # pentagonal(n/2 + 1) if n is even
+        else
+            return pentagonal(-(n >> 1) - 1); //# pentagonal(-(n/2 + 1)) if n is odd
+    }
+            
+    static public int termsign(int i)
+    {
+                if ( (i & 3) < 2 )
+                    return 1; // # add if i mod 4 is 0 or 1
+                else
+                    return -1; // # subtract otherwise
+    }
+     
+    //http://en.wikipedia.org/wiki/Pentagonal_number_theorem
+    static void problem78() {
+        int limit = 60000;
+        
+        List<BigInteger> pt = Lists.newArrayList();
+        pt.add(BigInteger.ONE);
+
+        int lastI = 0;
+        
+        for (int n = 1; n <= limit; ++n) {
+            /*
+            BigInteger r = BigInteger.ZERO;
+            int i = 0;
+            while (true) {
+                int k = (int) generalised_pentagonal(i);
+                if (k > n)
+                    break;
+                r = r.add( BigInteger.valueOf(termsign(i)).multiply( pt.get(n - k) ));
+                i += 1;
+            }
+            
+            
+            */
+            //log.debug(" {} = {}", n, r);
+            
+            int i = 0; //lastI; // + 1;
+            BigInteger r = BigInteger.ZERO; //pt.get(n-1);
+            while (true) {
+                int k = (int) generalised_pentagonal(i);
+                if (k > n) {
+                    lastI = i;
+                    break;
+                }
+                    
+                r = r.add( BigInteger.valueOf(termsign(i)).multiply( pt.get(n - k) ));
+                i += 1;
+                
+            }
+            pt.add(r);
+            
+            
+            //log.debug(" {} = {}", n, r);
+            
+            if (r.mod(BigInteger.valueOf(1000000)).intValue() == 0)
+                log.debug(" {} = {}", n, r);
+        }
+    }
+
+    static void problem78_fail() {
+
+        List<Integer> values = Lists.newArrayList();
+        
+        int limit = 600;
+        for (int i = 1; i <= limit; ++i) {
+            values.add(i);
+        }
+
+        int total = limit;
+
+        BigInteger[] ways = new BigInteger[total + 1];
+        Arrays.fill(ways, BigInteger.ZERO);
+        ways[0] = BigInteger.ONE;
+        for (int coinIndex = 0; coinIndex < values.size(); ++coinIndex) {
+            if (coinIndex % 200 == 0)
+                log.debug("Coint {}", coinIndex);
+            int coin = values.get(coinIndex);
+            for (int j = coin; j <= total; ++j) {
+                ways[j] = ways[j].add( ways[j - coin] );
+            }
+        }
+
+        for(int i = 1; i <= limit; ++i) {
+            
+            if (i < 20) {
+                log.debug("Ways {} = {}", i, ways[i]);
+                
+            }
+            if ( (ways[i].mod( BigInteger.valueOf( 1000000))).intValue() == 0)
+                log.debug("Ways i = {}", ways[i]);
+        }
+        log.debug("Ways {}", ways[limit]);
+
+    }
+    
+    static void problem77() {
+
+        int total = 1000;
+        
+        List<Integer> values = Prime.generatePrimes(total);
+                
+
+        int[] ways = new int[total + 1];
+        ways[0] = 1;
+        for (int coinIndex = 0; coinIndex < values.size(); ++coinIndex) {
+            int coin = values.get(coinIndex);
+            for (int j = coin; j <= total; ++j) {
+                ways[j] = ways[j] + ways[j - coin];
+            }
+        }
+        
+        for(int i = 1; i < total; ++i) {
+            if ( ways[i] < 5000)
+                continue;
+            
+            log.debug("Ways {} = {}", i, ways[i]);
+            break;
+        }
+
+
+ 
+    }
+    static void problem76() {
+
+        List<Integer> values = Lists.newArrayList();
+        for (int i = 1; i <= 99; ++i) {
+            values.add(i);
+        }
+
+        int total = 100;
+
+        int[] ways = new int[total + 1];
+        ways[0] = 1;
+        for (int coinIndex = 0; coinIndex < values.size(); ++coinIndex) {
+            int coin = values.get(coinIndex);
+            for (int j = coin; j <= total; ++j) {
+                ways[j] = ways[j] + ways[j - coin];
+            }
+        }
+
+        log.debug("Ways {}", ways[total]);
+
+    }
     
     static void problem75() {
         int limit = 1500000;
@@ -1809,6 +1960,11 @@ static void problem70_slow() {
     }
     
     
+    /**
+     * Ways to make change
+     * @param args
+     * @throws Exception
+     */
     public static void main31(String args[]) throws Exception
     {
       List<Integer> values = Arrays.asList(1, 2, 5, 10, 20, 50, 100, 200);
