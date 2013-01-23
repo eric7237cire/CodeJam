@@ -72,21 +72,34 @@ public class Main  {
         
          //Round 1B -- 2009
         //A in c++
+        //Finding next permutation in a sequence
          //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
         
         //A Breadth first search, did not really do what solution suggested, used a sortedSet instead of queue
          //codejam.y2009.round_1B.square_math.Main m = new codejam.y2009.round_1B.square_math.Main();
          
          //Round 1C -- 2009 
+        //Finding min number in a large base
          //codejam.y2009.round_1C.all_your_base.Main m = new codejam.y2009.round_1C.all_your_base.Main();
+        
+        //A bit of physics / calculus 
          //codejam.y2009.round_1C.center_mass.Main m = new codejam.y2009.round_1C.center_mass.Main();
+        
+        //DP.  TODO bottom up
          //codejam.y2009.round_1C.bribe_prisoner.Main m = new codejam.y2009.round_1C.bribe_prisoner.Main();
          
          //Round 2 -- 2009
         
+        //Number of swaps to put in order, can only swap adjacent
          //codejam.y2009.crazy_rows.Main m = new codejam.y2009.crazy_rows.Main();
+        
+        //DP TODO bottom up
          //codejam.y2009.digging_problem.Main m = new codejam.y2009.digging_problem.Main();
+        
+        //Depth first search, augmenting path
          //codejam.y2009.round_2.stock_charts.Main m = new codejam.y2009.round_2.stock_charts.Main();
+        
+        //Hardcore circle geometry / polar coordinates
          //codejam.y2009.round_2.watering_plants.Main m = new codejam.y2009.round_2.watering_plants.Main();
          
          //Round 3 -- 2009
@@ -122,10 +135,13 @@ public class Main  {
          //codejam.y2010.rank_pure.Main m = new codejam.y2010.rank_pure.Main();
          
          //2010 1C
-         //large a bit slow
-         //codejam.y2010.chess_boards.Main m = new codejam.y2010.chess_boards.Main();
+         
          //codejam.y2010.load_testing.Main m = new codejam.y2010.load_testing.Main();         
          //codejam.y2010.rope_intranet.Main m = new codejam.y2010.rope_intranet.Main();
+        
+        //Finding rectangles efficiently
+      //large a bit slow
+        codejam.y2010.round_1C.chess_boards.Main m = new codejam.y2010.round_1C.chess_boards.Main();
 
          //2010 2         
          //TODO large slow
@@ -235,7 +251,7 @@ public class Main  {
         //Probability, optimizing, state transitions, maybe matrix multiplication
         //codejam.y2012.round_final.upstairs_downstairs.Main m = new codejam.y2012.round_final.upstairs_downstairs.Main();
         
-        codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
+        //codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
         
         String[] files = {};
         if (m instanceof DefaultInputFiles) {

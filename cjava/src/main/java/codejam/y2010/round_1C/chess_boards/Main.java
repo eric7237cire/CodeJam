@@ -7,6 +7,7 @@ import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -18,9 +19,16 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.TreeMultiset;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
+    
+    @Override
+    public String[] getDefaultInputFiles() {
+      //   return new String[] {"sample.in"};
+         return new String[] { "C-small-practice.in" };
+      // return new String[] { "B-small-practice.in", "B-large-practice.in" };
+    }
     
     private static class Square implements Comparable<Square>{
         int size;
@@ -272,6 +280,7 @@ assignment  = += -= *= /= %= &= ^= |= <<= >>= >>>=
             parity = m % 2 == 0 ? 1 : 0;
             String hex = scanner.next();
 
+            //Input is in hex that defines each row
             for (int hexIdx = 0; hexIdx < input.N / 4; ++hexIdx) {
                 int hexInt = Integer.parseInt("" + hex.charAt(hexIdx), 16);
                 // log.debug("Row {}",
