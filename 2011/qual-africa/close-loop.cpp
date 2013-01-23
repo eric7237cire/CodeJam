@@ -125,28 +125,20 @@ void do_test_case(int test_case, ifstream& in, ofstream& fout)
     sort(all(blue));
     reverse(all(blue));
     
-    cout << "rEd " << red << endl;
-    cout << "blue " << blue << endl;
-    
-    bool takeRed = red.size() > blue.size();
-    
     uint totalLen = 0;
-    uint segments = 0;
+    
     while(!red.empty() && !blue.empty())
     {
-        //if (takeRed) {
-            totalLen += red[0];
-            red.erase(red.begin());
-        //} else {
-            totalLen += blue[0];
-            blue.erase(blue.begin());
-        //}
-        totalLen -- ;
-        takeRed = !takeRed;
-        ++segments;
+        
+        totalLen += red[0];
+        red.erase(red.begin());
+    
+        totalLen += blue[0];
+        blue.erase(blue.begin());
+    
+        totalLen -= 2;
     }
     
-    totalLen -= segments;
     
     fout << "Case #" << test_case+1 << ": "
     << totalLen << endl;
