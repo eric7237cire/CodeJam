@@ -36,7 +36,8 @@
    
    <logger name="codejam.y2008.round_emea" level="INFO"/>
    
-   <logger name="codejam" level="WARN"/>
+   <logger name="codejam" level="INFO"/>
+   <logger name="codejam.y2012" level="DEBUG"/>
    
                  
    <logger name="codejam.utils.multithread" level="DEBUG"/>
