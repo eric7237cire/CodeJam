@@ -103,10 +103,17 @@ public class Main  {
          //codejam.y2009.round_2.watering_plants.Main m = new codejam.y2009.round_2.watering_plants.Main();
          
          //Round 3 -- 2009
+        //Grid shortest path
          //codejam.y2009.sokoban.Main m = new codejam.y2009.sokoban.Main();
+        
+        //Set multiplying, polynomial symbolic manipulation.  TODO re-explain
          //codejam.y2009.alphabetomials.Main m = new codejam.y2009.alphabetomials.Main();
+        
+        // 3 coloring a particular graph (triangles)
         // codejam.y2009.round_3.football_team.Main m = new codejam.y2009.round_3.football_team.Main();
-         //codejam.y2009.interesting_ranges.Main m = new codejam.y2009.interesting_ranges.Main();
+        
+        //Counting ranges.  Had to use complex caching to solve in time.  TODO more comments
+         codejam.y2009.round_3.interesting_ranges.Main m = new codejam.y2009.round_3.interesting_ranges.Main();
          
          //Round 4 -- 2009
          //codejam.y2009.round_4.year_more.Main m = new codejam.y2009.round_4.year_more.Main();
@@ -117,10 +124,14 @@ public class Main  {
         //Using lattice paths to make a complex Dynamic programming DP
         // codejam.y2009.double_sort_grid.Main m = new codejam.y2009.double_sort_grid.Main();
         
+         //Network flow
      //   codejam.y2009.round_4.wifi_towers.Main m = new codejam.y2009.round_4.wifi_towers.Main(); 
       
          //2010 qual
+         //Bignumber GCD
          //codejam.y2010.fair_warning.Main m = new codejam.y2010.fair_warning.Main();
+         
+         //Finding repeated state?  
          //codejam.y2010.theme_park.Main m = new codejam.y2010.theme_park.Main();
          
          //2010 1A
@@ -130,8 +141,13 @@ public class Main  {
          
          //2010 1B
          
+         //Tree
          //codejam.y2010.file_fix.Main m = new codejam.y2010.file_fix.Main();
+         
+         //Reasing through problem, speed physics
         // codejam.y2010.round_1B.chicks.Main m = new codejam.y2010.round_1B.chicks.Main();
+         
+         //DP of some kind, TODO bottom up
          //codejam.y2010.rank_pure.Main m = new codejam.y2010.rank_pure.Main();
          
          //2010 1C
@@ -141,7 +157,7 @@ public class Main  {
         
         //Finding rectangles efficiently
       //large a bit slow
-        codejam.y2010.round_1C.chess_boards.Main m = new codejam.y2010.round_1C.chess_boards.Main();
+        //codejam.y2010.round_1C.chess_boards.Main m = new codejam.y2010.round_1C.chess_boards.Main();
 
          //2010 2         
          //TODO large slow
@@ -227,6 +243,8 @@ public class Main  {
         //2012 1B
         //codejam.y2012.round_1B.safety_numbers.Main m = new codejam.y2012.round_1B.safety_numbers.Main();
         //codejam.y2012.round_1B.tide.Main m = new codejam.y2012.round_1B.tide.Main();
+         
+         //Pigeon hole principal / birthday paradox
         //codejam.y2012.round_1B.equal_sums.Main m = new codejam.y2012.round_1B.equal_sums.Main();
         
         //2012 1C

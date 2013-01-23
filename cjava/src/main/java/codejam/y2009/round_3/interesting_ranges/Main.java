@@ -7,12 +7,20 @@ import java.util.SortedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+    
+    @Override
+    public String[] getDefaultInputFiles() {
+      //   return new String[] {"sample.in"};
+       //  return new String[] { "D-small-practice.in" };
+       return new String[] { "D-small-practice.in", "D-large-practice.in" };
+    }
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
     
