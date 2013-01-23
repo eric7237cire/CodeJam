@@ -152,6 +152,45 @@ void do_test_case(int test_case, ifstream& in, ofstream& fout)
     
     in >> P >> C;
     
+    vector<ll> S(P, 0);
+    
+    
+    FOR(p, 0, P)
+        in >> S[p];
+
+	while(true)
+	{
+		ll sum = accumulate( all(S), (ll) 0 );
+		ll k = sum / C;
+
+		bool reduced = false;
+
+		FOR(p, 0, P) 
+		{
+			if (S[p] > k) {
+				S[p] = k;
+				reduced = true;
+			}
+		}
+
+		if (!reduced) 
+		{
+				fout << "Case #" << test_case+1 << ": "
+    << k << endl;
+				return;
+		}
+	}
+
+}
+
+void do_test_case_fail(int test_case, ifstream& in, ofstream& fout)
+{
+    uint P, C;
+    
+    
+    
+    in >> P >> C;
+    
     vector<ll> S(P+1, 0);
     
     
@@ -203,18 +242,29 @@ void do_test_case(int test_case, ifstream& in, ofstream& fout)
         while( left >= 1 && S[left] == S[right] )
             --left;
         
+		uint forcedChoices = right-left;
+
         //Reduce a maximum of diff * size taking set
         ll diffNext = S[right] - S[right+1];
         
-        if (left < C-1 && left > 0) {
-            ll diffMaxNext = S[left] - S[left+1];
-            assert(diffMaxNext > 0);
-            diffNext = min(diffNext, diffMaxNext);
-        } 
-        ll probSets = diffNext;
-        uint maxSetSize = left + 1;
+		uint maxSetSize = left + 1;
         
         uint forcedSetSize = maxSetSize > C ? 0 : C - maxSetSize;
+
+		ll maxProbs = diffNext;
+		
+		if (forcedSetSize > 0) {
+			maxProbs =	(diffNext * forcedChoices) / forcedSetSize;
+			maxProbs *= forcedSetSize;
+		}
+
+		if (left < C-1 && left > 0 && (maxSetSize+forcedChoices) > C) {
+            ll diffMaxNext = S[left] - S[left+1];
+            assert(diffMaxNext > 0);
+            maxProbs = min(maxProbs, diffMaxNext);
+        } 
+        ll probSets = maxProbs;
+        
         
         ll totalFromMaxSet = maxSetSize <= C ? probSets * maxSetSize : probSets * C;
         ll totalFromForcedSet = probSets * forcedSetSize;

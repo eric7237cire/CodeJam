@@ -19,5 +19,5 @@ qual-round.exe sample.in > sample.txt
 
 qual-round.exe C-small-practice.in > c_small.txt
 
-rem qual-round.exe C-large-practice.in > c_large.txt
+rem qual-round.exe C-large-practice.in 
 
