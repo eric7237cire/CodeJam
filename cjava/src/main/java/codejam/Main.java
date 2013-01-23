@@ -113,7 +113,7 @@ public class Main  {
         // codejam.y2009.round_3.football_team.Main m = new codejam.y2009.round_3.football_team.Main();
         
         //Counting ranges.  Had to use complex caching to solve in time.  TODO more comments
-         codejam.y2009.round_3.interesting_ranges.Main m = new codejam.y2009.round_3.interesting_ranges.Main();
+        // codejam.y2009.round_3.interesting_ranges.Main m = new codejam.y2009.round_3.interesting_ranges.Main();
          
          //Round 4 -- 2009
          //codejam.y2009.round_4.year_more.Main m = new codejam.y2009.round_4.year_more.Main();
@@ -248,14 +248,24 @@ public class Main  {
         //codejam.y2012.round_1B.equal_sums.Main m = new codejam.y2012.round_1B.equal_sums.Main();
         
         //2012 1C
+         //Simple TODO use digraph class
         //codejam.y2012.round_1C.diamond_inheritance.Main m = new codejam.y2012.round_1C.diamond_inheritance.Main();
+         
+         //Physics, velocity acceleration. Intersection parabola / lines
         //codejam.y2012.round_1C.out_of_gas.Main m = new codejam.y2012.round_1C.out_of_gas.Main();
-        //codejam.y2012.round_1C.boxes.Main m = new codejam.y2012.round_1C.boxes.Main();
+         
+         //Did this the hard way, LCS DP on steroids, could have done simpler using their soltion TODO 
+        codejam.y2012.round_1C.boxes.Main m = new codejam.y2012.round_1C.boxes.Main();
         
         //2012 2
+         //Used a graph search problem.  Some proof to "never go backward strategy".  TODO understand a bit more their graph and
+         //edge traversal strategy
         //codejam.y2012.round_2.swinging_wild.Main m = new codejam.y2012.round_2.swinging_wild.Main();
+         
+         //Placing circles in confined space ; used rectangles.  Geometry
         //codejam.y2012.round_2.aerobics.Main m = new codejam.y2012.round_2.aerobics.Main();
-        //TODO implement their simpler approach
+        
+         //TODO implement their simpler approach
        // codejam.y2012.round_2.mountain_view.Main m = new codejam.y2012.round_2.mountain_view.Main();
         
         //Did not solve.  FSM intersection / dynamic programming.  TODO Look again why it works        

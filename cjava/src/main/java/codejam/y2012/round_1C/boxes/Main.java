@@ -27,8 +27,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-         return new String[] {"sample.in"};
-      // return new String[] { "A-small-practice.in", "A-large-practice.in" };
+     //    return new String[] {"sample.in"};
+       return new String[] { "C-small-practice.in", "C-large-practice.in" };
     }
 
     @Override

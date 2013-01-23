@@ -33,13 +33,10 @@
   <logger name="com.eric.codejam.multithread" level="OFF"/>
   <logger name="com.eric.codejam.SingleRowSolver" level="OFF" />
    -->
-   <logger name="codejam.y2008" level="DEBUG"/>
+   
    <logger name="codejam.y2008.round_emea" level="INFO"/>
-   <logger name="codejam.y2009" level="DEBUG"/>
-   <logger name="dcodejam.y2012" level="DEBUG"/>
-   <logger name="codejam.y2011" level="DEBUG"/>
-   <logger name="codejam.y2010" level="DEBUG"/>
-   <logger name="codejam" level="INFO"/>
+   
+   <logger name="codejam" level="WARN"/>
    
                  
    <logger name="codejam.utils.multithread" level="DEBUG"/>
