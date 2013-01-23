@@ -255,7 +255,7 @@ public class Main  {
         //codejam.y2012.round_1C.out_of_gas.Main m = new codejam.y2012.round_1C.out_of_gas.Main();
          
          //Did this the hard way, LCS DP on steroids, could have done simpler using their soltion TODO 
-        codejam.y2012.round_1C.boxes.Main m = new codejam.y2012.round_1C.boxes.Main();
+        //codejam.y2012.round_1C.boxes.Main m = new codejam.y2012.round_1C.boxes.Main();
         
         //2012 2
          //Used a graph search problem.  Some proof to "never go backward strategy".  TODO understand a bit more their graph and
@@ -279,7 +279,7 @@ public class Main  {
         //Probability, optimizing, state transitions, maybe matrix multiplication
         //codejam.y2012.round_final.upstairs_downstairs.Main m = new codejam.y2012.round_final.upstairs_downstairs.Main();
         
-        //codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
+        codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
         
         String[] files = {};
         if (m instanceof DefaultInputFiles) {
