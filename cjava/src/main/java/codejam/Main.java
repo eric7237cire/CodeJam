@@ -308,7 +308,7 @@ public class Main  {
         //2012 3
         
         //Probability Expected value until event happens.  see docs/2012/perfectGame.tex, sorting
-        codejam.y2012.round_3.perfect_game.Main m = new codejam.y2012.round_3.perfect_game.Main();
+       // codejam.y2012.round_3.perfect_game.Main m = new codejam.y2012.round_3.perfect_game.Main();
         
         //2012 Final
         
@@ -318,7 +318,7 @@ public class Main  {
         //Probability, optimizing, state transitions, maybe matrix multiplication
         //codejam.y2012.round_final.upstairs_downstairs.Main m = new codejam.y2012.round_final.upstairs_downstairs.Main();
         
-       // codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
+        codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
         
         String[] files = {};
         if (m instanceof DefaultInputFiles) {

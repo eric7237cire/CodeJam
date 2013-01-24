@@ -1,5 +1,6 @@
 package codejam.y2012.round_final.xeno_archaeology;
 
+import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -9,15 +10,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.geometry.Line;
+import codejam.utils.geometry.Point;
 import codejam.utils.geometry.PointInt;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
+import com.google.common.math.DoubleMath;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
@@ -98,6 +100,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      */
     public String handleCase(InputData in)
     {
+        bruteForce(in);
+        
         /**
          * Center coordinate Cx, Cy can
          * either have an odd x or even ; similiar for y
@@ -116,8 +120,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 List<Long> posSlopeYIntercepts = Lists.newArrayList();
                 List<Long> negSlopeYIntercepts = Lists.newArrayList();
 
-                List<Long> constraintGTE = Lists.newArrayList();
-                List<Long> constraintLTE = Lists.newArrayList();
+                List<Tile> constraintDiffXGTEDiffY = Lists.newArrayList();
+                List<Tile> constraintDiffXLTEDiffY = Lists.newArrayList();
                 
                 /**
                  * For each point, find if x - x' is odd/even
@@ -171,9 +175,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         if ( (tile.isRed && xDiffOdd) || (!tile.isRed && !xDiffOdd) ){
                             // abs( x - x' ) > abs ( y - y')
                             // Basically the diff of x's must become the maximum 
-                            constraintGTE.add( tile.getY() );
+                            constraintDiffXGTEDiffY.add( tile );
                         } else if ( (tile.isRed && yDiffOdd) || (!tile.isRed && !yDiffOdd) ){
-                            constraintLTE.add( tile.getX() );
+                            constraintDiffXLTEDiffY.add( tile );
                         }
                     }
 
@@ -185,12 +189,50 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
                 for(int p2Idx = 1; p2Idx < posSlopeYIntercepts.size(); ++p2Idx)
                 {
+                    nextRectangle:
                     for(int n2Idx = 1; n2Idx < negSlopeYIntercepts.size(); ++n2Idx)
                     {
                         /**
                          * Rectangle bounded by y = x + p1 ; y = x + p2 
                          *                      y = -x + n1 ; y = -x + n1
                          */
+                        
+                        
+                        long p1 = posSlopeYIntercepts.get(p2Idx - 1);
+                        long p2 = posSlopeYIntercepts.get(p2Idx);
+                        
+                        long n1 = negSlopeYIntercepts.get(n2Idx - 1);
+                        long n2 = negSlopeYIntercepts.get(n2Idx);
+                        
+                        log.debug("Rectangle bounded by y = x + {}, {} and y = -x + {}, {}", p1,p2,n1,n2);
+                        
+                        Line posSlope = new Line(1, p1);
+                        Line negSlope = new Line(-1, n1);
+                        
+                        Point intersection = posSlope.getIntersection(negSlope);
+                        
+                        long cX = DoubleMath.roundToLong(intersection.getX(), RoundingMode.HALF_DOWN);
+                        long cY = 1 + DoubleMath.roundToLong(intersection.getY(), RoundingMode.HALF_DOWN);
+                        
+                        for( Tile tile : constraintDiffXGTEDiffY ) {
+                            long diffX = Math.abs( cX - tile.getX() );
+                            long diffY = Math.abs( cY - tile.getY() );
+                            
+                            if (diffX < diffY) {
+                                continue nextRectangle;
+                            }
+                        }
+                        
+                        for( Tile tile : constraintDiffXLTEDiffY ) {
+                            long diffX = Math.abs( cX - tile.getX() );
+                            long diffY = Math.abs( cY - tile.getY() );
+                            
+                            if (diffX > diffY) {
+                                continue nextRectangle;
+                            }
+                        }
+                        
+                        log.debug("Found a rectangle");
                     }
                 }
                 
