@@ -232,7 +232,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                             }
                         }
                         
-                        log.debug("Found a rectangle");
+                        log.debug("Found a rectangle.  center x odd? {} center y odd? {} ", centerXOdd, centerYOdd);
                     }
                 }
                 

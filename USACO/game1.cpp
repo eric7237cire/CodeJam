@@ -25,8 +25,8 @@ using namespace std;
 typedef unsigned int uint;
 typedef unsigned long long ull;
 
-#define FORE(k,a,b) for(uint k=(a); k <= (b); ++k)
-#define FOR(k,a,b) for(int k=(a); k < (int) (b); ++k)
+#define FORE(k,a,b) for(int k=(int)(a); k <= (int)(b); ++k)
+#define FOR(k,a,b) for(int k=(int)(a); k < (int) (b); ++k)
 
 #define pb push_back 
 #define mp make_pair 
@@ -70,69 +70,49 @@ int main() {
 
     fin >> N;
     
-    uvvi squares(N, uvi(N, 0) );
-    uvi sqCount(N);
+    uvi board(N, 0);
     
-    char bit;
-
-    FOR(r, 0, N)
-        FOR(c, 0, N)
+    FOR(n, 0, N)
+        fin >> board[n];
+    
+    //First is score for player to act, second is the score for following player
+    vector< vector< ii > > score(N, vector< ii >(N, mp(-1,-1) ));
+    
+    //Init DB with pairs remaining
+    for(int i = 1; i < (int)N; ++i)
     {
-    	fin >> bit;
-
-        squares[r][c] = bit == '1' ? 1 : 0;
-       // cout << squares[r][c];
+       score[ i - 1 ][ i ] = 
+        mp( max(board[i], board[i-1]),
+            min(board[i], board[i-1]) );
     }
     
-   /* FOR(r, 1, N)
+    for(int size = 3; size <= (int)N; ++size)
+    {
+        for(int right = size-1; right < (int) N; ++right)
         {
-    		FOR(c, 0, N)
-    		{
-    			cout << setw(6) << squares[r][c];
-    		}
-    		cout << endl;
-        }
-*/
-    FOR(r, 1, N)
-        FOR(c, 1, N)
-    {
-        if (squares[r][c] == 0)
-            continue;
-        
-        uint up = squares[r-1][c];
-        uint upLeft = squares[r-1][c-1];
-        uint left = squares[r][c-1];
-
-        squares[r][c] = min(left, min(up, upLeft)) + 1;
-    }
-
-    FOR(r, 1, N)
-		FOR(c, 1, N)
-	{
-    	uint size = squares[r][c];
-    	FORE(s, 2, size)
-    	{
-    		sqCount[s-1]++;
-    	}
-	}
-
-    for(uint size = 2; size <= N; ++size)
-    {
-    	if (sqCount[size-1] == 0)
-    		break;
-
-    	fout << size << " " << sqCount[size-1] << endl;
-    }
-    /*
-    FOR(r, 1, N)
-    {
-		FOR(c, 0, N)
-		{
-			cout << setw(6) << squares[r][c];
-		}
-		cout << endl;
-    }*/
+            int left = right - size + 1;
             
+            ii leftBranch = score[ left ][right - 1];
+            ii rightBranch = score[ left+1 ][right];
+            
+            //Take the right number goes to left branch
+            int leftBranchScore = board[right] + leftBranch.second;
+            
+            int rightBranchScore = board[left] + rightBranch.second;
+            
+            if (rightBranchScore >= leftBranchScore)
+            {
+                score[left][right] = mp( rightBranchScore, rightBranch.first );   
+            }
+            else 
+            {
+                score[left][right] = mp( leftBranchScore, leftBranch.first );
+            }
+        }
+        
+    }
+            
+    fout << score[0][N-1].first << " " << score[0][N-1].second << endl;
 	
     return 0;
 }
