@@ -135,8 +135,13 @@ public class Main  {
          //codejam.y2010.theme_park.Main m = new codejam.y2010.theme_park.Main();
          
          //2010 1A
+        //Grid rotation
          //codejam.y2010.rotate.Main m = new codejam.y2010.rotate.Main();
+        
+        //DP todo bottom up
          //codejam.y2010.smooth.Main m = new codejam.y2010.smooth.Main();
+        
+        //Combinatoric game, TODO tex doc a bit
          //codejam.y2010.number_game.Main m = new codejam.y2010.number_game.Main();
          
          //2010 1B
@@ -169,8 +174,13 @@ public class Main  {
                   
          //2010 3
          
-         //codejam.y2010.round_3.rng.Main m = new codejam.y2010.round_3.rng.Main();         
+        //Used lattice to find random number generator points
+         //codejam.y2010.round_3.rng.Main m = new codejam.y2010.round_3.rng.Main();
+        
+        //TODO cleanup DP  Used BFS to find modulo length.
         //codejam.y2010.round_3.boards.Main m = new codejam.y2010.round_3.boards.Main();
+        
+        //Did my own algo, used GAP class.  TODO use their solution
         //codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();       
         //TODO large is slow
         //codejam.y2010.round_3.different_sum.Main m = new codejam.y2010.round_3.different_sum.Main();
@@ -185,6 +195,7 @@ public class Main  {
         //Greedy algorithm, proof by induction.  Very easy implementation to a seemingly hard problem
        // codejam.y2010.round_final.candy_store.Main m = new codejam.y2010.round_final.candy_store.Main();
         
+        //Intervals, Splitting interval into 2.  Binary search.  
         //codejam.y2010.round_final.travel_plan.Main m = new codejam.y2010.round_final.travel_plan.Main();
                  
          //2011 1A
@@ -192,23 +203,40 @@ public class Main  {
          //A in C++
          //TODO large is quite slow 14 secs -- 30 secs.  Can improve the algorithm
         // codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
+        
+        //DP TODO bottom up
          //codejam.y2011.round_1A.dominion.Main m = new codejam.y2011.round_1A.dominion.Main();
          
          //2011 1B
          //A in C++
+        //TODO explain method a bit more...
          //codejam.y2011.round_1B.hotdog_revenge.Main m = new codejam.y2011.round_1B.hotdog_revenge.Main();
+        
+        //Polygon breadth first search
          //codejam.y2011.round_1B.house_kittens.Main m = new codejam.y2011.round_1B.house_kittens.Main();
         
         //2011 1C
+        //Easy grid search / replace
         //codejam.y2011.round_1C.square_tiles.Main m = new codejam.y2011.round_1C.square_tiles.Main();
+        
+        //Looks like a greedy algorithm.  TODO comments
         //codejam.y2011.round_1C.space_emergency.Main m = new codejam.y2011.round_1C.space_emergency.Main();
+        
+        //GCD and LCM,  TODO comments
         //codejam.y2011.round_1C.perfect_harmony.Main m = new codejam.y2011.round_1C.perfect_harmony.Main();
          
         //2011 2
+        
+        //Greedy algorithm, TODO a bit of explanation
         //codejam.y2011.round_2.airport_walkways.Main m = new codejam.y2011.round_2.airport_walkways.Main();
+        
+        //Building up larger and larger squares.  TODO comments compare with their solution
         //codejam.y2011.round_2.spinning_blade.Main m = new codejam.y2011.round_2.spinning_blade.Main();
+        
+        //Explanation.  Seems to be prime factoring
         //codejam.y2011.round_2.expensive_dinner.Main m = new codejam.y2011.round_2.expensive_dinner.Main();
         
+        //TODO implement their solution.  Finding shortest path with most neighbors.  Used dijkstras then athor search
         //codejam.y2011.round_2.ai_wars.Main m = new codejam.y2011.round_2.ai_wars.Main();
 
 
@@ -234,14 +262,20 @@ public class Main  {
        //  codejam.y2012.round_qual.hall_of_mirrors.Main m = new codejam.y2012.round_qual.hall_of_mirrors.Main();
         
         //2012 1A
+        //Probability, TODO explanation?
         //codejam.y2012.round_1A.password.Main m = new codejam.y2012.round_1A.password.Main();
+        
+        //Looks like an easy problem, TODO comments
         //codejam.y2012.round_1A.kingdom_rush.Main m = new codejam.y2012.round_1A.kingdom_rush.Main();
         
         //Constraint problem
         //codejam.y2012.round_1A.cruise_control.Main m = new codejam.y2012.round_1A.cruise_control.Main();
         
         //2012 1B
+        //Easier problem.  Did some trick that did not seem to correspond to their solution.  TODO doc/compare?
         //codejam.y2012.round_1B.safety_numbers.Main m = new codejam.y2012.round_1B.safety_numbers.Main();
+        
+        //BFS with an interesting state, leaving a cave
         //codejam.y2012.round_1B.tide.Main m = new codejam.y2012.round_1B.tide.Main();
          
          //Pigeon hole principal / birthday paradox
