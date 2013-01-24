@@ -105,32 +105,6 @@ public class Main implements TestCaseHandler<InputData>,
             }
             this.color = color;
         }
-        @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + color;
-            result = prime * result + finish;
-            result = prime * result + start;
-            return result;
-        }
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            Offer other = (Offer) obj;
-            if (color != other.color)
-                return false;
-            if (finish != other.finish)
-                return false;
-            if (start != other.start)
-                return false;
-            return true;
-        }
     }
   
     @Override
@@ -165,6 +139,7 @@ public class Main implements TestCaseHandler<InputData>,
             
             visited.add(node);
             
+            //Need an offer that covers the very next square
             Collection<Offer> offers = offerMap.get(node.fencePainted+1);
             
             for(Offer offer : offers) {
@@ -181,7 +156,6 @@ public class Main implements TestCaseHandler<InputData>,
         }
         
         return String.format("Case #%d: IMPOSSIBLE", input.testCase);
-        //        return String.format("Case #%d: %s %s", input.testCase, df.format(p.getX()), df.format(p.getY()));
     }
 
 }
