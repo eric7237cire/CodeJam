@@ -4,6 +4,14 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.Scanner;
 
+import org.apache.commons.math3.fraction.Fraction;
+import org.apache.commons.math3.fraction.FractionField;
+import org.apache.commons.math3.linear.Array2DRowFieldMatrix;
+import org.apache.commons.math3.linear.FieldLUDecomposition;
+import org.apache.commons.math3.linear.FieldMatrix;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import codejam.utils.geometry.Line;
 import codejam.utils.geometry.Point;
 import codejam.utils.geometry.PointInt;
@@ -13,10 +21,13 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
+import com.google.common.math.DoubleMath;
 
 public class Main implements TestCaseHandler<InputData>,
         TestCaseInputScanner<InputData>, DefaultInputFiles {
 
+    final static Logger log = LoggerFactory.getLogger(Main.class);
+    
     @Override
     public String[] getDefaultInputFiles() {
     //    return new String[] {"sample.in"};
@@ -31,7 +42,61 @@ public class Main implements TestCaseHandler<InputData>,
         return i;
     }
    
-  
+  /**
+   * See solution explanation
+   * 
+   * Will calculate the transform matrix directly
+   */
+    public void getTranslationMatrix(InputData input, Point point) {
+        FieldMatrix<Fraction> fm = new Array2DRowFieldMatrix<>(FractionField.getInstance(), 3, 3);
+        
+        fm.setEntry(0,0, new Fraction(input.smallTriangle.p1.getX()));
+        fm.setEntry(1,0, new Fraction(input.smallTriangle.p1.getY()));
+        fm.setEntry(2,0, new Fraction(1));
+        
+        fm.setEntry(0,1, new Fraction(input.smallTriangle.p2.getX()));
+        fm.setEntry(1,1, new Fraction(input.smallTriangle.p2.getY()));
+        fm.setEntry(2,1, new Fraction(1));
+        
+        fm.setEntry(0,2, new Fraction(input.smallTriangle.p3.getX()));
+        fm.setEntry(1,2, new Fraction(input.smallTriangle.p3.getY()));
+        fm.setEntry(2,2, new Fraction(1));
+        
+        FieldMatrix<Fraction> fmLarge = new Array2DRowFieldMatrix<>(FractionField.getInstance(), 3, 3);
+        
+        fmLarge.setEntry(0,0, new Fraction(input.largeTriangle.p1.getX()));
+        fmLarge.setEntry(1,0, new Fraction(input.largeTriangle.p1.getY()));
+        fmLarge.setEntry(2,0, new Fraction(1));
+        
+        fmLarge.setEntry(0,1, new Fraction(input.largeTriangle.p2.getX()));
+        fmLarge.setEntry(1,1, new Fraction(input.largeTriangle.p2.getY()));
+        fmLarge.setEntry(2,1, new Fraction(1));
+        
+        fmLarge.setEntry(0,2, new Fraction(input.largeTriangle.p3.getX()));
+        fmLarge.setEntry(1,2, new Fraction(input.largeTriangle.p3.getY()));
+        fmLarge.setEntry(2,2, new Fraction(1));
+        
+        FieldLUDecomposition<Fraction> fd = new FieldLUDecomposition<>(fm);
+        
+        FieldMatrix<Fraction> m = fmLarge.multiply( fd.getSolver().getInverse());
+        
+        FieldMatrix<Fraction> pointM = new Array2DRowFieldMatrix<>(FractionField.getInstance(), 3, 1);
+        
+        pointM.setEntry(0,0, fromDouble(point.getX()));
+        pointM.setEntry(1,0, fromDouble(point.getY()));
+        pointM.setEntry(2,0, new Fraction(1));
+        
+        FieldMatrix<Fraction> trans = m.multiply(pointM);
+        
+        log.debug("Translated {}", trans);
+    }
+    
+    static Fraction fromDouble(double d) {
+        int intPart = DoubleMath.roundToInt(d, RoundingMode.DOWN);
+        
+        return new Fraction(d - intPart, 1e-5, 10000).add(intPart);
+    }
+    
     @Override
     public String handleCase(InputData input) {
         final PointInt origin = new PointInt(0,0);
@@ -137,6 +202,7 @@ public class Main implements TestCaseHandler<InputData>,
         
         DecimalFormat df = new DecimalFormat("0.######");
         
+        getTranslationMatrix(input, p);
         
         df.setRoundingMode(RoundingMode.HALF_UP);
         return String.format("Case #%d: %s %s", input.testCase, df.format(p.getX()), df.format(p.getY()));

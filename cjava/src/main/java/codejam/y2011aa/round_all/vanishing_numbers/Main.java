@@ -25,9 +25,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-        return new String[] {"sample.in"};
+        //return new String[] {"sample.in"};
       // return new String[] { "A-small-practice.in" };
-      //return new String[] { "C-small-practice.in", "C-large-practice.in" };
+      return new String[] { "A-small-practice.in", "A-large-practice.in" };
     }
 
     @Override
@@ -72,7 +72,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         StringBuffer ans =  new StringBuffer();
         ans.append(String.format("Case #%d:\n", in.testCase)); 
         
-        for(int i = 0; i < 53; ++i) {
+        for(int i = 0; i < 73; ++i) {
             
             List< Pair<BigFraction, BigFraction> > nextIntervals = Lists.newArrayList();
             

@@ -14,11 +14,33 @@ public class Main  {
 
 
         //2008 emea semis
-        //Geometry triangles -- rotation / translation / scaling of triangle.  Finding a point that transforms to itself
-        //codejam.y2008.round_emea.scaled_triangle.Main m = new codejam.y2008.round_emea.scaled_triangle.Main();
         
-        //Breadth first search
-        //codejam.y2008.round_emea.painting_fence.Main m = new codejam.y2008.round_emea.painting_fence.Main();
+        /**
+         * 2008 emea semis
+         * 
+         * Geometry triangles -- rotation / translation / scaling of triangle. 
+         * Finding a point that transforms to itself
+         * 
+         * matrix multiplication / transformations.  
+         * 
+         * Can always research more into eigen values / vectors
+         * Implement both proposed solutions.
+         * 
+         * TODO understand bmerries insane solution
+         */
+        //codejam.y2008.round_emea.scaled_triangle.Main m = new codejam.y2008.round_emea.scaled_triangle.Main();
+                
+        /**
+         * 2008 emea semis
+         * 
+         * Given solution was a brute force / greedy scanline.
+         * 
+         * Used a BFS.  Compared to bmerries implementation of proposed 
+         * solution (at least it looks like it), what we did is faster.
+         * 
+         * 
+         */
+        codejam.y2008.round_emea.painting_fence.Main m = new codejam.y2008.round_emea.painting_fence.Main();
         
         //Chromatic number of a tree
         //codejam.y2008.round_emea.rainbow_trees.Main m = new codejam.y2008.round_emea.rainbow_trees.Main();
@@ -262,7 +284,7 @@ public class Main  {
         //Very interesting inductive reasoning -- " africa 2010 qualification round"
         
         //2011 africa / arabia
-        codejam.y2011aa.round_all.vanishing_numbers.Main m = new codejam.y2011aa.round_all.vanishing_numbers.Main();
+        //codejam.y2011aa.round_all.vanishing_numbers.Main m = new codejam.y2011aa.round_all.vanishing_numbers.Main();
 
         
         //2012 qual
