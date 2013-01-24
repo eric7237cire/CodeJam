@@ -273,7 +273,7 @@ public class Main  {
         
         //2012 3
         
-        //Probability Expected value, sorting
+        //Probability Expected value until event happens.  see docs/2012/perfectGame.tex, sorting
         codejam.y2012.round_3.perfect_game.Main m = new codejam.y2012.round_3.perfect_game.Main();
         
         //2012 Final

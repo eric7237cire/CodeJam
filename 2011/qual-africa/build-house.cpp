@@ -127,14 +127,14 @@ void do_test_case(int test_case, ifstream& in, ofstream& fout)
     uvvi land(L, uvi(W, 0));
     
     char sq;
-    FOR(r, 0, L)
+    for(int y = H-1; y>=0; --y)
         FOR(c, 0, W)
         {
             in >> sq;
             switch(sq) {
             case 'G':
             case 'S':
-            land[r][c] = 1;
+            land[y][c] = 1;
             }
         }
     
@@ -160,7 +160,8 @@ void do_test_case(int test_case, ifstream& in, ofstream& fout)
         }
     }*/
 
-	 FOR(r, 0, L)
+    
+	 for(int r=H-1; r >= 0; --r)
     {
         FOR(c, 0, W)
         {
@@ -170,7 +171,7 @@ void do_test_case(int test_case, ifstream& in, ofstream& fout)
     }
 cout << endl;
    
-    
+   // return;
     for( int x = W-1; x >= 0; --x)
     {
         updateColumnOnesToRight(columnOnesToRight, x, land);
@@ -178,11 +179,15 @@ cout << endl;
         uint width = 0;
         for( int y = 0; y <= (int)H; ++y )
         {
+            //cout << "X= " << x << " Y= " << y << " 1s right " << columnOnesToRight[y] << endl;
             if ( columnOnesToRight[y] > width )
             {
-                widthStack.push( mp(y, width) );
-				cout << "X= " << x << " Y= " << y <<  "Push " << width << endl;
+                
+				
                 width = columnOnesToRight[y];
+                cout << "X= " << x << " Y= " << y <<  "Push " << width << endl;
+                
+                widthStack.push( mp(y, width) );
 				 
             }
             if ( columnOnesToRight[y] < width )
@@ -192,21 +197,31 @@ cout << endl;
                 {
 					uu rowWidth = widthStack.top();
                     widthStack.pop();
-					cout << "X= " << x << " Y= " << y <<  "Pop " << rowWidth.second << " " << columnOnesToRight[y] << endl;
+					cout << "X= " << x << " Y= " << y <<  " Pop y " <<					rowWidth.first << " Pop Width " << rowWidth.second << " cur width " << columnOnesToRight[y] << endl;
+					width = rowWidth.second;
                     y0 = rowWidth.first;
                     if (width * (y-y0) > 
                         area(best_ll, best_ur) )
                     {
                         best_ll = mp (x, y0);
                         best_ur = mp(x+width-1, y-1);
+                        
+                        cout << "X= " << x << " Y= " << y <<  " Pop y " <<					rowWidth.first << " Pop Width " << rowWidth.second << " cur width " << columnOnesToRight[y] << " New area max " << width*(y-y0) << endl;
+                        
+                        assert(width * (y-y0) == area(best_ll, best_ur)); 
+                        
+                        
                     }
-                    width = rowWidth.second;
-                } while( columnOnesToRight[y] < width );
+                    
+                } while( 
+                    !widthStack.empty() && widthStack.top().second > columnOnesToRight[y]);
                 
                 width = columnOnesToRight[y];
     
-                if (width != 0)
+                if (width != 0) {
+                    cout << "X= " << x << " Y= " << y <<  "Push after width " << width << " Push after y0 " << y0 << endl;
                     widthStack.push( mp(y0, width) );
+                }
             }
         }
     }
