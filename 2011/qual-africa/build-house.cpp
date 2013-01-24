@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <cassert>
 #include <iterator>
+#include <stack>
 #include <sstream>
 #include <bitset>
 #include <cctype>
@@ -96,44 +97,130 @@ V getMapValue( const map<K,V>& aMap, const K& key, const V& defaultValue )
     return it->second;
 }
 
+
+void updateColumnOnesToRight( uvi& columnOnesToRight, uint col, const uvvi& land)
+{
+    for(uint r = 0; r < land.size(); ++r)
+    {
+        if (land[r][col] != 0)
+            columnOnesToRight[r]++;
+        else
+            columnOnesToRight[r] = 0;
+    }
+}
+
+int area( ii lowerLeft, ii upperRight )
+{
+   return (upperRight.first - lowerLeft.first + 1)
+   * (upperRight.second - lowerLeft.second + 1);
+}
+        
 void do_test_case(int test_case, ifstream& in, ofstream& fout)
 {
     uint L, W;
        
     
-    in >> M;
+    in >> W >> L ;
+
+	uint H = L;
     
-    uvi P(12);
+    uvvi land(L, uvi(W, 0));
     
-    FOR(i, 0, 12)
-        in >> P[i];
-    
-    uint bestStartIdx = 0;
-    uint bestStopIdx;
-    uint bestGain = 0;
-    
-    FOR(start, 0, 12)
-    {
-        auto it = max_element( P.begin() + start, P.end());
-        uint units = M / P[start];
-        uint leftOver = M - units * P[start];
-        uint gain = units * (*it) - units * P[start];
-        if (gain > bestGain || ( gain == bestGain && P[start] < P[bestStartIdx]) )
+    char sq;
+    FOR(r, 0, L)
+        FOR(c, 0, W)
         {
-            bestGain = gain;
-            bestStartIdx = start + 1;
-            bestStopIdx = distance(P.begin(), it) + 1;
+            in >> sq;
+            switch(sq) {
+            case 'G':
+            case 'S':
+            land[r][c] = 1;
+            }
+        }
+    
+        
+    ii best_ll(0,0);
+    ii best_ur(-1,-1);
+    
+    uvi columnOnesToRight(H+1, 0);
+    
+    /*
+    for( lowerLeftX = W-1; lowerLeftX >= 0; --lowerLeftX)
+    {
+        updateColumnOnes(columnOnesToRight);
+        
+        for( lowerLeftY = 0; lowerLeftY < L; ++lowerLeftY)
+        {
+            uu ur = grow_ones( mp(lowerLeftX, lowerLeftY) );
+            
+            if (area(ll,up) > area(best_ll, best_ur) ) {
+                best_ll = ll;
+                best_ur = ur;
+            }
+        }
+    }*/
+
+	 FOR(r, 0, L)
+    {
+        FOR(c, 0, W)
+        {
+            cout << land[r][c];
+        }
+        cout << endl;
+    }
+cout << endl;
+   
+    
+    for( int x = W-1; x >= 0; --x)
+    {
+        updateColumnOnesToRight(columnOnesToRight, x, land);
+		 stack<uu> widthStack;
+        uint width = 0;
+        for( int y = 0; y <= (int)H; ++y )
+        {
+            if ( columnOnesToRight[y] > width )
+            {
+                widthStack.push( mp(y, width) );
+				cout << "X= " << x << " Y= " << y <<  "Push " << width << endl;
+                width = columnOnesToRight[y];
+				 
+            }
+            if ( columnOnesToRight[y] < width )
+            {
+                uint y0;
+                do
+                {
+					uu rowWidth = widthStack.top();
+                    widthStack.pop();
+					cout << "X= " << x << " Y= " << y <<  "Pop " << rowWidth.second << " " << columnOnesToRight[y] << endl;
+                    y0 = rowWidth.first;
+                    if (width * (y-y0) > 
+                        area(best_ll, best_ur) )
+                    {
+                        best_ll = mp (x, y0);
+                        best_ur = mp(x+width-1, y-1);
+                    }
+                    width = rowWidth.second;
+                } while( columnOnesToRight[y] < width );
+                
+                width = columnOnesToRight[y];
+    
+                if (width != 0)
+                    widthStack.push( mp(y0, width) );
+            }
         }
     }
     
-    if (bestGain == 0)
-    {
-        fout << "Case #" << test_case+1 << ": IMPOSSIBLE"
+   
+
+cout << "Case #" << test_case+1 << ": " 
+    << area(best_ll, best_ur)
      << endl;
-    } else {
-        fout << "Case #" << test_case+1 << ": " << bestStartIdx
-        << " " << bestStopIdx << " " << bestGain << endl;
-    }
+
+    fout << "Case #" << test_case+1 << ": " 
+    << area(best_ll, best_ur)
+     << endl;
+    
        
 		
 
