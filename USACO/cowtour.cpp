@@ -92,9 +92,11 @@ int main() {
 	    dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]);
 	}
 
+	//Calculate maximum distance between connected fields
 	vd maxDist(N+1, 0);
 	FOR(i, 0, N) FOR(j, 0, N)
 	{
+	    //Only consider fields that are connected
 	    if(dist[i][j] > notConnectedThresh)
 	        continue;
 	    
@@ -104,6 +106,10 @@ int main() {
 	
 	double minConnectionDistance = notConnected;
 	
+	//Now consider fields that are not connected.  Connecting
+	//them will result in a field whose max distance between
+	//the furthest nodes in each field + the distance between
+	//the 2 nodes.
 	FOR(i, 0, N) FOR(j, 0, N)
 	{
 	    if (dist[i][j] < notConnectedThresh)
@@ -117,12 +123,9 @@ int main() {
 	    minConnectionDistance = min(minConnectionDistance, distBet);
 	}
 		
+	//It is possible that the connected fields do not represent max
+	//inter-node distance.
 	maxDist[N] = minConnectionDistance;
-//FOR(i, 0, N) FOR(j, 0, N)
-	//    cout << i << ", " << j << " dist " << dist[i][j] << endl;
-	
-	//FOR(i, 0, N)
-	  //  cout << "Max distance node = " << i << " = " << maxDist[i] << endl;
 	
 	fout.precision(6);
 	fout << fixed << *max_element(all(maxDist)) << endl;

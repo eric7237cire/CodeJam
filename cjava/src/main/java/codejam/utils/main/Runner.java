@@ -115,7 +115,7 @@ public class Runner {
         Locale.setDefault(Locale.US);
         
         String dir = inputReader.getClass().getPackage().getName();
-        Pattern match = Pattern.compile("codejam\\.(y\\d+)\\.round_([^\\.]+)\\..*");
+        Pattern match = Pattern.compile("codejam\\.(y.+)\\.round_([^\\.]+)\\..*");
         Matcher m = match.matcher(dir);
         Preconditions.checkState(m.matches());
         dir = String.format("." + File.separator + "src" + File.separator + "main" + File.separator +

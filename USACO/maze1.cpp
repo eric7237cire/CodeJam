@@ -41,58 +41,6 @@ typedef pair<uint,uint> uu;
 #define contains(c,x) ((c).find(x) != (c).end()) 
 #define cpresent(c,x) (find(all(c),x) != (c).end()) 
 
-const ii NORTH = mp(-1, 0);
-const ii EAST = mp(0, 1);
-const ii SOUTH = mp(1, 0);
-const ii WEST = mp(0, -1);
-
-ii directions[4] = { NORTH, EAST, SOUTH, WEST };
-//01
-//02
-//20
-//10
-struct Location {
-    ii dir;
-    int dirIndex;
-    int row;
-    int col;
-};
-
-ostream& operator<<(ostream& os, const Location& loc) {
-    os << "(" << loc.dir.first << ", " << loc.dir.second << ") row " << loc.row << " col " << loc.col;   
-}
-
-Location getNewLoc(Location curLoc, const vector<string>& grid)
-{
-    int dRow = curLoc.dir.first;
-    int dCol = curLoc.dir.second;
-    
-    Location nextLoc(curLoc);
-    
-    //turn col, -row
-    int nextRow = curLoc.row + dRow;
-    int nextCol = curLoc.col + dCol;
-    
-    if (nextRow < 0 || nextRow >= 10 ||
-        nextCol < 0 || nextCol >= 10 ||
-        grid[nextRow][nextCol] == '*') 
-    {
-        nextLoc.dir.first = curLoc.dir.second;
-        nextLoc.dir.second = 
-        -curLoc.dir.first;
-        
-        nextLoc.dirIndex++;
-        if (nextLoc.dirIndex > 3)
-            nextLoc.dirIndex = 0;
-        
-    } else {
-        nextLoc.row += dRow;
-        nextLoc.col += dCol;
-    }
-    
-    return nextLoc;
-}
-
 uint getIndex(int row, int col, uint width)
 {
     //Taking into account 2 extra rows and columns
@@ -121,16 +69,11 @@ int main() {
     {
         
         getline(fin, lineStr);
-        cout << "Line " << line << " " << lineStr << endl;
+        //Parse line by line, it is either a north/south wall
         if (line % 2 == 0) {
-            //0 -1 
-            //2 0 
-            //4 1 
-            //6 2 
+            
             int rowAbove = line / 2 - 1;
             int rowBelow = rowAbove + 1;
-            cout << rowAbove << endl;
-            cout << rowBelow << endl;
             FOR(col, 0, W) {
                 char wallCh = lineStr[1+2*col];
                 if (wallCh == '-')
@@ -154,43 +97,32 @@ int main() {
                 connected[ sq2 ].pb(sq1);
             }
         } else {
+            //An east/west wall line
             int row = line / 2;
             FORE(col, 0, W) {
                 char wallCh = lineStr[2 * col];
                 if (wallCh == '|')
                     continue;
-                
+                                
+                uint sq1 = getIndex(row, col-1, W);
+                uint sq2 = getIndex(row, col, W); 
                 assert(wallCh == ' ');
                 
                 if (col == 0) {
-                    exits.pb( getIndex(row, col,W) );
+                    exits.pb( sq2 );
                     continue;
                 }
                 if (col == W) {
-                    exits.pb( getIndex(row, col-1,W) );
+                    exits.pb( sq1 );
                     continue;
                 }
                 
-                uint sq1 = getIndex(row, col-1, W);
-                uint sq2 = getIndex(row, col, W); 
                 connected[ sq1 ].pb(sq2);
-                connected[ sq2 ].pb(sq1);
-                
+                connected[ sq2 ].pb(sq1);                
             }
         }
     }
-    /*
-    cout << "Exit 1 " << exits[0] << endl;
-    cout << "Exit 2 " << exits[1] << endl;
-    cout << exits.size() << endl;
-    FOR(i, 0, W*H) {
-        cout << "Neighbors " << i << endl;
-        FOR(j, 0, connected[i].size()) {
-            cout << connected[i][j] << ", ";   
-        }
-        cout << endl;
-    }*/
-  
+      
     
     vector<bool> visited(W*H, false);
     vector<uint> distTo(W*H, 100000000);
