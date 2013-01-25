@@ -103,7 +103,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      */
     public String handleCase(InputData in)
     {
-        bruteForce(in);
+        String bf = bruteForce(in);
+        log.debug("Brute force {}", bf);
         
         /**
          * Center coordinate Cx, Cy can
@@ -241,10 +242,25 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         
                         log.debug("Found a rectangle.  center x odd? {} center y odd? {} ", centerXOdd, centerYOdd);
                         
-                        Tile center = findBestPointInRectangle( Math.min( Math.abs(n1), Math.abs(n2)),
-                                Math.max( Math.abs(n1), Math.abs(n2)),
-                                Math.min( Math.abs(-p1), Math.abs(-p2)),
-                                Math.max( Math.abs(-p1), Math.abs(-p2)),
+                        long A, B, C, D;
+                        
+                        if ( Math.abs(n1) <= Math.abs(n2) ) {
+                            A =  n1;
+                            B = n2;
+                        } else {
+                            A = n2;
+                            B = n1;
+                        }
+                        
+                        if ( Math.abs(-p1) <= Math.abs(-p2) ) {
+                            C = -p1;
+                            D = -p2;                                    
+                        } else {
+                            C = -p2;
+                            D = -p1;
+                        }
+                        
+                        Tile center = findBestPointInRectangle( A,B,C,D,
                                 centerXOdd != 0,
                                 centerYOdd != 0);
                                 
@@ -301,22 +317,26 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
        Preconditions.checkState(Math.abs(A) <= Math.abs(B));
        Preconditions.checkState(Math.abs(C) <= Math.abs(D));
        
-       List<Point> pointsToTest = Lists.newArrayList();
+       List<Tile> pointsToTest = Lists.newArrayList();
        
        if (M == Math.abs(A)) {
            Line mLine = null;
-           
+           long A_plus1 = 0;
            
            if (A >= 0) {
                //Line is x+y = A+1
                mLine = new Line( new Point(0, M+1), new Point(M+1, 0));
-               pointsToTest.add( new Point(0, M+1) );
-               pointsToTest.add( new Point(M+1, 0) );
+               pointsToTest.add( new Tile(0, M+1,false) );
+               pointsToTest.add( new Tile(M+1, 0, false) );
+               
+               A_plus1 = M+1;
            } else {
                //Line is x+y = A - 1
                mLine = new Line( new Point(0, -M-1), new Point(-M-1, 0));
-               pointsToTest.add( new Point(0, -M-1) );
-               pointsToTest.add( new Point(-M-1, 0) );
+               pointsToTest.add( new Tile(0, -M-1, false) );
+               pointsToTest.add( new Tile(-M-1, 0, false) );
+               
+               A_plus1 = -M-1;
            }
            
            //Intersect with line C and D
@@ -327,22 +347,33 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
            
            Point dm = dLine.getIntersection(mLine);
            
-           pointsToTest.add(cm);
-           pointsToTest.add(dm);
+           double minX = Math.min(cm.getX(), dm.getX());
+           double maxX = Math.max(cm.getX(), dm.getX());
+           
+           long intMinX = DoubleMath.roundToLong(minX, RoundingMode.UP);
+           long intMaxX = DoubleMath.roundToLong(maxX, RoundingMode.DOWN);
+           
+           pointsToTest.add( new Tile(intMinX, A_plus1-intMinX, false) );
+           pointsToTest.add( new Tile(intMaxX, A_plus1-intMaxX, false) );
        } else {
            Preconditions.checkState(M == Math.abs(C));
            Line mLine = null;
+           long C_plus1 = 0;
            if (C <= 0) {
                //Line is x-y = C - 1
                mLine = new Line( new Point(-M-1, 0), new Point(0, M+1));
 
-               pointsToTest.add( mLine.getP1() );
-               pointsToTest.add( mLine.getP2() );
+               pointsToTest.add( new Tile(-M-1, 0, false ) );
+               pointsToTest.add( new Tile(0, M+1, false ) );
+               
+               C_plus1 = M + 1;
            } else {
                //Line is x+y = A - 1
                mLine = new Line( new Point(0, -M-1), new Point(M+1, 0));
-               pointsToTest.add( mLine.getP1() );
-               pointsToTest.add( mLine.getP2() );
+               pointsToTest.add( new Tile(0, -M-1, false) );
+               pointsToTest.add( new Tile(M+1, 0, false) );
+               
+               C_plus1 = -M - 1;
            }
        
            //Intersect with line A and B
@@ -352,28 +383,34 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
            Point am = aLine.getIntersection(mLine);           
            Point bm = bLine.getIntersection(mLine);
        
-           pointsToTest.add(am);
-           pointsToTest.add(bm);
+           double minX = Math.min(am.getX(), bm.getX());
+           double maxX = Math.max(am.getX(), bm.getX());
+           
+           long intMinX = DoubleMath.roundToLong(minX, RoundingMode.UP);
+           long intMaxX = DoubleMath.roundToLong(maxX, RoundingMode.DOWN);
+           
+           pointsToTest.add( new Tile(intMinX, C_plus1-intMinX, false) );
+           pointsToTest.add( new Tile(intMaxX, C_plus1-intMaxX, false) );
        }
        
-       Collections.sort(pointsToTest, new Comparator<Point>() {
+       Collections.sort(pointsToTest, new Comparator<Tile>() {
 
-        @Override
-        public int compare(Point o1, Point o2)
-        {
-            return ComparisonChain.start().compare(o2.getX(), o1.getX()).compare(o2.getY(), o1.getY()).result();
-        }
-           
-       });
+           @Override
+           public int compare(Tile o1, Tile o2)
+           {
+               return ComparisonChain.start().compare(o2.getX(), o1.getX()).compare(o2.getY(), o1.getY()).result();
+           }
+              
+          });
        
-       for( Point point : pointsToTest)
+       for( Tile point : pointsToTest)
        {
-           long x = DoubleMath.roundToLong(point.getX(), RoundingMode.HALF_EVEN);
-           long y = DoubleMath.roundToLong(point.getY(), RoundingMode.HALF_EVEN);
+           long x = point.getX();
+           long y = point.getY();
            boolean feasible = (A <= x+y && x+y <= B) && (C <= x-y && x-y <= D);
            
            if (feasible)
-               return new Tile(x,y,false);
+               return point;
        
        }
        

@@ -212,7 +212,7 @@ public class Main  {
          //codejam.y2010.round_2.world_cup.Main m = new codejam.y2010.round_2.world_cup.Main();
         
         //Maybe do a doc TODO / comments
-         codejam.y2010.round_2.bacteria.Main m = new codejam.y2010.round_2.bacteria.Main(); 
+         //codejam.y2010.round_2.bacteria.Main m = new codejam.y2010.round_2.bacteria.Main(); 
 
         // codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
                   
@@ -371,7 +371,7 @@ public class Main  {
         //Probability, optimizing, state transitions, maybe matrix multiplication
         //codejam.y2012.round_final.upstairs_downstairs.Main m = new codejam.y2012.round_final.upstairs_downstairs.Main();
         
-        //codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
+        codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
         
         String[] files = {};
         if (m instanceof DefaultInputFiles) {
