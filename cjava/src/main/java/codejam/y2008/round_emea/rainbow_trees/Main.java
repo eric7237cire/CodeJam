@@ -18,8 +18,8 @@ import java.util.Stack;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import codejam.utils.datastructures.GraphInt;
 import codejam.utils.datastructures.TreeInt;
+import codejam.utils.datastructures.graph.GraphInt;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;

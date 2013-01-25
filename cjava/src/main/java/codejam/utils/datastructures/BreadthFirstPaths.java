@@ -1,5 +1,7 @@
 package codejam.utils.datastructures;
 
+import codejam.utils.datastructures.graph.Graph;
+
 /*************************************************************************
  *  Compilation:  javac BreadthFirstPaths.java
  *  Execution:    java BreadthFirstPaths G s

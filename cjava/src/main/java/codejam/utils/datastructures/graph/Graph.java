@@ -1,56 +1,65 @@
-package codejam.utils.datastructures;
+package codejam.utils.datastructures.graph;
+
+import java.util.Stack;
 /*************************************************************************
- *  Compilation:  javac Digraph.java
- *  Execution:    java Digraph filename.txt
+ *  Compilation:  javac Graph.java        
+ *  Execution:    java Graph input.txt
  *  Dependencies: Bag.java In.java StdOut.java
- *  Data files:   http://algs4.cs.princeton.edu/42directed/tinyDG.txt
+ *  Data files:   http://algs4.cs.princeton.edu/41undirected/tinyG.txt
  *
- *  A graph, implemented using an array of lists.
- *  Parallel edges and self-loops are permitted.
+ *  A graph, implemented using an array of sets.
+ *  Parallel edges and self-loops allowed.
  *
- *  % java Digraph tinyDG.txt
- *  13 22
- *  0: 5 1 
- *  1: 
- *  2: 0 3 
- *  3: 5 2 
- *  4: 3 2 
- *  5: 4 
- *  6: 9 4 0 
- *  7: 6 8 
- *  8: 7 9 
- *  9: 11 10 
- *  10: 12 
- *  11: 4 12 
- *  12: 9 
+ *  % java Graph tinyG.txt
+ *  13 vertices, 13 edges 
+ *  0: 6 2 1 5 
+ *  1: 0 
+ *  2: 0 
+ *  3: 5 4 
+ *  4: 5 6 3 
+ *  5: 3 4 0 
+ *  6: 0 4 
+ *  7: 8 
+ *  8: 7 
+ *  9: 11 10 12 
+ *  10: 9 
+ *  11: 9 12 
+ *  12: 11 9 
+ *
+ *  % java Graph mediumG.txt
+ *  250 vertices, 1273 edges 
+ *  0: 225 222 211 209 204 202 191 176 163 160 149 114 97 80 68 59 58 49 44 24 15 
+ *  1: 220 203 200 194 189 164 150 130 107 72 
+ *  2: 141 110 108 86 79 51 42 18 14 
+ *  ...
  *  
  *************************************************************************/
 
+import codejam.utils.datastructures.Bag;
+import codejam.utils.datastructures.In;
 
 
 /**
- *  The <tt>Digraph</tt> class represents an directed graph of vertices
+ *  The <tt>Graph</tt> class represents an undirected graph of vertices
  *  named 0 through V-1.
  *  It supports the following operations: add an edge to the graph,
- *  iterate over all of the neighbors incident to a vertex.
+ *  iterate over all of the neighbors adjacent to a vertex.
  *  Parallel edges and self-loops are permitted.
  *  <p>
- *  For additional documentation,
- *  see <a href="http://algs4.cs.princeton.edu/42directed">Section 4.2</a> of
+ *  For additional documentation, see <a href="http://algs4.cs.princeton.edu/51undirected">Section 5.1</a> of
  *  <i>Algorithms, 4th Edition</i> by Robert Sedgewick and Kevin Wayne.
  */
-
-public class Digraph {
+public class Graph {
     private final int V;
     private int E;
     private Bag<Integer>[] adj;
     
    /**
-     * Create an empty digraph with V vertices.
+     * Create an empty graph with V vertices.
      * @throws java.lang.IllegalArgumentException if V < 0
      */
     @SuppressWarnings("unchecked")
-    public Digraph(int V) {
+    public Graph(int V) {
         if (V < 0) throw new IllegalArgumentException("Number of vertices must be nonnegative");
         this.V = V;
         this.E = 0;
@@ -61,22 +70,38 @@ public class Digraph {
     }
 
    /**
+     * Create a random graph with V vertices and E edges.
+     * Expected running time is proportional to V + E.
+     * @throws java.lang.IllegalArgumentException if either V < 0 or E < 0
+     */
+    public Graph(int V, int E) {
+        this(V);
+        if (E < 0) throw new IllegalArgumentException("Number of edges must be nonnegative");
+        for (int i = 0; i < E; i++) {
+            int v = (int) (Math.random() * V);
+            int w = (int) (Math.random() * V);
+            addEdge(v, w);
+        }
+    }
+
+   /**  
      * Create a digraph from input stream.
-     */  
-    public Digraph(In in) {
-        this(in.readInt()); 
+     */
+    
+    public Graph(In in) {
+        this(in.readInt());
         int E = in.readInt();
         for (int i = 0; i < E; i++) {
             int v = in.readInt();
             int w = in.readInt();
-            addEdge(v, w); 
+            addEdge(v, w);
         }
     }
 
    /**
      * Copy constructor.
      */
-    public Digraph(Digraph G) {
+    public Graph(Graph G) {
         this(G.V());
         this.E = G.E();
         for (int v = 0; v < G.V(); v++) {
@@ -90,83 +115,58 @@ public class Digraph {
             }
         }
     }
-        
-   /**
-     * Return the number of vertices in the digraph.
-     */
-    public int V() {
-        return V;
-    }
 
    /**
-     * Return the number of edges in the digraph.
+     * Return the number of vertices in the graph.
      */
-    public int E() {
-        return E;
-    }
+    public int V() { return V; }
 
    /**
-     * Add the directed edge v->w to the digraph.
+     * Return the number of edges in the graph.
+     */
+    public int E() { return E; }
+
+
+   /**
+     * Add the undirected edge v-w to graph.
      * @throws java.lang.IndexOutOfBoundsException unless both 0 <= v < V and 0 <= w < V
      */
     public void addEdge(int v, int w) {
         if (v < 0 || v >= V) throw new IndexOutOfBoundsException();
         if (w < 0 || w >= V) throw new IndexOutOfBoundsException();
-        adj[v].add(w);
         E++;
+        adj[v].add(w);
+        adj[w].add(v);
     }
 
+
    /**
-     * Return the list of vertices pointed to from vertex v as an Iterable.
+     * Return the list of neighbors of vertex v as in Iterable.
      * @throws java.lang.IndexOutOfBoundsException unless 0 <= v < V
      */
-    public Iterable<Integer> adj(int v) {
+    public Bag<Integer> adj(int v) {
         if (v < 0 || v >= V) throw new IndexOutOfBoundsException();
         return adj[v];
     }
 
-   /**
-     * Return the reverse of the digraph.
-     */
-    public Digraph reverse() {
-        Digraph R = new Digraph(V);
-        for (int v = 0; v < V; v++) {
-            for (int w : adj(v)) {
-                R.addEdge(w, v);
-            }
-        }
-        return R;
-    }
 
    /**
-     * Return a string representation of the digraph.
+     * Return a string representation of the graph.
      */
     public String toString() {
         StringBuilder s = new StringBuilder();
         String NEWLINE = System.getProperty("line.separator");
-        s.append(V + " " + E + NEWLINE);
+        s.append(V + " vertices, " + E + " edges " + NEWLINE);
         for (int v = 0; v < V; v++) {
-            s.append(String.format("%d: ", v));
+            s.append(v + ": ");
             for (int w : adj[v]) {
-                s.append(String.format("%d ", w));
+                s.append(w + " ");
             }
             s.append(NEWLINE);
         }
         return s.toString();
     }
 
-   /**
-     * Test client.
-     */
-    public static void main(String[] args) {
-        In in = new In(args[0]);
-        Digraph G = new Digraph(in);
-        StdOut.println(G);
 
-        StdOut.println();
-        for (int v = 0; v < G.V(); v++)
-            for (int w : G.adj(v))
-                StdOut.println(v + "->" + w);
-    }
 
 }

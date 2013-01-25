@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import codejam.utils.datastructures.GraphAdjList;
+import codejam.utils.datastructures.graph.GraphAdjList;
 import codejam.utils.geometry.Line;
 import codejam.utils.geometry.Point;
 import codejam.utils.geometry.Polygon;

@@ -1,4 +1,7 @@
 package codejam.utils.datastructures;
+
+import codejam.utils.datastructures.graph.Digraph;
+
 /*************************************************************************
  *  Compilation:  javac DepthFirstOrder.java
  *  Execution:    java DepthFirstOrder filename.txt

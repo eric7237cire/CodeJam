@@ -1,15 +1,19 @@
-package codejam.y2012.round_1C.diamond_inheritance;
+package codejam.y2011aa.round_all.battlefield;
 
-import codejam.utils.datastructures.graph.GraphInt;
+import codejam.utils.datastructures.graph.Graph;
 import codejam.utils.main.AbstractInputData;
 
 public class InputData 
     extends AbstractInputData {
         
         int N;
-        GraphInt graph;
+        int R;
+        
+        Graph graph;
         
         public InputData(int testCase) {
             super(testCase);
+            
+            
         }
 }

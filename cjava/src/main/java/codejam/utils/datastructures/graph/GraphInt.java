@@ -1,9 +1,12 @@
-package codejam.utils.datastructures;
+package codejam.utils.datastructures.graph;
 
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+
+import codejam.utils.datastructures.TreeInt;
+import codejam.utils.datastructures.TreeInt.Node;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;

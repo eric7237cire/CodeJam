@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import codejam.utils.datastructures.graph.GraphInt;
+
 import com.google.common.collect.Maps;
 
 

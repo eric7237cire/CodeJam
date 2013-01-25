@@ -1,4 +1,7 @@
 package codejam.utils.datastructures;
+
+import codejam.utils.datastructures.graph.Digraph;
+
 /*************************************************************************
  *  Compilation:  javac Topoological.java
  *  Dependencies: Digraph.java DepthFirstOrder.java DirectedCycle.java

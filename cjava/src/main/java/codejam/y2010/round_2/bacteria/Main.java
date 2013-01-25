@@ -6,7 +6,7 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.datastructures.GraphAdjList;
+import codejam.utils.datastructures.graph.GraphAdjList;
 import codejam.utils.geometry.Rectangle;
 import codejam.utils.main.Runner;
 import codejam.utils.main.Runner.TestCaseInputScanner;

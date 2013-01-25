@@ -1,4 +1,7 @@
 package codejam.utils.datastructures;
+
+import codejam.utils.datastructures.graph.Digraph;
+
 /*************************************************************************
  *  Compilation:  javac DirectedCycle.java
  *  Execution:    java DirectedCycle < input.txt

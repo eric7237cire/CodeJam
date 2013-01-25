@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.ArticulationPoint;
 import codejam.utils.datastructures.BitSetInt;
-import codejam.utils.datastructures.GraphInt;
+import codejam.utils.datastructures.graph.GraphInt;
 import codejam.utils.utils.GridChar;
 import codejam.y2008.round_amer.king.BruteForce;
 import codejam.y2008.round_amer.king.InputData;

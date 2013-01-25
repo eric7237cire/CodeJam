@@ -1,4 +1,4 @@
-package codejam.utils.datastructures;
+package codejam.utils.datastructures.graph;
 
 import java.util.ArrayList;
 import java.util.List;

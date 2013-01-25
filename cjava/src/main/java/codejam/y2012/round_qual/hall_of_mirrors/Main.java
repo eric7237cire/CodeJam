@@ -10,7 +10,7 @@ import org.apache.commons.math3.util.ArithmeticUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.datastructures.GraphAdjList;
+import codejam.utils.datastructures.graph.GraphAdjList;
 import codejam.utils.geometry.Angle;
 import codejam.utils.geometry.Line;
 import codejam.utils.geometry.Point;

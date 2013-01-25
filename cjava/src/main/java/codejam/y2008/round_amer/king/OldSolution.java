@@ -8,7 +8,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import codejam.utils.datastructures.ArticulationPoint;
-import codejam.utils.datastructures.GraphInt;
+import codejam.utils.datastructures.graph.GraphInt;
 import codejam.utils.utils.Direction;
 import codejam.utils.utils.GridChar;
 

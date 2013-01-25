@@ -1,4 +1,7 @@
 package codejam.utils.datastructures;
+
+import codejam.utils.datastructures.graph.Graph;
+
 /*************************************************************************
  *  Compilation:  javac Bipartite.java
  *  Dependencies: Graph.java 
