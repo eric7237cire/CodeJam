@@ -442,7 +442,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             if (intersection == null)
                 continue;
             
-            if (!wall.isBetween(intersection)) {
+            if (!wall.onLineSegment(intersection)) {
                // log.debug("Intersection {} not between {}", intersection, wall);
                 continue;
             }
@@ -462,7 +462,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             log.debug("Intersection {} dir {} wall {}", intersection, direction, wall);
             
             Line checkLine = new Line(point, intersection);
-            if (checkLine.isBetween(self) && !point.equals(self)) {
+            if (checkLine.onLineSegment(self) && !point.equals(self)) {
                 //log.debug("Self {} checkline {}", self, checkLine);
                 intersection = self;
             }
@@ -646,7 +646,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 if (dc.compare(angleIntersection, fromAngle) != 0 && dc.compare(angleIntersection2, fromAngle) != 0)
                     continue;
 
-                if (wall.isBetween(intersection)) {
+                if (wall.onLineSegment(intersection)) {
                     log.debug("Intersection found with wall {} = {}.  Angle is {}", wall, intersection, angleIntersection * 180d / Math.PI);
 
                     points.add(intersection);

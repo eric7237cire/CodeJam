@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="qual-round.cpp">
+    <ClCompile Include="..\..\2011\qual-africa\build-house.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

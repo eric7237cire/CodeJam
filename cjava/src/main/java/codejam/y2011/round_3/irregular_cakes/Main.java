@@ -107,7 +107,7 @@ specifying the upper boundary. The j-th line here contains two integers
             
             startPoint = line.getPointGivenX(xLo);
             
-            Preconditions.checkState(line.isBetween(startPoint));
+            Preconditions.checkState(line.onLineSegment(startPoint));
             
             startIndex = pIdx;
             break;
@@ -127,7 +127,7 @@ specifying the upper boundary. The j-th line here contains two integers
             Line line = new Line(points.get(pIdx - 1), points.get(pIdx));
             stopPoint = line.getPointGivenX(xMax);
             
-            Preconditions.checkState(line.isBetween(stopPoint));
+            Preconditions.checkState(line.onLineSegment(stopPoint));
             stopIndex = pIdx;
             break;
         }

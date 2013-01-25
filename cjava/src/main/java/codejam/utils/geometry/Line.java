@@ -3,9 +3,11 @@ package codejam.utils.geometry;
 import codejam.utils.utils.DoubleComparator;
 
 import com.google.common.base.Preconditions;
+import com.google.common.math.DoubleMath;
 
 public class Line {
     
+    public static double tolerance = 0.000002;
     public final static DoubleComparator dc = new DoubleComparator(0.000002);
     private double m;
     private double b;
@@ -101,7 +103,7 @@ public class Line {
      * @param pointToTest
      * @return
      */
-    public boolean isBetween(Point pointToTest) {
+    public boolean onLineSegment(Point pointToTest) {
         
         if (pointToTest == null)
             return false;
@@ -110,11 +112,10 @@ public class Line {
             return false;
         
         return (
-            
-            dc.compare(Math.min(p1.getX(), p2.getX()), pointToTest.getX()) <= 0 &&
-        dc.compare(Math.max(p1.getX(), p2.getX()), pointToTest.getX()) >= 0 &&
-        dc.compare(Math.min(p1.getY(), p2.getY()), pointToTest.getY()) <= 0 && 
-        dc.compare(Math.max(p1.getY(), p2.getY()), pointToTest.getY()) >= 0) ;
+            DoubleMath.fuzzyCompare(Math.min(p1.getX(), p2.getX()), pointToTest.getX(), tolerance) <= 0 &&
+            DoubleMath.fuzzyCompare(Math.max(p1.getX(), p2.getX()), pointToTest.getX(), tolerance) >= 0 &&
+            DoubleMath.fuzzyCompare(Math.min(p1.getY(), p2.getY()), pointToTest.getY(), tolerance) <= 0 && 
+            DoubleMath.fuzzyCompare(Math.max(p1.getY(), p2.getY()), pointToTest.getY(), tolerance) >= 0) ;
 
     }
     /**

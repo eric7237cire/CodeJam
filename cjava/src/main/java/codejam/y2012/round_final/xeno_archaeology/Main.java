@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +18,7 @@ import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
@@ -245,6 +248,168 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
         return bruteForce(in);
         
+    }
+    
+    /**
+     * 
+     * A <= x + y <= B (negative slope lines)
+     * C <= x - y <= D (positive slope lines
+     */
+    Tile findBestPointInRectangle(long A, long B, long C, long D, boolean centerXOdd, boolean centerYOdd) {
+       long gAB = g(A,B);
+       long gCD = g(C,D);
+       
+       if (gAB == 0 && gCD == 0)
+           return findBestPointInRectangleContainingZero(A,B,C,D,centerXOdd, centerYOdd);
+       
+       //Look at graph on desmos to see why
+       long M = Math.max(g(A,B), g(C,D)) ;
+       
+       //Find the line that limits, and add one
+       Preconditions.checkState(Math.abs(A) <= Math.abs(B));
+       Preconditions.checkState(Math.abs(C) <= Math.abs(D));
+       
+       List<Point> pointsToTest = Lists.newArrayList();
+       
+       if (M == Math.abs(A)) {
+           Line mLine = null;
+           
+           
+           if (A >= 0) {
+               //Line is x+y = A+1
+               mLine = new Line( new Point(0, M+1), new Point(M+1, 0));
+               pointsToTest.add( new Point(0, M+1) );
+               pointsToTest.add( new Point(M+1, 0) );
+           } else {
+               //Line is x+y = A - 1
+               mLine = new Line( new Point(0, -M-1), new Point(-M-1, 0));
+               pointsToTest.add( new Point(0, -M-1) );
+               pointsToTest.add( new Point(-M-1, 0) );
+           }
+           
+           //Intersect with line C and D
+           Line cLine = new Line(1, -C);
+           Line dLine = new Line(1, -D);
+           
+           Point cm = cLine.getIntersection(mLine);
+           
+           Point dm = dLine.getIntersection(mLine);
+           
+           pointsToTest.add(cm);
+           pointsToTest.add(dm);
+       } else {
+           Preconditions.checkState(M == Math.abs(C));
+           Line mLine = null;
+           if (C <= 0) {
+               //Line is x-y = C - 1
+               mLine = new Line( new Point(-M-1, 0), new Point(0, M+1));
+
+               pointsToTest.add( mLine.getP1() );
+               pointsToTest.add( mLine.getP2() );
+           } else {
+               //Line is x+y = A - 1
+               mLine = new Line( new Point(0, -M-1), new Point(M+1, 0));
+               pointsToTest.add( mLine.getP1() );
+               pointsToTest.add( mLine.getP2() );
+           }
+       
+           //Intersect with line A and B
+           Line aLine = new Line(-1, A);
+           Line bLine = new Line(-1, B);
+           
+           Point am = aLine.getIntersection(mLine);           
+           Point bm = bLine.getIntersection(mLine);
+       
+           pointsToTest.add(am);
+           pointsToTest.add(bm);
+       }
+       
+       Collections.sort(pointsToTest, new Comparator<Point>() {
+
+        @Override
+        public int compare(Point o1, Point o2)
+        {
+            return ComparisonChain.start().compare(o2.getX(), o1.getX()).compare(o2.getY(), o1.getY()).result();
+        }
+           
+       });
+       
+       for( Point point : pointsToTest)
+       {
+           long x = DoubleMath.roundToLong(point.getX(), RoundingMode.HALF_EVEN);
+           long y = DoubleMath.roundToLong(point.getY(), RoundingMode.HALF_EVEN);
+           boolean feasible = (A <= x+y && x+y <= B) && (C <= x-y && x-y <= D);
+           
+           if (feasible)
+               return new Tile(x,y,false);
+       
+       }
+       
+       return null;
+    }
+    
+    Tile findBestPointInRectangleContainingZero(long A, long B, long C, long D, 
+            boolean centerXOdd, boolean centerYOdd) {
+        if (!centerXOdd && !centerYOdd)
+            return new Tile(0, 0, false);
+        
+        List<Pair<Long, Long>> pointsToTry = Lists.newArrayList();
+        if (centerXOdd && centerYOdd) {
+            pointsToTry.add( new ImmutablePair<>(1l,1l) );
+            pointsToTry.add( new ImmutablePair<>(1l,-1l) );
+            pointsToTry.add( new ImmutablePair<>(-1l,1l) );
+            pointsToTry.add( new ImmutablePair<>(-1l,-1l) );            
+        }
+        
+        if (centerXOdd && !centerYOdd) {
+            pointsToTry.add( new ImmutablePair<>(1l,0l) );
+            pointsToTry.add( new ImmutablePair<>(-1l,-1l) );
+            pointsToTry.add( new ImmutablePair<>(3l,0l) );
+            pointsToTry.add( new ImmutablePair<>(1l,2l) );
+            pointsToTry.add( new ImmutablePair<>(1l,-2l) );
+            pointsToTry.add( new ImmutablePair<>(-1l,2l) );
+            pointsToTry.add( new ImmutablePair<>(-1l,-2l) );
+            pointsToTry.add( new ImmutablePair<>(-3l,0l) );
+        }
+        
+        if (!centerXOdd && centerYOdd) {
+            pointsToTry.add( new ImmutablePair<>(0l,1l) );
+            pointsToTry.add( new ImmutablePair<>(-1l,-1l) );
+            
+            pointsToTry.add( new ImmutablePair<>(2l,1l) );
+            pointsToTry.add( new ImmutablePair<>(2l,-1l) );
+            
+            pointsToTry.add( new ImmutablePair<>(0l,3l) );
+            pointsToTry.add( new ImmutablePair<>(0l,-3l) );
+            
+            pointsToTry.add( new ImmutablePair<>(-2l,1l) );            
+            pointsToTry.add( new ImmutablePair<>(-2l,-1l) );
+            
+        }
+        
+        
+        //TODO how can 3, 0 work when 1, 0 did not ??
+        
+        
+        for(Pair<Long,Long> point : pointsToTry)
+        {
+            long x = point.getLeft();
+            long y = point.getRight();
+            boolean feasible = (A <= x+y && x+y <= B) && (C <= x-y && x-y <= D);
+            
+            if (feasible)
+                return new Tile(x,y,false);
+        
+        }
+      //None are feasible, rectangle does not contain any feasible points
+        return null;
+        
+    }
+    long g(long k, long l) {
+        if ( (k >= 0 && l >= 0) || ( k < 0 && l < 0) )
+            return Math.min(Math.abs(k), Math.abs(l));
+        
+        return 0;
     }
     
     
