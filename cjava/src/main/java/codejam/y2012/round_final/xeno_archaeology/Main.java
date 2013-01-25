@@ -300,8 +300,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     /**
      * 
-     * A <= x + y <= B (negative slope lines)
-     * C <= x - y <= D (positive slope lines
+     * A/B <= x + y <= A/B (negative slope lines)
+     * C/D <= x - y <= C/D (positive slope lines
+     * 
+     * abs(A) <= abs(B)
+     * abs(C) <= abs(D)
      */
     Tile findBestPointInRectangle(long A, long B, long C, long D, boolean centerXOdd, boolean centerYOdd) {
        long gAB = g(A,B);
@@ -331,7 +334,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                
                A_plus1 = M+1;
            } else {
-               //Line is x+y = A - 1
+               //Line is x+y = -M - 1
                mLine = new Line( new Point(0, -M-1), new Point(-M-1, 0));
                pointsToTest.add( new Tile(0, -M-1, false) );
                pointsToTest.add( new Tile(-M-1, 0, false) );
@@ -407,7 +410,18 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
        {
            long x = point.getX();
            long y = point.getY();
-           boolean feasible = (A <= x+y && x+y <= B) && (C <= x-y && x-y <= D);
+           
+           boolean betAB = (A < B) ?
+                   (A <= x+y && x+y <= B) :
+                       (B <= x+y && x+y <= A)
+                       ;
+                   
+           boolean betCD = (C < D) ?
+                   (C <= x-y && x-y <= D) :
+                       (D <= x-y && x-y <= C);
+                   
+            
+           boolean feasible = betAB && betCD;
            
            if (feasible)
                return point;
