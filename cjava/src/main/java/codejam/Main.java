@@ -13,10 +13,9 @@ public class Main  {
     public static void main(String args[]) throws Exception {
 
 
-        //2008 emea semis
         
         /**
-         * 2008 emea semis
+         * 2008 emea semis -- problem 1
          * 
          * Geometry triangles -- rotation / translation / scaling of triangle. 
          * Finding a point that transforms to itself
@@ -24,15 +23,17 @@ public class Main  {
          * matrix multiplication / transformations.  
          * 
          * Can always research more into eigen values / vectors
-         * Implement remaining proposed solutions.
-         * Used matrixes sort of to get answer
+         * Implement remaining proposed solution.
+         * 1. Used a solution space line intersection type solution,
+         * 2. Proposed matrix manipulation soliton         * 
+         * 3.  todo -- Remains a third, using estimation 
          * 
          * bmerries insane solution uses complex numbers
          */
-        codejam.y2008.round_emea.scaled_triangle.Main m = new codejam.y2008.round_emea.scaled_triangle.Main();
+       // codejam.y2008.round_emea.scaled_triangle.Main m = new codejam.y2008.round_emea.scaled_triangle.Main();
                 
         /**
-         * 2008 emea semis
+         * 2008 emea semis -- problem 2 
          * 
          * Given solution was a brute force / greedy scanline.
          * 
@@ -43,8 +44,17 @@ public class Main  {
          */
         //codejam.y2008.round_emea.painting_fence.Main m = new codejam.y2008.round_emea.painting_fence.Main();
         
-        //Chromatic number of a tree
-        //codejam.y2008.round_emea.rainbow_trees.Main m = new codejam.y2008.round_emea.rainbow_trees.Main();
+        /**
+         * 2008 emea semis -- problem 3
+         * 
+         * Coloring tree such that any path of length 2 or 3 has different colors.
+         * Chromatic number of a tree
+         * 
+         * 1. Contains the brute force / exponential way of computing chromatic polynomial
+         * 2. Child first calculation
+         * 3. A cleaner implementation using their solution
+         */
+        codejam.y2008.round_emea.rainbow_trees.Main m = new codejam.y2008.round_emea.rainbow_trees.Main();
         
         // State transitions / matrix multiplication / binary manipulation
        // codejam.y2008.round_emea.bus_stops.Main m = new codejam.y2008.round_emea.bus_stops.Main();

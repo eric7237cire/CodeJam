@@ -2,11 +2,15 @@ package codejam.y2008.round_emea.rainbow_trees;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
@@ -25,16 +29,16 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Maps;
 import com.google.common.math.IntMath;
+import com.google.common.math.LongMath;
 
 public class Main implements TestCaseHandler<InputData>,
         TestCaseInputScanner<InputData>, DefaultInputFiles {
 
     @Override
     public String[] getDefaultInputFiles() {
- //       return new String[] {"sample.in"};
+      // return new String[] {"sample.in"};
         return new String[] {"C-small-practice.in", "C-large-practice.in"};
-       // return new String[] {};
-     //   return new String[] {"A-small-practice.in", "A-large-practice.in"};
+      
     }
 
     @Override
@@ -73,8 +77,97 @@ public class Main implements TestCaseHandler<InputData>,
     private static final int MOD = 1000000009;
     private static final BigInteger MOD_BI = BigInteger.valueOf(MOD);
   
-    @Override
+    //GivenSolution
     public String handleCase(InputData input) {
+        
+        //First create the graph of vertices
+        GraphInt vertexGraph = new GraphInt();
+        
+        for(Pair<Integer, Integer> edge : input.edges ) {                       
+            vertexGraph.addConnection(edge.getLeft()-1, edge.getRight()-1);
+        }
+               
+        int[] parentNode = new int[input.n];
+        Arrays.fill(parentNode, -1);
+        
+        Queue<Integer> toVisit = new LinkedList<>();
+        LinkedList<Integer> vertexOrdering = new LinkedList<>();
+        
+        parentNode[0] = input.n;
+        
+        toVisit.add(0);
+        
+        
+        //BFS
+        while(!toVisit.isEmpty()) {
+            Integer nodeId = toVisit.poll();
+
+            vertexOrdering.add(nodeId);
+            Preconditions.checkState(parentNode[nodeId] >= 0);
+            
+            Set<Integer> connections = vertexGraph.getNeighbors(nodeId);
+            //Get all new children from old tree
+            for(Integer childNode : connections) {
+                if (parentNode[childNode] == -1) {
+                    toVisit.add(childNode);
+                    parentNode[childNode] = nodeId;
+                }
+            }
+        }
+        
+        //Reverse the BFS to make it children first
+        Collections.reverse(vertexOrdering);
+        
+        long[] waysToColor = new long[input.n];
+        Arrays.fill(waysToColor, -1);
+        
+        for(Integer nodeId : vertexOrdering) {
+            Set<Integer> connections = vertexGraph.getNeighbors(nodeId);
+            
+            Integer parentNodeId = parentNode[nodeId];
+            
+            //The root has parentNodeId == n ; the degree of its
+            //parent is just defined to be 0
+            Integer degreeParent = parentNodeId == input.n ?
+                    0 : vertexGraph.getNeighbors(parentNodeId).size();
+            
+            long prod = 1;
+            
+            //Ways to color immediate children
+            int index = 0;
+            for(Integer childNode : connections) {
+                if (childNode.equals(parentNodeId))
+                    continue;
+                
+                prod *= Math.max(0, input.k - degreeParent - index);
+                prod %= MOD;
+                ++index;
+                
+                Preconditions.checkState(waysToColor[childNode] >= 0);
+                        
+                //And ways to color subtree
+                prod = LongMath.checkedMultiply(prod,waysToColor[childNode]) ;
+                prod %= MOD;
+                
+            }
+            
+            Preconditions.checkState(prod >= 0);
+            waysToColor[nodeId] = prod;
+        }
+        
+        
+        
+        long ans = waysToColor[0];
+        
+        
+        
+        return String.format("Case #%d: %d", input.testCase, ans);
+    
+       
+    }
+    
+    public String handleCaseMySolution(InputData input) {
+        
         
         //First create the graph of vertices
         GraphInt vertexGraph = new GraphInt();
