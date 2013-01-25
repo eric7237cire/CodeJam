@@ -24,11 +24,12 @@ public class Main  {
          * matrix multiplication / transformations.  
          * 
          * Can always research more into eigen values / vectors
-         * Implement both proposed solutions.
+         * Implement remaining proposed solutions.
+         * Used matrixes sort of to get answer
          * 
-         * TODO understand bmerries insane solution
+         * bmerries insane solution uses complex numbers
          */
-        //codejam.y2008.round_emea.scaled_triangle.Main m = new codejam.y2008.round_emea.scaled_triangle.Main();
+        codejam.y2008.round_emea.scaled_triangle.Main m = new codejam.y2008.round_emea.scaled_triangle.Main();
                 
         /**
          * 2008 emea semis
@@ -40,7 +41,7 @@ public class Main  {
          * 
          * 
          */
-        codejam.y2008.round_emea.painting_fence.Main m = new codejam.y2008.round_emea.painting_fence.Main();
+        //codejam.y2008.round_emea.painting_fence.Main m = new codejam.y2008.round_emea.painting_fence.Main();
         
         //Chromatic number of a tree
         //codejam.y2008.round_emea.rainbow_trees.Main m = new codejam.y2008.round_emea.rainbow_trees.Main();

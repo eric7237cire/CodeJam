@@ -78,6 +78,7 @@ public class Main implements TestCaseHandler<InputData>,
         
         FieldLUDecomposition<Fraction> fd = new FieldLUDecomposition<>(fm);
         
+        //Translation matrix
         FieldMatrix<Fraction> m = fmLarge.multiply( fd.getSolver().getInverse());
         
         FieldMatrix<Fraction> pointM = new Array2DRowFieldMatrix<>(FractionField.getInstance(), 3, 1);
@@ -88,6 +89,53 @@ public class Main implements TestCaseHandler<InputData>,
         
         FieldMatrix<Fraction> trans = m.multiply(pointM);
         
+        FieldMatrix<Fraction> identity = new Array2DRowFieldMatrix<>(FractionField.getInstance(), 3, 3);
+        for(int i = 0; i < 3; ++i) {
+            for(int j = 0; j < 3; ++j) {
+                if (i == j) {
+                    identity.setEntry(i, j, new Fraction(1));
+                } else {
+                    identity.setEntry(i, j, new Fraction(0));
+                }
+            }
+        }
+        
+        FieldMatrix<Fraction> v = new Array2DRowFieldMatrix<>(FractionField.getInstance(), 3, 1);
+        
+        v.setEntry(0,0, new Fraction(1));
+        v.setEntry(1,0, new Fraction(1));
+        v.setEntry(2,0, new Fraction(1));
+        
+        //FieldLUDecomposition<Fraction> fd2 = new Fie
+        FieldMatrix<Fraction> what = m.subtract(identity).multiply(v);
+        
+        FieldMatrix<Fraction> what2 = m.subtract(identity).multiply(pointM);
+        
+        /**
+         * To solve, I just take a 
+         * [ a b c       [ x
+         *  d e f          y
+         *  g h i ]  *     1 ]  
+         *  
+         *  so ax + by + c = 0 ; dx + ey + f = 0 gx + hy + i = 0;
+         *  take 1st 2 and solve
+         */
+        FieldMatrix<Fraction> sub = new Array2DRowFieldMatrix<>(FractionField.getInstance(), 2, 2);
+        FieldMatrix<Fraction> sub2 = new Array2DRowFieldMatrix<>(FractionField.getInstance(), 2, 1);
+        
+        for(int i = 0; i < 2; ++i) {
+            for(int j = 0; j < 2; ++j) {
+        sub.setEntry(i, j, m.subtract(identity).getEntry(i,j));
+            }
+        }
+        
+        sub2.setEntry(0,0, m.subtract(identity).getEntry(0,2).multiply(-1));
+        sub2.setEntry(1,0, m.subtract(identity).getEntry(1,2).multiply(-1));
+        
+        FieldMatrix<Fraction>  ans = 
+                new FieldLUDecomposition<Fraction>(sub).
+                getSolver().getInverse().multiply(sub2);
+        
         log.debug("Translated {}", trans);
     }
     
@@ -96,6 +144,9 @@ public class Main implements TestCaseHandler<InputData>,
         
         return new Fraction(d - intPart, 1e-5, 10000).add(intPart);
     }
+    
+    
+    
     
     @Override
     public String handleCase(InputData input) {

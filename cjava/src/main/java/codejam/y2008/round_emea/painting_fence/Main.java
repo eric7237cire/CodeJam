@@ -23,9 +23,7 @@ public class Main implements TestCaseHandler<InputData>,
     @Override
     public String[] getDefaultInputFiles() {
      //   return new String[] {"sample.in"};
-        //return new String[] {};
         return new String[] {"B-small-practice.in", "B-large-practice.in"};
-     //   return new String[] {"A-small-practice.in", "A-large-practice.in"};
     }
 
     @Override
@@ -111,6 +109,8 @@ public class Main implements TestCaseHandler<InputData>,
     public String handleCase(InputData input) {
         
         Map<String, Integer> colorNumbers = Maps.newHashMap();
+        
+        //For each fence post, what offers are available to paint it ?
         Multimap<Integer, Offer> offerMap = HashMultimap.create();
         
         for(int i = 0; i < input.colors.length; ++i) {
