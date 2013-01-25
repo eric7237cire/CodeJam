@@ -50,7 +50,7 @@ public class Main implements TestCaseHandler<InputData>,
     
     //
     /**
-     * Every stop visited in start.  length all arrays = P * 2
+     * in the arrays, every stop prior to right most 1 (bus) is visited.  
      * 
      * in currentEnd, any 0 before a 1 has been visited
      */
@@ -67,6 +67,7 @@ public class Main implements TestCaseHandler<InputData>,
         
         //Are we done ?
         if (unvisitedBusStop == current.length) {
+            //All stops are visited, now check if it counts or not
             if (Arrays.equals(ending, current)) {
                 return 1;
             } else {
@@ -257,10 +258,15 @@ public class Main implements TestCaseHandler<InputData>,
      */
     public static int[] count(int startState, int finalLength, int K, int P, int mod, List<Integer> finalStates) {
         
+        //Contstraints from problem
+        Preconditions.checkState(K+P <= 20);
+        Preconditions.checkArgument(finalLength <= 2*P);
+        
         BitSetInt startStateBs = new BitSetInt(startState);
                 
        // log.debug("Start state [{}]", bsToStr(startStateBs, finalLength, P));
         
+        //All 0's before right most (MSB) 1 are considered visited
         int firstUnvisitedBusStop = startStateBs.getMostSigBitIndex() + 1;
         int lastUnvisitedBusStop = finalLength - 1;        
         
@@ -289,6 +295,11 @@ public class Main implements TestCaseHandler<InputData>,
                 
                 //For each set bit, starting at lowest, move that bus to unvisited stop
                 //If the distance == P, we stop as going further would result in a 'stranded' bus
+                //Ex
+                
+                // 111 | 0  if P = 3 we can only move the left most bus, other wise
+                // we get
+                // 101 | 1 where the leftmost bus cant get anywhere anymore
                 
                 BitSetInt busesLeft = new BitSetInt(prev);
                 

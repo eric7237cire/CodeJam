@@ -54,10 +54,10 @@ public class Main  {
          * 2. Child first calculation
          * 3. A cleaner implementation using their solution
          */
-        codejam.y2008.round_emea.rainbow_trees.Main m = new codejam.y2008.round_emea.rainbow_trees.Main();
+       // codejam.y2008.round_emea.rainbow_trees.Main m = new codejam.y2008.round_emea.rainbow_trees.Main();
         
         // State transitions / matrix multiplication / binary manipulation
-       // codejam.y2008.round_emea.bus_stops.Main m = new codejam.y2008.round_emea.bus_stops.Main();
+        codejam.y2008.round_emea.bus_stops.Main m = new codejam.y2008.round_emea.bus_stops.Main();
         
         //2008 amer semis
         // Tree traversal depth first

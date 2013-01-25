@@ -156,8 +156,8 @@ public class Main implements TestCaseHandler<InputData>,
     @Override
     public String handleCase(InputData input) {
         
-        if (1==1)
-            return solveUsingTranslationMatrix(input);
+      //  if (1==1)
+        //    return solveUsingTranslationMatrix(input);
         final PointInt origin = new PointInt(0,0);
         
         /**
