@@ -56,8 +56,15 @@ public class Main  {
          */
        // codejam.y2008.round_emea.rainbow_trees.Main m = new codejam.y2008.round_emea.rainbow_trees.Main();
         
-        // State transitions / matrix multiplication / binary manipulation
-        codejam.y2008.round_emea.bus_stops.Main m = new codejam.y2008.round_emea.bus_stops.Main();
+        /**
+         * 2008 emea semis -- problem 3
+         * 
+         * State transitions / matrix multiplication / binary manipulation
+         * 
+         * 1.  Solved very similiar to proposed solution
+         * 2.  Maybe could be improved using proposed, but seems OK.
+         */
+        //codejam.y2008.round_emea.bus_stops.Main m = new codejam.y2008.round_emea.bus_stops.Main();
         
         //2008 amer semis
         // Tree traversal depth first
@@ -198,12 +205,16 @@ public class Main  {
         //codejam.y2010.round_1C.chess_boards.Main m = new codejam.y2010.round_1C.chess_boards.Main();
 
          //2010 2         
-         //TODO large slow
+         //TODO large slow ; looks like binary search but not sure
          //codejam.y2010.round_2.diamond.Main m = new codejam.y2010.round_2.diamond.Main();
-         //codejam.y2010.round_2.world_cup.Main m = new codejam.y2010.round_2.world_cup.Main();         
+        
+        //DP TODO bottom up
+         //codejam.y2010.round_2.world_cup.Main m = new codejam.y2010.round_2.world_cup.Main();
+        
+        //Maybe do a doc TODO / comments
          //codejam.y2010.round_2.bacteria.Main m = new codejam.y2010.round_2.bacteria.Main(); 
         //TODO corrections small
-         //codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
+         codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
                   
          //2010 3
          
