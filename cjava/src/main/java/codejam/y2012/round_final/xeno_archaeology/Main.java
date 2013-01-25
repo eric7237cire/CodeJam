@@ -112,6 +112,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         List<Line> boundaryLines = Lists.newArrayList();
         
+        List<Tile> bestPoints = Lists.newArrayList();
         
 
         for (int centerYOdd = 0; centerYOdd <= 1; ++centerYOdd)
@@ -198,6 +199,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         /**
                          * Rectangle bounded by y = x + p1 ; y = x + p2 
                          *                      y = -x + n1 ; y = -x + n1
+                         *                      
+                         *                      x-y = -p1 (C or D)  ;  x-y = -p2 (C or D)
+                         *                      x+y = n1 (A or B)   ;  x+y = n2 (A or B)
                          */
                         
                         
@@ -236,6 +240,17 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         }
                         
                         log.debug("Found a rectangle.  center x odd? {} center y odd? {} ", centerXOdd, centerYOdd);
+                        
+                        Tile center = findBestPointInRectangle( Math.min( Math.abs(n1), Math.abs(n2)),
+                                Math.max( Math.abs(n1), Math.abs(n2)),
+                                Math.min( Math.abs(-p1), Math.abs(-p2)),
+                                Math.max( Math.abs(-p1), Math.abs(-p2)),
+                                centerXOdd != 0,
+                                centerYOdd != 0);
+                                
+                        if (center != null) {
+                            bestPoints.add(center);
+                        }
                     }
                 }
                 
@@ -243,10 +258,27 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         
        
+
+        Collections.sort(bestPoints, new Comparator<Tile>() {
+
+            @Override
+            public int compare(Tile o1, Tile o2)
+            {
+                return ComparisonChain.start().compare(o2.getX(), o1.getX()).compare(o2.getY(), o1.getY()).result();
+            }
+               
+           });
         
-        
+        if (bestPoints.size() > 0) {
+            return String.format("Case #%d: %d %d", in.testCase,
+                    bestPoints.get(0).getX(), bestPoints.get(0).getY());
             
-        return bruteForce(in);
+        } else {
+            return String.format("Case #%d: Too damaged", in.testCase);
+            
+        }
+            
+       // return bruteForce(in);
         
     }
     
