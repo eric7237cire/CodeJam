@@ -1,6 +1,6 @@
 /*
 ID: eric7231
-PROG: fence4
+PROG: fence9
 LANG: C++
 */
 #include <iostream>
@@ -212,231 +212,106 @@ bool isBetween(double n, double a, double b)
     return false;
 }
 
-void findVisible(PointD observer, const PointD& target, const vector<SegmentD>& fence, vector<bool>& visible) {
-  
-  const SegmentD ray(observer, target);
+double sqr(double x) { return x * x }
 
-  int closestFenceSegIdx = -1;
-  
-  double minDist = numeric_limits<double>::max();
+double length_squared(v, w) { return sqr(v.x - w.x) + sqr(v.y - w.y) }
 
-  if (debug)
-  cout << "Ray  Coords " << 
-    ray.first.x << " " << 
-    ray.first.y << " " << 
-    ray.second.x << " " << 
-    ray.second.y << endl;
-  
-  for(int i=0; i<fence.size(); i++) {
-	  SegmentD segFence = fence[i];
-
-	  if(isParallel(ray, segFence))
-		continue;
-
-	  PointD inter;
-
-	  bool c = getIntersection(ray, segFence, inter);
-
-	  if (debug)
-	  cout << "Checking fence segment " << i
-	  << " coords " <<
-    segFence.first.x << " " << 
-    segFence.first.y << " " << 
-    segFence.second.x << " " << 
-    segFence.second.y << "  Intersection " << inter << endl;
-  
-	  assert(c);
-
-	  //First see if it is on the segment
-	  double d1 = dist(segFence.first, inter);
-	  double d2 = dist(segFence.second, inter);
-	  double dSeg = dist(segFence.first, segFence.second);
-
-	  double diff = d1+d2 - dSeg;
-
-	  //Not on segment
-	  if ( abs(diff) > tolerance )
-	  {
-	      
-         if (debug)
-	      cout << "Index " << i << " not on segment.  d1= " << d1 << " d2 " << d2 << " dSeg " << dSeg << " inter " << inter  << endl;
-	      
-	
-		  continue;
-	  }
-	  
-	  //Intersecting corners
-	  if ( abs(d1) < tolerance )
-      {
-          int prevFenceIdx = i == 0 ? fence.size() - 1 : i -1;
-	      SegmentD prevFence = fence[prevFenceIdx];
-	      assert(prevFence.second == fence[i].first);
-	      
-	      //If the prev post's 1st point and the fence[i]'s second point are on the same side
-	      //of the ray, it is just a corner sticking out
-	      
-	      if (getSide( ray.first, ray.second, prevFence.first ) ==
-        getSide( ray.first, ray.second, fence[i].second ) )
-          {
-            if (debug)
-	      cout << "Index " << i << " breezed corner first " << endl;
-	      continue;    
-          } else {
-            cout << "Index " << i << " hit the corner.  d1= " << d1 << " d2 " << d2 << " dSeg " << dSeg << " inter " << inter  << endl;  
-          }
-          
-	  }
-	  
-	  if ( abs(d2) < tolerance )
-	  {
-	      int nextFenceIdx = i == fence.size() - 1 ? 0 : i+1;
-	      SegmentD nextFence = fence[nextFenceIdx];
-	      
-	      assert( fence[i].second == nextFence.first );
-	      
-	      if (getSide( ray.first, ray.second, nextFence.second ) ==
-	          getSide( ray.first, ray.second, fence[i].first ) ) 
-	      {
-	          if (debug)
-	              cout << "Index " << i << " breezed by corner second " << endl;
-	          
-	          continue;    
-          } else {
-               cout << "Index " << i << " hit the corner second.  d1= " << d1 << " d2 " << d2 << " dSeg " << dSeg << " inter " << inter  << endl;
-          }
-	      
-	  }
-
-	  if (!isBetween(inter.x, ray.first.x, ray.second.x))
-	  {
-	      if (debug)
-	      cout << "Index " << i << " not between ray " << inter.x << " ray " << ray.first.x << " " << ray.second.x << endl;
-	      continue;
-	  }
-	  
-	  double dToObs = dist(observer, inter);
-    
-	  if (dToObs < minDist) {
-		minDist = dToObs;
-		closestFenceSegIdx=i;
-	  }
-  }
-
-  if(closestFenceSegIdx < 0)
-	  return;
-
-  if (debug)
-  cout << "SegIdx = " << closestFenceSegIdx << " Coords " << 
-    fence[closestFenceSegIdx].first.x << " " << 
-    fence[closestFenceSegIdx].first.y << " " << 
-    fence[closestFenceSegIdx].second.x << " " << 
-    fence[closestFenceSegIdx].second.y << endl;
-  visible[closestFenceSegIdx] = true;
+double dot(PointD u, PointD v)
+{
+    return u.x*v.x + u.y*v.y;
 }
+
+double minimum_distance( const PointD& v, const PointD w, const Point& p) {
+  // Return minimum distance between line segment vw and point p
+  const double l2 = length_squared(v, w);  // i.e. |w-v|^2 -  avoid a sqrt
+  if (l2 == 0.0) return dist(p, v);   // v == w case
+  // Consider the line extending the segment, parameterized as v + t (w - v).
+  // We find projection of point p onto the line. 
+  // It falls where t = [(p-v) . (w-v)] / |w-v|^2
+  const float t = dot(p - v, w - v) / l2;
+  if (t < 0.0) return dist(p, v);       // Beyond the 'v' end of the segment
+  else if (t > 1.0) return dist(p, w);  // Beyond the 'w' end of the segment
+  const PointD projection = v + t * (w - v);  // Projection falls on the segment
+  return dist(p, projection);
+}
+
+bool inTriangle( const PointD& p, const PointD& tri1,
+    const PointD& tri2, const PointD& tri3)
+{
+    if ( getSide(p, tri1, tri2) != 
+        getSide(tri3, tri1, tri2) )
+        return false;
+        
+    if ( getSide(p, tri1, tri3) != 
+        getSide(tri2, tri1, tri3) )
+        return false;
+        
+    
+    if ( getSide(p, tri2, tri3) != 
+        getSide(tri1, tri2, tri3) )
+        return false;
+        
+    cout << p.x << ", " << p.y << " in triangle " << endl;
+    return true;
+    
+}
+
 
 int main() {
     
-	ofstream fout ("fence4.out");
-    ifstream fin ("fence4.in");
-	
+	ofstream fout ("fence9.out");
+    ifstream fin ("fence9.in");
+
+    uint m, n, p;
+
+    fin >> m >> n >> p;
+
+    //To m,n the to p,0 to 0,0
+
+    PointD t1( PointD(0,0) );
+    PointD t2( PointD(m,n) );
+    PointD t3( PointD(p,0) );  	
     
-    PointD ab(5, 5);
-    PointD cd(-1.5, 2);
+    int deltaRight = p < n ? 1 : -1;
     
-    PointD ef(0, 3);
-    PointD gh(-3, 1);
+    uint left = 0;
+    uint right = p;
     
-    SegmentD seg1(ab, cd);
-    SegmentD seg2(ef, gh);
+    uint total = 0;
     
-    PointD inter;
-    getIntersection( seg1, seg2, inter);
-    cout << "intersection " <<  inter << endl;
+    cout << "Tri test " << inTriangle( PointD(4, 1), t1, t2, t3 ) << endl;
+    cout << "Tri test " << inTriangle( PointD(3, 1), t1, t2, t3 ) << endl;
     
+    cout << "Delta right " << deltaRight << endl;
     
-    uint N;
-    fin>>N;
-    
-    PointD observer;
-    fin >> observer.x >> observer.y;
-    
-    vector<PointD> fence(N);
-    FOR(i, 0, N)
+    for(uint y = 1; y < n; ++y)
     {
-        fin>>fence[i].x >> fence[i].y;
-    }
-    
-	vector<SegmentD> fenceSeg;
-    
-  // check if the fence is  valid 
-    FOR(i, 0, N) 
-    {
-        int i2 = i==N-1 ? 0 : i+1;
-
-		SegmentD seg1( fence[i], fence[i2] );
-		fenceSeg.pb( seg1 );
-
-        FOR(k, 0, N)
-        {
-            //Next point
-            int k2 = (k+1)%N;
-
-            if(i==k || i==k2 || i2==k)
-                continue;
-            
-            SegmentD seg2( fence[k], fence[k2] );
-            
-            if (intersects(seg1, seg2))
-            {
-                fout << "NOFENCE" << endl;
-                return 0;
-            }
+        
+        while(!inTriangle( PointD(right, y), t1, t2, t3 ) && right > left) {
+            right += deltaRight;
+            cout << "Moving right " << right << endl;
         }
+        
+        right -= deltaRight;
+        
+        while(!inTriangle( PointD(left, y), t1, t2, t3 ) && left < right) { 
+            ++left;
+        }
+        
+        --left;
+        
+        
+        int count = right - left - 1;
+        
+        if (count < 0)
+            break;
+        
+        cout << "y " << y << " has " << count << " total " << total << endl;
+        cout << "left " << left << " right " << right << endl;
+        total += count;
     }
-
     
-	vector<bool> visible(fenceSeg.size(), false);
-  
-	FOR(i, 0, N)
-	{
-		//cout << "i is " << i << " " << fenceSeg[i].first.x << " " << fenceSeg[i].first.y << " " << fenceSeg[i].second.x << " " << fenceSeg[i].second.y << endl;
-
-		PointD nextFence = i == N-1 ? fence[0] : fence[i+1];
-		PointD prevFence = i == 0 ? fence[N-1] : fence[i-1];
-		
-		//findVisible(observer, fence[i], fenceSeg, visible);
-		
-		findVisible(observer, fence[i]+ .001*(prevFence-fence[i]), fenceSeg, visible);
-		findVisible(observer, fence[i]+ .001*(nextFence-fence[i]), fenceSeg, visible);
-		
-		
-		findVisible(observer, fence[i]+ .499*(nextFence-fence[i]), fenceSeg, visible);
-		//findVisible(observer, (fenceSeg[i].first + fenceSeg[i].second) / (double) 2, fenceSeg, visible);
-	}
-	
-	swap(fenceSeg[fenceSeg.size() - 1], fenceSeg[fenceSeg.size() - 2]);
-    swap(fenceSeg[fenceSeg.size() - 2].first, fenceSeg[fenceSeg.size() - 2].second);
-    
-	bool tmp =  visible[visible.size() - 1];
-	visible[visible.size() - 1] =  visible[visible.size() - 2];
-	visible[visible.size() - 2] = tmp;
-
-	uint visCount = 0;
-	FOR(i, 0, N)
-	{
-		if(!visible[i])
-			continue;
-		++visCount;
-	}
-
-	fout << visCount << endl;
-	FOR(i, 0, N)
-	{
-		if(!visible[i])
-			continue;
-
-		fout << fenceSeg[i].first.x << " " << fenceSeg[i].first.y << " " << fenceSeg[i].second.x << " " << fenceSeg[i].second.y << endl;
-	}
+    fout << total << endl;
 	
     return 0;
 }
