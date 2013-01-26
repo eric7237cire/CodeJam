@@ -97,6 +97,8 @@ public class Line {
 
     }
     
+    
+    
     /**
      * Is point on the line segment between p1 and p2.
      * 

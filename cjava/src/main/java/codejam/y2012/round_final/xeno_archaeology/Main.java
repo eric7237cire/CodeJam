@@ -18,7 +18,6 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Ordering;
 import com.google.common.math.DoubleMath;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
@@ -73,7 +72,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
          * either have an odd x or even ; similiar for y
          */
         
-        List<Line> boundaryLines = Lists.newArrayList();
         
         List<Tile> bestPoints = Lists.newArrayList();
         
@@ -133,14 +131,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                          * They will have slope 1 or -1.  Only the y-intercept changes
                          */
                         
-                        // x + y <= / >= x' + y'
-                        Line negSlope = new Line(-1, tile.getX()+tile.getY());
-                        
-                        // x - y >= / <= x' - y'
-                        Line posSlope = new Line(1, tile.getY() - tile.getX());
-                        
-                        boundaryLines.add(negSlope);
-                        boundaryLines.add(posSlope);
+                       
                         
                         negSlopeYIntercepts.add( tile.getX()+tile.getY());
                         
@@ -158,6 +149,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 }
                 
                 
+                /**
+                 * Now we go rectangle by rectangle, finding the best points
+                 */
                 Collections.sort(negSlopeYIntercepts);
                 Collections.sort(posSlopeYIntercepts);
                 
@@ -186,6 +180,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         Line posSlope = new Line(1, p1);
                         Line negSlope = new Line(-1, n1);
                         
+                        /**
+                         * Find just any point in the rectangle in order to test if
+                         * the interior of the rectangle is a valid solution. 
+                         */
                         Point intersection = posSlope.getIntersection(negSlope);
                         
                         long cX = DoubleMath.roundToLong(intersection.getX(), RoundingMode.HALF_DOWN);
@@ -215,8 +213,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                             long diffX = Math.abs( cX - tile.getX() );
                             long diffY = Math.abs( cY - tile.getY() );
                             
-                            if (diffX < diffY) {
-                                
+                            if (diffX < diffY) {                                
                                 continue nextRectangle;
                             }
                         }
@@ -225,8 +222,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                             long diffX = Math.abs( cX - tile.getX() );
                             long diffY = Math.abs( cY - tile.getY() );
                             
-                            if (diffX > diffY) {
-                                
+                            if (diffX > diffY) {                                
                                 continue nextRectangle;
                             }
                         }

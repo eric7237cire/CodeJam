@@ -371,6 +371,16 @@ public class Main  {
         //Probability, optimizing, state transitions, maybe matrix multiplication
         //codejam.y2012.round_final.upstairs_downstairs.Main m = new codejam.y2012.round_final.upstairs_downstairs.Main();
         
+        /**
+         * 2012 Final -- problem 3
+         * 
+         * Building constraints to find rectangles ; absolute value line
+         * intersection.
+         * 
+         * 1. Used proposed solution
+         * 2.  Can speed it up by not checking all rectangles ; but runtime
+         * is already 1sec.  Eatmore's solution is instant.
+         */
         codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
         
         String[] files = {};
