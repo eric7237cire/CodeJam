@@ -43,11 +43,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      */
     public String handleCase(InputData in) {
 
-        int n = 5;
+        int n = 11;
         
         List<Rule> rules = Lists.newArrayList();
         
-        String numBinary = "101";
+        String numBinary = "1011";
         int writeNumberStateBase = 100;
         int subtractStateBase = 200;
         
@@ -65,7 +65,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         
         //Write right boundary ; go into subtraction mode
-        rules.add(new Rule(writeNumberStateBase+numBinary.length()+1, 0,
+        rules.add(new Rule(writeNumberStateBase+numBinary.length(), 0,
             'W', subtractStateBase, rightBoundaryMark)); 
         
         //Subtraction--
@@ -81,6 +81,49 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             'W', subtractStateBase+1, 3));
         rules.add(new Rule(subtractStateBase+1, 2,
             'W', subtractStateBase+1, 2));
+        
+        rules.add(new Rule(subtractStateBase, 4,
+            'R', 0, 0));
+        
+        int copyPhaseBase = 300;
+        
+        //Done subtracting, hit left boundary
+        rules.add(new Rule(subtractStateBase+1, 4,
+            'E', copyPhaseBase, 7));
+        
+        /*
+        Copy phase 0 -- start copy
+        copy phase 1 -- copy 2 to right
+        copy phase 2 -- copy 3 to right
+        copy phase 3 -- done copy  
+        */
+        
+        //Start copying
+        rules.add(new Rule(copyPhaseBase, 3,
+            'E', copyPhaseBase+2, leftBoundaryMark));
+        rules.add(new Rule(copyPhaseBase, 2,
+            'E', copyPhaseBase+1, leftBoundaryMark));
+        
+        //Copy
+        rules.add(new Rule(copyPhaseBase+1, 3,
+            'E', copyPhaseBase+2, 2));
+        rules.add(new Rule(copyPhaseBase+1, 2,
+            'E', copyPhaseBase+1, 2));
+        
+        rules.add(new Rule(copyPhaseBase+2, 3,
+            'E', copyPhaseBase+2, 3));
+        rules.add(new Rule(copyPhaseBase+2, 2,
+            'E', copyPhaseBase+1, 3));
+        
+        //Hit right boundary
+        rules.add(new Rule(copyPhaseBase+1, rightBoundaryMark,
+            'E', copyPhaseBase+3, 2));
+        rules.add(new Rule(copyPhaseBase+2, rightBoundaryMark,
+            'E', copyPhaseBase+3, 3));
+        
+        //Write right boundary and start subtraction
+        rules.add(new Rule(copyPhaseBase+3, 0,
+            'W', subtractStateBase, rightBoundaryMark));
         
         StringBuffer ruleText = new StringBuffer();
         

@@ -19,7 +19,7 @@ public class Rule
         return String.format("%d %d -> %s %d %d", state, mark, ""+Direction,
             newState, newMark);
         else
-            return String.format("%d %d -> R");
+            return String.format("%d %d -> R", state,mark);
     }
     
     public Rule() {

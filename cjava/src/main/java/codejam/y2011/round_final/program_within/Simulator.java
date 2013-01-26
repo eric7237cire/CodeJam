@@ -83,7 +83,7 @@ public class Simulator
     
     public Integer go() {
         try {
-        for(int x = 1; x <= 150000; ++x) {
+        for(int x = 1; x <= 150; ++x) {
             log.debug("Step {}", x);
             Integer release = goOneStep();
             if (release != null)
@@ -134,7 +134,8 @@ public class Simulator
         
         
         if (!matchingRules.hasNext())
-            throw new Exception("Confused, ate cake");
+            throw new Exception("Confused, ate cake.  Current loc: " + currentLocation +
+                " Current state " + currentState);
         
         Rule rule = matchingRules.next();
         
