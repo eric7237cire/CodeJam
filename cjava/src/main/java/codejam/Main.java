@@ -299,6 +299,7 @@ public class Main  {
         //Simulation with a trick to do batch processing.  TODO look at proof via paths / tree justifying the algo
         //codejam.y2011.round_final.rains_atlantis.Main m = new codejam.y2011.round_final.rains_atlantis.Main();
         
+        codejam.y2011.round_final.program_within.Main m = new codejam.y2011.round_final.program_within.Main();
 
         //2010 africa
         
@@ -381,7 +382,7 @@ public class Main  {
          * 2.  Can speed it up by not checking all rectangles ; but runtime
          * is already 1sec.  Eatmore's solution is instant.
          */
-        codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
+        //codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
         
         String[] files = {};
         if (m instanceof DefaultInputFiles) {
