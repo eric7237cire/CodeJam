@@ -2,7 +2,6 @@ package codejam.y2012.round_final.xeno_archaeology;
 
 import java.math.RoundingMode;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,13 +12,11 @@ import org.slf4j.LoggerFactory;
 
 import codejam.utils.geometry.Line;
 import codejam.utils.geometry.Point;
-import codejam.utils.geometry.PointInt;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import com.google.common.math.DoubleMath;
@@ -30,9 +27,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-        return new String[] { "sample.in" };
-         //return new String[] { "C-small-practice.in" };
-       //  return new String[] { "B-small-practice.in", "B-large-practice.in" };
+      //  return new String[] { "sample.in" };
+       //  return new String[] { "C-small-practice.in" };
+         return new String[] { "C-large-practice.in" };
     }
 
     @Override
@@ -55,84 +52,21 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return in;
     }
     
-    public static class Tile implements Comparable<Tile> {
-
-        final long y;
-        final long x;
-        final boolean isRed;
-        
-        public Tile(long x, long y, boolean isRed) {
-            this.y = y;
-            this.x = x;
-            this.isRed = isRed;
-        }
-
-        public long getY()
-        {
-            return y;
-        }
-
-
-        public long getX()
-        {
-            return x;
-   
-        }
-
-        @Override
-        public int compareTo(Tile o)
-        {
-            long m1 = Math.abs(getX()) + Math.abs((getY()));
-            long m2 = Math.abs(o.getX()) + Math.abs((o.getY()));
-            return ComparisonChain.start()
-                    .compare(m1, m2)
-                    .compare(o.getX(), getX())
-                    .compare(o.getY(), getY())
-                    .result();
-        }
-
-        @Override
-        public String toString()
-        {
-            return "Tile [x=" + x + ", y=" + y + ", isRed=" + isRed + "]";
-        }
-        
-    }
     
-    class ManhatDistance implements Comparator<PointInt>
-    {
-
-        @Override
-        public int compare(PointInt o1, PointInt o2) {
-            int m1 = Math.abs(o1.getX()) + Math.abs((o1.getY()));
-            int m2 = Math.abs(o2.getX()) + Math.abs((o2.getY()));
-            return ComparisonChain.start()
-                    .compare(m1, m2)
-                    .compare(o2.getX(), o1.getX())
-                    .compare(o2.getY(), o1.getY())
-                    .result();
-        }
-
-       
-        
-    }
+    
+    
     
     final long MAX_COORD = 1000000000000000l; 
     final long MAX_INTERCEPT = 2 *MAX_COORD + 10;
     
-    
-    static long breakX = 39;
-    static long breakY = 14;
-    static boolean breakCenterXOdd = breakX % 2 != 0;
-    static boolean breakCenterYOdd = breakY % 2 != 0;
-    
+
     /**
      * Follow given solution
      */
     public String handleCase(InputData in)
     {
-        String bf = bruteForce(in);
-        log.debug("Brute force {}", bf);
+        //String bf = bruteForce(in);
+       // log.debug("Brute force {}", bf);
         
         /**
          * Center coordinate Cx, Cy can
@@ -150,9 +84,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             centerXLoop:
             for (int centerXOdd = 0; centerXOdd <= 1; ++centerXOdd)
             {
-                
-                boolean isCenterXOdd = centerXOdd != 0;
-                boolean isCenterYOdd = centerYOdd != 0;
                 
                 List<Long> posSlopeYIntercepts = Lists.newArrayList();
                 List<Long> negSlopeYIntercepts = Lists.newArrayList();
@@ -278,24 +209,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                             D = -p1;
                         }
                         
-                        if (isCenterXOdd==breakCenterXOdd && 
-                                isCenterYOdd == breakCenterYOdd && 
-                                pointInRectangle(breakX, breakY,A,B,C,D)
-                                ) {
-                            log.debug("test");
-                        }
+                        
                         
                         for( Tile tile : constraintDiffXGTEDiffY ) {
                             long diffX = Math.abs( cX - tile.getX() );
                             long diffY = Math.abs( cY - tile.getY() );
                             
                             if (diffX < diffY) {
-                                if (isCenterXOdd==breakCenterXOdd && 
-                                        isCenterYOdd == breakCenterYOdd && 
-                                        pointInRectangle(breakX, breakY,A,B,C,D)
-                                        ) {
-                                    log.debug("test");
-                                }
+                                
                                 continue nextRectangle;
                             }
                         }
@@ -305,24 +226,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                             long diffY = Math.abs( cY - tile.getY() );
                             
                             if (diffX > diffY) {
-                                if (isCenterXOdd==breakCenterXOdd && 
-                                        isCenterYOdd == breakCenterYOdd && 
-                                        pointInRectangle(breakX, breakY,A,B,C,D)
-                                        ) {
-                                    log.debug("test");
-                                }
+                                
                                 continue nextRectangle;
                             }
                         }
                         
-                        log.debug("Found a rectangle.  center x odd? {} center y odd? {} ", centerXOdd, centerYOdd);
+                      // log.debug("Found a rectangle.  center x odd? {} center y odd? {} ", centerXOdd, centerYOdd);
                         
                        
-                        if (centerXOdd==0 && centerYOdd == 0 && 
-                                pointInRectangle(-16, 18,A,B,C,D)
-                                ) {
-                            log.debug("test");
-                        }
+                        
                         
                         Tile center = findBestPointInRectangle( A,B,C,D,
                                 centerXOdd != 0,
@@ -366,13 +278,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
        long gAB = g(A,B);
        long gCD = g(C,D);
        
-       if (centerXOdd==breakCenterXOdd && 
-               centerYOdd == breakCenterYOdd && 
-               pointInRectangle(breakX, breakY,A,B,C,D)
-               ) {
-           log.debug("test");
-       }
        
+       //If Both A and B ; C and D switch signs that 0,0 is in the rectangle
        if (gAB == 0 && gCD == 0)
            return findBestPointInRectangleContainingZero(A,B,C,D,centerXOdd, centerYOdd);
        
@@ -384,22 +291,33 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
        Preconditions.checkState(Math.abs(C) <= Math.abs(D));
        
        List<Tile> pointsToTest = Lists.newArrayList();
-             
+           
+       /**
+        * Here we see which constraint is the limiting factor.
+        * We add 1 more since the boundary of the rectangle does not
+        * have the good parity (it will either be
+        * odd/odd ; even/even alternating or odd/even ; even/odd)
+        */
        if (M == Math.abs(A)) {
            Line mLine = null;
            long A_plus1 = 0;
            
            if (A >= 0) {
-               //Line is x+y = A+1
+               //Line is x+y = A+1 ( M+1)
                mLine = new Line( new Point(0, M+1), new Point(M+1, 0));
                pointsToTest.add( new Tile(0, M+1,false) );
                pointsToTest.add( new Tile(M+1, 0, false) );
                
+               //In case x must be odd we add these to check
+               pointsToTest.add( new Tile(1, M,false) );
+               pointsToTest.add( new Tile(M, 1, false) );               
+               
                A_plus1 = M+1;
            } else {
-               //Line is x+y = -M - 1
+               //Line is x+y = -M - 1 (A - 1)
                mLine = new Line( new Point(0, -M-1), new Point(-M-1, 0));
                pointsToTest.add( new Tile(0, -M-1, false) );
+               pointsToTest.add( new Tile(-1, -M, false) );
                pointsToTest.add( new Tile(-M-1, 0, false) );
                
                A_plus1 = -M-1;
@@ -417,7 +335,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
            double maxX = Math.max(cm.getX(), dm.getX());
            
            long intMinX = DoubleMath.roundToLong(minX, RoundingMode.UP);
-           long intMaxX = DoubleMath.roundToLong(maxX, RoundingMode.DOWN);
+           long intMaxX = DoubleMath.roundToLong(maxX,maxX >= 0 ? RoundingMode.DOWN : RoundingMode.UP);
            
            //Because the x's alternate (odd, even) the closest integer to the boundary
            //might need to be pulled back to make the point valid
@@ -438,13 +356,17 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
                pointsToTest.add( new Tile(-M-1, 0, false ) );
                pointsToTest.add( new Tile(0, M+1, false ) );
+               pointsToTest.add( new Tile(-1, M, false ) );
                
                C_plus1 = -M - 1;
            } else {
                //Line is x-y = C + 1 (M+1)
                mLine = new Line( new Point(0, -M-1), new Point(M+1, 0));
                pointsToTest.add( new Tile(0, -M-1, false) );
+               
+               //M+1 may not match odd/even requirements for center
                pointsToTest.add( new Tile(M+1, 0, false) );
+               pointsToTest.add( new Tile(M, -1, false) );
                
                C_plus1 = M + 1;
            }
@@ -481,7 +403,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
            pointsToTest.add( new Tile(intMinX, -C_plus1+intMinX, false) );
            pointsToTest.add( new Tile(intMaxX, -C_plus1+intMaxX, false) );
            
-           int aoeu = 8888;
        }
        
        Collections.sort(pointsToTest);
@@ -506,8 +427,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
        
        return null;
     }
-    
-    //void getPointJustInsideRectangle
     
     private static boolean pointInRectangle(long x, long y, long A, long B, long C, long D) {
         boolean betAB = (A < B) ?
@@ -542,15 +461,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         
         if (centerXOdd && !centerYOdd) {
-            // (1, 0), (-1, 0), (3, 0), (1, 2), (1, -2), (-1, 2), (-1, -2), (-3, 0).
             pointsToTry.add( new ImmutablePair<>(1l,0l) );
             pointsToTry.add( new ImmutablePair<>(-1l,0l) );
-            pointsToTry.add( new ImmutablePair<>(3l,0l) );
             pointsToTry.add( new ImmutablePair<>(1l,2l) );
             pointsToTry.add( new ImmutablePair<>(1l,-2l) );
             pointsToTry.add( new ImmutablePair<>(-1l,2l) );
             pointsToTry.add( new ImmutablePair<>(-1l,-2l) );
-            pointsToTry.add( new ImmutablePair<>(-3l,0l) );
         }
         
         if (!centerXOdd && centerYOdd) {
@@ -560,16 +476,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             pointsToTry.add( new ImmutablePair<>(2l,1l) );
             pointsToTry.add( new ImmutablePair<>(2l,-1l) );
             
-            pointsToTry.add( new ImmutablePair<>(0l,3l) );
-            pointsToTry.add( new ImmutablePair<>(0l,-3l) );
-            
             pointsToTry.add( new ImmutablePair<>(-2l,1l) );            
-            pointsToTry.add( new ImmutablePair<>(-2l,-1l) );
-            
+            pointsToTry.add( new ImmutablePair<>(-2l,-1l) );            
         }
         
-        
-        //TODO how can 3, 0 work when 1, 0 did not ??
         
         
         for(Pair<Long,Long> point : pointsToTry)
@@ -592,61 +502,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     
-    public String bruteForce(InputData in) {
-
-        PointInt bestCandidate = null;
-        
-        
-        
-        Ordering<PointInt> order = Ordering.from(new ManhatDistance()).nullsLast(); 
-        
-        List<PointInt> blueTiles = Lists.newArrayList();
-        List<PointInt> redTiles = Lists.newArrayList();
-        
-        for(Tile tile : in.tiles) {
-            if (tile.isRed) {
-                redTiles.add(new PointInt( (int) tile.getX(), (int) tile.getY()));
-            } else {
-                blueTiles.add(new PointInt( (int) tile.getX(), (int) tile.getY()));
-            }
-        }
-        
-        for(int y = -201; y <= 201; ++y)
-        {
-            for(int x = -201; x <= 201; ++x)
-            {
-                //Suppose center is at x, y
-                PointInt center = new PointInt(x,y);
-                
-                boolean ok = true;
-                for(PointInt red : redTiles)
-                {
-                    int parity = center.getKingDistance(red) % 2;
-                    if (parity == 0)
-                    {
-                        ok = false;
-                        break;
-                    }
-                }
-                
-                for(PointInt blue : blueTiles)
-                {
-                    int parity = center.getKingDistance(blue) % 2;
-                    if (parity == 1)
-                    {
-                        ok = false;
-                        break;
-                    }
-                }
-                
-                if (ok && order.compare(center, bestCandidate) < 0)
-                    bestCandidate = center;
-            }
-        }
-                
-        return String.format("Case #%d: %s", in.testCase,
-                bestCandidate == null ? "Too damaged" : "" + bestCandidate.getX() + " " + bestCandidate.getY());
-        
-    }
+   
 
 }
