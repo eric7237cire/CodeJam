@@ -121,10 +121,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     final long MAX_INTERCEPT = 2 *MAX_COORD + 10;
     
     
-    static long breakX = 1;
-    static long breakY = 2;
-    static boolean breakCenterXOdd = true;
-    static boolean breakCenterYOdd = false;
+    static long breakX = 39;
+    static long breakY = 14;
+    static boolean breakCenterXOdd = breakX % 2 != 0;
+    static boolean breakCenterYOdd = breakY % 2 != 0;
     
     /**
      * Follow given solution
@@ -419,6 +419,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
            long intMinX = DoubleMath.roundToLong(minX, RoundingMode.UP);
            long intMaxX = DoubleMath.roundToLong(maxX, RoundingMode.DOWN);
            
+           //Because the x's alternate (odd, even) the closest integer to the boundary
+           //might need to be pulled back to make the point valid
+           if ( (intMaxX % 2 == 0 && centerXOdd) ||
+                   (intMaxX % 2 != 0 && !centerXOdd) ) {
+                  intMaxX --;
+              }
+           
            pointsToTest.add( new Tile(intMinX, A_plus1-intMinX, false) );
            pointsToTest.add( new Tile(intMaxX, A_plus1-intMaxX, false) );
        } else {
@@ -477,20 +484,21 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
            int aoeu = 8888;
        }
        
-       Collections.sort(pointsToTest, new Comparator<Tile>() {
-
-           @Override
-           public int compare(Tile o1, Tile o2)
-           {
-               return ComparisonChain.start().compare(o2.getX(), o1.getX()).compare(o2.getY(), o1.getY()).result();
-           }
-              
-          });
+       Collections.sort(pointsToTest);
        
        for( Tile point : pointsToTest)
        {
            long x = point.getX();
            long y = point.getY();
+           
+           //It is possible that some of the points don't match the odd/even requirements
+           //Should be enough to test X
+           
+           if (x % 2 == 0 && centerXOdd)
+               continue;
+           
+           if (x % 2 != 0 && !centerXOdd)
+               continue;
            
            if (pointInRectangle(x,y,A,B,C,D))
                return point;       
