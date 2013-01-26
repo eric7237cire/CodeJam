@@ -43,10 +43,64 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      */
     public String handleCase(InputData in) {
 
+        int n = 5;
+        
+        List<Rule> rules = Lists.newArrayList();
+        
+        String numBinary = "101";
+        int writeNumberStateBase = 100;
+        int subtractStateBase = 200;
+        
+        int leftBoundaryMark = 4;
+        int rightBoundaryMark = 5;
+        
+        rules.add(new Rule(0, 0, 'E', writeNumberStateBase + 0, leftBoundaryMark));
+        
+        //write the number in binary, 3 means 2 ; 2 means 1
+        for(int c = 0; c < numBinary.length(); ++c)
+        {
+            char ch = numBinary.charAt(c);
+            rules.add(new Rule(writeNumberStateBase+c, 0, 'E', 
+                writeNumberStateBase+c+1, ch == '1' ? 3 : 2));
+        }
+        
+        //Write right boundary ; go into subtraction mode
+        rules.add(new Rule(writeNumberStateBase+numBinary.length()+1, 0,
+            'W', subtractStateBase, rightBoundaryMark)); 
+        
+        //Subtraction--
+        //S0 --> need to subtract 1
+        //S1 --> done subtracting
+        
+        rules.add(new Rule(subtractStateBase, 3,
+            'W', subtractStateBase+1, 2));
+        rules.add(new Rule(subtractStateBase, 2,
+            'W', subtractStateBase, 3));
+        
+        rules.add(new Rule(subtractStateBase+1, 3,
+            'W', subtractStateBase+1, 3));
+        rules.add(new Rule(subtractStateBase+1, 2,
+            'W', subtractStateBase+1, 2));
+        
+        StringBuffer ruleText = new StringBuffer();
+        
+        ruleText.append(rules.size());
+        ruleText.append("\n");
+            
+        for(Rule rule : rules)
+        {
+            log.debug("Rule: {}", rule);
+            ruleText.append( rule.toString() );
+            ruleText.append("\n");
+        }
+        
         try {
+            /*
         String text =
                 IOUtils.toString(this.getClass().getResourceAsStream(
                         "/codejam/y2011/rules1.txt"));
+                        */
+        String text = ruleText.toString();
        
         log.debug(text);
         

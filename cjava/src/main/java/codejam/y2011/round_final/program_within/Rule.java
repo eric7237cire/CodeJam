@@ -15,8 +15,25 @@ public class Rule
     @Override
     public String toString()
     {
-        return "Rule [state=" + state + ", mark=" + mark + ", Direction=" + Direction + ", newState=" + newState + ", newMark=" + newMark + "]";
+        if (Direction != 'R')
+        return String.format("%d %d -> %s %d %d", state, mark, ""+Direction,
+            newState, newMark);
+        else
+            return String.format("%d %d -> R");
     }
     
+    public Rule() {
+        
+    }
+    
+    public Rule(int state, int mark, char Direction,
+        int newState, int newMark)
+    {
+        this.state = state;
+        this.mark = mark;
+        this.Direction = Direction;
+        this.newState = newState;
+        this.newMark = newMark;
+    }
     
 }

@@ -92,6 +92,7 @@ public class Simulator
             printState();
         }
         } catch (Exception ex) {
+            log.debug(ex.toString());
             return -187;
         }
         
