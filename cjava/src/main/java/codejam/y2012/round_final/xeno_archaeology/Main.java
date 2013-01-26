@@ -31,7 +31,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String[] getDefaultInputFiles() {
         return new String[] { "sample.in" };
-     //    return new String[] { "B-small-practice.in" };
+         //return new String[] { "C-small-practice.in" };
        //  return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
@@ -55,7 +55,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return in;
     }
     
-    public static class Tile  {
+    public static class Tile implements Comparable<Tile> {
 
         final long y;
         final long x;
@@ -76,6 +76,25 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         public long getX()
         {
             return x;
+   
+        }
+
+        @Override
+        public int compareTo(Tile o)
+        {
+            long m1 = Math.abs(getX()) + Math.abs((getY()));
+            long m2 = Math.abs(o.getX()) + Math.abs((o.getY()));
+            return ComparisonChain.start()
+                    .compare(m1, m2)
+                    .compare(o.getX(), getX())
+                    .compare(o.getY(), getY())
+                    .result();
+        }
+
+        @Override
+        public String toString()
+        {
+            return "Tile [x=" + x + ", y=" + y + ", isRed=" + isRed + "]";
         }
         
     }
@@ -97,7 +116,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
        
         
     }
-
+    
+    final long MAX_COORD = 1000000000000000l; 
+    final long MAX_INTERCEPT = 2 *MAX_COORD + 10;
+    
+    
+    static long breakX = 1;
+    static long breakY = 2;
+    static boolean breakCenterXOdd = true;
+    static boolean breakCenterYOdd = false;
+    
     /**
      * Follow given solution
      */
@@ -115,6 +143,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         List<Tile> bestPoints = Lists.newArrayList();
         
+        
 
         for (int centerYOdd = 0; centerYOdd <= 1; ++centerYOdd)
         {
@@ -122,8 +151,17 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             for (int centerXOdd = 0; centerXOdd <= 1; ++centerXOdd)
             {
                 
+                boolean isCenterXOdd = centerXOdd != 0;
+                boolean isCenterYOdd = centerYOdd != 0;
+                
                 List<Long> posSlopeYIntercepts = Lists.newArrayList();
                 List<Long> negSlopeYIntercepts = Lists.newArrayList();
+                
+                posSlopeYIntercepts.add(MAX_INTERCEPT);
+                posSlopeYIntercepts.add(-MAX_INTERCEPT);
+                negSlopeYIntercepts.add(MAX_INTERCEPT);
+                negSlopeYIntercepts.add(-MAX_INTERCEPT);
+
 
                 List<Tile> constraintDiffXGTEDiffY = Lists.newArrayList();
                 List<Tile> constraintDiffXLTEDiffY = Lists.newArrayList();
@@ -146,7 +184,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     if ((tile.isRed && !xDiffOdd && !yDiffOdd) || 
                             (!tile.isRed && xDiffOdd && yDiffOdd))
                     {
-                        break centerXLoop;
+                        continue centerXLoop;
                         /**
                          * No solution will work.  If center is 
                          * odd, odd then a red point 3,  7 will have both xDiff and yDiff be even.
@@ -212,7 +250,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         long n1 = negSlopeYIntercepts.get(n2Idx - 1);
                         long n2 = negSlopeYIntercepts.get(n2Idx);
                         
-                        log.debug("Rectangle bounded by y = x + {}, {} and y = -x + {}, {}", p1,p2,n1,n2);
+                        //log.debug("Rectangle bounded by y = x + {}, {} and y = -x + {}, {}", p1,p2,n1,n2);
                         
                         Line posSlope = new Line(1, p1);
                         Line negSlope = new Line(-1, n1);
@@ -221,26 +259,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         
                         long cX = DoubleMath.roundToLong(intersection.getX(), RoundingMode.HALF_DOWN);
                         long cY = 1 + DoubleMath.roundToLong(intersection.getY(), RoundingMode.HALF_DOWN);
-                        
-                        for( Tile tile : constraintDiffXGTEDiffY ) {
-                            long diffX = Math.abs( cX - tile.getX() );
-                            long diffY = Math.abs( cY - tile.getY() );
-                            
-                            if (diffX < diffY) {
-                                continue nextRectangle;
-                            }
-                        }
-                        
-                        for( Tile tile : constraintDiffXLTEDiffY ) {
-                            long diffX = Math.abs( cX - tile.getX() );
-                            long diffY = Math.abs( cY - tile.getY() );
-                            
-                            if (diffX > diffY) {
-                                continue nextRectangle;
-                            }
-                        }
-                        
-                        log.debug("Found a rectangle.  center x odd? {} center y odd? {} ", centerXOdd, centerYOdd);
                         
                         long A, B, C, D;
                         
@@ -260,6 +278,52 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                             D = -p1;
                         }
                         
+                        if (isCenterXOdd==breakCenterXOdd && 
+                                isCenterYOdd == breakCenterYOdd && 
+                                pointInRectangle(breakX, breakY,A,B,C,D)
+                                ) {
+                            log.debug("test");
+                        }
+                        
+                        for( Tile tile : constraintDiffXGTEDiffY ) {
+                            long diffX = Math.abs( cX - tile.getX() );
+                            long diffY = Math.abs( cY - tile.getY() );
+                            
+                            if (diffX < diffY) {
+                                if (isCenterXOdd==breakCenterXOdd && 
+                                        isCenterYOdd == breakCenterYOdd && 
+                                        pointInRectangle(breakX, breakY,A,B,C,D)
+                                        ) {
+                                    log.debug("test");
+                                }
+                                continue nextRectangle;
+                            }
+                        }
+                        
+                        for( Tile tile : constraintDiffXLTEDiffY ) {
+                            long diffX = Math.abs( cX - tile.getX() );
+                            long diffY = Math.abs( cY - tile.getY() );
+                            
+                            if (diffX > diffY) {
+                                if (isCenterXOdd==breakCenterXOdd && 
+                                        isCenterYOdd == breakCenterYOdd && 
+                                        pointInRectangle(breakX, breakY,A,B,C,D)
+                                        ) {
+                                    log.debug("test");
+                                }
+                                continue nextRectangle;
+                            }
+                        }
+                        
+                        log.debug("Found a rectangle.  center x odd? {} center y odd? {} ", centerXOdd, centerYOdd);
+                        
+                       
+                        if (centerXOdd==0 && centerYOdd == 0 && 
+                                pointInRectangle(-16, 18,A,B,C,D)
+                                ) {
+                            log.debug("test");
+                        }
+                        
                         Tile center = findBestPointInRectangle( A,B,C,D,
                                 centerXOdd != 0,
                                 centerYOdd != 0);
@@ -275,15 +339,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
        
 
-        Collections.sort(bestPoints, new Comparator<Tile>() {
-
-            @Override
-            public int compare(Tile o1, Tile o2)
-            {
-                return ComparisonChain.start().compare(o2.getX(), o1.getX()).compare(o2.getY(), o1.getY()).result();
-            }
-               
-           });
+        Collections.sort(bestPoints);
         
         if (bestPoints.size() > 0) {
             return String.format("Case #%d: %d %d", in.testCase,
@@ -310,6 +366,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
        long gAB = g(A,B);
        long gCD = g(C,D);
        
+       if (centerXOdd==breakCenterXOdd && 
+               centerYOdd == breakCenterYOdd && 
+               pointInRectangle(breakX, breakY,A,B,C,D)
+               ) {
+           log.debug("test");
+       }
+       
        if (gAB == 0 && gCD == 0)
            return findBestPointInRectangleContainingZero(A,B,C,D,centerXOdd, centerYOdd);
        
@@ -321,7 +384,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
        Preconditions.checkState(Math.abs(C) <= Math.abs(D));
        
        List<Tile> pointsToTest = Lists.newArrayList();
-       
+             
        if (M == Math.abs(A)) {
            Line mLine = null;
            long A_plus1 = 0;
@@ -363,21 +426,32 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
            Line mLine = null;
            long C_plus1 = 0;
            if (C <= 0) {
-               //Line is x-y = C - 1
+               //Line is x-y = C - 1 (-M-1)
                mLine = new Line( new Point(-M-1, 0), new Point(0, M+1));
 
                pointsToTest.add( new Tile(-M-1, 0, false ) );
                pointsToTest.add( new Tile(0, M+1, false ) );
                
-               C_plus1 = M + 1;
+               C_plus1 = -M - 1;
            } else {
-               //Line is x+y = A - 1
+               //Line is x-y = C + 1 (M+1)
                mLine = new Line( new Point(0, -M-1), new Point(M+1, 0));
                pointsToTest.add( new Tile(0, -M-1, false) );
                pointsToTest.add( new Tile(M+1, 0, false) );
                
-               C_plus1 = -M - 1;
+               C_plus1 = M + 1;
            }
+           
+           /**
+            * x-y = C_plus1 is the line representing the manhattan distance
+            * M+1
+            * 
+            * Intersect it with the edges of the rectangle to find
+            * the point with the greatest X
+            */
+           
+           //A line with positive slope alternates between pos,pos ; neg, neg or pos,neg ; neg, pos
+           //  2, 3 ; 3, 4 ; 4 , 5 or  4, 8 ; 5, 9 ; 6, 10
        
            //Intersect with line A and B
            Line aLine = new Line(-1, A);
@@ -390,10 +464,17 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
            double maxX = Math.max(am.getX(), bm.getX());
            
            long intMinX = DoubleMath.roundToLong(minX, RoundingMode.UP);
-           long intMaxX = DoubleMath.roundToLong(maxX, RoundingMode.DOWN);
+           long intMaxX =  DoubleMath.roundToLong(maxX, maxX >= 0 ? RoundingMode.DOWN : RoundingMode.UP)  ;
            
-           pointsToTest.add( new Tile(intMinX, C_plus1-intMinX, false) );
-           pointsToTest.add( new Tile(intMaxX, C_plus1-intMaxX, false) );
+           if ( (intMaxX % 2 == 0 && centerXOdd) ||
+                (intMaxX % 2 != 0 && !centerXOdd) ) {
+               intMaxX --;
+           }
+                              
+           pointsToTest.add( new Tile(intMinX, -C_plus1+intMinX, false) );
+           pointsToTest.add( new Tile(intMaxX, -C_plus1+intMaxX, false) );
+           
+           int aoeu = 8888;
        }
        
        Collections.sort(pointsToTest, new Comparator<Tile>() {
@@ -411,24 +492,32 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
            long x = point.getX();
            long y = point.getY();
            
-           boolean betAB = (A < B) ?
-                   (A <= x+y && x+y <= B) :
-                       (B <= x+y && x+y <= A)
-                       ;
-                   
-           boolean betCD = (C < D) ?
-                   (C <= x-y && x-y <= D) :
-                       (D <= x-y && x-y <= C);
-                   
-            
-           boolean feasible = betAB && betCD;
-           
-           if (feasible)
-               return point;
-       
+           if (pointInRectangle(x,y,A,B,C,D))
+               return point;       
        }
        
        return null;
+    }
+    
+    //void getPointJustInsideRectangle
+    
+    private static boolean pointInRectangle(long x, long y, long A, long B, long C, long D) {
+        boolean betAB = (A < B) ?
+                (A <= x+y && x+y <= B) :
+                    (B <= x+y && x+y <= A)
+                    ;
+                
+        boolean betCD = (C < D) ?
+                (C <= x-y && x-y <= D) :
+                    (D <= x-y && x-y <= C);
+                
+         
+        boolean feasible = betAB && betCD;
+        
+        if (feasible)
+            return true;
+        
+        return false;
     }
     
     Tile findBestPointInRectangleContainingZero(long A, long B, long C, long D, 
@@ -445,8 +534,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         
         if (centerXOdd && !centerYOdd) {
+            // (1, 0), (-1, 0), (3, 0), (1, 2), (1, -2), (-1, 2), (-1, -2), (-3, 0).
             pointsToTry.add( new ImmutablePair<>(1l,0l) );
-            pointsToTry.add( new ImmutablePair<>(-1l,-1l) );
+            pointsToTry.add( new ImmutablePair<>(-1l,0l) );
             pointsToTry.add( new ImmutablePair<>(3l,0l) );
             pointsToTry.add( new ImmutablePair<>(1l,2l) );
             pointsToTry.add( new ImmutablePair<>(1l,-2l) );
@@ -457,7 +547,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         if (!centerXOdd && centerYOdd) {
             pointsToTry.add( new ImmutablePair<>(0l,1l) );
-            pointsToTry.add( new ImmutablePair<>(-1l,-1l) );
+            pointsToTry.add( new ImmutablePair<>(0l,-1l) );
             
             pointsToTry.add( new ImmutablePair<>(2l,1l) );
             pointsToTry.add( new ImmutablePair<>(2l,-1l) );
@@ -478,9 +568,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         {
             long x = point.getLeft();
             long y = point.getRight();
-            boolean feasible = (A <= x+y && x+y <= B) && (C <= x-y && x-y <= D);
-            
-            if (feasible)
+            if (pointInRectangle(x,y, A,B,C,D))
                 return new Tile(x,y,false);
         
         }

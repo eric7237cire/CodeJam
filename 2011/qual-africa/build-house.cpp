@@ -160,7 +160,7 @@ void do_test_case(int test_case, ifstream& in, ofstream& fout)
         }
     }*/
 
-    
+    /*
 	 for(int r=H-1; r >= 0; --r)
     {
         FOR(c, 0, W)
@@ -170,8 +170,7 @@ void do_test_case(int test_case, ifstream& in, ofstream& fout)
         cout << endl;
     }
 cout << endl;
-   
-   // return;
+   */
     for( int x = W-1; x >= 0; --x)
     {
         updateColumnOnesToRight(columnOnesToRight, x, land);
@@ -185,7 +184,7 @@ cout << endl;
                 
 				
                 width = columnOnesToRight[y];
-                cout << "X= " << x << " Y= " << y <<  "Push " << width << endl;
+               // cout << "X= " << x << " Y= " << y <<  "Push " << width << endl;
                 
                 widthStack.push( mp(y, width) );
 				 
@@ -197,7 +196,7 @@ cout << endl;
                 {
 					uu rowWidth = widthStack.top();
                     widthStack.pop();
-					cout << "X= " << x << " Y= " << y <<  " Pop y " <<					rowWidth.first << " Pop Width " << rowWidth.second << " cur width " << columnOnesToRight[y] << endl;
+					//cout << "X= " << x << " Y= " << y <<  " Pop y " <<					rowWidth.first << " Pop Width " << rowWidth.second << " cur width " << columnOnesToRight[y] << endl;
 					width = rowWidth.second;
                     y0 = rowWidth.first;
                     if (width * (y-y0) > 
@@ -206,7 +205,7 @@ cout << endl;
                         best_ll = mp (x, y0);
                         best_ur = mp(x+width-1, y-1);
                         
-                        cout << "X= " << x << " Y= " << y <<  " Pop y " <<					rowWidth.first << " Pop Width " << rowWidth.second << " cur width " << columnOnesToRight[y] << " New area max " << width*(y-y0) << endl;
+                       // cout << "X= " << x << " Y= " << y <<  " Pop y " <<					rowWidth.first << " Pop Width " << rowWidth.second << " cur width " << columnOnesToRight[y] << " New area max " << width*(y-y0) << endl;
                         
                         assert(width * (y-y0) == area(best_ll, best_ur)); 
                         
@@ -219,7 +218,7 @@ cout << endl;
                 width = columnOnesToRight[y];
     
                 if (width != 0) {
-                    cout << "X= " << x << " Y= " << y <<  "Push after width " << width << " Push after y0 " << y0 << endl;
+                    //cout << "X= " << x << " Y= " << y <<  "Push after width " << width << " Push after y0 " << y0 << endl;
                     widthStack.push( mp(y0, width) );
                 }
             }
