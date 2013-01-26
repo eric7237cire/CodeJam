@@ -28,9 +28,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         final int numCells = scanner.nextInt();
         final int numToBeFreed = scanner.nextInt();
 
-        
-
-
         List<Integer> listToBeFree = new ArrayList<>();
         for (int i = 0; i < numToBeFreed; ++i) {
             int index = scanner.nextInt();
@@ -48,16 +45,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     
     @Override
-    public String handleCase(InputData input) {
+    public String handleCase(InputData input) {        
+        DynamicBottomUp dbu = new DynamicBottomUp();
+        return dbu.handleCase(input);        
+    }
+    
+    public String oldHandleCase(InputData input) {
         final int numCells = input.numCells;
         
         List<Integer> listToBeFree = input.listToBeFree;
         
-        PrisonSelectionAlgorithm alg ;
-        alg = new Dynamic(numCells);
-        int cost = 0;
+        PrisonSelectionAlgorithm alg = new Dynamic(numCells);
         
-        cost = alg.findMinCost(1, numCells , listToBeFree);
+        int cost = alg.findMinCost(1, numCells , listToBeFree);
 
         return ("Case #" + input.testCase + ": " + cost);
     }

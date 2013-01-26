@@ -25,8 +25,8 @@ public class Main  {
          * Can always research more into eigen values / vectors
          * Implement remaining proposed solution.
          * 1. Used a solution space line intersection type solution,
-         * 2. Proposed matrix manipulation soliton         * 
-         * 3.  todo -- Remains a third, using estimation 
+         * 2. Proposed matrix manipulation solution         * 
+         * 3.  idea -- Remains a third, using estimation 
          * 
          * bmerries insane solution uses complex numbers
          */
@@ -125,13 +125,26 @@ public class Main  {
         //A bit of physics / calculus 
          //codejam.y2009.round_1C.center_mass.Main m = new codejam.y2009.round_1C.center_mass.Main();
         
-        //DP.  TODO bottom up
+        /**
+         * Round 1C -- 2009 
+         * Problem 3
+         * Dynamic programming.
+         * 
+         * 1.  Proposed solution, top down
+         * 2.  Also found LucaB's solution which is bottom up and like 10x faster
+         */
          //codejam.y2009.round_1C.bribe_prisoner.Main m = new codejam.y2009.round_1C.bribe_prisoner.Main();
          
          //Round 2 -- 2009
         
-        //Number of swaps to put in order, can only swap adjacent
-         //codejam.y2009.crazy_rows.Main m = new codejam.y2009.crazy_rows.Main();
+         /**
+          * Round 2 -- 2009
+          * Problem 1
+          * 
+          * Number of swaps to put in order, can only swap adjacent.
+          * "Disorder" count equals number of swaps. 
+          */
+         codejam.y2009.round_2.crazy_rows.Main m = new codejam.y2009.round_2.crazy_rows.Main();
         
         //DP TODO bottom up
          //codejam.y2009.digging_problem.Main m = new codejam.y2009.digging_problem.Main();
@@ -291,7 +304,7 @@ public class Main  {
         //Greedy algorithm (used solution)
         //codejam.y2011.round_3.dire_straights.Main m = new codejam.y2011.round_3.dire_straights.Main();
         
-        //2011 final round
+        //
         
         //Dynamic programming, combinatorics stars and bars counting (distributing n stars in k buckets )
         //codejam.y2011.round_final.runs.Main m = new codejam.y2011.round_final.runs.Main(); 
@@ -299,7 +312,13 @@ public class Main  {
         //Simulation with a trick to do batch processing.  TODO look at proof via paths / tree justifying the algo
         //codejam.y2011.round_final.rains_atlantis.Main m = new codejam.y2011.round_final.rains_atlantis.Main();
         
-        codejam.y2011.round_final.program_within.Main m = new codejam.y2011.round_final.program_within.Main();
+        /**
+         * 2011 final round
+         * 
+         * 1.  Creates a turning machine
+         * 2.  idea -- Can optimize the number of iterations
+         */
+        //codejam.y2011.round_final.program_within.Main m = new codejam.y2011.round_final.program_within.Main();
 
         //2010 africa
         

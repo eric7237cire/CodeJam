@@ -1,17 +1,26 @@
 package codejam.y2009.round_2.crazy_rows;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-public class Main implements TestCaseInputScanner<InputData>, TestCaseHandler<InputData> {
+public class Main implements TestCaseInputScanner<InputData>, TestCaseHandler<InputData>,
+DefaultInputFiles {
     
+    @Override
+    public String[] getDefaultInputFiles() {
+        return new String[] { "A-small-practice.in", "A-large-practice.in" };
+    }
+
     static class Row {
         final int leftOne;
         final int rightOne;
@@ -98,11 +107,53 @@ public class Main implements TestCaseInputScanner<InputData>, TestCaseHandler<In
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
     
-    @Override
-    public String handleCase(InputData data) {
+    public String handleCaseMine(InputData data) {
+        
         int cost = findMin(0, data.liste);
         
         return("Case #" + data.testCase + ": " + cost);
+    }
+    
+    public String handleCase(InputData in) {
+        
+        int N = in.liste.size();
+        int i,j;
+        
+        int[] a = new int[N];
+        //Only rightmost 1 matters
+        for(int rowIdx = 0; rowIdx < N; ++rowIdx) {
+            a[rowIdx] = in.liste.get(rowIdx).rightOne;
+        }
+        
+        int[] b = new int[N];
+     // -1 means no position is assigned for a[j].
+        Arrays.fill(b, -1);
+
+        for (i = 0; i < N; i++)
+        {
+            for (j = 0; j < N; j++)
+            {
+                //Find left most value that has not been assigned
+                if (b[j] < 0 && a[j] <= i)
+                {
+                    //Assign a[i]'s position
+                    b[j] = i;
+                    break;
+                }
+            }
+        }
+        int r=0;
+        for(i=0;i<N;i++) {
+            for(j=i+1;j<N;j++) {
+                //Counting disorder
+                if(b[i]>b[j]) {
+                    r++;
+                }
+            }
+        }
+          
+        // output r as the answer        
+        return String.format("Case #%d: %d", in.testCase, r);
     }
 
     @Override

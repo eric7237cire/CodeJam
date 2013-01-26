@@ -1,19 +1,16 @@
 package codejam.y2011.round_final.program_within;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.*;
 
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
