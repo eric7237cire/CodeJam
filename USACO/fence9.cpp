@@ -212,23 +212,23 @@ bool isBetween(double n, double a, double b)
     return false;
 }
 
-double sqr(double x) { return x * x }
+double sqr(double x) { return x * x; }
 
-double length_squared(v, w) { return sqr(v.x - w.x) + sqr(v.y - w.y) }
+double length_squared(const PointD& v, const PointD& w) { return sqr(v.x - w.x) + sqr(v.y - w.y); }
 
 double dot(PointD u, PointD v)
 {
     return u.x*v.x + u.y*v.y;
 }
 
-double minimum_distance( const PointD& v, const PointD w, const Point& p) {
+double minimum_distance( const PointD& v, const PointD w, const PointD& p) {
   // Return minimum distance between line segment vw and point p
   const double l2 = length_squared(v, w);  // i.e. |w-v|^2 -  avoid a sqrt
   if (l2 == 0.0) return dist(p, v);   // v == w case
   // Consider the line extending the segment, parameterized as v + t (w - v).
   // We find projection of point p onto the line. 
   // It falls where t = [(p-v) . (w-v)] / |w-v|^2
-  const float t = dot(p - v, w - v) / l2;
+  const double t = dot(p - v, w - v) / l2;
   if (t < 0.0) return dist(p, v);       // Beyond the 'v' end of the segment
   else if (t > 1.0) return dist(p, w);  // Beyond the 'w' end of the segment
   const PointD projection = v + t * (w - v);  // Projection falls on the segment
@@ -238,6 +238,14 @@ double minimum_distance( const PointD& v, const PointD w, const Point& p) {
 bool inTriangle( const PointD& p, const PointD& tri1,
     const PointD& tri2, const PointD& tri3)
 {
+	if ( abs(minimum_distance(tri1, tri2, p)) < tolerance)
+		return false;
+	if ( abs(minimum_distance(tri1, tri3, p)) < tolerance)
+		return false;
+	if ( abs(minimum_distance(tri2, tri3, p)) < tolerance)
+		return false;
+
+
     if ( getSide(p, tri1, tri2) != 
         getSide(tri3, tri1, tri2) )
         return false;
@@ -251,7 +259,7 @@ bool inTriangle( const PointD& p, const PointD& tri1,
         getSide(tri1, tri2, tri3) )
         return false;
         
-    cout << p.x << ", " << p.y << " in triangle " << endl;
+    //cout << p.x << ", " << p.y << " in triangle " << endl;
     return true;
     
 }
@@ -262,7 +270,7 @@ int main() {
 	ofstream fout ("fence9.out");
     ifstream fin ("fence9.in");
 
-    uint m, n, p;
+    int m, n, p;
 
     fin >> m >> n >> p;
 
@@ -272,10 +280,12 @@ int main() {
     PointD t2( PointD(m,n) );
     PointD t3( PointD(p,0) );  	
     
-    int deltaRight = p < n ? 1 : -1;
+    int deltaRight = (m-p) / n;
     
-    uint left = 0;
-    uint right = p;
+    if (deltaRight <= 0)
+        deltaRight = 1;
+    int left = 0;
+    int right = p;
     
     uint total = 0;
     
@@ -286,13 +296,15 @@ int main() {
     
     for(uint y = 1; y < n; ++y)
     {
+        //multiply by 2 just to be sure we are outside the triangle
+        right += 2 * deltaRight;
         
         while(!inTriangle( PointD(right, y), t1, t2, t3 ) && right > left) {
-            right += deltaRight;
-            cout << "Moving right " << right << endl;
+            right --;
+            //cout << "Moving right " << right << endl;
         }
         
-        right -= deltaRight;
+        right ++;
         
         while(!inTriangle( PointD(left, y), t1, t2, t3 ) && left < right) { 
             ++left;
@@ -306,8 +318,8 @@ int main() {
         if (count < 0)
             break;
         
-        cout << "y " << y << " has " << count << " total " << total << endl;
-        cout << "left " << left << " right " << right << endl;
+      //  cout << "y " << y << " has " << count << " total " << total << endl;
+      //  cout << "left " << left << " right " << right << endl;
         total += count;
     }
     

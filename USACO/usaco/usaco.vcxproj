@@ -22,7 +22,7 @@
     <None Include="..\cowtour.in" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\heritage.cpp" />
+    <ClCompile Include="..\fence9.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{899CB317-940A-4C4D-B045-76EF3A24D746}</ProjectGuid>
