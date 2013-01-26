@@ -8,6 +8,8 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.*;
+
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -20,9 +22,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     @Override
     public String[] getDefaultInputFiles() {
-        return new String[] { "sample.in" };
+      //  return new String[] { "sample.in" };
      //    return new String[] { "B-small-practice.in" };
-      //   return new String[] { "B-small-practice.in", "B-large-practice.in" };
+         return new String[] { "C-small-practice.in", "C-large-practice.in" };
     }
 
     @Override
@@ -43,11 +45,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      */
     public String handleCase(InputData in) {
 
-        int n = 11;
+        
         
         List<Rule> rules = Lists.newArrayList();
         
-        String numBinary = "1011";
+        String numBinary = Integer.toBinaryString(in.N);
         int writeNumberStateBase = 100;
         int subtractStateBase = 200;
         
@@ -132,7 +134,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
         for(Rule rule : rules)
         {
-            log.debug("Rule: {}", rule);
+           // log.debug("Rule: {}", rule);
             ruleText.append( rule.toString() );
             ruleText.append("\n");
         }
@@ -152,13 +154,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         Integer finalLoc = s.go();
         
+        Preconditions.checkState(finalLoc.equals(in.N));
+        
         log.debug("Final state {}", finalLoc); 
         
         } catch (Exception ex) {
             log.debug("ex",ex);
         }
-        
-        return String.format("Case #%d: %d", in.testCase,8);
+        ruleText.deleteCharAt(ruleText.length() - 1);
+        return String.format("Case #%d: ", in.testCase) + ruleText.toString();
         
     }
 

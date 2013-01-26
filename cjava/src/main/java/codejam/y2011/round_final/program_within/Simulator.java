@@ -83,13 +83,15 @@ public class Simulator
     
     public Integer go() {
         try {
-        for(int x = 1; x <= 150; ++x) {
-            log.debug("Step {}", x);
+        for(int x = 1; x <= 150000; ++x) {
+           // log.debug("Step {}", x);
             Integer release = goOneStep();
-            if (release != null)
+            if (release != null) {
+                 log.debug("Step {}", x);
                 return release;
+            }
             
-            printState();
+            //printState();
         }
         } catch (Exception ex) {
             log.debug(ex.toString());
