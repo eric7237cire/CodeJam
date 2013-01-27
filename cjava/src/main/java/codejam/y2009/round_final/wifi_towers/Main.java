@@ -1,4 +1,4 @@
-package codejam.y2009.round_4.wifi_towers;
+package codejam.y2009.round_final.wifi_towers;
 
 import java.util.Scanner;
 

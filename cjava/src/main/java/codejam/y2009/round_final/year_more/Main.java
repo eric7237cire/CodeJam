@@ -1,4 +1,4 @@
-package codejam.y2009.round_4.year_more;
+package codejam.y2009.round_final.year_more;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,11 +59,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      * @see codejam.utils.multithread.Consumer.TestCaseHandler#handleCase(java.lang.Object)
      */
     @Override
-    public String handleCase(InputData input) {
-        int N = input.N;
+    public String handleCase(InputData in) {
+        int N = in.N;
 
-        log.info("Starting case {}", input.testCase);
-        List<Tournament> tournaments = input.tournaments;
+        log.info("Starting case {}", in.testCase);
+        List<Tournament> tournaments = in.tournaments;
 
         // Happiness h = Happiness.create(N, 50, 10000, tournaments);
         RealSolution h = RealSolution.create(N, 50, 10000, tournaments);
@@ -79,6 +79,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         long wholeNumber = ev.longValue();
         ev = ev.subtract(wholeNumber);
 
-        return String.format("Case #%d: %d+%d/%d", input.testCase, wholeNumber, ev.getNumerator(), ev.getDenominator());
+        return String.format("Case #%d: %d+%d/%d", in.testCase, wholeNumber, ev.getNumerator(), ev.getDenominator());
     }
 }

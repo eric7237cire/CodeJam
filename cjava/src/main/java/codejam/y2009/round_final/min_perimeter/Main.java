@@ -1,4 +1,4 @@
-package codejam.y2009.round_4.min_perimeter;
+package codejam.y2009.round_final.min_perimeter;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;

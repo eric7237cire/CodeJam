@@ -1,4 +1,4 @@
-package codejam.y2009.round_4.double_sort_grid;
+package codejam.y2009.round_final.double_sort_grid;
 
 import java.util.Arrays;
 import java.util.HashMap;

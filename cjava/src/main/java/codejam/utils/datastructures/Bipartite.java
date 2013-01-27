@@ -61,7 +61,7 @@ public class Bipartite {
         }
     }
 
-    boolean isBipartite()            { return isBipartite; }
+    public boolean isBipartite()            { return isBipartite; }
     boolean color(int v)             { return color[v];    }
     public Iterable<Integer> cycle() { return cycle;       }
 

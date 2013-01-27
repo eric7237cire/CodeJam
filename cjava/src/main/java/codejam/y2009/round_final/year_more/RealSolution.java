@@ -1,4 +1,4 @@
-package codejam.y2009.round_4.year_more;
+package codejam.y2009.round_final.year_more;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import org.apache.commons.math3.fraction.BigFraction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.y2009.round_4.year_more.Main.Tournament;
+import codejam.y2009.round_final.year_more.Main.Tournament;
 
 import com.google.common.math.LongMath;
 

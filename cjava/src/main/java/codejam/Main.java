@@ -173,7 +173,7 @@ public class Main  {
         //Counting ranges.  Had to use complex caching to solve in time.  TODO more comments and their solution
         // codejam.y2009.round_3.interesting_ranges.Main m = new codejam.y2009.round_3.interesting_ranges.Main();
          
-         //Round 4 -- 2009
+         //Round Final -- 2009
          //codejam.y2009.round_4.year_more.Main m = new codejam.y2009.round_4.year_more.Main();
          
          //Both of these still a bit slow, especially min perimeter
@@ -183,7 +183,21 @@ public class Main  {
         // codejam.y2009.double_sort_grid.Main m = new codejam.y2009.double_sort_grid.Main();
         
          //Network flow
-     //   codejam.y2009.round_4.wifi_towers.Main m = new codejam.y2009.round_4.wifi_towers.Main(); 
+     //   codejam.y2009.round_4.wifi_towers.Main m = new codejam.y2009.round_4.wifi_towers.Main();
+        
+        //codejam.y2009.round_final.marbles.Main m = new codejam.y2009.round_final.marbles.Main();
+        
+        /**
+         * 2009 finals problem 5.
+         * 
+         * The solution in Sol.java written by Vitaliy was annotated.  
+         * 
+         * The one todo that seems magical is the direction (up or down) of each path is assigned only once.
+         * Perhaps it is due to the flipping / setting minimum code at the end of the main solve method.
+         * 
+         * And maybe try a bottom up, but meh...
+         */
+        codejam.y2009.round_final.marbles.Sol m = new codejam.y2009.round_final.marbles.Sol();
       
          //2010 qual
          //Bignumber GCD
@@ -246,7 +260,7 @@ public class Main  {
          * 
          * Used BFS to find modulo length.
          */
-        codejam.y2010.round_3.boards.Main m = new codejam.y2010.round_3.boards.Main();
+       // codejam.y2010.round_3.boards.Main m = new codejam.y2010.round_3.boards.Main();
         
         //Did my own algo, used GAP class.  TODO use their solution
         //codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();       

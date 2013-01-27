@@ -1,14 +1,19 @@
-package codejam.y2009.round_4.min_perimeter;
+package codejam.y2009.round_final.lights;
 
 import java.util.List;
 
-import codejam.utils.geometry.PointInt;
 import codejam.utils.main.AbstractInputData;
+import codejam.y2009.round_final.year_more.Main.Tournament;
 
 public class InputData extends AbstractInputData {
-    List<PointInt> points;
+
+    int N;
+    int T;
+    
+    List<Tournament> tournaments;
     
     public InputData(int testCase) {
         super(testCase);
     }
+
 }
