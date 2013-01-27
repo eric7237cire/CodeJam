@@ -57,27 +57,58 @@ V getMapValue( const map<K,V>& aMap, const K& key, const K& defaultValue )
     return it->second;
 }
 
-int getMax(vi boards, const vi& rails, int railIdx)
+//Minimum board index that can match a rail (boards and rails sorted asc)
+vi minBoardForRail;
+
+//Total length of rails from 0 to [ ]
+vi totalRailLen;
+
+bool dfs( vi& boards, int boardIdx, const vi& rails, 
+    int railIdx, const int boardLenLeft)
 {
+    assert(boardLenLeft >= 0);
     int maxRails = 0;
     
-    if (railIdx == rails.size())
-        return 0;
+    if (railIdx >= 0 && totalRailLen[railIdx] > boardLenLeft) {
+        //cout << "Total rail len " << totalRailLen[railIdx] <<        " idx " << railIdx << endl;
+        return false;
+    }
     
-    FOR(b, 0, boards.size()) 
+    FOR(b, boardIdx, boards.size()) 
     {
         if (boards[b] < rails[railIdx])
             continue;
         
-        vi boardCopy = boards;
-        boardCopy[b] -= rails[railIdx];
+        //We are done
+        if (railIdx == 0)
+            return true;
+        
+        boards[b] -= rails[railIdx];
+        int boardLenUsed = rails[railIdx];
                 
-        int numRails = 1 + getMax(boardCopy, rails, railIdx + 1);
-        maxRails = max(maxRails, numRails);
-    
+        //If what is remaining is completely unusable, remove it
+        if (boards[b] < rails[0])
+            boardLenUsed += boards[b];
+        
+        bool found = false;
+        
+        if (rails[railIdx-1] == rails[railIdx]) {
+            found = dfs(boards, b, rails, 
+            railIdx-1, boardLenLeft-boardLenUsed);
+        } else {
+            found = dfs(boards, minBoardForRail[railIdx-1], rails, 
+            railIdx-1, boardLenLeft-boardLenUsed);
+        }
+        
+        if (found)
+            return true;
+        
+        boards[b] += rails[railIdx];
+                
+        
     }
     
-    return maxRails;
+    return false;
 }
     
 
@@ -105,12 +136,46 @@ int main() {
         fin >> rail[r];
     
     sort( all( rail ) );
+    sort( all( boards ) );
     
-    int ans = getMax(boards, rail, 0);
+    //For each rail index, find the index of the board that can
+    //fit
+    minBoardForRail.resize(R, B);
     
+    int minBoardIdx = 0;
+    FOR(r, 0, R)
+    {
+        while(minBoardIdx < B && rail[r] > boards[minBoardIdx])
+            ++minBoardIdx;
+        
+        minBoardForRail[r] = minBoardIdx;
+    }        
     
-    //cout << "ans " << ans << endl;
-    fout << ans << endl;
-	
+    //Calculate lengths
+    totalRailLen.resize(R);
+    totalRailLen[0] = rail[0];
+    
+    FOR(r, 1, R)
+        totalRailLen[r] = rail[r] + totalRailLen[r-1];
+    
+    int totalBoardLen = 0;
+    FOR(b, 0, B)
+        totalBoardLen += boards[b];
+    
+    cout << "Total board len " << totalBoardLen << endl;
+    
+    for(int startRailIdx = R - 1; startRailIdx >= 0; --startRailIdx)
+    {
+        bool possible = dfs(boards, minBoardForRail[startRailIdx], rail, startRailIdx, totalBoardLen);
+        if (possible) {
+            fout << 1+startRailIdx << endl;
+            return 0;
+        } else {
+            cout << startRailIdx+1 << " not possible " << endl;   
+        }
+    }
+    
+    fout << 0 << endl;
     return 0;
+    
 }
