@@ -225,7 +225,7 @@ public class Main  {
          //2010 2         
          //TODO large slow ; looks like binary search but not sure
          //Found a much faster solution, TODO understand it
-         codejam.y2010.round_2.diamond.Main m = new codejam.y2010.round_2.diamond.Main();
+       //  codejam.y2010.round_2.diamond.Main m = new codejam.y2010.round_2.diamond.Main();
         
         //DP TODO bottom up
          //codejam.y2010.round_2.world_cup.Main m = new codejam.y2010.round_2.world_cup.Main();
@@ -240,8 +240,13 @@ public class Main  {
         //Used lattice to find random number generator points
          //codejam.y2010.round_3.rng.Main m = new codejam.y2010.round_3.rng.Main();
         
-        //TODO cleanup DP  Used BFS to find modulo length.
-        //codejam.y2010.round_3.boards.Main m = new codejam.y2010.round_3.boards.Main();
+        /**
+         * 2010 -- Round 3
+         * Problem 2
+         * 
+         * Used BFS to find modulo length.
+         */
+        codejam.y2010.round_3.boards.Main m = new codejam.y2010.round_3.boards.Main();
         
         //Did my own algo, used GAP class.  TODO use their solution
         //codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();       
