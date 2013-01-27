@@ -66,8 +66,13 @@ public class Main  {
          */
         //codejam.y2008.round_emea.bus_stops.Main m = new codejam.y2008.round_emea.bus_stops.Main();
         
-        //2008 amer semis
-        // Tree traversal depth first
+        
+        /**
+         * 2008 amer semis -- problem 1
+         * Tree traversal depth first
+         *
+         * 1.  TODO Do reverse BFS search from rainbow trees
+         */
        // codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
         
         // Iteratively guessing a code sequence, binary / using incomplete information / assumptions
@@ -144,7 +149,7 @@ public class Main  {
           * Number of swaps to put in order, can only swap adjacent.
           * "Disorder" count equals number of swaps. 
           */
-         codejam.y2009.round_2.crazy_rows.Main m = new codejam.y2009.round_2.crazy_rows.Main();
+         //codejam.y2009.round_2.crazy_rows.Main m = new codejam.y2009.round_2.crazy_rows.Main();
         
         //DP TODO bottom up
          //codejam.y2009.digging_problem.Main m = new codejam.y2009.digging_problem.Main();
@@ -165,7 +170,7 @@ public class Main  {
         // 3 coloring a particular graph (triangles)
         // codejam.y2009.round_3.football_team.Main m = new codejam.y2009.round_3.football_team.Main();
         
-        //Counting ranges.  Had to use complex caching to solve in time.  TODO more comments
+        //Counting ranges.  Had to use complex caching to solve in time.  TODO more comments and their solution
         // codejam.y2009.round_3.interesting_ranges.Main m = new codejam.y2009.round_3.interesting_ranges.Main();
          
          //Round 4 -- 2009
@@ -219,7 +224,8 @@ public class Main  {
 
          //2010 2         
          //TODO large slow ; looks like binary search but not sure
-         //codejam.y2010.round_2.diamond.Main m = new codejam.y2010.round_2.diamond.Main();
+         //Found a much faster solution, TODO understand it
+         codejam.y2010.round_2.diamond.Main m = new codejam.y2010.round_2.diamond.Main();
         
         //DP TODO bottom up
          //codejam.y2010.round_2.world_cup.Main m = new codejam.y2010.round_2.world_cup.Main();

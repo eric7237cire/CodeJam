@@ -211,9 +211,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     public static Interval calcEvenPairRanges(BigInteger L, BigInteger R) {
         Interval ans = null;
+        
+        //Calculate number of ranges with even palindromes
         Interval ri = calc(R);
                 
         if (L.compareTo(BigInteger.ONE) > 0) {
+            //Subtract number of ranges between 1 and L-1
             Interval li = calc(L.subtract(BigInteger.ONE));        
             ans = Interval.subtract(li, ri);
         } else {

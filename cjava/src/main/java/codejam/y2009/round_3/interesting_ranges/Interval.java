@@ -96,7 +96,11 @@ public class Interval {
 
         if (lhs.isEvenSpanning && !rhs.isEvenSpanning) {
             total.isEvenSpanning = false;
+            //interval even, goes via even
             total.evenLeft = lhs.evenLeft.add(rhs.evenLeft);
+            
+            //starts odd on lhs, rhs is odd, so any range
+            //ending on rhs thatś even will be even...
             total.evenRight = lhs.oddLeft.add(rhs.evenRight);
             total.oddLeft = lhs.oddLeft.add(rhs.oddLeft);
             total.oddRight = lhs.evenRight.add(rhs.oddRight);
@@ -148,6 +152,8 @@ public class Interval {
      */
     public static Interval subtract(Interval lhs, Interval big) {
         Interval total = new Interval();
+        
+        //Define boundaries, combination will go from lhs.right+1 to big.right
         total.left = lhs.right.add(BigInteger.ONE);
         total.right = big.right;
 

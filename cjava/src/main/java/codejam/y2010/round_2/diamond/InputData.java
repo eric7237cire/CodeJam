@@ -8,6 +8,8 @@ public class InputData extends AbstractInputData {
     int k;
     GridChar grid;
     
+    int[][] startDiamond;
+    
     InputData(int testCase) {
         super(testCase);
     }

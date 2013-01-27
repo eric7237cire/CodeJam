@@ -8,14 +8,23 @@ import org.slf4j.LoggerFactory;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.GridChar;
-
+import java.util.Arrays;
+import codejam.utils.main.DefaultInputFiles;
 import com.google.common.base.Preconditions;
 
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main implements TestCaseHandler<InputData>,
+TestCaseInputScanner<InputData>, DefaultInputFiles {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
+    
+    @Override
+    public String[] getDefaultInputFiles() {
+        return new String[] { "sample.in" };
+        //return new String[] { "A-small-practice.in", "A-large-practice.in" };
+    }
+    
     boolean testSize(int newSize, InputData input) {
         if (newSize < input.k) {
             return false;
@@ -42,8 +51,73 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     @Override
-    public String handleCase(InputData input) {
+    public String handleCase(InputData in) {
 
+        int m = in.k * 2 - 1; 
+        int n = in.k;
+        int[][] a = in.startDiamond;
+        
+        boolean[] rs = new boolean[m];
+        //for each line?
+        for (int r = 0; r < m; r++) {
+            rs[r] = true;
+            //for each line 
+            for (int i = 0; i < m; i++) {
+                int ii = (2 * r - i);
+                if (ii < 0 || ii >= m) continue;
+                for (int j = 0; j < m; j++) {
+                    if (a[i][j] >= 0 && a[ii][j] >= 0 && a[i][j] != a[ii][j]) {
+                        rs[r] = false;
+                        break;
+                    }
+                }
+                if (!rs[r]) break;
+            }
+            //log.debug("rs[r] {}  
+        }
+        
+        System.out.println(Arrays.toString(rs));
+        
+        boolean[] cs = new boolean[m];
+        for (int c = 0; c < m; c++) {
+            cs[c] = true;
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < m; j++) {
+                    int jj = (2 * c - j);
+                    if (jj < 0 || jj >= m) continue;
+                    if (a[i][j] >= 0 && a[i][jj] >= 0 && a[i][j] != a[i][jj]) {
+                        cs[c] = false;
+                        break;
+                    }
+                }
+                if (!cs[c]) break;
+            }
+        }
+
+        int[] rv = {0, n - 1, n - 1, 2 * n - 2};
+        int[] cv = {n - 1, 0, 2 * n - 2, n - 1};
+
+        int res = 10000;
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < m; j++) if (rs[i] && cs[j]) {
+                int d = 0;
+                for (int q = 0; q < 4; q++) {
+                    d = Math.max(d, Math.abs(rv[q] - i) + Math.abs(cv[q] - j));
+                }
+                res = Math.min(res, d);
+            }
+        }
+
+        //System.out.println(res);
+
+        res = (res + 1) * (res + 1) - (n * n);
+        
+        return ("Case #" + in.testCase + ": " + res);
+    }
+    public String handleCaseOld(InputData input) {
+
+        
         int caseNumber = input.testCase;
         log.info("Starting calculating case {}", caseNumber);
         
@@ -127,7 +201,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     
         InputData  input = new InputData(testCase);
-        
+        /*
         input.k = scanner.nextInt();
         scanner.nextLine();
         //map to a grid.  
@@ -154,6 +228,35 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         
         input.grid = grid;
+        */
+        //read in diamond
+        int n = scanner.nextInt();  //size of diamond
+        
+        //Number of lines
+        int m = 2 * n - 1;
+        int[][] a = new int[m][m];
+        for (int[] ints : a) {
+            Arrays.fill(ints, -1);
+        }
+        for (int i = 0; i < m; i++) {
+            //height of diamond, find column number, goes from 1 to n back to 1
+            int h = i < n ? i + 1 : 2 * n - 1 - i;
+            
+            //empty space ?
+            int d = n - h; 
+            for (int j = 0; j < h; j++) {
+                int c = scanner.nextInt();
+                //a space between each number
+                a[i][d + j * 2] = c;
+            }
+        }
+        
+        for (int[] ints : a) {
+            System.out.println(Arrays.toString(ints));
+        }
+        
+        input.startDiamond = a;
+        input.k = n;
         
         return input;
         
