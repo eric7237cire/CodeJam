@@ -53,65 +53,78 @@ TestCaseInputScanner<InputData>, DefaultInputFiles {
     @Override
     public String handleCase(InputData in) {
 
-        int m = in.k * 2 - 1; 
-        int n = in.k;
+        int maxDimension = in.k * 2 - 1; 
+        int diamondSize = in.k;
         int[][] a = in.startDiamond;
         
-        boolean[] rs = new boolean[m];
-        //for each line?
-        for (int r = 0; r < m; r++) {
-            rs[r] = true;
+        boolean[] rowSymmetry = new boolean[maxDimension];
+        
+        for (int reflectionRow = 0; reflectionRow < maxDimension; reflectionRow++) {
+            rowSymmetry[reflectionRow] = true;
             //for each line 
-            for (int i = 0; i < m; i++) {
-                int ii = (2 * r - i);
-                if (ii < 0 || ii >= m) continue;
-                for (int j = 0; j < m; j++) {
-                    if (a[i][j] >= 0 && a[ii][j] >= 0 && a[i][j] != a[ii][j]) {
-                        rs[r] = false;
+            for (int row = 0; row < maxDimension; row++) {
+                
+                /**
+                 * if reflection line is like 7, row is 11 we want
+                 * 11- 7 = 4  7 - 4 = row 3
+                 * 
+                 * 14 - 11 = 3
+                 */
+                int reflectedRow = (2 * reflectionRow - row);
+                if (reflectedRow < 0 || reflectedRow >= maxDimension) continue;
+                for (int col = 0; col < maxDimension; col++) {
+                    if (a[row][col] >= 0 && a[reflectedRow][col] >= 0 && a[row][col] != a[reflectedRow][col]) {
+                        rowSymmetry[reflectionRow] = false;
                         break;
                     }
                 }
-                if (!rs[r]) break;
+                if (!rowSymmetry[reflectionRow]) break;
             }
             //log.debug("rs[r] {}  
         }
         
-        System.out.println(Arrays.toString(rs));
+        System.out.println(Arrays.toString(rowSymmetry));
         
-        boolean[] cs = new boolean[m];
-        for (int c = 0; c < m; c++) {
-            cs[c] = true;
-            for (int i = 0; i < m; i++) {
-                for (int j = 0; j < m; j++) {
-                    int jj = (2 * c - j);
-                    if (jj < 0 || jj >= m) continue;
-                    if (a[i][j] >= 0 && a[i][jj] >= 0 && a[i][j] != a[i][jj]) {
-                        cs[c] = false;
+        boolean[] columnSymmetry = new boolean[maxDimension];
+        for (int reflectionCol = 0; reflectionCol < maxDimension; reflectionCol++) {
+            columnSymmetry[reflectionCol] = true;
+            for (int row = 0; row < maxDimension; row++) {
+                for (int col = 0; col < maxDimension; col++) {
+                    int reflectedCol = (2 * reflectionCol - col);
+                    if (reflectedCol < 0 || reflectedCol >= maxDimension) continue;
+                    if (a[row][col] >= 0 && a[row][reflectedCol] >= 0 && a[row][col] != a[row][reflectedCol]) {
+                        columnSymmetry[reflectionCol] = false;
                         break;
                     }
                 }
-                if (!cs[c]) break;
+                if (!columnSymmetry[reflectionCol]) break;
             }
         }
 
-        int[] rv = {0, n - 1, n - 1, 2 * n - 2};
-        int[] cv = {n - 1, 0, 2 * n - 2, n - 1};
+        int[] rv = {0, diamondSize - 1, diamondSize - 1, 2 * diamondSize - 2};
+        int[] cv = {diamondSize - 1, 0, 2 * diamondSize - 2, diamondSize - 1};
 
         int res = 10000;
 
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < m; j++) if (rs[i] && cs[j]) {
-                int d = 0;
-                for (int q = 0; q < 4; q++) {
-                    d = Math.max(d, Math.abs(rv[q] - i) + Math.abs(cv[q] - j));
+        for (int row = 0; row < maxDimension; row++) 
+        {
+            for (int col = 0; col < maxDimension; col++) 
+            {
+                if (rowSymmetry[row] && columnSymmetry[col]) 
+                {
+            
+                    int d = 0;
+                    for (int q = 0; q < 4; q++) {
+                        d = Math.max(d, Math.abs(rv[q] - row) + Math.abs(cv[q] - col));
+                    }
+                    res = Math.min(res, d);
                 }
-                res = Math.min(res, d);
             }
         }
 
         //System.out.println(res);
 
-        res = (res + 1) * (res + 1) - (n * n);
+        res = (res + 1) * (res + 1) - (diamondSize * diamondSize);
         
         return ("Case #" + in.testCase + ": " + res);
     }

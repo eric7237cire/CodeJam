@@ -207,7 +207,6 @@ TestCaseInputScanner<InputData>, DefaultInputFiles {
 		        
 		pair = new int[2*n];
 		dir = new int[2*n];
-		//g = new boolean[2*n];
 		
 		// find 2nd color
 		for(int i = 0;i<2*n;i++)

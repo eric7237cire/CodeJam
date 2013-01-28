@@ -101,7 +101,7 @@ public class BusStopTest {
         
       //Start test
         k = 2;
-        p = 4;
+        p = 5;
         n = 9;
         
         startState = BitSetInt.createWithBitsSet(0, 1);
@@ -117,7 +117,7 @@ public class BusStopTest {
         
       //Start test
         k = 2;
-        p = 4;
+        p = 5;
         n = 10;
         
         startState = BitSetInt.createWithBitsSet(0, 1);
@@ -133,7 +133,7 @@ public class BusStopTest {
         
       //Start test
         k = 2;
-        p = 4;
+        p = 6;
         n = 11;
         
         startState = BitSetInt.createWithBitsSet(0, 1);
@@ -145,27 +145,11 @@ public class BusStopTest {
         
         r = Main.countFast(n,k,p,mod);
         
-        //0123  45 6789 0
-        BitSetInt testState = new BitSetInt();
-        testState.set(9);
-        testState.set(8);
-        assertEquals(81, results[testState.getBits()]);
-        
-        testState = new BitSetInt();
-        testState.set(6);
-        testState.set(9);
-        assertEquals(24, results[testState.getBits()]);
-        
-        testState = new BitSetInt();
-        testState.set(7);
-        testState.set(9);
-        assertEquals(44, results[testState.getBits()]);
-        
-        assertEquals(c, r);
+       
         
       //Start test
         k = 2;
-        p = 4;
+        p = 6;
         n = 12;
         
         startState = BitSetInt.createWithBitsSet(0, 1);

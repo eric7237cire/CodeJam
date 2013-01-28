@@ -45,6 +45,20 @@ public class PolynomialTest {
     }
     
     @Test
+    public void testExpand() {
+        Polynomial p = new Polynomial("abb");
+        
+        p.doSimplify();
+        p.substitute(new VariableTerm("a"), new AddTerms(new VariableTerm("a_0"), new VariableTerm("a_1"), new VariableTerm("a_2")));
+        p.substitute(new VariableTerm("b"), new AddTerms(new VariableTerm("b_0"), new VariableTerm("b_1"), new VariableTerm("b_2")));
+        
+        p.doSimplify();
+        
+        String pStr = p.toString();
+        log.debug(pStr);
+    }
+    
+    @Test
     public void testMultConstructor() {
         MultTerms mul = (MultTerms) Polynomial.parseTerms("8(a_2 + a_1)^2");
         assertTrue(mul.getTerms().get(0) instanceof CoefficientTerm);

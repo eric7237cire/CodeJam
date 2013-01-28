@@ -164,7 +164,7 @@ public static int sumOfProductAllPermutationsFast(Integer[] numbers, int permLen
         
         long start = System.currentTimeMillis();
         long stop = System.currentTimeMillis();
-        for(int i = 3000000; i < 10000000; i += 1000000) {
+        for(int i = 3000000; i < 1000000; i += 100000) {
             
             if (i <= 6) {
             start = System.currentTimeMillis();

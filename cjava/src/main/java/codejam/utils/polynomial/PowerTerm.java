@@ -106,12 +106,21 @@ public class PowerTerm extends AbstractTerm {
 			
 			List<Term> addTerms = new ArrayList<>();
 			
+			Term rightTerm = null;
+			
+			if (binomial.getTerms().size() > 2) {
+			    AddTerms rightTerms = new AddTerms(binomial.getTerms().subList(1, binomial.getTerms().size()));
+			    rightTerm = rightTerms;
+			} else {
+			    rightTerm = binomial.getTerms().get(1);
+			}
+			
 			for(int leftPower = degree; leftPower >= 0; --leftPower) {
 				int rightPower = degree - leftPower;
 				Term mt = MultTerms.buildMultTerm(
 				(new CoefficientTerm(binomialCoeff.get(degree).get(rightPower))),
-				createPowerTerm(binomial.getTerms().get(0), leftPower),
-				createPowerTerm(binomial.getTerms().get(1), rightPower));
+				createPowerTerm(binomial.getTerms().get(0), leftPower),				
+				createPowerTerm(rightTerm, rightPower));
 				addTerms.add(mt);
 			}
 			

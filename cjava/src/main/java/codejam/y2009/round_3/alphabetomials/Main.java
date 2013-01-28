@@ -10,8 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.Lists;
-
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -21,15 +19,18 @@ import codejam.utils.polynomial.Polynomial;
 import codejam.utils.polynomial.Term;
 import codejam.utils.polynomial.VariableTerm;
 
+import com.google.common.collect.Lists;
+
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
     @Override
     public String[] getDefaultInputFiles() {
+
       //  return new String[] { "sample.in" };
-         //return new String[] { "B-small-practice.in" };
-         return new String[] { "B-large-practice.in" };
+        
+        return new String[] {"B-small-practice.in", "B-large-practice.in"};
     }
 
     

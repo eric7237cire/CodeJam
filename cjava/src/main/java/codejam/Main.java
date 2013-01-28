@@ -164,7 +164,18 @@ public class Main  {
         //Grid shortest path
          //codejam.y2009.sokoban.Main m = new codejam.y2009.sokoban.Main();
         
-        //Set multiplying, polynomial symbolic manipulation.  TODO re-explain
+        //
+        /**
+         * Round 3 -- 2009
+         * Problem 2
+         * 
+         * Set multiplying, polynomial symbolic manipulation.  
+         * 1. TODO re-explain
+         * 2. TODO add sections demonstating each part of the explanation,
+         * ie product 2 sets, product 10 sets
+         * 3.  TODO implement a faster solution, using AnotherSolution
+         */
+
        //  codejam.y2009.round_3.alphabetomials.Main m = new codejam.y2009.round_3.alphabetomials.Main();
         
         // 3 coloring a particular graph (triangles)
@@ -315,7 +326,7 @@ public class Main  {
         //Building up larger and larger squares.  TODO comments compare with their solution
         //codejam.y2011.round_2.spinning_blade.Main m = new codejam.y2011.round_2.spinning_blade.Main();
         
-        //Explanation.  Seems to be prime factoring
+        //TODO Explanation.  Seems to be prime factoring
         //codejam.y2011.round_2.expensive_dinner.Main m = new codejam.y2011.round_2.expensive_dinner.Main();
         
         //TODO implement their solution.  Finding shortest path with most neighbors.  Used dijkstras then athor search
