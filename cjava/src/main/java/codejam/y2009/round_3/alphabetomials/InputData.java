@@ -8,9 +8,11 @@ import codejam.utils.main.AbstractInputData;
 public class InputData extends AbstractInputData {
 
     public String polynomial;
-    int k;
-    int d;
-    List<String> dictWords;
+    public int k;
+    public int d;
+    public List<String> dictWords;
+    
+    public int[][] wordLetterCount;
     
     public InputData(int testCase) {
         super(testCase);

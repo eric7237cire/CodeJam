@@ -150,7 +150,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 p_counts.add(StringUtils.countMatches(word, "a"));
                 // p_counts.add(StringUtils.countMatches(word, "b"));
 
-                log.info("Perm {} p({}) {} total {}", new Object[] {(Object) combin,
+                log.debug("Perm {} p({}) {} total {}", new Object[] {(Object) combin,
                         p_counts, wordEval, total});
 
                 boolean fullLoop = true;
@@ -218,7 +218,20 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         for (int i = 0; i < input.d; ++i) {
             input.dictWords.add(scanner.next());
         }
-       // log.info("k {} d {} poly {}", m.k, m.d, m.polynomial);
+        
+        input.wordLetterCount = new int[input.d][26];
+        
+        for (int i = 0; i < input.d; ++i) {
+            for (int chInt = 'a'; chInt <= 'z'; ++chInt) {
+                char ch = (char) chInt;
+            
+                //Count of letter in the dictionary
+                int count = StringUtils.countMatches(input.dictWords.get(i), ""+ch);
+                
+                input.wordLetterCount[i][chInt-'a'] = count;
+            }
+        }
+
 
         return input;
     }

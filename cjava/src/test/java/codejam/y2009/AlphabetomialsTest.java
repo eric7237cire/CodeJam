@@ -2,6 +2,8 @@ package codejam.y2009;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -10,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import codejam.utils.test.TesterBase;
 import codejam.y2009.round_3.alphabetomials.InputData;
 import codejam.y2009.round_3.alphabetomials.Main;
+
+import com.google.common.collect.Lists;
 
 /**
  * Unit test for simple App.
@@ -35,8 +39,8 @@ public class AlphabetomialsTest extends TesterBase<InputData> {
             
     }
 
+   
 
-    @Test
     public void testCount() {
         Main m = new Main();
         InputData input = new InputData(1);
