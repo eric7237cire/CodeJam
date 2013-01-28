@@ -45,7 +45,7 @@ typedef pair<uint,uint> uu;
 #define cpresent(c,x) (find(all(c),x) != (c).end()) 
 
 template <class K, class V> 
-V getMapValue( const map<K,V>& aMap, const K& key, const K& defaultValue )
+V getMapValue( const map<K,V>& aMap, const K& key, const V& defaultValue )
 {
     typename map<K, V>::const_iterator it = aMap.find(key);
     if ( it == aMap.end() )
@@ -82,7 +82,7 @@ The third line of the record contains N2 integers, each representing a connected
 	typedef vector< vector< edge > > AdjList;
 	
 	
-	map<vector<int>, int > edgeListToNode;
+	map<vi, int > edgeListToNode;
 	
 	int s, ls, nSeg1, nSeg2;
 	vi seg1;
@@ -96,7 +96,7 @@ The third line of the record contains N2 integers, each representing a connected
 	FOR(seg, 0, N)
 	{
         fin >> s >> ls >> nSeg1 >> nSeg2;
-        
+        printf("seg %d %d %d %d\n", s, ls, nSeg1, nSeg2);
         seg1.resize(nSeg1+1);
         seg2.resize(nSeg2+1);
         
@@ -108,6 +108,7 @@ The third line of the record contains N2 integers, each representing a connected
         {
             fin >> seg2[s2];
         }
+        cout << "done reading segs" << endl;
         
         //Use zero based
         transform( all(seg1), seg1.begin(), op_decrease );
@@ -121,22 +122,28 @@ The third line of the record contains N2 integers, each representing a connected
         sort( all(seg2) );
         
         //Now seg1 and seg2 will uniquely define a node
+        cout << "done sort segs" << endl;
         
         int nodeNum1 = getMapValue(edgeListToNode, seg1, -1);
         if (nodeNum1 == -1) {
+            cout << "Adding nodeNum1 " << nodeCount << endl;
             nodeNum1 = nodeCount++;
             edgeListToNode.insert( mp(seg1, nodeNum1 ) );
         }
         
         int nodeNum2 = getMapValue(edgeListToNode, seg2, -1);
         if (nodeNum2 == -1) {
+            cout << "Adding nodeNum2 " << nodeCount << endl;
             nodeNum2 = nodeCount++;
             edgeListToNode.insert( mp(seg2, nodeNum2 ) );
         }
         
+        printf("n1 %d n2 %d \n", nodeNum1, nodeNum2);
         adjList[nodeNum1].pb( edge(nodeNum2, ls) );
         adjList[nodeNum2].pb( edge(nodeNum1, ls) );
 	}
+	
+	return 0;
 	
 	assert(nodeCount == N);
 	
