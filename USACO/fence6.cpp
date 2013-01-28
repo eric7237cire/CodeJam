@@ -12,8 +12,10 @@ LANG: C++
 #include <algorithm>
 #include <cassert>
 #include <iterator>
+#include <iomanip>
 #include <sstream>
 #include <bitset>
+#include <limits>
 #include <cctype>
 #include <cmath>
 #include <functional>
@@ -63,9 +65,19 @@ public:
     {}
 };
 
-const uint notConnected = 1000000000;
+const int notConnected = numeric_limits<int>::max();
 
-int op_decrease (int i) { return ++i; }
+int op_decrease (int i) { return --i; }
+
+template<typename T>
+ostream& operator<<( ostream& os, const vector<T>& vec )
+{
+    FOR(i, 0, vec.size())
+    {
+        os << setw(5) << vec[i];
+    }
+    return os;
+}
 
 int main() {
     
@@ -91,7 +103,7 @@ The third line of the record contains N2 integers, each representing a connected
 	int nodeCount = 0;
 	
 	
-	AdjList adjList(N);
+	AdjList adjList;
 	
 	FOR(seg, 0, N)
 	{
@@ -111,18 +123,20 @@ The third line of the record contains N2 integers, each representing a connected
         cout << "done reading segs" << endl;
         
         //Use zero based
-        transform( all(seg1), seg1.begin(), op_decrease );
+        //transform( all(seg1), seg1.begin(), op_decrease );
         
-        transform( all(seg2), seg2.begin(), op_decrease );
+        //transform( all(seg2), seg2.begin(), op_decrease );
         
-        seg1.pb(seg);
-        seg2.pb(seg);
+        seg1[nSeg1] = s;
+        seg2[nSeg2] = s;
         
         sort( all(seg1) );
         sort( all(seg2) );
         
         //Now seg1 and seg2 will uniquely define a node
         cout << "done sort segs" << endl;
+        cout << "Seg 1 " << seg1 << endl;
+        cout << "Seg 2 " << seg2 << endl;
         
         int nodeNum1 = getMapValue(edgeListToNode, seg1, -1);
         if (nodeNum1 == -1) {
@@ -139,43 +153,71 @@ The third line of the record contains N2 integers, each representing a connected
         }
         
         printf("n1 %d n2 %d \n", nodeNum1, nodeNum2);
+        if (adjList.size() < nodeCount) {
+            adjList.resize(nodeCount);
+        }
         adjList[nodeNum1].pb( edge(nodeNum2, ls) );
         adjList[nodeNum2].pb( edge(nodeNum1, ls) );
 	}
 	
-	return 0;
 	
-	assert(nodeCount == N);
+	int minCycle = numeric_limits<int>::max();
 	
-	FOR(rootNode, 0, N)
+	FOR(rootNode, 0, nodeCount)
     {
-        uvi dist(N, notConnected);
+        vi dist(nodeCount, notConnected);
+        vi prev(nodeCount, -1);
         
         dist[ rootNode ] = 0;
+        prev[ rootNode ] = 0;
+        
+        cout << "Start search at " << rootNode << endl << endl;
         
         set < ii > toVisit;
-        toVisit.insert( mp(0, 0) );
+        toVisit.insert( mp(0, rootNode) );
+        bool done = false;
         
-        while(!toVisit.empty())
+        while(!toVisit.empty() && !done)
         {
             set<ii>::iterator top = toVisit.begin();
             
             int distToRootFromCurNode = top->first;
             int curNode = top->second;
-            
+            printf("Queue distToRoot %d Current node %d Previous node %d\n",
+                distToRootFromCurNode, curNode, prev[curNode]);
             toVisit.erase(top);
             
             FOR(adjIdx, 0, adjList[curNode].size())
             {
+                
                 const edge& curEdge = adjList[curNode][adjIdx];
                 
-                uint distAdjToRoot = distToRootFromCurNode + curEdge.weight;
+                //Distance from root to adj node via curNode 
+                int distAdjToRoot = distToRootFromCurNode + curEdge.weight;
+                
+                //If there is an edge to a visited node and it is not where
+                //we just came from, it is a cycle
+                if (dist[curEdge.to] < notConnected 
+                    && dist[curEdge.to] > 0 &&
+                    prev[curNode] != curEdge.to
+                    ) 
+                {
+                    //Distance from root, to current node, to adjacent node,
+                    //and then back to root
+                    int cycleLen = distToRootFromCurNode + curEdge.weight + 
+                        dist[curEdge.to];
+                    //Found a cycle
+                    printf("Cycle to root node %d via curNode %d edge to %d . Len %d\n",
+                        rootNode, curNode, curEdge.to, cycleLen);
+                    minCycle = min(minCycle, cycleLen);
+                }
                 
                 if (distAdjToRoot < dist[curEdge.to])
                 {
                     //replace node in queue
                     toVisit.erase( mp( dist[curEdge.to], curEdge.to ) );
                     dist[ curEdge.to ] = distAdjToRoot;
+                    prev[ curEdge.to ] = curNode;
                     toVisit.insert( mp( dist[curEdge.to], curEdge.to ) );
                 }
             }
@@ -186,6 +228,8 @@ The third line of the record contains N2 integers, each representing a connected
         
         
     }
+    
+    fout << minCycle << endl;
 	
     return 0;
 }

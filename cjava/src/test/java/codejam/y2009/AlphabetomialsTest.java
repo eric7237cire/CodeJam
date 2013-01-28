@@ -1,19 +1,12 @@
 package codejam.y2009;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.test.TesterBase;
 import codejam.y2009.round_3.alphabetomials.InputData;
 import codejam.y2009.round_3.alphabetomials.Main;
-
-import com.google.common.collect.Lists;
 
 /**
  * Unit test for simple App.
@@ -40,19 +33,5 @@ public class AlphabetomialsTest extends TesterBase<InputData> {
     }
     
     
-
-   
-
-    public void testCount() {
-        Main m = new Main();
-        InputData input = new InputData(1);
-        input.polynomial = "a+e";
-        int count = m.evalP("ejoe",input);
-        assertEquals(2, count);
-
-        input.polynomial = "aber+aab+c";
-        count = m.evalP("abracadabra edgar",input);
-        assertEquals(109, count);
-    }
 
 }

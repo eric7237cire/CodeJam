@@ -169,14 +169,13 @@ public class Main  {
          * Round 3 -- 2009
          * Problem 2
          * 
+         * Summing a matrix 
+         * 
          * Set multiplying, polynomial symbolic manipulation.  
-         * 1. TODO re-explain
-         * 2. TODO add sections demonstating each part of the explanation,
-         * ie product 2 sets, product 10 sets
-         * 3.  TODO implement a faster solution, using AnotherSolution
+         * 1. My solution, which is slow, using symbol polynomial manipulations
+         * 2. A much faster solution based on proposed help / other competitors solutions
          */
-
-       //  codejam.y2009.round_3.alphabetomials.Main m = new codejam.y2009.round_3.alphabetomials.Main();
+       // codejam.y2009.round_3.alphabetomials.Main m = new codejam.y2009.round_3.alphabetomials.Main();
         
         // 3 coloring a particular graph (triangles)
         // codejam.y2009.round_3.football_team.Main m = new codejam.y2009.round_3.football_team.Main();
@@ -248,9 +247,16 @@ public class Main  {
         //codejam.y2010.round_1C.chess_boards.Main m = new codejam.y2010.round_1C.chess_boards.Main();
 
          //2010 2         
-         //TODO large slow ; looks like binary search but not sure
-         //Found a much faster solution, TODO understand it
-         codejam.y2010.round_2.diamond.Main m = new codejam.y2010.round_2.diamond.Main();
+         /**
+          * 2010 Round 2
+          * Problem 1.
+          * 
+          * 1.  My solution -- a binary search to find the size that fits
+          * 2.  A better solution -- calculate all symmetric points and use that
+          * to try centers that would work
+          */
+         //codejam.y2010.round_2.diamond.Main m = new codejam.y2010.round_2.diamond.Main();
+        //codejam.y2010.round_2.diamond.OldMain m = new codejam.y2010.round_2.diamond.OldMain();
         
         //DP TODO bottom up
          //codejam.y2010.round_2.world_cup.Main m = new codejam.y2010.round_2.world_cup.Main();
@@ -374,8 +380,13 @@ public class Main  {
         //Probability, TODO explanation?
         //codejam.y2012.round_1A.password.Main m = new codejam.y2012.round_1A.password.Main();
         
-        //Looks like an easy problem, TODO comments
-        //codejam.y2012.round_1A.kingdom_rush.Main m = new codejam.y2012.round_1A.kingdom_rush.Main();
+        /**
+         * 2012 Round 1A
+         * Problem 2
+         * 
+         * Greedy algorithm
+         */
+        codejam.y2012.round_1A.kingdom_rush.Main m = new codejam.y2012.round_1A.kingdom_rush.Main();
         
         //Constraint problem
         //codejam.y2012.round_1A.cruise_control.Main m = new codejam.y2012.round_1A.cruise_control.Main();

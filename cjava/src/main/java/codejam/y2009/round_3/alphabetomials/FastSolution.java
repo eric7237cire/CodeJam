@@ -13,6 +13,12 @@ import java.util.Map;
 public class FastSolution {
     static  int MOD = 10009;
     
+    /**
+     * 
+     * Just splits the incoming polynomial into products,
+     * so
+     * aab + cabbb + aaabbb are each treated seperately
+     */
     static public int combineTerms(InputData in, int k, List<Map<String, Integer>> memo) {
         int total = 0;
         String[] terms = in.polynomial.split("\\+");
@@ -43,6 +49,9 @@ public class FastSolution {
         int total = 0;
         
         if(k==1) {
+            /**
+             * When k=1, we just sum up the term across all words
+             */
             for(int w = 0; w < in.d; ++w) {
                 total += evaluateTerm(polyTerm, w, in); 
             }
@@ -81,10 +90,8 @@ public class FastSolution {
             //say we have k = 5, then we treat a2 (or b2 or z2)
             //as  a2+a3+a4+a5, so we evaluate the second term like that
             int sum2 = multiplySets(letters2.toString(), k-1, in,memo);
-            
-            
-            total += sum1*sum2;
-            
+                        
+            total += sum1*sum2;            
             total %= MOD;
         }
         
@@ -92,6 +99,13 @@ public class FastSolution {
         return total;
     }
     
+    /**
+     * 
+     * @param polyTerm single term ie aaabb
+     * @param word index of word
+     * @param in
+     * @return evaluating the polynomial for just that word
+     */
     static public int evaluateTerm(String polyTerm, int word, InputData in) {
         int prod = 1;
         for(int c = 0; c < polyTerm.length(); ++c) {
