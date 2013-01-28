@@ -1,7 +1,6 @@
 package codejam.y2011.round_final.ace_in_hole;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -15,7 +14,6 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
-import com.google.common.primitives.Primitives;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
@@ -24,8 +22,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String[] getDefaultInputFiles() {
         //return new String[] { "sample.in" };
-         return new String[] { "D-small-practice.in" };
-      //   return new String[] { "B-small-practice.in", "B-large-practice.in" };
+      //   return new String[] { "D-small-practice.in" };
+         return new String[] { "D-small-practice.in", "D-large-practice.in" };
     }
 
     @Override
@@ -127,8 +125,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     boolean isBetween(int n, int a, int b) {
-        int min = Math.min(a,b);
-        int max = Math.max(a,b);
+        //int min = Math.min(a,b);
+       // int max = Math.max(a,b);
+        Preconditions.checkState(a < b);
         return (a < n && n < b);
     }
 

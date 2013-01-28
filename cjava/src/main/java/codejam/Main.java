@@ -234,8 +234,21 @@ public class Main  {
          //Reasing through problem, speed physics
         // codejam.y2010.round_1B.chicks.Main m = new codejam.y2010.round_1B.chicks.Main();
          
-         //DP of some kind, TODO bottom up
-         //codejam.y2010.rank_pure.Main m = new codejam.y2010.rank_pure.Main();
+        //for(int i = 2; i <= 12; ++i) {
+           // log.debug("n = {}",i);
+           // codejam.y2010.round_1B.rank_pure.BruteForce.showPattern(i);
+       // }
+        
+         /**
+          * Dynamic programming / Choose number / counting problem
+          * 
+          * 1.  Solved using top down
+          * 2.  Solved again using bottom / up
+          * 
+          * See BruteForce for a listing of the possible sets for n = 12, problem description is
+          * not so clear (as a Set does not have order....)
+          */
+         codejam.y2010.round_1B.rank_pure.Main m = new codejam.y2010.round_1B.rank_pure.Main();
          
          //2010 1C
          
@@ -362,7 +375,12 @@ public class Main  {
          */
         //codejam.y2011.round_final.program_within.Main m = new codejam.y2011.round_final.program_within.Main();
 
-        codejam.y2011.round_final.ace_in_hole.Main m = new codejam.y2011.round_final.ace_in_hole.Main();
+        /**
+         * 2011 Final
+         * 
+         * 1.  Used proposed solution -- TODO go through reasoning
+         */
+        //codejam.y2011.round_final.ace_in_hole.Main m = new codejam.y2011.round_final.ace_in_hole.Main();
         
         //2010 africa
         
@@ -379,7 +397,13 @@ public class Main  {
        //  codejam.y2012.round_qual.hall_of_mirrors.Main m = new codejam.y2012.round_qual.hall_of_mirrors.Main();
         
         //2012 1A
-        //Probability, TODO explanation?
+
+        /**
+         * 2012 Round 1A
+         * Problem 1
+         * 
+         * Straightforward expected value / probability
+         */
         //codejam.y2012.round_1A.password.Main m = new codejam.y2012.round_1A.password.Main();
         
         /**
