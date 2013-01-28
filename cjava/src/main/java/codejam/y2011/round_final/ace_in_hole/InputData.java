@@ -8,7 +8,7 @@ public class InputData extends AbstractInputData {
 
     int N;
 
-    List<Integer> cards;
+    List<Integer> cardsExamined;
 
     public InputData(int testCase) {
         super(testCase);

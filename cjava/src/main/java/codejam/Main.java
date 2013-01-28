@@ -362,6 +362,8 @@ public class Main  {
          */
         //codejam.y2011.round_final.program_within.Main m = new codejam.y2011.round_final.program_within.Main();
 
+        codejam.y2011.round_final.ace_in_hole.Main m = new codejam.y2011.round_final.ace_in_hole.Main();
+        
         //2010 africa
         
         //A to C in C++
@@ -386,7 +388,7 @@ public class Main  {
          * 
          * Greedy algorithm
          */
-        codejam.y2012.round_1A.kingdom_rush.Main m = new codejam.y2012.round_1A.kingdom_rush.Main();
+      //  codejam.y2012.round_1A.kingdom_rush.Main m = new codejam.y2012.round_1A.kingdom_rush.Main();
         
         //Constraint problem
         //codejam.y2012.round_1A.cruise_control.Main m = new codejam.y2012.round_1A.cruise_control.Main();
