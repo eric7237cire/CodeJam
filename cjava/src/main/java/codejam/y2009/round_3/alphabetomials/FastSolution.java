@@ -3,6 +3,13 @@ package codejam.y2009.round_3.alphabetomials;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 
+ * Combining a matrix is like multiplying binomials ( w0 + w1 + w2 ) ( w0 + w1 + w2) creates 9 terms, like in a matrix 
+ * 
+ *
+ */
+
 public class FastSolution {
     static  int MOD = 10009;
     
@@ -45,6 +52,7 @@ public class FastSolution {
         }
         
         /*
+         * See solution explanation
          * Take a polynomial like aab, we want (a1+a2)(a1+a2)(b1+b2)
          * In the end, we have 2^3 = 8 terms, in the form
          * a1*a1*b1   * 1
@@ -74,10 +82,7 @@ public class FastSolution {
             //as  a2+a3+a4+a5, so we evaluate the second term like that
             int sum2 = multiplySets(letters2.toString(), k-1, in,memo);
             
-            //For each word in the dictionary, evaluate
-/*            for(int w = 0; w < in.d; ++w) {
-                sum1 += evaluateTerm(letters1.toString(), w, in);
-            }*/
+            
             total += sum1*sum2;
             
             total %= MOD;

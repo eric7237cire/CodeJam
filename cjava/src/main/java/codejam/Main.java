@@ -165,7 +165,7 @@ public class Main  {
          //codejam.y2009.sokoban.Main m = new codejam.y2009.sokoban.Main();
         
         //Set multiplying, polynomial symbolic manipulation.  TODO re-explain
-         codejam.y2009.round_3.alphabetomials.Main m = new codejam.y2009.round_3.alphabetomials.Main();
+       //  codejam.y2009.round_3.alphabetomials.Main m = new codejam.y2009.round_3.alphabetomials.Main();
         
         // 3 coloring a particular graph (triangles)
         // codejam.y2009.round_3.football_team.Main m = new codejam.y2009.round_3.football_team.Main();
@@ -239,7 +239,7 @@ public class Main  {
          //2010 2         
          //TODO large slow ; looks like binary search but not sure
          //Found a much faster solution, TODO understand it
-       //  codejam.y2010.round_2.diamond.Main m = new codejam.y2010.round_2.diamond.Main();
+         codejam.y2010.round_2.diamond.Main m = new codejam.y2010.round_2.diamond.Main();
         
         //DP TODO bottom up
          //codejam.y2010.round_2.world_cup.Main m = new codejam.y2010.round_2.world_cup.Main();
