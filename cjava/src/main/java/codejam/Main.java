@@ -165,7 +165,7 @@ public class Main  {
          //codejam.y2009.sokoban.Main m = new codejam.y2009.sokoban.Main();
         
         //Set multiplying, polynomial symbolic manipulation.  TODO re-explain
-         //codejam.y2009.alphabetomials.Main m = new codejam.y2009.alphabetomials.Main();
+         codejam.y2009.round_3.alphabetomials.Main m = new codejam.y2009.round_3.alphabetomials.Main();
         
         // 3 coloring a particular graph (triangles)
         // codejam.y2009.round_3.football_team.Main m = new codejam.y2009.round_3.football_team.Main();
@@ -197,7 +197,7 @@ public class Main  {
          * 
          * And maybe try a bottom up, but meh...
          */
-        codejam.y2009.round_final.marbles.Sol m = new codejam.y2009.round_final.marbles.Sol();
+        //codejam.y2009.round_final.marbles.Sol m = new codejam.y2009.round_final.marbles.Sol();
       
          //2010 qual
          //Bignumber GCD

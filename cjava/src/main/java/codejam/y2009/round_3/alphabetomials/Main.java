@@ -10,6 +10,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
+
+import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.polynomial.AddTerms;
@@ -18,9 +21,16 @@ import codejam.utils.polynomial.Polynomial;
 import codejam.utils.polynomial.Term;
 import codejam.utils.polynomial.VariableTerm;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
+
+    @Override
+    public String[] getDefaultInputFiles() {
+      //  return new String[] { "sample.in" };
+         //return new String[] { "B-small-practice.in" };
+         return new String[] { "B-large-practice.in" };
+    }
 
     
     public List<Integer> usePoly(InputData input) {
@@ -69,7 +79,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
                 //log.info("Computing k {} before sub {}", eachK, p);
                 p.substitute(subsList.get(i));
-                log.debug("Computing k {} after sub {}", eachK, p);
+                //log.debug("Computing k {} after sub {}", eachK, p);
                 totalPoly.addSelf(p);
                 
                 //log.info("Computing k {} after add {}", eachK, totalPoly);
@@ -81,7 +91,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
             totalPoly.doSimplify();
 
-            log.debug("Poly obj {} k {}", totalPoly, eachK);
+            //log.debug("Poly obj {} k {}", totalPoly, eachK);
             
             /**
              * Save the polynomial representing the total p(S).  The
@@ -239,8 +249,26 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     /* (non-Javadoc)
      * @see codejam.utils.multithread.Consumer.TestCaseHandler#handleCase(java.lang.Object)
      */
-    @Override
+    
     public String handleCase(InputData input) {
+    List<Map<String, Integer>> memo = Lists.newArrayList();
+    for(int k = 1; k <= input.k; ++k) {
+        memo.add(new HashMap<String,Integer>());
+    }
+    
+    List<Integer> totals = Lists.newArrayList();
+    
+    for(int k = 1; k <= input.k; ++k) {
+        int total = FastSolution.combineTerms(input, k, memo);
+        totals.add(total);
+    }
+    
+    return ("Case #" + input.testCase + ": " + StringUtils.join(totals, " "));
+    
+    }
+    
+    public String rhandleCase(InputData input) {
+
         
 
         List<Integer> total2 = usePoly(input);
