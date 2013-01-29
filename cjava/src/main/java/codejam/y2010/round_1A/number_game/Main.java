@@ -30,18 +30,20 @@ public class Main implements TestCaseHandler<InputData>,
         int lastLowerBound = 1;
         losingRanges.add(Ranges.closed(1, 1));
         /**
-         * I believe I found this just by observing the pattern.  Each
+         * I found this just by observing the pattern.  Each
          * entry corresponds to a starting number
          *  and the range (both below and above) when it loses.
          * 
-         * It is most likely a way of computing if it falls in the golden ratio or not.
+         * It turns out it was following the golden ratio
          */
         for (int i = 1; i < 1000000; ++i) {
             int n = i + 1;
+            //Found this rule to know when the lower bound got bumped
             if (losingRanges.get(lastLowerBound - 1).upperEndpoint() < n) {
                 ++lastLowerBound;
             }
             
+            //Upper bound was always increasing
             Range<Integer> losingRange = Ranges.closed(lastLowerBound, lastLowerBound + n - 1);
             
             losingRanges.add(losingRange);

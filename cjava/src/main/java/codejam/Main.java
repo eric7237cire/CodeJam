@@ -227,9 +227,9 @@ public class Main  {
          * 2010 Round 1A
          * Problem 3
          * 
-         * Combinatoric game
+         * Combinatoric game, golden ratio
          */
-         codejam.y2010.round_1A.number_game.Main m = new codejam.y2010.round_1A.number_game.Main();
+        // codejam.y2010.round_1A.number_game.Main m = new codejam.y2010.round_1A.number_game.Main();
          
          //2010 1B
          
@@ -343,8 +343,13 @@ public class Main  {
          
         //2011 2
         
-        //Greedy algorithm, TODO a bit of explanation
-        //codejam.y2011.round_2.airport_walkways.Main m = new codejam.y2011.round_2.airport_walkways.Main();
+        /**
+         * 2011  Round 2
+         * Problem 1
+         * 
+         * Greedy algorithm, velocity/time
+         */
+        codejam.y2011.round_2.airport_walkways.Main m = new codejam.y2011.round_2.airport_walkways.Main();
         
         //Building up larger and larger squares.  TODO comments compare with their solution
         //codejam.y2011.round_2.spinning_blade.Main m = new codejam.y2011.round_2.spinning_blade.Main();

@@ -61,7 +61,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     public String handleCase(InputData in) {
 
-        //speed pairs ==> distance
+        /**
+         * Build a list of pairs : walking speed , distance
+         * 
+         * Each walkway is considered only by it's length (position does not matter)
+         * 
+         * The non walkways are combined to a walkway of added speed 0
+         */
         List<MutablePair<Integer,Integer>> speedDistanceList = Lists.newArrayList();
         
         int totalWalkwayDistance = 0;
@@ -71,8 +77,30 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             speedDistanceList.add(new MutablePair<>(in.walkways[n].w + in.S, distance));
         }
         
+        //Add in the rest as a non walway
         speedDistanceList.add(new MutablePair<>(in.S, in.X - totalWalkwayDistance));
         
+        /**
+         * If you try a few examples, running on a slower walkway reduces the total time
+         * more than running on a faster walkway.
+         * 
+         * Say we have 2 walkways of 100 meters.  Walking speed is 10, Running is 20,
+         * First walkway adds 0, second adds 5
+         * 
+         * If we ran for 2 seconds on the second, we would be at a speed of 25,
+         * coving 50 meters, the rest of the 100 would take 50 / 15 = 3.33 seconds,
+         * for a total of 5.33 seconds.  Not running at all would be 100 / 15 = 20 / 3 = 6.667 seconds
+         * 
+         * If we ran 2 seconds of the first, we would go 40 meters, the rest
+         * would take 60 meters / 10 = 6 seconds for a total of 8 seconds.
+         * Walking the whole thing would be 100 / 10 = 10 seconds.
+         * 
+         * So running on the faster walkway saved 1.333 seconds, 
+         * on the slower one it saved 2 seconds
+         * 
+         * 
+         * Thus we do a greedy algorithm, spending all our running time on the slowest walkways
+         */
         Collections.sort(speedDistanceList);
         
         double tRunningLeft = in.t;
@@ -86,7 +114,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             
             if (tRunningLeft > 0) {
-                //How long to run this distance
+                //How long to run this distance.  distance / velocity = time
                 double timeNeeded = (double) speedDistance.getRight() / (speedDistance.getLeft() + runningAddition);
             
                 if (timeNeeded > tRunningLeft) {
@@ -96,6 +124,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     distanceLeft -= distanceCovered;
                     tRunningLeft = 0;
                 } else {
+                    //Run for t = timeNeeded
                     totalTime += timeNeeded;
                     distanceLeft = 0;
                     tRunningLeft -= timeNeeded;
