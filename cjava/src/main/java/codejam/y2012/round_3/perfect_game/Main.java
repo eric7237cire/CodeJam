@@ -1,24 +1,18 @@
 package codejam.y2012.round_3.perfect_game;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.datastructures.IndexMinPQ;
-import codejam.utils.geometry.PointInt;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 
 public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles
@@ -29,9 +23,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String[] getDefaultInputFiles()
     {
-        return new String[] { "sample.in" };
+       // return new String[] { "sample.in" };
         //    return new String[] { "B-small-practice.in" };
-        //  return new String[] { "B-small-practice.in", "B-large-practice.in" };
+          return new String[] { "A-small-practice.in", "A-large-practice.in" };
     }
 
     public static class Level
@@ -60,6 +54,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
     }
     
+    
     @Override
     public InputData readInput(Scanner scanner, int testCase)
     {
@@ -87,6 +82,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return in;
     }
 
+    /**
+     * Will do a simulation given the Levels.
+     * 
+     * Should correspond to what is calculated in getExpectedLength
+     * @param levels
+     */
     static void simulate(Level[] levels)
     {
         //death
@@ -127,15 +128,31 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         log.debug("Average length {}", (double) sum / iterations);
     }
 
-    double getExpectedLength(Level[] levels) {
+    /**
+     * This method failed for the large due to length limits, but is accurate
+     * 
+     * @param levels
+     * @return
+     */
+    static double getExpectedLength(Level[] levels) {
         
         List<Double> expectedLength = Lists.newArrayList();
+        
+        /**
+         * Expected times it takes to pass the level is 1 / P_pass or 1 / (1 - P_fail)
+         * 
+         * As the probability is given is %, its 100 / (100 - P_fail)
+         * 
+         * This is multiplied by the length to get expected length
+         */
         
         expectedLength.add(  (100d / ( 100 - levels[0].P)) * levels[0].L );
         
         for(int level = 1 ; level < levels.length; ++level) {
+            //1 / P_pass
             double expectedNumber = 100d / (100 - levels[level].P);
             
+            //Expected length is length of this level + previous expected length
             expectedLength.add(expectedNumber * 
                     (expectedLength.get(level-1)+levels[level].L));
         }
@@ -209,8 +226,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
     public String handleCase(InputData in)
     {
-        log.debug("test");
-        
+               
         //List<Level> levels = Lists.newArrayList(in.levels);
         
         Arrays.sort(in.levels, new LevelCompare());

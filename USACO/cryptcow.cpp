@@ -70,6 +70,61 @@ ostream& operator<<( ostream& os, const vector<T>& vec )
     return os;
 }
 
+bool check(const string& cur, const string& finalMsg)
+{
+    /*
+    FOR(cIt, 0, cur.size())
+        {
+            switch(cur[cIt])
+            {
+                case 'C': C.pb(cur[cIt]); break;
+                case 'O': O.pb(cur[cIt]); break;
+                case 'W': W.pb(cur[cIt]); break;
+            }
+        }
+      */  
+      
+  if (cur.size() == finalMsg.size())
+      return true;
+  
+  FOR(c, 0, cur.size())
+  {
+      if (cur[c] == 'C')
+          break;
+      
+      if (cur[c] == 'O' || cur[c] == 'W')
+          return false;
+  }
+  
+  for(int c = cur.size() - 1; c >= 0; --c)
+  {
+      if (cur[c] == 'W')
+          break;
+      
+      if (cur[c] == 'O' || cur[c] == 'C')
+          return false;
+  }
+  /*
+    int cIndex = cur.find_first_of('C');
+    int oIndex = cur.find_first_of('O');
+    int wIndex = cur.find_first_of('W');
+    
+    int wLastIndex = cur.find_last_of('W');
+    int oLastIndex = cur.find_last_of('O');
+	int cLastIndex = cur.find_last_of('C');
+	
+    if (cIndex == string::npos || oIndex == string::npos
+        || wIndex == string::npos)
+        return false;
+        
+		
+    if (cIndex>oIndex || cIndex>wIndex
+        || wLastIndex < cLastIndex || 
+        wLastIndex < oLastIndex) 
+            return false;
+    */
+    return true;
+}
 
 int main() {
     
@@ -80,6 +135,39 @@ int main() {
 	
     string msg;
     getline(fin, msg);
+    
+    if (finalMsg == msg) {
+        fout << "1 0" << endl;
+        return 0;
+    }
+     
+    int ss = msg.size(), ts = finalMsg.size();
+    if (ts>ss || (ss-ts)%3!=0) {
+            fout << 0 << " " << 0 << endl;
+			return 0;
+    }
+    int depth = (ss-ts)/3;
+	vi s_alphabet(128, 0);
+	vi f_alphabet(128, 0);
+    
+    FOR(f, 0, finalMsg.size()) f_alphabet[finalMsg[f]]++;
+    FOR(s, 0, msg.size()) s_alphabet[msg[s]]++;
+
+    FOR(i, 0, 128) {
+		if (s_alphabet[i]!=f_alphabet[i] && !(i=='C'||i=='O'||i=='W'))  {
+			fout << 0 << " " << 0 << endl;
+			return 0;
+		}
+	}
+    int ci = s_alphabet['C'];
+	int oi = s_alphabet['O'];
+	int wi = s_alphabet['W'];
+    //cout << ci << " " << oi << " " << wi << endl;
+    if (ci!=depth || oi!=depth || wi!=depth) {
+            fout << 0 << " " << 0 << endl;
+			return 0;
+    }
+
     
     queue<string> toVisit;
     set<string> visited;
@@ -96,18 +184,24 @@ int main() {
         
         visited.insert(cur);
         
-        if (cur == finalMsg)
+        if (cur.size() == finalMsg.size() && cur == finalMsg)
         {
             int steps = (msg.length() - finalMsg.length()) / 3;
             fout << "1 " << steps << endl;
             return 0;
         }
+
+		if (cur.size() == finalMsg.size())
+			continue;
+        
+        vi C,O,W;
+        
         int cIndex = -1;
         
         while( (cIndex = cur.find_first_of('C', cIndex+1)) != string::npos)
         {
             int oIndex = cIndex;
-            assert(cIndex >= 0 && cIndex < cur.length());
+            assert(cIndex >= 0 && cIndex < (int)cur.length());
             
             while( (oIndex = cur.find_first_of('O', oIndex+1)) != string::npos)
             {
@@ -137,7 +231,8 @@ int main() {
                     //copy.erase(oIndex, 1);
                     //copy.erase(cIndex, 1);
                     
-                    toVisit.push(copy);
+                    if (check(copy, finalMsg))
+                        toVisit.push(copy);
                 }
             }
             

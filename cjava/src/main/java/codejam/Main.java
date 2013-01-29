@@ -349,7 +349,7 @@ public class Main  {
          * 
          * Greedy algorithm, velocity/time
          */
-        codejam.y2011.round_2.airport_walkways.Main m = new codejam.y2011.round_2.airport_walkways.Main();
+        //codejam.y2011.round_2.airport_walkways.Main m = new codejam.y2011.round_2.airport_walkways.Main();
         
         //Building up larger and larger squares.  TODO comments compare with their solution
         //codejam.y2011.round_2.spinning_blade.Main m = new codejam.y2011.round_2.spinning_blade.Main();
@@ -462,8 +462,17 @@ public class Main  {
         
         //2012 3
         
-        //Probability Expected value until event happens.  see docs/2012/perfectGame.tex, sorting
-       // codejam.y2012.round_3.perfect_game.Main m = new codejam.y2012.round_3.perfect_game.Main();
+        /**
+         * 2012 Round 3
+         * Problem 1
+         * 
+         * Probability Expected value until event happens.  see docs/2012/perfectGame.tex, sorting
+         * 1.  Has a simulator / calculation of expected value that worked for the small
+         * 2.  See solution explanation for the Greedy algorithm that works for Large
+         */
+        codejam.y2012.round_3.perfect_game.Main m = new codejam.y2012.round_3.perfect_game.Main();
+        
+        //codejam.y2012.round_3.havannah.Main m = new codejam.y2012.round_3.havannah.Main(); 
         
         //2012 Final
         
