@@ -472,6 +472,14 @@ public class Main  {
          */
         //codejam.y2012.round_3.perfect_game.Main m = new codejam.y2012.round_3.perfect_game.Main();
         
+        /**
+         * 2012 Round 3
+         * Problem 2
+         * 
+         * Union find / Connected components
+         * 
+         * 1.  idea -- The check for a ring is clever, maybe draw some pictures
+         */
         codejam.y2012.round_3.havannah.Main m = new codejam.y2012.round_3.havannah.Main(); 
         
         //2012 Final

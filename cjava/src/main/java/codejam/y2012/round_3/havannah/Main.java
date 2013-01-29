@@ -1,5 +1,6 @@
 package codejam.y2012.round_3.havannah;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
@@ -30,8 +31,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     public String[] getDefaultInputFiles()
     {
       //  return new String[] { "sample.in" };
-           return new String[] { "B-small-practice.in" };
-        //  return new String[] { "B-small-practice.in", "B-large-practice.in" };
+        //   return new String[] { "B-small-practice.in" };
+          return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
 
@@ -137,6 +138,52 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     //S * 6 + moves
     final int maxNodeId = 3000 * 6 + 10000; 
     
+    void buildNeighborLists(List<Integer> sequenceNeighborComponentIds,
+            List<Integer> neighborIds,
+            List<Integer> edgeCornerIds,
+            Pair<Integer,Integer> move,
+            Map<Pair<Integer,Integer>, Integer> cellToIndex,    
+            Map<Pair<Integer,Integer>, Integer> cornersEdges,
+            DynamicUnionFind uf
+            )
+    {
+        for( int d = 0; d < 6; ++d) {
+            int[] delta = neighborDeltas[d];
+        
+            Pair<Integer,Integer> neighbor = new ImmutablePair<>(
+                    move.getLeft()+delta[0],
+                    move.getRight()+delta[1]);
+        
+            Integer neighborId = cellToIndex.get(neighbor);
+            
+            
+            
+            if (neighborId == null)
+            {
+                sequenceNeighborComponentIds.add(null);
+                neighborIds.add(null);
+                continue;
+            } else
+            {
+                //Neighbor has already been added
+                Integer componentId = uf.getGroupNumber(neighborId);
+                sequenceNeighborComponentIds.add(componentId);
+
+                Preconditions.checkState(componentId != null);
+                neighborIds.add(neighborId);
+                
+                //Is it an edge/corner
+                Integer edgeCornerId = cornersEdges.get(neighbor);
+                if (edgeCornerId != null)
+                    edgeCornerIds.add(edgeCornerId);
+            }
+        }
+        
+        //Double it to 12
+        sequenceNeighborComponentIds.addAll(new ArrayList<Integer>(sequenceNeighborComponentIds));
+
+    }
+    
     public String handleCase(InputData in)
     {
         Map<Pair<Integer,Integer>, Integer> cellToIndex = Maps.newHashMap();
@@ -171,27 +218,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
             
           //Check for rings before we merg neighbors
-            List<Integer> sequenceNeighborGroupIds = Lists.newArrayList();
+            /**
+             * Build lists of neighbors to check for edges/corners/rings
+             */
+            List<Integer> sequenceNeighborComponentIds = Lists.newArrayList();
+            List<Integer> neighborIds = Lists.newArrayList();
+            List<Integer> edgeCornerIds = Lists.newArrayList();
             
-            for( int d = 0; d < 12; ++d) {
-                int[] delta = neighborDeltas[d % 6];
-            
-                Pair<Integer,Integer> neighbor = new ImmutablePair<>(
-                        move.getLeft()+delta[0],
-                        move.getRight()+delta[1]);
-            
-                Integer neighborId = cellToIndex.get(neighbor);
-                
-                if (neighborId == null) {
-                    sequenceNeighborGroupIds.add(null);
-                    continue;
-                }
-                
-                Integer componentId = uf.getGroupNumber(neighborId);
-                sequenceNeighborGroupIds.add(componentId);
-            }
-            
-            
+            buildNeighborLists(sequenceNeighborComponentIds,neighborIds,edgeCornerIds,
+                    move,cellToIndex,cornersEdges,uf);
+                        
             //Create a new component ; hovewer because edges and corners
             //are considered as 
             uf.addNode(moveId);
@@ -200,18 +236,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             /**
              * Merge neighbors
              */
-            for( int[] delta : neighborDeltas) {
-                Pair<Integer,Integer> neighbor = new ImmutablePair<>(
-                        move.getLeft()+delta[0],
-                        move.getRight()+delta[1]);
+            for( int n = 0; n < 6; ++n ) {
                 
-                Integer neighborId = cellToIndex.get(neighbor);
+                Integer neighborId = neighborIds.get(n);
                 
                 if (neighborId == null)
-                    continue;
-                
-                Integer componentId = uf.getGroupNumber(neighborId); 
-                if (componentId == null)
                     continue;
                 
                 uf.mergeComponentsOfNodes(moveId, neighborId);
@@ -223,29 +252,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
              */
             Component com = uf.getGroup(moveId);
             
-            for( int[] delta : neighborDeltas) {
-                Pair<Integer,Integer> neighbor = new ImmutablePair<>(
-                        move.getLeft()+delta[0],
-                        move.getRight()+delta[1]);
-                
-                Integer neighborId = cellToIndex.get(neighbor);
-                
-                if (neighborId == null)
+           
+            
+            for(Integer edgeCornerId : edgeCornerIds) {
+
+                if (edgeCornerId == null)
                     continue;
                 
-                Integer componentId = uf.getGroupNumber(neighborId); 
-                if (componentId == null)
-                    continue;
-                
-                //Just check it is now the same component
-                Preconditions.checkState(componentId.equals(com.id));
-                
-                Integer edgeCorner = cornersEdges.get(neighbor);
-                
-                if (edgeCorner == null)
-                    continue;
-                
-                com.members.set(edgeCorner);
+                com.members.set(edgeCornerId);
             }
             
             //Also check self
@@ -260,12 +274,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             boolean hasRing = false;
             
             for(int offset = 0; offset <= 6; ++offset) {
-                Integer s1 = sequenceNeighborGroupIds.get(0+offset);
-                Integer s2 = sequenceNeighborGroupIds.get(1+offset);
-                Integer s3 = sequenceNeighborGroupIds.get(2+offset);
-                Integer s4 = sequenceNeighborGroupIds.get(3+offset);
-                Integer s5 = sequenceNeighborGroupIds.get(4+offset);
-                Integer s6 = sequenceNeighborGroupIds.get(5+offset);
+                Integer s1 = sequenceNeighborComponentIds.get(0+offset);
+                Integer s2 = sequenceNeighborComponentIds.get(1+offset);
+                Integer s3 = sequenceNeighborComponentIds.get(2+offset);
+                Integer s4 = sequenceNeighborComponentIds.get(3+offset);
+                Integer s5 = sequenceNeighborComponentIds.get(4+offset);
+                Integer s6 = sequenceNeighborComponentIds.get(5+offset);
                 
                 //Ring formed
                 if ( Objects.equal(s1, s3) && s1 != null && s2 == null && (s4==null||s5==null||s6==null)) {
