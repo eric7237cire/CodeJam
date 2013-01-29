@@ -470,9 +470,9 @@ public class Main  {
          * 1.  Has a simulator / calculation of expected value that worked for the small
          * 2.  See solution explanation for the Greedy algorithm that works for Large
          */
-        codejam.y2012.round_3.perfect_game.Main m = new codejam.y2012.round_3.perfect_game.Main();
+        //codejam.y2012.round_3.perfect_game.Main m = new codejam.y2012.round_3.perfect_game.Main();
         
-        //codejam.y2012.round_3.havannah.Main m = new codejam.y2012.round_3.havannah.Main(); 
+        codejam.y2012.round_3.havannah.Main m = new codejam.y2012.round_3.havannah.Main(); 
         
         //2012 Final
         
