@@ -1,6 +1,7 @@
 package codejam.y2012.round_3.havannah;
 
 import java.util.BitSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -14,6 +15,7 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.y2012.round_3.havannah.DynamicUnionFind.Component;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -27,8 +29,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String[] getDefaultInputFiles()
     {
-        return new String[] { "sample.in" };
-        //    return new String[] { "B-small-practice.in" };
+      //  return new String[] { "sample.in" };
+           return new String[] { "B-small-practice.in" };
         //  return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
@@ -89,11 +91,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         Preconditions.checkState(startSize + (in.S-2) * 4 == cellToIndex.size());
         
         //Upper right edge and upper left
-        for( a = in.S + 1; a <= 2*in.S - 1; ++ a) {
-            cellToIndex.put(new ImmutablePair<>(a, 2*in.S-1), 8);
+        for( int i = in.S + 1; i < 2*in.S - 1; ++ i) {
+            cellToIndex.put(new ImmutablePair<>(i, 2*in.S-1), 8);
             
             b = a;
-            cellToIndex.put(new ImmutablePair<>(2*in.S-1, b), 9);
+            cellToIndex.put(new ImmutablePair<>(2*in.S-1, i), 9);
         }        
         
         int endSize = cellToIndex.size();
@@ -132,14 +134,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             };
     
     
-    
+    //S * 6 + moves
+    final int maxNodeId = 3000 * 6 + 10000; 
     
     public String handleCase(InputData in)
     {
         Map<Pair<Integer,Integer>, Integer> cellToIndex = Maps.newHashMap();
         
-        enumerateCorners(in, cellToIndex);
-        enumerateEdges(in, cellToIndex);
+        Map<Pair<Integer,Integer>, Integer> cornersEdges = Maps.newHashMap();
+        enumerateCorners(in, cornersEdges);
+        enumerateEdges(in, cornersEdges);
         
         BitSet edgeMask = new BitSet();
         BitSet cornerMask = new BitSet();
@@ -149,7 +153,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         
 
-        DynamicUnionFind uf = new DynamicUnionFind(112);
+        DynamicUnionFind uf = new DynamicUnionFind(maxNodeId);
         
         StringBuffer r = new StringBuffer( String.format("Case #%d: ", in.testCase) );
         
@@ -160,13 +164,64 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             //Change into an id
             int moveId = -1;
             if (!cellToIndex.containsKey(move)) {
-                moveId = cellToIndex.size();
+                moveId = cellToIndex.size() + 12;
                 cellToIndex.put(move, moveId);
             } else {
                 moveId = cellToIndex.get(move);
             }
             
+          //Check for rings before we merg neighbors
+            List<Integer> sequenceNeighborGroupIds = Lists.newArrayList();
+            
+            for( int d = 0; d < 12; ++d) {
+                int[] delta = neighborDeltas[d % 6];
+            
+                Pair<Integer,Integer> neighbor = new ImmutablePair<>(
+                        move.getLeft()+delta[0],
+                        move.getRight()+delta[1]);
+            
+                Integer neighborId = cellToIndex.get(neighbor);
+                
+                if (neighborId == null) {
+                    sequenceNeighborGroupIds.add(null);
+                    continue;
+                }
+                
+                Integer componentId = uf.getGroupNumber(neighborId);
+                sequenceNeighborGroupIds.add(componentId);
+            }
+            
+            
+            //Create a new component ; hovewer because edges and corners
+            //are considered as 
             uf.addNode(moveId);
+                       
+            
+            /**
+             * Merge neighbors
+             */
+            for( int[] delta : neighborDeltas) {
+                Pair<Integer,Integer> neighbor = new ImmutablePair<>(
+                        move.getLeft()+delta[0],
+                        move.getRight()+delta[1]);
+                
+                Integer neighborId = cellToIndex.get(neighbor);
+                
+                if (neighborId == null)
+                    continue;
+                
+                Integer componentId = uf.getGroupNumber(neighborId); 
+                if (componentId == null)
+                    continue;
+                
+                uf.mergeComponentsOfNodes(moveId, neighborId);
+            }
+            
+            
+            /**
+             * Add in edge/corner markers
+             */
+            Component com = uf.getGroup(moveId);
             
             for( int[] delta : neighborDeltas) {
                 Pair<Integer,Integer> neighbor = new ImmutablePair<>(
@@ -178,13 +233,54 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 if (neighborId == null)
                     continue;
                 
-                if (uf.getGroupNumber(neighborId) == null)
+                Integer componentId = uf.getGroupNumber(neighborId); 
+                if (componentId == null)
                     continue;
                 
-                uf.mergeComponentsOfNodes(moveId, neighborId);
+                //Just check it is now the same component
+                Preconditions.checkState(componentId.equals(com.id));
+                
+                Integer edgeCorner = cornersEdges.get(neighbor);
+                
+                if (edgeCorner == null)
+                    continue;
+                
+                com.members.set(edgeCorner);
             }
             
-            Component com = uf.getGroup(moveId);
+            //Also check self
+            Integer edgeCorner = cornersEdges.get(move);
+            if (edgeCorner != null) {
+                com.members.set(edgeCorner);
+            }
+            
+            /**
+             * Check ring sequence
+             */
+            boolean hasRing = false;
+            
+            for(int offset = 0; offset <= 6; ++offset) {
+                Integer s1 = sequenceNeighborGroupIds.get(0+offset);
+                Integer s2 = sequenceNeighborGroupIds.get(1+offset);
+                Integer s3 = sequenceNeighborGroupIds.get(2+offset);
+                Integer s4 = sequenceNeighborGroupIds.get(3+offset);
+                Integer s5 = sequenceNeighborGroupIds.get(4+offset);
+                Integer s6 = sequenceNeighborGroupIds.get(5+offset);
+                
+                //Ring formed
+                if ( Objects.equal(s1, s3) && s1 != null && s2 == null && (s4==null||s5==null||s6==null)) {
+                    hasRing = true;
+                    break;
+                }
+                
+                if ( Objects.equal(s1, s4) && s1 != null && (s2 == null||s3==null) && (s5==null||s6==null)) {
+                    hasRing = true;
+                    break;
+                }
+            }
+            
+            
+            
             
             BitSet edges = BitSet.valueOf(edgeMask.toLongArray());
             edges.and( com.members );
@@ -194,7 +290,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             boolean hasBridge = corners.cardinality() >= 2;
             boolean hasFork = edges.cardinality() >= 3;
-            boolean hasRing = false;
+            
             
             if (!hasRing && !hasFork && !hasBridge)
                 continue;
