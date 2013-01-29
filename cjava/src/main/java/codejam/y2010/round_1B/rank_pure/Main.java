@@ -11,8 +11,6 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.LargeNumberUtils;
 
-import com.google.common.base.Preconditions;
-
 public class Main implements TestCaseHandler<InputData>,
 TestCaseInputScanner<InputData>, DefaultInputFiles {
 
@@ -36,10 +34,7 @@ TestCaseInputScanner<InputData>, DefaultInputFiles {
         if (memoize == null) {
         memoize = new int[N_MAX+1][N_MAX];
         
-        for(int[] a : memoize) {
-            Arrays.fill(a, -1);
-        }
-        
+                
         memoize[2][1] = 1;
         
         for(int n = 3; n <= N_MAX; ++n) {
@@ -76,7 +71,8 @@ TestCaseInputScanner<InputData>, DefaultInputFiles {
                     // a b Size c d n
                     // choose is # of vars right of size.
                     // must multiply it by how many ways to make a b.  A b must also be perfect
-                    Preconditions.checkState(memoize[size][size - choose - 1] != -1);
+                    //Can be zero legitimately
+                   // Preconditions.checkState(memoize[size][size - choose - 1] != 0);
                     
                     //size becomes the new n
                     long mult = memoize[size][size - choose - 1];
@@ -94,8 +90,6 @@ TestCaseInputScanner<InputData>, DefaultInputFiles {
         
         int total = 0;
         for(int size = 1; size < in.n; ++size) {
-                     
-            
             total += memoize[in.n][size];
             total %= MOD;
         }
@@ -107,12 +101,7 @@ TestCaseInputScanner<InputData>, DefaultInputFiles {
     public String handleCase2(InputData input) {
 
         int caseNumber = input.testCase;
-        log.info("Starting calculating case {}", caseNumber);
-        
-        //double ans = DivideConq.findMinPerimTriangle(input.points);
-
-        log.info("Done calculating answer case {}", caseNumber);
-        
+                
         final int n = input.n;
         
         final int maxSetSize = n - 1;
@@ -124,9 +113,11 @@ TestCaseInputScanner<InputData>, DefaultInputFiles {
         
         int count = 0;
         
-        int[][] memoize = new int[n+1][n+1];
+        if (memoize == null) {
+         memoize = new int[N_MAX+1][N_MAX+1];
         for(int[] a : memoize) {
             Arrays.fill(a, -1);
+        }
         }
         
         /*
@@ -151,7 +142,7 @@ TestCaseInputScanner<InputData>, DefaultInputFiles {
             // size = 4   2 3 4 n  ;  2 4 x n ;  4 x y n
             //            
             
-            count += solveSize(size, n, memoize);
+            count += solveSize(size, n);
             count %= MOD;
         }
         
@@ -163,9 +154,9 @@ TestCaseInputScanner<InputData>, DefaultInputFiles {
     //static int[][] memoize = new int[N_MAX+1][N_MAX+1];
     static int[][] combin = LargeNumberUtils.generateModedCombin(500, MOD);
     
-    int solveSize(int size, int n, int[][] memoize) {
+    int solveSize(int size, int n) {
         
-        if (memoize[size][n] > 0) {
+        if (memoize[size][n] >= 0) {
             return memoize[size][n];
         }
         if (size == 1) {
@@ -192,7 +183,7 @@ TestCaseInputScanner<InputData>, DefaultInputFiles {
                 // a b Size c d n
                 // choose is # of vars right of size.
                 // must multiply it by how many ways to make a b.  A b must also be perfect
-                long mult = solveSize(size - choose - 1, size,memoize);
+                long mult = solveSize(size - choose - 1, size);
                 //Preconditions.checkState(memoize[size - choose - 1][size] != -1);
                // long mult = memoize[size - choose - 1][size];
                 count += mult * combin[possible][choose] % MOD;

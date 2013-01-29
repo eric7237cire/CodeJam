@@ -223,8 +223,13 @@ public class Main  {
         //DP todo bottom up
          //codejam.y2010.smooth.Main m = new codejam.y2010.smooth.Main();
         
-        //Combinatoric game, TODO tex doc a bit
-         //codejam.y2010.number_game.Main m = new codejam.y2010.number_game.Main();
+        /**
+         * 2010 Round 1A
+         * Problem 3
+         * 
+         * Combinatoric game
+         */
+         codejam.y2010.round_1A.number_game.Main m = new codejam.y2010.round_1A.number_game.Main();
          
          //2010 1B
          
@@ -234,21 +239,20 @@ public class Main  {
          //Reasing through problem, speed physics
         // codejam.y2010.round_1B.chicks.Main m = new codejam.y2010.round_1B.chicks.Main();
          
-        //for(int i = 2; i <= 12; ++i) {
-           // log.debug("n = {}",i);
-           // codejam.y2010.round_1B.rank_pure.BruteForce.showPattern(i);
-       // }
+       
         
          /**
           * Dynamic programming / Choose number / counting problem
           * 
           * 1.  Solved using top down
-          * 2.  Solved again using bottom / up
+          * 2.  Solved again using bottom / up (difference in speed is negligible)
           * 
           * See BruteForce for a listing of the possible sets for n = 12, problem description is
           * not so clear (as a Set does not have order....)
+          * 
+          *  codejam.y2010.round_1B.rank_pure.BruteForce.showPattern(i);
           */
-         codejam.y2010.round_1B.rank_pure.Main m = new codejam.y2010.round_1B.rank_pure.Main();
+        // codejam.y2010.round_1B.rank_pure.Main m = new codejam.y2010.round_1B.rank_pure.Main();
          
          //2010 1C
          
