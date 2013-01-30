@@ -193,7 +193,7 @@ public class Main  {
         // codejam.y2009.double_sort_grid.Main m = new codejam.y2009.double_sort_grid.Main();
         
          //Network flow
-     //   codejam.y2009.round_4.wifi_towers.Main m = new codejam.y2009.round_4.wifi_towers.Main();
+        codejam.y2009.round_final.wifi_towers.Main m = new codejam.y2009.round_final.wifi_towers.Main();
         
         //codejam.y2009.round_final.marbles.Main m = new codejam.y2009.round_final.marbles.Main();
         
@@ -366,8 +366,13 @@ public class Main  {
         //Building up larger and larger squares.  TODO comments compare with their solution
         //codejam.y2011.round_2.spinning_blade.Main m = new codejam.y2011.round_2.spinning_blade.Main();
         
-        //TODO Explanation.  Seems to be prime factoring
-        codejam.y2011.round_2.expensive_dinner.Main m = new codejam.y2011.round_2.expensive_dinner.Main();
+        /**
+         * 2011 Round 2
+         * Problem 3
+         * 
+         * Prime factorization, LCM
+         */
+        //codejam.y2011.round_2.expensive_dinner.Main m = new codejam.y2011.round_2.expensive_dinner.Main();
         
         //TODO implement their solution.  Finding shortest path with most neighbors.  Used dijkstras then athor search
         //codejam.y2011.round_2.ai_wars.Main m = new codejam.y2011.round_2.ai_wars.Main();

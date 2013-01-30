@@ -23,7 +23,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\cryptcow.cpp">
+    <ClCompile Include="..\ditch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
