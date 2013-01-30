@@ -65,7 +65,18 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         if (primePows == null) {
             buildPrimePows();
         }
-        //int bf = solveBruteForce(in);
+        
+        /**
+         * The maximum # is going to be the prime factorization, ie
+         * 
+         * 2 * 2 * 2 * 3 * 3 * 5 * 5 * 5 * 5 etc
+         * 
+         * To minimize this #, we only count each unique factor only once, ie
+         * 
+         * 2^a * 3^b * 5^c
+         * 
+         * So the difference in spead is how many prime factors = p^i with i >= 2
+         */
         
         int spread = 0;
         if (in.N == 1) {

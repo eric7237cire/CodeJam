@@ -13,13 +13,19 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.DoubleComparator;
 
 import com.google.common.base.Preconditions;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, 
+TestCaseInputScanner<InputData> {
+
+    public Main() {
+        super("B",false,true,true);
+    }
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
     
@@ -39,9 +45,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         double rangeStart;
         double rangeEnd;
         
+        //Length required to spread out
         final long len;        
+        
+        //Where vendors start
         final int position;
                 
+        //Minimum space between
         final int D;
         
         RangeData(Pair<Integer,Integer> posVendors, int D) {
@@ -85,6 +95,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         List<Pair<Integer,Integer>> connectedRanges = new ArrayList<>();
         
+        //Ranges are already sorted on input
         for(int i = 0; i < input.posCount.size(); ++i) {
             Pair<Integer,Integer> posVendor = input.posCount.get(i);
             rangeData.add(new RangeData(posVendor, input.D));
@@ -102,6 +113,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             double endCurrent = rangeData.get(currentRange.getRight()).rangeEnd;
             double beginNext = rangeData.get(nextRange.getLeft()).rangeStart;
             
+            //Not intersecting, move on
             if (beginNext - endCurrent >= input.D) {
                 currentConnectedRange++;
                 continue;
@@ -114,21 +126,30 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             double minDistanceToStart = Double.MAX_VALUE;
             double maxDistanceToEnd = Double.MIN_VALUE;
             
+            //Search all the connected vendors to see which one has to travel the most to the edges
             for(int r = currentRange.getLeft(); r <= currentRange.getRight(); ++r) {
                 RangeData range = rangeData.get(r);
                 minDistanceToStart = Math.min(range.getDistanceToStart(), minDistanceToStart);
                 maxDistanceToEnd = Math.max(range.getDistanceToEnd(), maxDistanceToEnd);
             }
             
-            //Push next range to the right by startingAdj
+            //Push next range to the right by startingAdj, this is the minimimum distance needed between vendors
             double startingAdj = endCurrent + input.D - beginNext; 
             for(int r = nextRange.getLeft(); r <= nextRange.getRight(); ++r) {
                 RangeData range = rangeData.get(r);
+                //Check it's vendors to see how far they are from the beginning and end of their range
                 minDistanceToStart = Math.min(range.getDistanceToStart()+startingAdj, minDistanceToStart);
                 maxDistanceToEnd = Math.max(range.getDistanceToEnd()+startingAdj, maxDistanceToEnd);
             }
             
-            //Global adjustment
+            /**
+             * Global adjustment.  Basically we want to make the max distance
+             * a vendor has to move to the left = max distance a vendor has to move
+             * to the right.
+             * 
+             * Basically, by always pushing the next range to the right, we have
+             * to move everyone back.  (unless max=-min, where adjustment==0)
+             */
             double adjustment = (maxDistanceToEnd+minDistanceToStart) / 2;
             
             //Do adjustment
@@ -145,13 +166,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             connectedRanges.remove(currentConnectedRange+1);
             connectedRanges.set(currentConnectedRange, new ImmutablePair<>(currentRange.getLeft(), nextRange.getRight()));
             
-            currentConnectedRange = 0;
+            //Start looking from 0
+            currentConnectedRange = Math.max(0, currentConnectedRange-1);
         }
         
         double minDistanceToStart = Double.MAX_VALUE;
         double maxDistanceToEnd = Double.MIN_VALUE;
         
-        //Find largest distance
+        //Find largest distance vendors had to move
         for(int r = 0; r < rangeData.size(); ++r) {
             RangeData range = rangeData.get(r);
             minDistanceToStart = Math.min(range.getDistanceToStart(), minDistanceToStart);

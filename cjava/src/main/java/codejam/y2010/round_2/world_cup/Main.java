@@ -7,42 +7,44 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.main.Runner;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
     
+    final static Logger log = LoggerFactory.getLogger(Main.class);
+
+    public Main() {
+        super("B",false,true,true);
+    }
+
     @Override
     public String handleCase(InputData input) {
 
         int caseNumber = input.testCase;
-        log.info("Starting calculating case {}", caseNumber);
-        
-        //double ans = DivideConq.findMinPerimTriangle(input.points);
         int minCost = minCost(input.P, 0, 0, input);
 
-        log.info("Done calculating answer case {}", caseNumber);
-        
-        //DecimalFormat decim = new DecimalFormat("0.00000000000");
-        //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
-        
         return ("Case #" + caseNumber + ": " + minCost);
     }
     
     static int MAX_PRICE = 100000 * 2048;
     
     /**
-     * @param roundNum 1 based round number with matches = 2 ^ (P - roundNum)
-     * @param matchNum which match  0 to 2 ^ (P - roundNum) - 1
+     * MinCost starts at the top of the tournament tree
+     * roundNum = P (Pth round) is the top
+     * round 0 
+     * 
+     * 
+     * @param roundNum 1 based round number with # of matches = 2 ^ (P - roundNum)
+     * @param matchNum which match  0 to 2 ^ (P - roundNum) - 1 in the round
      * @param matchesMissed how many not purchased above in the tree
      */
     static int minCost(int roundNum, int matchNum, int matchesMissed, final InputData input) {
         //Next match numbers = matchNum * 2 and matchNum * 2 + 1
         
-        //Base case
+        //Base case, here we know how many matches could have been missed
         if (roundNum == 0) {
             //here the matchNum is really the team number
             if (matchesMissed > input.M[matchNum] ) {
@@ -54,6 +56,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         int matchNumLeft = matchNum * 2;
         int matchNumRight = matchNum * 2 + 1;
         
+        //Go down the tree in 2 ways, either we buy it or not
         int ifBuyPrice = input.costs.get(roundNum-1).get(matchNum)
                 + minCost(roundNum-1, matchNumLeft, matchesMissed, input)
                 + minCost(roundNum-1, matchNumRight, matchesMissed, input);
@@ -105,27 +108,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
 
 
-    public Main() {
-        super();
-    }
-    
-    
-    public static void main(String args[]) throws Exception {
-
-        if (args.length < 1) {
-            args = new String[] { "sample.txt" };
-           // args = new String[] { "B-small-practice.in" };
-//            args = new String[] { "B-large-practice.in" };
-         }
-         log.info("Input file {}", args[0]);
-
-         Main m = new Main();
-         Runner.goSingleThread(args[0], m, m);
-         //Runner.go(args[0], m, m, new InputData(-1));
-
-        
-       
-    }
 
     
 }

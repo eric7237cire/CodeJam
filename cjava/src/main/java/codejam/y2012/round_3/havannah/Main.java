@@ -1,7 +1,6 @@
 package codejam.y2012.round_3.havannah;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -11,6 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.datastructures.BitSetInt;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -192,8 +192,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         enumerateCorners(in, cornersEdges);
         enumerateEdges(in, cornersEdges);
         
-        BitSet edgeMask = new BitSet();
-        BitSet cornerMask = new BitSet();
+        BitSetInt edgeMask = new BitSetInt();
+        BitSetInt cornerMask = new BitSetInt();
         for(int i = 0; i <= 5; ++i) {
             cornerMask.set(i);
             edgeMask.set(i+6);
@@ -211,7 +211,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             //Change into an id
             int moveId = -1;
             if (!cellToIndex.containsKey(move)) {
-                moveId = cellToIndex.size() + 12;
+                moveId = cellToIndex.size() ;
                 cellToIndex.put(move, moveId);
             } else {
                 moveId = cellToIndex.get(move);
@@ -259,13 +259,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 if (edgeCornerId == null)
                     continue;
                 
-                com.members.set(edgeCornerId);
+                com.attrs.set(edgeCornerId);
             }
             
             //Also check self
             Integer edgeCorner = cornersEdges.get(move);
             if (edgeCorner != null) {
-                com.members.set(edgeCorner);
+                com.attrs.set(edgeCorner);
             }
             
             /**
@@ -296,14 +296,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             
             
-            BitSet edges = BitSet.valueOf(edgeMask.toLongArray());
-            edges.and( com.members );
+            int edges = edgeMask.getBits() & com.attrs.getBits();
             
-            BitSet corners = BitSet.valueOf(cornerMask.toLongArray());
-            corners.and( com.members );
+            int corners = cornerMask.getBits() & com.attrs.getBits();
             
-            boolean hasBridge = corners.cardinality() >= 2;
-            boolean hasFork = edges.cardinality() >= 3;
+            boolean hasBridge = Integer.bitCount(corners) >= 2;
+            boolean hasFork = Integer.bitCount(edges) >= 3;
             
             
             if (!hasRing && !hasFork && !hasBridge)

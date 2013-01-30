@@ -275,7 +275,12 @@ public class Main  {
          //codejam.y2010.round_2.diamond.Main m = new codejam.y2010.round_2.diamond.Main();
         //codejam.y2010.round_2.diamond.OldMain m = new codejam.y2010.round_2.diamond.OldMain();
         
-        //DP TODO bottom up
+        /**
+         * 2010 Round 2
+         * Problem 2
+         * 
+         * 1. DP on a tree but not memoized.  Looks like it follows the given solution too
+         */
          //codejam.y2010.round_2.world_cup.Main m = new codejam.y2010.round_2.world_cup.Main();
         
         //Maybe do a doc TODO / comments
@@ -325,7 +330,14 @@ public class Main  {
          
          //2011 1B
          //A in C++
-        //TODO explain method a bit more...
+        /**
+         * 2011 Round 1B
+         * Problem 2
+         * 
+         * 1.  My solution, merging vendors who intersect 
+         * 2.  idea -- they have a mathematical solution 
+         * 3.  idea -- Binary search
+         */
          //codejam.y2011.round_1B.hotdog_revenge.Main m = new codejam.y2011.round_1B.hotdog_revenge.Main();
         
         //Polygon breadth first search
@@ -355,7 +367,7 @@ public class Main  {
         //codejam.y2011.round_2.spinning_blade.Main m = new codejam.y2011.round_2.spinning_blade.Main();
         
         //TODO Explanation.  Seems to be prime factoring
-        //codejam.y2011.round_2.expensive_dinner.Main m = new codejam.y2011.round_2.expensive_dinner.Main();
+        codejam.y2011.round_2.expensive_dinner.Main m = new codejam.y2011.round_2.expensive_dinner.Main();
         
         //TODO implement their solution.  Finding shortest path with most neighbors.  Used dijkstras then athor search
         //codejam.y2011.round_2.ai_wars.Main m = new codejam.y2011.round_2.ai_wars.Main();
@@ -478,9 +490,10 @@ public class Main  {
          * 
          * Union find / Connected components
          * 
-         * 1.  idea -- The check for a ring is clever, maybe draw some pictures
+         * 1.  The check for a ring is clever, basically, if the C's are connected
+         * but there are gaps (in the X's and Y's) such that they must have connected by making a loop
          */
-        codejam.y2012.round_3.havannah.Main m = new codejam.y2012.round_3.havannah.Main(); 
+       // codejam.y2012.round_3.havannah.Main m = new codejam.y2012.round_3.havannah.Main(); 
         
         //2012 Final
         

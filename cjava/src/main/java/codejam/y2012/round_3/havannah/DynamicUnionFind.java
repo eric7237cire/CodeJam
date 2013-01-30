@@ -2,6 +2,8 @@ package codejam.y2012.round_3.havannah;
 
 import java.util.BitSet;
 
+import codejam.utils.datastructures.BitSetInt;
+
 import com.google.common.base.Preconditions;
 
 public class DynamicUnionFind
@@ -15,7 +17,10 @@ public class DynamicUnionFind
         Component(int id) {
             this.id = id;
             members = new BitSet();
+            attrs = new BitSetInt(0);
         }
+        
+        BitSetInt attrs;
     }
 
     /**
@@ -59,8 +64,8 @@ public class DynamicUnionFind
         for(int i=com1.members.nextSetBit(0); i>=0; 
                 i=com1.members.nextSetBit(i+1)) {
           //Special case!  members less than 11 are not real nodes, just markers
-            if (i <= 11)
-                continue;
+         //   if (i <= 11)
+            //    continue;
             Preconditions.checkState(memberToComponent[i] == com1);
             
             memberToComponent[i] = newComponent;
@@ -69,8 +74,8 @@ public class DynamicUnionFind
         for(int i=com2.members.nextSetBit(0); i>=0; 
                 i=com2.members.nextSetBit(i+1)) {
             //Special case!  members less than 11 are not real nodes, just markers
-            if (i <= 11)
-                continue;
+           // if (i <= 11)
+              //  continue;
             
             Preconditions.checkState(memberToComponent[i] == com2);
             
@@ -79,6 +84,7 @@ public class DynamicUnionFind
         
         newComponent.members.or(com1.members);
         newComponent.members.or(com2.members);
+        newComponent.attrs.setBits( com1.attrs.getBits() | com2.attrs.getBits() );
         
         newComponent.size = newComponent.members.cardinality();
     }
