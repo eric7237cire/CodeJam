@@ -177,6 +177,7 @@ static int augment(EdgeList& edges, int source, int sink)
                 
                 cout << "Edge dual " << edges[c][dual] << endl;
                 
+				//Edges can go negative
                // assert(edges[c][dual].flow >= 0 &&
                  //   edges[c][dual].flow <= edges[c][dual].cap
                  //   );
