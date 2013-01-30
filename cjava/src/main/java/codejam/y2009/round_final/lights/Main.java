@@ -5,9 +5,13 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.geometry.Circle;
+import codejam.utils.geometry.PointInt;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
+
+import com.google.common.collect.Lists;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
@@ -23,9 +27,27 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
        
-        InputData input = new InputData(testCase);
-       
-        return input;
+        InputData in = new InputData(testCase);
+        /*
+         * One line containing the coordinates x, y of the 
+         * red light source.
+    One line containing the coordinates x, y of the green light 
+    source.
+    One line containing the number of pillars n.
+    n lines describing the pillars. 
+    Each contains 3 numbers x, y, r. 
+    The pillar is a disk with the center (x, y) and radius r.
+
+         */
+        in.redLight = new PointInt(scanner.nextInt(), scanner.nextInt());
+        in.greenLight = new PointInt(scanner.nextInt(), scanner.nextInt());
+        in.N = scanner.nextInt();
+        
+        in.pillars = Lists.newArrayList();
+        for(int i = 0; i < in.N; ++i) {
+            in.pillars.add(new Circle(scanner.nextInt(),scanner.nextInt(),scanner.nextInt()));
+        }
+        return in;
     }
 
   
