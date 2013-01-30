@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.math.DoubleMath;
+
 import codejam.utils.geometry.Angle;
 import codejam.utils.geometry.Circle;
 import codejam.utils.geometry.Line;
@@ -36,6 +38,43 @@ public class CircleTest {
 
         c = Angle.comparePolar(3, -3, -Math.PI - .03, Math.PI - .04);
         assertEquals(1, c);
+    }
+    
+    @Test
+    public void testTangent() {
+        Circle c = new Circle(10, 6, 3);
+        
+        Point C = c.getCenter();
+        Point P = new Point(6,8);
+        
+        Point[] tangentPoints = c.getPointsTangentToLine(P);
+        Point T = tangentPoints[0];
+        Point T2 = tangentPoints[1];
+        
+        Point vecP = P.translate(T).normalize();
+        Point vecC = C.translate(T).normalize();
+        
+        //Tangent TP is perpendicular to CT
+        double dot = Point.dotProduct(vecP, vecC);
+        
+        assertEquals(0, dot, 0.0000001);
+        
+        assertTrue( c.onCircle(T) );
+        assertTrue( c.onCircle(T2) );
+                
+        assertEquals( P.distance(T), P.distance(T2), 0.0001);
+        assertFalse(T.equals(T2));
+        //Intersection should be the same
+        /*
+        Point[] pts = c.getPointsIntersectingLine(new Line(P,T));
+        Point[] pts2 = c.getPointsIntersectingLine(new Line(P,T2));
+       
+        assertEquals(pts[0], pts[1]);
+        assertEquals(pts2[0], pts2[1]);
+        
+        assertEquals(T, pts[0]);
+        assertEquals(T2, pts2[0]);
+        */
     }
 
     @Test

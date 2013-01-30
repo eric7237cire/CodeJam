@@ -33,6 +33,42 @@ public class Circle {
 	    this.y = c.y;
 	    this.r = c.r;
 	}
+	
+	/**
+	 * 
+	 * @param p
+	 * @return both points tangent to circle and forming a line with p
+	 */
+	public Point[] getPointsTangentToLine(Point P) {
+	    Point C = getCenter();
+	    double disPC = getCenter().distance(P);
+	    
+	    // Line CT and CP are perpendicular
+	    double disTC = r;
+	    
+	    double disPT = Math.sqrt(disPC*disPC - disTC*disTC);
+	    
+	    
+	    
+	    double a = Math.asin(disTC / disPC);
+	    
+	    /*
+	     * These angles are equal, we have all sides so we can choose any
+	     */
+	    //double a2 = Math.acos(disPT / disPC);	    
+	    //double a3 = Math.atan(disTC / disPT);
+
+	    //Take vector PC, make it the correct length, rotate it, then
+	    //move it back to P
+	    Point T = C.translate(P).scale(disPT / disPC).
+	            rotate(-a).translate( P.scale(-1));
+	    Point T2 = C.translate(P).scale(disPT / disPC).
+                rotate(a).translate( P.scale(-1));
+	    
+	    
+	    return new Point[] {T, T2};
+	    
+	}
 
 	/**
 	 * The 2 points where the circles touch

@@ -1,6 +1,6 @@
 /*
 ID: eric7231
-PROG: ditch
+PROG: stall4
 LANG: C++
 */
 #include <iostream>
@@ -59,7 +59,6 @@ V getMapValue( const map<K,V>& aMap, const K& key, const V& defaultValue )
 
 const int notConnected = numeric_limits<int>::max();
 
-int op_decrease (int i) { return --i; }
 
 template<typename T>
 ostream& operator<<( ostream& os, const vector<T>& vec )
@@ -136,27 +135,27 @@ static int augment(EdgeList& edges, int source, int sink)
             indexOf(vu, edges[v]) = uv.dual
              */
             //c is node
+            int v = c;
             
-            while (c != source)
+            while (v != source)
             {
                 //Get edge index of edge on path to source
-                int e = prev[c];
+                /**
+                 During the BFS, uv.dual was stored,
+                 which is the index of vu in edges[v]
+                 */
+                int vuIndex = prev[v];
  
-                //Edge index of target node
-                int dual = edges[c][e].dual;
-                
-                
+                int uvIndex = edges[v][vuIndex].dual;
+                                
                 //Get node associated with edge e
-                c = edges[c][e].trg;
+                int u = edges[v][vuIndex].trg;
                 
-                //Maybe needs to take into account backward edges?
+                //Now we check from the edge (that is directed towards the sink)
                 bottleneckCap = min(bottleneckCap, 
-                    edges[c][dual].cap - edges[c][dual].flow);
-                
-                
-                cout << "bc Edge dual " << edges[c][dual] << endl;
-                cout << "Bcap " << bottleneckCap << endl;
-                
+                    edges[u][uvIndex].cap - edges[u][uvIndex].flow);
+                                
+                v = u;
                 
             }
             //bottleneckCap = 1;
@@ -176,12 +175,8 @@ static int augment(EdgeList& edges, int source, int sink)
                 c = edges[c][e].trg;
                 edges[c][dual].flow+=bottleneckCap;
                 
-                cout << "Edge dual " << edges[c][dual] << endl;
+               // cout << "Edge dual " << edges[c][dual] << endl;
                 
-				//Edges can go negative
-               // assert(edges[c][dual].flow >= 0 &&
-                 //   edges[c][dual].flow <= edges[c][dual].cap
-                 //   );
             }
             return bottleneckCap;
         }
@@ -201,61 +196,85 @@ static int augment(EdgeList& edges, int source, int sink)
     return 0;
 }
 
+void printEdges(const EdgeList& edges, int M, int N)
+{
+    FOR(from, 0, edges.size()) {
+        if (from >= 0 && from < M) {
+            cout << "From cow " << from+1 << endl;
+            FOR( eIdx, 0, edges[from].size() )
+            {
+                cout << " To stall " << edges[from][eIdx].trg+1-M
+                << edges[from][eIdx] << endl;
+            }
+        } else if (from >= M && from < N+M)
+        {
+            cout << "From stall " << from+1-M << endl;
+            FOR( eIdx, 0, edges[from].size() )
+            {
+                cout << " To sink? " << edges[from][eIdx].trg+1
+                << edges[from][eIdx] << endl;
+            }
+        } else {
+            cout << "From sink? " << from+1 << endl;
+            FOR( eIdx, 0, edges[from].size() )
+            {
+                cout << " To cow " << edges[from][eIdx].trg+1
+                << edges[from][eIdx] << endl;
+            }
+        }
+    }
+}
+
 int main() {
     
-    string finalMsg = "Begin the Escape execution at the Break of Dawn";
     
-	ofstream fout ("ditch.out");
-    ifstream fin ("ditch.in");
+	ofstream fout ("stall4.out");
+    ifstream fin ("stall4.in");
 	
     int N,M;
     
-    //# Edges N ; M sink ; 1 source
+    //N = stalls ; M = cows
     fin >> N >> M;
     
-    int from, to, cap;
-    EdgeList edges(M);
+    int from, to, cap, stalls, stallNode;
+    EdgeList edges(M+N+2);
     
-    FOR(i, 0, N)
+    int source = M+N;
+    int sink = M+N+1;
+    
+    //Each cow
+    FOR(cow, 0, M)
     {
-        fin >> from >> to >> cap;
-        add_edge(from-1, to-1, cap, edges);
+        fin >> stalls;
         
+        FOR(stall, 0, stalls)
+        {
+            fin >> stallNode;
+            assert(stallNode >= 1 && stallNode <= N);
+            add_edge(cow, stallNode-1+M, 1, edges);
+        }
+        
+        add_edge(source, cow, 1, edges);
     }
-
-	int source = 0;
-	int sink = M-1;
     
+    FOR(stall, 0, N)
+    {
+        add_edge(stall+M, sink, 1, edges);
+    }
+     
+    // printEdges(edges, M, N);
+     
     int total = 0;
     
-    FOR(from, 0, edges.size()) {
-        cout << "From node " << from << endl;
-        cout << edges[from] << endl;
-    }
     
-    int augAmt = augment(edges,source,sink);
-    total += augAmt;
-
-	FOR(from, 0, edges.size()) {
-        cout << "From node " << from << endl;
-        cout << edges[from] << endl;
-    }
-
-    while( augAmt > 0 )
+    int augAmt = 0;
+    while( (augAmt = augment(edges,source,sink)) > 0 )
     {
-        augAmt = augment(edges,source,sink);
-        cout << "Aug amt " << augAmt << endl;
-		FOR(from, 0, edges.size()) {
-        cout << "From node " << from << endl;
-        cout << edges[from] << endl;
-    }
+        
+        //printEdges(edges, M, N);
         total += augAmt;
     }
     
-    FOR(from, 0, edges.size()) {
-       // cout << "From node " << from << endl;
-      //  cout << edges[from] << endl;
-    }
     
     fout << total << endl;
 	

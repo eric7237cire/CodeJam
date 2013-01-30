@@ -158,6 +158,10 @@ public class Point implements Comparable<Point> {
         return u.getX() * v.getY() - u.getY() * v.getX();
     }
     
+    static public double dotProduct(Point u, Point v) {
+        return u.getX() * v.getX() + u.getY() * v.getY();
+    }
+    
     public Point normalize() {
         double len = new Point(0,0).distance(this);
         return new Point(getX() / len, getY() / len);
