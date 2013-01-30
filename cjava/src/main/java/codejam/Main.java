@@ -286,7 +286,7 @@ public class Main  {
         //Maybe do a doc TODO / comments
          //codejam.y2010.round_2.bacteria.Main m = new codejam.y2010.round_2.bacteria.Main(); 
 
-        // codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
+         codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
                   
          //2010 3
          
@@ -490,7 +490,7 @@ public class Main  {
          * idea -- see if the comparison made can be translated to how it actually changes the overall
          * expected value
          */
-        codejam.y2012.round_3.perfect_game.Main m = new codejam.y2012.round_3.perfect_game.Main();
+        //codejam.y2012.round_3.perfect_game.Main m = new codejam.y2012.round_3.perfect_game.Main();
         
         /**
          * 2012 Round 3

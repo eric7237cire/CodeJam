@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import codejam.utils.utils.DoubleComparator;
 
 import com.google.common.base.Preconditions;
+import com.google.common.math.DoubleMath;
 
 
 
@@ -33,6 +34,11 @@ public class Circle {
 	    this.r = c.r;
 	}
 
+	/**
+	 * The 2 points where the circles touch
+	 * @param circle2
+	 * @return
+	 */
     public Point[] getIntersection(Circle circle2) {
         Circle circle1 = this;
 
@@ -55,6 +61,12 @@ public class Circle {
 
     }
     
+    /**
+     * Given an intersection point of a circle, find the other one
+     * @param circle2
+     * @param intersectionPoint
+     * @return
+     */
     public Point getOtherIntersection(Circle circle2, Point intersectionPoint) {
         Circle circle1 = this;
         
@@ -315,7 +327,7 @@ angle = tan-1 (m)
 	    
 	    double rCalc = Math.sqrt(r2);
 	    
-	    return Math.abs(rCalc - r) < DOUBLE_TOLERANCE;
+	    return DoubleMath.fuzzyEquals( rCalc - r, 0, DOUBLE_TOLERANCE);
 	}
 	
 	public boolean contains(Circle c) {
