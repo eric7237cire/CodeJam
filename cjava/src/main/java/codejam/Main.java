@@ -13,7 +13,7 @@ public class Main  {
     public static void main(String args[]) throws Exception {
 
 
-        
+        //Main m = null;
         /**
          * 2008 emea semis -- problem 1
          * 
@@ -193,7 +193,7 @@ public class Main  {
         // codejam.y2009.double_sort_grid.Main m = new codejam.y2009.double_sort_grid.Main();
         
          //Network flow
-        codejam.y2009.round_final.wifi_towers.Main m = new codejam.y2009.round_final.wifi_towers.Main();
+       // codejam.y2009.round_final.wifi_towers.Main m = new codejam.y2009.round_final.wifi_towers.Main();
         
         //codejam.y2009.round_final.marbles.Main m = new codejam.y2009.round_final.marbles.Main();
         
@@ -486,8 +486,11 @@ public class Main  {
          * Probability Expected value until event happens.  see docs/2012/perfectGame.tex, sorting
          * 1.  Has a simulator / calculation of expected value that worked for the small
          * 2.  See solution explanation for the Greedy algorithm that works for Large
+         * 
+         * idea -- see if the comparison made can be translated to how it actually changes the overall
+         * expected value
          */
-        //codejam.y2012.round_3.perfect_game.Main m = new codejam.y2012.round_3.perfect_game.Main();
+        codejam.y2012.round_3.perfect_game.Main m = new codejam.y2012.round_3.perfect_game.Main();
         
         /**
          * 2012 Round 3

@@ -1,4 +1,4 @@
-package codejam.y2009.round_final.lights;
+package codejam.y2010.round_final.ying_yang;
 
 import java.util.List;
 

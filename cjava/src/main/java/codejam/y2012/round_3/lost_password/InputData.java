@@ -1,4 +1,4 @@
-package codejam.y2009.round_final.lights;
+package codejam.y2012.round_3.lost_password;
 
 import java.util.List;
 

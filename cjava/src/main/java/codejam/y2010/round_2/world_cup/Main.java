@@ -17,7 +17,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
     public Main() {
-        super("B",false,true,true);
+        super("B",true,true);
     }
 
     @Override

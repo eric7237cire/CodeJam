@@ -24,7 +24,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 TestCaseInputScanner<InputData> {
 
     public Main() {
-        super("B",false,true,true);
+        super("B",true,true);
     }
 
     final static Logger log = LoggerFactory.getLogger(Main.class);

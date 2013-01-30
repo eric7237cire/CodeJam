@@ -10,17 +10,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles
 {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    @Override
+    public Main()
+    {
+        super("A", true,false);
+    }
     public String[] getDefaultInputFiles()
     {
        // return new String[] { "sample.in" };
@@ -183,8 +188,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 return lhs > rhs ? 1 : -1;
             
             return Integer.compare(o1.index, o2.index);
-            
-                
         }
         
     }
@@ -192,7 +195,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     public void handleSmall(InputData in)
     {
         double curExpectedLen = getExpectedLength(in.levels);
-        simulate(in.levels);
+       // simulate(in.levels);
         
         log.debug("Starting expected len {}", curExpectedLen);
         
@@ -203,34 +206,40 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 swapLevels(in.levels, i, j);
                 double swpExpectedLen = getExpectedLength(in.levels);
                 
-                log.debug("i: {};{} j: {};{} cur: {} after swap: {}",i,in.levels[i].index,
-                        j,in.levels[j].index,curExpectedLen, swpExpectedLen);
+                //log.debug("i: {};{} j: {};{} cur: {} after swap: {}",i,in.levels[i].index,
+                  //      j,in.levels[j].index,curExpectedLen, swpExpectedLen);
                 
                 //no improvement, swap back
                 if (swpExpectedLen > curExpectedLen) {
-                    log.debug("No improvement");
+                  //  log.debug("No improvement");
                     swapLevels(in.levels, i, j);
                 } else if (swpExpectedLen == curExpectedLen && in.levels[i].index < in.levels[j].index){
-                    log.debug("Improvement only in indexes");
+                   // log.debug("Improvement only in indexes");
                     curExpectedLen = swpExpectedLen;
                 } else if (swpExpectedLen == curExpectedLen && in.levels[i].index > in.levels[j].index){
-                    log.debug("No improvement, index already lower");
+                 //   log.debug("No improvement, index already lower");
                     swapLevels(in.levels, i, j);
                 } else {
-                    log.debug("Improvement");
+                  //  log.debug("Improvement");
+                    int lhs = in.levels[i].L * in.levels[j].P;
+                    int rhs = in.levels[j].L * in.levels[i].P;
+                   // int diff = lhs-rhs;
+                    Preconditions.checkState(rhs > lhs);
+                    //Preconditions.checkState(DoubleMath.fuzzyCompare(diff,curExpectedLen-swpExpectedLen, 0.001) == 0);
                     curExpectedLen = swpExpectedLen;
                 }
             }
         }
     }
     
+    @SuppressWarnings("unused")
     public String handleCase(InputData in)
-    {
-               
-        //List<Level> levels = Lists.newArrayList(in.levels);
-        
-        Arrays.sort(in.levels, new LevelCompare());
-        
+    {               
+        if (2==1) {
+            handleSmall(in);
+        } else {
+            Arrays.sort(in.levels, new LevelCompare());
+        }
         StringBuffer r = new StringBuffer( String.format("Case #%d: ", in.testCase) );
         
         for(int i = 0; i < in.N; ++i) {

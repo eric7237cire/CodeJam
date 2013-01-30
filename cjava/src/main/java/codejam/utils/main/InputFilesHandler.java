@@ -11,7 +11,18 @@ public class InputFilesHandler implements DefaultInputFiles
     
     String[] inputFiles;
     
-    public InputFilesHandler(String letter,  boolean sample, boolean small, boolean large) {
+    public InputFilesHandler(String letter) {
+        List<String> inputFiles = Lists.newArrayList();
+        
+       
+            inputFiles.add("sample.in");
+        
+        
+        this.inputFiles = new String[inputFiles.size()];
+        this.inputFiles = inputFiles.toArray(this.inputFiles);
+    }
+    
+    public InputFilesHandler(String letter,  boolean small, boolean large) {
         List<String> inputFiles = Lists.newArrayList();
         if (small) {
             inputFiles.add(letter + "-small-practice.in");
@@ -19,10 +30,7 @@ public class InputFilesHandler implements DefaultInputFiles
         if (large) {
             inputFiles.add(letter + "-large-practice.in");
         }
-        if (sample) {
-            inputFiles.add("sample.in");
-        }
-        
+                
         this.inputFiles = new String[inputFiles.size()];
         this.inputFiles = inputFiles.toArray(this.inputFiles);
     }

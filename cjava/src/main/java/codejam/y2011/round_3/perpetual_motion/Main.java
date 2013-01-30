@@ -1,4 +1,4 @@
-package codejam.y2009.round_final.lights;
+package codejam.y2011.round_3.perpetual_motion;
 
 import java.util.Scanner;
 
