@@ -8,8 +8,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.math.DoubleMath;
-
 import codejam.utils.geometry.Angle;
 import codejam.utils.geometry.Circle;
 import codejam.utils.geometry.Line;
@@ -64,6 +62,21 @@ public class CircleTest {
                 
         assertEquals( P.distance(T), P.distance(T2), 0.0001);
         assertFalse(T.equals(T2));
+        
+        Line line = new Line(P, T);
+        
+        double distToLine = line.distanceToPoint(C);
+
+        assertEquals(c.getR(), distToLine, 0.00001);
+        
+        Line line2 = new Line(P, T2);
+        
+        distToLine = line2.distanceToPoint(C);
+
+        assertEquals(c.getR(), distToLine, 0.00001);
+        
+        line = null;
+        
         //Intersection should be the same
         /*
         Point[] pts = c.getPointsIntersectingLine(new Line(P,T));

@@ -182,6 +182,38 @@ public class Line {
 
     }
     
+    /**
+     * 
+     * Are p1 and p2 on the same side of line definde by a and b ?
+     * @param p1
+     * @param p2
+     * @param a
+     * @param b
+     * @return
+     */
+    public static boolean sameSide(Point p1, Point p2, Point a, Point b) {
+        double cp = Point.crossProduct(b.translate(a), p1.translate(a));
+        double cp2 = Point.crossProduct(b.translate(a), p2.translate(a));
+        if (cp * cp2 >= 0)
+            return true;
+        else
+            return false;
+    }
+    
+    /**
+     * 
+     * @param a segment start
+     * @param b segment end
+     * @return 
+     */
+    public Point intersectsSegment(Point a, Point b) {
+        Point intersection = getIntersection(new Line(a,b));
+        
+        if ( isBetween(a, b, intersection) )
+            return intersection;
+        
+        return null;
+    }
     
     public Line getLinePerpendicular(Point p) {
         //Vector current line
@@ -225,6 +257,17 @@ public class Line {
         
         return p;
     }
+    
+    public double distanceToPoint(Point P) {
+        Point vecP = P.translate(p1);
+        Point vecB = p2.translate(p1);
+        
+        double cross = Point.crossProduct(vecP,vecB);
+        
+        double d = p2.distance(p1);
+        
+        return Math.abs(cross / d);
+    }
 
 	@Override
 	public int hashCode() {
@@ -263,36 +306,5 @@ public class Line {
 	    return "[ " + p1.toString() + ", " + p2.toString() + " ]";
 	}
     
-	/**
-	 * 
-	 * Are p1 and p2 on the same side of line definde by a and b ?
-	 * @param p1
-	 * @param p2
-	 * @param a
-	 * @param b
-	 * @return
-	 */
-    public static boolean sameSide(Point p1, Point p2, Point a, Point b) {
-        double cp = Point.crossProduct(b.translate(a), p1.translate(a));
-        double cp2 = Point.crossProduct(b.translate(a), p2.translate(a));
-        if (cp * cp2 >= 0)
-            return true;
-        else
-            return false;
-    }
-    
-    /**
-     * 
-     * @param a segment start
-     * @param b segment end
-     * @return 
-     */
-    public Point intersectsSegment(Point a, Point b) {
-        Point intersection = getIntersection(new Line(a,b));
-        
-        if ( isBetween(a, b, intersection) )
-            return intersection;
-        
-        return null;
-    }
+	
 }

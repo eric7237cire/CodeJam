@@ -19,3 +19,5 @@ stamps -- postage stamp problem related to frobenius problem
 ditch -- flow
 
 cowCrpyt -- revisit using suffix tree / linked list
+
+fence4 -- geometry

@@ -73,7 +73,7 @@ public class Main  {
          *
          * 1.  TODO Do reverse BFS search from rainbow trees
          */
-       // codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
+        codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
         
         // Iteratively guessing a code sequence, binary / using incomplete information / assumptions
        // codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
@@ -197,6 +197,8 @@ public class Main  {
         
         //codejam.y2009.round_final.marbles.Main m = new codejam.y2009.round_final.marbles.Main();
         
+     //   codejam.y2009.round_final.lights.Main m = new codejam.y2009.round_final.lights.Main();
+        
         /**
          * 2009 finals problem 5.
          * 
@@ -286,7 +288,8 @@ public class Main  {
         //Maybe do a doc TODO / comments
          //codejam.y2010.round_2.bacteria.Main m = new codejam.y2010.round_2.bacteria.Main(); 
 
-         codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
+        //TODO comments
+         //codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
                   
          //2010 3
          
