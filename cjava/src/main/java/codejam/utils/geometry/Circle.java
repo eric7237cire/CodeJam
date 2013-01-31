@@ -135,6 +135,11 @@ public class Circle {
     }
     
     //http://en.wikipedia.org/wiki/Circular_segment
+    /**
+     * Will find the area that is <= half or the area of the circle
+     * @param segmentLength
+     * @return
+     */
     public double findSegmentArea(double segmentLength) {
 
         double arg = (2 * r * r - segmentLength * segmentLength)

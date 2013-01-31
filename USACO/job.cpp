@@ -1,6 +1,6 @@
 /*
 ID: eric7231
-PROG: stall4
+PROG: job
 LANG: C++
 */
 #include <iostream>
@@ -228,55 +228,104 @@ void printEdges(const EdgeList& edges, int M, int N)
 int main() {
     
     
-	ofstream fout ("stall4.out");
-    ifstream fin ("stall4.in");
+	ofstream fout ("job.out");
+    ifstream fin ("job.in");
 	
-    int N,M;
+    /*
+    	 Three space-separated integers:
+N, the number of jobs (1<=N<=1000).
+M1, the number of type "A" machines (1<=M1<=30)
+M2, the number of type "B" machines (1<=M2<=30)
+Line 2..etc:	 M1 integers that are the job processing times of each type "A" machine (1..20) followed by M2 integers, the job processing times of each type "B" machine (1..20).
+
+*/
+    int N,M1,M2;
     
-    //N = stalls ; M = cows
-    fin >> N >> M;
-    
-    int from, to, cap, stalls, stallNode;
-    EdgeList edges(M+N+2);
-    
-    int source = M+N;
-    int sink = M+N+1;
-    
-    //Each cow
-    FOR(cow, 0, M)
-    {
-        fin >> stalls;
-        
-        FOR(stall, 0, stalls)
-        {
-            fin >> stallNode;
-            assert(stallNode >= 1 && stallNode <= N);
-            add_edge(cow, stallNode-1+M, 1, edges);
-        }
-        
-        add_edge(source, cow, 1, edges);
-    }
-    
-    FOR(stall, 0, N)
-    {
-        add_edge(stall+M, sink, 1, edges);
-    }
-     
-    // printEdges(edges, M, N);
-     
-    int total = 0;
-    
-    
-    int augAmt = 0;
-    while( (augAmt = augment(edges,source,sink)) > 0 )
-    {
-        
-        //printEdges(edges, M, N);
-        total += augAmt;
-    }
-    
-    
-    fout << total << endl;
-	
+   fin >> N >> M1 >> M2;
+
+   vi mA_time(M1);
+   vi mA_avail(M1, 0);
+   
+   vi finish_a(N);
+   vi finish_b(N);
+   
+   FOR(a, 0, M1)
+   {
+       fin >> mA_time[a];
+   }
+
+   vi mB_time(M2);
+   vi mB_avail(M2, 0);
+   
+   FOR(b, 0, M2)
+   {
+       fin >> mB_time[b];
+   }
+
+
+   //Start a greedy solution increasing on the number of jobs.
+   int finish_allA = 0;
+   int finish_all = 0;
+   
+   
+   //Calculate the time it takes to finish with all the A machines.
+   FOR(j, 0, N)
+   {
+       finish_a[j] = numeric_limits<int>::max();
+       int usedA = -1;
+       
+       FOR(a, 0, M1)
+       {
+           int c = mA_avail[a] + mA_time[a];
+
+           if (c < finish_a[j])
+           {
+               finish_a[j] = c;
+               usedA = a;
+           }
+       }
+
+       //Mark that we used the bth machine A for job a.
+       mA_avail[usedA] += mA_time[usedA];
+
+       //Check if this is greater than our smallest time.
+       finish_allA = max(finish_allA, finish_a[j]);
+   }
+
+   //Calculate the time it will take to finish all the B machines (from the end of time).
+   FOR(j, 0, N)
+   {
+       finish_b[j] = numeric_limits<int>::max();
+       int usedB = -1;
+       
+       FOR(b, 0, M2)
+       {
+           int c = mB_avail[b] + mB_time[b];
+
+           if (c < finish_b[j])
+           {
+               finish_b[j] = c;
+               usedB = b;
+           }
+       }
+
+       //Mark that we used the bth machine A for job a.
+       mB_avail[usedB] += mB_time[usedB];
+   }
+
+   //We now have the fastest times it takes for all the jobs to get through step A, and separately step B. Pair them up, the shortest to the longest, and record the shortest time for output.
+   sort (all(finish_a) );
+   sort (all(finish_b) );
+   reverse( all(finish_b) );
+
+   FOR(j, 0, N)
+   {
+       if (finish_a[j] + finish_b[j] > finish_all)
+           finish_all = finish_a[j] + finish_b[j];
+   }
+
+   fout << finish_allA << " " << finish_all << endl;
+   
+
     return 0;
 }
