@@ -23,6 +23,7 @@ import codejam.utils.utils.DoubleFormat;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.math.DoubleMath;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
@@ -61,13 +62,84 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return in;
     }
 
+    public static class Triangle {
+        Circle intCircle;
+        
+        Point p1; //light
+        Point p2;
+        Point p3;
+        
+        
+        
+        public Triangle(Circle intCircle, Point p1, Point p2, Point p3) {
+            super();
+            this.intCircle = intCircle;
+            this.p1 = p1;
+            this.p2 = p2;
+            this.p3 = p3;
+            Preconditions.checkArgument(p1 != null);
+            Preconditions.checkArgument(p2 != null);
+            Preconditions.checkArgument(p3 != null);
+        }
+
+
+        double getArea() {
+            double tArea = Polygon.area(Arrays.asList(p1,p2,p3));
+            
+            if (intCircle != null) {
+                double segDist = p2.distance(p3);
+                
+                double segArea = intCircle.findSegmentArea(segDist);
+                
+                return tArea - segArea;
+            }
+            
+            return tArea;
+            
+            
+        }
+    }
   
-    @Override
     public String handleCase(InputData in) {
+        
+        
+        //List<Triangle> redTriangles = getTriangles(in.redLight.toPoint(), in);
+        List<Triangle> redTriangles = Lists.newArrayList();
+        
+        double redArea = 0;
+        
+        for(Triangle redTriangle : redTriangles) {
+            redArea += redTriangle.getArea();
+        }
+        
+        List<Triangle> greenTriangles = getTriangles(in.greenLight.toPoint(), in);
+        
+        double greenArea = 0;
+        
+        for(Triangle greenTriangle : greenTriangles) {
+            greenArea += greenTriangle.getArea();
+        }
+        
+        StringBuffer sb = new StringBuffer();
+        sb.append(String.format("Case #%d:", in.testCase));
+        sb.append(0).append("\n");
+        sb.append(redArea).append("\n");
+        sb.append(greenArea).append("\n");
+        sb.append(0);
+        return sb.toString();
+      //9985.392182804038400000
+    }
+    
+    public List<Triangle> getTriangles(Point light, InputData in) {
        
         double area = 0;
         
-        List<Ray> rays = getLines(in.redLight.toPoint(), in);
+        List<Ray> rays = getLines(light, in);
+        for(int r1 = 0; r1 < rays.size(); ++r1) {
+            log.debug("Ray {} = {}", r1, rays.get(r1));
+        }
+        List<Triangle> triList = Lists.newArrayList();
+        
         for(int r1 = 0; r1 < rays.size(); ++r1) {
             int r2 = r1 == rays.size() - 1 ? 0 : r1+1;
                         
@@ -78,17 +150,21 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
         
             if (ray1.pillar == null && ray2.pillar == null) {
-                //2 corners
-                List<Point> points =
-                         Arrays.<Point>asList(corners[ray1.cornerIdx],
-                                corners[ray2.cornerIdx],
-                                in.redLight.toPoint());
-                double tArea = Polygon.area(points);
-                area += tArea;
-                log.debug("Adding corner to corner {}", tArea);
+                /**
+                 * Both rays hit corners
+                 */
+                triList.add(new Triangle(null,
+                        light,
+                        corners[ray1.cornerIdx],
+                                corners[ray2.cornerIdx]));
+                log.debug("Adding corner to corner {}", triList.get(triList.size()-1));
             } else if (ray1.pillar != null && ray2.pillar == null) {
-                
-                //Find intersection with wall
+
+                /**
+                 * ray1 tangent to circle1, ray2 hits a corner.
+                 * 
+                 * Need the previous corner to get the line represeting the wall
+                 */
                 
                 //Clockwise corner
                 int prevCornerIdx = ray2.cornerIdx == 0 ? 3 : ray2.cornerIdx - 1;
@@ -96,88 +172,62 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 Point wallInt = ray1.line.getIntersection(wall);
                 
-                List<Point> points =
-                        Arrays.<Point>asList(
+                triList.add(new Triangle(null,light, 
                                 wallInt,
-                               corners[ray2.cornerIdx],
-                               in.redLight.toPoint());
-                double tArea = Polygon.area(points);
+                               corners[ray2.cornerIdx]));
                 
                 log.debug("Adding circle/corner.  wall {} intersection {} area {}",
-                        wall, wallInt, tArea);
-               
-               area += tArea;
-               
+                        wall, wallInt);
                 
             } else if (ray1.pillar == null && ray2.pillar != null) {
                 
-                //Find intersection with wall
-                
+                /**
+                 * ray1 hits a wall, ray2 tangent to circle2.
+                 * 
+                 * This time we need the next corner
+                 */
                 //Counter Clockwise corner (+ degree direction)
                 int nextCornerIdx = ray1.cornerIdx == 3 ? 0 : ray1.cornerIdx + 1;
                 Line wall = new Line(corners[nextCornerIdx], corners[ray1.cornerIdx]);
                 
                 Point wallInt = ray2.line.getIntersection(wall);
                 
-                List<Point> points =
-                        Arrays.<Point>asList(
+                triList.add(new Triangle(null,light,
                                 wallInt,
-                               corners[ray1.cornerIdx],
-                               in.redLight.toPoint());
-                double tArea = Polygon.area(points);
+                               corners[ray1.cornerIdx]));
                 
-                log.debug("Adding corner/circle.  wall {} intersection {} area {}",
-                        wall, wallInt, tArea);
-               
-               area += tArea;
-               
+                log.debug("Adding corner/circle.  wall {} intersection {}",
+                        wall, wallInt);
                 
             } else if (Objects.equal(ray1.pillar, ray2.pillar)) {
+                
+                /**
+                 * Same circle
+                 */
                 Point T1 = ray1.line.getP2();
                 Point T2 = ray2.line.getP2();
                 
-                List<Point> points =
-                        Arrays.<Point>asList(
-                                T1,
-                               T2,
-                               in.redLight.toPoint());
-               double tArea = Polygon.area(points);
-               
-               double segDist = T1.distance(T2);
-               
-               double segArea = ray1.pillar.findSegmentArea(segDist);
-               
-               log.debug("Adding same circle {}", tArea-segArea);
-               area += tArea - segArea;
+                triList.add(new Triangle(ray1.pillar, light, T1, T2));
+                
+               log.debug("Adding same circle ");
             } else if (ray1.pillar != null && ray2.pillar != null && 
                     !(Objects.equal(ray1.pillar, ray2.pillar)) &&
-                    ray2.first
+                    ray2.first && ray1.first
                     )
             {
                 /**
-                 * Ray2 is first, so it must intersect circle 1 
+                 * Ray2 is first on it's circle, so it must intersect circle 1 
                  */
                 Point I2 = ray1.pillar.getClosestPointIntersectingLine(ray2.line);
                
                 Point T1 = ray1.line.getP2();
                 
-                List<Point> points =
-                        Arrays.<Point>asList(
-                               T1,
-                               I2,                               
-                               in.redLight.toPoint());
-               double tArea = Polygon.area(points);
-               
-               double segDist = I2.distance(T1);
-               
-               double segArea = ray1.pillar.findSegmentArea(segDist);
-               
-               log.debug("Adding different circle {}", tArea-segArea);
-               area += tArea - segArea;
+                triList.add(new Triangle(ray1.pillar, light, T1, I2));
+               log.debug("Adding different circle " );
         
-            }if (ray1.pillar != null && ray2.pillar != null && 
+            } else if (ray1.pillar != null && ray2.pillar != null && 
                     !(Objects.equal(ray1.pillar, ray2.pillar)) &&
-                    !ray2.first
+                    !ray2.first && !ray1.first
                     )
             {
                 /**
@@ -187,27 +237,32 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 Point T2 = ray2.line.getP2();
                 
-                List<Point> points =
-                        Arrays.<Point>asList(
-                               T2,
-                               I1,                               
-                               in.redLight.toPoint());
-               double tArea = Polygon.area(points);
+                triList.add(new Triangle(ray1.pillar, light, I1, T2));
                
-               double segDist = I1.distance(T2);
-               
-               double segArea = ray1.pillar.findSegmentArea(segDist);
-               
-               log.debug("Adding different circle {}", tArea-segArea);
-               area += tArea - segArea;
-        
+               log.debug("Adding different circle " );
+            } else if (ray1.pillar != null && ray2.pillar != null && 
+                    !(Objects.equal(ray1.pillar, ray2.pillar)) &&
+                    !ray1.first && ray2.first
+                    )
+            {
+                /**
+                 * Both rays hit a circle behind them
+                 */
+                log.debug("Circle behind");
+                Preconditions.checkState(ray1.circleBehind.equals(ray2.circleBehind));
+                
+                Point I1 = ray1.pointBehind;
+                Point I2 = ray2.pointBehind;
+                
+                triList.add(new Triangle(ray1.circleBehind, light,I1,I2));
             } else {
                 log.debug("Case not covered");
             }
         }
         
-        //9985.392182804038400000
-        return String.format("Case #%d: %s", in.testCase, DoubleFormat.df7.format(area));
+        return triList;
+        
+        
     }
     
     
@@ -226,12 +281,20 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         double ang;
         Point light;
         
+        
         Circle pillar;
         /**
-         * There are 2 rays, first means that it comes
+         * There are 2 rays to each pillar, first means that it comes
          * first in the ordering
          */
         boolean first; 
+        
+        /**
+         * What the ray hits afterwards
+         */
+        Circle circleBehind;
+        Point pointBehind;
+        double distBehind;
         
         int cornerIdx;
 
@@ -247,6 +310,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             this.ang = getAng(getVec(line));
             this.light = light;
             this.pillar = pillar;
+            
+            this.distBehind = Double.MAX_VALUE;
         }
         
         public Ray(Point light, int cornerIndex) {
@@ -297,6 +362,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
             for(Circle c : in.pillars) {
                 
+                //ONly check other pillars
                 if (ray.pillar != null && ray.pillar.equals(c))
                     continue;
                 
@@ -314,15 +380,28 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 double intDis = Math.min(d1, d2);
                 
-                //Don't care if it is behind
-                if (!line.onLineSegment(intersection))
+                double intAng = getAng(getVec(new Line(p, intersection)));
+                
+                //Don't care if it is behind the ray
+                //if (!line.onLineSegment(intersection))
+                if (!DoubleMath.fuzzyEquals(intAng, ray.ang, 0.00001)) {
+                    //TODO test this case
+                    Preconditions.checkArgument(DoubleMath.fuzzyEquals(Math.PI,Math.abs(intAng-ray.ang), 0.00001));
                     continue;
+                }
                 
                 if (intDis < lineLen) {
                     log.debug("Removing line {} to pillar {}, intersection with circle {} at {} was closer",
                             line, ray.pillar, c, intersection);
                     lineIt.remove();
                     continue rayLoop;
+                }
+                
+                //Find the smallest distance > lineLen
+                if (ray.distBehind > intDis) {
+                    ray.distBehind = intDis;
+                    ray.pointBehind = intersection;
+                    ray.circleBehind = c;
                 }
             }
         }
@@ -334,7 +413,19 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             public int compare(Ray o1, Ray o2)
             {
                 
-                return Double.compare(o1.ang,o2.ang);
+                int angCmp = DoubleMath.fuzzyCompare(o1.ang,o2.ang, 0.000001);
+                
+                if (angCmp == 1) {
+                    //Can be the case that line is tangent to 2 circles in the same place,
+                    //so the tie breaker is the polar angle of the light and the centers of the pillars
+                    double aC1 = getAng(getVec(new Line(o1.line.getP1(), o1.pillar.getCenter())));
+                    
+                    double aC2 = getAng(getVec(new Line(o2.line.getP1(), o2.pillar.getCenter())));
+                    
+                    return DoubleMath.fuzzyCompare(aC1, aC2, 0.000001);
+                } else {
+                    return angCmp;
+                }
             }
             
         });
