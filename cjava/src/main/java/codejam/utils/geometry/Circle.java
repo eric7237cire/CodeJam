@@ -290,7 +290,7 @@ Point[] ret = handleBaseCasesPointsIntersectingLineOriginatingAtP(p);
 	    
 	}
 
-    public Point[] getPointsIntersectingLine(Line l) {
+    public Point[] getPointsIntersectingLineOld(Line l) {
 
         double m = l.getM();
         double b = l.getB();
@@ -305,6 +305,56 @@ Point[] ret = handleBaseCasesPointsIntersectingLineOriginatingAtP(p);
 
         return new Point[] { l.getPointGivenX(x1), l.getPointGivenX(x2) };
 
+    }
+    
+    public Point[] getPointsIntersectingLine(Line l) {
+        //Move circle to origin
+        double x2 = l.getP2().getX() - x;
+        double y2 = l.getP2().getY() - y;
+        double x1 =  l.getP1().getX() - x;
+        double y1 =  l.getP1().getY() - y;
+        double dx = x2-x1;
+        double dy = y2-y1;
+        double dr = Math.sqrt(dx*dx+dy*dy);
+        double D = x1*y2-x2*y1;
+        
+       
+        double disc =r*r*dr*dr-D*D;
+        if (disc < 0)
+            return null;
+        
+        double discSqRt = Math.sqrt(disc);
+        double intX1 = x+ (D*dy+sgn(dy)*dx*discSqRt) / (dr*dr);
+        double intY1 = y+ (-D*dx+Math.abs(dy) * discSqRt) / (dr*dr);
+        
+        double intX2 = x+ (D*dy-sgn(dy)*dx*discSqRt) / (dr*dr);
+        double intY2 = y+ (-D*dx-Math.abs(dy) * discSqRt) / (dr*dr);
+        
+        return new Point[] { new Point(intX1, intY1), new Point(intX2, intY2) };
+    }
+    
+    public Point getClosestPointIntersectingLine(Line l) {
+        Point[] intPoints = getPointsIntersectingLine(l);
+        
+        if (intPoints == null)
+            return null;
+        
+        Point p = l.getP1();
+        
+        double d1 = p.distance(intPoints[0]);
+        double d2 = p.distance(intPoints[1]);
+        
+        //only care about the closer one
+        Point intersection = d1 < d2 ? intPoints[0] : intPoints[1];
+        
+        return intersection;
+    }
+    
+    
+    private static int sgn(double x) {
+        if (x < 0)
+            return -1;
+        return 1;
     }
 	
 	private Point[] buildCloseFar(Point a, Point b, Point ref) {

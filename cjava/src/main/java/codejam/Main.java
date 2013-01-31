@@ -158,7 +158,7 @@ public class Main  {
          //codejam.y2009.round_2.stock_charts.Main m = new codejam.y2009.round_2.stock_charts.Main();
         
         //Hardcore circle geometry / polar coordinates
-         codejam.y2009.round_2.watering_plants.Main m = new codejam.y2009.round_2.watering_plants.Main();
+     //    codejam.y2009.round_2.watering_plants.Main m = new codejam.y2009.round_2.watering_plants.Main();
          
          //Round 3 -- 2009
         //Grid shortest path
@@ -197,7 +197,7 @@ public class Main  {
         
         //codejam.y2009.round_final.marbles.Main m = new codejam.y2009.round_final.marbles.Main();
         
-     //   codejam.y2009.round_final.lights.Main m = new codejam.y2009.round_final.lights.Main();
+        codejam.y2009.round_final.lights.Main m = new codejam.y2009.round_final.lights.Main();
         
         /**
          * 2009 finals problem 5.

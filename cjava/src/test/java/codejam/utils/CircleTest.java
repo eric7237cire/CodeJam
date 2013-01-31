@@ -39,6 +39,32 @@ public class CircleTest {
     }
     
     @Test
+    public void testIntersection() {
+        Circle c = new Circle(10, 6, 3);
+        
+        Line l = new Line( new Point(3.9, 8), new Point(20, 1.3));
+        
+        Point[] pts = c.getPointsIntersectingLine(l);
+        
+        Point[] pts2 = c.getPointsIntersectingLineOld(l);
+        
+        assertTrue(c.onCircle(pts[0]) && l.onLine(pts[0]));
+        assertTrue(c.onCircle(pts[1]) && l.onLine(pts[1]));
+        assertFalse(pts[0].equals(pts[1]));
+        
+        
+        l = new Line( new Point(10,0), new Point(10, 1));
+        
+        pts = c.getPointsIntersectingLine(l);
+        pts2 = c.getPointsIntersectingLineOld(l);
+        
+        assertTrue(c.onCircle(pts[0]) && l.onLine(pts[0]));
+        assertTrue(c.onCircle(pts[1]) && l.onLine(pts[1]));
+        assertFalse(pts[0].equals(pts[1]));
+        
+    }
+    
+    @Test
     public void testTangent() {
         Circle c = new Circle(10, 6, 3);
         
