@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.geometry.Circle;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.CombinationIterator;
@@ -25,8 +26,14 @@ import codejam.utils.utils.CombinationIterator;
 import com.google.common.base.Preconditions;
 
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 
+    public Main() {
+        
+        super("D", true,true);
+    }
+
+    
 	Display d;
 	
 	public void display(InputData input) {
@@ -105,6 +112,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 				long plantsInsideBitSet = 0L;
 				int plantsCount = 0;
 
+				/**
+				 * Calculate which plants are inside
+				 */
 				for (int plant = 0; plant < n; ++plant) {
 					if (sprinkler.contains(plants.get(plant))) {
 						plantsInside.add(plant);
@@ -194,10 +204,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
 	
 
-	public Main() {
-		
-
-	}
 
 	final static Logger log = LoggerFactory.getLogger(Main.class);
 

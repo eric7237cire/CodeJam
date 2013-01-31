@@ -71,9 +71,9 @@ public class Main  {
          * 2008 amer semis -- problem 1
          * Tree traversal depth first
          *
-         * 1.  TODO Do reverse BFS search from rainbow trees
+         * 1.  A reverse BFS search 
          */
-        codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
+       // codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
         
         // Iteratively guessing a code sequence, binary / using incomplete information / assumptions
        // codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
@@ -158,7 +158,7 @@ public class Main  {
          //codejam.y2009.round_2.stock_charts.Main m = new codejam.y2009.round_2.stock_charts.Main();
         
         //Hardcore circle geometry / polar coordinates
-         //codejam.y2009.round_2.watering_plants.Main m = new codejam.y2009.round_2.watering_plants.Main();
+         codejam.y2009.round_2.watering_plants.Main m = new codejam.y2009.round_2.watering_plants.Main();
          
          //Round 3 -- 2009
         //Grid shortest path
@@ -289,6 +289,12 @@ public class Main  {
          //codejam.y2010.round_2.bacteria.Main m = new codejam.y2010.round_2.bacteria.Main(); 
 
         //TODO comments
+        /**
+         * Optimize  2x
+         * Go through again
+         * 
+         * TODO 2 theorectical solutions using inversions
+         */
          //codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
                   
          //2010 3

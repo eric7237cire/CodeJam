@@ -19,21 +19,18 @@ import codejam.utils.geometry.Point;
 import codejam.utils.geometry.PointInt;
 import codejam.utils.geometry.Polygon;
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
-    @Override
-    public String[] getDefaultInputFiles() {
-        return new String[] { "D-small-practice.in", "D-large-practice.in" };
-    }
     
     public Main() {
-        super();
+        super("D", false, true);
     }
     
     final static Logger log = LoggerFactory.getLogger(Main.class);
@@ -42,7 +39,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         Circle c;
         double polarAngle;
 
-        public CircleWithAngle(Circle c, double polarAngle, Point bucket) {
+        public CircleWithAngle(Circle c, double polarAngle) {
             super();
             this.c = c;
             this.polarAngle = polarAngle;
@@ -89,6 +86,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
         //double ans = DivideConq.findMinPerimTriangle(input.points);
         for(PointInt bucketPos : input.bucketPositions) {
+            
+            /**
+             * Circles with centers where the goats are and the radius necesary to reach the buckets
+             */
             Circle[] circles = new Circle[input.goatPolePositions.length];
             for(int gp = 0; gp < input.N; ++gp) {
                 PointInt goatPos = input.goatPolePositions[gp];
@@ -97,13 +98,18 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
             CircleWithAngle[] circlesWithpolarAngles = new CircleWithAngle[input.N];
 
+            
+            /**
+             * For each circle, calculate angle from bucket (where all circles intersect)
+             * to circle
+             */
             for (int c = 0; c < circles.length; ++c) {
                 double x = circles[c].getX() - bucketPos.getX();
                 double y = circles[c].getY() - bucketPos.getY();
 
                 double ang = Math.atan2(y, x);
                 circlesWithpolarAngles[c] = new CircleWithAngle(circles[c],
-                        ang, new Point(bucketPos));
+                        ang);
      
                 /*
                 log.debug("Angle for circle {} : {} \n is rad {} deg {}." +
@@ -159,7 +165,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             } else {
                 
                 //We need to check one more case.  If the min is in the 2nd quadrant
-                //and max is in the 3rd.  Our ordering will be off.  We look for a
+                //and max is in the 3rd. then the ordering will be off.  We look for a
                 //jump of pi.  The jump goes past the 4th and 1st quadrants.
                 
                 //We do not need additional checks because if there is a jump more than pie, all the points
