@@ -1,5 +1,7 @@
 package codejam.utils.geometry;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -138,56 +140,23 @@ public class Triangle {
         cx /= ret.size();
         cy /= ret.size();
         
-        Point center = new Point(cx,cy);
+        final Point center = new Point(cx,cy);
         
-       List<Point> retList = Lists.newArrayList();
+       List<Point> retList = Lists.newArrayList(ret);
         
-       for(Point p : ret) {
-           if (retList.size() < 2) {
-               retList.add(p);
-               continue;
-           }
+       //Order by angle with center
+       Collections.sort(retList,new Comparator<Point>(){
+
+        @Override
+        public int compare(Point o1, Point o2)
+        {
+            return Double.compare(o1.translate(center).polarAngle(),
+                    o2.translate(center).polarAngle());
+        }
            
-           Point newVec = p.translate(center);
-           boolean added = false;
-           
-           for(int pIdx = 0; pIdx < retList.size(); ++pIdx) {
-               
-               Point prevP = retList.get( pIdx - 1 < 0 ? retList.size()-1 : pIdx - 1);
-               Point lP = retList.get(pIdx);
-               Point vec = lP.translate(center);
-               Point prevVec = prevP.translate(center);
-               
-               //Previous point must be counter clockwise, next point clockwise (ie went too far, so new 
-               //point goes before current
-               
-               //If we find a point that is clockwise, the point goes there
-               if (Point.crossProduct(vec,newVec) < 0 && Point.crossProduct(prevVec,newVec) > 0) {
-                   retList.add(pIdx, p);
-                   added = true;
-                   break;
-               }
-           }
-           
-           Preconditions.checkState(added);
-           if (!added) {
-               retList.add(p);
-           }
-       }
+       });
        
-       /*
-       for(int p1 = 0; p1 < retList.size(); ++p1) {
-           int p2 = p1 + 1;
-           if (p2 == retList.size())
-               p2 = 0;
-           
-           Point p1Vec = retList.get(p1).translate(center);
-           Point p2Vec = retList.get(p2).translate(center);
-           
-           Preconditions.checkState(Point.crossProduct(p1Vec,p2Vec) > 0);
-           
-       }*/
-       
+          
         return retList;
         
     }

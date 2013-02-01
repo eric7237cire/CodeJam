@@ -167,6 +167,10 @@ public class Point implements Comparable<Point> {
         return u.getX() * v.getX() + u.getY() * v.getY();
     }
     
+    public double polarAngle() {
+        return Math.atan2(getY(), getX());
+    }
+    
     public Point normalize() {
         double len = new Point(0,0).distance(this);
         return new Point(getX() / len, getY() / len);

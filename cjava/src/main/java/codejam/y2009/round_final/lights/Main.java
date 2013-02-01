@@ -102,6 +102,47 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             ", p1=" + p1 + ", p2=" + p2 + ", p3=" + p3 + "]";
         }
     }
+    
+    public double getAreaPolygonIntersectCircle(List<Point> polygon, Circle circle)
+    {
+        List<Point> clipped = Lists.newArrayList();
+        List<Point> tanPoints = Lists.newArrayList();
+        
+        for(int p1Idx = 0; p1Idx < polygon.size(); ++p1Idx) {
+            int p2Idx = p1Idx + 1;
+            if (p2Idx >= polygon.size())
+                p2Idx = 0;
+            
+            Point p1 = polygon.get(p1Idx);
+            Point p2 = polygon.get(p2Idx);
+            
+            double d1ToCenter = p1.distance(circle.getCenter());
+            double d2ToCenter = p2.distance(circle.getCenter());
+            
+            if (DoubleMath.fuzzyCompare(d1ToCenter,circle.getR(),0.0001) >= 0) {
+                clipped.add(p1);
+            }
+            if (DoubleMath.fuzzyCompare(d2ToCenter,circle.getR(),0.0001) >= 0) {
+                //clipped.add(p2);
+            }
+            if (DoubleMath.fuzzyCompare(d1ToCenter,circle.getR(),0.0001) == 0) {
+                tanPoints.add(p1);
+            }
+            if (DoubleMath.fuzzyCompare(d2ToCenter,circle.getR(),0.0001) == 0) {
+              //   tanPoints.add(p2);
+            }
+            
+            
+        }
+        
+        Preconditions.checkState(tanPoints.size() == 2);
+        
+        double pArea = Polygon.area(clipped);
+        double segDistance = tanPoints.get(0).distance(tanPoints.get(1));
+        double segArea = circle.findSegmentArea(segDistance);
+        
+        return pArea - segArea;
+    }
   
     public String handleCase(InputData in) {
         
@@ -133,6 +174,14 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     continue;
                 }
                 
+                //For now ignore this case
+                if (red.intCircle != null && red.intCircle.equals(green.intCircle)) {
+                    double quasiArea = getAreaPolygonIntersectCircle(pts,red.intCircle);
+                    yellowArea += quasiArea;
+                    continue;
+                    
+                }
+                
                 double polyArea = Polygon.area(pts);
                 yellowArea += polyArea;
             }
@@ -141,9 +190,15 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         redArea -= yellowArea;
         greenArea -= yellowArea;
         
+        double blackArea = 10000 - redArea-greenArea-yellowArea;
+        
+        for(Circle pillar : in.pillars) {
+            blackArea -= pillar.getArea();
+        }
+        
         StringBuffer sb = new StringBuffer();
         sb.append(String.format("Case #%d:\n", in.testCase));
-        sb.append(10000-redArea-greenArea-yellowArea).append("\n");
+        sb.append(blackArea).append("\n");
         sb.append(redArea).append("\n");
         sb.append(greenArea).append("\n");
         sb.append(yellowArea);
