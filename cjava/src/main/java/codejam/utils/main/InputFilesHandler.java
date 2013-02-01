@@ -11,7 +11,7 @@ public class InputFilesHandler implements DefaultInputFiles
     
     String[] inputFiles;
     
-    public InputFilesHandler(String letter) {
+    public InputFilesHandler() {
         List<String> inputFiles = Lists.newArrayList();
         
        

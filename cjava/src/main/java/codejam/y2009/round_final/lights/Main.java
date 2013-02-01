@@ -31,7 +31,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
     public Main()
     {
-        super("F", true, false);
+        //super();
+        //super("F", false, true);
     }
     
     
@@ -319,16 +320,28 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     !ray1.first && ray2.first
                     )
             {
-                /**
-                 * Both rays hit a circle behind them
-                 */
-                log.debug("Circle behind");
-                Preconditions.checkState(ray1.circleBehind.equals(ray2.circleBehind));
                 
                 Point I1 = ray1.pointBehind;
                 Point I2 = ray2.pointBehind;
                 
-                triList.add(new ExTriangle(ray1.circleBehind, light,I1,I2));
+                
+                if (ray1.circleBehind != null && ray1.circleBehind.equals(ray2.circleBehind)) {
+
+                    /**
+                     * Both rays hit a circle behind them
+                     */
+                    log.debug("Circle behind");
+                    triList.add(new ExTriangle(ray1.circleBehind, light,I1,I2));
+                } else if (ray1.circleBehind == null && ray2.circleBehind == null) {
+                    log.debug("Wall behind");
+                    triList.add(new ExTriangle(null, light,I1,I2));
+                } else {
+                    Preconditions.checkState(false);
+                }
+                
+                
+                
+                
             } else {
                 log.debug("Case not covered");
             }
@@ -346,6 +359,13 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             new Point(0, 100),
             new Point(0,0),
             new Point(100,0)            
+    };
+    
+    static Line[] walls = new Line[] {
+        new Line(corners[0], corners[1]),
+        new Line(corners[1], corners[2]),
+        new Line(corners[2], corners[3]),
+        new Line(corners[3], corners[0])
     };
     
     
@@ -406,13 +426,13 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
     }
     
-    List<Ray> getLines(Point p, InputData in) {
+    List<Ray> getLines(Point light, InputData in) {
         List<Ray> lines = Lists.newArrayList();
         
         for(Circle c : in.pillars) {
-            Point[] tanPoints = c.getPointsTangentToLine(p);
-            Ray ray1 = new Ray(new Line(p, tanPoints[0]), p, c);
-            Ray ray2 = new Ray(new Line(p, tanPoints[1]), p, c);
+            Point[] tanPoints = c.getPointsTangentToLine(light);
+            Ray ray1 = new Ray(new Line(light, tanPoints[0]), light, c);
+            Ray ray2 = new Ray(new Line(light, tanPoints[1]), light, c);
             
             ray1.first = ray1.ang < ray2.ang;
             ray2.first = !ray1.first;
@@ -420,8 +440,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             lines.add(ray2);
         }
         
+        //Light to corner
         for(int c = 0; c < 4; ++c) {
-            lines.add(new Ray(p, c));
+            lines.add(new Ray(light, c));
         }
         
         
@@ -446,15 +467,15 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 if (intPoints == null)
                     continue;
                 
-                double d1 = p.distance(intPoints[0]);
-                double d2 = p.distance(intPoints[1]);
+                double d1 = light.distance(intPoints[0]);
+                double d2 = light.distance(intPoints[1]);
                 
                 //only care about the closer one
                 Point intersection = d1 < d2 ? intPoints[0] : intPoints[1];
                 
                 double intDis = Math.min(d1, d2);
                 
-                double intAng = getAng(getVec(new Line(p, intersection)));
+                double intAng = getAng(getVec(new Line(light, intersection)));
                 
                 //Don't care if it is behind the ray
                 //if (!line.onLineSegment(intersection))
@@ -478,6 +499,31 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     ray.circleBehind = c;
                 }
             }
+            
+            //If there is no circle behind the ray, it must hit a wall
+            for(Line wall : walls) {
+                Point intersection = ray.line.getIntersection(wall);
+                
+                if (intersection == null)
+                    continue;
+                
+                if (!wall.onLineSegment(intersection))
+                    continue;
+                
+                double intAng = getAng(getVec(new Line(light, intersection)));
+                
+                //Don't care if it is behind the ray (angle = PI)
+                if (!DoubleMath.fuzzyEquals(intAng, ray.ang, 0.00001)) {
+                    //TODO test this case
+                    Preconditions.checkArgument(DoubleMath.fuzzyEquals(Math.PI,Math.abs(intAng-ray.ang), 0.00001));
+                    continue;
+                }
+                
+                ray.pointBehind = intersection;
+                break;
+            }
+            
+            Preconditions.checkState(ray.pointBehind != null);
         }
         
         //Now order the lines in polar order
