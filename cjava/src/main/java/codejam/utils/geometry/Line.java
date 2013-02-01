@@ -277,6 +277,10 @@ public class Line {
         
         return Math.abs(cross / d);
     }
+    
+    public Point getVector() {
+        return p2.translate(p1);
+    }
 
 	@Override
 	public int hashCode() {
