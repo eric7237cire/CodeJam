@@ -1,13 +1,22 @@
 package codejam.utils.geometry;
 
 import java.util.List;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import codejam.utils.TriangleTest;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 
 public class Triangle {
 
+    final static Logger log = LoggerFactory.getLogger(Triangle.class);
+    
     final public Point p1;
 
     final public Point p2;
@@ -59,33 +68,106 @@ public class Triangle {
     
     public List<Point> getTriangleIntersection(Triangle other)
     {
-        List<Point> ret = Lists.newArrayList();
+        Set<Point> ret = Sets.newHashSet();
         
-        if (other.pointInTriangle(p1)) {
-            ret.add(p1);
+        List<Line> linesT1 = Lists.newArrayList();
+        
+        linesT1.add(new Line(p1,p2));
+        linesT1.add(new Line(p2,p3));
+        linesT1.add(new Line(p1,p3));
+        
+        List<Line> linesT2 = Lists.newArrayList();
+        
+        linesT2.add(new Line(other.p1,other.p2));
+        linesT2.add(new Line(other.p2,other.p3));
+        linesT2.add(new Line(other.p1,other.p3));
+        
+        for(Line l1 : linesT1) {
+            for(Line l2 : linesT2) {
+                
+                log.debug("Line 1 / 2 {} {}", l1, l2);
+                
+                if (l1.isParallel(l2)) {
+                    //Only accept points that are between the other line 
+                    //ret.clear();
+                    if (l1.onLineSegment(l2.getP1())) {
+                        ret.add(l2.getP1());
+                    }
+                    if (l1.onLineSegment(l2.getP2())) {
+                        ret.add(l2.getP2());
+                    }
+                    if (l2.onLineSegment(l1.getP1()) ) {
+                        ret.add(l1.getP1());
+                    }
+                    if (l2.onLineSegment(l1.getP2()) ) {
+                        ret.add(l1.getP2());
+                    }
+                    continue;
+                }
+                
+                Point p = l1.getIntersection(l2);
+                ret.add(p);
+                
+                if (pointInTriangle(l2.getP1())) {
+                    ret.add(l2.getP1());
+                }
+                if (pointInTriangle(l2.getP2())) {
+                    ret.add(l2.getP2());
+                }
+                if (other.pointInTriangle(l1.getP1())) {
+                    ret.add(l1.getP1());
+                }
+                if (other.pointInTriangle(l1.getP2())) {
+                    ret.add(l1.getP2());
+                }
+            }
         }
         
-        List<Point> p1p2 = other.getIntersectionWithLine(new Line(p1,p2));
+        double cx=0, cy=0;
         
-        addPoints(p1p2, ret, p1);
+        if (ret.size() < 3)
+            return null;
         
-        if (other.pointInTriangle(p2)) {
-            ret.add(p2);
+        for(Point p : ret) {
+            cx += p.getX();
+            cy += p.getY();
         }
         
-        List<Point> p2p3 = other.getIntersectionWithLine(new Line(p2,p3));
+        cx /= ret.size();
+        cy /= ret.size();
         
-        addPoints(p2p3, ret, p2);
+        Point center = new Point(cx,cy);
         
-        if (other.pointInTriangle(p3)) {
-            ret.add(p3);
-        }
+       List<Point> retList = Lists.newArrayList();
         
-        List<Point> p3p1 = other.getIntersectionWithLine(new Line(p3, p1));
-        
-        addPoints(p3p1, ret, p3);
-        
-        return ret;
+       for(Point p : ret) {
+           if (retList.isEmpty()) {
+               retList.add(p);
+               continue;
+           }
+           
+           Point newVec = p.translate(center);
+           boolean added = false;
+           
+           for(int pIdx = 0; pIdx < retList.size(); ++pIdx) {
+               
+               Point lP = retList.get(pIdx);
+               Point vec = lP.translate(center);
+               
+               //If we find a point that is clockwise, the point goes there
+               if (Point.crossProduct(vec,newVec) < 0) {
+                   retList.add(p);
+                   added = true;
+                   break;
+               }
+           }
+           
+           if (!added) {
+               retList.add(p);
+           }
+       }
+       
+        return retList;
         
     }
     
@@ -101,6 +183,9 @@ public class Triangle {
             return;
         
         if (intPoints.size() == 1) {
+            if (polygon.contains(intPoints.get(0)))
+                return;
+            
             polygon.add(intPoints.get(0));
             return;
         }
@@ -111,11 +196,18 @@ public class Triangle {
         double dist2 = intPoints.get(1).distance2(refPoint);
         
         if (dist1 < dist2) {
-            polygon.add(intPoints.get(0));
-            polygon.add(intPoints.get(1));
+            //Check to see if we are not adding the same point
+            if (!polygon.contains(intPoints.get(0)))                
+                polygon.add(intPoints.get(0));
+            
+            if (!polygon.contains(intPoints.get(1)))
+                polygon.add(intPoints.get(1));
         } else {
-            polygon.add(intPoints.get(1));
-            polygon.add(intPoints.get(0));
+            if (!polygon.contains(intPoints.get(1)))
+                polygon.add(intPoints.get(1));
+            
+            if (!polygon.contains(intPoints.get(0)))
+                polygon.add(intPoints.get(0));
         }
         
         
@@ -132,9 +224,28 @@ public class Triangle {
         List<Point> ret = Lists.newArrayList();
         
         for(Line triangleSegment : triLines) {
+            
+            if (line.isParallel(triangleSegment)) {
+                //Only accept points that are between the other line 
+                ret.clear();
+                if (line.onLineSegment(triangleSegment.getP1())) {
+                    ret.add(triangleSegment.getP1());
+                }
+                if (line.onLineSegment(triangleSegment.getP2())) {
+                    ret.add(triangleSegment.getP2());
+                }
+                if (triangleSegment.onLineSegment(line.getP1()) && !ret.contains(line.getP1())) {
+                    ret.add(line.getP1());
+                }
+                if (triangleSegment.onLineSegment(line.getP2()) && !ret.contains(line.getP2())) {
+                    ret.add(line.getP2());
+                }
+                return ret;
+            }
+            
             Point p = line.getIntersection(triangleSegment);
             
-            if (triangleSegment.onLineSegment(p)) {
+            if (triangleSegment.onLineSegment(p) && !ret.contains(p)) {
                 ret.add(p);
             }
         }
@@ -142,6 +253,14 @@ public class Triangle {
         Preconditions.checkState(ret.size() <= 2);
         
         return ret;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return "Triangle [p1=" + p1 + ", p2=" + p2 + ", p3=" + p3 + "]";
     }
     
 }

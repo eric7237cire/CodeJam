@@ -13,7 +13,7 @@ public class Main  {
     public static void main(String args[]) throws Exception {
 
 
-        //Main m = null;
+       // Main m = null;
         /**
          * 2008 emea semis -- problem 1
          * 
@@ -197,7 +197,7 @@ public class Main  {
         
         //codejam.y2009.round_final.marbles.Main m = new codejam.y2009.round_final.marbles.Main();
         
-       // codejam.y2009.round_final.lights.Main m = new codejam.y2009.round_final.lights.Main();
+        codejam.y2009.round_final.lights.Main m = new codejam.y2009.round_final.lights.Main();
         
         /**
          * 2009 finals problem 5.
@@ -363,7 +363,7 @@ public class Main  {
          * 
          * Straightforward Greedy algorithm. 
          */
-        codejam.y2011.round_1C.space_emergency.Main m = new codejam.y2011.round_1C.space_emergency.Main();
+       // codejam.y2011.round_1C.space_emergency.Main m = new codejam.y2011.round_1C.space_emergency.Main();
         
         //GCD and LCM,  TODO comments
         //codejam.y2011.round_1C.perfect_harmony.Main m = new codejam.y2011.round_1C.perfect_harmony.Main();

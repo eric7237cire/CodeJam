@@ -15,10 +15,10 @@ import codejam.utils.geometry.Line;
 import codejam.utils.geometry.Point;
 import codejam.utils.geometry.PointInt;
 import codejam.utils.geometry.Polygon;
+import codejam.utils.geometry.Triangle;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
-import codejam.utils.utils.DoubleFormat;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -31,7 +31,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
     public Main()
     {
-        super("E");
+        super("F", true, false);
     }
     
     
@@ -62,21 +62,14 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return in;
     }
 
-    public static class Triangle {
+    public static class ExTriangle extends Triangle {
         Circle intCircle;
         
-        Point p1; //light
-        Point p2;
-        Point p3;
-        
-        
-        
-        public Triangle(Circle intCircle, Point p1, Point p2, Point p3) {
-            super();
+        public ExTriangle(Circle intCircle, Point p1, Point p2, Point p3) {
+            //p1 is light
+            super(p1,p2,p3);
             this.intCircle = intCircle;
-            this.p1 = p1;
-            this.p2 = p2;
-            this.p3 = p3;
+            
             Preconditions.checkArgument(p1 != null);
             Preconditions.checkArgument(p2 != null);
             Preconditions.checkArgument(p3 != null);
@@ -98,47 +91,73 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
             
         }
+
+
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
+        @Override
+        public String toString() {
+            return "ExTriangle [intCircle=" + intCircle +
+            ", p1=" + p1 + ", p2=" + p2 + ", p3=" + p3 + "]";
+        }
     }
   
     public String handleCase(InputData in) {
         
         
-        List<Triangle> redTriangles = getTriangles(in.redLight.toPoint(), in);
+        List<ExTriangle> redTriangles = getTriangles(in.redLight.toPoint(), in);
         //List<Triangle> redTriangles = Lists.newArrayList();
         
         double redArea = 0;
         
-        for(Triangle redTriangle : redTriangles) {
+        for(ExTriangle redTriangle : redTriangles) {
             redArea += redTriangle.getArea();
         }
         
-        List<Triangle> greenTriangles = getTriangles(in.greenLight.toPoint(), in);
+        List<ExTriangle> greenTriangles = getTriangles(in.greenLight.toPoint(), in);
         
         double greenArea = 0;
         
-        for(Triangle greenTriangle : greenTriangles) {
+        for(ExTriangle greenTriangle : greenTriangles) {
             greenArea += greenTriangle.getArea();
         }
         
+        double yellowArea = 0;
+        
+        for(ExTriangle red : redTriangles) {
+            for(ExTriangle green : greenTriangles) {
+                List<Point> pts = red.getTriangleIntersection(green);
+                if (pts.size() < 3) {
+                    //Preconditions.checkState(pts.size() == 0);
+                    continue;
+                }
+                
+                double polyArea = Polygon.area(pts);
+                yellowArea += polyArea;
+            }
+        }
+        
+        redArea -= yellowArea;
+        greenArea -= yellowArea;
+        
         StringBuffer sb = new StringBuffer();
         sb.append(String.format("Case #%d:\n", in.testCase));
-        sb.append(0).append("\n");
+        sb.append(10000-redArea-greenArea-yellowArea).append("\n");
         sb.append(redArea).append("\n");
         sb.append(greenArea).append("\n");
-        sb.append(0);
+        sb.append(yellowArea);
         return sb.toString();
       //9985.392182804038400000
     }
     
-    public List<Triangle> getTriangles(Point light, InputData in) {
+    public List<ExTriangle> getTriangles(Point light, InputData in) {
        
-        double area = 0;
-        
         List<Ray> rays = getLines(light, in);
         for(int r1 = 0; r1 < rays.size(); ++r1) {
             log.debug("Ray {} = {}", r1, rays.get(r1));
         }
-        List<Triangle> triList = Lists.newArrayList();
+        List<ExTriangle> triList = Lists.newArrayList();
         
         for(int r1 = 0; r1 < rays.size(); ++r1) {
             int r2 = r1 == rays.size() - 1 ? 0 : r1+1;
@@ -153,7 +172,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 /**
                  * Both rays hit corners
                  */
-                triList.add(new Triangle(null,
+                triList.add(new ExTriangle(null,
                         light,
                         corners[ray1.cornerIdx],
                                 corners[ray2.cornerIdx]));
@@ -172,7 +191,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 Point wallInt = ray1.line.getIntersection(wall);
                 
-                triList.add(new Triangle(null,light, 
+                triList.add(new ExTriangle(null,light, 
                                 wallInt,
                                corners[ray2.cornerIdx]));
                 
@@ -192,7 +211,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 Point wallInt = ray2.line.getIntersection(wall);
                 
-                triList.add(new Triangle(null,light,
+                triList.add(new ExTriangle(null,light,
                         corners[ray1.cornerIdx],
                         wallInt));
                 
@@ -207,7 +226,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 Point T1 = ray1.line.getP2();
                 Point T2 = ray2.line.getP2();
                 
-                triList.add(new Triangle(ray1.pillar, light, T1, T2));
+                triList.add(new ExTriangle(ray1.pillar, light, T1, T2));
                 
                log.debug("Adding same circle ");
             } else if (ray1.pillar != null && ray2.pillar != null && 
@@ -222,7 +241,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                
                 Point T1 = ray1.line.getP2();
                 
-                triList.add(new Triangle(ray1.pillar, light, T1, I2));
+                triList.add(new ExTriangle(ray1.pillar, light, T1, I2));
                log.debug("Adding different circle " );
         
             } else if (ray1.pillar != null && ray2.pillar != null && 
@@ -237,7 +256,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 Point T2 = ray2.line.getP2();
                 
-                triList.add(new Triangle(ray1.pillar, light, I1, T2));
+                triList.add(new ExTriangle(ray1.pillar, light, I1, T2));
                
                log.debug("Adding different circle " );
             } else if (ray1.pillar != null && ray2.pillar != null && 
@@ -254,7 +273,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 Point I1 = ray1.pointBehind;
                 Point I2 = ray2.pointBehind;
                 
-                triList.add(new Triangle(ray1.circleBehind, light,I1,I2));
+                triList.add(new ExTriangle(ray1.circleBehind, light,I1,I2));
             } else {
                 log.debug("Case not covered");
             }

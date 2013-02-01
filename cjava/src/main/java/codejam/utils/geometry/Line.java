@@ -97,6 +97,15 @@ public class Line {
 
     }
     
+    public boolean isParallel(Line other) {
+        Point vec1 = p2.translate(p1);
+        Point vec2 = other.getP2().translate(other.getP1());
+        
+        double cp = Point.crossProduct(vec1,vec2);
+        
+        return DoubleMath.fuzzyEquals(0, cp, 0.00001);
+    }
+    
     
     
     /**
