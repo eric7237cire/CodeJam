@@ -128,7 +128,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         for(ExTriangle red : redTriangles) {
             for(ExTriangle green : greenTriangles) {
                 List<Point> pts = red.getTriangleIntersection(green);
-                if (pts.size() < 3) {
+                if (pts == null || pts.size() < 3) {
                     //Preconditions.checkState(pts.size() == 0);
                     continue;
                 }

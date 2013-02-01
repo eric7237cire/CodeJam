@@ -85,7 +85,8 @@ public class Triangle {
         for(Line l1 : linesT1) {
             for(Line l2 : linesT2) {
                 
-                log.debug("Line 1 / 2 {} {}", l1, l2);
+                //log.debug("Ret {}", ret);
+               // log.debug("Line 1 / 2 {} {}", l1, l2);
                 
                 if (l1.isParallel(l2)) {
                     //Only accept points that are between the other line 
@@ -106,7 +107,8 @@ public class Triangle {
                 }
                 
                 Point p = l1.getIntersection(l2);
-                ret.add(p);
+                if (l1.onLineSegment(p) && l2.onLineSegment(p))
+                    ret.add(p);
                 
                 if (pointInTriangle(l2.getP1())) {
                     ret.add(l2.getP1());
@@ -141,7 +143,7 @@ public class Triangle {
        List<Point> retList = Lists.newArrayList();
         
        for(Point p : ret) {
-           if (retList.isEmpty()) {
+           if (retList.size() < 2) {
                retList.add(p);
                continue;
            }
@@ -151,21 +153,40 @@ public class Triangle {
            
            for(int pIdx = 0; pIdx < retList.size(); ++pIdx) {
                
+               Point prevP = retList.get( pIdx - 1 < 0 ? retList.size()-1 : pIdx - 1);
                Point lP = retList.get(pIdx);
                Point vec = lP.translate(center);
+               Point prevVec = prevP.translate(center);
+               
+               //Previous point must be counter clockwise, next point clockwise (ie went too far, so new 
+               //point goes before current
                
                //If we find a point that is clockwise, the point goes there
-               if (Point.crossProduct(vec,newVec) < 0) {
-                   retList.add(p);
+               if (Point.crossProduct(vec,newVec) < 0 && Point.crossProduct(prevVec,newVec) > 0) {
+                   retList.add(pIdx, p);
                    added = true;
                    break;
                }
            }
            
+           Preconditions.checkState(added);
            if (!added) {
                retList.add(p);
            }
        }
+       
+       /*
+       for(int p1 = 0; p1 < retList.size(); ++p1) {
+           int p2 = p1 + 1;
+           if (p2 == retList.size())
+               p2 = 0;
+           
+           Point p1Vec = retList.get(p1).translate(center);
+           Point p2Vec = retList.get(p2).translate(center);
+           
+           Preconditions.checkState(Point.crossProduct(p1Vec,p2Vec) > 0);
+           
+       }*/
        
         return retList;
         
