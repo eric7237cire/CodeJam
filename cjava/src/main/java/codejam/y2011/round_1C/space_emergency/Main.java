@@ -6,6 +6,8 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
+
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -45,40 +47,65 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String handleCase(InputData input) {
      
-        int[] distances = new int[input.N];
-        for(int d = 0; d < distances.length; ++d) {
-            int a = d % input.C;
+        int[] timeBetStars = new int[input.N];
+        for(int d = 0; d < timeBetStars.length; ++d) {
+            /**
+             * a_i is the distance between
+             * star k*C+i and k*C+i+1, so
+             * we calculate i
+             */
+            int i = d % input.C;
             
             //Set the time it takes
-            distances[d] = 2 * input.a[a];
+            timeBetStars[d] = 2 * input.a[i];
         }
         
-        long distanceBeforeBoostersComplete = input.t;
+        long timeRemainingUntilBoostersComplete = input.t;
         int current = 0;
-        while(distanceBeforeBoostersComplete > 0 && current < distances.length) {
-            if (distances[current] >= distanceBeforeBoostersComplete) {
-                distances[current] -= distanceBeforeBoostersComplete;
-                distanceBeforeBoostersComplete = 0;
+        /**
+         * After this loop, we travel the time it takes to
+         * finish the boosters.  Any distance travelled
+         * during that time is subtracted.
+         */
+        while(timeRemainingUntilBoostersComplete > 0 && current < timeBetStars.length) {
+            if (timeBetStars[current] >= timeRemainingUntilBoostersComplete) {
+                timeBetStars[current] -= timeRemainingUntilBoostersComplete;
+                timeRemainingUntilBoostersComplete = 0;
                 break;
             } else {
-                distanceBeforeBoostersComplete -= distances[current];
+                timeRemainingUntilBoostersComplete -= timeBetStars[current];
                 
-                distances[current] = 0;
+                timeBetStars[current] = 0;
                 current++; 
             }
         }
       
+        /**
+         * Here, we take the greatest distances and divide
+         * the time in half as it is boosted.
+         */        
+        long time = -1;
         
-        Arrays.sort(distances);
-                        
-        for(int boosted = 0; boosted < input.L; ++boosted) {
-            int d = distances.length - 1 - boosted;
-            distances[d] /= 2;
-        }
-        
-        long time = input.t - distanceBeforeBoostersComplete;
-        for(int d = 0; d < distances.length; ++d) {
-            time += distances[d];
+        if (timeRemainingUntilBoostersComplete == 0) {
+            Arrays.sort(timeBetStars);
+
+            for (int boosted = 0; boosted < input.L; ++boosted)
+            {
+                int d = timeBetStars.length - 1 - boosted;
+                timeBetStars[d] /= 2;
+            }
+
+            time = input.t;
+            for (int d = 0; d < timeBetStars.length; ++d)
+            {
+                time += timeBetStars[d];
+            }
+        } else
+        {
+            /**
+             * Boosters finished too late to do any good
+             */
+            time = input.t - timeRemainingUntilBoostersComplete;            
         }
         
         return String.format("Case #%d: %d", input.testCase, time);

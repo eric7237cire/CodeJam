@@ -103,8 +103,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     public String handleCase(InputData in) {
         
         
-        //List<Triangle> redTriangles = getTriangles(in.redLight.toPoint(), in);
-        List<Triangle> redTriangles = Lists.newArrayList();
+        List<Triangle> redTriangles = getTriangles(in.redLight.toPoint(), in);
+        //List<Triangle> redTriangles = Lists.newArrayList();
         
         double redArea = 0;
         
@@ -121,7 +121,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         }
         
         StringBuffer sb = new StringBuffer();
-        sb.append(String.format("Case #%d:", in.testCase));
+        sb.append(String.format("Case #%d:\n", in.testCase));
         sb.append(0).append("\n");
         sb.append(redArea).append("\n");
         sb.append(greenArea).append("\n");
@@ -182,7 +182,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             } else if (ray1.pillar == null && ray2.pillar != null) {
                 
                 /**
-                 * ray1 hits a wall, ray2 tangent to circle2.
+                 * ray1 hits a corner, ray2 tangent to circle2.
                  * 
                  * This time we need the next corner
                  */
@@ -193,8 +193,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 Point wallInt = ray2.line.getIntersection(wall);
                 
                 triList.add(new Triangle(null,light,
-                                wallInt,
-                               corners[ray1.cornerIdx]));
+                        corners[ray1.cornerIdx],
+                        wallInt));
                 
                 log.debug("Adding corner/circle.  wall {} intersection {}",
                         wall, wallInt);
@@ -415,7 +415,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 int angCmp = DoubleMath.fuzzyCompare(o1.ang,o2.ang, 0.000001);
                 
-                if (angCmp == 1) {
+                if (angCmp == 0) {
                     //Can be the case that line is tangent to 2 circles in the same place,
                     //so the tie breaker is the polar angle of the light and the centers of the pillars
                     double aC1 = getAng(getVec(new Line(o1.line.getP1(), o1.pillar.getCenter())));

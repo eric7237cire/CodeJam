@@ -95,6 +95,11 @@ public class Point implements Comparable<Point> {
     public double distance(Point other) {
         return Math.sqrt( (x-other.x)*(x-other.x)+(y-other.y)*(y-other.y));
     }
+    
+    
+    public double distance2(Point other) {
+        return ( (x-other.x)*(x-other.x)+(y-other.y)*(y-other.y));
+    }
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */

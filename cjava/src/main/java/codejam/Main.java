@@ -197,7 +197,7 @@ public class Main  {
         
         //codejam.y2009.round_final.marbles.Main m = new codejam.y2009.round_final.marbles.Main();
         
-        codejam.y2009.round_final.lights.Main m = new codejam.y2009.round_final.lights.Main();
+       // codejam.y2009.round_final.lights.Main m = new codejam.y2009.round_final.lights.Main();
         
         /**
          * 2009 finals problem 5.
@@ -288,12 +288,12 @@ public class Main  {
         //Maybe do a doc TODO / comments
          //codejam.y2010.round_2.bacteria.Main m = new codejam.y2010.round_2.bacteria.Main(); 
 
-        //TODO comments
         /**
          * Optimize  2x
          * Go through again
          * 
          * TODO 2 theorectical solutions using inversions
+         * TODO comments
          */
          //codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
                   
@@ -356,8 +356,14 @@ public class Main  {
         //Easy grid search / replace
         //codejam.y2011.round_1C.square_tiles.Main m = new codejam.y2011.round_1C.square_tiles.Main();
         
-        //Looks like a greedy algorithm.  TODO comments
-        //codejam.y2011.round_1C.space_emergency.Main m = new codejam.y2011.round_1C.space_emergency.Main();
+        /**
+         * 2011 Round 1C
+         * 
+         * problem 2
+         * 
+         * Straightforward Greedy algorithm. 
+         */
+        codejam.y2011.round_1C.space_emergency.Main m = new codejam.y2011.round_1C.space_emergency.Main();
         
         //GCD and LCM,  TODO comments
         //codejam.y2011.round_1C.perfect_harmony.Main m = new codejam.y2011.round_1C.perfect_harmony.Main();
