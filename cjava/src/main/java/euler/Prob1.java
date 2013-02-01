@@ -87,7 +87,7 @@ public class Prob1 {
         List<BigInteger> pt = Lists.newArrayList();
         pt.add(BigInteger.ONE);
 
-        int lastI = 0;
+      //  int lastI = 0;
         
         for (int n = 1; n <= limit; ++n) {
             /*
@@ -110,7 +110,7 @@ public class Prob1 {
             while (true) {
                 int k = (int) generalised_pentagonal(i);
                 if (k > n) {
-                    lastI = i;
+                 //   lastI = i;
                     break;
                 }
                     

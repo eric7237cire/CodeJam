@@ -46,7 +46,7 @@ public class CircleTest {
         
         Point[] pts = c.getPointsIntersectingLine(l);
         
-        Point[] pts2 = c.getPointsIntersectingLineOld(l);
+       // Point[] pts2 = c.getPointsIntersectingLineOld(l);
         
         assertTrue(c.onCircle(pts[0]) && l.onLine(pts[0]));
         assertTrue(c.onCircle(pts[1]) && l.onLine(pts[1]));
@@ -56,7 +56,7 @@ public class CircleTest {
         l = new Line( new Point(10,0), new Point(10, 1));
         
         pts = c.getPointsIntersectingLine(l);
-        pts2 = c.getPointsIntersectingLineOld(l);
+       // pts2 = c.getPointsIntersectingLineOld(l);
         
         assertTrue(c.onCircle(pts[0]) && l.onLine(pts[0]));
         assertTrue(c.onCircle(pts[1]) && l.onLine(pts[1]));

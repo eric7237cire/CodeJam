@@ -75,6 +75,7 @@ public class CC {
 
 
     // test client
+    @SuppressWarnings("unchecked")
     public static void main(String[] args) {
         In in = new In(args[0]);
         Graph G = new Graph(in);

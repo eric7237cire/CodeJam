@@ -146,13 +146,7 @@ public class TriangleTest
                 new Point(1, 100),
                 new Point(0, 100));
         
-        Triangle t2 = new Triangle(
-                new Point(1, 1),
-                new Point(1, 100),
-                new Point(0, 100));
-        
-        List<Point> pts = t.getTriangleIntersection(t2);
-        List<Point> pts2 = t2.getTriangleIntersection(t);
+      
         
         Line l = new Line(new Point(1,1),new Point(1,100));
         
@@ -172,8 +166,6 @@ public class TriangleTest
         Line l3 = new Line(new Point(1.001, 2),
                 new Point(1, 100));
         
-        Point inter = l.getIntersection(l2);
-        Point inter2 = l2.getIntersection(l);
         
         assertTrue(l.isParallel(l2));
         assertTrue(l2.isParallel(l));

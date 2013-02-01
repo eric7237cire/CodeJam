@@ -8,8 +8,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.TriangleTest;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -161,47 +159,7 @@ public class Triangle {
         
     }
     
-    /**
-     * Want to add in counter clockwise order, so if there are 2 int points
-     * add the one closest to refPoint first
-     * @param intPoints
-     * @param polygon
-     * @param refPoint
-     */
-    private void addPoints(List<Point> intPoints, List<Point> polygon, Point refPoint) {
-        if (intPoints.size() == 0)
-            return;
-        
-        if (intPoints.size() == 1) {
-            if (polygon.contains(intPoints.get(0)))
-                return;
-            
-            polygon.add(intPoints.get(0));
-            return;
-        }
-        
-        Preconditions.checkState((intPoints.size() == 2));
-        
-        double dist1 = intPoints.get(0).distance2(refPoint);
-        double dist2 = intPoints.get(1).distance2(refPoint);
-        
-        if (dist1 < dist2) {
-            //Check to see if we are not adding the same point
-            if (!polygon.contains(intPoints.get(0)))                
-                polygon.add(intPoints.get(0));
-            
-            if (!polygon.contains(intPoints.get(1)))
-                polygon.add(intPoints.get(1));
-        } else {
-            if (!polygon.contains(intPoints.get(1)))
-                polygon.add(intPoints.get(1));
-            
-            if (!polygon.contains(intPoints.get(0)))
-                polygon.add(intPoints.get(0));
-        }
-        
-        
-    }
+   
     
     public List<Point> getIntersectionWithLine(Line line) {
         
