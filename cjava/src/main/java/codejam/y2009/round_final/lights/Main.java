@@ -19,6 +19,7 @@ import codejam.utils.geometry.Triangle;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
+import codejam.utils.utils.DoubleFormat;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
@@ -32,7 +33,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     public Main()
     {
         //super();
-        //super("F", false, true);
+        super("F", false, true);
     }
     
     
@@ -74,6 +75,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             Preconditions.checkArgument(p1 != null);
             Preconditions.checkArgument(p2 != null);
             Preconditions.checkArgument(p3 != null);
+            
+            Preconditions.checkArgument(intCircle == null || intCircle.onCircle(p2));
+            Preconditions.checkArgument(intCircle == null || intCircle.onCircle(p3));
         }
 
 
@@ -136,13 +140,23 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
         }
         
-        Preconditions.checkState(tanPoints.size() == 2);
-        
         double pArea = Polygon.area(clipped);
-        double segDistance = tanPoints.get(0).distance(tanPoints.get(1));
-        double segArea = circle.findSegmentArea(segDistance);
         
-        return pArea - segArea;
+        /**
+         * It is possible for the clipped area to not at all touch the circle, even if
+         * both lights are shining on it.  There can be other circles in the way for 
+         * example
+         */
+        Preconditions.checkState(tanPoints.size() == 2 || tanPoints.size() == 0);
+        if (tanPoints.size() == 2) {
+            double segDistance = tanPoints.get(0).distance(tanPoints.get(1));
+            double segArea = circle.findSegmentArea(segDistance);
+            
+            return pArea - segArea;
+        } else {
+            return pArea;
+        }
+        
     }
   
     public String handleCase(InputData in) {
@@ -221,7 +235,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             Ray ray1 = rays.get(r1);
             Ray ray2 = rays.get(r2);
             
-            log.debug("Calculating\n ray1 {}\nray 2 {} \n", ray1,ray2);
+           // log.debug("Calculating\n ray1 {}\nray 2 {} \n", ray1,ray2);
             
         
             if (ray1.pillar == null && ray2.pillar == null) {
@@ -306,13 +320,17 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     )
             {
                 /**
-                 * Ray2 is second, so ray1 must intersect circle 2 
+                 * We have circle1, then ray1 tangent to it on it's counter clockwise side
+                 * then ray2 which is it's counter-clockwise side
+                 * 
+                 * Because there is no ray hitting the beginning of circle2, circle1 must
+                 * be hiding it.  So ray1 hits circle2
                  */
                 Point I1 = ray2.pillar.getClosestPointIntersectingLine(ray1.line);
                 
                 Point T2 = ray2.line.getP2();
                 
-                triList.add(new ExTriangle(ray1.pillar, light, I1, T2));
+                triList.add(new ExTriangle(ray2.pillar, light, I1, T2));
                
                log.debug("Adding different circle " );
             } else if (ray1.pillar != null && ray2.pillar != null && 
@@ -420,7 +438,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         @Override
         public String toString()
         {
-            return "Ray [line=" + line + ", ang=" + ang + ", light=" + light + ", pillar=" + pillar + "]";
+            return "Ray [line=" + line + ", ang=" + 
+        DoubleFormat.df6.format(ang) + ", First?=" + first + ", pillar=" + pillar + " crc behind " + circleBehind + " point behind " + pointBehind;
         }
         
         
@@ -434,7 +453,22 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             Ray ray1 = new Ray(new Line(light, tanPoints[0]), light, c);
             Ray ray2 = new Ray(new Line(light, tanPoints[1]), light, c);
             
-            ray1.first = ray1.ang < ray2.ang;
+            //one exception, if ray1 angle is near 0, and ray2 near 2pi, then ray2 is in fact first
+            ray1.first = false;
+            
+            //Ray1.ang is less than ray2.ang and ray1.ang + PI <= ray2.ang
+            if (ray1.ang < ray2.ang && 
+                    DoubleMath.fuzzyCompare(ray2.ang - ray1.ang, Math.PI, 0.00001) <= 0) {
+                ray1.first = true;
+            }
+            
+            if (ray1.ang > ray2.ang &&
+                    DoubleMath.fuzzyCompare(ray1.ang - ray2.ang, Math.PI, 0.00001) > 0)
+            {
+                ray1.first = true;
+            }
+            
+            
             ray2.first = !ray1.first;
             lines.add(ray1);
             lines.add(ray2);
@@ -500,6 +534,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 }
             }
             
+            if (ray.circleBehind == null) {
             //If there is no circle behind the ray, it must hit a wall
             for(Line wall : walls) {
                 Point intersection = ray.line.getIntersection(wall);
@@ -522,9 +557,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 ray.pointBehind = intersection;
                 break;
             }
+            }
             
             Preconditions.checkState(ray.pointBehind != null);
         }
+        
+        final List<Ray> toDelete = Lists.newArrayList();
         
         //Now order the lines in polar order
         Collections.sort(lines, new Comparator<Ray>(){
@@ -538,10 +576,15 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 if (angCmp == 0) {
                     //Can be the case that line is tangent to 2 circles in the same place,
                     //so the tie breaker is the polar angle of the light and the centers of the pillars
-                    double aC1 = getAng(getVec(new Line(o1.line.getP1(), o1.pillar.getCenter())));
+                    double aC1 = o1.line.getP1().distance( o1.line.getP2());
                     
-                    double aC2 = getAng(getVec(new Line(o2.line.getP1(), o2.pillar.getCenter())));
+                    double aC2 = o2.line.getP1().distance( o2.line.getP2());
                     
+                    if (aC1 > aC2) {
+                        toDelete.add(o1);
+                    } else {
+                        toDelete.add(o2);
+                    }
                     return DoubleMath.fuzzyCompare(aC1, aC2, 0.000001);
                 } else {
                     return angCmp;
@@ -549,6 +592,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             }
             
         });
+        
+        lines.removeAll(toDelete);
+        
+        //
         
         return lines;
     }
