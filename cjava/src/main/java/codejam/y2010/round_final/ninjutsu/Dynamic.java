@@ -1,12 +1,10 @@
 package codejam.y2010.round_final.ninjutsu;
 
-import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +15,6 @@ import codejam.y2010.round_final.ninjutsu.PointData.PointDataIndex;
 import codejam.y2010.round_final.ninjutsu.RopePathData.PathNode;
 import codejam.y2010.round_final.ninjutsu.RopePathData.PivotCutPointIndex;
 
-import com.google.common.base.Preconditions;
 import com.google.common.math.DoubleMath;
 
 public class Dynamic
@@ -35,7 +32,7 @@ public class Dynamic
         Map<PointDataIndex, PointData[]> pointDataMemo = new HashMap<>();
         Map<PivotCutPointIndex, RopePathData> rlDataMemo = new HashMap<>();
         
-        int maxBends = maxBends(0, dirIndex, pointDataMemo, rlDataMemo, in, 0);
+        int maxBends = maxBends(0, dirIndex, pointDataMemo, rlDataMemo, in);
         
 
         return String.format("Case #%d: %d", in.testCase, maxBends);
@@ -213,8 +210,6 @@ public class Dynamic
             
             
         }
-        
-        //return ret;
     }
     
     
@@ -224,12 +219,10 @@ public class Dynamic
             int cutPointIndex,
             Map<PointDataIndex, PointData[]> pointDataMemo,
             Map<PivotCutPointIndex, RopePathData> rlDataMemo,
-            InputData in, int recLevel)
+            InputData in)
     {
-        String recLevelSpace = StringUtils.repeat(' ', 4 * recLevel);
+       
         
-        
-        PointDataIndex pdi = new PointDataIndex(currentPointIdx, cutPointIndex, true);
         
         PivotCutPointIndex rldIndex = new PivotCutPointIndex(currentPointIdx,cutPointIndex);
         
@@ -253,7 +246,7 @@ public class Dynamic
                     pathNode.pointIndex, //cut point
                     pointDataMemo,
                     rlDataMemo,
-                    in, recLevel);
+                    in);
         
             curMaxBends = Math.max(curMaxBends, bendsIfCut);
             curMaxBends = Math.max(bends, curMaxBends);

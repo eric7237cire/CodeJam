@@ -340,8 +340,12 @@ public class Main  {
         //Intervals, Splitting interval into 2.  Binary search.  
         //codejam.y2010.round_final.travel_plan.Main m = new codejam.y2010.round_final.travel_plan.Main();
                 
-        
-        codejam.y2010.round_final.ninjutsu.Main m = new codejam.y2010.round_final.ninjutsu.Main();
+        /**
+         * 2010 -- Round final
+         * 
+         * Interesting DP problem ; loop detection
+         */
+        //codejam.y2010.round_final.ninjutsu.Main m = new codejam.y2010.round_final.ninjutsu.Main();
         
         
         
@@ -452,7 +456,12 @@ public class Main  {
         //2010 africa
         
         //A to C in C++
-        //Very interesting inductive reasoning -- " africa 2010 qualification round"
+        /**
+         * Africa 2010 Problem A to C in C++.
+         * 
+         * C is particularly interesting -- Very interesting inductive reasoning -- " africa 2010 qualification round"
+         */
+        codejam.y2010aa.round_all.polygraph.Main m = new codejam.y2010aa.round_all.polygraph.Main();
         
         //2011 africa / arabia
         //codejam.y2011aa.round_all.vanishing_numbers.Main m = new codejam.y2011aa.round_all.vanishing_numbers.Main();

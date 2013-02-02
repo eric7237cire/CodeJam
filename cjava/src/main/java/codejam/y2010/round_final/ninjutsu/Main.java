@@ -18,7 +18,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
     public Main()
     {
-      //  super("E");
+        super("E", true, true);
     }
     
     
@@ -43,13 +43,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     @Override
     public String handleCase(InputData in) {
        
-        BruteForce bf = new BruteForce();
+      //  BruteForce bf = new BruteForce();
 
       //  String ans = bf.handleCase(in);
         
         Dynamic d = new Dynamic();
         return d.handleCase(in);
-        //return String.format("Case #%d: ", in.testCase);
     }
     
 }

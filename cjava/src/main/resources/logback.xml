@@ -39,12 +39,12 @@
    <logger name="codejam" level="INFO"/>
    <logger name="codejam.y2012" level="DEBUG"/>
    <logger name="codejam.y2011" level="DEBUG"/>
-   <logger name="codejam.y2010" level="DEBUG"/>
-   <logger name="ccodejam.y2011aa" level="DEBUG"/>
-   
+   <logger name="hcodejam.y2010" level="DEBUG"/>
+   <logger name="hcodejam.y2010aa" level="DEBUG"/>
+   <logger name="codejam.y2010aa" level="INFO"/>
                  
    <logger name="codejam.utils.multithread" level="DEBUG"/>
-   <logger name="codejam.utils" level="DEBUG"/>
+   <logger name="codejam.utils" level="INFO"/>
       <logger name="codejam.utils.main" level="DEBUG"/>
   <root level="${root-level:-DEBUG}">
     <appender-ref ref="console"/>

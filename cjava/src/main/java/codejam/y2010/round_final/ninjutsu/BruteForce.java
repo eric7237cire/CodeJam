@@ -127,7 +127,7 @@ public class BruteForce
         String recLevelSpace = StringUtils.repeat(' ', 4 * recLevel);
         
         PointInt currentPoint = in.points.get(currentPointIdx);
-        Point currentPointDouble = in.points.get(currentPointIdx).toPoint();
+       // Point currentPointDouble = in.points.get(currentPointIdx).toPoint();
         
         List<PointData> points = processOtherPoints(remainingRopeLength,currentPointIdx,direction,in);
         
