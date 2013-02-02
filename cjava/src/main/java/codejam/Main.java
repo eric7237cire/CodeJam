@@ -15,7 +15,9 @@ public class Main  {
 
        // Main m = null;
         
-        codejam.y2008.round_pracProb.alien_numbers.Main m = new codejam.y2008.round_pracProb.alien_numbers.Main();
+        //codejam.y2008.round_pracProb.alien_numbers.Main m = new codejam.y2008.round_pracProb.alien_numbers.Main();
+        
+        codejam.y2008.round_pracProb.alwaysLeft.Main m = new codejam.y2008.round_pracProb.alwaysLeft.Main();
         
         /**
          * 2008 emea semis -- problem 1
