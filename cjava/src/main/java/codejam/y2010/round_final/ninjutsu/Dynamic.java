@@ -1,8 +1,9 @@
 package codejam.y2010.round_final.ninjutsu;
 
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,7 +13,9 @@ import org.slf4j.LoggerFactory;
 import codejam.utils.geometry.Point;
 import codejam.utils.geometry.PointInt;
 import codejam.y2010.round_final.ninjutsu.PointData.PointDataIndex;
+import codejam.y2010.round_final.ninjutsu.RopePathData.RopeLengthDataIndex;
 
+import com.google.common.base.Preconditions;
 import com.google.common.math.DoubleMath;
 
 public class Dynamic
@@ -21,28 +24,40 @@ public class Dynamic
 
     public String handleCase(InputData in) {
         
-        int maxBends = maxBends(in.R, 0, new PointInt(-1, 0), in, 0);
+        //First add a point -R, 0
+        in.points.add(new PointInt(-in.R, 0));
+        
+        int dirIndex = in.points.size() - 1;
+        
+
+        Map<PointDataIndex, PointData[]> pointDataMemo = new HashMap<>();
+        Map<RopeLengthDataIndex, RopePathData> rlDataMemo = new HashMap<>();
+        
+        int maxBends = maxBends(0, dirIndex, pointDataMemo, rlDataMemo, in, 0);
+        
 
         return String.format("Case #%d: %d", in.testCase, maxBends);
     }
     
-    static class PointData {
-        
-        
-        
-    }
+    
     
     /**
-     * For all other points, calculate 
+     * For a given pivot and initial direction
+     * 
+     *  Calculate a list of points with
      * 1. Relative polar angle starting from direction
      * 2. Distance to currentPoint
      * 
-     * Then sort by angle.
+     * List is sorted by increasing polar angle starting from initial direction,
+     * ie counter clockwise
+     * 
+     * Size of list is # of total points - 1 (the pivot)
      * 
      * direction is a direction vector, not a point
      * 
      */
-    public PointData[] processOtherPoints(PointDataIndex pdIndex, InputData in, Map<PointDataIndex, PointData[]> pointDataMemo  )
+    public PointData[] processOtherPoints(PointDataIndex pdIndex, InputData in,
+            Map<PointDataIndex, PointData[]> pointDataMemo  )
     {
         PointData[] pd = pointDataMemo.get(pdIndex);
         if (pd != null) {
@@ -54,10 +69,10 @@ public class Dynamic
         Point currentPointDouble = currentPoint.toPoint();
     
         final PointInt dirPoint = in.points.get(pdIndex.dirPointIndex);
-        
-        
+                
         PointInt direction = pdIndex.directionTowardsDirPointIndex ?
-                cutPoint.translate(currentPoint) :
+                dirPoint.translate(currentPoint) : //pointing towards dirPoint
+                    currentPoint.translate(dirPoint)  //180 degrees opposite direction; away from dirPoint
                     ;
         
         PointData[] points =  new PointData[in.points.size()-1];
@@ -67,7 +82,7 @@ public class Dynamic
         int arrayIndex = -1;
         //For every other point, calculate it's polar angle with respect to the current point
         for(int pIdx = 0; pIdx < in.points.size(); ++pIdx) {
-            if (pIdx == currentPointIdx)
+            if (pIdx == pdIndex.pointIndex)
                 continue;
             ++arrayIndex;
             
@@ -107,129 +122,153 @@ public class Dynamic
         return points;
     }
     
+    private static PointData findFirstPointWithinDistance(PointData[] pointData, double distance) {
+        //TODO
+        return null;
+    }
     
     /**
-     * Given a point, a direction, and number of bends, determine the remaining rope length
+     * Given a point as a pivot, a cut point;
+     * determine the sequence of points that follow if we never cut the rope
      */
-    public double getRopeLen(RopeLengthData ropeLenData, 
-            Map<RopeLengthData, Double> memo,
-            PointData[][][] pointDataMemo,
+    public RopePathData getRopePath(RopeLengthDataIndex ropeLenDataIndex, 
+            Map<RopeLengthDataIndex, RopePathData> memo,
+            Map<PointDataIndex, PointData[]> pointDataMemo,
             InputData in) {
          
-        if (memo.containsKey(ropeLenData))
-            return memo.get(ropeLenData);
+        if (memo.containsKey(ropeLenDataIndex))
+            return memo.get(ropeLenDataIndex);
         
-        PointInt pivot = in.points.get(ropeLenData.pivotIdx);
+        //Get pivot and cut point
+        PointInt pivot = in.points.get(ropeLenDataIndex.pivotIdx);
         
-        PointInt cutPoint = in.points.get(ropeLenData.cutPointIdx);
+        PointInt cutPoint = in.points.get(ropeLenDataIndex.cutPointIdx);
         
-        PointInt direction = cutPoint.translate(pivot);
         
-        double distanceBeforeBends = pivot.distance(cutPoint);
+        //Build return object
+        RopePathData ret = new RopePathData();
+        memo.put(ropeLenDataIndex, ret);
         
-        int bends = 0;
+        //The starting length is where we just cut the rope
+        double ropeLengthRemaining = pivot.distance(cutPoint);
+                
+        //Add starting pivot
+        ret.ropeLengthRemaining.add(ropeLengthRemaining);
+        ret.pointIndexList.add(ropeLenDataIndex.pivotIdx);
         
-        PointInt curPiv = pivot;
-        PointInt curDir = direction;
-        int curPivIdx = ropeLenData.pivotIdx;
-        int curDirIdx = ropeLenData.cutPointIdx;
+        int curPivIdx = ropeLenDataIndex.pivotIdx;
+        int curDirIdx = ropeLenDataIndex.cutPointIdx;
+        
+        PointDataIndex pdi = new PointDataIndex(curPivIdx, curDirIdx, true);        
+        PointData[] pointData = processOtherPoints(pdi, in, pointDataMemo);        
+        PointData nextPoint = findFirstPointWithinDistance(pointData, ropeLengthRemaining);
+
+        //No point within reach
+        if (nextPoint == null) {        
+            return ret;
+        }
+        
+        //Add first bending point
+        ropeLengthRemaining -= nextPoint.distance;
+        ret.ropeLengthRemaining.add(ropeLengthRemaining);
+        ret.pointIndexList.add(nextPoint.pointIndex);
+        
+        //Now our direction will be opposite of the old pivot
+        curDirIdx = curPivIdx;
+        //And pivot is the point encountered
+        curPivIdx = nextPoint.pointIndex;
+        
         
         while(true) {
-            PointData[] pointData = processOtherPoints(curPivIdx,curDirIdx,in, pointDataMemo);
+            /**
+             * Now, as we are bending, the direction is 180 degrees from the previous pivot point
+             */
+            pdi = new PointDataIndex(curPivIdx, curDirIdx, false);
+            pointData = processOtherPoints(pdi, in, pointDataMemo);
+            nextPoint = findFirstPointWithinDistance(pointData, ropeLengthRemaining);
             
-            if (pointData.length == 0)
-                break;
+            if (nextPoint == null) {
+                //we are done
+                return ret;
+            }
             
-            ++bends;
+            ropeLengthRemaining -= nextPoint.distance;
             
-            curDirIdx = curPivIdx;
-            curPivIdx = pointData[0].pointIndex;
-            
-            if (pointData[0].pointIndex == ropeLenData.pivotIdx) {
+            if (ret.pointIndexList.contains(nextPoint.pointIndex)) {
                 //we have reached our original point and made a loop
-                break;
+                
+                int originalPointIdx = ret.pointIndexList.indexOf(nextPoint.pointIndex);
+                
+                double distanceLoop = ret.ropeLengthRemaining.get(originalPointIdx) - ropeLengthRemaining;
+                int loopBends = ret.pointIndexList.size() - originalPointIdx;
+                
+                int loopsPossible = DoubleMath.roundToInt(ropeLengthRemaining / distanceLoop,RoundingMode.DOWN);
+                
+                ropeLengthRemaining -= distanceLoop * loopsPossible;
+                
+                //Should only be possible to process 1 loop
+                Preconditions.checkState(ret.loopStart == null);
+                ret.loopsBendCount = loopBends * loopsPossible;
+                ret.loopStart = ret.pointIndexList.size();
+                
             }
+                            
+            
+            ret.pointIndexList.add(nextPoint.pointIndex);
+            ret.ropeLengthRemaining.add(ropeLengthRemaining);
+            
+            
+            //Direction is 180 degrees of vector pivot-->old_pivot
+            curDirIdx = curPivIdx;
+            curPivIdx = nextPoint.pointIndex;
+            
+            
         }
         
-        
-        /**
-         * Just find first bend
-         */
-        for(int paIdx = 0; paIdx < pointDataList.size(); ++paIdx) {
-            
-            PointData pointData = pointDataList.get(paIdx);
-            
-            /*
-            log.debug("{}P {}  R remaining {} Potential Q {}",
-                    recLevelSpace,
-                    currentPoint, DoubleFormat.df3.format(currentRopeLength), pointData);
-            */
-            
-            //Rope not long enough
-            if (DoubleMath.fuzzyCompare(distanceBeforeBends, pointData.distance, 0.00001) <= 0) {
-                continue;
-            }
-            
-            //We hit the first bend
-            RopeLengthData rld = new RopeLengthData(ropeLenData.pivotIdx,ropeLenData.cutPointIdx, 1);
-            double distToFirstBend = pointData.distance;
-            
-            memo.put(rld, distToFirstBend);
-        }
-        
-        /**
-         * Then use data to get subsequent
-         */
-        
+        //return ret;
     }
     
     
     
-    public int maxBends(double remainingRopeLength, 
-            int currentPointIdx, PointInt direction, InputData in, int recLevel)
+    public int maxBends( 
+            int currentPointIdx, /*int directionPointIdx, boolean towardsDir,*/ 
+            int cutPointIndex,
+            Map<PointDataIndex, PointData[]> pointDataMemo,
+            Map<RopeLengthDataIndex, RopePathData> rlDataMemo,
+            InputData in, int recLevel)
     {
         String recLevelSpace = StringUtils.repeat(' ', 4 * recLevel);
         
-        PointInt currentPoint = in.points.get(currentPointIdx);
-        Point currentPointDouble = in.points.get(currentPointIdx).toPoint();
         
-        List<PointData> points = processOtherPoints(remainingRopeLength,currentPointIdx,direction,in);
+        PointDataIndex pdi = new PointDataIndex(currentPointIdx, cutPointIndex, true);
         
-        double currentRopeLength = remainingRopeLength;
+        RopeLengthDataIndex rldIndex = new RopeLengthDataIndex(currentPointIdx,cutPointIndex);
         
-        log.debug("{}Point {}  rope remaining {}", recLevelSpace,currentPoint, currentRopeLength);
+        RopePathData ropePathData = getRopePath(rldIndex,rlDataMemo, pointDataMemo,in);
+        
+        
         
         int curMaxBends = 0;
         
-        for(int paIdx = 0; paIdx < points.size(); ++paIdx) {
+        for(int pathPointIdx = 1; pathPointIdx < ropePathData.pointIndexList.size(); ++pathPointIdx) {
             
-            //Point Q in solution text
-            PointData pointData = points.get(paIdx);
-            
-            /*
-            log.debug("{}P {}  R remaining {} Potential Q {}",
-                    recLevelSpace,
-                    currentPoint, DoubleFormat.df3.format(currentRopeLength), pointData);
-            */
-            
-            //Rope not long enough
-            if (DoubleMath.fuzzyCompare(currentRopeLength, pointData.distance, 0.00001) <= 0) {
-                continue;
+            int bends = pathPointIdx;
+            if (ropePathData.loopStart != null && pathPointIdx >= ropePathData.loopStart) {
+                bends += ropePathData.loopsBendCount;
             }
             
-            //Calculate length if we do not cut the rope
-            int bends = 1 + maxBends(currentRopeLength - pointData.distance, //minus rope  used to get to point 
-                    pointData.pointIndex, //the index 
-                    pointData.point.translate(currentPoint), //initial direction vector PQ  
-                    in, 1 + recLevel);
-            
-            curMaxBends = Math.max(bends, curMaxBends);
-            
-            //In order to continue, the rope must be shorter than distance to Q
-            currentRopeLength = pointData.distance;
-            
+            //See if cutting is better
+            int bendsIfCut = bends + maxBends(
+                    ropePathData.pointIndexList.get(pathPointIdx-1), //Last pivot
+                    ropePathData.pointIndexList.get(pathPointIdx), //cut point
+                    pointDataMemo,
+                    rlDataMemo,
+                    in, recLevel);
+        
+            curMaxBends = Math.max(curMaxBends, bendsIfCut);
         }
         
+                
         return curMaxBends;
         
     }

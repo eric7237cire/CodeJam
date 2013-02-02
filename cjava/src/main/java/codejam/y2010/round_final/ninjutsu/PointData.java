@@ -13,9 +13,24 @@ public class PointData
         
         /**
          * Either the initial direction is from point to dirPoint ;
-         * or it is in the opposite direction
+         * or it is in the opposite direction.
+         * 
+         * If we are cutting, then the direction is going towards the point where we cut.
+         * If we are bending, then the direction will be opposite the old pivot point.
          */
         boolean directionTowardsDirPointIndex;
+
+        /**
+         * 
+         */
+        public PointDataIndex(int pointIndex, int dirPointIndex, boolean directionTowardsDirPointIndex) {
+            super();
+            this.pointIndex = pointIndex;
+            this.dirPointIndex = dirPointIndex;
+            this.directionTowardsDirPointIndex = directionTowardsDirPointIndex;
+        }
+        
+        
     }
 
     //Index of point in input array
