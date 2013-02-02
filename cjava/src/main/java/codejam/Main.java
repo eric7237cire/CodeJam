@@ -14,6 +14,9 @@ public class Main  {
 
 
        // Main m = null;
+        
+        codejam.y2008.round_pracProb.alien_numbers.Main m = new codejam.y2008.round_pracProb.alien_numbers.Main();
+        
         /**
          * 2008 emea semis -- problem 1
          * 
@@ -461,7 +464,7 @@ public class Main  {
          * 
          * C is particularly interesting -- Very interesting inductive reasoning -- " africa 2010 qualification round"
          */
-        codejam.y2010aa.round_all.polygraph.Main m = new codejam.y2010aa.round_all.polygraph.Main();
+        //codejam.y2010aa.round_all.polygraph.Main m = new codejam.y2010aa.round_all.polygraph.Main();
         
         //2011 africa / arabia
         //codejam.y2011aa.round_all.vanishing_numbers.Main m = new codejam.y2011aa.round_all.vanishing_numbers.Main();
