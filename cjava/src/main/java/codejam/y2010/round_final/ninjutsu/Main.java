@@ -45,7 +45,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
        
         BruteForce bf = new BruteForce();
 
-        return bf.handleCase(in);
+      //  String ans = bf.handleCase(in);
+        
+        Dynamic d = new Dynamic();
+        return d.handleCase(in);
         //return String.format("Case #%d: ", in.testCase);
     }
     

@@ -12,8 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import codejam.utils.geometry.Point;
 import codejam.utils.geometry.PointInt;
+import codejam.utils.utils.DoubleFormat;
 import codejam.y2010.round_final.ninjutsu.PointData.PointDataIndex;
-import codejam.y2010.round_final.ninjutsu.RopePathData.RopeLengthDataIndex;
+import codejam.y2010.round_final.ninjutsu.RopePathData.PathNode;
+import codejam.y2010.round_final.ninjutsu.RopePathData.PivotCutPointIndex;
 
 import com.google.common.base.Preconditions;
 import com.google.common.math.DoubleMath;
@@ -31,7 +33,7 @@ public class Dynamic
         
 
         Map<PointDataIndex, PointData[]> pointDataMemo = new HashMap<>();
-        Map<RopeLengthDataIndex, RopePathData> rlDataMemo = new HashMap<>();
+        Map<PivotCutPointIndex, RopePathData> rlDataMemo = new HashMap<>();
         
         int maxBends = maxBends(0, dirIndex, pointDataMemo, rlDataMemo, in, 0);
         
@@ -123,7 +125,14 @@ public class Dynamic
     }
     
     private static PointData findFirstPointWithinDistance(PointData[] pointData, double distance) {
-        //TODO
+        for (int i = 0; i < pointData.length; ++i) {
+            PointData p = pointData[i];
+            
+            if (DoubleMath.fuzzyCompare(distance, p.distance, 0.4) > 0) {
+                log.debug("Found point {} within distance {}", p, DoubleFormat.df3.format(distance));
+                return p;
+            }
+        }
         return null;
     }
     
@@ -131,8 +140,8 @@ public class Dynamic
      * Given a point as a pivot, a cut point;
      * determine the sequence of points that follow if we never cut the rope
      */
-    public RopePathData getRopePath(RopeLengthDataIndex ropeLenDataIndex, 
-            Map<RopeLengthDataIndex, RopePathData> memo,
+    public RopePathData getRopePath(PivotCutPointIndex ropeLenDataIndex, 
+            Map<PivotCutPointIndex, RopePathData> memo,
             Map<PointDataIndex, PointData[]> pointDataMemo,
             InputData in) {
          
@@ -140,9 +149,10 @@ public class Dynamic
             return memo.get(ropeLenDataIndex);
         
         //Get pivot and cut point
-        PointInt pivot = in.points.get(ropeLenDataIndex.pivotIdx);
+        final PointInt pivot = in.points.get(ropeLenDataIndex.pivotIdx);
         
-        PointInt cutPoint = in.points.get(ropeLenDataIndex.cutPointIdx);
+        final PointInt cutPoint = in.points.get(ropeLenDataIndex.cutPointIdx);
+        
         
         
         //Build return object
@@ -151,10 +161,13 @@ public class Dynamic
         
         //The starting length is where we just cut the rope
         double ropeLengthRemaining = pivot.distance(cutPoint);
-                
+        
+        
+        log.debug("GetRopePath pivot {} cut Point {} Rope len {}",
+                pivot, cutPoint, DoubleFormat.df3.format(ropeLengthRemaining));
+        
         //Add starting pivot
-        ret.ropeLengthRemaining.add(ropeLengthRemaining);
-        ret.pointIndexList.add(ropeLenDataIndex.pivotIdx);
+        ret.addInitialPathNode(ropeLengthRemaining, ropeLenDataIndex.pivotIdx);
         
         int curPivIdx = ropeLenDataIndex.pivotIdx;
         int curDirIdx = ropeLenDataIndex.cutPointIdx;
@@ -169,9 +182,8 @@ public class Dynamic
         }
         
         //Add first bending point
-        ropeLengthRemaining -= nextPoint.distance;
-        ret.ropeLengthRemaining.add(ropeLengthRemaining);
-        ret.pointIndexList.add(nextPoint.pointIndex);
+        ropeLengthRemaining = ret.addPathNode(nextPoint.distance, nextPoint.pointIndex);
+        
         
         //Now our direction will be opposite of the old pivot
         curDirIdx = curPivIdx;
@@ -192,30 +204,7 @@ public class Dynamic
                 return ret;
             }
             
-            ropeLengthRemaining -= nextPoint.distance;
-            
-            if (ret.pointIndexList.contains(nextPoint.pointIndex)) {
-                //we have reached our original point and made a loop
-                
-                int originalPointIdx = ret.pointIndexList.indexOf(nextPoint.pointIndex);
-                
-                double distanceLoop = ret.ropeLengthRemaining.get(originalPointIdx) - ropeLengthRemaining;
-                int loopBends = ret.pointIndexList.size() - originalPointIdx;
-                
-                int loopsPossible = DoubleMath.roundToInt(ropeLengthRemaining / distanceLoop,RoundingMode.DOWN);
-                
-                ropeLengthRemaining -= distanceLoop * loopsPossible;
-                
-                //Should only be possible to process 1 loop
-                Preconditions.checkState(ret.loopStart == null);
-                ret.loopsBendCount = loopBends * loopsPossible;
-                ret.loopStart = ret.pointIndexList.size();
-                
-            }
-                            
-            
-            ret.pointIndexList.add(nextPoint.pointIndex);
-            ret.ropeLengthRemaining.add(ropeLengthRemaining);
+            ropeLengthRemaining = ret.addPathNode(nextPoint.distance, nextPoint.pointIndex);
             
             
             //Direction is 180 degrees of vector pivot-->old_pivot
@@ -234,7 +223,7 @@ public class Dynamic
             int currentPointIdx, /*int directionPointIdx, boolean towardsDir,*/ 
             int cutPointIndex,
             Map<PointDataIndex, PointData[]> pointDataMemo,
-            Map<RopeLengthDataIndex, RopePathData> rlDataMemo,
+            Map<PivotCutPointIndex, RopePathData> rlDataMemo,
             InputData in, int recLevel)
     {
         String recLevelSpace = StringUtils.repeat(' ', 4 * recLevel);
@@ -242,7 +231,7 @@ public class Dynamic
         
         PointDataIndex pdi = new PointDataIndex(currentPointIdx, cutPointIndex, true);
         
-        RopeLengthDataIndex rldIndex = new RopeLengthDataIndex(currentPointIdx,cutPointIndex);
+        PivotCutPointIndex rldIndex = new PivotCutPointIndex(currentPointIdx,cutPointIndex);
         
         RopePathData ropePathData = getRopePath(rldIndex,rlDataMemo, pointDataMemo,in);
         
@@ -250,22 +239,24 @@ public class Dynamic
         
         int curMaxBends = 0;
         
-        for(int pathPointIdx = 1; pathPointIdx < ropePathData.pointIndexList.size(); ++pathPointIdx) {
+        for(int pathPointIdx = 1; pathPointIdx < ropePathData.ropePath.size(); ++pathPointIdx) {
             
-            int bends = pathPointIdx;
-            if (ropePathData.loopStart != null && pathPointIdx >= ropePathData.loopStart) {
-                bends += ropePathData.loopsBendCount;
-            }
+            PathNode prevPathNode = ropePathData.ropePath.get(pathPointIdx-1);
+            PathNode pathNode = ropePathData.ropePath.get(pathPointIdx);
+            
+            int bends = pathNode.bends;
+            int prevBends = prevPathNode.bends;
             
             //See if cutting is better
-            int bendsIfCut = bends + maxBends(
-                    ropePathData.pointIndexList.get(pathPointIdx-1), //Last pivot
-                    ropePathData.pointIndexList.get(pathPointIdx), //cut point
+            int bendsIfCut = prevBends + maxBends(
+                    prevPathNode.pointIndex, //Last pivot
+                    pathNode.pointIndex, //cut point
                     pointDataMemo,
                     rlDataMemo,
                     in, recLevel);
         
             curMaxBends = Math.max(curMaxBends, bendsIfCut);
+            curMaxBends = Math.max(bends, curMaxBends);
         }
         
                 

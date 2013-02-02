@@ -142,11 +142,11 @@ public class BruteForce
             //Point Q in solution text
             PointData pointData = points.get(paIdx);
             
-            /*
+            
             log.debug("{}P {}  R remaining {} Potential Q {}",
                     recLevelSpace,
                     currentPoint, DoubleFormat.df3.format(currentRopeLength), pointData);
-            */
+            
             
             //Rope not long enough
             if (DoubleMath.fuzzyCompare(currentRopeLength, pointData.distance, 0.00001) <= 0) {
