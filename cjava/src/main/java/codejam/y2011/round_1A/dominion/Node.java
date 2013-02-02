@@ -1,25 +1,26 @@
 package codejam.y2011.round_1A.dominion;
 
+import com.google.common.base.Objects;
+
 public class Node {
-    int hand;
-    int turns;
-    int t;
-    int c1;
-    int c2;
-    static int TOTAL_CARDS;
-    
-    public Node(int hand, int turns, int t, int c1, int c2) {
+    final int hand;
+    final int turns;
+    final int t;
+    final int c1;
+    final int c2;
+        
+    public Node(int hand, int turns, int t, int c1, int c2, int TOTAL_CARDS) {
         super();
-        this.hand = hand;
-        this.turns = turns;
+        this.hand = Math.min(TOTAL_CARDS, hand);
+        this.turns = Math.min(TOTAL_CARDS, turns);
         this.t = t;
         this.c1 = c1;
         this.c2 = c2;
+        
     }
     
     public void limit() {
-        hand = Math.min(TOTAL_CARDS, hand);
-        turns = Math.min(TOTAL_CARDS, turns);
+        
     }
     
     @Override
@@ -35,7 +36,7 @@ public class Node {
     }
     @Override
     public String toString() {
-        return "Node [hand=" + hand + ", turns=" + turns + ", t=" + t + ", c1="
+        return "Node [hand=" + hand + ", turns=" + turns +  ", c1="
                 + c1 + ", c2=" + c2 + "]";
     }
     @Override
@@ -47,16 +48,12 @@ public class Node {
         if (getClass() != obj.getClass())
             return false;
         Node other = (Node) obj;
-        if (c1 != other.c1)
-            return false;
-        if (c2 != other.c2)
-            return false;
-        if (hand != other.hand)
-            return false;
-        if (t != other.t)
-            return false;
-        if (turns != other.turns)
-            return false;
-        return true;
+        
+        return Objects.equal(c1, other.c1) &&
+                Objects.equal(c2, other.c2) &&
+                Objects.equal(hand, other.hand) &&
+                Objects.equal(t, other.t) &&
+                Objects.equal(turns, other.turns);
+        
     }
 }

@@ -23,7 +23,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\ditch.cpp">
+    <ClCompile Include="..\buylow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

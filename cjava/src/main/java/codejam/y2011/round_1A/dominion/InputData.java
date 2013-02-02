@@ -12,6 +12,12 @@ public class InputData extends AbstractInputData {
 
     List<Card> hand;
     List<Card> deck;
+    
+    List<Card> c0_cards;
+    List<Card> c1_cards;
+    List<Card> c2_cards;
+    List<Card> t_cards ;
+    
     public InputData(int testCase) {
         super(testCase);
         hand = new ArrayList<>();

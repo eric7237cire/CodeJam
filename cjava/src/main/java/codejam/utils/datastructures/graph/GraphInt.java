@@ -63,6 +63,11 @@ public class GraphInt {
         
     }
     
+    /**
+     * Used in brute force graph coloring problem
+     * @param nodeA
+     * @param nodeB
+     */
     public void contractEdge(int nodeA, int nodeB) {
         //Will merge B into A
         Set<Integer> nodeANeighbors = nodeConnections.get(nodeA);

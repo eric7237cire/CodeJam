@@ -197,7 +197,19 @@ public class Main  {
         
         //codejam.y2009.round_final.marbles.Main m = new codejam.y2009.round_final.marbles.Main();
         
-        codejam.y2009.round_final.lights.Main m = new codejam.y2009.round_final.lights.Main();
+        /**
+         * 2009 Round Final
+         * Problem 6
+         * 
+         * Triangle - Triangle intersection
+         * Circle disk area
+         * polar angles
+         * 
+         * Fast -- 400 ms for large.  
+         * 
+         * idea -- try approximation and line sweep suggested solutions
+         */
+        //codejam.y2009.round_final.lights.Main m = new codejam.y2009.round_final.lights.Main();
         
         /**
          * 2009 finals problem 5.
@@ -334,8 +346,17 @@ public class Main  {
          //TODO large is quite slow 14 secs -- 30 secs.  Can improve the algorithm
         // codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
         
-        //DP TODO bottom up
-         //codejam.y2011.round_1A.dominion.Main m = new codejam.y2011.round_1A.dominion.Main();
+        /**
+         * 2011 Round 1A
+         * 
+         * Weighted / directed graph
+         * 
+         * Using DP to find max length.  Bottom up
+         * would need a topologicial sort (reverse post order)
+         * which is itself recursive, so it would defeat
+         * the point of doing a bottom up DP...
+         */
+         codejam.y2011.round_1A.dominion.Main m = new codejam.y2011.round_1A.dominion.Main();
          
          //2011 1B
          //A in C++
@@ -550,7 +571,7 @@ public class Main  {
             log.info("Input file {}", file);
 
              Runner.goSingleThread(file, m, m);
-           //Runner.go(file, m, m, 5);
+          // Runner.go(file, m, m, 5);
         }       
     }
 
