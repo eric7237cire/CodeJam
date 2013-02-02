@@ -96,6 +96,10 @@ public class PointInt implements Comparable<PointInt>{
         return Math.max( Math.abs(getX()-rhs.getX()) ,
                 Math.abs(getY()-rhs.getY()) );
     }
+    
+    static public int crossProduct(PointInt u, PointInt v) {
+        return u.getX() * v.getY() - u.getY() * v.getX();
+    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()

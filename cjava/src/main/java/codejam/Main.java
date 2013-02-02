@@ -339,7 +339,12 @@ public class Main  {
         
         //Intervals, Splitting interval into 2.  Binary search.  
         //codejam.y2010.round_final.travel_plan.Main m = new codejam.y2010.round_final.travel_plan.Main();
-                 
+                
+        
+        codejam.y2010.round_final.ninjutsu.Main m = new codejam.y2010.round_final.ninjutsu.Main();
+        
+        
+        
          //2011 1A
         
          //A in C++
@@ -356,7 +361,7 @@ public class Main  {
          * which is itself recursive, so it would defeat
          * the point of doing a bottom up DP...
          */
-         codejam.y2011.round_1A.dominion.Main m = new codejam.y2011.round_1A.dominion.Main();
+        // codejam.y2011.round_1A.dominion.Main m = new codejam.y2011.round_1A.dominion.Main();
          
          //2011 1B
          //A in C++
