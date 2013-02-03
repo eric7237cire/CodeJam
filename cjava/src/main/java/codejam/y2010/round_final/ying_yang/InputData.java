@@ -4,8 +4,8 @@ import codejam.utils.main.AbstractInputData;
 
 public class InputData extends AbstractInputData {
 
-    int N; //rows
-    int M; //columns
+    int height; //rows
+    int length; //columns
     
     public InputData(int testCase) {
         super(testCase);

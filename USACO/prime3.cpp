@@ -76,69 +76,26 @@ ostream& operator<<( ostream& os, const vector<T>& vec )
     return os;
 }
 
+typedef map< vi, int > DigitPrimeMap;
 
+DigitPrimeMap digitPrimeMap;
 
-struct BigNum{
-		
-        vector<long> s;
-        BigNum(long n=0) : s(200, 0){
-                s[0]=n;
-                //cout << "Constructor " << s << endl;
-        }
-        void smooth(){
-                for(long i=0;i<199;++i){
-                        s[i+1]+=s[i]/1000000;
-                        s[i]%=1000000;
-                }
-        }
-        void operator-=(BigNum b){
-                for(long i=0;i<200;++i)
-                        s[i]-=b.s[i];
-                for(long i=0;i<199;++i){
-                        while(s[i]<0){
-                                s[i]+=1000000;
-                                --s[i+1];
-                        }
-                        s[i+1]+=s[i]/1000000;
-                        s[i]%=1000000;
-                }
-        }
-        void operator+=(BigNum b){
-                for(long i=0;i<200;++i)
-                        s[i]+=b.s[i];
-                smooth();
-        }
-        static void output(long n, ostream& os){
-                string str;
-				ostringstream ostr;
-				ostr << n;
-                str = ostr.str();
-               // cout << "Str " << str << endl;
-				for(long l=str.length();l<6;++l)
-                        os << ('0');
-                os << str;
-        }
-        
-};
+string DecToBin(int number)
+{
+    if ( number == 0 ) return "0";
+    if ( number == 1 ) return "1";
 
-
-
-ostream& operator<<(ostream& os, const BigNum& bignum){
-                long i=199;
-                for(;bignum.s[i]==0 && i > 0;--i);
-                os << bignum.s[i];
-                for(--i;i>=0;--i)
-                        bignum.output(bignum.s[i], os);
-                
-                return os;
+    if ( number % 2 == 0 )
+        return DecToBin(number / 2) + "0";
+    else
+        return DecToBin(number / 2) + "1";
 }
 
-
-uvi getDigits(uint num)
+vi getDigits(uint num)
 {
     int sum = 0;
     
-    uvi digits;
+    vi digits;
     
     while(num > 0) {
         uint digit = num % 10;
@@ -155,103 +112,148 @@ uvi getDigits(uint num)
     return digits;
 }
 
-uvi primesWithSum;
-uvvi primeDigits;
-set<uint> primeSet;
-vector<string> ans;
+vi primesWithSum;
+vvi primeDigits;
+set<int> primeSet;
+vvi ans;
 
+int powTen[] = { 10000, 1000, 100, 10, 1 }; 
 
+vvs posDigitPrime(5, vs(10, set<uint>()));
 	
-void checkValid(const vi& rows) {
-
-	
-
-	FOR(col, 0, 5)
-	{
-		uint num = 0;
-		for(int row = 0; row < 5; row++)
-		{
-			num*=10;
-			num += primeDigits[ rows[row] ] [ col ];
-		}
-		
-		
-
-		if (!contains(primeSet, num)) {
-			
-			return;
-		}
-	}
 
 
-    cout << "\nValid\n " << endl;
-    FOR(r, 0, 5)
-        cout << primesWithSum[ rows[r] ] << endl;
+
+void idxToRowCol(const int idx, int& row, int& col)
+{
+    row = idx % 5;
+    col = idx / 5;
 }
+
+int rowColToIdx(int row, int col)
+{
+    return col * 5 + row;
+}
+
+void printGrid(const vi& grid, ostream& os, bool byRow)
+{
+    FOR(r, 0, 5)
+    {
+        FOR(c, 0, 5)
+        {
+            //int sq = rowColToIdx(r,c);
+            //The answer needs to be sorted row by row
+            if (byRow)
+            {int sq = r * 5 + c;
+            os << grid[sq];
+            } else {
+                int sq = rowColToIdx(r,c);
+                os << grid[sq];
+            }
+        }
+        
+        os << endl;
+    }
+}
+
+
+
 
 /**
 Put a prime in the top row, then try to fill in the columns
 */
-void search( const uvi& fdDigits, const uvi& sdDigits,
-    const uvi& leftColDigits, const uvi& rightColDigits,
-    vi& rows, int currentRow)
+void search( vi& grid, int currentSquare)
 {
-    if (currentRow == 5)
-    {
-        checkValid(rows);
+    if (currentSquare == 25)
+    {        
+        //ans.pb(grid);
+        vi gridRowCol;
+        FOR(r, 0, 5)
+        {
+            FOR(c, 0, 5)
+            {
+                gridRowCol.pb( grid[ rowColToIdx(r,c) ] );
+            }
+        }
+        ans.pb(gridRowCol);
+        
         return;
     }
     
-        
-	 
-    for(uint p = 0; p < primesWithSum.size(); ++p)
-    {
-        int fdDigit = currentRow;
-        int sdDigit = 4 - currentRow;
-        
-        const uvi& pd = primeDigits[p];
-
-		uint prime = primesWithSum[p];
-        
-        if (pd[fdDigit] != fdDigits[fdDigit]) {
-			continue;
-		}
-        
-        if (pd[sdDigit] != sdDigits[sdDigit]) {
-			continue;
-		}
-		
-		if (pd[0] != leftColDigits[currentRow]) {
-		    continue;
-		}
-		
-		if (pd[4] != rightColDigits[currentRow]) {
-		    continue;
-		}
-        
-        rows[currentRow] = p;
-		
-		search(fdDigits, sdDigits, leftColDigits, rightColDigits, rows, currentRow+1);
-        
+    int row, col;
+    idxToRowCol( currentSquare, row, col);
+    
+    vi colDigits;
+    FOR(r, 0, row) {
+        colDigits.pb(grid[ rowColToIdx(r,col) ]);   
     }
-    /*int curColumn = columns.size();
+    int p1 = digitPrimeMap[colDigits];
     
+    vi rowDigits;
+    FOR(c, 0, col) {
+        rowDigits.pb(grid[ rowColToIdx(row, c)]);
+    }
+    int p2 = digitPrimeMap[rowDigits];
     
+    bool onDiag1 = row == col;
     
+    vi diagDigits;
+    if (onDiag1) {
+    FOR(i, 0, row) {
+        diagDigits.pb( grid[ rowColToIdx(i,i) ] );   
+    }
+    }
     
-    int digit = topRowDigits[curColumn];
+    int p3 = onDiag1 ? digitPrimeMap[diagDigits] : (1 << 11) - 1;
     
-    const set<uint>& primesStartingWith = posDigitPrimes[0][digit];
+    bool onDiag2 = 4-col == row;
+    vi diag2Digits;
     
-    for(si::iterator psIt = primesStartingWith.begin();
-        psIt != primesStartingWith.end();
-        ++psIt)
-    {
-        FORE(r, 1, 4)
-        {
-            grid[r][curColumn   
+    if (onDiag2) {
+        FOR(c, 0, col) {
+            int r = 4 - c; 
+            diag2Digits.pb( grid[ rowColToIdx(r,c)  ] );   
         }
-    }*/
+    }
+    
+    int p4 = onDiag2 ? digitPrimeMap[diag2Digits] : (1 << 11) - 1;
+    
+    int all = p1 & p2 & p3 & p4;
+    /*
+    if (grid[0] == 1 &&
+        grid[1] == 3 &&
+        grid[2] == 3 &&
+        grid[3] == 1 &&
+        grid[4] == 3 &&
+        
+        grid[5] == 1 &&
+        grid[6] == 3 &&
+        grid[7] == 0 &&
+        grid[8] == 4 &&
+        grid[9] == 3 &&
+        
+        grid[10] == 3 &&
+        grid[11] == 2 &&
+        grid[12] == 3 &&
+        grid[13] == 0 &&
+        grid[14] == 3 
+        ) {
+    printGrid(grid);
+    cout << "P1 " << DecToBin(p1) << endl;
+    cout << "P2 " << DecToBin(p2) << endl;
+    cout << "P3 " << DecToBin(p3) << endl;
+    cout << "P4 " << DecToBin(p4) << endl;
+    cout << "Possible for next " << DecToBin(all) << endl;
+        }
+        */
+    FORE(d, 0, 9) {
+        if ( (all & (1 << d)) != 0) {
+            grid[currentSquare] = d;
+            search(grid, currentSquare+1);
+            grid[currentSquare] = -1;
+        }
+    }
+    
 }
         
 void generatePrimes(int n, vector<unsigned int>& primes) 
@@ -306,92 +308,101 @@ int main()
 	fin >> digitSum >> topLeft;
 	
 	
-	vvs posDigitPrime(5, vs(10, set<uint>()));
 	
 	
 	
 
 	FOR(i, 0, allPrimes.size()) {
-	    if (allPrimes[i] > 10000) {
-	        uint p = allPrimes[i];
-	        
-	        uvi digits = getDigits(p);
-	        
-	        //cout << p << " digit sum " << digits << endl;
-	        
-	        assert(digits.size() == 6);
-	        
-	        
-	        if (digits[5] != digitSum) 
-	            continue;
-	        
-	        primeDigits.pb ( digits) ;	        
-	        primesWithSum.pb(p);
-
-			
-
-			primeSet.insert(p);
-	        
-	        FOR(d, 0, 5) {
-	            //posDigitPrime[d][digits[d]].insert( p );
-	        }
-	        
+	    if (allPrimes[i] < 10000) {
+	        continue;
 	    }
-	}
-	
-	
-    FOR(firstDiag, 0, primesWithSum.size())
-    {
-        if (primeDigits[firstDiag][0] != topLeft)
+	    
+        uint p = allPrimes[i];
+        
+        vi digits = getDigits(p);
+        
+        //cout << p << " digit sum " << digits << endl;
+        
+        assert(digits.size() == 6);
+        
+        if (digits[5] != digitSum) 
             continue;
         
-        const uvi& firstDigits = primeDigits[firstDiag];
+        primeDigits.pb ( digits) ;	        
+        primesWithSum.pb(p);
+
+        //erase size
+        digits.erase(digits.begin() + 5);
+        
+        while(digits.size() > 0)
+        {
+            int nextDigit = digits[digits.size() - 1];
+            digits.erase( digits.end() - 1 );
+            digitPrimeMap[ digits ] = digitPrimeMap[ digits ] | (1 << nextDigit);
+        }
         
 
-        FOR(secondDiag, 0, primesWithSum.size())
-        {
-            const uvi& secondDigits = primeDigits[secondDiag];
-            
-            //Check center same
-            if (firstDigits[2] != secondDigits[2])
-                continue;
+        primeSet.insert(p);
         
-            //Left column
-            FOR(col1, 0, primesWithSum.size())
-            {
-                const uvi& col1Digits = primeDigits[col1];
-                
-                if(col1Digits[0] != firstDigits[0])
-                    continue;
-                
-                if(col1Digits[4] != secondDigits[0])
-                    continue;
-                
-                //Right column
-                FOR(col2, 0, primesWithSum.size())
-                {
-                    const uvi& col2Digits = primeDigits[col2];
-                
-                    if(col2Digits[4] != firstDigits[4])
-                        continue;
-                
-                    if(col2Digits[0] != secondDigits[4])
-                        continue;
-                
-                    vi rows(5, -1);
-                    search( firstDigits,
-                        secondDigits,
-                        col1Digits,
-                        col2Digits,
-                        rows, 0);
-                }
-            }
+        FOR(d, 0, 5) {
+            posDigitPrime[d][digits[d]].insert( p );
         }
+        
     }
 	
 	
 	
+    FOR(firstRowIdx, 0, primesWithSum.size())
+    {
+        if (primeDigits[firstRowIdx][0] != topLeft)
+            continue;
+        
+        const vi& firstDigits = primeDigits[firstRowIdx];
+        
+		vi grid(25, -1);
+
+		copy( firstDigits.begin(), firstDigits.begin()+5, grid.begin() );
+            
+        search( grid, 5 );
+    }
+	/*
+	vi test;
+	cout << "Test " << endl;
+	//cout << DecToBin(digitPrimeMap[test]) << endl;
+	
+	test.pb(3);
+	//cout << DecToBin(digitPrimeMap[test]) << endl;
+	
+	test.pb(4);
+	//cout << DecToBin(digitPrimeMap[test]) << endl;
+	
+	test.pb(3);
+	cout << DecToBin(digitPrimeMap[test]) << endl;
+	
+	test.clear();
+	test.pb(5);
+	//cout << DecToBin(digitPrimeMap[test]) << endl;
+	
+	cout << "Contains " << contains(primeSet, 34301) << endl;
+	
 	cout << primesWithSum.size() << endl;
+	*/
+	
+	sort(all(ans));
+	
+	if (ans.size() == 0)
+	{
+	    fout << "NONE" << endl;
+	    return 0;
+	}
+	
+	FOR(a, 0, ans.size())
+	{
+	    printGrid(ans[a], fout,true);
+	    if (a < ans.size() - 1)
+	        fout << endl;
+	}
+	
 	return 0;
 }
 
