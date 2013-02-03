@@ -17,7 +17,7 @@ public class Main  {
         
         //codejam.y2008.round_pracProb.alien_numbers.Main m = new codejam.y2008.round_pracProb.alien_numbers.Main();
         
-        codejam.y2008.round_pracProb.alwaysLeft.Main m = new codejam.y2008.round_pracProb.alwaysLeft.Main();
+        //codejam.y2008.round_pracProb.alwaysLeft.Main m = new codejam.y2008.round_pracProb.alwaysLeft.Main();
         
         /**
          * 2008 emea semis -- problem 1
@@ -352,7 +352,7 @@ public class Main  {
          */
         //codejam.y2010.round_final.ninjutsu.Main m = new codejam.y2010.round_final.ninjutsu.Main();
         
-        
+        codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
         
          //2011 1A
         

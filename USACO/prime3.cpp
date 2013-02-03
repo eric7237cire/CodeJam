@@ -147,17 +147,85 @@ uvi getDigits(uint num)
         num /= 10;
     }
     
+	//Make left most/most significant index 0
+	reverse(all(digits));
+
     digits.pb(sum);
     
     return digits;
 }
 
+uvi primesWithSum;
+uvvi primeDigits;
+set<uint> primeSet;
+vector<string> ans;
+
+
+	
+void checkValid(const vi& rows) {
+
+	
+
+	FOR(col, 0, 5)
+	{
+		uint num = 0;
+		for(int row = 0; row < 5; row++)
+		{
+			num*=10;
+			num += primeDigits[ rows[row] ] [ col ];
+		}
+		
+		
+
+		if (!contains(primeSet, num)) {
+			
+			return;
+		}
+	}
+
+
+    cout << "\nValid\n " << endl;
+    FOR(r, 0, 5)
+        cout << primesWithSum[ rows[r] ] << endl;
+}
+
 /**
 Put a prime in the top row, then try to fill in the columns
 */
-void search(uvvi& grid, uint digitSum, vector<string>& ans, const vvs& posDigitPrimes)
+void search( const uvi& fdDigits, const uvi& sdDigits, vi& rows, int currentRow)
 {
+    if (currentRow == 5)
+    {
+        checkValid(rows);
+        return;
+    }
+    
+        
+	 
+    for(uint p = 0; p < primesWithSum.size(); ++p)
+    {
+        int fdDigit = currentRow;
+        int sdDigit = 4 - currentRow;
+        
+        const uvi& pd = primeDigits[p];
+
+		uint prime = primesWithSum[p];
+        
+        if (pd[fdDigit] != fdDigits[fdDigit]) {
+			continue;
+		}
+        
+        if (pd[sdDigit] != sdDigits[sdDigit]) {
+			continue;
+		}
+        
+        rows[currentRow] = p;
+		
+        search(fdDigits, sdDigits, rows, currentRow+1);
+        
+    }
     /*int curColumn = columns.size();
+    
     
     
     
@@ -221,18 +289,18 @@ int main()
 	uvi allPrimes;
 	generatePrimes(100000, allPrimes);
 	
-	uvi primes;
 	
 	uint digitSum;
 	uint topLeft;
 	
 	fin >> digitSum >> topLeft;
 	
-	uvi fdPrimes;
-	uvvi primeDigits;
 	
 	vvs posDigitPrime(5, vs(10, set<uint>()));
 	
+	
+	
+
 	FOR(i, 0, allPrimes.size()) {
 	    if (allPrimes[i] > 10000) {
 	        uint p = allPrimes[i];
@@ -241,16 +309,18 @@ int main()
 	        
 	        //cout << p << " digit sum " << digits << endl;
 	        
-	        
-	        
 	        assert(digits.size() == 6);
 	        
 	        
 	        if (digits[5] != digitSum) 
 	            continue;
 	        
-	        primeDigits.insert( mp(p, digits) );	        
-	        primes.pb(p);
+	        primeDigits.pb ( digits) ;	        
+	        primesWithSum.pb(p);
+
+			
+
+			primeSet.insert(p);
 	        
 	        FOR(d, 0, 5) {
 	            //posDigitPrime[d][digits[d]].insert( p );
@@ -259,22 +329,34 @@ int main()
 	    }
 	}
 	
-	FOR(tr, 0, fdPrimes.size()) 
-	{
-	    FOR(fc, 0, fdPrimes.size())
-	    {
-	        FOR(diag, 0, fdPrimes.size())
-	        {
-	            search( primeDigits[tr],
-	                primeDigits[fc],
-	                primeDigits[diag], 1);
-	            
-	        }
-	    }
-	}
+	
+    FOR(firstDiag, 0, primesWithSum.size())
+    {
+        if (primeDigits[firstDiag][0] != topLeft)
+            continue;
+        
+        const uvi& firstDigits = primeDigits[firstDiag];
+        
+
+        FOR(secondDiag, 0, primesWithSum.size())
+        {
+            const uvi& secondDigits = primeDigits[secondDiag];
+            
+            //Check center same
+            if (firstDigits[2] != secondDigits[2])
+                continue;
+        
+			vi rows(5, -1);
+            search( firstDigits,
+                secondDigits,
+                rows, 0);
+            
+        }
+    }
 	
 	
-	cout << primes.size() << endl;
+	
+	cout << primesWithSum.size() << endl;
 	return 0;
 }
 

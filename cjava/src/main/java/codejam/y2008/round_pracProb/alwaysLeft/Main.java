@@ -3,8 +3,6 @@ package codejam.y2008.round_pracProb.alwaysLeft;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,26 +47,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     /**
      * Bits are North 0, South 1, West 2, East 3
      */
-    static void setBits(BitSetInt bs, int direction) {
-        direction %= 4;
-        
-        switch (direction) {
-        case 0:
-            bs.set(0);
-            return;
-        case 3:
-            bs.set(2);
-            return;
-        case 2:
-            bs.set(1);
-            return;
-        case 1:
-            bs.set(3);
-            return;
-            default:
-                throw new RuntimeException("ex");
-        }
-        
+    static int[] directionBits = new int[] { 0, 3, 1, 2 };
+    
+    static void setBits(BitSetInt bs, int direction) {        
+        bs.set(directionBits[direction % 4]);
     }
         
     @Override
@@ -97,8 +79,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             for(int x = Math.min(mw.minX,back.minX); x <= Math.max(mw.maxX,back.maxX); ++x)
             {
                 BitSetInt walls = wallMap.get(new PointInt(x,y));
-                log.debug("Coord :  {}  Can pass? N {} S {} E {} W {}  = {}", new PointInt(x,y), 
-                        walls.isSet(0),walls.isSet(1), walls.isSet(2), walls.isSet(3), Integer.toHexString(walls.getBits()) );
+              //  log.debug("Coord :  {}  Can pass? N {} S {} E {} W {}  = {}", new PointInt(x,y), 
+               //         walls.isSet(0),walls.isSet(1), walls.isSet(2), walls.isSet(3), Integer.toHexString(walls.getBits()) );
                 
                 ans.append(Integer.toHexString(walls.getBits()));
             }
@@ -146,8 +128,6 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     
                     currentSquare = PointInt.add(currentSquare, directions[directionIdx]);
                     
-                    
-                    
                     BitSetInt wallGaps = wallGapMap.get(currentSquare);
                     if (wallGaps == null) {
                         wallGaps = new BitSetInt();
@@ -157,26 +137,20 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     setBits(wallGaps, directionIdx + 2) ;
                     break;
                 case 'R':
-                    wallGaps = wallGapMap.get(currentSquare);
-                    //Left and front must be walls
-                   // setBits(wallGaps, directionIdx + 3) ; //left
-                    //setBits(wallGaps, directionIdx ) ; //front
-                    
+                    wallGaps = wallGapMap.get(currentSquare);                    
                     
                     directionIdx += 1;
                     directionIdx %= 4;
                     break;
                 case 'L':
                     wallGaps = wallGapMap.get(currentSquare);
-                    //Front must be a wall
-                    //setBits(wallGaps, directionIdx ) ; //front
                     
                     directionIdx += 3;
                     directionIdx %= 4;
                     break;
                 }
                 
-                log.debug("After Char {} position {} direction {}", ch, currentSquare, directionIdx);
+              //  log.debug("After Char {} position {} direction {}", ch, currentSquare, directionIdx);
             }
         }
     
