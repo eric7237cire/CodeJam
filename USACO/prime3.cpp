@@ -182,27 +182,42 @@ void search( vi& grid, vi& prefix, int currentSquare)
     idxToRowCol( currentSquare, row, col);
     
     int colNum = 0;
+    
     FOR(r, 0, row) {
         colNum *= 10;
         colNum += grid[ rowColToIdx(r,col) ];        
     }
+    //assert(colNum == prefix[5 + col]);
+    
+    //colNum = prefix[5+col];
+    
     int p1 = digitPrimeMap[colNum];
     
     int rowNum = 0;
+    
     FOR(c, 0, col) {
         rowNum *= 10;
         rowNum += (grid[ rowColToIdx(row, c)]);
     }
+    //assert(rowNum == prefix[row]);
+    
+    
+    //rowNum = prefix[row];
+    
     int p2 = digitPrimeMap[rowNum];
     
     bool onDiag1 = row == col;
     
     int diag1 = 0;
     if (onDiag1) {
+        
         FOR(i, 0, row) {
             diag1 *= 10;
             diag1 += ( grid[ rowColToIdx(i,i) ] );   
         }
+        //assert(diag1 == prefix[10]);
+        
+        //diag1 = prefix[10];
     }
     
     int p3 = onDiag1 ? digitPrimeMap[diag1] : (1 << 11) - 1;
@@ -211,11 +226,15 @@ void search( vi& grid, vi& prefix, int currentSquare)
     int diag2 = 0;
     
     if (onDiag2) {
+        
         FOR(c, 0, col) {
             int r = 4 - c;
             diag2 *= 10;
             diag2 += ( grid[ rowColToIdx(r,c)  ] );   
         }
+        //assert(diag2 == prefix[11]);
+        
+        //diag2 = prefix[11];
     }
     
     int p4 = onDiag2 ? digitPrimeMap[diag2] : (1 << 11) - 1;
@@ -251,7 +270,27 @@ void search( vi& grid, vi& prefix, int currentSquare)
     FORE(d, 0, 9) {
         if ( (all & (1 << d)) != 0) {
             grid[currentSquare] = d;
+            
+            /*
+            vi oldPrefix = prefix;
+            prefix[row] = prefix[row] * 10 + d;
+            prefix[5+col] = prefix[5+col]*10 + d;
+            if (onDiag1)
+                prefix[10] = prefix[10]*10 + d;
+            if (onDiag2)
+                prefix[11] = prefix[11]*10 + d;
+            */
             search(grid, prefix,currentSquare+1);
+            /*
+            prefix = oldPrefix;
+            
+            if (onDiag1)
+                prefix[10] /= 10;
+            if (onDiag2)
+                prefix[11] /= 10;
+            prefix[row] = prefix[row] / 10 ;
+            prefix[5+col] /= 10 ;
+            */
             grid[currentSquare] = -1;
         }
     }
@@ -375,36 +414,18 @@ int main()
 		
 		FOR(d, 0, 5)
 		{
-		   prefix[d] = firstDigits[d] * powTen[0];
+		   prefix[d] = firstDigits[d];
 		}
+		prefix[10] = firstDigits[0];
+		
+		prefix[11] = firstDigits[4];
 
 		copy( firstDigits.begin(), firstDigits.begin()+5, grid.begin() );
             
 		
         search( grid, prefix, 5 );
     }
-	/*
-	vi test;
-	cout << "Test " << endl;
-	//cout << DecToBin(digitPrimeMap[test]) << endl;
 	
-	test.pb(3);
-	//cout << DecToBin(digitPrimeMap[test]) << endl;
-	
-	test.pb(4);
-	//cout << DecToBin(digitPrimeMap[test]) << endl;
-	
-	test.pb(3);
-	cout << DecToBin(digitPrimeMap[test]) << endl;
-	
-	test.clear();
-	test.pb(5);
-	//cout << DecToBin(digitPrimeMap[test]) << endl;
-	
-	cout << "Contains " << contains(primeSet, 34301) << endl;
-	
-	cout << primesWithSum.size() << endl;
-	*/
 	
 	sort(all(ans));
 	

@@ -1,5 +1,6 @@
 package codejam.y2010.round_final.ying_yang;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -12,6 +13,7 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.GridChar;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
@@ -30,8 +32,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
        
         InputData in = new InputData(testCase);
        
-        in.height = scanner.nextInt();
-        in.length = scanner.nextInt();
+        in.nRows = scanner.nextInt();
+        in.nCols = scanner.nextInt();
         
         return in;
     }
@@ -48,6 +50,43 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             this.isWhite = isWhite;
         }
         
+        /**
+         * Given 2 diagonals, returns the intersection
+         * in the interior of the grid.  Or null if none exists
+         * 
+         */
+        PointInt intersection(Diagonal o, InputData in) {
+            int mOther = o.slope[0] * o.slope[1];
+            int m = slope[0] * slope[1];
+            int num =
+                    o.start.getY()-mOther*o.start.getX()-start.getY()+m*start.getX();
+            
+            int denom = m - mOther;
+            
+            if (num % denom != 0)
+                return null;
+            
+            int x = num / denom;
+            
+            int y = m * (x - start.getX()) + start.getY();
+            int y2 = mOther * (x - o.start.getX()) + o.start.getY();
+            
+            Preconditions.checkArgument(y == y2);
+            
+            if (y <= 0 || y >= in.nRows-1)
+                return null;
+            
+            if (x <= 0 || x >= in.nCols-1)
+                return null;
+            
+            return new PointInt(x, y);
+        }
+
+        @Override
+        public String toString()
+        {
+            return "Diagonal [start=" + start + ", slope=" + Arrays.toString(slope) + ", isWhite=" + isWhite + "]";
+        }
         
     }
     
@@ -106,7 +145,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             return BOTTOM;
         }
         
-        if (coord.getY() == in.height - 1) {
+        if (coord.getY() == in.nRows - 1) {
             return TOP;
         }
         
@@ -114,10 +153,11 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             return LEFT;
         }
         
-        if (coord.getX() == in.length - 1) {
+        if (coord.getX() == in.nCols - 1) {
             return RIGHT;
         }
         
+        Preconditions.checkState(false);
         return -1;
     }
   
@@ -134,31 +174,30 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         //top  M+N-2 to 2M+N-3
         //right 2M+N-2 to 2M+2N-5
         
-        int rightStart = in.length;
-        int rightLen = in.height-2;
+        int rightStart = in.nCols;
+        int rightLen = in.nRows-2;
         
         int topStart = rightStart+rightLen;
-        int topLen = in.length;
+        int topLen = in.nCols;
         
         int leftStart = topStart+topLen;
-        int leftLen = in.height-2;
+        int leftLen = in.nRows-2;
         
-        if (border >= 0 && border < in.length) {
+        if (border >= 0 && border < in.nCols) {
             //bottom
-            return new PointInt(0, border);
+            return new PointInt(border, 0);
         }
         if (border >= rightStart && border < rightStart+rightLen) {
             //right
-            return new PointInt(border-rightStart+1, in.length-1);
+            return new PointInt(in.nCols-1, border-rightStart+1 );
         }
         if (border >= topStart && border < topStart+topLen) {
             //top
-            return new PointInt(in.height-1, in.length - 1 - (border - topStart));
+            return new PointInt(in.nCols - 1 - (border - topStart), in.nRows-1);
         }
         if (border >= leftStart && border < leftStart+leftLen) {
             //left
-            return new PointInt(in.height - 2- (border-leftStart), 
-                    0);
+            return new PointInt(0, in.nRows - 2- (border-leftStart));
         }
         return null;
     }
@@ -168,7 +207,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     @Override
     public String handleCase(InputData in) {
        
-        final int borderLen = 2*in.height + 2*in.length - 4;
+        final int borderLen = 2*in.nRows + 2*in.nCols - 4;
+        
+        /**
+         * Loop through all starting positions for the white border
+         * and all possible lengths
+         */
         for(int startWhite = 0; startWhite < borderLen; ++startWhite)
         {
             for(int whiteBorderLen = 1; whiteBorderLen < borderLen; ++whiteBorderLen)
@@ -176,7 +220,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 int endWhite = (startWhite + whiteBorderLen - 1) % borderLen;
                 
                 log.debug("Start white {} end white {}",startWhite,endWhite);
-                GridChar grid = GridChar.buildEmptyGrid(in.height, in.length, '.');
+                GridChar grid = GridChar.buildEmptyGrid(in.nRows, in.nCols, '.');
                 grid.setyZeroOnTop(false);
                 
                 int startBlack = (endWhite + 1) % borderLen;
@@ -184,7 +228,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 log.debug("Start black {} end black {}",startBlack,endBlack);
                 
-               // Preconditions.checkState(false);
+                /**
+                 * A la brute force, set the border in the grid
+                 */
                 int border = startBlack;
                 while(border != startWhite)
                 {
@@ -205,15 +251,18 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     border %= borderLen;
                 }
                 
-                log.debug(grid.toString());
+               
                 
+                /**
+                 * Build all the diagonals
+                 */
                 List<Diagonal> diags = Lists.newArrayList();
                 
                 //Corners
                 for(int c = 0; c < 4; ++c) {
                     PointInt coord = new PointInt(
-                            in.length * corners[c][0],
-                            in.height * corners[c][1]);
+                            (in.nCols-1) * corners[c][0],
+                            (in.nRows-1) * corners[c][1]);
                     
                     
                 diags.add(new Diagonal(coord, cornerSlopes[c],
@@ -238,6 +287,54 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 diags.add(new Diagonal(whiteEndPt, slopesEndBoundary[sideWhiteEnd], true));
                 diags.add(new Diagonal(blackEndPt, slopesEndBoundary[sideBlackEnd], false));
+                
+                /**
+                 * Partition the diagonals in 2 sets, slope parallel to 1 and to -1
+                 * 
+                 * use the trick that slope.x * slope.y is positive it's positev
+                 */
+                
+                List<Diagonal> posSlopes = Lists.newArrayList();
+                List<Diagonal> negSlopes = Lists.newArrayList();
+                
+                for(Diagonal d : diags) {
+                    if (d.slope[0] * d.slope[1] > 0) {
+                        posSlopes.add(d);
+                    } else {
+                        Preconditions.checkState(d.slope[0] * d.slope[1] < 0);
+                        negSlopes.add(d);
+                    }
+                }
+                
+                
+                for(Diagonal pos : posSlopes) {
+                    for(Diagonal neg : negSlopes) {
+                        PointInt inter = pos.intersection(neg, in);
+                        
+                        log.debug("Diag pos={} neg={} inter = {}",pos,neg,inter);
+                        
+                        if (inter == null)
+                            continue;
+                        
+                        /**
+                         * Calculate if we are an even or odd distance, to determine color
+                         */
+                        
+                        boolean isSameColor = (pos.start.getX()-inter.getX()) % 2 == 0;
+                        boolean isWhite = (isSameColor && pos.isWhite) || (!isSameColor && !pos.isWhite);
+                        
+                        boolean isSameColorNeg = (neg.start.getX()-inter.getX()) % 2 == 0;
+                        boolean isWhiteNeg = (isSameColorNeg && neg.isWhite) || (!isSameColorNeg && !neg.isWhite);
+                        
+                        if (isWhite != isWhiteNeg) {
+                            continue;
+                        }
+                        
+                        grid.setEntry(inter.getY(),inter.getX(), isWhite ? 'W' : 'B');
+                    }
+                }
+                
+                log.debug(grid.toString());
                 
             }
         }
