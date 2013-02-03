@@ -76,9 +76,9 @@ ostream& operator<<( ostream& os, const vector<T>& vec )
     return os;
 }
 
-typedef map< vi, int > DigitPrimeMap;
+typedef map< int, int > DigitPrimeMap;
 
-DigitPrimeMap digitPrimeMap;
+vector<int> digitPrimeMap(10000, 0);
 
 string DecToBin(int number)
 {
@@ -114,12 +114,10 @@ vi getDigits(uint num)
 
 vi primesWithSum;
 vvi primeDigits;
-set<int> primeSet;
 vvi ans;
 
 int powTen[] = { 10000, 1000, 100, 10, 1 }; 
 
-vvs posDigitPrime(5, vs(10, set<uint>()));
 	
 
 
@@ -162,7 +160,7 @@ void printGrid(const vi& grid, ostream& os, bool byRow)
 /**
 Put a prime in the top row, then try to fill in the columns
 */
-void search( vi& grid, int currentSquare)
+void search( vi& grid, vi& prefix, int currentSquare)
 {
     if (currentSquare == 25)
     {        
@@ -183,40 +181,44 @@ void search( vi& grid, int currentSquare)
     int row, col;
     idxToRowCol( currentSquare, row, col);
     
-    vi colDigits;
+    int colNum = 0;
     FOR(r, 0, row) {
-        colDigits.pb(grid[ rowColToIdx(r,col) ]);   
+        colNum *= 10;
+        colNum += grid[ rowColToIdx(r,col) ];        
     }
-    int p1 = digitPrimeMap[colDigits];
+    int p1 = digitPrimeMap[colNum];
     
-    vi rowDigits;
+    int rowNum = 0;
     FOR(c, 0, col) {
-        rowDigits.pb(grid[ rowColToIdx(row, c)]);
+        rowNum *= 10;
+        rowNum += (grid[ rowColToIdx(row, c)]);
     }
-    int p2 = digitPrimeMap[rowDigits];
+    int p2 = digitPrimeMap[rowNum];
     
     bool onDiag1 = row == col;
     
-    vi diagDigits;
+    int diag1 = 0;
     if (onDiag1) {
-    FOR(i, 0, row) {
-        diagDigits.pb( grid[ rowColToIdx(i,i) ] );   
-    }
-    }
-    
-    int p3 = onDiag1 ? digitPrimeMap[diagDigits] : (1 << 11) - 1;
-    
-    bool onDiag2 = 4-col == row;
-    vi diag2Digits;
-    
-    if (onDiag2) {
-        FOR(c, 0, col) {
-            int r = 4 - c; 
-            diag2Digits.pb( grid[ rowColToIdx(r,c)  ] );   
+        FOR(i, 0, row) {
+            diag1 *= 10;
+            diag1 += ( grid[ rowColToIdx(i,i) ] );   
         }
     }
     
-    int p4 = onDiag2 ? digitPrimeMap[diag2Digits] : (1 << 11) - 1;
+    int p3 = onDiag1 ? digitPrimeMap[diag1] : (1 << 11) - 1;
+    
+    bool onDiag2 = 4-col == row;
+    int diag2 = 0;
+    
+    if (onDiag2) {
+        FOR(c, 0, col) {
+            int r = 4 - c;
+            diag2 *= 10;
+            diag2 += ( grid[ rowColToIdx(r,c)  ] );   
+        }
+    }
+    
+    int p4 = onDiag2 ? digitPrimeMap[diag2] : (1 << 11) - 1;
     
     int all = p1 & p2 & p3 & p4;
     /*
@@ -249,7 +251,7 @@ void search( vi& grid, int currentSquare)
     FORE(d, 0, 9) {
         if ( (all & (1 << d)) != 0) {
             grid[currentSquare] = d;
-            search(grid, currentSquare+1);
+            search(grid, prefix,currentSquare+1);
             grid[currentSquare] = -1;
         }
     }
@@ -334,19 +336,27 @@ int main()
         //erase size
         digits.erase(digits.begin() + 5);
         
-        while(digits.size() > 0)
+        digitPrimeMap[ 0 ] = digitPrimeMap[ 0 ] | (1 << digits[0] );
+        
+        int n = 0;
+        FOR(d, 0, 4)
         {
-            int nextDigit = digits[digits.size() - 1];
-            digits.erase( digits.end() - 1 );
-            digitPrimeMap[ digits ] = digitPrimeMap[ digits ] | (1 << nextDigit);
+            n *= 10;
+            n += digits[d];
+            
+            digitPrimeMap[ n ] = digitPrimeMap[ n ] | (1 << digits[d+1] );
         }
+        /*
+        for a prime like 13304
+        we have
+        0 -> 1
         
-
-        primeSet.insert(p);
+        1 -> 3
+        13 -> 3
+        133 -> 0
+        1330 -> 4
+        */
         
-        FOR(d, 0, 5) {
-            posDigitPrime[d][digits[d]].insert( p );
-        }
         
     }
 	
@@ -360,10 +370,18 @@ int main()
         const vi& firstDigits = primeDigits[firstRowIdx];
         
 		vi grid(25, -1);
+		
+		vi prefix(12, 0);
+		
+		FOR(d, 0, 5)
+		{
+		   prefix[d] = firstDigits[d] * powTen[0];
+		}
 
 		copy( firstDigits.begin(), firstDigits.begin()+5, grid.begin() );
             
-        search( grid, 5 );
+		
+        search( grid, prefix, 5 );
     }
 	/*
 	vi test;
