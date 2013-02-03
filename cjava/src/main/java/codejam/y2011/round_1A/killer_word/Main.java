@@ -144,7 +144,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         newData.count = 1;
                         newData.letter = idx;
                         newData.chLetter = ch;
-                        newData.letterPositions.setBits(currentLevelNodeData.getBits());
+                        newData.letterPositions.setAllBits(currentLevelNodeData.getBits());
                         existingNode = currentNode.addChild(tree.getNodes().size()+1);
                         existingNode.setData(newData);
                     }

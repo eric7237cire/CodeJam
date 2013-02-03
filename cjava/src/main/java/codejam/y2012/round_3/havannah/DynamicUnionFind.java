@@ -84,7 +84,7 @@ public class DynamicUnionFind
         
         newComponent.members.or(com1.members);
         newComponent.members.or(com2.members);
-        newComponent.attrs.setBits( com1.attrs.getBits() | com2.attrs.getBits() );
+        newComponent.attrs.setAllBits( com1.attrs.getBits() | com2.attrs.getBits() );
         
         newComponent.size = newComponent.members.cardinality();
     }

@@ -37,7 +37,7 @@ public class BitSetInt {
         return array;
     }
 
-    public void setBits(int bits) {
+    public void setAllBits(int bits) {
         this.bits = bits;
     }
 

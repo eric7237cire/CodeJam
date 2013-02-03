@@ -3,6 +3,8 @@ package codejam.y2008.round_pracProb.alwaysLeft;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +22,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
     public Main()
     {
-        //super();
-        super("A", true,true);
+      // super();
+        super("B", true,true);
     }
     
     
@@ -37,63 +39,148 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return in;
     }
 
-    PointInt[] directions = new PointInt[] {
+    static PointInt[] directions = new PointInt[] {
         new PointInt(0,1), //North
         new PointInt(1,0), //East
         new PointInt(0,-1), //South
         new PointInt(-1,0) //West
     };
+    
+    /**
+     * Bits are North 0, South 1, West 2, East 3
+     */
+    static void setBits(BitSetInt bs, int direction) {
+        direction %= 4;
+        
+        switch (direction) {
+        case 0:
+            bs.set(0);
+            return;
+        case 3:
+            bs.set(2);
+            return;
+        case 2:
+            bs.set(1);
+            return;
+        case 1:
+            bs.set(3);
+            return;
+            default:
+                throw new RuntimeException("ex");
+        }
+        
+    }
         
     @Override
     public String handleCase(InputData in)
     {
-        PointInt currentSquare = new PointInt(0,-1);
+        PointInt currentSquare = new PointInt(0,0);
         int directionIdx = 2; //South
         
         Map<PointInt, BitSetInt> wallMap = Maps.newHashMap();
         wallMap.put(currentSquare, new BitSetInt());
         
+        MazeWalker mw = new MazeWalker(currentSquare, wallMap, directionIdx);
+        mw.walkThroughMaze(in.entranceToExit);
+        
+        log.debug("\nNow exit\n");
+        PointInt exit = mw.currentSquare;
+        directionIdx = (mw.directionIdx+2) % 4;
+        
+        MazeWalker back = new MazeWalker(exit,  wallMap, directionIdx);
+        back.walkThroughMaze(in.exitToEntrance);
             
-        return "Case #" + in.testCase + ": " + convertedAlienNumber;
+        StringBuffer ans = new StringBuffer();
+        ans.append( "Case #" + in.testCase + ":\n");
+        for(int y = Math.max(mw.maxY,back.maxY); y >= Math.min(mw.minY,back.minY); --y)
+        {
+            for(int x = Math.min(mw.minX,back.minX); x <= Math.max(mw.maxX,back.maxX); ++x)
+            {
+                BitSetInt walls = wallMap.get(new PointInt(x,y));
+                log.debug("Coord :  {}  Can pass? N {} S {} E {} W {}  = {}", new PointInt(x,y), 
+                        walls.isSet(0),walls.isSet(1), walls.isSet(2), walls.isSet(3), Integer.toHexString(walls.getBits()) );
+                
+                ans.append(Integer.toHexString(walls.getBits()));
+            }
+            ans.append('\n');
+        }
+        
+        ans.deleteCharAt(ans.length()-1);
+        
+        return ans.toString();
     }
     
-    void walkThroughMaze(String steps, Map<PointInt, BitSetInt> wallMap) {
-        for(int c = 0; c < in.entranceToExit.length(); ++c) {
-            char ch = in.entranceToExit.charAt(c);
-            
-            switch(ch) {
-            case 'W':
-                BitSetInt prevWalls = wallMap.get(currentSquare);
-                prevWalls.set(directionIdx);
+    static class MazeWalker {
+        int minX = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxY = Integer.MIN_VALUE;
+        
+        PointInt currentSquare;
+        Map<PointInt, BitSetInt> wallGapMap; 
+        int directionIdx;
+        
+        public MazeWalker(PointInt currentSquare, Map<PointInt, BitSetInt> wallMap, int directionIdx) {
+            super();
+            this.currentSquare = currentSquare;
+            this.wallGapMap = wallMap;
+            this.directionIdx = directionIdx;
+        }
+
+        void walkThroughMaze(String steps) {
+            for(int c = 0; c < steps.length(); ++c) {
+                char ch = steps.charAt(c);
                 
-                currentSquare = PointInt.add(currentSquare, directions[directionIdx]);
-                
-                BitSetInt walls = wallMap.get(currentSquare);
-                if (walls == null) {
-                    walls = new BitSetInt();
-                    wallMap.put(currentSquare, walls);
+                //Do not count entrance and since it is only the current square, not the exit either
+                if (c > 0) {
+                    minX = Math.min(minX, currentSquare.getX());
+                    maxX = Math.max(maxX, currentSquare.getX());
+                    minY = Math.min(minY, currentSquare.getY());
+                    maxY = Math.max(maxY, currentSquare.getY());
                 }
                 
-                walls.set( (directionIdx + 2) % 4);
-                break;
-            case 'R':
-                walls = wallMap.get(currentSquare);
-                //Left and front must be walls
-                walls.set( (directionIdx + 3) % 4 );
-                walls.set( directionIdx  );
+                switch(ch) {
+                case 'W':
+                    BitSetInt prevWallGaps = wallGapMap.get(currentSquare);
+                    setBits(prevWallGaps, directionIdx);
+                    
+                    currentSquare = PointInt.add(currentSquare, directions[directionIdx]);
+                    
+                    
+                    
+                    BitSetInt wallGaps = wallGapMap.get(currentSquare);
+                    if (wallGaps == null) {
+                        wallGaps = new BitSetInt();
+                        wallGapMap.put(currentSquare, wallGaps);
+                    }
+                    
+                    setBits(wallGaps, directionIdx + 2) ;
+                    break;
+                case 'R':
+                    wallGaps = wallGapMap.get(currentSquare);
+                    //Left and front must be walls
+                   // setBits(wallGaps, directionIdx + 3) ; //left
+                    //setBits(wallGaps, directionIdx ) ; //front
+                    
+                    
+                    directionIdx += 1;
+                    directionIdx %= 4;
+                    break;
+                case 'L':
+                    wallGaps = wallGapMap.get(currentSquare);
+                    //Front must be a wall
+                    //setBits(wallGaps, directionIdx ) ; //front
+                    
+                    directionIdx += 3;
+                    directionIdx %= 4;
+                    break;
+                }
                 
-                directionIdx += 1;
-                directionIdx %= 4;
-                break;
-            case 'L':
-                //Front must be a wall
-                walls.set( directionIdx  );
-                
-                directionIdx += 3;
-                directionIdx %= 4;
-                break;
+                log.debug("After Char {} position {} direction {}", ch, currentSquare, directionIdx);
             }
         }
+    
+            
         
         
     }
