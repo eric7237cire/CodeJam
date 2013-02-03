@@ -38,6 +38,74 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return in;
     }
 
+    class PathEnd {
+        Diagonal pos;
+        Diagonal neg;
+        PointInt pathStart;
+        boolean isWhite;
+        public PathEnd(Diagonal pos, Diagonal neg, PointInt pathStart, boolean isWhite) {
+            super();
+            this.pos = pos;
+            this.neg = neg;
+            this.pathStart = pathStart;
+            this.isWhite = isWhite;
+        }        
+    }
+    
+    boolean drawPosNegDiagonal(GridChar grid, PathEnd path)
+    {
+               
+        boolean ok = 
+                drawDiagonal(grid, path.pathStart, path.pos.start,
+                new PointInt( -path.pos.slope[0],
+                        -path.pos.slope[1]),
+                        path.isWhite);
+        
+        if (!ok)
+            return false;
+        
+        ok = drawDiagonal(grid, path.pathStart, path.neg.start,
+                new PointInt( -path.neg.slope[0],
+                        -path.neg.slope[1]),
+                        path.isWhite);
+        
+        
+        return ok;
+    }
+    
+    boolean drawDiagonal(GridChar grid, PointInt start,
+            PointInt end,
+            PointInt delta, boolean isWhite)
+    {
+        
+        int iterCheck = 0;
+        
+        int y = start.getY();
+        int x = start.getX(); 
+        
+        while(x != end.getX())                
+        {
+            ++iterCheck;
+            
+            Preconditions.checkState(iterCheck < 100000);
+            
+            char cur = grid.getEntry(y, x);
+            if (isWhite && cur == '#')
+                return false;
+            
+            if (!isWhite && cur == '0')
+                return false;
+            
+            grid.setEntry(y,x, isWhite ? '0' : '#');
+            
+            y += delta.getY();
+            x += delta.getX();
+            isWhite = !isWhite;
+        }
+        
+        return true;
+    }
+    
     class Diagonal {
         PointInt start;
         
@@ -52,7 +120,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         /**
          * Given 2 diagonals, returns the intersection
-         * in the interior of the grid.  Or null if none exists
+         * in the interior of the grid or on the edge.
+         * 
+         *  Null if intersection is outside the grid
+         *  or not an even integer.
          * 
          */
         PointInt intersection(Diagonal o, InputData in) {
@@ -73,10 +144,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
             Preconditions.checkArgument(y == y2);
             
-            if (y <= 0 || y >= in.nRows-1)
+            if (y < 0 || y >= in.nRows)
                 return null;
             
-            if (x <= 0 || x >= in.nCols-1)
+            if (x < 0 || x >= in.nCols)
                 return null;
             
             return new PointInt(x, y);
@@ -208,6 +279,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     public String handleCase(InputData in) {
        
         final int borderLen = 2*in.nRows + 2*in.nCols - 4;
+        int count = 0;
         
         /**
          * Loop through all starting positions for the white border
@@ -219,14 +291,14 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             {
                 int endWhite = (startWhite + whiteBorderLen - 1) % borderLen;
                 
-                log.debug("Start white {} end white {}",startWhite,endWhite);
+               // log.debug("Start white {} end white {}",startWhite,endWhite);
                 GridChar grid = GridChar.buildEmptyGrid(in.nRows, in.nCols, '.');
                 grid.setyZeroOnTop(false);
                 
                 int startBlack = (endWhite + 1) % borderLen;
                 int endBlack = (borderLen + startWhite - 1) % borderLen;
                 
-                log.debug("Start black {} end black {}",startBlack,endBlack);
+               // log.debug("Start black {} end black {}",startBlack,endBlack);
                 
                 /**
                  * A la brute force, set the border in the grid
@@ -306,12 +378,14 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     }
                 }
                 
+                List<PathEnd> potentialBlackEnd = Lists.newArrayList();
+                List<PathEnd> potentialWhiteEnd = Lists.newArrayList();
                 
                 for(Diagonal pos : posSlopes) {
                     for(Diagonal neg : negSlopes) {
                         PointInt inter = pos.intersection(neg, in);
                         
-                        log.debug("Diag pos={} neg={} inter = {}",pos,neg,inter);
+                       // log.debug("Diag pos={} neg={} inter = {}",pos,neg,inter);
                         
                         if (inter == null)
                             continue;
@@ -330,11 +404,60 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                             continue;
                         }
                         
-                        grid.setEntry(inter.getY(),inter.getX(), isWhite ? 'W' : 'B');
+                        if (isWhite) {
+                            potentialWhiteEnd.add(new PathEnd(pos,neg,inter,isWhite));
+                        } else {
+                            potentialBlackEnd.add(new PathEnd(pos,neg,inter,isWhite));
+                        }
+                        
+                        //grid.setEntry(inter.getY(),inter.getX(), isWhite ? 'W' : 'B');
                     }
                 }
                 
-                log.debug(grid.toString());
+                
+                
+                for(int bEnd1 = 0; bEnd1 < potentialBlackEnd.size(); ++bEnd1) {
+                    for(int bEnd2 = bEnd1+1; bEnd2 < potentialBlackEnd.size(); ++bEnd2) {
+                        for(int wEnd1 = 0; wEnd1 < potentialWhiteEnd.size(); ++wEnd1) {
+                            for(int wEnd2 = wEnd1+1; wEnd2 < potentialWhiteEnd.size(); ++wEnd2) {
+                                PathEnd whiteEnd1 = potentialWhiteEnd.get(wEnd1);
+                                PathEnd whiteEnd2 = potentialWhiteEnd.get(wEnd2);
+                                
+                                PathEnd blackEnd1 = potentialBlackEnd.get(bEnd1);
+                                PathEnd blackEnd2 = potentialBlackEnd.get(bEnd2);
+                
+                                GridChar tryGrid = new GridChar(grid);
+                                
+                                boolean ok = drawPosNegDiagonal(tryGrid, whiteEnd1);
+                                
+                                if (!ok)
+                                    continue;
+                                
+                                ok = drawPosNegDiagonal(tryGrid, whiteEnd2);
+                                
+                                if (!ok)
+                                    continue;
+                                
+                                ok = drawPosNegDiagonal(tryGrid, blackEnd1);
+                                
+                                if (!ok)
+                                    continue;
+                                
+                                ok = drawPosNegDiagonal(tryGrid, blackEnd2);
+                                
+                                if (!ok)
+                                    continue;
+                                
+                                ++count;
+                                log.debug("Try grid.  Count: {}\n{}", count,tryGrid);
+                                
+                            }
+                        }
+                    }
+                }
+                
+                
+              // log.debug(grid.toString());
                 
             }
         }
