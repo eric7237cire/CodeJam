@@ -8,6 +8,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
+
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -43,6 +45,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         boolean isWhite;
     }
   
+    /**
+     * Based on a border length, return the coordinates
+     * @param in
+     * @param border
+     * @return
+     */
     Pair<Integer,Integer> getRowCol(InputData in, int border) {
         
         //Bottom 0 to M - 1
@@ -79,31 +87,74 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return null;
     }
     
+    /**
+     * What the slopes of the diagonal lines are if the
+     * boundary starts at the given side
+     * 
+     * Slope is away from other color
+     */
+    int[][] slopesBeginBoundary = new int[][]
+            {
+
+            { 1, 1 },             //Bottom row
+            { -1, 1},  //right side
+            { -1, -1}, //top side
+            {1, -1}
+            };
+    
+    int[][] slopesEndBoundary = new int[][]
+            {
+
+            { -1, 1 },             //Bottom row
+            { -1, -1},  //right side
+            { 1, -1}, //top side
+            {1, 1} //left side
+            };
+    
     @Override
     public String handleCase(InputData in) {
        
         final int borderLen = 2*in.N + 2*in.M - 4;
         for(int startWhite = 0; startWhite < borderLen; ++startWhite)
         {
-            for(int endWhite = startWhite; endWhite < borderLen; ++endWhite)
+            for(int whiteBorderLen = 1; whiteBorderLen < borderLen; ++whiteBorderLen)
             {
+                int endWhite = (startWhite + whiteBorderLen - 1) % borderLen;
+                
                 log.debug("Start white {} end white {}",startWhite,endWhite);
                 GridChar grid = GridChar.buildEmptyGrid(in.N, in.M, '.');
                 grid.setyZeroOnTop(false);
                 
-                for(int border = 0; border < startWhite; ++border) {
+                int startBlack = (endWhite + 1) % borderLen;
+                int endBlack = (borderLen + startWhite - 1) % borderLen;
+                
+                log.debug("Start black {} end black {}",startBlack,endBlack);
+                
+               // Preconditions.checkState(false);
+                int border = startBlack;
+                while(border != startWhite)
+                {
                     Pair<Integer,Integer> rc = getRowCol(in,border);
                     grid.setEntry(rc.getLeft(), rc.getRight(), '#');
+                    
+                    ++border;
+                    border %= borderLen;
                 }
-                for(int border = startWhite; border <= endWhite; ++border) {
+                
+                border = startWhite;
+                while(border != startBlack) {
+                    
                     Pair<Integer,Integer> rc = getRowCol(in,border);
                     grid.setEntry(rc.getLeft(), rc.getRight(), '0');
+                    
+                    ++border;
+                    border %= borderLen;
                 }
-                for(int border = endWhite + 1; border < borderLen; ++border) {
-                    Pair<Integer,Integer> rc = getRowCol(in,border);
-                    grid.setEntry(rc.getLeft(), rc.getRight(), '#');
-                }
+                
                 log.debug(grid.toString());
+                
+                
+                
             }
         }
 
