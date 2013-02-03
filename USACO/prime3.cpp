@@ -192,7 +192,9 @@ void checkValid(const vi& rows) {
 /**
 Put a prime in the top row, then try to fill in the columns
 */
-void search( const uvi& fdDigits, const uvi& sdDigits, vi& rows, int currentRow)
+void search( const uvi& fdDigits, const uvi& sdDigits,
+    const uvi& leftColDigits, const uvi& rightColDigits,
+    vi& rows, int currentRow)
 {
     if (currentRow == 5)
     {
@@ -218,10 +220,18 @@ void search( const uvi& fdDigits, const uvi& sdDigits, vi& rows, int currentRow)
         if (pd[sdDigit] != sdDigits[sdDigit]) {
 			continue;
 		}
+		
+		if (pd[0] != leftColDigits[currentRow]) {
+		    continue;
+		}
+		
+		if (pd[4] != rightColDigits[currentRow]) {
+		    continue;
+		}
         
         rows[currentRow] = p;
 		
-        search(fdDigits, sdDigits, rows, currentRow+1);
+		search(fdDigits, sdDigits, leftColDigits, rightColDigits, rows, currentRow+1);
         
     }
     /*int curColumn = columns.size();
@@ -346,11 +356,36 @@ int main()
             if (firstDigits[2] != secondDigits[2])
                 continue;
         
-			vi rows(5, -1);
-            search( firstDigits,
-                secondDigits,
-                rows, 0);
-            
+            //Left column
+            FOR(col1, 0, primesWithSum.size())
+            {
+                const uvi& col1Digits = primeDigits[col1];
+                
+                if(col1Digits[0] != firstDigits[0])
+                    continue;
+                
+                if(col1Digits[4] != secondDigits[0])
+                    continue;
+                
+                //Right column
+                FOR(col2, 0, primesWithSum.size())
+                {
+                    const uvi& col2Digits = primeDigits[col2];
+                
+                    if(col2Digits[4] != firstDigits[4])
+                        continue;
+                
+                    if(col2Digits[0] != secondDigits[4])
+                        continue;
+                
+                    vi rows(5, -1);
+                    search( firstDigits,
+                        secondDigits,
+                        col1Digits,
+                        col2Digits,
+                        rows, 0);
+                }
+            }
         }
     }
 	
