@@ -65,7 +65,19 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
              */
             return D*(D+1)/2;
         }
-        return 3;
+        
+        /**
+         * Try the egg at some floor N,
+         * if it breaks, we can check F(D-1, B-1) floors below N
+         * if it does not break, we can check F(D-1, B) floors above N
+         */
+        long bottomPartition = findFMax(D - 1, B - 1);
+        long topPartition = findFMax(D - 1, B);
+        
+        if (bottomPartition == -1 || topPartition == -1)
+            return -1;
+                  
+        return   1 + bottomPartition + topPartition;
     }
     
     long findDMin(long F, long B)
