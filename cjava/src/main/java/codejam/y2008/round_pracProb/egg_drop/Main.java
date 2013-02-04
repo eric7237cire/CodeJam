@@ -21,8 +21,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
     public Main()
     {
-       super();
-        //super("B", true,true);
+       //super();
+        super("C", 1,0);
     }
     
     
