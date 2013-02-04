@@ -15,9 +15,22 @@ public class Main  {
 
        // Main m = null;
         
+        /**
+         * 2008 -- Practice round
+         * Problem 1
+         * Converting from one base to another
+         */
         //codejam.y2008.round_pracProb.alien_numbers.Main m = new codejam.y2008.round_pracProb.alien_numbers.Main();
         
+        /**
+         * 2008 -- Practice round
+         * Problem 2
+         * 
+         * Tracing through a maze and reproducing it.
+         */
         //codejam.y2008.round_pracProb.alwaysLeft.Main m = new codejam.y2008.round_pracProb.alwaysLeft.Main();
+        
+        codejam.y2008.round_pracProb.egg_drop.Main m = new codejam.y2008.round_pracProb.egg_drop.Main(); 
         
         /**
          * 2008 emea semis -- problem 1
@@ -40,7 +53,9 @@ public class Main  {
         /**
          * 2008 emea semis -- problem 2 
          * 
-         * Given solution was a brute force / greedy scanline.
+         * Given a fence, find best offers using maximum of 3 colors.
+         * 
+         * Proposed solution was a brute force / greedy scanline.
          * 
          * Used a BFS.  Compared to bmerries implementation of proposed 
          * solution (at least it looks like it), what we did is faster.
@@ -80,11 +95,30 @@ public class Main  {
          */
        // codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
         
-        // Iteratively guessing a code sequence, binary / using incomplete information / assumptions
-       // codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
+        /**
+         * TODO ss
+         * 
+         * 2008 amer semis -- problem 2
+         * 
+         * There are K keys, each corresponding to a binary bit position.  
+         * As the sequence progresses, n is incremented, and those keys that
+         * are 'activated' are added together.
+         *  
+         * Iteratively guessing a code sequence, binary / using incomplete information / assumptions
+         * 
+         * Run example to see more
+         */
+        // 
+       //codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
         //codejam.y2008.round_amer.code_sequence.Main.example();
         
-        // Maintain a list of N best paths ; Probability
+        /**
+         * 2008 -- Round semis Amer
+         * Maintain a list of N best paths ; Probability
+         * 
+         * Found solution to speed up (30X) considerably the execution speed using an array
+         * instead of objects.  Also each node does not have it's own list of M paths
+         */
         //codejam.y2008.round_amer.test_passing.Main m = new codejam.y2008.round_amer.test_passing.Main();
         
        //Non bipartite matching using Edmonds algorithm (code found...)
@@ -352,7 +386,7 @@ public class Main  {
          */
         //codejam.y2010.round_final.ninjutsu.Main m = new codejam.y2010.round_final.ninjutsu.Main();
         
-        codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
+       // codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
         
          //2011 1A
         

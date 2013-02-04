@@ -381,7 +381,7 @@ public class Decoder {
             kPrevODList.get(0).keys.clear();
         }
         
-        //Decimal value of the key.  
+        //Decimal value of the key index 
         int keyDiff = 1 << keyIndex;
         
         //How long a complete cycle
@@ -419,7 +419,7 @@ public class Decoder {
                      * The only way to calculate a key value is to not have reset to 0's as then
                      * we do not know which greater keys were triggered on or off.                    
                      * 
-                     * For example, lets say the keyDiff is 100 (4 in binary).
+                     * For example, lets say the keyDiff is 100 (4 base 10).
                      * 
                      * We could attempt to calculate the key if we go from 101 0 11 to 101 1 11
                      * 
@@ -444,7 +444,7 @@ public class Decoder {
                 
                 //Looking for something like ...11111
                 //                             100000
-                // Example for k5
+                // Example for k5.  Subtract k4 to k0 then add k5 to get the next value
                 if (lastPosInCycle == keyDiff - 1 && k >= 0) {
                     int prev = sequence.get(sequence.size()-1);
                     

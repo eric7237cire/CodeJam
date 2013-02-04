@@ -2523,7 +2523,7 @@ static void problem70_slow() {
     
         
         ///
-        @SuppressWarnings("resource")
+       // @SuppressWarnings("resource")
         Scanner scanner = null;
         try {
         scanner = new Scanner(Prob1.class.getResourceAsStream("prob12.txt"));

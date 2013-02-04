@@ -12,23 +12,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.collect.MinMaxPriorityQueue;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    @Override
-    public String[] getDefaultInputFiles() {
-      //  return new String[] { "sample.in"};
-        //return new String[] { "C-small-practice.in" };
-        return new String[] { "C-large-practice.in" };
-        //return new String[] { "B-small-practice.in", "B-large-practice.in" };
+    public Main() {
+        super("C", 1, 0);
     }
-
+    
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
         InputData input = new InputData(testCase);
@@ -90,29 +87,37 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     @Override
-    public String handleCase(InputData input) {
+    public String handleCase(InputData in) {
         
+        Solution s = new Solution();
+        if(1==1) {
+            return s.handleCase(in);
+        }
+            
        // int[] currentQ = new int[input.Q];
         
-        Node[][] bestPaths = new Node[input.Q][4];
+        Node[][] bestPaths = new Node[in.Q][4];
         
+        /**
+         * Initialize first 4 nodes
+         */
         for(int a = 0; a < 4; ++a) {
-            bestPaths[0][a] = new Node(input.prob[0][a], a, input.Q);
+            bestPaths[0][a] = new Node(in.prob[0][a], a, in.Q);
         }
         
-        for (int q = 1; q < input.Q; ++q) {
+        for (int q = 1; q < in.Q; ++q) {
             for (int ans = 0; ans < 4; ++ans) {
                 //Build a list of best paths
                 //List<Path> paths = new ArrayList<>();
-                MinMaxPriorityQueue<Path> mm = MinMaxPriorityQueue.maximumSize(input.M).expectedSize(input.M).create();
+                MinMaxPriorityQueue<Path> mm = MinMaxPriorityQueue.maximumSize(in.M).expectedSize(in.M).create();
                 
                 for (int prevA = 0; prevA < 4; ++prevA) {
                     Node node = bestPaths[q-1][prevA];
                     for(Path prevPath : node.bestPaths) {
                         Path newPath = new Path(Arrays.copyOf(prevPath.pathList, q+1));
                         newPath.pathList[q] = ans;
-                        newPath.weight = prevPath.weight * input.prob[q][ans];
-                        if (mm.size() == input.M  && newPath.weight < mm.peekLast().weight) {
+                        newPath.weight = prevPath.weight * in.prob[q][ans];
+                        if (mm.size() == in.M  && newPath.weight < mm.peekLast().weight) {
                             break;
                         }
                         mm.add(newPath);
@@ -130,10 +135,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         //Combine last questions paths
         //Build a list of best paths
-        MinMaxPriorityQueue<Path> paths = MinMaxPriorityQueue.maximumSize(input.M).expectedSize(input.M).create();
+        MinMaxPriorityQueue<Path> paths = MinMaxPriorityQueue.maximumSize(in.M).expectedSize(in.M).create();
         
         for (int ans = 0; ans < 4; ++ans) {
-            paths.addAll(bestPaths[input.Q-1][ans].bestPaths);            
+            paths.addAll(bestPaths[in.Q-1][ans].bestPaths);            
         }
         
         double ev = 0;
@@ -147,7 +152,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         DecimalFormat df = new DecimalFormat("0.######");
         df.setRoundingMode(RoundingMode.HALF_UP);
         
-        return String.format("Case #%d: %s", input.testCase, df.format(ev));
+        return String.format("Case #%d: %s", in.testCase, df.format(ev));
     }
     
 

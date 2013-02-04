@@ -34,6 +34,10 @@ public class InputFilesHandler implements DefaultInputFiles
         this.inputFiles = new String[inputFiles.size()];
         this.inputFiles = inputFiles.toArray(this.inputFiles);
     }
+    
+    public InputFilesHandler(String letter,  int small, int large) {
+        this(letter, small==1, large==1);
+    }
 
     @Override
     public String[] getDefaultInputFiles()
