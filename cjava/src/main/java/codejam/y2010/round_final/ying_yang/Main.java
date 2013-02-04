@@ -88,6 +88,13 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return false;
     }
     
+    int[][] delta = new int[][] {
+            {0, 1}, //North
+            {1, 0}, //East
+            {0, -1}, //South
+            {-1, 0} //West
+    };
+    
     /**
      * Fill in the end of the path
      * 
@@ -158,12 +165,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         Preconditions.checkState(dir != null);
         
-        int[][] delta = new int[][] {
-                {0, 1}, //North
-                {1, 0}, //East
-                {0, -1}, //South
-                {-1, 0} //West
-        };
+        
         
         for(int d = 0; d < 4; ++d) {
             PointInt adj = path.pathStart.add(delta[d]);
@@ -192,6 +194,61 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
             grid.setEntry(adj.getY(),adj.getX(), isWhite ? '0' : '#');
             
+        }
+        
+        return true;
+    }
+    
+    boolean fillInGrid(GridChar grid, InputData in) {
+        int whiteEndCount = 0;
+        int blackEndCount = 0;
+        
+        for(int y = 0; y < in.nRows; ++y)
+        {
+            for(int x = 0; x < in.nCols; ++x) {
+                char c = grid.getEntry(y, x);
+                
+                if (c != '.')
+                    continue;
+                
+                Boolean hasWhiteNeighbor = null;
+                
+                for(int d = 0; d < 4; ++d) {
+                    int xx = x + delta[d][0];
+                    int yy = y + delta[d][1];
+                    
+                    if (xx < 0 || xx >= in.nCols)
+                        continue;
+                    
+                    if (yy < 0 || yy >= in.nRows)
+                        continue;
+                    
+                    char adj = grid.getEntry(yy, xx);
+                    
+                    if (adj == '0') {
+                        if (Boolean.FALSE.equals(hasWhiteNeighbor))
+                            return false;
+                        
+                        hasWhiteNeighbor = true;
+                    }
+                    
+                    if (adj == '#') {
+                        if (Boolean.TRUE.equals(hasWhiteNeighbor))
+                            return false;
+                        
+                        hasWhiteNeighbor = false;
+                    }
+                }
+                 
+                Preconditions.checkState(hasWhiteNeighbor != null);
+                    
+                if (hasWhiteNeighbor) {
+                    grid.setEntry(y, x, '#');
+                } else {
+                    grid.setEntry(y, x, '0');
+                }
+            
+            }
         }
         
         return true;
@@ -576,19 +633,24 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                                 if (!ok)
                                     continue;
                                 
-                                ok = fillInPathEnd(tryGrid, whiteEnd1, in);
+                                ok = fillInPathEnd(tryGrid, whiteEnd2, in);
 
                                 if (!ok)
                                     continue;
                                 
                                 
-                                ok = fillInPathEnd(tryGrid, whiteEnd1, in);
+                                ok = fillInPathEnd(tryGrid, blackEnd1, in);
 
                                 if (!ok)
                                     continue;
                                 
-                                ok = fillInPathEnd(tryGrid, whiteEnd1, in);
+                                ok = fillInPathEnd(tryGrid, blackEnd2, in);
 
+                                if (!ok)
+                                    continue;
+                                
+                                ok = fillInGrid(tryGrid, in);
+                                
                                 if (!ok)
                                     continue;
                                 
