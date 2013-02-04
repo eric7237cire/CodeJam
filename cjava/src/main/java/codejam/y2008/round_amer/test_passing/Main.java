@@ -23,7 +23,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
     public Main() {
-        super("C", 1, 1);
+        super("C", 1, 0);
     }
     
     @Override

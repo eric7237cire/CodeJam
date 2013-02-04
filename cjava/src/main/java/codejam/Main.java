@@ -30,6 +30,8 @@ public class Main  {
          */
         //codejam.y2008.round_pracProb.alwaysLeft.Main m = new codejam.y2008.round_pracProb.alwaysLeft.Main();
         
+        codejam.y2008.round_pracProb.egg_drop.Main m = new codejam.y2008.round_pracProb.egg_drop.Main(); 
+        
         /**
          * 2008 emea semis -- problem 1
          * 
@@ -114,9 +116,10 @@ public class Main  {
          * 2008 -- Round semis Amer
          * Maintain a list of N best paths ; Probability
          * 
-         * TODO use found solution to speed up (30X)
+         * Found solution to speed up (30X) considerably the execution speed using an array
+         * instead of objects.  Also each node does not have it's own list of M paths
          */
-        codejam.y2008.round_amer.test_passing.Main m = new codejam.y2008.round_amer.test_passing.Main();
+        //codejam.y2008.round_amer.test_passing.Main m = new codejam.y2008.round_amer.test_passing.Main();
         
        //Non bipartite matching using Edmonds algorithm (code found...)
         //codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();

@@ -18,6 +18,7 @@ public class Solution {
 
         int i, j;
 
+        //Total # of tries = # of problems ^ 4, we can try eveything
         total = (1L << (Qn + Qn));
         if (M >= total) {
             return ("Case #" + in.testCase + ": " + DoubleFormat.df6.format(1.0));
@@ -29,6 +30,7 @@ public class Solution {
 
         int k, x;
         for (i = 0; i < Qn; ++i) {
+            //For each existing path, Add current question
             double[] T = new double[4 * R.length];
             k = 0;
             for (x = 0; x < R.length; ++x) {
@@ -37,14 +39,23 @@ public class Solution {
                     ++k;
                 }
             }
+            
+            //Only keep best elements
             Arrays.sort(T);
+            
             R = trim(T, in);
         }
 
         double res = 0.0;
         for (i = 1; i <= M; ++i) {
-            // res=res*(1.0-R.get(total-i));
-            res = res + R[R.length - i];
+            /**
+             * Added because each path is the expected value
+             * to get all the answers correct.
+             * 
+             * Also, it is not independent, guessing wrong
+             * eliminates that possibility
+             */
+            res = res + R[R.length - i] ;
         }
         return "Case #" + in.testCase + ": " + DoubleFormat.df6.format(res);
 
@@ -54,14 +65,11 @@ public class Solution {
         if (T.length <= in.M)
             return T;
 
+        
         double[] R = new double[in.M];
-        int i, k;
-        k = 1;
-        for (i = 0; i < in.M; ++i) {
-            R[i] = T[T.length - k];
-            ++k;
-        }
+        System.arraycopy(T, T.length - in.M, R, 0, in.M);
         return R;
+       
     }
 
 }
