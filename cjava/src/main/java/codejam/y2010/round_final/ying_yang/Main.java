@@ -35,6 +35,13 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         in.nRows = scanner.nextInt();
         in.nCols = scanner.nextInt();
         
+        in.corners = new PointInt[] {
+                new PointInt(0, 0), //bottom left
+                new PointInt(in.nCols-1, 0), //bottom right
+                new PointInt(in.nCols-1, in.nRows-1), //top right
+                new PointInt(0, in.nRows-1) // top left
+        };
+        
         return in;
     }
 
@@ -71,6 +78,123 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         
         return ok;
+    }
+    
+    boolean isCorner(PointInt point, InputData in) {
+        for(int c = 0; c < 4; ++c) {
+            if (in.corners[c].equals(point))
+                return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Fill in the end of the path
+     * 
+     * ie for a white path facing east
+     * ###
+     * #00
+     * ###
+     * @param grid
+     * @param path
+     * @return
+     */
+    boolean fillInPathEnd(GridChar grid, PathEnd path, InputData in) {
+        Integer dir = null;
+        
+        //skip corners
+        if (isCorner(path.pathStart, in)) {
+            return true;
+        }
+        
+        //skip on edges
+        if (path.pathStart.getX() == 0 || path.pathStart.getX() == in.nCols-1)
+            return true;
+        
+        if (path.pathStart.getY() == 0 || path.pathStart.getY() == in.nRows-1)
+            return true;
+        
+        /**
+         * Determine the direction of the path by going in 
+         * the opposite direction of the two diagonals connected
+         * to the end point
+         */
+        if ( (path.neg.start.getX() < path.pathStart.getX() &&
+                path.pos.start.getX() < path.pathStart.getX() )
+                || path.pathStart.getX() == 0)
+        {
+            Preconditions.checkState(dir==null);
+            //Both diagonals coming from west
+            dir = 1;
+        }
+        if ( (path.neg.start.getX() > path.pathStart.getX() &&
+                path.pos.start.getX() > path.pathStart.getX() )
+                || path.pathStart.getX() == in.nCols-1)
+        {
+            Preconditions.checkState(dir==null);
+            //Both diagonals coming from east 
+            dir = 3;
+        }
+        if ( (path.neg.start.getY() < path.pathStart.getY() &&
+                path.pos.start.getY() < path.pathStart.getY() )
+                || path.pathStart.getY() == 0)
+        {
+            Preconditions.checkState(dir==null);
+            //Both diagonals coming from south
+            dir = 0;
+        }
+        if ( (path.neg.start.getY() > path.pathStart.getY() &&
+                path.pos.start.getY() > path.pathStart.getY() ) 
+                || 
+                (path.pathStart.getY() == in.nRows-1 &&
+                        path.pos.start.getY() == in.nRows -1 &&
+                path.neg.start.getY() == in.nRows-1 ) 
+                )
+        {
+            Preconditions.checkState(dir==null);
+            //Both diagonals coming from north
+            dir = 2;
+        }
+        
+        Preconditions.checkState(dir != null);
+        
+        int[][] delta = new int[][] {
+                {0, 1}, //North
+                {1, 0}, //East
+                {0, -1}, //South
+                {-1, 0} //West
+        };
+        
+        for(int d = 0; d < 4; ++d) {
+            PointInt adj = path.pathStart.add(delta[d]);
+            
+            if (adj.getX() < 0 || adj.getX() >= in.nCols)
+                continue;
+            
+            if (adj.getY() < 0 || adj.getY() >= in.nRows)
+                continue;
+            
+            char cur = grid.getEntry(adj.getY(), adj.getX());
+            
+            //Will be opposite of the endpoint except in direction of the path
+            
+            boolean isWhite = !path.isWhite;
+            
+            if (dir == d)
+                isWhite = !isWhite;
+            
+            //Check if there is a conflict
+            if (isWhite && cur == '#')
+                return false;
+            
+            if (!isWhite && cur == '0')
+                return false;
+            
+            grid.setEntry(adj.getY(),adj.getX(), isWhite ? '0' : '#');
+            
+        }
+        
+        return true;
     }
     
     boolean drawDiagonal(GridChar grid, PointInt start,
@@ -194,20 +318,15 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
             };
     
-    int[][] corners = new int[][] 
-            {
-            { 0, 0 },             //Bottom left
-            { 1, 0},  //bottom  right 
-            { 1, 1}, //top right
-            {0, 1} //top left 
-            
-            };
+    
     
     
     final static int BOTTOM = 0;
     final static int RIGHT = 1;
     final static int TOP = 2;
     final static int LEFT = 3;
+    
+    
     
     static int getSide(int borderPos, InputData in) {
         PointInt coord = getCoords(in,borderPos);
@@ -332,13 +451,11 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 //Corners
                 for(int c = 0; c < 4; ++c) {
-                    PointInt coord = new PointInt(
-                            (in.nCols-1) * corners[c][0],
-                            (in.nRows-1) * corners[c][1]);
+                    PointInt coordCorner = in.corners[c];
                     
                     
-                diags.add(new Diagonal(coord, cornerSlopes[c],
-                        grid.getEntry(coord.getY(), coord.getX()) == '0'
+                    diags.add(new Diagonal(coordCorner, cornerSlopes[c],
+                        grid.getEntry(coordCorner.getY(), coordCorner.getX()) == '0'
                         ));
                 }
                 
@@ -381,6 +498,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 List<PathEnd> potentialBlackEnd = Lists.newArrayList();
                 List<PathEnd> potentialWhiteEnd = Lists.newArrayList();
                 
+                /**
+                 * Intersect all the diagonals
+                 */
                 for(Diagonal pos : posSlopes) {
                     for(Diagonal neg : negSlopes) {
                         PointInt inter = pos.intersection(neg, in);
@@ -414,7 +534,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     }
                 }
                 
-                
+                /**
+                 * Try all end points to see if valid grids are
+                 * created.
+                 */
                 
                 for(int bEnd1 = 0; bEnd1 < potentialBlackEnd.size(); ++bEnd1) {
                     for(int bEnd2 = bEnd1+1; bEnd2 < potentialBlackEnd.size(); ++bEnd2) {
@@ -447,6 +570,28 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                                 
                                 if (!ok)
                                     continue;
+                                
+                                ok = fillInPathEnd(tryGrid, whiteEnd1, in);
+
+                                if (!ok)
+                                    continue;
+                                
+                                ok = fillInPathEnd(tryGrid, whiteEnd1, in);
+
+                                if (!ok)
+                                    continue;
+                                
+                                
+                                ok = fillInPathEnd(tryGrid, whiteEnd1, in);
+
+                                if (!ok)
+                                    continue;
+                                
+                                ok = fillInPathEnd(tryGrid, whiteEnd1, in);
+
+                                if (!ok)
+                                    continue;
+                                
                                 
                                 ++count;
                                 log.debug("Try grid.  Count: {}\n{}", count,tryGrid);
