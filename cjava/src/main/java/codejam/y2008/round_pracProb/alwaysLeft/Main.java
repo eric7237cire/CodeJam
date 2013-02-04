@@ -59,26 +59,46 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         PointInt currentSquare = new PointInt(0,0);
         int directionIdx = 2; //South
         
-        Map<PointInt, BitSetInt> wallMap = Maps.newHashMap();
-        wallMap.put(currentSquare, new BitSetInt());
+        /**
+         * As we do not know the dimensions of the maze, use a map
+         * to store the wallGap data (can pass or not) 
+         */
+        Map<PointInt, BitSetInt> canPassMap = Maps.newHashMap();
+        canPassMap.put(currentSquare, new BitSetInt());
         
-        MazeWalker mw = new MazeWalker(currentSquare, wallMap, directionIdx);
+        /**
+         * Walk through the front
+         */
+        MazeWalker mw = new MazeWalker(currentSquare, canPassMap, directionIdx);
         mw.walkThroughMaze(in.entranceToExit);
         
+        /**
+         * Get the exit coordinate and reverse direction
+         */
         log.debug("\nNow exit\n");
         PointInt exit = mw.currentSquare;
         directionIdx = (mw.directionIdx+2) % 4;
         
-        MazeWalker back = new MazeWalker(exit,  wallMap, directionIdx);
+        /**
+         * Then walk through again
+         */
+        MazeWalker back = new MazeWalker(exit,  canPassMap, directionIdx);
         back.walkThroughMaze(in.exitToEntrance);
             
         StringBuffer ans = new StringBuffer();
         ans.append( "Case #" + in.testCase + ":\n");
+        
+        /**
+         * The walkthroughs may not have visited the same set of squares,
+         * so we need to take the extremes from both.
+         * 
+         * Print
+         */
         for(int y = Math.max(mw.maxY,back.maxY); y >= Math.min(mw.minY,back.minY); --y)
         {
             for(int x = Math.min(mw.minX,back.minX); x <= Math.max(mw.maxX,back.maxX); ++x)
             {
-                BitSetInt walls = wallMap.get(new PointInt(x,y));
+                BitSetInt walls = canPassMap.get(new PointInt(x,y));
               //  log.debug("Coord :  {}  Can pass? N {} S {} E {} W {}  = {}", new PointInt(x,y), 
                //         walls.isSet(0),walls.isSet(1), walls.isSet(2), walls.isSet(3), Integer.toHexString(walls.getBits()) );
                 
@@ -137,14 +157,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     setBits(wallGaps, directionIdx + 2) ;
                     break;
                 case 'R':
-                    wallGaps = wallGapMap.get(currentSquare);                    
-                    
                     directionIdx += 1;
                     directionIdx %= 4;
                     break;
                 case 'L':
-                    wallGaps = wallGapMap.get(currentSquare);
-                    
                     directionIdx += 3;
                     directionIdx %= 4;
                     break;

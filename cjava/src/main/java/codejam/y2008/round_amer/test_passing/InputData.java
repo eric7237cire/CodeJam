@@ -4,6 +4,8 @@ import codejam.utils.main.AbstractInputData;
 
 public class InputData extends AbstractInputData {
 
+    //M is number of submissions
+    //Q number of questions
     int M, Q;
     double[][] prob;
     
