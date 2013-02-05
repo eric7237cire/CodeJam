@@ -143,7 +143,7 @@ enum {
   QK_JUST_BOUGHT_PERISHABLE
 };
 //location, groc, cost, hasPurchased, justBoughtPerishable
-typedef tuple<unsigned short, unsigned short, double, int, bool> QueueKey_t;
+typedef boost::tuple<unsigned short, unsigned short, double, int, bool> QueueKey_t;
 
 ostream& operator<<(ostream& os, QueueKey_t* qk)
 {

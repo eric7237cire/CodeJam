@@ -1,19 +1,18 @@
 package codejam.y2008.round_pracProb.egg_drop;
 
-import java.util.Map;
+import java.util.Comparator;
 import java.util.Scanner;
+import java.util.TreeSet;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.datastructures.BitSetInt;
-import codejam.utils.geometry.PointInt;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
@@ -22,7 +21,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     public Main()
     {
        //super();
-        super("C", 1,0);
+        super("C", 1,1);
     }
     
     
@@ -39,16 +38,34 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return in;
     }
     
-    long findFMax(long D, long B) {
+    static long[][] memo;
+    
+    /**
+     * Given bDlimit[ b ] = first D value such that # of floors is above 2 ^ 32
+     */
+    static long[] bDlimit;
+    
+    static long findFMax(long D, long B) {
+        
         if (D == 0 || B == 0)
             return 0;
+        
+        if (D < memoDSize && B < memoBSize && memo[(int)D][(int)B] != 0)
+            return memo[(int)D][(int)B];
+    
+        
+      //  log.debug("Calc fmax d {} b {}", D, B);
+        
+        long ans;
         
         if (B == 1) {
             /**
              * If we can break only 1 egg, then we can test D levels,
              * starting at the first floor and going up
              */
-            return D;
+            ans = D;
+            memoAns(D, B, ans);
+            return ans;
         }
         if (B == 2) {
             /**
@@ -63,7 +80,39 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
              *   
              *   which is the sum formula
              */
-            return D*(D+1)/2;
+            ans = D*(D+1)/2; 
+            memoAns(D, B, ans);
+            return ans;
+        }
+        
+        /**
+         * If we can break the same or more than we can drop, it is
+         * a binary search
+         */
+        if (B >= D) {
+            //Can do a binary search
+            if (D > 32) {
+                ans = -1;
+                memoAns(D, B, ans);
+                return ans;
+            }
+            
+            ans = (1L << D) - 1;
+            memoAns(D, B, ans);
+            return ans;
+        }
+        
+        if (B >= memoBSize ) //&& D >= 1000) {
+            return -1;
+        
+        
+        Preconditions.checkState(B < memoBSize);
+        
+        if (bDlimit[(int)B] != 0 && D >= bDlimit[(int)B]) {
+            
+            ans = -1;
+            memoAns(D, B, ans);            
+            return -1;
         }
         
         /**
@@ -73,13 +122,34 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
          */
         long bottomPartition = findFMax(D - 1, B - 1);
         long topPartition = findFMax(D - 1, B);
-        
-        if (bottomPartition == -1 || topPartition == -1)
-            return -1;
+                
+        if (bottomPartition == -1 || topPartition == -1) {
+            ans = -1;
+        } else {
                   
-        return   1 + bottomPartition + topPartition;
+            ans = 1 + bottomPartition + topPartition;
+        
+            if (ans >= maxF) {
+                ans = -1;
+            }
+        }
+        
+        memoAns(D, B, ans);
+        
+        return ans;
     }
     
+    private static void memoAns(long D, long B, long ans) {
+        if (D < memoDSize && B < memoBSize )
+            memo[(int)D][(int)B] = ans;
+    }
+    
+    final static long maxF = 4294967296L; 
+    
+    /**
+     * Start at 1 and keep going until fMax is higher than the given F
+     * 
+     */
     long findDMin(long F, long B)
     {
         Preconditions.checkArgument(F >= 0);
@@ -102,6 +172,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
     }
     
+    /**
+     * Same idea as Dmin
+     */
     long findBMin(long F, long D) {
         Preconditions.checkArgument(F >= 0);
         Preconditions.checkArgument(D >= 0);
@@ -122,9 +195,44 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         }
     }
         
+    /**
+     * Figured out experimentally.  After around D = 3000, B = 3 will be > 2 ^ 32
+     * 
+     * As B gets higher, the number of eggs available to drop is less.  
+     */
+    final static int memoDSize = 3000;
+    final static int memoBSize = 200;
+    
+    static {
+        memo = new long[memoDSize][memoBSize];
+        
+        bDlimit = new long[memoBSize];
+        
+        /**
+         * Found out smallest D value such that fMax >= 2^32
+         */
+        for( int b = 3; b < memoBSize; ++b ) {
+            long d = 1;
+            
+            long f = findFMax(d, b);
+            
+            while(true) {
+                if (f == -1) {
+                    bDlimit[b] = d;
+                    break;
+                }
+                
+                ++d;
+                f = findFMax(d, b);
+            }
+        }
+    }
     @Override
     public String handleCase(InputData in)
     {
+        if (memo == null) {
+            
+        }
         long Fmax = findFMax(in.D,in.B);
         long Dmin = findDMin(in.F,in.B);
         long Bmin = findBMin(in.F,in.D);
