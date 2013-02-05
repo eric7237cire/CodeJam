@@ -732,6 +732,8 @@ this kind of grid passed diag checks, degree checks
          */
         for(int startWhite = 0; startWhite < borderLen; ++startWhite)
         {
+            log.debug("Start white {} case {}", startWhite, in.testCase);
+            
             for(int whiteBorderLen = 1; whiteBorderLen < borderLen; ++whiteBorderLen)
             {
                 int endWhite = (startWhite + whiteBorderLen - 1) % borderLen;
