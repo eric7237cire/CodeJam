@@ -1,7 +1,9 @@
 package codejam.y2010.round_final.ying_yang;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -97,6 +99,17 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             {1, 0}, //East
             {0, -1}, //South
             {-1, 0} //West
+    };
+    
+    /**
+     * Diagonals going in the opposite direction of
+     * the beginning of a path
+     */
+    PointInt[][] diagDirections = new PointInt[][] {
+      {new PointInt(-1, -1), new PointInt(1, -1)}, //if path goes north, both diags go south
+      {new PointInt(-1, -1), new PointInt(-1, 1)}, //both west
+      {new PointInt(-1, 1), new PointInt(1, 1)}, //both north
+      {new PointInt(1, -1), new PointInt(1, 1)}, //both east
     };
     
     /**
@@ -203,6 +216,45 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return true;
     }
     
+    int getDegree(PointInt point, GridChar grid, InputData in) {
+        int x = point.getX();
+        int y = point.getY();
+        
+        int sameColorNeighbors = 0;
+        
+        char c = grid.getEntry(y, x);
+        
+        Preconditions.checkState(c != '.');
+        
+        boolean isWhite = c =='0';
+        
+        for(int d = 0; d <= 3; d += 1) {
+            int xx = x + delta[d][0];
+            int yy = y + delta[d][1];
+            
+            if (xx < 0 || xx >= in.nCols)
+                continue;
+            
+            if (yy < 0 || yy >= in.nRows)
+                continue;
+            
+            char adj = grid.getEntry(yy, xx);
+            
+            if (adj== '.')
+                continue;
+           // Preconditions.checkState(adj != '.');
+            
+            if (adj == '0' && isWhite) {
+                ++sameColorNeighbors;                        
+            }
+            
+            if (adj == '#' && !isWhite) {
+                ++sameColorNeighbors;
+            }
+        }
+        
+        return sameColorNeighbors;
+    }
     boolean fillInGrid(GridChar grid, InputData in, Set<PointInt> endPoints) {
         int whiteEndCount = 0;
         int blackEndCount = 0;
@@ -247,13 +299,13 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 //Already too many neighbors
                 if (sameColorNeighbors > sameColorDegree) {
-                    log.debug("{}, {} -- Too many neighbors {} > deg {}", x, y, sameColorNeighbors,sameColorDegree);
+                   // log.debug("{}, {} -- Too many neighbors {} > deg {}", x, y, sameColorNeighbors,sameColorDegree);
                     return false;
                 }
                 
                 //Too few neighbors
                 if (sameColorNeighbors == 0 && sameColorDegree == 2) {
-                    log.debug("{}, {} -- Too few neighbors {} > deg {}", x, y, sameColorNeighbors,sameColorDegree);
+                    //log.debug("{}, {} -- Too few neighbors {} > deg {}", x, y, sameColorNeighbors,sameColorDegree);
                     return false;
                 }
                 
@@ -275,13 +327,13 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 char northernChar = grid.getEntry(y+1, x);
                 
                 if (northernNeighborColorWhite == true && northernChar == '#') {
-                    log.debug("{}, {} -- North must be white. isWhite? {} north color {} degree {} neigh {}", x, y, 
-                            isWhite, northernChar, sameColorDegree, sameColorNeighbors);
+                   // log.debug("{}, {} -- North must be white. isWhite? {} north color {} degree {} neigh {}", x, y, 
+                   //         isWhite, northernChar, sameColorDegree, sameColorNeighbors);
                     return false;
                 }
                 
                 if (!northernNeighborColorWhite && northernChar == '0') {
-                    log.debug("{}, {} -- North must be black", x, y);
+                   // log.debug("{}, {} -- North must be black", x, y);
                     return false;
                 }
                 
@@ -290,6 +342,103 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
             }
         }
+        
+        //A final check for all the endpoints
+        
+        PointInt bp = null;
+        PointInt wp = null;
+        
+        for(PointInt ep : endPoints) {
+            int degree = getDegree(ep, grid,in);
+            
+            if (degree != 1)
+                return false;
+            
+            int x = ep.getX();
+            int y = ep.getY();
+            char epColor = grid.getEntry(y,x);
+            
+            Integer pathDirection = null;
+            
+            if (epColor == '0' && wp == null) {
+                wp = ep;
+            }
+            if (epColor == '#' && bp == null) {
+                bp = ep;
+            }
+            
+            //Find direction
+            for(int d = 0; d <= 3; d += 1) {
+                int xx = x + delta[d][0];
+                int yy = y + delta[d][1];
+                
+                if (xx < 0 || xx >= in.nCols)
+                    continue;
+                
+                if (yy < 0 || yy >= in.nRows)
+                    continue;
+                
+                char path = grid.getEntry(yy,xx);
+                
+                if (path == epColor) {
+                    Preconditions.checkState(pathDirection==null);
+                    pathDirection = d;
+                }
+            }
+            
+            Preconditions.checkState(pathDirection!=null);
+            
+           // log.debug("Check grid {} ep {} dir {}", grid, ep, pathDirection);
+            
+            boolean ok = checkDiagonal(grid,ep, diagDirections[pathDirection][0], in);
+            if (!ok)
+                return false;
+            
+            ok = checkDiagonal(grid,ep, diagDirections[pathDirection][1], in);
+            
+            if (!ok)
+                return false;
+            
+           // log.debug("Passed");
+        }
+        
+        for(int y = 0; y < in.nRows; ++y)
+        {
+            for(int x = 0; x < in.nCols; ++x) {
+                PointInt p = new PointInt(x,y);
+                
+                int degreeNeeded =  (endPoints.contains(p)) ? 1 : 2;
+                
+                int degree = getDegree(p, grid,in);
+                
+                if (degree != degreeNeeded) {
+                    return false;
+                }
+                
+            }
+        }
+        
+        
+        //Final check for connectedness, it is p
+        /*
+         * 
+20   0   0   0   0   
+16   0   #   #   0   
+12   0   0   0   0   
+8    #   #   #   #   
+4    #   0   0   #   
+0    #   #   #   #   
+
+this kind of grid passed diag checks, degree checks
+         */
+        
+        int totalNodes = in.nCols*in.nRows;
+        
+        int white = getConnectedCount(grid,wp, in);
+        int black = getConnectedCount(grid, bp, in);
+        
+        if (totalNodes != white+black)
+            return false;
         
         return true;
     }
@@ -325,6 +474,84 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         }
         
         return true;
+    }
+    
+    boolean checkDiagonal(GridChar grid, PointInt start,
+            PointInt delta, InputData in)
+    {
+        
+        int distance = 0;
+        
+        int y = start.getY();
+        int x = start.getX();
+        
+        char startColor = grid.getEntry(y, x);
+        
+        while(x >= 0 && x < in.nCols &&
+                y >= 0 && y < in.nRows)                
+        {
+            
+            
+            Preconditions.checkState(distance < 100000);
+            
+            char cur = grid.getEntry(y, x);
+            
+            Preconditions.checkState(cur == '0' || cur ==  '#');
+            
+            if (distance % 2 == 0 && cur != startColor)
+                return false;
+            
+            if (distance % 2 == 1 && cur == startColor)
+                return false;
+            
+            y += delta.getY();
+            x += delta.getX();
+            
+            ++distance;
+        }
+        
+        return true;
+    }
+    
+    int getConnectedCount(GridChar grid, PointInt start, InputData in) {
+        Queue<PointInt> q = new LinkedList<PointInt>();
+        
+        q.add(start);
+        
+        char color = grid.getEntry(start.getY(),start.getX());
+        
+        Set<PointInt> visited = Sets.newHashSet();
+        
+        while(!q.isEmpty()) {
+            PointInt p = q.poll();
+            if (visited.contains(p))
+                continue;
+            
+            visited.add(p);
+            
+            int x = p.getX();
+            int y = p.getY();
+            
+            for(int d = 0; d <= 3; d += 1) {
+                int xx = x + delta[d][0];
+                int yy = y + delta[d][1];
+                
+                if (xx < 0 || xx >= in.nCols)
+                    continue;
+                
+                if (yy < 0 || yy >= in.nRows)
+                    continue;
+                
+                char path = grid.getEntry(yy,xx);
+                
+                if (path == color) {
+                    q.add(new PointInt(xx,yy));
+                }
+            }
+        }
+        
+        return visited.size();
+        
     }
     
     class Diagonal {
@@ -517,7 +744,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 int endBlack = (borderLen + startWhite - 1) % borderLen;
 
                 if (startBlack == 7 && endBlack == 9) {
-                    debug = true;
+                    debug = false;
                 } else {
                     debug = false;
                 }
@@ -711,11 +938,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                                 whiteEnd2,blackEnd1,blackEnd2);
                         
                         boolean ok = fillInGrid(tryGrid, in, endPoints);
-                        log.debug("White end 1 {} 2 {}  Black end 1 {} 2 {}",
-                                whiteEnd1,
-                                whiteEnd2,
-                                blackEnd1,
-                                blackEnd2);
+                       // log.debug("White end 1 {} 2 {}  Black end 1 {} 2 {}",
+                                //whiteEnd1,  whiteEnd2,blackEnd1,blackEnd2);
                         //log.debug("Try grid ok {}.  Count: {}\n{}", ok,count,tryGrid);
                         
                         if (!ok)
@@ -723,8 +947,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
                         ++count;
                         
-                        log.debug("Try grid.  Count: {}\n{}", count,tryGrid);
-                        
+                        /*
+                        log.debug("Found grid. we {} {} be {} {}  Count: {}\n{}", 
+                                whiteEnd1, whiteEnd2,
+                                blackEnd1, blackEnd2,
+                                count,tryGrid);
+                        */
                     }
                 }
             }
