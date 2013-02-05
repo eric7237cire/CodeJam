@@ -3,6 +3,7 @@ package codejam.y2010.round_final.ying_yang;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import codejam.utils.utils.GridChar;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
@@ -199,54 +201,90 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return true;
     }
     
-    boolean fillInGrid(GridChar grid, InputData in) {
+    boolean fillInGrid(GridChar grid, InputData in, Set<PointInt> endPoints) {
         int whiteEndCount = 0;
         int blackEndCount = 0;
         
-        for(int y = 0; y < in.nRows; ++y)
+        for(int y = 0; y < in.nRows-1; ++y)
         {
-            for(int x = 0; x < in.nCols; ++x) {
+            for(int x = 1; x < in.nCols - 1; ++x) {
                 char c = grid.getEntry(y, x);
                 
-                if (c != '.')
-                    continue;
+                Preconditions.checkState(c != '.');
                 
-                Boolean hasWhiteNeighbor = null;
+                PointInt p = new PointInt(x,y);
+                final int sameColorDegree = endPoints.contains(p) ? 1 : 2;
                 
-                for(int d = 0; d < 4; ++d) {
+                int sameColorNeighbors = 0;
+                
+                boolean isWhite = c =='0';
+                
+                
+                for(int d = 1; d <= 3; d += 1) {
                     int xx = x + delta[d][0];
                     int yy = y + delta[d][1];
                     
-                    if (xx < 0 || xx >= in.nCols)
-                        continue;
-                    
+                    Preconditions.checkState(!(xx < 0 || xx >= in.nCols));
                     if (yy < 0 || yy >= in.nRows)
                         continue;
                     
                     char adj = grid.getEntry(yy, xx);
                     
-                    if (adj == '0') {
-                        if (Boolean.FALSE.equals(hasWhiteNeighbor))
-                            return false;
-                        
-                        hasWhiteNeighbor = true;
+                    if (adj== '.')
+                        continue;
+                   // Preconditions.checkState(adj != '.');
+                    
+                    if (adj == '0' && isWhite) {
+                        ++sameColorNeighbors;                        
                     }
                     
-                    if (adj == '#') {
-                        if (Boolean.TRUE.equals(hasWhiteNeighbor))
-                            return false;
-                        
-                        hasWhiteNeighbor = false;
+                    if (adj == '#' && !isWhite) {
+                        ++sameColorNeighbors;
                     }
                 }
+                
+                //Already too many neighbors
+                if (sameColorNeighbors > sameColorDegree) {
+                    log.debug("{}, {} -- Too many neighbors {} > deg {}", x, y, sameColorNeighbors,sameColorDegree);
+                    return false;
+                }
+                
+                //Too few neighbors
+                if (sameColorNeighbors == 0 && sameColorDegree == 2) {
+                    log.debug("{}, {} -- Too few neighbors {} > deg {}", x, y, sameColorNeighbors,sameColorDegree);
+                    return false;
+                }
+                
+                Boolean northernNeighborColorWhite = null;
+                
+                if (sameColorNeighbors == sameColorDegree - 1) {
+                    //Northern color must be same color
+                    northernNeighborColorWhite = isWhite;
+                }
+                
+                if (sameColorNeighbors == sameColorDegree) {
+                    //Northern neighbor must be other color
+                    northernNeighborColorWhite = !isWhite;
+                }
+                
+                Preconditions.checkState(northernNeighborColorWhite != null);
                  
-                Preconditions.checkState(hasWhiteNeighbor != null);
                     
-                if (hasWhiteNeighbor) {
-                    grid.setEntry(y, x, '#');
-                } else {
-                    grid.setEntry(y, x, '0');
+                char northernChar = grid.getEntry(y+1, x);
+                
+                if (northernNeighborColorWhite == true && northernChar == '#') {
+                    log.debug("{}, {} -- North must be white. isWhite? {} north color {} degree {} neigh {}", x, y, 
+                            isWhite, northernChar, sameColorDegree, sameColorNeighbors);
+                    return false;
                 }
+                
+                if (!northernNeighborColorWhite && northernChar == '0') {
+                    log.debug("{}, {} -- North must be black", x, y);
+                    return false;
+                }
+                
+                grid.setEntry(y+1, x, northernNeighborColorWhite ? '0' : '#');
+                
             
             }
         }
@@ -457,6 +495,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         final int borderLen = 2*in.nRows + 2*in.nCols - 4;
         int count = 0;
         
+        boolean debug = false;
+        
         /**
          * Loop through all starting positions for the white border
          * and all possible lengths
@@ -473,8 +513,15 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 int startBlack = (endWhite + 1) % borderLen;
                 int endBlack = (borderLen + startWhite - 1) % borderLen;
+
+                if (startBlack == 7 && endBlack == 9) {
+                    debug = true;
+                } else {
+                    debug = false;
+                }
                 
-               // log.debug("Start black {} end black {}",startBlack,endBlack);
+                if (debug)
+                    log.debug("Start black {} end black {}",startBlack,endBlack);
                 
                 /**
                  * A la brute force, set the border in the grid
@@ -561,8 +608,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 for(Diagonal pos : posSlopes) {
                     for(Diagonal neg : negSlopes) {
                         PointInt inter = pos.intersection(neg, in);
-                        
-                       // log.debug("Diag pos={} neg={} inter = {}",pos,neg,inter);
+                       
+                        if (debug)
+                            log.debug("Diag pos={} neg={} inter = {}",pos,neg,inter);
                         
                         if (inter == null)
                             continue;
@@ -606,6 +654,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                                 PathEnd blackEnd1 = potentialBlackEnd.get(bEnd1);
                                 PathEnd blackEnd2 = potentialBlackEnd.get(bEnd2);
                 
+                                if (blackEnd1.pathStart.equals(blackEnd2.pathStart))
+                                    continue;
+                                
+                                if (whiteEnd1.pathStart.equals(whiteEnd2.pathStart)) 
+                                    continue;
+                                
                                 GridChar tryGrid = new GridChar(grid);
                                 
                                 boolean ok = drawPosNegDiagonal(tryGrid, whiteEnd1);
@@ -649,7 +703,16 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                                 if (!ok)
                                     continue;
                                 
-                                ok = fillInGrid(tryGrid, in);
+                                Set<PointInt> endPoints = Sets.newHashSet(whiteEnd1.pathStart,
+                                        whiteEnd2.pathStart,blackEnd1.pathStart,blackEnd2.pathStart);
+                                
+                                ok = fillInGrid(tryGrid, in, endPoints);
+                                log.debug("White end 1 {} 2 {}  Black end 1 {} 2 {}",
+                                        whiteEnd1.pathStart,
+                                        whiteEnd2.pathStart,
+                                        blackEnd1.pathStart,
+                                        blackEnd2.pathStart);
+                                log.debug("Try grid ok {}.  Count: {}\n{}", ok,count,tryGrid);
                                 
                                 if (!ok)
                                     continue;

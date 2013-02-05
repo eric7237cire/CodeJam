@@ -133,7 +133,7 @@ int main()
     scanf("%d%d", &h, &w);
 	res = 0;
 	go(0, 0);
-	printf("%d %d %d\n", w, h, res);
+	printf("Case #%d: %d\n", tt, res);
 	fprintf(stderr, "%d %d %d\n", w, h, res);
   }
   return 0;
