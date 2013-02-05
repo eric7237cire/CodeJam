@@ -44,6 +44,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 new PointInt(0, in.nRows-1) // top left
         };
         
+        in.cornerSet = Sets.newHashSet(in.corners);
+        
         return in;
     }
 
@@ -569,17 +571,17 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 int sideWhiteEnd = getSide(endWhite,in);
                 int sideBlackEnd = getSide(endBlack,in);
                 
-                PointInt whiteStartPt = getCoords(in, startWhite);
-                PointInt blackStartPt = getCoords(in, startBlack);
+                PointInt whiteBorderStartPt = getCoords(in, startWhite);
+                PointInt blackBorderStartPt = getCoords(in, startBlack);
                 
-                PointInt whiteEndPt = getCoords(in, endWhite);
-                PointInt blackEndPt = getCoords(in, endBlack);
+                PointInt whiteBorderEndPt = getCoords(in, endWhite);
+                PointInt blackBorderEndPt = getCoords(in, endBlack);
                 
-                diags.add(new Diagonal(whiteStartPt, slopesBeginBoundary[sideWhiteStart], true));
-                diags.add(new Diagonal(blackStartPt, slopesBeginBoundary[sideBlackStart], false));
+                diags.add(new Diagonal(whiteBorderStartPt, slopesBeginBoundary[sideWhiteStart], true));
+                diags.add(new Diagonal(blackBorderStartPt, slopesBeginBoundary[sideBlackStart], false));
                 
-                diags.add(new Diagonal(whiteEndPt, slopesEndBoundary[sideWhiteEnd], true));
-                diags.add(new Diagonal(blackEndPt, slopesEndBoundary[sideBlackEnd], false));
+                diags.add(new Diagonal(whiteBorderEndPt, slopesEndBoundary[sideWhiteEnd], true));
+                diags.add(new Diagonal(blackBorderEndPt, slopesEndBoundary[sideBlackEnd], false));
                 
                 /**
                  * Partition the diagonals in 2 sets, slope parallel to 1 and to -1
@@ -601,6 +603,27 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 List<PathEnd> potentialBlackEnd = Lists.newArrayList();
                 List<PathEnd> potentialWhiteEnd = Lists.newArrayList();
+                
+                Set<PointInt> blackEndPoints = Sets.newHashSet();
+                Set<PointInt> whiteEndPoints = Sets.newHashSet();
+                
+                //First check the corners
+                if (in.cornerSet.contains(whiteBorderStartPt)) {
+                    whiteEndPoints.add(whiteBorderStartPt);
+                }
+                
+                if (in.cornerSet.contains(whiteBorderEndPt)) {
+                    whiteEndPoints.add(whiteBorderEndPt);
+                }
+                
+                if (in.cornerSet.contains(blackBorderStartPt)) {
+                    blackEndPoints.add(blackBorderStartPt);
+                }
+                
+                if (in.cornerSet.contains(blackBorderEndPt)) {
+                    blackEndPoints.add(blackBorderEndPt);
+                }
+                
                 
                 /**
                  * Intersect all the diagonals
@@ -631,8 +654,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                         
                         if (isWhite) {
                             potentialWhiteEnd.add(new PathEnd(pos,neg,inter,isWhite));
+                            whiteEndPoints.add(inter);
                         } else {
                             potentialBlackEnd.add(new PathEnd(pos,neg,inter,isWhite));
+                            blackEndPoints.add(inter);
                         }
                         
                         //grid.setEntry(inter.getY(),inter.getX(), isWhite ? 'W' : 'B');
@@ -644,94 +669,150 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                  * created.
                  */
                 
-                for(int bEnd1 = 0; bEnd1 < potentialBlackEnd.size(); ++bEnd1) {
-                    for(int bEnd2 = bEnd1+1; bEnd2 < potentialBlackEnd.size(); ++bEnd2) {
-                        for(int wEnd1 = 0; wEnd1 < potentialWhiteEnd.size(); ++wEnd1) {
-                            for(int wEnd2 = wEnd1+1; wEnd2 < potentialWhiteEnd.size(); ++wEnd2) {
-                                PathEnd whiteEnd1 = potentialWhiteEnd.get(wEnd1);
-                                PathEnd whiteEnd2 = potentialWhiteEnd.get(wEnd2);
-                                
-                                PathEnd blackEnd1 = potentialBlackEnd.get(bEnd1);
-                                PathEnd blackEnd2 = potentialBlackEnd.get(bEnd2);
+                //tryEndsOld(potentialBlackEnd, potentialWhiteEnd, in, grid);
                 
-                                if (blackEnd1.pathStart.equals(blackEnd2.pathStart))
-                                    continue;
-                                
-                                if (whiteEnd1.pathStart.equals(whiteEnd2.pathStart)) 
-                                    continue;
-                                
-                                GridChar tryGrid = new GridChar(grid);
-                                
-                                boolean ok = drawPosNegDiagonal(tryGrid, whiteEnd1);
-                                
-                                if (!ok)
-                                    continue;
-                                
-                                ok = drawPosNegDiagonal(tryGrid, whiteEnd2);
-                                
-                                if (!ok)
-                                    continue;
-                                
-                                ok = drawPosNegDiagonal(tryGrid, blackEnd1);
-                                
-                                if (!ok)
-                                    continue;
-                                
-                                ok = drawPosNegDiagonal(tryGrid, blackEnd2);
-                                
-                                if (!ok)
-                                    continue;
-                                
-                                ok = fillInPathEnd(tryGrid, whiteEnd1, in);
-
-                                if (!ok)
-                                    continue;
-                                
-                                ok = fillInPathEnd(tryGrid, whiteEnd2, in);
-
-                                if (!ok)
-                                    continue;
-                                
-                                
-                                ok = fillInPathEnd(tryGrid, blackEnd1, in);
-
-                                if (!ok)
-                                    continue;
-                                
-                                ok = fillInPathEnd(tryGrid, blackEnd2, in);
-
-                                if (!ok)
-                                    continue;
-                                
-                                Set<PointInt> endPoints = Sets.newHashSet(whiteEnd1.pathStart,
-                                        whiteEnd2.pathStart,blackEnd1.pathStart,blackEnd2.pathStart);
-                                
-                                ok = fillInGrid(tryGrid, in, endPoints);
-                                log.debug("White end 1 {} 2 {}  Black end 1 {} 2 {}",
-                                        whiteEnd1.pathStart,
-                                        whiteEnd2.pathStart,
-                                        blackEnd1.pathStart,
-                                        blackEnd2.pathStart);
-                                log.debug("Try grid ok {}.  Count: {}\n{}", ok,count,tryGrid);
-                                
-                                if (!ok)
-                                    continue;
-                                
-                                
-                                ++count;
-                                log.debug("Try grid.  Count: {}\n{}", count,tryGrid);
-                                
-                            }
-                        }
-                    }
-                }
+                List<PointInt> be = Lists.newArrayList(blackEndPoints);
+                List<PointInt> we = Lists.newArrayList(whiteEndPoints);
                 
+                int countThis = tryEnds(be, we, in, grid);
+                
+                count+=countThis;
                 
               // log.debug(grid.toString());
                 
             }
         }
 
-        return String.format("Case #%d: ", in.testCase);
+        return String.format("Case #%d: %d", in.testCase, count);
+    }
+    
+    int tryEnds( List<PointInt> potentialBlackEnd, List<PointInt> potentialWhiteEnd, InputData in, GridChar grid ) {
+        int count = 0;
+        
+        for(int bEnd1 = 0; bEnd1 < potentialBlackEnd.size(); ++bEnd1) {
+            for(int bEnd2 = bEnd1+1; bEnd2 < potentialBlackEnd.size(); ++bEnd2) {
+                for(int wEnd1 = 0; wEnd1 < potentialWhiteEnd.size(); ++wEnd1) {
+                    for(int wEnd2 = wEnd1+1; wEnd2 < potentialWhiteEnd.size(); ++wEnd2) {
+                        PointInt whiteEnd1 = potentialWhiteEnd.get(wEnd1);
+                        PointInt whiteEnd2 = potentialWhiteEnd.get(wEnd2);
+                        
+                        PointInt blackEnd1 = potentialBlackEnd.get(bEnd1);
+                        PointInt blackEnd2 = potentialBlackEnd.get(bEnd2);
+        
+                        Preconditions.checkState(!blackEnd1.equals(blackEnd2));
+                            
+                        
+                        Preconditions.checkState(!whiteEnd1.equals(whiteEnd2)); 
+                            
+                        
+                        GridChar tryGrid = new GridChar(grid);
+                        
+                        Set<PointInt> endPoints = Sets.newHashSet(whiteEnd1,
+                                whiteEnd2,blackEnd1,blackEnd2);
+                        
+                        boolean ok = fillInGrid(tryGrid, in, endPoints);
+                        log.debug("White end 1 {} 2 {}  Black end 1 {} 2 {}",
+                                whiteEnd1,
+                                whiteEnd2,
+                                blackEnd1,
+                                blackEnd2);
+                        //log.debug("Try grid ok {}.  Count: {}\n{}", ok,count,tryGrid);
+                        
+                        if (!ok)
+                            continue;
+        
+                        ++count;
+                        
+                        log.debug("Try grid.  Count: {}\n{}", count,tryGrid);
+                        
+                    }
+                }
+            }
+        }
+        
+        return count;
+    }
+    
+    void tryEndsOld( List<PathEnd> potentialBlackEnd, List<PathEnd> potentialWhiteEnd, InputData in, GridChar grid ) {
+        for(int bEnd1 = 0; bEnd1 < potentialBlackEnd.size(); ++bEnd1) {
+            for(int bEnd2 = bEnd1+1; bEnd2 < potentialBlackEnd.size(); ++bEnd2) {
+                for(int wEnd1 = 0; wEnd1 < potentialWhiteEnd.size(); ++wEnd1) {
+                    for(int wEnd2 = wEnd1+1; wEnd2 < potentialWhiteEnd.size(); ++wEnd2) {
+                        PathEnd whiteEnd1 = potentialWhiteEnd.get(wEnd1);
+                        PathEnd whiteEnd2 = potentialWhiteEnd.get(wEnd2);
+                        
+                        PathEnd blackEnd1 = potentialBlackEnd.get(bEnd1);
+                        PathEnd blackEnd2 = potentialBlackEnd.get(bEnd2);
+        
+                        if (blackEnd1.pathStart.equals(blackEnd2.pathStart))
+                            continue;
+                        
+                        if (whiteEnd1.pathStart.equals(whiteEnd2.pathStart)) 
+                            continue;
+                        
+                        GridChar tryGrid = new GridChar(grid);
+                        
+                        boolean ok = drawPosNegDiagonal(tryGrid, whiteEnd1);
+                        
+                        if (!ok)
+                            continue;
+                        
+                        ok = drawPosNegDiagonal(tryGrid, whiteEnd2);
+                        
+                        if (!ok)
+                            continue;
+                        
+                        ok = drawPosNegDiagonal(tryGrid, blackEnd1);
+                        
+                        if (!ok)
+                            continue;
+                        
+                        ok = drawPosNegDiagonal(tryGrid, blackEnd2);
+                        
+                        if (!ok)
+                            continue;
+                        
+                        ok = fillInPathEnd(tryGrid, whiteEnd1, in);
+
+                        if (!ok)
+                            continue;
+                        
+                        ok = fillInPathEnd(tryGrid, whiteEnd2, in);
+
+                        if (!ok)
+                            continue;
+                        
+                        
+                        ok = fillInPathEnd(tryGrid, blackEnd1, in);
+
+                        if (!ok)
+                            continue;
+                        
+                        ok = fillInPathEnd(tryGrid, blackEnd2, in);
+
+                        if (!ok)
+                            continue;
+                        
+                        Set<PointInt> endPoints = Sets.newHashSet(whiteEnd1.pathStart,
+                                whiteEnd2.pathStart,blackEnd1.pathStart,blackEnd2.pathStart);
+                        
+                        ok = fillInGrid(tryGrid, in, endPoints);
+                        log.debug("White end 1 {} 2 {}  Black end 1 {} 2 {}",
+                                whiteEnd1.pathStart,
+                                whiteEnd2.pathStart,
+                                blackEnd1.pathStart,
+                                blackEnd2.pathStart);
+                        log.debug("Try grid ok {}.  Count: {}\n{}", ok,42,tryGrid);
+                        
+                        if (!ok)
+                            continue;
+                        
+                        
+                        log.debug("Try grid.  Count: {}\n{}", 42,tryGrid);
+                        
+                    }
+                }
+            }
+        }
     }
 }
