@@ -57,6 +57,14 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
     
         
+    /**
+     * The main idea is to get the longest increasing sequence that is 
+     * lexographically greatest.  
+     * 
+     * What rests is the smallest lexographically sequence where
+     * the prices can be changed to be in order
+     * 
+     */
     @Override
     public String handleCase(InputData in)
     {
