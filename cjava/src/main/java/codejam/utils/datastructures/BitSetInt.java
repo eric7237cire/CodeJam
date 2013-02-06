@@ -45,6 +45,10 @@ public class BitSetInt {
         this.bits = bits;
     }
     
+    public BitSetInt(BitSetInt bits) {
+        this.bits = bits.getBits();
+    }
+    
     public BitSetInt() {
         
     }

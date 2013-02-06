@@ -30,7 +30,9 @@ public class Main  {
          */
         //codejam.y2008.round_pracProb.alwaysLeft.Main m = new codejam.y2008.round_pracProb.alwaysLeft.Main();
         
-        //codejam.y2008.round_pracProb.egg_drop.Main m = new codejam.y2008.round_pracProb.egg_drop.Main(); 
+        //codejam.y2008.round_pracProb.egg_drop.Main m = new codejam.y2008.round_pracProb.egg_drop.Main();
+        
+        codejam.y2008.round_pracProb.shopping_plan.Main m = new codejam.y2008.round_pracProb.shopping_plan.Main(); 
         
         /**
          * 2008 emea semis -- problem 1
@@ -394,7 +396,7 @@ public class Main  {
          * 
          * TODO optimize the connectedness checking
          */
-        codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
+       // codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
         
          //2011 1A
         
@@ -443,7 +445,7 @@ public class Main  {
        // codejam.y2011.round_1C.space_emergency.Main m = new codejam.y2011.round_1C.space_emergency.Main();
         
         //GCD and LCM,  TODO comments
-        codejam.y2011.round_1C.perfect_harmony.Main m = new codejam.y2011.round_1C.perfect_harmony.Main();
+       // codejam.y2011.round_1C.perfect_harmony.Main m = new codejam.y2011.round_1C.perfect_harmony.Main();
          
         //2011 2
         
@@ -631,8 +633,8 @@ public class Main  {
         for (String file : files) {
             log.info("Input file {}", file);
 
-          //  Runner.goSingleThread(file, m, m);
-          Runner.go(file, m, m, 5);
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
         }       
     }
 
