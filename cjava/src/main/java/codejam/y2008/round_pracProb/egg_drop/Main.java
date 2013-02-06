@@ -1,10 +1,7 @@
 package codejam.y2008.round_pracProb.egg_drop;
 
-import java.util.Comparator;
 import java.util.Scanner;
-import java.util.TreeSet;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

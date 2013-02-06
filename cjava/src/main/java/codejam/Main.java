@@ -379,13 +379,22 @@ public class Main  {
         //codejam.y2010.round_final.travel_plan.Main m = new codejam.y2010.round_final.travel_plan.Main();
                 
         /**
-         * 2010 -- Round final
+         * 2010 -- Round final          
+         * Problem 5
          * 
          * Interesting DP problem ; loop detection
          */
         //codejam.y2010.round_final.ninjutsu.Main m = new codejam.y2010.round_final.ninjutsu.Main();
         
-       // codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
+        /**
+         * 2010 -- Round final
+         * Problem 6
+         * 
+         * Symmetry, patters /topology
+         * 
+         * TODO optimize the connectedness checking
+         */
+        codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
         
          //2011 1A
         
@@ -622,8 +631,8 @@ public class Main  {
         for (String file : files) {
             log.info("Input file {}", file);
 
-             Runner.goSingleThread(file, m, m);
-          // Runner.go(file, m, m, 5);
+          //  Runner.goSingleThread(file, m, m);
+          Runner.go(file, m, m, 5);
         }       
     }
 

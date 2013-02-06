@@ -101,6 +101,7 @@ public class GridChar {
     public GridChar(GridChar rhs) {
         this.rows = rhs.rows;
         this.cols = rhs.cols;
+        this.yZeroOnTop = rhs.yZeroOnTop;
         this.grid = new char[rhs.grid.length];
         System.arraycopy(rhs.grid,0,this.grid,0,rhs.grid.length);
         this.invalidSquare = rhs.invalidSquare;
