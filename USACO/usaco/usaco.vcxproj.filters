@@ -20,7 +20,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\race3.cpp">
+    <ClCompile Include="..\lgame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

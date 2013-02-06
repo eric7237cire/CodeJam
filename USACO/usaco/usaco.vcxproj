@@ -22,7 +22,7 @@
     <None Include="..\cowtour.in" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\race3.cpp" />
+    <ClCompile Include="..\lgame.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{899CB317-940A-4C4D-B045-76EF3A24D746}</ProjectGuid>

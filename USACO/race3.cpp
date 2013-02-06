@@ -158,35 +158,7 @@ int main()
 			isUnavoidable = true;
 	    }
 
-		/*
-		Now check that starting from the node means we do not ever see the node again
-		*/
-		si visitedFromCheckPoint;
-		assert(toVisit.empty());
-
-		toVisit.push(checkNode);
-
-		while(!toVisit.empty() && isSplitting)
-	    {
-	        int node = toVisit.front();
-	        toVisit.pop();
-	        
-	        
-	     
-	        if (contains(visitedFromCheckPoint, node))
-	            continue;
-	        
-	        visitedFromCheckPoint.insert(node);
-	        
-	        FOR(n, 0, adjList[node].size()) 
-	        {
-				if (adjList[node][n] == checkNode) {
-				//	isSplitting = false;
-					continue;
-				}
-	            toVisit.push(adjList[node][n]);
-	        }
-	    }
+		
 
 		FOR(node, 0, finishNode)
 		{
@@ -194,24 +166,15 @@ int main()
 
 			FOR(n, 0, adjList[node].size()) 
 			{
-				if (checkNode == 4) {
-					//cout << "Checknode " << checkNode << endl;
-				}
+				
 				bool nInFirst = contains(visited, adjList[node][n]);
 
 				if (inFirst && !nInFirst && adjList[node][n] != checkNode) {
-					isSplitting = false;
-					if (checkNode == 4) {			
-						//cout << "Node " << node << " n " << n << " adj node " << adjList[node][n] << endl;
-					}
+					isSplitting = false;					
 					break;
 				}
 
-				if (!inFirst && nInFirst && adjList[node][n] != checkNode) {
-					if (checkNode == 4) {
-			
-						//cout << "Not in first, neigh in first Node " << node << " n " << n << " adj node " << adjList[node][n] << endl;
-					}
+				if (!inFirst && nInFirst && adjList[node][n] != checkNode) {					
 					isSplitting = false;
 					break;
 				}
@@ -226,20 +189,16 @@ int main()
 	
 	fout << unavoidable.size(); 
 	for(vi::const_iterator it = unavoidable.begin(); it != unavoidable.end(); ++it)
-	{
-	    
-	    fout << " ";
-	    
+	{	    
+	    fout << " ";	    
 	    fout << *it;
 	}
 	fout << endl;
 
 	fout << splitting.size(); 
 	for(vi::const_iterator it = splitting.begin(); it != splitting.end(); ++it)
-	{
-	    
-	    fout << " ";
-	    
+	{	    
+	    fout << " ";	    
 	    fout << *it;
 	}
 	fout << endl;
