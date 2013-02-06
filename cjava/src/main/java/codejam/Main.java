@@ -43,10 +43,24 @@ public class Main  {
         
     }
     
+    static void beta2008(String args[]) {
+
+        codejam.y2008.round_beta.triangle_trilemma.Main m = new codejam.y2008.round_beta.triangle_trilemma.Main(); 
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }       
+        
+    }
     
     public static void main(String args[]) throws Exception {
 
-        africa(args);
+        //africa(args);
+        beta2008(args);
 
        // Main m = null;
         
