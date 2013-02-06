@@ -18,7 +18,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="d.cpp">
+    <ClCompile Include="shopping-plan.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
