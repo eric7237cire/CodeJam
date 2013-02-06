@@ -129,47 +129,44 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         if(memo[currentLocation][itemsBoughtMask][boughtInt] >= 0)
             return memo[currentLocation][itemsBoughtMask][boughtInt];
         
-        double res = 1E100;
+        double res = Double.MAX_VALUE;
        
-        if (currentLocation == home) {
-            /**
-             * Go to a store, paying the price for gas
+        
+        if (!bought && currentLocation != home) {
+            /*
+             * nm is what still needs to be bought
              */
-            for (int to = 0; to < in.num_stores; to++)
-                res = Math
-                        .min(res, dist(currentLocation, to, in) + go(to, itemsBoughtMask, 0, memo, in));
-        } else {
-            if (!bought) {
-                /*
-                 * nm is what still needs to be bought
-                 */
-                int nm = (~itemsBoughtMask) & in.storeAvailableItemMask[currentLocation].getBits();
-                
-                //Loop through every combination of nm
-                for (int buy = nm; buy != 0; buy = (buy - 1) & nm) {
-                    double cost = in.storeItemsPrice[currentLocation][buy];
-                    if ((in.perishableMask.getBits() & buy) != 0) {
-                        int to = home;
-                        res = Math.min(
-                                res,
-                                cost + dist(currentLocation, to, in)
-                                        + go(to, itemsBoughtMask | buy, 0, memo, in));
-                    } else {
-                        res = Math.min(res,
-                                cost + go(currentLocation, itemsBoughtMask | buy, 1, memo, in));
-                    }
-                }
-            } else {
-                // Already have bought something, so go elsewhere
-                for (int to = 0; to <= in.num_stores; to++) {
-                    if (to == currentLocation)
-                        continue;
+            int nm = (~itemsBoughtMask)
+                    & in.storeAvailableItemMask[currentLocation].getBits();
 
-                    res = Math.min(res,
-                            dist(currentLocation, to, in) + go(to, itemsBoughtMask, 0, memo, in));
+            // Loop through every combination of nm
+            for (int buy = nm; buy != 0; buy = (buy - 1) & nm) {
+
+                // Each combination has already been precalculated
+                double cost = in.storeItemsPrice[currentLocation][buy];
+                if ((in.perishableMask.getBits() & buy) != 0) {
+                    int to = home;
+                    res = Math.min(res, cost + dist(currentLocation, to, in)
+                            + go(to, itemsBoughtMask | buy, 0, memo, in));
+                } else {
+                    res = Math.min(res, cost + go(currentLocation,
+                                                    itemsBoughtMask | buy, 1,
+                                                    memo, in));
                 }
             }
+        } else {
+            // Already have bought something, so go elsewhere
+            for (int to = 0; to <= in.num_stores; to++) {
+                if (to == currentLocation)
+                    continue;
+
+                res = Math.min(
+                        res,
+                        dist(currentLocation, to, in)
+                                + go(to, itemsBoughtMask, 0, memo, in));
+            }
         }
+        
         
         memo[currentLocation][itemsBoughtMask][boughtInt] = res;
         return res;
