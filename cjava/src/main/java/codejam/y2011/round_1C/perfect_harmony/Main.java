@@ -85,13 +85,18 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         //our frequency has to be <= anothers frequency
         
         long[] gcdDec = new long[in.N];
-        BigInteger[] lcmAsc  = new BigInteger[in.N];
+        
         
         Arrays.sort(in.freq);
         
+        /**
+         * Calculate least common multiple
+         * lcmAsc[i] = lcm of frequences 0 .. i inclusive
+         */
+        BigInteger[] lcmAsc  = new BigInteger[in.N];
         lcmAsc[0] = BigInteger.valueOf(in.freq[0]); 
         for(int freq = 1; freq < in.N; ++freq) {
-            
+            //LCM(A, B) = A * B / gcd(A, B)
             BigInteger gcd = BigInteger.valueOf(in.freq[freq]).gcd( lcmAsc[freq-1]);
             lcmAsc[freq] = lcmAsc[freq-1].multiply(BigInteger.valueOf(in.freq[freq])).divide(gcd);
         }
