@@ -43,9 +43,23 @@ public class Main  {
         
     }
     
+    /**
+     * Year 2008
+     * Practice round -- Beta
+     * 
+     */
     static void beta2008(String args[]) {
 
-        codejam.y2008.round_beta.triangle_trilemma.Main m = new codejam.y2008.round_beta.triangle_trilemma.Main(); 
+        /**
+         * Problem 1.  
+         * 
+         * CLassifying triangles
+         * 
+         * Law of cosines
+         */
+       // codejam.y2008.round_beta.triangle_trilemma.Main m = new codejam.y2008.round_beta.triangle_trilemma.Main(); 
+        
+        codejam.y2008.round_beta.price_wrong.Main m = new codejam.y2008.round_beta.price_wrong.Main();
         
         String[] files = Main.getFiles(m, args);
         for (String file : files) {
