@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
@@ -19,14 +20,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Ordering;
 import com.google.common.math.LongMath;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles{
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles{
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
     
-    @Override
-    public String[] getDefaultInputFiles() {
-       //return new String[] {"sample.in"};
-        return new String[] {"C-small-practice.in", "C-large-practice.in"};
+    public Main() {
+        super("C",1,1);
     }
     
     @Override
@@ -46,22 +45,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     
-    public boolean isPrime (long n)
-    {
-       if (n<=1) return false;
-       if (n==2) return true;
-       if (n%2==0) return false;
-       long m=LongMath.sqrt(n, RoundingMode.UP);
-
-       //100 000 000 / 2 iterations is OK!
-       for (long i=3; i<=m; i+=2) {
-           
-          if (n%i==0)
-             return false;
-       }
-
-       return true;
-    }
+  
     
     public List<Long> getDivisors(long n) {
         ArrayList<Long> ret = new ArrayList<Long>();
@@ -84,7 +68,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      
         //our frequency has to be <= anothers frequency
         
-        long[] gcdDec = new long[in.N];
+        
         
         
         Arrays.sort(in.freq);
@@ -101,6 +85,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             lcmAsc[freq] = lcmAsc[freq-1].multiply(BigInteger.valueOf(in.freq[freq])).divide(gcd);
         }
         
+        /**
+         * Compute gcd such that
+         * gcdDec[i] = gcd of i .. N inclusive
+         */
+        long[] gcdDec = new long[in.N];
         gcdDec[in.N-1] = in.freq[in.N - 1];
         for(int freq = in.N - 2; freq >= 0; --freq) {
             gcdDec[freq] = BigInteger.valueOf(gcdDec[freq+1]).gcd(BigInteger.valueOf(in.freq[freq])).longValue();
@@ -112,21 +101,49 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
         log.debug("LCM asc: {}", (Object) lcmAsc);
         log.debug("Freq: {}", in.freq);
+        /**
+         * Searching for a number that is either divisble by or divides evenly
+         * all the frequencies.
+         * 
+         * In Position i,
+         * then we look for Ans % F_i-1 == 0 ; Ans % F_i-2 == 0 ; etc
+         * 
+         * It is enough to look for Ans % lcm(F_0 .. F_i-1) == 0
+         * 
+         * or find some value k such that k1 * lcm(F_0 ... F_i-1) == ans
+         * 
+         * For frequences F_i to F_n we want
+         * we look for F_i % Ans == 0 ; F_i+1 % Ans == 0 ; F_i+2 % Ans == 0
+         * 
+         * We calculated the gcd of F_i .. F_n.  If Ans is a divisor of the gcd,
+         * the ans will be a divisor of all F_i ... F_n
+         * 
+         * 
+         * So we are looking for 2 constants, k1 and k2 such that
+         * ans = k1 * lcm(F_1 ... F_i) and 
+         * ans = gcd / k2
+         * 
+         * where k1 and k2 are integers
+         * this means that
+         * 
+         * k1 * lcm(F_1 ... F_i-1) == gcd / k2
+         * k1 * k2 = gcd(F_i / lcm(F_1 ... F_i)
+         * 
+         */
         for(int guessPosition = 0; guessPosition <= in.N; ++guessPosition) {
-            //Try to find a    in.freq[other-1]  <= frequency <= in.freq[other]
-            //long low = otherFreq == 0 ? in.L : Math.max(in.L, in.freq[otherFreq-1]);
             
             //LCM of all frequences less than our position
             BigInteger lcm = guessPosition == 0 ? BigInteger.ONE : lcmAsc[guessPosition-1];
             
             //GCD of all frequences greater
-            long gcd = guessPosition == in.N ? -1 : gcdDec[guessPosition];
+            final long gcd = guessPosition == in.N ? -1 : gcdDec[guessPosition];
             
             
             log.debug("In position {} lcm {} gcd {}", guessPosition, lcm, gcd);
             
             if (gcd == -1) {
                 
+                Preconditions.checkState(guessPosition == in.N);
                 long lowK1 = BigInteger.valueOf(in.L).divide(lcm).longValue();
                 
                 if (lowK1 == 0)
@@ -147,12 +164,22 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
             } else {
                 
+                /**
+                 * ans must be <= the gcd ; given the constraints of the guess
+                 * interval
+                 */
                 if (in.L > gcd)
                     continue; 
                 
+                /**
+                 * Similiarly, ans must be >= lcm 
+                 */
                 if (BigInteger.valueOf(in.H).compareTo(lcm) < 0) 
                     continue;
                 
+                /**
+                 * 
+                 */
                 BigInteger[] div = BigInteger.valueOf(gcd).divideAndRemainder(lcm);
                 
                 if (!div[1].equals(BigInteger.ZERO))
@@ -162,10 +189,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 //P = gcd / k2
                 //C = k1 * k2
                 
-                
                 long uppK2 = LongMath.divide(gcd, in.L, RoundingMode.UP);
                 
-                long C =   div[0].longValue(); //gcd / lcm.longValue();
+                long C =   div[0].longValue(); 
                 
                 List<Long> k2Divisors = getDivisors(gcd);
                 
