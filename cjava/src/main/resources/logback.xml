@@ -39,7 +39,7 @@
    <logger name="codejam" level="INFO"/>
    <logger name="codejam.y2012" level="DEBUG"/>
    <logger name="codejam.y2008" level="DEBUG"/>
-   <logger name="hcodejam.y2011" level="DEBUG"/>
+   <logger name="codejam.y2011" level="DEBUG"/>
    <logger name="codejam.y2010" level="DEBUG"/>
    <logger name="hcodejam.y2010aa" level="DEBUG"/>
    <logger name="codejam.y2010aa" level="INFO"/>

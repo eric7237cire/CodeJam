@@ -1,7 +1,6 @@
 package codejam.y2008.round_beta.hexagon_game;
 
 import java.math.RoundingMode;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,7 +24,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     public Main()
     {
       
-        super("D", 0,0);
+        super("D", 1,1);
     }
     
     
@@ -55,19 +54,16 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return in;
     }
 
-    int totalCheckers(int S) {
+    private int totalCheckers(int S) {
         int smallestRow = (S+1) / 2;
         return 2 * (sumFormula(S-1) - sumFormula(smallestRow-1)) + S;
     }
     
-    int sumFormula(int n) {
+    private int sumFormula(int n) {
         return n * (n+1) / 2;
     }
     
-    void addDist(int n1, int n2, int d, int[][] dist) {
-        dist[n1][n2] = d;
-        dist[n2][n1] = d;
-    }
+   
     
     /**
      * 
@@ -94,11 +90,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         final int total = totalCheckers(S);
         
-        int[][] dist = new int[total][total];
         
-        for(int[] d2 : dist) {
-            Arrays.fill(d2, Integer.MAX_VALUE);
-        }
         
         /**
          * Walk 2 counters, from the beginning and end
@@ -122,70 +114,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 coordNumber[startNode] = new PointInt(startX+2*i, numRows-1-row);
                 coordNumber[endNode] = new PointInt(startX+rowLen*2-2 - i*2, row);
 
- 
-                if (rowLen < S) {
-                    //Above 1
-                    addDist(endNode, endNode - rowLen, 1, dist);
-                    
-                    //Above 2
-                    addDist(endNode, endNode - rowLen - 1, 1, dist);
-                
-                    //Below 1
-                    addDist(startNode, startNode+rowLen, 1, dist);
-                    
-                    //Below 2
-                    addDist(startNode, startNode+rowLen+1, 1, dist);
-                }
-                
-                if (i > 0) {
-                    //Add left
-                    addDist(startNode, startNode - 1, 1, dist);
-                    
-                    //Add right
-                    addDist(endNode, endNode + 1, 1, dist);
-                }
-                
                 ++startNode;
-                --endNode;
-                
+                --endNode;                
             }
         }
         
-        for(int i = 0; i < total; ++i) {
-            dist[i][i] = 0;
-        }
-          
-        log.debug("Start distance");
-        for(int k = 0; k < total; ++k)
-        {
-            for(int i = 0; i < total; ++i) 
-            {
-                for(int j = 0; j < total; ++j)
-                {
-                    long temp = (long) dist[i][k] + dist[k][j];  //This will optimize the code performance , by removing the redundant expression .
-                    if (temp < dist[i][j]) {
-                        dist[i][j] = (int) temp;
-                    }
-                }
-                
-            }
-        }
-        log.debug("End distance");
        
-        for(int i = 0; i < total; ++i) 
-        {
-            for(int j = 0; j < total; ++j)
-            {
-                log.debug("Distance Node {} and {} = {} ; coords {} and {} dist = {}",
-                        i+1, j+1, dist[i][j],
-                        coordNumber[i], coordNumber[j],
-                        dist(coordNumber[i], coordNumber[j]));
-                Preconditions.checkState(dist[i][j] == dist(coordNumber[i], coordNumber[j]));
-                
-                
-            }
-            
-        }
         
         List<Integer> diagOnePos = Lists.newArrayList();
         List<Integer> diagTwoPos = Lists.newArrayList();
@@ -221,7 +155,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             diagThreePos.add(i);
         }
         
-        log.debug("diag 1 : {} diag 2 : {} diag 3 : {}", diagOnePos, diagTwoPos, diagThreePos);
+        //log.debug("diag 1 : {} diag 2 : {} diag 3 : {}", diagOnePos, diagTwoPos, diagThreePos);
         
         List<List<Integer>> diags = Lists.newArrayList();
         diags.add(diagOnePos); diags.add(diagTwoPos); diags.add(diagThreePos);
@@ -235,7 +169,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     int pos = in.checkerPos.get(posIdx) - 1;
                     int diagPos = diag.get(diagPosIdx);
                     
-                    weight[posIdx][diagPosIdx] = in.checkerWeight.get(posIdx) * dist[pos][diagPos];
+                    weight[posIdx][diagPosIdx] = in.checkerWeight.get(posIdx) * dist(coordNumber[pos], coordNumber[diagPos]);
                 }
             }
             

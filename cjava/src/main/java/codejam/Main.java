@@ -54,6 +54,12 @@ public class Main  {
          */
        // codejam.y2008.round_beta.triangle_trilemma.Main m = new codejam.y2008.round_beta.triangle_trilemma.Main(); 
         
+        /**
+         * Problem 2
+         * 
+         * Longest increasing subsequence
+         * Lexigraphic order
+         */
        // codejam.y2008.round_beta.price_wrong.Main m = new codejam.y2008.round_beta.price_wrong.Main();
         
         /**
@@ -67,7 +73,9 @@ public class Main  {
         /**
          * Problem 4 Hexagons
          * 
-         * Used  Floyd–Warshall all pairs and the assignment problem
+         * Tried using Floyd–Warshall all pairs, but was too slow.  Directly calculate hex distance
+         * 
+         * assignment problem
          */
         codejam.y2008.round_beta.hexagon_game.Main m = new codejam.y2008.round_beta.hexagon_game.Main();
         
@@ -115,6 +123,40 @@ public class Main  {
         }      
     }
     
+    static void roundFinal_2011(String args[]) {
+        
+        //Dynamic programming, combinatorics stars and bars counting (distributing n stars in k buckets )
+        //codejam.y2011.round_final.runs.Main m = new codejam.y2011.round_final.runs.Main(); 
+        
+        //Simulation with a trick to do batch processing.  TODO look at proof via paths / tree justifying the algo
+        //codejam.y2011.round_final.rains_atlantis.Main m = new codejam.y2011.round_final.rains_atlantis.Main();
+        
+        /**
+         * 2011 final round
+         * 
+         * 1.  Creates a turning machine
+         * 2.  idea -- Can optimize the number of iterations
+         */
+        //codejam.y2011.round_final.program_within.Main m = new codejam.y2011.round_final.program_within.Main();
+
+        /**
+         * 2011 Final
+         * 
+         * 1.  Used proposed solution -- TODO go through reasoning
+         */
+        //codejam.y2011.round_final.ace_in_hole.Main m = new codejam.y2011.round_final.ace_in_hole.Main();
+        
+       codejam.y2011.round_final.google_royale.Main m = new codejam.y2011.round_final.google_royale.Main();
+       
+       String[] files = Main.getFiles(m, args);
+       for (String file : files) {
+           log.info("Input file {}", file);
+
+           Runner.goSingleThread(file, m, m);
+         //Runner.go(file, m, m, 5);
+       }      
+    }
+    
     static void round3_2012(String args[]) {
         /**
          * 2012 Round 3
@@ -152,9 +194,11 @@ public class Main  {
     public static void main(String args[]) throws Exception {
 
         //africa(args);
-        beta2008(args);
+        //beta2008(args);
         
         //round2_2011(args);
+        
+        roundFinal_2011(args);
         
        // round3_2012(args);
 
@@ -626,29 +670,7 @@ public class Main  {
         //codejam.y2011.round_3.dire_straights.Main m = new codejam.y2011.round_3.dire_straights.Main();
         
         //
-        
-        //Dynamic programming, combinatorics stars and bars counting (distributing n stars in k buckets )
-        //codejam.y2011.round_final.runs.Main m = new codejam.y2011.round_final.runs.Main(); 
-        
-        //Simulation with a trick to do batch processing.  TODO look at proof via paths / tree justifying the algo
-        //codejam.y2011.round_final.rains_atlantis.Main m = new codejam.y2011.round_final.rains_atlantis.Main();
-        
-        /**
-         * 2011 final round
-         * 
-         * 1.  Creates a turning machine
-         * 2.  idea -- Can optimize the number of iterations
-         */
-        //codejam.y2011.round_final.program_within.Main m = new codejam.y2011.round_final.program_within.Main();
-
-        /**
-         * 2011 Final
-         * 
-         * 1.  Used proposed solution -- TODO go through reasoning
-         */
-        //codejam.y2011.round_final.ace_in_hole.Main m = new codejam.y2011.round_final.ace_in_hole.Main();
-        
-        
+       
         
         
        
