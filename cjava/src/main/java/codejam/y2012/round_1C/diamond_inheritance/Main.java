@@ -55,6 +55,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 Integer loc = toVisit.poll();
     
                 if (visitedNodes.contains(loc)) {
+                    /**
+                     * There exist at least 2 paths from the startNode to this one
+                     */
                     return String.format("Case #%d: Yes", in.testCase);
                 }
     

@@ -453,7 +453,7 @@ public class Main  {
          * 
          * Uses GCD and LCM to find the answer, which is restricted to an interval
          */
-        codejam.y2011.round_1C.perfect_harmony.Main m = new codejam.y2011.round_1C.perfect_harmony.Main();
+       // codejam.y2011.round_1C.perfect_harmony.Main m = new codejam.y2011.round_1C.perfect_harmony.Main();
          
         //2011 2
         
@@ -561,8 +561,13 @@ public class Main  {
         //codejam.y2012.round_1B.equal_sums.Main m = new codejam.y2012.round_1B.equal_sums.Main();
         
         //2012 1C
-         //Simple TODO use digraph class
-        //codejam.y2012.round_1C.diamond_inheritance.Main m = new codejam.y2012.round_1C.diamond_inheritance.Main();
+        /**
+         * 2012 round 1C
+         * Problem 1
+         * 
+         * Finding multiple paths in a directed graph
+         */ 
+        codejam.y2012.round_1C.diamond_inheritance.Main m = new codejam.y2012.round_1C.diamond_inheritance.Main();
          
          //Physics, velocity acceleration. Intersection parabola / lines
         //codejam.y2012.round_1C.out_of_gas.Main m = new codejam.y2012.round_1C.out_of_gas.Main();
