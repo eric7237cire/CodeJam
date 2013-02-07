@@ -1,17 +1,80 @@
 package codejam;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.main.AbstractInputData;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner;
+import codejam.utils.main.Runner.TestCaseInputScanner;
+import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 public class Main  {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
     
+    static void africa(String[] args) {
+        //2010 africa
+        
+        //A to C in C++
+        /**
+         * Africa 2010 Problem A to C in C++.
+         * 
+         * C is particularly interesting -- Very interesting inductive reasoning -- " africa 2010 qualification round"
+         */
+        //codejam.y2010aa.round_all.polygraph.Main m = new codejam.y2010aa.round_all.polygraph.Main();
+        
+        //2011 africa / arabia
+        //codejam.y2011aa.round_all.vanishing_numbers.Main m = new codejam.y2011aa.round_all.vanishing_numbers.Main();
+        //codejam.y2011aa.round_all.battlefield.Main m = new codejam.y2011aa.round_all.battlefield.Main();
+        
+        codejam.y2011aa.round_all.radio_receiver.Main m = new codejam.y2011aa.round_all.radio_receiver.Main();
+        
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }       
+        
+    }
+    
+    /**
+     * Year 2008
+     * Practice round -- Beta
+     * 
+     */
+    static void beta2008(String args[]) {
+
+        /**
+         * Problem 1.  
+         * 
+         * CLassifying triangles
+         * 
+         * Law of cosines
+         */
+       // codejam.y2008.round_beta.triangle_trilemma.Main m = new codejam.y2008.round_beta.triangle_trilemma.Main(); 
+        
+        codejam.y2008.round_beta.price_wrong.Main m = new codejam.y2008.round_beta.price_wrong.Main();
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }       
+        
+    }
+    
     public static void main(String args[]) throws Exception {
 
+        //africa(args);
+        beta2008(args);
 
        // Main m = null;
         
@@ -30,8 +93,23 @@ public class Main  {
          */
         //codejam.y2008.round_pracProb.alwaysLeft.Main m = new codejam.y2008.round_pracProb.alwaysLeft.Main();
         
+        /**
+         * 2008 -- Practice round
+         * Problem 3
+         * 
+         * Egg problem
+         */
         //codejam.y2008.round_pracProb.egg_drop.Main m = new codejam.y2008.round_pracProb.egg_drop.Main();
         
+        /**
+         * 2008 -- Practice round
+         * Problem 4
+         * 
+         * Finding route to stores with added constraint that perishable items
+         * must return home immediately.
+         * 
+         * Used lots of bit manipulations, solution from Plan3.cpp
+         */
         //codejam.y2008.round_pracProb.shopping_plan.Main m = new codejam.y2008.round_pracProb.shopping_plan.Main(); 
         
         /**
@@ -453,7 +531,8 @@ public class Main  {
          * 
          * Uses GCD and LCM to find the answer, which is restricted to an interval
          */
-       // codejam.y2011.round_1C.perfect_harmony.Main m = new codejam.y2011.round_1C.perfect_harmony.Main();
+        //codejam.y2011.round_1C.perfect_harmony.Main m = new codejam.y2011.round_1C.perfect_harmony.Main();
+
          
         //2011 2
         
@@ -510,19 +589,10 @@ public class Main  {
          */
         //codejam.y2011.round_final.ace_in_hole.Main m = new codejam.y2011.round_final.ace_in_hole.Main();
         
-        //2010 africa
         
-        //A to C in C++
-        /**
-         * Africa 2010 Problem A to C in C++.
-         * 
-         * C is particularly interesting -- Very interesting inductive reasoning -- " africa 2010 qualification round"
-         */
-        //codejam.y2010aa.round_all.polygraph.Main m = new codejam.y2010aa.round_all.polygraph.Main();
         
-        //2011 africa / arabia
-        //codejam.y2011aa.round_all.vanishing_numbers.Main m = new codejam.y2011aa.round_all.vanishing_numbers.Main();
-        //codejam.y2011aa.round_all.battlefield.Main m = new codejam.y2011aa.round_all.battlefield.Main();
+        
+       
         
         //2012 qual
         //A,B,C  in c++
@@ -635,6 +705,10 @@ public class Main  {
          */
         //codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
         
+
+    }
+
+    private static String[] getFiles(Object m, String[] args) {
         String[] files = {};
         if (m instanceof DefaultInputFiles) {
             files = ((DefaultInputFiles) m).getDefaultInputFiles();
@@ -643,13 +717,8 @@ public class Main  {
         if (args.length >= 1) {            
             files = args;
         }
-        for (String file : files) {
-            log.info("Input file {}", file);
-
-            Runner.goSingleThread(file, m, m);
-          //Runner.go(file, m, m, 5);
-        }       
+        
+        return files;
     }
-
     
 }

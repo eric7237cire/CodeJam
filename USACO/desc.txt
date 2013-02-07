@@ -21,3 +21,5 @@ ditch -- flow
 cowCrpyt -- revisit using suffix tree / linked list
 
 fence4 -- geometry
+
+buylow -- longest decreasing sequence, counting unique sequnces
