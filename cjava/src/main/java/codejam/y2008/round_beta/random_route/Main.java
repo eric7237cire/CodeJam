@@ -1,11 +1,16 @@
 package codejam.y2008.round_beta.random_route;
 
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +20,7 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
@@ -115,15 +121,48 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
         InputData in = new InputData(testCase);
         
+        in.nRoads = scanner.nextInt();
         
+        Map<String, Integer> strToNode = Maps.newHashMap();
+        
+        //First node is 0
+        getNode(scanner.next(), strToNode);
+        
+        in.graph = new WeightedGraphInt();
+        in.roads = Lists.newArrayList();
+        
+        for(int r = 0; r < in.nRoads; ++r) {
+            int node1 = getNode(scanner.next(), strToNode);
+            int node2 = getNode(scanner.next(), strToNode);
+            in.roads.add(buildEdge(node1,node2));
+            int weight = scanner.nextInt();
+            in.graph.addConnection(node1, node2, weight);
+        }
 
         return in;
     }
+    
+    Pair<Integer,Integer> buildEdge(int node1, int node2) {
+        return new ImmutablePair<>(Math.min(node1,node2), Math.max(node1,node2));
+    }
+    
+    int getNode(String str, Map<String, Integer> strToNode) {
+        Integer nodeId = strToNode.get(str);
+        
+        if (nodeId == null) {
+            nodeId = strToNode.size();
+            strToNode.put(str,nodeId);
+        }
+        
+        return nodeId;
+    }
 
+    
         
     @Override
     public String handleCase(InputData in)
     {
+        /*
         WeightedGraphInt g = new WeightedGraphInt();
         g.addConnection(0,1,3);
         g.addConnection(1,3,1);
@@ -134,11 +173,78 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         g.addConnection(0, 4, 7);
         g.addConnection(1, 4, 4);
         g.addConnection(3, 4, 3);
-        g.addConnection(2, 4, 6);
+        g.addConnection(2, 4, 5);
         
-        DijkstraNode[] dnodes = doDijkstra(g, 0, 5);
+        g.addConnection(3, 5, 2);
+        g.addConnection(5, 4, 1);
+        */
+        
+        WeightedGraphInt g = in.graph;
+        Map<Pair<Integer,Integer>, Double> edgeHits = Maps.newHashMap();
+        for(Pair<Integer,Integer> r : in.roads) {
+            edgeHits.put(r,0d);
+        }
+        
+        DijkstraNode[] dnodes = doDijkstra(g, 0, g.V());
+    
+        for(int targetCity = 1; targetCity < g.V(); ++targetCity)
+        {
+            List<List<Integer>> paths = Lists.newArrayList();
             
-        return "Case #" + in.testCase + ": " ;
+            List<Integer> init = Lists.newArrayList();
+            init.add(targetCity);
+            
+            Queue<List<Integer>> toVisit = new LinkedList<>();
+            toVisit.add(init);
+            
+            while(!toVisit.isEmpty()) 
+            {
+                List<Integer> path = toVisit.poll();
+                
+                //start node
+                if (path.get(path.size()-1) == 0) {
+                    paths.add(path);
+                    continue;
+                }
+                
+                int last = path.get(path.size()-1);
+                
+                for(int prev : dnodes[last].previous)
+                {
+                    List<Integer> newPath = Lists.newArrayList(path);
+                    newPath.add(prev);
+                    toVisit.add(newPath);
+                }
+            }
+            
+            for(List<Integer> path : paths) {
+                for(int n1 = 0; n1 < path.size(); ++n1) {
+                    for(int n2 = n1 + 1; n2 < path.size(); ++n2)
+                    {
+                        // 1 / # of target cities
+                        double prob = 1d / (g.V()-1);
+                        
+                        // 1 / # of paths
+                        prob *= 1d / paths.size();
+                        
+                        prob += edgeHits.get(buildEdge(n1,n2));
+                        
+                        edgeHits.put(buildEdge(n1,n2), prob);
+                    }
+                }
+            }
+            
+        }
+        
+        StringBuffer sb = new StringBuffer();
+        sb.append("Case #" + in.testCase + ": ") ;
+        
+        for(Pair<Integer,Integer> r : in.roads) {
+            sb.append(edgeHits.get(r));
+            sb.append(" ");
+        }
+        
+        return sb.toString();
     }
 
 }

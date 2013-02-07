@@ -128,10 +128,11 @@ int main()
 	
 	sort(all(letters));
 	
-	//3, 4,     5, 6, 7
+	//Store best single word	 
 	vector<string> longWords;
 	int longWordMin = 0;
 	
+	//Store best short words, key is a binary mask of which letters were used
 	map<int, vector<string> > bestShortWords;
 	map<int, int> bestShortScore;
 	
@@ -145,6 +146,7 @@ int main()
 	        break;
 	    
 	    string sorted = dictWord;
+	    sort(all(sorted));
 	    
 	    int lettersIdx = 0;
 	    
@@ -152,14 +154,12 @@ int main()
 	    bool valid = true;
 	    int score = 0;
 	    
-	    sort(all(sorted));
 	    
+	    //Build the 'key' of which letters were used
 	    FOR(c, 0, sorted.length()) {
 	        size_t idx = letters.find_first_of(sorted[c], lettersIdx);
 	        if (idx == string::npos) {
 	            valid = false;
-	          //  cout << sorted[c] << " not found in letters " << letters
-	          //  << "  idx " << lettersIdx << endl;
 	            break;
 	        }
 	        lettersIdx = idx+1;
@@ -172,20 +172,16 @@ int main()
 	        continue;
 	    }
 	    
-	    if (dictWord == "mam" || dictWord == "oryx")
-	    cout << "Word " << dictWord << " Score " << score << " key " << key << endl;
-
-		//if (dictWord.length() >= 5) {
-			if (score > longWordMin) {
+	    //No need to store words that are no longer the best
+	   	if (score > longWordMin) {
 				longWordMin = score;
 				longWords.clear();
-			}
+        }
 
-			if (score >= longWordMin) {
-				longWords.pb(dictWord);
-			}
-			//continue;
-		//}
+        if (score >= longWordMin) {
+            longWords.pb(dictWord);
+        }
+    
 		if (dictWord.length() >= 5)
 		    continue;
 	    
@@ -195,6 +191,7 @@ int main()
 			currentMin = bestShortScore[key];
 		}
 
+		//Clear lower words
 		if (score > currentMin)
 		{
 			bestShortWords[key].clear();
@@ -211,12 +208,8 @@ int main()
 	
 	//For short words, we at least have to do better than with a long word
 	int ansScore = longWordMin;
-
 	vector<string> ans(longWords);
 
-	cout << bestShortScore[7] << endl;
-	cout << bestShortScore[120] << endl;
-	
 	FOR(k1, 0, (1 << 7) - 1)
 	{
 		if (!contains(bestShortScore, k1))
@@ -230,9 +223,7 @@ int main()
 			//Add up k1 and k2
 			bool valid = true;
 
-			if (k1 == 7 && k2 == 120)
-			    cout << "Checking keys " << k1 << ", " << k2 << endl;
-
+			//Do another letter count (cant do a binary or because if they both used the one of 2 letters, the index would be the same
 			vi counts(26, 0);
 			FOR(i, 0, letters.length())
 			{
@@ -274,6 +265,7 @@ int main()
 
 			if (shortScore > ansScore)
 			{
+			    //found a new best score, clear current best list
 			    ansScore = shortScore;
 				ans.clear();
 			}
@@ -285,6 +277,7 @@ int main()
 			assert(!k1Words.empty());
 			assert(!k2Words.empty());
 
+			//Add all combinations of short words
 			FOR(k1w, 0, k1Words.size()) 
 			{
 				FOR(k2w, 0, k2Words.size())
