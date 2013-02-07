@@ -80,7 +80,7 @@ public class Main  {
         //codejam.y2011.round_2.airport_walkways.Main m = new codejam.y2011.round_2.airport_walkways.Main();
         
         //Building up larger and larger squares.  TODO comments compare with their solution
-        //codejam.y2011.round_2.spinning_blade.Main m = new codejam.y2011.round_2.spinning_blade.Main();
+        codejam.y2011.round_2.spinning_blade.Main m = new codejam.y2011.round_2.spinning_blade.Main();
         
         /**
          * 2011 Round 2
@@ -91,7 +91,7 @@ public class Main  {
         //codejam.y2011.round_2.expensive_dinner.Main m = new codejam.y2011.round_2.expensive_dinner.Main();
         
         //TODO implement their solution.  Finding shortest path with most neighbors.  Used dijkstras then athor search
-        codejam.y2011.round_2.ai_wars.Main m = new codejam.y2011.round_2.ai_wars.Main();
+        //codejam.y2011.round_2.ai_wars.Main m = new codejam.y2011.round_2.ai_wars.Main();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files) {
@@ -105,7 +105,9 @@ public class Main  {
     public static void main(String args[]) throws Exception {
 
         //africa(args);
-        beta2008(args);
+        //beta2008(args);
+        
+        round2_2011(args);
 
        // Main m = null;
         

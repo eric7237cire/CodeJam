@@ -117,9 +117,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     static class Square {
         long totalMass;
         
+        /**
+         * Sum of weight_x,y * x
+         */
         long colMassSum;
+        /**
+         * Sum of weight_x_y * y
+         * 
+         */
         long rowMassSum;
         
+        /**
+         * Length of one side
+         */
         int size;
         
         
@@ -127,6 +137,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
         }
         
+        /**
+         * 
+         */
         static Square from1d(int totalMass, int row, int col) {
             Square square = new Square();
             square.totalMass = totalMass;
@@ -154,6 +167,32 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             return square;
         }
         
+        /**
+         * 
+         * Build from
+         * 
+         * .RRRR
+         * .RRRR
+         * .RRRR
+         * .RRRR
+         * .....
+         * 
+         * .....
+         * LLLL.
+         * LLLL.
+         * LLLL.
+         * LLLL.
+         * 
+         * .....
+         * .CCC.
+         * .CCC.
+         * .CCC.
+         * .....
+         * 
+         * And the 4 corners
+         * 
+         * From the diagrams, its R + L - C + Upper left corner 1x1 + Lower Right corner 1x1
+         */
         static Square fromXd(Square centerSquare, Square upperRight, Square lowerLeft
                 , Square[][] squares_1,
                  int row, int col) {

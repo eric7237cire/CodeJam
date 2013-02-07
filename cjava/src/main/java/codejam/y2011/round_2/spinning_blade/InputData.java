@@ -9,6 +9,8 @@ public class InputData
    
         int R;
         int C;
+        
+        //Density
         int D;
         
         Grid<Integer> cells;
