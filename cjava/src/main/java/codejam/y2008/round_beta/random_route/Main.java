@@ -32,7 +32,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
     public Main()
     {
-        super("C", 0,0);
+        super("C", 1,0);
     }
     
     static class DijkstraNode {
@@ -88,6 +88,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             }
             
             Set<WeightedGraphInt.Edge> neighbors = graph.getEdges(nodeU.nodeId);
+            
+            if (neighbors == null)
+                continue;
             
             for(WeightedGraphInt.Edge neighbor : neighbors) {
                 int alt = neighbor.weight + nodeU.distance;
@@ -164,14 +167,16 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             }
             
             in.roads.add(road);
-            in.graph.addConnection(node1, node2, weight);
+            in.graph.addOneWayConnection(node1, node2, weight);
         }
+        
+        in.cityCount = strToNode.size();
 
         return in;
     }
     
-    Pair<Integer,Integer> buildEdge(int node1, int node2) {
-        return new ImmutablePair<>(Math.min(node1,node2), Math.max(node1,node2));
+    Pair<Integer,Integer> buildEdge(int fromNode, int toNode) {
+        return new ImmutablePair<>(fromNode,toNode);
     }
     InputData.Road buildRoad(int node1, int node2, int weight) {
         InputData.Road r = new InputData.Road(
@@ -223,7 +228,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             edgeHits.put(r.edge,0d);
         }
         
-        DijkstraNode[] dnodes = doDijkstra(g, 0, g.V(), in);
+        DijkstraNode[] dnodes = doDijkstra(g, 0, in.cityCount, in);
     
         for(int targetCity = 1; targetCity < g.V(); ++targetCity)
         {
@@ -280,9 +285,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                         prob *= 1d / paths.size();
                         
                         log.debug("Adding {} to edge {} {}", prob, n1, n2);
-                        prob += edgeHits.get(buildEdge(n1,n2));
+                        prob += edgeHits.get(buildEdge(n2,n1));
                         
-                        edgeHits.put(buildEdge(n1,n2), prob);
+                        edgeHits.put(buildEdge(n2,n1), prob);
                     
                 }
             }

@@ -52,6 +52,8 @@ public class InputData extends AbstractInputData {
     Map<Pair<Integer,Integer>, Integer> minWeight;
     Map<Road, Integer> count;
     
+    int cityCount;
+    
     public InputData(int testCase) {
         super(testCase);
     }
