@@ -82,6 +82,11 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
             for(WeightedGraphInt.Edge neighbor : neighbors) {
                 int alt = neighbor.weight + nodeU.distance;
+                
+                /**
+                 * Is path via u shorter than current distance
+                 * of start to v ?
+                 */
                 DijkstraNode nodeV = dijNodes[neighbor.to];
                 if (alt < nodeV.distance) {
                     toProcess.remove(nodeV);
@@ -90,8 +95,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     nodeV.previous.add(nodeU.nodeId);
                     toProcess.add(nodeV);                    
                 }
+                /**
+                 * If it is the same, it is an alternative
+                 */
                 if (alt == nodeV.distance) {
-                    nodeV.previous.add(nodeU.nodeId);
+                    if (!nodeV.previous.contains(nodeU.nodeId))
+                        nodeV.previous.add(nodeU.nodeId);
                 }
             }
         }
@@ -121,7 +130,13 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         g.addConnection(2,3,2);
         g.addConnection(0,2,2);
         
-        DijkstraNode[] dnodes = doDijkstra(g, 0, 4);
+        //2 paths to 3
+        g.addConnection(0, 4, 7);
+        g.addConnection(1, 4, 4);
+        g.addConnection(3, 4, 3);
+        g.addConnection(2, 4, 6);
+        
+        DijkstraNode[] dnodes = doDijkstra(g, 0, 5);
             
         return "Case #" + in.testCase + ": " ;
     }
