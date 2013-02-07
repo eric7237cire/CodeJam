@@ -71,7 +71,7 @@ ostream& operator<<( ostream& os, const vector<T>& vec )
 {
     FOR(i, 0, vec.size())
     {
-        os <<  setw(5) << vec[i]; // << endl;
+        os <<  vec[i] << endl;
     }
     return os;
 }
@@ -115,7 +115,7 @@ int main()
 	ofstream fout ("lgame.out");
 	ifstream fin ("lgame.in");
 	
-	ifstream dictIn ("lgame.dict2");
+	ifstream dictIn ("lgame.dict");
 
 	string letters;
 	
@@ -158,26 +158,157 @@ int main()
 	        size_t idx = letters.find_first_of(sorted[c], lettersIdx);
 	        if (idx == string::npos) {
 	            valid = false;
-	            cout << sorted[c] << " not found in letters " << letters
-	            << "  idx " << lettersIdx << endl;
+	          //  cout << sorted[c] << " not found in letters " << letters
+	          //  << "  idx " << lettersIdx << endl;
 	            break;
 	        }
-	        lettersIdx = idx;
+	        lettersIdx = idx+1;
 	        key |= (1 << idx);
 	        
 	        score += scores[dictWord[c] - 'a'];
 	    }
 	    
-	    cout << "Word " << dictWord << " Score " << score << endl;
-	    
 	    if (!valid) {
 	        continue;
 	    }
 	    
+	    if (dictWord == "mam" || dictWord == "oryx")
+	    cout << "Word " << dictWord << " Score " << score << " key " << key << endl;
+
+		//if (dictWord.length() >= 5) {
+			if (score > longWordMin) {
+				longWordMin = score;
+				longWords.clear();
+			}
+
+			if (score >= longWordMin) {
+				longWords.pb(dictWord);
+			}
+			//continue;
+		//}
+		if (dictWord.length() >= 5)
+		    continue;
 	    
-	    
+		//Deal with short words
+		int currentMin = 0;
+		if (contains(bestShortScore, key)) {
+			currentMin = bestShortScore[key];
+		}
+
+		if (score > currentMin)
+		{
+			bestShortWords[key].clear();
+			bestShortScore[key] = score;
+		}
+
+		if (score >= currentMin) 
+		{
+			bestShortWords[key].pb(dictWord);
+		}
 	}
+
+	//cout << "Long words " << longWords << endl;
 	
+	//For short words, we at least have to do better than with a long word
+	int ansScore = longWordMin;
+
+	vector<string> ans(longWords);
+
+	cout << bestShortScore[7] << endl;
+	cout << bestShortScore[120] << endl;
+	
+	FOR(k1, 0, (1 << 7) - 1)
+	{
+		if (!contains(bestShortScore, k1))
+			continue;
+
+		FOR(k2, k1, (1 << 7) - 1)
+		{
+			if (!contains(bestShortScore, k2))
+				continue;
+
+			//Add up k1 and k2
+			bool valid = true;
+
+			if (k1 == 7 && k2 == 120)
+			    cout << "Checking keys " << k1 << ", " << k2 << endl;
+
+			vi counts(26, 0);
+			FOR(i, 0, letters.length())
+			{
+				if (  ( (1 << i) & k1 ) == 0 )
+					continue;
+
+				int letIdx = letters[i] - 'a';
+				counts[ letIdx ] ++;
+				if (counts[ letIdx ] > maxCounts[letIdx]) {
+					//cout << "k1 " << k1 << " not valid too many " << letters[i] << " " << i << " " << counts[ letIdx ] << endl;
+					valid = false;
+					break;
+				}
+			}
+
+			FOR(i, 0, letters.length())
+			{
+				if (  ( (1 << i) & k2 ) == 0 )
+					continue;
+
+				int letIdx = letters[i] - 'a';
+				counts[ letIdx ] ++;
+				if (counts[ letIdx ] > maxCounts[letIdx]) {
+					//cout << "k2 " << k2 << " not valid too many " << letters[i] << " " << i << " " << counts[ letIdx ] << endl;
+					valid = false;
+					break;
+				}
+			}
+
+			if (!valid)
+				continue;
+
+			//cout << "Valid keys " << k1 << ", " << k2 << endl;
+
+			int shortScore = bestShortScore[k1] + bestShortScore[k2];
+
+			if (shortScore < ansScore)
+				continue;
+
+			if (shortScore > ansScore)
+			{
+			    ansScore = shortScore;
+				ans.clear();
+			}
+
+			const vector<string>& k1Words = bestShortWords[k1];
+
+			const vector<string>& k2Words = bestShortWords[k2];
+
+			assert(!k1Words.empty());
+			assert(!k2Words.empty());
+
+			FOR(k1w, 0, k1Words.size()) 
+			{
+				FOR(k2w, 0, k2Words.size())
+				{
+					string k1wStr = k1Words[k1w];
+					string k2wStr = k2Words[k2w];
+
+					if (k1wStr < k2wStr) {
+						string a = k1wStr + " " + k2wStr;
+						ans.pb(a);
+					} else {
+						string a = k2wStr + " " + k1wStr;
+						ans.pb(a);
+					}
+				}
+			}
+		}
+	}
+
+	fout << ansScore << endl;
+
+	sort(all(ans));
+
+	fout << ans ;
 	return 0;
 }
 
