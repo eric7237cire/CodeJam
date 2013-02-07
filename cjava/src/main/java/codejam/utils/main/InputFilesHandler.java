@@ -30,6 +30,10 @@ public class InputFilesHandler implements DefaultInputFiles
         if (large) {
             inputFiles.add(letter + "-large-practice.in");
         }
+        
+        if (!small && !large) {
+            inputFiles.add("sample.in");
+        }
                 
         this.inputFiles = new String[inputFiles.size()];
         this.inputFiles = inputFiles.toArray(this.inputFiles);
