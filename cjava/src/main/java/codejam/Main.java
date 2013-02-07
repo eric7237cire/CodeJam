@@ -105,9 +105,9 @@ public class Main  {
     public static void main(String args[]) throws Exception {
 
         //africa(args);
-        //beta2008(args);
+        beta2008(args);
         
-        round2_2011(args);
+        //round2_2011(args);
 
        // Main m = null;
         

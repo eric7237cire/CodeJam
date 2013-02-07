@@ -32,7 +32,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
     public Main()
     {
-        super("C", 1,0);
+        super("C", 0,0);
     }
     
     static class DijkstraNode {
@@ -193,6 +193,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         if (nodeId == null) {
             nodeId = strToNode.size();
             strToNode.put(str,nodeId);
+            log.debug("City {} = id {}", str, nodeId);
         }
         
         return nodeId;
@@ -221,6 +222,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         */
         
         WeightedGraphInt g = in.graph;
+        
+        log.debug("Graph {}", g);
         Map<Pair<Integer,Integer>, Double> edgeHits = Maps.newHashMap();
         
         
@@ -230,7 +233,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         DijkstraNode[] dnodes = doDijkstra(g, 0, in.cityCount, in);
     
-        for(int targetCity = 1; targetCity < g.V(); ++targetCity)
+        for(int targetCity = 1; targetCity < in.cityCount; ++targetCity)
         {
             List<List<Integer>> paths = Lists.newArrayList();
             
@@ -279,7 +282,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                         int n2 = path.get(n2Idx);
                         
                         // 1 / # of target cities
-                        double prob = 1d / (g.V()-1);
+                        double prob = 1d / (in.cityCount-1);
                         
                         // 1 / # of paths
                         prob *= 1d / paths.size();
@@ -288,6 +291,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                         prob += edgeHits.get(buildEdge(n2,n1));
                         
                         edgeHits.put(buildEdge(n2,n1), prob);
+                        
+                        log.debug("Prob now {}", edgeHits.get(buildEdge(n2,n1)));
                     
                 }
             }
@@ -299,6 +304,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         for(Road r : in.roads) {
             Integer count = in.count.get(r);
+            log.debug("Road {} count {}", r, count);
             Integer min = in.minWeight.get(r.edge);
             Preconditions.checkState(count != null);
             Preconditions.checkState(min != null);

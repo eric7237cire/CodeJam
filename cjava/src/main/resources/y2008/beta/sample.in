@@ -1,4 +1,14 @@
 1
+5 san_francisco
+san_francisco los_angeles 6
+los_angeles san_diego 2
+san_francisco san_diego 8
+los_angeles san_diego 2
+san_francisco los_angeles 6
+
+Case #1: 0.4500000 0.2000000 0.1000000 0.2000000 0.4500000
+
+
 6 plano
 seattle lincoln 1
 lincoln birmingham 3
@@ -24,14 +34,6 @@ buffalo thousand_oaks 4
 
 Case #100: 0.0000000 0.2500000 0.2500000 0.1250000 0.0000000 0.0000000 0.0000000 0.0000000 0.1250000 0.1250000 0.0000000 0.1250000
 
-5 san_francisco
-san_francisco los_angeles 6
-los_angeles san_diego 2
-san_francisco san_diego 8
-los_angeles san_diego 2
-san_francisco los_angeles 6
-
-Case #1: 0.4500000 0.2000000 0.1000000 0.2000000 0.4500000
 
 1
 code jam foo bar google

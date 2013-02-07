@@ -1,5 +1,6 @@
 package codejam.utils.datastructures.graph;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,6 +17,11 @@ public class WeightedGraphInt
             super();
             this.to = to;
             this.weight = weight;
+        }
+        @Override
+        public String toString()
+        {
+            return "Edge [to=" + to + ", weight=" + weight + "]";
         }
         
     }
@@ -54,6 +60,33 @@ public class WeightedGraphInt
     
     public int V() {
         return nodeConnections.keySet().size();
+    }
+
+    @Override
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append("Graph\n");
+        
+        int maxNode = Collections.max(nodeConnections.keySet());
+        
+        for(int node = 0; node <= maxNode; ++node) {
+            sb.append("Connections from node ");
+            sb.append(node);
+            sb.append("\n");
+            
+            Set<Edge> edges = nodeConnections.get(node);
+            
+            if (edges == null)
+                continue;
+            
+            for(Edge e : edges) {
+                sb.append(e);
+                sb.append("\n");
+            }
+        }
+        return sb.toString();
     }
 
 }
