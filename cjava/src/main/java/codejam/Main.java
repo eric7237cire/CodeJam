@@ -62,7 +62,14 @@ public class Main  {
          * Enumerating all shortest paths in a directed weighted graph.
          * Used Dijkstras and kept all previous instead of just one..
          */
-        codejam.y2008.round_beta.random_route.Main m = new codejam.y2008.round_beta.random_route.Main();
+        //codejam.y2008.round_beta.random_route.Main m = new codejam.y2008.round_beta.random_route.Main();
+        
+        /**
+         * Problem 4 Hexagons
+         * 
+         * Used  Floyd–Warshall all pairs and the assignment problem
+         */
+        codejam.y2008.round_beta.hexagon_game.Main m = new codejam.y2008.round_beta.hexagon_game.Main();
         
         String[] files = Main.getFiles(m, args);
         for (String file : files) {
@@ -108,12 +115,48 @@ public class Main  {
         }      
     }
     
+    static void round3_2012(String args[]) {
+        /**
+         * 2012 Round 3
+         * Problem 1
+         * 
+         * Probability Expected value until event happens.  see docs/2012/perfectGame.tex, sorting
+         * 1.  Has a simulator / calculation of expected value that worked for the small
+         * 2.  See solution explanation for the Greedy algorithm that works for Large
+         * 
+         * idea -- see if the comparison made can be translated to how it actually changes the overall
+         * expected value
+         */
+        //codejam.y2012.round_3.perfect_game.Main m = new codejam.y2012.round_3.perfect_game.Main();
+        
+        /**
+         * 2012 Round 3
+         * Problem 2
+         * 
+         * Union find / Connected components
+         * 
+         * 1.  The check for a ring is clever, basically, if the C's are connected
+         * but there are gaps (in the X's and Y's) such that they must have connected by making a loop
+         */
+        codejam.y2012.round_3.havannah.Main m = new codejam.y2012.round_3.havannah.Main(); 
+
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }
+    }
+    
     public static void main(String args[]) throws Exception {
 
         //africa(args);
         beta2008(args);
         
         //round2_2011(args);
+        
+       // round3_2012(args);
 
        // Main m = null;
         
@@ -677,30 +720,7 @@ public class Main  {
         
         //2012 3
         
-        /**
-         * 2012 Round 3
-         * Problem 1
-         * 
-         * Probability Expected value until event happens.  see docs/2012/perfectGame.tex, sorting
-         * 1.  Has a simulator / calculation of expected value that worked for the small
-         * 2.  See solution explanation for the Greedy algorithm that works for Large
-         * 
-         * idea -- see if the comparison made can be translated to how it actually changes the overall
-         * expected value
-         */
-        //codejam.y2012.round_3.perfect_game.Main m = new codejam.y2012.round_3.perfect_game.Main();
-        
-        /**
-         * 2012 Round 3
-         * Problem 2
-         * 
-         * Union find / Connected components
-         * 
-         * 1.  The check for a ring is clever, basically, if the C's are connected
-         * but there are gaps (in the X's and Y's) such that they must have connected by making a loop
-         */
-       // codejam.y2012.round_3.havannah.Main m = new codejam.y2012.round_3.havannah.Main(); 
-        
+       
         //2012 Final
         
         //Dijkstras using an indexed priority queue

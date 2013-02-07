@@ -75,23 +75,23 @@ public class AssignmentProblem {
         // compute shortest path from s to every other vertex
         DijkstraSP spt = new DijkstraSP(G, s);
 
-StdOut.print("path: ");
+       // log.StdOut.print("path: ");
 
         // augment along alternating path
         for (DirectedEdge e : spt.pathTo(t)) {
-            if (e.from() == 2 * N)
+           /* if (e.from() == 2 * N)
                 StdOut.print("s - ");
             else if (e.from() < N)
                 StdOut.print(e.from() + " - ");
             else
-                StdOut.print((e.from() - N) + "' - ");
+                StdOut.print((e.from() - N) + "' - ");*/
             int i = e.from(), j = e.to() - N;
             if (i < N) {
                 xy[i] = j;
                 yx[j] = i;
             }
         }
-        StdOut.println("t");
+        //StdOut.println("t");
 
         // update dual variables
         for (int i = 0; i < N; i++) px[i] += spt.distTo(i);

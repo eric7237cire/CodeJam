@@ -292,6 +292,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 }
             }
             
+            /**
+             * Walk each path and add the probability
+             * 
+             * 1 / # of cities * 1 / # of paths
+             */
+            
             //log.debug("Target city {} paths {}", targetCity, paths.size());
             for(List<Integer> path : paths) {
                 //log.debug("Path {}", path);
