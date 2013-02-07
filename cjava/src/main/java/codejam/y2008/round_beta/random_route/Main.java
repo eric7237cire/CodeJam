@@ -1,19 +1,20 @@
 package codejam.y2008.round_beta.random_route;
 
-import java.util.Map;
+import java.util.Comparator;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.datastructures.graph.WeightedGraphInt;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.Maps;
-import com.google.common.primitives.Ints;
+import com.google.common.collect.Lists;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
@@ -21,10 +22,83 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
     public Main()
     {
-       // super();
-        super("A", true,true);
+        super();
+       // super("A", true,true);
     }
     
+    static class DijkstraNode {
+        int nodeId;
+        
+        /**
+         * distance from start to nodeId
+         */
+        int distance;
+        
+        /**
+         * Previous nodes on the shortest path
+         */
+        List<Integer> previous;
+        public DijkstraNode(int nodeId, int distance) {
+            super();
+            this.nodeId = nodeId;
+            this.distance = distance;
+            this.previous = Lists.newArrayList();
+        }
+    }
+    
+    /**
+     * Indexes in graph go from 0 to nodeCount - 1
+     */
+    public DijkstraNode[] doDijkstra(WeightedGraphInt graph, int sourceNodeId, int nodeCount) {
+        
+        
+        DijkstraNode[] dijNodes = new DijkstraNode[nodeCount];
+        
+        for(int n = 0; n < dijNodes.length; ++n) {
+            dijNodes[n] = new DijkstraNode(n, Integer.MAX_VALUE);
+        }
+        
+        
+        PriorityQueue<DijkstraNode> toProcess = new PriorityQueue<>(1, new Comparator<DijkstraNode>() {
+
+            @Override
+            public int compare(DijkstraNode o1, DijkstraNode o2) {
+                return Integer.compare(o1.distance, o2.distance);
+            }
+        });
+        
+        dijNodes[sourceNodeId].distance = 0;
+        toProcess.add(dijNodes[sourceNodeId]);
+        
+        while(!toProcess.isEmpty()) {
+            DijkstraNode nodeU = toProcess.poll();
+            
+            if (nodeU.distance == Integer.MAX_VALUE) {
+             // all remaining vertices are inaccessible from source
+                break;
+            }
+            
+            Set<WeightedGraphInt.Edge> neighbors = graph.getEdges(nodeU.nodeId);
+            
+            for(WeightedGraphInt.Edge neighbor : neighbors) {
+                int alt = neighbor.weight + nodeU.distance;
+                DijkstraNode nodeV = dijNodes[neighbor.to];
+                if (alt < nodeV.distance) {
+                    toProcess.remove(nodeV);
+                    nodeV.distance = alt;
+                    nodeV.previous.clear();
+                    nodeV.previous.add(nodeU.nodeId);
+                    toProcess.add(nodeV);                    
+                }
+                if (alt == nodeV.distance) {
+                    nodeV.previous.add(nodeU.nodeId);
+                }
+            }
+        }
+        
+        return dijNodes;
+                             
+    }
     
     @Override
     public InputData readInput(Scanner scanner, int testCase)
@@ -32,9 +106,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
         InputData in = new InputData(testCase);
         
-        in.alienNumber = scanner.next();
-        in.sourceLanguage = scanner.next();
-        in.targetLanguage = scanner.next();
+        
 
         return in;
     }
@@ -43,49 +115,15 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     @Override
     public String handleCase(InputData in)
     {
-        Map<Character, Integer> sourceLanguage = Maps.newHashMap();
-        BiMap<Character, Integer> targetLanguage = HashBiMap.create();
+        WeightedGraphInt g = new WeightedGraphInt();
+        g.addConnection(0,1,3);
+        g.addConnection(1,3,1);
+        g.addConnection(2,3,2);
+        g.addConnection(0,2,2);
         
-        /**
-         * Characters ==> Digit maps (input digit's are in increasing order)
-         */
-        for(int sc = 0; sc < in.sourceLanguage.length(); ++sc) {
-            sourceLanguage.put(in.sourceLanguage.charAt(sc), sc);
-        }
-        
-        for(int tc = 0; tc < in.targetLanguage.length(); ++tc) {
-            targetLanguage.put(in.targetLanguage.charAt(tc), tc);
-        }
-        
-        /**
-         * Calculate the alien number in base 10
-         */
-        long alienNumberBase10 = 0;
-        
-        int sourceBase = sourceLanguage.size();
-        
-        long baseMult = 1;
-        for(int an = in.alienNumber.length() - 1; an >= 0; --an) {
-            int alienNumberDigit = sourceLanguage.get(in.alienNumber.charAt(an));
-            alienNumberBase10 += baseMult * alienNumberDigit;
-            baseMult *= sourceBase;
-        }
-        
-        /**
-         * Convert it to target languages base
-         */
-        int targetBase = in.targetLanguage.length();
-        
-        StringBuffer convertedAlienNumber = new StringBuffer();
-        while(alienNumberBase10 > 0) {
-            int digit = Ints.checkedCast(alienNumberBase10 % targetBase);
-            convertedAlienNumber.append(targetLanguage.inverse().get(digit));
+        DijkstraNode[] dnodes = doDijkstra(g, 0, 4);
             
-            alienNumberBase10 /= targetBase;
-        }
-        convertedAlienNumber.reverse();
-            
-        return "Case #" + in.testCase + ": " + convertedAlienNumber;
+        return "Case #" + in.testCase + ": " ;
     }
 
 }

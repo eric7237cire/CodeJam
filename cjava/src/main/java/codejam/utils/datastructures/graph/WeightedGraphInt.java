@@ -41,6 +41,12 @@ public class WeightedGraphInt
         nodeANeighbors.add(new Edge(nodeB, weight));
     }
     
+    public void addConnection(int nodeA, int nodeB, int weight) {
+        addOneWayConnection(nodeA, nodeB, weight);
+        
+        addOneWayConnection(nodeB, nodeA, weight);
+    }
+    
 
     public Set<Edge> getEdges(int node) {
         return nodeConnections.get(node);

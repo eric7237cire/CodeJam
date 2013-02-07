@@ -1,15 +1,10 @@
 package codejam;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.main.AbstractInputData;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner;
-import codejam.utils.main.Runner.TestCaseInputScanner;
-import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 public class Main  {
 
@@ -59,7 +54,9 @@ public class Main  {
          */
        // codejam.y2008.round_beta.triangle_trilemma.Main m = new codejam.y2008.round_beta.triangle_trilemma.Main(); 
         
-        codejam.y2008.round_beta.price_wrong.Main m = new codejam.y2008.round_beta.price_wrong.Main();
+       // codejam.y2008.round_beta.price_wrong.Main m = new codejam.y2008.round_beta.price_wrong.Main();
+        
+        codejam.y2008.round_beta.random_route.Main m = new codejam.y2008.round_beta.random_route.Main();
         
         String[] files = Main.getFiles(m, args);
         for (String file : files) {
@@ -69,6 +66,40 @@ public class Main  {
           //Runner.go(file, m, m, 5);
         }       
         
+    }
+    
+    static void round2_2011(String args[]) {
+        //2011 2
+        
+        /**
+         * 2011  Round 2
+         * Problem 1
+         * 
+         * Greedy algorithm, velocity/time
+         */
+        //codejam.y2011.round_2.airport_walkways.Main m = new codejam.y2011.round_2.airport_walkways.Main();
+        
+        //Building up larger and larger squares.  TODO comments compare with their solution
+        //codejam.y2011.round_2.spinning_blade.Main m = new codejam.y2011.round_2.spinning_blade.Main();
+        
+        /**
+         * 2011 Round 2
+         * Problem 3
+         * 
+         * Prime factorization, LCM
+         */
+        //codejam.y2011.round_2.expensive_dinner.Main m = new codejam.y2011.round_2.expensive_dinner.Main();
+        
+        //TODO implement their solution.  Finding shortest path with most neighbors.  Used dijkstras then athor search
+        codejam.y2011.round_2.ai_wars.Main m = new codejam.y2011.round_2.ai_wars.Main();
+
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }      
     }
     
     public static void main(String args[]) throws Exception {
@@ -534,30 +565,7 @@ public class Main  {
         //codejam.y2011.round_1C.perfect_harmony.Main m = new codejam.y2011.round_1C.perfect_harmony.Main();
 
          
-        //2011 2
-        
-        /**
-         * 2011  Round 2
-         * Problem 1
-         * 
-         * Greedy algorithm, velocity/time
-         */
-        //codejam.y2011.round_2.airport_walkways.Main m = new codejam.y2011.round_2.airport_walkways.Main();
-        
-        //Building up larger and larger squares.  TODO comments compare with their solution
-        //codejam.y2011.round_2.spinning_blade.Main m = new codejam.y2011.round_2.spinning_blade.Main();
-        
-        /**
-         * 2011 Round 2
-         * Problem 3
-         * 
-         * Prime factorization, LCM
-         */
-        //codejam.y2011.round_2.expensive_dinner.Main m = new codejam.y2011.round_2.expensive_dinner.Main();
-        
-        //TODO implement their solution.  Finding shortest path with most neighbors.  Used dijkstras then athor search
-        //codejam.y2011.round_2.ai_wars.Main m = new codejam.y2011.round_2.ai_wars.Main();
-
+    
 
         //2011 round 3
         //A discrete binary search problem
