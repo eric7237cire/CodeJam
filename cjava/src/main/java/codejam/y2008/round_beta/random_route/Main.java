@@ -124,6 +124,23 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                              
     }
     
+    public int countReachableCities(DijkstraNode[] nodes, int startNode) {
+        
+        int reachable = 0;
+        
+        for(int n = 0; n < nodes.length; ++n) {
+            if (n == startNode)
+                continue;
+        
+            if (nodes[n].distance < Integer.MAX_VALUE) {
+                ++reachable;
+            }
+            
+        }
+        
+        return reachable;
+    }
+    
     @Override
     public InputData readInput(Scanner scanner, int testCase)
     {
@@ -223,7 +240,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         WeightedGraphInt g = in.graph;
         
-        log.debug("Graph {}", g);
+        //log.debug("Graph {}", g);
         Map<Pair<Integer,Integer>, Double> edgeHits = Maps.newHashMap();
         
         
@@ -232,7 +249,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         }
         
         DijkstraNode[] dnodes = doDijkstra(g, 0, in.cityCount, in);
-    
+        final int reachableCities = countReachableCities(dnodes,0);
+        
+        
         for(int targetCity = 1; targetCity < in.cityCount; ++targetCity)
         {
             List<List<Integer>> paths = Lists.newArrayList();
@@ -273,26 +292,26 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 }
             }
             
-            log.debug("Target city {} paths {}", targetCity, paths.size());
+            //log.debug("Target city {} paths {}", targetCity, paths.size());
             for(List<Integer> path : paths) {
-                log.debug("Path {}", path);
+                //log.debug("Path {}", path);
                 for(int n2Idx = 1; n2Idx < path.size(); ++n2Idx) {
                     int n1Idx = n2Idx - 1;
                         int n1 = path.get(n1Idx);
                         int n2 = path.get(n2Idx);
                         
                         // 1 / # of target cities
-                        double prob = 1d / (in.cityCount-1);
+                        double prob = 1d / (reachableCities);
                         
                         // 1 / # of paths
                         prob *= 1d / paths.size();
                         
-                        log.debug("Adding {} to edge {} {}", prob, n1, n2);
+                        //log.debug("Adding {} to edge {} {}", prob, n1, n2);
                         prob += edgeHits.get(buildEdge(n2,n1));
                         
                         edgeHits.put(buildEdge(n2,n1), prob);
                         
-                        log.debug("Prob now {}", edgeHits.get(buildEdge(n2,n1)));
+                       // log.debug("Prob now {}", edgeHits.get(buildEdge(n2,n1)));
                     
                 }
             }
@@ -304,15 +323,14 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         for(Road r : in.roads) {
             Integer count = in.count.get(r);
-            log.debug("Road {} count {}", r, count);
+           
             Integer min = in.minWeight.get(r.edge);
             Preconditions.checkState(count != null);
             Preconditions.checkState(min != null);
-            if (count == null)
-            {
-                sb.append("0 ");
-                continue;
-            }
+            
+            /**
+             * We will never use a road if its weight is not minimal
+             */
             if (r.weight > min) {
                 sb.append("0 ");
                 continue;

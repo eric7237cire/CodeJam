@@ -56,6 +56,12 @@ public class Main  {
         
        // codejam.y2008.round_beta.price_wrong.Main m = new codejam.y2008.round_beta.price_wrong.Main();
         
+        /**
+         * Problem 3.
+         * 
+         * Enumerating all shortest paths in a directed weighted graph.
+         * Used Dijkstras and kept all previous instead of just one..
+         */
         codejam.y2008.round_beta.random_route.Main m = new codejam.y2008.round_beta.random_route.Main();
         
         String[] files = Main.getFiles(m, args);
