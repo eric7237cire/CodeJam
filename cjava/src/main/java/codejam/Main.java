@@ -128,7 +128,25 @@ public class Main  {
     
     static void practiceContest2008(String args[]) {
         
-        codejam.y2008.round_pracContest.old_magician.Main m = new codejam.y2008.round_pracContest.old_magician.Main();
+        /**
+         * Problem 1
+         * Recurence relationship ; patterns
+         */
+        //codejam.y2008.round_pracContest.old_magician.Main m = new codejam.y2008.round_pracContest.old_magician.Main();
+        
+        /**
+         * Problem 2
+         * 
+         * Finding minimum length for k squares to cover n points
+         * 
+         * Binary search
+         * Bit manipulations -- set / all subsets
+         * Dynamic programming
+         * 
+         * 
+         */
+        codejam.y2008.round_pracContest.square_fields.Main m = new
+                codejam.y2008.round_pracContest.square_fields.Main();
         
         String[] files = Main.getFiles(m, args);
         for (String file : files) {
