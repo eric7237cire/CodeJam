@@ -44,11 +44,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         int A = 50;
         int V = 100;
         int M = 100;
-        int initialBet = 25;
+        int initialBet = 10;
         
         int simulations = 10000;
         
-        //"Strategy is to bet 5 and keep doubling
         int hitVCount = 0;
         int loseCount = 0;
         int moneyIfLost = 0;
@@ -56,7 +55,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         Random r = new Random();
         
-        nextSimul:
+        
         for(int simul = 0; simul < simulations; ++simul)
         {
             int bet = initialBet;
@@ -105,15 +104,18 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 );
     }
     
+    /**
+     * Bet 1 until we win or have only y dollars left
+     */
     public void testObservation3_case2() {
         //Say A = 95, V = 100, M = 50 and we bet 5
         
         int A = 50;
         int V = 100;
-        int y = 25;
+        int y = 10;
         int M = 100;
         
-        int simulations = 1000;
+        int simulations = 10000;
         
         //"Strategy is to bet 5 and keep doubling
         int hitVCount = 0;
@@ -123,16 +125,15 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         Random r = new Random();
         
-        nextSimul:
+       
         for(int simul = 0; simul < simulations; ++simul)
         {
             int money = A;
-            int lost = 0;
-            
+                        
             ++totalRounds;
             
             
-            while(money >= 0 )
+            while(money > 0 && money < V)
             {
                 boolean won = r.nextBoolean();
                 if (won) {
@@ -142,42 +143,54 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 }
                 
                 if (money == V) {
-                    ++hitVCount;
-                    continue nextSimul;
+                   //++hitVCount;
+                    break;
                 }
                 
                 if (money == y) {
-                    
-                    
+                                        
                     int bet = y;
                     while(bet <= M )
                     {
                         won = r.nextBoolean();
                         if (won) {
-                            ++hitVCount;
-                            continue nextSimul;
-                        } 
+                            money += bet;
+                            break;
+                        }
                         
-                        lost += bet;
+                        money -= bet;
                         bet*=2;                        
                     }
                     
-                    break;
                 }
-                
+                //Mabye check for money == v ?
             }
             
-            loseCount++;
-            lostMoney += lost;
+            if (money >= V) {
+                ++hitVCount;
+            } else {
+                moneyIfLost += money;
+                ++loseCount;
+            }
         }
         
+        double expectedMoneyIfLose = moneyIfLost * 1.0d / loseCount; 
         log.debug("Won {}, lost {}, expected lose money {}  expected value {}",
                 100.0 * hitVCount / totalRounds,
                 100.0 * loseCount / totalRounds,
-                lostMoney * 1.0d / loseCount,
-                1.0d * hitVCount / totalRounds * 5 +
-                -1.0d * loseCount / totalRounds * lostMoney / loseCount
+                moneyIfLost * 1.0d / loseCount,
+                1.0d * hitVCount / totalRounds * V +
+                1.0d * loseCount / totalRounds * expectedMoneyIfLose
                 );
+    }
+    
+    public void calculateInflectionPoints(long M) {
+        for(int i = 0; i < 55; ++i) {
+            long p2 = 1L << i;
+            
+            long Mi = M / p2;
+            log.debug("i {} p2 {} Mi {}", i, p2, Mi);
+        }
     }
 
     public String handleCase(InputData in) {
@@ -185,6 +198,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         testObservation2();
         
         testObservation3_case2();
+        
+        calculateInflectionPoints(100);
         
         return String.format("Case #%d: ", in.testCase);        
     }
