@@ -1,0 +1,53 @@
+\documentclass[fleqn]{article}
+
+\usepackage{amsmath}
+\usepackage[top=2mm, bottom=2mm, left=2mm, right=30mm]{geometry}
+\begin{document}
+
+
+Finding probability of greatest inflection point $P_y$
+
+If it's linear, then the next point is $(V, 1)$
+
+Since it is an all in point, we have
+
+
+\begin{equation}
+\begin{alignedat}{2}
+  P_y  = && p * P_{2y} + (1-p) * P_{0}  \\
+   P_y  = && p * P_{2y} 
+ \end{alignedat}
+\end{equation}
+
+
+Given x is amt of money, and P is probability of winning / getting to V
+
+From one all in point to the next
+
+Make a line from $ (i, P_i) $  to $ (k, P_k) $
+
+where i is the all in point we are calculating $P_i$.
+
+Let $ j = 2 * i $ and $ P_i = p * P_j $
+
+To start off $k, P_k$ is the final state $(V, 1)$
+
+Goal is to get $P_i$ and $P_j$ on left side
+
+
+\begin{equation}
+\begin{alignedat}{2}
+  P - P_k  = && \frac{P_k-P_i}{k-i} * (x - k)   \\
+  P_j - P_k  = && \frac{P_k-P_i}{k-i} * (j - k)   \\
+  (P_j - P_k) * (k-i) =  && (P_k-P_i) * (j - k) \\
+  P_j * (k-i) - P_k * (k-i)  = && P_k * (j-k) - P_i * (j -k ) \\
+  P_j * (k-i)  + P_i * (j -k ) = && P_k * (j-k)  + P_k * (k-i)\\
+  P_j * (k-i)  + p*P_j * (j -k ) = && P_k * (j-k)  + P_k * (k-i)\\
+  P_j  = && \frac{P_k * ( (j-k)  + (k-i)} {(k-i)+p*(j-k)}\\
+  P_j  = && \frac{P_k * ( j-i)} {(k-i)+p*(j-k)}\\
+  a = b
+ \end{alignedat}
+\end{equation}
+
+
+\end{document}
