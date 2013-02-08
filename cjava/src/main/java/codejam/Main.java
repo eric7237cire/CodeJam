@@ -263,11 +263,11 @@ public class Main  {
 
         //africa(args);
         //beta2008(args);
-        practiceContest2008(args);
+        //practiceContest2008(args);
         
         //round2_2011(args);
         
-        //roundFinal_2011(args);
+        roundFinal_2011(args);
         
        // round3_2012(args);
 

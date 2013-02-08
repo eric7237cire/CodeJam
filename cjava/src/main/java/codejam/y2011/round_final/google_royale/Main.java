@@ -184,22 +184,129 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 );
     }
     
-    public void calculateInflectionPoints(long M) {
-        for(int i = 0; i < 55; ++i) {
+    public void testOptimalBetting(InputData in) {
+        //Say A = 95, V = 100, M = 50 and we bet 5
+        
+        long A = in.A;
+        long V = in.V;
+        
+        long M = in.M;
+        
+        int simulations = 10000;
+        
+        List<Long> allInPoints = calculateStrictAllInPoints(in.M);
+        
+        //"Strategy is to bet 5 and keep doubling
+        int hitVCount = 0;
+        int loseCount = 0;
+        
+        int moneyIfLost = 0;
+        int totalRounds = 0;
+        
+        Random r = new Random();
+               
+        for(int simul = 0; simul < simulations; ++simul)
+        {
+            long money = A;
+                        
+            ++totalRounds;
+                        
+            while(money > 0 && money < V)
+            {
+                
+                
+                //First either all in until lose or bet 1
+                
+                boolean allIn = false;
+                if (allInPoints.contains(money))
+                    allIn = true;
+                
+                if (!allIn) {
+                    boolean won = r.nextBoolean();
+                    if (won) {
+                        money += 1;
+                    } else {
+                        money -= 1;
+                    }
+                } else {
+                                                        
+                    long bet = money;
+                    while(bet <= M )
+                    {
+                        boolean won = r.nextBoolean();
+                        if (won) {
+                            money += bet;
+                            break;
+                        }
+                        
+                        money -= bet;
+                        bet*=2;                        
+                    }                    
+                }
+
+            }
+            
+            if (money >= V) {
+                ++hitVCount;
+            } else {
+                moneyIfLost += money;
+                ++loseCount;
+            }
+        }
+        
+        double expectedMoneyIfLose = moneyIfLost * 1.0d / loseCount; 
+        log.debug("Won {}, lost {}, expected lose money {}  expected value {}",
+                100.0 * hitVCount / totalRounds,
+                100.0 * loseCount / totalRounds,
+                moneyIfLost * 1.0d / loseCount,
+                1.0d * hitVCount / totalRounds * V +
+                1.0d * loseCount / totalRounds * expectedMoneyIfLose
+                );
+    }
+    
+    public List<Long> calculateStrictAllInPoints(long M) {
+        
+        long lowestLYet = Long.MAX_VALUE;
+        List<Long> inflectionPts = Lists.newArrayList();
+        
+        for(int i = 55; i >= 0; --i) {
+            
+            //2 ^ i
             long p2 = 1L << i;
             
+            if (p2 > M)
+                continue;
+            
+            //Greatest Mi such that Mi* 2^i <= M
+            //  Mi <= M / 2 ^ i
             long Mi = M / p2;
-            log.debug("i {} p2 {} Mi {}", i, p2, Mi);
+            
+            
+            long L = 0;
+            
+            if (i >= 1) {
+                L = -2 * Mi * ( (p2 >> 0L) - 1);
+            }
+            
+            if (L < lowestLYet) {
+                lowestLYet = L;
+                inflectionPts.add(Mi);
+            }
+            
+            log.debug("Mi {} * 2^i:{} ({}) <= {} ; L {}", Mi, i, p2, M, L);
         }
+        
+        return inflectionPts;
     }
 
     public String handleCase(InputData in) {
 
-        testObservation2();
+        testOptimalBetting(in);
+//        testObservation2();
         
-        testObservation3_case2();
+      //  testObservation3_case2();
         
-        calculateInflectionPoints(100);
+      //  calculateStrictAllInPoints(100);
         
         return String.format("Case #%d: ", in.testCase);        
     }
