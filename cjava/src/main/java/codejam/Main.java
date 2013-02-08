@@ -38,6 +38,43 @@ public class Main  {
         
     }
     
+    static void practiceRound2008(String args[]) {
+        /**
+         * 2008 -- Practice round
+         * Problem 1
+         * Converting from one base to another
+         */
+        //codejam.y2008.round_pracProb.alien_numbers.Main m = new codejam.y2008.round_pracProb.alien_numbers.Main();
+        
+        /**
+         * 2008 -- Practice round
+         * Problem 2
+         * 
+         * Tracing through a maze and reproducing it.
+         */
+        //codejam.y2008.round_pracProb.alwaysLeft.Main m = new codejam.y2008.round_pracProb.alwaysLeft.Main();
+        
+        /**
+         * 2008 -- Practice round
+         * Problem 3
+         * 
+         * Egg problem
+         */
+        //codejam.y2008.round_pracProb.egg_drop.Main m = new codejam.y2008.round_pracProb.egg_drop.Main();
+        
+        /**
+         * 2008 -- Practice round
+         * Problem 4
+         * 
+         * Finding route to stores with added constraint that perishable items
+         * must return home immediately.
+         * 
+         * Used lots of bit manipulations, solution from Plan3.cpp
+         */
+        //codejam.y2008.round_pracProb.shopping_plan.Main m = new codejam.y2008.round_pracProb.shopping_plan.Main(); 
+        
+    }
+    
     /**
      * Year 2008
      * Practice round -- Beta
@@ -87,6 +124,19 @@ public class Main  {
           //Runner.go(file, m, m, 5);
         }       
         
+    }
+    
+    static void practiceContest2008(String args[]) {
+        
+        codejam.y2008.round_pracContest.old_magician.Main m = new codejam.y2008.round_pracContest.old_magician.Main();
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }     
     }
     
     static void round2_2011(String args[]) {
@@ -195,49 +245,17 @@ public class Main  {
 
         //africa(args);
         //beta2008(args);
+        practiceContest2008(args);
         
         //round2_2011(args);
         
-        roundFinal_2011(args);
+        //roundFinal_2011(args);
         
        // round3_2012(args);
 
        // Main m = null;
         
-        /**
-         * 2008 -- Practice round
-         * Problem 1
-         * Converting from one base to another
-         */
-        //codejam.y2008.round_pracProb.alien_numbers.Main m = new codejam.y2008.round_pracProb.alien_numbers.Main();
-        
-        /**
-         * 2008 -- Practice round
-         * Problem 2
-         * 
-         * Tracing through a maze and reproducing it.
-         */
-        //codejam.y2008.round_pracProb.alwaysLeft.Main m = new codejam.y2008.round_pracProb.alwaysLeft.Main();
-        
-        /**
-         * 2008 -- Practice round
-         * Problem 3
-         * 
-         * Egg problem
-         */
-        //codejam.y2008.round_pracProb.egg_drop.Main m = new codejam.y2008.round_pracProb.egg_drop.Main();
-        
-        /**
-         * 2008 -- Practice round
-         * Problem 4
-         * 
-         * Finding route to stores with added constraint that perishable items
-         * must return home immediately.
-         * 
-         * Used lots of bit manipulations, solution from Plan3.cpp
-         */
-        //codejam.y2008.round_pracProb.shopping_plan.Main m = new codejam.y2008.round_pracProb.shopping_plan.Main(); 
-        
+       
         /**
          * 2008 emea semis -- problem 1
          * 

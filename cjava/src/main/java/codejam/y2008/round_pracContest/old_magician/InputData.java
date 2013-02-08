@@ -4,11 +4,8 @@ import codejam.utils.main.AbstractInputData;
 
 public class InputData extends AbstractInputData {
 
-    
-    long F;
-    long D; //how many eggs can we drop
-    long B; //how many eggs can be broken
-    
+    int W;
+    int B;
     
     
     public InputData(int testCase) {
