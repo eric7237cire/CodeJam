@@ -4,13 +4,9 @@
 \usepackage[top=2mm, bottom=2mm, left=2mm, right=30mm]{geometry}
 \begin{document}
 
+This is to complement the part of the solution about finding the probability at all in points.
 
-Finding probability of greatest inflection point $P_y$
-
-If it's linear, then the next point is $(V, 1)$
-
-Since it is an all in point, we have
-
+First, because it is an all in point, if we lose, we are done so the equation reduces to just
 
 \begin{equation}
 \begin{alignedat}{2}
@@ -24,13 +20,18 @@ Given x is amt of money, and P is probability of winning / getting to V
 
 From one all in point to the next
 
-Make a line from $ (i, P_i) $  to $ (k, P_k) $
+Make a line from $ (i, P_i) $  to $ (k, P_k) $ since it is linear.
 
 where i is the all in point we are calculating $P_i$.
 
 Let $ j = 2 * i $ and $ P_i = p * P_j $
 
-To start off $k, P_k$ is the final state $(V, 1)$
+To start off $k, P_k$ is the final state $(V, 1)$ afterwards, it will be the last all in point calculated.
+That means $k, P_k, i, j, k, p$ are all known, we are looking for $P_i$ and $P_j$.
+
+$p$ is calculated from $p = \frac{A-L}{V-L}$ or in this case $p = \frac{i-L}{j-L}$
+
+L is given by $-2i * (2^\text{infnum} - 1)$
 
 Goal is to get $P_i$ and $P_j$ on left side
 

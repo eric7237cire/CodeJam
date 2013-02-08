@@ -36,7 +36,7 @@ public class Circle {
 	
 	/**
 	 * 
-	 * @param p
+	 * @param pWinBettingRound
 	 * @return both points tangent to circle and forming a line with p
 	 */
 	public Point[] getPointsTangentToLine(Point P) {
