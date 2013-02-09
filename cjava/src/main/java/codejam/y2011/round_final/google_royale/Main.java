@@ -11,7 +11,9 @@ import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
+import codejam.utils.utils.DoubleFormat;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -195,7 +197,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         int simulations = 10000;
         
-        List<AllInPoint> allInPoints = calculateStrictAllInPoints(in.M);
+        List<Long> optional = Lists.newArrayList();
+        List<AllInPoint> allInPoints = calculateStrictAllInPoints(in.M, optional);
         
         //"Strategy is to bet 5 and keep doubling
         int hitVCount = 0;
@@ -286,12 +289,13 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
          * moneyAmt - moneyAmt - 2 * moneyAmt - 4 * moneyAmt...
          * 
          */
-        long L;
+        private long L;
         
         /**
          * Probability that the all in will succeed
          */
         double pWinBettingRound;
+        
         
         /**
          * Probability of winning / getting to V
@@ -308,6 +312,11 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
              */
             this.pWinBettingRound = 1.0d * (moneyAmt - L) / (2*moneyAmt - L);
         }
+        
+        public AllInPoint(long moneyAmt, double prob) {
+            P = prob;
+            this.moneyAmt = moneyAmt;
+        }
 
         @Override
         public String toString()
@@ -317,7 +326,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         
     }
-    public List<AllInPoint> calculateStrictAllInPoints(long M) {
+    public List<AllInPoint> calculateStrictAllInPoints(long M, List<Long> optionalAllInPoints) {
         
         long lowestLYet = Long.MAX_VALUE;
         List<AllInPoint> allInPoints = Lists.newArrayList();
@@ -344,6 +353,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 L = -2 * Mi * ( (p2 >> 0L) - 1);
             }
             
+            if (L == lowestLYet) {
+                optionalAllInPoints.add(Mi);
+            }
+            
             if (L < lowestLYet) {
                 lowestLYet = L;
                 allInPoints.add(new AllInPoint(Mi, L));
@@ -352,18 +365,19 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             log.debug("Mi {} * 2^i:{} ({}) <= {} ; L {}", Mi, i, p2, M, L);
         }
         
+        
         return allInPoints;
     }
 
-    public void calculateAllInPointProbability(List<AllInPoint> allInPoints, InputData in) {
+    public void calculateAllInPointProbability(List<AllInPoint> allInPoints) {
         
         /**
-         * Start off with final point
+         * Start off with final point, 1 prob, V money
          */
-        double lastApProb = 1.0;
-        long lastApMoneyAmt = in.V;
+        double lastApProb = allInPoints.get(allInPoints.size() -1).P;
+        long lastApMoneyAmt = allInPoints.get(allInPoints.size() -1).moneyAmt;
         
-        for(int apIdx = allInPoints.size() - 1; apIdx >= 0; --apIdx) {
+        for(int apIdx = allInPoints.size() - 2; apIdx >= 0; --apIdx) {
             AllInPoint ap = allInPoints.get(apIdx);
             
             //Set up variables, see tex doc
@@ -385,21 +399,63 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     
     public String handleCase(InputData in) {
 
-        List<AllInPoint> allInPoints = calculateStrictAllInPoints(in.M);
+        List<Long> optionalAllInPoints = Lists.newArrayList();
         
-        calculateAllInPointProbability(allInPoints, in);
+        List<AllInPoint> allInPoints = calculateStrictAllInPoints(in.M, optionalAllInPoints);
+        
+
+        AllInPoint finalPoint = new AllInPoint(in.V, 1.0d);
+        allInPoints.add(finalPoint);
+        
+        calculateAllInPointProbability(allInPoints);
         
         for(AllInPoint ap : allInPoints) {
             log.debug("ALl in point {}", ap);
         }
-        testOptimalBetting(in);
+        
+        long largestBet = -1;
+        double probToWin = .42;
+        
+        for(int apIdx = 0; apIdx < allInPoints.size() - 1; ++apIdx) {
+            AllInPoint ap1 = allInPoints.get(apIdx);
+            AllInPoint ap2 = allInPoints.get(apIdx+1);
+            
+            if (ap1.moneyAmt == in.A) {
+                largestBet = in.A;
+                probToWin = ap1.P;
+                break;
+            }
+            
+            Preconditions.checkState(ap1.moneyAmt < ap2.moneyAmt);
+            
+            if (ap1.moneyAmt < in.A && in.A < ap2.moneyAmt ) {
+                largestBet = Math.min(in.A - ap1.moneyAmt, ap2.moneyAmt - in.A);
+               
+                
+                if (optionalAllInPoints.contains(in.A)) {
+                    largestBet = in.A;
+                }
+                
+                /**
+                 * To catch a special case where m is low
+                 */
+                largestBet = Math.min(in.M, largestBet);
+                
+                double slope = (ap2.P - ap1.P) / (ap2.moneyAmt - ap1.moneyAmt);
+                double prob = slope * (in.A - ap1.moneyAmt) +  ap1.P; //using point/slope foruma
+                probToWin = prob;
+                break;
+            }
+        }
+        
+      //  testOptimalBetting(in);
 //        testObservation2();
         
       //  testObservation3_case2();
         
       //  calculateStrictAllInPoints(100);
         
-        return String.format("Case #%d: ", in.testCase);        
+        return String.format("Case #%d: %s %d", in.testCase, DoubleFormat.df7.format(probToWin), largestBet);        
     }
 
 }
