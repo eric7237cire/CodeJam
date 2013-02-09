@@ -210,9 +210,21 @@ public class Main  {
          */
         //codejam.y2011.round_2.expensive_dinner.Main m = new codejam.y2011.round_2.expensive_dinner.Main();
         
-        //TODO implement their solution.  Finding shortest path with most neighbors.  Used dijkstras then athor search
-        //codejam.y2011.round_2.ai_wars.Main m = new codejam.y2011.round_2.ai_wars.Main();
-        codejam.y2011.round_2.ai_wars.Solution m = new codejam.y2011.round_2.ai_wars.Solution();
+        /**
+         * Problem 4
+         * 
+         * Shortest paths ; interesting observation about
+         * neighbors on  the shortest path.
+         * 
+         * 
+         * 1.  Mine (Main), use a queue that favors number of planets threatened
+         * 2.  Theirs (Solution), using the attribute that a threatened planet can only be adjacent to the 2 preceding nodes
+         * to build a DP solution.
+         * 
+         * Their solution is about the same speed
+         */
+        codejam.y2011.round_2.ai_wars.Main m = new codejam.y2011.round_2.ai_wars.Main();
+        //codejam.y2011.round_2.ai_wars.Solution m = new codejam.y2011.round_2.ai_wars.Solution();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files) {

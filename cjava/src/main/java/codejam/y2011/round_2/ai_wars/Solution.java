@@ -19,7 +19,7 @@ public class Solution extends InputFilesHandler implements TestCaseHandler<Input
 {
 
     public Solution() {
-        super("D", 1, 1, 1);
+        super("D", 1, 1, 0);
     }
 
     @Override

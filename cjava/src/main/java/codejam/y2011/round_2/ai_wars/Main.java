@@ -26,7 +26,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     
 
     public Main() {
-        super("D", 1,0, 1);
+        super("D", 1,1, 0);
     }
     
 
@@ -325,10 +325,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             //We threaten their home world --> we are done
             if (neighbors.contains(TARGET_PLANET)) {
                 
-                Solution s = new Solution();
-                String ans = s.handleCase(in);
-                log.debug("Other");
-                log.debug(ans);
+                
                 return String.format("Case #%d: %d %d", in.testCase, node.pathLength, node.numPlanetsThreatened);
             }
             
