@@ -160,8 +160,7 @@ public class Main  {
                 codejam.y2008.round_pracContest.cycles.Main();
         
         
-        List<Pair<TestCaseInputScanner<AbstractInputData>,TestCaseHandler<AbstractInputData> 
-        >> l = Lists.newArrayList();
+       // List<Pair<TestCaseInputScanner<AbstractInputData>,TestCaseHandler<AbstractInputData>>> l = Lists.newArrayList();
         
        // l.add(new ImmutablePair<TestCaseInputScanner<AbstractInputData>,TestCaseHandler<AbstractInputData> >(m,m));
        // l.add(new ImmutablePair<TestCaseInputScanner<AbstractInputData>,TestCaseHandler<AbstractInputData> >(m2,m2));
@@ -285,11 +284,12 @@ public class Main  {
     public static void main(String args[]) throws Exception {
 
         //africa(args);
+        
         //beta2008(args);
-        practiceContest2008(args);
+        //practiceContest2008(args);
         
-        //round2_2011(args);
         
+        round2_2011(args);        
        // roundFinal_2011(args);
         
        // round3_2012(args);

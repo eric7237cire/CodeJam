@@ -128,6 +128,7 @@ public class DepthFirstOrder {
 
 
     // certify that digraph is either acyclic or has a directed cycle
+    @SuppressWarnings("unused")
     private boolean check(Digraph G) {
 
         // check that post(v) is consistent with post()

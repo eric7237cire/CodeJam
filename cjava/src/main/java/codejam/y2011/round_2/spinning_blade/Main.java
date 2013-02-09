@@ -8,23 +8,24 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Level;
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.Grid;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    @Override
-    public String[] getDefaultInputFiles() {
-      //   return new String[] {"sample.in"};
-        return new String[] { "B-small-practice.in", "B-large-practice.in" };
-      //  return new String[] { "B-small-practice.in", "B-large-practice.in" };
+    public Main() {
+        super("B", 1, 0);
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.OFF);
     }
 
     @Override
@@ -189,7 +190,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
          * .CCC.
          * .....
          * 
-         * And the 4 corners
+         * And the 2 corners
          * 
          * From the diagrams, its R + L - C + Upper left corner 1x1 + Lower Right corner 1x1
          */
@@ -213,6 +214,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
     }
     
+    
+    
     int solve(InputData in) {
 
         int largestSize = Math.min(in.R, in.C);
@@ -221,13 +224,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         int maxSize = 0;
         
         
-        //indexed top left
+        //indexed top left, stored by size
         List<Square[][]> squares = Lists.newArrayList();
         
         Square[][] squares_1 = new Square[in.R][in.C];
         for(int r = 0; r < in.R; r++) {
             for(int c = 0; c < in.C; ++c) {
                 squares_1[r][c] = Square.from1d(in.cells.getEntry(r,c) + in.D, r, c);
+                //squares_1[r][c] = Square.from1d(in.cells.getEntry(r,c), r, c);
             }
         }
         
@@ -255,13 +259,23 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             //A square is the center
             for(int topRow = 1; topRow <= in.R - sizeCenterSquare - 1; ++topRow ) {
                 for(int leftCol = 1; leftCol <= in.C - sizeCenterSquare - 1; ++leftCol) {
+                    
                     Square centerSquare = centerSquares[topRow][leftCol];
                     Square upperRight = largeSquares[topRow - 1][leftCol];
                     Square lowerLeft = largeSquares[topRow][leftCol - 1];
+                    
+                    /**
+                     * New square is composed of center, upper, lower.
+                     * See comment on fromXd
+                     */
                     Square newSquare = Square.fromXd(centerSquare,
                             upperRight, lowerLeft, squares_1, topRow-1, leftCol-1);
                     
                     newSquares[topRow - 1][leftCol - 1] = newSquare;
+                    
+                    Preconditions.checkState(newSquare.size == centerSquare.size + 2);
+                    Preconditions.checkState(newSquare.size == upperRight.size + 1);
+                    Preconditions.checkState(newSquare.size == lowerLeft.size + 1);
                     
                     int newSquareTopRow = topRow - 1;
                     int newSquareLeftCol = leftCol - 1;
@@ -298,6 +312,10 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     
                     long centerMassX = centerColMassSum / massBlade;
                     long centerMassY = centerRowMassSum / massBlade;
+                  
+                    
+                    log.debug("      top Row {} left col {} size {} mass blade {} Center x {} y {} center mass x{} y{}",
+                            topRow, leftCol, size, massBlade, centerX, centerY, centerMassX, centerMassY);
                     
                     if (centerX == centerMassX &&
                             centerY == centerMassY 
@@ -321,6 +339,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         int max = solve(in);
     
+        Solution s = new Solution();
+        int max2 = s.solve(in);
+        
+        //if (max2 > 0) throw new RuntimeException("e");
+        
+        Preconditions.checkState(max == max2);
         if (max == 0) {
             //return String.format("Case #%d: IMPOSSIBLE %d", in.testCase, bf);
             return String.format("Case #%d: IMPOSSIBLE", in.testCase);
