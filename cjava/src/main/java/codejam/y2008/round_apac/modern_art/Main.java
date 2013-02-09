@@ -13,6 +13,7 @@ import codejam.utils.datastructures.TreeInt;
 import codejam.utils.datastructures.TreeInt.Node;
 import codejam.utils.datastructures.graph.GraphAdjList;
 import codejam.utils.datastructures.graph.GraphInt;
+import codejam.utils.datastructures.graph.GraphIntAlgorithms;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -60,8 +61,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             smallGraph.addConnection(edge.getLeft(), edge.getRight());
         }
         
-        TreeInt<?> largeTree = largeGraph.convertToTree(1);
-        TreeInt<?> smallTree = smallGraph.convertToTree(1);
+        TreeInt<?> largeTree = GraphIntAlgorithms.convertToTree(largeGraph,1);
+        TreeInt<?> smallTree = GraphIntAlgorithms.convertToTree(smallGraph, 1);
         
         for(int largeRoot = 1; largeRoot <= input.N; ++largeRoot) {
             TreeInt<?> newTree = largeTree.reroot(largeRoot);

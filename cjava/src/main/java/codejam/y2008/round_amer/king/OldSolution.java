@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import codejam.utils.datastructures.ArticulationPoint;
 import codejam.utils.datastructures.graph.GraphInt;
+import codejam.utils.datastructures.graph.GraphIntAlgorithms;
 import codejam.utils.utils.Direction;
 import codejam.utils.utils.GridChar;
 
@@ -94,7 +95,7 @@ public class OldSolution {
                 if (isolatedNodes.contains(adjNode) || nonIsolatedNodes.contains(adjNode))
                     continue;
                 
-                Set<Integer> nodes = graph.getConnectedNodesWithoutNode(adjNode, aPoint);
+                Set<Integer> nodes = GraphIntAlgorithms.getConnectedNodesWithoutNode(graph, adjNode, aPoint);
                 
                 //Isolated set must not contain other articulation points
                 for(Integer aPointToTest : artPoints) {

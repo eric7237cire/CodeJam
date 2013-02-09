@@ -1,15 +1,20 @@
 package codejam.y2008.round_pracContest.cycles;
 
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
+
 import codejam.utils.main.AbstractInputData;
 
 public class InputData extends AbstractInputData {
 
+    //Number of verticies
+    int N;
     
-    long F;
-    long D; //how many eggs can we drop
-    long B; //how many eggs can be broken
+    //Forbidden edges
+    int K;
     
-    
+    List<Pair<Integer,Integer>> forbiddenEdges;
     
     public InputData(int testCase) {
         super(testCase);

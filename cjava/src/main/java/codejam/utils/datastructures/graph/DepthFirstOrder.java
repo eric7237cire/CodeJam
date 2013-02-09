@@ -1,6 +1,11 @@
-package codejam.utils.datastructures;
+package codejam.utils.datastructures.graph;
 
-import codejam.utils.datastructures.graph.Digraph;
+import codejam.utils.datastructures.DirectedEdge;
+import codejam.utils.datastructures.EdgeWeightedDigraph;
+import codejam.utils.datastructures.In;
+import codejam.utils.datastructures.Queue;
+import codejam.utils.datastructures.Stack;
+import codejam.utils.datastructures.StdOut;
 
 /*************************************************************************
  *  Compilation:  javac DepthFirstOrder.java
@@ -108,7 +113,7 @@ public class DepthFirstOrder {
         return postorder;
     }
 
-    // return vertices in preorder as an Iterable
+    // return vertices in postorder as an Iterable
     public Iterable<Integer> pre() {
         return preorder;
     }
@@ -123,7 +128,6 @@ public class DepthFirstOrder {
 
 
     // certify that digraph is either acyclic or has a directed cycle
-    @SuppressWarnings("unused")
     private boolean check(Digraph G) {
 
         // check that post(v) is consistent with post()

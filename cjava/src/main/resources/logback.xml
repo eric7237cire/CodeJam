@@ -21,10 +21,11 @@
   </appender>
   
    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>myApp.log</file>
+    <file>C:/codejam/CodeJam/cjava/src/main/resources/y2008/pracContest/test.txt</file>
     <append>false</append>
     <encoder>
-    <pattern>%d{HH:mm:ss:SSS} %r - %m%n</pattern>
+    <pattern>%m%n</pattern>
+    <!-- <pattern>%d{HH:mm:ss:SSS} %r - %m%n</pattern> -->
       
     </encoder>
   </appender>
@@ -35,6 +36,10 @@
    -->
    
    <logger name="codejam.y2008.round_emea" level="INFO"/>
+   
+   <logger name="file" level="ALL" additivity="false">
+     <appender-ref ref="FILE"/>
+   </logger>
    
    <logger name="codejam" level="INFO"/>
    <logger name="codejam.y2012" level="DEBUG"/>
@@ -48,8 +53,8 @@
    <logger name="codejam.utils.multithread" level="DEBUG"/>
    <logger name="codejam.utils" level="INFO"/>
       <logger name="codejam.utils.main" level="DEBUG"/>
+      
   <root level="${root-level:-DEBUG}">
     <appender-ref ref="console"/>
-    <appender-ref ref="FILE"/>
   </root>
 </configuration>

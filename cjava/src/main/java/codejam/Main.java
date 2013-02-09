@@ -1,10 +1,18 @@
 package codejam;
 
+import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import codejam.utils.main.AbstractInputData;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner;
+import codejam.utils.main.Runner.TestCaseInputScanner;
+import codejam.utils.multithread.Consumer.TestCaseHandler;
+
+import com.google.common.collect.Lists;
 
 public class Main  {
 
@@ -126,13 +134,13 @@ public class Main  {
         
     }
     
-    static void practiceContest2008(String args[]) {
+    static void practiceContest2008(String args[]) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
         
         /**
          * Problem 1
          * Recurence relationship ; patterns
          */
-        //codejam.y2008.round_pracContest.old_magician.Main m = new codejam.y2008.round_pracContest.old_magician.Main();
+        //codejam.y2008.round_pracContest.old_magician.Main m1 = new codejam.y2008.round_pracContest.old_magician.Main();
         
         /**
          * Problem 2
@@ -145,16 +153,31 @@ public class Main  {
          * 
          * 
          */
-        codejam.y2008.round_pracContest.square_fields.Main m = new
-                codejam.y2008.round_pracContest.square_fields.Main();
+        //codejam.y2008.round_pracContest.square_fields.Main m2 = new codejam.y2008.round_pracContest.square_fields.Main();
         
+        
+        codejam.y2008.round_pracContest.cycles.Main m = new
+                codejam.y2008.round_pracContest.cycles.Main();
+        
+        
+        List<Pair<TestCaseInputScanner<AbstractInputData>,TestCaseHandler<AbstractInputData> 
+        >> l = Lists.newArrayList();
+        
+       // l.add(new ImmutablePair<TestCaseInputScanner<AbstractInputData>,TestCaseHandler<AbstractInputData> >(m,m));
+       // l.add(new ImmutablePair<TestCaseInputScanner<AbstractInputData>,TestCaseHandler<AbstractInputData> >(m2,m2));
+        
+        
+       // for(int i = 0; i < l.size(); ++i) {
+            //String[] files = Main.getFiles(l.get(i).getLeft(), args);
         String[] files = Main.getFiles(m, args);
-        for (String file : files) {
-            log.info("Input file {}", file);
-
-            Runner.goSingleThread(file, m, m);
-          //Runner.go(file, m, m, 5);
-        }     
+            for (String file : files) {
+                log.info("Input file {}", file);
+    
+              //  Runner.goSingleThread(file, l.get(i).getLeft(), l.get(i).getValue());
+                Runner.goSingleThread(file, m,m);
+              //Runner.go(file, m, m, 5);
+            }     
+        //}
     }
     
     static void round2_2011(String args[]) {
@@ -263,11 +286,11 @@ public class Main  {
 
         //africa(args);
         //beta2008(args);
-        //practiceContest2008(args);
+        practiceContest2008(args);
         
         //round2_2011(args);
         
-        roundFinal_2011(args);
+       // roundFinal_2011(args);
         
        // round3_2012(args);
 
@@ -802,7 +825,7 @@ public class Main  {
 
     }
 
-    private static String[] getFiles(Object m, String[] args) {
+    public static String[] getFiles(Object m, String[] args) {
         String[] files = {};
         if (m instanceof DefaultInputFiles) {
             files = ((DefaultInputFiles) m).getDefaultInputFiles();

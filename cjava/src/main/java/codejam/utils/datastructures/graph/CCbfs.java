@@ -10,14 +10,14 @@ import java.util.List;
  */
 public class CCbfs
 {
-    IGraph graph;
+    GraphInt graph;
     
-    public CCbfs(IGraph graph) {
+    public CCbfs(GraphInt graph) {
         this.graph = graph;
     }
     
     public List<List<Integer>> go() {
-        int maxNodeNum = graph.V();
+        int maxNodeNum = graph.getMaxVNum() + 1;
         
         int[] componentNumPerNode = new int[maxNodeNum];
 
@@ -30,7 +30,7 @@ public class CCbfs
             ++currentGroupNum;
             
             while (currentNodeNum < maxNodeNum
-                    && (componentNumPerNode[currentNodeNum] != 0 || !graph.nodePresent(currentNodeNum) )) {
+                    && (componentNumPerNode[currentNodeNum] != 0 || !graph.nodeConnections.containsKey(currentNodeNum) )) {
                 // find next node num with no group num
                 ++currentNodeNum;
             }
@@ -58,10 +58,8 @@ public class CCbfs
                 componentNumPerNode[node] = currentGroupNum;
                 groups.get(currentGroupNum - 1).add(node);
 
-                for (int i = 0; i < maxNodeNum; ++i) {
-                    if (graph.isConnected(node, i)) {
-                        nodesToVisit.add(i);
-                    }
+                for (int adjNode : graph.getNeighbors(node)) {
+                    nodesToVisit.add(adjNode);                    
                 }
             }
 

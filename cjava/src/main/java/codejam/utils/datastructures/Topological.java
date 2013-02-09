@@ -1,5 +1,6 @@
 package codejam.utils.datastructures;
 
+import codejam.utils.datastructures.graph.DepthFirstOrder;
 import codejam.utils.datastructures.graph.Digraph;
 
 /*************************************************************************

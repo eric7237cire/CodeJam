@@ -7,20 +7,26 @@ import java.util.Set;
 
 import codejam.utils.datastructures.TreeInt;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-public class GraphInt {
+/**
+ * No self loops
+ * No duplicate edges
+ *
+ */
+public class GraphInt  {
     
     Map<Integer, Set<Integer>> nodeConnections;
     
     //Number of vertices
-    int V;
+    int maxVNum;
     public GraphInt() {
         nodeConnections = Maps.newHashMap();
-        V = 0;
+        maxVNum = 0;
     }
     
     public GraphInt(GraphInt graph) {
@@ -37,11 +43,18 @@ public class GraphInt {
     public Set<Integer> getNodes() {return nodeConnections.keySet(); }
     
     public void addNode(int node) {
+        maxVNum = Math.max(maxVNum, node);
+        
         if (!nodeConnections.containsKey(node)) {
             nodeConnections.put(node, Sets.<Integer>newHashSet());
         }
     }
     
+    public int getMaxVNum()
+    {
+        return maxVNum;
+    }
+
     public void removeConnection(int nodeA, int nodeB) {
         if (nodeA == nodeB)
             return;
@@ -49,8 +62,7 @@ public class GraphInt {
         Set<Integer> nodeANeighbors;
         Set<Integer> nodeBNeighbors;
         
-        if (nodeConnections.containsKey(nodeA)) {
-            
+        if (nodeConnections.containsKey(nodeA)) {            
         
             nodeANeighbors = nodeConnections.get(nodeA);
             nodeANeighbors.remove(nodeB);
@@ -93,28 +105,14 @@ public class GraphInt {
         if (nodeA == nodeB)
             return;
         
-        Set<Integer> nodeANeighbors;
-        Set<Integer> nodeBNeighbors;
-        
-        if (!nodeConnections.containsKey(nodeA)) {
-            nodeANeighbors = Sets.newHashSet();
-            nodeConnections.put(nodeA,nodeANeighbors);
-        } else {
-            nodeANeighbors = nodeConnections.get(nodeA);
-        }
-        
-        if (!nodeConnections.containsKey(nodeB)) {
-            nodeBNeighbors = Sets.newHashSet();
-            nodeConnections.put(nodeB,nodeBNeighbors);
-        } else {
-            nodeBNeighbors = nodeConnections.get(nodeB);
-        }
-        
-        nodeANeighbors.add(nodeB);
-        nodeBNeighbors.add(nodeA);
+        addOneWayConnection(nodeA, nodeB);
+        addOneWayConnection(nodeB, nodeA);
     }
     
     public void addOneWayConnection(int nodeA, int nodeB) {
+        addNode(nodeA);
+        addNode(nodeB);
+        
         Set<Integer> nodeANeighbors;
         
         if (!nodeConnections.containsKey(nodeA)) {
@@ -127,119 +125,23 @@ public class GraphInt {
         nodeANeighbors.add(nodeB);
     }
 
-    /**
-     * Gets connected nodes without using edge from u to v
-     * 
-     * @param startingNode
-     *            where to start
-     * @param U
-     * @param V
-     * @return
-     */
-    public Set<Integer> getConnectedNodesWithoutEdge(int startingNode, int U,
-            int V) {
-
-        Set<Integer> visitedNodes = Sets.newHashSet();
-
-        LinkedList<Integer> toVisit = new LinkedList<>();
-        toVisit.add(startingNode);
-
-        while (!toVisit.isEmpty()) {
-
-            Integer loc = toVisit.poll();
-
-            if (visitedNodes.contains(loc))
-                continue;
-
-            visitedNodes.add(loc);
-
-            Set<Integer> adjNodes = getNeighbors(loc);
-
-            if (loc == U) {
-                adjNodes = Sets.newHashSet(adjNodes);
-                adjNodes.remove(V);
-            } else if (loc == V) {
-                adjNodes = Sets.newHashSet(adjNodes);
-                adjNodes.remove(U);
-            }
-
-            for (Integer child : adjNodes) {
-                toVisit.add(child);
-            }
-        }
-
-        return visitedNodes;
-
-    }
-    
-    public Set<Integer> getConnectedNodesWithoutNode(int startingNode, 
-            int V) {
-
-        Set<Integer> visitedNodes = Sets.newHashSet();
-
-        LinkedList<Integer> toVisit = new LinkedList<>();
-        toVisit.add(startingNode);
-
-        while (!toVisit.isEmpty()) {
-
-            Integer loc = toVisit.poll();
-
-            if (visitedNodes.contains(loc))
-                continue;
-
-            visitedNodes.add(loc);
-
-            Set<Integer> adjNodes = getNeighbors(loc);
-
-            if (loc == V) {
-                continue;
-            }
-
-            for (Integer child : adjNodes) {
-                if (child == V)
-                    continue;
-                toVisit.add(child);
-            }
-        }
-
-        return visitedNodes;
-
-    }
+   
     
     
     public Set<Integer> getNeighbors(int node) {
         return nodeConnections.get(node);
     }
     
-    public <T> TreeInt<T>  convertToTree(int root) {
-        TreeInt<T> newTree = new TreeInt<T>(root);
-        
-        Queue<Integer> toVisit = new LinkedList<>();
-        
-        toVisit.add(root);
-        
-        while(!toVisit.isEmpty()) {
-            Integer nodeId = toVisit.poll();
-            
-            Preconditions.checkState(newTree.getNodes().containsKey(nodeId));
-            TreeInt<T>.Node newTreeNode = newTree.getNodes().get(nodeId);
-            Set<Integer> connections = getNeighbors(nodeId);
-            //Get all new children from old tree
-            for(Integer childNode : connections) {
-                //Add children to new tree node
-                if (newTreeNode.getParent() == null || childNode != newTreeNode.getParent().getId()) {
-                    newTreeNode.addChild(childNode);
-                    toVisit.add(childNode);
-                }
-            }
-            
-            
-        }
-        
-        return newTree;
+    public boolean nodeExists(int node) {
+        return nodeConnections.containsKey(node);
     }
     
-   
+    public int getDegree(int node) {
+        if (!nodeExists(node))
+            return 0;
+        
+        return getNeighbors(node).size();
+    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
@@ -264,4 +166,22 @@ public class GraphInt {
         
         return Objects.equal(nodeConnections, other.nodeConnections);
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Graph V=").append(V()).append("\n");
+        
+        for(Integer v : nodeConnections.keySet()) {
+            sb.append(" vertex ").append(v);
+            sb.append(" adjList -- ");
+            sb.append(Joiner.on(", ").join(nodeConnections.get(v)));
+            sb.append("\n");
+            
+        }
+        return sb.toString();
+    }
+
+   
 }

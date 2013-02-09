@@ -20,6 +20,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import codejam.utils.datastructures.TreeInt;
 import codejam.utils.datastructures.graph.GraphInt;
+import codejam.utils.datastructures.graph.GraphIntAlgorithms;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -181,7 +182,7 @@ public class Main implements TestCaseHandler<InputData>,
             vertexGraph.addConnection(edge.getLeft(), edge.getRight());
         }
                
-        TreeInt<NodeData> tree = vertexGraph.convertToTree(1);
+        TreeInt<NodeData> tree = GraphIntAlgorithms.convertToTree(vertexGraph, 1);
         
         Stack<TreeInt<NodeData>.Node> toVisit = new Stack<>();
         Set<TreeInt<NodeData>.Node> visited = new HashSet<>();

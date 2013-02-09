@@ -9,11 +9,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 import codejam.utils.geometry.PointInt;
+import codejam.utils.main.AbstractInputData;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main extends InputFilesHandler implements TestCaseHandler<AbstractInputData>, TestCaseInputScanner<AbstractInputData> {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
@@ -134,8 +135,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     }
     
     @Override
-    public String handleCase(InputData in)
+    public String handleCase(AbstractInputData ain)
     {
+        InputData in = (InputData) ain;
+        
         int lowLen = 0;
         int highLen = 100000;
         
