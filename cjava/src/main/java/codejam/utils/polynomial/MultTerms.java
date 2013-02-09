@@ -28,7 +28,7 @@ public class MultTerms extends AbstractTerm {
         Preconditions.checkState(this.terms.size() > 1);
     }
     
-    static Term  buildMultTerm(Term...args) {
+    public static Term  buildMultTerm(Term...args) {
         return buildMultTerm(Arrays.asList(args));
     }
    

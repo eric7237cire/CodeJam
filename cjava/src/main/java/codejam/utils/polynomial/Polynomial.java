@@ -43,6 +43,13 @@ public class Polynomial {
     public Term getAddTerms() {
         return addTerms;
     }
+    
+    
+
+    public void setAddTerms(Term addTerms)
+    {
+        this.addTerms = addTerms;
+    }
 
     static Term parseBinomialTerm(String[] strList) {
 

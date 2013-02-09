@@ -87,6 +87,26 @@ public class PowerTerm extends AbstractTerm {
     	if (degree == 1) {
             return term;
         }
+    	
+    	if (degree > 1 && term instanceof VariableTerm) {
+    	    VariableTerm var = (VariableTerm) term;
+    	    if (var.getName().equals("i")) {
+    	        if (degree % 4 == 0) {
+    	            return new CoefficientTerm(1);
+    	        }
+    	        if (degree % 2 == 0) {
+                    return new CoefficientTerm(-1);
+                }
+    	        else {
+    	            int rest = degree - 1;
+    	            int coef = rest % 4 == 0 ? 1 : -1;
+    	            
+    	            PowerTerm pt = new PowerTerm(var,1);
+    	            return MultTerms.buildMultTerm(new CoefficientTerm(coef), pt);
+    	        }
+    	    }
+    	}
+    	
 		if (term instanceof AddTerms && degree > 1) {
 		    AddTerms binomial = (AddTerms) term;
 			List<List<Integer>> binomialCoeff = new ArrayList<>();

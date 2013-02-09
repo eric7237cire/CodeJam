@@ -179,6 +179,63 @@ public class Main  {
         //}
     }
     
+    static void roundEMEA_2008(String args[]) {
+        /**
+         * 2008 emea semis -- problem 1
+         * 
+         * Geometry triangles -- rotation / translation / scaling of triangle. 
+         * Finding a point that transforms to itself
+         * 
+         * matrix multiplication / transformations.  
+         * 
+         * Can always research more into eigen values / vectors
+         * Implement remaining proposed solution.
+         * 1. Used a solution space line intersection type solution,
+         * 2. Proposed matrix manipulation solution         * 
+         * 3.  idea -- Remains a third, using estimation 
+         * 
+         * bmerries insane solution uses complex numbers
+         */
+       codejam.y2008.round_emea.scaled_triangle.Main m = new codejam.y2008.round_emea.scaled_triangle.Main();
+                
+        /**
+         * 2008 emea semis -- problem 2 
+         * 
+         * Given a fence, find best offers using maximum of 3 colors.
+         * 
+         * Proposed solution was a brute force / greedy scanline.
+         * 
+         * Used a BFS.  Compared to bmerries implementation of proposed 
+         * solution (at least it looks like it), what we did is faster.
+         * 
+         * 
+         */
+        //codejam.y2008.round_emea.painting_fence.Main m = new codejam.y2008.round_emea.painting_fence.Main();
+        
+        /**
+         * 2008 emea semis -- problem 3
+         * 
+         * Coloring tree such that any path of length 2 or 3 has different colors.
+         * Chromatic number of a tree
+         * 
+         * 1. Contains the brute force / exponential way of computing chromatic polynomial
+         * 2. Child first calculation
+         * 3. A cleaner implementation using their solution
+         */
+       // codejam.y2008.round_emea.rainbow_trees.Main m = new codejam.y2008.round_emea.rainbow_trees.Main();
+        
+        /**
+         * 2008 emea semis -- problem 3
+         * 
+         * State transitions / matrix multiplication / binary manipulation
+         * 
+         * 1.  Solved very similiar to proposed solution
+         * 2.  Maybe could be improved using proposed, but seems OK.
+         */
+        //codejam.y2008.round_emea.bus_stops.Main m = new codejam.y2008.round_emea.bus_stops.Main();
+        
+    }
+    
     static void round2_2011(String args[]) {
         //2011 2
         
@@ -303,6 +360,40 @@ public class Main  {
         }
     }
     
+    static void roundFinal_2012(String args[]) 
+    {
+        //2012 Final
+        
+        //Dijkstras using an indexed priority queue
+        //codejam.y2012.round_final.zombie_smash.Main m = new codejam.y2012.round_final.zombie_smash.Main();
+        
+        //Probability, optimizing, state transitions, maybe matrix multiplication
+        //codejam.y2012.round_final.upstairs_downstairs.Main m = new codejam.y2012.round_final.upstairs_downstairs.Main();
+        
+        /**
+         * 2012 Final -- problem 3
+         * 
+         * Building constraints to find rectangles ; absolute value line
+         * intersection.
+         * 
+         * 1. Used proposed solution
+         * 2.  Can speed it up by not checking all rectangles ; but runtime
+         * is already 1sec.  Eatmore's solution is instant.
+         */
+        //codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
+
+        
+        codejam.y2012.round_final.twirling_freedom.Main m = new codejam.y2012.round_final.twirling_freedom.Main();
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }
+    }
+    
     public static void main(String args[]) throws Exception {
 
         //africa(args);
@@ -311,68 +402,16 @@ public class Main  {
         //practiceContest2008(args);
         
         
-        round2_2011(args);        
+        //round2_2011(args);        
        // roundFinal_2011(args);
         
        // round3_2012(args);
+        roundFinal_2012(args);
 
        // Main m = null;
         
        
-        /**
-         * 2008 emea semis -- problem 1
-         * 
-         * Geometry triangles -- rotation / translation / scaling of triangle. 
-         * Finding a point that transforms to itself
-         * 
-         * matrix multiplication / transformations.  
-         * 
-         * Can always research more into eigen values / vectors
-         * Implement remaining proposed solution.
-         * 1. Used a solution space line intersection type solution,
-         * 2. Proposed matrix manipulation solution         * 
-         * 3.  idea -- Remains a third, using estimation 
-         * 
-         * bmerries insane solution uses complex numbers
-         */
-       // codejam.y2008.round_emea.scaled_triangle.Main m = new codejam.y2008.round_emea.scaled_triangle.Main();
-                
-        /**
-         * 2008 emea semis -- problem 2 
-         * 
-         * Given a fence, find best offers using maximum of 3 colors.
-         * 
-         * Proposed solution was a brute force / greedy scanline.
-         * 
-         * Used a BFS.  Compared to bmerries implementation of proposed 
-         * solution (at least it looks like it), what we did is faster.
-         * 
-         * 
-         */
-        //codejam.y2008.round_emea.painting_fence.Main m = new codejam.y2008.round_emea.painting_fence.Main();
-        
-        /**
-         * 2008 emea semis -- problem 3
-         * 
-         * Coloring tree such that any path of length 2 or 3 has different colors.
-         * Chromatic number of a tree
-         * 
-         * 1. Contains the brute force / exponential way of computing chromatic polynomial
-         * 2. Child first calculation
-         * 3. A cleaner implementation using their solution
-         */
-       // codejam.y2008.round_emea.rainbow_trees.Main m = new codejam.y2008.round_emea.rainbow_trees.Main();
-        
-        /**
-         * 2008 emea semis -- problem 3
-         * 
-         * State transitions / matrix multiplication / binary manipulation
-         * 
-         * 1.  Solved very similiar to proposed solution
-         * 2.  Maybe could be improved using proposed, but seems OK.
-         */
-        //codejam.y2008.round_emea.bus_stops.Main m = new codejam.y2008.round_emea.bus_stops.Main();
-        
+       
         
         /**
          * 2008 amer semis -- problem 1
@@ -799,7 +838,7 @@ public class Main  {
          * 
          * Finding multiple paths in a directed graph
          */ 
-        codejam.y2012.round_1C.diamond_inheritance.Main m = new codejam.y2012.round_1C.diamond_inheritance.Main();
+       // codejam.y2012.round_1C.diamond_inheritance.Main m = new codejam.y2012.round_1C.diamond_inheritance.Main();
          
          //Physics, velocity acceleration. Intersection parabola / lines
         //codejam.y2012.round_1C.out_of_gas.Main m = new codejam.y2012.round_1C.out_of_gas.Main();
@@ -824,26 +863,7 @@ public class Main  {
         //2012 3
         
        
-        //2012 Final
-        
-        //Dijkstras using an indexed priority queue
-        //codejam.y2012.round_final.zombie_smash.Main m = new codejam.y2012.round_final.zombie_smash.Main();
-        
-        //Probability, optimizing, state transitions, maybe matrix multiplication
-        //codejam.y2012.round_final.upstairs_downstairs.Main m = new codejam.y2012.round_final.upstairs_downstairs.Main();
-        
-        /**
-         * 2012 Final -- problem 3
-         * 
-         * Building constraints to find rectangles ; absolute value line
-         * intersection.
-         * 
-         * 1. Used proposed solution
-         * 2.  Can speed it up by not checking all rectangles ; but runtime
-         * is already 1sec.  Eatmore's solution is instant.
-         */
-        //codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
-        
+                
 
     }
 
