@@ -6,12 +6,15 @@ import org.slf4j.LoggerFactory;
 public class Solution
 {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
+    final static Logger log = LoggerFactory.getLogger("main");
 
     
 
     static class  Summatron {
         
+        /**
+         * Storing as 1 based saves a lot of special case if statements
+         */
         int[][] t;
         int[][] sum;
         
@@ -101,26 +104,28 @@ public class Solution
                     int d = topRow + size - 1;
                     
                     //weight must be even
-                    int cSum = classic.bladeSum(leftCol, r, topRow, d);
-                    if ((cSum * (size - 1)) % 2 != 0)
+                    int weightBlade = classic.bladeSum(leftCol, r, topRow, d);
+                    if ((weightBlade * (size - 1)) % 2 != 0)
                         continue;
-                    int cSumX = sumX.bladeSum(leftCol, r, topRow, d) - (cSum * (2 * leftCol + (size) - 1)) / 2;
-                    int cSumY = sumY.bladeSum(leftCol, r, topRow, d) - (cSum * (2 * topRow + (size) - 1)) / 2;
                     
-                    int centerX = (leftCol - 1 + leftCol - 1 + size - 1) ; // /2d
-                    int centerY = (topRow - 1 + topRow - 1 + size - 1) ;   // / 2d
-                    int massBlade = cSum;
+                    int centerX = 2 * leftCol + (size) - 1; //really 2 * centerX to avoid using double
+                    int centerY = 2 * topRow + (size) - 1;
                     
-                   // long centerMassX = 2 * sumX.bladeSum(leftCol, r, topRow, d)  / massBlade;
-                   // long centerMassY = 2 * sumY.bladeSum(leftCol, r, topRow, d) / massBlade;
+                    /**
+                     * Basically if the center weight was centered on the actual center,
+                     * would it create the same mass*distance sums ?
+                     */
+                    int cSumX = sumX.bladeSum(leftCol, r, topRow, d) - (weightBlade * centerX / 2);
+                    int cSumY = sumY.bladeSum(leftCol, r, topRow, d) - (weightBlade * centerY / 2);
+                    
                     
                    // log.debug("sol 2 top Row {} left col {} size {} mass blade {} Center x {} y {} center mass x{} y{}",
-                       //     topRow, leftCol, size, massBlade, centerX, centerY, centerMassX, centerMassY);
-                    /*
+                         //  topRow, leftCol, size, massBlade, centerX, centerY, centerMassX, centerMassY);
+                    
                     log.debug("Sol top Row {} left col {} size {} Center x {} y {} center mass x {} y {}",
-                            topRow, leftCol, size, cSumX, cSumY, sumX.bladeSum(leftCol, r, topRow, d),
+                            topRow, leftCol, size, centerX/2d, centerY/2d, sumX.bladeSum(leftCol, r, topRow, d),
                             sumY.bladeSum(leftCol, r, topRow, d));
-                    */
+                    
                     
                     if (cSumX == 0 && cSumY == 0) {
                         

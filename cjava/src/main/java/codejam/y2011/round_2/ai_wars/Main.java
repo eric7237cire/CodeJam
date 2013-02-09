@@ -9,11 +9,10 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.graph.GraphInt;
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
@@ -22,16 +21,14 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
+    
 
-    @Override
-    public String[] getDefaultInputFiles() {
-        // return new String[] {"sample.in"};
-        // return new String[] { "D-large-practice.in" };
-        return new String[] { "D-small-practice.in", "D-large-practice.in" };
+    public Main() {
+        super("D", 1,0, 1);
     }
+    
 
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
@@ -238,17 +235,23 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             graph.addConnection(edge.getLeft(), edge.getRight());
         }
         
+        final int TARGET_PLANET = 1;
+        
         //Calculate distances from target planet
-        DijkstraNode[] dijNodes = doDijkstra(graph, 1, in.P);
+        DijkstraNode[] dijNodes = doDijkstra(graph, TARGET_PLANET, in.P);
         
                 
         int maxDistance = 0;
         for(DijkstraNode node : dijNodes) {
+            //Not all planets are necessarily connected
             if(node.distance == Integer.MAX_VALUE)
                 continue;
             
             maxDistance = Math.max(maxDistance, node.distance);
         }
+        
+        
+        
         
         //Calculate neighbor sets with a distance exactly k and 0 to k
         BitSet[] neighborhoodsAtDistanceK = new BitSet[maxDistance+1];
@@ -320,7 +323,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             Set<Integer> neighbors = graph.getNeighbors(node.planetId);
             
             //We threaten their home world --> we are done
-            if (neighbors.contains(1)) {
+            if (neighbors.contains(TARGET_PLANET)) {
+                
+                Solution s = new Solution();
+                String ans = s.handleCase(in);
+                log.debug("Other");
+                log.debug(ans);
                 return String.format("Case #%d: %d %d", in.testCase, node.pathLength, node.numPlanetsThreatened);
             }
             

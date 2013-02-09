@@ -5,10 +5,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Level;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
@@ -21,11 +18,10 @@ import com.google.common.math.DoubleMath;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
 
     public Main() {
-        super("B", 1, 0);
-        (( ch.qos.logback.classic.Logger) log).setLevel(Level.OFF);
+        super("B", 1, 1, 0);
+        
     }
 
     @Override
@@ -337,14 +333,14 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
         //int bf = solveBruteForce(in);
         
-        int max = solve(in);
+        //int max = solve(in);
     
         Solution s = new Solution();
-        int max2 = s.solve(in);
+        int max = s.solve(in);
         
         //if (max2 > 0) throw new RuntimeException("e");
         
-        Preconditions.checkState(max == max2);
+       // Preconditions.checkState(max == max2);
         if (max == 0) {
             //return String.format("Case #%d: IMPOSSIBLE %d", in.testCase, bf);
             return String.format("Case #%d: IMPOSSIBLE", in.testCase);

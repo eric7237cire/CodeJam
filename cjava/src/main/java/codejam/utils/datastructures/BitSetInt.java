@@ -65,6 +65,14 @@ public class BitSetInt {
         bits |= 1 << pos;
     }
     
+    public BitSetInt and(BitSetInt rhs) {
+        return new BitSetInt(bits & rhs.getBits());
+    }
+    
+    public int populationCount() {
+        return Integer.bitCount(bits);
+    }
+    
     public void unset(int pos) {
         bits &= ~(1 << pos);
     }

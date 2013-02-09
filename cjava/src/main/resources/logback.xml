@@ -41,6 +41,7 @@
      <appender-ref ref="FILE"/>
    </logger>
    
+   <logger name="main" level="DEBUG"/>
    <logger name="codejam" level="INFO"/>
    <logger name="codejam.y2012" level="DEBUG"/>
    <logger name="codejam.y2008" level="DEBUG"/>

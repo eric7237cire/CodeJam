@@ -10,7 +10,7 @@ import codejam.utils.main.AbstractInputData;
 public class Consumer<InputData extends AbstractInputData> implements Runnable {
 
     public static interface TestCaseHandler<InputData> {
-        String handleCase(InputData input);
+        String handleCase(InputData in);
     }
 
     final static Logger log = LoggerFactory.getLogger(Consumer.class);
