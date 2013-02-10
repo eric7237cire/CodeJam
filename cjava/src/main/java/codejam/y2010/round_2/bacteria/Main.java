@@ -3,21 +3,24 @@ package codejam.y2010.round_2.bacteria;
 import java.util.List;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.google.common.base.Preconditions;
 
-import codejam.utils.datastructures.graph.GraphAdjList;
+import codejam.utils.datastructures.graph.CCbfs;
+import codejam.utils.datastructures.graph.GraphInt;
 import codejam.utils.geometry.Rectangle;
-import codejam.utils.main.Runner;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.Direction;
 import codejam.utils.utils.GridChar;
 
-public class Main implements TestCaseHandler<InputData>,
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>,
         TestCaseInputScanner<InputData> {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
+    public Main() {
+        super("C", 1, 1, 0);
+    }
+    
 
     //static final int RECT_SIZE_MAX = 100;
    // static final int RECT_NUM_MAX = 10;
@@ -25,13 +28,14 @@ public class Main implements TestCaseHandler<InputData>,
     static final int RECT_SIZE_MAX = 1000000;
     static final int RECT_NUM_MAX = 1000;
     
+    
     static List<List<Integer>> getRectIntersections(InputData input) {
         
         
-        GraphAdjList graph = new GraphAdjList(input.rects.length);
+        GraphInt graph = new GraphInt(); //input.rects.length);
         
         for(int rect1 = 0; rect1 < input.R; ++rect1) {
-            graph.addConnection(rect1, rect1);
+            graph.addNode(rect1);
             
             Rectangle rec1 = input.rects[rect1];
             
@@ -47,12 +51,15 @@ public class Main implements TestCaseHandler<InputData>,
             }
         }
         
-        List<List<Integer>> rectIntersections = graph.getConnectedComponents();
+        CCbfs cc = new CCbfs(graph);
+        List<List<Integer>> rectIntersections = cc.go();
 
         log.debug("Rect intersections {}", rectIntersections);
 
         return rectIntersections;
     }
+    
+    
     
     @Override
     public String handleCase(InputData input) {
@@ -79,7 +86,9 @@ public class Main implements TestCaseHandler<InputData>,
      * corner (first to be eaten) and bottom right corner.
      * 
      * The bottom right corner is either from a real rectangle or
-     * the rectangle needed to cover the blob.
+     * the rectangle needed to cover the blob.  The distance is
+     * the time it takes for a line of slope 1 to go across the 
+     * connected set.
       
        1
      11 
@@ -100,6 +109,26 @@ public class Main implements TestCaseHandler<InputData>,
      */
     static int findTimeToDecay(List<Integer> connectedRects, InputData input) {
         //find most north line via y - intercept  (lowest row value)
+        /**
+         * Because north is in direction of decrasing y, we want
+         * y - y' / x = -1
+         * 
+         * basically the slope delta(y - y_intercept) / delta(x)
+         * 
+         * y - y' = -x
+         * y+x = y'
+         * 
+         * Graph goes like
+         *   12345
+         * 1 
+         * 2   1
+         * 3
+         * 4
+         * 5
+         * 
+         * so the 1 is on a line x+y = 5  -- (3,2) (4,1) (5,0)  5 is the y intercept
+         * 
+         */
         int northYInt = Integer.MAX_VALUE;
         int southYInt = 0;
         
@@ -112,10 +141,15 @@ public class Main implements TestCaseHandler<InputData>,
         for(Integer rectNum : connectedRects) {
             northYInt = Math.min(northYInt, input.rects[rectNum].y1 + input.rects[rectNum].x1);
             southYInt = Math.max(southYInt, input.rects[rectNum].y2 + input.rects[rectNum].x2);
+            
+            //North is in direction of decreasing y coordinate
+            Preconditions.checkState(northYInt <= southYInt);
+            
             maxY = Math.max(maxY, input.rects[rectNum].y2);
             maxX = Math.max(maxX, input.rects[rectNum].x2);
         }
         
+        //This is the check for the bottom right corner being 'filled in'
         southYInt = Math.max(southYInt, maxY + maxX);
         
         return southYInt - northYInt + 1;
@@ -168,37 +202,20 @@ public class Main implements TestCaseHandler<InputData>,
 
     @Override
     public InputData readInput(Scanner scanner, int testCase)
-            {
+    {
 
         InputData input = new InputData(testCase);
         input.R = scanner.nextInt();
         input.rects = new Rectangle[input.R];
-        for (int i = 0; i < input.R; ++i) {
-            
-            input.rects[i] = new Rectangle(scanner.nextInt(),scanner.nextInt(),scanner.nextInt(),scanner.nextInt());
+        for (int i = 0; i < input.R; ++i)
+        {
+
+            input.rects[i] = new Rectangle(scanner.nextInt(), scanner.nextInt(), scanner.nextInt(), scanner.nextInt());
         }
 
         return input;
 
     }
-
-    public Main() {
-        super();
-    }
-
-    public static void main(String args[]) throws Exception {
-
-        if (args.length < 1) {
-            args = new String[] { "sample.txt" };
-            // args = new String[] { "C-small-practice.in" };
-            // args = new String[] { "B-large-practice.in" };
-        }
-        log.info("Input file {}", args[0]);
-
-        Main m = new Main();
-        Runner.goSingleThread(args[0], m, m);
-        // Runner.go(args[0], m, m, new InputData(-1));
-
-    }
+   
 
 }

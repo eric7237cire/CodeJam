@@ -22,6 +22,7 @@ import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
+import codejam.utils.utils.DoubleFormat;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
@@ -30,11 +31,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
     
     public Main() {
-        super("D", false, true);
+        super("D", 1, 1, 0);
     }
     
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-    
+        
     private static class CircleWithAngle {
         Circle c;
         double polarAngle;
@@ -78,10 +78,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         log.info("Starting calculating case {}", caseNumber);
         
         StringBuffer sb = new StringBuffer();
-        
-        DecimalFormat decim = new DecimalFormat("0.00000000");
-        decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
-        
+                
 
 
         //double ans = DivideConq.findMinPerimTriangle(input.points);
@@ -285,7 +282,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
             double area = getArea(arcsArray, circlesWithpolarAngles, bucketPos);
         
-            sb.append(decim.format(area));
+            sb.append(DoubleFormat.df7.format(area));
             sb.append(' ');
         }
         

@@ -6,6 +6,8 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
+import org.apache.commons.math3.complex.Complex;
+
 import com.google.common.base.Objects;
 import com.google.common.math.DoubleMath;
 
@@ -58,6 +60,10 @@ public class Point implements Comparable<Point> {
         return String.format("(%s, %s)", df.format(x), df.format(y));
     }
     
+    public Complex toComplex() {
+        return new Complex(getX(), getY());
+    }
+    
     public Point translate(Point newOrigin) {
         return new Point(x - newOrigin.getX(), y - newOrigin.getY());
     }
@@ -71,6 +77,10 @@ public class Point implements Comparable<Point> {
         double sinTh = Math.sin(ang);
         return new Point(getX() * cosTh - getY() * sinTh,
                 getX() * sinTh + getY() * cosTh);
+    }
+    
+    public Point rotateAbout(Point pivot, double ang) {
+        return translate(pivot).rotate(ang).translate( pivot.scale(-1));
     }
     
     public Point scale(double factor) {

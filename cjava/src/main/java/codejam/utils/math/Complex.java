@@ -1,3 +1,7 @@
+package codejam.utils.math;
+
+import codejam.utils.datastructures.StdOut;
+
 /*************************************************************************
  *  Compilation:  javac Complex.java
  *  Execution:    java Complex

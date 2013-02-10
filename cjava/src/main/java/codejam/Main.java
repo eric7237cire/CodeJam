@@ -236,6 +236,54 @@ public class Main  {
         
     }
     
+    static void round2_2010(String args[]) {
+        //2010 2         
+        /**
+         * 2010 Round 2
+         * Problem 1.
+         * 
+         * 1.  My solution -- a binary search to find the size that fits
+         * 2.  A better solution -- calculate all symmetric points and use that
+         * to try centers that would work
+         */
+        //codejam.y2010.round_2.diamond.Main m = new codejam.y2010.round_2.diamond.Main();
+       //codejam.y2010.round_2.diamond.OldMain m = new codejam.y2010.round_2.diamond.OldMain();
+       
+       /**
+        * 2010 Round 2
+        * Problem 2
+        * 
+        * 1. DP on a tree but not memoized.  Looks like it follows the given solution too
+        */
+        //codejam.y2010.round_2.world_cup.Main m = new codejam.y2010.round_2.world_cup.Main();
+       
+        /**
+         * Problem 3
+         * 
+         * Intersecting rectangles / connected components.
+         * 
+         * Y intercepts ; patters
+         */
+        //codejam.y2010.round_2.bacteria.Main m = new codejam.y2010.round_2.bacteria.Main(); 
+
+       /**
+        * Optimize  2x
+        * Go through again
+        * 
+        * TODO 2 theorectical solutions using inversions
+        * TODO comments
+        */
+        codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }    
+    }
+    
     static void round2_2011(String args[]) {
         //2011 2
         
@@ -401,12 +449,13 @@ public class Main  {
         //beta2008(args);
         //practiceContest2008(args);
         
+        round2_2010(args);
         
         //round2_2011(args);        
        // roundFinal_2011(args);
         
        // round3_2012(args);
-        roundFinal_2012(args);
+      //  roundFinal_2012(args);
 
        // Main m = null;
         
@@ -641,37 +690,7 @@ public class Main  {
       //large a bit slow
         //codejam.y2010.round_1C.chess_boards.Main m = new codejam.y2010.round_1C.chess_boards.Main();
 
-         //2010 2         
-         /**
-          * 2010 Round 2
-          * Problem 1.
-          * 
-          * 1.  My solution -- a binary search to find the size that fits
-          * 2.  A better solution -- calculate all symmetric points and use that
-          * to try centers that would work
-          */
-         //codejam.y2010.round_2.diamond.Main m = new codejam.y2010.round_2.diamond.Main();
-        //codejam.y2010.round_2.diamond.OldMain m = new codejam.y2010.round_2.diamond.OldMain();
-        
-        /**
-         * 2010 Round 2
-         * Problem 2
-         * 
-         * 1. DP on a tree but not memoized.  Looks like it follows the given solution too
-         */
-         //codejam.y2010.round_2.world_cup.Main m = new codejam.y2010.round_2.world_cup.Main();
-        
-        //Maybe do a doc TODO / comments
-         //codejam.y2010.round_2.bacteria.Main m = new codejam.y2010.round_2.bacteria.Main(); 
-
-        /**
-         * Optimize  2x
-         * Go through again
-         * 
-         * TODO 2 theorectical solutions using inversions
-         * TODO comments
-         */
-         //codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
+      
                   
          //2010 3
          
