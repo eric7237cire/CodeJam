@@ -25,6 +25,13 @@ public class Circle {
 		this.y = y;
 		this.r = r;
 	}
+	
+	public Circle(Point center, double r) {
+        super();
+        this.x = center.x();
+        this.y = center.y();
+        this.r = r;
+    }
 
 	
 	
@@ -80,11 +87,11 @@ public class Circle {
 
         double d = circle1.getCenter().distance(circle2.getCenter());
 
-        double a = (circle1.getR() * circle1.getR() - circle2.getR()
-                * circle2.getR() + d * d)
+        double a = (circle1.r() * circle1.r() - circle2.r()
+                * circle2.r() + d * d)
                 / (2 * d);
 
-        double h = Math.sqrt(circle1.getR() * circle1.getR() - a * a);
+        double h = Math.sqrt(circle1.r() * circle1.r() - a * a);
 
         double dx = circle2.x - circle1.x;
         double dy = circle2.y - circle1.y;
@@ -112,11 +119,11 @@ public class Circle {
         
         if (lineBetweenCenters.getType() == Line.Type.HORIZONTAL) {
             //perp line is a vertical line going through intersectionPoint
-            midPoint = lineBetweenCenters.getPointGivenX(intersectionPoint.getX());
+            midPoint = lineBetweenCenters.getPointGivenX(intersectionPoint.x());
         } else if (lineBetweenCenters.getType() == Line.Type.VERTICAL) {
-            Preconditions.checkState(circle1.getCenter().getX() == circle2.getCenter().getX());
+            Preconditions.checkState(circle1.getCenter().x() == circle2.getCenter().x());
             //Perp line is a horizontal line going through intersectionPoint
-            midPoint = new Point(circle1.getCenter().getX(), intersectionPoint.getY());
+            midPoint = new Point(circle1.getCenter().x(), intersectionPoint.y());
             
         } else {
         //find line perpendicular to this line containing the first intersection point
@@ -129,8 +136,8 @@ public class Circle {
         //This point is the midpoint between the 2 intersections.  Since the
         //midpoint = (x1 + x2) / 2, (y1+y2) / 2
         
-        Point otherIntersection = new Point(2 * midPoint.getX() - intersectionPoint.getX(),
-                2 * midPoint.getY() - intersectionPoint.getY());
+        Point otherIntersection = new Point(2 * midPoint.x() - intersectionPoint.x(),
+                2 * midPoint.y() - intersectionPoint.y());
         return otherIntersection;
     }
     
@@ -199,8 +206,8 @@ public class Circle {
 		Circle top = circleA.getY() >= circleB.getY() ? circleA : circleB;
 		Circle bottom = circleA.getY() < circleB.getY() ? circleA : circleB;
 		
-		double yTop = top.getY() + top.getR();
-		double yBottom = bottom.getY() - bottom.getR();
+		double yTop = top.getY() + top.r();
+		double yBottom = bottom.getY() - bottom.r();
 		
 		double y = (yTop + yBottom) / 2;
 		
@@ -226,8 +233,8 @@ public class Circle {
 	    double m = lineAB.getM();
 	    double b = lineAB.getB();
 	    
-	    double r_a = circleA.getR();
-	    double r_b = circleB.getR();
+	    double r_a = circleA.r();
+	    double r_b = circleB.r();
 	    double x_a = circleA.getX();
 	    double y_a = circleA.getY();
 	    
@@ -309,10 +316,10 @@ Point[] ret = handleBaseCasesPointsIntersectingLineOriginatingAtP(p);
     
     public Point[] getPointsIntersectingLine(Line l) {
         //Move circle to origin
-        double x2 = l.getP2().getX() - x;
-        double y2 = l.getP2().getY() - y;
-        double x1 =  l.getP1().getX() - x;
-        double y1 =  l.getP1().getY() - y;
+        double x2 = l.getP2().x() - x;
+        double y2 = l.getP2().y() - y;
+        double x1 =  l.getP1().x() - x;
+        double y1 =  l.getP1().y() - y;
         double dx = x2-x1;
         double dy = y2-y1;
         double dr = Math.sqrt(dx*dx+dy*dy);
@@ -383,8 +390,8 @@ angle = tan-1 (m)
 	    }
 	    Circle transCircle = new Circle(this);
 	    //move point to origin 
-	    transCircle.y = this.y - p.getY();
-	    transCircle.x = this.x - p.getX();
+	    transCircle.y = this.y - p.y();
+	    transCircle.x = this.x - p.x();
 	    Line l = new Line(new Point(x,y), p);
 	    double angle = Math.atan(l.getM());
 	    
@@ -394,7 +401,7 @@ angle = tan-1 (m)
 	    double x2 = transCircle.x + transCircle.r * Math.cos(angle+Math.PI);
         double y2 = transCircle.y + transCircle.r * Math.sin(angle+Math.PI);
 
-        return buildCloseFar(new Point(x1+p.getX(), y1+p.getY()), new Point(x2+p.getX(),y2+p.getY()), p);
+        return buildCloseFar(new Point(x1+p.x(), y1+p.y()), new Point(x2+p.x(),y2+p.y()), p);
         
 	}
 	
@@ -402,10 +409,10 @@ angle = tan-1 (m)
 	    if (this.getCenter().equals(p)) {
 	        return new Point[] {p, p};
 	    }
-	    if (DoubleComparator.compareStatic(p.getX(), x) == 0) {
+	    if (DoubleComparator.compareStatic(p.x(), x) == 0) {
             return buildCloseFar( new Point(x, y - r), new Point(x, y + r), p);
         }
-        if (DoubleComparator.compareStatic(p.getY(), y) == 0) {
+        if (DoubleComparator.compareStatic(p.y(), y) == 0) {
             return buildCloseFar( new Point(x - r, y), new Point(x + r, y), p);
         }
         return null;
@@ -413,8 +420,8 @@ angle = tan-1 (m)
 	
 	private final static double DOUBLE_TOLERANCE = 0.000001d;
 	public boolean onCircle(Point p) {
-	    double r2 = (x - p.getX()) * (x - p.getX()) +
-	            (y - p.getY()) * (y - p.getY());
+	    double r2 = (x - p.x()) * (x - p.x()) +
+	            (y - p.y()) * (y - p.y());
 	    
 	    double rCalc = Math.sqrt(r2);
 	    
@@ -423,7 +430,7 @@ angle = tan-1 (m)
 	
 	public boolean contains(Circle c) {
 		//Radius must be >= c
-		if (r < c.getR()) {
+		if (r < c.r()) {
 			return false;
 		}
 		
@@ -548,7 +555,7 @@ angle = tan-1 (m)
 		
 		double x1 = circle1.getX();
 		double y1 = circle1.getY();
-		double r1 = circle1.getR();
+		double r1 = circle1.r();
 		//double s1 = -1;
 		
 		//Substitute xs = M+N*rs, ys = P + Q*rs
@@ -579,9 +586,9 @@ angle = tan-1 (m)
 		return new double[] {
 				2*circle2.getX() - 2 *circle1.getX(),
 				2*circle2.getY() - 2 *circle1.getY(),
-				2*circle1.getR() - 2 *circle2.getR(),
-				circle1.getR()*circle1.getR() 
-				- circle2.getR()*circle2.getR()
+				2*circle1.r() - 2 *circle2.r(),
+				circle1.r()*circle1.r() 
+				- circle2.r()*circle2.r()
 				- circle1.getX()*circle1.getX()
 				+ circle2.getX()*circle2.getX()
 				- circle1.getY()*circle1.getY()
@@ -618,7 +625,7 @@ angle = tan-1 (m)
 
   
 	
-    public double getR() {
+    public double r() {
 		return r;
 	}
 

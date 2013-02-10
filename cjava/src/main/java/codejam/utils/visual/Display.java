@@ -59,10 +59,10 @@ public class Display extends Frame {
 	}
 
 	public void addCircle(Circle c) {
-		minX = Math.min(c.getX() - c.getR(),  minX);
-		maxX = Math.max(c.getX() + c.getR(),  maxX);
-		minY = Math.min(c.getY() - c.getR(),  minY);
-		maxY = Math.max(c.getY() + c.getR(),  maxY);
+		minX = Math.min(c.getX() - c.r(),  minX);
+		maxX = Math.max(c.getX() + c.r(),  maxX);
+		minY = Math.min(c.getY() - c.r(),  minY);
+		maxY = Math.max(c.getY() + c.r(),  maxY);
 		this.circles.add(c);
 	}
 	
@@ -77,8 +77,8 @@ public class Display extends Frame {
 		//Rectangle r = getBounds();
 		int x = (int) translateCoord(c.getX(),minX,maxX,minDisplayX, maxDisplayX);
 		int y = (int) translateCoord(c.getY(),minY,maxY,minDisplayY, maxDisplayY);
-		int width = (int)  (2*c.getR() / (maxX - minX) * (maxDisplayX - minDisplayX));
-		int height = (int)  (2*c.getR() / (maxY - minY) * (maxDisplayY - minDisplayY));
+		int width = (int)  (2*c.r() / (maxX - minX) * (maxDisplayX - minDisplayX));
+		int height = (int)  (2*c.r() / (maxY - minY) * (maxDisplayY - minDisplayY));
 		log.debug("DrawCircle {} ({}, {}) width {} height {} ", c, x, y, width, height);
 		
 		this.getGraphics().drawOval((int) (x  - width/2),

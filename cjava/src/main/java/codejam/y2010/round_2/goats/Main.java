@@ -101,10 +101,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
              * to circle
              */
             for (int c = 0; c < circles.length; ++c) {
-                double x = circles[c].getX() - bucketPos.getX();
-                double y = circles[c].getY() - bucketPos.getY();
-
-                double ang = Math.atan2(y, x);
+                double ang = circles[c].getCenter().translate(bucketPos.toPoint()).polarAngle(); //.Math.atan2(y, x);
                 circlesWithpolarAngles[c] = new CircleWithAngle(circles[c],
                         ang);
      
@@ -209,6 +206,11 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     double startingAngle = arcs.peek().fromAngle;
 
                     while (true) {
+                        
+                        /**
+                         * This algorithm is similiar in spirit to grahams
+                         * scan, using a stack / calculating a convex hull
+                         */
 
                         Circle circ = circlesWithpolarAngles[circNum].c;
                         // get intersection of circNum and circle on stack
@@ -219,8 +221,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                                 new Point(bucketPos));
 
                         // Now get polar angle of intersection
-                        double x = intPoint.getX() - bucketPos.getX();
-                        double y = intPoint.getY() - bucketPos.getY();
+                        double x = intPoint.x() - bucketPos.getX();
+                        double y = intPoint.y() - bucketPos.getY();
 
                         double angle = Math.atan2(y, x);
 

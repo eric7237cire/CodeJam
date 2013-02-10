@@ -131,8 +131,8 @@ public class Triangle {
             return null;
         
         for(Point p : ret) {
-            cx += p.getX();
-            cy += p.getY();
+            cx += p.x();
+            cy += p.y();
         }
         
         cx /= ret.size();

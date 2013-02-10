@@ -92,7 +92,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             Line line = new Line(new Point(mtn, heights[mtn-1]),
                     new Point(percievedMax, heights[percievedMax-1]));
             
-            double cur = line.getPointGivenX(currentMtn).getY();
+            double cur = line.getPointGivenX(currentMtn).y();
             
             int heightInt = DoubleMath.isMathematicalInteger(cur) ?
              (int) Math.floor(cur) - 1 : (int) Math.floor(cur);
@@ -151,7 +151,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                  * must be >= to these peaks.
                  */
                 for(int mtnAfterPM = percievedMax + 1; mtnAfterPM <= N; ++mtnAfterPM) {
-                    double limit = line.getPointGivenX(mtnAfterPM).getY();
+                    double limit = line.getPointGivenX(mtnAfterPM).y();
                     
                     if (limit < 0) {
                         log.debug("Limit less than 0");
@@ -167,7 +167,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         Line maxPointLine = new Line(new Point(mtnAfterPM, heights[mtnAfterPM-1]),
                                 new Point(percievedMax, heights[percievedMax-1]));
                         
-                        double cur = maxPointLine.getPointGivenX(currentMtn).getY();
+                        double cur = maxPointLine.getPointGivenX(currentMtn).y();
                         
                         if (cur < 0) {
                             log.debug("New point < 0");
@@ -199,7 +199,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
                 //peaks between currentMtn and its percieved max, make sure none are in the way
                 for(int mtn = currentMtn+1; mtn < percievedMax; ++mtn) {
-                    double limit = line.getPointGivenX(mtn).getY();
+                    double limit = line.getPointGivenX(mtn).y();
                     
                     if (perceivedHighest[mtn-1] != currentPercievedMax)
                         continue;
@@ -208,7 +208,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         log.debug("Adjusting on SAME level peak {} between peak {} and max {} is too high.  Must be strictly less than {}", 
                                 mtn, currentMtn, percievedMax, DoubleFormat.df3.format(limit));
                         
-                        double cur = line.getPointGivenX(mtn).getY();
+                        double cur = line.getPointGivenX(mtn).y();
                         
                         int heightInt = (int) Math.floor(cur) - 1;
                         heights[mtn - 1] = heightInt;                        
@@ -235,7 +235,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     new Point(percievedMax, heights[percievedMax-1]));
             
             for(int mtn = currentMtn+1; mtn < percievedMax; ++mtn) {
-                double limit = line.getPointGivenX(mtn).getY();
+                double limit = line.getPointGivenX(mtn).y();
                 
                 if (heights[mtn-1] >= limit) {
                     log.info("Failure peak {} / h {} between peak {} / h {} and max {} / h {} is too high." +
@@ -246,7 +246,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
             
             for(int mtn = percievedMax + 1; mtn <= heights.length; ++mtn) {
-                double limit = line.getPointGivenX(mtn).getY();
+                double limit = line.getPointGivenX(mtn).y();
                 
                 if (heights[mtn-1] > limit) {
                     log.info("Failure peak {} after peak {} and max {} is too high.  Must be <= {}", mtn, currentMtn, percievedMax, DoubleFormat.df3.format(limit));
@@ -254,7 +254,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     Line maxPointLine = new Line(new Point(mtn, heights[mtn-1]),
                             new Point(percievedMax, heights[percievedMax-1]));
                     
-                    double cur = maxPointLine.getPointGivenX(currentMtn).getY();
+                    double cur = maxPointLine.getPointGivenX(currentMtn).y();
                     
                     log.info("Can change current mtn {} to <= {}", currentMtn, DoubleFormat.df3.format(cur));
                     

@@ -93,13 +93,13 @@ public class CircleTest {
         
         double distToLine = line.distanceToPoint(C);
 
-        assertEquals(c.getR(), distToLine, 0.00001);
+        assertEquals(c.r(), distToLine, 0.00001);
         
         Line line2 = new Line(P, T2);
         
         distToLine = line2.distanceToPoint(C);
 
-        assertEquals(c.getR(), distToLine, 0.00001);
+        assertEquals(c.r(), distToLine, 0.00001);
         
         line = null;
         
@@ -123,13 +123,13 @@ public class CircleTest {
 
         Point[] points = circle1.getIntersection(circle2);
 
-        assertTrue(0 == DoubleComparator.compareStatic(points[0].getX(),
+        assertTrue(0 == DoubleComparator.compareStatic(points[0].x(),
                 5.452190844));
-        assertTrue(0 == DoubleComparator.compareStatic(points[0].getY(),
+        assertTrue(0 == DoubleComparator.compareStatic(points[0].y(),
                 -0.020489638));
-        assertTrue(0 == DoubleComparator.compareStatic(points[1].getX(),
+        assertTrue(0 == DoubleComparator.compareStatic(points[1].x(),
                 1.082291915));
-        assertTrue(0 == DoubleComparator.compareStatic(points[1].getY(),
+        assertTrue(0 == DoubleComparator.compareStatic(points[1].y(),
                 -1.893303465));
 
     }
@@ -312,7 +312,7 @@ public class CircleTest {
 
         assertEquals(3, ans.getX(), DoubleComparator.TOLERANCE);
         assertEquals(3, ans.getY(), DoubleComparator.TOLERANCE);
-        assertEquals(4, ans.getR(), DoubleComparator.TOLERANCE);
+        assertEquals(4, ans.r(), DoubleComparator.TOLERANCE);
 
         b = new Circle(5, 3, 2);
         // Circle b = new Circle(4.4142135623731, 1.5857864376269, 2);
@@ -329,7 +329,7 @@ public class CircleTest {
 
         assertEquals(3, ans.getX(), DoubleComparator.TOLERANCE);
         assertEquals(3, ans.getY(), DoubleComparator.TOLERANCE);
-        assertEquals(4, ans.getR(), DoubleComparator.TOLERANCE);
+        assertEquals(4, ans.r(), DoubleComparator.TOLERANCE);
 
     }
 
@@ -345,7 +345,7 @@ public class CircleTest {
 
         assertEquals(55, ans.getX(), DoubleComparator.TOLERANCE);
         assertEquals(7, ans.getY(), DoubleComparator.TOLERANCE);
-        assertEquals(50, ans.getR(), DoubleComparator.TOLERANCE);
+        assertEquals(50, ans.r(), DoubleComparator.TOLERANCE);
 
         a = new Circle(430, 1000, 84);
 
@@ -368,7 +368,7 @@ public class CircleTest {
 
         assertEquals(200, ans.getX(), DoubleComparator.TOLERANCE);
         assertEquals(101.5, ans.getY(), DoubleComparator.TOLERANCE);
-        assertEquals(2.5, ans.getR(), DoubleComparator.TOLERANCE);
+        assertEquals(2.5, ans.r(), DoubleComparator.TOLERANCE);
     }
 
    

@@ -37,28 +37,28 @@ public class Line {
     }
 
     public Line(Point a, double m) {
-        this(m, a.getY() - m * a.getX());
+        this(m, a.y() - m * a.x());
     }
     public Line(Point a, Point b) {
         this.p1 = a;
         this.p2 = b;
         
-        if (dc.compare(a.getX(), b.getX()) == 0) {
+        if (dc.compare(a.x(), b.x()) == 0) {
             type = Type.VERTICAL;
-            this.b = a.getX();
+            this.b = a.x();
             this.m = Double.POSITIVE_INFINITY;
             return;
         }
 
-        if (dc.compare(a.getY(), b.getY()) == 0) {
+        if (dc.compare(a.y(), b.y()) == 0) {
             type = Type.HORIZONTAL;
-            this.b = a.getY();
+            this.b = a.y();
             this.m = 0;
             return;
         }
         type = Type.NORMAL;
-        m = (a.getY() - b.getY()) / (a.getX() - b.getX());
-        this.b = a.getY() - m * a.getX();
+        m = (a.y() - b.y()) / (a.x() - b.x());
+        this.b = a.y() - m * a.x();
     }
     
     public Point getP1() {
@@ -81,13 +81,13 @@ public class Line {
         //crossproduct = (c.y - a.y) * (b.x - a.x) - (c.x - a.x) * (b.y - a.y)
         //if abs(crossproduct) > epsilon : return False   # (or != 0 if using integers)
 
-        double dotproduct = (pointToTest.getX() - a.getX()) * (b.getX() - a.getX()) + (pointToTest.getY() - a.getY())*(b.getY() - a.getY());
+        double dotproduct = (pointToTest.x() - a.x()) * (b.x() - a.x()) + (pointToTest.y() - a.y())*(b.y() - a.y());
         
         if (dotproduct < 0) {
             return false;
         }
 
-        double squaredlengthba = (b.getX() - a.getX())*(b.getX() - a.getX()) + (b.getY() - a.getY())*(b.getY() - a.getY());
+        double squaredlengthba = (b.x() - a.x())*(b.x() - a.x()) + (b.y() - a.y())*(b.y() - a.y());
         
         if (dotproduct > squaredlengthba) {
             return false;
@@ -123,10 +123,10 @@ public class Line {
             return false;
         
         return (
-            DoubleMath.fuzzyCompare(Math.min(p1.getX(), p2.getX()), pointToTest.getX(), tolerance) <= 0 &&
-            DoubleMath.fuzzyCompare(Math.max(p1.getX(), p2.getX()), pointToTest.getX(), tolerance) >= 0 &&
-            DoubleMath.fuzzyCompare(Math.min(p1.getY(), p2.getY()), pointToTest.getY(), tolerance) <= 0 && 
-            DoubleMath.fuzzyCompare(Math.max(p1.getY(), p2.getY()), pointToTest.getY(), tolerance) >= 0) ;
+            DoubleMath.fuzzyCompare(Math.min(p1.x(), p2.x()), pointToTest.x(), tolerance) <= 0 &&
+            DoubleMath.fuzzyCompare(Math.max(p1.x(), p2.x()), pointToTest.x(), tolerance) >= 0 &&
+            DoubleMath.fuzzyCompare(Math.min(p1.y(), p2.y()), pointToTest.y(), tolerance) <= 0 && 
+            DoubleMath.fuzzyCompare(Math.max(p1.y(), p2.y()), pointToTest.y(), tolerance) >= 0) ;
 
     }
     /**
@@ -171,7 +171,7 @@ public class Line {
         if (type == Type.NORMAL)
             return new Point((y - b) / m, y);
         else if (type == Type.VERTICAL) {
-            return new Point(p1.getX(),y);
+            return new Point(p1.x(),y);
         } else {
             return null;
         }
@@ -179,12 +179,12 @@ public class Line {
 
     public boolean onLine(Point a) {
         if (type == Type.NORMAL) {
-            Point b = getPointGivenY(a.getY());
+            Point b = getPointGivenY(a.y());
             return a.equals(b);
         } else if (type == Type.HORIZONTAL) {
-            return DoubleComparator.compareStatic(a.getY(), b) == 0;
+            return DoubleComparator.compareStatic(a.y(), b) == 0;
         } else if (type == Type.VERTICAL) {
-            return DoubleComparator.compareStatic(a.getX(), b) == 0;
+            return DoubleComparator.compareStatic(a.x(), b) == 0;
         }
 
         throw new IllegalStateException("huh");
@@ -228,11 +228,11 @@ public class Line {
         //Vector current line
         Point vec = p2.translate(p1);
         
-        if (vec.getY() == 0) {
-            return new Line(p, new Point(p.getX(), p.getY()+1));
+        if (vec.y() == 0) {
+            return new Line(p, new Point(p.x(), p.y()+1));
         }
         
-        double mPerp = -vec.getX() / vec.getY();
+        double mPerp = -vec.x() / vec.y();
         return new Line(p, mPerp);
         
     }
@@ -243,13 +243,13 @@ public class Line {
         if (this.type != Line.Type.NORMAL || line2.type != Line.Type.NORMAL) {
             Point p3 = line2.p1;
             Point p4 = line2.p2;
-            double numX = (p1.getX()*p2.getY() - p1.getY()*p2.getX()) * (p3.getX()-p4.getX()) - 
-                    (p1.getX() - p2.getX()) * (p3.getX()*p4.getY() - p3.getY()*p4.getX());
+            double numX = (p1.x()*p2.y() - p1.y()*p2.x()) * (p3.x()-p4.x()) - 
+                    (p1.x() - p2.x()) * (p3.x()*p4.y() - p3.y()*p4.x());
             
-            double numY =(p1.getX()*p2.getY() - p1.getY()*p2.getX()) * (p3.getY()-p4.getY()) - 
-                    (p1.getY() - p2.getY()) * (p3.getX()*p4.getY() - p3.getY()*p4.getX());
+            double numY =(p1.x()*p2.y() - p1.y()*p2.x()) * (p3.y()-p4.y()) - 
+                    (p1.y() - p2.y()) * (p3.x()*p4.y() - p3.y()*p4.x());
             
-            double denom = (p1.getX()-p2.getX())*(p3.getY()-p4.getY()) - (p1.getY()-p2.getY())*(p3.getX()-p4.getX());
+            double denom = (p1.x()-p2.x())*(p3.y()-p4.y()) - (p1.y()-p2.y())*(p3.x()-p4.x());
             
             if (denom == 0) {
                 return null;

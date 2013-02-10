@@ -126,7 +126,7 @@ public class WateringPlantsTest extends TesterBase<InputData> {
 		*/
 		assertEquals(120, ans.getX(), DoubleComparator.TOLERANCE);
 		assertEquals(115, ans.getY(), DoubleComparator.TOLERANCE);
-		assertEquals(26, ans.getR(), DoubleComparator.TOLERANCE);
+		assertEquals(26, ans.r(), DoubleComparator.TOLERANCE);
 	}
 	
 	

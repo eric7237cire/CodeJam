@@ -186,8 +186,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                          */
                         Point intersection = posSlope.getIntersection(negSlope);
                         
-                        long cX = DoubleMath.roundToLong(intersection.getX(), RoundingMode.HALF_DOWN);
-                        long cY = 1 + DoubleMath.roundToLong(intersection.getY(), RoundingMode.HALF_DOWN);
+                        long cX = DoubleMath.roundToLong(intersection.x(), RoundingMode.HALF_DOWN);
+                        long cY = 1 + DoubleMath.roundToLong(intersection.y(), RoundingMode.HALF_DOWN);
                         
                         long A, B, C, D;
                         
@@ -327,8 +327,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
            
            Point dm = dLine.getIntersection(mLine);
            
-           double minX = Math.min(cm.getX(), dm.getX());
-           double maxX = Math.max(cm.getX(), dm.getX());
+           double minX = Math.min(cm.x(), dm.x());
+           double maxX = Math.max(cm.x(), dm.x());
            
            long intMinX = DoubleMath.roundToLong(minX, RoundingMode.UP);
            long intMaxX = DoubleMath.roundToLong(maxX,maxX >= 0 ? RoundingMode.DOWN : RoundingMode.UP);
@@ -385,8 +385,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
            Point am = aLine.getIntersection(mLine);           
            Point bm = bLine.getIntersection(mLine);
        
-           double minX = Math.min(am.getX(), bm.getX());
-           double maxX = Math.max(am.getX(), bm.getX());
+           double minX = Math.min(am.x(), bm.x());
+           double maxX = Math.max(am.x(), bm.x());
            
            long intMinX = DoubleMath.roundToLong(minX, RoundingMode.UP);
            long intMaxX =  DoubleMath.roundToLong(maxX, maxX >= 0 ? RoundingMode.DOWN : RoundingMode.UP)  ;

@@ -24,14 +24,14 @@ public class Point implements Comparable<Point> {
     /**
      * @return the x
      */
-    public double getX() {
+    public double x() {
         return x;
     }
     
     /**
      * @return the y
      */
-    public double getY() {
+    public double y() {
         return y;
     }
     
@@ -61,22 +61,22 @@ public class Point implements Comparable<Point> {
     }
     
     public Complex toComplex() {
-        return new Complex(getX(), getY());
+        return new Complex(x(), y());
     }
     
     public Point translate(Point newOrigin) {
-        return new Point(x - newOrigin.getX(), y - newOrigin.getY());
+        return new Point(x - newOrigin.x(), y - newOrigin.y());
     }
     
     public Point add(Point point) {
-        return new Point(x + point.getX(), y + point.getY());   
+        return new Point(x + point.x(), y + point.y());   
     }
     
     public Point rotate(double ang) {
         double cosTh = Math.cos(ang);
         double sinTh = Math.sin(ang);
-        return new Point(getX() * cosTh - getY() * sinTh,
-                getX() * sinTh + getY() * cosTh);
+        return new Point(x() * cosTh - y() * sinTh,
+                x() * sinTh + y() * cosTh);
     }
     
     public Point rotateAbout(Point pivot, double ang) {
@@ -84,7 +84,7 @@ public class Point implements Comparable<Point> {
     }
     
     public Point scale(double factor) {
-        return new Point(getX() * factor, getY() * factor);
+        return new Point(x() * factor, y() * factor);
     }
     /*
      *  y - y.s = (y.p - y.s) / (x.p - x.s)  (x - x.s)
@@ -170,15 +170,15 @@ public class Point implements Comparable<Point> {
     
     //Treating points as vectors from 0,0.  Return value is the z component of a 3d vector
     static public double crossProduct(Point u, Point v) {
-        return u.getX() * v.getY() - u.getY() * v.getX();
+        return u.x() * v.y() - u.y() * v.x();
     }
     
     static public double dotProduct(Point u, Point v) {
-        return u.getX() * v.getX() + u.getY() * v.getY();
+        return u.x() * v.x() + u.y() * v.y();
     }
     
     public double polarAngle() {
-        double ang = Math.atan2(getY(), getX());
+        double ang = Math.atan2(y(), x());
         if (ang < 0) {
             ang += 2 * Math.PI;
         }
@@ -187,6 +187,6 @@ public class Point implements Comparable<Point> {
     
     public Point normalize() {
         double len = new Point(0,0).distance(this);
-        return new Point(getX() / len, getY() / len);
+        return new Point(x() / len, y() / len);
     }
 }

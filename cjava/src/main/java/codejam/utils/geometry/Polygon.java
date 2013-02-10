@@ -7,17 +7,17 @@ public class Polygon {
         double sum = 0;
         for(int i = 0; i < points.size() - 1; ++i) {
             
-            sum += points.get(i).getX() * points.get(i+1).getY();  
+            sum += points.get(i).x() * points.get(i+1).y();  
         }
         
-        sum += points.get(points.size()-1).getX() * points.get(0).getY();
+        sum += points.get(points.size()-1).x() * points.get(0).y();
         
         for(int i = 0; i < points.size() - 1; ++i) {
             
-            sum -= points.get(i+1).getX() * points.get(i).getY();  
+            sum -= points.get(i+1).x() * points.get(i).y();  
         }
         
-        sum -= points.get(0).getX() * points.get(points.size()-1).getY();
+        sum -= points.get(0).x() * points.get(points.size()-1).y();
         
         return Math.abs(sum) / 2;
     }

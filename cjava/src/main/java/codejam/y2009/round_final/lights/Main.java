@@ -69,11 +69,11 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
             double d1ToCenter = p1.distance(circle.getCenter());
             
-            if (DoubleMath.fuzzyCompare(d1ToCenter,circle.getR(),0.0001) >= 0) {
+            if (DoubleMath.fuzzyCompare(d1ToCenter,circle.r(),0.0001) >= 0) {
                 clipped.add(p1);
             }
             
-            if (DoubleMath.fuzzyCompare(d1ToCenter,circle.getR(),0.0001) == 0) {
+            if (DoubleMath.fuzzyCompare(d1ToCenter,circle.r(),0.0001) == 0) {
                 tanPoints.add(p1);
             }
         }

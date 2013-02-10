@@ -66,12 +66,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
 		if (n == 1) {
 			sprinklers = new Circle[] { plants.get(0) };
-			return plants.get(0).getR();
+			return plants.get(0).r();
 		}
 
 		if (n == 2) {
 			sprinklers = new Circle[] { plants.get(0), plants.get(1) };
-			return Math.max(plants.get(0).getR(), plants.get(1).getR());
+			return Math.max(plants.get(0).r(), plants.get(1).r());
 		}
 
 		Map<Circle, List<Integer>> plantsCovered = new HashMap<>();
@@ -135,7 +135,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 				Preconditions.checkState(plantsInside.size() >= k);
 				plantsCovered.put(sprinkler, plantsInside);
 				sizeToSprinkler.get(plantsCount - 1).add(
-						new Sprinkler(sprinkler.getR(), plantsInsideBitSet, sprinkler));
+						new Sprinkler(sprinkler.r(), plantsInsideBitSet, sprinkler));
 
 			}
 

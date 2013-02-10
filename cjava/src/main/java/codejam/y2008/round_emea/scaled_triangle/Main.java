@@ -259,7 +259,7 @@ public class Main implements TestCaseHandler<InputData>,
             p = l1.getIntersection(l2);
         }
         
-        return String.format("Case #%d: %s %s", input.testCase, DoubleFormat.df6.format(p.getX()), DoubleFormat.df6.format(p.getY()));
+        return String.format("Case #%d: %s %s", input.testCase, DoubleFormat.df6.format(p.x()), DoubleFormat.df6.format(p.y()));
     }
 
 }

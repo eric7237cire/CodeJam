@@ -95,7 +95,7 @@ specifying the upper boundary. The j-th line here contains two integers
         for(int pIdx = 0; pIdx < points.size(); ++pIdx) {
             Point point = points.get(pIdx);
             
-            if (point.getX() < xLo ) 
+            if (point.x() < xLo ) 
                 continue;
                 
             if (pIdx == 0) {
@@ -116,7 +116,7 @@ specifying the upper boundary. The j-th line here contains two integers
         for(int pIdx = 0; pIdx < points.size(); ++pIdx) {
             Point point = points.get(pIdx);
             
-            if (point.getX() < xMax ) 
+            if (point.x() < xMax ) 
                 continue;
                 
             if (pIdx == 0) {
@@ -159,7 +159,7 @@ specifying the upper boundary. The j-th line here contains two integers
     
     
     double findSlice(InputData in, double targetArea) {
-        final double xLeft = in.upper.get(0).getX();
+        final double xLeft = in.upper.get(0).x();
         double xLo = xLeft;
         double xHi = in.W;
         

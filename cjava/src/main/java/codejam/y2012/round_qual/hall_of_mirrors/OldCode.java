@@ -32,10 +32,10 @@ public class OldCode {
      * Tx = (-CxTy +cxSy + CySx - TySx) / (-Ty + Sy + Cy - Ty ) 
      */
     
-    double Cx = C.getX();
-    double Cy = C.getY();
-    double Sx = S.getX();
-    double Sy = S.getY();
+    double Cx = C.x();
+    double Cy = C.y();
+    double Sx = S.x();
+    double Sy = S.y();
     
     Point T = null;
     if (isTargetY) {
@@ -76,15 +76,15 @@ public class OldCode {
         //Assume there is a wall parralel 
         if (targetWall.getType() == Line.Type.HORIZONTAL) {
             isTargetY = true;
-            target = targetWall.getPointGivenX(1).getY();
-            side1 = sideWall1.getPointGivenY(1).getX();
-            side2 = sideWall2.getPointGivenY(1).getX();
+            target = targetWall.getPointGivenX(1).y();
+            side1 = sideWall1.getPointGivenY(1).x();
+            side2 = sideWall2.getPointGivenY(1).x();
         } else {
             isTargetY = false;
-            target  = targetWall.getPointGivenY(1).getX();
+            target  = targetWall.getPointGivenY(1).x();
             
-            side1 = sideWall1.getPointGivenX(1).getY();
-            side2 = sideWall2.getPointGivenX(1).getY();
+            side1 = sideWall1.getPointGivenX(1).y();
+            side2 = sideWall2.getPointGivenX(1).y();
         }
             
         //Using graph.png
@@ -108,13 +108,13 @@ public class OldCode {
          * b = a*delta / (kc + ak)
          *  
          */
-        double a = isTargetY ? side1 - S.getX() : side1 - S.getY();
-        double c = isTargetY ? side2 - S.getX() : side2 - S.getY();
+        double a = isTargetY ? side1 - S.x() : side1 - S.y();
+        double c = isTargetY ? side2 - S.x() : side2 - S.y();
         
         a = Math.abs(a);
         c = Math.abs(c);
         
-        double delta = isTargetY ? target - S.getY() : target  - S.getX();
+        double delta = isTargetY ? target - S.y() : target  - S.x();
         
         delta = Math.abs(delta);
         
@@ -125,20 +125,20 @@ public class OldCode {
         Point tSide2 = null;
         
         if (isTargetY) {
-            if (target > S.getY()) {
-                tSide1 = new Point(side1, S.getY() + b);
-                tSide2 = new Point(side2, S.getY() + d);
+            if (target > S.y()) {
+                tSide1 = new Point(side1, S.y() + b);
+                tSide2 = new Point(side2, S.y() + d);
             } else {
-                tSide1 = new Point(side1, S.getY() - b);
-                tSide2 = new Point(side2, S.getY() - d);
+                tSide1 = new Point(side1, S.y() - b);
+                tSide2 = new Point(side2, S.y() - d);
             }
         } else {
-            if (target > S.getX()) {
-                tSide1 = new Point(S.getX() + b, side1);
-                tSide2 = new Point(S.getX() + d, side2);
+            if (target > S.x()) {
+                tSide1 = new Point(S.x() + b, side1);
+                tSide2 = new Point(S.x() + d, side2);
             } else {
-                tSide1 = new Point(S.getX() - b, side1);
-                tSide2 = new Point(S.getX() - d, side2);
+                tSide1 = new Point(S.x() - b, side1);
+                tSide2 = new Point(S.x() - d, side2);
             }
         }
         
@@ -161,10 +161,10 @@ public class OldCode {
         //Assume there is a wall parralel 
         if (targetWall.getType() == Line.Type.HORIZONTAL) {
             isTargetY = true;
-            target = targetWall.getPointGivenX(1).getY();
+            target = targetWall.getPointGivenX(1).y();
         } else {
             isTargetY = false;
-            target  = targetWall.getPointGivenY(1).getX();
+            target  = targetWall.getPointGivenY(1).x();
         }
             
         //Triangle between S and T has sides a and b
@@ -192,13 +192,13 @@ public class OldCode {
          * 2kcb -cb + ab = a*delta
          * b = a*delta / (2kc - c + a) 
          */
-        double a = isTargetY ? target - S.getY() : target - S.getX();
-        double c = isTargetY ? target - C.getY() : target - C.getX();
+        double a = isTargetY ? target - S.y() : target - S.x();
+        double c = isTargetY ? target - C.y() : target - C.x();
         
         a = Math.abs(a);
         c = Math.abs(c);
         
-        double delta = isTargetY ? C.getX() - S.getX() : C.getY() - S.getY();
+        double delta = isTargetY ? C.x() - S.x() : C.y() - S.y();
         
         delta = Math.abs(delta);
         
@@ -209,20 +209,20 @@ public class OldCode {
         Point TCorner = null;
         
         if (isTargetY) {
-            if (C.getX() > S.getX()) {
-                T = new Point(S.getX() + b, target);
-                TCorner = new Point(C.getX() - d, target);
+            if (C.x() > S.x()) {
+                T = new Point(S.x() + b, target);
+                TCorner = new Point(C.x() - d, target);
             } else {
-                T = new Point(S.getX() - b, target);
-                TCorner = new Point(C.getX() + d, target);
+                T = new Point(S.x() - b, target);
+                TCorner = new Point(C.x() + d, target);
             }
         } else {
-            if (C.getY() > S.getY()) {
-                T = new Point(target, S.getY() + b);
-                TCorner = new Point(target, C.getY() - d);
+            if (C.y() > S.y()) {
+                T = new Point(target, S.y() + b);
+                TCorner = new Point(target, C.y() - d);
             } else {
-                T = new Point(target, S.getY() - b);
-                TCorner = new Point(target, C.getY() + d);
+                T = new Point(target, S.y() - b);
+                TCorner = new Point(target, C.y() + d);
             }
         }
         
@@ -231,7 +231,7 @@ public class OldCode {
         ret[1] = TCorner;
         //Now calculate if we hit the corner wall first
         
-        a = isTargetY ? S.getY() - C.getY() : S.getX() - C.getX();
+        a = isTargetY ? S.y() - C.y() : S.x() - C.x();
         
         //c is the same
         //double c = isTargetY ? target - C.getY() : target - C.getX();
@@ -246,20 +246,20 @@ public class OldCode {
         TCorner = null;
         
         if (isTargetY) {
-            if (C.getX() > S.getX()) {
-                T = new Point(S.getX() + b, C.getY());
-                TCorner = new Point(C.getX() - d, target);
+            if (C.x() > S.x()) {
+                T = new Point(S.x() + b, C.y());
+                TCorner = new Point(C.x() - d, target);
             } else {
-                T = new Point(S.getX() - b, C.getY());
-                TCorner = new Point(C.getX() + d, target);
+                T = new Point(S.x() - b, C.y());
+                TCorner = new Point(C.x() + d, target);
             }
         } else {
-            if (C.getY() > S.getY()) {
-                T = new Point(C.getX(), S.getY() + b);
-                TCorner = new Point(target, C.getY() - d);
+            if (C.y() > S.y()) {
+                T = new Point(C.x(), S.y() + b);
+                TCorner = new Point(target, C.y() - d);
             } else {
-                T = new Point(C.getX(), S.getY() - b);
-                TCorner = new Point(target, C.getY() + d);
+                T = new Point(C.x(), S.y() - b);
+                TCorner = new Point(target, C.y() + d);
             }
         }
 //      

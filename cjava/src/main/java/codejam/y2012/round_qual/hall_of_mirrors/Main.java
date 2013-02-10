@@ -470,17 +470,17 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             CornerCase cc = matchesCorner(corners, intersection, direction);
             
             if (cc == CornerCase.REFLECT) {
-                log.debug("Hit corner {} {}", intersection.getX(), intersection.getY());                
+                log.debug("Hit corner {} {}", intersection.x(), intersection.y());                
                 newDirection = new PointInt(-direction.getX(), -direction.getY()) ;
             } else if (cc == CornerCase.NOTHING) {
                newDirection = wall.getType() == Line.Type.HORIZONTAL ?
                 new PointInt(direction.getX(), -direction.getY()) :
                 new PointInt(-direction.getX(), direction.getY());
             } else if (cc == CornerCase.ABSORB) {
-                log.debug("Absorb corner {} {}", intersection.getX(), intersection.getY());
+                log.debug("Absorb corner {} {}", intersection.x(), intersection.y());
                 newDirection = new PointInt(0,0);
             } else if (cc == CornerCase.PASSTHRU) {
-                log.debug("Pass thru corner {} {}", intersection.getX(), intersection.getY());
+                log.debug("Pass thru corner {} {}", intersection.x(), intersection.y());
                 continue;   
             }
             
@@ -550,7 +550,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         if (DoubleMath.fuzzyCompare(distance, in.D, Point.tolerance) <= 0) {
             log.debug("Printing winning path distance {}  self {}  initial dir {}", distance, self, initialDir);
             for(Point p : points) {
-                log.debug("Winning path {} {}", p.getX(), p.getY());
+                log.debug("Winning path {} {}", p.x(), p.y());
             }
             return true;   
         }
@@ -615,7 +615,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         Line vec = new Line(self, iP);
 
         Point from = self;
-        double fromAngle = Math.atan2(iP.getY() - from.getY(), iP.getX() - from.getX());
+        double fromAngle = Math.atan2(iP.y() - from.y(), iP.x() - from.x());
         fromAngle = Angle.makeAnglePositive(fromAngle);
 
         DoubleComparator dc = new DoubleComparator(0.0001);
@@ -636,7 +636,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 if (j==0 && !wall.onLine(firstPoint))
                     continue;
 
-                double angleIntersection = Math.atan2(intersection.getY() - from.getY(), intersection.getX() - from.getX());
+                double angleIntersection = Math.atan2(intersection.y() - from.y(), intersection.x() - from.x());
                 angleIntersection = Angle.makeAnglePositive(angleIntersection);
 
                 // other side of line
@@ -658,8 +658,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
                     // log.debug("New angle {}", fromAngle * 180 / Math.PI);
 
-                    double y = Math.sin(fromAngle) + from.getY();
-                    double x = Math.cos(fromAngle) + from.getX();
+                    double y = Math.sin(fromAngle) + from.y();
+                    double x = Math.cos(fromAngle) + from.x();
 
                     vec = new Line(from, new Point(x, y));
 
