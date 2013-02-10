@@ -3,6 +3,7 @@ package codejam.y2011.round_1A.killer_word;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import codejam.utils.main.InputFilesHandler;
@@ -11,6 +12,7 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 public class Redo extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
@@ -42,7 +44,12 @@ public class Redo extends InputFilesHandler implements TestCaseHandler<InputData
             
         }
         
+        Map<String, Integer> wordToDictIndex = Maps.newHashMap();
+        
+        int wordIndex = 0;
         for(String word : in.words) {
+            wordToDictIndex.put(word, wordIndex++);
+            
             holders[word.length()-1].addWord(word);
         }
         
@@ -54,7 +61,7 @@ public class Redo extends InputFilesHandler implements TestCaseHandler<InputData
         
         for (int m = 0; m < in.M; ++m) {
             
-            List<String> singleRemainingWords = Lists.newArrayList();
+            String bestWord = null;
             int bestScore = -1000;
             
             String guesses = in.guessLists.get(m);
@@ -86,20 +93,28 @@ public class Redo extends InputFilesHandler implements TestCaseHandler<InputData
                     
                     if (wh.getWordsRemainingCount() == 1) {
                         String remWord = wh.getRemainingWord();
-                        if (remWord.indexOf(guessChar) == -1) {
-                            wh.score++;
-                        }
+                        
                         if (wh.score > bestScore) {
-                            singleRemainingWords.clear();
+                            bestWord = null;
                             bestScore = wh.score;
                         }
                         
                         if (wh.score >= bestScore) {
-                        singleRemainingWords.add(remWord);
+                            if (bestWord == null) {
+                                bestWord = remWord;
+                            } else {
+                                int existingIndex = wordToDictIndex.get(bestWord);
+                                int curIndex = wordToDictIndex.get(remWord);
+                                
+                                if (curIndex < existingIndex) {
+                                    bestWord = remWord;
+                                }
+                            }
+                        
                         }
                         
                         whIt.remove();
-                        log.debug("Removing Wh {}; bestScore {}; words {}", wh.toShortString(), bestScore, singleRemainingWords);
+                        log.debug("Removing Wh {}; bestScore {}; words {}", wh.toShortString(), bestScore, bestWord);
                     }
                 }
                 
@@ -111,10 +126,7 @@ public class Redo extends InputFilesHandler implements TestCaseHandler<InputData
                 prevLists = curWhList;
             }
             
-            Collections.sort(singleRemainingWords);
-            Preconditions.checkState(singleRemainingWords.size() > 0);
-            
-            ans.append(singleRemainingWords.get(0));
+            ans.append(bestWord);
             
             ans.append(" ");
             
