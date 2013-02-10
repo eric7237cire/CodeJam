@@ -174,11 +174,12 @@ public class WordHolder
     }
     
     public String getRemainingWord() {
-        for(int w = 0; w < words.size(); ++w) {
-            if (wordsRemaining.get(w)) {
-                return (words.get(w));
+        int index = wordsRemaining.nextSetBit(0);
+        
+        if (index != -1) {
+            return (words.get(index));
                 
-            }
+            
         }
         
         return null;

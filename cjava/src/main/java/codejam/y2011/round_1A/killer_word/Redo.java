@@ -18,7 +18,7 @@ public class Redo extends InputFilesHandler implements TestCaseHandler<InputData
 
     
     public Redo() {
-        super("B", 1, 0, 1);
+        super("B", 0, 1, 0);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class Redo extends InputFilesHandler implements TestCaseHandler<InputData
                 List<WordHolder> curWhList = Lists.newArrayList();
                 
                 Character guessChar = guesses.charAt(g);
-                log.debug("Guessing " + guessChar);
+                log.debug("Guessing " + guessChar + " cur lists length " + prevLists.size());
                 
                 for(int i = 0; i < prevLists.size(); ++i) {
                     WordHolder wh = prevLists.get(i);
@@ -84,12 +84,12 @@ public class Redo extends InputFilesHandler implements TestCaseHandler<InputData
                 }
                 
                 
-                log.debug("After guess {}", guessChar);
+               // log.debug("After guess {}", guessChar);
                 Iterator<WordHolder> whIt = curWhList.iterator();
                 
                 while(whIt.hasNext()) {
                     WordHolder wh = whIt.next();
-                    log.debug("Wh {}", wh.toShortString());
+                 //   log.debug("Wh {}", wh.toShortString());
                     
                     if (wh.getWordsRemainingCount() == 1) {
                         String remWord = wh.getRemainingWord();
@@ -114,7 +114,7 @@ public class Redo extends InputFilesHandler implements TestCaseHandler<InputData
                         }
                         
                         whIt.remove();
-                        log.debug("Removing Wh {}; bestScore {}; words {}", wh.toShortString(), bestScore, bestWord);
+                   //     log.debug("Removing Wh {}; bestScore {}; words {}", wh.toShortString(), bestScore, bestWord);
                     }
                 }
                 
