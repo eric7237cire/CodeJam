@@ -525,6 +525,37 @@ public class Main  {
        }      
     }
     
+    static void round1B_2012(String args[]) {
+        //2012 1B
+        /**
+         * Problem 1
+         * 
+         * Easier problem.  Did not use binary search as the solution suggests,
+         * but a linear one.  Again, not quite what the solution says, but
+         * probably equivalent.
+         * 
+         * Restarts every time there is someone with too many points, so maybe its
+         * not linear.  Who knows.  Still very fast...
+         */
+        //  
+        codejam.y2012.round_1B.safety_numbers.Main m = new codejam.y2012.round_1B.safety_numbers.Main();
+        
+        //BFS with an interesting state, leaving a cave
+        //codejam.y2012.round_1B.tide.Main m = new codejam.y2012.round_1B.tide.Main();
+         
+         //Pigeon hole principal / birthday paradox
+        //codejam.y2012.round_1B.equal_sums.Main m = new codejam.y2012.round_1B.equal_sums.Main();
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }     
+        
+    }
+    
     static void round3_2012(String args[]) {
         /**
          * 2012 Round 3
@@ -605,10 +636,11 @@ public class Main  {
         
       //  round2_2010(args);
         
-        round1A_2011(args);
+        //round1A_2011(args);
         //round2_2011(args);        
         //roundFinal_2011(args);
         
+        round1B_2012(args);
        // round3_2012(args);
       //  roundFinal_2012(args);
 
@@ -921,16 +953,7 @@ public class Main  {
         //Constraint problem
         //codejam.y2012.round_1A.cruise_control.Main m = new codejam.y2012.round_1A.cruise_control.Main();
         
-        //2012 1B
-        //Easier problem.  Did some trick that did not seem to correspond to their solution.  TODO doc/compare?
-        //codejam.y2012.round_1B.safety_numbers.Main m = new codejam.y2012.round_1B.safety_numbers.Main();
-        
-        //BFS with an interesting state, leaving a cave
-        //codejam.y2012.round_1B.tide.Main m = new codejam.y2012.round_1B.tide.Main();
-         
-         //Pigeon hole principal / birthday paradox
-        //codejam.y2012.round_1B.equal_sums.Main m = new codejam.y2012.round_1B.equal_sums.Main();
-        
+       
         //2012 1C
         /**
          * 2012 round 1C

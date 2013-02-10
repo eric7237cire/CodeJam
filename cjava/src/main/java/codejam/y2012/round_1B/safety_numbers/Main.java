@@ -2,23 +2,19 @@ package codejam.y2012.round_1B.safety_numbers;
 
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.DoubleFormat;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    @Override
-    public String[] getDefaultInputFiles() {
-     //    return new String[] {"sample.in"};
-        return new String[] { "A-small-practice.in", "A-large-practice.in" };
+    public Main() {
+        super("A", 1,1);
     }
+    
 
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
@@ -56,9 +52,27 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             if (neverLose[i])
                 continue;
             
+            /**
+             * The avg is the score they need to not be eliminated, anything
+             * below this means that we can distribute audience points
+             * to all the other scores lower than this one to be higher.
+             * 
+             * ex
+             * 
+             * 10 20 30
+             * average = 60*2 / 3 = 40
+             * 
+             * If someone has 40 then there is no way for the others to have both >= 40
+             * as there is not enough points leftover to distribute
+             */
             double a = 100* (avg - in.score[i]) / sum;
             ans[i] = a;
             
+            /**
+             * But, if they don't need any help from the audience,
+             * this changes the average.  We recompute and
+             * start all over
+             */
             if (a < 0) {
                 neverLose[i] = true;
                 ans[i] = 0;
@@ -67,6 +81,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
                 //Adjust the average to be distributed over the vulnerable places
                 avg = (2.0d * sum - neverLoseSum) / (in.N - neverLoseCount);
+                
+                //Go back to the beginning for Vasilli
                 i=-1;
                 continue;
             }
