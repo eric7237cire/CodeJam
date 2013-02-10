@@ -16,7 +16,7 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.math.DoubleMath;
 
 public class DivideConq {
-    List<PointInt> list;
+    private List<PointInt> list;
     
     static CompareX compX = new CompareX();
     static CompareY compY = new CompareY();
@@ -37,12 +37,47 @@ public class DivideConq {
         return dq.findMinPerim(0, list.size()-1, listSortedY);
     }
     
+    public double bruteForceSmall(List<PointInt> listPointsSortedY) {
+        double min = Double.MAX_VALUE;
+        for(int i = 0; i < listPointsSortedY.size(); ++i) {
+            PointInt pI = listPointsSortedY.get(i);
+            
+            for(int j = i+1; j < listPointsSortedY.size(); ++j) {
+                
+                PointInt pj = listPointsSortedY.get(j);
+                double ij = pI.distance(pj);
+                
+                for(int k = j+1; k < listPointsSortedY.size(); ++k) {
+                    PointInt pk = listPointsSortedY.get(k);
+                    double ik = pk.distance(pI);
+                    double jk = pk.distance(pj);
+                    
+                    double perim = ij + ik + jk;
+                    min = Math.min(min, perim);
+                }
+            }
+        }
+        return min;
+    }
+    
+    /**
+     * Because we are partitioning by X and avoiding another sort,
+     * leftIndex and rightIndex 
+     * @param leftIndex
+     * @param rightIndex
+     * @param listPointsSortedY
+     * @return
+     */
     public double findMinPerim(int leftIndex, int rightIndex, List<PointInt> listPointsSortedY) {
-        int numberOfPoints = rightIndex - leftIndex + 1;
+        final int numberOfPoints = rightIndex - leftIndex + 1;
         Preconditions.checkArgument(listPointsSortedY.size() == numberOfPoints);
         
         if (numberOfPoints < 3) {
             return Double.MAX_VALUE;
+        }
+        
+        if (numberOfPoints < 9) {
+            return bruteForceSmall(listPointsSortedY);
         }
         
         int leftHalfEndIndex = leftIndex + numberOfPoints / 2 - 1;
@@ -111,8 +146,12 @@ public class DivideConq {
                 continue;
             }
             
-            //Calculate start of the box to consider.  Should be at most
-            //boxMargin away from currenty point.  End of box is the last point added
+            /**
+             * Calculate start of the box to consider.  Should be at most
+             * boxMargin away from currenty point.  End of box is the last point added
+             * 
+             * Basically, while the box is too low, move it up
+             */
             while(startBox < boxPoints.size() && point.getY() - boxPoints.get(startBox).getY() > boxMargin) {
                 startBox++;
             }

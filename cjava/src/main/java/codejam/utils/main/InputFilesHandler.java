@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.Level;
-import codejam.y2011.round_2.spinning_blade.Main;
 
 import com.google.common.collect.Lists;
 

@@ -7,16 +7,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import codejam.utils.geometry.PointInt;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
+    public Main() {
+        super("B", 1,1, 0);
+    }
 
     @Override
     public String handleCase(InputData input) {

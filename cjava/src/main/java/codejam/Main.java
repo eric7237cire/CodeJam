@@ -1,18 +1,10 @@
 package codejam;
 
-import java.util.List;
-
-import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.main.AbstractInputData;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner;
-import codejam.utils.main.Runner.TestCaseInputScanner;
-import codejam.utils.multithread.Consumer.TestCaseHandler;
-
-import com.google.common.collect.Lists;
 
 public class Main  {
 
@@ -234,6 +226,71 @@ public class Main  {
          */
         //codejam.y2008.round_emea.bus_stops.Main m = new codejam.y2008.round_emea.bus_stops.Main();
         
+        
+       String[] files = Main.getFiles(m, args);
+       for (String file : files) {
+           log.info("Input file {}", file);
+
+           Runner.goSingleThread(file, m, m);
+         //Runner.go(file, m, m, 5);
+       }   
+    }
+    
+    static void roundFinal_2009(String args[]) {
+        //Round Final -- 2009
+        //codejam.y2009.round_4.year_more.Main m = new codejam.y2009.round_4.year_more.Main();
+        
+        //Both of these still a bit slow, especially min perimeter
+        /**
+         * Problem 2
+         * 
+         * Used proposed solution -- takes around 60 seconds
+         * Best C++ answer takes around 20 seconds
+         * 
+         */
+        codejam.y2009.round_final.min_perimeter.Main m = new codejam.y2009.round_final.min_perimeter.Main();
+       
+       //Using lattice paths to make a complex Dynamic programming DP
+       // codejam.y2009.double_sort_grid.Main m = new codejam.y2009.double_sort_grid.Main();
+       
+        //Network flow
+      // codejam.y2009.round_final.wifi_towers.Main m = new codejam.y2009.round_final.wifi_towers.Main();
+       
+        /**
+         * 2009 finals problem 5.
+         * 
+         * The solution in Sol.java written by Vitaliy was annotated.  
+         * 
+         * The one todo that seems magical is the direction (up or down) of each path is assigned only once.
+         * Perhaps it is due to the flipping / setting minimum code at the end of the main solve method.
+         * 
+         * And maybe try a bottom up, but meh...
+         */
+        //codejam.y2009.round_final.marbles.Sol m = new codejam.y2009.round_final.marbles.Sol();
+      
+       
+       /**
+        * 2009 Round Final
+        * Problem 6
+        * 
+        * Triangle - Triangle intersection
+        * Circle disk area
+        * polar angles
+        * 
+        * Fast -- 400 ms for large.  
+        * 
+        * idea -- try approximation and line sweep suggested solutions
+        */
+       //codejam.y2009.round_final.lights.Main m = new codejam.y2009.round_final.lights.Main();
+       
+       
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+         //   Runner.goSingleThread(file, m, m);
+          Runner.go(file, m, m, 5);
+        }    
     }
     
     static void round2_2010(String args[]) {
@@ -267,11 +324,16 @@ public class Main  {
         //codejam.y2010.round_2.bacteria.Main m = new codejam.y2010.round_2.bacteria.Main(); 
 
        /**
-        * Optimize  2x
-        * Go through again
+        * Problem 4
+        * Intersection of circles, overlapping area
         * 
-        * TODO 2 theorectical solutions using inversions
-        * TODO comments
+        * 1.  Solution
+        * 2.  Have TestInversions showing sample1, how intersection
+        * of the inverted circles (lines) correspond to the intersection
+        * of the circles.  See lecture notes pdf for more about
+        * dual line to point / lower envelope and convex hull.
+        *
+        * Idea actually implement convex hull solution
         */
         codejam.y2010.round_2.goats.Main m = new codejam.y2010.round_2.goats.Main();
         
@@ -350,7 +412,7 @@ public class Main  {
         
         /**
          * 2011 final round
-         * 
+         * Problem 3
          * 1.  Creates a turning machine
          * 2.  idea -- Can optimize the number of iterations
          */
@@ -358,11 +420,17 @@ public class Main  {
 
         /**
          * 2011 Final
-         * 
+         * Problem 4
          * 1.  Used proposed solution -- TODO go through reasoning
          */
         //codejam.y2011.round_final.ace_in_hole.Main m = new codejam.y2011.round_final.ace_in_hole.Main();
         
+        /**
+         * Problem 5
+         * 
+         * Probability, expected value
+         * Reducing nearly unbounded search space
+         */
        codejam.y2011.round_final.google_royale.Main m = new codejam.y2011.round_final.google_royale.Main();
        
        String[] files = Main.getFiles(m, args);
@@ -449,7 +517,9 @@ public class Main  {
         //beta2008(args);
         //practiceContest2008(args);
         
-        round2_2010(args);
+        roundFinal_2009(args);
+        
+      //  round2_2010(args);
         
         //round2_2011(args);        
        // roundFinal_2011(args);
@@ -596,46 +666,7 @@ public class Main  {
         //Counting ranges.  Had to use complex caching to solve in time.  TODO more comments and their solution
         // codejam.y2009.round_3.interesting_ranges.Main m = new codejam.y2009.round_3.interesting_ranges.Main();
          
-         //Round Final -- 2009
-         //codejam.y2009.round_4.year_more.Main m = new codejam.y2009.round_4.year_more.Main();
-         
-         //Both of these still a bit slow, especially min perimeter
-         //codejam.y2009.min_perimeter.Main m = new codejam.y2009.min_perimeter.Main();
-        
-        //Using lattice paths to make a complex Dynamic programming DP
-        // codejam.y2009.double_sort_grid.Main m = new codejam.y2009.double_sort_grid.Main();
-        
-         //Network flow
-       // codejam.y2009.round_final.wifi_towers.Main m = new codejam.y2009.round_final.wifi_towers.Main();
-        
-        //codejam.y2009.round_final.marbles.Main m = new codejam.y2009.round_final.marbles.Main();
-        
-        /**
-         * 2009 Round Final
-         * Problem 6
-         * 
-         * Triangle - Triangle intersection
-         * Circle disk area
-         * polar angles
-         * 
-         * Fast -- 400 ms for large.  
-         * 
-         * idea -- try approximation and line sweep suggested solutions
-         */
-        //codejam.y2009.round_final.lights.Main m = new codejam.y2009.round_final.lights.Main();
-        
-        /**
-         * 2009 finals problem 5.
-         * 
-         * The solution in Sol.java written by Vitaliy was annotated.  
-         * 
-         * The one todo that seems magical is the direction (up or down) of each path is assigned only once.
-         * Perhaps it is due to the flipping / setting minimum code at the end of the main solve method.
-         * 
-         * And maybe try a bottom up, but meh...
-         */
-        //codejam.y2009.round_final.marbles.Sol m = new codejam.y2009.round_final.marbles.Sol();
-      
+     
          //2010 qual
          //Bignumber GCD
          //codejam.y2010.fair_warning.Main m = new codejam.y2010.fair_warning.Main();

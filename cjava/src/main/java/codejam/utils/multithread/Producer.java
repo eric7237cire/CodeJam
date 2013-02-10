@@ -13,7 +13,7 @@ public class Producer<InputData extends AbstractInputData> implements Runnable {
 
    
 
-    final static Logger log = LoggerFactory.getLogger(Producer.class);
+    final static Logger log = LoggerFactory.getLogger("main");
 
     private final BlockingQueue<InputData> queue;
     private final int testCaseTotal;

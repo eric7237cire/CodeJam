@@ -110,9 +110,7 @@ public class TestInversion
        // StdDraw.text(p1.x(), p1.y(), "pts");
        // StdDraw.text(p2.x(), p2.y(), "pts2");
         
-        double d1 = p1.distance(q);
-        double d2 = p2.distance(q);
-        
+               
         Point p1_inv = invertPoint(p1, q, 10);
         Point p2_inv = invertPoint(p2, q, 10);
         
