@@ -390,7 +390,15 @@ public class Main  {
         //2011 1A
         
         //A in C++
-        //TODO large is quite slow 14 secs -- 30 secs.  Can improve the algorithm
+
+        /**
+         * Problem 2
+         * 
+         * Redid the implementation to get a 10X performance speedup...
+         * nice
+         * 
+         * The #1 guys c++ solution is still faster...
+         */
        // codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
         codejam.y2011.round_1A.killer_word.Redo m = new codejam.y2011.round_1A.killer_word.Redo();
        

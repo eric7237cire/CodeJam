@@ -1,7 +1,5 @@
 package codejam.y2011.round_1A.killer_word;
 
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -36,27 +34,20 @@ public class Redo extends InputFilesHandler implements TestCaseHandler<InputData
         
         WordHolder[] holders = new  WordHolder[MAX_WORD_LEN];
         
-        
-        
-        
         for(int len = 0; len < MAX_WORD_LEN; ++len) {
-            holders[len] = new WordHolder(len+1);
-            
+            holders[len] = new WordHolder(len+1);            
         }
         
         Map<String, Integer> wordToDictIndex = Maps.newHashMap();
         
         int wordIndex = 0;
         for(String word : in.words) {
-            wordToDictIndex.put(word, wordIndex++);
-            
+            wordToDictIndex.put(word, wordIndex++);            
             holders[word.length()-1].addWord(word);
         }
         
         StringBuffer ans = new StringBuffer();
         ans.append("Case #" + in.testCase + ": ");
-        
-        log.debug("hnehu");
         
         
         for (int m = 0; m < in.M; ++m) {
@@ -66,6 +57,9 @@ public class Redo extends InputFilesHandler implements TestCaseHandler<InputData
             
             String guesses = in.guessLists.get(m);
             
+            /**
+             * Initialize possible classes
+             */
             List<WordHolder> prevLists = Lists.newArrayList();
             for(int len = 0; len < MAX_WORD_LEN; ++len) {
                 prevLists.add(holders[len]);
@@ -75,59 +69,55 @@ public class Redo extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 List<WordHolder> curWhList = Lists.newArrayList();
                 
-                Character guessChar = guesses.charAt(g);
-                log.debug("Guessing " + guessChar + " cur lists length " + prevLists.size());
+                List<WordHolder> singleWordLeft = Lists.newArrayList();
                 
+                Character guessChar = guesses.charAt(g);
+               // log.debug("Guessing " + guessChar + " cur lists length " + prevLists.size());
+                
+                /**
+                 * Guess the word for each word class, the results are added
+                 * to curWhList.
+                 */
                 for(int i = 0; i < prevLists.size(); ++i) {
                     WordHolder wh = prevLists.get(i);
-                    wh.getPossibleGuesses(curWhList, guessChar);
+                    wh.getPossibleGuesses(curWhList, singleWordLeft, guessChar);
                 }
                 
                 
                // log.debug("After guess {}", guessChar);
-                Iterator<WordHolder> whIt = curWhList.iterator();
                 
-                while(whIt.hasNext()) {
-                    WordHolder wh = whIt.next();
-                 //   log.debug("Wh {}", wh.toShortString());
-                    
-                    if (wh.getWordsRemainingCount() == 1) {
-                        String remWord = wh.getRemainingWord();
+                for(WordHolder wh : singleWordLeft) {
+                                       
+                    Preconditions.checkState(wh.getWordsRemainingCount() == 1);
                         
-                        if (wh.score > bestScore) {
-                            bestWord = null;
-                            bestScore = wh.score;
-                        }
-                        
-                        if (wh.score >= bestScore) {
-                            if (bestWord == null) {
-                                bestWord = remWord;
-                            } else {
-                                int existingIndex = wordToDictIndex.get(bestWord);
-                                int curIndex = wordToDictIndex.get(remWord);
-                                
-                                if (curIndex < existingIndex) {
-                                    bestWord = remWord;
-                                }
-                            }
-                        
-                        }
-                        
-                        whIt.remove();
-                   //     log.debug("Removing Wh {}; bestScore {}; words {}", wh.toShortString(), bestScore, bestWord);
+                    if (wh.score > bestScore) {
+                        bestWord = null;
+                        bestScore = wh.score;
                     }
+                    
+                    if (wh.score >= bestScore) {
+                        String remWord = wh.getRemainingWord();
+                        if (bestWord == null) {
+                            bestWord = remWord;
+                        } else {
+                            int existingIndex = wordToDictIndex.get(bestWord);
+                            int curIndex = wordToDictIndex.get(remWord);
+                            
+                            if (curIndex < existingIndex) {
+                                bestWord = remWord;
+                            }
+                        }
+                    }  
                 }
                 
-                if (curWhList.isEmpty()) {
-                    
+                if (curWhList.isEmpty()) {                    
                     break;
                 }
                 
                 prevLists = curWhList;
             }
             
-            ans.append(bestWord);
-            
+            ans.append(bestWord);            
             ans.append(" ");
             
             

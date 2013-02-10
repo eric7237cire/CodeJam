@@ -9,11 +9,11 @@ import codejam.utils.datastructures.BitSetInt;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 public class WordHolder
 {
 
+    //All the words, does not change
     private List<String> words;
     
     /**
@@ -34,12 +34,17 @@ public class WordHolder
      */
     private List<Map<BitSetInt, BitSet>> letterCombinatinToWord;
     
+    //Each holder holds a specific length word
     private int wordSize;
     
+    //How many words left / bits set in words remaining
     private int wordsRemainingCount;
     private BitSet wordsRemaining;
+    
+    //Which positions have been guessed
     private BitSetInt positionsFilled;
     
+    //How many points he lost
     int score;
         
     @Override
@@ -126,8 +131,15 @@ public class WordHolder
         this.score = 0;
     }
     
+    public static WordHolder copy(WordHolder wh) {
+        WordHolder ret = new WordHolder(wh);
+        //ret.letterCombinatinToWord
+        return ret;
+    }
+    
     private WordHolder(WordHolder wh)
     {
+        //Shallow copy everything
         this.wordSize = wh.wordSize;
         this.letterCombinatinToWord = wh.letterCombinatinToWord;
         this.words = wh.words;
@@ -148,8 +160,7 @@ public class WordHolder
         }
         
         for(int c = 0; c < word.length(); ++c) {
-            int chCode = word.charAt(c) - 'a';
-            
+            int chCode = word.charAt(c) - 'a';            
             letterBitmasks[chCode].set(c);
         }
         
@@ -178,19 +189,15 @@ public class WordHolder
         
         if (index != -1) {
             return (words.get(index));
-                
-            
         }
         
         return null;
     }
 
-    public void getPossibleGuesses(List<WordHolder> wordHolders, Character nextLetterToGuess)
+    public void getPossibleGuesses(List<WordHolder> wordHolders, List<WordHolder> singeWordLeft, Character nextLetterToGuess)
     {
         
-        //Preconditions.checkState(lettersLeftToGuess.length() >= 1);
         
-        //for(int c = 0; c < lettersLeftToGuess.length(); ++c) {
         int chCode = nextLetterToGuess - 'a';
         
         Map<BitSetInt, BitSet> comWord = letterCombinatinToWord.get(chCode);
@@ -212,10 +219,18 @@ public class WordHolder
                 wh.score++;
             }
             
+            //Needed...why?  don't know
             if (wh.wordsRemainingCount == 0) {
                 continue;
             }
-            wordHolders.add(wh);
+            
+            
+            if (wh.wordsRemainingCount == 1) {
+                //Put in a special list to look at
+                singeWordLeft.add(wh);
+            } else {
+                wordHolders.add(wh);
+            }
         }
         
         
