@@ -236,6 +236,46 @@ public class Main  {
        }   
     }
     
+    static void round2_2009(String args[]) {
+        //Round 2 -- 2009
+        
+        /**
+         * Round 2 -- 2009
+         * Problem 1
+         * 
+         * Number of swaps to put in order, can only swap adjacent.
+         * "Disorder" count equals number of swaps. 
+         */
+        //codejam.y2009.round_2.crazy_rows.Main m = new codejam.y2009.round_2.crazy_rows.Main();
+       
+        /**
+         * Problem 2
+         * Found a similiar themed solution to mine that is much faster and more compact
+         * 
+         * Bottom up doesn't seem to make as much sense as it is hard to know if it is a reachable
+         * state or not.  
+         * 
+         * Dynamic programming / grid
+         */
+       //codejam.y2009.round_2.digging_problem.Main m = new codejam.y2009.round_2.digging_problem.Main();
+        codejam.y2009.round_2.digging_problem.Solution m = new codejam.y2009.round_2.digging_problem.Solution();
+        
+       //Depth first search, augmenting path
+        //codejam.y2009.round_2.stock_charts.Main m = new codejam.y2009.round_2.stock_charts.Main();
+       
+       //Hardcore circle geometry / polar coordinates
+    //    codejam.y2009.round_2.watering_plants.Main m = new codejam.y2009.round_2.watering_plants.Main();
+       
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }   
+    }
+    
     static void roundFinal_2009(String args[]) {
         //Round Final -- 2009
         //codejam.y2009.round_4.year_more.Main m = new codejam.y2009.round_4.year_more.Main();
@@ -346,6 +386,35 @@ public class Main  {
         }    
     }
     
+    static void round1A_2011(String args[]) {
+        //2011 1A
+        
+        //A in C++
+        //TODO large is quite slow 14 secs -- 30 secs.  Can improve the algorithm
+       // codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
+        codejam.y2011.round_1A.killer_word.Redo m = new codejam.y2011.round_1A.killer_word.Redo();
+       
+       /**
+        * 2011 Round 1A
+        * 
+        * Weighted / directed graph
+        * 
+        * Using DP to find max length.  Bottom up
+        * would need a topologicial sort (reverse post order)
+        * which is itself recursive, so it would defeat
+        * the point of doing a bottom up DP...
+        */
+       // codejam.y2011.round_1A.dominion.Main m = new codejam.y2011.round_1A.dominion.Main();
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }    
+    }
+    
     static void round2_2011(String args[]) {
         //2011 2
         
@@ -407,7 +476,11 @@ public class Main  {
         //Dynamic programming, combinatorics stars and bars counting (distributing n stars in k buckets )
         //codejam.y2011.round_final.runs.Main m = new codejam.y2011.round_final.runs.Main(); 
         
-        //Simulation with a trick to do batch processing.  TODO look at proof via paths / tree justifying the algo
+        /**
+         * Simulation with a trick to do batch processing.  
+         * 
+         * idea -- look at proof via paths / tree justifying the algo 
+         */
         //codejam.y2011.round_final.rains_atlantis.Main m = new codejam.y2011.round_final.rains_atlantis.Main();
         
         /**
@@ -421,9 +494,11 @@ public class Main  {
         /**
          * 2011 Final
          * Problem 4
-         * 1.  Used proposed solution -- TODO go through reasoning
+         * 1.  Used proposed solution 
+         * 
+         * idea go through formal proof via induction
          */
-        //codejam.y2011.round_final.ace_in_hole.Main m = new codejam.y2011.round_final.ace_in_hole.Main();
+        codejam.y2011.round_final.ace_in_hole.Main m = new codejam.y2011.round_final.ace_in_hole.Main();
         
         /**
          * Problem 5
@@ -431,7 +506,7 @@ public class Main  {
          * Probability, expected value
          * Reducing nearly unbounded search space
          */
-       codejam.y2011.round_final.google_royale.Main m = new codejam.y2011.round_final.google_royale.Main();
+      // codejam.y2011.round_final.google_royale.Main m = new codejam.y2011.round_final.google_royale.Main();
        
        String[] files = Main.getFiles(m, args);
        for (String file : files) {
@@ -517,12 +592,14 @@ public class Main  {
         //beta2008(args);
         //practiceContest2008(args);
         
-        roundFinal_2009(args);
+        //round2_2009(args);
+       // roundFinal_2009(args);
         
       //  round2_2010(args);
         
+        round1A_2011(args);
         //round2_2011(args);        
-       // roundFinal_2011(args);
+        //roundFinal_2011(args);
         
        // round3_2012(args);
       //  roundFinal_2012(args);
@@ -623,26 +700,7 @@ public class Main  {
          */
          //codejam.y2009.round_1C.bribe_prisoner.Main m = new codejam.y2009.round_1C.bribe_prisoner.Main();
          
-         //Round 2 -- 2009
         
-         /**
-          * Round 2 -- 2009
-          * Problem 1
-          * 
-          * Number of swaps to put in order, can only swap adjacent.
-          * "Disorder" count equals number of swaps. 
-          */
-         //codejam.y2009.round_2.crazy_rows.Main m = new codejam.y2009.round_2.crazy_rows.Main();
-        
-        //DP TODO bottom up
-         //codejam.y2009.digging_problem.Main m = new codejam.y2009.digging_problem.Main();
-        
-        //Depth first search, augmenting path
-         //codejam.y2009.round_2.stock_charts.Main m = new codejam.y2009.round_2.stock_charts.Main();
-        
-        //Hardcore circle geometry / polar coordinates
-     //    codejam.y2009.round_2.watering_plants.Main m = new codejam.y2009.round_2.watering_plants.Main();
-         
          //Round 3 -- 2009
         //Grid shortest path
          //codejam.y2009.sokoban.Main m = new codejam.y2009.sokoban.Main();
@@ -772,23 +830,7 @@ public class Main  {
          */
        // codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
         
-         //2011 1A
         
-         //A in C++
-         //TODO large is quite slow 14 secs -- 30 secs.  Can improve the algorithm
-        // codejam.y2011.round_1A.killer_word.Main m = new codejam.y2011.round_1A.killer_word.Main();
-        
-        /**
-         * 2011 Round 1A
-         * 
-         * Weighted / directed graph
-         * 
-         * Using DP to find max length.  Bottom up
-         * would need a topologicial sort (reverse post order)
-         * which is itself recursive, so it would defeat
-         * the point of doing a bottom up DP...
-         */
-        // codejam.y2011.round_1A.dominion.Main m = new codejam.y2011.round_1A.dominion.Main();
          
          //2011 1B
          //A in C++

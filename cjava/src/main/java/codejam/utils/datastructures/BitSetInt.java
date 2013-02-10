@@ -26,6 +26,30 @@ public class BitSetInt {
         return bs;
     }
     
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + bits;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        BitSetInt other = (BitSetInt) obj;
+        if (bits != other.bits)
+            return false;
+        return true;
+    }
+
     public int[] toIntArray(int length) {
         int[] array = new int[length];
         for(int i = 0; i < array.length; ++i) {

@@ -2,9 +2,7 @@ package codejam.y2009.round_2.digging_problem;
 
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.Grid;
@@ -14,14 +12,16 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
     
-    
+    public Main() {
+        super("B", 1, 1, 0);
+    }
     
     int iterations;
     
     
-    int[][][][] memo;
+    
      
    
     
@@ -131,11 +131,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
     }
     
-    private int getNewMin(int minCost, int costAddition, Node newNode, InputData input) {
+    private int getNewMin(int minCost, int costAddition, Node newNode, InputData input, int[][][][] memo) {
     	if (newNode == null) {
     		return minCost;
     	}
-        Integer toDig = getDepthOutOfCave(newNode, input);
+        Integer toDig = getDepthOutOfCave(newNode, input, memo);
         
         if (toDig < 0 || toDig == Integer.MAX_VALUE) {
             return minCost;
@@ -144,7 +144,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return Math.min(costAddition + toDig, minCost);
     }
     
-    Integer getDepthOutOfCave(final Node n, InputData input) {
+    Integer getDepthOutOfCave(final Node n, InputData input, int[][][][] memo) {
         
 
         final int rows = input.rows;
@@ -179,7 +179,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     		    
     		    int dug = 1 + Math.abs(digEntryCol - position);
     	        
-    	        minCost = getNewMin(minCost, dug,  newNode, input);
+    	        minCost = getNewMin(minCost, dug,  newNode, input, memo);
     		}
     	   	
     	
@@ -192,7 +192,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 
                 int dug = 1 + Math.abs(digEntryCol - position);
                 
-                minCost = getNewMin(minCost, dug,  newNode, input);
+                minCost = getNewMin(minCost, dug,  newNode, input, memo);
             }
         }
     	
@@ -215,7 +215,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     	        Preconditions.checkState(!grid.getEntry(row+1, col));
     	        //int[] range = findOpenRange(row, col);
     	        Node newNode = new Node(row, col, col);
-    	        minCost = getNewMin(minCost, 0,  newNode, input);
+    	        minCost = getNewMin(minCost, 0,  newNode, input, memo);
     	        
     	        //newNode = new Node(row, col, range[1]);
     	        //minCost = getNewMin(minCost, 0,  newNode);
@@ -239,7 +239,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     	        Preconditions.checkState(!grid.getEntry(row+1, col));
                 
                 Node newNode = new Node(row, col, col);
-    	        minCost = getNewMin(minCost, 0,  newNode, input);
+    	        minCost = getNewMin(minCost, 0,  newNode, input, memo);
             }
         }
     	
@@ -253,17 +253,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     	return minCost;
     }
 
-    public Main() {
-        super();
-
-        iterations = 0;
-    }
-
-	final static Logger log = LoggerFactory.getLogger(Main.class);
-
-   
-
-    
+        
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
         InputData input = new InputData(testCase);
@@ -286,6 +276,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public String handleCase(InputData data) {
         
+        int[][][][] memo;
         memo = new int[data.rows][data.cols][data.cols][2];
         for(int r=0; r<data.rows; ++r) {
             for(int c=0; c<data.cols; ++c) {
@@ -302,7 +293,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         Node n = new Node(0, 0, range[1]);
 
         log.info("Starting case {}", data.testCase);
-        Integer cost = getDepthOutOfCave(n, data);
+        Integer cost = getDepthOutOfCave(n, data, memo);
         
         log.info("Finished Starting case {}.  Iterations {}", data.testCase, iterations);
         

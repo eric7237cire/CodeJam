@@ -12,5 +12,5 @@ public class InputData extends AbstractInputData {
         super(testCase);
     }
     List<String> words;
-    List<String> lists;
+    List<String> guessLists;
 }

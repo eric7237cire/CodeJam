@@ -47,6 +47,8 @@ public class InputFilesHandler implements DefaultInputFiles
         
         if (!logging) {
             (( ch.qos.logback.classic.Logger) log).setLevel(Level.OFF);
+        } else {
+           // (( ch.qos.logback.classic.Logger) log).setLevel(Level.ALL);
         }
     }
     

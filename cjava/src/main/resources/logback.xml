@@ -48,7 +48,6 @@
    <logger name="codejam.y2011" level="DEBUG"/>
    <logger name="codejam.y2010" level="DEBUG"/>
    <logger name="hcodejam.y2010aa" level="DEBUG"/>
-   <logger name="codejam.y2010aa" level="INFO"/>
    <logger name="codejam.y2011aa" level="DEBUG"/>
                  
    <logger name="codejam.utils.multithread" level="DEBUG"/>

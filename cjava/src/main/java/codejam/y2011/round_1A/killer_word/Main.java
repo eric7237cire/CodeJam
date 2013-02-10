@@ -6,19 +6,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import codejam.utils.datastructures.BitSetInt;
 import codejam.utils.datastructures.TreeInt;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
+    
+    public Main() {
+        super("B", 1, 1, 1);
+    }
+    
     
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
@@ -26,12 +28,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         input.N = scanner.nextInt();
         input.M = scanner.nextInt();
         input.words = new ArrayList<>();
-        input.lists = new ArrayList<>();
+        input.guessLists = new ArrayList<>();
         for(int i = 0; i < input.N; ++i) {
             input.words.add(scanner.next());
         }
         for(int i = 0; i < input.M; ++i) {
-            input.lists.add(scanner.next());
+            input.guessLists.add(scanner.next());
         }
         return input;
     }
@@ -100,7 +102,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 tree.getRoot().setData(root);
             }
 
-            String line = input.lists.get(m);
+            String line = input.guessLists.get(m);
             List<TreeInt<NodeData>.Node> lastNodes = new ArrayList<>();
 
             /*
