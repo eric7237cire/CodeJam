@@ -17,6 +17,10 @@ fracDec -- convert num / den to decicaml repeating
 stamps -- postage stamp problem related to frobenius problem
 
 ditch -- flow
+stall4 -- flow (a bit improved from ditch)
+milk6 -- min cut
+
+job -- 2 steps 
 
 cowCrpyt -- revisit using suffix tree / linked list
 

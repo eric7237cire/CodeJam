@@ -960,7 +960,7 @@ public class Main  {
         //Did not solve.  FSM intersection / dynamic programming.  TODO Look again why it works        
         //codejam.y2012.round_2.descending_dark.Main m = new codejam.y2012.round_2.descending_dark.Main();
         
-        //2012 3
+        
         
        
                 
