@@ -8,12 +8,10 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import codejam.utils.geometry.Line;
 import codejam.utils.geometry.Point;
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.DoubleFormat;
@@ -24,18 +22,13 @@ import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 import com.google.common.primitives.Ints;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-
-    @Override
-    public String[] getDefaultInputFiles() {
-        // return new String[] {"sample.in"};
-   //    return new String[] {"C-small-practice.in"};
-       // return new String[] {"C-large-practice.in"};
-        return new String[] { "C-small-practice.in", "C-large-practice.in" };
+    public Main() {
+        super("C", 1, 1, 0);
     }
-
+    
+    
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
 
@@ -372,6 +365,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return true;
     }
     
+    /**
+     * For the small solution,
+     * an example of Integer Linear Programming
+     * @param in
+     * @return
+     */
     public String handleCase2(InputData in) {
 
         

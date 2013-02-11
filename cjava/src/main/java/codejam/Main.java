@@ -542,8 +542,11 @@ public class Main  {
         
         //BFS with an interesting state, leaving a cave
         //codejam.y2012.round_1B.tide.Main m = new codejam.y2012.round_1B.tide.Main();
-         
-         //Pigeon hole principal / birthday paradox
+                  
+        /**
+         * Pigeon hole principal / birthday paradox
+         * Randomized algorithm
+         */
         //codejam.y2012.round_1B.equal_sums.Main m = new codejam.y2012.round_1B.equal_sums.Main();
         
         String[] files = Main.getFiles(m, args);
@@ -559,8 +562,6 @@ public class Main  {
     static void round2_2012(String args[]) 
     {
         //2012 2
-        //Used a graph search problem.  Some proof to "never go backward strategy".  TODO understand a bit more their graph and
-        //edge traversal strategy
         /**
          * Problem 1.
          * 
@@ -571,17 +572,36 @@ public class Main  {
          * 
          * 1. Main -- my original solution ; around 7 secs for large
          * 2. Solution 1 -- basic solution for small N^3
-         * 3. Solution 2 -- dijkstars always handle largest
+         * 3. Solution 2 -- Proposed Dijkstra solution ; used IndexMinPQ class 
+         * also does the never go back rule.   < 1 second
+         * 
+         * idea try the proof of never go back
+         * can also try the order N solution and changing solution 2 to
+         * just go from 1 to N instead of in queue order
          */
        //codejam.y2012.round_2.swinging_wild.Main m = new codejam.y2012.round_2.swinging_wild.Main();
         //codejam.y2012.round_2.swinging_wild.Solution1 m = new codejam.y2012.round_2.swinging_wild.Solution1();
-        codejam.y2012.round_2.swinging_wild.Solution2 m = new codejam.y2012.round_2.swinging_wild.Solution2();
+       // codejam.y2012.round_2.swinging_wild.Solution2 m = new codejam.y2012.round_2.swinging_wild.Solution2();
         
-        //Placing circles in confined space ; used rectangles.  Geometry
+        /**
+         * Problem 2
+         * 
+         * Placing circles in confined space ; used rectangles.  Geometry
+         * 
+         * Proposed solution is randomized placement of circles
+         * 
+         * Idea try randomized algo
+         */
        //codejam.y2012.round_2.aerobics.Main m = new codejam.y2012.round_2.aerobics.Main();
        
         //TODO implement their simpler approach
-      // codejam.y2012.round_2.mountain_view.Main m = new codejam.y2012.round_2.mountain_view.Main();
+        /**
+         * 
+         * 1.  Attempted an example of Integer Linear Programming ; worked for small
+         * Lots of simplex notes in 2012 doc direction.  IP means you split the problem by
+         * adding more constraints branch and bound I think it's called
+         */
+       codejam.y2012.round_2.mountain_view.Main m = new codejam.y2012.round_2.mountain_view.Main();
        
        //Did not solve.  FSM intersection / dynamic programming.  TODO Look again why it works        
        //codejam.y2012.round_2.descending_dark.Main m = new codejam.y2012.round_2.descending_dark.Main();

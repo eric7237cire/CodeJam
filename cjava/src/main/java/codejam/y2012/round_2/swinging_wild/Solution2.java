@@ -1,13 +1,9 @@
 package codejam.y2012.round_2.swinging_wild;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-import ch.qos.logback.classic.Level;
 import codejam.utils.datastructures.IndexMinPQ;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.InputFilesHandler;
@@ -15,7 +11,6 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ComparisonChain;
 
 /**
  * Implement the alternative solution
@@ -28,9 +23,9 @@ public class Solution2 extends InputFilesHandler implements TestCaseHandler<Inpu
 
     public Solution2() 
     {
-        super("A", 0, 1, 0);
+        super("A", 1, 1, 0);
         
-        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
+//        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
         
         //super("A", 0, 0, 1);
     }
@@ -68,84 +63,10 @@ public InputData readInput(Scanner scanner, int testCase) {
     return in;
 }
 
-private static class Node implements Comparable<Node>
-{
-    int ropeIndex;
-    int swingLength;
-    public Node(int ropeIndex, int swingLength) {
-        super();
-        this.ropeIndex = ropeIndex;
-        this.swingLength = swingLength;
-    }
-    
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ropeIndex;
-        result = prime * result + swingLength;
-        return result;
-    }
-    
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Node other = (Node) obj;
-        if (ropeIndex != other.ropeIndex)
-            return false;
-        if (swingLength != other.swingLength)
-            return false;
-        return true;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "Node [ropeIndex=" + ropeIndex + ", swingLength=" + swingLength + "]";
-    }
-
-    @Override
-    public int compareTo(Node o)
-    {
-        return ComparisonChain.start().
-                compare(o.swingLength, swingLength)
-                .compare(ropeIndex, o.ropeIndex).result();
-    }
-    
-    
-    
-}
-
-public int getNodeId(Node node, 
-        Map<Node, Integer> nodeToIndex,
-        List<List<Node>> nodesPerRope)
-{
-    Integer nodeId = nodeToIndex.get(node);
-    
-    if (nodeId == null) {
-        nodeId = nodeToIndex.size();
-        nodeToIndex.put(node, nodeId);
-        
-        nodesPerRope.get(node.ropeIndex).add(node);
-    }
-    
-    return nodeId;
-    
-}
-
 @Override
 public String handleCase(InputData in) {
     
     
-    
-    
-    int[] maxLengthVisited = new int[in.nRopes];
-    Arrays.fill(maxLengthVisited, -1);
     
     TreeMap<Integer,Integer> positionToIndex = new TreeMap<>();
     
@@ -158,17 +79,13 @@ public String handleCase(InputData in) {
     }
     
     
-    boolean found = false;
-    
-    
-    
+    boolean found = false;    
     
     Preconditions.checkState(in.ropeLength[0] >= in.ropePosition[0]);
     
+    //IndexMinPQ does not let me change the comparator...so convert so large values are smaller
     toVisit.changeKey(0, Integer.MAX_VALUE-in.ropePosition[0]);
-    
-    int count = 0;
-    
+        
     while(!toVisit.isEmpty()) {
         
         int currentSwingLength = Integer.MAX_VALUE-toVisit.minKey();
@@ -176,6 +93,7 @@ public String handleCase(InputData in) {
         
         log.debug("Current rope {} swing length {}", currentRopeIndex, currentSwingLength);
         
+        //Unreachable nodes
         if (currentSwingLength == 0)
             continue;
         
@@ -183,23 +101,21 @@ public String handleCase(InputData in) {
             found = true;
             break;
         }
-        
-        /*
-        if (curNode.swingLength <= maxLengthVisited[curNode.ropeIndex]) {
-            continue;
-        }*/
-    
-        ++count;
-        if (count % 100 == 0)
-            log.info("Nodes visited {} of {} ", count, in.nRopes);
-        //maxLengthVisited[curNode.ropeIndex] = curNode.swingLength;
-        
+           
+        //Remove node from future consideration
         positionToIndex.remove(in.ropePosition[currentRopeIndex]);
         
         int curPos = in.ropePosition[currentRopeIndex];
         
+        /*
+         * backwards and forwards
         Map<Integer,Integer> reachable = positionToIndex.
                 subMap(curPos - currentSwingLength, true, curPos + currentSwingLength, true);
+        */
+        
+        //Never go backward strategy
+        Map<Integer,Integer> reachable = positionToIndex.
+                subMap(curPos , false, curPos + currentSwingLength, true);
         
         for(int ri : reachable.values())
         {
