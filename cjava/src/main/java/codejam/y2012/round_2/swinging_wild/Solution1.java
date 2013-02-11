@@ -9,6 +9,7 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 
+import ch.qos.logback.classic.Level;
 import codejam.utils.datastructures.graph.GraphInt;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.InputFilesHandler;
@@ -29,7 +30,10 @@ public class Solution1 extends InputFilesHandler implements TestCaseHandler<Inpu
 
     public Solution1() 
     {
-        super("A", 1, 0, 0);
+        super("A", 1, 1, 0);
+        
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
+        
         //super("A", 0, 0, 1);
     }
 
@@ -153,6 +157,12 @@ public String handleCase(InputData in) {
     final int startNodeId = getNodeId(startNode, nodeToIndex, nodesPerRope);
     final int endNodeId = getNodeId(endNode, nodeToIndex, nodesPerRope);
     
+    log.info("Number of ropes {}", in.nRopes);
+    
+    if (in.nRopes > 7000) {
+        return "too many";
+    }
+    
     for(int r1 = 0; r1 < in.nRopes; ++r1) 
     {
         for(int r2 = r1+1; r2 < in.nRopes; ++r2) 
@@ -202,22 +212,25 @@ public String handleCase(InputData in) {
             
         });
         
-        for(int pLonger = 0; pLonger < ropeNodeList.size(); ++pLonger) {
+        for(int pLonger = 1; pLonger < ropeNodeList.size(); ++pLonger) {
             Node nodeLonger = ropeNodeList.get(pLonger);
             int nodeIdLonger = nodeToIndex.get(nodeLonger);
             
-            for(int pShorter = 0; pShorter < pLonger; ++pShorter) {
-                Node nodeShorter = ropeNodeList.get(pShorter);
-                int nodeIdShorter = nodeToIndex.get(nodeShorter);
-                
-                log.debug("Connecting longer node {} id {} with shorter node {} id {}", nodeLonger,
-                        nodeIdLonger, nodeShorter, nodeIdShorter);
-                graph.addOneWayConnection(nodeIdLonger, nodeIdShorter);
-            }
+            int pShorter = pLonger-1;
+            
+            
+            Node nodeShorter = ropeNodeList.get(pShorter);
+            int nodeIdShorter = nodeToIndex.get(nodeShorter);
+            
+            log.debug("Connecting longer node {} id {} with shorter node {} id {}", nodeLonger,
+                    nodeIdLonger, nodeShorter, nodeIdShorter);
+            graph.addOneWayConnection(nodeIdLonger, nodeIdShorter);
+        
         }
     }
     
-    log.debug("Number of nodes {}", nodeToIndex.size());
+    log.info("Number of nodes {} ropes {} ropes ^2 = {}",
+            nodeToIndex.size(),in.nRopes, in.nRopes*in.nRopes);
     
     int nNodes = nodeToIndex.size();
     

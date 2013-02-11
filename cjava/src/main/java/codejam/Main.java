@@ -562,7 +562,8 @@ public class Main  {
         //Used a graph search problem.  Some proof to "never go backward strategy".  TODO understand a bit more their graph and
         //edge traversal strategy
        //codejam.y2012.round_2.swinging_wild.Main m = new codejam.y2012.round_2.swinging_wild.Main();
-        codejam.y2012.round_2.swinging_wild.Solution1 m = new codejam.y2012.round_2.swinging_wild.Solution1();
+        //codejam.y2012.round_2.swinging_wild.Solution1 m = new codejam.y2012.round_2.swinging_wild.Solution1();
+        codejam.y2012.round_2.swinging_wild.Solution2 m = new codejam.y2012.round_2.swinging_wild.Solution2();
         
         //Placing circles in confined space ; used rectangles.  Geometry
        //codejam.y2012.round_2.aerobics.Main m = new codejam.y2012.round_2.aerobics.Main();
