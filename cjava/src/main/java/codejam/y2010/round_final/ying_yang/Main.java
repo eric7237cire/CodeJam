@@ -331,6 +331,7 @@ this kind of grid passed diag checks, degree checks
     
     
     
+    @SuppressWarnings("unused")
     private boolean checkDiagonal(GridChar grid, PointInt start,
             PointInt delta, InputData in)
     {

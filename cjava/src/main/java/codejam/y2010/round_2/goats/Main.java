@@ -1,17 +1,11 @@
 package codejam.y2010.round_2.goats;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 import java.util.Stack;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import codejam.utils.geometry.Angle;
 import codejam.utils.geometry.Circle;

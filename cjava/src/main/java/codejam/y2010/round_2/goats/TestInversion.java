@@ -91,7 +91,7 @@ public class TestInversion
     static Line getInversion(Circle c, Point q) {
         Preconditions.checkState(c.onCircle(q));
         
-        Line pCent = new Line(q, c.getCenter());
+        //Line pCent = new Line(q, c.getCenter());
         
         Point dir1 = c.getCenter().rotateAbout(q,-Math.PI / 7.1);
         Point dir2 = c.getCenter().rotateAbout(q, Math.PI / 4.1);

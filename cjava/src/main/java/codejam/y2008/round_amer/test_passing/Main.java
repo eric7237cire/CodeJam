@@ -90,7 +90,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     public String handleCase(InputData in) {
         
         Solution s = new Solution();
-        if(1==1) {
+        if(in.testCase >= 0) {
             return s.handleCase(in);
         }
             

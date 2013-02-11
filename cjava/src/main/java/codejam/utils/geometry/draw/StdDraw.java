@@ -825,6 +825,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
      * on screen at once).
      * @param t number of milliseconds
      */
+    @SuppressWarnings("static-access")
     public static void show(int t) {
         defer = false;
         draw();

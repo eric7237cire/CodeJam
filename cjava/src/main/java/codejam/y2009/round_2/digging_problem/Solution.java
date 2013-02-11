@@ -3,7 +3,6 @@ package codejam.y2009.round_2.digging_problem;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import codejam.utils.main.AbstractInputData;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -25,9 +24,9 @@ public class Solution extends InputFilesHandler implements TestCaseHandler<Solut
         in.w = scanner.nextInt();
         in.f = scanner.nextInt();
 
-        int h = in.h;
+        //int h = in.h;
         int w = in.w;
-        int f = in.f;
+      //  int f = in.f;
 
         in.a = new char[in.h + 1][w + 2];
 
@@ -52,9 +51,7 @@ public class Solution extends InputFilesHandler implements TestCaseHandler<Solut
     @Override
     public String handleCase(SolutionInputData in)
     {
-        int h = in.h;
-        int w = in.w;
-        int f = in.f;
+        
         char[][] a = in.a;
 
         Arrays.fill(a[in.h], '#');
@@ -83,7 +80,7 @@ public class Solution extends InputFilesHandler implements TestCaseHandler<Solut
     private static int count(int y, int l1, int r1, SolutionInputData in, int[][][] z)
     {
         int h = in.h;
-        int w = in.w;
+      //  int w = in.w;
         int f = in.f;
         char[][] a = in.a;
 
