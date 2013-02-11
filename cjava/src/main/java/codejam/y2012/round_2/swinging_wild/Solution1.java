@@ -15,6 +15,7 @@ import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -28,7 +29,8 @@ public class Solution1 extends InputFilesHandler implements TestCaseHandler<Inpu
 
     public Solution1() 
     {
-        super("A", 0, 0, 1);
+        super("A", 1, 0, 0);
+        //super("A", 0, 0, 1);
     }
 
 
@@ -98,6 +100,14 @@ private static class Node
             return false;
         return true;
     }
+
+    @Override
+    public String toString()
+    {
+        return "Node [ropeIndex=" + ropeIndex + ", swingLength=" + swingLength + "]";
+    }
+    
+    
     
 }
 
@@ -134,14 +144,14 @@ public String handleCase(InputData in) {
         nodesPerRope.add(Lists.<Node>newArrayList());
     }
     
-    final int startNodeId = 0;
-    final int endNodeId = 1;
+    Preconditions.checkState(in.ropeLength[0] >= in.ropePosition[0]);
     
-    Node startNode = new Node(0, in.ropeLength[0]);
-    nodeToIndex.put(startNode, startNodeId);
-    
+    //Holding rope at ledge so cannot use full length
+    Node startNode = new Node(0, in.ropePosition[0]);
     Node endNode = new Node(in.nRopes-1, 0);
-    nodeToIndex.put(endNode, endNodeId);
+    
+    final int startNodeId = getNodeId(startNode, nodeToIndex, nodesPerRope);
+    final int endNodeId = getNodeId(endNode, nodeToIndex, nodesPerRope);
     
     for(int r1 = 0; r1 < in.nRopes; ++r1) 
     {
@@ -155,6 +165,8 @@ public String handleCase(InputData in) {
             
             int disBetween = Math.abs(pos1 - pos2);
             
+            log.debug("Pos {}, {} dis bet {}", pos1, pos2, disBetween);
+            
             Node node1 = new Node(r1, Math.min(len1, disBetween));
             Node node2 = new Node(r2, Math.min(len2, disBetween));
             
@@ -163,12 +175,14 @@ public String handleCase(InputData in) {
             
             //From rope1, we can swing to node2
             if (len1 >= disBetween) {
-                graph.addConnection(nodeId1, nodeId2);
+                log.debug("Connecting node {} id {} with node {} id {}", node1, nodeId1, node2, nodeId2);
+                graph.addOneWayConnection(nodeId1, nodeId2);
             }
             
             //From rope2, we can swing to node1
             if (len2 >= disBetween) {
-                graph.addConnection(nodeId2, nodeId1);
+                log.debug("Connecting node {} id {} with node {} id {}", node2, nodeId2, node1, nodeId1);
+                graph.addOneWayConnection(nodeId2, nodeId1);
             }
             
         }
@@ -189,8 +203,16 @@ public String handleCase(InputData in) {
         });
         
         for(int pLonger = 0; pLonger < ropeNodeList.size(); ++pLonger) {
+            Node nodeLonger = ropeNodeList.get(pLonger);
+            int nodeIdLonger = nodeToIndex.get(nodeLonger);
+            
             for(int pShorter = 0; pShorter < pLonger; ++pShorter) {
-                graph.addConnection(pLonger, pShorter);
+                Node nodeShorter = ropeNodeList.get(pShorter);
+                int nodeIdShorter = nodeToIndex.get(nodeShorter);
+                
+                log.debug("Connecting longer node {} id {} with shorter node {} id {}", nodeLonger,
+                        nodeIdLonger, nodeShorter, nodeIdShorter);
+                graph.addOneWayConnection(nodeIdLonger, nodeIdShorter);
             }
         }
     }
@@ -206,9 +228,10 @@ public String handleCase(InputData in) {
 
     boolean found = false;
     
-    while(toVisit.isEmpty()) {
+    while(!toVisit.isEmpty()) {
         Integer curNode = toVisit.poll();
         
+        log.debug("Visiting node id {}", curNode);
         if (curNode == endNodeId) {
             found = true;
             break;
