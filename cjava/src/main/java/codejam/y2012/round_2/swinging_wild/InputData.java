@@ -13,10 +13,10 @@ public class InputData
      *    test case contains the distance D to the ledge with your one 
      *    true love. You start by holding the first vine in hand.
      */
-        int N;
-        int d[];
-        int l[];
-        int D;
+        int nRopes;
+        int ropePosition[];
+        int ropeLength[];
+        int goalDistance;
         
         public InputData(int testCase) {
             super(testCase);

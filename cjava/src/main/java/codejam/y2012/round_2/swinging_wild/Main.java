@@ -27,6 +27,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
 
+        
+        return readInputStatic(scanner,testCase);
+    }
+
+    static public InputData readInputStatic(Scanner scanner, int testCase) {
+
         InputData in = new InputData(testCase);
         
         /*
@@ -38,20 +44,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
          *    true love. You start by holding the first vine in hand.
          */
         
-        in.N = scanner.nextInt();
-        in.d = new int[in.N];
-        in.l = new int[in.N];
+        in.nRopes = scanner.nextInt();
+        in.ropePosition = new int[in.nRopes];
+        in.ropeLength = new int[in.nRopes];
         
-        for(int n = 0; n < in.N; ++n) {
-            in.d[n] = scanner.nextInt();
-            in.l[n] = scanner.nextInt();
+        for(int n = 0; n < in.nRopes; ++n) {
+            in.ropePosition[n] = scanner.nextInt();
+            in.ropeLength[n] = scanner.nextInt();
         }
         
-        in.D = scanner.nextInt();
+        in.goalDistance = scanner.nextInt();
 
         return in;
     }
-
     
     
     public String handleCase(InputData in) {
@@ -60,9 +65,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         Map<Integer, Integer> maxLocationRange = Maps.newHashMap();
         
-        for(int n = 0; n < in.N; ++n) {
-            locLenMap.put(in.d[n], in.l[n]);
-            maxLocationRange.put(in.d[n], 0);
+        for(int n = 0; n < in.nRopes; ++n) {
+            locLenMap.put(in.ropePosition[n], in.ropeLength[n]);
+            maxLocationRange.put(in.ropePosition[n], 0);
         }
         
         //Pair means location, +/- range
@@ -70,7 +75,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         Map<Integer, Integer> toVisitLocRange = Maps.newHashMap();
                 
         
-        toVisitLocRange.put(in.d[0], in.d[0]);
+        toVisitLocRange.put(in.ropePosition[0], in.ropePosition[0]);
         
         while(!toVisitLocRange.isEmpty()) {
             Map.Entry<Integer,Integer> locRange = toVisitLocRange.entrySet().iterator().next();
@@ -87,7 +92,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 locLenMap.remove(locRange.getKey());
             }
             
-            if (in.D - locRange.getKey() <= locRange.getValue()) {
+            if (in.goalDistance - locRange.getKey() <= locRange.getValue()) {
                 return String.format("Case #%d: YES", in.testCase);
             }
             
