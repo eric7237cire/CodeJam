@@ -8,6 +8,7 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 import ch.qos.logback.classic.Level;
+import codejam.utils.datastructures.IndexMinPQ;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
@@ -61,7 +62,7 @@ public InputData readInput(Scanner scanner, int testCase) {
     in.goalDistance = scanner.nextInt();
 
     //Create a dummy rope at goal
-    in.ropeLength[in.nRopes-1] = 0;
+    in.ropeLength[in.nRopes-1] = 1;
     in.ropePosition[in.nRopes-1] = in.goalDistance;
     
     return in;
@@ -141,56 +142,78 @@ public int getNodeId(Node node,
 public String handleCase(InputData in) {
     
     
-    PriorityQueue<Node> toVisit = new PriorityQueue<Node>();
+    
     
     int[] maxLengthVisited = new int[in.nRopes];
     Arrays.fill(maxLengthVisited, -1);
     
     TreeMap<Integer,Integer> positionToIndex = new TreeMap<>();
+    
+    IndexMinPQ<Integer> toVisit = new IndexMinPQ<>(in.nRopes);
+    
     for(int r = 0; r < in.nRopes; ++r)
     {
+        toVisit.insert(r, Integer.MAX_VALUE);
         positionToIndex.put(in.ropePosition[r], r);
     }
     
     
     boolean found = false;
     
-    Preconditions.checkState(in.ropeLength[0] >= in.ropePosition[0]);    
-    toVisit.add(new Node(0, in.ropePosition[0]));
+    
+    
+    
+    Preconditions.checkState(in.ropeLength[0] >= in.ropePosition[0]);
+    
+    toVisit.changeKey(0, Integer.MAX_VALUE-in.ropePosition[0]);
     
     int count = 0;
     
     while(!toVisit.isEmpty()) {
-        Node curNode = toVisit.poll();
         
+        int currentSwingLength = Integer.MAX_VALUE-toVisit.minKey();
+        int currentRopeIndex = toVisit.delMin();
         
-        if (curNode.ropeIndex == in.nRopes-1) {
+        log.debug("Current rope {} swing length {}", currentRopeIndex, currentSwingLength);
+        
+        if (currentSwingLength == 0)
+            continue;
+        
+        if (currentRopeIndex == in.nRopes-1) {
             found = true;
             break;
         }
         
+        /*
         if (curNode.swingLength <= maxLengthVisited[curNode.ropeIndex]) {
             continue;
-        }
+        }*/
     
         ++count;
         if (count % 100 == 0)
-            log.info("Nodes visited {} of {} current node {} ", count, in.nRopes, curNode);
-        maxLengthVisited[curNode.ropeIndex] = curNode.swingLength;
+            log.info("Nodes visited {} of {} ", count, in.nRopes);
+        //maxLengthVisited[curNode.ropeIndex] = curNode.swingLength;
         
-        positionToIndex.remove(in.ropePosition[curNode.ropeIndex]);
+        positionToIndex.remove(in.ropePosition[currentRopeIndex]);
         
-        int curPos = in.ropePosition[curNode.ropeIndex];
+        int curPos = in.ropePosition[currentRopeIndex];
         
-        Map<Integer,Integer> reachable = positionToIndex.subMap(curPos - curNode.swingLength, true, curPos + curNode.swingLength, true);
+        Map<Integer,Integer> reachable = positionToIndex.
+                subMap(curPos - currentSwingLength, true, curPos + currentSwingLength, true);
         
         for(int ri : reachable.values())
         {
             int d = Math.abs(curPos - in.ropePosition[ri]);
             
-            Preconditions.checkState(d <= curNode.swingLength);
+            Preconditions.checkState(d <= currentSwingLength);
             
-            toVisit.add(new Node(ri, Math.min(in.ropeLength[ri], d)));
+            int riSwingLength = Integer.MAX_VALUE-Math.min(in.ropeLength[ri], d);
+            
+            int curSwingLength = toVisit.keyOf(ri);
+            
+            if (riSwingLength < curSwingLength) {
+                toVisit.decreaseKey(ri, riSwingLength);
+            }
             
         }
     }

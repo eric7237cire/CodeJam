@@ -561,6 +561,18 @@ public class Main  {
         //2012 2
         //Used a graph search problem.  Some proof to "never go backward strategy".  TODO understand a bit more their graph and
         //edge traversal strategy
+        /**
+         * Problem 1.
+         * 
+         * Graph search
+         * 
+         * Still don't understand their edge reduction part, but at least
+         * implemented the basic solution and the dijkstras solution
+         * 
+         * 1. Main -- my original solution ; around 7 secs for large
+         * 2. Solution 1 -- basic solution for small N^3
+         * 3. Solution 2 -- dijkstars always handle largest
+         */
        //codejam.y2012.round_2.swinging_wild.Main m = new codejam.y2012.round_2.swinging_wild.Main();
         //codejam.y2012.round_2.swinging_wild.Solution1 m = new codejam.y2012.round_2.swinging_wild.Solution1();
         codejam.y2012.round_2.swinging_wild.Solution2 m = new codejam.y2012.round_2.swinging_wild.Solution2();
