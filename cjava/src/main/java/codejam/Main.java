@@ -556,6 +556,32 @@ public class Main  {
         
     }
     
+    static void round2_2012(String args[]) 
+    {
+        //2012 2
+        //Used a graph search problem.  Some proof to "never go backward strategy".  TODO understand a bit more their graph and
+        //edge traversal strategy
+       codejam.y2012.round_2.swinging_wild.Main m = new codejam.y2012.round_2.swinging_wild.Main();
+        
+        //Placing circles in confined space ; used rectangles.  Geometry
+       //codejam.y2012.round_2.aerobics.Main m = new codejam.y2012.round_2.aerobics.Main();
+       
+        //TODO implement their simpler approach
+      // codejam.y2012.round_2.mountain_view.Main m = new codejam.y2012.round_2.mountain_view.Main();
+       
+       //Did not solve.  FSM intersection / dynamic programming.  TODO Look again why it works        
+       //codejam.y2012.round_2.descending_dark.Main m = new codejam.y2012.round_2.descending_dark.Main();
+       
+       
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }    
+    }
+    
     static void round3_2012(String args[]) {
         /**
          * 2012 Round 3
@@ -640,7 +666,8 @@ public class Main  {
         //round2_2011(args);        
         //roundFinal_2011(args);
         
-        round1B_2012(args);
+       // round1B_2012(args);
+        round2_2012(args);
        // round3_2012(args);
       //  roundFinal_2012(args);
 
@@ -969,22 +996,7 @@ public class Main  {
          //Did this the hard way, LCS DP on steroids, could have done simpler using their soltion TODO 
         //codejam.y2012.round_1C.boxes.Main m = new codejam.y2012.round_1C.boxes.Main();
         
-        //2012 2
-         //Used a graph search problem.  Some proof to "never go backward strategy".  TODO understand a bit more their graph and
-         //edge traversal strategy
-        //codejam.y2012.round_2.swinging_wild.Main m = new codejam.y2012.round_2.swinging_wild.Main();
-         
-         //Placing circles in confined space ; used rectangles.  Geometry
-        //codejam.y2012.round_2.aerobics.Main m = new codejam.y2012.round_2.aerobics.Main();
-        
-         //TODO implement their simpler approach
-       // codejam.y2012.round_2.mountain_view.Main m = new codejam.y2012.round_2.mountain_view.Main();
-        
-        //Did not solve.  FSM intersection / dynamic programming.  TODO Look again why it works        
-        //codejam.y2012.round_2.descending_dark.Main m = new codejam.y2012.round_2.descending_dark.Main();
-        
-        
-        
+   
        
                 
 
