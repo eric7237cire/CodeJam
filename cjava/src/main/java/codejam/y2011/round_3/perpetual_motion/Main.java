@@ -39,6 +39,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return in;
     }
 
+    @SuppressWarnings("unused")
     private void printGraph(GraphInt g, int nSquares, GridChar floor) {
         for(int i = 0; i < nSquares; ++i)
         {

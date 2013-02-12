@@ -490,8 +490,27 @@ public class Main  {
         //codejam.y2011.round_3.dire_straights.Main m = new codejam.y2011.round_3.dire_straights.Main();
         
         //
+        /**
+         * Problem 3
+         * 
+         * Bipartite cycles -- degree
+         * 
+         * Looking at the draw.ods file, it's more clear what the graph means
+         * 
+         * When we count the connected components, they are
+         * really isolated systems.  In the sample, the 2nd and 4th
+         * squares on the first row either both must go right or 
+         * both must go left.
+         * 
+         * It also shows before the elimination of single
+         * degree end node phase and afterwards showing that
+         * everything has degree 2.
+         * 
+         * The bottom pic shows which squares are forced.
+         */
+       // codejam.y2011.round_3.perpetual_motion.Main m = new codejam.y2011.round_3.perpetual_motion.Main();
         
-        codejam.y2011.round_3.perpetual_motion.Main m = new codejam.y2011.round_3.perpetual_motion.Main();
+        codejam.y2011.round_3.mystery_square.Main m = new codejam.y2011.round_3.mystery_square.Main();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files) {
