@@ -22,7 +22,7 @@
     <None Include="..\cowtour.in" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\milk6.cpp" />
+    <ClCompile Include="..\frameup.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{899CB317-940A-4C4D-B045-76EF3A24D746}</ProjectGuid>
