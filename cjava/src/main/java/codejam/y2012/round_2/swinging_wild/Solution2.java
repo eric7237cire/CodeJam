@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-import codejam.utils.datastructures.IndexMinPQ;
+import codejam.utils.datastructures.IndexMaxPQ;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
@@ -70,11 +70,11 @@ public String handleCase(InputData in) {
     
     TreeMap<Integer,Integer> positionToIndex = new TreeMap<>();
     
-    IndexMinPQ<Integer> toVisit = new IndexMinPQ<>(in.nRopes);
+    IndexMaxPQ<Integer> toVisit = new IndexMaxPQ<>(in.nRopes);
     
     for(int r = 0; r < in.nRopes; ++r)
     {
-        toVisit.insert(r, Integer.MAX_VALUE);
+        toVisit.insert(r, 0);
         positionToIndex.put(in.ropePosition[r], r);
     }
     
@@ -83,13 +83,12 @@ public String handleCase(InputData in) {
     
     Preconditions.checkState(in.ropeLength[0] >= in.ropePosition[0]);
     
-    //IndexMinPQ does not let me change the comparator...so convert so large values are smaller
-    toVisit.changeKey(0, Integer.MAX_VALUE-in.ropePosition[0]);
+    toVisit.increaseKey(0, in.ropePosition[0]);
         
     while(!toVisit.isEmpty()) {
         
-        int currentSwingLength = Integer.MAX_VALUE-toVisit.minKey();
-        int currentRopeIndex = toVisit.delMin();
+        int currentSwingLength = toVisit.maxKey();
+        int currentRopeIndex = toVisit.delMax();
         
         log.debug("Current rope {} swing length {}", currentRopeIndex, currentSwingLength);
         
@@ -123,12 +122,12 @@ public String handleCase(InputData in) {
             
             Preconditions.checkState(d <= currentSwingLength);
             
-            int riSwingLength = Integer.MAX_VALUE-Math.min(in.ropeLength[ri], d);
+            int riSwingLength = Math.min(in.ropeLength[ri], d);
             
             int curSwingLength = toVisit.keyOf(ri);
             
-            if (riSwingLength < curSwingLength) {
-                toVisit.decreaseKey(ri, riSwingLength);
+            if (riSwingLength > curSwingLength) {
+                toVisit.increaseKey(ri, riSwingLength);
             }
             
         }

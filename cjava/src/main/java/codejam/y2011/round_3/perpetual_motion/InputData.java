@@ -1,30 +1,15 @@
 package codejam.y2011.round_3.perpetual_motion;
 
-import java.util.List;
-
-import codejam.utils.geometry.Circle;
-import codejam.utils.geometry.PointInt;
 import codejam.utils.main.AbstractInputData;
+import codejam.utils.utils.GridChar;
 
 public class InputData extends AbstractInputData {
 
-    int N;
+    int R;
+    int C;
     
-    PointInt redLight;
-    PointInt greenLight;
+    GridChar floor;
     
-    List<Circle> pillars;
-    /*
-     * One line containing the coordinates x, y of the 
-     * red light source.
-One line containing the coordinates x, y of the green light 
-source.
-One line containing the number of pillars n.
-n lines describing the pillars. 
-Each contains 3 numbers x, y, r. 
-The pillar is a disk with the center (x, y) and radius r.
-
-     */
     public InputData(int testCase) {
         super(testCase);
     }

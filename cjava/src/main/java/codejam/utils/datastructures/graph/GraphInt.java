@@ -71,6 +71,22 @@ public class GraphInt  {
     }
     
     /**
+     * Only works properly in undirected graphs
+     * @param nodeA
+     */
+    public void removeNode(int nodeA) {
+        
+        Set<Integer> nodeANeighbors = nodeConnections.get(nodeA);
+            
+        for(int adj : nodeANeighbors) {
+            nodeConnections.get(adj).remove(nodeA);
+        }
+        
+        nodeConnections.remove(nodeA);
+        
+    }
+    
+    /**
      * Used in brute force graph coloring problem
      * @param nodeA
      * @param nodeB

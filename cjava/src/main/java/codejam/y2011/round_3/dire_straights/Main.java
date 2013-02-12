@@ -4,26 +4,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.collect.Lists;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-
-    @Override
-    public String[] getDefaultInputFiles() {
-        return new String[] { "sample.in" };
-     //    return new String[] { "B-small-practice.in" };
-       // return new String[] { "B-small-practice.in", "B-large-practice.in" };
+    public Main() {
+        super("B", 1,1 , 0);
     }
-
+    
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
 

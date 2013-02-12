@@ -479,6 +479,29 @@ public class Main  {
         }      
     }
     
+    static void round3_2011(String args[]) {
+
+
+        //2011 round 3
+        //A discrete binary search problem
+       // codejam.y2011.round_3.irregular_cakes.Main m = new codejam.y2011.round_3.irregular_cakes.Main();
+        
+        //Greedy algorithm (used solution)
+        //codejam.y2011.round_3.dire_straights.Main m = new codejam.y2011.round_3.dire_straights.Main();
+        
+        //
+        
+        codejam.y2011.round_3.perpetual_motion.Main m = new codejam.y2011.round_3.perpetual_motion.Main();
+
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }      
+    }
+    
     static void roundFinal_2011(String args[]) {
         
         //Dynamic programming, combinatorics stars and bars counting (distributing n stars in k buckets )
@@ -581,7 +604,7 @@ public class Main  {
          */
        //codejam.y2012.round_2.swinging_wild.Main m = new codejam.y2012.round_2.swinging_wild.Main();
         //codejam.y2012.round_2.swinging_wild.Solution1 m = new codejam.y2012.round_2.swinging_wild.Solution1();
-       // codejam.y2012.round_2.swinging_wild.Solution2 m = new codejam.y2012.round_2.swinging_wild.Solution2();
+        codejam.y2012.round_2.swinging_wild.Solution2 m = new codejam.y2012.round_2.swinging_wild.Solution2();
         
         /**
          * Problem 2
@@ -601,7 +624,7 @@ public class Main  {
          * Lots of simplex notes in 2012 doc direction.  IP means you split the problem by
          * adding more constraints branch and bound I think it's called
          */
-       codejam.y2012.round_2.mountain_view.Main m = new codejam.y2012.round_2.mountain_view.Main();
+       //codejam.y2012.round_2.mountain_view.Main m = new codejam.y2012.round_2.mountain_view.Main();
        
        //Did not solve.  FSM intersection / dynamic programming.  TODO Look again why it works        
        //codejam.y2012.round_2.descending_dark.Main m = new codejam.y2012.round_2.descending_dark.Main();
@@ -698,10 +721,11 @@ public class Main  {
         
         //round1A_2011(args);
         //round2_2011(args);        
+        round3_2011(args);
         //roundFinal_2011(args);
         
        // round1B_2012(args);
-        round2_2012(args);
+        //round2_2012(args);
        // round3_2012(args);
       //  roundFinal_2012(args);
 
@@ -974,15 +998,6 @@ public class Main  {
 
          
     
-
-        //2011 round 3
-        //A discrete binary search problem
-       // codejam.y2011.round_3.irregular_cakes.Main m = new codejam.y2011.round_3.irregular_cakes.Main();
-        
-        //Greedy algorithm (used solution)
-        //codejam.y2011.round_3.dire_straights.Main m = new codejam.y2011.round_3.dire_straights.Main();
-        
-        //
        
         
         
