@@ -97,13 +97,15 @@ void backtrack( vi& curOrder, int usedLetters, const vi& placedBefore,
     
     FOR(let, 0, 26)
     {
+		//Each letter that precedes this one must have been already placed
         if ( (usedLetters & placedBefore[let]) != placedBefore[let])
             continue;
         
+		//Letter must exist 
         if ( ( 1<<let & existMask ) == 0) 
             continue;
         
-        //Letter already used
+        //Letter must not have already been used
         if ( ( 1<<let & usedLetters ) != 0) 
             continue;
         
@@ -183,7 +185,7 @@ int main() {
         
         FORE(i, 0, 1)
         {
-			FOR(c, frameCol[let][0], frameCol[let][1])
+			FORE(c, frameCol[let][0], frameCol[let][1])
 			{
 				int r = i == 0 ? frameRow[let][0]  : frameRow[let][1];
 
@@ -200,7 +202,7 @@ int main() {
                 
 			}
             
-            FOR(r, frameRow[let][0], frameRow[let][1])
+            FORE(r, frameRow[let][0], frameRow[let][1])
             {
 				int c = i == 0 ? frameCol[let][0]  : frameCol[let][1];
 
