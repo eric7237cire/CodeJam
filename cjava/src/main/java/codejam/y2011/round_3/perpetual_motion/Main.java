@@ -1,11 +1,11 @@
 package codejam.y2011.round_3.perpetual_motion;
 
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
-import com.google.common.base.Preconditions;
-import com.google.common.math.IntMath;
-
+import ch.qos.logback.classic.Level;
+import codejam.utils.datastructures.graph.CCbfs;
 import codejam.utils.datastructures.graph.GraphInt;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
@@ -13,12 +13,16 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.GridChar;
 import codejam.utils.utils.LargeNumberUtils;
 
+import com.google.common.base.Preconditions;
+
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
 
     public Main()
     {
+        
         super("C", 1, 1, 0);
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
     
     
@@ -149,6 +153,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         int nSquares = in.C * in.R;
         //Start nodes have id 0 -> nSquares - 1
         
+        log.info("Begin case {}", in.testCase);
+        
         for(int r = 0; r < in.R; ++r) {
             for(int c = 0; c < in.C; ++c) {
                 char sq = in.floor.getEntry(r,c);
@@ -196,8 +202,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 //Make sure all end nodes exist
                 g.addNode(curIndex + nSquares);
-            }
+            }        
         }
+        
+        log.info("Done creating nodes {}", in.testCase);
         
         boolean allEndNodesAreConnected = true;
         
@@ -212,12 +220,28 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
         }
         
+        log.info("Done creating removing single degree {}", in.testCase);
+        
         if (!allEndNodesAreConnected) {
             return String.format("Case #%d: 0", in.testCase);
         }
         
-        int cyclesFound = 0;
+        CCbfs cc = new  CCbfs(g);
         
+        List<List<Integer>> cComps = cc.go();
+        
+        log.info("Done creating connected components {}", in.testCase);
+        
+        int cyclesFound = cComps.size();
+        log.debug("Cycles found");
+        
+        /*
+         * Method described in the solution.  A start node and end node are
+         * part of the same cycle and no other cylce.  They are part of the same connected component.
+         * What leaves the end node will forceable connect back to the start node becasue
+         * 1)  the graph is bipartite, each degree is 2
+         * 
+         * Draw a picture and it is easy to see.
         while(removeEvenDegreeEndNode(g, nSquares, in)) {
             
             while(removeSingleDegreeEndNodes(g, nSquares, in) != null) {};
@@ -225,11 +249,16 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             cyclesFound++;
         }
         
+        Preconditions.checkState(cComps.size() == cyclesFound);
+        */
+        
         int mod = 1000003;
         
        //printGraph(g, nSquares, in.floor);
         int count = (int) LargeNumberUtils.pow(2, cyclesFound, mod); //IntMath.pow(2, cyclesFound);
 
+        log.info("Done calculated 2^ {}", in.testCase);
+        
         return String.format("Case #%d: %d", in.testCase, count);
     }
 }
