@@ -24,6 +24,9 @@ job -- 2 steps
 
 cowCrpyt -- revisit using suffix tree / linked list
 
-fence4 -- geometry
+Geometry (in order of least recent first ;most recent last)
+fence4 
+fence9 
+fc (convex hulls)
 
 buylow -- longest decreasing sequence, counting unique sequnces

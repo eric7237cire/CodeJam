@@ -20,7 +20,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\frameup.cpp">
+    <ClCompile Include="..\fc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

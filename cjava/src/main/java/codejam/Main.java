@@ -714,7 +714,11 @@ public class Main  {
          */
         //codejam.y2012.round_final.xeno_archaeology.Main m = new codejam.y2012.round_final.xeno_archaeology.Main(); 
 
-        
+        /**
+         * 2012 Final -- problem 4
+         * 
+         * Rotation, rotating calipurs, convex hull
+         */
         codejam.y2012.round_final.twirling_freedom.Main m = new codejam.y2012.round_final.twirling_freedom.Main();
         
         String[] files = Main.getFiles(m, args);
