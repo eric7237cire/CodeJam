@@ -170,11 +170,31 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return currentSquareRootGuess;
     }
   
+    public void solve(String binaryString, int currentDivision)
+    {
+        int len = binaryString.length();
+        
+        int sqRootLen = (len+1) / 2;
+        
+        int lenNeededBottomUp = sqRootLen + 1;
+        int lenNeededTopDown = len - sqRootLen;
+        
+        // len - start + 1 = lenBu
+        int startBottomUp = len  - lenNeededBottomUp;
+        
+        String top = binaryString.substring(0, lenNeededTopDown);
+        
+        String bottom = binaryString.substring(startBottomUp, binaryString.length() );
+        
+        log.debug("Binary str {} top {} bot {}", binaryString, top, bottom);
+    }
+    
     @Override
     public String handleCase(InputData in) {
        
+        solve("11001", 1);
        // testTopDown();
-        testBottomUp();
+       // testBottomUp();
         
 
         return String.format("Case #%d: ", in.testCase);
