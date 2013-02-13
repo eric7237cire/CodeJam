@@ -1,5 +1,6 @@
 package codejam.y2011.round_3.mystery_square;
 
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Scanner;
 
@@ -7,12 +8,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
-import com.google.common.math.LongMath;
-
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
+
+import com.google.common.base.Preconditions;
+import com.google.common.math.LongMath;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
@@ -85,12 +86,35 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
             log.debug("Mystery {}", mystery);
             
+            int squareRootDigits = Long.toBinaryString(i).length();
+            
+            //Need one extra digit in the square
+            BigInteger squareDigits = BigInteger.valueOf(ii).mod(BigInteger.ONE.shiftLeft(squareRootDigits+1));
+            
+            log.debug("Square digits : {}", squareDigits.toString(2));
+            
+            if (i % 4 == 3 || i % 4 == 1) {
+            
+                BigInteger sqRoot = findSquareRootBottomUp( squareDigits, squareRootDigits+1, (int) (i % 4) );
+                BigInteger sq = sqRoot.multiply(sqRoot);
+                
+                log.debug("Calculated square : {} ({})", sq.toString(2), sq );
+                
+                
+            }
+            
         }
     }
     
     //Guessing last 2 digits are 11
-    public void findSquareRootBottomUp(long lowerSquareDigits, int numLowerSquareDigits,
-            long initialSquareRootGuess)
+    /**
+     * Produces a square root of k - 1 digits
+     * @param lowerSquareDigits 
+     * @param numLowerSquareDigits k
+     * @param initialSquareRootGuess 11 or 01
+     */
+    public BigInteger findSquareRootBottomUp(BigInteger lowerSquareDigits, int numLowerSquareDigits,
+            int initialSquareRootGuess)
     {
         Preconditions.checkState(initialSquareRootGuess == 3 || initialSquareRootGuess == 1);
         /**
@@ -102,21 +126,22 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
          * 
          * then take lowerSquareDigits % 16
          */
-        long currentSquareRootGuess = initialSquareRootGuess;
+        BigInteger currentSquareRootGuess = BigInteger.valueOf(initialSquareRootGuess);
         
-        log.debug("lower square {} ({})", Long.toBinaryString(lowerSquareDigits), lowerSquareDigits);
+        log.debug("lower square {} ({})", lowerSquareDigits.toString(2), 
+                lowerSquareDigits);
         
         
         
         for(int sqRootDigit = 3; sqRootDigit < numLowerSquareDigits; ++sqRootDigit)
         {
-            int currentSquareRootMod = 1 << sqRootDigit - 1;
+            BigInteger currentSquareRootMod = BigInteger.ONE.shiftLeft(sqRootDigit - 1);
             
             log.debug("Square root = {}*A + {}", currentSquareRootMod, currentSquareRootGuess);
-            long coefA = currentSquareRootMod * 2 * currentSquareRootGuess;
-            long constant = currentSquareRootGuess*currentSquareRootGuess;
+            BigInteger coefA = currentSquareRootMod.shiftLeft(1).multiply( currentSquareRootGuess );
+            BigInteger constant = currentSquareRootGuess.multiply(currentSquareRootGuess);
             
-            int currentSquareMod = currentSquareRootMod << 2;
+            BigInteger currentSquareMod = currentSquareRootMod.shiftLeft(2);
             
             log.debug("(Square root)^2 = {}*A^2 + {}*A + {}", 
                     currentSquareMod, coefA, constant);
@@ -124,32 +149,33 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             // currentSquareRootGuessMod * A^2 + coefA * A + constant = square
             
             
-            long mustEqual = lowerSquareDigits % currentSquareMod;
+            BigInteger mustEqual = lowerSquareDigits.mod( currentSquareMod );
             
             log.debug("(Square root)^2 % {} = {}", 
                     currentSquareMod, mustEqual);
             
-            long aIsOne = (coefA * 1 + constant) % currentSquareMod;
-            long aIsZero = (coefA * 0 + constant) % currentSquareMod;
+            BigInteger aIsOne = coefA.add(constant).mod( currentSquareMod );
+            BigInteger aIsZero =  constant.mod( currentSquareMod );
             
-            if (aIsOne == mustEqual) {
-                currentSquareRootGuess |= (1 << sqRootDigit - 1);
+            if (aIsOne.equals( mustEqual)) {
+                currentSquareRootGuess = currentSquareRootGuess.setBit(sqRootDigit - 1);
             } else {
                 //it's a zero
-                Preconditions.checkState(aIsZero == mustEqual);
+                Preconditions.checkState(aIsZero.equals(mustEqual));
             }
             
-            log.debug("Current square root guess {} ({})", Long.toBinaryString(currentSquareRootGuess), currentSquareRootGuess);
+            log.debug("Current square root guess {} ({})", currentSquareRootGuess.toString(2), currentSquareRootGuess);
         }
         
+        return currentSquareRootGuess;
     }
   
     @Override
     public String handleCase(InputData in) {
        
        // testTopDown();
-        //testBottomUp();
-        findSquareRootBottomUp(361 % (1 << 6), 6,  3);
+        testBottomUp();
+        
 
         return String.format("Case #%d: ", in.testCase);
     }
