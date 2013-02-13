@@ -2,6 +2,8 @@ package codejam.y2011.round_3.mystery_square;
 
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.lang3.StringUtils;
@@ -13,15 +15,16 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.common.math.BigIntegerMath;
 import com.google.common.math.LongMath;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-
+    
     public Main()
     {
-       super("D", 0, 0, 1);
+       super("D", 0, 1, 0);
     }
     
     
@@ -29,9 +32,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
        
-        InputData input = new InputData(testCase);
-       
-        return input;
+        InputData in = new InputData(testCase);
+        in.S = scanner.next();
+        return in;
     }
 
     public void testTopDown()
@@ -61,11 +64,39 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             log.debug("Replace with ones {} ({}) take sqrt rounded down = {} ", 
                     withOnesStr, withOnes, sqrt );
             
+            String topDown = getNeededTopDownString(binaryStr);
             
+            BigInteger sqRoot = findSquareRootTopDown(new BigInteger(topDown, 2), binaryStr.length() - topDown.length());
+            
+            log.debug("Mystery {} ({}) topDown {} square root {} ({})", mystery, ii, topDown, sqRoot.toString(2), sqRoot);
+            
+            Preconditions.checkState(sqRoot.multiply(sqRoot).longValue() == ii);
             
         }
         
         
+    }
+    
+    /**
+     * 
+     * if we have 
+     * 101???      topPart = 101, lenRest = 3
+     * or
+     * 11???  then topPart = 11, lenRest = 3
+     * 
+     */
+    BigInteger findSquareRootTopDown(BigInteger topPart, int lenRest) {
+        BigInteger top = topPart.shiftLeft(lenRest);
+        log.debug("len rest {}  1 << len {}  - 1 = {}", lenRest, 
+                BigInteger.ONE.shiftLeft(lenRest).toString(2),
+                BigInteger.ONE.shiftLeft(lenRest).subtract(BigInteger.ONE).toString(2));
+        top = top.add(BigInteger.ONE.shiftLeft(lenRest).subtract(BigInteger.ONE));
+        
+        
+        BigInteger sqRoot = BigIntegerMath.sqrt(top, RoundingMode.DOWN);
+        log.debug("Find square root top down.  top {} ({}) ; sq root {}", top.toString(2), top, sqRoot);
+        
+        return sqRoot;
     }
     
     public void testBottomUp() {
@@ -93,13 +124,19 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
             log.debug("Square digits : {}", squareDigits.toString(2));
             
+            String neededBottomUp = getNeededBottomUpString(binaryStr);
+            
+            int sqRootLen = (len+1) / 2;
+            
+            Preconditions.checkState(neededBottomUp.length() == sqRootLen + 1);
+            
             if (i % 4 == 3 || i % 4 == 1) {
             
-                BigInteger sqRoot = findSquareRootBottomUp( squareDigits, squareRootDigits+1, (int) (i % 4) );
+                BigInteger sqRoot = findSquareRootBottomUp( new BigInteger(neededBottomUp, 2), neededBottomUp.length(), (int) (i % 4) );
                 BigInteger sq = sqRoot.multiply(sqRoot);
                 
                 log.debug("Calculated square : {} ({})", sq.toString(2), sq );
-                
+                Preconditions.checkState(ii == sq.longValue());
                 
             }
             
@@ -160,8 +197,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             if (aIsOne.equals( mustEqual)) {
                 currentSquareRootGuess = currentSquareRootGuess.setBit(sqRootDigit - 1);
             } else {
+                //An invalid state, bottom up failed
+                if (!aIsZero.equals(mustEqual)) {
+                    return null;
+                }
                 //it's a zero
-                Preconditions.checkState(aIsZero.equals(mustEqual));
+                
             }
             
             log.debug("Current square root guess {} ({})", currentSquareRootGuess.toString(2), currentSquareRootGuess);
@@ -170,33 +211,247 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return currentSquareRootGuess;
     }
   
-    public void solve(String binaryString, int currentDivision)
+    
+    public String getNeededTopDownString(String mystery)
     {
-        int len = binaryString.length();
+        int len = mystery.length();
+        
+        int sqRootLen = (len+1) / 2;
+        
+        int lenNeededTopDown = len - sqRootLen;
+        
+        return mystery.substring(0, lenNeededTopDown);
+    }
+    
+    public String getNeededBottomUpString(String mystery) {
+        int len = mystery.length();
         
         int sqRootLen = (len+1) / 2;
         
         int lenNeededBottomUp = sqRootLen + 1;
-        int lenNeededTopDown = len - sqRootLen;
         
         // len - start + 1 = lenBu
         int startBottomUp = len  - lenNeededBottomUp;
         
-        String top = binaryString.substring(0, lenNeededTopDown);
+        return mystery.substring(startBottomUp, mystery.length() );
+
+    }
+    
+    public BigInteger solve(String binaryStringAns)
+    {
         
-        String bottom = binaryString.substring(startBottomUp, binaryString.length() );
+        String binaryString = binaryStringAns;
         
-        log.debug("Binary str {} top {} bot {}", binaryString, top, bottom);
+        int iter = 0;
+        int divisionShifts = 0;
+        
+        while(iter < 50)
+        {
+            ++iter;
+        
+            int len = binaryString.length();
+            
+            log.debug("Binary string {} length {} div shifts {}", binaryString, len, divisionShifts);
+            
+            if (len == 0) {
+                return BigInteger.ZERO;
+            }
+            
+            int sqRootLen = (len+1) / 2;
+            
+            int lenNeededTopDown = len - sqRootLen;
+            
+            String top = getNeededTopDownString(binaryString);
+            
+            String bottom = getNeededBottomUpString(binaryString);
+            
+            log.debug("Binary str {} top {} bot {}", binaryString, top, bottom);
+            
+            int countTop = StringUtils.countMatches(top, "?");
+            int countBottom = StringUtils.countMatches(bottom, "?");
+            
+            if (countTop <= countBottom) 
+            {
+                GeneratePerms topPerms = new GeneratePerms(top);
+                
+                while(topPerms.hasNext()) {
+                    BigInteger topPerm = topPerms.next();
+                    
+                    BigInteger sqRoot = findSquareRootTopDown(topPerm, len - lenNeededTopDown);
+                    
+                    if (matchBinaryStr(sqRoot, binaryString)) {
+                        return sqRoot.multiply(sqRoot).shiftLeft(divisionShifts);
+                    }
+                }
+            } else {
+                GeneratePerms botPerms = new GeneratePerms(bottom);
+                log.debug("Generating perms for {}", bottom);
+                    
+                while(botPerms.hasNext()) {
+                    BigInteger botPerm = botPerms.next();
+                    
+                    log.debug("Bottom perm {} ({})", botPerm.toString(2), botPerm);
+                    
+                    if (botPerm.toString(2).equals("111111100101010010100010001")) {
+                       log.debug("Found");
+                    }
+                    
+                    BigInteger sqRoot = findSquareRootBottomUp(botPerm, bottom.length(), 1);
+                    
+                    if (matchBinaryStr(sqRoot, binaryString)) {
+                        return sqRoot.multiply(sqRoot).shiftLeft(divisionShifts);
+                    }
+                    
+                    sqRoot = findSquareRootBottomUp(botPerm, bottom.length(), 3);
+                    
+                    if (matchBinaryStr(sqRoot, binaryString)) {
+                        return sqRoot.multiply(sqRoot).shiftLeft(divisionShifts);
+                    }
+                }
+            }
+            
+            divisionShifts += 2;
+            binaryString = binaryString.substring(0, binaryString.length() - 2);
+        
+        }
+        
+        return null;
+    }
+    
+    public boolean matchBinaryStr(BigInteger sqRoot, String binaryStringAns) 
+    {
+        if (sqRoot == null)
+            return false;
+        
+        String binary = sqRoot.multiply(sqRoot).toString(2);
+        
+        if (binary.length() != binaryStringAns.length())
+            return false;
+        
+        for(int c = 0; c < binary.length(); ++c) {
+            char ch = binary.charAt(c);
+            char ch2 = binaryStringAns.charAt(c);
+        
+            if (ch2 == '?')
+                continue;
+            
+            if (ch != ch2)
+                return false;
+        }
+        
+        return true;
+    }
+    
+    public void testGenerate() {
+        String test = "111?11?0010101001?100010?01";
+        
+        String goal = "111111100101010010100010001";
+        
+        GeneratePerms g = new GeneratePerms(test);
+        
+        int count = 0;
+        boolean found = false;
+        
+        while(g.hasNext()) {
+            String str = g.next().toString(2);
+            log.debug("{}", test);
+            log.debug("{}", str);
+            if (str.equals(goal)) {
+                found = true;
+            }
+            ++count;
+        }
+        
+        Preconditions.checkState(count == 1 << 4);
+        Preconditions.checkState(found);
+    }
+    
+    public class GeneratePerms implements Iterator<BigInteger>
+    {
+        String mysteryString;
+        
+        List<Integer> questionMarkPositions;
+        int maxPerm;
+        int perm;
+        
+        BigInteger curPerm;
+        
+        GeneratePerms(String mysteryString)
+        {
+            this.mysteryString = mysteryString;
+            questionMarkPositions = Lists.newArrayList();
+            
+            curPerm = BigInteger.valueOf(0);
+            
+            for(int c = 0; c < mysteryString.length(); ++c) {
+                char ch = mysteryString.charAt(c);
+                
+                //In a string, MSB is 0
+                int bitPos = mysteryString.length() - 1 - c;
+                
+                if (ch == '?') {
+                    questionMarkPositions.add(bitPos);
+                }
+                
+                if (ch == '1') {
+                    curPerm = curPerm.setBit(bitPos);
+                }
+            }
+            
+            
+            maxPerm = (1 << questionMarkPositions.size()) - 1;
+        }
+
+        @Override
+        public boolean hasNext()
+        {
+            return perm <= maxPerm;
+        }
+
+        @Override
+        public BigInteger next()
+        {
+            BigInteger r = curPerm;
+            
+            ++perm;
+            for(int i = 0; i < questionMarkPositions.size(); ++i) {
+                if ((perm & 1 << i) != 0) {
+                    curPerm = curPerm.setBit(questionMarkPositions.get(i));
+                } else {
+                    curPerm = curPerm.clearBit(questionMarkPositions.get(i));
+                }
+            }
+
+            return r;
+        }
+
+        @Override
+        public void remove()
+        {
+           
+            
+        }
+        
     }
     
     @Override
     public String handleCase(InputData in) {
        
-        solve("11001", 1);
-       // testTopDown();
+        //testTopDown();
+        //testBottomUp();
+        
+        testGenerate();
+        
+        if (in.S.length() == 1) {
+            return String.format("Case #%d: 1", in.testCase);
+        }
+        
+        BigInteger square = solve(in.S);
+        //solve("11001", 1);
+        
        // testBottomUp();
         
 
-        return String.format("Case #%d: ", in.testCase);
+        return String.format("Case #%d: %s", in.testCase, square.toString(2));
     }
 }
