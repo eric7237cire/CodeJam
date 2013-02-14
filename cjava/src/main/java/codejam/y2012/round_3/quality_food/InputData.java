@@ -2,29 +2,33 @@ package codejam.y2012.round_3.quality_food;
 
 import java.util.List;
 
-import codejam.utils.geometry.Circle;
-import codejam.utils.geometry.PointInt;
+import org.apache.commons.lang3.tuple.Pair;
+
 import codejam.utils.main.AbstractInputData;
 
 public class InputData extends AbstractInputData {
 
+    //Amount of money
+    long M;
+    
+    //Delivery fee
+    long F;
+    
     int N;
     
-    PointInt redLight;
-    PointInt greenLight;
-    
-    List<Circle> pillars;
-    /*
-     * One line containing the coordinates x, y of the 
-     * red light source.
-One line containing the coordinates x, y of the green light 
-source.
-One line containing the number of pillars n.
-n lines describing the pillars. 
-Each contains 3 numbers x, y, r. 
-The pillar is a disk with the center (x, y) and radius r.
+    static class Food {
+        final long price, time;
 
+        public Food(long price, long time) {
+            this.price = price;
+            this.time = time;
+        }
+    }
+    /**
+     * Price, Time to stale
      */
+    Food[] foodTypes;
+    
     public InputData(int testCase) {
         super(testCase);
     }
