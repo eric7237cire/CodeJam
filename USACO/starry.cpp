@@ -15,6 +15,7 @@ LANG: C++
 #include <cassert>
 #include <iterator>
 #include <sstream>
+#include <complex>
 #include <bitset>
 #include <iomanip>
 #include <cctype>
@@ -67,12 +68,19 @@ uint getIndex(int row, int col, int cols)
 template< typename T >
 struct Point
 {
+
     T x;
     T y;
     
+
     Point(T xx, T yy) : x(xx), y(yy) {}
 	Point() : x(), y() {}
+
+	
 };
+
+ 
+
 
 template<typename T> 
 Point<T> operator-( const Point<T>& lhs, const Point<T>& rhs) 
@@ -135,15 +143,54 @@ double cross( const PointD& A, const PointD& B )
     return A.x*B.y - A.y*B.x;
 }
 
+template<typename T>
+Point<T> rotate90(const Point<T>& pt)
+{
+	return Point<T>( -pt.y, pt.x );
+}
+
+template<typename T>
+class LowestYSortOrder
+{
+	public:
+	LowestYSortOrder()
+	{
+	}
+
+    int operator()(const Point<T>& p1, const Point<T>& p2) const
+    {
+        return p1.y < p2.y || (p1.y == p2.y && p1.x < p2.x);
+    }
+};
+
+
 const double tolerance = 0.000002;
 
-struct ComplexPoint : public complex<int>;
-
-template<typename Point> 
-set<Point> flood_fill( const vvi& grid, const Point& start, int width, int height )
+struct ComplexPoint : public complex<int>
 {
-    vector<Point> dirs;
-    typedef vector<Point> vp;
+	ComplexPoint(int xx, int yy) : complex<int>(xx,yy)
+	{
+
+	}
+	int x() 
+	{
+		return real();
+	}
+
+	int y()
+	{
+		return imag();
+	}
+};
+
+typedef Point<int> PPoint;
+
+typedef set<Point<int>, LowestYSortOrder<int> > sp;
+
+sp flood_fill( const vvi& grid, const PPoint& start, int width, int height )
+{
+    vector<PPoint> dirs;
+    typedef vector<PPoint> vp;
     for(int x = -1; x <= 1; ++x)
     {
         for(int y = -1; y <= 1; ++y)
@@ -151,16 +198,18 @@ set<Point> flood_fill( const vvi& grid, const Point& start, int width, int heigh
             if (x == 0 && y == 0)
                 continue;
             
-            dirs.pb(Point(x, y));
+            dirs.pb(PPoint(x, y));
         }
     }
     
-    queue<Point> toVisit;
-    set<Point> visited;
+    queue<PPoint> toVisit;
+    sp visited;
+
+	toVisit.push(start);
     
     while(!toVisit.empty())
     {
-        Point p = toVisit.front();
+        PPoint p = toVisit.front();
         
         toVisit.pop();
         
@@ -173,15 +222,78 @@ set<Point> flood_fill( const vvi& grid, const Point& start, int width, int heigh
         for(vp::iterator it = dirs.begin();
             it != dirs.end(); ++it)
         {
-            Point np = p + *it;
-            if (np.x() >= 0 && np.x() < width &&
-                np.y() >= 0 && np.y() < height)
+            PPoint np = p + *it;
+            if (np.x >= 0 && np.x < width &&
+                np.y >= 0 && np.y < height)
             {
-                toVisit.pb(np);
+				char ch = grid[np.x][np.y];
+				assert(ch == '0' || ch == '1');
+				if (ch == '1')
+					toVisit.push(np);
             }
         }
         
     }
+
+	return visited;
+}
+
+
+
+class OrderSetPoints
+{
+	public:
+	OrderSetPoints()
+	{
+	}
+
+	LowestYSortOrder<int> cmp;
+
+    int operator()(const sp& s1, const sp& s2) const
+    {
+        return lexicographical_compare( all(s1), all(s2), 
+			cmp );
+    }
+};
+
+
+
+
+typedef map<sp, char, OrderSetPoints> mapSpChar;
+
+sp flipSet( const sp& points);
+sp normalize( const sp& points);
+sp rotateSet90( const sp& points);
+
+char findLetter ( mapSpChar& clusterLetters, const sp& points, int nLetters )
+{
+	//Try and find it
+	sp norm = normalize(points);
+
+	mapSpChar::iterator it = clusterLetters.find(norm); 
+
+	if (it != clusterLetters.end()) {
+		return it->second;
+	}
+
+	int nextLetter = 'a' + nLetters;
+
+	sp flipped = flipSet(norm);
+
+	clusterLetters.insert(mp(norm, nextLetter));
+	clusterLetters.insert(mp(flipped, nextLetter));
+
+	for(int i = 0; i < 3; ++i)
+	{
+		norm = rotateSet90(norm);
+		flipped = rotateSet90(flipped);
+
+		clusterLetters.insert(mp(norm, nextLetter));
+		clusterLetters.insert(mp(flipped, nextLetter));
+
+	}
+
+	return nextLetter;
 }
 
 /**
@@ -189,22 +301,21 @@ Find min x and min y and make minX, minY the origin.
 
 This means when translation is done all points are >= 0
 */
-template<typename Point, typename T> 
-set<Point> normalize( const set<Point>& points)
+sp normalize( const sp& points)
 {
-    typedef set<Point> sp;
-    T minX = numeric_limits<T>::max();
-    T minY = numeric_limits<T>::max();
+    
+    int minX = numeric_limits<int>::max();
+    int minY = numeric_limits<int>::max();
     
     for(sp::iterator it = points.begin(); it != points.end(); ++it)
     {
-        minX = min(minX, it->x());
-        minY = min(minY, it->y());
+        minX = min(minX, it->x);
+        minY = min(minY, it->y);
     }
     
-    Point newOrigin(minX, minY);
+    Point<int> newOrigin(minX, minY);
     
-    set<Point> ret;
+    sp ret;
     
     for(sp::iterator it = points.begin(); it != points.end(); ++it)
     {
@@ -214,14 +325,15 @@ set<Point> normalize( const set<Point>& points)
     return ret;
 }
 
+
+
 /*
 Assume set is already normalized, though not sure if that even matters...
 */
-template<typename Point, typename T> 
-set<Point> rotateSet90( const set<Point>& points)
+sp rotateSet90( const sp& points)
 {
     
-    set<Point> ret;
+    sp ret;
     
     for(sp::iterator it = points.begin(); it != points.end(); ++it)
     {
@@ -231,14 +343,15 @@ set<Point> rotateSet90( const set<Point>& points)
     return normalize(ret);        
 }
 
+Point<int> flip( const Point<int>& pt );
+
 /**
 flips about x axis
 */
-template<typename Point, typename T> 
-set<Point> flipSet( const set<Point>& points)
+sp flipSet( const sp& points)
 {
     
-    set<Point> ret;
+    sp ret;
     
     for(sp::iterator it = points.begin(); it != points.end(); ++it)
     {
@@ -248,10 +361,17 @@ set<Point> flipSet( const set<Point>& points)
     return normalize(ret);        
 }
 
+Point<int> flip( const Point<int>& pt )
+{
+	return Point<int>( pt.x, -pt.y);
+}
+
 complex<int> flip( const complex<int>& pt )
 {
     return complex<int>( pt.real(), -pt.imag() );    
 }
+
+
 
 
 int main() {
@@ -262,11 +382,11 @@ int main() {
     int width, height;
     fin >> width >> height;
 
-    vvi grid;
+    vvi grid(width, vi(height, 0));
     
-    FOR(x, 0, width)
+	for(int y = height - 1; y >= 0; --y)
     {
-        FOR(y, 0, height)
+		FOR(x, 0, width)    
         {
             char ch;
             fin >> ch;
@@ -275,6 +395,62 @@ int main() {
     }
      
     //Once grid has been read in, scan again, looking for unassigned stars
+
+	mapSpChar clusterLetters;
+	int nLetters = 0;
+	char maxLetter = -1;
+
+	for(int y = height - 1; y >= 0; --y)
+    {
+		FOR(x, 0, width)
+        {
+			if (grid[x][y] != '1')
+				continue;
+
+			sp cluster = flood_fill(grid, Point<int>(x,y), width, height);
+
+			cout << "Cluster at " << Point<int>(x, y) << " size " << cluster.size() << endl;
+
+			char letter = findLetter(clusterLetters, cluster, nLetters);
+
+			if (letter > maxLetter) {
+				++nLetters;
+				maxLetter = letter;
+			}
+
+			cout << "Assigning " << letter << endl;
+
+			for(sp::iterator it = cluster.begin(); it != cluster.end(); ++it)
+			{
+				grid[it->x][it->y] = letter;
+			}
+
+			/*
+			for(int yy = height - 1; yy >= 0; --yy)
+			{
+
+				FOR(xx, 0, width)
+				{
+					cout << (char) grid[xx][yy];
+				}
+				cout << endl;
+			}	
+			cout << endl << endl;
+			*/
+
+		}
+	}
     
+	
+    
+    for(int y = height - 1; y >= 0; --y)
+    {
+		FOR(x, 0, width)
+		{
+			fout << (char) grid[x][y];
+		}
+		fout << endl;
+	}
+
     return 0;
 }
