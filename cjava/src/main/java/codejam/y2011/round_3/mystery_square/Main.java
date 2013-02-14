@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Level;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -25,6 +26,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     public Main()
     {
        super("D", 0, 1, 0);
+       
+       (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
     
     
@@ -245,7 +248,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         int iter = 0;
         int divisionShifts = 0;
         
-        while(iter < 50)
+        while(iter < 500)
         {
             ++iter;
         
@@ -257,55 +260,56 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 return BigInteger.ZERO;
             }
             
-            int sqRootLen = (len+1) / 2;
+            char lastChar = binaryString.charAt(binaryString.length()-1);
+            boolean canBeOdd = lastChar == '1' || lastChar == '?';
             
-            int lenNeededTopDown = len - sqRootLen;
-            
-            String top = getNeededTopDownString(binaryString);
-            
-            String bottom = getNeededBottomUpString(binaryString);
-            
-            log.debug("Binary str {} top {} bot {}", binaryString, top, bottom);
-            
-            int countTop = StringUtils.countMatches(top, "?");
-            int countBottom = StringUtils.countMatches(bottom, "?");
-            
-            if (countTop <= countBottom) 
-            {
-                GeneratePerms topPerms = new GeneratePerms(top);
+            if (canBeOdd) {
+                               
+                String top = getNeededTopDownString(binaryString);            
+                String bottom = getNeededBottomUpString(binaryString);
                 
-                while(topPerms.hasNext()) {
-                    BigInteger topPerm = topPerms.next();
+                log.info("Binary str {} top {} bot {}", binaryString, top, bottom);
+                
+                int countTop = StringUtils.countMatches(top, "?");
+                int countBottom = StringUtils.countMatches(bottom, "?");
+                
+                if (countTop <= countBottom) 
+                {
+                    GeneratePerms topPerms = new GeneratePerms(top);
                     
-                    BigInteger sqRoot = findSquareRootTopDown(topPerm, len - lenNeededTopDown);
-                    
-                    if (matchBinaryStr(sqRoot, binaryString)) {
-                        return sqRoot.multiply(sqRoot).shiftLeft(divisionShifts);
+                    while(topPerms.hasNext()) {
+                        BigInteger topPerm = topPerms.next();
+                        
+                        BigInteger sqRoot = findSquareRootTopDown(topPerm, binaryString.length() - top.length());
+                        
+                        if (matchBinaryStr(sqRoot, binaryString)) {
+                            return sqRoot.multiply(sqRoot).shiftLeft(divisionShifts);
+                        }
                     }
-                }
-            } else {
-                GeneratePerms botPerms = new GeneratePerms(bottom);
-                log.debug("Generating perms for {}", bottom);
+                } else {
+                    GeneratePerms botPerms = new GeneratePerms(bottom);
+                    //log.debug("Generating perms for {}", bottom);
                     
-                while(botPerms.hasNext()) {
-                    BigInteger botPerm = botPerms.next();
                     
-                    log.debug("Bottom perm {} ({})", botPerm.toString(2), botPerm);
-                    
-                    if (botPerm.toString(2).equals("111111100101010010100010001")) {
-                       log.debug("Found");
-                    }
-                    
-                    BigInteger sqRoot = findSquareRootBottomUp(botPerm, bottom.length(), 1);
-                    
-                    if (matchBinaryStr(sqRoot, binaryString)) {
-                        return sqRoot.multiply(sqRoot).shiftLeft(divisionShifts);
-                    }
-                    
-                    sqRoot = findSquareRootBottomUp(botPerm, bottom.length(), 3);
-                    
-                    if (matchBinaryStr(sqRoot, binaryString)) {
-                        return sqRoot.multiply(sqRoot).shiftLeft(divisionShifts);
+                        
+                    while(botPerms.hasNext()) {
+                        BigInteger botPerm = botPerms.next();
+                        
+                        //log.debug("Bottom perm {} ({})", botPerm.toString(2), botPerm);
+                        
+                       
+                        BigInteger sqRoot = findSquareRootBottomUp(botPerm, bottom.length(), 1);
+                        
+                        if (matchBinaryStr(sqRoot, binaryString)) {
+                            return sqRoot.multiply(sqRoot).shiftLeft(divisionShifts);
+                        }
+                  
+                        BigInteger sqRoot2 = findSquareRootBottomUp(botPerm, bottom.length(), 3);
+                        
+                        if (matchBinaryStr(sqRoot2, binaryString)) {
+                            return sqRoot2.multiply(sqRoot2).shiftLeft(divisionShifts);
+                        }
+                   
                     }
                 }
             }
@@ -379,6 +383,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         GeneratePerms(String mysteryString)
         {
             this.mysteryString = mysteryString;
+            log.info("Mystery str len {}", mysteryString.length());
             questionMarkPositions = Lists.newArrayList();
             
             curPerm = BigInteger.valueOf(0);
@@ -440,7 +445,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         //testTopDown();
         //testBottomUp();
         
-        testGenerate();
+        //testGenerate();
         
         if (in.S.length() == 1) {
             return String.format("Case #%d: 1", in.testCase);
