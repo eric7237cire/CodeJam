@@ -137,6 +137,123 @@ double cross( const PointD& A, const PointD& B )
 
 const double tolerance = 0.000002;
 
+struct ComplexPoint : public complex<int>;
+
+template<typename Point> 
+set<Point> flood_fill( const vvi& grid, const Point& start, int width, int height )
+{
+    vector<Point> dirs;
+    typedef vector<Point> vp;
+    for(int x = -1; x <= 1; ++x)
+    {
+        for(int y = -1; y <= 1; ++y)
+        {
+            if (x == 0 && y == 0)
+                continue;
+            
+            dirs.pb(Point(x, y));
+        }
+    }
+    
+    queue<Point> toVisit;
+    set<Point> visited;
+    
+    while(!toVisit.empty())
+    {
+        Point p = toVisit.front();
+        
+        toVisit.pop();
+        
+        if (contains(visited, p)) {
+            continue;
+        }
+        
+        visited.insert(p);
+        
+        for(vp::iterator it = dirs.begin();
+            it != dirs.end(); ++it)
+        {
+            Point np = p + *it;
+            if (np.x() >= 0 && np.x() < width &&
+                np.y() >= 0 && np.y() < height)
+            {
+                toVisit.pb(np);
+            }
+        }
+        
+    }
+}
+
+/**
+Find min x and min y and make minX, minY the origin.
+
+This means when translation is done all points are >= 0
+*/
+template<typename Point, typename T> 
+set<Point> normalize( const set<Point>& points)
+{
+    typedef set<Point> sp;
+    T minX = numeric_limits<T>::max();
+    T minY = numeric_limits<T>::max();
+    
+    for(sp::iterator it = points.begin(); it != points.end(); ++it)
+    {
+        minX = min(minX, it->x());
+        minY = min(minY, it->y());
+    }
+    
+    Point newOrigin(minX, minY);
+    
+    set<Point> ret;
+    
+    for(sp::iterator it = points.begin(); it != points.end(); ++it)
+    {
+        ret.insert( *it - newOrigin);
+    }
+    
+    return ret;
+}
+
+/*
+Assume set is already normalized, though not sure if that even matters...
+*/
+template<typename Point, typename T> 
+set<Point> rotateSet90( const set<Point>& points)
+{
+    
+    set<Point> ret;
+    
+    for(sp::iterator it = points.begin(); it != points.end(); ++it)
+    {
+        ret.insert( rotate90(*it) );
+    }
+    
+    return normalize(ret);        
+}
+
+/**
+flips about x axis
+*/
+template<typename Point, typename T> 
+set<Point> flipSet( const set<Point>& points)
+{
+    
+    set<Point> ret;
+    
+    for(sp::iterator it = points.begin(); it != points.end(); ++it)
+    {
+        ret.insert( flip(*it) );
+    }
+    
+    return normalize(ret);        
+}
+
+complex<int> flip( const complex<int>& pt )
+{
+    return complex<int>( pt.real(), -pt.imag() );    
+}
+
+
 int main() {
     
 	ofstream fout ("starry.out");
