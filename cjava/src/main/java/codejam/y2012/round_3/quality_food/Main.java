@@ -25,7 +25,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     
     public Main()
     {
-        super("C", 0, 0, 1);
+        super("C", 1, 0, 0);
     }
     
     
@@ -149,6 +149,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 long cost = largeCost.longValue() * nLargeDeliveries +
                         smallCost.longValue() * nSmallDeliveries + in.F * nDeliveries;
                 
+                
                 log.debug("For D days {} Delivery size {} , {}  number deliveries {} = {} + {}   cost {}", D, 
                         largeDeliverySize, smallDeliverySize, nDeliveries, nLargeDeliveries, nSmallDeliveries, cost);
                 
@@ -157,6 +158,39 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
         }
         
+        return minCost;
+    }
+    
+    long costOfDaysWorthFood( long D, long deliverySizeGuess, List<Pair<Long,BigInteger>> criticalPoints, InputData in )
+    {
+        long minCost = Long.MAX_VALUE;
+        
+        
+        deliverySizeGuess = Math.min(deliverySizeGuess, D);
+        
+        long nDeliveries = (long) Math.ceil( D / (double)deliverySizeGuess );
+        
+        long largeDeliverySize = (long) Math.ceil( D / (double)nDeliveries );
+        
+        long overflowD = nDeliveries * largeDeliverySize;
+        
+        long smallDeliverySize = largeDeliverySize - 1;
+        
+        long nSmallDeliveries = overflowD - D;
+        long nLargeDeliveries = nDeliveries - nSmallDeliveries;
+        
+        BigInteger largeCost = getSingleDeliveryCost(criticalPoints, largeDeliverySize);
+        BigInteger smallCost = getSingleDeliveryCost(criticalPoints, smallDeliverySize);
+        
+        long cost = largeCost.longValue() * nLargeDeliveries +
+                smallCost.longValue() * nSmallDeliveries + in.F * nDeliveries;
+        
+        
+        log.debug("For D days {} Delivery size {} , {}  number deliveries {} = {} + {}   cost {}", D, 
+                largeDeliverySize, smallDeliverySize, nDeliveries, nLargeDeliveries, nSmallDeliveries, cost);
+        
+        minCost = Math.min(cost, minCost);
+
         return minCost;
     }
     
@@ -179,9 +213,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         while (true) {
             long mid = lo + (hi - lo) / 2;
-
+//5071
             long cost = costOfDaysWorthFood(mid, criticalPoints, in);
-
+            log.debug("Cost of surviving {} days = {}", mid, cost);
             if (cost <= in.M) {
                 lo = mid;
             } else {
@@ -193,6 +227,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             if (hi - lo <= 1)
                 break;
         }
+        
+        
         
         return lo;
     }
@@ -247,17 +283,32 @@ List<Pair<Long,BigInteger>> criticalPoints = Lists.newArrayList();
     
     List<Food> getCheapestFoodForTime(InputData in) 
     {
-        int j = 0;
         List<Food> cheapestFoodForTime = Lists.newArrayList();
-        for(int i = 0; i < in.N; ++i) 
+        
+        /**
+         * the food choices are sorted cheapest first, 
+         * then greatest time to stale.
+         * 
+         * That means every time we hit a point later
+         * than the last added, it is the cheapest food
+         * for that time to stale value.
+         */
+        cheapestFoodForTime.add(in.foodTypes[0]);
+        
+        for(int i = 1; i < in.N; ++i) 
         {
-            if (j > 0 && (in.foodTypes[j - 1].price == in.foodTypes[i].price || 
-                    in.foodTypes[j - 1].time >= in.foodTypes[i].time)) {
+            Food lastMinPoint = cheapestFoodForTime.get(cheapestFoodForTime.size() -1);
+            
+            Food curPoint = in.foodTypes[i];
+            
+            if (curPoint.price == lastMinPoint.price)
                 continue;
-            }
+            
+            if (curPoint.time <= lastMinPoint.time)
+                continue;
             
             cheapestFoodForTime.add(in.foodTypes[i]);
-            ++j;
+            
         }
         
         return cheapestFoodForTime;
@@ -275,12 +326,16 @@ List<Pair<Long,BigInteger>> criticalPoints = Lists.newArrayList();
             @Override
             public int compare(Food o1, Food o2)
             {
-               return ComparisonChain.start().compare(o1.price,o2.price).result();
+               return ComparisonChain.start().compare(o1.price,o2.price).compare(o2.time,o1.time).result();
             }
             
         });
         
         List<Food> cheapestFoodForTime = getCheapestFoodForTime(in);
+        
+        for (Food food : cheapestFoodForTime) {
+            log.debug("Cheapest food for time {}", food);
+        }
         
         //Now we want to construct the "critical points" where the slope of the cost
         //for days function changes
@@ -293,7 +348,16 @@ List<Pair<Long,BigInteger>> criticalPoints = Lists.newArrayList();
                     getSingleDeliveryCost(criticalPoints, time));
         }*/
         
-        long maxDays = getMaxDays(criticalPoints, in);
+        log.debug("Money avail {}, {}", in.M,costOfDaysWorthFood(5071, criticalPoints, in));
+
+        for(int i = 1; i < 80; ++i) {
+            long cost = costOfDaysWorthFood(5071, i, criticalPoints,in);
+            log.debug("Cost if delivery size {}.  Is <= {} ? {}",
+                    cost, in.M, cost <= in.M );
+        }
+        
+       long maxDays = getMaxDays(criticalPoints, in);
+      //  long maxDays = 16;
         
         return String.format("Case #%d: %d ", in.testCase, maxDays);
     }

@@ -23,6 +23,14 @@ public class InputData extends AbstractInputData {
             this.price = price;
             this.time = time;
         }
+
+        @Override
+        public String toString()
+        {
+            return "Food [price=" + price + ", time/delivery size=" + time + "]";
+        }
+        
+        
     }
     /**
      * Price, Time to stale
