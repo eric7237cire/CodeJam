@@ -37,8 +37,10 @@ public class Simplex {
     
     List<Equation> equations;
     int objectiveFunctionRow = -1;
+    int phase1Row = -1;
     
-    boolean needsPhase1 = false;
+    private final static int PHASE_1_COL_ID = -1;
+    private final static int PHASE_2_COL_ID = -2;
     
     private final static double tolerance = 1e-5;
     
@@ -78,7 +80,7 @@ public class Simplex {
         equations.add(eq);
         
         eq.basicVariable = "Z";
-        eq.basicVarColumn  = -1;
+        eq.basicVarColumn  = PHASE_2_COL_ID;
         
         
     }
@@ -106,6 +108,15 @@ public class Simplex {
             this.artificialVar = artificialVar;
             this.rhs = rhs;
         }
+
+        @Override
+        public String toString()
+        {
+            return "Equation [coeff=" + coeff + ", slackVar=" + slackVar + ", artificialVar=" + artificialVar + ", rhs=" + rhs + ", basicVariable="
+                    + basicVariable + ", basicVarColumn=" + basicVarColumn + "]";
+        }
+        
+        
     }
     
     
@@ -147,18 +158,20 @@ public class Simplex {
         ++slackVariableCount;
     }
     
+    /**
+     * 
+     * Add 
+     * c_0 * x_0 + c_1 * x_1 == rhs
+     */
     public void addConstraintEquals(List<Double> coeff, Double rhs) {
-        /*
-        Equation eq = new Equation();
-        eq.rhs = rhs;
-        eq.coeff = coeff;
         
-        equations.add(eq);
         
-        if (rhs > 0) {
-            eq.artificialVar = new ImmutablePair<>(artificialVariableCount, 1);
-            ++artificialVariableCount;
-        }*/
+        equations.add(new Equation(coeff, null, 
+                new ImmutablePair<>(artificialVariableCount, 1), rhs));
+        
+        ++artificialVariableCount;
+        
+        
     }
     
     //c_1 * x_1 + c_2 * x_2 + c_3 * x_3 + z = RHS
@@ -175,6 +188,40 @@ public class Simplex {
         //+1 for rhs 
         columns = variableCount + artificialVariableCount + slackVariableCount + 1;
         
+        if (artificialVariableCount > 0)
+        {
+            /**
+             * Create phase 1 objective function.  
+             * 
+             * Set the phase 1 function which is minimizing
+             * W = a1 + a2 + a3
+             * 
+             * W - a1 - a2 - a3 = 0
+             * 
+             *  To convert into a maximizing , we multiply eveything by -1
+             * -W + a1 + a2 + a3 = 0
+             *  
+             * 
+             * all the artificial variables             
+             */
+            List<Double> coef = Lists.newArrayList();
+            for(int c = 0; c < columns - 1; ++c) {
+                if (isArtificialVar(c)) {
+                    coef.add(1d);
+                } else {
+                    coef.add(0d);
+                }
+            }
+            Equation eq = new Equation(coef, null, null, 0d);
+            eq.basicVariable="-W";
+            eq.basicVarColumn = PHASE_1_COL_ID;
+            equations.add(0, eq);
+            
+            phase1Row = 0;
+            objectiveFunctionRow ++;
+        }
+            
+        
         //For minimization
         rows = equations.size() ;
         
@@ -188,6 +235,12 @@ public class Simplex {
             for(int c = 0; c < eq.coeff.size(); ++c) {
                 matrix.setEntry(eqNum, c, eq.coeff.get(c));
             }
+            matrix.setEntry(eqNum, columns-1, eq.rhs);
+            
+            //Recalculate basic var indexes as needed
+            
+            if (eqNum == phase1Row || eqNum == objectiveFunctionRow)
+                continue;
             
             if (eq.slackVar != null) {
                 matrix.setEntry(eqNum, variableCount + eq.slackVar.getKey(), eq.slackVar.getValue());
@@ -200,39 +253,34 @@ public class Simplex {
             } else if (eq.slackVar != null) {
                 eq.basicVarColumn =(variableCount + eq.slackVar.getKey());
             }
-            matrix.setEntry(eqNum, columns-1, eq.rhs);
+            
         }
         
-        final int phase1Row = rows - 2;
-        
-        /**
-         * Set the phase 1 function which is maximizing 
-         * w = -a_1 - a_2 - a_3 ...
-         * 
-         * all the artificial variables
-         */
-        /*
-        for(int av = 0; av < artificialVariableCount; ++av) {
-            matrix.setEntry(rows-1, av+variableCount+slackVariableCount, 1);
+        if (artificialVariableCount > 0)
+        {
+
+            /**
+             *  One more step if it is a phase 1 problem.
+             *  Proper form says that each basic var is 1 only in it's row,
+             *  so we need to remove the artificial vars from the phase I
+             *  objective function
+             */
+            //Remove artificial coeff from objective func
+            for (int eqNum = 0; eqNum < equations.size(); ++eqNum)
+            {
+                if (eqNum == phase1Row)
+                    continue;
+
+                Equation eq = equations.get(eqNum);
+
+                if (eq.artificialVar == null)
+                    continue;
+
+                //Found a constraint with an artificial var, add the eq * -1 to the phase I  row
+                matrix.setRowVector(phase1Row, matrix.getRowVector(phase1Row).combine(1, -1, matrix.getRowVector(eqNum)));
+            }
+
         }
-        
-        //Also set the initial minimization equation w = a_1 + a_2 + ...
-        //Trying to maximize -w = a_1 + a_2 + ...
-        
-        //Remove artificial coeff from objective func
-        for(int eqNum = 0; eqNum < equations.size(); ++eqNum) {
-            Equation eq = equations.get(eqNum);
-            if (eq.artificialVar == null) 
-                continue;
-                
-            matrix.setRowVector(rows-1, 
-                    matrix.getRowVector(rows-1).combine(1, -1,matrix.getRowVector(eqNum)));
-        }*/
-        
-        
-        
-        
-        
         
     }
     
@@ -244,8 +292,16 @@ public class Simplex {
     {
         buildMatrix();
         
-        if (needsPhase1) {
-            doPhase1(solutions);
+        if (log.isDebugEnabled()) {
+            log.debug("Intial matrix");
+            debugPrint();
+        }
+        
+        if (artificialVariableCount > 0) {
+            List<Double> phaseOneResults = Lists.newArrayList();
+            boolean feasible = doPhase1(phaseOneResults);
+            if (!feasible)
+                return false;
         }
         
         int iterCheck = 0;
@@ -280,6 +336,23 @@ public class Simplex {
     
     public boolean doPhase1(List<Double> solutions)
     {
+        int iterCheck = 0;
+        
+        boolean notDone = true;
+        
+        while(notDone) {
+            notDone = doStep(phase1Row);
+            
+            if(log.isDebugEnabled()) {
+                log.debug("Phase 1 step done");
+                debugPrint();
+            }
+            ++iterCheck;
+            
+            Preconditions.checkState(iterCheck < 5000);
+        }
+        
+        
         List<Double> ret = solutions;
         
         for(int var = 0; var < columns - 1; ++var) {
@@ -394,7 +467,7 @@ public class Simplex {
         //log.debug("Matrix is now : \n{}", printMatrix(matrix.getData(), rows, columns));
 
         if (log.isDebugEnabled()) {
-            log.debug("Step finished Matrix\n{}", printMatrix(matrix.getData(), rows, columns));
+        //    log.debug("Step finished Matrix\n{}", printMatrix(matrix.getData(), rows, columns));
         }
         
         return true;
@@ -450,8 +523,8 @@ public class Simplex {
             
             int basisRowLabel = eq.basicVarColumn;
             String basisRowLabelStr = "";
-            if (basisRowLabel == -1) {
-                basisRowLabelStr = "Z";
+            if (basisRowLabel < 0) {
+                basisRowLabelStr = eq.basicVariable;
             } else
             if (basisRowLabel < variableCount) {
                 basisRowLabelStr = "bv" + basisRowLabel;

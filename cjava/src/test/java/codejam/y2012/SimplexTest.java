@@ -49,8 +49,8 @@ public class SimplexTest {
     }
     
     
-    @Test
-    public void testExampleChapter2()
+   // @Test
+    public void testExampleChapter4()
     {
         Simplex s = new Simplex(2);
         
@@ -70,6 +70,35 @@ public class SimplexTest {
         s.addConstraintLTE(Arrays.asList(1d, 1d), 4d);
         
         List<Double> solutions = Lists.newArrayList();
+        s.solve(solutions);
+        
+        assertEquals(2, solutions.size());
+        assertEquals(2d, solutions.get(0), 1e-5);
+        assertEquals(2d, solutions.get(1), 1e-5);
+    }
+    
+    @Test
+    public void testExampleChapter5()
+    {
+        Simplex s = new Simplex(2);
+        
+        /**
+         * Maximize Z=15x_1 + 10x_2
+         * 
+         * x1 <= 2
+         * x2 <= 3
+         * x1 + x2 == 4
+         */
+        s.addObjectiveFunction(Arrays.asList(15d, 10d));
+        
+        s.addConstraintLTE(Arrays.asList(1d, 0d), 2d);
+        
+        s.addConstraintLTE(Arrays.asList(0d, 1d), 3d);
+        
+        s.addConstraintEquals(Arrays.asList(1d, 1d), 4d);
+        
+        List<Double> solutions = Lists.newArrayList();
+        
         s.solve(solutions);
         
         assertEquals(2, solutions.size());
