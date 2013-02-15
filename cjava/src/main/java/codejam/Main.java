@@ -681,7 +681,9 @@ public class Main  {
          * 1.  The check for a ring is clever, basically, if the C's are connected
          * but there are gaps (in the X's and Y's) such that they must have connected by making a loop
          */
-        codejam.y2012.round_3.havannah.Main m = new codejam.y2012.round_3.havannah.Main(); 
+        //codejam.y2012.round_3.havannah.Main m = new codejam.y2012.round_3.havannah.Main();
+        
+        codejam.y2012.round_3.quality_food.Main m = new codejam.y2012.round_3.quality_food.Main();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files) {
@@ -744,12 +746,12 @@ public class Main  {
         
         //round1A_2011(args);
         //round2_2011(args);        
-        round3_2011(args);
+        //round3_2011(args);
         //roundFinal_2011(args);
         
        // round1B_2012(args);
         //round2_2012(args);
-       // round3_2012(args);
+        round3_2012(args);
       //  roundFinal_2012(args);
 
        // Main m = null;

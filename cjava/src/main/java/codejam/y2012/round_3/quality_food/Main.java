@@ -46,6 +46,42 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         return in;
     }
+    
+    Long getSingleDayCost(List<Food> cheapestFoodForTime, long time)
+    {
+        for(int i = 0; i < cheapestFoodForTime.size(); ++i)
+        {
+            if (cheapestFoodForTime.get(i).time >= time) {
+                return cheapestFoodForTime.get(i).price;
+            }
+        }
+        
+        return null;
+    }
+    
+    BigInteger getSingleDeliveryCost(List<Pair<Long,BigInteger>> criticalPoints, long time)
+    {
+        for(int i = 1; i < criticalPoints.size(); ++i)
+        {
+            Pair<Long,BigInteger> lastCritPoint = criticalPoints.get(i-1);
+            Pair<Long,BigInteger> critPoint = criticalPoints.get(i);
+            
+            if (time == critPoint.getLeft()) {
+                return critPoint.getRight();
+            }
+            
+            if (time >= lastCritPoint.getLeft() && time < critPoint.getLeft())
+            {
+                BigInteger slope = critPoint.getRight().subtract(lastCritPoint.getRight())
+                        .divide(BigInteger.valueOf(critPoint.getLeft()-lastCritPoint.getLeft()));
+                
+                //y0 + slope * deltaX
+                return lastCritPoint.getRight().add( slope.multiply( BigInteger.valueOf(time - lastCritPoint.getLeft())) ); 
+            }
+        }
+        
+        return null;
+    }
 
   
     @Override
@@ -109,9 +145,13 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     BigInteger.valueOf(deltaX).multiply(BigInteger.valueOf(slope)) );
             
             criticalPoints.add(new ImmutablePair<>(x, y));
+            log.debug("Add crit point {}", criticalPoints.get(criticalPoints.size()-1));
         }
         
-        
+        for(int time = 1; time <= 36; ++time) {
+            log.debug("Time {} SingleDayCost {} SingleDeliveryCost {}", time, getSingleDayCost(cheapestFoodForTime, time),
+                    getSingleDeliveryCost(criticalPoints, time));
+        }
         
         return String.format("Case #%d: ", in.testCase);
     }
