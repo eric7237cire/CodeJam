@@ -300,6 +300,8 @@ public class Simplex {
         if (artificialVariableCount > 0) {
             List<Double> phaseOneResults = Lists.newArrayList();
             boolean feasible = doPhase1(phaseOneResults);
+            
+            log.debug("Phase I complete {}", feasible);
             if (!feasible)
                 return false;
         }
@@ -310,6 +312,10 @@ public class Simplex {
         
         while(notDone) {
             notDone = doStep(objectiveFunctionRow);
+            if (log.isDebugEnabled()) {
+                log.debug("Phase I step done");
+                debugPrint();
+            }
             ++iterCheck;
             
             Preconditions.checkState(iterCheck < 5000);
@@ -330,6 +336,9 @@ public class Simplex {
                 ret.set(basicVarColIdx, value);
             }
         }
+        
+        //Add the Z value
+        ret.add( matrix.getEntry(objectiveFunctionRow, columns-1));
         
         return true;
     }
