@@ -1,0 +1,33 @@
+3
+
+O N Z  
+A<G B<H C<F D<F E<I F<J G<L H<K I<J J<M L<N N<O
+
+L I E M K H D
+M<E
+
+A B
+B<A
+
+A B
+A<B A<A
+
+A B C
+A<B B<A
+
+A B F G
+A<B B<F
+
+A B C D E F G Z 
+F<A B<E G<B
+
+A Z C Y E F G
+A<F Y<Z A<Y C<G
+
+A B C
+A<B B<A
+
+J G C F B A
+
+A W X Y Z F G H I J K L M O P Q R S T U
+I<J I<A Q<W T<F J<W R<G W<U P<S P<H

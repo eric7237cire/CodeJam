@@ -6,13 +6,14 @@ kimbits -- 2d DP, interesting counting problem
 
 comehome -- dijkstras
 
+Graph problems :
+
 cowtour -- all pairs shortest paths
-
 butter -- dijkstras all pairs ; adj list
-
 fence - eulerian tour 
-
 fracDec -- convert num / den to decicaml repeating
+
+frameup -- all possible orderings in a DAG
 
 stamps -- postage stamp problem related to frobenius problem
 

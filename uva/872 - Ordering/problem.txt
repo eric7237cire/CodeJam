@@ -1,0 +1,35 @@
+Background
+
+   Order is an important concept in mathematics and in computer science. For example, Zorns Lemma states: a partially ordered set in which every chain has an upper bound contains a maximal element. Order is also important in reasoning about the fix-point semantics of programs.
+    This problem involves neither Zorns Lemma nor fix-point semantics, but does involve order.
+
+Problem
+
+   Given a list of variable constraints of the form A < B, you are to write a program that prints all orderings of the variables that are consistent with the constraints. For example, given the contraints A < B and A < C there are two orderings of the variables A, B and C that are consistent with these constraints: ABC and ACB.
+
+Input
+
+The input begins with a single positive integer on a line by itself indicating the number of the cases following, each of them as described below. This line is followed by a blank line, and there is also a blank line between two consecutive inputs.
+   The input consists of two lines: a list of variables on one line, followed by a list of constraints of the form A < B on the next line. Variables and contraints are separated by single spaces.
+   All variables are single character, upper-case letters. There will be at least two variables, and no more than 20 variables. There will be at least one constraint, and no more than 50 constraints. There will be no more than 300 orderings consistent with the contraints in a specification.
+
+Output
+
+For each test case, the output must follow the description below. The outputs of two consecutive cases will be separated by a blank line.
+   All orderings consistent with the constraints should be printed. Orderings are printed in alphabetical order, one per line. Characters on a line are separated by a space. If no ordering is possible, the output is a single line with the word NO.
+
+Sample Input
+
+1
+
+A B F G
+A<B B<F
+
+Sample Output
+
+A B F G
+A B G F
+A G B F
+G A B F
+
+ 
