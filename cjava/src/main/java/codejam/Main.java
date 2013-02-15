@@ -683,6 +683,13 @@ public class Main  {
          */
         //codejam.y2012.round_3.havannah.Main m = new codejam.y2012.round_3.havannah.Main();
         
+        /**
+         * Problem 3
+         * 
+         * Ternary search / binary search
+         * 
+         * idea -- try the actual ternary search
+         */
         codejam.y2012.round_3.quality_food.Main m = new codejam.y2012.round_3.quality_food.Main();
 
         String[] files = Main.getFiles(m, args);

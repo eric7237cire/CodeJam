@@ -9,7 +9,6 @@ import java.util.Scanner;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import codejam.utils.geometry.PointLong;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -18,14 +17,14 @@ import codejam.y2012.round_3.quality_food.InputData.Food;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
-import com.google.common.math.BigIntegerMath;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
     
     public Main()
     {
-        super("C", 1, 0, 0);
+        super("C", 1, 1, 0);
+        //(( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
     
     
@@ -48,7 +47,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return in;
     }
     
-    Long getSingleDayCost(List<Food> cheapestFoodForTime, long time)
+    /*
+    private Long getSingleDayCost(List<Food> cheapestFoodForTime, long time)
     {
         for(int i = 0; i < cheapestFoodForTime.size(); ++i)
         {
@@ -58,8 +58,15 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         }
         
         return null;
-    }
+    }*/
     
+    /**
+     * See comments for critical points.
+     * 
+     * Basically, we do linear interpolation
+     * 
+     * time aka delivery size is the x coordinate ; cost is the y
+     */
     BigInteger getSingleDeliveryCost(List<Pair<Long,BigInteger>> criticalPoints, long time)
     {
         for(int i = 1; i < criticalPoints.size(); ++i)
@@ -85,7 +92,11 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return BigInteger.valueOf(Long.MAX_VALUE);
     }
     
-    long getLargestDeliverySize(long moneyForSingleDelivery, List<Pair<Long,BigInteger>> criticalPoints, long mostResistantFoodTimeToStale) {
+    /*
+     * Trying the other way, todo
+     */
+    /*
+    private long getLargestDeliverySize(long moneyForSingleDelivery, List<Pair<Long,BigInteger>> criticalPoints, long mostResistantFoodTimeToStale) {
         
         long lo = 0;
         long hi = mostResistantFoodTimeToStale+1;
@@ -112,95 +123,97 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         }
         
         return lo;
-    }
+    }*/
     
-    long costOfDaysWorthFood( long D, List<Pair<Long,BigInteger>> criticalPoints, InputData in )
+    BigInteger costOfDaysWorthFood( long D, List<Pair<Long,BigInteger>> criticalPoints, InputData in )
     {
-        long minCost = Long.MAX_VALUE;
+        BigInteger minCost = BigInteger.valueOf(Long.MAX_VALUE);
         
         for(int i = 1; i < criticalPoints.size(); ++i)
         {
-            //Try using cp.time - 2 and cp.time - 1
+            //Each critical point gives us a guess of what the delivery size should be
             
-            //and cp.time and cp.time - 1
+            //left is X / time
+            long deliverySizeGuess = criticalPoints.get(i).getLeft() ;
             
-            for(long delta = -1; delta <= 0; ++delta) {
-                long deliverySizeGuess = criticalPoints.get(i).getLeft() + delta;
-                
-                if (deliverySizeGuess < 1)
-                    continue;
-                
-                deliverySizeGuess = Math.min(deliverySizeGuess, D);
-                
-                long nDeliveries = (long) Math.ceil( D / (double)deliverySizeGuess );
-                
-                long largeDeliverySize = (long) Math.ceil( D / (double)nDeliveries );
-                
-                long overflowD = nDeliveries * largeDeliverySize;
-                
-                long smallDeliverySize = largeDeliverySize - 1;
-                
-                long nSmallDeliveries = overflowD - D;
-                long nLargeDeliveries = nDeliveries - nSmallDeliveries;
-                
-                BigInteger largeCost = getSingleDeliveryCost(criticalPoints, largeDeliverySize);
-                BigInteger smallCost = getSingleDeliveryCost(criticalPoints, smallDeliverySize);
-                
-                long cost = largeCost.longValue() * nLargeDeliveries +
-                        smallCost.longValue() * nSmallDeliveries + in.F * nDeliveries;
-                
-                
-                log.debug("For D days {} Delivery size {} , {}  number deliveries {} = {} + {}   cost {}", D, 
-                        largeDeliverySize, smallDeliverySize, nDeliveries, nLargeDeliveries, nSmallDeliveries, cost);
-                
-                minCost = Math.min(cost, minCost);
-            }
+            if (deliverySizeGuess < 1)
+                continue;
+            
+            deliverySizeGuess = Math.min(deliverySizeGuess, D);                
+            
+            BigInteger cost = costOfDaysWorthFood(D, deliverySizeGuess, criticalPoints, in);
+           
+            minCost = minCost.min(cost);
+            
             
         }
         
         return minCost;
     }
     
-    long costOfDaysWorthFood( long D, long deliverySizeGuess, List<Pair<Long,BigInteger>> criticalPoints, InputData in )
-    {
-        long minCost = Long.MAX_VALUE;
+    BigInteger divideRoundUp(BigInteger n, BigInteger div) {
+        BigInteger[] res = n.divideAndRemainder(div);
         
+        if (res[1].compareTo(BigInteger.ZERO) > 0) {
+            return res[0].add(BigInteger.ONE);
+        }
+        
+        return res[0];
+    }
+    
+    BigInteger costOfDaysWorthFood( long D, long deliverySizeGuess, List<Pair<Long,BigInteger>> criticalPoints, InputData in )
+    {
+        
+        if (D <= 0)
+            return BigInteger.valueOf(0);
         
         deliverySizeGuess = Math.min(deliverySizeGuess, D);
         
-        long nDeliveries = (long) Math.ceil( D / (double)deliverySizeGuess );
+        if (deliverySizeGuess <= 0)
+            return BigInteger.valueOf(Long.MAX_VALUE);
         
-        long largeDeliverySize = (long) Math.ceil( D / (double)nDeliveries );
+        //Given this guess, find out how many deliveries that represents
+        BigInteger nDeliveries = divideRoundUp(BigInteger.valueOf(D), BigInteger.valueOf(deliverySizeGuess ));
         
-        long overflowD = nDeliveries * largeDeliverySize;
+        //Now that we know that, find 2 values L, S such that L == S + 1 and
+        // k * L + k_2 * S = D (# of days)
+        // k + k_2 = nDeliveries
+        BigInteger largeDeliverySize = divideRoundUp(BigInteger.valueOf(D), nDeliveries);
         
-        long smallDeliverySize = largeDeliverySize - 1;
+        //  (k + k_2) * L = D + extra
+        // extra == k_2 since S == L - 1 ; each extra we want to remove is k--, k_2++
+        BigInteger overflowD = nDeliveries.multiply( largeDeliverySize );
         
-        long nSmallDeliveries = overflowD - D;
-        long nLargeDeliveries = nDeliveries - nSmallDeliveries;
+        BigInteger smallDeliverySize = largeDeliverySize.subtract(BigInteger.ONE);
         
-        BigInteger largeCost = getSingleDeliveryCost(criticalPoints, largeDeliverySize);
-        BigInteger smallCost = getSingleDeliveryCost(criticalPoints, smallDeliverySize);
+        BigInteger nSmallDeliveries = overflowD.subtract( BigInteger.valueOf(D) );
+        BigInteger nLargeDeliveries = nDeliveries.subtract( nSmallDeliveries );
         
-        long cost = largeCost.longValue() * nLargeDeliveries +
-                smallCost.longValue() * nSmallDeliveries + in.F * nDeliveries;
+        Preconditions.checkState(largeDeliverySize.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) <= 0);
+        Preconditions.checkState(smallDeliverySize.compareTo(BigInteger.valueOf(Long.MAX_VALUE)) <= 0);
+        
+        BigInteger largeCost = getSingleDeliveryCost(criticalPoints, largeDeliverySize.longValue());
+        BigInteger smallCost = getSingleDeliveryCost(criticalPoints, smallDeliverySize.longValue());
+        
+        BigInteger cost = largeCost.multiply(nLargeDeliveries)
+                .add( smallCost.multiply(nSmallDeliveries) )
+                .add( BigInteger.valueOf(in.F).multiply( nDeliveries));
         
         
         log.debug("For D days {} Delivery size {} , {}  number deliveries {} = {} + {}   cost {}", D, 
                 largeDeliverySize, smallDeliverySize, nDeliveries, nLargeDeliveries, nSmallDeliveries, cost);
         
-        minCost = Math.min(cost, minCost);
-
-        return minCost;
+        return cost;
     }
     
 
+    /*
     long numberOfDays(long deliverySize, InputData in)
     {
         long moneyPerDelivery = in.M / deliverySize;
         return 0;
         
-    }
+    }*/
     
     long getMaxDays( List<Pair<Long,BigInteger>> criticalPoints, InputData in) {
         
@@ -208,15 +221,20 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         long hi = in.M+1;
     //  invariant lo can afford lo days, cannot afford hi days
         
-        Preconditions.checkState(costOfDaysWorthFood(lo, criticalPoints, in) <= in.M);
-        Preconditions.checkState(costOfDaysWorthFood(hi, criticalPoints, in) > in.M);
+        BigInteger bigIntM = BigInteger.valueOf(in.M);
+        
+        log.info("{}", costOfDaysWorthFood(lo, criticalPoints, in));
+        log.info("{}", costOfDaysWorthFood(hi, criticalPoints, in));
+        
+        //Check invariants
+        Preconditions.checkState(costOfDaysWorthFood(lo, criticalPoints, in).compareTo( BigInteger.valueOf(in.M)) <= 0);
+        Preconditions.checkState(costOfDaysWorthFood(hi, criticalPoints, in).compareTo((BigInteger.valueOf(in.M))) > 0);
         
         while (true) {
             long mid = lo + (hi - lo) / 2;
-//5071
-            long cost = costOfDaysWorthFood(mid, criticalPoints, in);
+            BigInteger cost = costOfDaysWorthFood(mid, criticalPoints, in);
             log.debug("Cost of surviving {} days = {}", mid, cost);
-            if (cost <= in.M) {
+            if (cost.compareTo(bigIntM) <= 0) {
                 lo = mid;
             } else {
                 hi = mid;
@@ -227,8 +245,6 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             if (hi - lo <= 1)
                 break;
         }
-        
-        
         
         return lo;
     }
@@ -342,22 +358,10 @@ List<Pair<Long,BigInteger>> criticalPoints = Lists.newArrayList();
 
         List<Pair<Long,BigInteger>> criticalPoints = getCriticalPoints(cheapestFoodForTime);
         
-        /*
-        for(int time = 1; time <= 36; ++time) {
-            log.debug("Time {} SingleDayCost {} SingleDeliveryCost {}", time, getSingleDayCost(cheapestFoodForTime, time),
-                    getSingleDeliveryCost(criticalPoints, time));
-        }*/
-        
         log.debug("Money avail {}, {}", in.M,costOfDaysWorthFood(5071, criticalPoints, in));
 
-        for(int i = 1; i < 80; ++i) {
-            long cost = costOfDaysWorthFood(5071, i, criticalPoints,in);
-            log.debug("Cost if delivery size {}.  Is <= {} ? {}",
-                    cost, in.M, cost <= in.M );
-        }
         
        long maxDays = getMaxDays(criticalPoints, in);
-      //  long maxDays = 16;
         
         return String.format("Case #%d: %d ", in.testCase, maxDays);
     }
