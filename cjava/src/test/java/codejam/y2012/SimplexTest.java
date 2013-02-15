@@ -1,5 +1,7 @@
 package codejam.y2012;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,7 +13,7 @@ import com.google.common.collect.Lists;
 
 public class SimplexTest {
 
-    @Test
+    
     public void simplexTest() {
        /*
         * x1 + x2 > 1
@@ -42,8 +44,37 @@ public class SimplexTest {
         
         s.addConstraintEquals(Arrays.asList(1d, 1d, 1d, 0d), 5d);
         
-        s.doPhase1(solutions);
+       // s.doPhase1(solutions);
         
+    }
+    
+    
+    @Test
+    public void testExampleChapter2()
+    {
+        Simplex s = new Simplex(2);
+        
+        /**
+         * Maximize Z=15x_1 + 10x_2
+         * 
+         * x1 <= 2
+         * x2 <= 3
+         * x1 + x2 <= 4
+         */
+        s.addObjectiveFunction(Arrays.asList(15d, 10d));
+        
+        s.addConstraintLTE(Arrays.asList(1d, 0d), 2d);
+        
+        s.addConstraintLTE(Arrays.asList(0d, 1d), 3d);
+        
+        s.addConstraintLTE(Arrays.asList(1d, 1d), 4d);
+        
+        List<Double> solutions = Lists.newArrayList();
+        s.solve(solutions);
+        
+        assertEquals(2, solutions.size());
+        assertEquals(2d, solutions.get(0), 1e-5);
+        assertEquals(2d, solutions.get(1), 1e-5);
     }
 
 }

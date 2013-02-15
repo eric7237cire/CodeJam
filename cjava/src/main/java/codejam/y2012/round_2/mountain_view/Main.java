@@ -399,7 +399,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
             log.info("Tries {}", tries);
             List<Double> solution = Lists.newArrayList();        
-            boolean f = simplex.doPhase1(solution);
+            boolean f = false; //simplex.doPhase1(solution);
             
             if (!f) {
                 //return String.format("Case #%d: Impossible", in.testCase, solution.subList(0, in.N));

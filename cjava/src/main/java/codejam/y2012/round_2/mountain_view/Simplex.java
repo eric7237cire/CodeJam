@@ -36,6 +36,11 @@ public class Simplex {
     int columns;
     
     List<Equation> equations;
+    int objectiveFunctionRow = -1;
+    
+    boolean needsPhase1 = false;
+    
+    private final static double tolerance = 1e-5;
     
     List<Integer> basicVarRowLabels = Lists.newArrayList();
     
@@ -52,16 +57,47 @@ public class Simplex {
         slackVariableCount = o.slackVariableCount;
     }
     
+    /**
+     * Add maximize Z = c_0 * x_0 + c_0 * x_1 + ...
+     * @param coef
+     */
+    public void addObjectiveFunction(List<Double> coeff) {
+        objectiveFunctionRow = equations.size();
+        
+        /**
+         * Transform into Z - c_0 * x_0 - ... = 0
+         */
+        
+        coeff = Lists.transform(coeff, new Function<Double,Double>(){
+            public Double apply(Double arg) {
+                return -arg;
+            }
+        });
+        
+        Equation eq = new Equation(coeff, null,null,0d);
+        equations.add(eq);
+        
+        eq.basicVariable = "Z";
+        eq.basicVarColumn  = -1;
+        
+        
+    }
+    
     static class Equation
     {
         final List<Double> coeff;
         
         //slack var index and initial value
-        final ImmutablePair<Integer, Integer> slackVar;
-        
+        final ImmutablePair<Integer, Integer> slackVar;        
         final ImmutablePair<Integer, Integer> artificialVar;
         
         final Double rhs;
+        
+        String basicVariable;
+        /**
+         * The column of the variable which is basic (currently assigned a non zero value)
+         */
+        int basicVarColumn;
 
         public Equation(List<Double> coeff, ImmutablePair<Integer, Integer> slackVar, ImmutablePair<Integer, Integer> artificialVar, Double rhs) {
             super();
@@ -134,16 +170,19 @@ public class Simplex {
         ++slackVariableCount;        
     }
 
-    public boolean doPhase1(List<Double> solutions)  
+    public void buildMatrix()
     {
         //+1 for rhs 
         columns = variableCount + artificialVariableCount + slackVariableCount + 1;
         
         //For minimization
-        rows = equations.size() + 1;
+        rows = equations.size() ;
         
         this.matrix = new Array2DRowRealMatrix(rows, columns);
         
+        /**
+         * Add all the constraints
+         */
         for(int eqNum = 0; eqNum < equations.size(); ++eqNum) {
             Equation eq = equations.get(eqNum);
             for(int c = 0; c < eq.coeff.size(); ++c) {
@@ -157,15 +196,22 @@ public class Simplex {
             if (eq.artificialVar != null) {
                 matrix.setEntry(eqNum, variableCount + slackVariableCount + eq.artificialVar.getKey(), eq.artificialVar.getValue());
                 
-                basicVarRowLabels.add(variableCount + slackVariableCount + eq.artificialVar.getKey());
-            } else {
-                basicVarRowLabels.add(variableCount + eq.slackVar.getKey());
+                eq.basicVarColumn = (variableCount + slackVariableCount + eq.artificialVar.getKey());
+            } else if (eq.slackVar != null) {
+                eq.basicVarColumn =(variableCount + eq.slackVar.getKey());
             }
             matrix.setEntry(eqNum, columns-1, eq.rhs);
-            
-            
         }
         
+        final int phase1Row = rows - 2;
+        
+        /**
+         * Set the phase 1 function which is maximizing 
+         * w = -a_1 - a_2 - a_3 ...
+         * 
+         * all the artificial variables
+         */
+        /*
         for(int av = 0; av < artificialVariableCount; ++av) {
             matrix.setEntry(rows-1, av+variableCount+slackVariableCount, 1);
         }
@@ -181,89 +227,59 @@ public class Simplex {
                 
             matrix.setRowVector(rows-1, 
                     matrix.getRowVector(rows-1).combine(1, -1,matrix.getRowVector(eqNum)));
-        }
+        }*/
         
+        
+        
+        
+        
+        
+    }
+    
+    public void debugPrint() {
         log.debug("Matrix\n{}", printMatrix(matrix.getData(), rows, columns));
-        
+    }
     
+    public boolean solve(List<Double> solutions)
+    {
+        buildMatrix();
         
-        
-        while(true)
-        {
-          //Choose a negative value in objective function
-            boolean foundNegValue = false;
-            double lowestColumnValue = 0;
-            int pivotColIdx = -1;
-            
-            for(int c = 0; c < columns - 1; ++c) {
-                if (DoubleMath.fuzzyCompare(matrix.getEntry(rows-1, c), lowestColumnValue, 1e-5) < 0) {
-                    foundNegValue = true;
-                    pivotColIdx = c;
-                    lowestColumnValue = matrix.getEntry(rows-1, c); 
-                }
-            }
-            
-            if (!foundNegValue) {
-                break;
-            }
-            
-                
-            double lowestRatio = Double.MAX_VALUE;
-    
-            int pivotRowIdx = -1;
-            
-            //cycle through to find best ratio
-            for (int r = 0; r < rows - 1; ++r) {
-                
-                if (DoubleMath.fuzzyCompare(matrix.getEntry(r, pivotColIdx), 0, 1e-5) <= 0)
-                    continue;
-                
-                double ratio = matrix.getEntry(r, columns - 1) / 
-                        matrix.getEntry(r, pivotColIdx);
-                if (DoubleMath.fuzzyCompare(ratio, 0, 1e-5) >= 0 && ratio < lowestRatio) {
-                    lowestRatio = ratio;
-                    pivotRowIdx = r;
-
-                }
-            }
-            
-            Preconditions.checkState(pivotRowIdx >= 0);
-            
-            log.debug("Choosing pivot row {} col {}", pivotRowIdx, pivotColIdx);
-            
-            basicVarRowLabels.set(pivotRowIdx, pivotColIdx);
-            
-            Double pivotEntry = matrix.getEntry(pivotRowIdx,pivotColIdx);
-            RealVector pivotRow = matrix.getRowVector(pivotRowIdx);
-            pivotRow.mapDivideToSelf(pivotEntry);
-            
-            matrix.setRowVector(pivotRowIdx, pivotRow);
-            
-            
-            for(int r = 0; r < rows; ++r) {
-                if (r == pivotRowIdx)
-                    continue;
-                
-                double entry = matrix.getEntry(r, pivotColIdx);
-                
-                RealVector row = matrix.getRowVector(r);
-                
-                row.combineToSelf(1, -entry, pivotRow);
-                
-                matrix.setRowVector(r, row);
-            }
-            
-            
-           //log.debug("Matrix is now : \n{}", printMatrix(matrix.getData(), rows, columns));
+        if (needsPhase1) {
+            doPhase1(solutions);
         }
+        
+        int iterCheck = 0;
+        
+        boolean notDone = true;
+        
+        while(notDone) {
+            notDone = doStep(objectiveFunctionRow);
+            ++iterCheck;
+            
+            Preconditions.checkState(iterCheck < 5000);
+        }
+        
+        List<Double> ret = solutions;
+        ret.clear();
+        
+        for(int var = 0; var < variableCount; ++var) {
+            ret.add(0d);
+        }
+        
+        for (int eq =  0; eq < equations.size(); ++eq) {
+            int basicVarColIdx = equations.get(eq).basicVarColumn; 
+            if (isVar(basicVarColIdx)) {
+                Double value = matrix.getEntry(eq, columns - 1);
+                
+                ret.set(basicVarColIdx, value);
+            }
+        }
+        
+        return true;
+    }
     
-            
-            
-            
-        
-        
-        //log.debug("Matrix\n{}", printMatrix(matrix.getData(), rows, columns));
-        
+    public boolean doPhase1(List<Double> solutions)
+    {
         List<Double> ret = solutions;
         
         for(int var = 0; var < columns - 1; ++var) {
@@ -287,11 +303,117 @@ public class Simplex {
         return isFeasible;
     }
     
+    public boolean doStep(int objectiveFunctionRow)  
+    {
+
+        /**
+         * Choose the pivot column by finding
+         * the most negative value in objective function row
+         */
+        boolean foundNegValue = false;
+        
+        double lowestColumnValueInObjectiveRow = 0;
+        int pivotColIdx = -1;
+
+        for (int c = 0; c < columns - 1; ++c)
+        {
+            double coefVal  = matrix.getEntry(objectiveFunctionRow, c);
+            if (DoubleMath.fuzzyCompare(coefVal, lowestColumnValueInObjectiveRow, tolerance) < 0)
+            {
+                foundNegValue = true;
+                pivotColIdx = c;
+                lowestColumnValueInObjectiveRow = coefVal;
+            }
+        }
+
+        //We are done
+        if (!foundNegValue)
+        {
+            return false;
+        }
+
+        double lowestRatio = Double.MAX_VALUE;
+
+        int pivotRowIdx = -1;
+
+        //cycle through to find best ratio
+        for (int r = 0; r < rows; ++r)
+        {
+            Equation eq = equations.get(r);
+            
+            //Skip over objective rows (can be 2 if it is a 2 phase)
+            if (eq.basicVarColumn < 0)
+                continue;
+
+            //Skip over entries that equal 0 or are negative
+            if (DoubleMath.fuzzyCompare(matrix.getEntry(r, pivotColIdx), 0, tolerance) <= 0)
+                continue;
+
+            double ratio = matrix.getEntry(r, columns - 1) / matrix.getEntry(r, pivotColIdx);
+            if (DoubleMath.fuzzyCompare(ratio, 0, tolerance) >= 0 && ratio < lowestRatio)
+            {
+                lowestRatio = ratio;
+                pivotRowIdx = r;
+            }
+        }
+
+        Preconditions.checkState(pivotRowIdx >= 0);
+
+        log.debug("Choosing pivot row {} col {}", pivotRowIdx, pivotColIdx);
+
+        /**
+         * The pivot column is the entering basic varable 
+         * and the row is the exiting basic variable.
+         * 
+         * Use the column index and the ordering of
+         * basic 0 1 2 .. slack 0 1 2 ... artificial 0 1 2 ... RHS
+         */
+        //basicVarRowLabels.set(pivotRowIdx, pivotColIdx);
+        equations.get(pivotRowIdx).basicVarColumn = pivotColIdx;
+
+        Double pivotEntry = matrix.getEntry(pivotRowIdx, pivotColIdx);
+        RealVector pivotRow = matrix.getRowVector(pivotRowIdx);
+        pivotRow.mapDivideToSelf(pivotEntry);
+
+        matrix.setRowVector(pivotRowIdx, pivotRow);
+
+        for (int r = 0; r < rows; ++r)
+        {
+            if (r == pivotRowIdx)
+                continue;
+
+            double entry = matrix.getEntry(r, pivotColIdx);
+
+            RealVector row = matrix.getRowVector(r);
+
+            row.combineToSelf(1, -entry, pivotRow);
+
+            matrix.setRowVector(r, row);
+        }
+
+        //log.debug("Matrix is now : \n{}", printMatrix(matrix.getData(), rows, columns));
+
+        if (log.isDebugEnabled()) {
+            log.debug("Step finished Matrix\n{}", printMatrix(matrix.getData(), rows, columns));
+        }
+        
+        return true;
+        
+    }
+    
     private boolean isArtificialVar(int columnIdx) {
         int start = this.variableCount+this.slackVariableCount;
         int end = this.columns - 1;
         
         return (start <= columnIdx && end >= columnIdx);
+    }
+    
+    /**
+     * Is this column one of the entered variables
+     * 
+     */
+    private boolean isVar(int columnIdx) {
+        return columnIdx >= 0 && columnIdx < variableCount;
     }
     
     public String printMatrix(double[][] matrix, int rows, int cols) {
@@ -322,22 +444,24 @@ public class Simplex {
         gridStr.append("\n");
         
         for (int rIdx = 0; rIdx < rows; ++rIdx) {
+            Equation eq = equations.get(rIdx);
             int r = rIdx;
             
-            if (rIdx < rows - 1) {
-                int basisRowLabel = basicVarRowLabels.get(rIdx);
-                String basisRowLabelStr = "";
-                if (basisRowLabel < variableCount) {
-                    basisRowLabelStr = "bv" + basisRowLabel;
-                } else if (basisRowLabel < variableCount + slackVariableCount) {
-                    basisRowLabelStr = "sv" + (basisRowLabel - variableCount);
-                } else {
-                    basisRowLabelStr = "a" + (basisRowLabel - variableCount - slackVariableCount);
-                }
-            gridStr.append(StringUtils.rightPad(basisRowLabelStr, printWidth));
+            
+            int basisRowLabel = eq.basicVarColumn;
+            String basisRowLabelStr = "";
+            if (basisRowLabel == -1) {
+                basisRowLabelStr = "Z";
+            } else
+            if (basisRowLabel < variableCount) {
+                basisRowLabelStr = "bv" + basisRowLabel;
+            } else if (basisRowLabel < variableCount + slackVariableCount) {
+                basisRowLabelStr = "sv" + (basisRowLabel - variableCount);
             } else {
-                gridStr.append(StringUtils.rightPad("", printWidth));
+                basisRowLabelStr = "a" + (basisRowLabel - variableCount - slackVariableCount);
             }
+            gridStr.append(StringUtils.rightPad(basisRowLabelStr, printWidth));
+        
             
             for (int c = 0; c < cols; ++c) {
                 String s = DoubleFormat.df3.format(matrix[r][c]);
