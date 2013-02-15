@@ -85,6 +85,29 @@ public class Simplex {
         
     }
     
+    public void addObjectiveFunctionToMinimize(List<Double> coeff) {
+        objectiveFunctionRow = equations.size();
+        
+        /**
+         * Transform into Z - c_0 * x_0 - ... = 0
+         */
+        
+        /*
+        coeff = Lists.transform(coeff, new Function<Double,Double>(){
+            public Double apply(Double arg) {
+                return -arg;
+            }
+        }); */
+        
+        Equation eq = new Equation(coeff, null,null,0d);
+        equations.add(eq);
+        
+        eq.basicVariable = "-Z";
+        eq.basicVarColumn  = PHASE_2_COL_ID;
+        
+        
+    }
+    
     static class Equation
     {
         final List<Double> coeff;
@@ -304,6 +327,22 @@ public class Simplex {
             log.debug("Phase I complete {}", feasible);
             if (!feasible)
                 return false;
+            
+            //Remove artificial variable columns
+            Array2DRowRealMatrix newMatrix = new Array2DRowRealMatrix(rows, columns-artificialVariableCount);
+            int newCols = columns-artificialVariableCount;
+            
+            for(int r = 0; r < rows; ++r) {
+                for(int c = 0; c < variableCount + slackVariableCount; ++c) 
+                {
+                    newMatrix.setEntry(r,c, matrix.getEntry(r,c));                    
+                }
+                
+                newMatrix.setEntry(r, newCols-1, matrix.getEntry(r, columns-1));
+            }
+            
+            matrix = newMatrix;
+            columns = newCols;
         }
         
         int iterCheck = 0;
@@ -313,7 +352,7 @@ public class Simplex {
         while(notDone) {
             notDone = doStep(objectiveFunctionRow);
             if (log.isDebugEnabled()) {
-                log.debug("Phase I step done");
+                log.debug("Phase II step done");
                 debugPrint();
             }
             ++iterCheck;
@@ -338,7 +377,12 @@ public class Simplex {
         }
         
         //Add the Z value
-        ret.add( matrix.getEntry(objectiveFunctionRow, columns-1));
+        if (equations.get(objectiveFunctionRow).basicVariable.equals("-Z")) {
+            //We were minimizing
+            ret.add( -1 * matrix.getEntry(objectiveFunctionRow, columns-1));
+        } else {
+            ret.add( matrix.getEntry(objectiveFunctionRow, columns-1));
+        }
         
         return true;
     }

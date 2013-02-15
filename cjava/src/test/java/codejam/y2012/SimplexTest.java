@@ -141,5 +141,37 @@ public class SimplexTest {
         //Z
         assertEquals(36d, solutions.get(2), 1e-5);
     }
+    
+    @Test
+    public void testExampleChap04_page137()
+    {
+        Simplex s = new Simplex(2);
+        
+        /**
+         * Minimize Z=.4x_1 + .5x_2
+         * 
+         * .3x1 + .1x2 <= 2.7
+         * .5x1 + .5x2 = 6
+         * .6x1 + .4x2 >= 6
+         */
+        s.addObjectiveFunctionToMinimize(Arrays.asList(.4, .5));
+        
+        s.addConstraintLTE(Arrays.asList(.3, .1), 2.7);
+        
+        s.addConstraintEquals(Arrays.asList(.5, .5), 6d);
+        
+        s.addConstraintGTE(Arrays.asList(.6, .4), 6d);
+        
+        List<Double> solutions = Lists.newArrayList();
+        
+        s.solve(solutions);
+        
+        assertEquals(3, solutions.size());
+        assertEquals(7.5d, solutions.get(0), 1e-5);
+        assertEquals(4.5d, solutions.get(1), 1e-5);
+        
+        //Z
+        assertEquals(5.25d, solutions.get(2), 1e-5);
+    }
 
 }
