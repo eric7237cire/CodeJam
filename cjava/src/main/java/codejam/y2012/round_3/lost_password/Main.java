@@ -2,17 +2,13 @@ package codejam.y2012.round_3.lost_password;
 
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-
+    
     public Main()
     {
       //  super("E");
@@ -23,9 +19,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
        
-        InputData input = new InputData(testCase);
+        InputData in = new InputData(testCase);
        
-        return input;
+        return in;
     }
 
   

@@ -171,6 +171,20 @@ public class Main  {
         //}
     }
     
+    static void round2_2008(String args[]) {
+        
+        codejam.y2008.round_2.star_wars.Main m = new codejam.y2008.round_2.star_wars.Main();
+        
+    
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }   
+    }
+    
     static void roundEMEA_2008(String args[]) {
         /**
          * 2008 emea semis -- problem 1
@@ -746,6 +760,8 @@ public class Main  {
         //beta2008(args);
         //practiceContest2008(args);
         
+        round2_2008(args);
+        
         //round2_2009(args);
        // roundFinal_2009(args);
         
@@ -758,7 +774,7 @@ public class Main  {
         
        // round1B_2012(args);
         //round2_2012(args);
-        round3_2012(args);
+        //round3_2012(args);
       //  roundFinal_2012(args);
 
        // Main m = null;

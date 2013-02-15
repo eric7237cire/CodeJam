@@ -10,6 +10,7 @@ import java.util.Stack;
 
 import codejam.utils.geometry.Line;
 import codejam.utils.geometry.Point;
+import codejam.utils.linear.Simplex;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;

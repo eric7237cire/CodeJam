@@ -1,4 +1,4 @@
-package codejam.y2012.round_2.mountain_view;
+package codejam.utils.linear;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +26,7 @@ public class Simplex {
 
     private RealMatrix matrix;
     
-    final static Logger log = LoggerFactory.getLogger(Simplex.class);
+    final static Logger log = LoggerFactory.getLogger("main");
     
     int variableCount;
     int slackVariableCount;
@@ -168,7 +168,9 @@ public class Simplex {
             
         } else {
             //Multiply the everything by -1 to make the slack variable coeff = 1
-            //since it is in the basis
+            //since it is in the basis.
+            
+            //Note this is just like adding a LTE constraint, after * -1, the sign flips
             coeff = Lists.transform(coeff, new Function<Double,Double>(){
                 public Double apply(Double arg) {
                     return -arg;
@@ -186,6 +188,8 @@ public class Simplex {
      * Add 
      * c_0 * x_0 + c_1 * x_1 == rhs
      */
+    
+    
     public void addConstraintEquals(List<Double> coeff, Double rhs) {
         
         
@@ -198,7 +202,33 @@ public class Simplex {
     }
     
     //c_1 * x_1 + c_2 * x_2 + c_3 * x_3 + z = RHS
+    /**
+     * c_1 * x_1 + c_2 * x_2 + c_3 * x_3 <= RHS
+     * 
+     * if RHS < 0 we have
+     * 
+     * c_1 * x_1 + c_2 * x_2 + c_3 * x_3 - z + a = -RHS
+     * 
+     * if 0
+     * 
+     * c_1 * x_1 + c_2 * x_2 + c_3 * x_3 + z = 0
+     * 
+     * c_1 * x_1 + c_2 * x_2 + c_3 * x_3 - z = RHS
+     */
     public void addConstraintLTE(List<Double> coeff, Double rhs) {
+        
+        if (rhs < 0) {
+            //Convert to a GTE constraint
+            coeff = Lists.transform(coeff, new Function<Double,Double>(){
+                public Double apply(Double arg) {
+                    return -arg;
+                }
+            });
+            
+            addConstraintGTE(coeff, -rhs);
+            return;
+        }
+        
         Preconditions.checkState(rhs >= 0);
         
         equations.add(new Equation(coeff, new ImmutablePair<>(slackVariableCount, 1), null, rhs));
@@ -343,6 +373,8 @@ public class Simplex {
             
             matrix = newMatrix;
             columns = newCols;
+            
+            artificialVariableCount = 0;
         }
         
         int iterCheck = 0;
