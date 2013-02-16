@@ -83,15 +83,40 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         @Test
         public void test() 
         {
-            int[] ft = FenwickTree.ft_create(10);
+            int[] ft = FenwickTree.ft_create(15);
             
             FenwickTree.ft_adjust(ft, 1, 1, 100);
-            FenwickTree.ft_adjust(ft, 3, 1, 100);
-            FenwickTree.ft_adjust(ft, 4, 1, 100);
-            FenwickTree.ft_adjust(ft, 7, 1, 100);
-            FenwickTree.ft_adjust(ft, 10, 1, 100);
+            log.debug("FT {}", ft);
             
-            assertEquals(7, FenwickTree.findIndexWithFreq(ft, 4));
+            FenwickTree.ft_adjust(ft, 3, 1, 100);
+            log.debug("FT {}", ft);
+            
+            FenwickTree.ft_adjust(ft, 4, 1, 100);
+            log.debug("FT {}", ft);
+            
+            FenwickTree.ft_adjust(ft, 7, 1, 100);
+            log.debug("FT {}", ft);
+            
+            FenwickTree.ft_adjust(ft, 10, 1, 100);
+            log.debug("FT {}", ft);
+            
+            FenwickTree.ft_adjust(ft, 15, 1, 100);
+            log.debug("FT {}", ft);
+            
+            
+            
+            
+            assertEquals(1, FenwickTree.findLowestIndexWithFreq(ft, 1));
+            
+            assertEquals(3, FenwickTree.findLowestIndexWithFreq(ft, 2));
+            
+            assertEquals(4, FenwickTree.findLowestIndexWithFreq(ft, 3));
+            
+            assertEquals(7, FenwickTree.findLowestIndexWithFreq(ft, 4));
+            
+            assertEquals(10, FenwickTree.findLowestIndexWithFreq(ft, 5));
+            
+            assertEquals(15, FenwickTree.findLowestIndexWithFreq(ft, 6));
         }
         
     
@@ -103,24 +128,39 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         int[] deck = new int[in.K];
         
-        int currentIndex = 0;
-        int currentCount = 1;
+        int currentIndex = in.K-1;
+        int cardsSkipped = 0;
+        
+        int[] ft = FenwickTree.ft_create(in.K);
         
         for(int currentCard = 1; currentCard <= in.K; ++currentCard)
         {
-            while(currentCount < currentCard) {
+            int cardsLeft = in.K - currentCard + 1;
+            
+            int nCardsToSkip = currentCard ;
+            
+            nCardsToSkip %= cardsLeft;
+            if (nCardsToSkip == 0)
+                nCardsToSkip = cardsLeft;
+               
+            while(cardsSkipped < nCardsToSkip) {
                 currentIndex++;
                 currentIndex %= in.K;
                 
+                //If the card is not assigned, then the card counts, otherwise it has already been removed
                 if (deck[currentIndex] == 0) {
-                    ++currentCount;
+                    ++cardsSkipped;
                 }
             }
+            
+            //Last skipped card is not really skipped, current index points to it
             
             Preconditions.checkState(deck[currentIndex] == 0);
             deck[currentIndex] = currentCard;
             
-            currentCount = 0;
+            FenwickTree.ft_adjust(ft, currentIndex+1, -1, in.K);
+            
+            cardsSkipped = 0;
         }
         
         List<Integer> ans = Lists.newArrayList();

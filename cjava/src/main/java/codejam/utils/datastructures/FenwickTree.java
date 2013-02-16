@@ -19,7 +19,41 @@ public class FenwickTree
         return new int[n + 1];
     }
 
-    public static int findIndexWithFreq(int[] ft, int cumFre){
+    public static int findLowestIndexWithFreq(int[] ft, int cumFre){
+        int idx = 0; // this var is result of function
+        
+        int maxVal = ft.length - 1;
+        
+        int bitMask = Integer.highestOneBit(maxVal);
+        
+        int lowestFound = ft.length + 10;
+                
+        while ((bitMask != 0) && (idx < maxVal)){ // nobody likes overflow :)
+            int tIdx = idx + bitMask; // we make midpoint of interval
+            if (cumFre == ft[tIdx]) // if it is equal, we just return idx
+            {
+                lowestFound = Math.min(lowestFound, tIdx);
+            }
+            
+            if (cumFre > ft[tIdx]){ 
+                    // if tree frequency "can fit" into cumFre,
+                    // then include it
+                idx = tIdx; // update index 
+                cumFre -= ft[tIdx]; // set frequency for next loop 
+            }
+            bitMask >>= 1; // half current interval
+        }
+        
+        if (lowestFound <= maxVal)
+            return lowestFound;
+        
+        
+        return -1;
+        
+    }
+
+    
+    public static int findAnyIndexWithFreq(int[] ft, int cumFre){
         int idx = 0; // this var is result of function
         
         int maxVal = ft.length;
