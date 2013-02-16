@@ -65,10 +65,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<AbstractI
                 if ( (combin & 1 << ptIdx) == 0)
                     continue;
                 
-                minX = Math.min(minX, in.points.get(ptIdx).getX());
-                minY = Math.min(minY, in.points.get(ptIdx).getY());
-                maxX = Math.max(maxX, in.points.get(ptIdx).getX());
-                maxY = Math.max(maxY, in.points.get(ptIdx).getY());
+                minX = Math.min(minX, in.points.get(ptIdx).x());
+                minY = Math.min(minY, in.points.get(ptIdx).y());
+                maxX = Math.max(maxX, in.points.get(ptIdx).x());
+                maxY = Math.max(maxY, in.points.get(ptIdx).y());
             }
             
         

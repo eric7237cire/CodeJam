@@ -1,10 +1,10 @@
 CC = g++
-CFLAGS =  -g
+CFLAGS =  -O3
 OLD = -g -O3 -Wall
 
 EXEC_NAME = endlessknight.exe pockets.exe test_util.exe portal.exe classroom.exe classroom_old.exe
-INCLUDES = -IC:\MinGW\boost_1_52_0
-LIBS = -LC:\MinGW\boost_1_52_0\stage\lib\
+INCLUDES = -IC:\codejam\boost_1_52_0
+LIBS = -LC:\codejam\boost_1_52_0\stage\lib\
 
 INSTALL_DIR = /usr/bin
 

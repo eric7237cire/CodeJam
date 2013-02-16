@@ -83,7 +83,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     int gridTimeToTravel( PointInt p1, PointInt p2) {
-        return 100 * Math.max( Math.abs( p1.getX() - p2.getX()), Math.abs( p1.getY() - p2.getY()));
+        return 100 * Math.max( Math.abs( p1.x() - p2.x()), Math.abs( p1.y() - p2.y()));
     }
     
     public void generateStates(List<State> states, int[][] stateToIndex, InputData in)

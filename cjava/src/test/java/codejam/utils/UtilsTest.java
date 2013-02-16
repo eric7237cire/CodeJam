@@ -10,7 +10,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
+import org.apache.commons.math3.linear.LUDecomposition;
+import org.apache.commons.math3.linear.RealMatrix;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.graph.GraphAdjList;
 import codejam.utils.geometry.Line;
@@ -72,6 +77,40 @@ public class UtilsTest
                 assertEquals(check, LargeNumberUtils.choose(n,k,mod,fact));
             }
         }
+    }
+    
+    @Test
+    public void testCombinLucasTheorum() 
+    {
+        int p = 17;
+        
+        BigInteger pBI = BigInteger.valueOf(p);
+        
+        int[][] preCal = LargeNumberUtils.generateModedCombin(p-1, p);
+        
+        for(int n = 1; n <= 200; ++n)
+        {
+            for(int k = 1; k <= n; ++k)
+            {
+                BigInteger combin = BigIntegerMath.binomial(n,k);
+                BigInteger modded = combin.mod(pBI);
+                
+                int val = modded.intValue();
+        
+                
+                assertEquals(val, LargeNumberUtils.combin(n,k,preCal, p));
+            }
+        }
+        
+    }
+    
+    final protected static Logger log = LoggerFactory.getLogger("main");
+    
+    @Test
+    public void testMatrix()
+    {
+        
+        
     }
     
     @Test

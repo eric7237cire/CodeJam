@@ -59,7 +59,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
             if (DoubleMath.fuzzyCompare(powerNeeded, Y, 1e-5) > 0 && powerNeeded > largestPowerNeed)
             {
-                log.info("Ship {} needed power {}",i,powerNeeded);
+                log.debug("Ship {} needed power {}",i,powerNeeded);
                 largestPowerNeed = powerNeeded;
                 furthestShipIndex = i;
             }
@@ -79,6 +79,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         int iterCheck = 0;
         double ans = 42;
         
+        /**
+         * Do simplex but only on the furthest ships
+         * to avoid using too many constraints
+         */
         findFurthestShip(0,0,0,0.00001, edgeShips,in);
         
         while(true)

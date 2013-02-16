@@ -11,7 +11,7 @@ public class PointInt implements Comparable<PointInt>{
     /**
      * @return the x
      */
-    public int getX() {
+    public int x() {
         return x;
     }
     /**
@@ -23,7 +23,7 @@ public class PointInt implements Comparable<PointInt>{
     /**
      * @return the y
      */
-    public int getY() {
+    public int y() {
         return y;
     }
     /**
@@ -45,11 +45,11 @@ public class PointInt implements Comparable<PointInt>{
     }
     
     public static PointInt add(PointInt a, PointInt b) {
-        return new PointInt(a.getX() + b.getX(), a.getY() + b.getY());   
+        return new PointInt(a.x() + b.x(), a.y() + b.y());   
     }
     
     public PointInt add(int[] xy) {
-        return new PointInt(getX() + xy[0], getY() + xy[1]);
+        return new PointInt(x() + xy[0], y() + xy[1]);
     }
     
     /*
@@ -84,7 +84,7 @@ public class PointInt implements Comparable<PointInt>{
     }
     
     public PointInt translate(PointInt newOrigin) {
-        return new PointInt(x - newOrigin.getX(), y - newOrigin.getY());
+        return new PointInt(x - newOrigin.x(), y - newOrigin.y());
     }
     
     public Point toPoint() {
@@ -93,16 +93,16 @@ public class PointInt implements Comparable<PointInt>{
     
     public int getManhattanDistance()
     {
-        return Math.abs(getX()) + Math.abs(getY());
+        return Math.abs(x()) + Math.abs(y());
     }
     
     public int getKingDistance(PointInt rhs) {
-        return Math.max( Math.abs(getX()-rhs.getX()) ,
-                Math.abs(getY()-rhs.getY()) );
+        return Math.max( Math.abs(x()-rhs.x()) ,
+                Math.abs(y()-rhs.y()) );
     }
     
     static public int crossProduct(PointInt u, PointInt v) {
-        return u.getX() * v.getY() - u.getY() * v.getX();
+        return u.x() * v.y() - u.y() * v.x();
     }
 
     /* (non-Javadoc)

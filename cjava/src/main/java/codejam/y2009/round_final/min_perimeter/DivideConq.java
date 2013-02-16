@@ -101,8 +101,8 @@ public class DivideConq {
         
         for(PointInt pl : listPointsSortedY) {
             //Verify the points are still between left and right index
-            Preconditions.checkState(list.get(leftIndex).getX() <= pl.getX());
-            Preconditions.checkState(list.get(rightIndex).getX() >= pl.getX());
+            Preconditions.checkState(list.get(leftIndex).x() <= pl.x());
+            Preconditions.checkState(list.get(rightIndex).x() >= pl.x());
             
             if (compX.compare(pl, midPoint) < 0) {
                 leftList.add(pl);
@@ -142,7 +142,7 @@ public class DivideConq {
         for(int i = 0; i < listPointsSortedY.size(); ++i) {
             PointInt point = listPointsSortedY.get(i);
             
-            if (Math.abs(point.getX() - midPoint.getX()) > boxMargin) {
+            if (Math.abs(point.x() - midPoint.x()) > boxMargin) {
                 continue;
             }
             
@@ -152,7 +152,7 @@ public class DivideConq {
              * 
              * Basically, while the box is too low, move it up
              */
-            while(startBox < boxPoints.size() && point.getY() - boxPoints.get(startBox).getY() > boxMargin) {
+            while(startBox < boxPoints.size() && point.y() - boxPoints.get(startBox).y() > boxMargin) {
                 startBox++;
             }
             
@@ -198,8 +198,8 @@ public class DivideConq {
 
         @Override
         public int compare(PointInt o1, PointInt o2) {
-            return ComparisonChain.start().compare(o1.getY(), o2.getY())
-                    .compare(o1.getX(), o2.getX()).result();
+            return ComparisonChain.start().compare(o1.y(), o2.y())
+                    .compare(o1.x(), o2.x()).result();
         }
 
     };
@@ -208,8 +208,8 @@ public class DivideConq {
 
         @Override
         public int compare(PointInt o1, PointInt o2) {
-            return ComparisonChain.start().compare(o1.getX(), o2.getX())
-                    .compare(o1.getY(), o2.getY()).result();
+            return ComparisonChain.start().compare(o1.x(), o2.x())
+                    .compare(o1.y(), o2.y()).result();
         }
 
     };

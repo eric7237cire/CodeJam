@@ -22,6 +22,32 @@ public class LargeNumberUtils {
         return combinations;
     }
     
+    /**
+     * If mod is prime, calculates (A choose B) % modP 
+     * @param A
+     * @param B
+     * @param mod
+     * @return
+     */
+    public static int combin(int N, int K, int[][] preCalculated, int modP) 
+    {
+        
+        if (N < modP) {
+            return preCalculated[N][K];
+        }
+        
+        int Ndiv = N / modP;
+        int Nrem = N % modP;
+        int Kdiv = K / modP;
+        int Krem = K % modP;
+        
+        int ans = combin(Ndiv, Kdiv, preCalculated, modP) *
+                combin(Nrem, Krem, preCalculated, modP);
+        ans %= modP;
+        
+        return ans;
+    }
+    
     public static int[][] generateModedPerum(int max, int modulo) {
         int[][] permutations = new int[max+1][max+1];
         

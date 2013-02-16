@@ -69,8 +69,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
      * 
      */
     int dist(PointInt p1, PointInt p2) {
-        int diffY = Math.abs(p2.getY()-p1.getY());
-        int diffX = Math.abs(p2.getX()-p1.getX());
+        int diffY = Math.abs(p2.y()-p1.y());
+        int diffX = Math.abs(p2.x()-p1.x());
         
        
         //Once we have changed rows, we no longer need to move any x

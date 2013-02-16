@@ -94,8 +94,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     
     
     private static int getDegree(PointInt point, GridChar grid, InputData in) {
-        int x = point.getX();
-        int y = point.getY();
+        int x = point.x();
+        int y = point.y();
         
         int sameColorNeighbors = 0;
         
@@ -237,8 +237,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             if (degree != 1)
                 return false;
             
-            int x = ep.getX();
-            int y = ep.getY();
+            int x = ep.x();
+            int y = ep.y();
             char epColor = grid.getEntry(y,x);
             
             Integer pathDirection = null;
@@ -338,8 +338,8 @@ this kind of grid passed diag checks, degree checks
         
         int distance = 0;
         
-        int y = start.getY();
-        int x = start.getX();
+        int y = start.y();
+        int x = start.x();
         
         char startColor = grid.getEntry(y, x);
         
@@ -360,8 +360,8 @@ this kind of grid passed diag checks, degree checks
             if (distance % 2 == 1 && cur == startColor)
                 return false;
             
-            y += delta.getY();
-            x += delta.getX();
+            y += delta.y();
+            x += delta.x();
             
             ++distance;
         }
@@ -374,7 +374,7 @@ this kind of grid passed diag checks, degree checks
         
         q.add(start);
         
-        char color = grid.getEntry(start.getY(),start.getX());
+        char color = grid.getEntry(start.y(),start.x());
         
         Set<PointInt> visited = Sets.newHashSet();
         
@@ -385,8 +385,8 @@ this kind of grid passed diag checks, degree checks
             
             visited.add(p);
             
-            int x = p.getX();
-            int y = p.getY();
+            int x = p.x();
+            int y = p.y();
             
             for(int d = 0; d <= 3; d += 1) {
                 int xx = x + delta[d][0];
@@ -434,7 +434,7 @@ this kind of grid passed diag checks, degree checks
             int mOther = o.slope[0] * o.slope[1];
             int m = slope[0] * slope[1];
             int num =
-                    o.start.getY()-mOther*o.start.getX()-start.getY()+m*start.getX();
+                    o.start.y()-mOther*o.start.x()-start.y()+m*start.x();
             
             int denom = m - mOther;
             
@@ -443,8 +443,8 @@ this kind of grid passed diag checks, degree checks
             
             int x = num / denom;
             
-            int y = m * (x - start.getX()) + start.getY();
-            int y2 = mOther * (x - o.start.getX()) + o.start.getY();
+            int y = m * (x - start.x()) + start.y();
+            int y2 = mOther * (x - o.start.x()) + o.start.y();
             
             Preconditions.checkArgument(y == y2);
             
@@ -511,19 +511,19 @@ this kind of grid passed diag checks, degree checks
     static int getSide(int borderPos, InputData in) {
         PointInt coord = getCoords(in,borderPos);
         
-        if (coord.getY() == 0 ) {
+        if (coord.y() == 0 ) {
             return BOTTOM;
         }
         
-        if (coord.getY() == in.nRows - 1) {
+        if (coord.y() == in.nRows - 1) {
             return TOP;
         }
         
-        if (coord.getX() == 0) {
+        if (coord.x() == 0) {
             return LEFT;
         }
         
-        if (coord.getX() == in.nCols - 1) {
+        if (coord.x() == in.nCols - 1) {
             return RIGHT;
         }
         
@@ -658,7 +658,7 @@ this kind of grid passed diag checks, degree checks
                 while(border != startWhite)
                 {
                     PointInt rc = getCoords(in,border);
-                    grid.setEntry(rc.getY(), rc.getX(), '#');
+                    grid.setEntry(rc.y(), rc.x(), '#');
                     
                     ++border;
                     border %= borderLen;
@@ -668,7 +668,7 @@ this kind of grid passed diag checks, degree checks
                 while(border != startBlack) {
                     
                     PointInt rc = getCoords(in,border);
-                    grid.setEntry(rc.getY(), rc.getX(), '0');
+                    grid.setEntry(rc.y(), rc.x(), '0');
                     
                     ++border;
                     border %= borderLen;
@@ -687,7 +687,7 @@ this kind of grid passed diag checks, degree checks
                     
                     
                     diags.add(new Diagonal(coordCorner, cornerSlopes[c],
-                        grid.getEntry(coordCorner.getY(), coordCorner.getX()) == '0'
+                        grid.getEntry(coordCorner.y(), coordCorner.x()) == '0'
                         ));
                 }
                 
@@ -765,10 +765,10 @@ this kind of grid passed diag checks, degree checks
                          * Calculate if we are an even or odd distance, to determine color
                          */
                         
-                        boolean isSameColor = (pos.start.getX()-inter.getX()) % 2 == 0;
+                        boolean isSameColor = (pos.start.x()-inter.x()) % 2 == 0;
                         boolean isWhite = (isSameColor && pos.isWhite) || (!isSameColor && !pos.isWhite);
                         
-                        boolean isSameColorNeg = (neg.start.getX()-inter.getX()) % 2 == 0;
+                        boolean isSameColorNeg = (neg.start.x()-inter.x()) % 2 == 0;
                         boolean isWhiteNeg = (isSameColorNeg && neg.isWhite) || (!isSameColorNeg && !neg.isWhite);
                         
                         if (isWhite != isWhiteNeg) {

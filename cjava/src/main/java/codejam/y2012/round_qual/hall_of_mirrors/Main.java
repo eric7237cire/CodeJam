@@ -99,11 +99,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             if (corner.absorbVector == null)
                 return CornerCase.REFLECT;
             
-            int cmpY = Integer.compare(0, direction.getY());
-            int cmpY2 = Integer.compare(0, corner.absorbVector.getY());
+            int cmpY = Integer.compare(0, direction.y());
+            int cmpY2 = Integer.compare(0, corner.absorbVector.y());
             
-            int cmpX = Integer.compare(0, direction.getX());
-            int cmpX2 = Integer.compare(0, corner.absorbVector.getX());
+            int cmpX = Integer.compare(0, direction.x());
+            int cmpX2 = Integer.compare(0, corner.absorbVector.x());
             
             if (cmpY == cmpY2 && cmpX == cmpX2) 
                 return CornerCase.ABSORB;
@@ -424,13 +424,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             if (wallObj.orientation.getDeltaY() != 0 && 
                 Integer.compare(wallObj.orientation.getDeltaY(), 0) ==
-                Integer.compare(direction.getY(), 0)) {
+                Integer.compare(direction.y(), 0)) {
                 continue;
             }
             
             if (wallObj.orientation.getDeltaX() != 0 && 
                 Integer.compare(wallObj.orientation.getDeltaX(), 0) ==
-                Integer.compare(direction.getX(), 0)) {
+                Integer.compare(direction.x(), 0)) {
                     continue;
             }
             
@@ -471,11 +471,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             if (cc == CornerCase.REFLECT) {
                 log.debug("Hit corner {} {}", intersection.x(), intersection.y());                
-                newDirection = new PointInt(-direction.getX(), -direction.getY()) ;
+                newDirection = new PointInt(-direction.x(), -direction.y()) ;
             } else if (cc == CornerCase.NOTHING) {
                newDirection = wall.getType() == Line.Type.HORIZONTAL ?
-                new PointInt(direction.getX(), -direction.getY()) :
-                new PointInt(-direction.getX(), direction.getY());
+                new PointInt(direction.x(), -direction.y()) :
+                new PointInt(-direction.x(), direction.y());
             } else if (cc == CornerCase.ABSORB) {
                 log.debug("Absorb corner {} {}", intersection.x(), intersection.y());
                 newDirection = new PointInt(0,0);
@@ -575,13 +575,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 if (x==0 && y==0) {
                     continue;
                 } else if (x == 0) {
-                    direction.setY(direction.getY() / Math.abs(direction.getY()));
+                    direction.setY(direction.y() / Math.abs(direction.y()));
                 } else if (y==0) {
-                    direction.setX(direction.getX() / Math.abs(direction.getX()));
+                    direction.setX(direction.x() / Math.abs(direction.x()));
                 } else {
-                    int gcd = ArithmeticUtils.gcd(direction.getX(), direction.getY());
-                    direction.setX(direction.getX() / gcd);
-                    direction.setY(direction.getY() / gcd);
+                    int gcd = ArithmeticUtils.gcd(direction.x(), direction.y());
+                    direction.setX(direction.x() / gcd);
+                    direction.setY(direction.y() / gcd);
                 }
                 
                 if (dirs.contains(direction))                    

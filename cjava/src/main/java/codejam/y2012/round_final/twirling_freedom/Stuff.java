@@ -180,12 +180,12 @@ Choosing a direction
         int maxY = Integer.MIN_VALUE;
         
         for(int s = 0; s < in.N; ++s) {
-            points[s] = new Point2D(in.stars.get(s).getX(),in.stars.get(s).getY());
+            points[s] = new Point2D(in.stars.get(s).x(),in.stars.get(s).y());
             
-            minX = Math.min(minX, in.stars.get(s).getX());
-            minY = Math.min(minY, in.stars.get(s).getY());
-            maxY = Math.max(maxY, in.stars.get(s).getY());
-            maxX = Math.max(maxX, in.stars.get(s).getX());
+            minX = Math.min(minX, in.stars.get(s).x());
+            minY = Math.min(minY, in.stars.get(s).y());
+            maxY = Math.max(maxY, in.stars.get(s).y());
+            maxX = Math.max(maxX, in.stars.get(s).x());
         }
         
         //int fac = 3;
@@ -206,7 +206,7 @@ Choosing a direction
         }
         
         for(int s = 0; s < in.N; ++s) {
-            points[s] = new Point2D(in.stars.get(s).getX(),in.stars.get(s).getY());
+            points[s] = new Point2D(in.stars.get(s).x(),in.stars.get(s).y());
          
             if (draw) {
             points[s].draw();
@@ -273,7 +273,7 @@ P7 = i*q_6 + i*p_0 + i*q_2 + i*q_3 + -1*i*q_0 + -1*i*q_1
             
             Complex[] q = new Complex[4];
             for(int i = 0; i < 4; ++i) {
-                q[i] = new Complex(in.stars.get(outPerm[i]).getX(),in.stars.get(outPerm[i]).getY());
+                q[i] = new Complex(in.stars.get(outPerm[i]).x(),in.stars.get(outPerm[i]).y());
             }
             
             Complex c1 = new Complex(-1, 1).multiply(q[0].multiply(used[0])); 
@@ -287,10 +287,10 @@ P7 = i*q_6 + i*p_0 + i*q_2 + i*q_3 + -1*i*q_0 + -1*i*q_1
                     new Point(pointC.getReal(), pointC.getImaginary()).distance(new Point(0,0)));
         }
         
-        Complex c1 = new Complex(-1, 1).multiply(new Complex(choices[0].getX(),choices[0].getY()).multiply(used[0])); 
-        Complex c2 = new Complex(-1, -1).multiply(new Complex(choices[1].getX(),choices[1].getY()).multiply(used[1]));
-        Complex c3 = new Complex(1, -1).multiply(new Complex(choices[2].getX(),choices[2].getY()).multiply(used[2]));
-        Complex c4 = new Complex(1, 1).multiply(new Complex(choices[3].getX(),choices[3].getY()).multiply(used[3]));
+        Complex c1 = new Complex(-1, 1).multiply(new Complex(choices[0].x(),choices[0].y()).multiply(used[0])); 
+        Complex c2 = new Complex(-1, -1).multiply(new Complex(choices[1].x(),choices[1].y()).multiply(used[1]));
+        Complex c3 = new Complex(1, -1).multiply(new Complex(choices[2].x(),choices[2].y()).multiply(used[2]));
+        Complex c4 = new Complex(1, 1).multiply(new Complex(choices[3].x(),choices[3].y()).multiply(used[3]));
         
     //    Complex pointC = c1.add(c2.multiply(used[1])).add(c3.multiply(used[2])).add(c4.multiply(used[3]));
         Complex pointC = c1.add(c2).add(c3).add(c4);

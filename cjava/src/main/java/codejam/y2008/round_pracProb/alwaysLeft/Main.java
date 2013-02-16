@@ -135,10 +135,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 //Do not count entrance and since it is only the current square, not the exit either
                 if (c > 0) {
-                    minX = Math.min(minX, currentSquare.getX());
-                    maxX = Math.max(maxX, currentSquare.getX());
-                    minY = Math.min(minY, currentSquare.getY());
-                    maxY = Math.max(maxY, currentSquare.getY());
+                    minX = Math.min(minX, currentSquare.x());
+                    maxX = Math.max(maxX, currentSquare.x());
+                    minY = Math.min(minY, currentSquare.y());
+                    maxY = Math.max(maxY, currentSquare.y());
                 }
                 
                 switch(ch) {

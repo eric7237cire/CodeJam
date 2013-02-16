@@ -52,30 +52,30 @@ public class Main implements TestCaseHandler<InputData>,
     public String solveUsingTranslationMatrix(InputData input) {
         RealMatrix fm = new Array2DRowRealMatrix(3, 3);
         
-        fm.setEntry(0,0, input.smallTriangle.p1.getX());
-        fm.setEntry(1,0, input.smallTriangle.p1.getY());
+        fm.setEntry(0,0, input.smallTriangle.p1.x());
+        fm.setEntry(1,0, input.smallTriangle.p1.y());
         fm.setEntry(2,0, 1);
         
-        fm.setEntry(0,1, input.smallTriangle.p2.getX());
-        fm.setEntry(1,1, input.smallTriangle.p2.getY());
+        fm.setEntry(0,1, input.smallTriangle.p2.x());
+        fm.setEntry(1,1, input.smallTriangle.p2.y());
         fm.setEntry(2,1, 1);
         
-        fm.setEntry(0,2, input.smallTriangle.p3.getX());
-        fm.setEntry(1,2, input.smallTriangle.p3.getY());
+        fm.setEntry(0,2, input.smallTriangle.p3.x());
+        fm.setEntry(1,2, input.smallTriangle.p3.y());
         fm.setEntry(2,2, 1);
         
         RealMatrix fmLarge = new Array2DRowRealMatrix(3, 3);
         
-        fmLarge.setEntry(0,0, input.largeTriangle.p1.getX());
-        fmLarge.setEntry(1,0, input.largeTriangle.p1.getY());
+        fmLarge.setEntry(0,0, input.largeTriangle.p1.x());
+        fmLarge.setEntry(1,0, input.largeTriangle.p1.y());
         fmLarge.setEntry(2,0, 1);
         
-        fmLarge.setEntry(0,1, input.largeTriangle.p2.getX());
-        fmLarge.setEntry(1,1, input.largeTriangle.p2.getY());
+        fmLarge.setEntry(0,1, input.largeTriangle.p2.x());
+        fmLarge.setEntry(1,1, input.largeTriangle.p2.y());
         fmLarge.setEntry(2,1, 1);
         
-        fmLarge.setEntry(0,2, input.largeTriangle.p3.getX());
-        fmLarge.setEntry(1,2, input.largeTriangle.p3.getY());
+        fmLarge.setEntry(0,2, input.largeTriangle.p3.x());
+        fmLarge.setEntry(1,2, input.largeTriangle.p3.y());
         fmLarge.setEntry(2,2, 1);
         
         LUDecomposition fd = new LUDecomposition(fm);
@@ -168,8 +168,8 @@ public class Main implements TestCaseHandler<InputData>,
         PointInt p2LargeTranslated = input.largeTriangle.p2.translate(input.largeTriangle.p1);
         PointInt p2SmallTranslated = input.smallTriangle.p2.translate(input.smallTriangle.p1);
         
-        double angP2 = Math.atan2(p2LargeTranslated.getY(), p2LargeTranslated.getX()) ;
-        double angSmP2 = Math.atan2(p2SmallTranslated.getY(), p2SmallTranslated.getX()) ;
+        double angP2 = Math.atan2(p2LargeTranslated.y(), p2LargeTranslated.x()) ;
+        double angSmP2 = Math.atan2(p2SmallTranslated.y(), p2SmallTranslated.x()) ;
         
         /**
          * The angle of rotation between the small triangle and the large
@@ -203,9 +203,9 @@ public class Main implements TestCaseHandler<InputData>,
          *    What yLarge point gets translated to x such that x = xLarge?
          */
         double xIntercept = (  
-                - input.largeTriangle.p1.getX() * Math.cos(rotAngLtoS) * scaleLtoS
-                + input.largeTriangle.p1.getY() * Math.sin(rotAngLtoS) * scaleLtoS
-                + input.smallTriangle.p1.getX() ) / (1-Math.cos(rotAngLtoS)*scaleLtoS);
+                - input.largeTriangle.p1.x() * Math.cos(rotAngLtoS) * scaleLtoS
+                + input.largeTriangle.p1.y() * Math.sin(rotAngLtoS) * scaleLtoS
+                + input.smallTriangle.p1.x() ) / (1-Math.cos(rotAngLtoS)*scaleLtoS);
         
         double xSlope = -Math.sin(rotAngLtoS) * scaleLtoS / (1-Math.cos(rotAngLtoS)*scaleLtoS);
         
@@ -215,9 +215,9 @@ public class Main implements TestCaseHandler<InputData>,
          * f(ySmall) to x
          */        
         double xIntercept2 = (  
-                - input.smallTriangle.p1.getX() * Math.cos(rotAngStoL) * scaleStoL
-                + input.smallTriangle.p1.getY() * Math.sin(rotAngStoL) * scaleStoL
-                + input.largeTriangle.p1.getX() ) / (1-Math.cos(rotAngStoL)*scaleStoL);
+                - input.smallTriangle.p1.x() * Math.cos(rotAngStoL) * scaleStoL
+                + input.smallTriangle.p1.y() * Math.sin(rotAngStoL) * scaleStoL
+                + input.largeTriangle.p1.x() ) / (1-Math.cos(rotAngStoL)*scaleStoL);
         
         double xSlope2 = -Math.sin(rotAngStoL) * scaleStoL / (1-Math.cos(rotAngStoL)*scaleStoL);
         
@@ -227,9 +227,9 @@ public class Main implements TestCaseHandler<InputData>,
         double slope = Math.sin(rotAngLtoS) * scaleLtoS / (1-Math.cos(rotAngLtoS)*scaleLtoS);
         
         double yIntercept = (  
-                - input.largeTriangle.p1.getY() * Math.cos(rotAngLtoS) * scaleLtoS
-                - input.largeTriangle.p1.getX() * Math.sin(rotAngLtoS) * scaleLtoS
-                + input.smallTriangle.p1.getY() ) / (1-Math.cos(rotAngLtoS)*scaleLtoS);
+                - input.largeTriangle.p1.y() * Math.cos(rotAngLtoS) * scaleLtoS
+                - input.largeTriangle.p1.x() * Math.sin(rotAngLtoS) * scaleLtoS
+                + input.smallTriangle.p1.y() ) / (1-Math.cos(rotAngLtoS)*scaleLtoS);
         
         /**
          * f(xSmall) to y

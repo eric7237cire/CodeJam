@@ -18,8 +18,8 @@ public class Point implements Comparable<Point> {
    
     
     public Point(PointInt p) {
-        x = p.getX();
-        y = p.getY();
+        x = p.x();
+        y = p.y();
     }
     /**
      * @return the x
@@ -161,9 +161,9 @@ public class Point implements Comparable<Point> {
     public boolean equalsPointInt(PointInt obj) {
         
          
-        if (!DoubleMath.fuzzyEquals(x, obj.getX(), tolerance))
+        if (!DoubleMath.fuzzyEquals(x, obj.x(), tolerance))
             return false;
-        if (!DoubleMath.fuzzyEquals(y, obj.getY(), tolerance))
+        if (!DoubleMath.fuzzyEquals(y, obj.y(), tolerance))
             return false;
         return true;
     }

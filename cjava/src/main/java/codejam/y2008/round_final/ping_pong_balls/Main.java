@@ -87,12 +87,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
     
     boolean inside(InputData in, PointInt p) {
-        return p.getX() >= 0 && p.getX() < in.W && p.getY() >= 0 && p.getY() < in.H;
+        return p.x() >= 0 && p.x() < in.W && p.y() >= 0 && p.y() < in.H;
     }
     
     boolean inside(InputData in, int a, int b) {
-        int x = in.initial.getX() + a*in.vec1.getX() + b*in.vec2.getX();
-        int y = in.initial.getY() + a*in.vec1.getY() + b*in.vec2.getY();
+        int x = in.initial.x() + a*in.vec1.x() + b*in.vec2.x();
+        int y = in.initial.y() + a*in.vec1.y() + b*in.vec2.y();
         if(x<0 || x>=in.W) return false;
         if(y<0 || y>=in.H) return false;
         return true;

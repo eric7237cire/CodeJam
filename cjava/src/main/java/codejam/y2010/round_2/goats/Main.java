@@ -84,7 +84,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             Circle[] circles = new Circle[input.goatPolePositions.length];
             for(int gp = 0; gp < input.N; ++gp) {
                 PointInt goatPos = input.goatPolePositions[gp];
-                circles[gp] = new Circle(goatPos.getX(), goatPos.getY(), goatPos.distance(bucketPos));
+                circles[gp] = new Circle(goatPos.x(), goatPos.y(), goatPos.distance(bucketPos));
             }
 
             CircleWithAngle[] circlesWithpolarAngles = new CircleWithAngle[input.N];
@@ -215,8 +215,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                                 new Point(bucketPos));
 
                         // Now get polar angle of intersection
-                        double x = intPoint.x() - bucketPos.getX();
-                        double y = intPoint.y() - bucketPos.getY();
+                        double x = intPoint.x() - bucketPos.x();
+                        double y = intPoint.y() - bucketPos.y();
 
                         double angle = Math.atan2(y, x);
 
