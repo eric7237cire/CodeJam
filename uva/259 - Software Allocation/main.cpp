@@ -86,7 +86,7 @@ struct FlowEdge
 		throw "Illegal vertex";
 	}
 
-    void addResidualFlowTo(int vertex, double delta) {
+    void addResidualFlowTo(int vertex, EdgeWeightType delta) {
         if      (vertex == from) flow -= delta;
         else if (vertex == to) flow += delta;
         else throw "Illegal endpoint";
@@ -114,9 +114,26 @@ struct EdmondsKarp
 	//Number of vertices including S and T
 	int V;
 
+	vector<FlowEdge*> allEdges;
+
+	void addFlowEdge(int from, int to, EdgeWeightType cap)
+	{
+		FlowEdge* fe = new FlowEdge(from, to, cap);
+		edges[from].pb(fe);
+		edges[to].pb(fe);
+
+		allEdges.pb(fe);
+	}
+
 	EdmondsKarp() : flow(0) 
 	{
 
+	}
+
+	~EdmondsKarp() 
+	{
+		for(vfe::iterator it = allEdges.begin(); it != allEdges.end(); ++it)
+			delete *it;
 	}
 
 	void doFlow() 
@@ -187,66 +204,95 @@ struct EdmondsKarp
 int main() {
   
 
-  /*
-  // Graph in Figure 4.21
-  4 0 1
-  2 2 70 3 30
-  2 2 25 3 70
-  3 0 70 3 5 1 25
-  3 0 30 2 5 1 70
 
-  // Graph in Figure 4.22
-  4 0 3
-  2 1 100 3 100
-  2 2 1 3 100
-  1 3 100
-  0
+  
 
-  // Graph in Figure 4.23.A
-  5 1 0
-  0
-  2 2 100 3 50
-  3 3 50 4 50 0 50
-  1 4 100
-  1 0 125
+  char app;
+  int nUsers;
+  char computers[12];
 
-  // Graph in Figure 4.23.B
-  5 1 0
-  0
-  2 2 100 3 50
-  3 3 50 4 50 0 50
-  1 4 100
-  1 0 75
+  string line;
+  while(true)
+  {
+	  getline(cin, line);
 
-  // Graph in Figure 4.23.C
-  5 1 0
-  0
-  2 2 100 3 50
-  2 4 5 0 5
-  1 4 100
-  1 0 125
-  */
+	  if (!cin.good()) 
+		  break;
 
-  EdmondsKarp ek;
-  scanf("%d %d %d", &ek.V, &ek.s, &ek.t);
+	  EdmondsKarp ek;
+		ek.V = 26 + 10 + 2;
+		ek.s = 0;
+		ek.t = 37;
 
-  int k, vertex, weight;  
-  for (int i = 0; i < ek.V; i++) {
-    scanf("%d", &k);
-	vfe vEdges;
+		ek.edges.resize(ek.V);
 
-    for (int j = 0; j < k; j++) {
-      scanf("%d %d", &vertex, &weight);
-      FlowEdge* fe = new FlowEdge(i, vertex, weight);
-	  vEdges.pb(fe);  
-    }
+		int appCount = 0;
+	  
+	  while(3 == sscanf(line.c_str(), "%c%d %[0123456789];", &app, &nUsers, &computers))
+	  {
+			//cout << app << " users " << nUsers  << " com " << computers << endl;  
 
-	ek.edges.pb(vEdges);
+			appCount += nUsers;
+
+			int appVertex = 1 + app - 'A';
+			
+			ek.addFlowEdge(ek.s, appVertex, nUsers);
+
+			for(char* chPtr = &computers[0]; *chPtr != '\0'; ++chPtr)
+			{
+				char ch = *chPtr;
+			//	cout << "Computers " << computers << "ch " << ch << endl;
+				int computerVertex = 27 + ch - '0';
+				assert(computerVertex >= 27 && computerVertex < 37);
+
+				ek.addFlowEdge(appVertex, computerVertex, 1);
+			}
+
+			getline(cin, line);
+	  }
+
+	  //Done with input, add in flow edges from computers to T
+	  for(int compVertex = 27; compVertex < ek.t; ++compVertex)
+	  {
+		  ek.addFlowEdge(compVertex, ek.t, 1);
+	  }
+	
+	  ek.doFlow();
+
+	  if (ek.flow < appCount) 
+	  {
+		printf("!\n");
+	  } else {
+		  
+
+		  for(int compVertex = 27; compVertex < ek.t; ++compVertex)
+		  {
+			  char assign = '_';
+
+			  const vfe& adjList = ek.edges[compVertex];
+			  FOR(eIdx, 0, adjList.size())
+			  {
+				  FlowEdge* fe = adjList[eIdx];
+
+				  if (fe->from >= 1 && fe->from <= 26 && fe->flow == 1)
+				  {
+					  assign = fe->from - 1 + 'A';
+					  break;
+				  }
+			  }
+
+			  cout << assign;
+
+		  }
+
+		  cout << endl;
+	  }
+	  
+
   }
 
-  ek.doFlow();
+ 
 
-  printf("%d\n", ek.flow);                              // this is the max flow value
-
+  
   return 0;
 }
