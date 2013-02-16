@@ -1,5 +1,8 @@
 package codejam.utils.datastructures;
 
+import codejam.utils.datastructures.graph.Edge;
+import codejam.utils.datastructures.graph.EdgeWeightedGraph;
+
 
 /******************************************************************************
  *  Compilation:  javac PrimMST.java

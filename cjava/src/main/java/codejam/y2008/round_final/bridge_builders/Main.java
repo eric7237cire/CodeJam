@@ -8,10 +8,10 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.datastructures.BreadthFirstPaths;
-import codejam.utils.datastructures.Edge;
-import codejam.utils.datastructures.EdgeWeightedGraph;
 import codejam.utils.datastructures.LazyPrimMST;
+import codejam.utils.datastructures.graph.BreadthFirstPaths;
+import codejam.utils.datastructures.graph.Edge;
+import codejam.utils.datastructures.graph.EdgeWeightedGraph;
 import codejam.utils.datastructures.graph.Graph;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;

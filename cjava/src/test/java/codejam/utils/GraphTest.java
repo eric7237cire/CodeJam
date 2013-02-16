@@ -11,9 +11,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.datastructures.Edge;
-import codejam.utils.datastructures.EdgeWeightedGraph;
 import codejam.utils.datastructures.PrimMST;
+import codejam.utils.datastructures.graph.Edge;
+import codejam.utils.datastructures.graph.EdgeWeightedGraph;
 import codejam.utils.datastructures.graph.GraphAdjList;
 
 public class GraphTest {

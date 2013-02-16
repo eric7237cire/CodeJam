@@ -2,6 +2,9 @@ package codejam.utils.datastructures;
 
 import codejam.utils.datastructures.graph.DepthFirstOrder;
 import codejam.utils.datastructures.graph.Digraph;
+import codejam.utils.datastructures.graph.DirectedCycle;
+import codejam.utils.datastructures.graph.EdgeWeightedDigraph;
+import codejam.utils.datastructures.graph.EdgeWeightedDirectedCycle;
 
 /*************************************************************************
  *  Compilation:  javac Topoological.java

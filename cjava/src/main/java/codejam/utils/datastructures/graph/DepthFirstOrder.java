@@ -1,7 +1,5 @@
 package codejam.utils.datastructures.graph;
 
-import codejam.utils.datastructures.DirectedEdge;
-import codejam.utils.datastructures.EdgeWeightedDigraph;
 import codejam.utils.datastructures.In;
 import codejam.utils.datastructures.Queue;
 import codejam.utils.datastructures.Stack;

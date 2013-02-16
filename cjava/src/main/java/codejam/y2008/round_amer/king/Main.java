@@ -6,8 +6,8 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.datastructures.EdmondsMatching;
 import codejam.utils.datastructures.UndirectedGraph;
+import codejam.utils.datastructures.graph.EdmondsMatching;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;

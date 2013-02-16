@@ -1,4 +1,9 @@
 package codejam.utils.datastructures;
+
+import codejam.utils.datastructures.graph.DijkstraSP;
+import codejam.utils.datastructures.graph.DirectedEdge;
+import codejam.utils.datastructures.graph.EdgeWeightedDigraph;
+
 /*************************************************************************
  *  Compilation:  javac AssignmentProblem.java
  *  Execution:    java AssignmentProblem N

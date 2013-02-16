@@ -171,6 +171,27 @@ public class Main  {
         //}
     }
     
+    static void round1C_2008(String args[]) {
+        
+    
+        /**
+         * Problem 3
+         * 
+         * Counting strictly increasing sequences
+         */
+        codejam.y2008.round_1C.speed_limits.Main m = new codejam.y2008.round_1C.speed_limits.Main();
+        
+        
+    
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }   
+    }
+    
     static void round2_2008(String args[]) {
         
         codejam.y2008.round_2.star_wars.Main m = new codejam.y2008.round_2.star_wars.Main();
@@ -189,6 +210,13 @@ public class Main  {
         
         /**
          * Problem 3
+         * 
+         * Bipartite matching (a good test)
+         * Maximum independent set
+         * 
+         * 
+         * TODO use bipartite.h / augmenting tree
+         * to improve matching alorithm
          */
         codejam.y2008.round_3.no_cheating.Main m = new codejam.y2008.round_3.no_cheating.Main();
         
@@ -789,8 +817,9 @@ public class Main  {
         //beta2008(args);
         //practiceContest2008(args);
         
+        round1C_2008(args);
         //round2_2008(args);
-        round3_2008(args);
+        //round3_2008(args);
         
         //round2_2009(args);
        // roundFinal_2009(args);

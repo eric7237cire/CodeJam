@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import codejam.utils.datastructures.BreadthFirstPaths;
+import codejam.utils.datastructures.graph.BreadthFirstPaths;
 import codejam.utils.datastructures.graph.Graph;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;

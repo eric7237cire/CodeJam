@@ -6,9 +6,9 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.datastructures.FlowEdge;
-import codejam.utils.datastructures.FlowNetwork;
-import codejam.utils.datastructures.FordFulkerson;
+import codejam.utils.datastructures.graph.FlowEdge;
+import codejam.utils.datastructures.graph.FlowNetwork;
+import codejam.utils.datastructures.graph.FordFulkerson;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
