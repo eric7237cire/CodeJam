@@ -210,7 +210,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         boolean allEndNodesAreConnected = true;
         
-        phase1: while (allEndNodesAreConnected == true)
+        while (allEndNodesAreConnected == true)
         {
             Boolean r = removeSingleDegreeEndNodes(g, nSquares, in);
             

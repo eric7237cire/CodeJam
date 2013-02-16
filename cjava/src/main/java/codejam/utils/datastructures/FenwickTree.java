@@ -86,7 +86,7 @@ public class FenwickTree
     }
 
     
-    public static int ft_rsq(int[] ft, int b, int mod)
+    public static int ft_rsq_mod(int[] ft, int b, int mod)
     { // returns RSQ(1, b)
         int sum = 0;
         for (; b > 0; b -= LSOne(b))
@@ -96,19 +96,43 @@ public class FenwickTree
         }
         return sum;
     }
+    
+    public static int ft_rsq(int[] ft, int b)
+    { // returns RSQ(1, b)
+        int sum = 0;
+        for (; b > 0; b -= LSOne(b))
+        {
+            sum += ft[b];
+        }
+        return sum;
+    }
 
     public static int ft_rsq(int[] ft, int a, int b, int mod)
     { // returns RSQ(a, b)
         Preconditions.checkState(a <= b);
         if (a==1)
-            return ft_rsq(ft, b, mod);
+            return ft_rsq_mod(ft, b, mod);
         
-        return (mod + ft_rsq(ft, b, mod) - 
-                 ft_rsq(ft, a - 1, mod)) % mod;
+        return (mod + ft_rsq_mod(ft, b, mod) - 
+                 ft_rsq_mod(ft, a - 1, mod)) % mod;
     }
 
     // adjusts value of the k-th element by v (v can be +ve/inc or -ve/dec)
-    public static void ft_adjust(int[] ft, int k, int v, int mod)
+    public static void ft_adjust(int[] ft, int k, int v)
+    { 
+        //Indexes go from 1 to N
+        Preconditions.checkState(k > 0);
+        
+        Preconditions.checkState(k <= ft.length);
+        
+        // note: n = ft.size() - 1
+        for (; k < ft.length; k += LSOne(k))
+        {
+            ft[k] += v;
+        }
+    }
+
+    public static void ft_adjust_mod(int[] ft, int k, int v, int mod)
     { 
         //Indexes go from 1 to N
         Preconditions.checkState(k > 0);
@@ -122,7 +146,6 @@ public class FenwickTree
             ft[k] %= mod;
         }
     }
-
     
     @Test
     public void test() {
@@ -130,13 +153,13 @@ public class FenwickTree
         int[] ft = ft_create(10);
         
         
-        FenwickTree.ft_adjust(ft, 1, 3, mod);
-        FenwickTree.ft_adjust(ft, 5, 2, mod);
-        FenwickTree.ft_adjust(ft, 8, 9, mod);
+        FenwickTree.ft_adjust_mod(ft, 1, 3, mod);
+        FenwickTree.ft_adjust_mod(ft, 5, 2, mod);
+        FenwickTree.ft_adjust_mod(ft, 8, 9, mod);
         
-        assertEquals(5, FenwickTree.ft_rsq(ft, 5, mod) );
-        assertEquals(14, FenwickTree.ft_rsq(ft, 8, mod) );
-        assertEquals(3, FenwickTree.ft_rsq(ft, 1, mod) );
+        assertEquals(5, FenwickTree.ft_rsq_mod(ft, 5, mod) );
+        assertEquals(14, FenwickTree.ft_rsq_mod(ft, 8, mod) );
+        assertEquals(3, FenwickTree.ft_rsq_mod(ft, 1, mod) );
     }
     
     public static void main(String[] args)
@@ -145,20 +168,20 @@ public class FenwickTree
         int[]  ft;
         int mod = 10000007;
         ft = ft_create(10);     // ft = {-,0,0,0,0,0,0,0, 0,0,0}
-        ft_adjust(ft, 2, 1,mod);    // ft = {-,0,1,0,1,0,0,0, 1,0,0}, idx 2,4,8 => +1
-        ft_adjust(ft, 4, 1,mod);    // ft = {-,0,1,0,2,0,0,0, 2,0,0}, idx 4,8 => +1
-        ft_adjust(ft, 5, 2,mod);    // ft = {-,0,1,0,2,2,2,0, 4,0,0}, idx 5,6,8 => +2
-        ft_adjust(ft, 6, 3,mod);    // ft = {-,0,1,0,2,2,5,0, 7,0,0}, idx 6,8 => +3
-        ft_adjust(ft, 7, 2,mod);    // ft = {-,0,1,0,2,2,5,2, 9,0,0}, idx 7,8 => +2
-        ft_adjust(ft, 8, 1,mod);    // ft = {-,0,1,0,2,2,5,2,10,0,0}, idx 8 => +1
-        ft_adjust(ft, 9, 1,mod);    // ft = {-,0,1,0,2,2,5,2,10,1,1}, idx 9,10 => +1
-        System.out.printf("%d\n", ft_rsq(ft, 1, 1));  // 0 => ft[1] = 0
-        System.out.printf("%d\n", ft_rsq(ft, 1, 2));  // 1 => ft[2] = 1
-        System.out.printf("%d\n", ft_rsq(ft, 1, 6));  // 7 => ft[6] + ft[4] = 5 + 2 = 7
-        System.out.printf("%d\n", ft_rsq(ft, 1, 10)); // 11 => ft[10] + ft[8] = 1 + 10 = 11
-        System.out.printf("%d\n", ft_rsq(ft, 3, 6));  // 6 => rsq(1, 6) - rsq(1, 2) = 7 - 1
+        ft_adjust_mod(ft, 2, 1,mod);    // ft = {-,0,1,0,1,0,0,0, 1,0,0}, idx 2,4,8 => +1
+        ft_adjust_mod(ft, 4, 1,mod);    // ft = {-,0,1,0,2,0,0,0, 2,0,0}, idx 4,8 => +1
+        ft_adjust_mod(ft, 5, 2,mod);    // ft = {-,0,1,0,2,2,2,0, 4,0,0}, idx 5,6,8 => +2
+        ft_adjust_mod(ft, 6, 3,mod);    // ft = {-,0,1,0,2,2,5,0, 7,0,0}, idx 6,8 => +3
+        ft_adjust_mod(ft, 7, 2,mod);    // ft = {-,0,1,0,2,2,5,2, 9,0,0}, idx 7,8 => +2
+        ft_adjust_mod(ft, 8, 1,mod);    // ft = {-,0,1,0,2,2,5,2,10,0,0}, idx 8 => +1
+        ft_adjust_mod(ft, 9, 1,mod);    // ft = {-,0,1,0,2,2,5,2,10,1,1}, idx 9,10 => +1
+        System.out.printf("%d\n", ft_rsq_mod(ft, 1, 1));  // 0 => ft[1] = 0
+        System.out.printf("%d\n", ft_rsq_mod(ft, 1, 2));  // 1 => ft[2] = 1
+        System.out.printf("%d\n", ft_rsq_mod(ft, 1, 6));  // 7 => ft[6] + ft[4] = 5 + 2 = 7
+        System.out.printf("%d\n", ft_rsq_mod(ft, 1, 10)); // 11 => ft[10] + ft[8] = 1 + 10 = 11
+        System.out.printf("%d\n", ft_rsq_mod(ft, 3, 6));  // 6 => rsq(1, 6) - rsq(1, 2) = 7 - 1
 
-        ft_adjust(ft, 5, 2,mod); // update demo
+        ft_adjust_mod(ft, 5, 2,mod); // update demo
         System.out.printf("Index: ");
         for (int i = 0; i < (int) ft.length; i++)
             System.out.printf("%d ", i);

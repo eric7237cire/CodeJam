@@ -113,7 +113,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             count[i] = rq + 1;
             sum += count[i];
             
-            FenwickTree.ft_adjust(ft, sortedIndex, count[i], mod);
+            FenwickTree.ft_adjust_mod(ft, sortedIndex, count[i], mod);
             /*
             log.debug("FT {}", ft);
             for(int j = in.n; j >= 1; --j)

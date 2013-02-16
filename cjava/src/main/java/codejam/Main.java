@@ -177,7 +177,7 @@ public class Main  {
         /**
          * Problem 3
          * 
-         * Interval tree
+         * Interval tree / Binary Interval Tree (Fenwick)
          */
         codejam.y2008.round_1B.mouse_trap.Main m = new codejam.y2008.round_1B.mouse_trap.Main();
         

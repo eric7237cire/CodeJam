@@ -26,7 +26,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\10305 - Ordering Tasks\main.cpp">
+    <ClCompile Include="..\259 - Software Allocation\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

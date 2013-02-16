@@ -2,27 +2,26 @@ package codejam.y2008.round_1B.mouse_trap;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
 import org.junit.Test;
-
-import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 
 import codejam.utils.datastructures.FenwickTree;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
+import com.google.common.base.Joiner;
+import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
     
     public Main()
     {
-        super("C", 1,0, 1);
+        super("C", 1,1, 1);
       //  (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
     
@@ -85,22 +84,22 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         {
             int[] ft = FenwickTree.ft_create(15);
             
-            FenwickTree.ft_adjust(ft, 1, 1, 100);
+            FenwickTree.ft_adjust(ft, 1, 1);
             log.debug("FT {}", ft);
             
-            FenwickTree.ft_adjust(ft, 3, 1, 100);
+            FenwickTree.ft_adjust(ft, 3, 1);
             log.debug("FT {}", ft);
             
-            FenwickTree.ft_adjust(ft, 4, 1, 100);
+            FenwickTree.ft_adjust(ft, 4, 1);
             log.debug("FT {}", ft);
             
-            FenwickTree.ft_adjust(ft, 7, 1, 100);
+            FenwickTree.ft_adjust(ft, 7, 1);
             log.debug("FT {}", ft);
             
-            FenwickTree.ft_adjust(ft, 10, 1, 100);
+            FenwickTree.ft_adjust(ft, 10, 1);
             log.debug("FT {}", ft);
             
-            FenwickTree.ft_adjust(ft, 15, 1, 100);
+            FenwickTree.ft_adjust(ft, 15, 1);
             log.debug("FT {}", ft);
             
             
@@ -133,7 +132,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         int[] ft = FenwickTree.ft_create(in.K);
         for(int currentCard = 2; currentCard <= in.K; ++currentCard)
         {
-            FenwickTree.ft_adjust(ft, currentCard, 1, in.K);
+            FenwickTree.ft_adjust(ft, currentCard, 1);
         }
         deck[0] = 1;
         
@@ -149,12 +148,14 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             nCardsToSkip %= cardsLeft;
             if (nCardsToSkip == 0)
                 nCardsToSkip = cardsLeft;
-                           
-            int cardsBeforePos = FenwickTree.ft_rsq(ft, currentIndex+1, in.K);
+                      
+            //How many cards before / after?
+            int cardsBeforePos = FenwickTree.ft_rsq(ft, currentIndex+1);
             
             int cardsAfterPos = cardsLeft - cardsBeforePos;
             
             int checkIndex = currentIndex;
+            
             
             if (nCardsToSkip <= cardsAfterPos)
             {
@@ -183,7 +184,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             Preconditions.checkState(deck[currentIndex] == 0);
             deck[currentIndex] = currentCard;
             
-            FenwickTree.ft_adjust(ft, currentIndex+1, -1, in.K);
+            //Remove current card from binary interval tree
+            FenwickTree.ft_adjust(ft, currentIndex+1, -1);
             
             
         }
