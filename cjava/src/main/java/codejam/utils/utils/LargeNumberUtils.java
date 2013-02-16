@@ -31,6 +31,7 @@ public class LargeNumberUtils {
      */
     public static int combin(int N, int K, int[][] preCalculated, int modP) 
     {
+        Preconditions.checkState(N >= 0);
         
         if (N < modP) {
             return preCalculated[N][K];
