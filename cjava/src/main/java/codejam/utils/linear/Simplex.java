@@ -383,8 +383,11 @@ public class Simplex {
         
         while(notDone) {
             notDone = doStep(objectiveFunctionRow);
+            
+            log.debug("Phase II step done");
+            
             if (log.isDebugEnabled()) {
-                log.debug("Phase II step done");
+                
                 debugPrint();
             }
             ++iterCheck;
@@ -428,8 +431,9 @@ public class Simplex {
         while(notDone) {
             notDone = doStep(phase1Row);
             
+            log.debug("Phase 1 step done");
             if(log.isDebugEnabled()) {
-                log.debug("Phase 1 step done");
+                
                 debugPrint();
             }
             ++iterCheck;
