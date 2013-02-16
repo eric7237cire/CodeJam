@@ -7,11 +7,9 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import codejam.utils.datastructures.BitSetLong;
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.Direction;
@@ -21,16 +19,14 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-
-    @Override
-    public String[] getDefaultInputFiles() {
-         return new String[] {"sample.in"};
-        //return new String[] {"D-small-practice.in"};
-       // return new String[] { "B-small-practice.in", "B-large-practice.in" };
+    
+    public Main()
+    {
+        super("D", 1, 1, 0);
     }
+    
 
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
@@ -188,6 +184,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
     }
     
+    /**
+     * 
+     * Transforms the set of reachable squares into a series of left to right segments.
+     * 
+     * Also calculate if it is "safe to go down" which means we can move down
+     * without leaving the set of reachable squares. 
+     */
     void buildSegments(GridChar grid, Set<Integer> reachableSquares, List<Segment> segments) {
         
         for(int reachableSquareGridIndex : reachableSquares) 
@@ -230,6 +233,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         StringBuffer sb = new StringBuffer();
         sb.append(String.format("Case #%d:\n", in.testCase));
         
+        //Check for each cave location
         for(int d = 0; d <= 9; ++d) {
             Set<Integer> caveSquares = Sets.newHashSet();
             Integer caveLoc = getCaveSquares(in.grid, d, caveSquares);
@@ -258,6 +262,8 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                  */
                 BitSetLong[] possible = new BitSetLong[maxLen + 1];
                 possible[1] = new BitSetLong(1);
+                
+                //First loop to initialize the values
                 for (int len = 1; len <= maxLen; ++len) {
                     
                     //Weed out squares unsafe to go down
@@ -284,17 +290,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     }
                 }
                 
-                //Do the same logic but from the top ... TODO Why?
+                //Do the same logic but from the top ...
                 //maybe to cover the badByLen in the other direction
                 for (int len = maxLen; len > 1; --len) {
                     possible[len - 1].restrictToSet( possible[len].getBits() | (possible[len].getBits() >> 1) );
                 }
                 List<Segment> remaining = new ArrayList<Segment>();
                 for (Segment s : segments)
+                {
                     //If we are still in the segment
                     if ((s.safeToGoDown.getBits() & possible[s.length].getBits()) == 0) {
                         remaining.add(s);
                     }
+                }
                 if (remaining.size() == segments.size())
                     break;
                 segments = remaining;

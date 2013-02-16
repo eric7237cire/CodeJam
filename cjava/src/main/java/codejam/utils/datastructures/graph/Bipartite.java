@@ -88,17 +88,33 @@ public class Bipartite
      * @param input
      * @return
      */
-    public static List<Pair<Integer, Integer>> getMaxMatching(GraphInt graph, List<Integer> lhsNodes, List<Integer> rhsNodes) {
+    public static List<Pair<Integer, Integer>> getMaxMatching(GraphInt graph, List<Integer> lhsNodes, List<Integer> rhsNodes, List<Pair<Integer, Integer>> greedyMatch) {
         // Right to Left
         BiMap<Integer, Integer> matchesMap = HashBiMap.create();
+        
+        int count = 0;
+        
+        if (greedyMatch != null) {
+            for (Pair<Integer,Integer> edge : greedyMatch)
+            {
+                matchesMap.put(edge.getRight(), edge.getLeft());
+            }
+            count = matchesMap.size();
+        }
 
         // Right hand side of the bipartite graph
         boolean[] seen;
 
-        int count = 0;
+        
         for (int lhsNodeIdx = 0; lhsNodeIdx < lhsNodes.size(); ++lhsNodeIdx) {
+            
+            if (matchesMap.inverse().containsKey(lhsNodes.get(lhsNodeIdx)))
+                continue;
+            
             seen = new boolean[rhsNodes.size()];
 
+            
+            
             if (findAugmentingPath(graph,lhsNodes.get(lhsNodeIdx), rhsNodes, seen, matchesMap)) {
                 ++count;
             }
@@ -119,7 +135,7 @@ public class Bipartite
         /* 
          * The vertex is part of the left hand side
          */
-        log.debug("findAugPath");
+        //log.debug("findAugPath");
         
         //Loop through all right hand side vertices
         for(int rhsVertexIdx = 0; rhsVertexIdx < rhsNodes.size(); ++rhsVertexIdx) {

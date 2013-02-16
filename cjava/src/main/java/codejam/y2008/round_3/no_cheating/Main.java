@@ -10,6 +10,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import codejam.utils.datastructures.graph.FlowEdge;
 import codejam.utils.datastructures.graph.FlowNetwork;
 import codejam.utils.datastructures.graph.FordFulkerson;
+import codejam.utils.datastructures.graph.GraphInt;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -44,7 +45,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     public String handleCase(InputData in)
     {
 
-      // GraphInt graph = new GraphInt();
+       GraphInt graph = new GraphInt();
       // UndirectedGraph<Integer> uGraph = new UndirectedGraph<Integer>();
        int N = in.grid.getSize();
        FlowNetwork fn = new FlowNetwork(N+2);
@@ -79,7 +80,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                continue;
            
            ++vertexCount;
-         //  graph.addNode(gcIdx);
+           graph.addNode(gcIdx);
           // uGraph.addNode(gcIdx);
            
            int col = in.grid.getRowCol(gcIdx)[1];
@@ -112,7 +113,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                //Even though only this node can see the other paper, in terms of 
                //a configuration, both directions mean cheating can occur
                
-            //   graph.addConnection(gcIdx, adjIdx);
+               graph.addConnection(gcIdx, adjIdx);
                
             //   uGraph.addNode(adjIdx);
             //   uGraph.addEdge(gcIdx,adjIdx);
@@ -146,10 +147,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
       // log.debug("Grid {}", in.grid);
        
       // log.debug("Graph {}", graph);
-       //boolean b = Bipartite.getBipartite(graph,left,right);
+      
        
       // log.debug("left {} right {}", left, right);
-       //List<Pair<Integer,Integer>> matching = Bipartite.getMaxMatching(graph,left,right);
+       //List<Pair<Integer,Integer>> matching = Bipartite.getMaxMatching(graph,left,right, greedyMatch);
        
        /*UndirectedGraph<Integer> g = EdmondsMatching.maximumMatching(uGraph);
        int mSize = 0;
@@ -162,7 +163,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
        */
        FordFulkerson ff = new FordFulkerson(fn,s,t);
        int mSize = DoubleMath.roundToInt(ff.value(), RoundingMode.HALF_EVEN);
-       log.debug("Match size {} Flow {}",mSize,ff.value());
+      // int mSize = matching.size();
+       
+       //log.debug("Match size {} Flow {}",mSize,ff.value());
        
        
        

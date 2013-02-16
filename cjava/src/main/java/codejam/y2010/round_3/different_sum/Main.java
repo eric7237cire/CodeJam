@@ -120,7 +120,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         return maxCol;
     }
     
-    static public int getMaxCarryOver(int base) {
+    /**
+     * Since all digits must be unique the max carry over is all the
+     * numbers in the base / base
+     * 
+     * ie for base 10, 1+2+...9 / 10
+     * 
+     * @param base
+     * @return
+     */
+    static int getMaxCarryOver(int base) {
         //sum 1 to base-1
         
         int sum = (base-1) * (base) / 2;
@@ -198,12 +207,21 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     }
     
+    /**
+     * 
+     * @param n Target sum
+     * @param base
+     * @return
+     */
     public long solve(final long n, final int base) {
         
         final int maxCol = getMaxColumn(n,base);
         final int maxCarryOver = getMaxCarryOver(base);
         final int maxColumnSum = (base-1)*base / 2;
         
+        /**
+         * DP array column to outbound carry over
+         */
         OutgoingTermCount[][] outTermCounts = new OutgoingTermCount[maxCol][maxCarryOver+1];
         
         //Initialize first column
@@ -326,7 +344,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
         //seed base 2
         array[0] = new int[2][];
+        
+        //In base 2, to make a sum of 0 with 0 terms
         array[0][0] = new int[] {1};
+        
+        //to make a s
         array[0][1] = new int[] {INVALID, 1};
         
         for(int base = 3; base <= MAX_DIMENSION; ++base) {
@@ -334,10 +356,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             
             //We do not know what the # of max terms is.  We know it must be less than base + 1
             array[base-2] = new int[maxSum+1][base+1];
-            
-            for(int sum = 0; sum < array[base-2].length; ++sum) {
-               // Arrays.fill(array[base-2][sum], INVALID);
-            }
             
             //Take all sums possible from previous base and add digit
             int[][] prevBase = array[base - 2 - 1];
@@ -390,10 +408,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     
 
     int[][] permutations;
-    int[][][] singleColCountsNew;
+    static int[][][] singleColCountsNew;
     
     public Main() {
-        singleColCountsNew = getSumTermArray();
+        if (singleColCountsNew == null)
+            singleColCountsNew = getSumTermArray();
     
         permutations = LargeNumberUtils.generateModedPerum(70, MOD);
     }

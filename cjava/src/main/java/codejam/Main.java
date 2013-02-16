@@ -236,7 +236,7 @@ public class Main  {
          * Maximum independent set
          * 
          * 
-         * TODO use bipartite.h / augmenting tree
+         * idea use bipartite.h / augmenting tree to try to be faster than the flow algo
          * to improve matching alorithm
          */
         codejam.y2008.round_3.no_cheating.Main m = new codejam.y2008.round_3.no_cheating.Main();
@@ -478,6 +478,45 @@ public class Main  {
         }    
     }
     
+    static void round3_2010(String args[]) 
+    {
+        //2010 3
+        
+        //Used lattice to find random number generator points
+         //codejam.y2010.round_3.rng.Main m = new codejam.y2010.round_3.rng.Main();
+        
+        /**
+         * 2010 -- Round 3
+         * Problem 2
+         * 
+         * Used BFS to find modulo length.
+         */
+       // codejam.y2010.round_3.boards.Main m = new codejam.y2010.round_3.boards.Main();
+        
+        //Did my own algo, used GAP class.  TODO use their solution
+        //codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();       
+        
+        /**
+         * Problem 4.
+         * 
+         * Pretty interesting DP / counting problem
+         * 
+         * Bottom up DP used 
+         */
+        codejam.y2010.round_3.different_sum.Main m = new codejam.y2010.round_3.different_sum.Main();
+
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }
+    }
+    
+    
+    
     static void round1A_2011(String args[]) {
         //2011 1A
         
@@ -715,7 +754,7 @@ public class Main  {
          */
        //codejam.y2012.round_2.swinging_wild.Main m = new codejam.y2012.round_2.swinging_wild.Main();
         //codejam.y2012.round_2.swinging_wild.Solution1 m = new codejam.y2012.round_2.swinging_wild.Solution1();
-        codejam.y2012.round_2.swinging_wild.Solution2 m = new codejam.y2012.round_2.swinging_wild.Solution2();
+       // codejam.y2012.round_2.swinging_wild.Solution2 m = new codejam.y2012.round_2.swinging_wild.Solution2();
         
         /**
          * Problem 2
@@ -735,10 +774,15 @@ public class Main  {
          * Lots of simplex notes in 2012 doc direction.  IP means you split the problem by
          * adding more constraints branch and bound I think it's called
          */
-       //codejam.y2012.round_2.mountain_view.Main m = new codejam.y2012.round_2.mountain_view.Main();
+       codejam.y2012.round_2.mountain_view.Main m = new codejam.y2012.round_2.mountain_view.Main();
        
-       //Did not solve.  FSM intersection / dynamic programming.  TODO Look again why it works        
-       //codejam.y2012.round_2.descending_dark.Main m = new codejam.y2012.round_2.descending_dark.Main();
+       //        
+       /**
+        * Did not solve.  FSM intersection / dynamic programming.
+        * 
+        * Bitmasks representing possible moves
+        */
+        //codejam.y2012.round_2.descending_dark.Main m = new codejam.y2012.round_2.descending_dark.Main();
        
        
         String[] files = Main.getFiles(m, args);
@@ -838,15 +882,16 @@ public class Main  {
         //beta2008(args);
         //practiceContest2008(args);
         
-        round1B_2008(args);
+        //round1B_2008(args);
         //round1C_2008(args);
         //round2_2008(args);
-        //round3_2008(args);
+      //  round3_2008(args);
         
         //round2_2009(args);
        // roundFinal_2009(args);
         
       //  round2_2010(args);
+        round3_2010(args);
         
         //round1A_2011(args);
         //round2_2011(args);        
@@ -854,7 +899,7 @@ public class Main  {
         //roundFinal_2011(args);
         
        // round1B_2012(args);
-        //round2_2012(args);
+       // round2_2012(args);
         //round3_2012(args);
       //  roundFinal_2012(args);
 
@@ -1035,23 +1080,6 @@ public class Main  {
 
       
                   
-         //2010 3
-         
-        //Used lattice to find random number generator points
-         //codejam.y2010.round_3.rng.Main m = new codejam.y2010.round_3.rng.Main();
-        
-        /**
-         * 2010 -- Round 3
-         * Problem 2
-         * 
-         * Used BFS to find modulo length.
-         */
-       // codejam.y2010.round_3.boards.Main m = new codejam.y2010.round_3.boards.Main();
-        
-        //Did my own algo, used GAP class.  TODO use their solution
-        //codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();       
-        //TODO large is slow
-        //codejam.y2010.round_3.different_sum.Main m = new codejam.y2010.round_3.different_sum.Main();
        
         //2010 final
         //Dynamic programming.  has both recursive and bottom up
