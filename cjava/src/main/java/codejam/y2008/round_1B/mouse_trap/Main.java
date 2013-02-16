@@ -128,39 +128,64 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         int[] deck = new int[in.K];
         
-        int currentIndex = in.K-1;
-        int cardsSkipped = 0;
+        int currentIndex = 0;
         
         int[] ft = FenwickTree.ft_create(in.K);
-        
-        for(int currentCard = 1; currentCard <= in.K; ++currentCard)
+        for(int currentCard = 2; currentCard <= in.K; ++currentCard)
         {
+            FenwickTree.ft_adjust(ft, currentCard, 1, in.K);
+        }
+        deck[0] = 1;
+        
+        for(int currentCard = 2; currentCard <= in.K; ++currentCard)
+        {
+            Preconditions.checkState(deck[currentIndex] != 0);
+            
             int cardsLeft = in.K - currentCard + 1;
             
+            //Loop as much as possible
             int nCardsToSkip = currentCard ;
             
             nCardsToSkip %= cardsLeft;
             if (nCardsToSkip == 0)
                 nCardsToSkip = cardsLeft;
-               
-            while(cardsSkipped < nCardsToSkip) {
-                currentIndex++;
-                currentIndex %= in.K;
-                
-                //If the card is not assigned, then the card counts, otherwise it has already been removed
-                if (deck[currentIndex] == 0) {
-                    ++cardsSkipped;
-                }
-            }
+                           
+            int cardsBeforePos = FenwickTree.ft_rsq(ft, currentIndex+1, in.K);
             
-            //Last skipped card is not really skipped, current index points to it
+            int cardsAfterPos = cardsLeft - cardsBeforePos;
+            
+            int checkIndex = currentIndex;
+            
+            if (nCardsToSkip <= cardsAfterPos)
+            {
+                /**
+                 * Next position to fill does not require wrapping around, find freuency
+                 * [] [] cp [] [] [] []
+                 * 
+                 * say I wanted the 3rd position, then I want frencuency 2 + 3
+                 */
+                currentIndex = FenwickTree.findLowestIndexWithFreq(ft, 
+                        nCardsToSkip + cardsBeforePos) - 1;
+                
+                Preconditions.checkState(currentIndex > checkIndex && currentIndex < in.K);
+            } else {
+                //Next position is somewhere before currentp position
+                
+                //Skip all cards up to the end
+                nCardsToSkip -= cardsAfterPos;
+                
+                currentIndex = FenwickTree.findLowestIndexWithFreq(ft, 
+                        nCardsToSkip ) - 1;
+                
+                Preconditions.checkState(currentIndex>= 0 && currentIndex < checkIndex);
+            }
             
             Preconditions.checkState(deck[currentIndex] == 0);
             deck[currentIndex] = currentCard;
             
             FenwickTree.ft_adjust(ft, currentIndex+1, -1, in.K);
             
-            cardsSkipped = 0;
+            
         }
         
         List<Integer> ans = Lists.newArrayList();

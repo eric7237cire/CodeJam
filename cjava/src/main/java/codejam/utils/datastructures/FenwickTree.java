@@ -30,6 +30,13 @@ public class FenwickTree
                 
         while ((bitMask != 0) && (idx < maxVal)){ // nobody likes overflow :)
             int tIdx = idx + bitMask; // we make midpoint of interval
+            
+            //In case array size is not a power of 2
+            if (tIdx >= ft.length) {
+                bitMask >>= 1;
+                continue;
+            }
+            
             if (cumFre == ft[tIdx]) // if it is equal, we just return idx
             {
                 lowestFound = Math.min(lowestFound, tIdx);
