@@ -171,6 +171,27 @@ public class Main  {
         //}
     }
     
+    static void round1B_2008(String args[]) {
+        
+        
+        /**
+         * Problem 3
+         * 
+         * Interval tree
+         */
+        codejam.y2008.round_1B.mouse_trap.Main m = new codejam.y2008.round_1B.mouse_trap.Main();
+        
+        
+    
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }   
+    }
+    
     static void round1C_2008(String args[]) {
         
     
@@ -817,7 +838,8 @@ public class Main  {
         //beta2008(args);
         //practiceContest2008(args);
         
-        round1C_2008(args);
+        round1B_2008(args);
+        //round1C_2008(args);
         //round2_2008(args);
         //round3_2008(args);
         

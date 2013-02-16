@@ -19,6 +19,32 @@ public class FenwickTree
         return new int[n + 1];
     }
 
+    public static int findIndexWithFreq(int[] ft, int cumFre){
+        int idx = 0; // this var is result of function
+        
+        int maxVal = ft.length;
+        
+        int bitMask = Integer.highestOneBit(maxVal);
+                
+        while ((bitMask != 0) && (idx < maxVal)){ // nobody likes overflow :)
+            int tIdx = idx + bitMask; // we make midpoint of interval
+            if (cumFre == ft[tIdx]) // if it is equal, we just return idx
+                return tIdx;
+            else if (cumFre > ft[tIdx]){ 
+                    // if tree frequency "can fit" into cumFre,
+                    // then include it
+                idx = tIdx; // update index 
+                cumFre -= ft[tIdx]; // set frequency for next loop 
+            }
+            bitMask >>= 1; // half current interval
+        }
+        if (cumFre != 0) // maybe given cumulative frequency doesn't exist
+            return -1;
+        else
+            return idx;
+    }
+
+    
     public static int ft_rsq(int[] ft, int b, int mod)
     { // returns RSQ(1, b)
         int sum = 0;

@@ -1,20 +1,12 @@
 package codejam.y2008.round_1C.speed_limits;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
 
-import ch.qos.logback.classic.Level;
 import codejam.utils.datastructures.FenwickTree;
-import codejam.utils.linear.Simplex;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
-import codejam.utils.utils.DoubleFormat;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.common.math.DoubleMath;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
@@ -82,11 +74,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
     }
     
-    public void test() 
-    {
-        
-    }
-    
+   
     @Override
     public String handleCase(InputData in) {
        
