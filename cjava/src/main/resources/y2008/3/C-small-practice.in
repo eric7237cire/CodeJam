@@ -1,0 +1,177 @@
+20
+10 10
+....x..x.x
+.x.xxxx.x.
+..x..x....
+x..xx..x..
+.x.x.x....
+xx...x.x..
+.x.xx..xxx
+...x.xxx.x
+.xx.....x.
+.....x..x.
+9 9
+.....x.x.
+.........
+...x.....
+.....xxx.
+x...xx...
+.x......x
+x....x...
+.........
+.........
+10 10
+.xxxxxxxxx
+xxx.x.x.xx
+xx.x.x.x.x
+x.xxxxxxx.
+xx.xxxxx.x
+x.xx...xx.
+xx.xxxxx.x
+x.xxxxxxx.
+xx.x.x.x.x
+xxx.x.x.xx
+10 10
+x.........
+x.xxxxxxxx
+x.xxxxxxxx
+xx......xx
+x.xxxxxx.x
+xx......xx
+xxxxxxxxxx
+x........x
+x.xxxxxxxx
+x.xxxxxxxx
+1 10
+....x.....
+7 3
+...
+...
+...
+...
+...
+...
+...
+9 10
+.x.xxx..x.
+xx.....x.x
+xx.xx.x.x.
+x.x.xx....
+..xx.xxx..
+..xx.x.x.x
+.xx..xxx..
+x....x..x.
+....x.....
+10 1
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+10 10
+..........
+..x.x...xx
+..........
+..........
+x..x....xx
+.x........
+...x......
+..........
+..........
+..........
+10 10
+xxxxx.xxxx
+x.x..x.x.x
+xx..xx...x
+x.xxxxx.xx
+.xxxx.xx.x
+..x....xx.
+x.xxxxxx.x
+x..xxx.x.x
+x.......xx
+xxxx.xxxxx
+10 10
+..........
+..........
+......x...
+..........
+..........
+..........
+..........
+..........
+..........
+..........
+10 8
+.....x..
+x.......
+..x.x...
+.x..x...
+.x.x.x..
+.....xx.
+.xx.....
+.......x
+.....x..
+..x.....
+10 10
+x.xxx.xx.x
+.xxx.xx.x.
+xxxxx.x..x
+xxxx.xxxxx
+.x.x...x.x
+x.x...x.x.
+xxxxx.xxxx
+x.xx.xx..x
+.x.xx.x...
+x.xx.xxx.x
+7 9
+....x....
+..x......
+.......xx
+.........
+.........
+.........
+......x..
+1 1
+.
+10 10
+.xxxxxxxx.
+x.x.x.xx.x
+xx.x.x..xx
+x.x.xx..xx
+.xxx..xx.x
+x.xx..xxx.
+xx..xx.x.x
+xx..x.x.xx
+x.xx.x.x.x
+.xxxxxxxx.
+3 7
+.......
+x......
+.......
+4 3
+..x
+xx.
+x..
+.x.
+10 10
+x........x
+.xxxxxxxx.
+x.xxxxxx.x
+.xxxxxxxx.
+x.xxxxxx.x
+.xxxxxxxx.
+x.xxxxxx.x
+.xxxxxx.xx
+x.....x..x
+xxxxxx.xxx
+5 3
+.xx
+x..
+xxx
+x.x
+xxx

@@ -24,37 +24,6 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         //((ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
 
-    /*
-     * To calculate change of basis
-     * Array2DRowRealMatrix m = new Array2DRowRealMatrix(
-                new double[][] {
-                        {2d, 1d},
-                        {1d, 2d},
-                });
-        
-        LUDecomposition lu = new LUDecomposition(m);
-        RealMatrix inv = lu.getSolver().getInverse();
-        
-        log.debug("Inv {}", inv);
-        
-        for(int x = 0; x <= 5; ++x)
-        {
-            for(int y = 0; y <= 5; ++y) 
-            {
-        
-                Array2DRowRealMatrix p1 = 
-                        new Array2DRowRealMatrix(
-                                new double[][] {
-                                        {(double)x},
-                                        {(double)y},
-                                });
-            
-                RealMatrix r = inv.multiply(p1);
-                log.debug("Result {},{} = {}", x,y ,r);
-            }
-        }
-     */
-
     @Override
     public InputData readInput(Scanner scanner, int testCase)
     {
@@ -101,6 +70,15 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         Fraction[][] basisMatrix = new Fraction[][] {
                 {2d/3, -1d/3},
                 {-1d/3, 2d/3}
+                
+                this is the inverse of 
+                new double[][] {
+                        {2d, 1d},
+                        {1d, 2d},
+                });
+                
+            LUDecomposition lu = new LUDecomposition(m);
+            RealMatrix inv = lu.getSolver().getInverse();
         };*/
         Fraction a = new Fraction(2, 3);
         Fraction b = new Fraction(-1, 3);
@@ -204,6 +182,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 ways %= mod;
             }
             
+            //Inclusion / exclusion principal
             int mult = subSet.size() % 2 == 0 ? 1 : -1;
             totalWays += mod + mult * ways;
             totalWays %= mod;

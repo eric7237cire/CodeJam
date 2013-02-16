@@ -187,7 +187,21 @@ public class Main  {
     
     static void round3_2008(String args[]) {
         
-        codejam.y2008.round_3.endless_knight.Main m = new codejam.y2008.round_3.endless_knight.Main();
+        /**
+         * Problem 3
+         */
+        codejam.y2008.round_3.no_cheating.Main m = new codejam.y2008.round_3.no_cheating.Main();
+        
+        /**
+         * Problem 4
+         * 
+         * Change of basis / new coordinates
+         * inclusion / exclusion
+         * Lucas's theorum for calulating n choose k mod prime
+         * 
+         * Implementation is much cleaner than the c++ one
+         */
+       // codejam.y2008.round_3.endless_knight.Main m = new codejam.y2008.round_3.endless_knight.Main();
         
     
         String[] files = Main.getFiles(m, args);
