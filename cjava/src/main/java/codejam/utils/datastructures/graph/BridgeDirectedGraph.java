@@ -94,13 +94,13 @@ public class BridgeDirectedGraph
         if (dfs_low[u] == dfs_num[u])
         { // if this is a root (start) of an SCC
             ++numComp;
-           // log.debug("Strongly connected component num {}", numComp);
+            log.debug("Strongly connected component num {}", numComp);
             while (true)
             {
                 int v = S.peek();
                 S.pop();
                 visited[v] = false;
-               // log.debug(" {}", v);
+                log.debug(" {}", v);
                 scCompNum[v] = numComp; 
                 if (u == v)
                     break;

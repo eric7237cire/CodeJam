@@ -23,7 +23,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     
     public Main()
     {
-       super("D", 0, 1, 0);
+       super("D", 0, 1);
        
        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }

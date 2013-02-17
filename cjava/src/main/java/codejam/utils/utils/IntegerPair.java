@@ -1,7 +1,7 @@
 package codejam.utils.utils;
 
 public class IntegerPair implements Comparable<IntegerPair> {
-  Integer _first, _second;
+  int _first, _second;
 
   public IntegerPair(Integer f, Integer s) {
     _first = f;
@@ -15,6 +15,29 @@ public class IntegerPair implements Comparable<IntegerPair> {
       return this.second() - o.second();
   }
 
-  public Integer first() { return _first; }
-  public Integer second() { return _second; }
+  public int first() { return _first; }
+  public int second() { return _second; }
+  
+  public void setFirst(int f) 
+  {
+      _first = f;
+  }
+  
+  public void setSecond(int s)
+  {
+      _second = s;
+  }
+  
+  public void addSecond(int add)
+  {
+      _second += add;
+  }
+
+@Override
+public String toString()
+{
+    return "(" + _first + ", " + _second + ")";
+}
+  
+  
 }
