@@ -8,8 +8,10 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
+import ch.qos.logback.classic.Level;
 import codejam.utils.datastructures.graph.BridgeDirectedGraph;
 import codejam.utils.datastructures.graph.DirectedGraphInt;
 import codejam.utils.datastructures.graph.FlowEdge;
@@ -33,7 +35,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 {
 
     public Main() {
-          super("D", 0, 0);
+          super("D", 1, 1);
+          (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
 
     @Override
@@ -137,6 +140,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
      * 
      * ??xx
      *   xx??
+     *   
+     * ABCD
+     *    EFGH
      * 
      */
     int transition_cost(String suffix, String prefix) 
@@ -153,6 +159,185 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         throw new RuntimeException("huh");
     }
     
+    public String handleLarge(InputData in)
+    {
+        log.debug("Start handle large");
+        BiMap<Character, Character> l33t = HashBiMap.create(9);
+        l33t.put('o', '0');
+        l33t.put('i', '1');
+        l33t.put('e', '3');
+        l33t.put('a', '4');
+        l33t.put('s', '5');
+        l33t.put('t', '7');
+        l33t.put('b', '8');
+        l33t.put('g', '9');
+        
+        
+        //Find all k length candidates  of S 
+
+        Set<String> candidates = Sets.newHashSet();
+
+        long nCandidates = 0;
+        
+        for(int startIdx = 0; startIdx <= in.S.length() - in.k; ++startIdx)
+        {
+            int endIdx = startIdx + in.k - 1;
+            String subStr = in.S.substring(startIdx,endIdx+1);
+            
+            candidates.add(subStr);
+            
+        }
+        
+        
+        
+        //Calculate weight for each prefix
+        Map<String, Integer> phraseWeight = Maps.newHashMap();
+        
+        Map<String, Long> stringPermCount = Maps.newHashMap();
+        
+        for(String candidate : candidates)
+        {
+          //Find out how many permutations they would be
+            long perms = 1;
+            for (int k=0; k<in.k; ++k) {
+                if (l33t.containsKey(candidate.charAt(k)))
+                    perms *= 2;
+            }
+            
+            log.debug("Sub string {} perms {}", candidate, perms);
+            
+            nCandidates += perms;
+            
+            String prefix = candidate.substring(0, candidate.length()-1);
+            String suffix = candidate.substring(1, candidate.length());
+            
+            log.debug("Candidate {} Prefix {} suffix {}", candidate, prefix, suffix);
+            
+            //If prefix ends in a l33table character, it is connected twice
+            int prefixCount = l33t.containsKey(candidate.charAt(in.k-1)) ? 2 : 1;
+            
+            int suffixCount = l33t.containsKey(candidate.charAt(0)) ? 2 : 1;
+            
+            stringPermCount.put(prefix, perms / prefixCount);
+            stringPermCount.put(suffix, perms / suffixCount);
+            
+            int curPrefixWeight = phraseWeight.containsKey(prefix) ? phraseWeight.get(prefix) : 0;                        
+            phraseWeight.put(prefix, curPrefixWeight-prefixCount);
+            
+            int curSuffixWeight = phraseWeight.containsKey(suffix) ? phraseWeight.get(suffix) : 0;
+            phraseWeight.put(suffix, curSuffixWeight+suffixCount);
+        }
+        
+        log.info("Num candidates {}", nCandidates);
+
+        List<String> allPhrases = Lists.newArrayList(phraseWeight.keySet());
+        
+        int source = allPhrases.size();
+        int tSink = allPhrases.size()+1;
+        int superSource = allPhrases.size() + 2;
+        
+        int inf = 1000000;
+        MincostMaxflow<Long,Long> fn = new MincostMaxflow<>(new NumericLong(0), new NumericLong(0));
+                
+        
+        
+        long sourceAdded = 0;
+        
+        List<Pair<Integer,Long>> sourcePhrasesSuffix = Lists.newArrayList();
+        List<Pair<Integer,Long>> sinkPhrasesPrefix = Lists.newArrayList();
+        
+        for(int i = 0; i < allPhrases.size(); ++i)
+        {
+            String phrase = allPhrases.get(i);
+            int weight = phraseWeight.get(phrase);
+            
+            log.debug("Phrase {} weight {}", phrase, weight);
+            
+            long perms = stringPermCount.get(phrase);
+            
+            /*
+            for (int k=0; k<in.k-1; ++k) {
+                if (l33t.containsKey(phrase.charAt(k)))
+                perms *= 2;
+            }*/
+            
+            if (weight > 0) {
+                fn.addArc(source, i, new NumericLong(perms*weight), new NumericLong(0));
+                
+                sourcePhrasesSuffix.add(new ImmutablePair<>(i, perms*weight));
+                sourceAdded += perms * weight;
+                continue;
+            } 
+            
+            if (weight < 0)
+            {
+                sinkPhrasesPrefix.add(new ImmutablePair<>(i,-weight*perms));
+                fn.addArc(i, tSink, new NumericLong(-weight*perms), new NumericLong(0));        
+            }
+            
+            
+        }
+        
+        if (sourceAdded == 0) {
+            return String.format("Case #%d: %d", in.testCase, nCandidates+in.k-1);
+        }
+        
+        log.info("Source added {}", sourceAdded);
+        
+        log.info("Connecting phrases {} * {}", sourcePhrasesSuffix.size(), 
+                sinkPhrasesPrefix.size());
+        for(int i = 0; i < sourcePhrasesSuffix.size(); ++i)
+        {
+            for(int j = 0; j < sinkPhrasesPrefix.size(); ++j)
+            {
+                Pair<Integer,Long> suffixIndexWeight = sourcePhrasesSuffix.get(i);
+                Pair<Integer,Long> prefixIndexWeight = sinkPhrasesPrefix.get(j);
+                
+                String suffix = allPhrases.get(suffixIndexWeight.getLeft());
+                String prefix = allPhrases.get(prefixIndexWeight.getLeft());
+                
+                //  A = x????
+                //  B = ????y
+                
+                //check ? are the same
+                int transitionCost = transition_cost(suffix, prefix);
+                
+                long maxCap = Math.min(sourcePhrasesSuffix.get(i).getValue(),
+                        sinkPhrasesPrefix.get(j).getValue());
+                
+                log.debug("Connecting {}, {} to {}, {}", i,suffix, j,prefix);
+                fn.addArc(suffixIndexWeight.getLeft(),
+                        prefixIndexWeight.getLeft(), 
+                        new NumericLong(maxCap), new NumericLong(transitionCost));
+                
+            }
+        }
+        
+        log.info("Done connecting phrases");
+        
+        
+        
+        //Use supersource as we can leave 1 flow since an euler path can have 2 odd nodes
+        fn.addArc(superSource, source,new NumericLong(sourceAdded-1), new NumericLong(0));
+        
+        Pair<Long,Long> flowCost = fn.getFlow(superSource, tSink);
+        
+                
+        
+        long flow = flowCost.getRight();
+       
+        log.info("Flow {} cost {} ", flowCost.getLeft(), flowCost.getRight());
+        long ans = flow +  nCandidates + in.k - 1;
+        log.info(String.format("Case #%d: %d", in.testCase, ans));
+        return String.format("Case #%d: %d", in.testCase, ans);
+    }
+    
+    
+    /**
+     * THis version treats each l33t version seperately
+     * @param in
+     * @return
+     */
     public String showMaxFlow(InputData in)
     {
         BiMap<Character, Character> l33t = HashBiMap.create(9);
@@ -206,12 +391,13 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
         List<String> allPhrases = Lists.newArrayList(phraseWeight.keySet());
         
-        int s = allPhrases.size();
-        int t = allPhrases.size()+1;
+        int source = allPhrases.size();
+        int tSink = allPhrases.size()+1;
+        int superSource = allPhrases.size() + 2;
         
         int inf = 1000000;
         MincostMaxflow<Long,Long> fn = new MincostMaxflow<>(new NumericLong(0), new NumericLong(0));
-        FlowNetwork fn2 = new FlowNetwork(t+1);
+        FlowNetwork fn2 = new FlowNetwork(tSink+1);
         
         for(int i = 0; i < allPhrases.size(); ++i)
         {
@@ -238,6 +424,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             }
         }
         
+        
+        int sourceAdded = 0;
+        
         for(int i = 0; i < allPhrases.size(); ++i)
         {
             String phrase = allPhrases.get(i);
@@ -246,28 +435,33 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             log.debug("Phrase {} weight {}", phrase, weight);
             
             if (weight > 0) {
-                fn.addArc(s, i, new NumericLong(weight), new NumericLong(0));
-                fn2.addEdge(new FlowEdge(s,i, weight));
+                fn.addArc(source, i, new NumericLong(weight), new NumericLong(0));
+                fn2.addEdge(new FlowEdge(source,i, weight));
+                
+                sourceAdded += weight;
             } 
             
             if (weight <= 0)
             {
-                fn.addArc(i, t, new NumericLong(-weight), new NumericLong(0));
-                fn2.addEdge(new FlowEdge(i,t,-weight));
+                fn.addArc(i, tSink, new NumericLong(-weight), new NumericLong(0));
+                fn2.addEdge(new FlowEdge(i,tSink,-weight));
             }
         }
         
+        //Use supersource as we can leave 1 flow since an euler path can have 2 odd nodes
+        fn.addArc(superSource, source,new NumericLong(sourceAdded-1), new NumericLong(0));
         
-        Pair<Long,Long> flowCost = fn.getFlow(s, t);
+        Pair<Long,Long> flowCost = fn.getFlow(superSource, tSink);
         
-        FordFulkerson fff = new FordFulkerson(fn2, s,t);
+        FordFulkerson fff = new FordFulkerson(fn2, source,tSink);
         double flowCheck = fff.value(); 
         
         log.debug("Flow network {}", fn2.toString());
         
         long flow = flowCost.getRight();
-        if (flow >= 2)
-            flow -= 2;
+       
+        log.debug("Candidates size {}", candidates.size());
+        
         log.debug("Flow {} cost {} flow check {}", flowCost.getLeft(), flowCost.getRight(), flowCheck);
         long ans = flow + candidates.size() + in.k - 1;
         
@@ -514,12 +708,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     @Override
     public String handleCase(InputData in)
     {
-        if (in != null)
-        //    return handleSmall(in);
-            return showMaxFlow(in);
+       // showMaxFlow(in);
         
-        
+        return handleLarge(in);
 
-        return String.format("Case #%d: ", in.testCase);
+        //return String.format("Case #%d: ", in.testCase);
     }
 }

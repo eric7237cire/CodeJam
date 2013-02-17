@@ -9,6 +9,8 @@ import java.util.Queue;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import codejam.utils.math.Numeric;
 
@@ -17,6 +19,7 @@ import com.google.common.collect.Lists;
 public class MincostMaxflow<FlowType, CostType>
 {
     
+    final protected static Logger log = LoggerFactory.getLogger("main");
 
     class Edge
     {
@@ -105,8 +108,12 @@ public class MincostMaxflow<FlowType, CostType>
             potential.add(costType.fromInt(0));
         }
 
+        int iterCheck = 0;
         while (true)
         {
+            ++iterCheck;
+            if (iterCheck % 20 == 0)
+                log.info("Starting getFlow loop {}", iterCheck);
             // use dijkstra to find an augmenting path
             int[] from = new int[N];
             Arrays.fill(from, -1);
