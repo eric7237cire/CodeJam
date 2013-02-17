@@ -328,6 +328,115 @@ public class Main  {
        }   
     }
     
+    static void roundAMER_2008(String args[])
+    {
+        /**
+         * 2008 amer semis -- problem 1
+         * Tree traversal depth first
+         *
+         * 1.  A reverse BFS search 
+         */
+       // codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
+        
+        /**
+         *
+         * 2008 amer semis -- problem 2
+         * 
+         * There are K keys, each corresponding to a binary bit position.  
+         * As the sequence progresses, n is incremented, and those keys that
+         * are 'activated' are added together.
+         *  
+         * Iteratively guessing a code sequence, binary / using incomplete information / assumptions
+         * 
+         * Run example to see more
+         */
+        // 
+       //codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
+        //codejam.y2008.round_amer.code_sequence.Main.example();
+        
+        /**
+         * 2008 -- Round semis Amer
+         * Maintain a list of N best paths ; Probability
+         * 
+         * Found solution to speed up (30X) considerably the execution speed using an array
+         * instead of objects.  Also each node does not have it's own list of M paths
+         */
+        //codejam.y2008.round_amer.test_passing.Main m = new codejam.y2008.round_amer.test_passing.Main();
+        
+       //Non bipartite matching using Edmonds algorithm (code found...)
+        //TODO use code in compet book
+        //codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();
+        
+    }
+    static void roundAPAC_2008(String args[])
+    {
+        //2008 apac semis
+        //A and B are in c++        
+        //C++ for millionaire exists that is very fast
+        //Probability ; Making a problem discrete that appears continous
+        //codejam.y2008.round_apac.millionaire.Main m = new codejam.y2008.round_apac.millionaire.Main();
+        
+        //Subtree isomorhisme.  Requires multiple bipartite matchings recursively down the tree
+        //codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
+        
+    }
+    
+    static void roundFinal_2008(String args[])
+    {
+ //2008 Finals  Cheated all the way...
+        
+        //Psuedo linear optimization.  Visualing solution 2d line
+        //codejam.y2008.round_final.juice.Main m = new codejam.y2008.round_final.juice.Main();
+        
+        //Defining a coord system, recognizing non decreasing sequence
+        //codejam.y2008.round_final.ping_pong_balls.Main m = new codejam.y2008.round_final.ping_pong_balls.Main();
+        
+        //A clever trick, also understanding there are not really multiple solutions to watch out for
+        //codejam.y2008.round_final.mine_layer.Main m = new codejam.y2008.round_final.mine_layer.Main();
+       
+        //Using minimum spanning tree MST primms algorithm
+        //codejam.y2008.round_final.bridge_builders.Main m = new codejam.y2008.round_final.bridge_builders.Main();
+        
+        //Using maxflow to find a maximum perimeter, switches nodes in a bipartite graph to turn a maxcut to a mincut
+        //codejam.y2008.round_final.year_code_jam.Main m = new codejam.y2008.round_final.year_code_jam.Main();
+        
+    }
+    
+    static void round1B_2009(String args[])
+    {
+        //Round 1B -- 2009
+        //A in c++
+        //Finding next permutation in a sequence
+         //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
+        
+        //A Breadth first search, did not really do what solution suggested, used a sortedSet instead of queue
+         //codejam.y2009.round_1B.square_math.Main m = new codejam.y2009.round_1B.square_math.Main();
+         
+    }
+    
+    static void round1C_2009(String args[])
+    {
+        //Round 1C -- 2009 
+        //Finding min number in a large base
+         //codejam.y2009.round_1C.all_your_base.Main m = new codejam.y2009.round_1C.all_your_base.Main();
+        
+        //A bit of physics / calculus 
+         //codejam.y2009.round_1C.center_mass.Main m = new codejam.y2009.round_1C.center_mass.Main();
+        
+        /**
+         * Round 1C -- 2009 
+         * Problem 3
+         * Dynamic programming.
+         * 
+         * 1.  Proposed solution, top down
+         * 2.  Also found LucaB's solution which is bottom up and like 10x faster
+         */
+         //codejam.y2009.round_1C.bribe_prisoner.Main m = new codejam.y2009.round_1C.bribe_prisoner.Main();
+         
+    }
+    
+    
+    
     static void round2_2009(String args[]) {
         //Round 2 -- 2009
         
@@ -366,6 +475,35 @@ public class Main  {
             Runner.goSingleThread(file, m, m);
           //Runner.go(file, m, m, 5);
         }   
+    }
+    
+    static void round3_2009(String args[])
+    {
+
+        
+        //Round 3 -- 2009
+       //Grid shortest path
+        //codejam.y2009.sokoban.Main m = new codejam.y2009.sokoban.Main();
+       
+       //
+       /**
+        * Round 3 -- 2009
+        * Problem 2
+        * 
+        * Summing a matrix 
+        * 
+        * Set multiplying, polynomial symbolic manipulation.  
+        * 1. My solution, which is slow, using symbol polynomial manipulations
+        * 2. A much faster solution based on proposed help / other competitors solutions
+        */
+      // codejam.y2009.round_3.alphabetomials.Main m = new codejam.y2009.round_3.alphabetomials.Main();
+       
+       // 3 coloring a particular graph (triangles)
+       // codejam.y2009.round_3.football_team.Main m = new codejam.y2009.round_3.football_team.Main();
+       
+       //Counting ranges.  Had to use complex caching to solve in time.  TODO more comments and their solution
+       // codejam.y2009.round_3.interesting_ranges.Main m = new codejam.y2009.round_3.interesting_ranges.Main();
+        
     }
     
     static void roundFinal_2009(String args[]) {
@@ -423,6 +561,100 @@ public class Main  {
          //   Runner.goSingleThread(file, m, m);
           Runner.go(file, m, m, 5);
         }    
+    }
+
+    static void roundQual_2010(String args[])
+    {
+ //2010 qual
+        
+        //A in c++
+         //Bignumber GCD
+         //codejam.y2010.fair_warning.Main m = new codejam.y2010.fair_warning.Main();
+         
+         //Finding repeated state?  
+         //codejam.y2010.theme_park.Main m = new codejam.y2010.theme_park.Main();
+        
+        
+    }
+    static void round1A_2010(String args[]) {
+        
+        //2010 1A
+       //Grid rotation
+        //codejam.y2010.rotate.Main m = new codejam.y2010.rotate.Main();
+       
+       //DP TODO bottom up
+        codejam.y2010.round_1A.smooth.Main m = new codejam.y2010.round_1A.smooth.Main();
+       
+       /**
+        * 2010 Round 1A
+        * Problem 3
+        * 
+        * Combinatoric game, golden ratio
+        */
+       // codejam.y2010.round_1A.number_game.Main m = new codejam.y2010.round_1A.number_game.Main();
+        
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+         //   Runner.goSingleThread(file, m, m);
+          Runner.go(file, m, m, 5);
+        }   
+    }
+    
+    static void round1B_2010(String args[]) {
+        //2010 1B
+        
+        //Tree
+        //codejam.y2010.file_fix.Main m = new codejam.y2010.file_fix.Main();
+        
+        //Reasoning through problem, speed physics
+        codejam.y2010.round_1B.chicks.Main m = new codejam.y2010.round_1B.chicks.Main();
+        
+      
+       
+        /**
+         * Dynamic programming / Choose number / counting problem
+         * 
+         * 1.  Solved using top down
+         * 2.  Solved again using bottom / up (difference in speed is negligible)
+         * 
+         * See BruteForce for a listing of the possible sets for n = 12, problem description is
+         * not so clear (as a Set does not have order....)
+         * 
+         *  codejam.y2010.round_1B.rank_pure.BruteForce.showPattern(i);
+         */
+       // codejam.y2010.round_1B.rank_pure.Main m = new codejam.y2010.round_1B.rank_pure.Main();
+        
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+         //   Runner.goSingleThread(file, m, m);
+          Runner.go(file, m, m, 5);
+        }   
+    }
+    
+    static void round1C_2010(String args[]) {
+        //2010 1C
+        
+        //codejam.y2010.load_testing.Main m = new codejam.y2010.load_testing.Main();         
+        //codejam.y2010.rope_intranet.Main m = new codejam.y2010.rope_intranet.Main();
+       
+       //Finding rectangles efficiently
+     //TODO large a bit slow
+       codejam.y2010.round_1C.chess_boards.Main m = new codejam.y2010.round_1C.chess_boards.Main();
+
+     
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+         //   Runner.goSingleThread(file, m, m);
+          Runner.go(file, m, m, 5);
+        }   
     }
     
     static void round2_2010(String args[]) {
@@ -515,6 +747,42 @@ public class Main  {
         }
     }
     
+    static void roundFinal_2010(String args[]) {
+        
+        
+     //2010 final
+     //Dynamic programming.  has both recursive and bottom up
+    // codejam.y2010.round_final.letter_stamper.Main m = new codejam.y2010.round_final.letter_stamper.Main();
+     
+     //Partial 2 trees, decomposition to find longest path that does not intersect nodes twice
+   //  codejam.y2010.round_final.city_tour.Main m = new codejam.y2010.round_final.city_tour.Main();
+     
+     //Greedy algorithm, proof by induction.  Very easy implementation to a seemingly hard problem
+    // codejam.y2010.round_final.candy_store.Main m = new codejam.y2010.round_final.candy_store.Main();
+     
+     //Intervals, Splitting interval into 2.  Binary search.  
+     //codejam.y2010.round_final.travel_plan.Main m = new codejam.y2010.round_final.travel_plan.Main();
+             
+     /**
+      * 2010 -- Round final          
+      * Problem 5
+      * 
+      * Interesting DP problem ; loop detection
+      */
+     //codejam.y2010.round_final.ninjutsu.Main m = new codejam.y2010.round_final.ninjutsu.Main();
+     
+     /**
+      * 2010 -- Round final
+      * Problem 6
+      * 
+      * Symmetry, patters /topology
+      * 
+      * TODO optimize the connectedness checking
+      */
+    // codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
+     
+     
+    }
     
     
     static void round1A_2011(String args[]) {
@@ -554,6 +822,56 @@ public class Main  {
         }    
     }
     
+    static void round1B_2011(String args[]) 
+    {
+        //2011 1B
+        //A in C++
+       /**
+        * 2011 Round 1B
+        * Problem 2
+        * 
+        * 1.  My solution, merging vendors who intersect 
+        * 2.  idea -- they have a mathematical solution 
+        * 3.  idea -- Binary search
+        */
+        //codejam.y2011.round_1B.hotdog_revenge.Main m = new codejam.y2011.round_1B.hotdog_revenge.Main();
+       
+       //Polygon breadth first search
+        //codejam.y2011.round_1B.house_kittens.Main m = new codejam.y2011.round_1B.house_kittens.Main();
+       
+        
+    }
+    
+    static void round1C_2011(String args[]) 
+    {
+
+        
+        //2011 1C
+        //Easy grid search / replace
+        //codejam.y2011.round_1C.square_tiles.Main m = new codejam.y2011.round_1C.square_tiles.Main();
+        
+        /**
+         * 2011 Round 1C
+         * 
+         * problem 2
+         * 
+         * Straightforward Greedy algorithm. 
+         */
+       // codejam.y2011.round_1C.space_emergency.Main m = new codejam.y2011.round_1C.space_emergency.Main();
+        
+        /**
+         * 2011 Round 1C
+         * 
+         * Problem 3
+         * 
+         * Finding a number that is divisible or divides a range of numbers
+         * 
+         * Uses GCD and LCM to find the answer, which is restricted to an interval
+         */
+        //codejam.y2011.round_1C.perfect_harmony.Main m = new codejam.y2011.round_1C.perfect_harmony.Main();
+
+            
+    }
     static void round2_2011(String args[]) {
         //2011 2
         
@@ -698,6 +1016,31 @@ public class Main  {
        }      
     }
     
+    static void round1A_2012(String args[]) {
+        //2012 1A
+
+        /**
+         * 2012 Round 1A
+         * Problem 1
+         * 
+         * Straightforward expected value / probability
+         */
+        //codejam.y2012.round_1A.password.Main m = new codejam.y2012.round_1A.password.Main();
+        
+        /**
+         * 2012 Round 1A
+         * Problem 2
+         * 
+         * Greedy algorithm
+         */
+      //  codejam.y2012.round_1A.kingdom_rush.Main m = new codejam.y2012.round_1A.kingdom_rush.Main();
+        
+        //Constraint problem
+        //codejam.y2012.round_1A.cruise_control.Main m = new codejam.y2012.round_1A.cruise_control.Main();
+        
+       
+    }
+    
     static void round1B_2012(String args[]) {
         //2012 1B
         /**
@@ -730,6 +1073,26 @@ public class Main  {
           //Runner.go(file, m, m, 5);
         }     
         
+    }
+    
+    static void round1C_2012(String args[]) {
+        
+        //2012 1C
+        /**
+         * 2012 round 1C
+         * Problem 1
+         * 
+         * Finding multiple paths in a directed graph
+         */ 
+       // codejam.y2012.round_1C.diamond_inheritance.Main m = new codejam.y2012.round_1C.diamond_inheritance.Main();
+         
+         //Physics, velocity acceleration. Intersection parabola / lines
+        //codejam.y2012.round_1C.out_of_gas.Main m = new codejam.y2012.round_1C.out_of_gas.Main();
+         
+         //Did this the hard way, LCS DP on steroids, could have done simpler using their soltion TODO 
+        //codejam.y2012.round_1C.boxes.Main m = new codejam.y2012.round_1C.boxes.Main();
+        
+   
     }
     
     static void round2_2012(String args[]) 
@@ -826,7 +1189,9 @@ public class Main  {
          * 
          * idea -- try the actual ternary search
          */
-        codejam.y2012.round_3.quality_food.Main m = new codejam.y2012.round_3.quality_food.Main();
+        //codejam.y2012.round_3.quality_food.Main m = new codejam.y2012.round_3.quality_food.Main();
+        
+        codejam.y2012.round_3.lost_password.Main m = new codejam.y2012.round_3.lost_password.Main();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files) {
@@ -891,7 +1256,7 @@ public class Main  {
        // roundFinal_2009(args);
         
       //  round2_2010(args);
-        round3_2010(args);
+       // round3_2010(args);
         
         //round1A_2011(args);
         //round2_2011(args);        
@@ -900,311 +1265,25 @@ public class Main  {
         
        // round1B_2012(args);
        // round2_2012(args);
-        //round3_2012(args);
+        round3_2012(args);
       //  roundFinal_2012(args);
 
        // Main m = null;
         
+        
        
-       
-        
-        /**
-         * 2008 amer semis -- problem 1
-         * Tree traversal depth first
-         *
-         * 1.  A reverse BFS search 
-         */
-       // codejam.y2008.round_amer.mixing.Main m = new codejam.y2008.round_amer.mixing.Main();
-        
-        /**
-         *
-         * 2008 amer semis -- problem 2
-         * 
-         * There are K keys, each corresponding to a binary bit position.  
-         * As the sequence progresses, n is incremented, and those keys that
-         * are 'activated' are added together.
-         *  
-         * Iteratively guessing a code sequence, binary / using incomplete information / assumptions
-         * 
-         * Run example to see more
-         */
-        // 
-       //codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
-        //codejam.y2008.round_amer.code_sequence.Main.example();
-        
-        /**
-         * 2008 -- Round semis Amer
-         * Maintain a list of N best paths ; Probability
-         * 
-         * Found solution to speed up (30X) considerably the execution speed using an array
-         * instead of objects.  Also each node does not have it's own list of M paths
-         */
-        //codejam.y2008.round_amer.test_passing.Main m = new codejam.y2008.round_amer.test_passing.Main();
-        
-       //Non bipartite matching using Edmonds algorithm (code found...)
-        //codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();
-        
-        //2008 apac semis
-        //A and B are in c++        
-        //C++ for millionaire exists that is very fast
-        //Probability ; Making a problem discrete that appears continous
-        //codejam.y2008.round_apac.millionaire.Main m = new codejam.y2008.round_apac.millionaire.Main();
-        
-        //Subtree isomorhisme.  Requires multiple bipartite matchings recursively down the tree
-        //codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
-        
-        
-        //2008 Finals  Cheated all the way...
-        
-        //Psuedo linear optimization.  Visualing solution 2d line
-        //codejam.y2008.round_final.juice.Main m = new codejam.y2008.round_final.juice.Main();
-        
-        //Defining a coord system, recognizing non decreasing sequence
-        //codejam.y2008.round_final.ping_pong_balls.Main m = new codejam.y2008.round_final.ping_pong_balls.Main();
-        
-        //A clever trick, also understanding there are not really multiple solutions to watch out for
-        //codejam.y2008.round_final.mine_layer.Main m = new codejam.y2008.round_final.mine_layer.Main();
-       
-        //Using minimum spanning tree MST primms algorithm
-        //codejam.y2008.round_final.bridge_builders.Main m = new codejam.y2008.round_final.bridge_builders.Main();
-        
-        //Using maxflow to find a maximum perimeter, switches nodes in a bipartite graph to turn a maxcut to a mincut
-        //codejam.y2008.round_final.year_code_jam.Main m = new codejam.y2008.round_final.year_code_jam.Main();
-        
         //Round 1A -- 2009
         //In C++
+               
         
-         //Round 1B -- 2009
-        //A in c++
-        //Finding next permutation in a sequence
-         //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
-        
-        //A Breadth first search, did not really do what solution suggested, used a sortedSet instead of queue
-         //codejam.y2009.round_1B.square_math.Main m = new codejam.y2009.round_1B.square_math.Main();
-         
-         //Round 1C -- 2009 
-        //Finding min number in a large base
-         //codejam.y2009.round_1C.all_your_base.Main m = new codejam.y2009.round_1C.all_your_base.Main();
-        
-        //A bit of physics / calculus 
-         //codejam.y2009.round_1C.center_mass.Main m = new codejam.y2009.round_1C.center_mass.Main();
-        
-        /**
-         * Round 1C -- 2009 
-         * Problem 3
-         * Dynamic programming.
-         * 
-         * 1.  Proposed solution, top down
-         * 2.  Also found LucaB's solution which is bottom up and like 10x faster
-         */
-         //codejam.y2009.round_1C.bribe_prisoner.Main m = new codejam.y2009.round_1C.bribe_prisoner.Main();
-         
-        
-         //Round 3 -- 2009
-        //Grid shortest path
-         //codejam.y2009.sokoban.Main m = new codejam.y2009.sokoban.Main();
-        
-        //
-        /**
-         * Round 3 -- 2009
-         * Problem 2
-         * 
-         * Summing a matrix 
-         * 
-         * Set multiplying, polynomial symbolic manipulation.  
-         * 1. My solution, which is slow, using symbol polynomial manipulations
-         * 2. A much faster solution based on proposed help / other competitors solutions
-         */
-       // codejam.y2009.round_3.alphabetomials.Main m = new codejam.y2009.round_3.alphabetomials.Main();
-        
-        // 3 coloring a particular graph (triangles)
-        // codejam.y2009.round_3.football_team.Main m = new codejam.y2009.round_3.football_team.Main();
-        
-        //Counting ranges.  Had to use complex caching to solve in time.  TODO more comments and their solution
-        // codejam.y2009.round_3.interesting_ranges.Main m = new codejam.y2009.round_3.interesting_ranges.Main();
-         
      
-         //2010 qual
-         //Bignumber GCD
-         //codejam.y2010.fair_warning.Main m = new codejam.y2010.fair_warning.Main();
-         
-         //Finding repeated state?  
-         //codejam.y2010.theme_park.Main m = new codejam.y2010.theme_park.Main();
-         
-         //2010 1A
-        //Grid rotation
-         //codejam.y2010.rotate.Main m = new codejam.y2010.rotate.Main();
         
-        //DP todo bottom up
-         //codejam.y2010.smooth.Main m = new codejam.y2010.smooth.Main();
-        
-        /**
-         * 2010 Round 1A
-         * Problem 3
-         * 
-         * Combinatoric game, golden ratio
-         */
-        // codejam.y2010.round_1A.number_game.Main m = new codejam.y2010.round_1A.number_game.Main();
-         
-         //2010 1B
-         
-         //Tree
-         //codejam.y2010.file_fix.Main m = new codejam.y2010.file_fix.Main();
-         
-         //Reasing through problem, speed physics
-        // codejam.y2010.round_1B.chicks.Main m = new codejam.y2010.round_1B.chicks.Main();
-         
-       
-        
-         /**
-          * Dynamic programming / Choose number / counting problem
-          * 
-          * 1.  Solved using top down
-          * 2.  Solved again using bottom / up (difference in speed is negligible)
-          * 
-          * See BruteForce for a listing of the possible sets for n = 12, problem description is
-          * not so clear (as a Set does not have order....)
-          * 
-          *  codejam.y2010.round_1B.rank_pure.BruteForce.showPattern(i);
-          */
-        // codejam.y2010.round_1B.rank_pure.Main m = new codejam.y2010.round_1B.rank_pure.Main();
-         
-         //2010 1C
-         
-         //codejam.y2010.load_testing.Main m = new codejam.y2010.load_testing.Main();         
-         //codejam.y2010.rope_intranet.Main m = new codejam.y2010.rope_intranet.Main();
-        
-        //Finding rectangles efficiently
-      //large a bit slow
-        //codejam.y2010.round_1C.chess_boards.Main m = new codejam.y2010.round_1C.chess_boards.Main();
-
-      
-                  
-       
-        //2010 final
-        //Dynamic programming.  has both recursive and bottom up
-       // codejam.y2010.round_final.letter_stamper.Main m = new codejam.y2010.round_final.letter_stamper.Main();
-        
-        //Partial 2 trees, decomposition to find longest path that does not intersect nodes twice
-      //  codejam.y2010.round_final.city_tour.Main m = new codejam.y2010.round_final.city_tour.Main();
-        
-        //Greedy algorithm, proof by induction.  Very easy implementation to a seemingly hard problem
-       // codejam.y2010.round_final.candy_store.Main m = new codejam.y2010.round_final.candy_store.Main();
-        
-        //Intervals, Splitting interval into 2.  Binary search.  
-        //codejam.y2010.round_final.travel_plan.Main m = new codejam.y2010.round_final.travel_plan.Main();
-                
-        /**
-         * 2010 -- Round final          
-         * Problem 5
-         * 
-         * Interesting DP problem ; loop detection
-         */
-        //codejam.y2010.round_final.ninjutsu.Main m = new codejam.y2010.round_final.ninjutsu.Main();
-        
-        /**
-         * 2010 -- Round final
-         * Problem 6
-         * 
-         * Symmetry, patters /topology
-         * 
-         * TODO optimize the connectedness checking
-         */
-       // codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
-        
-        
-         
-         //2011 1B
-         //A in C++
-        /**
-         * 2011 Round 1B
-         * Problem 2
-         * 
-         * 1.  My solution, merging vendors who intersect 
-         * 2.  idea -- they have a mathematical solution 
-         * 3.  idea -- Binary search
-         */
-         //codejam.y2011.round_1B.hotdog_revenge.Main m = new codejam.y2011.round_1B.hotdog_revenge.Main();
-        
-        //Polygon breadth first search
-         //codejam.y2011.round_1B.house_kittens.Main m = new codejam.y2011.round_1B.house_kittens.Main();
-        
-        //2011 1C
-        //Easy grid search / replace
-        //codejam.y2011.round_1C.square_tiles.Main m = new codejam.y2011.round_1C.square_tiles.Main();
-        
-        /**
-         * 2011 Round 1C
-         * 
-         * problem 2
-         * 
-         * Straightforward Greedy algorithm. 
-         */
-       // codejam.y2011.round_1C.space_emergency.Main m = new codejam.y2011.round_1C.space_emergency.Main();
-        
-        /**
-         * 2011 Round 1C
-         * 
-         * Problem 3
-         * 
-         * Finding a number that is divisible or divides a range of numbers
-         * 
-         * Uses GCD and LCM to find the answer, which is restricted to an interval
-         */
-        //codejam.y2011.round_1C.perfect_harmony.Main m = new codejam.y2011.round_1C.perfect_harmony.Main();
-
-         
-    
-       
-        
-        
-       
         
         //2012 qual
         //A,B,C  in c++
         //TODO a bit slow
        //  codejam.y2012.round_qual.hall_of_mirrors.Main m = new codejam.y2012.round_qual.hall_of_mirrors.Main();
-        
-        //2012 1A
-
-        /**
-         * 2012 Round 1A
-         * Problem 1
-         * 
-         * Straightforward expected value / probability
-         */
-        //codejam.y2012.round_1A.password.Main m = new codejam.y2012.round_1A.password.Main();
-        
-        /**
-         * 2012 Round 1A
-         * Problem 2
-         * 
-         * Greedy algorithm
-         */
-      //  codejam.y2012.round_1A.kingdom_rush.Main m = new codejam.y2012.round_1A.kingdom_rush.Main();
-        
-        //Constraint problem
-        //codejam.y2012.round_1A.cruise_control.Main m = new codejam.y2012.round_1A.cruise_control.Main();
-        
-       
-        //2012 1C
-        /**
-         * 2012 round 1C
-         * Problem 1
-         * 
-         * Finding multiple paths in a directed graph
-         */ 
-       // codejam.y2012.round_1C.diamond_inheritance.Main m = new codejam.y2012.round_1C.diamond_inheritance.Main();
-         
-         //Physics, velocity acceleration. Intersection parabola / lines
-        //codejam.y2012.round_1C.out_of_gas.Main m = new codejam.y2012.round_1C.out_of_gas.Main();
-         
-         //Did this the hard way, LCS DP on steroids, could have done simpler using their soltion TODO 
-        //codejam.y2012.round_1C.boxes.Main m = new codejam.y2012.round_1C.boxes.Main();
-        
-   
-       
-                
+          
 
     }
 

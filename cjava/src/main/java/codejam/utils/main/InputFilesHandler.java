@@ -29,7 +29,7 @@ public class InputFilesHandler implements DefaultInputFiles
         this.inputFiles = inputFiles.toArray(this.inputFiles);
     }
     
-    public InputFilesHandler(String letter,  boolean small, boolean large, boolean logging) {
+    public InputFilesHandler(String letter,  boolean small, boolean large) {
         List<String> inputFiles = Lists.newArrayList();
         if (small) {
             inputFiles.add(letter + "-small-practice.in");
@@ -45,22 +45,21 @@ public class InputFilesHandler implements DefaultInputFiles
         this.inputFiles = new String[inputFiles.size()];
         this.inputFiles = inputFiles.toArray(this.inputFiles);
         
-        if (!logging) {
+        if (small || large) {
             (( ch.qos.logback.classic.Logger) log).setLevel(Level.OFF);
         } else {
            // (( ch.qos.logback.classic.Logger) log).setLevel(Level.ALL);
         }
     }
     
-    public InputFilesHandler(String letter,  boolean small, boolean large) {
-        this(letter,small,large,true);
-    }
     
     public InputFilesHandler(String letter,  int small, int large) {
-        this(letter,small,large,1);
+        this(letter, small==1, large==1);
     }
+    
+    @Deprecated
     public InputFilesHandler(String letter,  int small, int large, int logging) {
-        this(letter, small==1, large==1, logging == 1);
+        this(letter, small==1, large==1);
     }
 
     @Override
