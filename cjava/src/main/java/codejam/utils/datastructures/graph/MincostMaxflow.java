@@ -1,7 +1,5 @@
 package codejam.utils.datastructures.graph;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -11,10 +9,8 @@ import java.util.Queue;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Test;
 
 import codejam.utils.math.Numeric;
-import codejam.utils.math.NumericLong;
 
 import com.google.common.collect.Lists;
 

@@ -9,6 +9,9 @@ public class NumericLong implements Numeric<Long>
     public NumericLong(Long l) {
         this.num = l;
     }
+    public NumericLong(int l) {
+        this.num = l;
+    }
 
     @Override
     public Numeric<Long> negate()

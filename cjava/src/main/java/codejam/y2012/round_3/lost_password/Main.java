@@ -1,6 +1,5 @@
 package codejam.y2012.round_3.lost_password;
 
-import java.math.RoundingMode;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,13 +8,17 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import codejam.utils.datastructures.graph.BridgeDirectedGraph;
 import codejam.utils.datastructures.graph.DirectedGraphInt;
 import codejam.utils.datastructures.graph.FlowEdge;
 import codejam.utils.datastructures.graph.FlowNetwork;
 import codejam.utils.datastructures.graph.FordFulkerson;
+import codejam.utils.datastructures.graph.MincostMaxflow;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
+import codejam.utils.math.NumericLong;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.IntegerPair;
 
@@ -25,7 +28,6 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.common.math.DoubleMath;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
 {
@@ -125,6 +127,32 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
     }
 
+    /**
+     * Matching prefix 
+     * A cost of 1 is 
+     * ?xxx
+     * xxx?
+     * 
+     * 2 is 
+     * 
+     * ??xx
+     *   xx??
+     * 
+     */
+    int transition_cost(String suffix, String prefix) 
+    {
+        Preconditions.checkState(suffix.length() == prefix.length());
+        
+        for (int n=1; n<=suffix.length(); ++n) 
+        {
+            if (suffix.substring(n, suffix.length()).equals(
+                    prefix.substring(0, prefix.length()-n)))
+                return n;
+        }
+        
+        throw new RuntimeException("huh");
+    }
+    
     public String showMaxFlow(InputData in)
     {
         BiMap<Character, Character> l33t = HashBiMap.create(9);
@@ -182,32 +210,31 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         int t = allPhrases.size()+1;
         
         int inf = 1000000;
-        FlowNetwork fn = new FlowNetwork(t+1);
+        MincostMaxflow<Long,Long> fn = new MincostMaxflow<>(new NumericLong(0), new NumericLong(0));
+        FlowNetwork fn2 = new FlowNetwork(t+1);
         
         for(int i = 0; i < allPhrases.size(); ++i)
         {
-            for(int j = i+1; j < allPhrases.size(); ++j)
+            for(int j = 0; j < allPhrases.size(); ++j)
             {
             
-                String p1 = allPhrases.get(i);
-                String p2 = allPhrases.get(j);
+                String suffix = allPhrases.get(i);
+                String prefix = allPhrases.get(j);
                 
                 //  A = x????
                 //  B = ????y
                 
                 //check ? are the same
-                if (p1.substring(1, p1.length()).equals(p2.substring(0, p2.length()-1)))
-                {
-                    log.debug("Connecting {}, {} to {}, {}", i,p1, j,p2);
-                    fn.addEdge(new FlowEdge(i,j,inf));
-                }     
+                int transitionCost = transition_cost(suffix, prefix);
                 
-                //connect other direction
-                if (p2.substring(1, p2.length()).equals(p1.substring(0, p1.length()-1)))
-                {
-                    log.debug("Connecting {}, {} to {}, {} also", j,p2, i,p1);
-                    fn.addEdge(new FlowEdge(j,i,inf));
-                }
+                
+                
+                log.debug("Connecting {}, {} to {}, {}", i,suffix, j,prefix);
+                fn.addArc(i, j, new NumericLong(inf), new NumericLong(transitionCost));
+                fn2.addEdge(new FlowEdge(i,j,inf));
+                 
+                
+                
             }
         }
         
@@ -219,21 +246,30 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             log.debug("Phrase {} weight {}", phrase, weight);
             
             if (weight > 0) {
-                fn.addEdge(new FlowEdge(s, i, weight));
+                fn.addArc(s, i, new NumericLong(weight), new NumericLong(0));
+                fn2.addEdge(new FlowEdge(s,i, weight));
             } 
             
-            if (weight < 0)
+            if (weight <= 0)
             {
-                fn.addEdge(new FlowEdge(i, t, -weight));
+                fn.addArc(i, t, new NumericLong(-weight), new NumericLong(0));
+                fn2.addEdge(new FlowEdge(i,t,-weight));
             }
         }
         
         
-        FordFulkerson ff = new FordFulkerson(fn, s,t);
+        Pair<Long,Long> flowCost = fn.getFlow(s, t);
         
-        int flow = DoubleMath.roundToInt(ff.value(), RoundingMode.HALF_EVEN);
-        log.debug("Flow {}", flow);
-        int ans = flow + candidates.size() + in.k - 1;
+        FordFulkerson fff = new FordFulkerson(fn2, s,t);
+        double flowCheck = fff.value(); 
+        
+        log.debug("Flow network {}", fn2.toString());
+        
+        long flow = flowCost.getRight();
+        if (flow >= 2)
+            flow -= 2;
+        log.debug("Flow {} cost {} flow check {}", flowCost.getLeft(), flowCost.getRight(), flowCheck);
+        long ans = flow + candidates.size() + in.k - 1;
         
         return String.format("Case #%d: %d", in.testCase, ans);
     }
