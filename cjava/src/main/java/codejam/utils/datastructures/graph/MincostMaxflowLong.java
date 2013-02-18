@@ -90,9 +90,8 @@ public class MincostMaxflowLong
 
         long flowInfinity = Long.MAX_VALUE;
         long costInfinity = Long.MAX_VALUE;
-        //long Uepsilon = 1; for (int i=0; i<30; i++) Uepsilon /= 2;
-
-        long[] flow = new long[M];
+       
+       
 /*
         for (int i = 0; i < M; ++i)
         {
