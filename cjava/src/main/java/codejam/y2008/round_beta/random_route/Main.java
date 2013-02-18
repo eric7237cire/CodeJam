@@ -102,11 +102,14 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 DijkstraNode nodeV = dijNodes[neighbor.to];
                 
                 Road r = buildRoad(nodeU.nodeId,nodeV.nodeId,neighbor.weight);
+                //To handle multiedges
                 int roadCount = in.count.get(r);
                 
+                //Found a new best path
                 if (alt < nodeV.distance) {
                     toProcess.remove(nodeV);
                     nodeV.distance = alt;
+                    //Clear non shorest paths
                     nodeV.previous.clear();
                     nodeV.previous.setCount(nodeU.nodeId, roadCount);
                     toProcess.add(nodeV);                    
@@ -160,6 +163,11 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         in.minWeight = Maps.newHashMap();
         in.count = Maps.newHashMap();
         
+        /**
+         * A bit of special handling to find
+         * the minimum weight between 2 cities
+         * and then count how many of each edge there are
+         */
         for(int r = 0; r < in.nRoads; ++r) {
             int node1 = getNode(scanner.next(), strToNode);
             int node2 = getNode(scanner.next(), strToNode);
@@ -263,7 +271,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             toVisit.add(init);
             
             /**
-             * Build all paths
+             * Build all paths ; keep adding the different
+             * previous choices until we get to start node
              */
             while(!toVisit.isEmpty()) 
             {
@@ -281,14 +290,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 {
                     List<Integer> newPath = Lists.newArrayList(path);
                     newPath.add(prev);
-                    
-                   // Pair<Integer,Integer> edge = buildEdge(prev,last);
-                    
-                    //int edgeCount = in.count.get(edge);
-                    //for(int count = 0; count < edgeCount; ++count) {
-                        toVisit.add(newPath);
-                    //}
-                    
+                   
+                    toVisit.add(newPath);   
                 }
             }
             

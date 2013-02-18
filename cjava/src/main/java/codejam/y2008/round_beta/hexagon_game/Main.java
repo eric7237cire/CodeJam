@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.AssignmentProblem;
+import codejam.utils.datastructures.AssignmentProblemUsingMinMax;
 import codejam.utils.geometry.PointInt;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
@@ -16,6 +17,7 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
+import com.google.common.primitives.Ints;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
@@ -163,6 +165,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         int min = Integer.MAX_VALUE;
         for(List<Integer> diag : diags) {
             double[][] weight = new double[S][S];
+            long[][] weightLong = new long[S][S];
             
             for(int posIdx = 0; posIdx < S; ++posIdx) {
                 for(int diagPosIdx = 0; diagPosIdx < S; ++diagPosIdx) {
@@ -170,11 +173,15 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     int diagPos = diag.get(diagPosIdx);
                     
                     weight[posIdx][diagPosIdx] = in.checkerWeight.get(posIdx) * dist(coordNumber[pos], coordNumber[diagPos]);
+                    weightLong[posIdx][diagPosIdx] = in.checkerWeight.get(posIdx) * dist(coordNumber[pos], coordNumber[diagPos]);
                 }
             }
             
-            AssignmentProblem ap = new AssignmentProblem(weight);
-            int minWeight = DoubleMath.roundToInt(ap.weight(), RoundingMode.HALF_EVEN);
+            //AssignmentProblem ap = new AssignmentProblem(weight);
+            
+            int minWeight = Ints.checkedCast(AssignmentProblemUsingMinMax.doAssignmentProblemUsingMinMax(weightLong));
+            
+            //int minWeight = DoubleMath.roundToInt(ap.weight(), RoundingMode.HALF_EVEN);
             
             min = Math.min(minWeight, min);
         }

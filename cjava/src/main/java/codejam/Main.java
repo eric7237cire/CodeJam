@@ -22,9 +22,27 @@ public class Main  {
         //codejam.y2010aa.round_all.polygraph.Main m = new codejam.y2010aa.round_all.polygraph.Main();
         
         //2011 africa / arabia
+        /**
+         * Problem 1
+         * 
+         * BigFractions, finding when a decimal is eliminated
+         * interval is 0 to 1
+         * 
+         * Eliminate first third and last third
+         */
         //codejam.y2011aa.round_all.vanishing_numbers.Main m = new codejam.y2011aa.round_all.vanishing_numbers.Main();
+        
+        /**
+         * Problem 2
+         * 
+         * Euler path
+         */
         //codejam.y2011aa.round_all.battlefield.Main m = new codejam.y2011aa.round_all.battlefield.Main();
         
+        /**
+         * Problem 3
+         * Binary search and interval intersection
+         */
         codejam.y2011aa.round_all.radio_receiver.Main m = new codejam.y2011aa.round_all.radio_receiver.Main();
         
         
@@ -71,8 +89,15 @@ public class Main  {
          * 
          * Used lots of bit manipulations, solution from Plan3.cpp
          */
-        //codejam.y2008.round_pracProb.shopping_plan.Main m = new codejam.y2008.round_pracProb.shopping_plan.Main(); 
+        codejam.y2008.round_pracProb.shopping_plan.Main m = new codejam.y2008.round_pracProb.shopping_plan.Main(); 
         
+        String[] files = Main.getFiles(m, args);
+        for (String file : files) {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+          //Runner.go(file, m, m, 5);
+        }   
     }
     
     /**
@@ -105,7 +130,7 @@ public class Main  {
          * Enumerating all shortest paths in a directed weighted graph.
          * Used Dijkstras and kept all previous instead of just one..
          */
-        //codejam.y2008.round_beta.random_route.Main m = new codejam.y2008.round_beta.random_route.Main();
+       // codejam.y2008.round_beta.random_route.Main m = new codejam.y2008.round_beta.random_route.Main();
         
         /**
          * Problem 4 Hexagons
@@ -148,6 +173,14 @@ public class Main  {
         //codejam.y2008.round_pracContest.square_fields.Main m2 = new codejam.y2008.round_pracContest.square_fields.Main();
         
         
+        /**
+         * Problem 3
+         * 
+         * Hamiltonian cycles  (hit each vertex once)
+         * Inclusion / exclusion principal
+         * 
+         * Enumerating all subsets ; Combinatoric counting
+         */
         codejam.y2008.round_pracContest.cycles.Main m = new
                 codejam.y2008.round_pracContest.cycles.Main();
         
@@ -173,6 +206,11 @@ public class Main  {
     
     static void round1B_2008(String args[]) {
         
+        /**
+         * Problem 2
+         * 
+         * TODO union find
+         */
         
         /**
          * Problem 3
@@ -194,11 +232,21 @@ public class Main  {
     
     static void round1C_2008(String args[]) {
         
+        /**
+         * Problem 2
+         * Ugly numbers
+         * 
+         * Chinese remainder theorems
+         */
     
         /**
          * Problem 3
+         * Speed limits
          * 
-         * Counting strictly increasing sequences
+         * Counting strictly increasing sequences using
+         * a speedup based on fenwich tree / binary interval tree
+         * 
+         * FenwickTree
          */
         codejam.y2008.round_1C.speed_limits.Main m = new codejam.y2008.round_1C.speed_limits.Main();
         
@@ -215,8 +263,17 @@ public class Main  {
     
     static void round2_2008(String args[]) {
         
+        /**
+         * Problem 3
+         * 
+         * Simplex algorithm
+         */
         codejam.y2008.round_2.star_wars.Main m = new codejam.y2008.round_2.star_wars.Main();
         
+        
+        /**
+         * TODO PermRLE Problem 4
+         */
     
         String[] files = Main.getFiles(m, args);
         for (String file : files) {
@@ -1244,7 +1301,8 @@ public class Main  {
 
         //africa(args);
         
-        //beta2008(args);
+        beta2008(args);
+        //practiceRound2008(args);
         //practiceContest2008(args);
         
         //round1B_2008(args);
@@ -1265,7 +1323,7 @@ public class Main  {
         
        // round1B_2012(args);
        // round2_2012(args);
-        round3_2012(args);
+     //   round3_2012(args);
       //  roundFinal_2012(args);
 
        // Main m = null;

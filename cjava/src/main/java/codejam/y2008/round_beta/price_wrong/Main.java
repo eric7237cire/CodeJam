@@ -71,6 +71,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         int N = in.words.size();
         List<List<String>> longestSequence = Lists.newArrayList();
         
+        //Intialize the N sequences of length of 1
         for(int i = 0; i < N; ++i) {
             List<String> words = Lists.newArrayList();
             words.add(in.words.get(i));
@@ -79,14 +80,17 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         ListCompare.ListStringComparator cmp = new ListStringComparator();
         
-        for(int i = 0; i < N; ++i)
+        for(int endOfSeqIdx = 0; endOfSeqIdx < N; ++endOfSeqIdx)
         {
-            for(int j = 0; j < i; ++j) 
+            for(int prevEndOfSeqIdx = 0; prevEndOfSeqIdx < endOfSeqIdx; ++prevEndOfSeqIdx) 
             {
-                if (in.prices.get(j) < in.prices.get(i)) {
-                    List<String> newSequence = Lists.newArrayList(longestSequence.get(j));
-                    newSequence.add(in.words.get(i));
-                    
+                //Find all previous sequences that end with a value 
+                //strictly less than the current value
+                if (in.prices.get(prevEndOfSeqIdx) < in.prices.get(endOfSeqIdx)) {
+                    List<String> newSequence = Lists.newArrayList(longestSequence.get(prevEndOfSeqIdx));
+                    newSequence.add(in.words.get(endOfSeqIdx));
+
+                    //Sort in order to compare lexographically
                     Collections.sort(newSequence);
                     
                     /**
@@ -94,10 +98,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                      * we want the highest lexographic increasing sequence
                      */
                     
-                    boolean longer_sequence = newSequence.size() > longestSequence.get(i).size();
+                    boolean longer_sequence = newSequence.size() > longestSequence.get(endOfSeqIdx).size();
                     
-                    boolean later_sequence = newSequence.size() == longestSequence.get(i).size() &&
-                            cmp.compare(newSequence, longestSequence.get(i)) > 0;
+                    boolean later_sequence = newSequence.size() == longestSequence.get(endOfSeqIdx).size() &&
+                            cmp.compare(newSequence, longestSequence.get(endOfSeqIdx)) > 0;
                          
                   /*  log.debug("huh {} new size {} long size {}", cmp.compare(newSequence, longestSequence.get(i)),
                             newSequence.size(), longestSequence.get(i).size());
@@ -105,12 +109,13 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                             i,j,newSequence, longer_sequence, later_sequence,  longestSequence.get(i)); 
                     */        
                     if (longer_sequence || later_sequence) {
-                        longestSequence.set(i, newSequence);
+                        longestSequence.set(endOfSeqIdx, newSequence);
                     }
                 }
             }
         }             
-        
+
+        //Take the greatest lexographic and longest sequence
         Ordering<List<String>> reverse = Ordering.from(cmp).reverse();
         
         Collections.sort(longestSequence, reverse);
@@ -119,6 +124,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         List<String> rest = Lists.newArrayList();
         
+        //Find out which prices remain
         for(String word : in.words) {
             if (!longestIncSequence.contains(word)) {
                 rest.add(word);

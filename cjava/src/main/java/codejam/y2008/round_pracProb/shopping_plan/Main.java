@@ -61,6 +61,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         in.storeLoc[in.num_stores] = new PointInt(0,0);
         
+        /**
+         * Calculate which items are available at which store
+         * and store their prices
+         */
         for(int s = 0; s < in.num_stores; ++s) {
             in.storeLoc[s] = new PointInt(scanner.nextInt(),scanner.nextInt());
             
@@ -86,6 +90,10 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         Preconditions.checkState(in.num_items <= 15);
         in.storeItemsPrice  = new int[in.num_stores][1 << in.num_items];
         
+        /**
+         * Go through each possible combination of items and 
+         * calculate their price.
+         */
         for(int s = 0; s < in.num_stores; ++s) {
             BitSetInt items = new BitSetInt(in.storeAvailableItemMask[s]);
             
@@ -123,7 +131,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         int home = in.num_stores;
         boolean bought = boughtInt != 0;
         
-        
+        //Finished state, everything bought and at home
         if(currentLocation==home && itemsBoughtMask==(1<<in.num_items)-1) return 0.0;
         
         if(memo[currentLocation][itemsBoughtMask][boughtInt] >= 0)
@@ -145,10 +153,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 // Each combination has already been precalculated
                 double cost = in.storeItemsPrice[currentLocation][buy];
                 if ((in.perishableMask.getBits() & buy) != 0) {
-                    int to = home;
-                    res = Math.min(res, cost + dist(currentLocation, to, in)
-                            + go(to, itemsBoughtMask | buy, 0, memo, in));
+                    //Buy items and go home.  
+                    res = Math.min(res, 
+                            cost + dist(currentLocation, home, in)
+                            + go(home, itemsBoughtMask | buy, 0, memo, in));
                 } else {
+                    //Buy items and stay put
                     res = Math.min(res, cost + go(currentLocation,
                                                     itemsBoughtMask | buy, 1,
                                                     memo, in));
@@ -175,6 +185,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     @Override
     public String handleCase(InputData in)
     {
+        /**
+         * mincost = memo[currentLocation][items bought bit mask][just purchased at currentLocation] 
+         */
         double [][][] memo = new double[in.num_stores+1][1 << in.num_items][2];
         for(double[][] d2 : memo) {
             for(double[] d1 : d2){

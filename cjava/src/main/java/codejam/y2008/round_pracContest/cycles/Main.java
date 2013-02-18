@@ -101,7 +101,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
             /*
              * To count number of cycles, we first permute the verticies that are
-             * not adjacent to the current subset of forbidden edges
+             * not incident to the current subset of forbidden edges
              */
             
             int permComponents = in.N - g.V();
