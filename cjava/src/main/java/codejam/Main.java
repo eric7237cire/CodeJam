@@ -779,7 +779,7 @@ public class Main  {
       * 
       * TODO optimize the connectedness checking
       */
-    // codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
+     codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
      
      
     }

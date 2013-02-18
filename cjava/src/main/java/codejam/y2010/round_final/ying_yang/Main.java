@@ -582,12 +582,18 @@ this kind of grid passed diag checks, degree checks
         
         boolean debug = false;
         
-        int[] startToFirstCornerDistance = new int[borderLen];
+        
         
         /**
          * For symettry, calculate distance of start of white border
-         * and distance to nearest 1st or 3rd corner  on it's path
+         * and distance to nearest bottom left or top right corner 
+         *  on it's path.  If the distance is the same we can flip / rotate
+         *  as needed to get exactly the same path
+         * 
+         * 
          */
+        
+        int[] startToFirstCornerDistance = new int[borderLen];
         
         for(int startWhite = 0; startWhite < borderLen; ++startWhite)
         {
@@ -624,13 +630,18 @@ this kind of grid passed diag checks, degree checks
             
             for(int whiteBorderLen = 1; whiteBorderLen < borderLen; ++whiteBorderLen)
             {
+                /**
+                 * Given the start of the white border and it's length,
+                 * we can determine where it ends and the same for the blackborder
+                 */
                 final int endWhite = (startWhite + whiteBorderLen - 1) % borderLen;
             
                 final int startBlack = (endWhite + 1) % borderLen;
                 final int endBlack = (borderLen + startWhite - 1) % borderLen;
                 
-                
-                
+                /**
+                 * Symettry checks for both white and black
+                 */
                 if (symettryCache[distanceToFirstCorner][whiteBorderLen] != -1) {
                     count += symettryCache[distanceToFirstCorner][whiteBorderLen];
                     //log.debug("Used cache");
@@ -673,8 +684,6 @@ this kind of grid passed diag checks, degree checks
                     ++border;
                     border %= borderLen;
                 }
-                
-               
                 
                 /**
                  * Build all the diagonals
