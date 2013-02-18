@@ -18,6 +18,7 @@ import codejam.utils.datastructures.graph.FlowEdge;
 import codejam.utils.datastructures.graph.FlowNetwork;
 import codejam.utils.datastructures.graph.FordFulkerson;
 import codejam.utils.datastructures.graph.MincostMaxflow;
+import codejam.utils.datastructures.graph.MincostMaxflowLong;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.math.NumericLong;
@@ -237,7 +238,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         int superSource = allPhrases.size() + 2;
         
         int inf = 1000000;
-        MincostMaxflow<Long,Long> fn = new MincostMaxflow<>(new NumericLong(0), new NumericLong(0));
+        MincostMaxflowLong fn = new MincostMaxflowLong();
                 
         
         
@@ -262,7 +263,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             }*/
             
             if (weight > 0) {
-                fn.addArc(source, i, new NumericLong(perms*weight), new NumericLong(0));
+                fn.addArc(source, i, perms*weight, 0);
                 
                 sourcePhrasesSuffix.add(new ImmutablePair<>(i, perms*weight));
                 sourceAdded += perms * weight;
@@ -272,7 +273,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             if (weight < 0)
             {
                 sinkPhrasesPrefix.add(new ImmutablePair<>(i,-weight*perms));
-                fn.addArc(i, tSink, new NumericLong(-weight*perms), new NumericLong(0));        
+                fn.addArc(i, tSink, (-weight*perms), (0));        
             }
             
             
@@ -308,7 +309,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 log.debug("Connecting {}, {} to {}, {}", i,suffix, j,prefix);
                 fn.addArc(suffixIndexWeight.getLeft(),
                         prefixIndexWeight.getLeft(), 
-                        new NumericLong(maxCap), new NumericLong(transitionCost));
+                        (maxCap), (transitionCost));
                 
             }
         }
@@ -318,7 +319,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         
         //Use supersource as we can leave 1 flow since an euler path can have 2 odd nodes
-        fn.addArc(superSource, source,new NumericLong(sourceAdded-1), new NumericLong(0));
+        fn.addArc(superSource, source, (sourceAdded-1), (0));
         
         Pair<Long,Long> flowCost = fn.getFlow(superSource, tSink);
         

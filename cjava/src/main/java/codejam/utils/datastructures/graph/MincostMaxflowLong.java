@@ -12,11 +12,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.math.Numeric;
+import codejam.utils.utils.LongIntPair;
 
 import com.google.common.collect.Lists;
 
-public class MincostMaxflow<FlowType, CostType>
+public class MincostMaxflowLong
 {
     
     final protected static Logger log = LoggerFactory.getLogger("main");
@@ -24,10 +24,10 @@ public class MincostMaxflow<FlowType, CostType>
     class Edge
     {
         public int source, destination;
-        Numeric<FlowType> capacity, residue;
-        Numeric<CostType> cost;
+        long capacity, residue;
+        long cost;
 
-        public Edge(int source, int destination, Numeric<FlowType> capacity, Numeric<FlowType> residue, Numeric<CostType> cost) {
+        public Edge(int source, int destination, long capacity, long residue, long cost) {
             super();
             this.source = source;
             this.destination = destination;
@@ -53,7 +53,7 @@ public class MincostMaxflow<FlowType, CostType>
             V.add(new ArrayList<Integer>());
     }
 
-    public void addArc(int source, int destination, Numeric<FlowType> capacity, Numeric<CostType> cost)
+    public void addArc(int source, int destination, long capacity, long cost)
     {
 
         int e = E.size();
@@ -64,15 +64,13 @@ public class MincostMaxflow<FlowType, CostType>
         V.get(source).add(e);
         V.get(destination).add(e + 1);
         E.add(new Edge(source, destination, capacity, capacity, cost));
-        E.add(new Edge(destination, source, capacity, flowType.fromInt(0), cost.negate()));
+        E.add(new Edge(destination, source, capacity, 0L, -cost));
     }
 
-    public MincostMaxflow(Numeric<CostType> cc, Numeric<FlowType> ff) {
+    public MincostMaxflowLong() {
         V = Lists.newArrayList();
         E = Lists.newArrayList();
 
-        this.costType = cc;
-        this.flowType = ff;
     }
 
     /**
@@ -81,32 +79,33 @@ public class MincostMaxflow<FlowType, CostType>
      * @param sink
      * @return  Flow / cost
      */
-    public Pair<FlowType, CostType> getFlow(int source, int sink)
+    public Pair<Long,Long> getFlow(int source, int sink)
     {
         resizeIfNeeded(source);
         resizeIfNeeded(sink);
 
         int N = V.size(), M = E.size();
-        Numeric<FlowType> flowSize = flowType.fromInt(0);
-        Numeric<CostType> flowCost = costType.fromInt(0);
+        long flowSize = 0;
+        long flowCost = 0;
 
-        Numeric<FlowType> flowInfinity = flowType.getMax();
-        Numeric<CostType> costInfinity = costType.getMax();
-        //Numeric<CostType> Uepsilon = 1; for (int i=0; i<30; i++) Uepsilon /= 2;
+        long flowInfinity = Long.MAX_VALUE;
+        long costInfinity = Long.MAX_VALUE;
+        //long Uepsilon = 1; for (int i=0; i<30; i++) Uepsilon /= 2;
 
-        List<Numeric<FlowType>> flow = Lists.newArrayList();
-
+        long[] flow = new long[M];
+/*
         for (int i = 0; i < M; ++i)
         {
             flow.add(flowType.fromInt(0));
-        }
+        }*/
 
-        List<Numeric<CostType>> potential = Lists.newArrayList();
+        long[] potential = new long[N];
 
+        /*
         for (int i = 0; i < N; ++i)
         {
             potential.add(costType.fromInt(0));
-        }
+        }*/
 
         int iterCheck = 0;
         while (true)
@@ -118,58 +117,57 @@ public class MincostMaxflow<FlowType, CostType>
             int[] from = new int[N];
             Arrays.fill(from, -1);
 
-            List<Numeric<CostType>> dist = Lists.newArrayList();
-            for (int i = 0; i < N; ++i)
-            {
-                dist.add(costInfinity);
-            }
-
-            Queue<Pair<Numeric<CostType>, Integer>> Q = new PriorityQueue<>(10, new Comparator<Pair<Numeric<CostType>, Integer>>() {
+            long[] dist = new long[N];
+            Arrays.fill(dist, costInfinity);
+            
+            Queue<LongIntPair> Q = new PriorityQueue<>(10, new Comparator<LongIntPair>() {
 
                 @Override
-                public int compare(Pair<Numeric<CostType>, Integer> o1, Pair<Numeric<CostType>, Integer> o2)
+                public int compare(LongIntPair o1, LongIntPair o2)
                 {
-                    int cmp1 = o1.getLeft().compareTo(o2.getLeft());
-                    if (cmp1 != 0)
-                        return cmp1; //greater first
-
-                    return o1.getRight().compareTo(o2.getRight());
+                    if (o1._first != o2._first)
+                    {
+                        return o1._first < o2._first ? -1 : 1;
+                    }
+                    
+                    return o1._second - o2._second;
 
                 }
 
             });
             //priority_queue< pair<U,int>, vector<pair<U,int> >, greater<pair<U,int> > > Q;
-            Q.add(new ImmutablePair<Numeric<CostType>, Integer>(costType.fromInt(0), source));
+            Q.add(new LongIntPair(0L, source));
 
             from[source] = -2;
-            dist.set(source, costType.fromInt(0));
+            dist[source] = 0;
 
             while (!Q.isEmpty())
             {
-                Pair<Numeric<CostType>, Integer> top = Q.poll();
-                Numeric<CostType> howFar = top.getLeft();
-                int where = top.getRight();
+                LongIntPair top = Q.poll();
+                long howFar = top._first;
+                int where = top._second;
 
-                if (dist.get(where).compareTo(howFar) < 0)
+                if (dist[where] < howFar)
                     continue;
 
                 //loop through edges of where
                 for (int i = 0; i < V.get(where).size(); i++)
                 {
                     Edge edge = E.get(V.get(where).get(i));
-                    if (edge.residue.equals(flowType.fromInt(0)))
+                    if (edge.residue == 0L)
                         continue;
 
                     int dest = edge.destination;
-                    Numeric<CostType> cost = edge.cost;
+                    long cost = edge.cost;
 
-                    Numeric<CostType> rhs = dist.get(where).add(potential.get(where)).subtract(potential.get(dest)).add(cost);
+                    long rhs = dist[where] + potential[where] - 
+                            potential[dest] + cost;
 
-                    if (dist.get(dest).compareTo(rhs) > 0)
+                    if (dist[dest] > rhs)
                     {
-                        dist.set(dest, rhs);
+                        dist[dest] = rhs;
                         from[dest] = V.get(where).get(i);
-                        Q.add(new ImmutablePair<Numeric<CostType>, Integer>(dist.get(dest), dest));
+                        Q.add(new LongIntPair(dist[dest], dest));
                     }
 
                 }
@@ -178,28 +176,28 @@ public class MincostMaxflow<FlowType, CostType>
             // update vertex potentials
             for (int i = 0; i < N; i++)
             {
-                if (dist.get(i).equals(costInfinity))
+                if (dist[i] == costInfinity)
                 {
-                    potential.set(i, costInfinity);
-                } else if (potential.get(i).compareTo(costInfinity) < 0)
+                    potential[i] = costInfinity;
+                } else if (potential[i] < costInfinity)
                 {
-                    potential.set(i, potential.get(i).add(dist.get(i)));
+                    potential[i]+=dist[i];
                 }
             }
 
             // if there is no path, we are done
             if (from[sink] == -1)
-                return new ImmutablePair<FlowType, CostType>(flowSize.getVal(), flowCost.getVal());
+                return new ImmutablePair<Long,Long>(flowSize, flowCost);
 
             // construct an augmenting path
-            Numeric<FlowType> canPush = flowInfinity;
+            long canPush = flowInfinity;
             int where = sink;
 
             while (true)
             {
                 if (from[where] == -2)
                     break;
-                canPush = canPush.min(E.get(from[where]).residue);
+                canPush = Math.min(canPush, E.get(from[where]).residue);
                 where = E.get(from[where]).source;
             }
 
@@ -209,23 +207,21 @@ public class MincostMaxflow<FlowType, CostType>
             {
                 if (from[where] == -2)
                     break;
-                E.get(from[where]).residue = E.get(from[where]).residue.subtract(canPush);
+                E.get(from[where]).residue = E.get(from[where]).residue - (canPush);
 
                 //Because we added the edges in pairs xor will either add one or subtract one
-                E.get(from[where] ^ 1).residue = E.get(from[where] ^ 1).residue.add(canPush);
+                E.get(from[where] ^ 1).residue = E.get(from[where] ^ 1).residue + (canPush);
                 
                 //Each unit of flow costs cost 
-                flowCost = flowCost.add(E.get(from[where]).cost.multiplyNumeric(canPush));
+                flowCost += E.get(from[where]).cost * (canPush);
                 where = E.get(from[where]).source;
             }
-            flowSize = flowSize.add(canPush);
+            flowSize += canPush;
 
         }
 
         //return null;
     }
 
-    Numeric<CostType> costType;
-    Numeric<FlowType> flowType;
 
 }
