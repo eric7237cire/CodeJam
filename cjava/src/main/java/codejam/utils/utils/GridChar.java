@@ -272,6 +272,8 @@ public class GridChar {
 
     @Override
     public String toString() {
+      //  if (grid != null)
+         //   throw new RuntimeException("bah");
         StringBuffer gridStr = new StringBuffer();
         for (int rIdx = 0; rIdx < rows; ++rIdx) {
             int r = rIdx;

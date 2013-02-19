@@ -1,20 +1,19 @@
 package codejam.y2010.round_final.ying_yang;
 
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 
-import ch.qos.logback.classic.Level;
 import codejam.utils.geometry.PointInt;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.GridChar;
 
-import static com.google.common.base.Preconditions.*;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -25,7 +24,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     public Main()
     {
         super("F", 1, 1);
-        //(( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
+       // (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
     
     
@@ -250,61 +249,145 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         }
     }
     
-    private void checkBorder(boolean c0IsWhite, 
-            InputData in, GridChar grid,
-            PointInt whiteBorderStartCheck,
-            PointInt blackBorderStartCheck,
-            int whiteBorderLen
-            )
+    private static class CheckBorderVars
     {
-        char borderColor = c0IsWhite ? '0' : '#';
+        char borderColor;
         PointInt whiteBorderStartPt = null;
         PointInt blackBorderStartPt = null;
                 
+        int whiteBorderLen;
+        GridChar grid;
+        boolean ok;
+    }
+    
+    static private void checkBorderHelper(CheckBorderVars v, int x, int y)
+    {
+        char curColor = v.grid.getEntry(y, x);
+        
+        if (curColor == '0')
+            ++v.whiteBorderLen;
+        
+        if (curColor != v.borderColor) 
+        {
+            if (curColor == '0') 
+            {
+                if (v.whiteBorderStartPt!=null) {
+                    v.ok = false;
+                    log.info("Second white start point found {}", v.whiteBorderStartPt);
+                    return;
+                }
+                v.whiteBorderStartPt = new PointInt(x, y);
+            }
+            if (curColor == '#')
+            {
+                if (v.blackBorderStartPt!=null) {
+                    v.ok = false;
+                    log.info("Second black point found {}", v.blackBorderStartPt);
+                    return;
+                }
+                v.blackBorderStartPt = new PointInt(x,y);
+            }
+            
+            v.borderColor = curColor;
+        }        
+    }
+    
+    private static boolean checkBorder(boolean c0IsWhite, 
+            InputData in, GridChar grid,
+            PointInt whiteBorderStartCheck,
+            PointInt blackBorderStartCheck,
+            int whiteBorderLenCheck
+            )
+    {
+        CheckBorderVars v = new CheckBorderVars();
+        v.grid = grid;
+        v.borderColor = c0IsWhite ? '0' : '#';
+        v.ok = true;
+                
+        /**
+         * Each leg does not include the end
+         * 
+         * 4333
+         * 4  2
+         * 4  2
+         * 1112
+         */
+        
         for(int x = 0; x < in.nCols - 1; ++x)
         {
-            char curColor = grid.getEntry(0, x);            
-            
-            if (curColor != borderColor) 
-            {
-                if (curColor == '0') 
-                {
-                    checkState(whiteBorderStartPt==null);
-                    whiteBorderStartPt = new PointInt(x, 0);
-                }
-                if (curColor == '#')
-                {
-                    checkState(blackBorderStartPt==null);
-                    blackBorderStartPt = new PointInt(x,0);
-                }
-                
-                borderColor = curColor;
-            }                
+            int y = 0;
+            checkBorderHelper(v, x, y);                    
         }
-        for(int y = 0; y < in.nRows; ++y)
+        
+        if (!v.ok)
+            return false;
+        
+        for(int y = 0; y < in.nRows - 1; ++y)
         {
-            char curColor = grid.getEntry(y, in.nCols-1);            
-            
-            if (curColor != borderColor) 
-            {
-                if (curColor == '0') 
-                {
-                    checkState(whiteBorderStartPt==null);
-                    whiteBorderStartPt = new PointInt(in.nCols-1, y);
-                }
-                if (curColor == '#')
-                {
-                    checkState(blackBorderStartPt==null);
-                    blackBorderStartPt = new PointInt(in.nCols-1,y);
-                }
-                
-                borderColor = curColor;
-            }                
+            int x = in.nCols - 1; 
+            checkBorderHelper(v, x, y);                            
         }
-        for(int x = 0; x < in.nCols - 1; ++x)
+        
+        if (!v.ok)
+            return false;
+        
+        for(int x = in.nCols-1; x >= 1; --x)
         {
+            int y = in.nRows - 1;
             
+            checkBorderHelper(v, x, y);
         }
+        
+        if (!v.ok)
+            return false;
+        
+        
+        for(int y = in.nRows-1; y >= 1; --y)
+        {
+            int x = 0;
+            
+            checkBorderHelper(v, x, y);
+        }
+        
+        if (!v.ok)
+            return false;
+        
+        //In case white border starts at 0,0
+        if (v.whiteBorderStartPt == null && v.whiteBorderLen > 0
+                && grid.getEntry(0,0) == '0')
+        {
+            v.whiteBorderStartPt = new PointInt(0,0);
+        }
+        
+        log.info("Grid {}", grid);
+        if (v.whiteBorderStartPt==null)
+            return false;
+        
+        if (v.blackBorderStartPt == null)
+            return false;
+        
+        //checkState(v.blackBorderStartPt != null);
+        
+        if (v.whiteBorderLen != whiteBorderLenCheck)
+        {
+            log.info("Grid {}", v.grid);
+            log.info("Border len check failed actual {} check val {}", v.whiteBorderLen, whiteBorderLenCheck);
+            return false;
+        }
+        
+        if (!v.whiteBorderStartPt.equals(whiteBorderStartCheck))
+        {
+            log.info("White border start check failed {} {}", v.whiteBorderStartPt, whiteBorderStartCheck);
+            return false;
+        }
+        
+        if (!v.blackBorderStartPt.equals(blackBorderStartCheck))
+        {
+            log.info("Black border start check failed {} {}", v.blackBorderStartPt, blackBorderStartCheck);
+            return false;
+        }
+        
+        return true;
     }
     
     /**
@@ -330,11 +413,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
        fillInBottomRow(grid, null, in, endPoints, borderBegEnd, c0IsWhite, c1IsWhite);
         
         //int[][] degreeGrid = new int[in.nCols][in.nRows];
-        //boolean[][] connectedEdge = new boolean[in.nCols][in.nRows];
+     //   boolean[][] connectedEdge = new boolean[in.nCols][in.nRows];
         
-
         PointInt bp = null;
         PointInt wp = null;
+        
+        
         
         /**
          * Fill in rows knowing the degree of each vertex and the borders
@@ -347,6 +431,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             for(int x = 0; x < in.nCols ; ++x) {
                 char c = grid.getEntry(y, x);
                 
+                /*
+                if (x==0 || x == in.nCols-1)
+                    connectedEdge[x][y] = true;
+                if (y==0 || y == in.nRows-1)
+                    connectedEdge[x][y] = true;
+                */
                 Preconditions.checkState(c != '.');
                 
                 PointInt p = new PointInt(x,y);
@@ -375,10 +465,12 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     Preconditions.checkState(adj != '.');
                     
                     if (adj == '0' && isWhite) {
-                        ++sameColorNeighbors;                        
+                        ++sameColorNeighbors;  
+                       // connectedEdge[x][y] |= connectedEdge[xx][yy];
                     }
                     
                     if (adj == '#' && !isWhite) {
+                      //  connectedEdge[x][y] |= connectedEdge[xx][yy];
                         ++sameColorNeighbors;
                     }
                 }
@@ -444,16 +536,20 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         
         //TODO
+        /*
         final int borderLen = 2*in.nRows + 2*in.nCols - 4;
         
         //Check border corresponds
-        /*
+        
         int border = blackBorderStart;
         while(border != whiteBorderStart)
         {
             PointInt rc = getCoords(in,border);
             if ('#' != grid.getEntry(rc.y(), rc.x()))
-                    return false;
+            {
+                checkState(!checkBorder(c0IsWhite, in, grid, borderBegEnd[0], borderBegEnd[2], whiteBorderLen));
+                return false;
+            }
             
             ++border;
             border %= borderLen;
@@ -464,11 +560,21 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
             PointInt rc = getCoords(in,border);
             if ('0' != grid.getEntry(rc.y(), rc.x()))
+            {
+                checkState(!checkBorder(c0IsWhite, in, grid, borderBegEnd[0], borderBegEnd[2], whiteBorderLen));
                 return false;
+            }
             
             ++border;
             border %= borderLen;
-        }*/
+        }
+        
+        checkState(checkBorder(c0IsWhite, in, grid, borderBegEnd[0], borderBegEnd[2], whiteBorderLen));
+        */
+        
+        if (!checkBorder(c0IsWhite, in,
+                grid, borderBegEnd[0], borderBegEnd[2], whiteBorderLen))
+            return false;
         
         //A final check for all the endpoints
         
@@ -586,12 +692,64 @@ this kind of grid passed diag checks, degree checks
         //TODO do this while filling stuff in
         int white = getConnectedCount(grid,wp, in);
         int black = getConnectedCount(grid, bp, in);
+       // 
+        boolean checkConnected = totalNodes == white+black;
         
-        if (totalNodes != white+black)
+       // boolean checkConnected = true;
+        
+        if (!checkConnected)
         {
-            //log.error("Grid {}", grid);
+            //log.info("Grid {}", grid);
             return false;
         }
+        
+        /*
+        for(int y = in.nRows-1; y >= 0; --y)
+        {
+            //skip edges as it is already filled in
+            for(int x = in.nCols-1; x >= 0; --x)
+            {
+                char c = grid.getEntry(y, x);
+                
+                if (x==0 || x == in.nCols-1)
+                    connectedEdge[x][y] = true;
+                if (y==0 || y == in.nRows-1)
+                    connectedEdge[x][y] = true;
+                
+                Preconditions.checkState(c != '.');
+                
+                for(int d = 0; d <= 3; d += 1) {
+                    int xx = x + delta[d][0];
+                    int yy = y + delta[d][1];
+                    
+                    if (xx < 0 || xx >= in.nCols)
+                        continue; //Preconditions.checkState(!(xx < 0 || xx >= in.nCols));
+                    if (yy < 0 || yy >= in.nRows)
+                        continue;
+                    
+                    char adj = grid.getEntry(yy, xx);
+                    
+                   // if (adj== '.')
+                    //    continue;
+                    Preconditions.checkState(adj != '.');
+                    
+                    if (adj == c) {
+                        connectedEdge[x][y] |= connectedEdge[xx][yy];
+                    }
+                    
+                    
+                }
+                
+                if (!connectedEdge[x][y]) 
+                {
+                    checkState(!checkConnected);
+                    return false;
+                }
+            }
+        }
+        
+        checkState(checkConnected);
+        */
         
         return true;
     }
@@ -636,84 +794,29 @@ this kind of grid passed diag checks, degree checks
         return true;
     }
     
-    private static boolean hasMonocolorInteriorRow(GridChar grid, InputData in) {
-        
-        for(int y = 1; y < in.nRows-1; ++y)
-        {            
-            boolean hasBlack = false;
-            boolean hasWhite = false;
-            
-            for(int x = 0; x < in.nCols; ++x) 
-            {
-                char ch = grid.getEntry(y, x);
-                
-                if (ch =='#')
-                    hasBlack = true;
-                
-                if (ch == '0')
-                    hasWhite = true;
-                
-                if (hasBlack && hasWhite)
-                    break;
-            }
-            
-            if (!hasBlack || !hasWhite)
-                return true;
-        }
-        
-        return false;
-            
-    }
-    
-    private static boolean hasMonocolorInteriorCol(GridChar grid, InputData in) {
-        
-        for(int x = 1; x < in.nCols-1; ++x) 
-        {
-            boolean hasBlack = false;
-            boolean hasWhite = false;
-         
-            for(int y = 0; y < in.nRows; ++y)
-            {            
-                    char ch = grid.getEntry(y, x);
-                    
-                    if (ch =='#')
-                        hasBlack = true;
-                    
-                    if (ch == '0')
-                        hasWhite = true;
-                    
-                    if (hasBlack && hasWhite)
-                        break;
-            
-            }
-            
-            if (!hasBlack || !hasWhite)
-                return true;
-            
-        }
-        
-        return false;
-            
-    }
+  
     
     private static int getConnectedCount(GridChar grid, PointInt start, InputData in) {
-        Queue<PointInt> q = new LinkedList<PointInt>();
+        Queue<Integer> q = new LinkedList<Integer>();
         
-        q.add(start);
+        int startIndex = grid.getIndex(start.y(), start.x());
         
-        char color = grid.getEntry(start.y(),start.x());
+        q.add(startIndex);
         
-        Set<PointInt> visited = Sets.newHashSet();
+        char color = grid.getEntry(startIndex);
+        
+        //Set<PointInt> visited = Sets.newHashSet();
+        BitSet visited = new BitSet();
         
         while(!q.isEmpty()) {
-            PointInt p = q.poll();
-            if (visited.contains(p))
+            int p = q.poll();
+            if (visited.get(p))
                 continue;
             
-            visited.add(p);
+            visited.set(p);
             
-            int x = p.x();
-            int y = p.y();
+            int x = p % in.nCols;
+            int y = p / in.nCols;
             
             for(int d = 0; d <= 3; d += 1) {
                 int xx = x + delta[d][0];
@@ -728,12 +831,12 @@ this kind of grid passed diag checks, degree checks
                 char path = grid.getEntry(yy,xx);
                 
                 if (path == color) {
-                    q.add(new PointInt(xx,yy));
+                    q.add(yy * in.nCols + xx);
                 }
             }
         }
         
-        return visited.size();
+        return visited.cardinality();
         
     }
     
