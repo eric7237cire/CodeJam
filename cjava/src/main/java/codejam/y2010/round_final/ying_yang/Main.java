@@ -634,39 +634,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             */
            // log.debug("Passed");
         }
-        
-        /*
-        for(PointInt p : borderBegEnd)
-        {
-            int degreeNeeded =  (endPoints.contains(p)) ? 1 : 2;
-            
-            int degree = getDegree(p, grid,in);
-            
-            if (degree != degreeNeeded) {
-                log.error("Grid {}", grid);
-                return false;
-            }
-        }*/
-        
-        /*
-        for(int y = 0; y < in.nRows; ++y)
-        {
-            for(int x = 0; x < in.nCols; ++x) {
-                PointInt p = new PointInt(x,y);
-                
-                int degreeNeeded =  (endPoints.contains(p)) ? 1 : 2;
-                
-                int degree = getDegree(p, grid,in);
-                
-                if (degree != degreeNeeded) {
-                    log.error("Grid {}", grid);
-                    return false;
-                }
-                
-            }
-        }*/
-        
-        
+              
         //Final check for connectedness, it is p
         /*
          * 
@@ -689,112 +657,22 @@ this kind of grid passed diag checks, degree checks
         if (has || has2)
             return false;
         */
-        //TODO do this while filling stuff in
+       
         int white = getConnectedCount(grid,wp, in);
         int black = getConnectedCount(grid, bp, in);
-       // 
-        boolean checkConnected = totalNodes == white+black;
-        
-       // boolean checkConnected = true;
-        
-        if (!checkConnected)
+
+        if (totalNodes != white+black)
         {
             //log.info("Grid {}", grid);
             return false;
         }
         
-        /*
-        for(int y = in.nRows-1; y >= 0; --y)
-        {
-            //skip edges as it is already filled in
-            for(int x = in.nCols-1; x >= 0; --x)
-            {
-                char c = grid.getEntry(y, x);
-                
-                if (x==0 || x == in.nCols-1)
-                    connectedEdge[x][y] = true;
-                if (y==0 || y == in.nRows-1)
-                    connectedEdge[x][y] = true;
-                
-                Preconditions.checkState(c != '.');
-                
-                for(int d = 0; d <= 3; d += 1) {
-                    int xx = x + delta[d][0];
-                    int yy = y + delta[d][1];
-                    
-                    if (xx < 0 || xx >= in.nCols)
-                        continue; //Preconditions.checkState(!(xx < 0 || xx >= in.nCols));
-                    if (yy < 0 || yy >= in.nRows)
-                        continue;
-                    
-                    char adj = grid.getEntry(yy, xx);
-                    
-                   // if (adj== '.')
-                    //    continue;
-                    Preconditions.checkState(adj != '.');
-                    
-                    if (adj == c) {
-                        connectedEdge[x][y] |= connectedEdge[xx][yy];
-                    }
-                    
-                    
-                }
-                
-                if (!connectedEdge[x][y]) 
-                {
-                    checkState(!checkConnected);
-                    return false;
-                }
-            }
-        }
-        
-        checkState(checkConnected);
-        */
-        
         return true;
     }
     
     
     
-    @SuppressWarnings("unused")
-    private boolean checkDiagonal(GridChar grid, PointInt start,
-            PointInt delta, InputData in)
-    {
-        
-        int distance = 0;
-        
-        int y = start.y();
-        int x = start.x();
-        
-        char startColor = grid.getEntry(y, x);
-        
-        while(x >= 0 && x < in.nCols &&
-                y >= 0 && y < in.nRows)                
-        {
-            
-            
-            Preconditions.checkState(distance < 100000);
-            
-            char cur = grid.getEntry(y, x);
-            
-            Preconditions.checkState(cur == '0' || cur ==  '#');
-            
-            if (distance % 2 == 0 && cur != startColor)
-                return false;
-            
-            if (distance % 2 == 1 && cur == startColor)
-                return false;
-            
-            y += delta.y();
-            x += delta.x();
-            
-            ++distance;
-        }
-        
-        return true;
-    }
-    
-  
+     
     
     private static int getConnectedCount(GridChar grid, PointInt start, InputData in) {
         Queue<Integer> q = new LinkedList<Integer>();
@@ -1112,31 +990,6 @@ this kind of grid passed diag checks, degree checks
                // log.debug("Start white {} end white {}",startWhite,endWhite);
                 
                 
-                
-                
-                /**
-                 * A la brute force, set the border in the grid
-                 */
-                /*
-                int border = startBlack;
-                while(border != startWhite)
-                {
-                    PointInt rc = getCoords(in,border);
-                    grid.setEntry(rc.y(), rc.x(), '#');
-                    
-                    ++border;
-                    border %= borderLen;
-                }
-                
-                border = startWhite;
-                while(border != startBlack) {
-                    
-                    PointInt rc = getCoords(in,border);
-                    grid.setEntry(rc.y(), rc.x(), '0');
-                    
-                    ++border;
-                    border %= borderLen;
-                }*/
                 
                 /**
                  * Build all the diagonals
