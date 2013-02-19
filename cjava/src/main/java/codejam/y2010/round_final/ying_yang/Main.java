@@ -130,19 +130,15 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         return sameColorNeighbors;
     }
-    /**
-     * 
-     * @param grid
-     * @param in
-     * @param endPoints
-     * @param borderBegEnd  w start, w end, b start, b end
-     * @param c0IsWhite
-     * @param c1IsWhite
-     * @return
-     */
-    private static boolean fillInGrid(GridChar grid, InputData in, 
+    
+    private static void fillInBottomRow(GridChar grid, GridChar checkGrid, InputData in, 
             Set<PointInt> endPoints, PointInt[] borderBegEnd, boolean c0IsWhite, boolean c1IsWhite) {
-       
+        
+        //int[] startStop = null; 
+        //char[] fillChar = null;
+        
+        boolean checkGridDo = false;
+        
         /*
          * Fill in bottom row based on bools
          */
@@ -150,26 +146,38 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         {
             if (borderBegEnd[2].y() == 0)
             {
+                /*
+                startStop = new int[] {
+                        0,
+                        borderBegEnd[2].x() - 1,
+                        borderBegEnd[2].x(),
+                        borderBegEnd[3].x(),
+                        borderBegEnd[3].x()+1,
+                        in.nCols-1
+                };
+                fillChar = new char[] { '0', '#', '0' };
+                */
+                
                 //Black border start between
                 for(int x = 0; x < borderBegEnd[2].x(); ++x)
                 {
-                    Preconditions.checkState(grid.getEntry(0,x) == '0');
+                    if (checkGridDo) Preconditions.checkState(checkGrid.getEntry(0,x) == '0');
                     grid.setEntry(0, x, '0');
                 }
                 for(int x = borderBegEnd[2].x(); x <= borderBegEnd[3].x(); ++x)
                 {
-                    Preconditions.checkState(grid.getEntry(0,x) == '#');
+                    if (checkGridDo) Preconditions.checkState(checkGrid.getEntry(0,x) == '#');
                     grid.setEntry(0, x, '#');
                 }
                 for(int x = borderBegEnd[3].x()+1; x < in.nCols; ++x)
                 {
-                    Preconditions.checkState(grid.getEntry(0,x) == '0');
+                    if (checkGridDo) Preconditions.checkState(checkGrid.getEntry(0,x) == '0');
                     grid.setEntry(0, x, '0');
                 }
             }
             
             for(int x = 0; x < in.nCols ; ++x) {
-                Preconditions.checkState(grid.getEntry(0,x) == '0');
+                if (checkGridDo) Preconditions.checkState(checkGrid.getEntry(0,x) == '0');
                 grid.setEntry(0, x, '0');
             }
         }
@@ -180,24 +188,24 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             {
                 for(int x = 0; x < borderBegEnd[0].x(); ++x)
                 {
-                    Preconditions.checkState(grid.getEntry(0,x) == '#');
+                    if (checkGridDo) Preconditions.checkState(checkGrid.getEntry(0,x) == '#');
                     grid.setEntry(0, x, '#');
                 }
                 for(int x = borderBegEnd[0].x(); x <= borderBegEnd[1].x(); ++x)
                 {
-                    Preconditions.checkState(grid.getEntry(0,x) == '0');
+                    if (checkGridDo) Preconditions.checkState(checkGrid.getEntry(0,x) == '0');
                     grid.setEntry(0, x, '0');
                 }
                 for(int x = borderBegEnd[1].x()+1; x < in.nCols; ++x)
                 {
-                    Preconditions.checkState(grid.getEntry(0,x) == '#');
+                    if (checkGridDo) Preconditions.checkState(checkGrid.getEntry(0,x) == '#');
                     grid.setEntry(0, x, '#');
                 }
             }
             else 
             {
                 for(int x = 0; x < in.nCols ; ++x) {
-                    Preconditions.checkState(grid.getEntry(0,x) == '#');
+                    if (checkGridDo) Preconditions.checkState(checkGrid.getEntry(0,x) == '#');
                     grid.setEntry(0, x, '#');
                 }
             }
@@ -212,11 +220,11 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             Preconditions.checkState(borderBegEnd[2].x() == colEndWhite+1);
             
             for(int x = 0; x <= colEndWhite; ++x) {
-                Preconditions.checkState(grid.getEntry(0,x) == '0');
+                if (checkGridDo)     Preconditions.checkState(checkGrid.getEntry(0,x) == '0');
                 grid.setEntry(0, x, '0');
             }
             for(int x = colEndWhite+1; x < in.nCols; ++x) {
-                Preconditions.checkState(grid.getEntry(0,x) == '#');
+                if (checkGridDo) Preconditions.checkState(checkGrid.getEntry(0,x) == '#');
                 grid.setEntry(0, x, '#');
             }
         }
@@ -230,15 +238,37 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             Preconditions.checkState(borderBegEnd[0].x() == colEndBlack+1);
             
             for(int x = 0; x <= colEndBlack; ++x) {
-                Preconditions.checkState(grid.getEntry(0,x) == '#');
+                if (checkGridDo) Preconditions.checkState(checkGrid.getEntry(0,x) == '#');
                 grid.setEntry(0, x, '#');
             }
             for(int x = colEndBlack+1; x < in.nCols; ++x) {
-                Preconditions.checkState(grid.getEntry(0,x) == '0');
+                if (checkGridDo)Preconditions.checkState(checkGrid.getEntry(0,x) == '0');
                 grid.setEntry(0, x, '0');
             }
             
         }
+    }
+    
+    /**
+     * 
+     * @param grid
+     * @param in
+     * @param endPoints
+     * @param borderBegEnd  w start, w end, b start, b end
+     * @param c0IsWhite
+     * @param c1IsWhite
+     * @return
+     */
+    private static boolean fillInGrid(GridChar grid, InputData in, 
+            Set<PointInt> endPoints, PointInt[] borderBegEnd,
+            int whiteBorderStart, int blackBorderStart,
+            boolean c0IsWhite, boolean c1IsWhite) {
+       
+
+        //GridChar grid = GridChar.buildEmptyGrid(in.nRows, in.nCols, '.');
+        //grid.setyZeroOnTop(false); 
+        
+       fillInBottomRow(grid, null, in, endPoints, borderBegEnd, c0IsWhite, c1IsWhite);
         
         //int[][] degreeGrid = new int[in.nCols][in.nRows];
         //boolean[][] connectedEdge = new boolean[in.nCols][in.nRows];
@@ -281,9 +311,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                     
                     char adj = grid.getEntry(yy, xx);
                     
-                    if (adj== '.')
-                        continue;
-                   // Preconditions.checkState(adj != '.');
+                   // if (adj== '.')
+                    //    continue;
+                    Preconditions.checkState(adj != '.');
                     
                     if (adj == '0' && isWhite) {
                         ++sameColorNeighbors;                        
@@ -320,7 +350,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 Preconditions.checkState(northernNeighborColorWhite != null);
                  
-                    
+                    /*
                 char northernChar = grid.getEntry(y+1, x);
                 
                 if (northernNeighborColorWhite == true && northernChar == '#') {
@@ -332,9 +362,14 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 if (!northernNeighborColorWhite && northernChar == '0') {
                    // log.debug("{}, {} -- North must be black", x, y);
                     return false;
-                }
+                }*/
                 
                 grid.setEntry(y+1, x, northernNeighborColorWhite ? '0' : '#');
+                
+                /*
+                Preconditions.checkState(checkGrid.getEntry(y+1,x) == '.' ||
+                        checkGrid.getEntry(y+1,x) == grid.getEntry(y+1,x));
+                */
                 
                 if (wp == null && isWhite) {
                     wp = new PointInt(x,y);
@@ -344,6 +379,31 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 }
             
             }
+        }
+        
+        final int borderLen = 2*in.nRows + 2*in.nCols - 4;
+        
+        //Check border corresponds
+        int border = blackBorderStart;
+        while(border != whiteBorderStart)
+        {
+            PointInt rc = getCoords(in,border);
+            if ('#' != grid.getEntry(rc.y(), rc.x()))
+                    return false;
+            
+            ++border;
+            border %= borderLen;
+        }
+        
+        border = whiteBorderStart;
+        while(border != blackBorderStart) {
+            
+            PointInt rc = getCoords(in,border);
+            if ('0' != grid.getEntry(rc.y(), rc.x()))
+                return false;
+            
+            ++border;
+            border %= borderLen;
         }
         
         //A final check for all the endpoints
@@ -783,7 +843,8 @@ this kind of grid passed diag checks, degree checks
         
         boolean debug = false;
         
-       
+        GridChar grid = GridChar.buildEmptyGrid(in.nRows, in.nCols, '.');
+        grid.setyZeroOnTop(false);
         
         
         /**
@@ -882,13 +943,12 @@ this kind of grid passed diag checks, degree checks
                // log.debug("Start white {} end white {}",startWhite,endWhite);
                 
                 
-                GridChar grid = GridChar.buildEmptyGrid(in.nRows, in.nCols, '.');
-                grid.setyZeroOnTop(false);
+                
                 
                 /**
                  * A la brute force, set the border in the grid
                  */
-                
+                /*
                 int border = startBlack;
                 while(border != startWhite)
                 {
@@ -907,7 +967,7 @@ this kind of grid passed diag checks, degree checks
                     
                     ++border;
                     border %= borderLen;
-                }
+                }*/
                 
                 /**
                  * Build all the diagonals
@@ -1059,7 +1119,9 @@ this kind of grid passed diag checks, degree checks
                         blackBorderEndPt
                 };
                 
-                int countThis = tryEnds(be, we, in, grid,borderBegEnd, bottomLeftCornerIsWhite, bottomRightCornerIsWhite);
+                int countThis = tryEnds(be, we, in, grid,borderBegEnd,
+                        startWhite, startBlack,
+                        bottomLeftCornerIsWhite, bottomRightCornerIsWhite);
                                 
                 /**
                  * Save the answer for both
@@ -1087,6 +1149,7 @@ this kind of grid passed diag checks, degree checks
     private static int tryEnds( List<PointInt> potentialBlackEnd, 
             List<PointInt> potentialWhiteEnd, 
             InputData in, GridChar grid, PointInt[] borderBegEnd,
+            int whiteBorderStart, int blackBorderStart,
             boolean c0IsWhite, boolean c1IsWhite) {
         int count = 0;
         
@@ -1106,13 +1169,15 @@ this kind of grid passed diag checks, degree checks
                         Preconditions.checkState(!whiteEnd1.equals(whiteEnd2)); 
                             
                         
-                        GridChar tryGrid = new GridChar(grid);
+                       // GridChar tryGrid = new GridChar(grid);
                         
                         Set<PointInt> endPoints = Sets.newHashSet(whiteEnd1,
                                 whiteEnd2,blackEnd1,blackEnd2);
                         
-                        boolean ok = fillInGrid(tryGrid, in, endPoints,
-                                borderBegEnd, c0IsWhite, c1IsWhite);
+                        boolean ok = fillInGrid(grid, in, endPoints,
+                                borderBegEnd, 
+                                whiteBorderStart, blackBorderStart,
+                                c0IsWhite, c1IsWhite);
                        // log.debug("White end 1 {} 2 {}  Black end 1 {} 2 {}",
                                 //whiteEnd1,  whiteEnd2,blackEnd1,blackEnd2);
                         //log.debug("Try grid ok {}.  Count: {}\n{}", ok,count,tryGrid);
