@@ -14,6 +14,7 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.GridChar;
 
+import static com.google.common.base.Preconditions.*;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -249,6 +250,63 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         }
     }
     
+    private void checkBorder(boolean c0IsWhite, 
+            InputData in, GridChar grid,
+            PointInt whiteBorderStartCheck,
+            PointInt blackBorderStartCheck,
+            int whiteBorderLen
+            )
+    {
+        char borderColor = c0IsWhite ? '0' : '#';
+        PointInt whiteBorderStartPt = null;
+        PointInt blackBorderStartPt = null;
+                
+        for(int x = 0; x < in.nCols - 1; ++x)
+        {
+            char curColor = grid.getEntry(0, x);            
+            
+            if (curColor != borderColor) 
+            {
+                if (curColor == '0') 
+                {
+                    checkState(whiteBorderStartPt==null);
+                    whiteBorderStartPt = new PointInt(x, 0);
+                }
+                if (curColor == '#')
+                {
+                    checkState(blackBorderStartPt==null);
+                    blackBorderStartPt = new PointInt(x,0);
+                }
+                
+                borderColor = curColor;
+            }                
+        }
+        for(int y = 0; y < in.nRows; ++y)
+        {
+            char curColor = grid.getEntry(y, in.nCols-1);            
+            
+            if (curColor != borderColor) 
+            {
+                if (curColor == '0') 
+                {
+                    checkState(whiteBorderStartPt==null);
+                    whiteBorderStartPt = new PointInt(in.nCols-1, y);
+                }
+                if (curColor == '#')
+                {
+                    checkState(blackBorderStartPt==null);
+                    blackBorderStartPt = new PointInt(in.nCols-1,y);
+                }
+                
+                borderColor = curColor;
+            }                
+        }
+        for(int x = 0; x < in.nCols - 1; ++x)
+        {
+            
+        }
+    }
+    
     /**
      * 
      * @param grid
@@ -262,6 +320,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     private static boolean fillInGrid(GridChar grid, InputData in, 
             Set<PointInt> endPoints, PointInt[] borderBegEnd,
             int whiteBorderStart, int blackBorderStart,
+            int whiteBorderLen,
             boolean c0IsWhite, boolean c1IsWhite) {
        
 
@@ -381,9 +440,14 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             }
         }
         
+        
+        
+        
+        //TODO
         final int borderLen = 2*in.nRows + 2*in.nCols - 4;
         
         //Check border corresponds
+        /*
         int border = blackBorderStart;
         while(border != whiteBorderStart)
         {
@@ -404,7 +468,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             
             ++border;
             border %= borderLen;
-        }
+        }*/
         
         //A final check for all the endpoints
         
@@ -465,6 +529,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
            // log.debug("Passed");
         }
         
+        /*
         for(PointInt p : borderBegEnd)
         {
             int degreeNeeded =  (endPoints.contains(p)) ? 1 : 2;
@@ -475,8 +540,9 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 log.error("Grid {}", grid);
                 return false;
             }
-        }
+        }*/
         
+        /*
         for(int y = 0; y < in.nRows; ++y)
         {
             for(int x = 0; x < in.nCols; ++x) {
@@ -492,7 +558,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 }
                 
             }
-        }
+        }*/
         
         
         //Final check for connectedness, it is p
@@ -1121,6 +1187,7 @@ this kind of grid passed diag checks, degree checks
                 
                 int countThis = tryEnds(be, we, in, grid,borderBegEnd,
                         startWhite, startBlack,
+                        whiteBorderLen,
                         bottomLeftCornerIsWhite, bottomRightCornerIsWhite);
                                 
                 /**
@@ -1150,6 +1217,7 @@ this kind of grid passed diag checks, degree checks
             List<PointInt> potentialWhiteEnd, 
             InputData in, GridChar grid, PointInt[] borderBegEnd,
             int whiteBorderStart, int blackBorderStart,
+            int whiteBorderLen,
             boolean c0IsWhite, boolean c1IsWhite) {
         int count = 0;
         
@@ -1177,6 +1245,7 @@ this kind of grid passed diag checks, degree checks
                         boolean ok = fillInGrid(grid, in, endPoints,
                                 borderBegEnd, 
                                 whiteBorderStart, blackBorderStart,
+                                whiteBorderLen,
                                 c0IsWhite, c1IsWhite);
                        // log.debug("White end 1 {} 2 {}  Black end 1 {} 2 {}",
                                 //whiteEnd1,  whiteEnd2,blackEnd1,blackEnd2);
