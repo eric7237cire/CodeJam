@@ -130,8 +130,11 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         return sameColorNeighbors;
     }
-    private static boolean fillInGrid(GridChar grid, InputData in, Set<PointInt> endPoints) {
+    private static boolean fillInGrid(GridChar grid, InputData in, Set<PointInt> endPoints, PointInt[] borderBegEnd) {
        
+        //int[][] degreeGrid = new int[in.nCols][in.nRows];
+        //boolean[][] connectedEdge = new boolean[in.nCols][in.nRows];
+        
         /**
          * Fill in rows knowing the degree of each vertex and the borders
          */
@@ -285,6 +288,18 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
            // log.debug("Passed");
         }
         
+        for(PointInt p : borderBegEnd)
+        {
+            int degreeNeeded =  (endPoints.contains(p)) ? 1 : 2;
+            
+            int degree = getDegree(p, grid,in);
+            
+            if (degree != degreeNeeded) {
+                log.error("Grid {}", grid);
+                return false;
+            }
+        }
+        
         for(int y = 0; y < in.nRows; ++y)
         {
             for(int x = 0; x < in.nCols; ++x) {
@@ -295,6 +310,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 int degree = getDegree(p, grid,in);
                 
                 if (degree != degreeNeeded) {
+                    log.error("Grid {}", grid);
                     return false;
                 }
                 
@@ -317,20 +333,20 @@ this kind of grid passed diag checks, degree checks
         
         int totalNodes = in.nCols*in.nRows;
         
-        
+        /*
         boolean has = hasMonocolorInteriorRow(grid,in);
         boolean has2 = hasMonocolorInteriorCol(grid,in);
         
         if (has || has2)
             return false;
-        
+        */
         //TODO do this while filling stuff in
         int white = getConnectedCount(grid,wp, in);
         int black = getConnectedCount(grid, bp, in);
         
         if (totalNodes != white+black)
         {
-            log.error("Grid {}", grid);
+            //log.error("Grid {}", grid);
             return false;
         }
         
@@ -688,12 +704,33 @@ this kind of grid passed diag checks, degree checks
         }
         
         /**
+         * Deterimen the border value for each corner,
+         * in order to know its color only based on s
+         */
+        
+        int[] cornerBorderIndex = new int[] 
+        {
+                0,
+                in.nCols-1,
+                in.nCols-1+in.nRows-1,
+                in.nCols-1+in.nRows-1+in.nCols-1,
+                in.nCols-1+in.nRows-1+in.nCols-1+in.nRows-1,
+        };
+
+        // y = 0 bottom
+        Preconditions.checkState(new PointInt(0,0).equals( getCoords(in, cornerBorderIndex[0])) );
+        Preconditions.checkState(new PointInt(in.nCols-1,0).equals( getCoords(in, cornerBorderIndex[1])) );
+        Preconditions.checkState(new PointInt(in.nCols-1,in.nRows-1).equals( getCoords(in, cornerBorderIndex[2])) );
+        Preconditions.checkState(new PointInt(0,in.nRows-1).equals( getCoords(in, cornerBorderIndex[3])) );
+        //TODO
+        
+        /**
          * Loop through all starting positions for the white border
          * and all possible lengths
          */
         for(int startWhite = 0; startWhite < borderLen; ++startWhite)
         {
-            log.debug("Start white {} case {}", startWhite, in.testCase);
+            log.info("Start white {} case {}", startWhite, in.testCase);
             int distanceToFirstCorner = startToFirstCornerDistance[startWhite];
             
             for(int whiteBorderLen = 1; whiteBorderLen < borderLen; ++whiteBorderLen)
@@ -762,6 +799,25 @@ this kind of grid passed diag checks, degree checks
                 for(int c = 0; c < 4; ++c) {
                     PointInt coordCorner = in.corners[c];
                     
+                    boolean isWhite = false;
+                    if (startWhite <= endWhite)
+                    {
+                        if (startWhite <= cornerBorderIndex[c] &&
+                                cornerBorderIndex[c] <= endWhite) {
+                            isWhite = true;
+                        }
+                    } else {
+                        Preconditions.checkState(startBlack < endBlack);
+                        
+                        if (! (startBlack <= cornerBorderIndex[c] &&
+                                cornerBorderIndex[c] <= endBlack) ) {
+                            isWhite = true;
+                        }
+                    }
+                    
+                    boolean isWhiteCheck = grid.getEntry(coordCorner.y(), coordCorner.x()) == '0';
+                        
+                    Preconditions.checkState(isWhite == isWhiteCheck);
                     
                     diags.add(new Diagonal(coordCorner, cornerSlopes[c],
                         grid.getEntry(coordCorner.y(), coordCorner.x()) == '0'
@@ -870,7 +926,14 @@ this kind of grid passed diag checks, degree checks
                 List<PointInt> be = Lists.newArrayList(blackEndPoints);
                 List<PointInt> we = Lists.newArrayList(whiteEndPoints);
                 
-                int countThis = tryEnds(be, we, in, grid);
+                PointInt[] borderBegEnd = new PointInt[] {
+                        whiteBorderStartPt,
+                        whiteBorderEndPt,
+                        blackBorderStartPt,
+                        blackBorderEndPt
+                };
+                
+                int countThis = tryEnds(be, we, in, grid,borderBegEnd);
                                 
                 /**
                  * Save the answer for both
@@ -895,7 +958,9 @@ this kind of grid passed diag checks, degree checks
         return String.format("Case #%d: %d", in.testCase, count);
     }
     
-    private static int tryEnds( List<PointInt> potentialBlackEnd, List<PointInt> potentialWhiteEnd, InputData in, GridChar grid ) {
+    private static int tryEnds( List<PointInt> potentialBlackEnd, 
+            List<PointInt> potentialWhiteEnd, 
+            InputData in, GridChar grid, PointInt[] borderBegEnd ) {
         int count = 0;
         
         for(int bEnd1 = 0; bEnd1 < potentialBlackEnd.size(); ++bEnd1) {
@@ -919,7 +984,7 @@ this kind of grid passed diag checks, degree checks
                         Set<PointInt> endPoints = Sets.newHashSet(whiteEnd1,
                                 whiteEnd2,blackEnd1,blackEnd2);
                         
-                        boolean ok = fillInGrid(tryGrid, in, endPoints);
+                        boolean ok = fillInGrid(tryGrid, in, endPoints, borderBegEnd);
                        // log.debug("White end 1 {} 2 {}  Black end 1 {} 2 {}",
                                 //whiteEnd1,  whiteEnd2,blackEnd1,blackEnd2);
                         //log.debug("Try grid ok {}.  Count: {}\n{}", ok,count,tryGrid);
