@@ -13,7 +13,7 @@ public class Consumer<InputData extends AbstractInputData> implements Runnable {
         String handleCase(InputData in);
     }
 
-    final static Logger log = LoggerFactory.getLogger(Consumer.class);
+    final static Logger log = LoggerFactory.getLogger("main");
 
     private final BlockingQueue<InputData> queue;
     private final String[] answers;

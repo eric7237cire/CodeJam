@@ -12,11 +12,10 @@ import java.util.Set;
 
 import org.apache.commons.collections.buffer.CircularFifoBuffer;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.Gaps;
 import codejam.utils.datastructures.Gaps.Gap;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.y2010.round_3.hotdog.InputData.Corner;
@@ -26,9 +25,13 @@ import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.TreeMultiset;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
+    
+    public Main()
+    {
+        super("C", 1, 1);
+    }
     
     static CircularFifoBuffer lastElems = new CircularFifoBuffer(3);
     

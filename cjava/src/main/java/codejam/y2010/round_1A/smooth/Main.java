@@ -4,17 +4,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-        
+    public Main() {
+        super("B", 1, 1);
+    }
+    
     int[][] memoize = new int[100][257];
+    
+    public final int NO_PREVIOUS_VALUE = 256;
+    
     int getMinCost(int currentIndex, int previousValue, InputData input) {
         
         if (currentIndex > input.pixels.size() - 1) {
@@ -29,24 +32,32 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
       
         int minCost = Integer.MAX_VALUE;
         
-        //del current
+        //del current; always valid
         int cost = input.deleteCost + getMinCost(currentIndex + 1, previousValue, input);
         minCost = Math.min(cost, minCost);
         
-        //Change value current
+        //Change value current to something close enough to the previous value
         int min = Math.max(0, previousValue - input.minimumDist);
         int max = Math.min(255, previousValue + input.minimumDist);
-        min = (previousValue == 256) ? 0 : min;
-        max = (previousValue == 256) ? 255 : max;
+        min = (previousValue == NO_PREVIOUS_VALUE) ? 0 : min;
+        max = (previousValue == NO_PREVIOUS_VALUE) ? 255 : max;
         for(int v = min; v <= max; ++v) {            
             int diff = Math.abs(currentValue - v);
             cost = diff + getMinCost(currentIndex + 1, v, input);
             minCost = Math.min(cost, minCost);            
         }
         
-        //previous not valid
-        if (previousValue != 256 && input.minimumDist > 0) {
 
+        /**
+         * If previous value is more than the min distance
+         * away from the currently value, then add a node to
+         * make it valid.
+         * 
+         * The checks avoid an infinite loop as what was invalid now is valid
+         */
+        if (previousValue != NO_PREVIOUS_VALUE && input.minimumDist > 0) {
+
+            
             if (previousValue + input.minimumDist < currentValue) {
                 // add a node = prevVal + minDist to reduce distance
                 cost = input.insertCost
@@ -72,7 +83,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
         int caseNumber = input.testCase;
         
-        log.info(
+        log.debug(
                 "Starting calculating case {}.  Input {} Delete {} Min dist {}. \n Pixels {}",
                 caseNumber, input.insertCost, input.deleteCost,
                 input.minimumDist, input.pixels);
@@ -81,7 +92,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         for (int i = 0; i < m.memoize.length; ++i) {
             Arrays.fill(m.memoize[i], -1);            
         }
-        int cost = m.getMinCost(0, 256, input);
+        int cost = m.getMinCost(0, NO_PREVIOUS_VALUE, input);
         return ("Case #" + caseNumber + ": " + cost);
 
     }

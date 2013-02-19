@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -19,21 +20,20 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.TreeMultiset;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-    
-    @Override
-    public String[] getDefaultInputFiles() {
-      //   return new String[] {"sample.in"};
-         return new String[] { "C-small-practice.in" };
-      // return new String[] { "B-small-practice.in", "B-large-practice.in" };
+    public Main()
+    {
+        super("C", 1, 1);
     }
     
     private static class Square implements Comparable<Square>{
         int size;
         int row;
         int col;
+        /**
+         * Top left corner
+         */
         public Square(int size, int row, int col) {
             super();
             this.size = size;
@@ -58,9 +58,12 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         //NW
         int diagConnectedCount;
-       // Grid<Integer> grid;
+       
         Square square;
+        //Grid index
         int idx;
+        
+        //Row / col corresponding to grid index
         int row;
         int col;
         
@@ -156,12 +159,14 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                         ps.diagConnectedCount = minDiag + 1;
                         
                     } else {
-                        //nothing
+                        //nothing, form a 1x1 square
                         ps.diagConnectedCount = 1;
                     }
                 }
                 
                 potGrid.setEntry(idx, ps);
+                
+                //Build the square object that shares a bottom / right corner with this grid index
                 ps.calcSquare();
                 squares.add(ps.square);
                 
@@ -192,6 +197,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                 break;
             }
             
+            //Remove all squares that were inside the chosen square
             for(int r = square.row; r < square.row + square.size; ++r) {
                 for(int c = square.col; c < square.col + square.size; ++c) {
                     Preconditions.checkState(null != potGrid.getEntry(r, c));
@@ -203,6 +209,19 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
             
             
+            /**
+             * potiential squares are keyed of bottom right corners
+             * square top left
+             * 
+             * so there may be squares remaining that depeneded on the wood
+             * just removed.  so if we removed
+             * xxyy
+             * xxyy
+             * yyyy
+             * yyyy
+             * 
+             * we check all y  anthyngi more would mean a contradiction
+             */
             for(int m = square.row; m < square.row + 2 * square.size && m < input.M; ++m) {
                 for(int n = square.col; n < square.col + 2 * square.size && n < input.N; ++n) {
                     PotentialSquares ps = potGrid.getEntry(m, n);
@@ -230,36 +249,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         }
         
         
-        /*
-        List<String> testBoard = Arrays.asList(
-        "0101",
-        "1001"
-        );
-        
-        for(String s : testBoard) {
-            log.debug("Int {}", Integer.toHexString(Integer.parseInt(s,2)));
-        }*/
-        
         return (sb.toString());
     }
     
-    /*
-     * Operators    Precedence
-
-unary   ++expr --expr +expr -expr ~ !
-multiplicative  * / %
-additive    + -
-shift   << >> >>>
-relational  < > <= >= instanceof
-equality    == !=
-bitwise AND &
-bitwise exclusive OR    ^bitwise inclusive OR    |.
-logical AND &&
-logical OR  ||
-ternary ? :
-assignment  = += -= *= /= %= &= ^= |= <<= >>= >>>=
-
-     */
     @Override
     public InputData readInput(Scanner scanner, int testCase)  {
         
@@ -303,29 +295,5 @@ assignment  = += -= *= /= %= &= ^= |= <<= >>= >>>=
     }
 
     
-
-
-    public Main() {
-        super();
-    }
-    
-    
-    public static void main(String args[]) throws Exception {
-
-        if (args.length < 1) {
-            args = new String[] { "sample.txt" };
-          //  args = new String[] { "C-small-practice.in" };
-//            args = new String[] { "B-large-practice.in" };
-         }
-         log.info("Input file {}", args[0]);
-
-         Main m = new Main();
-         Runner.goSingleThread(args[0], m, m);
-         //Runner.go(args[0], m, m, new InputData(-1));
-
-        
-       
-    }
-
     
 }

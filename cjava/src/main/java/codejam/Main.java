@@ -476,6 +476,14 @@ public class Main  {
         //Using maxflow to find a maximum perimeter, switches nodes in a bipartite graph to turn a maxcut to a mincut
         //codejam.y2008.round_final.year_code_jam.Main m = new codejam.y2008.round_final.year_code_jam.Main();
         
+        String[] files = Main.getFiles(m, args);
+        for (String file : files)
+        {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+            //Runner.go(file, m, m, 5);
+        }
     }
     
     static void round1A_2009(String args[])
@@ -673,13 +681,16 @@ public class Main  {
         
         
     }
+    //public static void main(String args[]) throws Exception {
     static void round1A_2010(String args[]) {
         
         //2010 1A
        //Grid rotation
         //codejam.y2010.rotate.Main m = new codejam.y2010.rotate.Main();
-       
-       //DP TODO bottom up
+              
+        /**
+         * Problem 2 -- Smooth
+         */
         codejam.y2010.round_1A.smooth.Main m = new codejam.y2010.round_1A.smooth.Main();
        
        /**
@@ -734,14 +745,19 @@ public class Main  {
         }   
     }
     
+    //public static void main(String args[]) throws Exception {
     static void round1C_2010(String args[]) {
         //2010 1C
         
         //codejam.y2010.load_testing.Main m = new codejam.y2010.load_testing.Main();         
         //codejam.y2010.rope_intranet.Main m = new codejam.y2010.rope_intranet.Main();
        
-       //Finding rectangles efficiently
-     //TODO large a bit slow
+       //
+        /**
+         *  Finding rectangles efficiently
+         *  
+         *   Removing largest rectangles in order and updating the rest 
+         */
        codejam.y2010.round_1C.chess_boards.Main m = new codejam.y2010.round_1C.chess_boards.Main();
 
      
@@ -807,8 +823,8 @@ public class Main  {
         }    
     }
     
-    static void round3_2010(String args[]) 
-    {
+    public static void main(String args[]) throws Exception {
+    //static void round3_2010(String args[]) {
         //2010 3
         
         //Used lattice to find random number generator points
@@ -822,8 +838,12 @@ public class Main  {
          */
        // codejam.y2010.round_3.boards.Main m = new codejam.y2010.round_3.boards.Main();
         
-        //Did my own algo, used GAP class.  TODO use their solution
-        //codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();       
+        /**
+         * Problem 3 -- hot dogs
+         * 
+         * Did my own algo, used GAP class.  TODO use their solution
+         */
+        codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();       
         
         /**
          * Problem 4.
@@ -832,7 +852,7 @@ public class Main  {
          * 
          * Bottom up DP used 
          */
-        codejam.y2010.round_3.different_sum.Main m = new codejam.y2010.round_3.different_sum.Main();
+        //codejam.y2010.round_3.different_sum.Main m = new codejam.y2010.round_3.different_sum.Main();
 
         
         String[] files = Main.getFiles(m, args);
@@ -844,9 +864,9 @@ public class Main  {
         }
     }
     
-    public static void main(String args[]) throws Exception
-    {
-        //static void roundFinal_2010(String args[]) {
+    //public static void main(String args[]) throws Exception {
+    
+    static void roundFinal_2010(String args[]) {
 
         //2010 final
         //Dynamic programming.  has both recursive and bottom up
@@ -874,8 +894,6 @@ public class Main  {
          * Problem 6
          * 
          * Symmetry, patters /topology
-         * 
-         * TODO optimize the connectedness checking
          */
         codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
 

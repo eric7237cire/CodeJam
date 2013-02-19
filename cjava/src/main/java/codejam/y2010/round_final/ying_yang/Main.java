@@ -8,6 +8,7 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 
+import ch.qos.logback.classic.Level;
 import codejam.utils.geometry.PointInt;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
@@ -24,7 +25,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
     public Main()
     {
         super("F", 1, 1);
-       // (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.ERROR);
     }
     
     
@@ -400,24 +401,23 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
      * @param c1IsWhite
      * @return
      */
+    static int fillGridCount = 0;
     private static boolean fillInGrid(GridChar grid, InputData in, 
             Set<PointInt> endPoints, PointInt[] borderBegEnd,
             int whiteBorderStart, int blackBorderStart,
             int whiteBorderLen,
             boolean c0IsWhite, boolean c1IsWhite) {
        
+        ++fillGridCount;
+        if (fillGridCount % 100000 == 0) {
+            log.error("fillInGrid {} test case #{}", fillGridCount, in.testCase);
+        }
 
-        //GridChar grid = GridChar.buildEmptyGrid(in.nRows, in.nCols, '.');
-        //grid.setyZeroOnTop(false); 
         
        fillInBottomRow(grid, null, in, endPoints, borderBegEnd, c0IsWhite, c1IsWhite);
-        
-        //int[][] degreeGrid = new int[in.nCols][in.nRows];
-     //   boolean[][] connectedEdge = new boolean[in.nCols][in.nRows];
-        
+       
         PointInt bp = null;
         PointInt wp = null;
-        
         
         
         /**
@@ -431,12 +431,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             for(int x = 0; x < in.nCols ; ++x) {
                 char c = grid.getEntry(y, x);
                 
-                /*
-                if (x==0 || x == in.nCols-1)
-                    connectedEdge[x][y] = true;
-                if (y==0 || y == in.nRows-1)
-                    connectedEdge[x][y] = true;
-                */
+                
                 Preconditions.checkState(c != '.');
                 
                 PointInt p = new PointInt(x,y);
@@ -501,76 +496,13 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 
                 Preconditions.checkState(northernNeighborColorWhite != null);
                  
-                    /*
-                char northernChar = grid.getEntry(y+1, x);
-                
-                if (northernNeighborColorWhite == true && northernChar == '#') {
-                   // log.debug("{}, {} -- North must be white. isWhite? {} north color {} degree {} neigh {}", x, y, 
-                   //         isWhite, northernChar, sameColorDegree, sameColorNeighbors);
-                    return false;
-                }
-                
-                if (!northernNeighborColorWhite && northernChar == '0') {
-                   // log.debug("{}, {} -- North must be black", x, y);
-                    return false;
-                }*/
                 
                 grid.setEntry(y+1, x, northernNeighborColorWhite ? '0' : '#');
-                
-                /*
-                Preconditions.checkState(checkGrid.getEntry(y+1,x) == '.' ||
-                        checkGrid.getEntry(y+1,x) == grid.getEntry(y+1,x));
-                */
-                
-                if (wp == null && isWhite) {
-                    wp = new PointInt(x,y);
-                }
-                if (bp == null && !isWhite) {
-                    bp = new PointInt(x,y);
-                }
-            
+                            
             }
         }
         
         
-        
-        
-        //TODO
-        /*
-        final int borderLen = 2*in.nRows + 2*in.nCols - 4;
-        
-        //Check border corresponds
-        
-        int border = blackBorderStart;
-        while(border != whiteBorderStart)
-        {
-            PointInt rc = getCoords(in,border);
-            if ('#' != grid.getEntry(rc.y(), rc.x()))
-            {
-                checkState(!checkBorder(c0IsWhite, in, grid, borderBegEnd[0], borderBegEnd[2], whiteBorderLen));
-                return false;
-            }
-            
-            ++border;
-            border %= borderLen;
-        }
-        
-        border = whiteBorderStart;
-        while(border != blackBorderStart) {
-            
-            PointInt rc = getCoords(in,border);
-            if ('0' != grid.getEntry(rc.y(), rc.x()))
-            {
-                checkState(!checkBorder(c0IsWhite, in, grid, borderBegEnd[0], borderBegEnd[2], whiteBorderLen));
-                return false;
-            }
-            
-            ++border;
-            border %= borderLen;
-        }
-        
-        checkState(checkBorder(c0IsWhite, in, grid, borderBegEnd[0], borderBegEnd[2], whiteBorderLen));
-        */
         
         if (!checkBorder(c0IsWhite, in,
                 grid, borderBegEnd[0], borderBegEnd[2], whiteBorderLen))
@@ -589,50 +521,15 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             int y = ep.y();
             char epColor = grid.getEntry(y,x);
             
-            Integer pathDirection = null;
+            //Integer pathDirection = null;
             
             if (epColor == '0' && wp == null) {
                 wp = ep;
             }
             if (epColor == '#' && bp == null) {
                 bp = ep;
-            }
-            
-            //Find direction
-            for(int d = 0; d <= 3; d += 1) {
-                int xx = x + delta[d][0];
-                int yy = y + delta[d][1];
-                
-                if (xx < 0 || xx >= in.nCols)
-                    continue;
-                
-                if (yy < 0 || yy >= in.nRows)
-                    continue;
-                
-                char path = grid.getEntry(yy,xx);
-                
-                if (path == epColor) {
-                    Preconditions.checkState(pathDirection==null);
-                    pathDirection = d;
-                }
-            }
-            
-            Preconditions.checkState(pathDirection!=null);
-            
-           // log.debug("Check grid {} ep {} dir {}", grid, ep, pathDirection);
-            /*
-             * These checks are redundant as the connect component check
-             * covers it
-            boolean ok = checkDiagonal(grid,ep, diagDirections[pathDirection][0], in);
-            if (!ok)
-                return false;
-            
-            ok = checkDiagonal(grid,ep, diagDirections[pathDirection][1], in);
-            
-            if (!ok)
-                return false;
-            */
-           // log.debug("Passed");
+            }            
+          
         }
               
         //Final check for connectedness, it is p
@@ -1070,6 +967,8 @@ this kind of grid passed diag checks, degree checks
                 
                 Set<PointInt> blackEndPoints = Sets.newHashSet();
                 Set<PointInt> whiteEndPoints = Sets.newHashSet();
+                //List<PointInt> blackEndPoints = Lists.newArrayList();
+                //List<PointInt> whiteEndPoints = Lists.newArrayList();
                 
                 //First check the corners
                 if (in.cornerSet.contains(whiteBorderStartPt)) {
@@ -1133,6 +1032,8 @@ this kind of grid passed diag checks, degree checks
                                 
                 List<PointInt> be = Lists.newArrayList(blackEndPoints);
                 List<PointInt> we = Lists.newArrayList(whiteEndPoints);
+               // List<PointInt> be = (blackEndPoints);
+               // List<PointInt> we = (whiteEndPoints);
                 
                 PointInt[] borderBegEnd = new PointInt[] {
                         whiteBorderStartPt,
@@ -1169,12 +1070,18 @@ this kind of grid passed diag checks, degree checks
         return String.format("Case #%d: %d", in.testCase, count);
     }
     
+    static int tryEnsCount = 0;
+    
     private static int tryEnds( List<PointInt> potentialBlackEnd, 
             List<PointInt> potentialWhiteEnd, 
             InputData in, GridChar grid, PointInt[] borderBegEnd,
             int whiteBorderStart, int blackBorderStart,
             int whiteBorderLen,
             boolean c0IsWhite, boolean c1IsWhite) {
+        ++tryEnsCount;
+        if (tryEnsCount % 50000 == 0) {
+            log.error("tryEnds count {} test case #{}", tryEnsCount, in.testCase);
+        }
         int count = 0;
         
         for(int bEnd1 = 0; bEnd1 < potentialBlackEnd.size(); ++bEnd1) {
@@ -1187,10 +1094,17 @@ this kind of grid passed diag checks, degree checks
                         PointInt blackEnd1 = potentialBlackEnd.get(bEnd1);
                         PointInt blackEnd2 = potentialBlackEnd.get(bEnd2);
         
-                        Preconditions.checkState(!blackEnd1.equals(blackEnd2));
+                        /*
+                        if (blackEnd1.equals(blackEnd2))
+                            continue;
+                        
+                        if (whiteEnd1.equals(whiteEnd2))
+                            continue;
+                            */
+                        //Preconditions.checkState(!blackEnd1.equals(blackEnd2));
                             
                         
-                        Preconditions.checkState(!whiteEnd1.equals(whiteEnd2)); 
+                        //Preconditions.checkState(!whiteEnd1.equals(whiteEnd2)); 
                             
                         
                        // GridChar tryGrid = new GridChar(grid);
