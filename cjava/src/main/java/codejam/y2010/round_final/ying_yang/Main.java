@@ -7,9 +7,7 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import ch.qos.logback.classic.Level;
 import codejam.utils.geometry.PointInt;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
@@ -22,11 +20,11 @@ import com.google.common.collect.Sets;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-
+   
     public Main()
     {
-        super();
+        super("F", 1, 1);
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
     
     
@@ -319,12 +317,22 @@ this kind of grid passed diag checks, degree checks
         
         int totalNodes = in.nCols*in.nRows;
         
+        
+        boolean has = hasMonocolorInteriorRow(grid,in);
+        boolean has2 = hasMonocolorInteriorCol(grid,in);
+        
+        if (has || has2)
+            return false;
+        
         //TODO do this while filling stuff in
         int white = getConnectedCount(grid,wp, in);
         int black = getConnectedCount(grid, bp, in);
         
         if (totalNodes != white+black)
+        {
+            log.error("Grid {}", grid);
             return false;
+        }
         
         return true;
     }
@@ -367,6 +375,66 @@ this kind of grid passed diag checks, degree checks
         }
         
         return true;
+    }
+    
+    private static boolean hasMonocolorInteriorRow(GridChar grid, InputData in) {
+        
+        for(int y = 1; y < in.nRows-1; ++y)
+        {            
+            boolean hasBlack = false;
+            boolean hasWhite = false;
+            
+            for(int x = 0; x < in.nCols; ++x) 
+            {
+                char ch = grid.getEntry(y, x);
+                
+                if (ch =='#')
+                    hasBlack = true;
+                
+                if (ch == '0')
+                    hasWhite = true;
+                
+                if (hasBlack && hasWhite)
+                    break;
+            }
+            
+            if (!hasBlack || !hasWhite)
+                return true;
+        }
+        
+        return false;
+            
+    }
+    
+    private static boolean hasMonocolorInteriorCol(GridChar grid, InputData in) {
+        
+        for(int x = 1; x < in.nCols-1; ++x) 
+        {
+            boolean hasBlack = false;
+            boolean hasWhite = false;
+         
+            for(int y = 0; y < in.nRows; ++y)
+            {            
+                    char ch = grid.getEntry(y, x);
+                    
+                    if (ch =='#')
+                        hasBlack = true;
+                    
+                    if (ch == '0')
+                        hasWhite = true;
+                    
+                    if (hasBlack && hasWhite)
+                        break;
+            
+            }
+            
+            if (!hasBlack || !hasWhite)
+                return true;
+            
+        }
+        
+        return false;
+            
     }
     
     private static int getConnectedCount(GridChar grid, PointInt start, InputData in) {
@@ -798,9 +866,7 @@ this kind of grid passed diag checks, degree checks
                  * Try all end points to see if valid grids are
                  * created.
                  */
-                
-                //tryEndsOld(potentialBlackEnd, potentialWhiteEnd, in, grid);
-                
+                                
                 List<PointInt> be = Lists.newArrayList(blackEndPoints);
                 List<PointInt> we = Lists.newArrayList(whiteEndPoints);
                 

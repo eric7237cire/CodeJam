@@ -1,8 +1,7 @@
-package codejam.y2012.round_3.havannah;
+package codejam.utils.datastructures;
 
 import java.util.BitSet;
 
-import codejam.utils.datastructures.BitSetInt;
 
 import com.google.common.base.Preconditions;
 
@@ -20,7 +19,7 @@ public class DynamicUnionFind
             attrs = new BitSetInt(0);
         }
         
-        BitSetInt attrs;
+        public BitSetInt attrs;
     }
 
     /**
@@ -29,11 +28,9 @@ public class DynamicUnionFind
     int componentCount;
     
     public DynamicUnionFind(int maxNodeId) {
-        memberToComponent = new Component[maxNodeId+1]; //Maps.newHashMap();
-        
+        memberToComponent = new Component[maxNodeId+1];         
     }
     
-    //private Map<Integer, Component> memberToComponent;
     
     Component[] memberToComponent;
     Component[] components;
@@ -63,9 +60,7 @@ public class DynamicUnionFind
         
         for(int i=com1.members.nextSetBit(0); i>=0; 
                 i=com1.members.nextSetBit(i+1)) {
-          //Special case!  members less than 11 are not real nodes, just markers
-         //   if (i <= 11)
-            //    continue;
+          
             Preconditions.checkState(memberToComponent[i] == com1);
             
             memberToComponent[i] = newComponent;
@@ -73,10 +68,7 @@ public class DynamicUnionFind
         
         for(int i=com2.members.nextSetBit(0); i>=0; 
                 i=com2.members.nextSetBit(i+1)) {
-            //Special case!  members less than 11 are not real nodes, just markers
-           // if (i <= 11)
-              //  continue;
-            
+                       
             Preconditions.checkState(memberToComponent[i] == com2);
             
             memberToComponent[i] = newComponent;

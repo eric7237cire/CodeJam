@@ -11,10 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.BitSetInt;
+import codejam.utils.datastructures.DynamicUnionFind;
+import codejam.utils.datastructures.DynamicUnionFind.Component;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
-import codejam.y2012.round_3.havannah.DynamicUnionFind.Component;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;

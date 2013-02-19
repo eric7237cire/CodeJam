@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.AssignmentProblem;
-import codejam.utils.datastructures.AssignmentProblemUsingMinMax;
 import codejam.utils.geometry.PointInt;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
@@ -17,7 +16,6 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
-import com.google.common.primitives.Ints;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
@@ -177,11 +175,11 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 }
             }
             
-            //AssignmentProblem ap = new AssignmentProblem(weight);
+            AssignmentProblem ap = new AssignmentProblem(weight);
             
-            int minWeight = Ints.checkedCast(AssignmentProblemUsingMinMax.doAssignmentProblemUsingMinMax(weightLong));
+            //int minWeight = Ints.checkedCast(AssignmentProblemUsingMinMax.doAssignmentProblemUsingMinMax(weightLong));
             
-            //int minWeight = DoubleMath.roundToInt(ap.weight(), RoundingMode.HALF_EVEN);
+            int minWeight = DoubleMath.roundToInt(ap.weight(), RoundingMode.HALF_EVEN);
             
             min = Math.min(minWeight, min);
         }

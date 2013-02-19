@@ -261,6 +261,7 @@ public class Main  {
         }   
     }
     
+    //public static void main(String args[]) throws Exception
     static void round2_2008(String args[]) {
         
         /**
@@ -376,13 +377,14 @@ public class Main  {
         //codejam.y2008.round_emea.bus_stops.Main m = new codejam.y2008.round_emea.bus_stops.Main();
         
         
-       String[] files = Main.getFiles(m, args);
-       for (String file : files) {
-           log.info("Input file {}", file);
+        String[] files = Main.getFiles(m, args);
+        for (String file : files)
+        {
+            log.info("Input file {}", file);
 
-           Runner.goSingleThread(file, m, m);
-         //Runner.go(file, m, m, 5);
-       }   
+            Runner.goSingleThread(file, m, m);
+            //Runner.go(file, m, m, 5);
+        }
     }
     
     static void roundAMER_2008(String args[])
@@ -419,11 +421,18 @@ public class Main  {
          * instead of objects.  Also each node does not have it's own list of M paths
          */
         //codejam.y2008.round_amer.test_passing.Main m = new codejam.y2008.round_amer.test_passing.Main();
-        
-       //Non bipartite matching using Edmonds algorithm (code found...)
-        //TODO use code in compet book
-        //codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();
-        
+
+        //Non bipartite matching using Edmonds algorithm (code found...)
+        codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();
+
+        String[] files = Main.getFiles(m, args);
+        for (String file : files)
+        {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+            //Runner.go(file, m, m, 5);
+        }
     }
     static void roundAPAC_2008(String args[])
     {
@@ -442,10 +451,20 @@ public class Main  {
     {
  //2008 Finals  Cheated all the way...
         
-        //Psuedo linear optimization.  Visualing solution 2d line
-        //codejam.y2008.round_final.juice.Main m = new codejam.y2008.round_final.juice.Main();
+        /**
+         * Psuedo linear optimization.  Visualing solution 2d line.
+         * 
+         * Finding max points A,B,C satisfying some A*,B*,C* with
+         * A*+B*+C* = 10000 and each A<=A*, etc 
+         */
+        codejam.y2008.round_final.juice.Main m = new codejam.y2008.round_final.juice.Main();
         
-        //Defining a coord system, recognizing non decreasing sequence
+        /**
+         * Problem 2
+         *
+         * Defining a coord system, recognizing non decreasing sequence
+         * How many points in a rectangle hit by 2 vectors
+         */
         //codejam.y2008.round_final.ping_pong_balls.Main m = new codejam.y2008.round_final.ping_pong_balls.Main();
         
         //A clever trick, also understanding there are not really multiple solutions to watch out for
@@ -459,27 +478,40 @@ public class Main  {
         
     }
     
+    static void round1A_2009(String args[])
+    {
+        //TODO all 3
+    }
+    
     static void round1B_2009(String args[])
     {
         //Round 1B -- 2009
         //A in c++
         //Finding next permutation in a sequence
-         //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
-        
+        //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
+
         //A Breadth first search, did not really do what solution suggested, used a sortedSet instead of queue
-         //codejam.y2009.round_1B.square_math.Main m = new codejam.y2009.round_1B.square_math.Main();
-         
+        codejam.y2009.round_1B.square_math.Main m = new codejam.y2009.round_1B.square_math.Main();
+
+        String[] files = Main.getFiles(m, args);
+        for (String file : files)
+        {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+            //Runner.go(file, m, m, 5);
+        }
     }
-    
+
     static void round1C_2009(String args[])
     {
         //Round 1C -- 2009 
         //Finding min number in a large base
-         //codejam.y2009.round_1C.all_your_base.Main m = new codejam.y2009.round_1C.all_your_base.Main();
-        
+        //codejam.y2009.round_1C.all_your_base.Main m = new codejam.y2009.round_1C.all_your_base.Main();
+
         //A bit of physics / calculus 
-         //codejam.y2009.round_1C.center_mass.Main m = new codejam.y2009.round_1C.center_mass.Main();
-        
+        codejam.y2009.round_1C.center_mass.Main m = new codejam.y2009.round_1C.center_mass.Main();
+
         /**
          * Round 1C -- 2009 
          * Problem 3
@@ -488,8 +520,16 @@ public class Main  {
          * 1.  Proposed solution, top down
          * 2.  Also found LucaB's solution which is bottom up and like 10x faster
          */
-         //codejam.y2009.round_1C.bribe_prisoner.Main m = new codejam.y2009.round_1C.bribe_prisoner.Main();
-         
+        //codejam.y2009.round_1C.bribe_prisoner.Main m = new codejam.y2009.round_1C.bribe_prisoner.Main();
+
+        String[] files = Main.getFiles(m, args);
+        for (String file : files)
+        {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+            //Runner.go(file, m, m, 5);
+        }
     }
     
     
@@ -804,41 +844,49 @@ public class Main  {
         }
     }
     
-    static void roundFinal_2010(String args[]) {
-        
-        
-     //2010 final
-     //Dynamic programming.  has both recursive and bottom up
-    // codejam.y2010.round_final.letter_stamper.Main m = new codejam.y2010.round_final.letter_stamper.Main();
-     
-     //Partial 2 trees, decomposition to find longest path that does not intersect nodes twice
-   //  codejam.y2010.round_final.city_tour.Main m = new codejam.y2010.round_final.city_tour.Main();
-     
-     //Greedy algorithm, proof by induction.  Very easy implementation to a seemingly hard problem
-    // codejam.y2010.round_final.candy_store.Main m = new codejam.y2010.round_final.candy_store.Main();
-     
-     //Intervals, Splitting interval into 2.  Binary search.  
-     //codejam.y2010.round_final.travel_plan.Main m = new codejam.y2010.round_final.travel_plan.Main();
-             
-     /**
-      * 2010 -- Round final          
-      * Problem 5
-      * 
-      * Interesting DP problem ; loop detection
-      */
-     //codejam.y2010.round_final.ninjutsu.Main m = new codejam.y2010.round_final.ninjutsu.Main();
-     
-     /**
-      * 2010 -- Round final
-      * Problem 6
-      * 
-      * Symmetry, patters /topology
-      * 
-      * TODO optimize the connectedness checking
-      */
-     codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
-     
-     
+    public static void main(String args[]) throws Exception
+    {
+        //static void roundFinal_2010(String args[]) {
+
+        //2010 final
+        //Dynamic programming.  has both recursive and bottom up
+        // codejam.y2010.round_final.letter_stamper.Main m = new codejam.y2010.round_final.letter_stamper.Main();
+
+        //Partial 2 trees, decomposition to find longest path that does not intersect nodes twice
+        //  codejam.y2010.round_final.city_tour.Main m = new codejam.y2010.round_final.city_tour.Main();
+
+        //Greedy algorithm, proof by induction.  Very easy implementation to a seemingly hard problem
+        // codejam.y2010.round_final.candy_store.Main m = new codejam.y2010.round_final.candy_store.Main();
+
+        //Intervals, Splitting interval into 2.  Binary search.  
+        //codejam.y2010.round_final.travel_plan.Main m = new codejam.y2010.round_final.travel_plan.Main();
+
+        /**
+         * 2010 -- Round final          
+         * Problem 5
+         * 
+         * Interesting DP problem ; loop detection
+         */
+        //codejam.y2010.round_final.ninjutsu.Main m = new codejam.y2010.round_final.ninjutsu.Main();
+
+        /**
+         * 2010 -- Round final
+         * Problem 6
+         * 
+         * Symmetry, patters /topology
+         * 
+         * TODO optimize the connectedness checking
+         */
+        codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
+
+        String[] files = Main.getFiles(m, args);
+        for (String file : files)
+        {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+            //Runner.go(file, m, m, 5);
+        }
     }
     
     
@@ -1288,6 +1336,9 @@ public class Main  {
          */
         codejam.y2012.round_final.twirling_freedom.Main m = new codejam.y2012.round_final.twirling_freedom.Main();
         
+        
+        //TODO problem 5
+        
         String[] files = Main.getFiles(m, args);
         for (String file : files) {
             log.info("Input file {}", file);
@@ -1297,7 +1348,7 @@ public class Main  {
         }
     }
     
-    public static void main(String args[]) throws Exception {
+    public static void main2(String args[]) throws Exception {
 
         //africa(args);
         
