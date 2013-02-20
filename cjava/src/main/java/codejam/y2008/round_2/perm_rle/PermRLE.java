@@ -14,6 +14,7 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.DoubleFormat;
 
 import com.google.common.collect.Sets;
+import com.google.common.math.IntMath;
 
 public class PermRLE extends InputFilesHandler
 implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
@@ -25,8 +26,145 @@ implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
             //(( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
         }
         
+        private static class SubSetData
+        {
+            final int size;
+            final int nSubSets;
+            
+            //elements[subSetIndex][elementIndex]  with subSetIndex < nSubSets and elementIndex < size
+            final int[][] elements;
+            
+            //bitMask[subSetIndex] = all elementIndexes in a bitmask 0000101 is size = 2, elements 0 and 2
+            final int[] bitMask;
+            
+            SubSetData(int maxSize, int size)
+            {
+                this.size = size;
+                nSubSets = IntMath.binomial(maxSize, size);
+                elements  = new int[nSubSets][size];
+                
+                bitMask = new int[nSubSets];
+            }
+        }
         
-        int shortestHamiltonianCycle( int[][] weights, InputData in)
+        static SubSetData[] preComputeSubsets(int maxSize)
+        {
+            SubSetData[] subsets = new SubSetData[maxSize];
+            
+            //Current index of each subset, incremented as each subset is found
+            int[] cur = new int[maxSize];
+            
+            //Intialize
+            for(int s = 0; s < maxSize;++s)
+            {
+                SubSetData ssd = new SubSetData(maxSize,s+1);
+                subsets[s] = ssd;                
+            }
+            
+            //Go through each subset
+            for(int i = 1; i < 1 << maxSize; ++i)
+            {
+                //How large?
+                int pc = Integer.bitCount(i);
+                
+                
+                int curSubset = cur[pc-1]++;
+                
+                //Set bitmask
+                subsets[pc-1].bitMask[curSubset] = i;
+                
+                //Find each actual element
+                int curSubsetElem = 0;
+                for(int j = 0; j < maxSize; ++j)
+                {
+                    if ( (i & 1 << j) == 0)
+                        continue;
+                    
+                    subsets[pc-1].elements[ curSubset ][ curSubsetElem ++ ] = j;
+                }
+                
+                 
+            }
+            
+            return subsets;
+            
+        }
+        
+        static int[][] dp= new int[ 1 << 16 ][16];
+        int shortestHamiltonianCycle( SubSetData[] ssd, int[][] weights, InputData in)
+        {
+            /**
+             * Shortest path starts from x, visits everything in A
+             * and ends up at node 0 
+             * dp[A][x] 
+             * 
+             * A is a bit mask
+             * 
+             */
+            //Advantage of bottom up , we initialize as we go
+            
+            //int[][] dp = new int[ 1 << in.k ][in.k];
+            
+            
+            dp[1][0] = 0;
+            dp[0][0] = 0;
+            
+            
+            
+            for(int n = 0; n < ssd[0].nSubSets; ++n)
+            {
+                int subSet = ssd[0].bitMask[n];
+                                
+                dp[subSet][n] = weights[ ssd[0].elements[n][0] ][0];
+            }
+            
+            for(int subsetSize = 2; subsetSize <= in.k; ++subsetSize)
+            {
+                SubSetData curSSD = ssd[subsetSize-1];
+                                
+                //Loop through all subsets of the next size
+                for(int ssNum = 0; ssNum < curSSD.nSubSets; ++ssNum)
+                {
+                    //Get the bitmask
+                    int ssBitMask = curSSD.bitMask[ssNum];
+                    
+                    //Go through each element to select a start node
+                    for(int ssElemIdx = 0; ssElemIdx < subsetSize; ++ssElemIdx)
+                    {
+                        int startNode = curSSD.elements[ssNum][ssElemIdx];
+                        
+                        //Reset the existing value
+                        dp[ssBitMask][startNode] = Integer.MAX_VALUE;
+                        
+                        int prevSSBitMask = ssBitMask  &  ~(1 << startNode);
+                        
+                        /**
+                         * Here we want to start from startNode and go to any element remaining 
+                         * in the subset, taking the minimum cost of adding startNode to the subset
+                         */
+                        for(int ssExistElemIdx = 0; ssExistElemIdx < subsetSize; ++ssExistElemIdx)
+                        {
+                            if (ssElemIdx == ssExistElemIdx)
+                                continue;
+                            
+                            int nodeInCycle = curSSD.elements[ssNum][ssExistElemIdx];
+                            
+                            int edgeCost = weights[startNode][nodeInCycle];
+                            
+                            dp[ssBitMask][startNode] = Math.min(dp[ssBitMask][startNode],
+                                    edgeCost + dp[prevSSBitMask][nodeInCycle]);
+                        }
+                        
+                        
+                    }
+                }
+            }
+                
+            return dp[ (1<<in.k) - 1][0];
+            
+        }
+        
+        int shortestHamiltonianCycleOld( int[][] weights, InputData in)
         {
             /**
              * Shortest path starts from x, visits everything in A
@@ -186,6 +324,8 @@ implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
         @Override
         public String handleCase(InputData in)
         {
+            SubSetData[] ssd = preComputeSubsets(in.k);
+            
             int minimum = Integer.MAX_VALUE;
             for (int lastInPermutation = 0; lastInPermutation < in.k; ++lastInPermutation)
             {
@@ -202,7 +342,7 @@ implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
                     }
                 }
                 
-                int cur = 1+shortestHamiltonianCycle(directedGraph, in);
+                int cur = 1+shortestHamiltonianCycle(ssd, directedGraph, in);
                 
                 minimum = Math.min(minimum, cur);
             }
