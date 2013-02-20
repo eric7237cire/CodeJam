@@ -430,7 +430,7 @@ public class Main  {
          * Run example to see more
          */
         // 
-       //codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
+       codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
         //codejam.y2008.round_amer.code_sequence.Main.example();
         
         /**
@@ -461,16 +461,34 @@ public class Main  {
             //Runner.go(file, m, m, 5);
         }
     }
-    static void roundAPAC_2008(String args[])
-    {
+    
+    //public static void main(String args[]) throws Exception {
+    static void roundAPAC_2008(String args[]) {
         //2008 apac semis
         //A and B are in c++        
+        
         //C++ for millionaire exists that is very fast
+        
         //Probability ; Making a problem discrete that appears continous
         //codejam.y2008.round_apac.millionaire.Main m = new codejam.y2008.round_apac.millionaire.Main();
+      
+        /**
+         * Problem 4
+         * Modern Art
+         * 
+         * Subtree isomorhisme.  Requires multiple bipartite matchings recursively down the tree
+         * 
+         */
+        codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
         
-        //Subtree isomorhisme.  Requires multiple bipartite matchings recursively down the tree
-        //codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
+        String[] files = Main.getFiles(m, args);
+        for (String file : files)
+        {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+            //Runner.go(file, m, m, 5);
+        }
         
     }
     
@@ -518,14 +536,21 @@ public class Main  {
         //TODO all 3
     }
     
-    static void round1B_2009(String args[])
-    {
+    
+    //static void round1B_2009(String args[]) {
+    public static void main(String args[]) throws Exception {
+    
         //Round 1B -- 2009
         //A in c++
         //Finding next permutation in a sequence
         //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
 
-        //A Breadth first search, did not really do what solution suggested, used a sortedSet instead of queue
+        /**
+         * Problem 3 -- Square math
+         *
+         * A Breadth first search, did not really do what solution suggested, used a sortedSet instead of queue
+         */
+        
         codejam.y2009.round_1B.square_math.Main m = new codejam.y2009.round_1B.square_math.Main();
 
         String[] files = Main.getFiles(m, args);
