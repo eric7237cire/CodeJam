@@ -204,20 +204,22 @@ public class Main  {
         //}
     }
     
-    static void round1B_2008(String args[]) {
+    public static void main(String args[]) throws Exception {
+    //static void round1B_2008(String args[]) {
         
         /**
          * Problem 2
          * 
          * TODO union find
          */
+        codejam.y2008.round_1B.number_sets.Main m = new codejam.y2008.round_1B.number_sets.Main();
         
         /**
          * Problem 3
          * 
          * Interval tree / Binary Interval Tree (Fenwick)
          */
-        codejam.y2008.round_1B.mouse_trap.Main m = new codejam.y2008.round_1B.mouse_trap.Main();
+        //codejam.y2008.round_1B.mouse_trap.Main m = new codejam.y2008.round_1B.mouse_trap.Main();
         
         
     
@@ -237,6 +239,7 @@ public class Main  {
          * Ugly numbers
          * 
          * Chinese remainder theorems
+         * TODO
          */
     
         /**
@@ -823,8 +826,8 @@ public class Main  {
         }    
     }
     
-    public static void main(String args[]) throws Exception {
-    //static void round3_2010(String args[]) {
+    //public static void main(String args[]) throws Exception {
+    static void round3_2010(String args[]) {
         //2010 3
         
         //Used lattice to find random number generator points
