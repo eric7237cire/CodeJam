@@ -204,13 +204,13 @@ public class Main  {
         //}
     }
     
-    public static void main(String args[]) throws Exception {
-    //static void round1B_2008(String args[]) {
+    //public static void main(String args[]) throws Exception {
+    static void round1B_2008(String args[]) {
         
         /**
          * Problem 2
          * 
-         * TODO union find
+         * Good test for union find
          */
         codejam.y2008.round_1B.number_sets.Main m = new codejam.y2008.round_1B.number_sets.Main();
         
@@ -264,20 +264,21 @@ public class Main  {
         }   
     }
     
-    //public static void main(String args[]) throws Exception
-    static void round2_2008(String args[]) {
+    public static void main(String args[]) throws Exception {
+    //static void round2_2008(String args[]) {
         
         /**
          * Problem 3
          * 
          * Simplex algorithm
          */
-        codejam.y2008.round_2.star_wars.Main m = new codejam.y2008.round_2.star_wars.Main();
+        //codejam.y2008.round_2.star_wars.Main m = new codejam.y2008.round_2.star_wars.Main();
         
         
         /**
          * TODO PermRLE Problem 4
          */
+        codejam.y2008.round_2.perm_rle.PermRLE m = new codejam.y2008.round_2.perm_rle.PermRLE(); 
     
         String[] files = Main.getFiles(m, args);
         for (String file : files) {
