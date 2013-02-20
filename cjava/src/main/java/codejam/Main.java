@@ -844,7 +844,9 @@ public class Main  {
         /**
          * Problem 3 -- hot dogs
          * 
-         * Did my own algo, used GAP class.  TODO use their solution
+         * Did my own algo, used GAP class.  < 2 secs  
+         * 
+         * idea use their solution
          */
         codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();       
         
