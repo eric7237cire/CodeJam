@@ -264,8 +264,12 @@ public class Main  {
         }   
     }
     
-    public static void main(String args[]) throws Exception {
-    //static void round2_2008(String args[]) {
+    //public static void main(String args[]) throws Exception {
+    static void round2_2008(String args[]) {
+        
+        //Problem 1 boolean tree -- C++  DP
+        
+        //Problem 2 Triangle Areas --inC++  forming triangles with int points for a certain area
         
         /**
          * Problem 3
@@ -276,7 +280,14 @@ public class Main  {
         
         
         /**
-         * TODO PermRLE Problem 4
+         * PermRLE Problem 4
+         * 
+         * Finding shortest hamiltonian cycle in a complete graph
+         * using bottom up DP to turn n! into n * 2^n
+         * 
+         * Also precompute all subsets and their indexes
+         * 
+         * Avoids use of non primitive types
          */
         codejam.y2008.round_2.perm_rle.PermRLE m = new codejam.y2008.round_2.perm_rle.PermRLE(); 
     
@@ -289,7 +300,12 @@ public class Main  {
         }   
     }
     
+    //public static void main(String args[]) throws Exception {
     static void round3_2008(String args[]) {
+        
+        //Problem 1 pockets -- computing polygon area and pockets given a walk (F, L, R, etc) TODO
+        
+        //Problem 2 portal -- interesting shortest path using Dijkstars / BFS  (in C++)  TODO
         
         /**
          * Problem 3
@@ -391,8 +407,8 @@ public class Main  {
         }
     }
     
-    static void roundAMER_2008(String args[])
-    {
+    //public static void main(String args[]) throws Exception {
+    static void roundAMER_2008(String args[]) {
         /**
          * 2008 amer semis -- problem 1
          * Tree traversal depth first
@@ -426,8 +442,15 @@ public class Main  {
          */
         //codejam.y2008.round_amer.test_passing.Main m = new codejam.y2008.round_amer.test_passing.Main();
 
-        //Non bipartite matching using Edmonds algorithm (code found...)
-        codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();
+        //
+        /**
+         * Problem 4
+         * 
+         * Combinatoric game 
+         * 
+         * Non bipartite matching using Edmonds algorithm (code found...)
+         */
+        //codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files)

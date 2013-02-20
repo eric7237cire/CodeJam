@@ -7,11 +7,9 @@ import java.util.Scanner;
 import java.util.Set;
 
 import ch.qos.logback.classic.Level;
-import codejam.utils.datastructures.graph.WeightedGraphInt;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
-import codejam.utils.utils.DoubleFormat;
 
 import com.google.common.collect.Sets;
 import com.google.common.math.IntMath;
@@ -23,12 +21,12 @@ implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
         public PermRLE()
         {
             super("D", 1, 1);
-            //(( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
+            (( ch.qos.logback.classic.Logger) log).setLevel(Level.OFF);
         }
         
         private static class SubSetData
         {
-            final int size;
+            //final int size;
             final int nSubSets;
             
             //elements[subSetIndex][elementIndex]  with subSetIndex < nSubSets and elementIndex < size
@@ -39,7 +37,7 @@ implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
             
             SubSetData(int maxSize, int size)
             {
-                this.size = size;
+              //  this.size = size;
                 nSubSets = IntMath.binomial(maxSize, size);
                 elements  = new int[nSubSets][size];
                 
