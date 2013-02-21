@@ -1,5 +1,7 @@
 package codejam.y2012.round_final.shifting_paths;
 
+import static com.google.common.base.Preconditions.checkState;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -20,9 +22,6 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.IntegerPair;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-
-import static com.google.common.base.Preconditions.*;
 
 public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles
 {
@@ -118,6 +117,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
             if (p.trapNodes.isSet(curLoc)) {
                 DP dn = new DP(-1,-1,-1);
                 for(IntegerPair ip : path) {
+                    checkState(dp[ip.first()][ip.second()] == null);
                     dp[ip.first()][ip.second()] = dn; 
                 }
                 return;
@@ -130,8 +130,12 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
                 for(int i = 0; i < path.size(); ++i)
                 {
                     IntegerPair pathElem = path.get(i);
+                    checkState(dp[pathElem.first()][pathElem.second()] == null);
+                    
                     dp[pathElem.first()][pathElem.second()] =
                             new DP(stateA, locB, step - i);
+                    
+                    
                 }
                 
                 return;
@@ -147,6 +151,10 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
                     for(int i = 0; i < path.size(); ++i)
                     {
                         IntegerPair pathElem = path.get(i);
+                        
+                        checkState(dp[pathElem.first()][pathElem.second()] == null);
+                        
+                        
                         dp[pathElem.first()][pathElem.second()] =
                                 exist;
                     }
@@ -372,9 +380,11 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         @Override
         public String toString()
         {
-            return "Partition [trapNodes=" + 
+            return "Partition A size " + A.size() + " B Size " + B.size() + " trapNodes=" + 
+                    StringUtils.reverse(Long.toBinaryString(trapNodes.getBits()));
+            /*return "Partition [trapNodes=" + 
         StringUtils.reverse(Long.toBinaryString(trapNodes.getBits()))
-        + ", B=" + B + ", A=" + A + "]";
+        + ", B=" + B + ", A=" + A + "]";*/
         }
         
         
@@ -480,7 +490,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         
         
         
-        log.debug("Partition {}", p);
+        log.info("Partition {}", p);
         return p;
     }
 
@@ -517,6 +527,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         }
         
         
+        
         int stateB = (1 << p.B.size()) - 1;
         int stateA = (1 << p.A.size()) - 1;
         
@@ -527,7 +538,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         long maxSteps = (1L << in.N) * in.N;
 
        // maxSteps = 150;
-        
+        log.info("Start B");
         while(steps < maxSteps)
         {
             log.debug("Cur location {} state A {} state B {} steps {}",
