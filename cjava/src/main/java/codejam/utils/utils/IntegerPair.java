@@ -3,7 +3,7 @@ package codejam.utils.utils;
 public class IntegerPair implements Comparable<IntegerPair> {
   int _first, _second;
 
-  public IntegerPair(Integer f, Integer s) {
+  public IntegerPair(int f, int s) {
     _first = f;
     _second = s;
   }

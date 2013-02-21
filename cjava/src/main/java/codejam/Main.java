@@ -1437,9 +1437,10 @@ public class Main  {
          * 
          * Rotation, rotating calipurs, convex hull
          */
-        codejam.y2012.round_final.twirling_freedom.Twirling m = new codejam.y2012.round_final.twirling_freedom.Twirling();
+        //codejam.y2012.round_final.twirling_freedom.Twirling m = new codejam.y2012.round_final.twirling_freedom.Twirling();
         
         
+        codejam.y2012.round_final.shifting_paths.ShiftingPaths m  = new codejam.y2012.round_final.shifting_paths.ShiftingPaths(); 
         //TODO problem 5
         
         String[] files = Main.getFiles(m, args);
