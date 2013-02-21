@@ -119,7 +119,7 @@ public class BitSetLong {
     }
     
     public boolean isSet(int pos) {
-        return (bits & 1 << pos) != 0;
+        return (bits & 1L << pos) != 0;
     }
     
     @Override

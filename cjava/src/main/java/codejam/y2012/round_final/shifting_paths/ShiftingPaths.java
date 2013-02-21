@@ -29,7 +29,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
 
     public ShiftingPaths() {
         super("E", 1, 0);
-        //((ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
+        ((ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
 
     @Override
@@ -99,6 +99,91 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         }
         
         return new DP(-1, -1, -1);
+
+    }
+    
+    void calcDPQueue(int stateA, int locA, Partition p, InputData in, DP[][] dp)
+    {
+        
+        int curLoc = p.A.get( locA );
+
+        int maxSteps = (1 << 20) * 10;
+        
+        //Aloc, Astate
+        List<IntegerPair> path = Lists.newArrayList();
+
+        int step = 0;
+        for (; step < maxSteps; ++step)
+        {
+            if (p.trapNodes.isSet(curLoc)) {
+                DP dn = new DP(-1,-1,-1);
+                for(IntegerPair ip : path) {
+                    dp[ip.first()][ip.second()] = dn; 
+                }
+                return;
+            }
+            
+            if (p.Bset.isSet(curLoc))
+            {
+                int locB = p.origIndexToBIndex(curLoc);
+                
+                for(int i = 0; i < path.size(); ++i)
+                {
+                    IntegerPair pathElem = path.get(i);
+                    dp[pathElem.first()][pathElem.second()] =
+                            new DP(stateA, locB, step - i);
+                }
+                
+                return;
+            }
+            
+            int aLoc = p.origIndexToAIndex(curLoc);
+            
+            if (dp[aLoc][stateA] != null) {
+                DP exist = dp[aLoc][stateA];
+                
+                if (exist.inLoop())
+                {
+                    for(int i = 0; i < path.size(); ++i)
+                    {
+                        IntegerPair pathElem = path.get(i);
+                        dp[pathElem.first()][pathElem.second()] =
+                                exist;
+                    }
+                    
+                    return;
+                }
+                
+                for(int i = 0; i < path.size(); ++i)
+                {
+                    IntegerPair pathElem = path.get(i);
+                    dp[pathElem.first()][pathElem.second()] =
+                            new DP(exist.newStateA, 
+                                    exist.locB, exist.stepsTaken + step - i);
+                }
+                return;
+                
+            }
+            
+            
+            
+            path.add(new IntegerPair(aLoc, stateA));
+            
+            //Calculate new location
+            boolean goLeft = (stateA & 1 << aLoc) != 0;
+            
+            stateA  ^= 1 << aLoc;
+            curLoc = goLeft ? in.leftRight[curLoc].first() : in.leftRight[curLoc].second();
+
+            
+            
+            
+            //Must go through B before getting to final node
+            checkState (curLoc != in.N - 1);
+                
+        }
+        
+        
 
     }
     
@@ -217,8 +302,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         
         //We left set A
         if (p.Bset.isSet(nextNode)) {
-            int indexInB = p.B.indexOf(nextNode);
-            checkState(indexInB >= 0 && indexInB < p.B.size());
+            int indexInB = p.origIndexToBIndex(nextNode);
             
             DP dn  = new DP(nextStateA,  indexInB,
             1 );
@@ -393,11 +477,13 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         {
             for(int locA = 0; locA < p.A.size(); ++locA)
             {
-                dpOnSetA(p, stateA, locA, in, dp);
+                //dpOnSetA(p, stateA, locA, in, dp);
+                calcDPQueue(stateA, locA, p, in, dp);
                 
                 DP check = bruteForce(stateA, locA, p, in);
                 
                 DP val = dp[locA][stateA];
+                
                 
                 checkState(val.equals(check));
                 
