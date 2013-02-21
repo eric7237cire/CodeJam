@@ -8,7 +8,7 @@ import codejam.utils.utils.GridChar;
 public class InputData extends AbstractInputData {
     int width ;
     int queries ;
-    GridChar grid;
+    char[][] grid;
     List<Integer> targets;
     
     InputData(int testCase) {

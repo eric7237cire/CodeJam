@@ -544,8 +544,8 @@ public class Main  {
     }
     
     
-    static void round1B_2009(String args[]) {
-    //public static void main(String args[]) throws Exception {
+    //static void round1B_2009(String args[]) {
+    public static void main(String args[]) throws Exception {
     
         //Round 1B -- 2009
         //A in c++
@@ -734,15 +734,15 @@ public class Main  {
         }    
     }
 
-    public static void main(String args[]) throws Exception {
-    //static void roundQual_2010(String args[]) {
+    //public static void main(String args[]) throws Exception {
+    static void roundQual_2010(String args[]) {
  //2010 qual
         
         //A in c++
          //Bignumber GCD
          //codejam.y2010.fair_warning.Main m = new codejam.y2010.fair_warning.Main();
          
-         //Finding repeated state?  
+         //Looping when possible, state machine ish 
          codejam.y2010.round_qual.theme_park.ThemePark m = 
                  new codejam.y2010.round_qual.theme_park.ThemePark();
         

@@ -59,7 +59,7 @@ import com.google.common.base.Objects;
 		/**
 		 * @return the maxRow
 		 */
-		public static int getMaxRow() {
+		private static int getMaxRow() {
 			return maxRow;
 		}
 
@@ -74,7 +74,7 @@ import com.google.common.base.Objects;
 		/**
 		 * @return the maxCol
 		 */
-		public static int getMaxCol() {
+		private static int getMaxCol() {
 			return maxCol;
 		}
 

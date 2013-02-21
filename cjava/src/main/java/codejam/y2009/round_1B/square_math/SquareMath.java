@@ -5,6 +5,8 @@ import java.util.Scanner;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import ch.qos.logback.classic.Level;
+import codejam.utils.Grid2d;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -19,7 +21,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 
     public SquareMath(){
         super("C",1,1);
-        
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
         
         expressionOrder = new Ordering<String>() {
             @Override
@@ -38,7 +40,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 	int expressionCount = 0;
 	
 	private String getExpression(int targetValue) {
-		int maxPosition = Position.getMaxRow() * Position.getMaxCol();
+		int maxPosition = minExpression.length;
 		
 		String retExp = null;
 		for (int position = 0; position < maxPosition; ++position) {
@@ -83,11 +85,14 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 	 * @param table
 	 */
 	private void calculateExpression(
-			GridChar table) {
+			char[][] table) {
 
 		expressionCount = 0;
 
-		int maxPosition = Position.getMaxRow() * Position.getMaxCol();
+		int maxPosition = Grid2d.getSize(table); 
+		int maxRow = table.length;
+		int maxCol = table[0].length;
+		
 		int maxValue = 350 + NEG_ADJUSTMENT;
 		minExpression = new String[maxPosition][maxValue];
 		visited = new boolean[maxPosition][maxValue];
@@ -95,16 +100,16 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 		SortedSet<PositionValueExp> minSet = new TreeSet<>(); 
 		
 		// Initialize known minimums
-		for (int r = 0; r < Position.getMaxRow(); ++r) {
-			for (int c = 0; c < Position.getMaxCol(); ++c) {
-				Character ch = table.getEntry(r, c);
+		for (int r = 0; r < maxRow; ++r) {
+			for (int c = 0; c < maxCol; ++c) {
+				char ch = table[r][c];
 				if (!Character.isDigit(ch)) {
 					continue;
 				}
 				int digit = Character.digit(ch, 10);
-				minExpression[new Position(r, c).toInt()][digit+NEG_ADJUSTMENT] = "" + ch;
+				minExpression[r * maxCol + c][digit+NEG_ADJUSTMENT] = "" + ch;
 				
-				minSet.add(new PositionValueExp(new Position(r, c).toInt(), digit+NEG_ADJUSTMENT,  "" + ch));
+				minSet.add(new PositionValueExp(r*maxCol + c, digit+NEG_ADJUSTMENT,  "" + ch));
 				
 			}
 		}
@@ -134,20 +139,36 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 			
 			//For All Neighbors p of Vertex k.
 			Position minUnvisitedPosition = new Position(minUnvisitedPositionIdx);
+			int row = minUnvisitedPositionIdx / maxCol;
+			int col = minUnvisitedPositionIdx % maxCol;
 			
-			List<Position> signPositions = minUnvisitedPosition.getAdjPositions();
-
-			final int minUnvisitedDigit = Character.digit(table.getEntry(minUnvisitedPosition.getRow(), minUnvisitedPosition.getCol()), 10);
+			
+			final int minUnvisitedDigit = Character.digit(table[minUnvisitedPosition.getRow()][ minUnvisitedPosition.getCol()], 10);
 			Preconditions.checkState(minUnvisitedDigit >= 0 && minUnvisitedDigit <= 9);
 			
-			for (Position signPos : signPositions) {
-				Character sign = table.getEntry(signPos.getRow(), signPos.getCol());
+			for (int dir = 0; dir <= 3; ++dir) {
+			    int signPosRow = row + Grid2d.deltaDir[dir][0];
+			    int signPosCol = col + Grid2d.deltaDir[dir][1];
+			    
+			    if (signPosRow < 0 || signPosRow >= maxRow)
+			        continue;
+			    if (signPosCol < 0 || signPosCol >= maxCol)
+			        continue;
+			    
+				Character sign = table[signPosRow][signPosCol];
 
-				List<Position> digitPositions = signPos.getAdjPositions();
-
-				for (Position digitPos : digitPositions) {
+				
+				for (int digitDelta = 0; digitDelta <= 3; ++digitDelta) {
 					
-					Character curChar = table.getEntry(digitPos.getRow(), digitPos.getCol());
+				    int digitPosRow = signPosRow + Grid2d.deltaDir[digitDelta][0];
+				    int digitPosCol = signPosCol + Grid2d.deltaDir[digitDelta][1];
+				    
+				    if (digitPosRow < 0 || digitPosRow >= maxRow)
+	                    continue;
+	                if (digitPosCol < 0 || digitPosCol >= maxCol)
+	                    continue;
+				    
+					Character curChar = table[digitPosRow][digitPosCol];
 					int curDigit = Character.digit(curChar,  10);
 					
 					int nextValue = NEG_ADJUSTMENT +  
@@ -158,15 +179,18 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 					if (nextValue < 0 || nextValue >= maxValue) {
 						continue;
 					}
-					String curMin = minExpression[digitPos.toInt()][nextValue];
+					
+					int digitPosIdx = digitPosRow*maxCol + digitPosCol;
+					
+					String curMin = minExpression[digitPosIdx][nextValue];
 					String newMin = minExpression[minUnvisitedPositionIdx][minUnvisitedValue+NEG_ADJUSTMENT] + sign + curChar;
 					
 					if (expressionOrder.compare(newMin,  curMin) < 0) {
-						minExpression[digitPos.toInt()][nextValue] = newMin;
+						minExpression[digitPosIdx][nextValue] = newMin;
 					}
 					
-					if (!visited[digitPos.toInt()][nextValue]) {
-						minSet.add(new PositionValueExp(digitPos.toInt(), nextValue, minExpression[digitPos.toInt()][nextValue]));
+					if (!visited[digitPosIdx][nextValue]) {
+						minSet.add(new PositionValueExp(digitPosIdx, nextValue, minExpression[digitPosIdx][nextValue]));
 					}
 				}
 			}
@@ -194,7 +218,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
         input.width = scanner.nextInt();
         input.queries = scanner.nextInt();
         
-        input.grid = GridChar.buildFromScanner(scanner,input.width,input.width,' ');
+        input.grid = Grid2d.buildFromScanner(scanner,input.width,input.width);
         
         input.targets = new ArrayList<>();
         for (int q = 0; q < input.queries; ++q) {
