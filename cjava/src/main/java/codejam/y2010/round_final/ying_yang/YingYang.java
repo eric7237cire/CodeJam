@@ -19,10 +19,10 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class YingYang extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
    
-    public Main()
+    public YingYang()
     {
         super("F", 1, 1);
         (( ch.qos.logback.classic.Logger) log).setLevel(Level.ERROR);

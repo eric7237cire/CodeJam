@@ -554,8 +554,8 @@ public class Main  {
     }
     
     
-    //static void round1B_2009(String args[]) {
-    public static void main(String args[]) throws Exception {
+    static void round1B_2009(String args[]) {
+    //public static void main(String args[]) throws Exception {
     
         //Round 1B -- 2009
         //A in c++
@@ -571,7 +571,6 @@ public class Main  {
          * Problem 3 -- Square math
          *
          * A Breadth first search, did not really do what solution suggested, used a sortedSet instead of queue
-         * TODO cleanup remove positions
          */
         
         codejam.y2009.round_1B.square_math.SquareMath m = new codejam.y2009.round_1B.square_math.SquareMath();
@@ -980,7 +979,7 @@ public class Main  {
          * 
          * Symmetry, patters /topology
          */
-        codejam.y2010.round_final.ying_yang.Main m = new codejam.y2010.round_final.ying_yang.Main();
+        codejam.y2010.round_final.ying_yang.YingYang m = new codejam.y2010.round_final.ying_yang.YingYang();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files)
@@ -1411,8 +1410,8 @@ public class Main  {
         }
     }
     
-    static void roundFinal_2012(String args[]) 
-    {
+    public static void main(String args[]) throws Exception {
+    //static void roundFinal_2012(String args[]) {
         //2012 Final
         
         //Dijkstras using an indexed priority queue
@@ -1438,7 +1437,7 @@ public class Main  {
          * 
          * Rotation, rotating calipurs, convex hull
          */
-        codejam.y2012.round_final.twirling_freedom.Main m = new codejam.y2012.round_final.twirling_freedom.Main();
+        codejam.y2012.round_final.twirling_freedom.Twirling m = new codejam.y2012.round_final.twirling_freedom.Twirling();
         
         
         //TODO problem 5

@@ -18,12 +18,12 @@ import codejam.utils.utils.DoubleFormat;
 
 import com.google.common.collect.Lists;
 
-public class Main extends InputFilesHandler 
+public class Twirling extends InputFilesHandler 
     implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
-    public Main() 
+    public Twirling() 
     {
-        super("D", 1, 1, 0);
+        super("D", 1, 1);
     }
 
     @Override
