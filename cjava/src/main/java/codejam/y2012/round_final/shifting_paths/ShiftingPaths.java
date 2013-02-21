@@ -90,7 +90,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
                     }
                 }
                 
-                return new DP(newStateA, p.B.indexOf(curLoc), step+1);
+                return new DP(newStateA, p.origIndexToBIndex(curLoc), step+1);
             }
             
             //Must go through B before getting to final node
@@ -192,7 +192,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         public String toString()
         {
             return "DP [newStateA=" + stateToString(newStateA) 
-                    + ", locB=" + (locB+1) + ", stepsTaken=" + stepsTaken + "]";
+                    + ", locB=" + (locB) + ", stepsTaken=" + stepsTaken + "]";
         }
         
         
@@ -388,7 +388,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         
         DP[][] dp = new DP[p.A.size()][ 1 << p.A.size()];
         
-        /*
+        
         for(int stateA = 0; stateA < 1 << p.A.size(); ++stateA)
         {
             for(int locA = 0; locA < p.A.size(); ++locA)
@@ -400,8 +400,10 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
                 DP val = dp[locA][stateA];
                 
                 checkState(val.equals(check));
+                
+                log.debug("DP for state A {} and loc A {} = {}",stateToString(stateA),locA,val);
             }
-        }*/
+        }
         
         
         int stateB = (1 << p.B.size()) - 1;
@@ -413,8 +415,13 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         
         int maxSteps = (1 << 10) * 10;
 
+       // maxSteps = 150;
+        
         while(steps < maxSteps)
         {
+            log.debug("Cur location {} state A {} state B {} steps {}",
+                    curLoc, stateToString(stateA), stateToString(stateB), steps);
+            
             //Find out which set curLoc belongs to
             if (p.Aset.isSet(curLoc))
             {
@@ -426,7 +433,10 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
                 }
                 
                 steps += val.stepsTaken;
-                curLoc = p.B.indexOf(val.locB);
+                curLoc = p.B.get(val.locB);
+                checkState(p.Bset.isSet(curLoc));
+                
+                stateA = val.newStateA;
                 continue;
             }
             
@@ -450,6 +460,9 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
                 
         }
         
+        log.error("Error");
+        
+       // return handleSmall(in);
         return String.format("Case #%d: Error", in.testCase);
     }
 
