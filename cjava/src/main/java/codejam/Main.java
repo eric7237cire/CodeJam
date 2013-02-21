@@ -11,6 +11,16 @@ public class Main  {
     final static Logger log = LoggerFactory.getLogger(Main.class);
     
     static void africa(String[] args) {
+        /**
+         * 2010 africa qualification 
+         * 
+         * All in c++ ; all easy
+         * 
+         * Problem 1 -- store credit -- using map datastructure
+         * Problem 2 -- reverse words -- tokenizing 
+         * Problem 3 -- t9 spelling -- convert text to cell phone text
+         */
+        
         //2010 africa
         
         //A to C in C++
