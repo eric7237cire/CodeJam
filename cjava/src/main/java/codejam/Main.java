@@ -531,27 +531,38 @@ public class Main  {
         }
     }
     
+    static void qual_2009(String args[])
+    {
+        //Problem 3Welcome to code jam  finding sub-sequence DP
+    }
+    
     static void round1A_2009(String args[])
     {
         //TODO all 3
     }
     
     
-    //static void round1B_2009(String args[]) {
-    public static void main(String args[]) throws Exception {
+    static void round1B_2009(String args[]) {
+    //public static void main(String args[]) throws Exception {
     
         //Round 1B -- 2009
         //A in c++
-        //Finding next permutation in a sequence
+        //
+        /**
+         * Finding next permutation in a sequence
+         * 
+         *  Similiar to next_permutation in c++
+         */
         //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
 
         /**
          * Problem 3 -- Square math
          *
          * A Breadth first search, did not really do what solution suggested, used a sortedSet instead of queue
+         * TODO cleanup remove positions
          */
         
-        codejam.y2009.round_1B.square_math.Main m = new codejam.y2009.round_1B.square_math.Main();
+        codejam.y2009.round_1B.square_math.SquareMath m = new codejam.y2009.round_1B.square_math.SquareMath();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files)
@@ -563,8 +574,8 @@ public class Main  {
         }
     }
 
-    static void round1C_2009(String args[])
-    {
+    //public static void main(String args[]) throws Exception {
+    static void round1C_2009(String args[]) {
         //Round 1C -- 2009 
         //Finding min number in a large base
         //codejam.y2009.round_1C.all_your_base.Main m = new codejam.y2009.round_1C.all_your_base.Main();
@@ -593,7 +604,7 @@ public class Main  {
     }
     
     
-    
+    //public static void main(String args[]) throws Exception {
     static void round2_2009(String args[]) {
         //Round 2 -- 2009
         
@@ -634,6 +645,7 @@ public class Main  {
         }   
     }
     
+    //public static void main(String args[]) throws Exception {
     static void round3_2009(String args[])
     {
 
@@ -720,8 +732,8 @@ public class Main  {
         }    
     }
 
-    static void roundQual_2010(String args[])
-    {
+    public static void main(String args[]) throws Exception {
+    //static void roundQual_2010(String args[]) {
  //2010 qual
         
         //A in c++
@@ -729,9 +741,16 @@ public class Main  {
          //codejam.y2010.fair_warning.Main m = new codejam.y2010.fair_warning.Main();
          
          //Finding repeated state?  
-         //codejam.y2010.theme_park.Main m = new codejam.y2010.theme_park.Main();
+         codejam.y2010.round_qual.theme_park.ThemePark m = 
+                 new codejam.y2010.round_qual.theme_park.ThemePark();
         
-        
+         String[] files = Main.getFiles(m, args);
+         for (String file : files) {
+             log.info("Input file {}", file);
+
+          //   Runner.goSingleThread(file, m, m);
+           Runner.go(file, m, m, 5);
+         }    
     }
     //public static void main(String args[]) throws Exception {
     static void round1A_2010(String args[]) {

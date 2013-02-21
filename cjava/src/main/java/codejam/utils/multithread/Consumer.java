@@ -33,10 +33,11 @@ public class Consumer<InputData extends AbstractInputData> implements Runnable {
                 InputData input = queue.take();
                 log.debug("Consumer thread loop.  TestCase #{}", input.testCase);
                 if (input.testCase < 0) {
-                    log.info("Consumer Thread ending");
+                    log.debug("Consumer Thread ending");
                     return;
                 }
                 String ans = testCaseHandler.handleCase(input);
+                log.info(ans);
                 answers[input.testCase - 1] = ans;
             }
         } catch (InterruptedException ex) {

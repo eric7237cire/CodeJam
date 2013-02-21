@@ -30,7 +30,7 @@ import com.google.common.base.Preconditions;
 public class Runner {
 
     static int testCounter = 0;
-    final static Logger log = LoggerFactory.getLogger(Runner.class);
+    final static Logger log = LoggerFactory.getLogger("main");
     
     public interface TestCaseInputScanner<InputData> {
         public InputData readInput(Scanner scanner, int testCase)
@@ -59,7 +59,7 @@ public class Runner {
             for (int test = 1; test <= t; test++) {
                 InputData input = inputReader.readInput(scanner, test);
                 String ans = testCaseHandler.handleCase(input);
-                log.debug(ans);
+                log.info(ans);
                 pos.println(ans);
             }
 
