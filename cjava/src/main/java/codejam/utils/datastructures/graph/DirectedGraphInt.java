@@ -1,5 +1,6 @@
 package codejam.utils.datastructures.graph;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -142,6 +143,15 @@ public class DirectedGraphInt
     public Set<Integer> getOutbound(int node)
     {
         return nodeOutEdges.get(node).elementSet();
+    }
+    
+    public Set<Integer> getInbound(int node)
+    {
+        if (!nodeExists(node))
+        {
+            return Collections.emptySet();
+        }
+        return nodeInEdges.get(node).elementSet();
     }
 
     public boolean isConnected(int from, int to)
