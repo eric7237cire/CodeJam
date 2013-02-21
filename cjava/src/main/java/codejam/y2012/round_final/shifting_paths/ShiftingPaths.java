@@ -28,7 +28,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
 {
 
     public ShiftingPaths() {
-        super("E", 0, 0);
+        super("E", 1, 0);
         //((ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
 
@@ -50,7 +50,19 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
 
     DP bruteForce(int stateA, int locA, Partition p, InputData in)
     {
-        int visitedOdd = stateA;
+        int state = 0;
+        //Convert stateA to combined state
+        for(int i = 0; i < p.A.size(); ++i)
+        {
+            int index = p.A.get(i);
+            
+            if ((stateA & 1 << i) != 0)
+            {
+                state |= 1 << index;
+            }
+        }
+        
+        int visitedOdd = state;
         int curLoc = p.A.get( locA );
 
         int maxSteps = (1 << 10) * 10;
@@ -58,21 +70,32 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         int step = 0;
         for (; step < maxSteps; ++step)
         {
-            locA = p.origIndexToAIndex(curLoc);
             
-            boolean goLeft = (visitedOdd & 1 << locA) != 0;
+            boolean goLeft = (visitedOdd & 1 << curLoc) != 0;
             
-            visitedOdd ^= 1 << locA;
+            visitedOdd ^= 1 << curLoc;
 
             curLoc = goLeft ? in.leftRight[curLoc].first() : in.leftRight[curLoc].second();
 
             if (p.Bset.isSet(curLoc))
             {
-                return new DP(visitedOdd, p.B.indexOf(curLoc), step+1);
+                int newStateA = 0;
+                for(int i = 0; i < p.A.size(); ++i)
+                {
+                    int index = p.A.get(i);
+                    
+                    if ((visitedOdd & 1 << index) != 0)
+                    {
+                        newStateA |= 1 << i;
+                    }
+                }
+                
+                return new DP(newStateA, p.B.indexOf(curLoc), step+1);
             }
             
-            if (curLoc == in.N - 1)
-                break;
+            //Must go through B before getting to final node
+            checkState (curLoc != in.N - 1);
+                
         }
         
         return new DP(-1, -1, -1);
@@ -204,15 +227,29 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
             return dn;
         }
         
+        if (p.trapNodes.isSet(nextNode))
+        {
+            DP dn = new DP(-1,-1,-1);
+            dp[locA][stateA] = dn;
+            return dn;
+        }
+        
         checkState(p.Aset.isSet(nextNode));
         
         int indexInA = p.A.indexOf(nextNode);
         
         DP next = dpOnSetA(p, nextStateA, indexInA, in, dp);
         
+        if (next.inLoop()) {
+            dp[locA][stateA] = next;
+            return next;
+        }
+        
         DP dn  = new DP( next.newStateA,
          next.locB,
          1 + next.stepsTaken);
+        
+        
         
         dp[locA][stateA] = dn;
         return dn;
@@ -351,6 +388,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         
         DP[][] dp = new DP[p.A.size()][ 1 << p.A.size()];
         
+        /*
         for(int stateA = 0; stateA < 1 << p.A.size(); ++stateA)
         {
             for(int locA = 0; locA < p.A.size(); ++locA)
@@ -363,10 +401,56 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
                 
                 checkState(val.equals(check));
             }
+        }*/
+        
+        
+        int stateB = (1 << p.B.size()) - 1;
+        int stateA = (1 << p.A.size()) - 1;
+        
+        int curLoc = 0;
+        
+        int steps = 0;
+        
+        int maxSteps = (1 << 10) * 10;
+
+        while(steps < maxSteps)
+        {
+            //Find out which set curLoc belongs to
+            if (p.Aset.isSet(curLoc))
+            {
+                int locA = p.origIndexToAIndex(curLoc);
+                DP val = dpOnSetA(p, stateA, locA, in, dp);
+                
+                if (val.inLoop()) {
+                    return String.format("Case #%d: Infinity", in.testCase);
+                }
+                
+                steps += val.stepsTaken;
+                curLoc = p.B.indexOf(val.locB);
+                continue;
+            }
+            
+            if (p.trapNodes.isSet(curLoc)) {
+                return String.format("Case #%d: Infinity", in.testCase);
+            }
+            
+            int locB = p.origIndexToBIndex(curLoc);
+            
+            boolean goLeft = (stateB & 1 << locB) != 0;
+            
+            stateB ^= 1 << locB;
+
+            curLoc = goLeft ? in.leftRight[curLoc].first() : in.leftRight[curLoc].second();
+
+            ++steps;
+            
+            if (curLoc == in.N - 1) {
+                return String.format("Case #%d: %d", in.testCase, steps);
+            }
+                
         }
         
-        
-        return handleSmall(in);
+        return String.format("Case #%d: Error", in.testCase);
     }
 
 }
