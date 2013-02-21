@@ -146,7 +146,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         }
         
         
-        int count  = uf.count();;
+        int count  = uf.count();
         
         return String.format("Case #%d: %d ", in.testCase, count);
         

@@ -210,7 +210,9 @@ public class Main  {
         /**
          * Problem 2
          * 
-         * TODO union find
+         * Union of sets containing same prime factor.
+         * 
+         * Decent test for union find
          */
         codejam.y2008.round_1B.number_sets.Main m = new codejam.y2008.round_1B.number_sets.Main();
         
