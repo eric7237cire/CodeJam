@@ -1,6 +1,5 @@
 package codejam.y2009.round_1B.square_math;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -10,7 +9,6 @@ import codejam.utils.Grid2d;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
-import codejam.utils.utils.GridChar;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
@@ -138,12 +136,11 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 			visited[minUnvisitedPositionIdx][minUnvisitedValue+NEG_ADJUSTMENT] = true;
 			
 			//For All Neighbors p of Vertex k.
-			Position minUnvisitedPosition = new Position(minUnvisitedPositionIdx);
 			int row = minUnvisitedPositionIdx / maxCol;
 			int col = minUnvisitedPositionIdx % maxCol;
 			
 			
-			final int minUnvisitedDigit = Character.digit(table[minUnvisitedPosition.getRow()][ minUnvisitedPosition.getCol()], 10);
+			final int minUnvisitedDigit = Character.digit(table[row][ col ], 10);
 			Preconditions.checkState(minUnvisitedDigit >= 0 && minUnvisitedDigit <= 9);
 			
 			for (int dir = 0; dir <= 3; ++dir) {
@@ -233,8 +230,6 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
         StringBuffer sb = new StringBuffer();
         sb.append("Case #" + input.testCase + ": ");
 
-        Position.setMaxCol(input.width);
-        Position.setMaxRow(input.width);
 
         SquareMath m = new SquareMath();
 
