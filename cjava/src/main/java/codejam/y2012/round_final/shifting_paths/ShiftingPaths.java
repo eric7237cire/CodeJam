@@ -28,7 +28,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
 {
 
     public ShiftingPaths() {
-        super("E", 1, 0);
+        super("E", 1, 1);
         ((ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
 
@@ -285,6 +285,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         
     }
     
+    /*
     private static DP dpOnSetA(Partition p, int stateA, int locA, InputData in, DP[][] dp)
     {
         if (dp[locA][stateA] != null)
@@ -337,7 +338,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         
         dp[locA][stateA] = dn;
         return dn;
-    }
+    }*/
     
     private static class Partition
     {
@@ -349,16 +350,19 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         List<Integer> B = Lists.newArrayList();
         List<Integer> A = Lists.newArrayList();
         
+        int[] origToAIndex;
+        int[] origToBIndex;
+        
         int origIndexToAIndex(int index)
         {
-            int r = A.indexOf(index);
+            int r = origToAIndex[index];
             checkState(r >= 0 && r < A.size());
             return r;
         }
         
         int origIndexToBIndex(int index)
         {
-            int r = B.indexOf(index);
+            int r = origToBIndex[index];
             checkState(r >= 0 && r < B.size());
             return r;
         }
@@ -450,16 +454,31 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         
         int half = l.size() / 2;
         
+        p.origToAIndex = new int[in.N-1];
+        p.origToBIndex = new int[in.N-1];
+        
+        Arrays.fill(p.origToAIndex, -1);
+        Arrays.fill(p.origToBIndex, -1);
+        
         for(int i = 0; i < l.size(); ++i)
         {
+            int origIndex  = l.get(i).second();
+            
             if (i <= half) {
-                p.B.add(l.get(i).second());
-                p.Bset.set(l.get(i).second());
+                p.origToBIndex[origIndex] = p.B.size();
+                
+                p.B.add(origIndex);
+                p.Bset.set(origIndex);
+                
             } else {
-                p.A.add(l.get(i).second());
-                p.Aset.set(l.get(i).second());
+                p.origToAIndex[origIndex] = p.A.size();
+                
+                p.A.add(origIndex);
+                p.Aset.set(origIndex);
             }
         }
+        
+        
         
         log.debug("Partition {}", p);
         return p;
@@ -475,11 +494,16 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         
         for(int stateA = 0; stateA < 1 << p.A.size(); ++stateA)
         {
+            if (stateA % 50000 == 0) {
+                log.info("Precalculating state A {} of {}", stateA, 1 << p.A.size());
+            }
             for(int locA = 0; locA < p.A.size(); ++locA)
             {
                 //dpOnSetA(p, stateA, locA, in, dp);
                 calcDPQueue(stateA, locA, p, in, dp);
                 
+                /*
+                if (in.N < 30) {
                 DP check = bruteForce(stateA, locA, p, in);
                 
                 DP val = dp[locA][stateA];
@@ -488,6 +512,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
                 checkState(val.equals(check));
                 
                 log.debug("DP for state A {} and loc A {} = {}",stateToString(stateA),locA,val);
+                }*/
             }
         }
         
@@ -497,9 +522,9 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
         
         int curLoc = 0;
         
-        int steps = 0;
+        long steps = 0;
         
-        int maxSteps = (1 << 10) * 10;
+        long maxSteps = (1L << in.N) * in.N;
 
        // maxSteps = 150;
         
@@ -512,7 +537,7 @@ public class ShiftingPaths extends InputFilesHandler implements TestCaseHandler<
             if (p.Aset.isSet(curLoc))
             {
                 int locA = p.origIndexToAIndex(curLoc);
-                DP val = dpOnSetA(p, stateA, locA, in, dp);
+                DP val = dp[locA][stateA]; //dpOnSetA(p, stateA, locA, in, dp);
                 
                 if (val.inLoop()) {
                     return String.format("Case #%d: Infinity", in.testCase);
