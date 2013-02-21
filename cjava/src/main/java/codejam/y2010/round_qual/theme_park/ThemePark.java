@@ -3,16 +3,20 @@ package codejam.y2010.round_qual.theme_park;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Level;
 
-import codejam.utils.main.Runner;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class ThemePark extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
+    public ThemePark()
+    {
+        super("C",1,1);
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
+    }
+    
     
     static class GroupStart {
         long money;
@@ -28,10 +32,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     public String handleCase(InputData input) {
         
         int caseNumber = input.testCase;
-
-        log.info("Starting calculating case {}", caseNumber);
-        
-        //double ans = DivideConq.findMinPerimTriangle(input.points);
         
         int ridesLeft = input.rides;
         int groupAtFront = 0;
@@ -76,11 +76,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
         }
         
-
-        log.info("Done calculating answer case {}", caseNumber);
-        
-        //DecimalFormat decim = new DecimalFormat("0.00000000000");
-        //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
         
         return ("Case #" + caseNumber + ": " + moneyGained );
     }
@@ -103,37 +98,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             i.groupSizes.add(scanner.nextInt());
         }
         
-        //log.info("Reading data...Test case # {} ", testCase);
-        
-        //log.info("Done Reading data...Test case # {} ", testCase);
-        
-        
+              
         return i;
         
     }
 
     
-
-
-    public Main() {
-        super();
-    }
-    
-    
-    public static void main(String args[]) throws Exception {
-
-        if (args.length < 1) {
-           args = new String[] { "sample.txt" };
-           //args = new String[] { "smallInput.txt" };
-           //args = new String[] { "largeInput.txt" };
-        }
-        log.info("Input file {}", args[0]);
-
-        Main m = new Main();
-        Runner.goSingleThread(args[0], m, m);
-        
-       
-    }
-
     
 }

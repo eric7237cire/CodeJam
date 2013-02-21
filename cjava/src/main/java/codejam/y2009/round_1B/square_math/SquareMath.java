@@ -5,9 +5,7 @@ import java.util.Scanner;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.GridChar;
@@ -16,8 +14,24 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
+public class SquareMath extends InputFilesHandler implements
+TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 
+    public SquareMath(){
+        super("C",1,1);
+        
+        
+        expressionOrder = new Ordering<String>() {
+            @Override
+            public int compare(String s1, String s2) {
+
+                return ComparisonChain.start()
+                        .compare(s1.length(), s2.length()).compare(s1, s2)
+                        .result();
+            }
+        }.nullsLast();
+
+    }
 	
 	
 
@@ -171,24 +185,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
 	final private Ordering<String> expressionOrder;
 
-	public Main() {
-		minExpression = new String[400][265];
-
-		expressionOrder = new Ordering<String>() {
-			@Override
-			public int compare(String s1, String s2) {
-
-				return ComparisonChain.start()
-						.compare(s1.length(), s2.length()).compare(s1, s2)
-						.result();
-			}
-		}.nullsLast();
-
-	}
-
-
-
-	final static Logger log = LoggerFactory.getLogger(Main.class);
 
 	
     @Override
@@ -216,7 +212,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         Position.setMaxCol(input.width);
         Position.setMaxRow(input.width);
 
-        Main m = new Main();
+        SquareMath m = new SquareMath();
 
         m.calculateExpression(input.grid);
         

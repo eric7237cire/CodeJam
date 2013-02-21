@@ -6,8 +6,6 @@ import java.util.Scanner;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import codejam.utils.datastructures.TreeInt;
 import codejam.utils.datastructures.TreeInt.Node;
@@ -15,18 +13,17 @@ import codejam.utils.datastructures.graph.GraphAdjList;
 import codejam.utils.datastructures.graph.GraphInt;
 import codejam.utils.datastructures.graph.GraphIntAlgorithms;
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-
-    @Override
-    public String[] getDefaultInputFiles() {
-        return new String[] { "D-small-practice.in", "D-large-practice.in" };
+    public Main()
+    {
+        super("D", 1, 1);
     }
-    
+        
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
         InputData input = new InputData(testCase);
@@ -80,9 +77,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     //True if the subtrees at smallTreeNode and largeTreeNode are isomorphic
     @SuppressWarnings({ "rawtypes", "unchecked" })
     boolean top_down_unordered_subtree_isomorphism(
-            Node smallTreeNode,  Node largeTreeNode
-    // node_array<set<node> >& B
-    ) {
+            Node smallTreeNode,  Node largeTreeNode) {
 
         int smallChildrenCount = smallTreeNode.getChildren().size();
         int largeChildrenCount = largeTreeNode.getChildren().size();

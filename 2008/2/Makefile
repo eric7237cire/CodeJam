@@ -1,9 +1,9 @@
 CC = g++
-CFLAGS = -Wall -g
-OLD = -g -O3
+CFLAGS = -O3
+OLD = -Wall -g -g -O3
 EXEC_NAME = star_wars.exe boolean_tree.exe triangle_area.exe
-INCLUDES = -IC:\MinGW\boost_1_52_0
-LIBS = -LC:\MinGW\boost_1_52_0\stage\lib\
+INCLUDES = -IC:\codejam\boost_1_52_0
+LIBS = -LC:\codejam\boost_1_52_0\stage\lib\
 #OBJ_FILES = star_wars.o simplex.o util.o
 
 INSTALL_DIR = /usr/bin

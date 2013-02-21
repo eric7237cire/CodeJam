@@ -204,15 +204,15 @@ public class Main  {
         //}
     }
     
-    public static void main(String args[]) throws Exception {
-    //static void round1B_2008(String args[]) {
+    //public static void main(String args[]) throws Exception {
+    static void round1B_2008(String args[]) {
         
         /**
          * Problem 2
          * 
          * Union of sets containing same prime factor.
          * 
-         * Decent test for union find
+         * Good test for union find
          */
         codejam.y2008.round_1B.number_sets.Main m = new codejam.y2008.round_1B.number_sets.Main();
         
@@ -266,20 +266,32 @@ public class Main  {
         }   
     }
     
-    //public static void main(String args[]) throws Exception
+    //public static void main(String args[]) throws Exception {
     static void round2_2008(String args[]) {
+        
+        //Problem 1 boolean tree -- C++  DP
+        
+        //Problem 2 Triangle Areas --inC++  forming triangles with int points for a certain area
         
         /**
          * Problem 3
          * 
          * Simplex algorithm
          */
-        codejam.y2008.round_2.star_wars.Main m = new codejam.y2008.round_2.star_wars.Main();
+        //codejam.y2008.round_2.star_wars.Main m = new codejam.y2008.round_2.star_wars.Main();
         
         
         /**
-         * TODO PermRLE Problem 4
+         * PermRLE Problem 4
+         * 
+         * Finding shortest hamiltonian cycle in a complete graph
+         * using bottom up DP to turn n! into n * 2^n
+         * 
+         * Also precompute all subsets and their indexes
+         * 
+         * Avoids use of non primitive types
          */
+        codejam.y2008.round_2.perm_rle.PermRLE m = new codejam.y2008.round_2.perm_rle.PermRLE(); 
     
         String[] files = Main.getFiles(m, args);
         for (String file : files) {
@@ -290,7 +302,12 @@ public class Main  {
         }   
     }
     
+    //public static void main(String args[]) throws Exception {
     static void round3_2008(String args[]) {
+        
+        //Problem 1 pockets -- computing polygon area and pockets given a walk (F, L, R, etc) TODO
+        
+        //Problem 2 portal -- interesting shortest path using Dijkstars / BFS  (in C++)  TODO
         
         /**
          * Problem 3
@@ -392,8 +409,8 @@ public class Main  {
         }
     }
     
-    static void roundAMER_2008(String args[])
-    {
+    //public static void main(String args[]) throws Exception {
+    static void roundAMER_2008(String args[]) {
         /**
          * 2008 amer semis -- problem 1
          * Tree traversal depth first
@@ -415,7 +432,7 @@ public class Main  {
          * Run example to see more
          */
         // 
-       //codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
+       codejam.y2008.round_amer.code_sequence.Main m = new codejam.y2008.round_amer.code_sequence.Main();
         //codejam.y2008.round_amer.code_sequence.Main.example();
         
         /**
@@ -427,8 +444,15 @@ public class Main  {
          */
         //codejam.y2008.round_amer.test_passing.Main m = new codejam.y2008.round_amer.test_passing.Main();
 
-        //Non bipartite matching using Edmonds algorithm (code found...)
-        codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();
+        //
+        /**
+         * Problem 4
+         * 
+         * Combinatoric game 
+         * 
+         * Non bipartite matching using Edmonds algorithm (code found...)
+         */
+        //codejam.y2008.round_amer.king.Main m = new codejam.y2008.round_amer.king.Main();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files)
@@ -439,16 +463,34 @@ public class Main  {
             //Runner.go(file, m, m, 5);
         }
     }
-    static void roundAPAC_2008(String args[])
-    {
+    
+    //public static void main(String args[]) throws Exception {
+    static void roundAPAC_2008(String args[]) {
         //2008 apac semis
         //A and B are in c++        
+        
         //C++ for millionaire exists that is very fast
+        
         //Probability ; Making a problem discrete that appears continous
         //codejam.y2008.round_apac.millionaire.Main m = new codejam.y2008.round_apac.millionaire.Main();
+      
+        /**
+         * Problem 4
+         * Modern Art
+         * 
+         * Subtree isomorhisme.  Requires multiple bipartite matchings recursively down the tree
+         * 
+         */
+        codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
         
-        //Subtree isomorhisme.  Requires multiple bipartite matchings recursively down the tree
-        //codejam.y2008.round_apac.modern_art.Main m = new codejam.y2008.round_apac.modern_art.Main();
+        String[] files = Main.getFiles(m, args);
+        for (String file : files)
+        {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+            //Runner.go(file, m, m, 5);
+        }
         
     }
     
@@ -491,20 +533,38 @@ public class Main  {
         }
     }
     
+    static void qual_2009(String args[])
+    {
+        //Problem 3Welcome to code jam  finding sub-sequence DP
+    }
+    
     static void round1A_2009(String args[])
     {
         //TODO all 3
     }
     
-    static void round1B_2009(String args[])
-    {
+    
+    static void round1B_2009(String args[]) {
+    //public static void main(String args[]) throws Exception {
+    
         //Round 1B -- 2009
         //A in c++
-        //Finding next permutation in a sequence
+        //
+        /**
+         * Finding next permutation in a sequence
+         * 
+         *  Similiar to next_permutation in c++
+         */
         //codejam.y2009.round_1B.next_number.Main m = new codejam.y2009.round_1B.next_number.Main();
 
-        //A Breadth first search, did not really do what solution suggested, used a sortedSet instead of queue
-        codejam.y2009.round_1B.square_math.Main m = new codejam.y2009.round_1B.square_math.Main();
+        /**
+         * Problem 3 -- Square math
+         *
+         * A Breadth first search, did not really do what solution suggested, used a sortedSet instead of queue
+         * TODO cleanup remove positions
+         */
+        
+        codejam.y2009.round_1B.square_math.SquareMath m = new codejam.y2009.round_1B.square_math.SquareMath();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files)
@@ -516,8 +576,8 @@ public class Main  {
         }
     }
 
-    static void round1C_2009(String args[])
-    {
+    //public static void main(String args[]) throws Exception {
+    static void round1C_2009(String args[]) {
         //Round 1C -- 2009 
         //Finding min number in a large base
         //codejam.y2009.round_1C.all_your_base.Main m = new codejam.y2009.round_1C.all_your_base.Main();
@@ -546,7 +606,7 @@ public class Main  {
     }
     
     
-    
+    //public static void main(String args[]) throws Exception {
     static void round2_2009(String args[]) {
         //Round 2 -- 2009
         
@@ -587,6 +647,7 @@ public class Main  {
         }   
     }
     
+    //public static void main(String args[]) throws Exception {
     static void round3_2009(String args[])
     {
 
@@ -673,8 +734,8 @@ public class Main  {
         }    
     }
 
-    static void roundQual_2010(String args[])
-    {
+    public static void main(String args[]) throws Exception {
+    //static void roundQual_2010(String args[]) {
  //2010 qual
         
         //A in c++
@@ -682,9 +743,16 @@ public class Main  {
          //codejam.y2010.fair_warning.Main m = new codejam.y2010.fair_warning.Main();
          
          //Finding repeated state?  
-         //codejam.y2010.theme_park.Main m = new codejam.y2010.theme_park.Main();
+         codejam.y2010.round_qual.theme_park.ThemePark m = 
+                 new codejam.y2010.round_qual.theme_park.ThemePark();
         
-        
+         String[] files = Main.getFiles(m, args);
+         for (String file : files) {
+             log.info("Input file {}", file);
+
+          //   Runner.goSingleThread(file, m, m);
+           Runner.go(file, m, m, 5);
+         }    
     }
     //public static void main(String args[]) throws Exception {
     static void round1A_2010(String args[]) {
@@ -846,7 +914,9 @@ public class Main  {
         /**
          * Problem 3 -- hot dogs
          * 
-         * Did my own algo, used GAP class.  TODO use their solution
+         * Did my own algo, used GAP class.  < 2 secs  
+         * 
+         * idea use their solution
          */
         codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();       
         

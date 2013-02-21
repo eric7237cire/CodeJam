@@ -18,7 +18,7 @@ import com.google.common.collect.HashBiMap;
  */
 public class GraphAdjList {
 
-    final static Logger log = LoggerFactory.getLogger(GraphAdjList.class);
+    final static Logger log = LoggerFactory.getLogger("main");
     
     private boolean[][] connected;
     int maxNodeNum;
