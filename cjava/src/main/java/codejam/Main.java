@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner;
+import codejam.y2009.round_1A.collecting_cards.CollectingCards;
 
 public class Main
 {
@@ -567,14 +568,14 @@ public class Main
         }
     }
 
-    public static void main(String args[]) throws Exception 
-    //static void qual_2009(String args[])
+    //public static void main(String args[]) throws Exception 
+    static void qual_2009(String args[])
     {
         //Problem 1 alien language regular expressions
         
         //Prolem 2 watersheds simulation
         
-        //Problem 3Welcome to code jam  finding sub-sequence DP
+        //Problem 3Welcome to code jam  finding sub-sequence DP -- bottom up
         codejam.y2009.round_qual.welcome.WelcomeCodeJam m = new codejam.y2009.round_qual.welcome.WelcomeCodeJam() ;
         
         String[] files = Main.getFiles(m, args);
@@ -587,14 +588,25 @@ public class Main
         }
     }
 
-    static void round1A_2009(String args[])
+    public static void main(String args[]) throws Exception 
+    //static void round1A_2009(String args[])
     {
         //Problem 1 -- multi base happiness  
         
         //Problem 2 -- crossing road -- dijkstaras
         
         //Problem 3 collecting cards -- combinatorics / probability
+        
+        CollectingCards m = new CollectingCards();
 
+        String[] files = Main.getFiles(m, args);
+        for (String file : files)
+        {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+            //Runner.go(file, m, m, 5);
+        }
         //TODO all 3 ; currently in c++
     }
 

@@ -1,8 +1,5 @@
 package codejam.y2009.round_qual.welcome;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.lang3.StringUtils;
@@ -11,10 +8,6 @@ import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Ordering;
 
 public class WelcomeCodeJam extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
@@ -25,11 +18,11 @@ public class WelcomeCodeJam extends InputFilesHandler implements TestCaseHandler
     }
 	@Override
     public InputData readInput(Scanner scanner, int testCase) {
-       InputData input = new InputData(testCase);
-       input.S = scanner.nextLine();
-       if (input.S.length() == 0)
-           input.S = scanner.nextLine();
-       return input;
+       InputData in = new InputData(testCase);
+       in.S = scanner.nextLine();
+       if (in.S.length() == 0)
+           in.S = scanner.nextLine();
+       return in;
     }
 
     @Override
