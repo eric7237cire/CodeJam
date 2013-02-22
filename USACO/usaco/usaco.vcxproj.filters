@@ -20,7 +20,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\starry.cpp">
+    <ClCompile Include="..\fence3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

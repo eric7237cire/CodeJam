@@ -70,10 +70,10 @@ struct FlowEdge
 	}
 
 	EdgeWeightType residualCapacityTo(int vertex) const {
-        if      (vertex == from) return flow;  //going backwards, we can subtract flow
-        else if (vertex == to) return capacity - flow;
-        else throw "Illegal endpoint";
-    }
+		if      (vertex == from) return flow;  //going backwards, we can subtract flow
+		else if (vertex == to) return capacity - flow;
+		else throw "Illegal endpoint";
+	}
 
 	int other(int vertex) const
 	{
@@ -86,13 +86,13 @@ struct FlowEdge
 		throw "Illegal vertex";
 	}
 
-    void addResidualFlowTo(int vertex, EdgeWeightType delta) {
-        if      (vertex == from) flow -= delta;
-        else if (vertex == to) flow += delta;
-        else throw "Illegal endpoint";
+	void addResidualFlowTo(int vertex, EdgeWeightType delta) {
+		if      (vertex == from) flow -= delta;
+		else if (vertex == to) flow += delta;
+		else throw "Illegal endpoint";
 
 		assert(flow >= 0 && flow <= capacity);
-    }
+	}
 };
 
 typedef vector<FlowEdge*> vfe;
@@ -150,8 +150,8 @@ struct EdmondsKarp
 
 			for(int v = t; v != s; v = prev[v]->other(v))
 			{
-                prev[v]->addResidualFlowTo(v, bottle); 
-            }
+				prev[v]->addResidualFlowTo(v, bottle); 
+			}
 
 			flow += bottle;
 		}
@@ -175,7 +175,7 @@ struct EdmondsKarp
 		{
 			int u = q.front();
 			q.pop();
-						
+
 			vfe& adjList = edges[u];
 
 			FOR(eIdx, 0, adjList.size())
@@ -202,24 +202,24 @@ struct EdmondsKarp
 
 
 int main() {
-  
 
 
-  
 
-  char app;
-  int nUsers;
-  char computers[12];
 
-  string line;
-  while(true)
-  {
-	  getline(cin, line);
 
-	  if (!cin.good()) 
-		  break;
+	char app;
+	int nUsers;
+	char computers[12];
 
-	  EdmondsKarp ek;
+	string line;
+	while(true)
+	{
+		getline(cin, line);
+
+		if (!cin.good()) 
+			break;
+
+		EdmondsKarp ek;
 		ek.V = 26 + 10 + 2;
 		ek.s = 0;
 		ek.t = 37;
@@ -227,21 +227,21 @@ int main() {
 		ek.edges.resize(ek.V);
 
 		int appCount = 0;
-	  
-	  while(3 == sscanf(line.c_str(), "%c%d %[0123456789];", &app, &nUsers, &computers))
-	  {
+
+		while(3 == sscanf(line.c_str(), "%c%d %[0123456789];", &app, &nUsers, &computers))
+		{
 			//cout << app << " users " << nUsers  << " com " << computers << endl;  
 
 			appCount += nUsers;
 
 			int appVertex = 1 + app - 'A';
-			
+
 			ek.addFlowEdge(ek.s, appVertex, nUsers);
 
 			for(char* chPtr = &computers[0]; *chPtr != '\0'; ++chPtr)
 			{
 				char ch = *chPtr;
-			//	cout << "Computers " << computers << "ch " << ch << endl;
+				//	cout << "Computers " << computers << "ch " << ch << endl;
 				int computerVertex = 27 + ch - '0';
 				assert(computerVertex >= 27 && computerVertex < 37);
 
@@ -249,50 +249,50 @@ int main() {
 			}
 
 			getline(cin, line);
-	  }
+		}
 
-	  //Done with input, add in flow edges from computers to T
-	  for(int compVertex = 27; compVertex < ek.t; ++compVertex)
-	  {
-		  ek.addFlowEdge(compVertex, ek.t, 1);
-	  }
-	
-	  ek.doFlow();
+		//Done with input, add in flow edges from computers to T
+		for(int compVertex = 27; compVertex < ek.t; ++compVertex)
+		{
+			ek.addFlowEdge(compVertex, ek.t, 1);
+		}
 
-	  if (ek.flow < appCount) 
-	  {
-		printf("!\n");
-	  } else {
-		  
+		ek.doFlow();
 
-		  for(int compVertex = 27; compVertex < ek.t; ++compVertex)
-		  {
-			  char assign = '_';
+		if (ek.flow < appCount) 
+		{
+			printf("!\n");
+		} else {
 
-			  const vfe& adjList = ek.edges[compVertex];
-			  FOR(eIdx, 0, adjList.size())
-			  {
-				  FlowEdge* fe = adjList[eIdx];
 
-				  if (fe->from >= 1 && fe->from <= 26 && fe->flow == 1)
-				  {
-					  assign = fe->from - 1 + 'A';
-					  break;
-				  }
-			  }
+			for(int compVertex = 27; compVertex < ek.t; ++compVertex)
+			{
+				char assign = '_';
 
-			  cout << assign;
+				const vfe& adjList = ek.edges[compVertex];
+				FOR(eIdx, 0, adjList.size())
+				{
+					FlowEdge* fe = adjList[eIdx];
 
-		  }
+					if (fe->from >= 1 && fe->from <= 26 && fe->flow == 1)
+					{
+						assign = fe->from - 1 + 'A';
+						break;
+					}
+				}
 
-		  cout << endl;
-	  }
-	  
+				cout << assign;
 
-  }
+			}
 
- 
+			cout << endl;
+		}
 
-  
-  return 0;
+
+	}
+
+
+
+
+	return 0;
 }

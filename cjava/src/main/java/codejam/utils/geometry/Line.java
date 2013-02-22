@@ -267,6 +267,38 @@ public class Line {
         return p;
     }
     
+    /*
+     * Segment to segment intersection
+     * 
+     * 
+bool getIntersection( const SegmentD& seg1, const SegmentD& seg2, PointD& inter)
+{
+    PointD p = seg1.first;
+    PointD r = seg1.second - seg1.first;
+    
+    PointD q = seg2.first;
+    PointD s = seg2.second - seg2.first;
+    
+    //P + t*r intersects q + u*s
+    
+    double rCrossS = cross(r, s);
+    
+    if ( abs( rCrossS ) < tolerance )
+        return false;
+    
+    double t = cross(q-p, s / rCrossS);
+    
+    double u = cross(q-p, r / rCrossS);
+    
+    inter = p + t*r;
+    return true;
+}
+
+http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+
+t between 0 and 1
+     */
+    
     public double distanceToPoint(Point P) {
         Point vecP = P.translate(p1);
         Point vecB = p2.translate(p1);

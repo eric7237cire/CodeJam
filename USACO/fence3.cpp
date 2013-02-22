@@ -1,6 +1,6 @@
 /*
 ID: eric7231
-PROG: theme
+PROG: fence3
 LANG: C++
 */
 #include <iostream>
@@ -60,46 +60,213 @@ V getMapValue( const map<K,V>& aMap, const K& key, const K& defaultValue )
     return it->second;
 }
 
+template< typename T >
+struct Point
+{
+    T x;
+    T y;
+    
+    Point(T xx, T yy) : x(xx), y(yy) {}
+	Point() : x(), y() {}
+};
+
+template<typename T> 
+Point<T> operator-( const Point<T>& lhs, const Point<T>& rhs) 
+{
+	Point<T> ret( lhs.x - rhs.x, lhs.y - rhs.y);
+	return ret;
+}
+
+template<typename T> 
+Point<T> operator+( const Point<T>& lhs, const Point<T>& rhs) 
+{
+	Point<T> ret( lhs.x + rhs.x, lhs.y + rhs.y);
+	return ret;
+}
+
+template<typename T> 
+bool operator==( const Point<T>& lhs, const Point<T>& rhs) 
+{
+	return lhs.x == rhs.x && lhs.y == rhs.y;
+}
+
+template<typename T> 
+bool operator!=( const Point<T>& lhs, const Point<T>& rhs) 
+{
+	return lhs.x != rhs.x || lhs.y != rhs.y;
+}
+
+template<typename T> 
+Point<T> operator/( const Point<T>& lhs, const T&  rhs) 
+{
+	Point<T> ret( lhs.x / rhs, lhs.y / rhs);
+	return ret;
+}
+
+template<typename T> 
+Point<T> operator*( const Point<T>& lhs, const T&  rhs) 
+{
+	Point<T> ret( lhs.x * rhs, lhs.y * rhs);
+	return ret;
+}
+
+template<typename T> 
+Point<T> operator*( const T&  lhs, const Point<T>& rhs) 
+{
+	return rhs * lhs;
+}
+
+template<typename T> 
+ostream& operator<<( ostream& os, const Point<T>& rhs) 
+{
+	os << "(" << rhs.x << ", " << rhs.y << ")" ;
+	return os;
+}
+
+typedef Point<double> PointD;
+typedef pair<PointD, PointD> SegmentD;
+
+double dot(PointD u, PointD v)
+{
+    return u.x*v.x + u.y*v.y;
+}
+
+
+double sqr(double x) { return x * x; }
+
+double length_squared(const PointD& v, const PointD& w) { return sqr(v.x - w.x) + sqr(v.y - w.y); }
+
+
+double length_squared(const SegmentD& seg)
+{
+    PointD pt = seg.second - seg.first;
+    return pt.x * pt.x + pt.y * pt.y;
+}
+
+double dist(const PointD pt1, const PointD pt2)
+{
+    PointD pt = pt2 - pt1;
+    return sqrt(pt.x * pt.x + pt.y * pt.y);
+}
+
+/**
+ distance of point to segment
+ 
+ http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
+*/
+double minimum_distance( const PointD& v, const PointD w, const PointD& p) {
+  // Return minimum distance between line segment vw and point p
+  const double l2 = length_squared(v, w);  // i.e. |w-v|^2 -  avoid a sqrt
+  if (l2 == 0.0) return dist(p, v);   // v == w case
+  // Consider the line extending the segment, parameterized as v + t (w - v).
+  // We find projection of point p onto the line. 
+  // It falls where t = [(p-v) . (w-v)] / |w-v|^2
+  const double t = dot(p - v, w - v) / l2;
+  if (t < 0.0) return dist(p, v);       // Beyond the 'v' end of the segment
+  else if (t > 1.0) return dist(p, w);  // Beyond the 'w' end of the segment
+  const PointD projection = v + t * (w - v);  // Projection falls on the segment
+  return dist(p, projection);
+}
+
+
+double getTotalDistance(const vector<SegmentD>& seg, PointD pt)
+{
+    double t = 0;
+    FOR(i, 0, seg.size())
+    {
+		double dis = minimum_distance( seg[i].first, seg[i].second, pt);
+        t += dis;
+    }
+    
+    return t;
+}
+
+void ternarySearch(const vector<SegmentD>& seg, PointD& pt, bool doX)
+{
+    
+    PointD loPt = PointD(pt);
+    PointD hiPt = PointD(pt);
+    
+    PointD leftThirdPt = PointD(pt);
+    PointD rightThirdPt = PointD(pt);
+    
+    double& left = doX ? loPt.x : loPt.y;
+    double& right = doX ? hiPt.x : hiPt.y;
+    
+    left = 0;
+    right = 200;
+     
+    double& leftThird = doX ? leftThirdPt.x : leftThirdPt.y;
+    double& rightThird = doX ? rightThirdPt.x : rightThirdPt.y;
+    
+    
+//  invariant list[loIdx] <= target ; list[hiIdx] > target
+        while (true) {
+            
+			cout << "Left " << left << " right " << right << endl;
+
+			cout << "Points l " << loPt << " r " << hiPt << " l thi " << leftThirdPt << " r thi " << rightThirdPt << endl;
+
+			assert(right >= left);
+
+            if ( (right - left) < 0.01)
+            {
+                pt = leftThirdPt;
+                return;
+            }
+             
+            leftThird = (2*left + right) / 3;
+            rightThird = (left + 2*right) / 3;
+                
+            double t1 = getTotalDistance(seg, leftThirdPt);
+            double t2 = getTotalDistance(seg, rightThirdPt);
+
+			cout << "Left third " << leftThird << " = " << t1 << " Right third " << rightThird << " =  " << t2 << endl;
+            
+            if (t1 > t2)
+            {
+                //Can't be between left and left third
+                left = leftThird;
+            } else {
+                right = rightThird;
+            }
+
+			cout << endl;
+        }
+        
+        
+        return;
+}
 
 int main() {
     
-	ofstream fout ("theme.out");
-    ifstream fin ("theme.in");
+	ofstream fout ("fence3.out");
+    ifstream fin ("fence3.in");
 
     int N;  
     fin >> N;
     
-    vi music(N);
+    vector<SegmentD> seg;
   
-    int ans=0;  
-
     FOR(i, 0, N)
     {
-        fin >> music[i];
+        int a,b,c,d;
+        fin >> a >> b >> c >> d;
+        
+        seg.pb( mp( PointD(a,b), PointD(c,d) ) );
     }
     
-    FOR(i, 0, N-2*ans)
-    { 
-        int len = 0;
-        int sub,temp;
-        
-        //Find start of at least one other sequence that is later
-       for(int j=i+5;j<N-ans;j++)
-       {  
-           //Find length of match
-          int p1=i;  
-          int p2=j;  
-            temp=0;  
-            //Difference will stay the same throughout the 2 subsequences
-            sub=music[p1]-music[p2];   
-            while(p1<j&&p2<N&&sub==music[p1++]-music[p2++])  
-                temp++;  
-            len=max(len, temp);  
-        }  
-        ans=max(len, ans);  
-    }     
-    if(ans<5)  
-        ans=0;  
-    fout << ans << endl;  
+    PointD pt(300,300);
+    
+	cout << "X search " << endl;
+    ternarySearch(seg, pt, true);
+    
+	cout << "Y search " << endl;
+    ternarySearch(seg, pt, false);
+    
+    fout << pt << endl;
+    
+	cout << "Total " << getTotalDistance(seg, PointD(1.0, 1.6)) << endl;
+
     return 0;  
 }  
