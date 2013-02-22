@@ -184,14 +184,14 @@ double getTotalDistance(const vector<SegmentD>& seg, PointD pt)
 void ternarySearch(const vector<SegmentD>& seg, PointD& pt, bool doX)
 {
     
-    PointD loPt = PointD(pt);
-    PointD hiPt = PointD(pt);
+    PointD leftPt = PointD(pt);
+    PointD rightPt = PointD(pt);
     
     PointD leftThirdPt = PointD(pt);
     PointD rightThirdPt = PointD(pt);
     
-    double& left = doX ? loPt.x : loPt.y;
-    double& right = doX ? hiPt.x : hiPt.y;
+    double& left = doX ? leftPt.x : leftPt.y;
+    double& right = doX ? rightPt.x : rightPt.y;
     
     left = 0;
     right = 200;
@@ -202,18 +202,30 @@ void ternarySearch(const vector<SegmentD>& seg, PointD& pt, bool doX)
     
 //  invariant list[loIdx] <= target ; list[hiIdx] > target
         while (true) {
-            
+            cout << fixed << setprecision(5) ;
 			cout << "Left " << left << " right " << right << endl;
 
-			cout << "Points l " << loPt << " r " << hiPt << " l thi " << leftThirdPt << " r thi " << rightThirdPt << endl;
+			cout << "Points l " << leftPt << " r " << rightPt << " l thi " << leftThirdPt << " r thi " << rightThirdPt << endl;
 
 			assert(right >= left);
 
+			double f1 = getTotalDistance(seg, leftPt);
+			double f2 = getTotalDistance(seg, rightPt);
+			
+			cout << " left = " << f1 << " right = " << f2 << endl;
+			
+			if ( abs(f2-f1) < 0.001 )
+			{
+			    leftThird = (left + right) / 2;
+			    pt = leftThirdPt;
+                return;
+            }
+            /*
             if ( (right - left) < 0.01)
             {
                 pt = leftThirdPt;
                 return;
-            }
+            }*/
              
             leftThird = (2*left + right) / 3;
             rightThird = (left + 2*right) / 3;
@@ -256,17 +268,23 @@ int main() {
         seg.pb( mp( PointD(a,b), PointD(c,d) ) );
     }
     
-    PointD pt(300,300);
+    PointD pt(220,220);
     
-	cout << "X search " << endl;
-    ternarySearch(seg, pt, true);
-    
-	cout << "Y search " << endl;
+	
+	ternarySearch(seg, pt, true);
+    ternarySearch(seg, pt, false);    
+    ternarySearch(seg, pt, true);    
+    ternarySearch(seg, pt, false);
+    ternarySearch(seg, pt, true);    
     ternarySearch(seg, pt, false);
     
-    fout << pt << endl;
+    //fout << pt << endl;
     
-	cout << "Total " << getTotalDistance(seg, PointD(1.0, 1.6)) << endl;
+    double d = getTotalDistance(seg, pt);
+    
+    fout << fixed << setprecision(1) << pt.x << " " << pt.y << " " << d << endl;
+    
+	cout << "Total " << getTotalDistance(seg, PointD(15.9, 15.9)) << endl;
 
     return 0;  
 }  

@@ -567,9 +567,24 @@ public class Main
         }
     }
 
-    static void qual_2009(String args[])
+    public static void main(String args[]) throws Exception 
+    //static void qual_2009(String args[])
     {
+        //Problem 1 alien language regular expressions
+        
+        //Prolem 2 watersheds simulation
+        
         //Problem 3Welcome to code jam  finding sub-sequence DP
+        codejam.y2009.round_qual.welcome.WelcomeCodeJam m = new codejam.y2009.round_qual.welcome.WelcomeCodeJam() ;
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files)
+        {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+            //Runner.go(file, m, m, 5);
+        }
     }
 
     static void round1A_2009(String args[])
@@ -580,7 +595,7 @@ public class Main
         
         //Problem 3 collecting cards -- combinatorics / probability
 
-        //TODO all 3 ; currently in java
+        //TODO all 3 ; currently in c++
     }
 
     static void round1B_2009(String args[])
@@ -1465,9 +1480,9 @@ public class Main
         }
     }
 
-    public static void main(String args[]) throws Exception
+    //public static void main(String args[]) throws Exception
+    static void roundFinal_2012(String args[])
     {
-        //static void roundFinal_2012(String args[]) {
         //2012 Final
 
         //Dijkstras using an indexed priority queue
