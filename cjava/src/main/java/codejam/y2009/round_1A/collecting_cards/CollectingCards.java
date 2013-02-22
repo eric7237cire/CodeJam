@@ -54,6 +54,7 @@ public class CollectingCards extends InputFilesHandler implements TestCaseHandle
 	    
 	    Preconditions.checkState(newCards != Long.MAX_VALUE);
 	    
+	    //State is impossible
 	    if (nExistingCards > x)
 	        return 0;
 	    
@@ -84,6 +85,8 @@ public class CollectingCards extends InputFilesHandler implements TestCaseHandle
         
         for(int x = 0; x < in.C; ++x)
         {
+            //If we have x cards, then calculate expected value of having
+            //y cards after getting a new pack
             int yUpperBound = Math.min(in.C, x + in.N);
             for(int y = x; y <= yUpperBound; ++y)
             {
