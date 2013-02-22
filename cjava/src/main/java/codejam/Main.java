@@ -23,16 +23,33 @@ public class Main
          * Problem 3 -- t9 spelling -- convert text to cell phone text
          */
 
-        //2010 africa
-
-        //A to C in C++
+        //2010 africa online comptetiion
+        
+        //Problem 1 odd man out (C++)
+        //Problem 2 get to work (C++)
+        
         /**
-         * Africa 2010 Problem A to C in C++.
+         * Problem 3 qualification round
+         * (C++)
          * 
-         * C is particularly interesting -- Very interesting inductive reasoning -- " africa 2010 qualification round"
+         * Very interesting inductive reasoning 
+         */
+
+        /**
+         * Problem 4
+         * Gaussian elimination
          */
         //codejam.y2010aa.round_all.polygraph.Main m = new codejam.y2010aa.round_all.polygraph.Main();
 
+        /**
+         * 2011 qual all in c++
+         */
+        
+        //Problem 1 -- closing the loop (greedy algo)
+        //Problem 2 -- investing at the market
+        //problem 3 -- (interesting) building a house (finding largest rectangle)
+        
+        
         //2011 africa / arabia
         /**
          * Problem 1
@@ -218,7 +235,7 @@ public class Main
         //}
     }
 
-    //public static void main(String args[]) throws Exception {
+    //public static void main(String args[]) throws Exception 
     static void round1B_2008(String args[])
     {
 
