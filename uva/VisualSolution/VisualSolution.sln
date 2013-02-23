@@ -15,6 +15,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11456 - Trainsorting", "..\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11790 - Murcia Skyline", "..\11790 - Murcia Skyline\11790 - Murcia Skyline.vcxproj", "{7C0401FD-F114-4581-89AB-636EC5577140}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11450 - Wedding shopping", "..\11450 - Wedding shopping\11450 - Wedding shopping.vcxproj", "{B5B7AF88-E32D-40F6-9407-559D2B02E29C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -49,6 +51,10 @@ Global
 		{7C0401FD-F114-4581-89AB-636EC5577140}.Debug|Win32.Build.0 = Debug|Win32
 		{7C0401FD-F114-4581-89AB-636EC5577140}.Release|Win32.ActiveCfg = Release|Win32
 		{7C0401FD-F114-4581-89AB-636EC5577140}.Release|Win32.Build.0 = Release|Win32
+		{B5B7AF88-E32D-40F6-9407-559D2B02E29C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B5B7AF88-E32D-40F6-9407-559D2B02E29C}.Debug|Win32.Build.0 = Debug|Win32
+		{B5B7AF88-E32D-40F6-9407-559D2B02E29C}.Release|Win32.ActiveCfg = Release|Win32
+		{B5B7AF88-E32D-40F6-9407-559D2B02E29C}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
