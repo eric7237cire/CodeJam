@@ -595,8 +595,7 @@ public class Main
         
         //Problem 2 -- crossing road -- dijkstaras
         
-        //Problem 3 collecting cards -- combinatorics / probability
-        
+        //Problem 3 collecting cards -- combinatorics / probability        
         CollectingCards m = new CollectingCards();
 
         String[] files = Main.getFiles(m, args);
@@ -607,7 +606,7 @@ public class Main
             Runner.goSingleThread(file, m, m);
             //Runner.go(file, m, m, 5);
         }
-        //TODO all 3 ; currently in c++
+        
     }
 
     static void round1B_2009(String args[])
