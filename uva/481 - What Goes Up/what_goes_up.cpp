@@ -85,6 +85,81 @@ int main()
 		seq.pb(n);
 	}
 
+	assert(seq.size() > 0);
+
+	vi dp(seq.size(), 0);
+
+	vi lis;
+
+	lis.pb(seq[0]);
+	
+	int globalMax = 0;
+
+	for(int dpIdx = 1; dpIdx < seq.size(); ++dpIdx)
+	{
+		//Eveything before it is strictly less than seq[dpIdx]
+		vi::iterator it = lower_bound(all(lis), seq[dpIdx]);
+		
+		//This will be at most the length of the sequence - 1
+		int curMax = distance(lis.begin(), it);
+
+		dp[dpIdx] = curMax;
+		
+		if (it == lis.end())
+		{
+			lis.pb(seq[dpIdx]);
+		} else {
+			//Found an element 
+			*it = seq[dpIdx];
+		}
+
+		globalMax = max(globalMax, curMax);
+	}
+
+	
+
+	int last = numeric_limits<int>::max();
+	int cur = globalMax;
+
+#ifndef ONLINE_JUDGE
+	cout << "DP array " << dp << endl;
+	cout << "LIS array " << lis << endl;
+#endif
+
+	//In order to have the seq latest in the input
+	for(int i = seq.size() - 1; i >= 0; --i)
+	{
+		if (dp[i] == cur && seq[i] < last)
+		{
+			last = lis[ cur-- ] = seq[i];			
+		}
+	}
+
+	cout << lis.size() << endl;
+	cout << "-" << endl;	
+	cout << lis;
+
+	
+	return 0;
+}
+
+//The n^2 algo
+int slowmain() 
+{
+#ifndef ONLINE_JUDGE
+	
+	freopen ("input.txt","r",stdin);
+#endif
+	
+	
+	int n;
+	vi seq;
+
+	while(1 == scanf("%d", &n))
+	{
+		seq.pb(n);
+	}
+
 	vi dp(seq.size(), 0);
 
 	int globalMax = 0;
