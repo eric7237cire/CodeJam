@@ -9,6 +9,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10226 -- Hardwood", "..\102
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10720 - Graph Construction", "..\10720 - Graph Construction\10720 - Graph Construction.vcxproj", "{6CF392C2-2F72-43E2-A1BE-F0A46E085569}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "481 - What Goes Up", "..\481 - What Goes Up\481 - What Goes Up.vcxproj", "{7806F125-2888-45B3-A8A6-3BD03BE143E4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11456 - Trainsorting", "..\11456 - Trainsorting\11456 - Trainsorting.vcxproj", "{B8B555CB-3B9F-4DCD-9FCA-F883A96824A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -31,6 +35,14 @@ Global
 		{6CF392C2-2F72-43E2-A1BE-F0A46E085569}.Debug|Win32.Build.0 = Debug|Win32
 		{6CF392C2-2F72-43E2-A1BE-F0A46E085569}.Release|Win32.ActiveCfg = Release|Win32
 		{6CF392C2-2F72-43E2-A1BE-F0A46E085569}.Release|Win32.Build.0 = Release|Win32
+		{7806F125-2888-45B3-A8A6-3BD03BE143E4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7806F125-2888-45B3-A8A6-3BD03BE143E4}.Debug|Win32.Build.0 = Debug|Win32
+		{7806F125-2888-45B3-A8A6-3BD03BE143E4}.Release|Win32.ActiveCfg = Release|Win32
+		{7806F125-2888-45B3-A8A6-3BD03BE143E4}.Release|Win32.Build.0 = Release|Win32
+		{B8B555CB-3B9F-4DCD-9FCA-F883A96824A2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B8B555CB-3B9F-4DCD-9FCA-F883A96824A2}.Debug|Win32.Build.0 = Debug|Win32
+		{B8B555CB-3B9F-4DCD-9FCA-F883A96824A2}.Release|Win32.ActiveCfg = Release|Win32
+		{B8B555CB-3B9F-4DCD-9FCA-F883A96824A2}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
