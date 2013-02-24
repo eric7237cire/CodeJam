@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import static com.google.common.base.Preconditions.*;
 import com.google.common.math.IntMath;
 
+@SuppressWarnings("unused")
 public class SegmentTreeSum
 {
     final protected static Logger log = LoggerFactory.getLogger("main");
@@ -155,6 +156,7 @@ public class SegmentTreeSum
     }
     
     //-----------------------------------
+    
     int rangeSumQuery(int vertex, int left, int right, int i, int j)
     {
         int mid = (left + right) / 2;
@@ -170,13 +172,13 @@ public class SegmentTreeSum
         int p1 = rangeSumQuery(vertex * 2, left, mid, i, j);
         int p2 = rangeSumQuery(vertex * 2 + 1, mid + 1, right, i, j);
         
-        //Update tree value which is not the same as p1 and p2, since this is over the full range
-        tree[vertex].value = tree[vertex * 2].value + tree[vertex * 2 + 1].value;
-        /*
+        
+        if (false)
         log.debug("Answer vertex {} left {} right {} i {} j {} p1 {} p2 {} p1+p2 {}" +
         		" left tree val {} right tree val {} total val {}type {}", vertex, tree[vertex].value, left, right,  i, j, p1,p2,p1+p2, tree[vertex * 2].value,tree[vertex * 2 + 1].value,
         		tree[vertex].value);
-        		*/
+        		
+        
         return (p1 + p2);
     }
     
@@ -229,15 +231,9 @@ public class SegmentTreeSum
         if (p1 >= 0)
             return p1;
         
+       
+        
         return p2;
-        
-        //Update tree value which is not the same as p1 and p2, since this is over the full range
-        
-        /*
-        log.debug("Answer vertex {} left {} right {} i {} j {} p1 {} p2 {} p1+p2 {}" +
-                " left tree val {} right tree val {} total val {}type {}", vertex, tree[vertex].value, left, right,  i, j, p1,p2,p1+p2, tree[vertex * 2].value,tree[vertex * 2 + 1].value,
-                tree[vertex].value);
-                */
     }
     
     public int findLowestIndexWithSum(int targetSum)
@@ -253,8 +249,6 @@ public class SegmentTreeSum
         
         checkState(right >= left);
         checkState(right <= rightMax);
-        
-
         checkState(tree[vertex].value >= targetSum);
         
         if (left == right) {

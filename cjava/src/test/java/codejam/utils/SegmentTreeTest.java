@@ -2,7 +2,6 @@ package codejam.utils;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.BitSet;
 import java.util.Random;
 
 import org.junit.Test;
@@ -17,7 +16,7 @@ public class SegmentTreeTest
     final protected static Logger log = LoggerFactory.getLogger("main");
     
 
-    //@Test
+    @Test
     public void test()
     {
         SegmentTreeSum st = new SegmentTreeSum(10);
@@ -28,11 +27,11 @@ public class SegmentTreeTest
         assertEquals(2, a);
     }
     
-    //@Test
+    @Test
     public void testRand()
     {
-        int size = 517;
-        int iterations = 15000;
+        int size = 519;
+        int iterations = 150000;
                 
         Random r = new Random(42);
         
@@ -50,6 +49,7 @@ public class SegmentTreeTest
             int start = Util.getRandBetween(0, size-1,r);
             int stop = Util.getRandBetween(start, size-1,r);
             
+            log.debug("Op is {} start {} stop {} size {}", op, start, stop, size);
             int q = -1;
             
             if (op == 1) {
@@ -98,7 +98,7 @@ public class SegmentTreeTest
         
     }
     
-    //@Test
+    @Test
     public void testFindFirstZero()
     {
         int[] ar = new int[] { 
