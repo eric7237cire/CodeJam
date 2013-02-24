@@ -7,7 +7,9 @@ import java.util.Scanner;
 
 import org.junit.Test;
 
+import ch.qos.logback.classic.Level;
 import codejam.utils.datastructures.FenwickTree;
+import codejam.utils.datastructures.SegmentTreeSum;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -16,13 +18,13 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
-public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class MouseTrap extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
     
-    public Main()
+    public MouseTrap()
     {
         super("C", 1,1);
-      //  (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
     
     
@@ -119,9 +121,88 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         }
         
     
+        public String handleCase(InputData in) {
+            
+            
+            
+            int[] deck = new int[in.K];
+            
+            int currentIndex = 0;
+            
+            SegmentTreeSum st = new SegmentTreeSum(in.K);
+            
+            st.update(1, in.K - 1, SegmentTreeSum.SET);
+            
+            deck[0] = 1;
+            
+            for(int currentCard = 2; currentCard <= in.K; ++currentCard)
+            {
+                //Current index is filled
+                Preconditions.checkState(deck[currentIndex] != 0);
+                
+                int cardsLeft = in.K - currentCard + 1;
+                
+                //Loop as much as possible
+                int nCardsToSkip = currentCard ;
+                
+                nCardsToSkip %= cardsLeft;
+                if (nCardsToSkip == 0)
+                    nCardsToSkip = cardsLeft;
+                          
+                //How many cards before / after?  +1 because Fenwick tree is 1 based
+                int cardsBeforePos = st.rangeSumQuery(0, currentIndex);
+                
+                int cardsAfterPos = cardsLeft - cardsBeforePos;
+                
+                int checkIndex = currentIndex;
+                
+                
+                if (nCardsToSkip <= cardsAfterPos)
+                {
+                    /**
+                     * Next position to fill does not require wrapping around, find freuency
+                     * [] [] cp [] [] [] []
+                     * 
+                     * say I wanted the 3rd position, then I want frencuency 2 + 3
+                     */
+                    currentIndex = st.findLowestIndexWithSum( 
+                            nCardsToSkip + cardsBeforePos);
+                    
+                    Preconditions.checkState(currentIndex > checkIndex && currentIndex < in.K);
+                } else {
+                    //Next position is somewhere before currentp position
+                    
+                    //Skip all cards up to the end
+                    nCardsToSkip -= cardsAfterPos;
+                    
+                    currentIndex = st.findLowestIndexWithSum( 
+                            nCardsToSkip ) ;
+                    
+                    Preconditions.checkState(currentIndex>= 0 && currentIndex < checkIndex);
+                }
+                
+                Preconditions.checkState(deck[currentIndex] == 0);
+                deck[currentIndex] = currentCard;
+                
+                //Remove current card from binary interval tree
+                st.update(currentIndex, currentIndex, SegmentTreeSum.ERASE);
+                
+                
+            }
+            
+            List<Integer> ans = Lists.newArrayList();
+            
+            for(Integer ansIdx : in.d) {
+                ans.add(deck[ansIdx-1]);
+            }
+            
+            return String.format("Case #%d: %s ", in.testCase, Joiner.on(' ').join(ans));
+            
+        }
+            
     
-    @Override
-    public String handleCase(InputData in) {
+    //Fenwick tree
+    public String handleCase2(InputData in) {
        
         
         
@@ -138,6 +219,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
         for(int currentCard = 2; currentCard <= in.K; ++currentCard)
         {
+            //Current index is filled
             Preconditions.checkState(deck[currentIndex] != 0);
             
             int cardsLeft = in.K - currentCard + 1;
@@ -149,7 +231,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
             if (nCardsToSkip == 0)
                 nCardsToSkip = cardsLeft;
                       
-            //How many cards before / after?
+            //How many cards before / after?  +1 because Fenwick tree is 1 based
             int cardsBeforePos = FenwickTree.ft_rsq(ft, currentIndex+1);
             
             int cardsAfterPos = cardsLeft - cardsBeforePos;

@@ -19,6 +19,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11450 - Wedding shopping", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "108 - Maximum Sum", "..\108 - Maximum Sum\108 - Maximum Sum.vcxproj", "{1146AF7C-F9A4-4DFF-827B-D6954EFEDB2B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11402 Ahoy Pirates", "..\11402 Ahoy Pirates\11402 Ahoy Pirates.vcxproj", "{E0F72755-8F71-46EA-84D4-58327566BE32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -61,6 +63,10 @@ Global
 		{1146AF7C-F9A4-4DFF-827B-D6954EFEDB2B}.Debug|Win32.Build.0 = Debug|Win32
 		{1146AF7C-F9A4-4DFF-827B-D6954EFEDB2B}.Release|Win32.ActiveCfg = Release|Win32
 		{1146AF7C-F9A4-4DFF-827B-D6954EFEDB2B}.Release|Win32.Build.0 = Release|Win32
+		{E0F72755-8F71-46EA-84D4-58327566BE32}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E0F72755-8F71-46EA-84D4-58327566BE32}.Debug|Win32.Build.0 = Debug|Win32
+		{E0F72755-8F71-46EA-84D4-58327566BE32}.Release|Win32.ActiveCfg = Release|Win32
+		{E0F72755-8F71-46EA-84D4-58327566BE32}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

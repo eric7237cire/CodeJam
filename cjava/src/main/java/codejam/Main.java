@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner;
+import codejam.y2008.round_1B.mouse_trap.MouseTrap;
 import codejam.y2009.round_1A.collecting_cards.CollectingCards;
 
 public class Main
@@ -236,8 +237,8 @@ public class Main
         //}
     }
 
-    //public static void main(String args[]) throws Exception 
-    static void round1B_2008(String args[])
+    public static void main(String args[]) throws Exception 
+    //static void round1B_2008(String args[])
     {
 
         /**
@@ -247,14 +248,14 @@ public class Main
          * 
          * Good test for union find
          */
-        codejam.y2008.round_1B.number_sets.Main m = new codejam.y2008.round_1B.number_sets.Main();
+        //codejam.y2008.round_1B.number_sets.Main m = new codejam.y2008.round_1B.number_sets.Main();
 
         /**
          * Problem 3
          * 
          * Interval tree / Binary Interval Tree (Fenwick)
          */
-        //codejam.y2008.round_1B.mouse_trap.Main m = new codejam.y2008.round_1B.mouse_trap.Main();
+        MouseTrap m = new MouseTrap();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files)
@@ -588,8 +589,8 @@ public class Main
         }
     }
 
-    public static void main(String args[]) throws Exception 
-    //static void round1A_2009(String args[])
+    //public static void main(String args[]) throws Exception 
+    static void round1A_2009(String args[])
     {
         //Problem 1 -- multi base happiness  
         

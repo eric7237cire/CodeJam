@@ -2,6 +2,7 @@ package euler;
 
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -259,5 +260,10 @@ start again from Step 1 but using the expression at the end of Step 3
             ++count;
         }
         return count;
+    }
+    
+    public static int getRandBetween(int Min, int Max, Random r)
+    {
+        return Min + (int)(r.nextDouble() * ((Max - Min) + 1));
     }
 }
