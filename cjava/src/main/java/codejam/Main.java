@@ -1031,15 +1031,16 @@ public class Main
          * 
          * Idea look at other implementations for bottom up
          */
-         codejam.y2010.round_final.letter_stamper.LetterStamper m = new codejam.y2010.round_final.letter_stamper.LetterStamper();
+        // codejam.y2010.round_final.letter_stamper.LetterStamper m = new codejam.y2010.round_final.letter_stamper.LetterStamper();
 
-        //Partial 2 trees, decomposition to find longest path that does not intersect nodes twice
+        //
          /**
           * Problem 2
           * 
+          * Partial 2 trees, decomposition to find longest path that does not intersect nodes twice
           * TODO understand a bit more why it works
           */
-        //  codejam.y2010.round_final.city_tour.Main m = new codejam.y2010.round_final.city_tour.Main();
+          codejam.y2010.round_final.city_tour.CityTour m = new codejam.y2010.round_final.city_tour.CityTour();
 
         //Greedy algorithm, proof by induction.  Very easy implementation to a seemingly hard problem
         // codejam.y2010.round_final.candy_store.Main m = new codejam.y2010.round_final.candy_store.Main();

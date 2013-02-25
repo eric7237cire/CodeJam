@@ -10,7 +10,7 @@ public class InputData extends AbstractInputData {
 
     int N;
     
-    int[][] connections;
+    boolean[][] connections;
     
     List<Pair<Integer,Integer>> edges;
         
