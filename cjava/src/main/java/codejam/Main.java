@@ -1019,16 +1019,26 @@ public class Main
         }
     }
 
-    //public static void main(String args[]) throws Exception {
-
-    static void roundFinal_2010(String args[])
+    public static void main(String args[]) throws Exception 
+    //static void roundFinal_2010(String args[])
     {
 
         //2010 final
-        //Dynamic programming.  has both recursive and bottom up
-        // codejam.y2010.round_final.letter_stamper.Main m = new codejam.y2010.round_final.letter_stamper.Main();
+        /**
+         * Problem 1
+         * 
+         * Dynamic programming.  has both recursive and bottom up
+         * 
+         * Idea look at other implementations for bottom up
+         */
+         codejam.y2010.round_final.letter_stamper.LetterStamper m = new codejam.y2010.round_final.letter_stamper.LetterStamper();
 
         //Partial 2 trees, decomposition to find longest path that does not intersect nodes twice
+         /**
+          * Problem 2
+          * 
+          * TODO understand a bit more why it works
+          */
         //  codejam.y2010.round_final.city_tour.Main m = new codejam.y2010.round_final.city_tour.Main();
 
         //Greedy algorithm, proof by induction.  Very easy implementation to a seemingly hard problem
@@ -1051,16 +1061,16 @@ public class Main
          * 
          * Symmetry, patters /topology
          */
-        codejam.y2010.round_final.ying_yang.YingYang m = new codejam.y2010.round_final.ying_yang.YingYang();
+        //codejam.y2010.round_final.ying_yang.YingYang m = new codejam.y2010.round_final.ying_yang.YingYang();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files)
         {
             log.info("Input file {}", file);
 
-            //  Runner.goSingleThread(file, m, m);
+              Runner.goSingleThread(file, m, m);
 
-            Runner.go(file, m, m, 5);
+            //Runner.go(file, m, m, 5);
         }
     }
 
@@ -1386,11 +1396,11 @@ public class Main
         //Physics, velocity acceleration. Intersection parabola / lines
         //codejam.y2012.round_1C.out_of_gas.Main m = new codejam.y2012.round_1C.out_of_gas.Main();
 
-        //Did this the hard way, LCS DP on steroids, could have done simpler using their soltion TODO 
+        //Did this the hard way, LCS DP on steroids, idea try their  simpler soltion TODO 
         //codejam.y2012.round_1C.boxes.Main m = new codejam.y2012.round_1C.boxes.Main();
 
     }
-
+    //public static void main(String args[]) throws Exception
     static void round2_2012(String args[])
     {
         //2012 2
@@ -1426,12 +1436,13 @@ public class Main
          */
         //codejam.y2012.round_2.aerobics.Main m = new codejam.y2012.round_2.aerobics.Main();
 
-        //TODO implement their simpler approach
         /**
          * 
          * 1.  Attempted an example of Integer Linear Programming ; worked for small
          * Lots of simplex notes in 2012 doc direction.  IP means you split the problem by
          * adding more constraints branch and bound I think it's called
+         * 
+         * idea -- try their simpler approach
          */
         codejam.y2012.round_2.mountain_view.Main m = new codejam.y2012.round_2.mountain_view.Main();
 
@@ -1488,6 +1499,15 @@ public class Main
          */
         //codejam.y2012.round_3.quality_food.Main m = new codejam.y2012.round_3.quality_food.Main();
 
+        /**
+         * 2012
+         * Problem 4
+         * 
+         * Mincost max flow
+         * Dibarjun sequences
+         * 
+         * Idea -- try the greedy algorithm
+         */
         codejam.y2012.round_3.lost_password.Main m = new codejam.y2012.round_3.lost_password.Main();
 
         String[] files = Main.getFiles(m, args);
@@ -1500,8 +1520,8 @@ public class Main
         }
     }
 
-    public static void main(String args[]) throws Exception
-    //static void roundFinal_2012(String args[])
+    //public static void main(String args[]) throws Exception
+    static void roundFinal_2012(String args[])
     {
         //2012 Final
 

@@ -5,21 +5,21 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Level;
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles{
+public class LetterStamper extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles{
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-
-    @Override
-    public String[] getDefaultInputFiles() {
-  //     return new String[] {"sample.in"};
-       // return new String[] {"A-small-practice.in"};
-        return new String[] {"A-small-practice.in", "A-large-practice.in"};
+   
+    public LetterStamper() 
+    {
+        super("A", 1, 1);
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
     
 
@@ -150,8 +150,11 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         
     }
-    
     public String handleCase(InputData in) {
+        //return handleCaseTopDown(in);
+        return handleCaseBottomUp(in);
+    }
+    public String handleCaseBottomUp(InputData in) {
         
         //index -- state -- stack height
         int[][][] bottUp = new int[in.S.length()][6][Math.max(3,in.S.length())];
@@ -171,6 +174,9 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             bottUp[curIdx][stackState][0] = 3;
         }
         
+        /**
+         * Compute last character
+         */
         //Stack height 1
         for(int stackState = 0; stackState < 6; ++stackState) {
             if (popsNeeded[stackState][curChar] == 0)
@@ -198,7 +204,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
             }
         }
         
-        //General case        
+        //General case 
         for( curIdx = in.S.length() - 2; curIdx >= 0; --curIdx) {
         
             curChar = (int) in.S.charAt(curIdx) - 'A';

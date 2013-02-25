@@ -3,9 +3,6 @@ package codejam.y2012.round_final.zombie_smash;
 import java.util.List;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import ch.qos.logback.classic.Level;
 import codejam.utils.datastructures.IndexMinPQ;
 import codejam.utils.geometry.PointInt;
@@ -59,7 +56,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         return in;
     }
 
-    class State implements Comparable<State>
+    private static class State implements Comparable<State>
     {
         //Time last zombie was smashed, Last zombie smashed, Number of zombies already smashed)
         int timeLastZombieSmashed;
@@ -82,17 +79,22 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
         
     }
     
-    int gridTimeToTravel( PointInt p1, PointInt p2) {
+    private static int gridTimeToTravel( PointInt p1, PointInt p2) {
         return 100 * Math.max( Math.abs( p1.x() - p2.x()), Math.abs( p1.y() - p2.y()));
     }
     
-    public void generateStates(List<State> states, int[][] stateToIndex, InputData in)
+    /**
+     * See solution explanation
+     * 
+     * Generate all possible states 
+     */
+    private static void generateStates(List<State> states, int[][] stateToIndex, InputData in)
     {
         states.clear();
         
         states.add(new State(0, null, 0)); // Include the initial state.
         
-        for(int z = 0; z < in.Z; ++z)
+        for(int lastZombieSmashedIndex = 0; lastZombieSmashedIndex < in.Z; ++lastZombieSmashedIndex)
         {
             for(int zombies_killed = 1; zombies_killed <= in.Z; ++zombies_killed)
             {
@@ -100,15 +102,15 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
                 int earliest_smash_time = Integer.MAX_VALUE;
                 if (zombies_killed == 1)
                 {
-                  int earliest_arrival_time = gridTimeToTravel( new PointInt(0,0), in.zombieLoc[z]);
-                  if (earliest_arrival_time <= in.zombieAppearance[z] + 1000)
-                    earliest_smash_time = Math.max( in.zombieAppearance[z],
+                  int earliest_arrival_time = gridTimeToTravel( new PointInt(0,0), in.zombieLoc[lastZombieSmashedIndex]);
+                  if (earliest_arrival_time <= in.zombieAppearance[lastZombieSmashedIndex] + 1000)
+                    earliest_smash_time = Math.max( in.zombieAppearance[lastZombieSmashedIndex],
                                               earliest_arrival_time);
                 }
                 
-                stateToIndex[z][zombies_killed] = states.size();
+                stateToIndex[lastZombieSmashedIndex][zombies_killed] = states.size();
                 
-                states.add( new State(earliest_smash_time, z, zombies_killed) );
+                states.add( new State(earliest_smash_time, lastZombieSmashedIndex, zombies_killed) );
                 
                 
             }
