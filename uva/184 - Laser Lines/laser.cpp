@@ -120,7 +120,8 @@ typedef Point<int> PointI;
 typedef pair<PointD, PointD> SegmentD;
 typedef vector<PointD> vp;
 
-double cross( const PointD& A, const PointD& B )
+template<typename T>
+T cross( const Point<T>& A, const Point<T>& B )
 {
     return A.x*B.y - A.y*B.x;
 }
@@ -245,7 +246,7 @@ class Line
 		C = p1.x*p2.y - p2.x * p1.y;
 
 		//make A positive
-		if (A < 0)
+		if (A < 0 || (A==0 && B < 0) )
 		{
 			A *= -1;
 			B *= -1;
@@ -370,7 +371,8 @@ bool cmpLine(const vecP& v1, const vecP& v2)
 
 int main() {
 #ifndef ONLINE_JUDGE
-	freopen ("input.txt","r",stdin);
+	//freopen ("input.txt","r",stdin);
+	freopen ("in.txt","r",stdin);
 #endif
 
 	while(true)
@@ -384,15 +386,20 @@ int main() {
 			if (x == 0 && y == 0)
 				break;
 
+			assert(x >= 0 && x < 10000);
+			assert(y >= 0 && y < 10000);
+
 			points.pb(PointI(x,y));
 
-			
+			assert(points.size() < 301);
 		}
 		if (r == 0)
 			break;
 
 		if (points.empty())
 			break;
+
+		assert(points.size() > 2);
 
 		//sort( all(points), cmp);
 		typedef map<Line<int>, set<int> > LinePointsMap;
@@ -401,9 +408,20 @@ int main() {
 
 		for(int i = 0; i < points.size(); ++i)
 		{
+			//printf("%d ...\n", i);
 			for(int j = i+1; j < points.size(); ++j)
 			{
-				Line<int> line(points[i], points[j]);
+				if (points[i] == points[j])
+					continue;
+
+			//	printf("%d %d ...\n", i, j);
+				for(int k = j+1; k < points.size(); ++k)
+				{
+					
+					if ( !isColinear( points[i], points[j], points[k] ) )
+						continue;
+
+					Line<int> line(points[i], points[j]);
 
 				//LinePointsMap::iterator it = linePoints.find(line);
 #ifndef ONLINE_JUDGE 
@@ -413,12 +431,15 @@ int main() {
 					line.A, line.B, line.C
 					);*/
 #endif
-				linePoints[line].insert(i);
-				linePoints[line].insert(j);
+					linePoints[line].insert(i);
+					linePoints[line].insert(j);
+					linePoints[line].insert(k);
+				}
+				
 			}
 		}
 		
-		vector<vector<PointI>> lines;
+		vector<vector<PointI> > lines;
 
 		for( LinePointsMap::iterator it = linePoints.begin();
 			it != linePoints.end();
@@ -435,10 +456,14 @@ int main() {
 				sIt != pointIndexes.end();
 				++sIt)
 			{
+				//cout << points[*sIt] << endl;
 				v.pb(points[*sIt]);
 			}
 			
 			sort(all(v), cmp);
+
+
+			//printf("%d %d %d \n", it->first.A, it->first.B, it->first.C);
 
 			lines.pb(v);
 			
@@ -455,6 +480,8 @@ int main() {
 			printf("The following lines were found:\n");
 			FOR( linIdx, 0, lines.size())
 			{
+				
+
 				FOR(i, 0, lines[linIdx].size())
 				{
 					printf("(%4d,%4d)", lines[linIdx][i].x, lines[linIdx][i].y);
