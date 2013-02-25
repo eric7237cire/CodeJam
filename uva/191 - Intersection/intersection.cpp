@@ -316,7 +316,7 @@ bool intersects(const Point<T>& a1,const Point<T>& a2,
 	if ( getSide( a1, a2, b1 ) == getSide( a1, a2, b2 ) )
 		return false; 
 
-     
+      
 	if (b1==b2)
 	{
 		return isBetween(b1.x, a1.x, a2.x) &&
