@@ -7,15 +7,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
+import ch.qos.logback.classic.Level;
+
 import codejam.utils.geometry.PointInt;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
+import codejam.utils.utils.DoubleFormat;
 
-public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
+public class MinPerimeter extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>{
 
-    public Main() {
-        super("B", 1,1, 0);
+    public MinPerimeter() {
+        super("B", 1,1);
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
 
     @Override
@@ -29,10 +33,8 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 
         log.info("Done calculating answer case {}", input.testCase);
         
-        DecimalFormat decim = new DecimalFormat("0.00000000000");
-        decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
         
-        return ("Case #" + input.testCase + ": " + decim.format(ans));
+        return ("Case #" + input.testCase + ": " + DoubleFormat.df7.format(ans));
                 
 
     }

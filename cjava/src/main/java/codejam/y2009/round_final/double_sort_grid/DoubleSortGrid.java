@@ -2,9 +2,8 @@ package codejam.y2009.round_final.double_sort_grid;
 
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import ch.qos.logback.classic.Level;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.Grid;
@@ -12,11 +11,14 @@ import codejam.utils.utils.Grid;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class DoubleSortGrid extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-
-    
+   
+    public DoubleSortGrid()
+    {
+        super("C", 1, 1);
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
+    }
     
     
     @Override

@@ -49,7 +49,7 @@ public class Main
         
         //Problem 1 -- closing the loop (greedy algo)
         //Problem 2 -- investing at the market
-        //problem 3 -- (interesting) building a house (finding largest rectangle)
+        //problem 3 -- (interesting) building a house (finding largest unobstructed rectangle using stack )
         
         
         //2011 africa / arabia
@@ -237,8 +237,8 @@ public class Main
         //}
     }
 
-    public static void main(String args[]) throws Exception 
-    //static void round1B_2008(String args[])
+    //public static void main(String args[]) throws Exception 
+    static void round1B_2008(String args[])
     {
 
         /**
@@ -596,7 +596,10 @@ public class Main
         
         //Problem 2 -- crossing road -- dijkstaras
         
-        //Problem 3 collecting cards -- combinatorics / probability        
+        /**
+         * Problem 3 collecting cards -- combinatorics / probability
+         * Back substitution solving w/ matrices        
+         */
         CollectingCards m = new CollectingCards();
 
         String[] files = Main.getFiles(m, args);
@@ -743,7 +746,8 @@ public class Main
 
     }
 
-    static void roundFinal_2009(String args[])
+    //static void roundFinal_2009(String args[])
+    public static void main(String args[]) throws Exception 
     {
         //Round Final -- 2009
         //codejam.y2009.round_4.year_more.Main m = new codejam.y2009.round_4.year_more.Main();
@@ -752,14 +756,18 @@ public class Main
         /**
          * Problem 2
          * 
+         * Divide & conquer with merging of results.  
+         * 
+         * Idea optimize / maybe use c++
+         * 
          * Used proposed solution -- takes around 60 seconds
          * Best C++ answer takes around 20 seconds
          * 
          */
-        codejam.y2009.round_final.min_perimeter.Main m = new codejam.y2009.round_final.min_perimeter.Main();
+        //codejam.y2009.round_final.min_perimeter.MinPerimeter m = new codejam.y2009.round_final.min_perimeter.MinPerimeter();
 
         //Using lattice paths to make a complex Dynamic programming DP
-        // codejam.y2009.double_sort_grid.Main m = new codejam.y2009.double_sort_grid.Main();
+        codejam.y2009.round_final.double_sort_grid.DoubleSortGrid m = new codejam.y2009.round_final.double_sort_grid.DoubleSortGrid();
 
         //Network flow
         // codejam.y2009.round_final.wifi_towers.Main m = new codejam.y2009.round_final.wifi_towers.Main();
@@ -796,7 +804,7 @@ public class Main
             log.info("Input file {}", file);
 
             //   Runner.goSingleThread(file, m, m);
-            Runner.go(file, m, m, 5);
+            Runner.go(file, m, m, 2);
         }
     }
 
@@ -1542,39 +1550,7 @@ public class Main
         }
     }
 
-    public static void main2(String args[]) throws Exception
-    {
-
-        //africa(args);
-
-        beta2008(args);
-        //practiceRound2008(args);
-        //practiceContest2008(args);
-
-        //round1B_2008(args);
-        //round1C_2008(args);
-        //round2_2008(args);
-        //  round3_2008(args);
-
-        //round2_2009(args);
-        // roundFinal_2009(args);
-
-        //  round2_2010(args);
-        // round3_2010(args);
-
-        //round1A_2011(args);
-        //round2_2011(args);        
-        //round3_2011(args);
-        //roundFinal_2011(args);
-
-        // round1B_2012(args);
-        // round2_2012(args);
-        //   round3_2012(args);
-        //  roundFinal_2012(args);
-
-        // Main m = null;
-
-    }
+    
 
     public static String[] getFiles(Object m, String[] args)
     {
