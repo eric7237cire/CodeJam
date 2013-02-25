@@ -746,8 +746,8 @@ public class Main
 
     }
 
-    //static void roundFinal_2009(String args[])
-    public static void main(String args[]) throws Exception 
+    static void roundFinal_2009(String args[])
+    //public static void main(String args[]) throws Exception 
     {
         //Round Final -- 2009
         //codejam.y2009.round_4.year_more.Main m = new codejam.y2009.round_4.year_more.Main();
@@ -1500,16 +1500,21 @@ public class Main
         }
     }
 
-    //public static void main(String args[]) throws Exception
-    static void roundFinal_2012(String args[])
+    public static void main(String args[]) throws Exception
+    //static void roundFinal_2012(String args[])
     {
         //2012 Final
 
         //Dijkstras using an indexed priority queue
-        //codejam.y2012.round_final.zombie_smash.Main m = new codejam.y2012.round_final.zombie_smash.Main();
+        codejam.y2012.round_final.zombie_smash.Main m = new codejam.y2012.round_final.zombie_smash.Main();
 
-        //Probability, optimizing, state transitions, maybe matrix multiplication
-        //codejam.y2012.round_final.upstairs_downstairs.Main m = new codejam.y2012.round_final.upstairs_downstairs.Main();
+        /**
+         * Problem 2 Upstairs downstairs
+         * Probability, optimizing, state transitions
+         * 
+         * Idea use matrix multiplication to calculate state transitions
+         */
+        //codejam.y2012.round_final.upstairs_downstairs.UpstairsDownstairs m = new codejam.y2012.round_final.upstairs_downstairs.UpstairsDownstairs();
 
         /**
          * 2012 Final -- problem 3
@@ -1538,7 +1543,7 @@ public class Main
          * 
          * Dynamic programming
          */
-        codejam.y2012.round_final.shifting_paths.ShiftingPaths m = new codejam.y2012.round_final.shifting_paths.ShiftingPaths();
+        //codejam.y2012.round_final.shifting_paths.ShiftingPaths m = new codejam.y2012.round_final.shifting_paths.ShiftingPaths();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files)

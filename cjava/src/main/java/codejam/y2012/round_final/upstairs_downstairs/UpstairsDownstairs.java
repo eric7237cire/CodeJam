@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.apache.commons.lang3.math.Fraction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import ch.qos.logback.classic.Level;
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.DoubleFormat;
@@ -16,17 +16,14 @@ import codejam.utils.utils.DoubleFormat;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class UpstairsDownstairs extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-
-    @Override
-    public String[] getDefaultInputFiles() {
-      //  return new String[] { "sample.in" };
-     //    return new String[] { "B-small-practice.in" };
-        return new String[] { "B-small-practice.in", "B-large-practice.in" };
+    public UpstairsDownstairs()
+    {
+        super("B", 1, 1);
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
-
+    
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
 
@@ -90,7 +87,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         /**
          * We will calculate for each prefix the probability of 
-         * the 3 possible states, awake, asleep, and awoke.
+         * the 3 possible states: awake, asleep, and awoke.
          * 
          * Awake means he was never asleep.
          * Asleep means he was awake at most once
@@ -108,12 +105,16 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         {
             double p = combinedList.get(prefixSize-1).doubleValue();
             
+            //prob he was awake * prop being woken up = prob still awake
             prefixProbAwake[prefixSize] =
                     prefixProbAwake[prefixSize-1] * p;             
             
+            //Can be asleep either by being put asleep after being awake
+            //+  staying asleep
             prefixProbAsleep[prefixSize] = (1 - p) * prefixProbAwake[prefixSize-1]
                     + (1-p) * prefixProbAsleep[prefixSize-1];
             
+            //prob asleep then woken + Once you have been woken up you stay awake
             prefixProbAwoke[prefixSize] = prefixProbAsleep[prefixSize-1]*p +
                     prefixProbAwoke[prefixSize-1];
             
@@ -161,11 +162,15 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         for(int suffixSize = 1; suffixSize <= in.K; ++suffixSize)
         {
             Fraction p = combinedList.get(combinedList.size() - suffixSize);
+            
+            //Easy prob still asleep * (1-pAwake)
             suffixProbStayAsleep[suffixSize] = suffixProbStayAsleep[suffixSize-1] * (1-p.doubleValue());
             
             suffixProbSleepToWokenUp[suffixSize] = 1 - suffixProbStayAsleep[suffixSize];
             
-
+            //to go from awake to woken up
+            //1)  go to sleep * next prob sleep to woken up
+            //2)  stay awake * next prob awake to woken up
             suffixProbAwakeToWokenUp[suffixSize] = (1-p.doubleValue()) * suffixProbSleepToWokenUp[suffixSize-1]
                     + p.doubleValue() * suffixProbAwakeToWokenUp[suffixSize-1];
             

@@ -32,17 +32,7 @@ public class DoubleSortGrid extends InputFilesHandler implements TestCaseHandler
        
          count = DynamicProgrammingLarge.solveGrid(input.grid);
         
-       // count = DynamicProgrammingLargeNonOptimized.solveGrid(input.grid);
-        //log.info("Count DP {}.  ans {}", caseNumber, countDP);
-
-       // log.info("Done dp ");
-        
         log.info("Done calculating answer case # {}.  ans [ {} ] ", input.testCase, count);
-        
-        
-        
-        //DecimalFormat decim = new DecimalFormat("0.00000000000");
-        //decim.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
         
         return ("Case #" + input.testCase + ": " + count);
     }

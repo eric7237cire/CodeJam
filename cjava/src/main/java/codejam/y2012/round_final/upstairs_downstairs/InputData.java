@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.commons.lang3.math.Fraction;
 
 import codejam.utils.main.AbstractInputData;
-import codejam.y2012.round_final.upstairs_downstairs.Main.Activity;
+import codejam.y2012.round_final.upstairs_downstairs.UpstairsDownstairs.Activity;
 
 public class InputData extends AbstractInputData {
 

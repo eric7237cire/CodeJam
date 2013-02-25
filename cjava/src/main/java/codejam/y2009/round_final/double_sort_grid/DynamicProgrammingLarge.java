@@ -34,7 +34,7 @@ public class DynamicProgrammingLarge {
     //[pathKey][Column]
     static int[][] nextPath;
     static int pathCount;
-    Grid<Integer> grid;
+    int[][] grid;
     
     static Memoize memoizeTL;
     static Map<List<Integer>, Integer> pathToIndex;
@@ -49,6 +49,7 @@ public class DynamicProgrammingLarge {
         //M+N choose M  M rows N cols
 
         memoizeTL = new Memoize();
+        //paths[index][col] = row   A path goes from bottom left to top right 
         paths = new int[ 184756 ][MAX_COLS];
                 
         nextPath = new int [ 184756 ][MAX_COLS];
@@ -61,11 +62,16 @@ public class DynamicProgrammingLarge {
         pathToIndex = null;
     }
     public DynamicProgrammingLarge(Grid<Integer> grid) {
-        this.grid = Grid.buildEmptyGrid(MAX_ROWS, MAX_COLS, LETTER_MAX-1);
+        //Fill in rest of grid with z to be able to reuse maxpath / lattice stuff
+        this.grid = new int[MAX_ROWS][MAX_COLS]; //rid.buildEmptyGrid(MAX_ROWS, MAX_COLS, LETTER_MAX-1);
+        
+        for(int[] data : this.grid) {
+            Arrays.fill(data, LETTER_MAX-1);
+        }
         
         for(int r = 0; r < grid.getRows(); ++r) {
             for(int c = 0; c < grid.getCols(); ++c) {
-                this.grid.setEntry(r,c,  grid.getEntry(r,c));
+                this.grid[r][c] = grid.getEntry(r,c);
             }
         }
 
@@ -79,30 +85,7 @@ public class DynamicProgrammingLarge {
                 Arrays.fill(memoize[i][j], -1);
             }
         }
-        
-        //int totalPathNumber = IntMath.binomial(grid.getRows()+grid.getCols(), grid.getRows());
-        //Preconditions.checkState(totalPathNumber == paths.size());
-        
-        //2 2.  Max let d
-        /*
-        check[0][4][1] = 30;
-        //2 1
-        check[1][4][0] = 20;
-        check[1][4][1] = 30;
-        check[1][3][1] = 14;
-        check[1][3][0] = 8;
-        //b
-        check[1][2][1] = 5;
-        check[1][2][0] = 2;
-        //a
-        check[1][1][1] = 1;
-      //  check[1][1][0] = 0;
-        //2 0
-        check[2][4][1] = 10;
-        check[2][3][1] = 6;
-        check[2][3][0] = 6;
-        check[2][2][1] = 3;
-        check[2][2][0] = 3;*/
+     
     }
     
     
@@ -124,9 +107,13 @@ public class DynamicProgrammingLarge {
             return memoize[pathKey][maxCharacter][colLimit];
         }
         
+        /**
+         * The lattice path only containing the top left corner
+         */
         if (pathKey == pathCount - 2) {
-            int letter = grid.getEntry(0);
+            int letter = grid[0][0];
             int sum = 0;
+            //Is it a free character ?
             if ( letter == LETTER_MAX) {
                 sum = maxCharacter+1;
             } else
@@ -162,7 +149,7 @@ public class DynamicProgrammingLarge {
          */
         if (nextPathKey >= 0) {
 
-            int letter = grid.getEntry(currentPathRow - 1, colLimit);
+            int letter = grid[currentPathRow - 1][colLimit];
 
             if (letter > maxCharacter && letter != LETTER_MAX) {
             //    log.debug("Invalid letter ");
@@ -172,15 +159,14 @@ public class DynamicProgrammingLarge {
             }
 
             if (letter == LETTER_MAX || letter == maxCharacter) {
-                // We have found a maximal point. Row = currentPathRow, Col
-                // = colLimit
+                // We have found a maximal point. 
                 isMaxPoint = true;
             }
         }
 
         //Count previous letters
         if (colLimit == 0) {
-            sum = solve(pathKey, maxCharacter - 1, grid.getCols() - 1);
+            sum = solve(pathKey, maxCharacter - 1, MAX_COLS - 1);
         } else {
             sum = solve(pathKey, maxCharacter, colLimit - 1);
         }
@@ -229,24 +215,31 @@ public class DynamicProgrammingLarge {
      * @param afterRowValue
      * @param cols
      */
-    private static void createAllPaths(List<Integer> pathSoFar, int afterRowValue, int cols) {
+    private static void createAllPaths(List<Integer> pathSoFar,
+            int afterRowValue, int cols) {
         if (pathSoFar.size() == cols) {
-            //log.debug("Path {} : {}", paths.size(), pathSoFar);
-            for(int c = 0; c < MAX_COLS; ++c)
-            paths[pathCount][c] = pathSoFar.get(c); //.add(new ArrayList<Integer>(pathSoFar));
+            // log.debug("Path {} : {}", paths.size(), pathSoFar);
+            for (int c = 0; c < MAX_COLS; ++c)
+            {
+                paths[pathCount][c] = pathSoFar.get(c);             
+            }
             pathToIndex.put(new ArrayList<Integer>(pathSoFar), pathCount);
             pathCount++;
-            
+
             return;
         }
-        
-        for(int i = afterRowValue; i >= 0; --i) {
+
+        for (int i = afterRowValue; i >= 0; --i) {
             pathSoFar.add(i);
             createAllPaths(pathSoFar, i, cols);
-            pathSoFar.remove(pathSoFar.size() -1);
+            pathSoFar.remove(pathSoFar.size() - 1);
         }
     }
     
+    /**
+     * BUild up a structure for finding the index of a lattice path
+     * not including a maximum point (a "corner" in the path)
+     */
     private static void buildNextPaths() {
         
     
@@ -264,6 +257,7 @@ public class DynamicProgrammingLarge {
                     List<Integer>  intersectedPath = new ArrayList<Integer>();
                     
                     
+                    //Build up path with only once change
                     for (int index = 0; index < MAX_COLS; index++)
                     {
                         intersectedPath.add(path[index]);
@@ -273,6 +267,7 @@ public class DynamicProgrammingLarge {
                     int intPathIndex = pathToIndex.get(intersectedPath);
                     nextPath[pathKey][c] = intPathIndex;
                 } else {
+                    //not a max point
                     nextPath[pathKey][c] = -1;
                 }
             }
