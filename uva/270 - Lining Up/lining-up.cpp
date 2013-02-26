@@ -408,20 +408,30 @@ int main() {
 
 	int T;
 	scanf("%d", &T);
+	
+	string line;
+	getline(cin,line);
+	getline(cin,line);
 
 	FOR(t, 0, T)
 	{
 	    vector<PointI> points;
 	    
-	    int x, int y;
-	    while(scanf("%d%d", &x, &y) != EOF)
-	    {
-	         points.pb( PointI(x, y) );
+	    int x;
+	    int y;
+	    
+	    while(getline(cin,line)){
+            if(line=="") break;
+            sscanf(line.c_str(),"%d %d",&x,&y);
+            points.pb( PointI(x, y) );
 	         assert(points.size() <= 700 );
-	    }
+            
+        }
+	    
 	       
 	    typedef map<Line<int>, set<int> > LinePointsMap;
 	    
+	    LinePointsMap linePoints;
 	    int maxPtCount = 0;
 	    
 		for(int i = 0; i < points.size(); ++i)
@@ -442,7 +452,8 @@ int main() {
 					linePoints[line].insert(i);
 					linePoints[line].insert(j);
 					
-					maxPtCount = max(maxPtCount, linePoints[line].size());
+					maxPtCount = max(maxPtCount,
+					    (int) linePoints[line].size());
 			}
 		}
 		

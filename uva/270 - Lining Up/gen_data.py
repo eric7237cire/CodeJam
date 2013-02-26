@@ -1,14 +1,22 @@
 import random
-nCases = 100000
-minX = -100
-maxX = 100
+nCases = 20
+minX = -10
+maxX = 10
 minY = -100
 maxY = 100
+nPoints = 700
 print(nCases)
 for i in range(nCases):
-	for j in range(4):
+	s = set()
+	for j in range(nPoints):
 		#print( j)
-		print( random.randint(minX, maxX), end=" " )
-		print( random.randint(minY, maxY), end= "\n" if j == 3 else  " " )
+		x = random.randint(minX, maxX)
+		y = random.randint(minY, maxY)
+		if (x, y) in s:
+			continue
+		s.add( (x, y) )
+		print(x , end=" " )
+		print(y , end= "\n")
+	print("")
 	#print("\n")
 
