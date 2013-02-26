@@ -460,7 +460,7 @@ int main() {
         
         FOR(i, 0, points.size())
         {
-            printf("(%d, %d)\n", points[i].x, points[i].y);
+           // printf("(%d, %d)\n", points[i].x, points[i].y);
         }
 	       
 	    typedef map<Line<int>, set<int> > LinePointsMap;
@@ -470,93 +470,39 @@ int main() {
 	    
 		for(int i = 0; i < points.size(); ++i)
 		{
-		    PolarCmp( points[i] );
-		    sort( points.begin() + i, points.end(), PolarCmp );
+		    PolarCmp<int> pc( points[i] );
 		    
-			//printf("%d ...\n", i);
-			for(int j = i+1; j < points.size(); ++j)
-			{
-			    Line<int> line(points[i], points[j]);
-
-				//LinePointsMap::iterator it = linePoints.find(line);
-#ifndef ONLINE_JUDGE 
-				/*
-				printf("Line from (%d, %d) and (%d, %d) is %dx + %dy + %d = 0\n",
-					points[i].x, points[i].y, points[j].x, points[j].y, 
-					line.A, line.B, line.C
-					);*/
-#endif
-					linePoints[line].insert(i);
-					linePoints[line].insert(j);
-					
-					maxPtCount = max(maxPtCount,
-					    (int) linePoints[line].size());
-			}
-		}
-		
+		    vector<PointI> pts( points.begin() + i + 1, points.end() );
+		    
+		    sort( all(pts), pc );
+		    
+		    int ptIdx = 0;
+		    int pt2Idx = ptIdx + 1;
+		    
+		    while(pt2Idx < pts.size())
+            {
+                int count  = 0;
+                while( pt2Idx < pts.size() && isColinear( points[i], pts[ptIdx], pts[pt2Idx] ) )
+                {
+                    ++pt2Idx;
+                    ++count;
+                }
+                
+                if (count > 0)
+                    count += 2;
+                
+                maxPtCount= max(maxPtCount, count);
+                
+                ptIdx = pt2Idx + 1;
+                pt2Idx = ptIdx + 1;
+		    
+            }
+        }		        
+			
 		cout << maxPtCount << endl;
+		if (t < T - 1)
+		    cout << endl;
 	}
 	return 0;
 }
 
-int mainSlow() {
-#ifndef ONLINE_JUDGE
-	freopen ("input.txt","r",stdin);
-	//freopen ("in.txt","r",stdin);
-#endif
-
-	int T;
-	scanf("%d", &T);
-	
-	string line;
-	getline(cin,line);
-	getline(cin,line);
-
-	FOR(t, 0, T)
-	{
-	    vector<PointI> points;
-	    
-	    int x;
-	    int y;
-	    
-	    while(getline(cin,line)){
-            if(line=="") break;
-            sscanf(line.c_str(),"%d %d",&x,&y);
-            points.pb( PointI(x, y) );
-	         assert(points.size() <= 700 );
-            
-        }
-	    
-	       
-	    typedef map<Line<int>, set<int> > LinePointsMap;
-	    
-	    LinePointsMap linePoints;
-	    int maxPtCount = 0;
-	    
-		for(int i = 0; i < points.size(); ++i)
-		{
-			//printf("%d ...\n", i);
-			for(int j = i+1; j < points.size(); ++j)
-			{
-			    Line<int> line(points[i], points[j]);
-
-				//LinePointsMap::iterator it = linePoints.find(line);
-#ifndef ONLINE_JUDGE 
-				/*
-				printf("Line from (%d, %d) and (%d, %d) is %dx + %dy + %d = 0\n",
-					points[i].x, points[i].y, points[j].x, points[j].y, 
-					line.A, line.B, line.C
-					);*/
-#endif
-					linePoints[line].insert(i);
-					linePoints[line].insert(j);
-					
-					maxPtCount = max(maxPtCount,
-					    (int) linePoints[line].size());
-			}
-		}
-		
-		cout << maxPtCount << endl;
-	}
-	return 0;
-}
