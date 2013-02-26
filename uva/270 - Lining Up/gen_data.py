@@ -1,10 +1,10 @@
 import random
-nCases = 20
+nCases = 1
 minX = -10
 maxX = 10
 minY = -100
 maxY = 100
-nPoints = 700
+nPoints = 70
 print(nCases)
 for i in range(nCases):
 	s = set()

@@ -398,9 +398,108 @@ void maxPair( pair<A,B>& maxPair, const pair<A,B>& pair)
 	maxPair.second = max(maxPair.second, pair.second);
 }
 
+int cmpYX(const PointI& a, const PointI& b)
+{
+    if (a.y != b.y)
+    {
+        return a.y < b.y;
+    }
+    return a.x < b.x;
+}
+
+template<typename T>
+struct PolarCmp
+{
+    Point<T> origin;
+    
+    PolarCmp( const Point<T> ori ) : origin(ori) 
+    {
+    }
+    
+    int operator()(const Point<T>& a, const Point<T>& b)
+    {
+       int isCCW = ccw(origin, a, b);
+       
+       if (isCCW == 1) 
+           return true;
+       
+       return false;
+    }
+};
 
 
 int main() {
+#ifndef ONLINE_JUDGE
+	freopen ("input.txt","r",stdin);
+	//freopen ("in.txt","r",stdin);
+#endif
+
+	int T;
+	scanf("%d", &T);
+	
+	string line;
+	getline(cin,line);
+	getline(cin,line);
+
+	FOR(t, 0, T)
+	{
+	    vector<PointI> points;
+	    
+	    int x;
+	    int y;
+	    
+	    while(getline(cin,line)){
+            if(line=="") break;
+            sscanf(line.c_str(),"%d %d",&x,&y);
+            points.pb( PointI(x, y) );
+	        // assert(points.size() <= 700 );
+            
+        }
+	    
+        sort( all(points), cmpYX );
+        
+        FOR(i, 0, points.size())
+        {
+            printf("(%d, %d)\n", points[i].x, points[i].y);
+        }
+	       
+	    typedef map<Line<int>, set<int> > LinePointsMap;
+	    
+	    LinePointsMap linePoints;
+	    int maxPtCount = 0;
+	    
+		for(int i = 0; i < points.size(); ++i)
+		{
+		    PolarCmp( points[i] );
+		    sort( points.begin() + i, points.end(), PolarCmp );
+		    
+			//printf("%d ...\n", i);
+			for(int j = i+1; j < points.size(); ++j)
+			{
+			    Line<int> line(points[i], points[j]);
+
+				//LinePointsMap::iterator it = linePoints.find(line);
+#ifndef ONLINE_JUDGE 
+				/*
+				printf("Line from (%d, %d) and (%d, %d) is %dx + %dy + %d = 0\n",
+					points[i].x, points[i].y, points[j].x, points[j].y, 
+					line.A, line.B, line.C
+					);*/
+#endif
+					linePoints[line].insert(i);
+					linePoints[line].insert(j);
+					
+					maxPtCount = max(maxPtCount,
+					    (int) linePoints[line].size());
+			}
+		}
+		
+		cout << maxPtCount << endl;
+	}
+	return 0;
+}
+
+int mainSlow() {
 #ifndef ONLINE_JUDGE
 	freopen ("input.txt","r",stdin);
 	//freopen ("in.txt","r",stdin);
