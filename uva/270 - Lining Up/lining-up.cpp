@@ -465,24 +465,14 @@ int main() {
 	    while(getline(cin,line)){
             if(line=="") break;
             sscanf(line.c_str(),"%d %d",&x,&y);
-            points.pb( PointI(x, y) );
-	        // assert(points.size() <= 700 );
-            
+            points.pb( PointI(x, y) );            
         }
 	    
-		FOR(i, 0, points.size())
-        {
-            //fprintf(pFile, "Case %d (%d, %d)\n", t+1, points[i].x, points[i].y);
-        }
+		
 
         sort( all(points), cmpYX );
         
-        
-	       
-	    //typedef map<Line<int>, set<int> > LinePointsMap;
-	    
-	    //LinePointsMap linePoints;
-	    int maxPtCount = min((int) points.size(), 2);
+        int maxPtCount = min((int) points.size(), 2);
 	    
 		for(int i = 0; i < points.size(); ++i)
 		{
@@ -509,8 +499,8 @@ int main() {
 		    while(pt2Idx < pts.size())
             {
                 int count  = 0;
-                PointI ptTe2 = pts[ptIdx] - points[i];
-		         double ang = atan2( ptTe2.y, ptTe2.x );
+              //  PointI ptTe2 = pts[ptIdx] - points[i];
+		     //    double ang = atan2( ptTe2.y, ptTe2.x );
 		        
 		         #if 0
                 fout << "Top of loop pt " << pts[ptIdx]
@@ -535,6 +525,7 @@ int main() {
 				    ptIdx = pt2Idx;
 				    pt2Idx = ptIdx + 1;
 				} else {
+					
 					++ptIdx;
 					pt2Idx = ptIdx + 1;
 				}
