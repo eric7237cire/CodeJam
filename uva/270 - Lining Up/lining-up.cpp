@@ -57,6 +57,17 @@ bool isBetween(T x, T a, T b)
 		(b <= x && x <= a);
 }
 
+
+template<typename T>
+ostream& operator<<( ostream& os, const vector<T>& vec )
+{
+    FOR(i, 0, vec.size())
+    {
+        os <<  vec[i] << endl;
+    }
+    return os;
+}
+
 template< typename T >
 struct Point
 {
@@ -430,10 +441,13 @@ struct PolarCmp
 
 int main() {
 #ifndef ONLINE_JUDGE
-	freopen ("input.txt","r",stdin);
+	freopen ("input2.txt","r",stdin);
 	//freopen ("in.txt","r",stdin);
 #endif
 
+    //FILE * pFile = fopen ("out.txt","w");
+    //ofstream fout ("out2.txt");
+    
 	int T;
 	scanf("%d", &T);
 	
@@ -456,17 +470,19 @@ int main() {
             
         }
 	    
+		FOR(i, 0, points.size())
+        {
+            //fprintf(pFile, "Case %d (%d, %d)\n", t+1, points[i].x, points[i].y);
+        }
+
         sort( all(points), cmpYX );
         
-        FOR(i, 0, points.size())
-        {
-           // printf("(%d, %d)\n", points[i].x, points[i].y);
-        }
+        
 	       
-	    typedef map<Line<int>, set<int> > LinePointsMap;
+	    //typedef map<Line<int>, set<int> > LinePointsMap;
 	    
-	    LinePointsMap linePoints;
-	    int maxPtCount = 0;
+	    //LinePointsMap linePoints;
+	    int maxPtCount = min((int) points.size(), 2);
 	    
 		for(int i = 0; i < points.size(); ++i)
 		{
@@ -476,25 +492,52 @@ int main() {
 		    
 		    sort( all(pts), pc );
 		    
+		    #if 0
+		   fout << "Pivot point " << points[i] 
+		    << " Polar sorted rest " << pts << endl;
+		    
+		    FOR(te, 0, pts.size())
+		    {
+		        PointI ptTe = pts[te] - points[i];
+		         double ang = atan2( ptTe.y, ptTe.x );
+		         fout << "Angle " << ang << " for pt " << pts[te] << endl;
+		    }
+		    #endif
 		    int ptIdx = 0;
 		    int pt2Idx = ptIdx + 1;
 		    
 		    while(pt2Idx < pts.size())
             {
                 int count  = 0;
+                PointI ptTe2 = pts[ptIdx] - points[i];
+		         double ang = atan2( ptTe2.y, ptTe2.x );
+		        
+		         #if 0
+                fout << "Top of loop pt " << pts[ptIdx]
+                << " ang " << ang 
+                << " Pt 2 " << pts[pt2Idx] << endl;
+                #endif
                 while( pt2Idx < pts.size() && isColinear( points[i], pts[ptIdx], pts[pt2Idx] ) )
                 {
                     ++pt2Idx;
                     ++count;
                 }
                 
+                //fout << "Count " << count << endl;
+                
                 if (count > 0)
                     count += 2;
                 
                 maxPtCount= max(maxPtCount, count);
                 
-                ptIdx = pt2Idx + 1;
-                pt2Idx = ptIdx + 1;
+				if (count > 0) {
+				    //pt2Idx points to an invalid index, last valid one is pt2Idx - 1
+				    ptIdx = pt2Idx;
+				    pt2Idx = ptIdx + 1;
+				} else {
+					++ptIdx;
+					pt2Idx = ptIdx + 1;
+				}
 		    
             }
         }		        
