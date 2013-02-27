@@ -29,6 +29,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "191 - Intersection", "..\19
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "270 - Lining Up", "..\270 - Lining Up\270 - Lining Up.vcxproj", "{2088A3A4-C53B-468F-BB4F-17D8A1D8B088}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "378 - Intersecting Lines", "..\378 - Intersecting Lines\378 - Intersecting Lines.vcxproj", "{4730B342-3566-407A-8954-278C0EAC849C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "587 - Theres treasure everywhere", "..\587 - Theres treasure everywhere\587 - Theres treasure everywhere.vcxproj", "{B831F4BA-F97F-46F1-B812-93BCEFCE1A1F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -91,6 +95,14 @@ Global
 		{2088A3A4-C53B-468F-BB4F-17D8A1D8B088}.Debug|Win32.Build.0 = Debug|Win32
 		{2088A3A4-C53B-468F-BB4F-17D8A1D8B088}.Release|Win32.ActiveCfg = Release|Win32
 		{2088A3A4-C53B-468F-BB4F-17D8A1D8B088}.Release|Win32.Build.0 = Release|Win32
+		{4730B342-3566-407A-8954-278C0EAC849C}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4730B342-3566-407A-8954-278C0EAC849C}.Debug|Win32.Build.0 = Debug|Win32
+		{4730B342-3566-407A-8954-278C0EAC849C}.Release|Win32.ActiveCfg = Release|Win32
+		{4730B342-3566-407A-8954-278C0EAC849C}.Release|Win32.Build.0 = Release|Win32
+		{B831F4BA-F97F-46F1-B812-93BCEFCE1A1F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B831F4BA-F97F-46F1-B812-93BCEFCE1A1F}.Debug|Win32.Build.0 = Debug|Win32
+		{B831F4BA-F97F-46F1-B812-93BCEFCE1A1F}.Release|Win32.ActiveCfg = Release|Win32
+		{B831F4BA-F97F-46F1-B812-93BCEFCE1A1F}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

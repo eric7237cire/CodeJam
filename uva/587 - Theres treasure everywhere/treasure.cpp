@@ -10,7 +10,7 @@
 #include <cassert>
 #include <iterator>
 #include <sstream>
-#include <complex>
+//#include <complex>
 #include <bitset>
 #include <iomanip>
 #include <cctype>
@@ -132,6 +132,13 @@ Point<T> operator*( const T&  lhs, const Point<T>& rhs)
 	return rhs * lhs;
 }
 
+/*
+template<typename T> 
+Point<T> operator*( int lhs, const Point<T>& rhs) 
+{
+	return rhs * lhs;
+}*/
+
 template<typename T> 
 ostream& operator<<( ostream& os, const Point<T>& rhs) 
 {
@@ -155,6 +162,12 @@ T cross( const Point<T>& A, const Point<T>& B )
 
 const double tolerance = 0.000002;
 
+//Rotate about origin counter clockwise
+template<typename T>
+Point<T> rotate90(const Point<T> & p)
+{
+    return Point<T>(-p.y, p.x);
+}
 
 
 
@@ -522,41 +535,43 @@ int main() {
 	//freopen ("in.txt","r",stdin);
 #endif
 
-    int T;
-	scanf("%d", &T);
-
-    printf("INTERSECTING LINES OUTPUT\n");
-    PointI a1, a2, b1, b2;
+   
+   double diag = sqrt(2) / 2;
+   
+   map<string, PointD> dirs;
+   dirs["N"] = PointD(0, 1);
+   dirs["E"] = PointD(1, 0);
+   dirs["W"] = (double)-1 * dirs["E"];
+   dirs["S"] = (double)-1 * dirs["N"];
+   dirs["NE"] = PointD(diag, diag);
+   dirs["NW"] = rotate90(dirs["NE"]);
+   dirs["SW"] = rotate90(dirs["NW"]);
+   dirs["SE"] = rotate90(dirs["SW"]);
     
-	FOR(t, 0, T)
-	{
-		int read = scanf("%d%d %d%d %d%d %d%d", &a1.x, &a1.y,
-        &a2.x, &a2.y,
-        &b1.x, &b1.y,
-        &b2.x, &b2.y);
-		assert(8 == read);
+    int steps;
+    char dir[3];
+    char end[2];
+   
+    int t = 1;
     
-		//cout << a1 << a2 << b1 << b2 << endl;
-        Line<int> l1(a1, a2);
-        Line<int> l2(b1, b2);
-        
-        if (l1 == l2)
+    while(true)
+    {
+        PointD p(0,0);
+        bool ok = false;
+        while(3 <= scanf("%d%[NSEW]%[,.]", &steps, dir, end))
         {
-            printf("LINE\n");
-        } else if (l1.A == l2.A && l1.B == l2.B)
-        {
-            printf("NONE\n");
-        } else {
-            PointD inter;
-            bool ok = getIntersection(a1, a2, b1, b2, inter);
-            assert(ok);
-            printf("POINT %.2f %.2f\n", inter.x, inter.y);
+            ok = true;
+            p = p + dirs[ string(dir) ] * (double) steps;
+            if (end[0] == '.')
+                break;            
         }
+        
+        if (!ok)
+            return 0;
+        
+        printf("Map #%d\nThe treasure is located at (%.3f,%.3f).\nThe distance to the treasure is %.3f.\n\n",
+            t++, p.x, p.y, dist(PointD(0,0), p));
     }
-    
-	printf("END OF OUTPUT\n");
-
-
 	return 0;
 }
 
