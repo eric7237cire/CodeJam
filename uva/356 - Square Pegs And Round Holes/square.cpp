@@ -50,7 +50,23 @@ typedef map<string, int> msi;
 #define contains(c,x) ((c).find(x) != (c).end()) 
 #define cpresent(c,x) (find(all(c),x) != (c).end()) 
 
+template<typename T>
+bool isBetween(T x, T a, T b)
+{
+	return (a <= x && x <= b) ||
+		(b <= x && x <= a);
+}
 
+
+template<typename T>
+ostream& operator<<( ostream& os, const vector<T>& vec )
+{
+    FOR(i, 0, vec.size())
+    {
+        os <<  vec[i] << endl;
+    }
+    return os;
+}
 
 template< typename T >
 struct Point
@@ -128,37 +144,8 @@ T cross( const Point<T>& A, const Point<T>& B )
 
 const double tolerance = 0.000002;
 
-template<typename T>
-bool isColinear(  const Point<T>& p1, 
-    const Point<T>& p2, const Point<T>& p3)
-{
-    Point<T> v1 = p2 - p1;
-    Point<T> v2 = p3 - p1;
-    
-    T crossProduct = cross(v1, v2); 
-    
-    if (crossProduct == 0) {
-        return true;
-    }
-    
-    return false;
-}
 
-template<> 
-bool isColinear<double>(  const Point<double>& p1, 
-    const Point<double>& p2, const Point<double>& p3)
-{
-    Point<double> v1 = p2 - p1;
-    Point<double> v2 = p3 - p1;
-    
-    double crossProduct = cross(v1, v2); 
-    
-    if (abs(crossProduct) < tolerance) {
-        return true;
-    }
-    
-    return false;
-}
+
 
 /*
 vector p1p2 ; p1p3
@@ -216,6 +203,9 @@ int ccw<double>(  const Point<double>& p1,
 
 template<typename T> T gcd(T a, T b)
 {
+	if (!numeric_limits<T>::is_exact)
+		return min( abs(a), abs(b) );
+
     if (a == 0)
        return b;
     while (b != 0)
@@ -265,6 +255,8 @@ class Line
 	}
 };
 
+
+
 template<typename T> 
 bool operator<( const Line<T>& lhs, const Line<T>& rhs) 
 {
@@ -277,6 +269,53 @@ bool operator<( const Line<T>& lhs, const Line<T>& rhs)
 	return lhs.C < rhs.C;
 }
 
+template<typename T>
+class Circle
+{
+public:
+	T x;
+	T y;
+	T r;
+
+	Circle(T _x, T _y, T _r) : x(_x), y(_y), r(_r)
+	{
+
+	}
+
+	int sgn(double x) {
+        if (x < 0)
+            return -1;
+        return 1;
+    }
+
+	bool getPointsIntersectingLine(const Point<T>& p1,
+			const Point<T>& p2, Point<double>& i1,  Point<double>& i2 )
+	{
+        //Move circle to origin
+        T x2 = p2.x - x;
+        T y2 = p2.y - y;
+        T x1 =  p1.x - x;
+        T y1 =  p2.y - y;
+        T dx = x2-x1;
+        T dy = y2-y1;
+        double dr = sqrt(dx*dx+dy*dy);
+        T D = x1*y2-x2*y1;
+
+        double disc =r*r*dr*dr-D*D;
+        if (disc < 0)
+            return false;
+        
+        double discSqRt = sqrt(disc);
+        i1.x = x+ (D*dy+sgn(dy)*dx*discSqRt) / (dr*dr);
+        i1.y = y+ (-D*dx+abs(dy) * discSqRt) / (dr*dr);
+
+        i2.x = x+ (D*dy-sgn(dy)*dx*discSqRt) / (dr*dr);
+        i2.y = y+ (-D*dx-abs(dy) * discSqRt) / (dr*dr);
+
+        return true;
+    }
+};
+
 
 bool isParallel( const SegmentD& seg1, const SegmentD& seg2)
 {
@@ -288,28 +327,68 @@ bool isParallel( const SegmentD& seg1, const SegmentD& seg2)
 	return false;
 }
 
-int getSide( const PointD& A, const PointD& B, const PointD& P)
+template<typename T>
+int getSide( const Point<T>& A, const Point<T>& B, const Point<T>& P)
 {
-    double z = cross(B-A, P-A);
+    T z = cross(B-A, P-A);
     
-    if (z > tolerance)
-        return 1; 
-    if (z < tolerance)
-        return -1; 
+	if (numeric_limits<T>::is_exact) {
+		if (z > 0) {
+#ifndef ONLINE_JUDGE
+			cout << "Points " << A << " " << B << " " << P << " 1 " << endl;
+#endif
+			return 1;
+		}
+		if (z < 0) {
+#ifndef ONLINE_JUDGE
+			cout << "Points " << A << " " << B << " " << P << " -1 " << endl;
+#endif
+			return -1;
+		}
+	}
+	else {
+		if (z > tolerance)
+			return 1; 
+		if (z < tolerance)
+			return -1; 
+	}
 
+#ifndef ONLINE_JUDGE
+	cout << "Points " << A << " " << B << " " << P << " 0 " << endl;
+#endif
     return 0; 
 }
 
-bool intersects(const SegmentD& seg1, const SegmentD& seg2)
+template<typename T>
+bool isColinear(  const Point<T>& p1, 
+    const Point<T>& p2, const Point<T>& p3)
 {
-    if (getSide( seg1.first, seg1.second, seg2.first ) ==
-        getSide( seg1.first, seg1.second, seg2.second ) )
-        return false;
-        
-    if (getSide( seg2.first, seg2.second, seg1.first ) ==
-        getSide( seg2.first, seg2.second, seg1.second ) )
-        return false;
-        
+    return 0 == getSide(p1, p2, p3);
+}
+
+template<typename T>
+bool intersects(const Point<T>& a1,const Point<T>& a2,
+				const Point<T>& b1,const Point<T>& b2)
+{
+	if (a1==a2)
+	{ 
+		return isBetween(a1.x, b1.x, b2.x) &&
+			isBetween(a1.y, b1.y, b2.y);
+	}
+	
+	if ( getSide( a1, a2, b1 ) == getSide( a1, a2, b2 ) )
+		return false; 
+
+      
+	if (b1==b2)
+	{
+		return isBetween(b1.x, a1.x, a2.x) &&
+			isBetween(b1.y, a1.y, a2.y);
+	}
+
+    if ( getSide( b1, b2, a1) == getSide( b1, b2, a2 ) )
+	    return false;
+	
     return true;
 }
 
@@ -368,131 +447,105 @@ bool cmpLine(const vecP& v1, const vecP& v2)
 	return v1.size() < v2.size();
 }
 
+template<typename A, typename B>
+void minPair( pair<A,B>& minPair, const pair<A,B>& pair)
+{
+	minPair.first = min(minPair.first, pair.first);
+	minPair.second = min(minPair.second, pair.second);
+}
+
+template<typename A, typename B>
+void maxPair( pair<A,B>& maxPair, const pair<A,B>& pair)
+{
+	maxPair.first = max(maxPair.first, pair.first);
+	maxPair.second = max(maxPair.second, pair.second);
+}
+
+int cmpYX(const PointI& a, const PointI& b)
+{
+    if (a.y != b.y)
+    {
+        return a.y < b.y;
+    }
+    return a.x < b.x;
+}
+
+template<typename T>
+struct PolarCmp
+{
+    Point<T> origin;
+    
+    PolarCmp( const Point<T> ori ) : origin(ori) 
+    {
+    }
+    
+    int operator()(const Point<T>& a, const Point<T>& b)
+    {
+       int isCCW = ccw(origin, a, b);
+       
+       if (isCCW == 1) 
+           return true;
+       
+       return false;
+    }
+};
+
 
 int main() {
 #ifndef ONLINE_JUDGE
-	//freopen ("input.txt","r",stdin);
-	freopen ("laser.txt","r",stdin);
+	freopen ("input2.txt","r",stdin);
+	//freopen ("in.txt","r",stdin);
 #endif
 
-	while(true)
+    //FILE * pFile = fopen ("out.txt","w");
+    //ofstream fout ("out2.txt");
+    
+	int n;
+	int t = 0;
+	while(1 == scanf("%d", &n))
 	{
-		vector<PointI> points;
-		int x, y;
-		int r;
-		while(r = scanf("%d%d", &x, &y) == 2)
+		Circle<double> c(0, 0, (double) n - .5);
+
+		int lastX = n;
+
+		int totalIns = 0;
+		int totalCirc = 0;
+		FOR(y, 1, n)
 		{
-			//printf("Read point %d, %d\n", x, y);
-			if (x == 0 && y == 0)
-				break;
+			PointD i1, i2;
+			c.getPointsIntersectingLine( PointD(0, y), PointD(1, y), i1, i2);
+			//cout << "Intersection y=" << y <<  " " << i1 << ", " << i2 << endl;
 
-			
-			points.pb(PointI(x,y));
+			int x = (int) ceil(i1.x);
 
-			//assert(points.size() < 301);
+			assert(x <= lastX);
+
+			int circ = lastX - x + 1;
+			int inside = x - 1;
+			totalIns += inside;
+			totalCirc += circ;
+
+			lastX = x;
+
 		}
-		if (r == 0)
-			break;
 
-		if (points.empty())
-			break;
+		totalCirc += lastX;
 
-		assert(points.size() > 2);
+		totalIns *= 4;
+		totalCirc *= 4;
 
-		//sort( all(points), cmp);
-		typedef map<Line<int>, set<int> > LinePointsMap;
+		//cout << totalIns << " , " << totalCirc << endl;
+		if (t>0)
+			printf("\n");
+		printf("In the case n = %d, %d cells contain segments of the circle.\nThere are %d cells completely contained in the circle.\n",
+				n, totalCirc, totalIns);
 
-		LinePointsMap linePoints;
-		
-		int maxSize = 0;
-
-		for(int i = 0; i < points.size(); ++i)
-		{
-			//printf("%d ...\n", i);
-			for(int j = i+1; j < points.size(); ++j)
-			{
-				if (points[i] == points[j])
-					continue;
-
-			//	printf("%d %d ...\n", i, j);
-				for(int k = j+1; k < points.size(); ++k)
-				{
-					
-					if ( !isColinear( points[i], points[j], points[k] ) )
-						continue;
-
-					Line<int> line(points[i], points[j]);
-
-				//LinePointsMap::iterator it = linePoints.find(line);
-#ifndef ONLINE_JUDGE 
-				/*
-				printf("Line from (%d, %d) and (%d, %d) is %dx + %dy + %d = 0\n",
-					points[i].x, points[i].y, points[j].x, points[j].y, 
-					line.A, line.B, line.C
-					);*/
-#endif
-					linePoints[line].insert(i);
-					linePoints[line].insert(j);
-					linePoints[line].insert(k);
-					
-					maxSize = max(maxSize, (int) linePoints[line].size());
-				}
-				
-			}
-		}
-		
-		vector<vector<PointI> > lines;
-
-		for( LinePointsMap::iterator it = linePoints.begin();
-			it != linePoints.end();
-			++it)
-		{
-			set<int> pointIndexes = it->second;
-
-			if (pointIndexes.size() < 3)
-				continue;
-
-			vector<PointI> v;
-
-			for(set<int>::iterator sIt = pointIndexes.begin();
-				sIt != pointIndexes.end();
-				++sIt)
-			{
-				//cout << points[*sIt] << endl;
-				v.pb(points[*sIt]);
-			}
-			
-			sort(all(v), cmp);
-
-
-			//printf("%d %d %d \n", it->first.A, it->first.B, it->first.C);
-
-			lines.pb(v);
-			
-		}
-		
-		sort(all(lines), cmpLine);
-
-		if (lines.empty())
-		{
-			printf("No lines were found\n");
-		} 
-		else 
-		{
-			printf("The following lines were found:\n");
-			FOR( linIdx, 0, lines.size())
-			{
-				if ( lines[linIdx].size() < maxSize)
-				        continue;
-                printf("Size %d ", lines[linIdx].size()); 
-				FOR(i, 0, lines[linIdx].size())
-				{
-				    
-					printf("(%4d,%4d)", lines[linIdx][i].x, lines[linIdx][i].y);
-				}
-				printf("\n");
-			}
-		}
+		t++;
 	}
+	
+
+
+
 	return 0;
 }
+
