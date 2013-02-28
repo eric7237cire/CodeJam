@@ -975,8 +975,8 @@ public class Main
         }
     }
 
-    //public static void main(String args[]) throws Exception {
-    static void round3_2010(String args[])
+    public static void main(String args[]) throws Exception 
+    //static void round3_2010(String args[])
     {
         //2010 3
 
@@ -989,7 +989,7 @@ public class Main
          * 
          * Used BFS to find modulo length.
          */
-        // codejam.y2010.round_3.boards.Main m = new codejam.y2010.round_3.boards.Main();
+         codejam.y2010.round_3.boards.Boards m = new codejam.y2010.round_3.boards.Boards();
 
         /**
          * Problem 3 -- hot dogs
@@ -998,7 +998,7 @@ public class Main
          * 
          * idea use their solution
          */
-        codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();
+       // codejam.y2010.round_3.hotdog.Main m = new codejam.y2010.round_3.hotdog.Main();
 
         /**
          * Problem 4.
@@ -1019,8 +1019,8 @@ public class Main
         }
     }
 
-    public static void main(String args[]) throws Exception 
-    //static void roundFinal_2010(String args[])
+    //public static void main(String args[]) throws Exception 
+    static void roundFinal_2010(String args[])
     {
 
         //2010 final

@@ -12,7 +12,7 @@ import com.google.common.math.IntMath;
 
 public class PrevSolution
 {
-    final static Logger log = LoggerFactory.getLogger(Main.class);
+    final static Logger log = LoggerFactory.getLogger(Boards.class);
 
     final static int INVALID = IntMath.pow(10, 8); 
     

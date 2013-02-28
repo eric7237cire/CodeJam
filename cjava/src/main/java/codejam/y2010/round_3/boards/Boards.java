@@ -10,23 +10,26 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang3.ArrayUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import codejam.utils.main.DefaultInputFiles;
+import ch.qos.logback.classic.Level;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class Boards extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
     
     final static int MAX_BOARD_LENGTH = 100000;
     final static int MAX_N = 100;
     
+    public Boards()
+    {
+        super("B", 1, 1);
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
+    }
     
     
     private static class Node {
@@ -165,14 +168,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         
         return input;
         
-    }
-
-    
-
-
-    @Override
-    public String[] getDefaultInputFiles() {
-        return new String[] { "B-small-practice.in", "B-large-practice.in" };
     }
 
     
