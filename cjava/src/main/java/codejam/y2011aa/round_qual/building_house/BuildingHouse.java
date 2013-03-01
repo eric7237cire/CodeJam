@@ -1,6 +1,5 @@
 package codejam.y2011aa.round_qual.building_house;
 
-import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -17,6 +16,7 @@ implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
 
     public BuildingHouse() {
         super("C", 1, 1);
+        setLogInfo();
     }
 
     @Override
@@ -29,80 +29,20 @@ implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
         return in;
     }
 
-    @Override
-    public String handleCase(InputData in)
-    {
-        PointInt best_ll = new PointInt(0,0);
-        PointInt best_ur = new PointInt(-1,-1);
-        
-        int[] columnOnesToRight = new int[in.R+1];
-        
-        for( int x = in.C-1; x >= 0; --x)
-        {
-            updateColumnOnesToRight(columnOnesToRight, x, in.grid);
-            Stack<PointInt> widthStack = new Stack<>();
-            int width = 0;
-            for( int y = 0; y <= in.R; ++y )
-            {
-                //cout << "X= " << x << " Y= " << y << " 1s right " << columnOnesToRight[y] << endl;
-                if ( columnOnesToRight[y] > width )
-                {
-                                        
-                    width = columnOnesToRight[y];
-                   // cout << "X= " << x << " Y= " << y <<  "Push " << width << endl;
-                    
-                    widthStack.push( new PointInt(width, y) );
-                     
-                }
-                if ( columnOnesToRight[y] < width )
-                {
-                    int y0;
-                    do
-                    {
-                        PointInt rowWidth = widthStack.pop();
-                        
-                        //cout << "X= " << x << " Y= " << y <<  " Pop y " <<                    rowWidth.first << " Pop Width " << rowWidth.second << " cur width " << columnOnesToRight[y] << endl;
-                        width = rowWidth.x();
-                        y0 = rowWidth.y();
-                        if (width * (y-y0) > 
-                            area(best_ll, best_ur) )
-                        {
-                            best_ll = new PointInt(x, y0);
-                            best_ur = new PointInt(x+width-1, y-1);
-                            
-                           // cout << "X= " << x << " Y= " << y <<  " Pop y " <<                    rowWidth.first << " Pop Width " << rowWidth.second << " cur width " << columnOnesToRight[y] << " New area max " << width*(y-y0) << endl;
-                            
-                            assert(width * (y-y0) == area(best_ll, best_ur)); 
-                            
-                            
-                        }
-                        
-                    } while( 
-                        !widthStack.empty() && widthStack.lastElement().x() > columnOnesToRight[y]);
-                    
-                    width = columnOnesToRight[y];
-        
-                    if (width != 0) {
-                        //cout << "X= " << x << " Y= " << y <<  "Push after width " << width << " Push after y0 " << y0 << endl;
-                        widthStack.push( new PointInt(width, y0) );
-                    }
-                }
-            }
-        }
-        
-       
-        return  String.format("Case #%d: %d", in.testCase,  area(best_ll, best_ur)); 
-
-    }
-    
-    private static int area( PointInt lowerLeft, PointInt upperRight )
-    {
-       return (upperRight.x() - lowerLeft.x() + 1)
-       * (upperRight.y() - lowerLeft.y() + 1);
-    }
-    
-    
-    void updateColumnOnesToRight( int[] columnOnesToRight, int col, char[][] land)
+    /**
+     * Go through column col and either add one if the square is usable
+     * or reset the count to zero.
+     * 
+     * Example
+     * 
+     * ..#
+     * .#.
+     * ...
+     * 
+     * it would be 0, 1, 1 then 1, 0, 2 then 2, 1, 3
+     * 
+     */
+    private static void updateColumnOnesToRight( int[] columnOnesToRight, int col, char[][] land)
     {
         for(int r = 0; r < land.length; ++r)
         {
@@ -113,9 +53,90 @@ implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
         }
     }
 
-   
+    @Override
+    public String handleCase(InputData in)
+    {
+        PointInt best_ll = new PointInt(0,0);
+        PointInt best_ur = new PointInt(-1,-1);
+        
+        int[] usableSquaresToRight = new int[in.R+1];
+        
+        /**
+         * Loop from right to left
+         */
+        for( int x = in.C-1; x >= 0; --x)
+        {
+            updateColumnOnesToRight(usableSquaresToRight, x, in.grid);
+            Stack<PointInt> widthStack = new Stack<>();
+            int curWidth = 0;
+            for( int y = 0; y <= in.R; ++y )
+            {
+                //cout << "X= " << x << " Y= " << y << " 1s right " << columnOnesToRight[y] << endl;
+                /**
+                 * Here we widened 
+                 */
+                if ( usableSquaresToRight[y] > curWidth )
+                {
+                                        
+                    curWidth = usableSquaresToRight[y];
+                   // cout << "X= " << x << " Y= " << y <<  "Push " << width << endl;
+                    
+                    widthStack.push( new PointInt(curWidth, y) );
+                     
+                }
+                /**
+                 * Current width is less, look for rectangles
+                 * in the stack with a width > than this width
+                 *         
+                 */
+                if ( usableSquaresToRight[y] < curWidth )
+                {
+                    int y0;
+                    do
+                    {
+                        PointInt rowWidth = widthStack.pop();
                         
+                        //cout << "X= " << x << " Y= " << y <<  " Pop y " <<                    rowWidth.first << " Pop Width " << rowWidth.second << " cur width " << columnOnesToRight[y] << endl;
+                        curWidth = rowWidth.x();
+                        y0 = rowWidth.y();
+                        //Check for a better rectangle
+                        if (curWidth * (y-y0) > 
+                            area(best_ll, best_ur) )
+                        {
+                            best_ll = new PointInt(x, y0);
+                            best_ur = new PointInt(x+curWidth-1, y-1);
+                            
+                           // cout << "X= " << x << " Y= " << y <<  " Pop y " <<                    rowWidth.first << " Pop Width " << rowWidth.second << " cur width " << columnOnesToRight[y] << " New area max " << width*(y-y0) << endl;
+                            
+                            assert(curWidth * (y-y0) == area(best_ll, best_ur)); 
+                            
+                            
+                        }
+                        
+                    } while( 
+                        !widthStack.empty() && widthStack.lastElement().x() > usableSquaresToRight[y]);
+                    
+                    curWidth = usableSquaresToRight[y];                    
+        
+                    /**
+                     * We can still make a retangle with the last popped rectagle (lowest y value)
+                     */
+                    if (curWidth != 0) {
+                        //cout << "X= " << x << " Y= " << y <<  "Push after width " << width << " Push after y0 " << y0 << endl;
+                        widthStack.push( new PointInt(curWidth, y0) );
+                    }
+                }
+            }
+        }
+        
+       
+        return  String.format("Case #%d: %d", in.testCase,  area(best_ll, best_ur)); 
 
+    }
 
+    private static int area(PointInt lowerLeft, PointInt upperRight)
+    {
+        return (upperRight.x() - lowerLeft.x() + 1) * (upperRight.y() - lowerLeft.y() + 1);
+    }
 
 }

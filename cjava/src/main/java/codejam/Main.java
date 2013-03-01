@@ -7,7 +7,7 @@ import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner;
 import codejam.y2008.round_1B.mouse_trap.MouseTrap;
 import codejam.y2009.round_1A.collecting_cards.CollectingCards;
-import codejam.y2011aa.round_compet.battlefield.BattleField;
+import codejam.y2011aa.round_qual.building_house.BuildingHouse;
 
 public class Main
 {
@@ -43,7 +43,7 @@ public class Main
          * Problem 4
          * Gaussian elimination
          */
-        codejam.y2010aa.round_all.polygraph.Main m = new codejam.y2010aa.round_all.polygraph.Main();
+       // codejam.y2010aa.round_all.polygraph.PolyGraph m = new codejam.y2010aa.round_all.polygraph.PolyGraph();
 
         /**
          * 2011 qual all in c++
@@ -52,7 +52,7 @@ public class Main
         //Problem 1 -- closing the loop (greedy algo)
         //Problem 2 -- investing at the market
         //problem 3 -- (interesting) building a house (finding largest unobstructed rectangle using stack )
-        
+        BuildingHouse m = new BuildingHouse();
         
         //2011 africa / arabia
         /**

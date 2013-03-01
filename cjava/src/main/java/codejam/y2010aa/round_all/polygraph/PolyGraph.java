@@ -10,10 +10,10 @@ import codejam.y2010aa.round_all.polygraph.InputData.Statement;
 
 import com.google.common.collect.Lists;
 
-public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
+public class PolyGraph extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
 
-    public Main()
+    public PolyGraph()
     {
         super("D", 1, 1);
         setLogInfo();
