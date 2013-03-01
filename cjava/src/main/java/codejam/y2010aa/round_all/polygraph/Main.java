@@ -2,9 +2,6 @@ package codejam.y2010aa.round_all.polygraph;
 
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.math.MatrixInt;
@@ -15,12 +12,11 @@ import com.google.common.collect.Lists;
 
 public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
 
     public Main()
     {
-        super();
-       // super("D", true,false);
+        super("D", 1, 1);
+        setLogInfo();
     }
     
     

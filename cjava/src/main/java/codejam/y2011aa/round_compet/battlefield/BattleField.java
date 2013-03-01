@@ -4,12 +4,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import ch.qos.logback.classic.Level;
 import codejam.utils.datastructures.graph.CC;
 import codejam.utils.datastructures.graph.Graph;
-import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
@@ -19,17 +17,15 @@ import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class BattleField extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
+{
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-
-    @Override
-    public String[] getDefaultInputFiles() {
-        return new String[] {"sample.in"};
-      // return new String[] { "A-small-practice.in" };
-    //  return new String[] { "A-small-practice.in", "A-large-practice.in" };
+    public BattleField()
+    {
+        super("B", 1, 1);
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
-
+    
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
 

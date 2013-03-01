@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 public class MatrixInt
 {
 
-    final static Logger log = LoggerFactory.getLogger(MatrixInt.class);
+    final static Logger log = LoggerFactory.getLogger("main");
     
     public int[][] data;
     final int rows;
@@ -80,6 +80,9 @@ public class MatrixInt
     }
     
     public void debugPrint() {
+        if (!log.isDebugEnabled())
+            return;
+        
         for(int r = 0; r < rows; ++r) {
             log.debug("{}", (Object)data[r]);
         }

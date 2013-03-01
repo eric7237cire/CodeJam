@@ -7,13 +7,15 @@ import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner;
 import codejam.y2008.round_1B.mouse_trap.MouseTrap;
 import codejam.y2009.round_1A.collecting_cards.CollectingCards;
+import codejam.y2011aa.round_compet.battlefield.BattleField;
 
 public class Main
 {
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    static void africa(String[] args)
+    public static void main(String args[]) throws Exception
+    //static void africa(String[] args)
     {
         /**
          * 2010 africa qualification 
@@ -41,7 +43,7 @@ public class Main
          * Problem 4
          * Gaussian elimination
          */
-        //codejam.y2010aa.round_all.polygraph.Main m = new codejam.y2010aa.round_all.polygraph.Main();
+        codejam.y2010aa.round_all.polygraph.Main m = new codejam.y2010aa.round_all.polygraph.Main();
 
         /**
          * 2011 qual all in c++
@@ -61,20 +63,20 @@ public class Main
          * 
          * Eliminate first third and last third
          */
-        //codejam.y2011aa.round_all.vanishing_numbers.Main m = new codejam.y2011aa.round_all.vanishing_numbers.Main();
+        //codejam.y2011aa.round_compet.vanishing_numbers.Main m = new codejam.y2011aa.round_compet.vanishing_numbers.Main();
 
         /**
          * Problem 2
          * 
          * Euler path
          */
-        //codejam.y2011aa.round_all.battlefield.Main m = new codejam.y2011aa.round_all.battlefield.Main();
+        //codejam.y2011aa.round_compet.battlefield.BattleField m = new BattleField();
 
         /**
          * Problem 3
          * Binary search and interval intersection
          */
-        codejam.y2011aa.round_compet.radio_receiver.Main m = new codejam.y2011aa.round_compet.radio_receiver.Main();
+        //codejam.y2011aa.round_compet.radio_receiver.RadioReceiver m = new codejam.y2011aa.round_compet.radio_receiver.RadioReceiver();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files)
@@ -975,8 +977,8 @@ public class Main
         }
     }
 
-    public static void main(String args[]) throws Exception 
-    //static void round3_2010(String args[])
+    //public static void main(String args[]) throws Exception 
+    static void round3_2010(String args[])
     {
         //2010 3
 

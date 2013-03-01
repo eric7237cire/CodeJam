@@ -7,27 +7,27 @@ import java.util.Scanner;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Level;
+import codejam.utils.main.InputFilesHandler;
+import codejam.utils.main.Runner.TestCaseInputScanner;
+import codejam.utils.multithread.Consumer.TestCaseHandler;
+import codejam.utils.utils.DoubleFormat;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 import com.google.common.math.LongMath;
 
-import codejam.utils.main.InputFilesHandler;
-import codejam.utils.main.Runner.TestCaseInputScanner;
-import codejam.utils.multithread.Consumer.TestCaseHandler;
-import codejam.utils.utils.DoubleFormat;
+public class RadioReceiver extends InputFilesHandler 
+implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
 
-public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData> {
-
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-
-    public Main()
+    
+    public RadioReceiver()
     {
       // super();
         super("C", 1,1);
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
     
     
