@@ -74,7 +74,7 @@ public class Main
          * Problem 3
          * Binary search and interval intersection
          */
-        codejam.y2011aa.round_all.radio_receiver.Main m = new codejam.y2011aa.round_all.radio_receiver.Main();
+        codejam.y2011aa.round_compet.radio_receiver.Main m = new codejam.y2011aa.round_compet.radio_receiver.Main();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files)

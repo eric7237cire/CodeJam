@@ -1,17 +1,19 @@
-package codejam.y2011aa.round_all.vanishing_numbers;
+package codejam.y2011aa.round_compet.battlefield;
 
-import java.math.BigDecimal;
-import java.util.List;
-
+import codejam.utils.datastructures.graph.Graph;
 import codejam.utils.main.AbstractInputData;
 
 public class InputData 
     extends AbstractInputData {
         
         int N;
-        List<BigDecimal> numbers;
+        int R;
+        
+        Graph graph;
         
         public InputData(int testCase) {
             super(testCase);
+            
+            
         }
 }

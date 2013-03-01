@@ -1,4 +1,4 @@
-package codejam.y2011aa.round_all.radio_receiver;
+package codejam.y2011aa.round_compet.radio_receiver;
 
 import java.math.RoundingMode;
 import java.util.Collections;

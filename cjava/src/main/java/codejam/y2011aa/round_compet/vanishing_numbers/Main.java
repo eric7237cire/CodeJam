@@ -1,4 +1,4 @@
-package codejam.y2011aa.round_all.vanishing_numbers;
+package codejam.y2011aa.round_compet.vanishing_numbers;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

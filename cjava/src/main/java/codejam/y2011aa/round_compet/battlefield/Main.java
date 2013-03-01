@@ -1,4 +1,4 @@
-package codejam.y2011aa.round_all.battlefield;
+package codejam.y2011aa.round_compet.battlefield;
 
 import java.util.Collections;
 import java.util.List;
