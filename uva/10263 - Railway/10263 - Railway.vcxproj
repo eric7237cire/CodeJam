@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F2E9D520-5307-49F9-9B55-BDCDBBA2E035}</ProjectGuid>
+    <ProjectGuid>{C59E32B1-B751-4F30-B328-A4F676577E89}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>My1249Euclid</RootNamespace>
+    <RootNamespace>My10263Railway</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -76,11 +76,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="euclid.cpp" />
+    <ClCompile Include="railway.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt" />
-    <Text Include="output.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
