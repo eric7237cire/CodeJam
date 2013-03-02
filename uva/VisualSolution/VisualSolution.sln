@@ -35,6 +35,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "587 - Theres treasure every
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "833 - Water Falls", "..\833 - Water Falls\833 - Water Falls.vcxproj", "{1473B4E2-1B3F-4040-BD2C-4D9D90C76325}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1249 - Euclid", "..\1249 - Euclid\1249 - Euclid.vcxproj", "{F2E9D520-5307-49F9-9B55-BDCDBBA2E035}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -109,6 +111,10 @@ Global
 		{1473B4E2-1B3F-4040-BD2C-4D9D90C76325}.Debug|Win32.Build.0 = Debug|Win32
 		{1473B4E2-1B3F-4040-BD2C-4D9D90C76325}.Release|Win32.ActiveCfg = Release|Win32
 		{1473B4E2-1B3F-4040-BD2C-4D9D90C76325}.Release|Win32.Build.0 = Release|Win32
+		{F2E9D520-5307-49F9-9B55-BDCDBBA2E035}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F2E9D520-5307-49F9-9B55-BDCDBBA2E035}.Debug|Win32.Build.0 = Debug|Win32
+		{F2E9D520-5307-49F9-9B55-BDCDBBA2E035}.Release|Win32.ActiveCfg = Release|Win32
+		{F2E9D520-5307-49F9-9B55-BDCDBBA2E035}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
