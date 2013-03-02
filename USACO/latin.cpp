@@ -56,8 +56,7 @@ typedef map<string, int> msi;
 #define cpresent(c,x) (find(all(c),x) != (c).end()) 
 
 int N;
-//ull tally;
-//vvi grid;
+
 vi colMasks;
 vi rowMasks;
 

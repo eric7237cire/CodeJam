@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.Runner;
 import codejam.y2008.round_1B.mouse_trap.MouseTrap;
+import codejam.y2008.round_1C.ugly_numbers.UglyNumbers;
 import codejam.y2009.round_1A.collecting_cards.CollectingCards;
 import codejam.y2011aa.round_qual.building_house.BuildingHouse;
 
@@ -14,8 +15,8 @@ public class Main
 
     final static Logger log = LoggerFactory.getLogger(Main.class);
 
-    public static void main(String args[]) throws Exception
-    //static void africa(String[] args)
+   // public static void main(String args[]) throws Exception
+    static void africa(String[] args)
     {
         /**
          * 2010 africa qualification 
@@ -269,7 +270,8 @@ public class Main
         }
     }
 
-    static void round1C_2008(String args[])
+    public static void main(String args[]) throws Exception
+    //static void round1C_2008(String args[])
     {
 
         /**
@@ -279,6 +281,7 @@ public class Main
          * Chinese remainder theorems
          * TODO
          */
+        UglyNumbers m = new UglyNumbers();
 
         /**
          * Problem 3
@@ -289,7 +292,7 @@ public class Main
          * 
          * FenwickTree
          */
-        codejam.y2008.round_1C.speed_limits.Main m = new codejam.y2008.round_1C.speed_limits.Main();
+        //codejam.y2008.round_1C.speed_limits.Main m = new codejam.y2008.round_1C.speed_limits.Main();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files)
