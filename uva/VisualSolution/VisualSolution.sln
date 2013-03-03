@@ -39,6 +39,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "1249 - Euclid", "..\1249 - 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10263 - Railway", "..\10263 - Railway\10263 - Railway.vcxproj", "{C59E32B1-B751-4F30-B328-A4F676577E89}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11227 - The silver bullet", "..\11227 - The silver bullet\11227 - The silver bullet.vcxproj", "{86B35BFC-DA9E-4F46-AE51-C640A6A69473}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -121,6 +123,10 @@ Global
 		{C59E32B1-B751-4F30-B328-A4F676577E89}.Debug|Win32.Build.0 = Debug|Win32
 		{C59E32B1-B751-4F30-B328-A4F676577E89}.Release|Win32.ActiveCfg = Release|Win32
 		{C59E32B1-B751-4F30-B328-A4F676577E89}.Release|Win32.Build.0 = Release|Win32
+		{86B35BFC-DA9E-4F46-AE51-C640A6A69473}.Debug|Win32.ActiveCfg = Debug|Win32
+		{86B35BFC-DA9E-4F46-AE51-C640A6A69473}.Debug|Win32.Build.0 = Debug|Win32
+		{86B35BFC-DA9E-4F46-AE51-C640A6A69473}.Release|Win32.ActiveCfg = Release|Win32
+		{86B35BFC-DA9E-4F46-AE51-C640A6A69473}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

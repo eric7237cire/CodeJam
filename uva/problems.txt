@@ -1,0 +1,18 @@
+Geometry problems (recent first)
+
+10263 railway
+
+distance point to line segment
+
+1249 euclid
+
+parraleogram area, polygon area
+distance along vector
+
+833 water falls
+
+intersection line segments
+
+270 lining up
+
+Finding colinear points efficiently
