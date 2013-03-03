@@ -41,6 +41,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10263 - Railway", "..\10263
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "11227 - The silver bullet", "..\11227 - The silver bullet\11227 - The silver bullet.vcxproj", "{86B35BFC-DA9E-4F46-AE51-C640A6A69473}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "10005 - Packing polygons", "..\10005 - Packing polygons\10005 - Packing polygons.vcxproj", "{E39D4A7D-2142-4A13-8F08-0AB3E4F07DC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -127,6 +129,10 @@ Global
 		{86B35BFC-DA9E-4F46-AE51-C640A6A69473}.Debug|Win32.Build.0 = Debug|Win32
 		{86B35BFC-DA9E-4F46-AE51-C640A6A69473}.Release|Win32.ActiveCfg = Release|Win32
 		{86B35BFC-DA9E-4F46-AE51-C640A6A69473}.Release|Win32.Build.0 = Release|Win32
+		{E39D4A7D-2142-4A13-8F08-0AB3E4F07DC6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E39D4A7D-2142-4A13-8F08-0AB3E4F07DC6}.Debug|Win32.Build.0 = Debug|Win32
+		{E39D4A7D-2142-4A13-8F08-0AB3E4F07DC6}.Release|Win32.ActiveCfg = Release|Win32
+		{E39D4A7D-2142-4A13-8F08-0AB3E4F07DC6}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
