@@ -1407,7 +1407,7 @@ public class Main
         //codejam.y2012.round_1C.out_of_gas.Main m = new codejam.y2012.round_1C.out_of_gas.Main();
 
         //Did this the hard way, LCS DP on steroids, idea try their  simpler soltion TODO 
-        codejam.y2012.round_1C.boxes.Main m = new codejam.y2012.round_1C.boxes.Main();
+        codejam.y2012.round_1C.boxes.BoxFactory m = new codejam.y2012.round_1C.boxes.BoxFactory();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files)
