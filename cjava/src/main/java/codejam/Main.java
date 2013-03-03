@@ -9,6 +9,7 @@ import codejam.y2008.round_1B.mouse_trap.MouseTrap;
 import codejam.y2008.round_1C.ugly_numbers.UglyNumbers;
 import codejam.y2009.round_1A.collecting_cards.CollectingCards;
 import codejam.y2011aa.round_qual.building_house.BuildingHouse;
+import codejam.y2012.round_1C.boxes.BoxFactorySolution;
 
 public class Main
 {
@@ -1406,8 +1407,14 @@ public class Main
         //Physics, velocity acceleration. Intersection parabola / lines
         //codejam.y2012.round_1C.out_of_gas.Main m = new codejam.y2012.round_1C.out_of_gas.Main();
 
-        //Did this the hard way, LCS DP on steroids, idea try their  simpler soltion TODO 
-        codejam.y2012.round_1C.boxes.BoxFactory m = new codejam.y2012.round_1C.boxes.BoxFactory();
+        /**
+         * Problem 3
+         * Did this the hard way, LCS DP on steroids, idea try their  simpler soltion 
+         * 
+         *  Solution is much simpler and faster
+         */
+        //codejam.y2012.round_1C.boxes.BoxFactory m = new codejam.y2012.round_1C.boxes.BoxFactory();
+        BoxFactorySolution m = new BoxFactorySolution();
 
         String[] files = Main.getFiles(m, args);
         for (String file : files)
