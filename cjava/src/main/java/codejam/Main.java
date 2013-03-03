@@ -270,8 +270,8 @@ public class Main
         }
     }
 
-    public static void main(String args[]) throws Exception
-    //static void round1C_2008(String args[])
+    //public static void main(String args[]) throws Exception
+    static void round1C_2008(String args[])
     {
 
         /**
@@ -279,7 +279,10 @@ public class Main
          * Ugly numbers
          * 
          * Chinese remainder theorems
-         * TODO
+         * 
+         * Finding all expressions formable by inserting + and - 
+         * 
+         * Implemented their solution.  idea -- go through by hand to understand a bit better.
          */
         UglyNumbers m = new UglyNumbers();
 
@@ -1043,7 +1046,7 @@ public class Main
           * Problem 2
           * 
           * Partial 2 trees, decomposition to find longest path that does not intersect nodes twice
-          * TODO understand a bit more why it works
+          * 
           */
           codejam.y2010.round_final.city_tour.CityTour m = new codejam.y2010.round_final.city_tour.CityTour();
 
@@ -1387,7 +1390,8 @@ public class Main
 
     }
 
-    static void round1C_2012(String args[])
+    public static void main(String args[]) throws Exception
+    //static void round1C_2012(String args[])
     {
 
         //2012 1C
@@ -1403,8 +1407,16 @@ public class Main
         //codejam.y2012.round_1C.out_of_gas.Main m = new codejam.y2012.round_1C.out_of_gas.Main();
 
         //Did this the hard way, LCS DP on steroids, idea try their  simpler soltion TODO 
-        //codejam.y2012.round_1C.boxes.Main m = new codejam.y2012.round_1C.boxes.Main();
+        codejam.y2012.round_1C.boxes.Main m = new codejam.y2012.round_1C.boxes.Main();
 
+        String[] files = Main.getFiles(m, args);
+        for (String file : files)
+        {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+            //Runner.go(file, m, m, 5);
+        }
     }
     //public static void main(String args[]) throws Exception
     static void round2_2012(String args[])

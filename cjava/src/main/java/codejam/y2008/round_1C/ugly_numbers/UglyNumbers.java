@@ -1,9 +1,7 @@
 package codejam.y2008.round_1C.ugly_numbers;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
-import codejam.utils.datastructures.FenwickTree;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;

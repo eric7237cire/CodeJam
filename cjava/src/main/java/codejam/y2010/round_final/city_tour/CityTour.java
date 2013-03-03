@@ -2,10 +2,10 @@ package codejam.y2010.round_final.city_tour;
 
 import java.util.Scanner;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import ch.qos.logback.classic.Level;
 import codejam.utils.main.DefaultInputFiles;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
@@ -17,8 +17,8 @@ public class CityTour extends InputFilesHandler implements TestCaseHandler<Input
 
     public CityTour()
     {
-        super("B", 1, 1);
-        (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
+        super("B", 0, 0);
+        //(( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
         
 
@@ -63,17 +63,23 @@ public class CityTour extends InputFilesHandler implements TestCaseHandler<Input
     
   
     int best_so_far = 0;
+    
+    static int indentLevel = 0;
 
     int best(int x, int y, int N, boolean[][] connected) {
+        ++indentLevel;
+        
         int max_len = 2;
         int second_max_len = -1;
 
-        log.debug("best x={}, y={} start", x + 1, y + 1);
+        String indent = StringUtils.repeat(' ', 4 * indentLevel - 4);
+        
+        log.debug("{}best x={}, y={} start", indent, x + 1, y + 1);
         /*
          * Look for a third node that is directly connected with x and y with a
          * greater index. This is to go down the tree decomposition.
          * 
-         * The "tree composition node" of x, y, z
+         * The "tree composition node" of x, y, z is the root of a sub tree
          */
         for (int z = Math.max(x, y) + 1; z < N; z++) {
             /*
@@ -84,7 +90,8 @@ public class CityTour extends InputFilesHandler implements TestCaseHandler<Input
                 continue;
             }
             
-            log.debug("best x={}, y={} checking intermediate node z {}",
+            log.debug("{}best x={}, y={} checking intermediate node z {}",
+                    indent,
                     x + 1, y + 1, z + 1);
             /**
              * Because the way the tree decomposition works, these 2 paths
@@ -105,18 +112,21 @@ public class CityTour extends InputFilesHandler implements TestCaseHandler<Input
             // x+1, y+1, i+1, y+1, lenZY);
 
             int len = lenXZ + lenZY - 1;
+            
+            //Keep track of best 2 paths going through x and y
             if (len > max_len) {
                 second_max_len = max_len;
                 max_len = len;
                 log.debug(
-                        "best x={}, y={}  z={} Updated max_len.  xz {} zy {} - 1 = {}"
-                                + " Now second max = {}, max = {}", x + 1,
+                        "{}best x={}, y={}  z={} Updated max_len.  xz {} zy {} - 1 = {}"
+                                + " Now second max = {}, max = {}", indent, x + 1,
                         y + 1, z + 1, lenXZ, lenZY, len, second_max_len,
                         max_len);
             } else if (len > second_max_len) {
                 second_max_len = len;
                 log.debug(
-                        "best x={}, y={} Updated second max_len.  Now second max = {}, max = {}",
+                        "{}best x={}, y={} Updated second max_len.  Now second max = {}, max = {}",
+                        indent,
                         x + 1, y + 1, second_max_len, max_len);
             }
         
@@ -134,12 +144,15 @@ public class CityTour extends InputFilesHandler implements TestCaseHandler<Input
          * triangle. Given we always look for nodes > i, we know we are going
          * down different paths in the decomp tree...
          */
-      //  best_so_far = Math.max(max_len, best_so_far);
+
         best_so_far = Math.max(max_len + second_max_len - 2, best_so_far);
 
-        log.debug("best x={}, y={} done.  Best so far = {}", x + 1, y + 1,
-                best_so_far);
+        log.debug("{}best x={}, y={} done.  Best so far = {}. Return {} 2nd best {} ", 
+                indent, x + 1, y + 1,
+                best_so_far,
+                max_len, second_max_len);
 
+        --indentLevel;
         return max_len;
     }
     

@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
@@ -21,15 +22,14 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class Main extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-
-    @Override
-    public String[] getDefaultInputFiles() {
-     //    return new String[] {"sample.in"};
-       return new String[] { "C-small-practice.in", "C-large-practice.in" };
+    public Main()
+    {
+        super("C", 1, 1);
+        setLogInfo();
     }
+    
 
     @Override
     public InputData readInput(Scanner scanner, int testCase) {
@@ -798,7 +798,7 @@ long currentColIndex = 1;
 
                 Block blockOfB = matchingBlocks.get(mbIndex);
                 
-                log.info("\n @@ Matching block B {}  cur row size {}", blockOfB, blockRow.size());
+                log.debug("\n @@ Matching block B {}  cur row size {}", blockOfB, blockRow.size());
 
                 
                 //Build 2 ranges.  Best match previous row and best match current row
@@ -836,7 +836,7 @@ long currentColIndex = 1;
             
             
             
-            log.info("\n@@@!!!New prev row {}\n", prevBlockRow);
+            log.debug("\n@@@!!!New prev row {}\n", prevBlockRow);
             blockRow = Lists.newArrayList();
             //blockRow.add(new UpdateRowInfo(0,0,0,0));
         }
