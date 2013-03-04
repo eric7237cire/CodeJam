@@ -70,6 +70,7 @@ implements TestCaseHandler<SolInputData>, TestCaseInputScanner<SolInputData>, De
                                 finished = true;
                             } else {
                                 totalA += in.a[prevA].count;
+                                //Important becasue in the dp calculation, it is between a+1 and x (see solution exp)
                                 --prevA;
                             }
                         }

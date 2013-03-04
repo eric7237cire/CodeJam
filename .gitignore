@@ -23,3 +23,9 @@ ipch
 *.dvi
 *.aux
 *.dll
+*.vcxproj
+*.vcxproj.filters
+CMakeFiles/
+*.sln
+*.vcxproj.user
+*.cmake
