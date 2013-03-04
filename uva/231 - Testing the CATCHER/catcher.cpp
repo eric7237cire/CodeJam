@@ -50,77 +50,65 @@ typedef map<string, int> msi;
 #define contains(c,x) ((c).find(x) != (c).end()) 
 #define cpresent(c,x) (find(all(c),x) != (c).end()) 
 
+template<typename T>
+ostream& operator<<( ostream& os, const vector<T>& vec )
+{
+    FOR(i, 0, vec.size())
+    {
+        os << setw(5) << vec[i];
+    }
+    return os;
+}
+
 int main() 
 {
 #ifndef ONLINE_JUDGE
 	freopen ("input.txt","r",stdin);
 #endif
 
-	int T;
-	scanf("%d", &T);
-
-	FORE(t, 1, T)
+	int t = 0;
+	while(true)
 	{
-		int M, C; //M=Money C=Types of garments
-		scanf("%d%d", &M, &C);
+		vi seq;
+
+		int h;
+
+		while(1 == scanf("%d", &h) && h != -1)
+		{
+			seq.pb(h);
+		}
+
+		if (seq.empty())
+			return 0;
+
+		if (t > 0)
+			cout << endl;
+	 
+		//cout << "Sequence " << seq << endl;
+
+	    vi lis;
+	    lis.pb(seq[0]);
+	    
+		FOR(idx, 1, seq.size())
+	    {
+			//lower_bound means everything before is <=, upper bound means strictly greater
+			vi::iterator it = upper_bound(all(lis), seq[idx], greater<int>());
 		
-		vvi modelPrices(C);
+            int len = distance(lis.begin(), it);
 
-		vb dp(M+1, false);
-
-		FOR(c, 0, C)
-		{
-			int K;
-			scanf("%d", &K);
-
-			modelPrices[c].resize(K);
-
-			FOR(k, 0, K)
+			if (it == lis.end())
 			{
-				scanf("%d", &modelPrices[c][k]);
-
-				//Init first row
-				if (c == 0 &&  modelPrices[c][k] <= M)
-				{
-					dp[ modelPrices[c][k] ]  = true;
-				}
-			}
-		}
-
-		bool hasSolution = true;
-
-		vb dpNext(M+1, false);
-
-		for(int c = 1; c < C && hasSolution; ++c)
-		{
-			dpNext.assign(M+1, false); 
-			hasSolution = false;
-
-			FOR(m, 0, M)
-			{
-				if (dp[m] == false)
-					continue;
-								
-				FOR(k, 0, modelPrices[c].size())
-				{
-					if (modelPrices[c][k] + m > M)
-						continue;
-
-					hasSolution = dpNext[m+modelPrices[c][k]] = true;
-				}
+				lis.pb(seq[idx]);
+			} else {
+				//Found an lower element for position it
+				assert(seq[idx] >= *it );
+				*it = seq[idx];
 			}
 
-			dp = dpNext;
+			//cout << "After idx " << idx << " lis " << lis << endl;
 		}
-
-		if (!hasSolution)
-		{
-			cout << "no solution" << endl;
-		}  else {
-			int m = M;
-			for(; m >= 0 && !dp[m]; --m) ;
-			cout << m << endl;
-		}		
+                        
+		printf("Test #%d:\n  maximum possible interceptions: %d\n", ++t, lis.size());
 	}
 
 	return 0;
