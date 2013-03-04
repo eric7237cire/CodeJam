@@ -16,3 +16,10 @@ intersection line segments
 270 lining up
 
 Finding colinear points efficiently
+
+DP
+
+LIS
+
+231 CATCHER -- non increasing
+11790 Muricas skyline -- weighted 
