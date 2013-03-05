@@ -55,34 +55,11 @@ ostream& operator<<( ostream& os, const vector<T>& vec )
 {
     FOR(i, 0, vec.size())
     {
-        os << vec[i] << endl;
+        os << setw(5) << vec[i] ;
     }
     return os;
 }
 
-struct elephant 
-{
-	int W;
-	int S;
-	int index;
-
-	elephant(int w, int s, int i) : W(w), S(s), index(i) 
-	{
-	}
-};
-
-bool operator<( const elephant& b1, const elephant& b2)
-{
-	if (b1.W != b2.W)
-		return b1.W < b2.W;
-
-	return b1.S > b2.S;
-}
-
-bool isBefore( const elephant& b1, const elephant& b2)
-{
-	return b1.W < b2.W && b1.S > b2.S;
-}
 
 int main() 
 {
@@ -92,54 +69,70 @@ int main()
 
 	
 	
-	vector<elephant> seq;
-	int w, s;
-	int i = 0;
-	while(2 == scanf("%d%d", &w, &s ))
-	{
-		seq.pb( elephant(w, s, ++i) );
-	}
-		
-	int N = seq.size();
-	vi dp(N);
-	    	    
-	sort(all(seq));
-
-	FOR(i, 0, N)
-	{
-		dp[i] = 1;
-
-		FOR(j, 0, i)
-		{
-			if ( !isBefore(seq[j], seq[i]) )
-				continue;
-
-			dp[i] = max(dp[i], 1 + dp[j]);
-		}
-	}
-			
-		
-	int max = *max_element(all(dp));
-	cout << max << endl;
-
-	int cur = max;
-	elephant last (numeric_limits<int>::max(), numeric_limits<int>::min(), -1);
-
-	vi ans; 
-	for(int i = seq.size() - 1; i >= 0; --i)
-	{
-		if (dp[i] == cur && isBefore(seq[i], last))
-		{
-			last = seq[i];	
-			cur --;
-			ans.pb(seq[i].index);
-			//printf("%d %d %d\n", last.W, last.S, last.index);
-			
-		}
-	}
+	int N;
 	
-	reverse(all(ans));
-    cout << ans;
+
+	while(1 == scanf("%d", &N))
+	{
+		vi seq1(N);
+
+		FOR(i, 0, N)
+		{
+			scanf("%d", &seq1[i]);			
+		}
+
+		vi seq2( seq1.rbegin(), seq1.rend() );
+				
+		vi dp1(N);
+		vi dp2(N);
+
+		
+		vi lis2; 
+				
+		for(int choice = 0; choice <= 1; ++choice)
+		{
+			vi lis;
+			vi& dp = choice == 0 ? dp1 : dp2;
+			vi& seq = choice == 0 ? seq1 : seq2;
+
+			dp[0] = 1;
+			lis.pb(seq[0]);
+
+			for(int dpIdx = 1; dpIdx < seq.size(); ++dpIdx)
+			{
+				//Eveything before it is strictly less than seq[dpIdx]
+				vi::iterator it = lower_bound(all(lis), seq[dpIdx]);
+
+				int lisLen = 1+distance(lis.begin(), it);
+
+				if (it == lis.end())
+				{
+					lis.pb(seq[dpIdx]);
+				} else {
+					//Found an element 
+					*it = seq[dpIdx];
+				}
+					
+				dp[dpIdx] = lisLen;
+			}
+		}
+
+		//cout << seq1 << endl;
+		//cout << dp1 << endl;
+		//cout << dp2 << endl;
+		
+		int ans = 0;
+		for(int dpIdx = 0; dpIdx < N; ++dpIdx)
+		{
+			ans = max(ans, 2 * min(dp1[dpIdx], dp2[N - dpIdx - 1]) - 1);
+		}
+
+		
+		cout << ans << endl;
+		
+
+	}
+
 	
 
 	return 0;
