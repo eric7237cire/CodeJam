@@ -101,13 +101,17 @@ int main()
 	    vi lis;
 	    lis.pb(seq[0]);
 	    
+	    vi dp(seq.size(), 0);
+	    
 		FOR(idx, 1, seq.size())
 	    {
 			//lower_bound means everything before is <=, upper bound means strictly greater
 			vi::iterator it = upper_bound(all(lis), seq[idx], less<int>());
 		
-            int len = distance(lis.begin(), it);
+			int len = distance(lis.begin(), it);
 
+			dp[idx] = len;
+			
 			if (it == lis.end())
 			{
 				lis.pb(seq[idx]);
@@ -119,6 +123,22 @@ int main()
 
 			//cout << "After idx " << idx << " lis " << lis << endl;
 		}
+		
+		int last = numeric_limits<int>::max();
+		int cur = lis.size() - 1;
+		
+		
+		//cout << dp << endl;
+	
+		//In order to have the seq latest in the input
+		for(int i = seq.size() - 1; i >= 0; --i)
+		{
+			if (dp[i] == cur && seq[i] < last)
+			{
+				last = lis[ cur-- ] = seq[i];			
+			}
+		}
+
                         
 		printf("Max hits: %d\n", lis.size());
 		cout << lis;
