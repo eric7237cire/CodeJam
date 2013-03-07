@@ -1,14 +1,15 @@
 #include "stdio.h"
-//#include <algorithm>
-#include <vector>
+#include <algorithm>
+//#include <vector>
 //#include <cstring>
 #include <limits>
+#include <cstdlib>
 using namespace std;
 
 #define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
 #define pb push_back 
 
-typedef vector<int> vi;
+//typedef vector<int> vi;
 
 int main()
 {
@@ -16,28 +17,34 @@ int main()
 	freopen ("input.txt","r",stdin);
 #endif
 
-	int T;
-	scanf("%d", &T);
+	char buf[128];
+	
+	int dp[20000];
+	int p[20000];
+	gets(buf);
+	int T = atoi(buf);
+
 	FOR(t, 0, T)
 	{
 		int n;
-		scanf("%d", &n);
+		gets(buf);
+		n = atoi(buf) - 1;
+		
+		// dp[i] means max value of path ending at vertex [i]
+		// p[i] path length of max value path 
 
-		vi a(n-1); 
-		vi dp(n - 1, 0); // dp[i] means max value of path ending at vertex [i]
-		vi p(n - 1, 0); //path length
-		for(int s = 0; s < a.size(); ++s)
-		{
-			scanf("%d", &a[s]);
-		}
+		int a;
 
 		
-		dp[0] = max(0, a[0]);
-		p[0] = a[0] > 0 ? 1 : 0; //never any zero value paths
+		gets(buf);
+		a = atoi(buf);
+		
+		dp[0] = max(0, a);
+		p[0] = a > 0 ? 1 : 0; //never any zero value paths
 
 		int best;
 		int bestIdx;
-		if (a[0] > 0) {
+		if (a > 0) {
 			best = dp[0];
 			bestIdx = 0;
 		} else {
@@ -45,11 +52,14 @@ int main()
 			best = 0;
 		}
 
-		for(int i = 1; i < a.size(); ++i)
+		for(int i = 1; i < n; ++i)
 		{
-			if (dp[i-1] + a[i] >= 0)
+			gets(buf);
+			a = atoi(buf);
+
+			if (dp[i-1] + a >= 0)
 			{
-				dp[i] = dp[i-1] + a[i];
+				dp[i] = dp[i-1] + a;
 				p[i] = p[i-1] + 1;
 
 				if (dp[i] > best || (dp[i] == best && p[i] > p[bestIdx])) 
@@ -80,12 +90,10 @@ int main()
 	}
 }
 
-
+#if 0
 int mainBruteForce()
 {
-#ifndef ONLINE_JUDGE
-	freopen ("input.txt","r",stdin);
-#endif
+
 
 	int T;
 	scanf("%d", &T);
@@ -140,3 +148,4 @@ int mainBruteForce()
 
 	return 0;
 }
+#endif
