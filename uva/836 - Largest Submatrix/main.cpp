@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-
+#include <iostream>
 
 using namespace std;
 
@@ -18,13 +18,14 @@ using namespace std;
 
 typedef vector<int> vi;
 
+//from x1 to x2 inclusive
 void kadane(int input[], int n, int &x1, int &x2, int &max)
 {
 	int cur;
 	max = 0;
 	cur = 0;
 	x1 = x2 = 0;
-	int lx1, lx2;
+	int lx1;
 	lx1 = 0;
 	for(int i = 0; i<n; i++)
 	{
@@ -63,7 +64,6 @@ int main()
 
 
 		int sq[25][25];
-		int maxArea[25][25];
 
 		int r = 0;
 		while( NULL != gets(buf) && buf[0] != '\0')
@@ -101,16 +101,16 @@ int main()
 
 				if (cur > max_sum)
 				{
-					fy1 = x1;
-					fy2 = x2;
-					fx1 = i;
-					fx2 = j;
+					fx1 = x1;
+					fx2 = x2;
+					fy1 = i;
+					fy2 = j;
 					max_sum = cur;
 				}
 			}
 		}
 		//cout << "max Sum = " << max_sum << " from (" << fx1 << "," << fy1 << ") to ("
-		  //<< fx2 << "," << fy2 << ")" << endl;
+		//  << fx2 << "," << fy2 << ")" << endl;
 		if (t > 0)
 			printf("\n");
 		printf("%d\n", max_sum);
