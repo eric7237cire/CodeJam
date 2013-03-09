@@ -21,11 +21,12 @@ typedef unsigned int uint;
 
 int main()
 {
-	uint a, b;
+	int v, t;
 	
-	while(2 == scanf("%u%u", &a, &b))
+	while(2 == scanf("%d%d", &v, &t))
 	{
-		printf("%d\n", abs(a - b));
+		//average velocity will be exactly v, so for 2 * t 
+		printf("%d\n", 2 * v * t);
 	}
 
 	return 0;

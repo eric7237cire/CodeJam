@@ -1,2 +1,2 @@
-mingw32-make all
+make all
 cat input.txt | project

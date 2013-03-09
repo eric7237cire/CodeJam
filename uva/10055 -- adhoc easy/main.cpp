@@ -18,14 +18,18 @@ using namespace std;
 #define pb push_back
 
 typedef unsigned int uint; 
+typedef long long ll;
 
 int main()
 {
-	uint a, b;
+	ll a, b;
 	
-	while(2 == scanf("%u%u", &a, &b))
+	while(2 == scanf("%lld%lld", &a, &b))
 	{
-		printf("%d\n", abs(a - b));
+	//printf("%lld %lld ", a, b);
+		ll diff = a - b;
+		if (diff < 0) diff *= -1;
+		printf("%lld\n", diff);
 	}
 
 	return 0;
