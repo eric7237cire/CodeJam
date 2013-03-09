@@ -29,3 +29,5 @@ CMakeFiles/
 *.sln
 *.vcxproj.user
 *.cmake
+CMakeCache.txt
+Makefile

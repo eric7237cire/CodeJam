@@ -23,3 +23,7 @@ LIS
 
 231 CATCHER -- non increasing
 11790 Muricas skyline -- weighted 
+
+MaxSum
+
+10827 -- torus :  has best maxsum algo where the input array is reused for the sums
