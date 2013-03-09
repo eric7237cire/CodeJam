@@ -23,12 +23,23 @@ typedef unsigned int uint;
 
 int main()
 {
+	bool isLeft = true;
 	
 	while( s = gets(buf) )
 	{
 		while( *s != '\0' )
 		{
-			putc( *s++ - 7, stdout);
+			if (*s == '"')
+			{
+				if (isLeft)
+					fputs("``", stdout);
+				else 
+					fputs("''", stdout);
+				isLeft = !isLeft;
+			} else {
+				putc( *s, stdout);
+			}
+			++s;
 		}
 		puts("");
 	}
