@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 //#include <ctype.h>
+#include <cassert>
 
 //#include <iostream>
 
@@ -21,7 +22,7 @@ typedef unsigned int uint;
 
 char buf[1024];
 
-const int items = 100;
+const int items = 200;
 const int maxSpace = 10000;
 
 int W[items];
@@ -30,6 +31,7 @@ int TW[items];
 
 
 int maxIdx;
+int capacity;
 
 int memo[items][1 + maxSpace];
 int used[items+1][1 + maxSpace];
@@ -44,19 +46,30 @@ int value(int idx, int left)
 	{
 		return memo[idx][left];
 	}
+		
+	//These calculations are if car is put on right side
+	int weightUsedLeft = capacity - left; 
+	int weightUsedRight = TW[idx] - weightUsedLeft;
 	
-	int weightNotUsed = TW[idx] - left;
+	//printf("idx %d left %d total %d weight Used %d not used %d\n",idx, left, TW[idx], weightUsedLeft, weightUsedRight);
+	assert(weightUsedRight >= 0);
+		
+	int valIfSkip = 0; 
+	int valIfUse =  0; 
 	
-	assert(weightNotUsed >= 0);
+	if (W[idx] <= left)
+	{
+		//printf("Testing use idx %d left %d total %d weight Used %d not used %d\n", idx, left, TW[idx], weightUsedLeft, weightUsedRight);
+		valIfUse = 1 + value(1+idx, left - W[idx] );
+	}
+	
+	if (weightUsedRight <= capacity)
+	{
+		//printf("Testing not use idx %d left %d total %d weight Used %d not used %d\n", idx, left, TW[idx], weightUsedLeft, weightUsedRight);
 		
-		
-	//Can't use item
-	if (W[idx] > left)
-		return value(1+idx, left);
-		
-	int valIfSkip = value(1+idx, left);
-	int valIfUse =  V[idx] + value(1+idx, left - W[idx] );
-		
+		valIfSkip = 1 + value(1+idx, left);
+	}
+	
 	if (valIfUse >= valIfSkip && valIfUse > 0) {
 		//printf("Used idx memo[%d] left %d  used %d \n", idx, left,  usedIfUse);
 		used[idx][left] = 1;
@@ -79,46 +92,56 @@ int main()
 	scanf("%d", &T);
 	while(T--)
 	{
-		int capacity;
-				
 		scanf("%d", &capacity);
+		//printf("%d\n", capacity);
+		capacity *= 100;
 		
 		memset(memo, -1, sizeof memo);
 		memset(used, 0, sizeof used);
 		
 		int w; 
 		int idx = 0;
+		
 		while(1 == scanf("%d", &w) && w != 0)
 		{
+			//anything beyond 200 is not usable, but keep reading the data anyway
+			if (idx >= 200)
+				continue;
+				
 			W[idx] = w;
 			
-			TW[idx] = W[idx] + idx == 0 ? 0 : TW[idx-1];
+			TW[idx] = W[idx] + (idx == 0 ? 0 : TW[idx-1] );
 			++idx;
 		}
 		
 		maxIdx = idx;
 			
+		//printf("MaxIdx %d capacity %d\n", maxIdx, capacity);
 		int ans = value(0, capacity);
+		
+		assert(ans <= maxIdx);
 		
 		//printf("max %d Ans %d\n", maxValue, ans);
 		printf("%d\n", ans );
 		
 		int weightLeft = capacity;
 		
-		FOR(i, 0, maxIdx)
+		FOR(i, 0, ans)
 		{
 			if (used[i][weightLeft])
 			{
 				weightLeft  -= W[i];
-				printf("Used %d %d.  Cap left %d\n", V[i], W[i], weightLeft);
+				//printf("Used %d.  Cap left %d\n", W[i], weightLeft);
+				printf("port\n");
 			} else {
-			
-				printf("Not Used %d %d.  Cap left %d\n", V[i], W[i], weightLeft);
+				
+				//printf("Not Used %d.  Cap left %d\n",  W[i], weightLeft);
+				printf("starboard\n");
 			}
 				
 		}
 		
-		if (T > 1)
+		if (T > 0)
 			printf("\n");
 	}
 
