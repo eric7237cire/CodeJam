@@ -8,6 +8,7 @@
 //#include <string>
 
 #include <stdlib.h>
+#include <cassert>
 //#include <ctype.h>
 
 //#include <iostream>
@@ -38,10 +39,15 @@ ll memo[MAXN+1][MAXM][MAXD+1];
 
 ll count(int idx, int nRem, int rem)
 {
+	//printf("D= %d MAXD = %d\n", D, MAXD);
+	assert(rem >= 0 && rem < MAXD);
 	//base case, count 1 if current remainder is divisible by target 
 	if (nRem == 0)
 	{
-		return memo[idx][nRem][rem] = (rem + MAXD) % D == 0 ? 1 : 0;
+		memo[idx][nRem][rem] = rem % D == 0 ? 1 : 0;
+		
+		//printf("%d MAXD %d %d idx %d nRem %d rem %d = %d  \n",		D, MAXD, (rem + MAXD) % D,			idx, nRem, rem, memo[idx][nRem][rem]);
+		return memo[idx][nRem][rem];
 	}
 	
 	if (idx == N)
@@ -53,12 +59,16 @@ ll count(int idx, int nRem, int rem)
 		
 	ll countIfSkip = ::count(1+idx, nRem, rem);
 	
-	int newRem = (V[idx] + rem) % MAXD;
+	int newRem = (V[idx] + rem) % D;
+	if (newRem < 0)
+		newRem += D;
 	
 	ll countIfUse =  ::count(1+idx, nRem - 1, newRem);
-		
+	
+	//printf("idx %d nRem %d rem %d = skip %lld use %lld\n",	idx, nRem, rem, countIfSkip, countIfUse);
+	
 	return memo[idx][nRem][rem] = countIfSkip + countIfUse;
-	//printf("memo[%d] left %d = %d  used %d \n", idx, left, memo[idx][left], usedItems);
+	
 	
 }
 
