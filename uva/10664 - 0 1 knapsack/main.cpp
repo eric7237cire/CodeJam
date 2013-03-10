@@ -19,108 +19,77 @@ using namespace std;
 
 typedef unsigned int uint; 
 
+const int MAXN = 200;
+const int MAXW = 200;
+
 char buf[1024];
 
-const int items = 30;
-const int maxSpace = 1000;
-int V[items];
-int W[items];
-int depth[items];
-char* next;
+int W[MAXN];
 
-int maxIdx;
+int N;
 
-int memo[items][1 + maxSpace];
-int used[items][1 + maxSpace];
+int memo[MAXN][1 + MAXW];
 
-int value(int idx, int left, int& usedItems)
+int possible(int idx, int left)
 {
-	//Considered all the coins
-	if (idx == maxIdx || left == 0)
+	//printf("idx %d left %d N %d\n", idx, left, N);
+	if (left == 0)
+		return 1;
+		
+	if (idx == N)
 		return 0;
 		
 	if (memo[idx][left] != -1)
-	{
-		usedItems |= used[idx][left];
 		return memo[idx][left];
-	}
-		
+			
 		
 	//Can't use item
 	if (W[idx] > left)
-		return value(1+idx, left, usedItems);
+		return possible(1+idx, left);
 		
-	int usedIfSkip = usedItems;
-	int usedIfUse = usedItems;
-	int valIfSkip = value(1+idx, left, usedIfSkip);
-	int valIfUse =  V[idx] + value(1+idx, left - W[idx], usedIfUse );
+	int ifSkip = possible(1+idx, left);
+	int ifUse =  possible(1+idx, left - W[idx]);
 	
-	if (valIfUse >= valIfSkip) {
-		//printf("Used idx memo[%d] left %d  used %d \n", idx, left,  usedIfUse);
-		usedItems |= usedIfUse | 1 << idx; 
-	} else {
-		usedItems |= usedIfSkip;
-	}
+	return memo[idx][left] = ifSkip || ifUse;
 	
-	memo[idx][left] = max(valIfSkip, valIfUse);
-	used[idx][left] = usedItems;
-	//printf("memo[%d] left %d = %d  used %d \n", idx, left, memo[idx][left], usedItems);
-	return memo[idx][left];
-}
-
-int NumberOfSetBits(int i)
-{
-    i = i - ((i >> 1) & 0x55555555);
-    i = (i & 0x33333333) + ((i >> 2) & 0x33333333);
-    return (((i + (i >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
+	//printf("memo[%d] left %d = %d  used %d \n", idx, left, memo[idx][left], usedItems);	
 }
 
 int main()
 {
-#if !ONLINE_JUDGE && _MSC_VER && !__INTEL_COMPILER
-	freopen ("input.txt","r",stdin);
-#endif
-	int t, w;
-	bool isFirst = true;
-	while(2 == scanf("%d %d", &t, &w))
+
+	
+	gets(buf);
+	int T = atoi(buf);
+	
+	while(T--)
 	{
 		memset(memo, -1, sizeof memo);
 		
-		if (isFirst) {
-			isFirst = false;
-		} else {
-			fputs("\n", stdout);
-		}
+		gets(buf);
 		
-		scanf("%d", &maxIdx);
+		N = 0;
+		char* next = buf;
+		int v;
 		
-		FOR(i, 0, maxIdx)
+		int sum = 0; 
+		while( (v = strtol(next, &next, 10)) != 0)
 		{
-			int d, v;
-			scanf("%d %d", &d, &v);
-			W[i] = 3 * w * d;
-			depth[i] = d;
-			V[i] = v;
+			//printf("%d sum %d\n", v, sum);
+			sum += (W[N++] = v);
 		}
-			
-		int usedItems = 0;
-		int ans = value(0, t, usedItems);
 		
-		usedItems = used[0][t];
-		
-		int usedTreasure = NumberOfSetBits(usedItems);
-		
-		//printf("max %d Ans %d\n", maxValue, ans);
-		printf("%d\n", ans );
-		printf("%d\n", usedTreasure );
-		
-		FOR(i, 0, maxIdx)
+		if (sum % 2 == 1) 
 		{
-			if (  (1 << i & usedItems) == 0)
-				continue;
-				
-			printf("%d %d\n", depth[i], V[i]);
+			puts("NO");
+			continue;
 		}
+		
+		
+		int ans = possible(0, sum / 2);
+		
+		puts( ans ? "YES" : "NO" );
+		
 	}
 
 	return 0;
