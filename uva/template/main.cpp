@@ -4,20 +4,15 @@
 //#include <cstring>
 //#include "string.h"
 //#include <limits>
-
 //#include <string>
 
 #include <stdlib.h>
-//#include <ctype.h>
-
-//#include <iostream>
 
 using namespace std;
 
 #define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
 #define pb push_back
-
-typedef unsigned int uint; 
+ 
 
 int main()
 {
