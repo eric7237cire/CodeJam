@@ -35,6 +35,13 @@ int main()
 	
 	while(2 == scanf("%d%d", &m, &n) && (m||n))
 	{
+		++T;
+		
+		if (T > 1)
+			puts("");
+			
+		printf("Field #%d:\n", T);
+		
 		gets(buf);
 		for(int r=0; r < m; ++r)
 		{
