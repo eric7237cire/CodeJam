@@ -26,21 +26,21 @@ int W[MAX_N];
 int N;
 int x;
 
-double memo[MAX_N][1 + MAX_W];
+int memo[MAX_N][1 + MAX_W];
 
-
-double value(int idx, int share)
+//Return the lowest share over 5000
+int value(int idx, int share)
 {
 	if (idx == N && share > 5000)
 	{
 		//printf("W[x] %d share %d\n", W[x], share);
-		return (double)W[x] / share;
+		return share;
 	}
 		
 	if (idx == N)
-		return 0;
+		return 10010;
 		
-	double& res = memo[idx][share];
+	int& res = memo[idx][share];
 
 	if (res >= 0)
 		return res;
@@ -48,12 +48,10 @@ double value(int idx, int share)
 	if (idx == x)
 		return res = value(1+idx, share + W[idx]);
 	
-	double valIfSkip = value(1+idx, share);
-	double valIfUse =  value(1+idx, share + W[idx] );
+	int valIfSkip = value(1+idx, share);
+	int valIfUse =  value(1+idx, share + W[idx] );
 	
-	
-	
-	res = max(valIfSkip, valIfUse);
+	res = min(valIfSkip, valIfUse);
 	
 	//printf("memo[%d][%d] = %lf\n", idx, share, res);
 	
@@ -89,9 +87,11 @@ int main()
 			W[i] = n1 * 100 + n2; 
 		}
 			
-		double ans = value(0, 0);
+		int minSum = value(0, 0);
 		
-		printf("%.2lf\n", ans*100 );
+		double ans = (double) 100 * W[x] / minSum;
+		
+		printf("%.2lf\n", ans );
 		
 	}
 
