@@ -30,7 +30,7 @@ int dir[][2] =
 	};
 int main()
 {
-	//int T;
+	int T =0;
 	//scanf("%d", &T);
 	
 	while(2 == scanf("%d%d", &m, &n) && (m||n))
