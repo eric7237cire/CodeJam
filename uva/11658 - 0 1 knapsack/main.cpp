@@ -32,14 +32,17 @@ double memo[MAX_N][1 + MAX_W];
 double value(int idx, int share)
 {
 	if (idx == N && share > 5000)
+	{
+		//printf("W[x] %d share %d\n", W[x], share);
 		return (double)W[x] / share;
+	}
 		
 	if (idx == N)
 		return 0;
 		
 	double& res = memo[idx][share];
 
-	if (res != -1)
+	if (res >= 0)
 		return res;
 		
 	if (idx == x)
@@ -48,9 +51,17 @@ double value(int idx, int share)
 	double valIfSkip = value(1+idx, share);
 	double valIfUse =  value(1+idx, share + W[idx] );
 	
-	return res = max(valIfSkip, valIfUse);
 	
-	//printf("memo[%d] left %d = %d  used %d \n", idx, left, memo[idx][left], usedItems);
+	
+	res = max(valIfSkip, valIfUse);
+	
+	//printf("memo[%d][%d] = %lf\n", idx, share, res);
+	
+	return res;
+	
+	
+	
+	//
 	
 }
 
@@ -69,16 +80,18 @@ int main()
 			}
 		}
 		
+		--x;
+		
 		FOR(i, 0, N)
 		{
-			float v;
-			scanf("%f", &v);
-			W[i] = (int) (v * 100); 			
+			int n1, n2;
+			scanf("%d.%d", &n1, &n2);
+			W[i] = n1 * 100 + n2; 
 		}
 			
 		double ans = value(0, 0);
 		
-		printf("%lf\n", ans );
+		printf("%.2lf\n", ans*100 );
 		
 	}
 
