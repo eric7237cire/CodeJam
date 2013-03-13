@@ -1025,12 +1025,7 @@ pile 14 onto 6
 pile 24 onto 11
 move 15 over 24
 quit
-quit
-0
-0
-0
-0
-0
+
 
 
 10
