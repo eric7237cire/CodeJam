@@ -1,26 +1,17 @@
 #include "stdio.h"
 #include <algorithm>
-#include <vector>
 #include <cstring>
-//#include "string.h"
-//#include <limits>
-//#include <string>
 #include <list>
 #include <cassert>
-//#include <iostream>
-#include <stdlib.h>
 
 using namespace std;
 
-typedef vector<int> vi;
-typedef vector<vi> vvi;
 typedef list<int> li;
-
 typedef li::iterator LIT;
 
 #define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
 
-const int MAX_N = 24;
+const int MAX_N = 25;
 int loc[MAX_N];
 
 li piles[MAX_N];
@@ -30,46 +21,124 @@ int N;
 char cmd1[10];
 char cmd2[10];
 
+//Return everything above pilePos to original positions
+void returnToOrig( li& l, const LIT& pilePos, int pile )
+{
+	LIT it = pilePos;
+	it++;
+	while(it != l.end())
+	{		
+		int block = *it;
+		
+		//should be impossible to put things under an existing block on its original position
+		assert(block != pile);
+		
+		//printf("moving %d to original pos\n", block);
+		
+		li& origPile = piles[  block ];
+		
+		//important to do this post++ or else the iterator won't be valid
+		origPile.splice( origPile.end(), l, it++ );
+		
+		loc [ block ] = block;
+	}
+
+}
+
 void moveOnto(int b1, int b2)
 {
-	LIT b1It = find( piles[ loc[b1] ].begin(), piles[ loc[b1] ].end(), b1);
+	li& l1 = piles[ loc[b1] ];
+	li& l2 = piles[ loc[b2] ];
 	
-	LIT b2It = find( piles[ loc[b2] ].begin(), piles[ loc[b2] ].end(), b2);
-
+	LIT b1It = find( l1.begin(), l1.end(), b1);	
+	LIT b2It = find( l2.begin(), l2.end(), b2);
+	
+	returnToOrig(l1, b1It, b1 );
+	returnToOrig(l2, b2It, b2 );
+	
+	//b2It++;	
+	l2.splice( l2.end(), l1, b1It );
+	
+	loc[b1] = loc[b2];
 }
 
 void moveOver(int b1, int b2)
 {
-
+	li& l1 = piles[ loc[b1] ];
+	li& l2 = piles[ loc[b2] ];
+	
+	LIT b1It = find( l1.begin(), l1.end(), b1);	
+	assert(b1It != l1.end() );
+	
+	returnToOrig(l1, b1It, b1);
+	
+	l2.splice( l2.end(), l1, b1It );
+	
+	loc[b1] = loc[b2];
 }
 
 void pileOnto(int b1, int b2)
 {
+	li& l1 = piles[ loc[b1] ];
+	li& l2 = piles[ loc[b2] ];
+	
+	LIT b1It = find( l1.begin(), l1.end(), b1);	
+	LIT b2It = find( l2.begin(), l2.end(), b2);
+	
+	returnToOrig(l2, b2It, b2);
+	
+	for( LIT it = b1It; it != l1.end(); ++it)
+	{
+		loc[*it] = loc[b2];
+	}
+	
+	l2.splice( l2.end(), l1, b1It, l1.end() );	
 
-
+	//loc[b1] = loc[b2];
 }
 
 void pileOver(int b1, int b2)
 {
+	li& l1 = piles[ loc[b1] ];
+	li& l2 = piles[ loc[b2] ];
+	
+	LIT b1It = find( l1.begin(), l1.end(), b1);	
+	
+	for( LIT it = b1It; it != l1.end(); ++it)
+	{
+		loc[*it] = loc[b2];
+	}
+	
+	l2.splice( l2.end(), l1, b1It, l1.end() );	
+}
 
+void checkAll()
+{
+	FOR(i, 0, N)
+	{
+		li& l = piles[ loc[i] ];
+		assert( find( l.begin(), l.end(), i) != l.end() );
+	}
 }
 
 void printPiles()
 {
 	FOR(i, 0, N)
 	{
-		printf("%d: ", i);
+		printf("%d:", i);
 		for(LIT it = piles[i].begin();
 		it != piles[i].end();
 		++it)
 		{
-			if (it != piles[i].begin())
-				printf(" ");
-			printf("%d", *it);
+			//if (it != piles[i].begin())
+			//	printf(" ");
+			printf(" %d", *it);
 		}
 		puts("");
 	}
 }
+
+
 
 int main()
 {
@@ -91,11 +160,9 @@ int main()
 			assert(piles[i].size() == 1);
 		}
 		
-		while(4 == scanf("%s %d %s %d", cmd1, &b1, cmd2, &b2))
+		while(1 == scanf("%s", cmd1) && 0 != strcmp(cmd1, "quit") && 3 == scanf("%d %s %d", &b1, cmd2, &b2))
 		{
-			printf("hello");
-			printf("Read %s %d - %s %d\n",
-				cmd1, b1, cmd2, b2);
+			// printf("Read %s %d - %s %d\n", cmd1, b1, cmd2, b2);
 			if (b1 == b2 || loc[b1] == loc[b2])
 				continue;
 				
@@ -104,7 +171,7 @@ int main()
 				moveOnto(b1, b2);
 			if ( 0 == strcmp(cmd1, "move") &&
 			0 == strcmp(cmd2, "over") )
-				moveOnto(b1, b2);
+				moveOver(b1, b2);
 			if ( 0 == strcmp(cmd1, "pile") &&
 			0 == strcmp(cmd2, "onto") )
 				pileOnto(b1, b2);
@@ -112,14 +179,15 @@ int main()
 			0 == strcmp(cmd2, "over") )
 				pileOver(b1, b2);
 				
+			// printPiles();
+			checkAll();
 		}
 		
-		//int r = scanf("%s", cmd1);
-		
-		puts(cmd1);
 		assert( 0 == strcmp(cmd1, "quit") );
 		
 		printPiles();
+		
+		//return 0;
 		
 	}
 
