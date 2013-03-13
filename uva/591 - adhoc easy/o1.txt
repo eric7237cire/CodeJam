@@ -1,0 +1,18 @@
+Set #1
+The minimum number of moves is 5.
+
+Set #2
+The minimum number of moves is 0.
+
+Set #3
+The minimum number of moves is 5.
+
+Set #4
+The minimum number of moves is 0.
+
+Set #5
+The minimum number of moves is 49.
+
+Set #6
+The minimum number of moves is 1250.
+

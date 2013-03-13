@@ -1,0 +1,22 @@
+
+C:\codejam\CodeJam\uva\591 - adhoc easy>make all 
+[100%] Built target project
+
+C:\codejam\CodeJam\uva\591 - adhoc easy>cat input.txt   | project
+Set #1
+The minimum number of moves is 5.
+Set #1
+The minimum number of moves is 5.
+
+Set #2
+The minimum number of moves is 0.
+
+Set #3
+The minimum number of moves is 5.
+
+Set #4
+The minimum number of moves is 0.
+
+Set #5
+The minimum number of moves is 49.
+
