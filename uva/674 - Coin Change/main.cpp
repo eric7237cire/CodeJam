@@ -1,45 +1,56 @@
 #include "stdio.h"
 #include <algorithm>
-//#include <vector>
-//#include <cstring>
-//#include "string.h"
-//#include <limits>
-//#include <string>
-
-#include <stdlib.h>
+//#include <stdlib.h>
 
 using namespace std;
 
-#define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
-#define pb push_back
- 
 typedef unsigned long long ull;
- 
-//int V[] = {10000, 5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5};
-int V[] = {2000, 1000, 400, 200, 100, 40, 20, 10, 4, 2, 1};
-int N = 11;
+
+int V[] = {50, 25, 10, 5, 1};
+int N = 5;
+int target;
 ull dp[30001];
 
 int main()
 {
-	int d1, d2;
-	
-	while(2 == scanf("%d.%d", &d1, &d2))
+	while(1 == scanf("%d", &target) )
 	{
-		int target = d1 * 100 + d2;
-		target /= 5;
-		
 		fill(dp, dp + target + 1, 0);
         dp[0] = 1;
         for (int coinIndex = 0; coinIndex < N; ++coinIndex) {
             
             for (int j = V[coinIndex]; j <= target; ++j) {
                 dp[j] = dp[j] + dp[j - V[coinIndex]];
-            }
+            }	
         }
-	
-		printf("%4d.%02d%17llu\n", d1, d2, dp[target]);
+
+		printf("%llu\n", dp[target] );
+		
 	}
 	
 	return 0;
 }
+
+/*
+
+faster
+
+int N = 5, V, coinValue[5] = {1, 5, 10, 25, 50}, memo[6][7500];
+// N and coinValue are fixed for this problem, max V is 7489
+
+int ways(int type, int value) {
+  if (value == 0)              return 1;
+  if (value < 0 || type == N)  return 0;
+  if (memo[type][value] != -1) return memo[type][value];
+  return memo[type][value] = ways(type + 1, value) + ways(type, value - coinValue[type]);
+}
+
+int main() {
+  memset(memo, -1, sizeof memo); // we only need to initialize this once
+  while (1 == scanf("%d", &V) )
+    printf("%d\n", ways(0, V));
+
+  return 0;
+}
+
+*/
