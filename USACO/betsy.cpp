@@ -42,14 +42,14 @@ int popCount( ull num )
 	return pc;
 }
 	
-int count( const ull visited, const int row, const int col, int nVisited )
+ull count( const ull visited, const int row, const int col, int nVisited )
 {
 	int curIdx = getIndex(row, col);
 	
 	//cout << "Visited " << visited << " pop count " << popCount(visited) << " nVisited " << nVisited << endl;
 	
 	int pc = popCount(visited);
-	printf("visited %llu row %d col %d nVisited %d pop count %d %d\n", visited, row, col, nVisited, pc, pc);
+	//printf("visited %llu row %d col %d nVisited %d pop count %d \n", visited, row, col, nVisited, pc);
 	
 	//printf("visited size %d row %d pc %d\n", sizeof(visited), sizeof(row), pc);
 	
@@ -71,7 +71,7 @@ int count( const ull visited, const int row, const int col, int nVisited )
 		
 	
 	
-	int c = 0;
+	ull c = 0;
 	for(int d = 0; d <= 3; ++d)
 	{
 		int rr = row + dir[d][1];
