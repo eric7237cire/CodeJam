@@ -1,13 +1,7 @@
 #include "stdio.h"
 #include <algorithm>
-//#include <vector>
 #include <cstring>
-//#include "string.h"
-//#include <limits>
-//#include <string>
-#include <list>
 #include <cassert>
-//#include <iostream>
 #include <stdlib.h>
 
 using namespace std;
@@ -15,41 +9,25 @@ using namespace std;
 #define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
 #define pb push_back
  
+int h, m;
+ 
 int main()
 {
-	int T;
-	scanf("%d", &T);
-	
-	while(T--)
+	while(2 == scanf("%d:%d", &h, &m) && (h||m) )
 	{
-		int N;
-		scanf("%d", &N);
+		if (h == 12) h = 0;
 		
-		list<int> trains;
+		double a1 = 30 * h + .5 * m;
+		double a2 = 6 * m;
 		
-		while(N--)
-		{
-			int train;
-			scanf("%d", &train);
-			
-			trains.push_back(train);
-		}
+		double dif = a1 >= a2 ? a1 - a2 : a2 - a1; //+ 180;
 		
-		int ans = 0;
+		while(dif > 180)
+			dif = 360 - dif;
 		
-		while(trains.size() > 1)
-		{
-			list<int>::iterator it = find(trains.begin(), trains.end(), trains.size() );
-			
-			assert(it != trains.end());
-			
-			ans += -1 + distance(it, trains.end() );
-			
-			trains.erase(it);
-		}
-		
-		printf("Optimal train swapping takes %d swaps.\n", ans);
+		printf("%.3lf\n", dif );
+		//printf("a1 = %lf, a2 = %lf, %.3lf\n", a1, a2,  dif );
 	}
-
+	
 	return 0;
 }
