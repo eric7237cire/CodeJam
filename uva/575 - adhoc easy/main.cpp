@@ -15,41 +15,30 @@ using namespace std;
 #define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
 #define pb push_back
  
+const int MAX_SIZE = 32;
+char buf[MAX_SIZE];
+unsigned int base[MAX_SIZE];
 int main()
 {
-	int T;
-	scanf("%d", &T);
-	
-	while(T--)
+	base[0] = 2;
+	FOR(i, 1, MAX_SIZE)
+		base[i] = 2 * base[i];
+		
+	while( gets(buf) && strcmp(buf, "0") != 0 )
 	{
-		int N;
-		scanf("%d", &N);
+		printf("%s \n", buf);		
 		
-		list<int> trains;
-		
-		while(N--)
-		{
-			int train;
-			scanf("%d", &train);
-			
-			trains.push_back(train);
-		}
-		
+		int len = strlen(buf);
 		int ans = 0;
-		
-		while(trains.size() > 1)
+		FOR(i, 0, len)
 		{
-			list<int>::iterator it = find(trains.begin(), trains.end(), trains.size() );
-			
-			assert(it != trains.end());
-			
-			ans += -1 + distance(it, trains.end() );
-			
-			trains.erase(it);
+			printf("base[%d] = %u\n", i, base[i]);
+			ans += base[i] * (len - i) - 1;
 		}
+		printf("%d\n", ans);
 		
-		printf("Optimal train swapping takes %d swaps.\n", ans);
+		
 	}
-
+	
 	return 0;
 }
