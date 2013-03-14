@@ -1,13 +1,7 @@
 #include "stdio.h"
 #include <algorithm>
-//#include <vector>
 #include <cstring>
-//#include "string.h"
-//#include <limits>
-//#include <string>
-#include <list>
 #include <cassert>
-//#include <iostream>
 #include <stdlib.h>
 
 using namespace std;
@@ -22,18 +16,19 @@ int main()
 {
 	base[0] = 2;
 	FOR(i, 1, MAX_SIZE)
-		base[i] = 2 * base[i];
+		base[i] = 2 * base[i-1];
 		
 	while( gets(buf) && strcmp(buf, "0") != 0 )
 	{
-		printf("%s \n", buf);		
+		
 		
 		int len = strlen(buf);
+		//printf("Read [%s] len %d \n", buf, len);		
 		int ans = 0;
 		FOR(i, 0, len)
 		{
-			printf("base[%d] = %u\n", i, base[i]);
-			ans += base[i] * (len - i) - 1;
+			//printf("base[%d] = %u\n", i, base[i]);
+			ans += (base[len - i - 1]-1) * (buf[i] - '0') ;
 		}
 		printf("%d\n", ans);
 		
