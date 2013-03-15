@@ -1,23 +1,9 @@
-3
-18132
-17
-
-17
-1765
-3
-
-2374859
-3029382
-36123
-
-2147483647 
-2147483647 
-46340
-
-0
-0
-1
-
-1
-0
-1
+sequence subsequence
+person compression
+VERDI vivaVittorioEmanueleReDiItalia
+caseDoesMatter CaseDoesMatter
+aa aa
+a aa
+aaa aa
+aaa baaaa
+abcc abcdddd

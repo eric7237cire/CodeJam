@@ -4,44 +4,59 @@
 #include <cassert>
 #include <stdlib.h>
 #include <cmath>
+#include <string> 
+#include <iostream>
 
 using namespace std;
 
 #define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
 #define pb push_back
  
-typedef unsigned long long ull;
-
-int B, P, M;
-
-int modular_pow(ull base, int exponent, int modulus)
-{
-    int result = 1;
-    while (exponent > 0)
-	{
-        if (exponent % 2 == 1)
-           result = (result * base) % modulus;
-		   
-        exponent = exponent >> 1;
-        base = (base * base) % modulus;
-	}
-    return result;
-}
 
 int main()
 {
 	
-	while(scanf("%d%d%d", &B, &P, &M) == 3)
+	while(cin)
 	{
-		if (0 == B)
+		string s1;
+		string s2;
+		
+		cin >> s1 >> s2;
+		
+		if (cin.fail())
+			break;
+		
+		string::iterator it1 = s1.begin();
+		string::iterator it2 = s2.begin();
+	
+		bool ok = true;
+		
+		while(it1 != s1.end())
 		{
-			printf("0\n" );
-			continue;
+			while( *it2 != *it1 && it2 != s2.end())
+				++it2;
+				
+			if ( *it2 != *it1 )
+			{
+				ok = false;
+				break;
+			}
+			
+			++it1;
+			
+			if (it2 == s2.end()) {
+				ok = false;
+				break;
+			}
+			++it2;
 		}
-		printf("%d\n", modular_pow(B, P, M) );
+		
+		if (ok)
+			puts("Yes");
+		else
+			puts("No");
 		
 	}
-	
 
 	return 0;
 }
