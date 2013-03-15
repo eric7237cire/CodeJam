@@ -23,7 +23,7 @@ int V2[MAX_NCOIN];
 const int MAX_AMT = 300;
 int nCoins;
 int dp[MAX_AMT+1][MAX_AMT+1];
-int dpNext[MAX_AMT+1][MAX_AMT+1];
+//int dpNext[MAX_AMT+1][MAX_AMT+1];
 
 int T;
 //goal 
@@ -52,9 +52,9 @@ int main()
 		}
 		
 		//dest source
-		memcpy(dpNext, dp, sizeof(dp));
+		//memcpy(dpNext, dp, sizeof(dp));
 		
-		dpNext[0][0] = dp[0][0] = 0;
+		dp[0][0] = 0;
         		
 		FOR(coinIdx, 0, nCoins)
 		{
@@ -66,26 +66,25 @@ int main()
 					if (dp[amt1][amt2] == numeric_limits<int>::max())
 						continue;
 				
-					for (int coinsUsed = 1; true ; ++coinsUsed) 
-					{
-						int nextAmt1 = amt1 + coinsUsed * V1[coinIdx];
-						int nextAmt2 = amt2 + coinsUsed * V2[coinIdx];
+					
+					int nextAmt1 = amt1 +  V1[coinIdx];
+					int nextAmt2 = amt2 +  V2[coinIdx];
+					
+					if (nextAmt1 > MAX_AMT || nextAmt2 > MAX_AMT )
+						break;
 						
-						if (nextAmt1 > MAX_AMT || nextAmt2 > MAX_AMT )
-							break;
-						
-						dpNext[nextAmt1][nextAmt2] = 
-						min(dpNext[nextAmt1][nextAmt2], 
-							dp[amt1][amt2] + coinsUsed);
+					dp[nextAmt1][nextAmt2] = 
+						min(dp[nextAmt1][nextAmt2], 
+							dp[amt1][amt2] + 1);
 					/*printf("amt %d coinIdx %d num of coins %d Setting %d to %d\n", 
 						amt, i, j,
 					amt + j * V[i], dpNext[amt + j * V[i]]);*/
-					}
+					
 				}
             }
 			
 			//Copy next to dp
-			memcpy(dp, dpNext, sizeof(dp));
+			//memcpy(dp, dpNext, sizeof(dp));
 			
 			
 			
