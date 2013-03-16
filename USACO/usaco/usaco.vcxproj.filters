@@ -18,9 +18,12 @@
     <None Include="..\cowtour.in">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="..\telecow.in">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\fence3.cpp">
+    <ClCompile Include="..\telecow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
