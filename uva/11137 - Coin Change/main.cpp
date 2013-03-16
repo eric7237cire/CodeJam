@@ -4,41 +4,81 @@
 //#include <cstring>
 //#include "string.h"
 //#include <limits>
-//#include <string>
-
+#include <cassert>
+#include <string>
+#include <iostream>
+#include <sstream>
 #include <stdlib.h>
 
 using namespace std;
 
 #define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
 #define pb push_back
- 
+
+typedef long long ll; 
 typedef unsigned long long ull;
  
-//int V[] = {10000, 5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5};
-int V[] = {2000, 1000, 400, 200, 100, 40, 20, 10, 4, 2, 1};
-int N = 11;
-ull dp[30001];
+int V[] = {1, 8, 27, 64, 125, 36 * 6, 49 * 7, 64 * 8, 81 * 9,
+1000, 121 * 11, 12*12*12, 
+13*13*13,
+14*14*14,
+15*15*15,
+16*16*16,
+17*17*17,
+18*18*18,
+19*19*19,
+20*20*20,
+21*21*21
+};
+
+const int TYPES = 11;
+
+ll dp[10001][TYPES];
+
+int N;
+
+//440022018293
+//2147483648
+
+ll count(int value, int coin)
+{
+	if (value < 0)
+		return 0;
+		
+	ll& res = dp[value][coin];
+	
+	if (res >= 0)
+		return res;
+	
+	//printf("count nCoins %d  nSum %d\n", nCoins, nSum);
+		
+	if (value == 0 && coin == 0 )
+		return res = 1;
+		
+	if (value > 0 && coin == 0)
+		return res = 0;
+	
+	res = ::count(value - V[coin], coin) + ::count(value, coin - 1);	
+	
+	//if (res < 0)
+		//printf("nCoins %d nSum %d res %lld\n", nCoins, nSum, res);
+	//assert(res >= 0);
+	
+	return res;
+}
 
 int main()
 {
-	int d1, d2;
 	
-	while(2 == scanf("%d.%d", &d1, &d2))
+	FOR(i, 0, 10001) FOR(j, 0, TYPES)
+		dp[i][j] = -1;
+	
+	
+	while(1 == scanf("%d", &N))
 	{
-		int target = d1 * 100 + d2;
-		target /= 5;
+		ll ans = ::count(N, TYPES - 1);
 		
-		fill(dp, dp + target + 1, 0);
-        dp[0] = 1;
-        for (int coinIndex = 0; coinIndex < N; ++coinIndex) {
-            
-            for (int j = V[coinIndex]; j <= target; ++j) {
-                dp[j] = dp[j] + dp[j - V[coinIndex]];
-            }
-        }
-	
-		printf("%4d.%02d%17llu\n", d1, d2, dp[target]);
+		printf("%lld\n", ans);
 	}
 	
 	return 0;
