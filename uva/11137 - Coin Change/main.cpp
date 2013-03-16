@@ -18,8 +18,13 @@ using namespace std;
 typedef long long ll; 
 typedef unsigned long long ull;
  
-int V[] = {1, 8, 27, 64, 125, 36 * 6, 49 * 7, 64 * 8, 81 * 9,
-1000, 121 * 11, 12*12*12, 
+int V[] = {
+1, 8, 27, 
+64, 125, 36 * 6,
+ 49 * 7, 64 * 8, 81 * 9,
+1000, 
+11*11*11, 
+12*12*12, 
 13*13*13,
 14*14*14,
 15*15*15,
@@ -31,18 +36,15 @@ int V[] = {1, 8, 27, 64, 125, 36 * 6, 49 * 7, 64 * 8, 81 * 9,
 21*21*21
 };
 
-const int TYPES = 11;
+const int TYPES = 21;
 
 ll dp[10001][TYPES];
 
 int N;
 
-//440022018293
-//2147483648
-
 ll count(int value, int coin)
 {
-	if (value < 0)
+	if (value < 0 )
 		return 0;
 		
 	ll& res = dp[value][coin];
@@ -50,21 +52,12 @@ ll count(int value, int coin)
 	if (res >= 0)
 		return res;
 	
-	//printf("count nCoins %d  nSum %d\n", nCoins, nSum);
-		
-	if (value == 0 && coin == 0 )
+	//Special because coin 0 is 1	
+	if (value == 0 || coin == 0)
 		return res = 1;
 		
-	if (value > 0 && coin == 0)
-		return res = 0;
+	return res = ::count(value - V[coin], coin) + ::count(value, coin - 1);	
 	
-	res = ::count(value - V[coin], coin) + ::count(value, coin - 1);	
-	
-	//if (res < 0)
-		//printf("nCoins %d nSum %d res %lld\n", nCoins, nSum, res);
-	//assert(res >= 0);
-	
-	return res;
 }
 
 int main()
