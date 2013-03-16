@@ -1,40 +1,68 @@
-#include "stdio.h"
+#include <stdio.h>
 #include <algorithm>
-#include <cstring>
-#include <cassert>
-#include <stdlib.h>
+
+int rp[100];
+int cp[100];
+ 
+int N;
 
 using namespace std;
 
-#define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
-#define pb push_back
- 
-const int MAX_N = 50;
-int V[MAX_N];
-int N;
-
-int main()
+int main ()
 {
-	int T;
-	scanf("%d", &T);
-	
-	for(int t = 1; t <= T; ++t)
+    while( 1 == scanf("%d", &N) && N)
 	{
-		int a, b;
-		scanf("%d%d", &a, &b);
+		fill(rp, rp+N, 0);
+		fill(cp, cp+N, 0);
 		
-		int s = 0;
-		for(int i = a; i <= b; ++i)
+		for(int r = 0; r < N; ++r)
 		{
-			if (i % 2 == 0)
-				continue;
-			s += i;
+			for(int c = 0; c < N; ++c)
+			{
+				int bit;
+				scanf("%d", &bit);
+				
+				if (bit == 0)
+					continue;
+					
+				rp[r] ^= 1;
+				cp[c] ^= 1;
+			}
 		}
-			
-		printf("Case %d: %d\n", t, s);
-
-	}
-	
-	
-	return 0;
+ 
+		bool ok = true;
+		int oddRow = -1;
+		int oddCol = -1;
+		
+		for(int r = 0; r < N; ++r)
+		{
+			if (rp[r] % 2 == 0)
+				continue;
+				
+			if (oddRow != -1)
+				ok = false;
+			else	
+				oddRow = r+1;
+		}
+		
+		for(int c = 0; c < N; ++c)
+		{
+			if (cp[c] % 2 == 0)
+				continue;
+				
+			if (oddCol != -1)
+				ok = false;
+			else	
+				oddCol = c+1;
+		}
+		
+		if (!ok || oddRow * oddCol < 0)
+			printf("Corrupt\n");
+		else if (oddRow > 0)
+			printf("Change bit (%d,%d)\n", oddRow, oddCol);
+		else 
+			printf ("OK\n");
+    }
+ 
+    return 0;
 }

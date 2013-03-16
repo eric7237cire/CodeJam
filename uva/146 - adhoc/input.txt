@@ -1,10 +1,7 @@
-2
-1
-5
-3
-5
+abaacb
+cbbaa
+aaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+aaaaaaaaaaaaaaaaaaaabcaaaaaaaaaaa
 
-Sample Output 
-
-Case 1: 9
-Case 2: 8
+#

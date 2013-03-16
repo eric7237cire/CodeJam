@@ -2,39 +2,33 @@
 #include <algorithm>
 #include <cstring>
 #include <cassert>
+#include <string>
 #include <stdlib.h>
+#include <iostream>
 
 using namespace std;
 
 #define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
 #define pb push_back
  
-const int MAX_N = 50;
-int V[MAX_N];
-int N;
-
 int main()
 {
-	int T;
-	scanf("%d", &T);
-	
-	for(int t = 1; t <= T; ++t)
+	while(true)
 	{
-		int a, b;
-		scanf("%d%d", &a, &b);
+		string s;
+		cin >> s;
 		
-		int s = 0;
-		for(int i = a; i <= b; ++i)
-		{
-			if (i % 2 == 0)
-				continue;
-			s += i;
-		}
+		if (s == "#")
+			break;
 			
-		printf("Case %d: %d\n", t, s);
-
+		bool ok = next_permutation(s.begin(), s.end());
+		
+		if (!ok)
+			puts("No Successor");
+		else
+			cout << s << endl;
+			
 	}
-	
 	
 	return 0;
 }
