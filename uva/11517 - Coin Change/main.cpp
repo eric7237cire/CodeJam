@@ -1,11 +1,7 @@
 #include "stdio.h"
 #include <algorithm>
-//#include <vector>
-//#include <cstring>
-//#include "string.h"
-//#include <limits>
-//#include <string>
-
+#include <cstring>
+#include <limits>
 #include <stdlib.h>
 
 using namespace std;
@@ -13,32 +9,70 @@ using namespace std;
 #define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
 #define pb push_back
  
-typedef unsigned long long ull;
- 
-//int V[] = {10000, 5000, 2000, 1000, 500, 200, 100, 50, 20, 10, 5};
-int V[] = {2000, 1000, 400, 200, 100, 40, 20, 10, 4, 2, 1};
-int N = 11;
-ull dp[30001];
+int V[100];
+
+//Number of coins  / bills
+int N; 
+
+const int SIZE_DP = 20000;
+int dp[SIZE_DP];
+
+//value targetted
+int target;
+
+int T;
 
 int main()
 {
-	int d1, d2;
-	
-	while(2 == scanf("%d.%d", &d1, &d2))
+	scanf("%d", &T);
+	while(T--)
 	{
-		int target = d1 * 100 + d2;
-		target /= 5;
+		scanf("%d", &target);
+		scanf("%d", &N);
 		
-		fill(dp, dp + target + 1, 0);
-        dp[0] = 1;
-        for (int coinIndex = 0; coinIndex < N; ++coinIndex) {
-            
-            for (int j = V[coinIndex]; j <= target; ++j) {
-                dp[j] = dp[j] + dp[j - V[coinIndex]];
+		FOR(i, 0, N)
+		{
+			scanf("%d", &V[i]);			
+		}
+		
+		//printf("Target is %d %d  ", target, target * 5);
+		
+		fill(dp, dp + SIZE_DP, numeric_limits<int>::max());
+		
+		dp[0] = 0;
+				
+        FOR(i, 0, N)
+		{
+			for(int amt = SIZE_DP - 1 - V[i]; amt >= 0; --amt)
+			{
+				if (dp[amt] == numeric_limits<int>::max())
+					continue;
+				
+				int nextAmt = amt + V[i];
+				
+				dp[nextAmt] = min(dp[nextAmt], dp[amt] + 1);
+					/*printf("amt %d coinIdx %d num of coins %d Setting %d to %d\n", 
+						amt, i, j,
+					amt + j * V[i], dpNext[amt + j * V[i]]);*/
+				
             }
-        }
-	
-		printf("%4d.%02d%17llu\n", d1, d2, dp[target]);
+		}
+		
+		int minAmt = numeric_limits<int>::max();
+		int minCoins = numeric_limits<int>::max();
+		
+		for(int amt = target; amt < SIZE_DP; ++amt)
+		{
+			//printf("amt %d i %d  dp[amt] %d \n", amt, i, dpShop[amt]);
+			if (dp[amt] == numeric_limits<int>::max())
+				continue;
+			
+			minAmt = amt;
+			minCoins = dp[amt];
+			break;
+		}
+				
+		printf("%d %d\n", minAmt, minCoins);
 	}
 	
 	return 0;
