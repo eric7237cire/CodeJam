@@ -48,7 +48,7 @@ typedef pair<uint,uint> uu;
 #define cpresent(c,x) (find(all(c),x) != (c).end()) 
 #define SZ(x) ((int) (x).size())
 
-const bool debug = true;
+const bool debug = false;
 
 template <class K, class V> 
 V getMapValue( const map<K,V>& aMap, const K& key, const V& defaultValue )
@@ -84,9 +84,12 @@ struct edge
     ll cap;
     ll residue;
 	
+	bool ignore;
+	
 	//flow = capacity - residue
     
-    edge(int _src, int _dest, ll pcap, ll pres) : src(_src), dest(_dest), cap(pcap), residue(pres)
+    edge(int _src, int _dest, ll pcap, ll pres) : src(_src), dest(_dest), cap(pcap), residue(pres),
+	ignore(false)
 	{
 	
 	}
@@ -131,13 +134,13 @@ class Flow
 	
 	}
 	
-	//Makes all edges connected to nodeIdx capacity = 0
-	void removeNode(int nodeIdx)
+	
+	void setIgnoreNode(int nodeIdx, bool ignore)
 	{
 		for(int e = 0; e < V[nodeIdx].size(); ++e)
 		{
 			int eIdx = V[nodeIdx][e];
-			E[ eIdx ].residue = E[eIdx].cap = E[ eIdx ^ 1].residue = E[ eIdx ^ 1].cap = 0;
+			E[ eIdx ].ignore = ignore;
 		}
 	}
 	
@@ -243,6 +246,9 @@ class Flow
 				
 				if (anEdge.residue == 0)
 					continue;
+				
+				if (anEdge.ignore)
+					continue;
 					
 				int trgNodeIdx = anEdge.dest;
 				//printf("edges target %d flow %d capacity %d seen %d\n", n, edges[c][i].flow, edges[c][i].cap, seen[n]);
@@ -253,10 +259,10 @@ class Flow
 					q.push(trgNodeIdx);
 				}
 			}
-			printf("Done\n");
+			//printf("Done\n");
 		}
 		
-		printf("Return 0\n");
+		//printf("Return 0\n");
 		return 0;
 	}
 };
@@ -309,24 +315,22 @@ int main() {
 	Flow flow(source, sink);
 	
 	set<int> ignore;
-	ignore.insert(3);
-	ignore.insert(4);
+	//ignore.insert(3);
+	//ignore.insert(4);
 	//ignore.insert(8);
 	//ignore.insert(11);
 	//ignore.insert(17);
-	ignore.insert(33);
+	//ignore.insert(33);
 	   
-	ignore.clear();
+	//ignore.clear();
 	
     FOR(m, 0, M)
     {
         fin >> from >> to;
 		
-		if ( contains(ignore, from) || contains(ignore, to) || from > 20 || to > 20)
+	   if ( contains(ignore, from) || contains(ignore, to) )
 			continue;
-		//if (from == 3 || from == 4 ||
-		//to == 3 || to == 4)
-			//continue;
+		
         //in bound nodes +N
 		flow.add_edge(from-1, to-1 + N, 1000000 );
 		flow.add_edge(to-1, from-1 + N, 1000000 );
@@ -368,12 +372,12 @@ int main() {
 	
 		flow.resetFlow();
 		
-		flow.removeNode(n);
+		flow.setIgnoreNode(n, true);
 		
 		ll newTotal = 0;
         
 		augAmt = 0;
-		printf("Call augment flow source %d sink %d\n", source, sink);
+		if (debug) printf("Call augment flow source %d sink %d\n", source, sink);
 		while( (augAmt = flow.augment()) > 0 )
 		{   
 			//cout << "Augment " << total << endl;
@@ -382,9 +386,11 @@ int main() {
 		
 		if (newTotal < total)
 		{
-			printf("New max flow %d\n", newTotal);
+			if (debug) printf("New max flow %d\n", newTotal);
 			total = newTotal;
 			minCut.pb(n+1);
+		} else {
+			flow.setIgnoreNode(n, false);
 		}
 	}
 	

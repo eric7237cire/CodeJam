@@ -5,6 +5,7 @@
 #include <limits>
 #include <list>
 #include <iostream>
+#include <iomanip>
 #include <string>
 
 #include <stdlib.h>
@@ -23,43 +24,44 @@ typedef list<int> li;
 
 int N;
 
+ostream& operator<<( ostream& os, const li& li)
+{
+	for(li::const_iterator it = li.begin(); it != li.end(); ++it)
+		os << setw(5) << *it;
+		
+	return os;
+}
+
 int main()
 {
 	int i = 0;
-	list<int>
+	li L;
+	
+	
 	while(1 == scanf("%d", &N))
 	{
-		V[i++] = N;
-			
-		int minDist = numeric_limits<int>::max();
+		li::iterator insPoint = upper_bound( L.begin(), L.end(), N );
 		
-		sort(V, V + N);
-		
-		/*
-		1 - 0
-		3 - 1
-		5 - 2
-		7 - 3
-		9 - 4
-		
-		2 - 0 1
-		4 - 1 2
-		6 - 2 3
-		8 - 3 4 
-		*/
-		
-		int loc = (N % 2 == 0) ? ( V[N/2] + V[N/2 - 1] ) / 2 : V[(N+1) / 2 - 1] ;
-		
-		//FOR(loc, 1, 30001)
+		L.insert( insPoint, N );
+				
+		li::iterator medStart;
+		li::iterator medEnd;
+		if ( L.size() % 2 == 0)
 		{
-			int dist = 0;
-			FOR(i, 0, N)
-				dist += abs(V[i] - loc);
-			//printf("dist at %d is %d\n", loc, dist);
-			minDist = min(minDist, dist);
+			medStart = L.begin();
+			advance(medStart,  L.size()/2 - 1);
+			medEnd = medStart;
+			medEnd++;
+		} else {
+			medStart = L.begin();
+			advance(medStart, ( L.size()+1) / 2 - 1);
+			medEnd = medStart;
 		}
+		//printf("Med start %d end %d\n", *medStart, *medEnd);	
+		//avoid overflow 
+		int med = *medStart + (*medEnd - *medStart ) / 2;
 		
-		printf("%d\n", minDist);
+		printf("%d\n", med);
 	}
 	
 	return 0;

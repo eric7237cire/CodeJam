@@ -1,40 +1,33 @@
-#include "stdio.h"
-#include <algorithm>
-#include <cstring>
-#include <cassert>
-#include <stdlib.h>
-
-using namespace std;
-
-#define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
-#define pb push_back
+#include <stdio.h>
  
-const int MAX_N = 50;
-int V[MAX_N];
-int N;
-
-int main()
+int main ()
 {
-	int T;
-	scanf("%d", &T);
-	
-	for(int t = 1; t <= T; ++t)
-	{
-		int a, b;
-		scanf("%d%d", &a, &b);
-		
-		int s = 0;
-		for(int i = a; i <= b; ++i)
-		{
-			if (i % 2 == 0)
-				continue;
-			s += i;
-		}
-			
-		printf("Case %d: %d\n", t, s);
-
-	}
-	
-	
-	return 0;
+    char a [150];
+ 
+    while ( gets (a) ) {
+ 
+        int i = 0;
+        while ( a [i] != 0 ) {
+            int frq = 0;
+ 
+            while ( a [i] >= '0' && a [i] <= '9' )
+                frq += (a [i++] - '0');
+ 
+            for ( int j = 0; j < frq; j++ ) {
+                if ( a [i] == 'b' )
+                    printf (" ");
+                else
+                    printf ("%c", a [i]);
+            }
+ 
+            if ( a [i] == '!' )
+                printf ("\n");
+ 
+            i++;
+        }
+ 
+        printf ("\n");
+    }
+ 
+    return 0;
 }
