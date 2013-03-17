@@ -252,32 +252,33 @@ class Flow
 };
 
 
-#if 0
-void printEdges(const EdgeList& edges, int N)
+string plugName[200];
+string deviceName[100];
+
+string getNameForId(int id)
 {
-    FOR(from, 0, edges.size()) 
+    if (id == 0)
+        return "SOURCE";
+    if (id == 1)
+        return "SINK";
+    if (id < 102)
+        return deviceName[id-2];
+    return plugName[id-102];
+    
+}
+
+void print(const Flow& flow)
+{
+    FOR(i, 0, flow.E.size()) 
     {
-        if (from < N)
-			cout << "From outBoundNode Comp #" << from + 1 << endl;
-		else 
-			cout << "From inBoundNode Comp #" << from - N + 1 << endl;
-        FOR( eIdx, 0, edges[from].size() )
-        {
-			if (edges[from][eIdx].cap == 0)
-				continue;
-				
-			int toNode = edges[from][eIdx].trg;
-			if (toNode < N)
-				cout << " To outBoundNode comp# " << toNode+1;
-			else
-				cout << " To inBoundNode comp# " << toNode-N+1;
-            
-			cout << " Edge obj " << edges[from][eIdx] << endl;
-        }
-     
+        if (i % 2 == 1)
+            continue;
+        cout << "Id: " << i << " Source: " << getNameForId(flow.E[i].src);
+        cout <<  " Dest: " << getNameForId(flow.E[i].dest);
+        cout << " " << flow.E[i] << endl;     
     }
 }
-#endif 
+
 
 typedef map<string, int> msi;
 
@@ -323,16 +324,12 @@ int main() {
 			int id = getId(plugIdMap, name);
 			assert(id == i);
 			
-			flow.add_edge( source, 2 + id, 1 );
+			plugName[id] = name; 
+		    
+			flow.add_edge( id + 102, sink, 1 );
 		}
 		
 		cin >> nDevice;
-		
-		
-		   
-		const int plugIdAdd = 2 + nDevice;
-		
-		
 		
 		FOR(i, 0, nDevice)
 		{
@@ -340,13 +337,17 @@ int main() {
 			int id = getId(deviceIdMap, name);
 			assert(id == i);
 			
+			deviceName[id] = name;
+			
 			cin >> name;
 			int plugId = getId(plugIdMap, name) ;
+			
+			plugName[plugId] = name; 
 			//cout << name << " id " << plugId << endl;
 			//assert( 0 <= plugId && plugId < nPlug);
 			
-			flow.add_edge( id + 2, plugId + plugIdAdd, 1 );
-			flow.add_edge( plugId + plugIdAdd, sink, 1);
+			flow.add_edge( id + 2, plugId + 102, 1 );
+			flow.add_edge( source, id+2, 1);
 		}
 		
 		cin >> nAdap;
@@ -358,7 +359,8 @@ int main() {
 			cin >> name;
 			int plugId2 = getId(plugIdMap, name);
 			
-			flow.add_edge( plugId1 + plugIdAdd, plugId2 + plugIdAdd, 1000000);
+			flow.add_edge( plugId1 + 102, plugId2 + 102, 1000000);
+			flow.add_edge( plugId2 + 102, plugId1 + 102, 1000000);
 		}
 		
 		 
@@ -371,10 +373,16 @@ int main() {
 		while( (augAmt = flow.augment()) > 0 )
 		{   
 			//cout << "Augment " << total << endl;
+			
 			total += augAmt;
 		}
 		
-		cout << nDevices - total << endl;
+		//print(flow);
+		
+		printf("nPlug %d nDevice %d nAdap %d total %d\n", 
+		    nPlug, 
+		    nDevice, nAdap, total);
+		cout << nDevice - total << endl;
 		
 	}
     return 0;
