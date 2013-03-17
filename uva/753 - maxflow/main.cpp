@@ -44,7 +44,7 @@ typedef pair<uint,uint> uu;
 #define cpresent(c,x) (find(all(c),x) != (c).end()) 
 #define SZ(x) ((int) (x).size())
 
-const bool debug = true;
+const bool debug = false;
 
 const int notConnected = numeric_limits<int>::max();
 
@@ -142,7 +142,9 @@ class Flow
 		V[dest].pb(e+1);
 		
 		E.push_back(edge<FlowType>(src, dest, cap, cap));
-		E.push_back(edge<FlowType>(src, dest, cap, 0));
+		
+		//Residual = 0, so backwards edge begins saturated at max flow
+		E.push_back(edge<FlowType>(dest, src, cap, 0));
 	}
 	
 	/*
@@ -215,24 +217,29 @@ class Flow
 			
 			assert(seen[nodeIdx]);
 							
-			//if (debug) printf("Popped node %d\n", nodeIdx);
+			if (debug) printf("Popped node %d\n", nodeIdx);
 			//Sink?
 			
 
-		   // printf("Looking at node %d.  Edges count %d\n", c, edges[c].size());
+		    if (debug) printf("Looking at node %d.  Edges count %d\n", nodeIdx, V[nodeIdx].size());
 			for (int i = 0; i < V[nodeIdx].size(); i++)
 			{
 				const int edgeIdx = V[nodeIdx][i];
 				const edge<FlowType>& anEdge = E[ edgeIdx ];
 				
+				int trgNodeIdx = anEdge.dest;
+				
+				if (debug) printf("edges id %d target %d flow %d capacity %d seen: %s\n", edgeIdx, trgNodeIdx, 
+					anEdge.cap - anEdge.residue, anEdge.cap, seen[trgNodeIdx] ? "yes" : "no");
+					
 				if (anEdge.residue == 0)
 					continue;
 				
 				if (anEdge.ignore)
 					continue;
 					
-				int trgNodeIdx = anEdge.dest;
-				//printf("edges target %d flow %d capacity %d seen %d\n", n, edges[c][i].flow, edges[c][i].cap, seen[n]);
+				
+				
 				if ( !seen[trgNodeIdx])
 				{
 					prev[trgNodeIdx] = edgeIdx;
@@ -371,7 +378,6 @@ int main() {
 			int plugId2 = getId(plugIdMap, name);
 			
 			flow.add_edge( plugId1 + 102, plugId2 + 102, 1000000);
-			//flow.add_edge( plugId2 + 102, plugId1 + 102, 1000000);
 		}
 		
 		 
@@ -383,17 +389,17 @@ int main() {
 		int augAmt = 0;
 		while( (augAmt = flow.augment()) > 0 )
 		{   
-			//cout << "Augment " << total << endl;
-			
 			total += augAmt;
+			if (debug) cout << "After flow augment total: " << total << endl;
 		}
 		
-		print(flow);
+		if (debug) print(flow);
 		
-		printf("nPlug %d nDevice %d nAdap %d total %d\n", 
+		if (debug) printf("nPlug %d nDevice %d nAdap %d total %d\n", 
 		    nPlug, 
 		    nDevice, nAdap, total);
 		cout << nDevice - total << endl;
+		if(T) printf("\n");
 		
 	}
     return 0;

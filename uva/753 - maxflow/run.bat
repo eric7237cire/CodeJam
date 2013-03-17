@@ -1,5 +1,7 @@
 make all
-cat cases.txt | project > out.txt
+rem cat cases.txt | project > out.txt
+
 cat out.txt
 rem cat cases.txt | p2
-rem cat input.txt | project
+cat input.txt | p2
+cat input.txt | project
