@@ -3,6 +3,7 @@
 #include <cstring>
 #include <cassert>
 #include <stdlib.h>
+#include <cmath>
 
 using namespace std;
 
@@ -13,26 +14,34 @@ const int MAX_N = 50;
 int V[MAX_N];
 int N;
 
+int FindDiagonal(int n)
+{
+    --n;
+	return (1+sqrt(8*n+1))/2;
+}
+
 int main()
 {
-	int T;
-	scanf("%d", &T);
 	
-	for(int t = 1; t <= T; ++t)
+	while(1 == scanf("%d", &N))
 	{
-		int a, b;
-		scanf("%d%d", &a, &b);
+		int d = FindDiagonal(N);
 		
-		int s = 0;
-		for(int i = a; i <= b; ++i)
-		{
-			if (i % 2 == 0)
-				continue;
-			s += i;
-		}
-			
-		printf("Case %d: %d\n", t, s);
+		int numBefore = d * (d-1) / 2;
+		
+		//odd start d/1  even start  1 / d
+		int pos = N - numBefore -  1;
+		
+		//printf("N= %d Diag %d num before %d pos=%d\n", N, d, numBefore, pos);
 
+		printf("TERM %d IS ", N);
+		
+		
+		
+		if (d % 2 == 0)
+		    printf("%d/%d\n", 1 + pos, d - pos);
+		else
+		    printf("%d/%d\n", d - pos, 1 + pos);
 	}
 	
 	
