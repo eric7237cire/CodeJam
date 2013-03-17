@@ -1,0 +1,204 @@
+reached sink
+Finding maximum flow through augmenting path. Sink=1
+Can push 1.  Next node in aug path 111
+Can push 1.  Next node in aug path 132
+Can push 1.  Next node in aug path 0
+Pushing 1 flow at node 1 edge ids 18 and 19 
+Pushing 1 flow at node 111 edge ids 174 and 175 
+Pushing 1 flow at node 132 edge ids 60 and 61 
+reached sink
+Finding maximum flow through augmenting path. Sink=1
+Can push 1.  Next node in aug path 118
+Can push 1.  Next node in aug path 133
+Can push 1.  Next node in aug path 0
+Pushing 1 flow at node 1 edge ids 32 and 33 
+Pushing 1 flow at node 118 edge ids 178 and 179 
+Pushing 1 flow at node 133 edge ids 62 and 63 
+reached sink
+Finding maximum flow through augmenting path. Sink=1
+Can push 1.  Next node in aug path 119
+Can push 1.  Next node in aug path 135
+Can push 1.  Next node in aug path 0
+Pushing 1 flow at node 1 edge ids 34 and 35 
+Pushing 1 flow at node 119 edge ids 132 and 133 
+Pushing 1 flow at node 135 edge ids 66 and 67 
+reached sink
+Finding maximum flow through augmenting path. Sink=1
+Can push 1.  Next node in aug path 110
+Can push 1.  Next node in aug path 137
+Can push 1.  Next node in aug path 0
+Pushing 1 flow at node 1 edge ids 16 and 17 
+Pushing 1 flow at node 110 edge ids 142 and 143 
+Pushing 1 flow at node 137 edge ids 70 and 71 
+reached sink
+Finding maximum flow through augmenting path. Sink=1
+Can push 1.  Next node in aug path 104
+Can push 1.  Next node in aug path 139
+Can push 1.  Next node in aug path 0
+Pushing 1 flow at node 1 edge ids 4 and 5 
+Pushing 1 flow at node 104 edge ids 126 and 127 
+Pushing 1 flow at node 139 edge ids 74 and 75 
+reached sink
+Finding maximum flow through augmenting path. Sink=1
+Can push 1.  Next node in aug path 123
+Can push 1.  Next node in aug path 144
+Can push 1.  Next node in aug path 0
+Pushing 1 flow at node 1 edge ids 42 and 43 
+Pushing 1 flow at node 123 edge ids 122 and 123 
+Pushing 1 flow at node 144 edge ids 84 and 85 
+reached sink
+Finding maximum flow through augmenting path. Sink=1
+Can push 1.  Next node in aug path 121
+Can push 1.  Next node in aug path 147
+Can push 1.  Next node in aug path 0
+Pushing 1 flow at node 1 edge ids 38 and 39 
+Pushing 1 flow at node 121 edge ids 120 and 121 
+Pushing 1 flow at node 147 edge ids 90 and 91 
+reached sink
+Finding maximum flow through augmenting path. Sink=1
+Can push 1.  Next node in aug path 116
+Can push 1.  Next node in aug path 150
+Can push 1.  Next node in aug path 0
+Pushing 1 flow at node 1 edge ids 28 and 29 
+Pushing 1 flow at node 116 edge ids 150 and 151 
+Pushing 1 flow at node 150 edge ids 96 and 97 
+reached sink
+Finding maximum flow through augmenting path. Sink=1
+Can push 1.  Next node in aug path 124
+Can push 1.  Next node in aug path 151
+Can push 1.  Next node in aug path 0
+Pushing 1 flow at node 1 edge ids 44 and 45 
+Pushing 1 flow at node 124 edge ids 152 and 153 
+Pushing 1 flow at node 151 edge ids 98 and 99 
+reached sink
+Finding maximum flow through augmenting path. Sink=1
+Can push 1.  Next node in aug path 112
+Can push 1.  Next node in aug path 153
+Can push 1.  Next node in aug path 0
+Pushing 1 flow at node 1 edge ids 20 and 21 
+Pushing 1 flow at node 112 edge ids 160 and 161 
+Pushing 1 flow at node 153 edge ids 102 and 103 
+reached sink
+Finding maximum flow through augmenting path. Sink=1
+Can push 1.  Next node in aug path 130
+Can push 1.  Next node in aug path 155
+Can push 1.  Next node in aug path 0
+Pushing 1 flow at node 1 edge ids 56 and 57 
+Pushing 1 flow at node 130 edge ids 134 and 135 
+Pushing 1 flow at node 155 edge ids 106 and 107 
+reached sink
+Finding maximum flow through augmenting path. Sink=1
+Can push 1.  Next node in aug path 117
+Can push 1.  Next node in aug path 157
+Can push 1.  Next node in aug path 0
+Pushing 1 flow at node 1 edge ids 30 and 31 
+Pushing 1 flow at node 117 edge ids 172 and 173 
+Pushing 1 flow at node 157 edge ids 110 and 111 
+reached sink
+Finding maximum flow through augmenting path. Sink=1
+Can push 1.  Next node in aug path 103
+Can push 1.  Next node in aug path 159
+Can push 1.  Next node in aug path 0
+Pushing 1 flow at node 1 edge ids 2 and 3 
+Pushing 1 flow at node 103 edge ids 136 and 137 
+Pushing 1 flow at node 159 edge ids 114 and 115 
+reached sink
+Finding maximum flow through augmenting path. Sink=1
+Can push 1.  Next node in aug path 106
+Can push 1.  Next node in aug path 161
+Can push 1.  Next node in aug path 0
+Pushing 1 flow at node 1 edge ids 8 and 9 
+Pushing 1 flow at node 106 edge ids 130 and 131 
+Pushing 1 flow at node 161 edge ids 118 and 119 
+Id: 0 Source: r0 Dest: SINK 102 --> 1 flow 0 / 1
+Id: 2 Source: r1 Dest: SINK 103 --> 1 flow 1 / 1
+Id: 4 Source: r2 Dest: SINK 104 --> 1 flow 1 / 1
+Id: 6 Source: r3 Dest: SINK 105 --> 1 flow 0 / 1
+Id: 8 Source: r4 Dest: SINK 106 --> 1 flow 1 / 1
+Id: 10 Source: r5 Dest: SINK 107 --> 1 flow 0 / 1
+Id: 12 Source: r6 Dest: SINK 108 --> 1 flow 0 / 1
+Id: 14 Source: r7 Dest: SINK 109 --> 1 flow 0 / 1
+Id: 16 Source: r8 Dest: SINK 110 --> 1 flow 1 / 1
+Id: 18 Source: r9 Dest: SINK 111 --> 1 flow 1 / 1
+Id: 20 Source: r10 Dest: SINK 112 --> 1 flow 1 / 1
+Id: 22 Source: r11 Dest: SINK 113 --> 1 flow 0 / 1
+Id: 24 Source: r12 Dest: SINK 114 --> 1 flow 0 / 1
+Id: 26 Source: r13 Dest: SINK 115 --> 1 flow 0 / 1
+Id: 28 Source: r14 Dest: SINK 116 --> 1 flow 1 / 1
+Id: 30 Source: r15 Dest: SINK 117 --> 1 flow 1 / 1
+Id: 32 Source: r16 Dest: SINK 118 --> 1 flow 1 / 1
+Id: 34 Source: r17 Dest: SINK 119 --> 1 flow 1 / 1
+Id: 36 Source: r18 Dest: SINK 120 --> 1 flow 0 / 1
+Id: 38 Source: r19 Dest: SINK 121 --> 1 flow 1 / 1
+Id: 40 Source: r20 Dest: SINK 122 --> 1 flow 0 / 1
+Id: 42 Source: r21 Dest: SINK 123 --> 1 flow 1 / 1
+Id: 44 Source: r22 Dest: SINK 124 --> 1 flow 1 / 1
+Id: 46 Source: r23 Dest: SINK 125 --> 1 flow 0 / 1
+Id: 48 Source: r24 Dest: SINK 126 --> 1 flow 0 / 1
+Id: 50 Source: r25 Dest: SINK 127 --> 1 flow 0 / 1
+Id: 52 Source: r26 Dest: SINK 128 --> 1 flow 0 / 1
+Id: 54 Source: r27 Dest: SINK 129 --> 1 flow 0 / 1
+Id: 56 Source: r28 Dest: SINK 130 --> 1 flow 1 / 1
+Id: 58 Source: r29 Dest: SINK 131 --> 1 flow 0 / 1
+Id: 60 Source: SOURCE Dest: p0 0 --> 132 flow 1 / 1
+Id: 62 Source: SOURCE Dest: p1 0 --> 133 flow 1 / 1
+Id: 64 Source: SOURCE Dest: p2 0 --> 134 flow 0 / 1
+Id: 66 Source: SOURCE Dest: p3 0 --> 135 flow 1 / 1
+Id: 68 Source: SOURCE Dest: p4 0 --> 136 flow 0 / 1
+Id: 70 Source: SOURCE Dest: p5 0 --> 137 flow 1 / 1
+Id: 72 Source: SOURCE Dest: p6 0 --> 138 flow 0 / 1
+Id: 74 Source: SOURCE Dest: p7 0 --> 139 flow 1 / 1
+Id: 76 Source: SOURCE Dest: p8 0 --> 140 flow 0 / 1
+Id: 78 Source: SOURCE Dest: p9 0 --> 141 flow 0 / 1
+Id: 80 Source: SOURCE Dest: p10 0 --> 142 flow 0 / 1
+Id: 82 Source: SOURCE Dest: p11 0 --> 143 flow 0 / 1
+Id: 84 Source: SOURCE Dest: p12 0 --> 144 flow 1 / 1
+Id: 86 Source: SOURCE Dest: p13 0 --> 145 flow 0 / 1
+Id: 88 Source: SOURCE Dest: p14 0 --> 146 flow 0 / 1
+Id: 90 Source: SOURCE Dest: p15 0 --> 147 flow 1 / 1
+Id: 92 Source: SOURCE Dest: p16 0 --> 148 flow 0 / 1
+Id: 94 Source: SOURCE Dest: p17 0 --> 149 flow 0 / 1
+Id: 96 Source: SOURCE Dest: p18 0 --> 150 flow 1 / 1
+Id: 98 Source: SOURCE Dest: p19 0 --> 151 flow 1 / 1
+Id: 100 Source: SOURCE Dest: p20 0 --> 152 flow 0 / 1
+Id: 102 Source: SOURCE Dest: p21 0 --> 153 flow 1 / 1
+Id: 104 Source: SOURCE Dest: p22 0 --> 154 flow 0 / 1
+Id: 106 Source: SOURCE Dest: p23 0 --> 155 flow 1 / 1
+Id: 108 Source: SOURCE Dest: p24 0 --> 156 flow 0 / 1
+Id: 110 Source: SOURCE Dest: p25 0 --> 157 flow 1 / 1
+Id: 112 Source: SOURCE Dest: p26 0 --> 158 flow 0 / 1
+Id: 114 Source: SOURCE Dest: p27 0 --> 159 flow 1 / 1
+Id: 116 Source: SOURCE Dest: p28 0 --> 160 flow 0 / 1
+Id: 118 Source: SOURCE Dest: p29 0 --> 161 flow 1 / 1
+Id: 120 Source: p15 Dest: r19 147 --> 121 flow 1 / 1000000
+Id: 122 Source: p12 Dest: r21 144 --> 123 flow 1 / 1000000
+Id: 124 Source: p12 Dest: r11 144 --> 113 flow 0 / 1000000
+Id: 126 Source: p7 Dest: r2 139 --> 104 flow 1 / 1000000
+Id: 128 Source: p10 Dest: r16 142 --> 118 flow 0 / 1000000
+Id: 130 Source: p29 Dest: r4 161 --> 106 flow 1 / 1000000
+Id: 132 Source: p3 Dest: r17 135 --> 119 flow 1 / 1000000
+Id: 134 Source: p23 Dest: r28 155 --> 130 flow 1 / 1000000
+Id: 136 Source: p27 Dest: r1 159 --> 103 flow 1 / 1000000
+Id: 138 Source: p18 Dest: r2 150 --> 104 flow 0 / 1000000
+Id: 140 Source: p3 Dest: r29 135 --> 131 flow 0 / 1000000
+Id: 142 Source: p5 Dest: r8 137 --> 110 flow 1 / 1000000
+Id: 144 Source: p14 Dest: r9 146 --> 111 flow 0 / 1000000
+Id: 146 Source: p23 Dest: r0 155 --> 102 flow 0 / 1000000
+Id: 148 Source: p29 Dest: r0 161 --> 102 flow 0 / 1000000
+Id: 150 Source: p18 Dest: r14 150 --> 116 flow 1 / 1000000
+Id: 152 Source: p19 Dest: r22 151 --> 124 flow 1 / 1000000
+Id: 154 Source: p27 Dest: r24 159 --> 126 flow 0 / 1000000
+Id: 156 Source: p3 Dest: r5 135 --> 107 flow 0 / 1000000
+Id: 158 Source: p18 Dest: r5 150 --> 107 flow 0 / 1000000
+Id: 160 Source: p21 Dest: r10 153 --> 112 flow 1 / 1000000
+Id: 162 Source: p10 Dest: r17 142 --> 119 flow 0 / 1000000
+Id: 164 Source: p27 Dest: r25 159 --> 127 flow 0 / 1000000
+Id: 166 Source: p15 Dest: r16 147 --> 118 flow 0 / 1000000
+Id: 168 Source: p27 Dest: r4 159 --> 106 flow 0 / 1000000
+Id: 170 Source: p18 Dest: r22 150 --> 124 flow 0 / 1000000
+Id: 172 Source: p25 Dest: r15 157 --> 117 flow 1 / 1000000
+Id: 174 Source: p0 Dest: r9 132 --> 111 flow 1 / 1000000
+Id: 176 Source: p25 Dest: r23 157 --> 125 flow 0 / 1000000
+Id: 178 Source: p1 Dest: r16 133 --> 118 flow 1 / 1000000
+nPlug 30 nDevice 30 nAdap 30 total 14
+16

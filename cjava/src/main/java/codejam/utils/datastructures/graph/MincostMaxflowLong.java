@@ -20,9 +20,9 @@ public class MincostMaxflowLong {
 
     final protected static Logger log = LoggerFactory.getLogger("main");
 
-    class Edge {
+    public static class Edge {
         public int source, destination;
-        long capacity, residue;
+        public long capacity, residue;
         long cost;
 
         public Edge(int source, int destination, long capacity, long residue,
@@ -38,7 +38,7 @@ public class MincostMaxflowLong {
     }
 
     List<List<Integer>> V;
-    List<Edge> E;
+    public List<Edge> E;
 
     public void reset() {
         V.clear();

@@ -23,6 +23,7 @@
     <None Include="..\telecow.in" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\uva\753 - maxflow\main.cpp" />
     <ClCompile Include="..\telecow.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

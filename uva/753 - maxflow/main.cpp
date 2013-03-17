@@ -44,7 +44,7 @@ typedef pair<uint,uint> uu;
 #define cpresent(c,x) (find(all(c),x) != (c).end()) 
 #define SZ(x) ((int) (x).size())
 
-const bool debug = false;
+const bool debug = true;
 
 const int notConnected = numeric_limits<int>::max();
 
@@ -61,27 +61,29 @@ ostream& operator<<( ostream& os, const vector<T>& vec )
 
 
 //edge from source to destination
+template <typename FlowType>
 struct edge
-{
-    
+{    
     int src;
     int dest;
     
-    ll cap;
-    ll residue;
+    FlowType cap;
+    FlowType residue;
 	
 	bool ignore;
 	
 	//flow = capacity - residue
     
-    edge(int _src, int _dest, ll pcap, ll pres) : src(_src), dest(_dest), cap(pcap), residue(pres),
+    edge(int _src, int _dest, FlowType _cap, FlowType _res) :
+	src(_src), dest(_dest), cap(_cap), residue(_res),
 	ignore(false)
 	{
-	
+		assert(residue >= 0 && residue <= cap);
 	}
 };
 
-ostream& operator<<(ostream& os, const edge& e)
+template<typename FlowType>
+ostream& operator<<(ostream& os, const edge<FlowType>& e)
 {
     os <<  e.src << " --> " << e.dest
 		<< " flow " << e.cap - e.residue << " / " << e.cap ;
@@ -89,13 +91,14 @@ ostream& operator<<(ostream& os, const edge& e)
     return os;
 }
 
+template<typename FlowType>
 class Flow
 {
 	public:
 	
 	//V [ node idx ] = list of edge idxs originating from node
 	vvi V;
-	vector<edge> E;
+	vector<edge<FlowType> > E;
 	
 	int source;
 	int sink;
@@ -128,7 +131,7 @@ class Flow
 		}
 	}
 	
-	void add_edge(int src, int dest, int cap)
+	void add_edge(int src, int dest, FlowType cap)
 	{
 		int e = E.size();
 		
@@ -138,16 +141,16 @@ class Flow
 		V[src].pb(e);
 		V[dest].pb(e+1);
 		
-		E.push_back(edge(src, dest, cap, cap));
-		E.push_back(edge(src, dest, cap, 0));
+		E.push_back(edge<FlowType>(src, dest, cap, cap));
+		E.push_back(edge<FlowType>(src, dest, cap, 0));
 	}
 	
 	/*
 		prev[ vertex id ] =  the edge id of the edge used to go to previous node
 	*/
-	ll findAugPathMaxFlow(const vi& prev)
+	FlowType findAugPathMaxFlow(const vi& prev)
 	{
-		ll canPush = numeric_limits<ll>::max();
+		FlowType canPush = numeric_limits<FlowType>::max();
 		
 		int nodeIdx = sink;
 		
@@ -163,13 +166,13 @@ class Flow
 			nodeIdx = E[ prev[nodeIdx] ].src;		
 			
 			if (debug)
-				printf("Can push %lld.  Next node in aug path %d\n", canPush, nodeIdx);
+				printf("Can push %d.  Next node in aug path %d\n", canPush, nodeIdx);
 		}
 	
 		return canPush;
 	}
 	
-	void updateViaAugPath(const vi& prev, ll flowAdded)
+	void updateViaAugPath(const vi& prev, FlowType flowAdded)
 	{
 		int nodeIdx  = sink;
 		
@@ -178,12 +181,14 @@ class Flow
 			assert(prev[nodeIdx] >= 0);
 			
 			E[ prev[nodeIdx] ].residue -= flowAdded;
+			assert(E[ prev[nodeIdx] ].residue >= 0);
 
 			//Because we added the edges in pairs xor will either add one or subtract one
             E[ prev[nodeIdx] ^ 1].residue += flowAdded;
+			assert( E[ prev[nodeIdx] ^ 1 ].residue <= E[ prev[nodeIdx] ^ 1 ].cap);
             
 			if (debug)
-				printf("Pushing %lld flow at node %d edge ids %d and %d \n", 
+				printf("Pushing %d flow at node %d edge ids %d and %d \n", 
 				flowAdded, nodeIdx, prev[nodeIdx], prev[nodeIdx] ^ 1);
 			
 			nodeIdx = E[ prev[nodeIdx] ].src;
@@ -191,7 +196,7 @@ class Flow
 		
 	}
 	
-	ll augment()
+	FlowType augment()
 	{
 		const int nNodes = V.size();
 		vi prev(nNodes, -1);
@@ -208,25 +213,17 @@ class Flow
 			int nodeIdx = q.front();
 			q.pop();
 			
-			if (debug) printf("Popped node %d\n", nodeIdx);
+			assert(seen[nodeIdx]);
+							
+			//if (debug) printf("Popped node %d\n", nodeIdx);
 			//Sink?
-			if (nodeIdx == sink)
-			{
-				if (debug) printf("reached sink\n");
-				
-				ll canPush = findAugPathMaxFlow(prev);
-				assert(canPush > 0);
-				
-				updateViaAugPath( prev, canPush );
-				
-				return canPush;
-			}
+			
 
 		   // printf("Looking at node %d.  Edges count %d\n", c, edges[c].size());
 			for (int i = 0; i < V[nodeIdx].size(); i++)
 			{
 				const int edgeIdx = V[nodeIdx][i];
-				const edge& anEdge = E[ edgeIdx ];
+				const edge<FlowType>& anEdge = E[ edgeIdx ];
 				
 				if (anEdge.residue == 0)
 					continue;
@@ -244,6 +241,18 @@ class Flow
 				}
 			}
 			//printf("Done\n");
+		}
+		
+		if (seen[sink])
+		{
+			if (debug) printf("reached sink\n");
+			
+			FlowType canPush = findAugPathMaxFlow(prev);
+			assert(canPush > 0);
+			
+			updateViaAugPath( prev, canPush );
+			
+			return canPush;
 		}
 		
 		//printf("Return 0\n");
@@ -267,7 +276,8 @@ string getNameForId(int id)
     
 }
 
-void print(const Flow& flow)
+template< typename FlowType >
+void print(const Flow<FlowType>& flow)
 {
     FOR(i, 0, flow.E.size()) 
     {
@@ -310,7 +320,7 @@ int main() {
 		
 		const int source = 0;
 		const int sink = 1;
-		Flow flow(source, sink);
+		Flow<int> flow(source, sink);
 		
 		map<string, int> plugIdMap;
 		map<string, int> deviceIdMap;
@@ -322,7 +332,7 @@ int main() {
 		{
 			cin >> name;
 			int id = getId(plugIdMap, name);
-			assert(id == i);
+			//assert(id == i);
 			
 			plugName[id] = name; 
 		    
@@ -335,7 +345,7 @@ int main() {
 		{
 			cin >> name;
 			int id = getId(deviceIdMap, name);
-			assert(id == i);
+			//assert(id == i);
 			
 			deviceName[id] = name;
 			
@@ -346,8 +356,9 @@ int main() {
 			//cout << name << " id " << plugId << endl;
 			//assert( 0 <= plugId && plugId < nPlug);
 			
-			flow.add_edge( id + 2, plugId + 102, 1 );
-			flow.add_edge( source, id+2, 1);
+			//flow.add_edge( id + 2, plugId + 102, 1 );
+			//flow.add_edge( source, id+2, 1);
+			flow.add_edge( source, plugId+102, 1);
 		}
 		
 		cin >> nAdap;
@@ -360,7 +371,7 @@ int main() {
 			int plugId2 = getId(plugIdMap, name);
 			
 			flow.add_edge( plugId1 + 102, plugId2 + 102, 1000000);
-			flow.add_edge( plugId2 + 102, plugId1 + 102, 1000000);
+			//flow.add_edge( plugId2 + 102, plugId1 + 102, 1000000);
 		}
 		
 		 
@@ -377,7 +388,7 @@ int main() {
 			total += augAmt;
 		}
 		
-		//print(flow);
+		print(flow);
 		
 		printf("nPlug %d nDevice %d nAdap %d total %d\n", 
 		    nPlug, 
