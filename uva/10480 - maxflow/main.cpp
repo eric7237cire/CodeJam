@@ -198,6 +198,100 @@ class Flow
 		
 	}
 	
+	vector<ii>  getMinCut()
+	{
+		const int nNodes = V.size();
+		vi prev(nNodes, -1);
+		vector<bool> seen(nNodes, false);
+
+		prev[source] = -2;
+		
+		/*
+		From the source vertex, do a depth-first search along edges that still 
+		have residual capacity (i.e., non-saturated edges). 
+		The cut consists of all edges that were "seen" (i.e., are incident on a visited vertex),
+		but were not traversed since they are saturated. As you noted, there might
+		be other saturated edges that are not part of the minimum cut.
+		*/
+		set<int> visited;
+		
+		queue<int> q;
+		
+		q.push(source);
+		seen[source] = true;
+		while (!q.empty())
+		{
+			int nodeIdx = q.front();
+			q.pop();
+			
+			assert(seen[nodeIdx]);
+			
+			visited.insert(nodeIdx);
+							
+			if (debug) printf("Popped node %d\n", nodeIdx);
+			//Sink?
+			
+
+		    if (debug) printf("Looking at node %d.  Edges count %d\n", nodeIdx, V[nodeIdx].size());
+			for (int i = 0; i < V[nodeIdx].size(); i++)
+			{
+				const int edgeIdx = V[nodeIdx][i];
+				const edge<FlowType>& anEdge = E[ edgeIdx ];
+				
+				int trgNodeIdx = anEdge.dest;
+				
+				if (debug) printf("edges id %d target %d flow %d capacity %d seen: %s\n", edgeIdx, trgNodeIdx, 
+					anEdge.cap - anEdge.residue, anEdge.cap, seen[trgNodeIdx] ? "yes" : "no");
+					
+				if (anEdge.residue == 0)
+					continue;
+				
+				if ( !seen[trgNodeIdx])
+				{
+					prev[trgNodeIdx] = edgeIdx;
+					seen[trgNodeIdx] = true;
+					q.push(trgNodeIdx);
+				}
+			}			
+		}
+		
+		//if it is max flow, there should be no augmenting path to the sink;
+		assert(!seen[sink]);
+		
+		vector<ii> ret;
+		
+		//Loop through visited verticies, looking for edges to non visited verticies
+		for(set<int>::iterator it = visited.begin(); it != visited.end(); ++it)
+		{
+			int nodeIdx = *it;
+			
+			for (int i = 0; i < V[nodeIdx].size(); i++)
+			{
+				const int edgeIdx = V[nodeIdx][i];
+				
+				//Only consider originally added edges
+				if (edgeIdx % 2 == 1)
+					continue;
+				
+				const edge<FlowType>& anEdge = E[ edgeIdx ];
+				
+				int trgNodeIdx = anEdge.dest;
+				
+				if (contains(visited, trgNodeIdx))
+					continue;
+				
+				//If there was residue it should have been traversed
+				assert (anEdge.residue == 0);
+									
+				ret.pb( mp(nodeIdx, trgNodeIdx) );
+			}			
+		
+		}
+		
+		return ret;
+		
+	}
+	
 	FlowType augment()
 	{
 		const int nNodes = V.size();
@@ -268,35 +362,6 @@ class Flow
 };
 
 
-string plugName[200];
-string deviceName[100];
-
-string getNameForId(int id)
-{
-    if (id == 0)
-        return "SOURCE";
-    if (id == 1)
-        return "SINK";
-    if (id < 102)
-        return deviceName[id-2];
-    return plugName[id-102];
-    
-}
-
-template< typename FlowType >
-void print(const Flow<FlowType>& flow)
-{
-    FOR(i, 0, flow.E.size()) 
-    {
-        if (i % 2 == 1)
-            continue;
-        cout << "Id: " << i << " Source: " << getNameForId(flow.E[i].src);
-        cout <<  " Dest: " << getNameForId(flow.E[i].dest);
-        cout << " " << flow.E[i] << endl;     
-    }
-}
-
-
 typedef map<string, int> msi;
 
 int getId(map<string, int>& m, const string& name)
@@ -317,71 +382,26 @@ int getId(map<string, int>& m, const string& name)
 int main() {
     
     
-	int T;
+	int nNodes;
+	const int source = 1;
+	const int sink = 2;
+	int nEdges;
 	
-	cin >> T;
-    
-	while(T--)
+	int T = 0;
+	
+	while(2 == scanf("%d%d", &nNodes, &nEdges) && (nNodes|nEdges) )
 	{
 		
-		
-		const int source = 0;
-		const int sink = 1;
 		Flow<int> flow(source, sink);
 		
-		map<string, int> plugIdMap;
-		map<string, int> deviceIdMap;
-		int nPlug, nDevice, nAdap;
-		
-		cin >> nPlug ; 
-		string name;
-		FOR(i, 0, nPlug)
+		FOR(i, 0, nEdges)
 		{
-			cin >> name;
-			int id = getId(plugIdMap, name);
-			//assert(id == i);
+			int n1, n2, cap;
+			scanf("%d%d%d", &n1, &n2, &cap);
 			
-			plugName[id] = name; 
-		    
-			flow.add_edge( id + 102, sink, 1 );
+			flow.add_edge( n1, n2, cap );
+			flow.add_edge( n2, n1, cap );
 		}
-		
-		cin >> nDevice;
-		
-		FOR(i, 0, nDevice)
-		{
-			cin >> name;
-			int id = getId(deviceIdMap, name);
-			//assert(id == i);
-			
-			deviceName[id] = name;
-			
-			cin >> name;
-			int plugId = getId(plugIdMap, name) ;
-			
-			plugName[plugId] = name; 
-			//cout << name << " id " << plugId << endl;
-			//assert( 0 <= plugId && plugId < nPlug);
-			
-			//flow.add_edge( id + 2, plugId + 102, 1 );
-			//flow.add_edge( source, id+2, 1);
-			flow.add_edge( source, plugId+102, 1);
-		}
-		
-		cin >> nAdap;
-		
-		FOR(i, 0, nAdap)
-		{
-			cin >> name;
-			int plugId1 = getId(plugIdMap, name);
-			cin >> name;
-			int plugId2 = getId(plugIdMap, name);
-			
-			flow.add_edge( plugId1 + 102, plugId2 + 102, 1000000);
-		}
-		
-		 
-		//printEdges(edges, N);
 		 
 		int total = 0;
 		
@@ -393,14 +413,15 @@ int main() {
 			if (debug) cout << "After flow augment total: " << total << endl;
 		}
 		
-		if (debug) print(flow);
+		vector<ii> minCut = flow.getMinCut();
 		
-		if (debug) printf("nPlug %d nDevice %d nAdap %d total %d\n", 
-		    nPlug, 
-		    nDevice, nAdap, total);
-		cout << nDevice - total << endl;
-		if(T) printf("\n");
+		//printf("Flow %d\n", total);
 		
+		FOR(i, 0, minCut.size())
+		{
+			printf("%d %d\n", minCut[i].first, minCut[i].second);
+		}
+		puts("");
 	}
     return 0;
 }
