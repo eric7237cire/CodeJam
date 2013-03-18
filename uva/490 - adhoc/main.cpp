@@ -1,40 +1,28 @@
+#include<iostream>
+#include<vector>
+#include<string>
 #include "stdio.h"
-#include <algorithm>
-#include <cstring>
-#include <cassert>
-#include <stdlib.h>
-
 using namespace std;
 
-#define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
-#define pb push_back
- 
-const int MAX_N = 50;
-int V[MAX_N];
-int N;
+int main(){
+    
+    string s;
+    vector<string> v;    
+    int n=-1;
+    
+    while(getline(cin,s)){
+        v.push_back(s);
+        n=max(n,(int)s.size());
+    }
+    
+    vector<string> u(n,"");
+    
+    for(int i=v.size()-1;i>=0;i--){
+        for(int j=0;j<v[i].size();j++) u[j]+=v[i][j];
+        for(int j=v[i].size();j<n;j++) u[j]+=" ";
+    }
+    
+    for(int i=0;i<n;i++) cout<<u[i]<<endl;
 
-int main()
-{
-	int T;
-	scanf("%d", &T);
-	
-	for(int t = 1; t <= T; ++t)
-	{
-		int a, b;
-		scanf("%d%d", &a, &b);
-		
-		int s = 0;
-		for(int i = a; i <= b; ++i)
-		{
-			if (i % 2 == 0)
-				continue;
-			s += i;
-		}
-			
-		printf("Case %d: %d\n", t, s);
-
-	}
-	
-	
-	return 0;
+    return 0;
 }
