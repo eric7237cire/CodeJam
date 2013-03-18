@@ -18,7 +18,7 @@ int x,y,d;
 
 int main()
 {
-		
+	int T = 1;
 	while ( 1==scanf("%d",&x) && x != -1)
 	{
 		scanf("%d%d",&y,&d);
@@ -33,6 +33,9 @@ int main()
 			//printf("Read %d %d %c\n", a, b, c);
 			pos[a - (x-1)][b - (y-1)] = c;
 		}
+		
+		if (debug)
+			printf("Line %d x %d y %d d %d\n", T++, x, y, d);
 		
 		if (debug)
 		for(int y = 2; y >= 0; --y)
@@ -50,15 +53,9 @@ int main()
 		
 		for (int i = 0; i < 8; i++) 
 		{
-			int newD = isCCW ? (d + i ) % 8 : (8 + d - i) % 8;
-			int adjD = (8+newD - 1) % 8;
-			if (debug) printf("Trying dir %d is land ? %c is adj %d water ? %c \n",
-				newD, pos[ 1 + dir[newD][0] ][ 1 + dir[newD][1] ],
-				adjD, pos[ 1 + dir[adjD][0] ][ 1 + dir[adjD][1] ] );
-			//cout << pos[ 1 + dir[newD][0] ][ 1 + dir[newD][1] ];
-				
-			if ( pos[ 1 + dir[adjD][0] ][ 1 + dir[adjD][1] ] == '0' &&
-			pos[ 1 + dir[newD][0] ][ 1 + dir[newD][1] ] == '1'
+			int newD = (d + i + 5) % 8 ;
+			
+			if ( pos[ 1 + dir[newD][0] ][ 1 + dir[newD][1] ] == '1'
 			) 
 			{
 				printf("%d\n",  newD);
