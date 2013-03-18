@@ -198,6 +198,100 @@ class Flow
 		
 	}
 	
+	vector<ii>  getMinCut()
+	{
+		const int nNodes = V.size();
+		vi prev(nNodes, -1);
+		vector<bool> seen(nNodes, false);
+
+		prev[source] = -2;
+		
+		/*
+		From the source vertex, do a depth-first search along edges that still 
+		have residual capacity (i.e., non-saturated edges). 
+		The cut consists of all edges that were "seen" (i.e., are incident on a visited vertex),
+		but were not traversed since they are saturated. As you noted, there might
+		be other saturated edges that are not part of the minimum cut.
+		*/
+		set<int> visited;
+		
+		queue<int> q;
+		
+		q.push(source);
+		seen[source] = true;
+		while (!q.empty())
+		{
+			int nodeIdx = q.front();
+			q.pop();
+			
+			assert(seen[nodeIdx]);
+			
+			visited.insert(nodeIdx);
+							
+			if (debug) printf("Popped node %d\n", nodeIdx);
+			//Sink?
+			
+
+		    if (debug) printf("Looking at node %d.  Edges count %d\n", nodeIdx, V[nodeIdx].size());
+			for (int i = 0; i < V[nodeIdx].size(); i++)
+			{
+				const int edgeIdx = V[nodeIdx][i];
+				const edge<FlowType>& anEdge = E[ edgeIdx ];
+				
+				int trgNodeIdx = anEdge.dest;
+				
+				if (debug) printf("edges id %d target %d flow %d capacity %d seen: %s\n", edgeIdx, trgNodeIdx, 
+					anEdge.cap - anEdge.residue, anEdge.cap, seen[trgNodeIdx] ? "yes" : "no");
+					
+				if (anEdge.residue == 0)
+					continue;
+				
+				if ( !seen[trgNodeIdx])
+				{
+					prev[trgNodeIdx] = edgeIdx;
+					seen[trgNodeIdx] = true;
+					q.push(trgNodeIdx);
+				}
+			}			
+		}
+		
+		//if it is max flow, there should be no augmenting path to the sink;
+		assert(!seen[sink]);
+		
+		vector<ii> ret;
+		
+		//Loop through visited verticies, looking for edges to non visited verticies
+		for(set<int>::iterator it = visited.begin(); it != visited.end(); ++it)
+		{
+			int nodeIdx = *it;
+			
+			for (int i = 0; i < V[nodeIdx].size(); i++)
+			{
+				const int edgeIdx = V[nodeIdx][i];
+				
+				//Only consider originally added edges
+				if (edgeIdx % 2 == 1)
+					continue;
+				
+				const edge<FlowType>& anEdge = E[ edgeIdx ];
+				
+				int trgNodeIdx = anEdge.dest;
+				
+				if (contains(visited, trgNodeIdx))
+					continue;
+				
+				//If there was residue it should have been traversed
+				assert (anEdge.residue == 0);
+									
+				ret.pb( mp(nodeIdx, trgNodeIdx) );
+			}			
+		
+		}
+		
+		return ret;
+		
+	}
+	
 	FlowType augment()
 	{
 		const int nNodes = V.size();
@@ -268,38 +362,10 @@ class Flow
 };
 
 
-string plugName[200];
-string deviceName[100];
-
-string getNameForId(int id)
-{
-    if (id == 0)
-        return "SOURCE";
-    if (id == 1)
-        return "SINK";
-    if (id < 102)
-        return deviceName[id-2];
-    return plugName[id-102];
-    
-}
-
-template< typename FlowType >
-void print(const Flow<FlowType>& flow)
-{
-    FOR(i, 0, flow.E.size()) 
-    {
-        if (i % 2 == 1)
-            continue;
-        cout << "Id: " << i << " Source: " << getNameForId(flow.E[i].src);
-        cout <<  " Dest: " << getNameForId(flow.E[i].dest);
-        cout << " " << flow.E[i] << endl;     
-    }
-}
-
-
 typedef map<string, int> msi;
 
-int getId(map<string, int>& m, const string& name)
+
+int getId(map<string, int>& m, const string& name, int nextId)
 {
 	msi::iterator lowerBound = m.lower_bound(name);
 
@@ -309,83 +375,82 @@ int getId(map<string, int>& m, const string& name)
 	}
 	else
 	{
-	   m.insert(lowerBound, std::make_pair(name, m.size()));
-	   return m.size() - 1;
+	   m.insert(lowerBound, std::make_pair(name, nextId));
+	   return nextId;
 	}	
 }
 
 int main() {
     
     
-	int T;
+	int nNodes;
+	const int source = 0;
+	const int sink = 1;
+	int nEdges;
 	
+	int T = 0;
 	cin >> T;
-    
-	while(T--)
+	
+	string line;
+	getline(cin, line);
+	getline(cin, line);
+	
+	while( T--)
 	{
+		map<string, int> personIdMap;
+		map<string, int> partyIdMap;
 		
+		map<int, string> personNames;
+		map<int, string> clubNames;
 		
-		const int source = 0;
-		const int sink = 1;
+		map<string, int> clubIdMap;
+		
 		Flow<int> flow(source, sink);
 		
-		map<string, int> plugIdMap;
-		map<string, int> deviceIdMap;
-		int nPlug, nDevice, nAdap;
-		
-		cin >> nPlug ; 
-		string name;
-		FOR(i, 0, nPlug)
+		while(getline(cin, line) && line != "")
 		{
-			cin >> name;
-			int id = getId(plugIdMap, name);
-			//assert(id == i);
+			istringstream ss(line);
+			string clubName;
+			string personName;
+			string partyName;
+			ss >> personName >> partyName;
+			int idPerson = getId(personIdMap, personName, 
+				2 + personIdMap.size() + partyMap.size() + clubIdMap.size());
+				
+			int idParty = getId(partyIdMap, partyName, 
+				2 + personIdMap.size() + partyMap.size() + clubIdMap.size());
+				
+			personNames[idPerson] = personName;
 			
-			plugName[id] = name; 
-		    
-			flow.add_edge( id + 102, sink, 1 );
+			//Impose the maximum of each party 
+			flow.addEdge(idParty, idPerson, 1);
+			
+			while( ss >> clubName)
+			{
+				int idClub = getId(clubIdMap, clubName, 
+				2 + personIdMap.size() + partyMap.size() + clubIdMap.size());
+				
+				clubNames[idClub] = clubName;
+			}
 		}
 		
-		cin >> nDevice;
+		//must be less than half 
+		int maxPartyMembers = (partyIdMap.size()-1) / 2;
 		
-		FOR(i, 0, nDevice)
+		for(msi::iterator it = partyIdMap.begin(); it != partyIdMap.end(); ++it)
 		{
-			cin >> name;
-			int id = getId(deviceIdMap, name);
-			//assert(id == i);
-			
-			deviceName[id] = name;
-			
-			cin >> name;
-			int plugId = getId(plugIdMap, name) ;
-			
-			plugName[plugId] = name; 
-			//cout << name << " id " << plugId << endl;
-			//assert( 0 <= plugId && plugId < nPlug);
-			
-			//flow.add_edge( id + 2, plugId + 102, 1 );
-			//flow.add_edge( source, id+2, 1);
-			flow.add_edge( source, plugId+102, 1);
+			flow.addEdge( source, it->second, maxPartyMembers);
 		}
 		
-		cin >> nAdap;
-		
-		FOR(i, 0, nAdap)
+		for(msi::iterator it = clubIdMap.begin(); it != clubIdMap.end(); ++it)
 		{
-			cin >> name;
-			int plugId1 = getId(plugIdMap, name);
-			cin >> name;
-			int plugId2 = getId(plugIdMap, name);
-			
-			flow.add_edge( plugId1 + 102, plugId2 + 102, 1000000);
+			//A successful assignement
+			flow.addEdge( id->second, sink, 1);
 		}
 		
-		 
-		//printEdges(edges, N);
-		 
+		
 		int total = 0;
-		
-		
+				
 		int augAmt = 0;
 		while( (augAmt = flow.augment()) > 0 )
 		{   
@@ -393,14 +458,44 @@ int main() {
 			if (debug) cout << "After flow augment total: " << total << endl;
 		}
 		
-		if (debug) print(flow);
+		//Must have 1 assignement per club
+		if (total < clubIdMap.size())
+			puts("Impossible.");
 		
-		if (debug) printf("nPlug %d nDevice %d nAdap %d total %d\n", 
-		    nPlug, 
-		    nDevice, nAdap, total);
-		cout << nDevice - total << endl;
-		if(T) printf("\n");
+		//vector<ii> minCut = flow.getMinCut();
 		
+		//printf("Flow %d\n", total);
+		
+		for(msi::iterator it = personNames.begin(); it != personNames.end(); ++it)
+		{
+			int nodeIdx = it->first;
+			
+			for (int i = 0; i < V[nodeIdx].size(); i++)
+			{
+				const int edgeIdx = V[nodeIdx][i];
+				
+				//Only consider originally added edges
+				if (edgeIdx % 2 == 1)
+					continue;
+				
+				const edge<FlowType>& anEdge = E[ edgeIdx ];
+				
+				int trgNodeIdx = anEdge.dest;
+				
+				map<int, string>::iterator clubIt = clubNames.find(trgNodeIdx);
+				
+				if (clubIt == clubNames.end())
+					continue;
+					
+				if (anEdge.residue > 0)
+					continue;
+				
+				cout << it->second << " " << clubIt->second << endl;
+			}			
+			
+			printf("%d %d\n", minCut[i].first, minCut[i].second);
+		}
+		puts("");
 	}
     return 0;
 }
