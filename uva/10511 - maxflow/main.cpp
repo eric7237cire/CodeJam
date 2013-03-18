@@ -131,7 +131,7 @@ class Flow
 		}
 	}
 	
-	void add_edge(int src, int dest, FlowType cap)
+	void addEdge(int src, int dest, FlowType cap)
 	{
 		int e = E.size();
 		
@@ -397,10 +397,13 @@ int main() {
 	
 	while( T--)
 	{
+		//eat blank line before input
+		
+		
 		map<string, int> personIdMap;
 		map<string, int> partyIdMap;
 		
-		map<int, string> personNames;
+		//map<int, string> personNames;
 		map<int, string> clubNames;
 		
 		map<string, int> clubIdMap;
@@ -409,43 +412,48 @@ int main() {
 		
 		while(getline(cin, line) && line != "")
 		{
+			//cout << "Read line " << line << endl;
 			istringstream ss(line);
 			string clubName;
 			string personName;
 			string partyName;
 			ss >> personName >> partyName;
 			int idPerson = getId(personIdMap, personName, 
-				2 + personIdMap.size() + partyMap.size() + clubIdMap.size());
+				2 + personIdMap.size() + partyIdMap.size() + clubIdMap.size());
 				
 			int idParty = getId(partyIdMap, partyName, 
-				2 + personIdMap.size() + partyMap.size() + clubIdMap.size());
+				2 + personIdMap.size() + partyIdMap.size() + clubIdMap.size());
 				
-			personNames[idPerson] = personName;
+			//personNames[idPerson] = personName;
 			
 			//Impose the maximum of each party 
+			//printf("Add edge party %d to person %d\n", idParty, idPerson);
 			flow.addEdge(idParty, idPerson, 1);
 			
 			while( ss >> clubName)
 			{
 				int idClub = getId(clubIdMap, clubName, 
-				2 + personIdMap.size() + partyMap.size() + clubIdMap.size());
+				2 + personIdMap.size() + partyIdMap.size() + clubIdMap.size());
 				
 				clubNames[idClub] = clubName;
+				
+				flow.addEdge(idPerson, idClub, 1);
 			}
 		}
 		
 		//must be less than half 
-		int maxPartyMembers = (partyIdMap.size()-1) / 2;
+		int maxPartyMembers = (clubIdMap.size()-1) / 2;
 		
 		for(msi::iterator it = partyIdMap.begin(); it != partyIdMap.end(); ++it)
 		{
+			//printf("Add party edge source %d to %d cap %d\n", source, it->second, maxPartyMembers);
 			flow.addEdge( source, it->second, maxPartyMembers);
 		}
 		
 		for(msi::iterator it = clubIdMap.begin(); it != clubIdMap.end(); ++it)
 		{
 			//A successful assignement
-			flow.addEdge( id->second, sink, 1);
+			flow.addEdge( it->second, sink, 1);
 		}
 		
 		
@@ -460,25 +468,39 @@ int main() {
 		
 		//Must have 1 assignement per club
 		if (total < clubIdMap.size())
+		{
 			puts("Impossible.");
+			if (T)
+				puts("");
+			continue;
+		}
 		
 		//vector<ii> minCut = flow.getMinCut();
 		
-		//printf("Flow %d\n", total);
+		//printf("Flow %d # clubs %d \n", total, clubIdMap.size());
 		
-		for(msi::iterator it = personNames.begin(); it != personNames.end(); ++it)
+		for(msi::iterator it = personIdMap.begin(); it != personIdMap.end(); ++it)
 		{
-			int nodeIdx = it->first;
+			int nodeIdx = it->second;
 			
-			for (int i = 0; i < V[nodeIdx].size(); i++)
+			//cout << "id " << nodeIdx << endl;
+			
+			for (int i = 0; i < flow.V[nodeIdx].size(); i++)
 			{
-				const int edgeIdx = V[nodeIdx][i];
+				
+				//printf("i: %d V size: %d\n", i, flow.V[nodeIdx].size());
+				
+				
+				const int edgeIdx = flow.V[nodeIdx][i];
+				//printf("1 edge idx %d\n", edgeIdx);
 				
 				//Only consider originally added edges
 				if (edgeIdx % 2 == 1)
 					continue;
 				
-				const edge<FlowType>& anEdge = E[ edgeIdx ];
+				//printf("2 edge idx %d\n", edgeIdx);
+				
+				const edge<int>& anEdge = flow.E[ edgeIdx ];
 				
 				int trgNodeIdx = anEdge.dest;
 				
@@ -490,12 +512,13 @@ int main() {
 				if (anEdge.residue > 0)
 					continue;
 				
-				cout << it->second << " " << clubIt->second << endl;
-			}			
+				cout << it->first << " " << clubIt->second << endl;
+			}
 			
-			printf("%d %d\n", minCut[i].first, minCut[i].second);
+						
 		}
-		puts("");
+		if (T)
+				puts("");
 	}
     return 0;
 }

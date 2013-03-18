@@ -1,11 +1,21 @@
-2
+3
  
 fred dinosaur jets jetsons
 john rhinocerous jets rockets
 mary rhinocerous jetsons rockets
 ruth platypus rockets
- 
+
 fred dinosaur jets jetsons
 john rhinocerous jets rockets
 mary rhinocerous jetsons rockets
 ruth platypus rockets
+
+person1 party1 club1
+person2 party1 club4
+person3 party1 club5
+person4 party2 club2
+person5 party2 club2
+person6 party2 club2
+person7 party3 club3
+person8 party3 club3 club5
+person9 party1 club5
