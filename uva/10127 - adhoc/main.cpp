@@ -1,38 +1,24 @@
 #include "stdio.h"
-#include <algorithm>
-#include <cstring>
-#include <cassert>
-#include <stdlib.h>
 
-using namespace std;
-
-#define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
-#define pb push_back
- 
-const int MAX_N = 50;
-int V[MAX_N];
 int N;
 
 int main()
 {
-	int T;
-	scanf("%d", &T);
-	
-	for(int t = 1; t <= T; ++t)
+	while(1 == scanf("%d", &N))
 	{
-		int a, b;
-		scanf("%d%d", &a, &b);
+		int div = 1;
+		int digits = 1;
 		
-		int s = 0;
-		for(int i = a; i <= b; ++i)
+		while( div % N != 0 )
 		{
-			if (i % 2 == 0)
-				continue;
-			s += i;
+			div *= 10;
+			++div;
+			div %= N;
+			++digits;
+			//printf("Div %llu N %d\n", div, N);			
 		}
-			
-		printf("Case %d: %d\n", t, s);
 
+		printf("%d\n", digits);
 	}
 	
 	

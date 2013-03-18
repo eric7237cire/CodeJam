@@ -1,0 +1,72 @@
+
+C:\codejam\CodeJam\uva\824 - graph traversal>make all 
+Scanning dependencies of target project
+[100%] Building CXX object CMakeFiles/project.dir/main.cpp.obj
+Linking CXX executable project.exe
+[100%] Built target project
+
+C:\codejam\CodeJam\uva\824 - graph traversal>cat input.txt   | project
+6
+6
+6
+6
+6
+7
+7
+0
+2
+2
+2
+1
+0
+7
+0
+7
+7
+0
+2
+2
+2
+2
+4
+4
+3
+2
+1
+0
+1
+2
+3
+3
+3
+3
+1
+5
+5
+3
+3
+6
+2
+6
+6
+6
+6
+5
+3
+3
+3
+6
+6
+6
+6
+0
+0
+0
+0
+7
+1
+4
+4
+5
+4
+6
