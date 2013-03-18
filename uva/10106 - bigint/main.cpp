@@ -918,24 +918,18 @@ const BigInt & BigInt::operator %=(const BigInt & rhs)
     return *this;
 }
 
-const int MAX_N = 5000;
-BigInt fib[MAX_N+1] ;
-
-int N;
-
+string s;
+string s2;
 
 int main()
 {
-	fib[0] = 0;
-	fib[1] = 1;
-	for(int i = 2; i <= MAX_N; ++i)
-		fib[i] = fib[i-1] + fib[i-2];
+	
 		
-	while(1 == scanf("%d", &N))
+	while( getline(cin, s) && getline(cin, s2))
 	{
-		printf("The Fibonacci number for %d is ", N);
-		cout << fib[N] << endl;
-		
+		BigInt x(s);
+		BigInt y(s2);
+		cout << x*y << endl;		
 	}
 	
 	return 0;
