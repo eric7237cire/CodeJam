@@ -58,15 +58,26 @@ int main()
 	
 	while( 1 == scanf("%d", &N) && N )
 	{
+		int sum = 0;
 		for(int i = 0; i < p.size(); ++i)
 		{
-			int other = N - p[i];
-			if (isPrime[other])
-			{
-				printf("%d = %d + %d\n", N, p[i], other);
+			int larger = N - p[i];
+			
+			//printf("N %d p %d ", N, p[i]);
+			
+			if (larger < p[i])
 				break;
+				
+			
+			if (isPrime[larger])
+			{
+				//printf("%d = %d + %d\n", N, p[i], larger);
+				++sum;
+				
 			}
 		}
+		
+		printf("%d\n", sum);
 		
 	}
 	
