@@ -918,18 +918,36 @@ const BigInt & BigInt::operator %=(const BigInt & rhs)
     return *this;
 }
 
+
+BigInt expo(int a, int b){
+  BigInt result(1);
+  BigInt base(a);
+  
+  while (b){
+    if (b%2==1){
+      result *= base;
+    }
+    b /= 2;
+    base *= base;
+  }
+
+  return result;
+}
+
 string s;
 string s2;
+
+int base, exp1, exp2;
 
 int main()
 {
 	
-		
-	while( getline(cin, s) && getline(cin, s2))
+	while( 3 == scanf("%d%d%d", &base, &exp1, &exp2) )
 	{
-		BigInt x(s);
-		BigInt y(s2);
-		cout << x*y << endl;		
+		BigInt n1 = expo(base, exp1);
+		BigInt n2 = expo(base, exp2);
+		BigInt modulus = (n1 - 1) % (n2 - 1);
+		cout << modulus << endl;		
 	}
 	
 	return 0;
