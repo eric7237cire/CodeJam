@@ -923,13 +923,31 @@ string s2;
 
 int main()
 {
-	
+	int T;
+	cin >> T;
 		
-	while( getline(cin, s) && getline(cin, s2))
+	while(T--)
 	{
-		BigInt x(s);
-		BigInt y(s2);
-		cout << x*y << endl;		
+		int M;
+		cin >> M;
+		
+		string s1, s2;
+		
+		string d1, d2;
+		for(int i = 0; i < M; ++i)
+		{
+			cin >> d1 >> d2;
+			s1 += d1;
+			s2 += d2;
+			
+		}
+		
+		BigInt n1(s1);
+		BigInt n2(s2);
+		
+		cout << n1+n2 << endl;
+		if (T)
+			cout << endl;
 	}
 	
 	return 0;
