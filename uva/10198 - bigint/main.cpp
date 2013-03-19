@@ -918,18 +918,25 @@ const BigInt & BigInt::operator %=(const BigInt & rhs)
     return *this;
 }
 
-string s;
-string s2;
+//dp[N-1] = Ways to make a number with digits summing to N using only 1 to 4
+BigInt dp[1001];
 
 int main()
 {
+	dp[0] = 2; // 1 4
+	dp[1] = 5; // 11 14 41 44 2
+	dp[2] = 13;   // 111 114 141  144 411 414  441 444 12 42 3 21 24
 	
-		
-	while( getline(cin, s) && getline(cin, s2))
+	for(int n = 3; n <= 1000; ++n)
 	{
-		BigInt x(s);
-		BigInt y(s2);
-		cout << x*y << endl;		
+		//Append a 1 or 4 + append a 2 + append a 3
+		dp[n] = 2*dp[n-1] + dp[n-2] + dp[n-3];
+	}
+		
+	int n;
+	while( 1 == scanf("%d", &n) )
+	{
+		cout << dp[n-1] << endl;		
 	}
 	
 	return 0;

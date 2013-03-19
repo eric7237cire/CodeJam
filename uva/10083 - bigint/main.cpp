@@ -946,9 +946,19 @@ int main()
 	{
 		BigInt n1 = expo(base, exp1);
 		BigInt n2 = expo(base, exp2);
+		BigInt div = (n1 - 1) / (n2 - 1);
 		BigInt modulus = (n1 - 1) % (n2 - 1);
-		cout << modulus << endl;		
+		cout << "Div : " << div << " Mod " << modulus << endl;
 	}
+	
+	/*
+	Output For Sample Input
+
+(2^9-1)/(2^3-1) 73
+(2^3-1)/(2^2-1) is not an integer with less than 100 digits.
+(21^42-1)/(21^7-1) 18952884496956715554550978627384117011154680106
+(123^911-1)/(123^1-1) is not an integer with less than 100 digits.
+*/
 	
 	return 0;
 }
