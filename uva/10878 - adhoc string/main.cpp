@@ -1,28 +1,30 @@
 #include "stdio.h"
-
+#include <cstring>
 using namespace std;
 
 #define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
- 
+
+char line[12];
+
 int main()
 {
-	int T;
-	scanf("%d", &T);
-	
-	while(T--)
+	while( gets(line) )
 	{
-		int f;
-		scanf("%d", &f);
+		if ( line[6] != '.' ) 
+			continue;
+			
+		char c = 0;
 		
-		int ans = 0;
-		while(f--)
+		for(int i = 2; i <= 8; ++i)
 		{
-			int area, anim, env;
-			scanf("%d%d%d", &area, &anim, &env);
-			ans += area * env; //anim cancels out
+			int pos = i;
+			if (i >= 6)
+				pos++;
+			
+			if (line[pos] == 'o')			
+				c |= 1 << 8 - i;			
 		}
-		
-		printf("%d\n", ans);		
+		printf("%c", c);		
 	}
 
 	return 0;

@@ -21,7 +21,7 @@ int sumDigits(int n)
 
 int main()
 {
-	
+	//or summing digit=1+(n-1)%9;  or %9
 	
 	while(scanf("%d", &N) && N)
 	{
