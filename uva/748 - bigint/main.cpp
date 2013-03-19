@@ -925,11 +925,56 @@ int main()
 {
 	
 		
-	while( getline(cin, s) && getline(cin, s2))
+	while( cin >> s  )
 	{
-		BigInt x(s);
-		BigInt y(s2);
-		cout << x*y << endl;		
+		int n;
+		cin >> n;
+		
+		BigInt num;
+		BigInt denom = 1;
+		
+		//Find decimal 
+		size_t decPos = s.find('.');
+		if (decPos != string::npos)
+		{
+			while( s[ s.length() - 1] == '0' )
+				s.erase( s.end() - 1);
+				
+			int pos = s.length() - decPos;
+			//printf("Len %d Pos = %d\n", s.length(), pos);
+			for(int i = 1; i < pos; ++i)
+			denom *= 10;
+			
+			s.erase(decPos, 1);
+		}
+		num = BigInt(s);
+		
+		//cout << num << endl;		
+		//cout << denom << endl;	
+		
+		BigInt top = num;
+		BigInt bot = denom;
+
+		for(int i = 2; i <= n; ++i)
+		{
+			top *= num;
+			bot *= denom;
+		}
+		
+		string numStr = top.ToString();
+		string botStr = bot.ToString();
+		while( numStr.length() < botStr.length() - 1)
+			numStr.insert( numStr.begin(), '0' );
+		
+		if (botStr.length() > 1)
+		{
+			int pos = numStr.length() - botStr.length() + 1;
+			numStr.insert( numStr.begin() + pos, '.' );
+		}
+		
+		//cout << top << endl;		
+		//cout << bot << endl;	
+		cout << numStr << endl;
 	}
 	
 	return 0;
