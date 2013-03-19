@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <iomanip>
 #include <limits>
 #include <stdlib.h>
 
@@ -919,8 +920,8 @@ const BigInt & BigInt::operator %=(const BigInt & rhs)
 }
 
 string s;
-string s2;
 BigInt pow26[21];
+
 
 int main()
 {
@@ -929,11 +930,56 @@ int main()
 		pow26[i] = pow26[i-1] * 26;
 	
 		
-	while( getline(cin, s) && getline(cin, s2))
+	while( getline(cin, s) && s.length() > 0 && s[0] != '*')
 	{
-		BigInt x(s);
-		BigInt y(s2);
-		cout << x*y << endl;		
+		BigInt num;
+		string word;
+		if (isdigit(s[0]))
+		{
+			num = BigInt(s);
+			BigInt orig = num;
+			
+			for(int power = 20; power >= 0; --power)
+			{
+				BigInt div = num / pow26[power];
+				int letter = div.ToInt();
+				
+				num -= letter * pow26[power];
+				if (letter == 0)
+					continue;
+				
+				word += (letter + 'a' - 1);
+				
+			}
+			
+			num = orig;
+		}
+		else 
+		{
+			word = s;
+			num = 0;
+			for(int i = 0; i < s.length(); ++i)
+			{
+				int base  = s.length() - 1 - i;
+				num += pow26[base] * (s[i] - 'a' + 1);
+				
+			}
+		
+		}
+		
+		string numStr = num.ToString();
+		cout << left << setw(22) << word;
+		
+		for(int i = 0; i < numStr.length(); ++i)
+		{
+			int digit = numStr.length() - i;
+			cout << numStr[i];
+			
+			if ( digit > 1 && (digit-1) % 3 == 0)
+				cout << ',';
+			
+		}
+		cout << endl;		
 	}
 	
 	return 0;

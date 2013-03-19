@@ -918,18 +918,26 @@ const BigInt & BigInt::operator %=(const BigInt & rhs)
     return *this;
 }
 
-string s;
-string s2;
-
 int main()
 {
 	
-		
-	while( getline(cin, s) && getline(cin, s2))
+	int T;
+	cin >> T;
+	
+	while( T--)
 	{
-		BigInt x(s);
-		BigInt y(s2);
-		cout << x*y << endl;		
+		string n1, n2;
+		cin >> n1 >> n2;
+		reverse(n1.begin(), n1.end());
+		reverse(n2.begin(), n2.end());
+		
+		//cout << n1 << ", " << n2 << endl;
+		BigInt sum = BigInt(n1) + BigInt(n2);
+		string sumStr = sum.ToString();
+		//cout << sumStr << endl;
+		reverse(sumStr.begin(), sumStr.end());
+		int start = sumStr.find_first_not_of('0');
+		cout << string( sumStr, start, string::npos ) << endl;		
 	}
 	
 	return 0;
