@@ -920,9 +920,13 @@ const BigInt & BigInt::operator %=(const BigInt & rhs)
 
 string s;
 string s2;
+BigInt pow26[21];
 
 int main()
 {
+	pow26[0] = 1;
+	for(int i = 1; i <= 20; ++i)
+		pow26[i] = pow26[i-1] * 26;
 	
 		
 	while( getline(cin, s) && getline(cin, s2))
