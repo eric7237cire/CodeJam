@@ -1,25 +1,25 @@
 //STARTGEOM
 #include <iostream>
-#include <fstream>
-#include <string>
+//#include <fstream>
+//#include <string>
 #include <map>
-#include <stack>
-#include <set>
-#include <list>
+//#include <stack>
+//#include <set>
+//#include <list>
 #include <vector>
 #include <algorithm>
 #include <cassert>
-#include <iterator>
-#include <sstream>
+//#include <iterator>
+//#include <sstream>
 //#include <complex>
-#include <bitset>
+//#include <bitset>
 #include <iomanip>
-#include <cctype>
+//#include <cctype>
 #include <limits>
 #include <numeric>
 #include <cmath>
-#include <functional>
-#include <queue>
+//#include <functional>
+//#include <queue>
 using namespace std;
 
 typedef unsigned int uint;
@@ -690,6 +690,9 @@ bool circle2PtsRad(const Point<T>& p1, const Point<T>& p2,
   return true; 
 }
 
+/*
+returns 0 inside, 1 border, 2 outside
+*/
 template<typename T>
 int inCircle( const Point<T>& p, const Point<T>& c, T r) { 
   T dx = p.x - c.x;
@@ -707,11 +710,138 @@ int inCircle( const Point<T>& p, const Point<T>& c, T r) {
 	  return Euc < rSq ? 0 : 2; 
   }
 }
-  
+ 
+template<typename T> 
+int cmp(T a, T b, T epsilon)
+{
+	T dif = a - b;
+	if (abs(dif) <= epsilon)
+	{
+		return 0;
+	}
+	
+	if (dif > 0)
+	{
+		return 1; //a > b
+	}
+	
+	return -1;
+}  
 
+/*
+Is (x, y) in rectangle ?  true if inside (not just touching edge)
+*/
+template<typename T>
+bool inRectangle( T x, T y, T x1, T x2, T y1, T y2, T epsilon )
+{	
+	assert( x1 <= x2 );
+	assert( y1 <= y2 );
+	
+	if (cmp(x, x1, epsilon) > 0 &&
+		cmp(x, x2, epsilon) < 0 &&
+		cmp(y, y1, epsilon) > 0 &&
+		cmp(y, y2, epsilon) < 0 )
+		return true;
+	
+	return false;
+}
 
 //STOPGEOM
 
 
-int main()
-ao
+
+
+
+
+
+
+
+
+
+
+
+
+
+#include "stdio.h"
+// x, y upper left x y lower right 
+float rect[10][4];
+// x, y radius
+float circle[10][3];
+
+int rectFigNums[10];
+int circleFigNums[10];
+
+float epsilon = 0.00001;
+
+int main() 
+{
+
+	char ch;
+	
+	int R = 0;
+	int C = 0;
+	int figNum = 1;
+	
+	while(1==scanf(" %c", &ch) && ch != '*' )
+	{
+		if (ch == 'r')
+		{
+			scanf("%f%f%f%f", &rect[R][0], &rect[R][1],
+			&rect[R][2], &rect[R][3]);
+			rectFigNums[R] = figNum++;
+			++R;
+		} else if (ch == 'c') {
+			scanf("%f%f%f%f", &circle[C][0], &circle[C][1],	&circle[C][2]);
+			circleFigNums[C] = figNum++;
+			++C;		
+		}
+	}
+	
+	assert(ch == '*');
+	
+	float x, y;
+	int pointIdx = 0;
+	while(2 == scanf("%f%f", &x, &y))
+	{
+		++pointIdx;
+		if (cmp(x, 9999.9f, epsilon) == 0 && cmp(y, 9999.9f, epsilon) == 0)
+			continue;
+		
+		int atLeastOne = false;
+		for(int r = 0; r < R; ++r)
+		{
+			//printf("Rectangle %d point %d\n", r+1, pointIdx);
+			if (inRectangle(x, y, rect[r][0],
+					rect[r][2],
+					rect[r][3],
+					rect[r][1], epsilon) )
+			{
+				atLeastOne = true;
+				printf("Point %d is contained in figure %d\n", 
+					pointIdx, rectFigNums[r]);
+			}
+		}
+		
+		for(int c = 0; c < C; ++c)
+		{
+			if (0 == inCircle( 
+			Point<float>( x, y),
+			Point<float>( circle[c][0], circle[c][1] ),
+			circle[c][2]) )
+			{
+				atLeastOne = true;
+				printf("Point %d is contained in figure %d\n", 
+					pointIdx, circleFigNums[c]);
+			}
+			
+		}
+		
+		if (!atLeastOne)
+		{
+			printf("Point %d is not contained in any figure\n", pointIdx);
+		}
+	}
+	
+	return 0;
+}
+

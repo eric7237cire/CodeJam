@@ -17,7 +17,7 @@ replaceGeom = re.compile(r"""
 (//STOPGEOM)
 """, re.VERBOSE | re.DOTALL | re.MULTILINE )
 
-replacement = '\\1\n' + headerContents + '\n\\3\n'
+replacement = '\\1\n' + headerContents + '\n\\3'
 #print(replacement)
 sourceContents = replaceGeom.sub( replacement,  sourceContents )
 
@@ -27,4 +27,4 @@ sourceFile = open( sys.argv[1], 'w')
 sourceFile.write( sourceContents )
 
 #print(headerContents)
-print(sourceContents)
+#print(sourceContents)

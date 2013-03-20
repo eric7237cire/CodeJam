@@ -1,1 +1,0 @@
-python c:\codejam\codejam\lib\replaceInFile.py %*

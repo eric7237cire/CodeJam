@@ -1,10 +1,11 @@
+//STARTGEOM
 #include <iostream>
 //#include <fstream>
 //#include <string>
 #include <map>
 //#include <stack>
 //#include <set>
-#include <list>
+//#include <list>
 #include <vector>
 #include <algorithm>
 #include <cassert>
@@ -506,8 +507,7 @@ bool getIntersection(const Point<T>& a1,const Point<T>& a2,
     return true;
 }
 
-template<typename T>
-double dist( const Point<T>& p1, const Point<T>& p2 )
+double dist( const PointD& p1, const PointD& p2 )
 {
 	return sqrt( (p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y) );
 }
@@ -769,223 +769,109 @@ bool inTriangle( T x, T y, T x1, T y1, T x2, T y2, T x3, T y3, T epsilon )
 	return false;
 }
 
+//STOPGEOM
 
+#include "stdio.h"
+// x, y upper left x y lower right 
+float rect[10][4];
+// x, y radius
+float circle[10][3];
 
-bool inTriangle2( const PointD& p, const PointD& tri1,
-    const PointD& tri2, const PointD& tri3)
+float triangle[10][6];
+
+int rectFigNums[10];
+int circleFigNums[10];
+int triangleFigNums[10];
+
+float epsilon = 0.00001;
+
+int main() 
 {
-	PointD closest;
-	//not sure if this is necesary for not degenerate triangles
-	if ( abs(minimum_distance(tri1, tri2, p, closest)) < tolerance)
-		return false;
-	if ( abs(minimum_distance(tri1, tri3, p, closest)) < tolerance)
-		return false;
-	if ( abs(minimum_distance(tri2, tri3, p, closest)) < tolerance)
-		return false;
 
-
-    if ( getSide(p, tri1, tri2) != 
-        getSide(tri3, tri1, tri2) )
-        return false;
-        
-    if ( getSide(p, tri1, tri3) != 
-        getSide(tri2, tri1, tri3) )
-        return false;
-        
-    
-    if ( getSide(p, tri2, tri3) != 
-        getSide(tri1, tri2, tri3) )
-        return false;
-        
-    //cout << p.x << ", " << p.y << " in triangle " << endl;
-    return true;
-    
-}
-
-//Sort lowest y first, then lowest x
-template<typename T>
-class LowestYSortOrder
-{
-	public:
-	LowestYSortOrder()
+	char ch;
+	
+	int R = 0;
+	int C = 0;
+	int T = 0;
+	int figNum = 1;
+	
+	while(1==scanf(" %c", &ch) && ch != '*' )
 	{
-	}
-
-    int operator()(const Point<T>& p1, const Point<T>& p2)
-    {
-		if (p1.y < p2.y)
-			return 1;
-			
-        if (p1.y == p2.y && p1.x < p2.x)
-			return 1;
-			
-		return 0;
-    }
-};
-
-template<typename T>
-class PolarOrder
-{
-    Point<T> refPoint;
-    
-public:
-    PolarOrder(const Point<T>& refPt) : refPoint(refPt) 
-    {
-    }
-    
-    
-	//Returns true if p1 goes before p2
-	int operator()(const Point<T>& p1, const Point<T>& p2)
-	{
-		int cmp = compare(p1, p2);
-
-		if (cmp == -1)
-			return true;
-			
-		if (cmp == 0 && p1 != p2)
+		if (ch == 'r')
 		{
-			double d1 = dist(p1, refPoint);
-			double d2 = dist(p2, refPoint);
-			if (::cmp(d1, d2, 1e-5) < 0)
-				return true;
+			scanf("%f%f%f%f", &rect[R][0], &rect[R][1],
+			&rect[R][2], &rect[R][3]);
+			rectFigNums[R] = figNum++;
+			++R;
+		} else if (ch == 'c') {
+			scanf("%f%f%f%f", &circle[C][0], &circle[C][1],	&circle[C][2]);
+			circleFigNums[C] = figNum++;
+			++C;		
+		} else if (ch == 't') {
+			scanf("%f%f%f%f%f%f", &triangle[T][0], &triangle[T][1],&triangle[T][2],
+			&triangle[T][3],&triangle[T][4],&triangle[T][5]);
+			triangleFigNums[T] = figNum++;
+			++T;
 		}
-
-		return false;
-	}
-
-    int compare(const Point<T>& p1, const Point<T>& p2)
-    {
-        Point<T> v1 = p1 - refPoint;
-        Point<T> v2 = p2 - refPoint;
-        
-        //Lowest angle is 0, then goes counter clockwise.  This
-        //will hit the positive angle first, so it is "less than" the other
-        if (v1.y >= 0 && v2.y < 0)
-            return -1;
-        
-        //Similar logic
-        if (v1.y < 0 && v2.y >= 0)
-            return +1;
-        
-        if (v1.y == 0 && v2.y == 0) 
-        {
-            //v1 has an angle of 0 and v2 -PI
-            if (v1.x >= 0 && v2.x < 0)
-                return -1;  
-            
-            //v2 has an angle of 0 and v1 -PI
-            if (v2.x >= 0 && v1.x < 0)
-                return +1;
-            
-            //both the same
-            return 0;
-        }
-        
-        //At this point both are above or below the y axis ; take the cross product
-        
-        int ccwRes = ccw(refPoint, p1, p2);
-                
-        //v2 is counter clockwise to v1, so v1 goes before
-        if (ccwRes > 0)
-            return -1;
-        
-        //v2 is clockwise of v1, so v2 goes before
-        if (ccwRes < 0)
-            return +1;
-        
-        //Vectors v1 and v2 are colinear		
-        return 0;
-    }
-};
-
-template<typename T>
-void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
-{
-    typedef vector<Point<T> > vpt;
-    
-   vector<Point<T> > points(pointsIn);
-   
-   sort(all(points), LowestYSortOrder<T>());
-   
-   for(typename vpt::iterator ito = points.begin();
-	ito != points.end();
-	++ito)
-	{
-		//cout << "1 Sorted input " << *ito << endl;
 	}
 	
-   //Sort relative to polar angle with first point (lowest y point)
-   sort(points.begin() + 1, points.end(), PolarOrder<T>(points[0]));
-   
-   for(typename vpt::iterator ito = points.begin();
-	ito != points.end();
-	++ito)
+	assert(ch == '*');
+	
+	float x, y;
+	int pointIdx = 0;
+	while(2 == scanf("%f%f", &x, &y))
 	{
-		//cout << "Sorted input " << *ito << endl;
+		++pointIdx;
+		if (cmp(x, 9999.9f, epsilon) == 0 && cmp(y, 9999.9f, epsilon) == 0)
+			continue;
+		
+		int atLeastOne = false;
+		for(int r = 0; r < R; ++r)
+		{
+			//printf("Rectangle %d point %d\n", r+1, pointIdx);
+			if (inRectangle(x, y, rect[r][0],
+					rect[r][2],
+					rect[r][3],
+					rect[r][1], epsilon) )
+			{
+				atLeastOne = true;
+				printf("Point %d is contained in figure %d\n", 
+					pointIdx, rectFigNums[r]);
+			}
+		}
+		
+		for(int c = 0; c < C; ++c)
+		{
+			if (0 == inCircle( 
+			Point<float>( x, y),
+			Point<float>( circle[c][0], circle[c][1] ),
+			circle[c][2]) )
+			{
+				atLeastOne = true;
+				printf("Point %d is contained in figure %d\n", 
+					pointIdx, circleFigNums[c]);
+			}
+			
+		}
+		
+		for(int t = 0; t < T; ++t)
+		{
+			if (inTriangle(x, y, triangle[t][0],
+				triangle[t][1], triangle[t][2],
+				triangle[t][3], triangle[t][4],
+				triangle[t][5], epsilon )) 
+			{
+				printf("Point %d is contained in figure %d\n", 
+					pointIdx, triangleFigNums[t]);
+			}
+		}
+		
+		if (!atLeastOne)
+		{
+			printf("Point %d is not contained in any figure\n", pointIdx);
+		}
 	}
-   
-   list<Point<T> > hull;
-   
-   hull.push_front(points[0]);
-   
-   typename vpt::iterator it;
-   
-   for(it = points.begin()+1; it != points.end(); ++it)
-   {
-       if (*it != points[0]) 
-		   break;
-   }
-   
-   if (it == points.end()) {
-       //all points equal to first
-       return;
-   }
-   
-   typename vpt::iterator k1 = it;
-   ++it;
-   //Find first non collinear point 
-   while( it != points.end() )
-   {
-       if (!isColinear(points[0], *k1, *it))
-           break;
-       
-       ++it;
-   }
-   
-   //The point right before the first non
-   //linear point is added
-   hull.push_front(*(it - 1));
-   
-      
-   for( ; it != points.end(); ++it)
-   {
-       Point<T> t2 = hull.front();
-       hull.pop_front();
-       
-       Point<T> t1 = hull.front();
-       
-       Point<T> t3 = *it;
-	   
-	   //cout << " t1 " << t1 << " t2 " << t2 << " point " << t3 << endl;
-       
-       //Continue poping until we find a left turn
-       while(ccw(t1, t2, t3) <= 0) 
-       {
-		   assert(hull.front() == t1);
-           t2 = hull.front();
-           hull.pop_front();
-       
-           t1 = hull.front();
-           
-           
-       }
-       
-       hull.push_front(t2);
-       hull.push_front(t3);
-       
-   }
-   
-   
-   hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
+	
+	return 0;
 }
 
