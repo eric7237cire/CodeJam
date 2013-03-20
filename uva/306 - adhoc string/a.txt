@@ -6,28 +6,49 @@ Linking CXX executable project.exe
 [100%] Built target project
 
 C:\codejam\CodeJam\uva\306 - adhoc string>cat input.txt   | project
-lelBo Hob 
-lelBo Hob 
-HolleoB  b
-BelHo lob 
-lolBeoH  b
-Hello Bob 
-BolHeol  b
-lelBo Hob 
-BolHeol  b
-BelHo lob 
-lolBeoH  b
-Hello Bob 
+Finding cycle id=0 start i = 0
+Next elem 0 in cycle 0
+Next elem 3 in cycle 0
+Next elem 6 in cycle 0
+Finding cycle id=1 start i = 1
+Next elem 1 in cycle 1
+Next elem 4 in cycle 1
+Finding cycle id=2 start i = 2
+Next elem 2 in cycle 2
+Finding cycle id=3 start i = 5
+Next elem 5 in cycle 3
+Next elem 7 in cycle 3
+Finding cycle id=4 start i = 8
+Next elem 8 in cycle 4
+Next elem 9 in cycle 4
+i=0 cycleId=0 offset=0 k=44 pos=2
+i=1 cycleId=1 offset=1 k=44 pos=1
+i=2 cycleId=2 offset=2 k=44 pos=0
+i=3 cycleId=0 offset=0 k=44 pos=2
+i=4 cycleId=1 offset=1 k=44 pos=1
+i=5 cycleId=3 offset=3 k=44 pos=1
+i=6 cycleId=0 offset=0 k=44 pos=2
+i=7 cycleId=3 offset=3 k=44 pos=1
+i=8 cycleId=4 offset=4 k=44 pos=0
+i=9 cycleId=4 offset=4 k=44 pos=0
+String fast [ oBlo Bob ]
+brute force [lelBo Hob ]
+i=0 cycleId=0 offset=0 k=2 pos=2
+i=1 cycleId=1 offset=1 k=2 pos=1
+i=2 cycleId=2 offset=2 k=2 pos=0
+i=3 cycleId=0 offset=0 k=2 pos=2
+i=4 cycleId=1 offset=1 k=2 pos=1
+i=5 cycleId=3 offset=3 k=2 pos=1
+i=6 cycleId=0 offset=0 k=2 pos=2
+i=7 cycleId=3 offset=3 k=2 pos=1
+i=8 cycleId=4 offset=4 k=2 pos=0
+i=9 cycleId=4 offset=4 k=2 pos=0
+String fast [ oBlo Bob ]
+brute force [lelBo Hob ]
 
-vsca.uma.e
-uesva.cma.
-..euvascma
-aa..uvescm
-vmaa.u.esc
-ucmva.a.es
-.scuvama.e
-aes.uvcma.
-v.ea.uscma
-ua.va.escm
-.mauva.esc
-acm.uva.es
+Finding cycle id=0 start i = 0
+Next elem 0 in cycle 0
+Next elem 2 in cycle 0
+Next elem 1 in cycle 0
+Next elem 3 in cycle 0
+Next elem 6 in cycle 0

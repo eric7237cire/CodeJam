@@ -1,18 +1,26 @@
 10
 4 5 3 7 2 8 1 6 10 9
-44 Hello Bob
+1 012345689
+2 012345689
+3 012345689
+4 012345689
+5 012345689
+0
+0
 2 Hello Bob
 3 Hello Bob
-40000 Hello Bob
+4 Hello Bob
 5 Hello Bob
 6 Hello Bob
-7 Hello Bob
-8 Hello Bob
+0
+0
 43 Hello Bob
 10 Hello Bob
 11 Hello Bob
 12 Hello Bob
 0
+0
+
 10
 4 3 7 5 6 1 8 9 10 2
 1 acm.uva.es
