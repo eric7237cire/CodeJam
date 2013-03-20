@@ -1,0 +1,33 @@
+
+C:\codejam\CodeJam\uva\306 - adhoc string>make all 
+Scanning dependencies of target project
+[100%] Building CXX object CMakeFiles/project.dir/main.cpp.obj
+Linking CXX executable project.exe
+[100%] Built target project
+
+C:\codejam\CodeJam\uva\306 - adhoc string>cat input.txt   | project
+lelBo Hob 
+lelBo Hob 
+HolleoB  b
+BelHo lob 
+lolBeoH  b
+Hello Bob 
+BolHeol  b
+lelBo Hob 
+BolHeol  b
+BelHo lob 
+lolBeoH  b
+Hello Bob 
+
+vsca.uma.e
+uesva.cma.
+..euvascma
+aa..uvescm
+vmaa.u.esc
+ucmva.a.es
+.scuvama.e
+aes.uvcma.
+v.ea.uscma
+ua.va.escm
+.mauva.esc
+acm.uva.es
