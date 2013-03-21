@@ -500,8 +500,8 @@ with DET  =  a11a22-a12a21
 		T x = a22/det * C + -a12/det * line2.C;
 		T y = -a21/det * C + a11/det * line2.C;
 		
-		pInt.x = x;
-		pInt.y = y;
+		pInt.x =- x;
+		pInt.y = -y;
 		
 		return true;
 	}
@@ -688,8 +688,8 @@ bool getIntersection(const Point<T>& a1,const Point<T>& a2,
 template<typename T>
 double dist( const Point<T>& p1, const Point<T>& p2 )
 {
-	return hypot( p1.x-p2.x, p1.y - p2.y );
-	//return sqrt( (p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y) );
+	//return hypot( p1.x-p2.x, p1.y - p2.y );
+	return sqrt( (p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y) );
 }
 
 template<typename T>
@@ -1128,19 +1128,26 @@ int main() {
 		PointD pInt;
 		bool ok = lineMidABCenter.intersection(lineMidBCCenter, pInt);
 		
+		assert( lineMidABCenter.onLine(midAB) );
+		assert( lineMidBCCenter.onLine(midBC) );
+		assert( lineMidABCenter.onLine(pInt) );
+		assert( lineMidBCCenter.onLine(pInt) );
 		cout << "ok " << ok << " INT " << pInt << endl;
 		
-		double r = dist(pInt, A);
+		double r = dist(pInt, p1);
+		double r2 = dist(pInt, p2);
+		double r3 = dist(pInt, p3);
+		cout << "dist test " << dist(PointD(0,0), PointD(1,1)) << " " << r << " " << r2 << " " << r3 <<endl;
 		
 		printf("(x %c %.3lf)^2 + (y %c %.3lf)^2 = %.3lf^2\n",
 		pInt.x >= 0 ? '+' : '-',
-		pInt.x, 
+		abs(pInt.x), 
 		pInt.y >= 0 ? '+' : '-',
-		pInt.y, r);
+		abs(pInt.y), r);
 		
 		double xCoef = -2 * pInt.x;
 		double yCoef = -2 * pInt.y;
-		double cCoef = -r*r + pInt.x*pInt.x + pInt.y+pInt.y;
+		double cCoef = -r*r - pInt.x*pInt.x - pInt.y+pInt.y;
 		
 		printf("x^2 + y^2 %c %.3lfx %c %.3lfy %c %.3lf = 0\n", 
 			xCoef >= 0 ? '+' : '-',

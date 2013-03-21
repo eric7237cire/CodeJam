@@ -499,8 +499,8 @@ with DET  =  a11a22-a12a21
 		T x = a22/det * C + -a12/det * line2.C;
 		T y = -a21/det * C + a11/det * line2.C;
 		
-		pInt.x = x;
-		pInt.y = y;
+		pInt.x =- x;
+		pInt.y = -y;
 		
 		return true;
 	}
@@ -687,8 +687,8 @@ bool getIntersection(const Point<T>& a1,const Point<T>& a2,
 template<typename T>
 double dist( const Point<T>& p1, const Point<T>& p2 )
 {
-	return hypot( p1.x-p2.x, p1.y - p2.y );
-	//return sqrt( (p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y) );
+	//return hypot( p1.x-p2.x, p1.y - p2.y );
+	return sqrt( (p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y) );
 }
 
 template<typename T>
