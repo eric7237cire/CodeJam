@@ -1109,13 +1109,13 @@ int main() {
 		assert(lineAB.onLine(midAB));
 		assert(lineBC.onLine(midBC));
 		
-		PointD pInt;
-		bool ok = lineAB.intersection(lineBC, pInt);
+		
+		//bool ok = lineAB.intersection(lineBC, pInt);
 		cout << p1 << ", " << p2 << endl;
 		cout << lineAB << endl;
 		cout << p2 << ", " << p3 << endl;
 		cout << lineBC << endl;
-		cout << pInt << endl;
+		//cout << pInt << endl;
 		//Take the equation of line perpendicular to ax+by+c=0 as bx-ay+k=0 where k is a constant.
 		
 		double k1 = -(lineAB.B * midAB.x - lineAB.A * midAB.y);
@@ -1125,9 +1125,30 @@ int main() {
 		Line<double> lineMidABCenter(lineAB.B, -lineAB.A, k1);
 		Line<double> lineMidBCCenter(lineBC.B, -lineBC.A, k2);
 		
-		ok = lineMidABCenter.intersection(lineMidBCCenter, pInt);
+		PointD pInt;
+		bool ok = lineMidABCenter.intersection(lineMidBCCenter, pInt);
 		
 		cout << "ok " << ok << " INT " << pInt << endl;
+		
+		double r = dist(pInt, A);
+		
+		printf("(x %c %.3lf)^2 + (y %c %.3lf)^2 = %.3lf^2\n",
+		pInt.x >= 0 ? '+' : '-',
+		pInt.x, 
+		pInt.y >= 0 ? '+' : '-',
+		pInt.y, r);
+		
+		double xCoef = -2 * pInt.x;
+		double yCoef = -2 * pInt.y;
+		double cCoef = -r*r + pInt.x*pInt.x + pInt.y+pInt.y;
+		
+		printf("x^2 + y^2 %c %.3lfx %c %.3lfy %c %.3lf = 0\n", 
+			xCoef >= 0 ? '+' : '-',
+			abs(xCoef),
+			yCoef >= 0 ? '+' : '-',
+			abs(yCoef),
+			cCoef >= 0 ? '+' : '-',
+			abs(cCoef));
 		
 		if (t++ >  0)
 			printf("\n");
