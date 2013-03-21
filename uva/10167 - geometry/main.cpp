@@ -1,3 +1,4 @@
+//STARTGEOM
 #include <iostream>
 #include <map>
 #include <list>
@@ -1011,5 +1012,37 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
+}
+
+
+//STOPGEOM
+
+#include "stdio.h"
+int main() 
+{
+	int N;
+	while(1 == scanf("%d", &N) && N)
+	{
+		vpi points;
+		pi p;
+		FOR(i, 0, 2*N)
+		{
+			cin >> p;
+			points.pb(p);
+			cout << p << endl;
+		}
+			
+		for(int A = -500; A <= 500; ++A)
+		{
+			for(int B = -500; B <= 500; ++B)
+			{
+				
+			}
+		}
+
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
 }
 
