@@ -448,7 +448,7 @@ class Line
 	T B;
 	T C;
 
-	Line(const Point<T>& p1, const Point<T>& p2)
+	Line(const Point<T>& p1, const Point<T>& p2, bool normalize = false)
 	{
 			
 	    assert(p1 != p2);
@@ -457,6 +457,8 @@ class Line
 		B = p2.x - p1.x;
 		C = p1.x*p2.y - p2.x * p1.y;
 
+		if (normalize)
+		{
 		//make A positive
 		if (A < 0 || (A==0 && B < 0) )
 		{
@@ -471,7 +473,7 @@ class Line
 		A /= gcdABC;
 		B /= gcdABC;
 		C /= gcdABC;
-
+}
 		//assert(A * p1.x + B * p1.y + C == 0);
 		//assert(A * p2.x + B * p2.y + C == 0);
 	}
