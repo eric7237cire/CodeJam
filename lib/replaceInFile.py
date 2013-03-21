@@ -1,7 +1,10 @@
 import sys
 import re
 
-headerF = open("""C:\codejam\CodeJam\lib\geom.h""", 'r')
+if sys.argv[2] == "common":
+	headerF = open("""C:\codejam\CodeJam\lib\common.h""", 'r')
+else:
+	headerF = open("""C:\codejam\CodeJam\lib\geom.h""", 'r')
 sourceFile = open( sys.argv[1], 'r')
 backupFile = open( sys.argv[1] + 'backup', 'w')
 
@@ -10,8 +13,14 @@ sourceContents = sourceFile.read()
 
 backupFile.write(sourceContents)
 
-
-replaceGeom = re.compile(r"""
+if sys.argv[2] == "common":
+	replaceGeom = re.compile(r"""
+(//STARTCOMMON)               # Start of a numeric entity reference
+(.*)
+(//STOPCOMMON)
+""", re.VERBOSE | re.DOTALL | re.MULTILINE )
+else:
+	replaceGeom = re.compile(r"""
 (//STARTGEOM)               # Start of a numeric entity reference
 (.*)
 (//STOPGEOM)
@@ -19,6 +28,7 @@ replaceGeom = re.compile(r"""
 
 replacement = '\\1\n' + headerContents + '\n\\3'
 #print(replacement)
+#print (sourceContents)
 sourceContents = replaceGeom.sub( replacement,  sourceContents )
 
 #print( replaceGeom.search(sourceContents).groups() )
