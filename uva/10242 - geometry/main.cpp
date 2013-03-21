@@ -1086,62 +1086,33 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
 }
 //STOPGEOM
 
+PointD a, b, c, d;
+
 #include "stdio.h"
 int main() {
 
-	PointD p1, p2, p3;
-	
-	while( cin >> p1 )
+	while(cin >> a >> b >> c >> d)
 	{
-		cin >> p2;
-		cin >> p3;
-				
-		PointD midAB = (p1 + p2) / 2.0;
-		PointD midBC = (p2 + p3) / 2.0;
-
-		Line<double> lineAB(p1, p2);
-		Line<double> lineBC(p2, p3);
+		//want b and c to be the common points
+		if ( a == d )
+		{
+			swap(a, b);
+			swap(c, d);
+		} else if (a == c) {
+			swap(a, b);
+		} else if (b == d) {
+			swap(c, d);
+		}
 		
-		assert(lineAB.onLine(midAB));
-		assert(lineBC.onLine(midBC));
-		
-		//Take the equation of line perpendicular to ax+by+c=0 as bx-ay+k=0 where k is a constant.
-		
-		double k1 = -(lineAB.B * midAB.x - lineAB.A * midAB.y);
-		double k2 = -(lineBC.B * midBC.x - lineBC.A * midBC.y);
-		
-		//Create lines going from midpoints perpendicular to original lines
-		Line<double> lineMidABCenter(lineAB.B, -lineAB.A, k1);
-		Line<double> lineMidBCCenter(lineBC.B, -lineBC.A, k2);
-		
-		PointD pInt;
-		bool ok = lineMidABCenter.intersection(lineMidBCCenter, pInt);
-		
-		assert( lineMidABCenter.onLine(midAB) );
-		assert( lineMidBCCenter.onLine(midBC) );
-		assert( lineMidABCenter.onLine(pInt) );
-		assert( lineMidBCCenter.onLine(pInt) );
-		
-		double r = dist(pInt, p1);
-				
-		printf("(x %c %.3lf)^2 + (y %c %.3lf)^2 = %.3lf^2\n",
-		cmp(-pInt.x, 0.0) >= 0 ? '+' : '-',
-		abs(pInt.x), 
-		-pInt.y >= 0 ? '+' : '-',
-		abs(pInt.y), r);
-		
-		double xCoef = 2 * -pInt.x;
-		double yCoef = 2 * -pInt.y;
-		double cCoef = -(r*r) + pInt.x*pInt.x + pInt.y*pInt.y;
-		
-		printf("x^2 + y^2 %c %.3lfx %c %.3lfy %c %.3lf = 0\n\n", 
-			xCoef >= 0 ? '+' : '-',
-			abs(xCoef),
-			yCoef >= 0 ? '+' : '-',
-			abs(yCoef),
-			cmp(cCoef, 0.0) >= 0 ? '+' : '-',
-			abs(cCoef));
-		
+		assert(a != b);
+		assert(a != c);
+		assert(a != d);
+		assert(b == c);
+		assert(c != d);
+		//scanf("%d", &nSeg);
+		PointD dif = d - b;
+		PointD ans = a + dif;
+		printf( "%.3lf %.3lf\n", ans.x, ans.y);
 		
 	}
 	return 0;

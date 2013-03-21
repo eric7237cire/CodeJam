@@ -1086,62 +1086,95 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
 }
 //STOPGEOM
 
+//starting position
+pi pPos[20];
+//player velocity
+int pVel[20];
+
+int nPlayers;
+int nBalls;
+
 #include "stdio.h"
 int main() {
 
-	PointD p1, p2, p3;
-	
-	while( cin >> p1 )
+	while(1==scanf("PLAYERS=%d", &nPlayers))
 	{
-		cin >> p2;
-		cin >> p3;
-				
-		PointD midAB = (p1 + p2) / 2.0;
-		PointD midBC = (p2 + p3) / 2.0;
+		FOR(i, 0, nPlayers)
+		{
+			cin >> pPos[i];
+			cin >> pVel[i];
+			//cout << i << pPos[i] << pVel[i] << endl;
+		}
 
-		Line<double> lineAB(p1, p2);
-		Line<double> lineBC(p2, p3);
+		int ok = scanf(" BALLS=%d", &nBalls);
+		assert(1==ok);
+		//printf("nballs = %d\n", nBalls);
+		FOR(i, 0, nBalls)
+		{
+			int a, b, c, d, e, f, g;
+			scanf("%d%d%d%d%d%d%d", &a, &b, &c, &d, &e, &f, &g);
 		
-		assert(lineAB.onLine(midAB));
-		assert(lineBC.onLine(midBC));
-		
-		//Take the equation of line perpendicular to ax+by+c=0 as bx-ay+k=0 where k is a constant.
-		
-		double k1 = -(lineAB.B * midAB.x - lineAB.A * midAB.y);
-		double k2 = -(lineBC.B * midBC.x - lineBC.A * midBC.y);
-		
-		//Create lines going from midpoints perpendicular to original lines
-		Line<double> lineMidABCenter(lineAB.B, -lineAB.A, k1);
-		Line<double> lineMidBCCenter(lineBC.B, -lineBC.A, k2);
-		
-		PointD pInt;
-		bool ok = lineMidABCenter.intersection(lineMidBCCenter, pInt);
-		
-		assert( lineMidABCenter.onLine(midAB) );
-		assert( lineMidBCCenter.onLine(midBC) );
-		assert( lineMidABCenter.onLine(pInt) );
-		assert( lineMidBCCenter.onLine(pInt) );
-		
-		double r = dist(pInt, p1);
+			double det = sqrt(b*b - 4 *a *c);
+			double t1 = ( -b + det ) / (2*a) ;
+			double t2 = ( -b - det) / (2*a) ;
+			//printf("a=%d b=%d c=%d %lf %lf\n", a,b,c, t1, t2);
+			int t;
+			double td; 
+			if ( cmp(t1, 0.0) <= 0)
+				td = t2;
+			else if ( cmp(t2,0.0) <= 0)
+				td = t1;
+			else 
+				td = min(t1, t2);
+			
+			assert(td > 0);			
+			
+			//always check 1
+			if ( a * 1 * 1 + b * 1 + c <= 0)
+				t = 1;
+			else 
+			{
+				t = ceil(td);
+				//in case of rounding error check t - 1
+				if ( a * (t-1) * (t-1) + b * (t-1) + c <= 0)
+				{
+					t--;
+				} else {
+					assert( a * t * t + b * t + c <= 0);
+				}
+			}
 				
-		printf("(x %c %.3lf)^2 + (y %c %.3lf)^2 = %.3lf^2\n",
-		cmp(-pInt.x, 0.0) >= 0 ? '+' : '-',
-		abs(pInt.x), 
-		-pInt.y >= 0 ? '+' : '-',
-		abs(pInt.y), r);
-		
-		double xCoef = 2 * -pInt.x;
-		double yCoef = 2 * -pInt.y;
-		double cCoef = -(r*r) + pInt.x*pInt.x + pInt.y*pInt.y;
-		
-		printf("x^2 + y^2 %c %.3lfx %c %.3lfy %c %.3lf = 0\n\n", 
-			xCoef >= 0 ? '+' : '-',
-			abs(xCoef),
-			yCoef >= 0 ? '+' : '-',
-			abs(yCoef),
-			cmp(cCoef, 0.0) >= 0 ? '+' : '-',
-			abs(cCoef));
-		
+				
+			
+			//printf("ball %d t=%lf\n", i, t);
+			
+			int x = d * t + e;
+			int y = f * t + g;
+			PointI ball(x, y);
+			
+			if (x < 0 || y < 0) 
+			{
+				printf("Ball %d was foul at (%d,%d)\n", i+1, x, y);
+				continue;
+			}
+			bool caught = false;
+			
+			FOR(p, 0, nPlayers)
+			{
+				double dis = dist(pPos[p], ball);
+				double tTaken = dis / pVel[p];
+				if (cmp( tTaken, (double) t ) <= 0 ) {
+					caught = true;
+					break;
+				}
+			}
+			
+			if (caught) 
+				printf("Ball %d was caught at (%d,%d)\n", i+1, x, y);
+			else
+				printf("Ball %d was safe at (%d,%d)\n", i+1, x, y);
+		}
+	
 		
 	}
 	return 0;

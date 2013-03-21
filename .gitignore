@@ -32,3 +32,4 @@ CMakeFiles/
 CMakeCache.txt
 Makefile
 *backup
+o*.txt

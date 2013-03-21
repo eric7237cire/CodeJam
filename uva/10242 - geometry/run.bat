@@ -1,4 +1,3 @@
 python c:\codejam\codejam\lib\replaceInFile.py main.cpp
 make all
-cat input.txt | project 
-rem diff o.txt output.txt
+cat input.txt | project

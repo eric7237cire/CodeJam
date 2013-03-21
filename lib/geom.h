@@ -43,13 +43,12 @@ typedef map<string, int> msi;
 Util
 */
 
-
+const double tolerance = 0.000002;
 
 template<typename T> T gcd(T a, T b)
 {
-	if (!numeric_limits<T>::is_exact)
-		return min( abs(a), abs(b) );
-
+	assert(numeric_limits<T>::is_exact);
+		
     if (a == 0)
        return b;
     while (b != 0)
@@ -78,7 +77,7 @@ void maxPair( pair<A,B>& maxPair, const pair<A,B>& pair)
 
 
 template<typename T> 
-int cmp(T a, T b, T epsilon)
+int cmp(T a, T b, T epsilon = tolerance)
 {
 	T dif = a - b;
 	if (abs(dif) <= epsilon)
@@ -272,7 +271,7 @@ T cross( const Point<T>& A, const Point<T>& B )
     return A.x*B.y - A.y*B.x;
 }
 
-const double tolerance = 0.000002;
+
 
 //Rotate about origin counter clockwise
 template<typename T>
@@ -457,23 +456,23 @@ class Line
 		B = p2.x - p1.x;
 		C = p1.x*p2.y - p2.x * p1.y;
 
-		if (normalize)
+		if (normalize && numeric_limits<T>::is_exact)
 		{
-		//make A positive
-		if (A < 0 || (A==0 && B < 0) )
-		{
-			A *= -1;
-			B *= -1;
-			C *= -1;
+			//make A positive
+			if (A < 0 || (A==0 && B < 0) )
+			{
+				A *= -1;
+				B *= -1;
+				C *= -1;
+			}
+
+			T gcdAB = gcd( abs(A), abs(B) );
+			T gcdABC = gcd( gcdAB, abs(C) );
+
+			A /= gcdABC;
+			B /= gcdABC;
+			C /= gcdABC;
 		}
-
-		T gcdAB = gcd( abs(A), abs(B) );
-		T gcdABC = gcd( gcdAB, abs(C) );
-
-		A /= gcdABC;
-		B /= gcdABC;
-		C /= gcdABC;
-}
 		//assert(A * p1.x + B * p1.y + C == 0);
 		//assert(A * p2.x + B * p2.y + C == 0);
 	}
@@ -498,11 +497,15 @@ with DET  =  a11a22-a12a21
 		if (det == 0)
 			return false;
 			
-		T x = a22/det * C + -a12/det * line2.C;
-		T y = -a21/det * C + a11/det * line2.C;
+		/*
+		-C because we move it to rhs
+		*/
+			
+		T x = a22/det * -C + -a12/det * -line2.C;
+		T y = -a21/det * -C + a11/det * -line2.C;
 		
-		pInt.x =- x;
-		pInt.y = -y;
+		pInt.x = x;
+		pInt.y = y;
 		
 		return true;
 	}
@@ -1080,7 +1083,3 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
 }
-
-
-
-
