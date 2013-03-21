@@ -39,6 +39,62 @@ typedef map<string, int> msi;
 #define contains(c,x) ((c).find(x) != (c).end()) 
 #define cpresent(c,x) (find(all(c),x) != (c).end()) 
 
+/*
+Util
+*/
+
+
+
+template<typename T> T gcd(T a, T b)
+{
+	if (!numeric_limits<T>::is_exact)
+		return min( abs(a), abs(b) );
+
+    if (a == 0)
+       return b;
+    while (b != 0)
+	{
+        if (a > b)
+           a = a - b;
+        else
+           b = b - a;
+	}
+    return a;
+}
+
+template<typename A, typename B>
+void minPair( pair<A,B>& minPair, const pair<A,B>& pair)
+{
+	minPair.first = min(minPair.first, pair.first);
+	minPair.second = min(minPair.second, pair.second);
+}
+
+template<typename A, typename B>
+void maxPair( pair<A,B>& maxPair, const pair<A,B>& pair)
+{
+	maxPair.first = max(maxPair.first, pair.first);
+	maxPair.second = max(maxPair.second, pair.second);
+}
+
+
+template<typename T> 
+int cmp(T a, T b, T epsilon)
+{
+	T dif = a - b;
+	if (abs(dif) <= epsilon)
+	{
+		return 0;
+	}
+	
+	if (dif > 0)
+	{
+		return 1; //a > b
+	}
+	
+	return -1;
+}  
+
+
 template<typename T>
 bool isBetween(T x, T a, T b)
 {
@@ -57,6 +113,10 @@ ostream& operator<<( ostream& os, const vector<T>& vec )
     return os;
 }
 
+/*
+POINT
+*/
+
 template< typename T >
 struct Point
 {
@@ -73,6 +133,15 @@ struct Point
     	return result;
     }
 };
+
+
+typedef Point<double> PointD;
+typedef Point<int> PointI;
+typedef Point<int> pi;
+typedef pair<PointD, PointD> SegmentD;
+typedef vector<PointD> vp;
+typedef vector<PointI> vpi;
+typedef vector<PointI> vecP ;
 
 template<typename T> 
 Point<T> operator-( const Point<T>& lhs, const Point<T>& rhs) 
@@ -143,12 +212,47 @@ istream& operator>>( istream& in, Point<T>& rhs)
 }
 
 
-typedef Point<double> PointD;
-typedef Point<int> PointI;
-typedef Point<int> pi;
-typedef pair<PointD, PointD> SegmentD;
-typedef vector<PointD> vp;
-typedef vector<PointI> vpi;
+template<typename T>
+int cmpYX(const Point<T>& a, const Point<T>& b)
+{
+    if (a.y != b.y)
+    {
+        return a.y < b.y;
+    }
+    return a.x < b.x;
+}
+
+template<typename T> 
+bool operator<( const Point<T>& lhs, const Point<T>& rhs) 
+{
+	return cmpYX(lhs, rhs);
+}
+
+template<typename T>
+struct PolarCmp
+{
+    Point<T> origin;
+    
+    PolarCmp( const Point<T> ori ) : origin(ori) 
+    {
+    }
+    
+    int operator()(const Point<T>& a, const Point<T>& b)
+    {
+       int isCCW = ccw(origin, a, b);
+       
+       if (isCCW == 1) 
+           return true;
+       
+       return false;
+    }
+};
+
+bool cmp(const PointI& i, const PointI& j) {
+	return (i.x != j.x)  ?
+		i.x < j.x :
+		i.y < j.y;
+}
 
 template<typename T>
 T dot( const Point<T>& A, const Point<T>& B )
@@ -233,22 +337,107 @@ int ccw<double>(  const Point<double>& p1,
     throw up; 
 }
 
-template<typename T> T gcd(T a, T b)
-{
-	if (!numeric_limits<T>::is_exact)
-		return min( abs(a), abs(b) );
 
-    if (a == 0)
-       return b;
-    while (b != 0)
+
+//Sort lowest y first, then lowest x
+template<typename T>
+class LowestYSortOrder
+{
+	public:
+	LowestYSortOrder()
 	{
-        if (a > b)
-           a = a - b;
-        else
-           b = b - a;
 	}
-    return a;
-}
+
+    int operator()(const Point<T>& p1, const Point<T>& p2)
+    {
+		if (p1.y < p2.y)
+			return 1;
+			
+        if (p1.y == p2.y && p1.x < p2.x)
+			return 1;
+			
+		return 0;
+    }
+};
+
+template<typename T>
+class PolarOrder
+{
+    Point<T> refPoint;
+    
+public:
+    PolarOrder(const Point<T>& refPt) : refPoint(refPt) 
+    {
+    }
+    
+    
+	//Returns true if p1 goes before p2
+	int operator()(const Point<T>& p1, const Point<T>& p2)
+	{
+		int cmp = compare(p1, p2);
+
+		if (cmp == -1)
+			return true;
+			
+		if (cmp == 0 && p1 != p2)
+		{
+			double d1 = dist(p1, refPoint);
+			double d2 = dist(p2, refPoint);
+			if (::cmp(d1, d2, 1e-5) < 0)
+				return true;
+		}
+
+		return false;
+	}
+
+    int compare(const Point<T>& p1, const Point<T>& p2)
+    {
+        Point<T> v1 = p1 - refPoint;
+        Point<T> v2 = p2 - refPoint;
+        
+        //Lowest angle is 0, then goes counter clockwise.  This
+        //will hit the positive angle first, so it is "less than" the other
+        if (v1.y >= 0 && v2.y < 0)
+            return -1;
+        
+        //Similar logic
+        if (v1.y < 0 && v2.y >= 0)
+            return +1;
+        
+        if (v1.y == 0 && v2.y == 0) 
+        {
+            //v1 has an angle of 0 and v2 -PI
+            if (v1.x >= 0 && v2.x < 0)
+                return -1;  
+            
+            //v2 has an angle of 0 and v1 -PI
+            if (v2.x >= 0 && v1.x < 0)
+                return +1;
+            
+            //both the same
+            return 0;
+        }
+        
+        //At this point both are above or below the y axis ; take the cross product
+        
+        int ccwRes = ccw(refPoint, p1, p2);
+                
+        //v2 is counter clockwise to v1, so v1 goes before
+        if (ccwRes > 0)
+            return -1;
+        
+        //v2 is clockwise of v1, so v2 goes before
+        if (ccwRes < 0)
+            return +1;
+        
+        //Vectors v1 and v2 are colinear		
+        return 0;
+    }
+};
+
+/*
+LINE
+*/
 
 template<class T>
 class Line
@@ -337,140 +526,6 @@ bool operator==( const Line<T>& lhs, const Line<T>& rhs)
 		
 	 (lhs.B == rhs.B) &&
 		 lhs.C == rhs.C;
-}
-
-template<typename T>
-class Circle
-{
-public:
-	T x;
-	T y;
-	T r;
-
-	Circle(T _x, T _y, T _r) : x(_x), y(_y), r(_r)
-	{
-
-	}
-
-	int sgn(double x) {
-        if (x < 0)
-            return -1;
-        return 1;
-    }
-
-	bool getPointsIntersectingLine(const Point<T>& p1,
-			const Point<T>& p2, Point<double>& i1,  Point<double>& i2 )
-	{
-        //Move circle to origin
-        T x2 = p2.x - x;
-        T y2 = p2.y - y;
-        T x1 =  p1.x - x;
-        T y1 =  p2.y - y;
-        T dx = x2-x1;
-        T dy = y2-y1;
-        double dr = sqrt(dx*dx+dy*dy);
-        T D = x1*y2-x2*y1;
-
-        double disc =r*r*dr*dr-D*D;
-        if (disc < 0)
-            return false;
-        
-        double discSqRt = sqrt(disc);
-        i1.x = x+ (D*dy+sgn(dy)*dx*discSqRt) / (dr*dr);
-        i1.y = y+ (-D*dx+abs(dy) * discSqRt) / (dr*dr);
-
-        i2.x = x+ (D*dy-sgn(dy)*dx*discSqRt) / (dr*dr);
-        i2.y = y+ (-D*dx-abs(dy) * discSqRt) / (dr*dr);
-
-        return true;
-    }
-	
-	//http://en.wikipedia.org/wiki/Circular_segment
-    /**
-     * Will find the area that is <= half or the area of the circle
-     * @param segmentLength
-     * @return
-     */
-    double findSegmentArea(double segmentLength) {
-
-        double arg = (2 * r * r - segmentLength * segmentLength)
-                / (2 * r * r);
-        
-        //Correct if arg = -1.0000000002 for ex
-        if (arg < -1) {
-            assert( arg >= -1.000001);
-            arg = -1;
-        }
-        
-        double ang = acos(arg);
-
-        double area = (r * r / 2.0) * (ang - sin(ang));
-
-        return area;
-    }
-};
-
-
-/*
-returns 0 inside, 1 border, 2 outside
-*/
-template<typename T>
-int inCircle( const Point<T>& p, const Point<T>& c, T r) { 
-  T dx = p.x - c.x;
-  T dy = p.y - c.y;
-  T Euc = dx * dx + dy * dy;
-  T rSq = r * r; 
-
-  if (numeric_limits<T>::is_exact) 
-  {
-	  return Euc < rSq ? 0 : Euc == rSq ? 1 : 2;  // inside/border/outside
-  } else {
-	  if ( abs(Euc - rSq) < tolerance )
-		  return 1;
-
-	  return Euc < rSq ? 0 : 2; 
-  }
-}
-
-//Finds centers of circle given 2 pts and a radius
-template<typename T>
-bool circle2PtsRad(const Point<T>& p1, const Point<T>& p2, 
-				   double r,  
-				   Point<T>& c1,
-				   Point<T>& c2) 
-{
-  T d2 = length_squared(p1, p2);
-
-  /**
-  if m is midway between p1 and p2
-
-  ratio mc_1 / mp_1
-
-  pythag says r^2 = mp_1^2 + mc_1^2
-
-  so mc_1 = sqrt(r^2 - mp_1^2)
-
-  h = sqrt(r^2 - mp_1^2) / mp_1
-
-  h = sqrt(r^2 - mp_1^2) / sqrt(mp_1^2)
-  h = sqrt( r^2 / mp_1^2 - 1 )
-
-  4 * mp_1^2 = d2
-
-  ratio mc_1 / mp_1 = 2 * sqrt( r^2 / d2 - 1/4 )
-  */
-
-  double det = r * r / d2 - 0.25;
-  if (det < 0.0) return false;
-  double h = sqrt(det);
-
-  //point m is average p1 and p2  ; scaling / rotation combined (swap x,y neg x)
-  c1.x = (p1.x + p2.x) * 0.5 + (p1.y - p2.y) * h;
-  c1.y = (p1.y + p2.y) * 0.5 + (p2.x - p1.x) * h;
-
-  c2.x = (p1.x + p2.x) * 0.5 + (p2.y - p1.y) * h;
-  c2.y = (p1.y + p2.y) * 0.5 + (p1.x - p2.x) * h;
-  return true; 
 }
 
 
@@ -616,97 +671,7 @@ double length_squared(const SegmentD& seg)
     return pt.x * pt.x + pt.y * pt.y;
 }
 
-bool cmp(const PointI& i, const PointI& j) {
-	return (i.x != j.x)  ?
-		i.x < j.x :
-		i.y < j.y;
-}
 
-typedef vector<PointI> vecP ;
-
-bool cmpLine(const vecP& v1, const vecP& v2)
-{
-	uint i = 0;
-	while( i < v1.size() && i < v2.size() )
-	{
-		if (v1[i] != v2[i])
-		{
-			return cmp(v1[i], v2[i]);
-		}
-		++i;
-	}
-
-	return v1.size() < v2.size();
-}
-
-template<typename A, typename B>
-void minPair( pair<A,B>& minPair, const pair<A,B>& pair)
-{
-	minPair.first = min(minPair.first, pair.first);
-	minPair.second = min(minPair.second, pair.second);
-}
-
-template<typename A, typename B>
-void maxPair( pair<A,B>& maxPair, const pair<A,B>& pair)
-{
-	maxPair.first = max(maxPair.first, pair.first);
-	maxPair.second = max(maxPair.second, pair.second);
-}
-
-template<typename T>
-int cmpYX(const Point<T>& a, const Point<T>& b)
-{
-    if (a.y != b.y)
-    {
-        return a.y < b.y;
-    }
-    return a.x < b.x;
-}
-
-template<typename T> 
-bool operator<( const Point<T>& lhs, const Point<T>& rhs) 
-{
-	return cmpYX(lhs, rhs);
-}
-
-template<typename T>
-struct PolarCmp
-{
-    Point<T> origin;
-    
-    PolarCmp( const Point<T> ori ) : origin(ori) 
-    {
-    }
-    
-    int operator()(const Point<T>& a, const Point<T>& b)
-    {
-       int isCCW = ccw(origin, a, b);
-       
-       if (isCCW == 1) 
-           return true;
-       
-       return false;
-    }
-};
-
-template<typename T>
-double polyArea ( const vector<Point<T> >& points) 
-{
-        double sum = 0;
-        for(int i = 0; i < points.size() - 1; ++i) {            
-            sum += points[i].x * points[i+1].y;  
-        }
-        
-        sum += points[ points.size()-1].x * points[0].y;
-        
-        for(int i = 0; i < points.size() - 1; ++i) {            
-            sum -= points[i+1].x * points[i].y;  
-        }
-        
-        sum -= points[0].x * points[points.size()-1].y;
-        
-        return abs(sum) / 2;
-}
 
 
 /**
@@ -735,22 +700,146 @@ double minimum_distance( const PointD& v, const PointD& w, const PointD& p, Poin
   return dist(p, projection);
 }
 
-template<typename T> 
-int cmp(T a, T b, T epsilon)
+/*
+Circle
+*/
+template<typename T>
+class Circle
 {
-	T dif = a - b;
-	if (abs(dif) <= epsilon)
+public:
+	T x;
+	T y;
+	T r;
+
+	Circle(T _x, T _y, T _r) : x(_x), y(_y), r(_r)
 	{
-		return 0;
+
 	}
-	
-	if (dif > 0)
+
+	int sgn(double x) {
+        if (x < 0)
+            return -1;
+        return 1;
+    }
+
+	bool getPointsIntersectingLine(const Point<T>& p1,
+			const Point<T>& p2, Point<double>& i1,  Point<double>& i2 )
 	{
-		return 1; //a > b
-	}
+        //Move circle to origin
+        T x2 = p2.x - x;
+        T y2 = p2.y - y;
+        T x1 =  p1.x - x;
+        T y1 =  p2.y - y;
+        T dx = x2-x1;
+        T dy = y2-y1;
+        double dr = sqrt(dx*dx+dy*dy);
+        T D = x1*y2-x2*y1;
+
+        double disc =r*r*dr*dr-D*D;
+        if (disc < 0)
+            return false;
+        
+        double discSqRt = sqrt(disc);
+        i1.x = x+ (D*dy+sgn(dy)*dx*discSqRt) / (dr*dr);
+        i1.y = y+ (-D*dx+abs(dy) * discSqRt) / (dr*dr);
+
+        i2.x = x+ (D*dy-sgn(dy)*dx*discSqRt) / (dr*dr);
+        i2.y = y+ (-D*dx-abs(dy) * discSqRt) / (dr*dr);
+
+        return true;
+    }
 	
-	return -1;
-}  
+	//http://en.wikipedia.org/wiki/Circular_segment
+    /**
+     * Will find the area that is <= half or the area of the circle
+     * @param segmentLength
+     * @return
+     */
+    double findSegmentArea(double segmentLength) {
+
+        double arg = (2 * r * r - segmentLength * segmentLength)
+                / (2 * r * r);
+        
+        //Correct if arg = -1.0000000002 for ex
+        if (arg < -1) {
+            assert( arg >= -1.000001);
+            arg = -1;
+        }
+        
+        double ang = acos(arg);
+
+        double area = (r * r / 2.0) * (ang - sin(ang));
+
+        return area;
+    }
+};
+
+
+/*
+returns 0 inside, 1 border, 2 outside
+*/
+template<typename T>
+int inCircle( const Point<T>& p, const Point<T>& c, T r) { 
+  T dx = p.x - c.x;
+  T dy = p.y - c.y;
+  T Euc = dx * dx + dy * dy;
+  T rSq = r * r; 
+
+  if (numeric_limits<T>::is_exact) 
+  {
+	  return Euc < rSq ? 0 : Euc == rSq ? 1 : 2;  // inside/border/outside
+  } else {
+	  if ( abs(Euc - rSq) < tolerance )
+		  return 1;
+
+	  return Euc < rSq ? 0 : 2; 
+  }
+}
+
+//Finds centers of circle given 2 pts and a radius
+template<typename T>
+bool circle2PtsRad(const Point<T>& p1, const Point<T>& p2, 
+				   double r,  
+				   Point<T>& c1,
+				   Point<T>& c2) 
+{
+  T d2 = length_squared(p1, p2);
+
+  /**
+  if m is midway between p1 and p2
+
+  ratio mc_1 / mp_1
+
+  pythag says r^2 = mp_1^2 + mc_1^2
+
+  so mc_1 = sqrt(r^2 - mp_1^2)
+
+  h = sqrt(r^2 - mp_1^2) / mp_1
+
+  h = sqrt(r^2 - mp_1^2) / sqrt(mp_1^2)
+  h = sqrt( r^2 / mp_1^2 - 1 )
+
+  4 * mp_1^2 = d2
+
+  ratio mc_1 / mp_1 = 2 * sqrt( r^2 / d2 - 1/4 )
+  */
+
+  double det = r * r / d2 - 0.25;
+  if (det < 0.0) return false;
+  double h = sqrt(det);
+
+  //point m is average p1 and p2  ; scaling / rotation combined (swap x,y neg x)
+  c1.x = (p1.x + p2.x) * 0.5 + (p1.y - p2.y) * h;
+  c1.y = (p1.y + p2.y) * 0.5 + (p2.x - p1.x) * h;
+
+  c2.x = (p1.x + p2.x) * 0.5 + (p2.y - p1.y) * h;
+  c2.y = (p1.y + p2.y) * 0.5 + (p1.x - p2.x) * h;
+  return true; 
+}
+
+/*
+Rectangle
+*/
 
 /*
 Is (x, y) in rectangle ?  true if inside (not just touching edge)
@@ -769,6 +858,12 @@ bool inRectangle( T x, T y, T x1, T x2, T y1, T y2, T epsilon )
 	
 	return false;
 }
+
+/*
+Triangle
+*/
+
+
 
 /*
 Inside triangle, not on the lines
@@ -826,101 +921,33 @@ bool inTriangle2( const PointD& p, const PointD& tri1,
     
 }
 
-//Sort lowest y first, then lowest x
-template<typename T>
-class LowestYSortOrder
-{
-	public:
-	LowestYSortOrder()
-	{
-	}
 
-    int operator()(const Point<T>& p1, const Point<T>& p2)
-    {
-		if (p1.y < p2.y)
-			return 1;
-			
-        if (p1.y == p2.y && p1.x < p2.x)
-			return 1;
-			
-		return 0;
-    }
-};
+
+/*
+Polygon
+*/
+
 
 template<typename T>
-class PolarOrder
+double polyArea ( const vector<Point<T> >& points) 
 {
-    Point<T> refPoint;
-    
-public:
-    PolarOrder(const Point<T>& refPt) : refPoint(refPt) 
-    {
-    }
-    
-    
-	//Returns true if p1 goes before p2
-	int operator()(const Point<T>& p1, const Point<T>& p2)
-	{
-		int cmp = compare(p1, p2);
-
-		if (cmp == -1)
-			return true;
-			
-		if (cmp == 0 && p1 != p2)
-		{
-			double d1 = dist(p1, refPoint);
-			double d2 = dist(p2, refPoint);
-			if (::cmp(d1, d2, 1e-5) < 0)
-				return true;
-		}
-
-		return false;
-	}
-
-    int compare(const Point<T>& p1, const Point<T>& p2)
-    {
-        Point<T> v1 = p1 - refPoint;
-        Point<T> v2 = p2 - refPoint;
-        
-        //Lowest angle is 0, then goes counter clockwise.  This
-        //will hit the positive angle first, so it is "less than" the other
-        if (v1.y >= 0 && v2.y < 0)
-            return -1;
-        
-        //Similar logic
-        if (v1.y < 0 && v2.y >= 0)
-            return +1;
-        
-        if (v1.y == 0 && v2.y == 0) 
-        {
-            //v1 has an angle of 0 and v2 -PI
-            if (v1.x >= 0 && v2.x < 0)
-                return -1;  
-            
-            //v2 has an angle of 0 and v1 -PI
-            if (v2.x >= 0 && v1.x < 0)
-                return +1;
-            
-            //both the same
-            return 0;
+        double sum = 0;
+        for(int i = 0; i < points.size() - 1; ++i) {            
+            sum += points[i].x * points[i+1].y;  
         }
         
-        //At this point both are above or below the y axis ; take the cross product
+        sum += points[ points.size()-1].x * points[0].y;
         
-        int ccwRes = ccw(refPoint, p1, p2);
-                
-        //v2 is counter clockwise to v1, so v1 goes before
-        if (ccwRes > 0)
-            return -1;
+        for(int i = 0; i < points.size() - 1; ++i) {            
+            sum -= points[i+1].x * points[i].y;  
+        }
         
-        //v2 is clockwise of v1, so v2 goes before
-        if (ccwRes < 0)
-            return +1;
+        sum -= points[0].x * points[points.size()-1].y;
         
-        //Vectors v1 and v2 are colinear		
-        return 0;
-    }
-};
+        return abs(sum) / 2;
+}
+
+
 
 template<typename T>
 void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
@@ -1012,4 +1039,7 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
 }
+
+
+
 
