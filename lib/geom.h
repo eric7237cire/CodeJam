@@ -501,6 +501,18 @@ with DET  =  a11a22-a12a21
 		
 		pInt.x = x;
 		pInt.y = y;
+		
+		return true;
+	}
+	
+	bool onLine( const Point<T>& pt)
+	{
+		T res = A * pt.x + B * pt.y + C;
+		
+		if (numeric_limits<T>::is_exact)
+			return res == 0;
+		else 
+			return abs(res) < tolerance;
 	}
 };
 

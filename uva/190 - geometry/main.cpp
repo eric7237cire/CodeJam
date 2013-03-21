@@ -502,6 +502,18 @@ with DET  =  a11a22-a12a21
 		
 		pInt.x = x;
 		pInt.y = y;
+		
+		return true;
+	}
+	
+	bool onLine( const Point<T>& pt)
+	{
+		T res = A * pt.x + B * pt.y + C;
+		
+		if (numeric_limits<T>::is_exact)
+			return res == 0;
+		else 
+			return abs(res) < tolerance;
 	}
 };
 
@@ -1094,6 +1106,9 @@ int main() {
 		Line<double> lineAB(p1, p2);
 		Line<double> lineBC(p2, p3);
 		
+		assert(lineAB.onLine(midAB));
+		assert(lineBC.onLine(midBC));
+		
 		PointD pInt;
 		bool ok = lineAB.intersection(lineBC, pInt);
 		cout << p1 << ", " << p2 << endl;
@@ -1102,6 +1117,17 @@ int main() {
 		cout << lineBC << endl;
 		cout << pInt << endl;
 		//Take the equation of line perpendicular to ax+by+c=0 as bx-ay+k=0 where k is a constant.
+		
+		double k1 = -(lineAB.B * midAB.x - lineAB.A * midAB.y);
+		double k2 = -(lineBC.B * midBC.x - lineBC.A * midBC.y);
+		
+		//Create lines going from midpoints perpendicular to original lines
+		Line<double> lineMidABCenter(lineAB.B, -lineAB.A, k1);
+		Line<double> lineMidBCCenter(lineBC.B, -lineBC.A, k2);
+		
+		ok = lineMidABCenter.intersection(lineMidBCCenter, pInt);
+		
+		cout << "ok " << ok << " INT " << pInt << endl;
 		
 		if (t++ >  0)
 			printf("\n");
