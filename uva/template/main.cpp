@@ -8,10 +8,10 @@ int main() {
 	int T;
 	scanf("%d", &T);
 
-	FOR(t, 0, T)
+	while(T--)
 	{
 		
-		if (t > 0)
+		if (T > 0)
 			printf("\n");
 
 		//scanf("%d", &nSeg);
