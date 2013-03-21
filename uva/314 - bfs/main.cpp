@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <cmath>
 
 #define FOR(k,a,b) for(int k=(a); k < (int) (b); ++k)
@@ -23,3 +24,22 @@ int cmp(T a, T b, T epsilon = tolerance)
 }  
 
 using namespace std;
+//STOPCOMMON
+
+#include "stdio.h"
+int main() {
+
+	int M, N;
+	scanf("%d", &T);
+
+	while(T--)
+	{
+		
+		if (T > 0)
+			printf("\n");
+
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
+}
