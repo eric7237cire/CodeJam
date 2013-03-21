@@ -1,3 +1,4 @@
+//STARTGEOM
 #include <iostream>
 //#include <fstream>
 //#include <string>
@@ -1020,5 +1021,40 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
+}
+
+
+//STOPGEOM
+
+#include "stdio.h"
+
+int N;
+Point<double> dog;
+Point<double> rabbit;
+Point<double> hole;
+
+int main() {
+
+	while( cin >> N )
+	{
+	
+		cin >> rabbit >> dog;
+		
+		bool escaped = false;
+		
+		FOR(i, 0, N)
+		{
+			cin >> hole;
+			if (!escaped && cmp(2.0*dist(rabbit, hole), dist(dog, hole), 1e-6) <= 0)
+			{
+				escaped = true;
+				printf("The gopher can escape through the hole at (%.3lf,%.3lf).\n", hole.x, hole.y);
+			}
+		}
+		
+		if (!escaped)
+			puts("The gopher cannot escape.");
+	}
+	return 0;
 }
 

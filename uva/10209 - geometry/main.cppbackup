@@ -1,0 +1,24 @@
+//STARTGEOM
+//STOPGEO
+
+#include "stdio.h"
+
+double a;
+
+
+#include <math.h>
+
+int main()
+{
+    double x,y,z,l,areaOfRect;
+    double pi=acos(-1);
+    while(scanf("%lf",&x)==1){
+        areaOfRect=x*x;
+        y = areaOfRect * (1 - sqrt(3) + pi / 3);
+        z = areaOfRect * (2 * sqrt(3) - 4 + pi / 3);
+        l = areaOfRect * (4 - sqrt(3) - 2 * pi/ 3);
+        printf("%.3f %.3f %.3f\n", y,z,l);
+    }
+    return 0;
+}
+
