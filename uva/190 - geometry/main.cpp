@@ -476,6 +476,33 @@ class Line
 		//assert(A * p1.x + B * p1.y + C == 0);
 		//assert(A * p2.x + B * p2.y + C == 0);
 	}
+	
+	Line(T _A, T _B, T _C) : A(_A), B(_B), C(_C) {}
+	
+	/*
+	| a11 a12 |-1             |  a22 -a12 |
+| a21 a22 |    =  1/DET * | -a21  a11 |
+
+with DET  =  a11a22-a12a21
+*/
+	bool intersection( const Line<T>& line2, Point<T>& pInt )
+	{
+		T a11 = A;
+		T a12 = B;
+		T a21 = line2.A;
+		T a22 = line2.B;
+		
+		T det = a11*a22 - a12*a21;
+		
+		if (det == 0)
+			return false;
+			
+		T x = a22/det * C + -a12/det * line2.C;
+		T y = -a21/det * C + a11/det * line2.C;
+		
+		pInt.x = x;
+		pInt.y = y;
+	}
 };
 
 template<class T>
@@ -1059,12 +1086,21 @@ int main() {
 		cin >> p2;
 		cin >> p3;
 		
-		cout << p1 << p2 << p3;
+		//cout << p1 << p2 << p3;
 		
 		PointD midAB = (p1 + p2) / 2.0;
 		PointD midBC = (p2 + p3) / 2.0;
 
+		Line<double> lineAB(p1, p2);
+		Line<double> lineBC(p2, p3);
 		
+		PointD pInt;
+		bool ok = lineAB.intersection(lineBC, pInt);
+		cout << p1 << ", " << p2 << endl;
+		cout << lineAB << endl;
+		cout << p2 << ", " << p3 << endl;
+		cout << lineBC << endl;
+		cout << pInt << endl;
 		//Take the equation of line perpendicular to ax+by+c=0 as bx-ay+k=0 where k is a constant.
 		
 		if (t++ >  0)
