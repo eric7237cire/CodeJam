@@ -3,6 +3,9 @@
 -30 20
 -10 -50
 10 -5
+1
+5 5
+4 5
 0
 
 Lucy and Lily are twins. Today is their birthday. Mother buys a birthday cake for them.Now we put the cake onto a Descartes coordinate. Its center is at (0,0), and the cake's length of radius is 100.

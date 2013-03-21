@@ -1059,14 +1059,41 @@ int main()
 		{
 			cin >> p;
 			points.pb(p);
-			cout << p << endl;
+			//cout << p << endl;
 		}
 			
-		for(int A = -500; A <= 500; ++A)
+		Point<int> origin(0,0);
+		
+		bool solFound = false;
+		
+		for(int A = -500; A <= 500 && !solFound; ++A)
 		{
-			for(int B = -500; B <= 500; ++B)
+			for(int B = -500; B <= 500 && !solFound; ++B)
 			{
+				//Ax + By = 0
+				//points are 0, 0 and other point is B, -A
+				Point<int> other(B, -A);
 				
+				int nPos =0;
+				int nNeg = 0;
+				
+				for(int i = 0; i < points.size(); ++i)
+				{
+					int side = getSide(origin, other, points[i]);
+					if (side == 0) {
+						nPos = -1;
+						break;
+					} else if (side == 1)
+						nPos++;
+					else if (side == -1)
+						nNeg++;
+				}
+				
+				if (nPos == N && nNeg == N)
+				{
+					solFound = true;
+					printf("%d %d\n", A, B);
+				}
 			}
 		}
 

@@ -44,6 +44,80 @@ typedef map<string, int> msi;
 Util
 */
 
+
+
+template<typename T> T gcd(T a, T b)
+{
+	if (!numeric_limits<T>::is_exact)
+		return min( abs(a), abs(b) );
+
+    if (a == 0)
+       return b;
+    while (b != 0)
+	{
+        if (a > b)
+           a = a - b;
+        else
+           b = b - a;
+	}
+    return a;
+}
+
+template<typename A, typename B>
+void minPair( pair<A,B>& minPair, const pair<A,B>& pair)
+{
+	minPair.first = min(minPair.first, pair.first);
+	minPair.second = min(minPair.second, pair.second);
+}
+
+template<typename A, typename B>
+void maxPair( pair<A,B>& maxPair, const pair<A,B>& pair)
+{
+	maxPair.first = max(maxPair.first, pair.first);
+	maxPair.second = max(maxPair.second, pair.second);
+}
+
+
+template<typename T> 
+int cmp(T a, T b, T epsilon)
+{
+	T dif = a - b;
+	if (abs(dif) <= epsilon)
+	{
+		return 0;
+	}
+	
+	if (dif > 0)
+	{
+		return 1; //a > b
+	}
+	
+	return -1;
+}  
+
+
+template<typename T>
+bool isBetween(T x, T a, T b)
+{
+	return (a <= x && x <= b) ||
+		(b <= x && x <= a);
+}
+
+
+template<typename T>
+ostream& operator<<( ostream& os, const vector<T>& vec )
+{
+    FOR(i, 0, vec.size())
+    {
+        os <<  vec[i] << endl;
+    }
+    return os;
+}
+
+/*
+POINT
+*/
+
 template< typename T >
 struct Point
 {
@@ -70,35 +144,74 @@ typedef vector<PointD> vp;
 typedef vector<PointI> vpi;
 typedef vector<PointI> vecP ;
 
-bool cmpLine(const vecP& v1, const vecP& v2)
+template<typename T> 
+Point<T> operator-( const Point<T>& lhs, const Point<T>& rhs) 
 {
-	uint i = 0;
-	while( i < v1.size() && i < v2.size() )
-	{
-		if (v1[i] != v2[i])
-		{
-			return cmp(v1[i], v2[i]);
-		}
-		++i;
-	}
+	Point<T> ret( lhs.x - rhs.x, lhs.y - rhs.y);
+	return ret;
+}
 
-	return v1.size() < v2.size();
+template<typename T> 
+Point<T> operator+( const Point<T>& lhs, const Point<T>& rhs) 
+{
+	Point<T> ret( lhs.x + rhs.x, lhs.y + rhs.y);
+	return ret;
+}
+
+template<typename T> 
+bool operator==( const Point<T>& lhs, const Point<T>& rhs) 
+{
+	return lhs.x == rhs.x && lhs.y == rhs.y;
+}
+
+template<typename T> 
+bool operator!=( const Point<T>& lhs, const Point<T>& rhs) 
+{
+	return lhs.x != rhs.x || lhs.y != rhs.y;
+}
+
+template<typename T> 
+Point<T> operator/( const Point<T>& lhs, const T&  rhs) 
+{
+	Point<T> ret( lhs.x / rhs, lhs.y / rhs);
+	return ret;
+}
+
+template<typename T> 
+Point<T> operator*( const Point<T>& lhs, const T&  rhs) 
+{
+	Point<T> ret( lhs.x * rhs, lhs.y * rhs);
+	return ret;
 }
 
 
-template<typename A, typename B>
-void minPair( pair<A,B>& minPair, const pair<A,B>& pair)
+template<typename T> 
+Point<T> operator*( const T&  lhs, const Point<T>& rhs) 
 {
-	minPair.first = min(minPair.first, pair.first);
-	minPair.second = min(minPair.second, pair.second);
+	return rhs * lhs;
 }
 
-template<typename A, typename B>
-void maxPair( pair<A,B>& maxPair, const pair<A,B>& pair)
+/*
+template<typename T> 
+Point<T> operator*( int lhs, const Point<T>& rhs) 
 {
-	maxPair.first = max(maxPair.first, pair.first);
-	maxPair.second = max(maxPair.second, pair.second);
+	return rhs * lhs;
+}*/
+
+template<typename T> 
+ostream& operator<<( ostream& os, const Point<T>& rhs) 
+{
+	os << "(" << rhs.x << ", " << rhs.y << ")" ;
+	return os;
 }
+
+template<typename T>
+istream& operator>>( istream& in, Point<T>& rhs)
+{
+	in >> rhs.x >> rhs.y;
+	return in;
+}
+
 
 template<typename T>
 int cmpYX(const Point<T>& a, const Point<T>& b)
@@ -142,22 +255,89 @@ bool cmp(const PointI& i, const PointI& j) {
 		i.y < j.y;
 }
 
-template<typename T> 
-int cmp(T a, T b, T epsilon)
+template<typename T>
+T dot( const Point<T>& A, const Point<T>& B )
 {
-	T dif = a - b;
-	if (abs(dif) <= epsilon)
-	{
-		return 0;
-	}
-	
-	if (dif > 0)
-	{
-		return 1; //a > b
-	}
-	
-	return -1;
-}  
+    return A.x*B.x + A.y * B.y;       
+}
+
+template<typename T>
+T mag( const Point<T>& v )
+{
+    return sqrt(v.x * v.x + v.y * v.y);
+}
+
+template<typename T>
+T cross( const Point<T>& A, const Point<T>& B )
+{
+    return A.x*B.y - A.y*B.x;
+}
+
+const double tolerance = 0.000002;
+
+//Rotate about origin counter clockwise
+template<typename T>
+Point<T> rotate90(const Point<T> & p)
+{
+    return Point<T>(-p.y, p.x);
+}
+
+
+
+/*
+vector p1p2 ; p1p3
+returns 
+-1 if p1p3 is clockwise of p1p2 ( "right turn" )
++1 if p1p3 is counter-clockwise of p1p2 ( "left turn " )
+0 if parallel
+*/
+template<typename T>
+int  ccw(  const Point<T>& p1, 
+    const Point<T>& p2, const Point<T>& p3)
+{
+    Point<T> v1 = p2 - p1;
+    Point<T> v2 = p3 - p1;
+    
+    T cp = cross(v1, v2);
+    
+    //v2 is counter clockwise to v1, so we turned left
+    if (cp > 0)
+        return +1;
+    
+    //v2 is clockwise of v1, 
+    if (cp < 0)
+        return -1;
+    
+    //Vectors v1 and v2 are colinear
+    return 0;
+}
+
+template<> 
+int ccw<double>(  const Point<double>& p1, 
+    const Point<double>& p2, const Point<double>& p3)
+{
+    Point<double> v1 = p2 - p1;
+    Point<double> v2 = p3 - p1;
+    
+    double cp = cross(v1, v2);
+    
+    //Vectors v1 and v2 are colinear
+    if (abs(cp) < tolerance) {
+        return 0;
+    }
+    
+    //v2 is counter clockwise to v1, so we turned left
+    if (cp > 0)
+        return +1;
+    
+    //v2 is clockwise of v1, 
+    if (cp < 0)
+        return -1;
+    
+	int up = 3;
+    throw up; 
+}
+
 
 
 //Sort lowest y first, then lowest x
@@ -255,199 +435,6 @@ public:
         return 0;
     }
 };
-
-template<typename T>
-bool isBetween(T x, T a, T b)
-{
-	return (a <= x && x <= b) ||
-		(b <= x && x <= a);
-}
-
-
-template<typename T>
-ostream& operator<<( ostream& os, const vector<T>& vec )
-{
-    FOR(i, 0, vec.size())
-    {
-        os <<  vec[i] << endl;
-    }
-    return os;
-}
-
-/*
-POINT
-*/
-
-
-template<typename T> 
-Point<T> operator-( const Point<T>& lhs, const Point<T>& rhs) 
-{
-	Point<T> ret( lhs.x - rhs.x, lhs.y - rhs.y);
-	return ret;
-}
-
-template<typename T> 
-Point<T> operator+( const Point<T>& lhs, const Point<T>& rhs) 
-{
-	Point<T> ret( lhs.x + rhs.x, lhs.y + rhs.y);
-	return ret;
-}
-
-template<typename T> 
-bool operator==( const Point<T>& lhs, const Point<T>& rhs) 
-{
-	return lhs.x == rhs.x && lhs.y == rhs.y;
-}
-
-template<typename T> 
-bool operator!=( const Point<T>& lhs, const Point<T>& rhs) 
-{
-	return lhs.x != rhs.x || lhs.y != rhs.y;
-}
-
-template<typename T> 
-Point<T> operator/( const Point<T>& lhs, const T&  rhs) 
-{
-	Point<T> ret( lhs.x / rhs, lhs.y / rhs);
-	return ret;
-}
-
-template<typename T> 
-Point<T> operator*( const Point<T>& lhs, const T&  rhs) 
-{
-	Point<T> ret( lhs.x * rhs, lhs.y * rhs);
-	return ret;
-}
-
-
-template<typename T> 
-Point<T> operator*( const T&  lhs, const Point<T>& rhs) 
-{
-	return rhs * lhs;
-}
-
-/*
-template<typename T> 
-Point<T> operator*( int lhs, const Point<T>& rhs) 
-{
-	return rhs * lhs;
-}*/
-
-template<typename T> 
-ostream& operator<<( ostream& os, const Point<T>& rhs) 
-{
-	os << "(" << rhs.x << ", " << rhs.y << ")" ;
-	return os;
-}
-
-template<typename T>
-istream& operator>>( istream& in, Point<T>& rhs)
-{
-	in >> rhs.x >> rhs.y;
-	return in;
-}
-
-
-
-template<typename T>
-T dot( const Point<T>& A, const Point<T>& B )
-{
-    return A.x*B.x + A.y * B.y;       
-}
-
-template<typename T>
-T mag( const Point<T>& v )
-{
-    return sqrt(v.x * v.x + v.y * v.y);
-}
-
-template<typename T>
-T cross( const Point<T>& A, const Point<T>& B )
-{
-    return A.x*B.y - A.y*B.x;
-}
-
-const double tolerance = 0.000002;
-
-//Rotate about origin counter clockwise
-template<typename T>
-Point<T> rotate90(const Point<T> & p)
-{
-    return Point<T>(-p.y, p.x);
-}
-
-
-
-/*
-vector p1p2 ; p1p3
-returns 
--1 if p1p3 is clockwise of p1p2 ( "right turn" )
-+1 if p1p3 is counter-clockwise of p1p2 ( "left turn " )
-0 if parallel
-*/
-template<typename T>
-int  ccw(  const Point<T>& p1, 
-    const Point<T>& p2, const Point<T>& p3)
-{
-    Point<T> v1 = p2 - p1;
-    Point<T> v2 = p3 - p1;
-    
-    T cp = cross(v1, v2);
-    
-    //v2 is counter clockwise to v1, so we turned left
-    if (cp > 0)
-        return +1;
-    
-    //v2 is clockwise of v1, 
-    if (cp < 0)
-        return -1;
-    
-    //Vectors v1 and v2 are colinear
-    return 0;
-}
-
-template<> 
-int ccw<double>(  const Point<double>& p1, 
-    const Point<double>& p2, const Point<double>& p3)
-{
-    Point<double> v1 = p2 - p1;
-    Point<double> v2 = p3 - p1;
-    
-    double cp = cross(v1, v2);
-    
-    //Vectors v1 and v2 are colinear
-    if (abs(cp) < tolerance) {
-        return 0;
-    }
-    
-    //v2 is counter clockwise to v1, so we turned left
-    if (cp > 0)
-        return +1;
-    
-    //v2 is clockwise of v1, 
-    if (cp < 0)
-        return -1;
-    
-	int up = 3;
-    throw up; 
-}
-
-template<typename T> T gcd(T a, T b)
-{
-	if (!numeric_limits<T>::is_exact)
-		return min( abs(a), abs(b) );
-
-    if (a == 0)
-       return b;
-    while (b != 0)
-	{
-        if (a > b)
-           a = a - b;
-        else
-           b = b - a;
-	}
-    return a;
-}
 
 /*
 LINE
@@ -1072,14 +1059,41 @@ int main()
 		{
 			cin >> p;
 			points.pb(p);
-			cout << p << endl;
+			//cout << p << endl;
 		}
 			
-		for(int A = -500; A <= 500; ++A)
+		Point<int> origin(0,0);
+		
+		bool solFound = false;
+		
+		for(int A = -500; A <= 500 && !solFound; ++A)
 		{
-			for(int B = -500; B <= 500; ++B)
+			for(int B = -500; B <= 500 && !solFound; ++B)
 			{
+				//Ax + By = 0
+				//points are 0, 0 and other point is B, -A
+				Point<int> other(B, -A);
 				
+				int nPos =0;
+				int nNeg = 0;
+				
+				for(int i = 0; i < points.size(); ++i)
+				{
+					int side = getSide(origin, other, points[i]);
+					if (side == 0) {
+						nPos = -1;
+						break;
+					} else if (side == 1)
+						nPos++;
+					else if (side == -1)
+						nNeg++;
+				}
+				
+				if (nPos == N && nNeg == N)
+				{
+					solFound = true;
+					printf("%d %d\n", A, B);
+				}
 			}
 		}
 
