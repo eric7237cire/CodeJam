@@ -1,0 +1,56 @@
+Mr. Black recently bought a villa in the countryside. Only one thing bothers him: although there are light switches in most rooms, the lights they control are often in other rooms than the switches themselves. While his estate agent saw this as a feature, Mr. Black has come to believe that the electricians were a bit absent-minded (to put it mildly) when they connected the switches to the outlets.
+
+One night, Mr. Black came home late. While standing in the hallway, he noted that the lights in all other rooms were switched off. Unfortunately, Mr. Black was afraid of the dark, so he never dared to enter a room that had its lights out and would never switch off the lights of the room he was in.
+
+After some thought, Mr. Black was able to use the incorrectly wired light switches to his advantage. He managed to get to his bedroom and to switch off all lights except for the one in the bedroom.
+
+You are to write a program that, given a description of a villa, determines how to get from the hallway to the bedroom if only the hallway light is initially switched on. You may never enter a dark room, and after the last move, all lights except for the one in the bedroom must be switched off. If there are several paths to the bedroom, you have to find the one which uses the smallest number of steps, where ``move from one room to another'', ``switch on a light'' and ``switch off a light'' each count as one step.
+
+Input
+
+The input file contains several villa descriptions. Each villa starts with a line containing three integers r, d, and s. r is the number of rooms in the villa, which will be at most 10. d is the number of doors/connections between the rooms and s is the number of light switches in the villa. The rooms are numbered from 1 to r; room number 1 is the hallway, room number r is the bedroom.
+
+This line is followed by d lines containing two integers i and j each, specifying that room i is connected to room j by a door. Then follow s lines containing two integers k and l each, indicating that there is a light switch in room k that controls the light in room l.
+
+A blank line separates the villa description from the next one. The input file ends with a villa having r = d = s = 0, which should not be processed.
+
+Output
+
+For each villa, first output the number of the test case (`Villa #1', `Villa #2', etc.) in a line of its own.
+
+If there is a solution to Mr. Black's problem, output the shortest possible sequence of steps that leads him to his bedroom and only leaves the bedroom light switched on. (Output only one shortest sequence if you find more than one.) Adhere to the output format shown in the sample below.
+
+If there is no solution, output a line containing the statement `The problem cannot be solved.'
+
+Output a blank line after each test case.
+
+Sample Input
+
+3 3 4
+1 2
+1 3
+3 2
+1 2
+1 3
+2 1
+3 2
+
+2 1 2
+2 1
+1 1
+1 2
+
+0 0 0
+Sample Output
+
+Villa #1
+The problem can be solved in 6 steps:
+- Switch on light in room 2.
+- Switch on light in room 3.
+- Move to room 2.
+- Switch off light in room 1.
+- Move to room 3.
+- Switch off light in room 2.
+
+Villa #2
+The problem cannot be solved.
