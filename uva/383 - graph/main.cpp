@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include "stdio.h"
 #include <iostream>
 #include <fstream>
@@ -381,4 +382,133 @@ int getId(map<OrigType, int>& m, map<int, OrigType>& mapNames, const OrigType& n
 	   mapNames[nextId] = name;
 	   return nextId;
 	}	
+}
+
+//STOPCOMMON
+
+struct State
+{
+	int loc;	
+	int steps;
+	
+	State(int lloc, int ssteps)  : 
+	loc(lloc), steps(ssteps)
+	{
+		
+	}
+	
+};
+
+
+bool operator<(const State& lhs, const State& rhs)
+{
+	return lhs.loc < rhs.loc;
+}
+
+struct StateComp
+{
+	int operator()(const State& lhs, const State& rhs)
+	{
+		if (lhs.steps != rhs.steps)
+		return -lhs.steps < -rhs.steps;
+	
+		return (lhs < rhs);
+	}
+};
+
+int main() {
+
+	int T;
+	scanf("%d", &T);
+
+	cout << "SHIPPING ROUTES OUTPUT\n" << endl;
+	
+	FORE(t, 1, T)
+	{
+		cout << "DATA SET" << setw(3) << t << endl << endl;
+		
+		int nNodes, nEdges, nQuery;
+		cin >> nNodes >> nEdges >> nQuery;
+		//cout << nQuery << endl;
+		map<string, int> idMap;
+		map<int, string> nameMap;
+		
+		FOR(m, 0, nNodes)
+		{
+			string name;
+			cin >> name;
+			
+			//Initialize all the ids
+			getId(idMap, nameMap, name, idMap.size());
+		}
+		
+		vvi connections(nNodes, vi());
+		
+		FOR(n, 0, nEdges)
+		{
+			string name1, name2;
+			cin >> name1 >> name2;
+			int id1, id2;
+			id1 = idMap[name1];
+			id2 = idMap[name2];
+			
+			connections[id1].pb(id2);
+			connections[id2].pb(id1);
+		}
+		
+		FOR(q, 0, nQuery)
+		{
+			int shipSize;
+			string name1, name2;
+			cin >> shipSize >> name1 >> name2;
+			int id1, id2;
+			id1 = idMap[name1];
+			id2 = idMap[name2];
+			
+			
+			priority_queue<State, vector<State>, StateComp > toVisit;
+			set<State> visited;
+			
+			toVisit.push( State(id1, 0) );
+			bool finished = false;
+			
+			while( !toVisit.empty() )
+			{
+				State cur = toVisit.top();
+				toVisit.pop();
+				
+				if (contains(visited, cur))
+					continue;
+					
+				//printf("Visited node %d ; %s after %d steps\n", cur.loc, nameMap[cur.loc].c_str(), cur.steps);
+				visited.insert(cur);
+				
+				if (cur.loc == id2)
+				{
+					int cost = 100 * shipSize * cur.steps;
+					printf("$%d\n", cost);
+					finished = true;
+					break;
+				}
+				
+				vi& adjList = connections[cur.loc];
+			
+				FOR(i, 0, adjList.size())
+				{
+					toVisit.push( State(adjList[i], cur.steps + 1) );
+				}
+			}
+			
+			if (!finished)
+				cout << "NO SHIPMENT POSSIBLE" << endl;
+		}
+		
+		cout << endl;
+
+		//scanf("%d", &nSeg);
+		
+	}
+	
+	cout << "END OF OUTPUT" << endl;
+	return 0;
 }
