@@ -26,6 +26,8 @@ typedef unsigned long long ull;
 #define FORE(k,a,b) for(uint k=(a); k <= (b); ++k)
 #define FOR(k,a,b) for(uint k=(a); k < (b); ++k)
 
+#define NE_LE(attr) if (lhs.attr != rhs.attr) return lhs.attr < rhs.attr
+
 #define pb push_back 
 #define mp make_pair 
 
@@ -455,8 +457,9 @@ ostream& operator<<(ostream& os, const State& rhs)
 
 bool operator<(const State& lhs, const State& rhs)
 {
-	if (lhs.row != rhs.row)
-		return lhs.row < rhs.row;
+	NE_LE(row);
+	//if (lhs.row != rhs.row)
+		//return lhs.row < rhs.row;
 		
 	if (lhs.col != rhs.col)
 		return lhs.col < rhs.col;

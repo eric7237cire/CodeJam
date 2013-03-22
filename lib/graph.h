@@ -25,6 +25,8 @@ typedef unsigned long long ull;
 #define FORE(k,a,b) for(uint k=(a); k <= (b); ++k)
 #define FOR(k,a,b) for(uint k=(a); k < (b); ++k)
 
+#define NE_LT(attr) if (lhs.attr != rhs.attr) return lhs.attr < rhs.attr
+
 #define pb push_back 
 #define mp make_pair 
 
