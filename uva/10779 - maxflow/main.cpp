@@ -399,66 +399,16 @@ int main() {
 	
 	while( T--)
 	{
-		//eat blank line before input
 		
-		
-		map<string, int> personIdMap;
-		map<string, int> partyIdMap;
-		
-		//map<int, string> personNames;
-		map<int, string> clubNames;
-		
-		map<string, int> clubIdMap;
-		
-		Flow<int> flow(source, sink);
-		
-		while(getline(cin, line) && line != "")
-		{
-			//cout << "Read line " << line << endl;
-			istringstream ss(line);
-			string clubName;
-			string personName;
-			string partyName;
-			ss >> personName >> partyName;
-			int idPerson = getId(personIdMap, personName, 
-				2 + personIdMap.size() + partyIdMap.size() + clubIdMap.size());
-				
-			int idParty = getId(partyIdMap, partyName, 
-				2 + personIdMap.size() + partyIdMap.size() + clubIdMap.size());
-				
-			//personNames[idPerson] = personName;
 			
 			//Impose the maximum of each party 
 			//printf("Add edge party %d to person %d\n", idParty, idPerson);
 			flow.addEdge(idParty, idPerson, 1);
 			
-			while( ss >> clubName)
-			{
-				int idClub = getId(clubIdMap, clubName, 
-				2 + personIdMap.size() + partyIdMap.size() + clubIdMap.size());
-				
-				clubNames[idClub] = clubName;
-				
-				flow.addEdge(idPerson, idClub, 1);
-			}
-		}
 		
-		//must be less than half 
-		int maxPartyMembers = (clubIdMap.size()-1) / 2;
-		
-		for(msi::iterator it = partyIdMap.begin(); it != partyIdMap.end(); ++it)
-		{
-			//printf("Add party edge source %d to %d cap %d\n", source, it->second, maxPartyMembers);
-			flow.addEdge( source, it->second, maxPartyMembers);
-		}
-		
-		for(msi::iterator it = clubIdMap.begin(); it != clubIdMap.end(); ++it)
-		{
 			//A successful assignement
 			flow.addEdge( it->second, sink, 1);
-		}
-		
-		
+			
 		int total = 0;
 				
 		int augAmt = 0;
@@ -468,61 +418,6 @@ int main() {
 			if (debug) cout << "After flow augment total: " << total << endl;
 		}
 		
-		//Must have 1 assignement per club
-		if (total < clubIdMap.size())
-		{
-			puts("Impossible.");
-			if (T)
-				puts("");
-			continue;
-		}
-		
-		//vector<ii> minCut = flow.getMinCut();
-		
-		//printf("Flow %d # clubs %d \n", total, clubIdMap.size());
-		
-		for(msi::iterator it = personIdMap.begin(); it != personIdMap.end(); ++it)
-		{
-			int nodeIdx = it->second;
-			
-			//cout << "id " << nodeIdx << endl;
-			
-			for (int i = 0; i < flow.V[nodeIdx].size(); i++)
-			{
-				
-				//printf("i: %d V size: %d\n", i, flow.V[nodeIdx].size());
-				
-				
-				const int edgeIdx = flow.V[nodeIdx][i];
-				//printf("1 edge idx %d\n", edgeIdx);
-				
-				//Only consider originally added edges
-				if (edgeIdx % 2 == 1)
-					continue;
-				
-				//printf("2 edge idx %d\n", edgeIdx);
-				
-				const edge<int>& anEdge = flow.E[ edgeIdx ];
-				
-				int trgNodeIdx = anEdge.dest;
-				
-				map<int, string>::iterator clubIt = clubNames.find(trgNodeIdx);
-				
-				if (clubIt == clubNames.end())
-					continue;
-					
-				if (anEdge.residue > 0)
-					continue;
-				
-				cout << it->first << " " << clubIt->second << endl;
-			}
-			
-						
-		}
-		if (T)
-				puts("");
-	}
-    return 0;
 }
 #endif 
 //STOPCOMMON
@@ -533,11 +428,69 @@ int main() {
 	int T;
 	scanf("%d", &T);
 
-	while(T--)
+	FORE(t, 1, T)
 	{
+		int nPeople, nStickers;
+		cin >> nPeople >> nStickers;
 		
-		if (T > 0)
-			printf("\n");
+		const int source = 0;
+		const int sink = nStickers + 1;
+		
+		Flow<int> flow(source, sink);
+		
+		FORE(per, 1, nPeople)
+		{
+			int k;
+			cin >> k;
+			
+			vi perStickers(nStickers, 0);
+			
+			FOR(i, 0, k)
+			{
+				int stickerId;
+				cin >> stickerId;
+				
+				perStickers[stickerId-1]++;
+			}
+			
+			if (per == 1) //bob
+			{
+				FORE(stickId, 1, nStickers)
+				{
+					//printf("Add bob edge source ==> %d with cap %d\n", stickId, perStickers[stickId-1]);
+					flow.addEdge(source, stickId, perStickers[stickId-1]);
+					
+					//Each unique sticker can count once
+					flow.addEdge(stickId, sink, 1);
+				}
+			} else {
+				int offset = nStickers + 1 + per;
+				
+				FORE(stickId, 1, nStickers)
+				{
+					if (perStickers[stickId - 1] == 0)
+					{
+						//accept a sticker
+						flow.addEdge(stickId, per + offset, 1);
+					} else if (perStickers[stickId - 1] > 1) {
+						//give a sticker
+						flow.addEdge(per + offset, stickId, perStickers[stickId - 1] - 1);
+					}
+				}
+								
+			}
+		}
+		
+		int total = 0;
+				
+		int augAmt = 0;
+		while( (augAmt = flow.augment()) > 0 )
+		{   
+			total += augAmt;
+			if (debug) cout << "After flow augment total: " << total << endl;
+		}
+		
+		printf("Case #%d: %d\n", t, total);
 
 		//scanf("%d", &nSeg);
 		
