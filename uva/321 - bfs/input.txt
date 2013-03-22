@@ -1,3 +1,19 @@
+3 3 4
+1 2
+1 3
+3 2
+1 2
+1 3
+2 1
+3 2
+
+2 1 2
+2 1
+1 1
+1 2
+
+0 0 0
+
 Mr. Black recently bought a villa in the countryside. Only one thing bothers him: although there are light switches in most rooms, the lights they control are often in other rooms than the switches themselves. While his estate agent saw this as a feature, Mr. Black has come to believe that the electricians were a bit absent-minded (to put it mildly) when they connected the switches to the outlets.
 
 One night, Mr. Black came home late. While standing in the hallway, he noted that the lights in all other rooms were switched off. Unfortunately, Mr. Black was afraid of the dark, so he never dared to enter a room that had its lights out and would never switch off the lights of the room he was in.

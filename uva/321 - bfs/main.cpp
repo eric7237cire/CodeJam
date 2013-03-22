@@ -447,6 +447,12 @@ bool operator<(const State& lhs, const State& rhs)
 	return lhs.lights < rhs.lights;
 }
 
+ostream& operator<<(ostream& os, const State& rhs)
+{
+	os << "room " << rhs.room << ", lights " << rhs.lights << " steps = " << rhs.steps ;
+	return os;
+}
+
 struct StateComp
 {
 	int operator()(const State& lhs, const State& rhs)
@@ -464,7 +470,7 @@ bool roomConn[10][10];
 int main() {
 
 	
-	while(scanf("%d%d%d", &r, &d, &s))
+	while(scanf("%d%d%d", &r, &d, &s) == 3 && (r||d||s))
 	{
 		
 		//r = rooms, d = doors, s = switches
@@ -497,6 +503,10 @@ int main() {
 		toVisit.push( State(0, 1, 0) );
 		bool finished = false;
 		
+		int finalLights = 1 << r-1;
+		
+		//visited.insert( State(0, 1, 0) );
+		
 		while( !toVisit.empty() )
 		{
 			State cur = toVisit.top();
@@ -505,24 +515,35 @@ int main() {
 			if (contains(visited, cur))
 				continue;
 				
-			//cout << "Visiting " << cur << endl;
+			cout << "Visiting " << cur << endl;
 				
 			visited.insert(cur);
+			
+			if ( cur.room == r - 1 && cur.lights == finalLights) 
+			{
+				cout << "found it " << cur.steps << endl;
+				finished = true;
+				break;
+			}
 		
 			assert( (cur.lights & 1 << cur.room) != 0 );
 			
 			FOR(i, 0, switches[ cur.room ].size())
 			{
+				cout << "switch " << i << endl;
 				toVisit.push( State(cur.room, cur.lights ^ 1 << switches[ cur.room ][i], cur.steps+1) );
 			}
 			FOR(i, 0, r)
 			{
-				if (roomConn[cur.room][i] && (cur.lights | 1 << i) && i != cur.room)
+				cout << "room " << i << endl;
+				if (roomConn[cur.room][i] && (cur.lights & 1 << i) && i != cur.room)
 				{
 					toVisit.push( State(i, cur.lights, cur.steps+1) );
 				}
 			}
 		}
+		
+		cout << "ok" << endl;
 	}
 	return 0;
 }
