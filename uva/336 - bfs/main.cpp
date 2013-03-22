@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include "stdio.h"
 #include <iostream>
 #include <fstream>
@@ -422,3 +423,74 @@ int main() {
 		
 }
 #endif 
+//STOPCOMMON
+
+//node ttl
+typedef pair<int, int> State;
+
+int main() {
+
+	int NC;
+	int t = 0;
+	while(1 == scanf("%d", &NC) && NC)
+	{
+		
+		vvi connections(31, vi());
+		//name ==> id 
+		map<int, int> mapIds;
+		//id ==> name
+		map<int, int> mapNames;
+		
+		FOR(i, 0, NC)
+		{
+			int name1, name2;
+			scanf("%d%d", &name1, &name2);
+			
+			int id1, id2;
+			id1 = getId(mapIds, mapNames, name1, mapIds.size());
+			id2 = getId(mapIds, mapNames, name2, mapIds.size());
+			
+			connections[id1].pb(id2);
+			connections[id2].pb(id1);
+		}
+		
+		int nodeName, TTL;
+		while( 2 == scanf("%d%d", &nodeName, &TTL) && (nodeName|TTL) )
+		{
+			int nodeId = mapIds[nodeName];
+			
+			queue<State> toVisit;
+			set<int> visited;
+			
+			toVisit.push( State(nodeId, TTL) );
+			
+			while( !toVisit.empty() )
+			{
+				State cur = toVisit.front();
+				toVisit.pop();
+				
+				if (contains(visited, cur.first))
+					continue;
+					
+				visited.insert(cur.first);
+				
+				if (cur.second == 0)
+					continue;
+				
+				vi& adjList = connections[cur.first];
+			
+				FOR(i, 0, adjList.size())
+				{
+					toVisit.push( State(adjList[i], cur.second - 1) );
+				}
+			}
+		
+			printf("Case %d: %d nodes not reachable from node %d with TTL = %d.\n",
+			++t, mapIds.size() - visited.size(), nodeName, TTL);
+		}
+
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
+}
