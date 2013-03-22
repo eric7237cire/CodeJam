@@ -447,11 +447,14 @@ struct State
 	}
 };
 
+ostream& operator<<(ostream& os, const State& rhs)
+{
+	os << "[" << rhs.row << ", " << rhs.col << "] dir = " << rhs.dir << " time " << rhs.time ;
+	return os;
+}
+
 bool operator<(const State& lhs, const State& rhs)
 {
-	if (lhs.time != rhs.time)
-		return -lhs.time < -rhs.time;
-	
 	if (lhs.row != rhs.row)
 		return lhs.row < rhs.row;
 		
@@ -460,6 +463,18 @@ bool operator<(const State& lhs, const State& rhs)
 		
 	return lhs.dir < rhs.dir;
 }
+
+struct StateComp
+{
+	int operator()(const State& lhs, const State& rhs)
+	{
+		if (lhs.time != rhs.time)
+		return -lhs.time < -rhs.time;
+	
+		return (lhs < rhs);
+	}
+};
+
 	
 int main() {
 
@@ -482,10 +497,11 @@ int main() {
 		
 		int d = strDir[s];
 		
-		priority_queue<State> toVisit;
+		priority_queue<State, vector<State>, StateComp> toVisit;
 		set<State> visited;
 		
 		toVisit.push( State(b1, b2, d, 0) );
+		bool finished = false;
 		
 		while( !toVisit.empty() )
 		{
@@ -495,11 +511,14 @@ int main() {
 			if (contains(visited, cur))
 				continue;
 				
+			//cout << "Visiting " << cur << endl;
+				
 			visited.insert(cur);
 			
 			if (cur.row == e1 && cur.col == e2)
 			{
-				cout << "DONE " << cur.time << endl;
+				cout << cur.time << endl;
+				finished = true;
 				break;
 			}
 				
@@ -515,15 +534,19 @@ int main() {
 				int newCol = cur.col + i*dir[cur.dir][1];
 				
 				if (newRow < 1 || newRow > M-1 || newCol < 1 || newCol > N-1)
+				{
+					//printf("Can't advance %d steps to %d %d\n", i, newRow, newCol);
 					break;
+				}
 				
 				bool ok = true;
 				for(int r = newRow - 1; r <= newRow && ok; ++r)
 				{
 					for(int c = newCol - 1; c <= newCol; ++c)
 					{
-						if (grid[r][c] == 0)
+						if (grid[r][c] == 1)
 						{
+							//printf("Block in the way. Can't advance %d steps to %d %d\n", i, newRow, newCol);
 							ok = false;
 							break;
 						}
@@ -539,6 +562,9 @@ int main() {
 			}
 			
 		}
+		
+		if (!finished)
+			cout << -1 << endl;
 		// 1, 1 robot touches grid 0,0 0,1 1,0 1,1
 		
 		// max robot == min 1, 1  to M -1 , N - 1
