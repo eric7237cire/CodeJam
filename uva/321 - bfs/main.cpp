@@ -434,10 +434,16 @@ struct State
 	
 	int steps;
 	
-	State(int rroom, int llights, int ssteps) : room(rroom), lights(llights), steps(ssteps)
-	{
+	set<State>::iterator prev;
 	
+	string action;
+	
+	State(int rroom, int llights, int ssteps, const string& aaction, set<State>::iterator pprev = set<State>::iterator()) : 
+	room(rroom), lights(llights), steps(ssteps), action(aaction), prev(pprev)
+	{
+		
 	}
+	
 };
 
 bool operator<(const State& lhs, const State& rhs)
@@ -469,16 +475,22 @@ bool roomConn[10][10];
 
 int main() {
 
+	int t = 0;
 	
 	while(scanf("%d%d%d", &r, &d, &s) == 3 && (r||d||s))
 	{
+		
+		printf("Villa #%d\n", ++t);
+		
+		FOR(i, 0, 10) FOR(j, 0, 10)
+			roomConn[i][j] = false;
 		
 		//r = rooms, d = doors, s = switches
 		FOR(counter, 0, d)
 		{
 			int i, j;
 			scanf("%d%d", &i, &j);
-			roomConn[i-1][j-1] = roomConn[j-1][i-1] = true;
+			roomConn[j-1][i-1] = roomConn[i-1][j-1]  = true;
 		}
 		
 		
@@ -500,7 +512,7 @@ int main() {
 		priority_queue<State, vector<State>, StateComp> toVisit;
 		set<State> visited;
 		
-		toVisit.push( State(0, 1, 0) );
+		toVisit.push( State(0, 1, 0, "", visited.end()) );
 		bool finished = false;
 		
 		int finalLights = 1 << r-1;
@@ -515,14 +527,32 @@ int main() {
 			if (contains(visited, cur))
 				continue;
 				
-			cout << "Visiting " << cur << endl;
-				
-			visited.insert(cur);
+			//cout << "Visiting " << cur << endl;
+			
+			pair<set<State>::iterator,bool>	insRet = visited.insert(cur);
+			assert(insRet.second);
+			set<State>::iterator curIt = insRet.first;
 			
 			if ( cur.room == r - 1 && cur.lights == finalLights) 
 			{
-				cout << "found it " << cur.steps << endl;
+				//cout << "found it " << cur.steps << endl;
+				printf("The problem can be solved in %d steps:\n", cur.steps);
 				finished = true;
+				
+				vector<string> actions;
+				
+				for( set<State>::iterator it = curIt; it != visited.end(); it = it->prev)
+				{
+					//cout << "Prev " << *it << endl;
+					actions.pb(it->action);
+					//cout << it->action << endl;
+				}
+				
+				for( int i = actions.size() - 2; i >= 0; --i)
+				{
+					cout << actions[i] << endl;
+				}
+				
 				break;
 			}
 		
@@ -530,20 +560,38 @@ int main() {
 			
 			FOR(i, 0, switches[ cur.room ].size())
 			{
-				cout << "switch " << i << endl;
-				toVisit.push( State(cur.room, cur.lights ^ 1 << switches[ cur.room ][i], cur.steps+1) );
+				//cout << "switch " << i << endl;
+				int targetRoom = switches[ cur.room ][i];
+				
+				ostringstream oss;
+				oss << "- Switch ";
+				if (cur.lights & 1 << targetRoom)
+					oss << "off";
+				else	
+					oss << "on";
+				oss << " light in room " << targetRoom+1 << ".";
+				
+				
+				toVisit.push( State(cur.room, cur.lights ^ 1 << targetRoom, cur.steps+1, oss.str(), curIt) );
 			}
 			FOR(i, 0, r)
 			{
-				cout << "room " << i << endl;
+				//cout << "room " << i << endl;
+				ostringstream oss;
+				oss << "- Move to room " << i+1 << ".";
+				
 				if (roomConn[cur.room][i] && (cur.lights & 1 << i) && i != cur.room)
 				{
-					toVisit.push( State(i, cur.lights, cur.steps+1) );
+					toVisit.push( State(i, cur.lights, cur.steps+1, oss.str(), curIt) );
 				}
 			}
 		}
 		
-		cout << "ok" << endl;
+		if (!finished)
+			cout << "The problem cannot be solved." << endl;
+			
+		cout << endl;
+		
 	}
 	return 0;
 }
