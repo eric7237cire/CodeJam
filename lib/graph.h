@@ -425,6 +425,7 @@ void reset()
 	visited.assign(V, 0);
 	numSCC = 0;
 	
+	SCC.clear();
 	
 
 }
@@ -498,17 +499,19 @@ void tarjanSCC(int u)
 
 	if (dfs_low[u] == dfs_num[u]) 
 	{         // if this is a root (start) of an SCC
-		printf("SCC %d:", ++numSCC);            // this part is done after recursion
-		SCC.pb(S);
-		S.clear();
-		/*
+		//printf("SCC %d:", ++numSCC);            // this part is done after recursion
+		++numSCC;
+		SCC.pb(vi());
+		//S.clear();
+		
 		while (1) 
 		{
 			int v = S.back(); S.pop_back(); visited[v] = 0;
-			printf(" %d", v);
+			SCC[numSCC-1].pb(v);
+			//printf(" %d", v);
 			if (u == v) break;
 		}
-		printf("\n");*/
+		
     }
     
 } 
