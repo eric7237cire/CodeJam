@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include "stdio.h"
 #include <iostream>
 #include <fstream>
@@ -65,7 +66,6 @@ ostream& operator<<( ostream& os, const vector<T>& vec )
     return os;
 }
 
-#ifdef USING_FLOW
 
 //edge from source to destination
 template <typename FlowType>
@@ -367,31 +367,30 @@ class Flow
 		return 0;
 	}
 };
-#endif 
+
 
 typedef map<string, int> msi;
 
 template<typename OrigType>
-int getId(map<OrigType, int>& mapNameId, map<int, OrigType>& mapNames, const OrigType& name, int nextId)
+int getId(map<OrigType, int>& m, map<int, OrigType>& mapNames, const OrigType& name, int nextId)
 {
-	typename map<OrigType, int>::iterator lowerBound = mapNameId.lower_bound(name);
+	typename map<OrigType, int>::iterator lowerBound = m.lower_bound(name);
 
-	if(lowerBound != mapNameId.end() && !(mapNameId.key_comp()(name, lowerBound->first)))
+	if(lowerBound != m.end() && !(m.key_comp()(name, lowerBound->first)))
 	{
 	   return lowerBound->second;
 	}
 	else
 	{
-	   mapNameId.insert(lowerBound, std::make_pair(name, nextId));
+	   m.insert(lowerBound, std::make_pair(name, nextId));
 	   mapNames[nextId] = name;
 	   return nextId;
 	}	
 }
 
-#ifdef USING_DFS
-namespace DFS
-{
-		
+//STOPCOMMON
+
+
 int V, E;
 vi dfs_low;    
 vi dfs_num;
@@ -400,34 +399,9 @@ vi dfs_parent;
 vi articulation_vertex;
 int dfsNumberCounter, dfsRoot, rootChildren;
 vvi AdjList;
+
 vvb  needed;
 
-vi S;
-vi visited;
-int numSCC;
-
-//strongly connected components
-vvi SCC;
-
-void reset()
-{
-	
-	articulation_vertex.assign(V, false);
-	AdjList.assign(V, vi() );
-	needed.assign(V, vb(V, false) );
-	dfsNumberCounter = 0;
-	dfs_num.assign(V, -1);
-	dfs_low.assign(V, 0);
-	dfs_parent.assign(V, -1);
-	dfsRoot = 0;
-	rootChildren = 0;
-	
-	visited.assign(V, 0);
-	numSCC = 0;
-	
-	
-
-}
 
 void articulationPointAndBridge(int u) 
 {
@@ -480,10 +454,12 @@ void articulationPointAndBridge(int u)
 	}
 } 
 
+vi S, visited;
+int numSCC;
+
 void tarjanSCC(int u) 
 {
 	dfs_low[u] = dfs_num[u] = dfsNumberCounter++;      // dfs_low[u] <= dfs_num[u]
-	
 	S.push_back(u);           // stores u in a vector based on order of visitation
 	visited[u] = 1;
 	for (int j = 0; j < (int)AdjList[u].size(); j++) 
@@ -499,19 +475,78 @@ void tarjanSCC(int u)
 	if (dfs_low[u] == dfs_num[u]) 
 	{         // if this is a root (start) of an SCC
 		printf("SCC %d:", ++numSCC);            // this part is done after recursion
-		SCC.pb(S);
-		S.clear();
-		/*
 		while (1) 
 		{
 			int v = S.back(); S.pop_back(); visited[v] = 0;
 			printf(" %d", v);
 			if (u == v) break;
 		}
-		printf("\n");*/
+		printf("\n");
     }
     
 } 
+
+int main() 
+{
+	int t = 0;
 	
+	while(2 == scanf("%d%d", &V, &E) && (V|E) )
+	{
+		printf("%d\n\n", ++t);
+		articulation_vertex.assign(V, false);
+		AdjList.assign(V, vi() );
+		needed.assign(V, vb(V, false) );
+		dfsNumberCounter = 0;
+		dfs_num.assign(V, -1);
+		dfs_low.assign(V, 0);
+		dfs_parent.assign(V, -1);
+		dfsRoot = 0;
+		rootChildren = 0;
+		
+		FOR(e, 0, E)
+		{
+			int u, v;
+			cin >> u >> v;
+			u--; v--;
+			
+			AdjList[u].pb(v);
+			AdjList[v].pb(u);
+		}
+		
+		for (int i = 0; i < V; i++)
+		{
+			if (dfs_num[i] == -1) 
+			{
+				dfsRoot = i;
+				rootChildren = 0;
+				articulationPointAndBridge(i);
+				articulation_vertex[dfsRoot] = (rootChildren > 1); 
+			}  
+		}
+		
+		for (int u = 0; u < V; ++u)
+		{
+			for(int v = 0; v < V; ++v)
+			{
+				if (needed[u][v])
+					printf("%d %d\n", u+1, v+1);
+			}
+		
+		}
+		//articulationPointAndBridge(0);
+		
+		#if 0
+		dfs_num.assign(V, -1); 
+		dfs_low.assign(V, 0); 
+		visited.assign(V, 0);
+		dfsNumberCounter = numSCC = 0;
+		for (int i = 0; i < V; i++)
+			if (dfs_num[i] == -1)
+				tarjanSCC(i);
+		#endif
+		printf("#\n");
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
 }
-#endif 

@@ -1,3 +1,6 @@
+#define USING_DFS 1
+
+//STARTCOMMON
 #include "stdio.h"
 #include <iostream>
 #include <fstream>
@@ -515,3 +518,20 @@ void tarjanSCC(int u)
 	
 }
 #endif 
+//STOPCOMMON
+
+using namespace DFS;
+int main() 
+{
+	
+	while(2 == scanf("%d%d", &V, &E) && (V || E) )
+	{
+		reset();
+		 
+		
+
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
+}
