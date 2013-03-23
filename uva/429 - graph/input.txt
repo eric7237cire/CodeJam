@@ -1,0 +1,36 @@
+3
+
+dip
+lip
+mad
+map
+maple
+may
+pad
+pip
+pod
+pop
+sap
+sip
+slice
+slick
+spice
+stick
+stock
+*
+spice stock
+may pod
+
+bob
+add
+bdb
+adb
+add
+*
+bob add
+
+a
+b
+*
+a b
+a a
