@@ -140,7 +140,7 @@ int main() {
 			int next;
 			while( (next = seq[ curFactorIndex[j].first ] * curFactorIndex[j].second) <= seq[i] )
 				++curFactorIndex[j].first;
-			;
+			
 			
 			//printf("Cur seq value %d.  Checking Used %d =  %d\n", lowestIndex, lowestNext );
 			
