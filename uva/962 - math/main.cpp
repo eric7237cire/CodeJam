@@ -1,14 +1,8 @@
-#define USING_MATH 0
-
 //STARTCOMMON
 
 //STOPCOMMON
 
-#if USING_MATH
-using namespace math
-#endif
-
-
+#include "stdio.h"
 int main() {
 
 	int T;

@@ -17,18 +17,12 @@ sourceContents = sourceFile.read()
 
 backupFile.write(sourceContents)
 
-if sys.argv[2] != "common":
-	replaceGeom = re.compile(r"""
+replaceGeom = re.compile(r"""
 (//STARTCOMMON)               # Start of a numeric entity reference
 (.*)
 (//STOPCOMMON)
 """, re.VERBOSE | re.DOTALL | re.MULTILINE )
-else:
-	replaceGeom = re.compile(r"""
-(//STARTGEOM)               # Start of a numeric entity reference
-(.*)
-(//STOPGEOM)
-""", re.VERBOSE | re.DOTALL | re.MULTILINE )
+
 
 #make sure backslashes stay that way
 headerContents = headerContents.replace("\\", "\\\\")

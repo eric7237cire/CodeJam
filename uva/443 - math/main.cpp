@@ -1,3 +1,6 @@
+#define USING_MATH 1
+
+//STARTCOMMON
 
 #include <cmath>
 #include <vector>
@@ -107,3 +110,70 @@ namespace math
 }
 
 #endif 
+//STOPCOMMON
+
+
+using namespace math;
+
+
+int main() {
+
+	
+	vector<int> seq; 
+	seq.pb(1);
+	
+	//pairs curIndex, prime factor
+	vii curFactorIndex;
+	curFactorIndex.pb(mp(0, 2));
+	curFactorIndex.pb(mp(0, 3));
+	curFactorIndex.pb(mp(0, 5));
+	curFactorIndex.pb(mp(0, 7));
+	
+	for(int i = 0; i < 5842; ++i)
+	{
+		int lowestIndex = -1;
+		int lowestNext = numeric_limits<int>::max();
+		
+		FOR(j, 0, curFactorIndex.size())
+		{
+			//increase index until we have a candidate
+			int next;
+			while( (next = seq[ curFactorIndex[j].first ] * curFactorIndex[j].second) <= seq[i] )
+				++curFactorIndex[j].first;
+			;
+			
+			//printf("Cur seq value %d.  Checking Used %d =  %d\n", lowestIndex, lowestNext );
+			
+			assert(next > seq[i]);
+			
+			if (next < lowestNext)
+			{
+				lowestNext = next;
+				lowestIndex = j;
+			}
+		}
+		
+		curFactorIndex[lowestIndex].first++;
+		seq.pb( lowestNext );
+		
+		//printf("%d =  %d\n", i+2, lowestNext );
+		
+		
+	}
+
+	int N;
+	while(1 == scanf("%d", &N) && N)
+	{
+		
+		printf("The %d%s humble number is %d.\n", N, 
+		N % 100 != 11 && N % 10 == 1 ? "st" : 
+		N % 100 != 12 && N % 10 == 2 ? "nd" : 
+		N % 100 != 13 && N % 10 == 3 ? "rd" :
+		"th", seq[N-1]);
+		
+
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
+}

@@ -1,3 +1,7 @@
-10 12
- 10 14
- 100 200
+A B D E C C D
+F F W D D D D
+P W E W W W W
+%
+a A b B c d E t
+a a a a a c c t
+e f g h c a a t
