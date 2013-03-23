@@ -1,5 +1,3 @@
-#define USING_DFS 1
-
 //STARTCOMMON
 #include "stdio.h"
 #include <iostream>
@@ -523,54 +521,79 @@ void tarjanSCC(int u)
 #endif 
 //STOPCOMMON
 
-using namespace DFS;
-int main() 
-{
-	int t = 0;
-	while(2 == scanf("%d%d", &V, &E) && (V || E) )
-	{
-		if (t > 0)
-			cout << endl;
-			
-		printf("Calling circles for data set %d:\n", ++t);
-		reset();
-		 
-		map<string, int> mapNameId;
-		map<int, string> mapNames;
-		
-		FOR(e, 0, E)
-		{
-			string name1, name2;
-			cin >> name1 >> name2;
-			int id1 = getId(mapNameId, mapNames, name1, mapNameId.size() );
-			int id2 = getId(mapNameId, mapNames, name2, mapNameId.size() );
-			
-			AdjList[id1].pb(id2);
-			//printf("Connecting %d and %d\n", id1, id2);
-		}
-
-		FOR(v, 0, V)
-		{
-			if (dfs_num[v] != -1)
-				continue;
-				
-			tarjanSCC(v);
-		}
-		
-		FOR(s, 0, SCC.size())
-		{
-			vi& cs = SCC[s];
-			//cout << "s " << s;
-			FOR(i, 0, cs.size())
-			{
-				string name = mapNames[ cs[i] ];
-				cout << name;
-				if (i != cs.size() - 1)
-					cout << ", ";
-				//cout << i << " " << cs[i] << " " << name << ", ";
-			}
-			cout << endl;
-		}
-	}
-	return 0;
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+int color[200][200], d[200][200], pi[200][200], f[200][200];
+char graph[200][200]={0};
+int visitOrder, nrows, ncols, count=0;
+ 
+ 
+void DFS_visit(int ux, int uy) {
+    int i, j, k, v;
+    color[ux][uy]=1;
+    visitOrder = visitOrder + 1;
+    d[ux][uy] = visitOrder;
+    i=ux-1;
+    if (i<1) i++;
+ 
+    for (; i<=ux+1 ; i++) {
+        j=uy-1;
+        if (j<1) j++;
+        for ( ; j<=uy+1 ; j++) {
+ 
+            if (color[i][j]==0 && graph[i][j]=='1') {
+                DFS_visit(i,j);
+            }
+        }
+    }
+    color[ux][uy]=2;
+ 
+    f[ux][uy] = visitOrder = visitOrder + 1;
+ 
+ 
+}
+ 
+void DFS() {
+    int i, j, k, v;
+ 
+    for (i=1 ; i<=nrows ; i++) {
+        for (j=1 ; j<=ncols ; j++) {
+            color[i][j]=0;
+            pi[i][j]=-1;
+            d[i][j]=99999;
+            f[i][j]=99999;
+        }
+    }
+    visitOrder = 0; /* - Global - */
+    for (i=1 ; i<=nrows ; i++) {
+        for (j=1 ; j<=ncols ; j++)
+            if (color[i][j]==0 && graph[i][j]=='1') {
+ 
+                ::count++;
+                DFS_visit(i,j);
+            }
+    }
+ 
+}
+ 
+int main() {
+    int i, j, image=1;
+    while (scanf("%d",&nrows)!=EOF) {
+        ::count=0;
+        if (nrows==0)
+            break;
+        getchar();
+ 
+        ncols=nrows;
+ 
+        for (i=1 ; i<=nrows ; i++) {
+            gets(&graph[i][1]);
+        }
+ 
+        DFS();
+ 
+        printf("Image number %d contains %d war eagles.\n",image++,::count);
+    }
+    return 0;
 }

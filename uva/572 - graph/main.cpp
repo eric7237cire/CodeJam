@@ -1,5 +1,3 @@
-#define USING_DFS 1
-
 //STARTCOMMON
 #include "stdio.h"
 #include <iostream>
@@ -523,54 +521,35 @@ void tarjanSCC(int u)
 #endif 
 //STOPCOMMON
 
-using namespace DFS;
-int main() 
-{
-	int t = 0;
-	while(2 == scanf("%d%d", &V, &E) && (V || E) )
-	{
-		if (t > 0)
-			cout << endl;
-			
-		printf("Calling circles for data set %d:\n", ++t);
-		reset();
-		 
-		map<string, int> mapNameId;
-		map<int, string> mapNames;
-		
-		FOR(e, 0, E)
-		{
-			string name1, name2;
-			cin >> name1 >> name2;
-			int id1 = getId(mapNameId, mapNames, name1, mapNameId.size() );
-			int id2 = getId(mapNameId, mapNames, name2, mapNameId.size() );
-			
-			AdjList[id1].pb(id2);
-			//printf("Connecting %d and %d\n", id1, id2);
-		}
-
-		FOR(v, 0, V)
-		{
-			if (dfs_num[v] != -1)
-				continue;
-				
-			tarjanSCC(v);
-		}
-		
-		FOR(s, 0, SCC.size())
-		{
-			vi& cs = SCC[s];
-			//cout << "s " << s;
-			FOR(i, 0, cs.size())
-			{
-				string name = mapNames[ cs[i] ];
-				cout << name;
-				if (i != cs.size() - 1)
-					cout << ", ";
-				//cout << i << " " << cs[i] << " " << name << ", ";
-			}
-			cout << endl;
-		}
+#include <stdio.h>
+char maze[105][105];
+int row,col;
+int x_axis[8]={-1,-1,-1,0,0,1,1,1};
+int y_axis[8]={0,1,-1,1,-1,0,1,-1};
+void dfs(int x,int y)
+{  maze[x][y]='*';
+   int i;
+   for(i=0;i<8;i++)
+   {  int nx=x_axis[i]+x;
+      int ny=y_axis[i]+y;
+      if(nx>=0 && nx<row && ny>=0 && ny<col && maze[nx][ny]=='@')
+              dfs(nx,ny);
+   }
+}
+int main()
+{  
+	while(scanf("%d %d",&row,&col) && row && col)
+	{  
+	int i,j,count=0;
+	for(i=0;i<row;i++) scanf("%s",maze[i]);
+	for(i=0;i<row;i++)
+	   for(j=0;j<col;j++)
+	if(maze[i][j]=='@')
+	{ 
+		count++;
+		dfs(i,j);
 	}
-	return 0;
+	printf("%d\n",count);
+}
+ return 0;
 }

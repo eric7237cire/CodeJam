@@ -1,5 +1,3 @@
-#define USING_DFS 1
-
 //STARTCOMMON
 #include "stdio.h"
 #include <iostream>
@@ -523,54 +521,56 @@ void tarjanSCC(int u)
 #endif 
 //STOPCOMMON
 
-using namespace DFS;
-int main() 
-{
-	int t = 0;
-	while(2 == scanf("%d%d", &V, &E) && (V || E) )
-	{
-		if (t > 0)
-			cout << endl;
-			
-		printf("Calling circles for data set %d:\n", ++t);
-		reset();
-		 
-		map<string, int> mapNameId;
-		map<int, string> mapNames;
-		
-		FOR(e, 0, E)
-		{
-			string name1, name2;
-			cin >> name1 >> name2;
-			int id1 = getId(mapNameId, mapNames, name1, mapNameId.size() );
-			int id2 = getId(mapNameId, mapNames, name2, mapNameId.size() );
-			
-			AdjList[id1].pb(id2);
-			//printf("Connecting %d and %d\n", id1, id2);
-		}
+#include <cstring>
+typedef unsigned long long ULL;
+typedef long long LL;
 
-		FOR(v, 0, V)
-		{
-			if (dfs_num[v] != -1)
-				continue;
-				
-			tarjanSCC(v);
-		}
-		
-		FOR(s, 0, SCC.size())
-		{
-			vi& cs = SCC[s];
-			//cout << "s " << s;
-			FOR(i, 0, cs.size())
-			{
-				string name = mapNames[ cs[i] ];
-				cout << name;
-				if (i != cs.size() - 1)
-					cout << ", ";
-				//cout << i << " " << cs[i] << " " << name << ", ";
-			}
-			cout << endl;
-		}
-	}
-	return 0;
+char G[201][201];
+bool visited[201][201];
+int N;
+
+void DFS(int x, int y) {
+    if (x < 0 || y < 0 || x >= N || y >= N || visited[x][y] || G[x][y] == 'b')
+        return;
+
+    visited[x][y] = true;
+
+    DFS(x-1, y-1); DFS(x-1, y); DFS(x, y-1);
+    DFS(x, y+1); DFS(x+1, y); DFS(x+1, y+1);
+}
+
+int main() {
+    int ctr=1;
+
+    while(cin >> N && N) {
+        memset(G, 0, sizeof(G));
+
+        for(int i=0; i<N; i++) {
+            for(int j=0; j<N; j++)
+                cin >> G[i][j];
+        }
+
+        bool stat=false;
+
+        for(int i=0; i<N; i++) {
+            memset(visited, 0, sizeof(visited));
+
+            if (G[i][0] == 'w')
+                DFS(i, 0);
+
+            for(int j=0; j<N; j++) {
+                if (visited[j][N-1]) {
+                    stat = true;
+                    break;
+                }
+            }
+            if (stat) break;
+        }
+        cout << ctr++ << " ";
+        if (stat) cout << 'W';
+        else cout << 'B';
+        cout << endl;
+    }
+
+    return 0;
 }

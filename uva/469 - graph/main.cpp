@@ -1,5 +1,3 @@
-#define USING_DFS 1
-
 //STARTCOMMON
 #include "stdio.h"
 #include <iostream>
@@ -523,54 +521,19 @@ void tarjanSCC(int u)
 #endif 
 //STOPCOMMON
 
-using namespace DFS;
-int main() 
-{
-	int t = 0;
-	while(2 == scanf("%d%d", &V, &E) && (V || E) )
-	{
-		if (t > 0)
-			cout << endl;
-			
-		printf("Calling circles for data set %d:\n", ++t);
-		reset();
-		 
-		map<string, int> mapNameId;
-		map<int, string> mapNames;
-		
-		FOR(e, 0, E)
-		{
-			string name1, name2;
-			cin >> name1 >> name2;
-			int id1 = getId(mapNameId, mapNames, name1, mapNameId.size() );
-			int id2 = getId(mapNameId, mapNames, name2, mapNameId.size() );
-			
-			AdjList[id1].pb(id2);
-			//printf("Connecting %d and %d\n", id1, id2);
-		}
+int main() {
 
-		FOR(v, 0, V)
-		{
-			if (dfs_num[v] != -1)
-				continue;
-				
-			tarjanSCC(v);
-		}
+	int T;
+	scanf("%d", &T);
+
+	while(T--)
+	{
 		
-		FOR(s, 0, SCC.size())
-		{
-			vi& cs = SCC[s];
-			//cout << "s " << s;
-			FOR(i, 0, cs.size())
-			{
-				string name = mapNames[ cs[i] ];
-				cout << name;
-				if (i != cs.size() - 1)
-					cout << ", ";
-				//cout << i << " " << cs[i] << " " << name << ", ";
-			}
-			cout << endl;
-		}
+		if (T > 0)
+			printf("\n");
+
+		//scanf("%d", &nSeg);
+		
 	}
 	return 0;
 }
