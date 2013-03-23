@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include "stdio.h"
 #include <iostream>
 #include <fstream>
@@ -384,4 +385,91 @@ int getId(map<OrigType, int>& m, map<int, OrigType>& mapNames, const OrigType& n
 	   mapNames[nextId] = name;
 	   return nextId;
 	}	
+}
+
+//STOPCOMMON
+
+vb taken;
+vvii connections;
+priority_queue<ii, vii, greater<ii> > pq;
+
+void process(int vtx) 
+{
+	taken[vtx] = 1;
+	for (int j = 0; j < connections[vtx].size(); j++) 
+	{
+		ii adj = connections[vtx][j];
+		if (!taken[adj.first]) 
+			pq.push(ii(adj.second, adj.first));
+	}
+} 
+
+int main() {
+
+	int N;
+	int T = 0;
+	while(1 == scanf("%d", &N))
+	{
+		connections.clear();
+		connections.resize(N);
+		
+		int prevCost = 0;
+		FOR(i, 0, N-1)
+		{
+			int n1, n2, cost;
+			cin >> n1 >> n2 >> cost;
+			prevCost += cost;
+			--n1; --n2;
+			
+		}
+		
+		int K;
+		cin >> K;
+		FOR(i, 0, K)
+		{
+			int n1, n2, cost;
+			cin >> n1 >> n2 >> cost;
+			
+			--n1; --n2;
+			connections[n1].pb( mp(n2, cost) );
+			connections[n2].pb( mp(n1, cost) );
+		}
+		int M;
+		cin >> M;
+		FOR(i, 0, M)
+		{
+			int n1, n2, cost;
+			cin >> n1 >> n2 >> cost;
+			
+			--n1; --n2;
+			connections[n1].pb( mp(n2, cost) );
+			connections[n2].pb( mp(n1, cost) );
+		}
+		
+		if (T++ > 0)
+			printf("\n");
+
+		taken.clear();
+		taken.resize(N, false); 		
+		assert(pq.empty());
+		
+		process(0); // take vertex 0 and process all edges incident to vertex 0
+		int mst_cost = 0;
+		while (!pq.empty()) 
+		{ // repeat until V vertices (E = V-1 edges) are taken
+			ii front = pq.top(); pq.pop();
+			int u = front.second;
+			int w = front.first; 
+			if (!taken[u]) // we have not connected this vertex yet
+			{
+				mst_cost += w;
+				process(u); // take u and process all edges incident to u
+			}
+		}
+
+		printf("%d\n%d\n", prevCost, mst_cost);
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
 }

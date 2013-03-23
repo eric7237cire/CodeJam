@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include "stdio.h"
 #include <iostream>
 #include <fstream>
@@ -384,4 +385,107 @@ int getId(map<OrigType, int>& m, map<int, OrigType>& mapNames, const OrigType& n
 	   mapNames[nextId] = name;
 	   return nextId;
 	}	
+}
+
+//STOPCOMMON
+
+int V;
+vi dfs_low;    
+vi dfs_num;
+vi dfs_parent;
+
+vi articulation_vertex;
+int dfsNumberCounter, dfsRoot, rootChildren;
+vvi AdjList;
+
+
+void articulationPointAndBridge(int u) 
+{
+	dfs_low[u] = dfs_num[u] = dfsNumberCounter++;      // dfs_low[u] <= dfs_num[u]
+	for (int j = 0; j < (int)AdjList[u].size(); j++) 
+	{
+		int v = AdjList[u][j];
+		if (dfs_num[v] == -1) 
+		{
+			//tree edge
+			dfs_parent[v] = u;
+			if (u == dfsRoot) rootChildren++;  // special case, count children of root
+
+			articulationPointAndBridge(v);
+
+			if (dfs_low[v] >= dfs_num[u])              // for articulation point
+				articulation_vertex[u] = true;           // store this information first
+			
+			//if (dfs_low[v] > dfs_num[u])                           // for bridge
+				//printf(" Edge (%d, %d) is a bridge\n", u, v);
+		
+			dfs_low[u] = min(dfs_low[u], dfs_low[v]);       // update dfs_low[u]
+		}
+        else if (v != dfs_parent[u])       // a back edge and not direct cycle
+		{
+		  dfs_low[u] = min(dfs_low[u], dfs_num[v]);       // update dfs_low[u]
+		}
+	}
+} 
+
+
+int main() 
+{
+
+	while(1 == scanf("%d", &V) && V)
+	{
+		articulation_vertex.assign(V, false);
+		AdjList.assign(V, vi() );
+		dfsNumberCounter = 0;
+		dfs_num.assign(V, -1);
+		dfs_low.assign(V, 0);
+		dfs_parent.assign(V, -1);
+		dfsRoot = 0;
+		rootChildren = 0;
+		string s;
+		
+		while( getline(cin, s) ) 
+		{
+			//cout << "Read " << s << endl;
+			istringstream in(s);
+			int u; 
+			if ( ! (in >> u) )
+				continue;
+			
+			if (u == 0)
+				break;
+				
+			int v;
+			while ( in >> v )
+			{
+				//printf("Connect %d %d \n", u, v);
+				AdjList[u-1].pb(v-1);
+				AdjList[v-1].pb(u-1);
+			}
+		}
+		
+		articulationPointAndBridge(0);
+		
+		//printf("Articulation Points:\n");
+		int nCount = 0;
+		for (int i = 0; i < V; i++)
+		{
+			if (i == 0 && rootChildren > 1 && articulation_vertex[i])
+			{
+				++nCount;
+				//printf(" Vertex %d\n", i+1);
+			}
+			else if (i > 0 && articulation_vertex[i])
+			{
+				++nCount;
+				//printf(" Vertex %d\n", i+1);
+			}
+		}
+		
+		cout << nCount << endl;
+	}
+	
+	
+	  
+	return 0;
 }
