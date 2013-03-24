@@ -1,7 +1,5 @@
-#include <cstring> 
 #include "stdio.h" 
 #include <limits>
-#include <cassert>
 #include <algorithm>
 
 using namespace std;
@@ -11,87 +9,54 @@ using namespace std;
 
 
 // dp[len][min][max] = min cost to make cuts from min to max on a board of length len 
-int dp[53][53];
+int dp[50][50];
 
-int cuts[53];
+int cuts[50];
 
+int N;
+int L;
 
-int cost( int minIdx, int maxIdx, const int N, const int L )
+int cost( int minIdx, int maxIdx)
 {
-	int ret = dp[minIdx][maxIdx];
+	int& ret = dp[minIdx][maxIdx];
 	
-	if (ret > 0 )
+	if (ret < numeric_limits<int>::max() )
 		return ret;
 
-	ret = numeric_limits<int>::max();
-		
-	
 	//where dimensions of the board 
 	int left = minIdx == 0 ? 0 : cuts[minIdx - 1] ;
 	int right  = maxIdx == N - 1 ? L : cuts[maxIdx + 1] ;
 	int length = right - left; 
 	
 	if ( minIdx == maxIdx )
-	{
-		ret = length;
-		dp[minIdx][maxIdx] = ret;
-		return ret;
-	}
+		return ret = length;
 	
-	assert (minIdx < maxIdx );
-			
-	//handle left and right seperately
-	//cut minIdx
-	ret = min(ret, length + cost( minIdx+1, maxIdx, N, L) );
-	
-	//cut max Idx
-	ret = min(ret, length + cost( minIdx, maxIdx-1, N, L) );
-	
-	
+	//cutting ends
+	ret = min(ret, length + cost( minIdx+1, maxIdx) );	
+	ret = min(ret, length + cost( minIdx, maxIdx-1) );
 	
 	FORE(idx, minIdx+1, maxIdx-1)
 	{
-		//int newLeft = cuts[idx] - left; 
-		//int newRight
-		ret = min(ret, length + cost( minIdx, idx - 1, N, L )  + cost( idx+1, maxIdx, N, L ));
+		ret = min(ret, length + cost( minIdx, idx - 1)  + cost( idx+1, maxIdx));
 	}
 	
-	dp[minIdx][maxIdx] = ret;
 	return ret;
 }
 
 int main() 
 {
-	int t = 0;
-	int N, L;
 	
-	while(  scanf("%d", &L) && L )
+	while(  scanf("%d%d", &L, &N) && L )
 	{
-		scanf("%d", &N);
-		
-		if (N <= 0)
-		{
-			printf("The minimum cutting is 0.\n");
-			continue;
-		}
-		
-		//if (N >= 52 )
-			//return 0;
-			
-		FOR(i, 0, N)
-		{
+		FOR(i, 0, N)		
 			scanf("%d", &cuts[i]);
-		}
-		
+				
 		FOR(i, 0, N) FOR(j, 0, N)
-			dp[i][j] = 0;
+			dp[i][j] = numeric_limits<int>::max();
 		
-		//memset( dp, 0, sizeof dp );
-		int minCost = cost(0, N-1, N, L);
-	
+		int minCost = N == 0 ? 0 : cost(0, N-1);
 			
-		printf("The minimum cutting is %d.\n", minCost);
-		
+		printf("The minimum cutting is %d.\n", minCost);		
 	}
 	return 0;
 }
