@@ -12,6 +12,8 @@ using namespace std;
 #define pb push_back 
 #define contains(c,x) ((c).find(x) != (c).end()) 
 #define all(c) (c).begin(),(c).end() 
+#define MIN(a,b) ((a)<(b)?(a):(b))
+#define MAX(a,b) ((a)<(b)?(b):(a))
 
 typedef unsigned int uint;
 typedef long long ll;
