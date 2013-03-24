@@ -10,7 +10,7 @@ using namespace std;
 #define mp make_pair 
 #define pb push_back 
 #define contains(c,x) ((c).find(x) != (c).end()) 
-
+#define all(c) (c).begin(),(c).end() 
 
 typedef unsigned int uint;
 typedef long long ll;
