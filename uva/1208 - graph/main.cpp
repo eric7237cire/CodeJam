@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include "stdio.h"
 #include <iostream>
 #include <fstream>
@@ -520,3 +521,139 @@ void tarjanSCC(int u)
 	
 }
 #endif 
+//STOPCOMMON
+
+
+
+class Node
+{
+public:
+	int parentNodeId;
+	int nodeId;
+	int weight;
+	
+	Node( int _parentNodeId, int _nodeId, int _weight) :
+		parentNodeId(_parentNodeId), nodeId(_nodeId), weight(_weight)
+	{
+	
+	}
+};
+	
+struct NodeCmp
+{
+	int operator() ( const Node& lhs, const Node& rhs)
+	{
+		NE_GT(weight);
+		
+		NE_LT(nodeId);
+		NE_LT(parentNodeId);
+		
+		return 0;
+		
+	}
+
+};
+
+struct DisplayCmp
+{
+	int operator() ( const Node& lhs, const Node& rhs)
+	{
+		NE_LT(weight);
+		
+		int minIdLhs = min(lhs.nodeId, lhs.parentNodeId);
+		int minIdRhs = min(rhs.nodeId, rhs.parentNodeId);
+		
+		if (minIdLhs != minIdRhs)
+			return minIdLhs < minIdRhs;
+		
+		int maxIdLhs = max(lhs.nodeId, lhs.parentNodeId);
+		int maxIdRhs = max(rhs.nodeId, rhs.parentNodeId);
+		
+		return maxIdLhs < maxIdRhs;
+		
+	}
+
+};
+
+
+vb inMST;
+vvii connections;
+priority_queue<Node, vector<Node>, NodeCmp > pq;
+
+
+void process(int nodeId) 
+{
+	inMST[nodeId] = true;
+	for (int j = 0; j < connections[nodeId].size(); j++) 
+	{
+		//node, weight pair
+		ii adj = connections[nodeId][j];
+		if (!inMST[adj.first]) 
+			pq.push( Node(nodeId, adj.first, adj.second) );
+	}
+} 
+
+int main() {
+
+	int N;
+	int T ;
+	scanf("%d", &T);
+	
+	FORE(t, 1, T)
+	{
+		printf("Case %d:\n", t); 
+		scanf("%d", &N);
+		
+		connections.clear();
+		connections.resize(N);
+		
+		FOR(i, 0, N)
+		{
+			FOR(j, 0, N)
+			{
+				int cost;
+				int read =  scanf("%d,", &cost) || scanf("%d", &cost);
+								
+				if (cost > 0)
+				{
+					//printf("Connect %d and %d cost %d\n", i, j, cost);
+					connections[i].pb( mp(j, cost) );
+				}
+			}
+		}
+		
+		inMST.clear();
+		inMST.resize(N, false); 		
+		assert(pq.empty());
+		
+		vector<Node> mstEdges;
+		
+		process(0); // take vertex 0 and process all edges incident to vertex 0
+		int mst_cost = 0;
+		while (!pq.empty()) 
+		{ // repeat until V vertices (E = V-1 edges) are inMST
+			Node front = pq.top(); pq.pop();
+			//printf("Node %d parent %d  weight %d\n", front.nodeId, front.parentNodeId, front.weight);
+						
+			if (!inMST[front.nodeId]) 
+			{
+				mstEdges.pb( front );
+				
+				mst_cost += front.weight;
+				process(front.nodeId); 
+			}
+		}
+		
+		sort( all(mstEdges), DisplayCmp() );
+
+		for(int i = 0; i < mstEdges.size(); ++i)
+		{
+			printf("%c-%c %d\n", 'A' + min(mstEdges[i].nodeId, mstEdges[i].parentNodeId), 
+				'A' + max(mstEdges[i].nodeId, mstEdges[i].parentNodeId), mstEdges[i].weight);
+		}
+		
+		//printf("%d\n", mst_cost);
+		
+	}
+	return 0;
+}
