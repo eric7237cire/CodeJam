@@ -76,11 +76,6 @@ int isPossible(int fromIndex, int sum)
 	if (ret != -42)
 		return ret;
 	
-	//2  7  11
-	
-	//2,-2   9, 5
-	 //  -5
-	
 	int n1 = abs( ( sum + values[fromIndex] ) % K );
 	
 	int n2 = abs ( ( sum - values[fromIndex] ) % K );
@@ -92,23 +87,47 @@ int isPossible(int fromIndex, int sum)
 
 }
 
+#include <cctype>
+#include <cstdio>
+#define RI readint
+#define READ_BUF_SIZE 1048576
+char buf[READ_BUF_SIZE], *lim = buf + READ_BUF_SIZE, *now = lim;
+void adapt(){
+    while(now != lim && !isdigit(*now)) now++;
+    if(now == lim){
+        int r = fread(buf, 1, READ_BUF_SIZE - 1, stdin);
+        buf[r] = 0;
+        lim = buf + r - 1;
+        while(isdigit(*lim)) ungetc(*lim--, stdin);
+        now = buf;
+    }
+    while(!isdigit(*now)) now++;
+}
+void readint(int &n){    
+    adapt();
+    n = 0;    
+    while(isdigit(*now)) n = n * 10 + *now++ - '0';
+}
 
 int main() 
 {
 
 	int T;
-	scanf("%d", &T);
+	RI(T);
+//	scanf("%d", &T);
 	
 	while(T--)
 	{
-		scanf("%d%d", &N, &K);
+		//scanf("%d%d", &N, &K);
+		RI(N); RI(K);
 		//printf("%d  %d\n", -10 % 3, 10 % -3);
 				
 		FORE(n, 0, N) FORE(k, 0, K)
 			dp[n][k] = -42;
 			
 		FOR(n, 0, N)
-			scanf("%d", &values[n]);
+			RI(values[n]);
+//			scanf("%d", &values[n]);
 			
 		if (isPossible(0, 0))
 			puts("Divisible");
