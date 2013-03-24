@@ -1,0 +1,139 @@
+//STARTCOMMON
+#include <cmath>
+#include <vector>
+#include "stdio.h" 
+#include <limits>
+#include <cassert>
+#include <string>
+#include <iostream>
+
+using namespace std;
+
+#define mp make_pair 
+#define pb push_back 
+#define contains(c,x) ((c).find(x) != (c).end()) 
+#define all(c) (c).begin(),(c).end() 
+#define MIN(a,b) ((a)<(b)?(a):(b))
+#define MAX(a,b) ((a)<(b)?(b):(a))
+
+typedef unsigned int uint;
+typedef long long ll;
+typedef unsigned long long ull;
+
+#define FORE(k,a,b) for(int k=(a); k <= (b); ++k)
+#define FOR(k,a,b) for(int k=(a); k < (b); ++k)
+
+typedef vector<int> vi; 
+typedef vector<double> vd;
+typedef vector<bool> vb;
+typedef vector<vb> vvb;
+typedef vector<vi> vvi;
+typedef vector<uint> uvi; 
+typedef vector<uvi> uvvi;
+typedef vector<vd> vvd;
+typedef pair<int,int> ii;
+typedef pair<uint,uint> uu;
+typedef vector<ii> vii;
+typedef vector<vii> vvii;
+
+
+const double tolerance = 0.000002;
+template<typename T> 
+int cmp(T a, T b, T epsilon = tolerance)
+{
+	T dif = a - b;
+	if (abs(dif) <= epsilon)
+	{
+		return 0;
+	}
+	
+	if (dif > 0)
+	{
+		return 1; //a > b
+	}
+	
+	return -1;
+}  
+
+
+//STOPCOMMON
+
+const int MAX_N = 10001;
+const int MAX_K = 101;
+
+int N, K;
+int dp[MAX_N][MAX_K];
+
+int values[MAX_N];
+
+int isPossible(int fromIndex, int sum)
+{
+	if (fromIndex >= N)
+		return sum == 0;
+		
+	int& ret = dp[fromIndex][sum];
+	
+	if (ret != -42)
+		return ret;
+	
+	int n1 = abs( ( sum + values[fromIndex] ) % K );
+	
+	int n2 = abs ( ( sum - values[fromIndex] ) % K );
+	
+	ret = isPossible( fromIndex + 1, n1 ) || isPossible( fromIndex + 1, n2);
+	
+	return ret;
+
+
+}
+
+#include <cctype>
+#include <cstdio>
+#define RI readint
+#define MAX 1048576
+char buf[MAX], *lim = buf + MAX, *now = lim;
+void adapt(){
+    while(now != lim && !isdigit(*now)) now++;
+    if(now == lim){
+        int r = fread(buf, 1, MAX - 1, stdin);
+        buf[r] = 0;
+        lim = buf + r - 1;
+        while(isdigit(*lim)) ungetc(*lim--, stdin);
+        now = buf;
+    }
+    while(!isdigit(*now)) now++;
+}
+void readint(int &n){    
+    adapt();
+    n = 0;    
+    while(isdigit(*now)) n = n * 10 + *now++ - '0';
+}
+
+int main() 
+{
+
+	int T;
+	RI(T);
+//	scanf("%d", &T);
+	
+	while(T--)
+	{
+		//scanf("%d%d", &N, &K);
+		RI(N); RI(K);
+		//printf("%d  %d\n", -10 % 3, 10 % -3);
+				
+		FORE(n, 0, N) FORE(k, 0, K)
+			dp[n][k] = -42;
+			
+		FOR(n, 0, N)
+			RI(values[n]);
+//			scanf("%d", &values[n]);
+			
+		if (isPossible(0, 0))
+			puts("Divisible");
+		else
+			puts("Not divisible");
+		
+	}
+	return 0;
+}
