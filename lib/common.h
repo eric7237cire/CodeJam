@@ -1,9 +1,10 @@
-
 #include <cmath>
 #include <vector>
 #include "stdio.h" 
 #include <limits>
 #include <cassert>
+#include <string>
+#include <iostream>
 
 using namespace std;
 
@@ -51,71 +52,5 @@ int cmp(T a, T b, T epsilon = tolerance)
 	return -1;
 }  
 
-#ifdef USING_MATH
-namespace math
-{
-	vector<bool> isPrime;
-
-	vector<int> primes;
-	
-	void generatePrimes( int maxPrime ) 
-	{
-		isPrime.assign(maxPrime + 1, true);
-		isPrime[0] = false;
-		isPrime[1] = false;
-		
-		primes.clear();
-
-		//Since we are eliminating via prime factors, a factor is at most sqrt(n)
-		int upperLimit = static_cast<int>(sqrt(maxPrime));
-
-		for(int i = 2; i <= upperLimit; ++i) {
-			if (!isPrime[i]) {
-				continue;
-			}
-
-			//Loop through all multiples of the prime factor i.  Start with i*i, because the rest
-			//were already covered by previous factors.  Ex, i == 7, we start at 49 because 7*2 through 7*6 
-			//we already covered by previous prime factors.
-			for(int j = i * i; j <= maxPrime; j += i) {
-				isPrime[j] = false;
-			}
-		}
-
-		for(int i = 0; i <= maxPrime; ++i) {
-			if (isPrime[i])
-				primes.push_back(i);
-		}
-
-	}
-	
-	int addFactors(int n, int maxPIdx)
-	{
-		for(int pIdx = 0; pIdx <= maxPIdx; ++pIdx)
-		{
-			while( n % primes[pIdx] == 0 )
-			{
-				//total[pIdx] ++;
-				n /= primes[pIdx];
-			}
-		}
-		
-		return n;
-
-	}
-	
-	int sumDigits(int num)
-	{
-        int sum = 0;
-	    while(num)
-	    {
-	        sum += num % 10;
-	        num /= 10;
-	    }
-	    return sum;
-	    
-	}
-
-}
 
 #endif 

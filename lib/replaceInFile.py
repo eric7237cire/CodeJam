@@ -5,6 +5,8 @@ if sys.argv[2] == "common":
 	headerF = open("""C:\codejam\CodeJam\lib\common.h""", 'r')
 elif sys.argv[2] == "graph":
 	headerF = open("""C:\codejam\CodeJam\lib\graph.h""", 'r')
+elif sys.argv[2] == "math":
+	headerF = open("""C:\codejam\CodeJam\lib\math.h""", 'r')
 else:
 	headerF = open("""C:\codejam\CodeJam\lib\geom.h""", 'r')
 sourceFile = open( sys.argv[1], 'r')
