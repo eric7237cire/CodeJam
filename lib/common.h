@@ -52,5 +52,3 @@ int cmp(T a, T b, T epsilon = tolerance)
 	return -1;
 }  
 
-
-#endif 

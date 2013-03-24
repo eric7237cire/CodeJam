@@ -1,72 +1,81 @@
-//STARTCOMMON
 #include <cmath>
-#include <vector>
 #include "stdio.h" 
 #include <limits>
 #include <cassert>
 #include <string>
 #include <iostream>
-
+#include <queue>
+#include <utility>
 using namespace std;
-
-#define mp make_pair 
-#define pb push_back 
-#define contains(c,x) ((c).find(x) != (c).end()) 
-#define all(c) (c).begin(),(c).end() 
-
-typedef unsigned int uint;
-typedef long long ll;
-typedef unsigned long long ull;
 
 #define FORE(k,a,b) for(int k=(a); k <= (b); ++k)
 #define FOR(k,a,b) for(int k=(a); k < (b); ++k)
 
-typedef vector<int> vi; 
-typedef vector<double> vd;
-typedef vector<bool> vb;
-typedef vector<vb> vvb;
-typedef vector<vi> vvi;
-typedef vector<uint> uvi; 
-typedef vector<uvi> uvvi;
-typedef vector<vd> vvd;
-typedef pair<int,int> ii;
-typedef pair<uint,uint> uu;
-typedef vector<ii> vii;
-typedef vector<vii> vvii;
+typedef pair<int, int> ii;
+
+bool visited[1001][1001];
+ii prev[1001][1001];
+
+//fill, empty, pour 
 
 
-const double tolerance = 0.000002;
-template<typename T> 
-int cmp(T a, T b, T epsilon = tolerance)
+
+int main() 
 {
-	T dif = a - b;
-	if (abs(dif) <= epsilon)
+
+	int Ca, Cb, N;
+	while(3 == scanf("%d%d%d", &Ca, &Cb, &N))
 	{
-		return 0;
-	}
-	
-	if (dif > 0)
-	{
-		return 1; //a > b
-	}
-	
-	return -1;
-}  
-
-
-#endif 
-//STOPCOMMON
-
-int main() {
-
-	int T;
-	scanf("%d", &T);
-
-	while(T--)
-	{
+		FORE(i, 0, N) FORE(j, 0, N)
+		{
+			visited[i][j] = false;
+			prev[i][j] = make_pair(-1, -1);
+		}
 		
-		if (T > 0)
-			printf("\n");
+				
+		queue<ii> toVisit;
+		
+		toVisit.push( make_pair(0, 0) );
+		
+		while(!toVisit.empty())
+		{
+			ii cur = toVisit.front();
+			toVisit.pop();
+			
+			if (visited[cur.first][cur.second])
+				continue;
+				
+			visited[cur.first][cur.second] = true;
+			
+			ii choices[6];
+			//fill A
+			choices[0] = make_pair(Ca, cur.second);
+			//fill B
+			choices[1] = make_pair(cur.first, Cb);
+			
+			//empty A
+			choices[2] = make_pair(0, cur.second);
+			
+			//empty B
+			choices[3] = make_pair(cur.first, 0);
+
+			//A->B			
+			int ab = min(Cb - cur.second, cur.first);
+			choices[4] = make_pair(cur.first-ab, cur.second+ab);
+			//B->A
+			int ba = min(Ca - cur.first, cur.second);
+			choices[5] = make_pair(cur.first+ba, cur.second-ba);
+			
+			FOR(i, 0, 6)
+			{
+				if (!visited[ choices[i].first ][ choices[i].second])
+				{
+					prev[ choices[i].first ][ choices[i].second] = cur;
+					toVisit.push( choices[i] );
+				}
+			}
+		
+		}
 		
 	}
 	return 0;
