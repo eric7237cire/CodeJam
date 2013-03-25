@@ -4,7 +4,7 @@ import re
 if sys.argv[2] == "common":
 	headerF = open("""/home/eric/CodeJam/lib/common.h""", 'r')
 elif sys.argv[2] == "graph":
-	headerF = open("""~/CodeJam/lib/graph.h""", 'r')
+	headerF = open("""/home/eric/CodeJam/lib/graph.h""", 'r')
 else:
 	headerF = open("""~/CodeJam/lib/geom.h""", 'r')
 sourceFile = open( sys.argv[1], 'r')
