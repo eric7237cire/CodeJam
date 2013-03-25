@@ -525,15 +525,15 @@ void tarjanSCC(int u)
 
 
 
+
 class Node
 {
 public:
-	int parentNodeId;
 	int nodeId;
-	int weight;
+	double weight;
 	
-	Node( int _parentNodeId, int _nodeId, int _weight) :
-		parentNodeId(_parentNodeId), nodeId(_nodeId), weight(_weight)
+	Node( int _nodeId, double _weight) :
+		nodeId(_nodeId), weight(_weight)
 	{
 	
 	}
@@ -546,7 +546,6 @@ struct NodeCmp
 		NE_GT(weight);
 		
 		NE_LT(nodeId);
-		NE_LT(parentNodeId);
 		
 		return 0;
 		
@@ -554,71 +553,56 @@ struct NodeCmp
 
 };
 
-struct DisplayCmp
-{
-	int operator() ( const Node& lhs, const Node& rhs)
-	{
-		NE_LT(weight);
-		
-		int minIdLhs = min(lhs.nodeId, lhs.parentNodeId);
-		int minIdRhs = min(rhs.nodeId, rhs.parentNodeId);
-		
-		if (minIdLhs != minIdRhs)
-			return minIdLhs < minIdRhs;
-		
-		int maxIdLhs = max(lhs.nodeId, lhs.parentNodeId);
-		int maxIdRhs = max(rhs.nodeId, rhs.parentNodeId);
-		
-		return maxIdLhs < maxIdRhs;
-		
-	}
-
-};
-
 
 vb inMST;
-vvii connections;
+double weights[1002][1002];
 priority_queue<Node, vector<Node>, NodeCmp > pq;
-
+int N;
 
 void process(int nodeId) 
 {
 	inMST[nodeId] = true;
-	for (int j = 0; j < connections[nodeId].size(); j++) 
+	for (int adj = 0; adj < N; ++adj) 
 	{
-		//node, weight pair
-		ii adj = connections[nodeId][j];
-		if (!inMST[adj.first]) 
-			pq.push( Node(nodeId, adj.first, adj.second) );
+		if (!inMST[adj]) 
+			pq.push( Node(adj, weights[nodeId][adj] ) );
 	}
 } 
 
+
+
 int main() {
 
-	int N;
+	
 	int T ;
 	scanf("%d", &T);
 	
 	FORE(t, 1, T)
 	{
-		printf("Case %d:\n", t); 
-		scanf("%d", &N);
 		
-		connections.clear();
-		connections.resize(N);
+		int r;
+		scanf("%d%d", &N, &r);
+				
+		vector<ii> nodes;
+		
+		FOR(i, 0, N)
+		{
+			ii xy;
+			scanf("%d%d", &xy.first, &xy.second);
+			nodes.pb(xy);
+		}
 		
 		FOR(i, 0, N)
 		{
 			FOR(j, 0, N)
 			{
-				int cost;
-				int read =  scanf("%d,", &cost) || scanf("%d", &cost);
-								
-				if (cost > 0)
-				{
-					//printf("Connect %d and %d cost %d\n", i, j, cost);
-					connections[i].pb( mp(j, cost) );
-				}
+				
+				double cost = sqrt( (nodes[i].first-nodes[j].first)*(nodes[i].first-nodes[j].first)
+				+ (nodes[i].second-nodes[j].second)*(nodes[i].second-nodes[j].second) );
+				
+				//printf("Connect %d and %d cost %lf\n", i, j, cost);
+				weights[i][j] = weights[j][i] = cost; 
+				
 			}
 		}
 		
@@ -629,30 +613,32 @@ int main() {
 		vector<Node> mstEdges;
 		
 		process(0); // take vertex 0 and process all edges incident to vertex 0
-		int mst_cost = 0;
+		double rails_cost = 0;
+		double road_cost = 0;
+		int nStates = 1;
+		
 		while (!pq.empty()) 
-		{ // repeat until V vertices (E = V-1 edges) are inMST
+		{ 
 			Node front = pq.top(); pq.pop();
-			//printf("Node %d parent %d  weight %d\n", front.nodeId, front.parentNodeId, front.weight);
+			//printf("Node %d  weight %lf\n", front.nodeId, front.weight);
 						
 			if (!inMST[front.nodeId]) 
 			{
 				mstEdges.pb( front );
 				
-				mst_cost += front.weight;
+				if (front.weight <= r)
+				{
+					road_cost += front.weight;
+				} else {
+					nStates++;
+					rails_cost += front.weight;
+				}
 				process(front.nodeId); 
 			}
 		}
 		
-		sort( all(mstEdges), DisplayCmp() );
-
-		for(int i = 0; i < mstEdges.size(); ++i)
-		{
-			printf("%c-%c %d\n", 'A' + min(mstEdges[i].nodeId, mstEdges[i].parentNodeId), 
-				'A' + max(mstEdges[i].nodeId, mstEdges[i].parentNodeId), mstEdges[i].weight);
-		}
+		printf("Case #%d: %d %.0lf %.0lf\n", t, nStates, road_cost, rails_cost); 
 		
-		//printf("%d\n", mst_cost);
 		
 	}
 	return 0;
