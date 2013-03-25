@@ -552,16 +552,21 @@ class UnionFind
 {
 public:
 	vi id; vi sz;
+	
+	int nComp;
 
 	void initSet(int n)
 	{
 		id.assign(n, 0);
 		sz.assign(n, 1);
 		for(int i = 0; i < n; ++i) id[i] = i;
+		
+		nComp = n;
 	}
 
 	int findSet(int i)
 	{
+		printf("Find set %d\n", i);
 		return (i == id[i]) ? i : id[i] = findSet(id[i]);
 	}
 
@@ -580,6 +585,10 @@ public:
         int i = findSet(p);
         int j = findSet(q);
 
+		if (i == j)
+			return;
+			
+		--nComp;
         if(sz[i] > sz[j])
         {
             id[j] = i;
@@ -607,9 +616,12 @@ vector< WeightedEdge > EdgeList;  // format: weight, two vertices of the edge
 int main() 
 {
 	int A;
+	int T;
+	scanf("%d", &T);
 	
-	while(2 == scanf("%d%d", &V, &E, &A) && (V|E) )
+	FORE(t, 1, T)
 	{
+		scanf("%d%d%d", &V, &E, &A);
 		AdjList.assign(V, vii());
 		EdgeList.clear();
 		
@@ -618,6 +630,11 @@ int main()
 			int id1, id2;
 			int w;
 			scanf("%d%d%d", &id1, &id2, &w);
+			
+			if (w >= A)
+				continue;
+			
+			//printf("Reading %d %d %d\n", id1, id2, w);
 			--id1; --id2;
 						
 			AdjList[id1].pb(mp(id2, w));
@@ -631,9 +648,12 @@ int main()
 		UnionFind uf;
 		uf.initSet(V);             // all V are disjoint sets initially
  
-		for (int i = 0; i < E; i++) 
+		for (int i = 0; i < EdgeList.size(); i++) 
 		{                           // for each edge, O(E)
+			//printf("Edge idx %d\n", i);
 			WeightedEdge front = EdgeList[i];
+			
+			//printf("Edge weig %d u %d v %d \n", front.weight, front.u, front.v);
 			if (!uf.isSameSet(front.u, front.v)) 
 			{    // if no cycle
 				//printf("Connect %d and %d\n", front.u, front.v);
@@ -642,8 +662,8 @@ int main()
 			}
 		}                            // note: the runtime cost of UFDS is very light
 
-		printf("%d\n", mst_cost);
-			
+		//		printf("mst:%d comp:%d  total %d\n", mst_cost, uf.nComp, uf.nComp * A + mst_cost);
+		printf("Case #%d: %d %d\n", t, uf.nComp * A + mst_cost, uf.nComp); 
 		// note: the number of disjoint sets must eventually be one for a valid MST
 		//printf("MST cost = %d (Kruskal's) size %d / %d.  root id %d %s\n", mst_cost, size, V, rootId, root.c_str());
 
