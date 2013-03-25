@@ -547,20 +547,26 @@ int operator<( const WeightedEdge& lhs, const WeightedEdge& rhs )
 
 }
 
+
 class UnionFind
 {
 public:
 	vi id; vi sz;
+	
+	int nComp;
 
 	void initSet(int n)
 	{
 		id.assign(n, 0);
 		sz.assign(n, 1);
 		for(int i = 0; i < n; ++i) id[i] = i;
+		
+		nComp = n;
 	}
 
 	int findSet(int i)
 	{
+		//printf("Find set %d\n", i);
 		return (i == id[i]) ? i : id[i] = findSet(id[i]);
 	}
 
@@ -579,6 +585,10 @@ public:
         int i = findSet(p);
         int j = findSet(q);
 
+		if (i == j)
+			return;
+			
+		--nComp;
         if(sz[i] > sz[j])
         {
             id[j] = i;
