@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include "stdio.h"
 #include <iostream>
 #include <fstream>
@@ -593,3 +594,81 @@ public:
 		//printf("Union set %d to %d ; sizes %d and %d\n", p, q, sz[p], sz[q]);
 	}
 };
+//STOPCOMMON
+
+
+
+int V, E;
+
+vvii AdjList;
+
+vector< WeightedEdge > EdgeList;  // format: weight, two vertices of the edge
+
+int main() 
+{
+
+	while(2 == scanf("%d%d", &V, &E) && (V|E) )
+	{
+		map<string, int> mapNameId;
+		map<int, string> mapNames;
+		
+		FOR(v, 0, V)
+		{
+			string s;
+			cin >> s;
+			
+		
+			//establish ids
+			getId(mapNameId, mapNames, s, mapNameId.size());
+		}
+		
+		AdjList.assign(V, vii());
+		EdgeList.clear();
+		
+		FOR(e, 0, E)
+		{
+			string s1, s2;
+			int w;
+			cin >> s1 >> s2 >> w;
+			int id1 = getId(mapNameId, mapNames, s1, mapNameId.size());
+			int id2 = getId(mapNameId, mapNames, s2, mapNameId.size());
+			
+			AdjList[id1].pb(mp(id2, w));
+			AdjList[id2].pb(mp(id1, w));
+			EdgeList.pb( WeightedEdge(id1, id2, w) );
+		}
+		
+		string root;
+		cin >> root;
+		int rootId = getId(mapNameId, mapNames, root, mapNameId.size());
+		
+		sort(EdgeList.begin(), EdgeList.end());   // sort by edge weight in O(E log E)
+
+		int mst_cost = 0; 
+		UnionFind uf;
+		uf.initSet(V);             // all V are disjoint sets initially
+ 
+		for (int i = 0; i < E; i++) 
+		{                           // for each edge, O(E)
+			WeightedEdge front = EdgeList[i];
+			if (!uf.isSameSet(front.u, front.v)) 
+			{    // if no cycle
+				//printf("Connect %d and %d\n", front.u, front.v);
+				mst_cost += front.weight;                     // add the weight of e to MST
+				uf.unionSet(front.u, front.v);       // link endpoints
+			}
+		}                            // note: the runtime cost of UFDS is very light
+
+		int size = uf.size(rootId);
+		if (size < V)
+			puts("Impossible");
+		else 
+			printf("%d\n", mst_cost);
+			
+		// note: the number of disjoint sets must eventually be one for a valid MST
+		//printf("MST cost = %d (Kruskal's) size %d / %d.  root id %d %s\n", mst_cost, size, V, rootId, root.c_str());
+
+  		
+	}
+	return 0;
+}
