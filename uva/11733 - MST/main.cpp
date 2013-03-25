@@ -566,7 +566,7 @@ public:
 
 	int findSet(int i)
 	{
-		printf("Find set %d\n", i);
+		//printf("Find set %d\n", i);
 		return (i == id[i]) ? i : id[i] = findSet(id[i]);
 	}
 
