@@ -1177,7 +1177,7 @@ class AnsComp
     int operator()(const PointWithHeight& lhs, const PointWithHeight& rhs)
     {
         if ( lhs.second.x != rhs.second.x ) 
-            lhs.second.x < rhs.second.x;
+            return lhs.second.x < rhs.second.x;
         
         return lhs.second.y < rhs.second.y;        
     }      
@@ -1198,6 +1198,7 @@ int main() {
 
 	int t = 0;
 	int N;
+	bool debug = false && true;
 	
 	while(1 == scanf("%d", &N) && N)
 	{
@@ -1230,7 +1231,7 @@ int main() {
 			
 			if (points.empty())
 			{
-			    cout << "Adding first point " << pt << " h= " << height
+			    if (debug) cout << "Adding first point " << pt << " h= " << height
 			    <<  " to line " << line << endl;
 			    points.pb( ptWH );
 			    continue;
@@ -1254,7 +1255,7 @@ int main() {
 			     
 			     if(closerPt.first >= height)
 			     {
-			         cout << "Point " << closerPt.second << " is >= height. Not adding point " << pt << " h= " << height
+			         if (debug) cout << "Point " << closerPt.second << " is >= height. Not adding point " << pt << " h= " << height
 			         <<  " to line " << line << endl;
 			         removedPoints.pb( ptWH );
 			         continue;
@@ -1268,15 +1269,15 @@ int main() {
 			
 			int insIdx = distance( points.begin(), insPosIt );
 			
-			cout << "Adding point " << pt << " h= " << height
+			if (debug) cout << "Adding point " << pt << " h= " << height
 			         <<  " to line " << line << endl;
-			printf("taller index %d  ins index %d\n", tallerIdx, insIdx);
+			if (debug) printf("taller index %d  ins index %d\n", tallerIdx, insIdx);
 			
 			assert(tallerIdx >= insIdx);
 			
 			if (tallerIdx > insIdx)
 			{
-			    printf("Removing between [%d, %d) size points %d\n",
+			    if (debug) printf("Removing between [%d, %d) size points %d\n",
 			         insIdx + 1,
 			          tallerIdx + 1,
 			         points.size());
@@ -1290,8 +1291,9 @@ int main() {
 			//points.pb( ptWH );
 		}
 		
-		cout << "Case " << t << endl;
+		if (debug) cout << "Case " << t << endl;
 		
+		if (debug) 
 		for(MapLinePoints::iterator it = linePoints.begin(); it != linePoints.end(); ++it)
 		{
 			Ray ray = it->first;
