@@ -1260,6 +1260,15 @@ int main() {
 			         <<  " to line " << line << endl;
 			printf("taller index %d  ins index %d\n", tallerIdx, insIdx);
 			
+			assert(tallerIdx >= insIdx);
+			
+			if (tallerIdx > insIdx)
+			{
+			     removedPoints.insert( removedPoints.end(), points.begin() + insIdx + 1,
+			         points.begin() + tallerIdx + 1);
+			     points.erase(points.begin() + insIdx + 1,
+			         points.begin() + tallerIdx + 1);
+			}
 			//erase everything between insPosIt + 1 and delStop - 1
 			
 			//points.pb( ptWH );
