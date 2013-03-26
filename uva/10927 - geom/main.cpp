@@ -1167,8 +1167,20 @@ class CompHeight
     int operator()(const PointWithHeight& lhs, const PointWithHeight& rhs)
     {
         return lhs.first < rhs.first;        
-    }   
+    }      
     
+};
+
+class AnsComp
+{
+    public:
+    int operator()(const PointWithHeight& lhs, const PointWithHeight& rhs)
+    {
+        if ( lhs.second.x != rhs.second.x ) 
+            lhs.second.x < rhs.second.x;
+        
+        return lhs.second.y < rhs.second.y;        
+    }      
     
 };
 
@@ -1264,6 +1276,10 @@ int main() {
 			
 			if (tallerIdx > insIdx)
 			{
+			    printf("Removing between [%d, %d) size points %d\n",
+			         insIdx + 1,
+			          tallerIdx + 1,
+			         points.size());
 			     removedPoints.insert( removedPoints.end(), points.begin() + insIdx + 1,
 			         points.begin() + tallerIdx + 1);
 			     points.erase(points.begin() + insIdx + 1,
@@ -1289,8 +1305,21 @@ int main() {
 			}
 			
 		}
-
-		//scanf("%d", &nSeg);
+		
+		sort( all(removedPoints), AnsComp() );
+		
+		printf("Data set %d:\n", t);
+		if (removedPoints.empty())
+		    puts("All the lights are visible.");
+		else {
+		    puts("Some lights are not visible:");
+		    FOR(i, 0, removedPoints.size())
+		    {
+		        printf("x = %d, y = %d%c\n", removedPoints[i].second.x,
+		            removedPoints[i].second.y, i == removedPoints.size() - 1 ?
+		            '.' : ';');
+		    }
+		}
 		
 	}
 	return 0;
