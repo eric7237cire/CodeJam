@@ -62,11 +62,10 @@ template<typename T> T gcd(T a, T b)
     return a;
 }*/
 
-
-template<typename T>
-T gcd(T a, T b)
+/*
+int gcd(int a, int b)
 {
-    T c;
+    int c;
     while (b != 0)
     {
         c = a % b;
@@ -74,10 +73,8 @@ T gcd(T a, T b)
         b = c;
     }
     return a;
-}
-
-template<typename T> 
-T gcd2(T a, T b)
+}*/
+template<typename T> T gcd(T a, T b)
 {
     while(b) b ^= a ^= b ^= a %= b;
     return a;
@@ -1142,9 +1139,11 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
 }
 //STOPCOMMON
 
+typedef long long CoordType;
+
 //true for y > 0 or y == 0 x > 0, false otherwise
-typedef pair<Line<int>, bool> Ray;
-typedef pair<int, Point<int> > PointWithHeight;
+typedef pair<Line<CoordType>, bool> Ray;
+typedef pair<int, Point<CoordType> > PointWithHeight;
 
 //List of points on same ray, ordered by distance to origin AND height
 typedef vector<PointWithHeight> VecPoint;
@@ -1156,8 +1155,8 @@ public:
     int operator()(const PointWithHeight& lhs, const PointWithHeight& rhs)
     {
         
-        int a = abs(lhs.second.x) + abs(lhs.second.y);
-        int b = abs(rhs.second.x) + abs(rhs.second.y);
+        CoordType a = abs(lhs.second.x) + abs(lhs.second.y);
+        CoordType b = abs(rhs.second.x) + abs(rhs.second.y);
         
         return a < b;
         
@@ -1189,7 +1188,7 @@ class AnsComp
 
 
 //assume point is not origin
-bool getRaySide(const Point<int>& pt)
+bool getRaySide(const Point<CoordType>& pt)
 {
 	if (pt.y != 0)
 		return pt.y > 0;
@@ -1202,6 +1201,7 @@ int main() {
 	int t = 0;
 	int N;
 	bool debug =  true;
+	debug = false;
 	
 	while(1 == scanf("%d", &N) && N)
 	{
@@ -1212,13 +1212,13 @@ int main() {
 		
 		
 		
-		Point<int> origin(0,0);
+		Point<CoordType> origin(0,0);
 		
 		vector<PointWithHeight> removedPoints;
 
 		FOR(n, 0, N)
 		{
-			Point<int> pt;
+			Point<CoordType> pt;
 			cin >> pt;
 			
 			int height;
@@ -1226,7 +1226,7 @@ int main() {
 			
 			PointWithHeight ptWH(height, pt);
 		
-			Line<int> line( pt, origin, true );
+			Line<CoordType> line( pt, origin, true );
 			bool side = getRaySide(pt);
 			Ray ray(line, side);
 			
@@ -1252,9 +1252,15 @@ int main() {
 			if (insPosIt != points.begin())
 			{
 			     PointWithHeight& closerPt = *(insPosIt - 1);
-			     //assert( length_squared(pt, origin) > length_squared(closerPt.second, origin));
-			     //assert( isColinear(pt, closerPt.second, origin) );
-			     //assert( getRaySide(pt) == getRaySide(closerPt.second) );
+				 
+				 if (debug) cout << "Checking point " << pt 
+				 <<  " closer point is " << closerPt.second << " with height " << closerPt.first
+			         <<  " and  line " << line << endl;
+				 
+				 //printf("len sq %d %d \n", length_squared(pt, origin), length_squared(closerPt.second, origin));
+			     assert( dist(pt, origin) > dist(closerPt.second, origin));
+			     assert( isColinear(pt, closerPt.second, origin) );
+			     assert( getRaySide(pt) == getRaySide(closerPt.second) );
 			     
 			     if(closerPt.first >= height)
 			     {
@@ -1276,7 +1282,7 @@ int main() {
 			         <<  " to line " << line << endl;
 			if (debug) printf("taller index %d  ins index %d\n", tallerIdx, insIdx);
 			
-			//assert(tallerIdx >= insIdx);
+			assert(tallerIdx >= insIdx);
 			
 			if (tallerIdx > insIdx)
 			{
@@ -1320,8 +1326,8 @@ int main() {
 		    puts("Some lights are not visible:");
 		    FOR(i, 0, removedPoints.size())
 		    {
-		        printf("x = %d, y = %d%c\n", removedPoints[i].second.x,
-		            removedPoints[i].second.y, i == removedPoints.size() - 1 ?
+		        printf("x = %d, y = %d%c\n", (int)removedPoints[i].second.x,
+		            (int)removedPoints[i].second.y, i == removedPoints.size() - 1 ?
 		            '.' : ';');
 		    }
 		}
