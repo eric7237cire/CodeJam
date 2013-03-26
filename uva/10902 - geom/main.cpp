@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <iostream>
 #include <map>
 #include <list>
@@ -1118,3 +1119,44 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
 }
+//STOPCOMMON
+
+#include "stdio.h"
+int main() {
+
+	int N;
+	while( 1 == scanf("%d", &N) && N)
+	{
+		vector< Segment<double> > vecSegments(N);
+		FOR(n, 0, N)
+		{
+			cin >> vecSegments[n] ;
+		}
+		
+		vector<int> onTop;
+		for(int i = 0; i < N; ++i)
+		{
+			bool ok = true;
+			
+			for(int j = i + 1; j < N; ++j)
+			{
+				if (intersects( vecSegments[i].p1, vecSegments[i].p2, vecSegments[j].p1, vecSegments[j].p2 ))
+				{
+					ok = false;
+					break;
+				}
+			}
+			
+			if (ok)
+				onTop.pb(i+1);
+		}
+		
+		printf("Top sticks: %d", onTop[0]);
+		for(int i = 1; i < onTop.size(); ++i)
+			printf(", %d", onTop[i]);
+			
+		puts(".");
+	}
+	return 0;
+}
+
