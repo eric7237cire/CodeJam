@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <iostream>
 #include <map>
 #include <list>
@@ -1087,3 +1088,50 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
 }
+//STOPCOMMON
+
+
+#include "stdio.h"
+
+int t;
+int r;
+int N;
+int T;
+
+
+
+int main() 
+{
+
+	while(2 == scanf("%d%d", &N, &T) )
+	{
+		double x = 0, y = 0;
+		
+		FOR(n, 0, N)
+		{
+			scanf("%d%d", &r, &t);
+			
+			double angle = 2 * PI * T / t;
+			
+			double xOffset = r * cos(angle);
+			double yOffset = r * sin(angle);
+			
+			x += xOffset;
+			y += yOffset;
+			
+			//printf("n = %d x %lf xoff %lf y %lf yoff %lf\n", n, x, xOffset, y, yOffset);
+			double d = dist( Point<double>(0, 0), Point<double>(x, y));
+			if (n > 0)
+				printf(" ");
+			printf("%.4lf", d);
+		}
+		
+		
+		puts("");
+
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
+}
+

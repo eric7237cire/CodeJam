@@ -1,7 +1,7 @@
-//STARTGEOM
+//STARTCOMMON
 
 
-//STOPGEOM
+//STOPCOMMON
 
 #include "stdio.h"
 int main() {
