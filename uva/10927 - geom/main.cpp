@@ -1139,6 +1139,8 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
 }
 //STOPCOMMON
 
+
+//Needed to stop overflow in Line constructor
 typedef long long CoordType;
 
 //true for y > 0 or y == 0 x > 0, false otherwise
@@ -1195,8 +1197,103 @@ bool getRaySide(const Point<CoordType>& pt)
 		
 	return pt.x > 0;
 }
+
 #include "stdio.h"
+
 int main() {
+
+	int t = 0;
+	int N;
+	
+	while(1 == scanf("%d", &N) && N)
+	{
+		++t;
+		//store a line and 2 end points, first with y > 0 (or if y==0, x >), second y < 0 ...
+		//this stor
+		MapLinePoints linePoints;
+		
+		Point<CoordType> origin(0,0);
+		
+		vector<PointWithHeight> removedPoints;
+
+		FOR(n, 0, N)
+		{
+			//get x y z
+			Point<CoordType> pt;
+			cin >> pt;
+			
+			int height;
+			cin >> height;
+			
+			PointWithHeight ptWH(height, pt);
+		
+			// build normalized line
+			Line<CoordType> line( pt, origin, true );
+			bool side = getRaySide(pt);
+			Ray ray(line, side);
+			
+			VecPoint& points = linePoints[ray];
+			
+			if (points.empty())
+			{
+			    points.pb( ptWH );
+			    continue;
+			}
+			
+			//Find insertion point using distance, since it is on the same line, we dont need to compare the real distance 
+			VecPoint::iterator insPosIt = upper_bound(all(points), ptWH, CompDistance());
+
+			//Since points is sorted, we only need to check preceding point if it higher or not 
+			if (insPosIt != points.begin())
+			{
+			     PointWithHeight& closerPt = *(insPosIt - 1);
+			     
+			     if(closerPt.first >= height)
+			     {
+			         removedPoints.pb( ptWH );
+			         continue;
+			     }          
+			}
+			
+			//Now see which points are hidden by finding point with higher Z
+			int tallerIdx = distance( points.begin(), upper_bound(all(points), ptWH, CompHeight()) );
+			
+			insPosIt = points.insert( insPosIt, ptWH );
+			
+			int insIdx = distance( points.begin(), insPosIt );
+			
+			if (tallerIdx > insIdx)
+			{
+			     removedPoints.insert( removedPoints.end(), points.begin() + insIdx + 1,
+			         points.begin() + tallerIdx + 1);
+			     points.erase(points.begin() + insIdx + 1,
+			         points.begin() + tallerIdx + 1);
+			}
+
+		}
+		
+		
+		sort( all(removedPoints), AnsComp() );
+		
+		printf("Data set %d:\n", t);
+		if (removedPoints.empty())
+		    puts("All the lights are visible.");
+		else {
+		    puts("Some lights are not visible:");
+		    FOR(i, 0, removedPoints.size())
+		    {
+		        printf("x = %d, y = %d%c\n", (int)removedPoints[i].second.x,
+		            (int)removedPoints[i].second.y, i == removedPoints.size() - 1 ?
+		            '.' : ';');
+		    }
+		}
+		
+	}
+	return 0;
+}
+
+
+int main2() {
 
 	int t = 0;
 	int N;
