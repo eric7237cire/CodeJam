@@ -62,10 +62,11 @@ template<typename T> T gcd(T a, T b)
     return a;
 }*/
 
-/*
-int gcd(int a, int b)
+
+template<typename T>
+T gcd(T a, T b)
 {
-    int c;
+    T c;
     while (b != 0)
     {
         c = a % b;
@@ -73,8 +74,10 @@ int gcd(int a, int b)
         b = c;
     }
     return a;
-}*/
-template<typename T> T gcd(T a, T b)
+}
+
+template<typename T> 
+T gcd2(T a, T b)
 {
     while(b) b ^= a ^= b ^= a %= b;
     return a;
@@ -1198,7 +1201,7 @@ int main() {
 
 	int t = 0;
 	int N;
-	bool debug = false && true;
+	bool debug =  true;
 	
 	while(1 == scanf("%d", &N) && N)
 	{
@@ -1249,9 +1252,9 @@ int main() {
 			if (insPosIt != points.begin())
 			{
 			     PointWithHeight& closerPt = *(insPosIt - 1);
-			     assert( length_squared(pt, origin) > length_squared(closerPt.second, origin));
-			     assert( isColinear(pt, closerPt.second, origin) );
-			     assert( getRaySide(pt) == getRaySide(closerPt.second) );
+			     //assert( length_squared(pt, origin) > length_squared(closerPt.second, origin));
+			     //assert( isColinear(pt, closerPt.second, origin) );
+			     //assert( getRaySide(pt) == getRaySide(closerPt.second) );
 			     
 			     if(closerPt.first >= height)
 			     {
@@ -1273,7 +1276,7 @@ int main() {
 			         <<  " to line " << line << endl;
 			if (debug) printf("taller index %d  ins index %d\n", tallerIdx, insIdx);
 			
-			assert(tallerIdx >= insIdx);
+			//assert(tallerIdx >= insIdx);
 			
 			if (tallerIdx > insIdx)
 			{
