@@ -1,3 +1,13 @@
-10 12
- 10 14
- 100 200
+6 5
+remar
+pitos
+remas
+remos
+retos
+ritos
+5 4
+pato
+lisa
+pata
+pita
+pisa
