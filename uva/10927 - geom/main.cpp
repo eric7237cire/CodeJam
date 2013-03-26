@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <iostream>
 #include <map>
 #include <list>
@@ -1136,3 +1137,76 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
 }
+//STOPCOMMON
+
+//true for y > 0 or y == 0 x > 0, false otherwise
+typedef pair<Line<int>, bool> Ray;
+typedef pair<int, Point<int> > PointWithHeight;
+typedef vector<PointWithHeight> VecPoint;
+typedef map<Ray, VecPoint> MapLinePoints;
+
+//assume point is not origin
+bool getRaySide(const Point<int>& pt)
+{
+	if (pt.y != 0)
+		return pt.y > 0;
+		
+	return pt.x > 0;
+}
+#include "stdio.h"
+int main() {
+
+	int t = 0;
+	int N;
+	
+	while(1 == scanf("%d", &N) && N)
+	{
+		++t;
+		//store a line and 2 end points, first with y > 0 (or if y==0, x >), second y < 0 ...
+		//this stor
+		MapLinePoints linePoints;
+		
+		
+		
+		Point<int> origin(0,0);
+		
+		FOR(n, 0, N)
+		{
+			Point<int> pt;
+			cin >> pt;
+			
+			int height;
+			cin >> height;
+			
+			PointWithHeight ptWH(height, pt);
+		
+			Line<int> line( pt, origin, true );
+			bool side = getRaySide(pt);
+			Ray ray(line, side);
+			
+			VecPoint& points = linePoints[ray];
+			points.pb( ptWH );
+		}
+		
+		cout << "Case " << t << endl;
+		
+		for(MapLinePoints::iterator it = linePoints.begin(); it != linePoints.end(); ++it)
+		{
+			Ray ray = it->first;
+			VecPoint& points = it->second;
+			
+			cout << "Line " << ray.first << " side " << ray.second << endl;
+			
+			for(int i = 0; i < points.size(); ++i)
+			{
+				cout << "Point " << points[i].second << " height " << points[i].first << endl;
+			}
+			
+		}
+
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
+}
+
