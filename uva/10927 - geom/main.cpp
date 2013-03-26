@@ -1142,8 +1142,36 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
 //true for y > 0 or y == 0 x > 0, false otherwise
 typedef pair<Line<int>, bool> Ray;
 typedef pair<int, Point<int> > PointWithHeight;
+
+//List of points on same ray, ordered by distance to origin AND height
 typedef vector<PointWithHeight> VecPoint;
 typedef map<Ray, VecPoint> MapLinePoints;
+
+class CompDistance
+{
+public:
+    int operator()(const PointWithHeight& lhs, const PointWithHeight& rhs)
+    {
+        
+        int a = abs(lhs.second.x) + abs(lhs.second.y);
+        int b = abs(rhs.second.x) + abs(rhs.second.y);
+        
+        return a < b;
+        
+    }   
+};
+
+class CompHeight
+{
+    public:
+    int operator()(const PointWithHeight& lhs, const PointWithHeight& rhs)
+    {
+        return lhs.first < rhs.first;        
+    }   
+    
+    
+};
+
 
 //assume point is not origin
 bool getRaySide(const Point<int>& pt)
@@ -1170,6 +1198,8 @@ int main() {
 		
 		Point<int> origin(0,0);
 		
+		vector<PointWithHeight> removedPoints;
+
 		FOR(n, 0, N)
 		{
 			Point<int> pt;
@@ -1185,7 +1215,54 @@ int main() {
 			Ray ray(line, side);
 			
 			VecPoint& points = linePoints[ray];
-			points.pb( ptWH );
+			
+			if (points.empty())
+			{
+			    cout << "Adding first point " << pt << " h= " << height
+			    <<  " to line " << line << endl;
+			    points.pb( ptWH );
+			    continue;
+			}
+			
+			VecPoint::iterator insPosIt = upper_bound(all(points), ptWH, CompDistance());
+			
+			
+			
+			/*Case 1.  Further then all points.
+			stopIt = points.end()
+			
+			if (stopIt - 1) is shorter, then add, otherwise remove it			
+			*/
+			if (insPosIt != points.begin())
+			{
+			     PointWithHeight& closerPt = *(insPosIt - 1);
+			     assert( length_squared(pt, origin) > length_squared(closerPt.second, origin));
+			     assert( isColinear(pt, closerPt.second, origin) );
+			     assert( getRaySide(pt) == getRaySide(closerPt.second) );
+			     
+			     if(closerPt.first >= height)
+			     {
+			         cout << "Point " << closerPt.second << " is >= height. Not adding point " << pt << " h= " << height
+			         <<  " to line " << line << endl;
+			         removedPoints.pb( ptWH );
+			         continue;
+			     }          
+			}
+			
+			int tallerIdx = distance( points.begin(), upper_bound(all(points), ptWH, CompHeight()) );
+			
+			
+			insPosIt = points.insert( insPosIt, ptWH );
+			
+			int insIdx = distance( points.begin(), insPosIt );
+			
+			cout << "Adding point " << pt << " h= " << height
+			         <<  " to line " << line << endl;
+			printf("taller index %d  ins index %d\n", tallerIdx, insIdx);
+			
+			//erase everything between insPosIt + 1 and delStop - 1
+			
+			//points.pb( ptWH );
 		}
 		
 		cout << "Case " << t << endl;
