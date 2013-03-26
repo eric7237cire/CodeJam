@@ -1090,6 +1090,37 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
 }
 //STOPCOMMON
 
+/*
+10585 - Center of Symmetry 
+ Stephanus & Wang Zirui 
+
+ Sort the coordinates by X, then by Y. If there is a center of symmetry, 
+ then the center of symmetry is : 
+
+ Denote 
+ Leftmost point (Xl,Yl) 
+ Rightmost point (Xr,Yr) 
+
+ Center of Symmetry : ( (Xl + Xr)/2, (Yl + Yr)/2 ) 
+
+ Then check every leftmost and rightmost point whether they have the same center of symmetry.
+ */
+ 
+template<typename T>
+class PointSort
+{
+	public:
+	
+    int operator()(const Point<T>& lhs, const Point<T>& rhs)
+    {
+		if (lhs.x != rhs.x)
+			return lhs.x < rhs.x;
+		
+		return lhs.y < rhs.y;
+    }
+};
+ 
+int N;
 #include "stdio.h"
 int main() {
 
@@ -1098,13 +1129,72 @@ int main() {
 
 	FOR(t, 0, T)
 	{
+		scanf("%d", &N);
 		
-		if (t > 0)
-			printf("\n");
-
+		vector<Point<int> > vp;
+		FOR(n, 0, N)
+		{
+			Point<int> pt;
+			cin >> pt;
+			vp.pb(pt);
+			//cout << pt << endl;
+		}
+		
+		sort(all(vp), PointSort<int>());
+		
+		FOR(n, 0, N)
+		{
+			//cout << vp[n] << endl;
+		}
+		
+		if (vp.size() <= 1)
+		{
+			puts("yes");
+			continue;
+		}
 		//scanf("%d", &nSeg);
+		int left = 0;
+		int right = vp.size() - 1;
+		
+		int centerX = vp[left].x + vp[right].x;
+		int centerY = vp[left].x + vp[right].x;
+		
+		++left;
+		--right;
+		
+		bool ok = true;
+		
+		while(left <= right)
+		{
+			int cX = vp[left].x + vp[right].x;
+			int cY = vp[left].x + vp[right].x;
+			
+			//printf("center is %d/2, %d/2 ; %d/2 %d/2 for ", cX, cY, centerX, centerY);
+			//cout << vp[left] << "  " << vp[right] << endl;
+			
+			/*Leftmost point (Xl,Yl) 
+ Rightmost point (Xr,Yr) 
+
+ Center of Symmetry : ( (Xl + Xr)/2, (Yl + Yr)/2 ) */
+			if (cX != centerX || cY != centerY )
+			{
+				ok = false;
+				break;
+			}
+			
+			
+			++left;
+			--right;
+		}
+		
+		if (ok)
+			puts("yes");
+		else	
+			puts("no");
 		
 	}
+	
+	
 	return 0;
 }
 
