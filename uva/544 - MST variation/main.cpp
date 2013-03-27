@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include "stdio.h"
 #include <iostream>
 #include <fstream>
@@ -614,3 +615,22 @@ public:
 		//printf("Union set %d to %d ; sizes %d and %d\n", p, q, sz[p], sz[q]);
 	}
 };
+
+//STOPCOMMON
+
+int main() {
+
+	int T;
+	scanf("%d", &T);
+
+	while(T--)
+	{
+		
+		if (T > 0)
+			printf("\n");
+
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
+}

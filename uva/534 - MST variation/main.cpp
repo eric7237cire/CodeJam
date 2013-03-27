@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include "stdio.h"
 #include <iostream>
 #include <fstream>
@@ -614,3 +615,70 @@ public:
 		//printf("Union set %d to %d ; sizes %d and %d\n", p, q, sz[p], sz[q]);
 	}
 };
+
+//STOPCOMMON
+
+
+int V, E;
+
+//vvii AdjList;
+
+vector< WeightedEdge<double> > EdgeList;  // format: weight, two vertices of the edge
+
+int main() 
+{
+	int t = 0;
+	while(1 == scanf("%d", &V) && V)
+	{
+		
+		vii coords(V);
+		FOR(i, 0, V)
+		{
+			scanf("%d%d", &coords[i].first, &coords[i].second);
+		}
+		
+		//AdjList.assign(V, vii());
+		EdgeList.clear();
+		E = V * V;
+		
+		FOR(i, 0, V) FOR(j, i+1, V)
+		{
+			double dist = distance( coords[i].first, coords[i].second, coords[j].first,  coords[j].second);
+			EdgeList.pb( WeightedEdge<double>( i, j, dist) );
+		}
+
+		sort(EdgeList.begin(), EdgeList.end());   // sort by edge weight in O(E log E)
+
+		double max_weight = -1;
+		
+		UnionFind uf;
+		uf.initSet(V);             // all V are disjoint sets initially
+ 		
+ 		for (int i = 0; i < EdgeList.size(); i++) 
+		{                           // for each edge, O(E)
+			//printf("Edge idx %d\n", i);
+			WeightedEdge<double>& front = EdgeList[i];
+			
+			//printf("Edge weig %d u %d v %d \n", front.weight, front.u, front.v);
+			if (!uf.isSameSet(front.u, front.v)) 
+			{    // if no cycle
+				//printf("Connect %d and %d\n", front.u, front.v);
+			
+				max_weight = max(max_weight, front.weight);
+				uf.unionSet(front.u, front.v);       // link endpoints
+				
+				if ( (front.u <= 1 || front.v <= 1) && uf.isSameSet(0, 1) )
+				{
+					//we have a path from node 0 to 1
+					break;
+				}
+			} 
+		}                           
+
+		printf("Scenario #%d\nFrog Distance = %.3lf\n\n", ++t, max_weight);
+		
+		
+  		
+	}
+	return 0;
+}
