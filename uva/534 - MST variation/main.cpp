@@ -667,7 +667,8 @@ int main()
 				max_weight = max(max_weight, front.weight);
 				uf.unionSet(front.u, front.v);       // link endpoints
 				
-				if ( (front.u <= 1 || front.v <= 1) && uf.isSameSet(0, 1) )
+				//Even if nodes are not 0 or 1, they may have become connected
+				if ( uf.isSameSet(0, 1) )
 				{
 					//we have a path from node 0 to 1
 					break;

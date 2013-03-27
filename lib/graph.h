@@ -374,7 +374,10 @@ class Flow
 typedef map<string, int> msi;
 
 template<typename OrigType>
-int getId(map<OrigType, int>& mapNameId, map<int, OrigType>& mapNames, const OrigType& name, int nextId)
+int getId(
+	map<OrigType, int>& mapNameId, 
+	map<int, OrigType>& mapNames, 
+	const OrigType& name, int nextId)
 {
 	typename map<OrigType, int>::iterator lowerBound = mapNameId.lower_bound(name);
 

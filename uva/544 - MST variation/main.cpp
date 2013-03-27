@@ -618,19 +618,72 @@ public:
 
 //STOPCOMMON
 
-int main() {
 
-	int T;
-	scanf("%d", &T);
+int V, E;
 
-	while(T--)
+//vvii AdjList;
+
+vector< WeightedEdge<int> > EdgeList;  // format: weight, two vertices of the edge
+
+int main() 
+{
+	int t = 0;
+	while(2 == scanf("%d%d", &V, &E) && (V||E))
 	{
 		
-		if (T > 0)
-			printf("\n");
+		//AdjList.assign(V, vii());
+		EdgeList.clear();
 
-		//scanf("%d", &nSeg);
+		map<string, int> mapNameId;
+		map<int, string> mapNames;
 		
+		FOR(e, 0, E)
+		{
+			string s1, s2;
+			int w;
+			cin >> s1 >> s2 >> w;
+			
+			int id1 = getId(mapNameId, mapNames, s1, mapNameId.size());
+			int id2 = getId(mapNameId, mapNames, s2, mapNameId.size());
+			
+			EdgeList.pb( WeightedEdge<int>(id1, id2, -w) );
+		}
+		
+		sort(EdgeList.begin(), EdgeList.end());   // sort by edge weight in O(E log E)
+
+		int maxWeight = numeric_limits<int>::max();
+		UnionFind uf;
+		uf.initSet(V);             // all V are disjoint sets initially
+		
+		
+		string s1, s2;
+		cin >> s1 >> s2;
+		
+		int targetCityId1 = getId(mapNameId, mapNames, s1, mapNameId.size());
+		int targetCityId2 = getId(mapNameId, mapNames, s2, mapNameId.size());
+ 		
+ 		for (int i = 0; i < EdgeList.size(); i++) 
+		{                           // for each edge, O(E)
+			//printf("Edge idx %d\n", i);
+			WeightedEdge<int> front = EdgeList[i];
+			
+			//printf("Edge weig %d u %d v %d \n", front.weight, front.u, front.v);
+			if (!uf.isSameSet(front.u, front.v)) 
+			{   
+				maxWeight = min(maxWeight, -front.weight);
+				uf.unionSet(front.u, front.v);       // link endpoints
+				
+				if (uf.isSameSet(targetCityId1, targetCityId2)) {
+					break;
+				}
+			} 
+		}                            // note: the runtime cost of UFDS is very light
+
+		printf("Scenario #%d\n%d tons\n\n", ++t, maxWeight);
+
+  		
 	}
 	return 0;
 }
+
+
