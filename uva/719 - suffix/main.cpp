@@ -58,10 +58,8 @@ int cmp(T a, T b, T epsilon = tolerance)
 
 //STOPCOMMON
 
-#include <algorithm>
-#include <cstdio>
 #include <cstring>
-using namespace std;
+#include <string>
 
 typedef pair<int, int> ii;
 
@@ -80,12 +78,6 @@ int Phi[MAX_N];    // for computing longest common prefix
 int PLCP[MAX_N];
 int LCP[MAX_N];    // LCP[i] stores the LCP between previous suffix "T + SA[i-1]" and current suffix "T + SA[i]"
 
-bool cmpStr(int a, int b) { return strcmp(T + a, T + b) < 0; }  // compare suffices
-
-void constructSA_slow() {                    // cannot go beyond 1000 characters
-  for (int i = 0; i < n; i++) SA[i] = i;      // initial SA: {0, 1, 2, ..., n-1}
-  sort(&SA[0], SA + n, cmpStr);   // sort: O(n log n) * comparison: O(n) = O(n^2 log n)
-}
 
 void countingSort(int k) {
   int i, sum, maxi = max(300, n);        // up to 255 ASCII chars or length of n
@@ -237,6 +229,7 @@ int MinExp(const char *s, const int slen) {
 Finds alphabetically first representation of a cyclic string in O(length)
 */
 
+/*
 minimumExpression(s) {
    s = s + s;
    len = length(s), i = 0, j = 1, k = 0;
@@ -246,7 +239,7 @@ minimumExpression(s) {
       else if(s[i+k] < s[j+k]) { j = j+k+1; if(j <= i) j = i+1; k = 0; }
    }
    return min(i, j);
-}
+}*/
 
 int main() 
 {
@@ -266,10 +259,11 @@ int main()
   
 		T[n++] = '.';                                            // important bug fix!
 		T[n] = '\0';
-		puts(T);
+		//puts(T);
 		constructSA();                                                   // O(n log n)
 		
 		int ans = 0;
+		char* ansStr;
 		
 		//printf("\nThe Suffix Array of string T = '%s' is shown below (O(n log n) version):\n", T);
 		//printf("i\tSA[i]\tSuffix\n");
@@ -277,14 +271,24 @@ int main()
 		{
 			if (!ans && SA[i] <= n / 2)
 			{
-				ans = n/2 - SA[i] ;
+				ans = SA[i] + 1;
+				ansStr = T + SA[i];
 			}
-			printf("%2d\t%2d\t%s\n", i, SA[i], T + SA[i]);
+			//printf("%2d\t%2d\t%s\n", i, SA[i], T + SA[i]);
 			
 		}
 		
-		printf("%d\n", ans);
-
+		for(ans = 1; ans <= n / 2; ++ans)
+		{
+			if ( 0 == strncmp( T + ans - 1, ansStr, n / 2) )
+			{
+				printf("%d\n", ans);
+				break;
+			}
+		}
+		
+		
+		//cout << ansStr << endl;
 	}
 	
 	return 0;
@@ -306,11 +310,7 @@ int maindemo() {
   
   n = (int) strlen(gets(T));
   
-  constructSA_slow();                                            // O(n^2 log n)
-  printf("\nThe Suffix Array of string T = '%s' is shown below (O(n^2 log n) version):\n", T);
-  printf("i\tSA[i]\tSuffix\n");
-  for (int i = 0; i < n; i++) printf("%2d\t%2d\t%s\n", i, SA[i], T + SA[i]);
-
+  
   T[n++] = '.';                                            // important bug fix!
   constructSA();                                                   // O(n log n)
   printf("\nThe Suffix Array of string T = '%s' is shown below (O(n log n) version):\n", T);
@@ -337,4 +337,3 @@ int maindemo() {
   }
 	return 0;
 }
-
