@@ -1,3 +1,4 @@
+//STARTCOMMON
 
 #include <cmath>
 #include <vector>
@@ -1078,4 +1079,93 @@ ostream& operator<<( ostream& os, const vector<T>& vec )
         os <<  vec[i] << endl;
     }
     return os;
+}
+
+//STOPCOMMON
+
+const int LIMIT = 1000000;
+
+int mu [LIMIT+1];
+int muSum[LIMIT+1];
+
+int main() 
+{
+
+	generatePrimes(LIMIT);
+	
+	fill(mu, mu + LIMIT, -10);
+	
+	mu[1] = 1;
+	muSum[1] = 1;
+	
+	for(int pIdx = 0; pIdx < primes.size(); ++pIdx)
+	{
+		if (primes[pIdx] > 1000)
+			break;
+			
+		int sqPrime = primes[pIdx] * primes[pIdx];
+		
+		for(int i = sqPrime; i <= LIMIT; i += sqPrime)
+		{
+			mu[i] = 0;
+		}
+	}
+			
+	
+	FORE(i, 2, LIMIT)
+	{
+		int num = i;
+		
+		if (mu[num] == 0)
+		{
+			muSum[i] = muSum[i-1] ;
+			continue;
+		}
+		//printf("Num=%d\n", num);
+		int nFactors = 0;
+		bool hasSq = false;
+		
+		for(int pIdx = 0; pIdx < primes.size(); ++pIdx)
+		{
+			int nFactorsForThisPrime = 0;
+			if (primes[pIdx] > 1000)
+				break;
+				
+			if (primes[pIdx] > num)
+				break;
+				
+			while( num % primes[pIdx] == 0 )
+			{
+				//total[pIdx] ++;
+				num /= primes[pIdx];
+				++nFactorsForThisPrime;
+			}
+			
+			if (nFactorsForThisPrime >= 2)
+				hasSq = true;
+				
+			nFactors += nFactorsForThisPrime;
+		}
+		
+		if (vbIsPrime[num])
+			++nFactors;
+	
+		assert(!hasSq);
+		
+		
+		mu[i] = nFactors % 2 == 0 ? 1 : -1;
+		muSum[i] = muSum[i-1] + mu[i];
+		
+		//printf("%8d%8d%8d\n", i+1, table[i].first, table[i].second);
+	}
+
+	int N;
+	while(1 == scanf("%d", &N) && N)
+	{
+		
+		printf("%8d%8d%8d\n", N, mu[N], muSum[N]);
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
 }
