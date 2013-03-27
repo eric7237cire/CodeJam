@@ -8,25 +8,31 @@ T = 5
 print( str(T) )
 
 for t in range(T):
-	v = random.randint(2, 9)
+	v = random.randint(2, 1000)
 	
 	edges = []
 	
-	s = set()
+	#s = set()
 	
 	for i in range(1, v):
 		atLeastOne = False 
 		
-		while not atLeastOne:
-			for j in range(i+1, v+1):
-				hasEdge = random.randint(0, 1)
-				if hasEdge == 0:
-					continue;
-				
-				weight = random.randint(1, 100000)
-				edges.append( (i, j, weight) )
-				s.add( (i, j) )
-				atLeastOne = True 
+		
+		for j in range(i+1, v+1):
+			hasEdge = random.randint(0, 1)
+			if hasEdge == 0:
+				continue;
+			
+			weight = random.randint(1, 100)
+			edges.append( (i, j, weight) )
+			#s.add( (i, j) )
+			atLeastOne = True 
+			
+		if not atLeastOne:
+			j = random.randint(i+1, v)
+			weight = random.randint(1, 100)
+			edges.append( (i, j, weight) )
+			#s.add( (i, j) )
 	
 	print( str(v) + " " + str( len(edges) ) )
 	

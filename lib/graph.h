@@ -594,24 +594,27 @@ public:
 		return sz[ findSet(i) ];
 	}
 
-	void unionSet(int p, int q)
+	//Returns id of unified set
+	int unionSet(int p, int q)
 	{
         int i = findSet(p);
         int j = findSet(q);
 
 		if (i == j)
-			return;
+			return i;
 			
 		--nComp;
         if(sz[i] > sz[j])
         {
             id[j] = i;
             sz[i] += sz[j];
+			return i;
         }
         else
         {
 			id[i] = j;
 			sz[j] += sz[i];
+			return j;
         }
 		
 		//printf("Union set %d to %d ; sizes %d and %d\n", p, q, sz[p], sz[q]);
