@@ -631,7 +631,6 @@ int main() {
 
 	while(T--)
 	{
-		int nComp;
 		scanf("%d%d", &V, &E);
 		
 		EdgeList.clear();
@@ -667,12 +666,7 @@ int main() {
 				
 				uf.unionSet(front.u, front.v);       // link endpoints
 				
-				//Even if nodes are not 0 or 1, they may have become connected
-				if ( uf.nComp <= nComp )
-				{
-					//we have a path from node 0 to 1
-					break;
-				}
+				
 			}  else {
 				totalWeight += front.weight;
 			}
