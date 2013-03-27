@@ -8,7 +8,7 @@ T = 5
 print( str(T) )
 
 for t in range(T):
-	v = random.randint(2, 1000)
+	v = random.randint(2, 5000)
 	
 	edges = []
 	
@@ -17,16 +17,13 @@ for t in range(T):
 	for i in range(1, v):
 		atLeastOne = False 
 		
-		
-		for j in range(i+1, v+1):
-			hasEdge = random.randint(0, 1)
-			if hasEdge == 0:
-				continue;
-			
+		j = i + random.randint(1, 100)
+		while j <= v:
 			weight = random.randint(1, 100)
 			edges.append( (i, j, weight) )
 			#s.add( (i, j) )
 			atLeastOne = True 
+			j = j + random.randint(1, 100)
 			
 		if not atLeastOne:
 			j = random.randint(i+1, v)

@@ -637,6 +637,8 @@ list<int> components[5001];
 int mstEdgeCount[5001];
 int allEdgeCount[5001];
 
+int lastLengthUpdate[5001];
+
 int main() {
 
 	int T;
@@ -651,6 +653,7 @@ int main() {
 		memset( adjMatrix, 0, sizeof adjMatrix );
 		memset(mstEdgeCount,0,sizeof(mstEdgeCount));
         memset(allEdgeCount,0,sizeof(allEdgeCount));
+		memset(lastLengthUpdate,0,sizeof(lastLengthUpdate));
 		
 		EdgeList.clear();
 		
@@ -673,123 +676,117 @@ int main() {
 			adjMatrix[v1][v2] = adjMatrix[v2][v1] = w;
 		}
 		
+		EdgeList.pb( WeightedEdge<int>( 0, 0, -1) );
+		
 		//Join together with most expensive edges first
-		sort(EdgeList.rbegin(), EdgeList.rend());
+		sort(EdgeList.begin(), EdgeList.end());
 		int sumCandidates = 0;
-		int lastWeight = numeric_limits<int>::max();
-		vector<int> mergedVertices;
+		
+		int lastI = EdgeList.size();
 		
 		UnionFind uf;
 		uf.initSet(V);             // all V are disjoint sets initially
  		
- 		for (int i = 0; i < EdgeList.size(); i++) 
+ 		for (int i = EdgeList.size()-1; i >= 1; i--) 
 		{                           // for each edge, O(E)
-			//printf("Edge idx %d\n", i);
 			WeightedEdge<int>& front = EdgeList[i];
 			
-			if (front.weight < lastWeight)
-			{
-				//printf("New lower weight %d old last %d\n", front.weight, lastWeight);
-				set<int> ufSetIds;
-				for(int mvIdx = 0; mvIdx < mergedVertices.size(); ++mvIdx)
-				{
-					ufSetIds.insert( uf.findSet( mergedVertices[mvIdx] ) );
-				}
-				
-				for( set<int>::iterator it = ufSetIds.begin(); it != ufSetIds.end(); ++it)
-				{
-					int setId = *it;
-					
-					list<int>& listVer = components[setId];
-					
-					bool ok = true;
-					
-					for(list<int>::iterator lit = listVer.begin(); lit != listVer.end() && ok; ++lit)
-					{
-						for(list<int>::iterator lit2 = listVer.begin(); lit2 != listVer.end(); ++lit2)
-						{
-							int weight = adjMatrix[*lit][*lit2];
-							if (weight != 0 && weight < lastWeight) {
-								if (debug) printf("Found lower weighted inner edge between %d and %d with weight %d.  Current last weight %d\n",
-								1+*lit, 1+*lit2, weight, lastWeight);
-								
-								ok = false;
-								break;
-							}
-						}
-					}
-					
-					if (ok)
-					{
-						sumCandidates += uf.sz[ *it ];
-						if (debug) printf("Adding set id=%d size = %d  sum %d\n", *it, uf.sz[*it], sumCandidates);
-						mergedVertices.clear();
-					} else {
-						if (debug) printf("Not Adding set id=%d size = %d  sum %d\n", *it, uf.sz[*it], sumCandidates);
-					}
-					
-					if (debug) for(list<int>::iterator lit = listVer.begin(); lit != listVer.end(); ++lit)
-					{
-						cout << 1 + *lit << endl;
-					}
-					
-				}
-				
-				lastWeight = front.weight;
-				
-			}
+			if (debug) printf("Edge idx %d  ver: %d <-> %d weight=%d\n", i, EdgeList[i].u+1, EdgeList[i].v+1, EdgeList[i].weight);
 			
 			int setU = uf.findSet(front.u);
 			int setV = uf.findSet(front.v);
 			
 			if (setU != setV)
 			{
+				list<int>& listU = components[setU];
+				list<int>& listV = components[setV];
+				
+				int newEdges = 0;
+				
 				//Find all the new edges between the 2 sets
-				for(list<int>::iterator lit = listVer.begin(); lit != listVer.end() && ok; ++lit)
+				for(list<int>::iterator lit = listU.begin(); lit != listU.end(); ++lit)
+				{
+					for(list<int>::iterator lit2 = listV.begin(); lit2 != listV.end(); ++lit2)
 					{
-						for(list<int>::iterator lit2 = listVer.begin(); lit2 != listVer.end(); ++lit2)
-						{
-							int weight = adjMatrix[*lit][*lit2];
-							if (weight != 0 && weight < lastWeight) {
-								if (debug) printf("Found lower weighted inner edge between %d and %d with weight %d.  Current last weight %d\n",
-								1+*lit, 1+*lit2, weight, lastWeight);
-								
-								ok = false;
-								break;
-							}
-						}
+						int weight = adjMatrix[*lit][*lit2];
+						if (weight != 0) {
+							//if (debug) printf("Found lower weighted inner edge between %d and %d with weight %d.  Current last weight %d\n",
+							//1+*lit, 1+*lit2, weight, lastWeight);
+							
+							//ok = false;
+							//break;
+							++newEdges;
+						}					
 					}
+				}
 				
 				int mergedSet = uf.unionSet(front.u, front.v);       // link endpoints
 				
-				if (setU != mergedSet)
+				allEdgeCount[mergedSet] += newEdges;
+				
+				int otherSet = (setU == mergedSet) ? setV : setU;
+				
+				//components[mergedSet].merge( components[otherSet ] );
+				components[mergedSet].splice( components[mergedSet].end(), components[otherSet ] );
+				allEdgeCount[mergedSet] += allEdgeCount[otherSet];
+				//merge them plus the current mst edge
+				mstEdgeCount[mergedSet] += mstEdgeCount[otherSet] + 1;
+				
+				
+				//printf("Merging Edge weig %d u %d v %d set id %d %d \n", front.weight, front.u, front.v, uf.findSet(front.u), uf.findSet(front.v) );
+			}  else {
+				assert(setU == setV);
+				//Add another MST edge to the component
+				mstEdgeCount[setU]++;
+			}
+			
+			//last of this weight, evaluate candidates
+			if (front.weight != EdgeList[i-1].weight)
+			{
+				if (debug) printf("New lower weight %d \n", front.weight);
+								
+				for( int updateEdgeIdx = i; updateEdgeIdx < lastI; ++updateEdgeIdx)
 				{
-					components[mergedSet].merge( components[setU ] );
-				} else {
-					assert(setU == mergedSet);
-					components[mergedSet].merge( components[setV ] );
+					
+					int setId = uf.findSet( EdgeList[updateEdgeIdx].u );
+					
+					bool ok = true;
+					
+					if (debug) printf("For set id %d all edges %d MST edges %d\n", setId, allEdgeCount[setId], mstEdgeCount[setId]);
+					if (allEdgeCount[setId] > mstEdgeCount[setId])
+						ok = false;
+					
+					if (lastLengthUpdate[setId] == front.weight)
+						ok = false;
+					
+					if (ok)
+					{
+						sumCandidates += uf.sz[ setId ];
+						lastLengthUpdate[setId] = front.weight;
+						
+						if (debug) printf("Adding set id=%d size = %d  sum %d\n", setId, uf.sz[setId], sumCandidates);
+						//mergedVertices.clear();
+					} else {
+						if (debug) printf("Not Adding set id=%d size = %d  sum %d\n", setId, uf.sz[setId], sumCandidates);
+					}
+					
+					if (debug) for(list<int>::iterator lit = components[setId].begin(); lit != components[setId].end(); ++lit)
+					{
+						cout << 1 + *lit << endl;
+					}
+					
 				}
 				
-				mergedVertices.pb(front.u);
-				mergedVertices.pb(front.v);
-				//printf("Merging Edge weig %d u %d v %d set id %d %d \n", front.weight, front.u, front.v, uf.findSet(front.u), uf.findSet(front.v) );
-			}  
+				lastI = i;
+								
+			}
+			
+		
 			
 			
 		}
 		
-		set<int> ufSetIds;
-		for(int mvIdx = 0; mvIdx < mergedVertices.size(); ++mvIdx)
-		{
-			ufSetIds.insert( uf.findSet( mergedVertices[mvIdx] ) );
-		}
 		
-		for( set<int>::iterator it = ufSetIds.begin(); it != ufSetIds.end(); ++it)
-		{
-			sumCandidates += uf.sz[ *it ];
-		}
-		
-		mergedVertices.clear();
 
 		printf("%d\n", sumCandidates);
 		
