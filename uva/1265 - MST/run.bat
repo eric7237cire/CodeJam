@@ -4,7 +4,7 @@ cat out.txt
 
 cat input.txt | project
 
-goto end2
+goto end
 
 :end2
 

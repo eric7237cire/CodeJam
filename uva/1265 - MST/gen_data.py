@@ -3,7 +3,7 @@ import random
 random.seed()
 T = 5
 
- 
+MAX_W = 100000
 
 print( str(T) )
 
@@ -19,7 +19,7 @@ for t in range(T):
 		
 		j = i + random.randint(1, 100)
 		while j <= v:
-			weight = random.randint(1, 100)
+			weight = random.randint(1, MAX_W)
 			edges.append( (i, j, weight) )
 			#s.add( (i, j) )
 			atLeastOne = True 
@@ -27,7 +27,7 @@ for t in range(T):
 			
 		if not atLeastOne:
 			j = random.randint(i+1, v)
-			weight = random.randint(1, 100)
+			weight = random.randint(1, MAX_W)
 			edges.append( (i, j, weight) )
 			#s.add( (i, j) )
 	
