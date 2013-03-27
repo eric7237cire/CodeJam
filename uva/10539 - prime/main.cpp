@@ -1,3 +1,4 @@
+//STARTCOMMON
 
 #include <cmath>
 #include <vector>
@@ -1029,4 +1030,87 @@ ostream& operator<<( ostream& os, const vector<T>& vec )
         os <<  vec[i] << endl;
     }
     return os;
+}
+
+//STOPCOMMON
+
+#include <algorithm>
+
+
+void check(ull n)
+{
+	ull orig = n;
+	int nFac = 0;
+	for(int pIdx = 0; pIdx <= primes.size() && n > 1; ++pIdx)
+	{
+		if (n % primes[pIdx] == 0)
+			nFac ++;
+			
+		while( n % primes[pIdx] == 0 )
+		{
+			//total[pIdx] ++;
+			n /= primes[pIdx];
+		}
+	}
+	
+	if (nFac > 1)
+	{
+		cout << orig << endl;
+		assert(false);
+	}
+
+}
+
+int main() {
+
+	int T;
+	scanf("%d", &T);
+
+	generatePrimes(1000000);
+	
+	//printf("Number of primes %d\n", primes.size());
+	//cout << numeric_limits<ull>::max() << endl;
+	while(T--)
+	{
+		ull low;
+		ull high; 
+		cin >> low >> high;
+		
+		vector<ull> ansVec;
+		int ans = 0;
+		//cout << "Low " << low << " High " << high << endl;
+		FOR(i, 0, primes.size())
+		{
+			ull almostPrime = (ull)primes[i] * primes[i];
+			if (almostPrime > high)
+				break;
+			
+			//cout << "Prime " << primes[i] << endl;
+			while(almostPrime < low)
+			{
+				//cout << "Too low " << almostPrime << endl;
+				almostPrime*=primes[i];
+			}
+				
+			while(almostPrime <= high)
+			{
+				//cout << "Counting " << almostPrime << endl;
+				
+				//ansVec.pb(almostPrime);
+				//check(almostPrime);
+				++ans;
+				
+				assert(almostPrime != 0);
+				almostPrime*=primes[i];
+			}
+		}
+			
+		cout << ans << endl;
+		
+		//sort(all(ansVec));
+		//cout << ansVec << endl;
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
 }
