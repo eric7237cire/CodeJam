@@ -624,19 +624,80 @@ public:
 
 //STOPCOMMON
 
-int main() {
+vector< WeightedEdge<double> > EdgeList;  // format: weight, two vertices of the edge
+int V, E;
 
-	int T;
-	scanf("%d", &T);
 
-	while(T--)
+int main() 
+{
+
+	while(1 == scanf("%d", &V))	
 	{
+		vector<ii> coords(V);
+		FOR(v, 0, V)
+		{
+			scanf("%d%d", &coords[v].first, &coords[v].second);
+		}
 		
-		if (T > 0)
-			printf("\n");
-
-		//scanf("%d", &nSeg);
+		EdgeList.clear();
+		EdgeList.reserve(V*(V-1) / 2);
+		FOR(v, 0, V)
+		{
+			FOR(v2, v+1, V)
+			{
+				double dist = distance( coords[v].first, coords[v].second, coords[v2].first, coords[v2].second);
+				EdgeList.pb( WeightedEdge<double> (v, v2, dist) );
+			}			
+		}
 		
+		UnionFind uf;
+		uf.initSet(V);
+		
+		int M;
+		scanf("%d", &M);
+		
+		FOR(m, 0, M)
+		{
+			int c1, c2;
+			scanf("%d%d", &c1, &c2);
+		
+			uf.unionSet(c1-1, c2-1);
+		}
+		
+		if (uf.nComp <= 1)
+		{
+			puts("0.00");
+			continue;
+		}
+		
+		sort(all(EdgeList));
+		
+		double totalCableLen = 0;
+		
+ 		for (int i = 0; i < EdgeList.size(); ++i) 
+		{
+			WeightedEdge<double>& front = EdgeList[i];
+			
+			//printf("Edge idx %d  ver: %d <-> %d weight=%lf\n", i, EdgeList[i].u, EdgeList[i].v, EdgeList[i].weight);
+			
+			int setU = uf.findSet(front.u);
+			int setV = uf.findSet(front.v);
+			
+			if (setU != setV)
+			{
+				uf.unionSet(setU, setV);
+				totalCableLen += front.weight;
+			}
+			
+			if (uf.nComp <= 1)
+				break;
+			
+		}
+		
+		printf("%.2lf\n", totalCableLen);
+		
+				
 	}
 	return 0;
 }
+
