@@ -734,8 +734,8 @@ int main() {
 						sumCandidates += components[setId].size();
 						lastLengthUpdate[setId] = front.weight;
 						
-						if (debug) printf("Adding set id=%d size = %d  sum %d\n", setId, components[setId].size(), sumCandidates);
-						//mergedVertices.clear();
+						//if (debug) printf("Adding set id=%d size = %d  sum %d\n", setId, components[setId].size(), sumCandidates);
+						
 					} else {
 						//if (debug) printf("Not Adding set id=%d size = %d  sum %d\n", setId, components[setId].size(), sumCandidates);
 					}
