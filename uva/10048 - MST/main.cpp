@@ -542,7 +542,7 @@ public:
 	
 	WeightType weight;
 	
-	WeightedEdge(int _u, int _v, WeightType _w) : u(_u), v(_v), weight(_w)
+	WeightedEdge(int _u = 0, int _v = 0, WeightType _w = 0) : u(_u), v(_v), weight(_w)
 	{
 	
 	}
@@ -563,20 +563,15 @@ int operator<( const WeightedEdge<WeightType>& lhs, const WeightedEdge<WeightTyp
 }
 
 
+int id[101];
+
 class UnionFind
 {
 public:
-	vi id; vi sz;
-	
-	int nComp;
 
 	void initSet(int n)
 	{
-		id.assign(n, 0);
-		sz.assign(n, 1);
-		for(int i = 0; i < n; ++i) id[i] = i;
-		
-		nComp = n;
+		for(int i = 0; i < n; ++i) id[i] = i;		
 	}
 
 	int findSet(int i)
@@ -590,11 +585,6 @@ public:
 		return findSet(p) == findSet(q);
 	}
 	
-	int size(int i)
-	{
-		return sz[ findSet(i) ];
-	}
-
 	//Returns id of unified set
 	int unionSet(int p, int q)
 	{
@@ -604,38 +594,107 @@ public:
 		if (i == j)
 			return i;
 			
-		--nComp;
-        if(sz[i] > sz[j])
-        {
-            id[j] = i;
-            sz[i] += sz[j];
-			return i;
-        }
-        else
-        {
-			id[i] = j;
-			sz[j] += sz[i];
-			return j;
-        }
+		id[j] = i;
 		
+		return i;
 		//printf("Union set %d to %d ; sizes %d and %d\n", p, q, sz[p], sz[q]);
 	}
 };
+//hh
+//STOPCOMMO
 
-//STOPCOMMON
+#include <list>
+#include <cstring> 
 
-int main() {
+WeightedEdge<int> EdgeList[1001];  // format: weight, two vertices of the edge
+int V, E, Q;
 
-	int T;
-	scanf("%d", &T);
+list<int> components[101];
 
-	while(T--)
+int minConWeight[101][101];
+
+int main() 
+{
+
+	int T = 0;
+
+	while(3 == scanf("%d%d%d", &V, &E, &Q) && (V|E|Q) )
 	{
+	
+		memset(minConWeight,-1,sizeof(minConWeight));
+		
+		FORE(v, 1, V)
+		{
+			components[v].clear();
+			components[v].push_back(v);
+			id[v] = v;
+			
+			minConWeight[v][v] = 0;
+		}
+		
+		FOR(e, 0, E) 
+		{
+			scanf("%d%d%d", &EdgeList[e].u, &EdgeList[e].v, &EdgeList[e].weight);
+		}
+		
+		sort(EdgeList, EdgeList + E);
+
+		UnionFind uf;
+		
+ 		for (int i = 0; i < E; ++i) 
+		{
+			WeightedEdge<int>& front = EdgeList[i];
+			
+			//if (debug) printf("Edge idx %d  ver: %d <-> %d weight=%d\n", i, EdgeList[i].u, EdgeList[i].v, EdgeList[i].weight);
+			
+			int setU = uf.findSet(front.u);
+			int setV = uf.findSet(front.v);
+			
+			if (setU != setV)
+			{
+				list<int>& listU = components[setU];
+				list<int>& listV = components[setV];
+				
+				int mergedSet = uf.unionSet(front.u, front.v);       // link endpoints
+				
+				int otherSet = (setU == mergedSet) ? setV : setU;
+				
+				components[mergedSet].splice( components[mergedSet].end(), components[otherSet ] );
+				
+				for( list<int>::iterator lit = components[mergedSet].begin(); lit != components[mergedSet].end(); ++lit)
+				{
+					for( list<int>::iterator lit2 = components[mergedSet].begin(); lit2 != components[mergedSet].end(); ++lit2)
+					{
+						if (minConWeight[*lit][*lit2] == -1)
+							minConWeight[*lit2][*lit] = minConWeight[*lit][*lit2] = front.weight;
+					}
+				}
+				
+				//printf("Merging Edge weig %d u %d v %d set id %d %d \n", front.weight, front.u, front.v, uf.findSet(front.u), uf.findSet(front.v) );
+			}  else {
+				assert(setU == setV);
+				
+			}
+			
+			
+		}
 		
 		if (T > 0)
-			printf("\n");
-
-		//scanf("%d", &nSeg);
+			puts("");
+			
+		++T;
+		printf("Case #%d\n", T);
+		
+		FOR(q, 0, Q)
+		{
+			int id1, id2;
+			scanf("%d%d", &id1, &id2);
+			
+			if (minConWeight[id1][id2] == -1)
+				puts("no path");
+			else
+				printf("%d\n", minConWeight[id1][id2]);
+		}
 		
 	}
 	return 0;

@@ -541,7 +541,7 @@ public:
 	
 	WeightType weight;
 	
-	WeightedEdge(int _u, int _v, WeightType _w) : u(_u), v(_v), weight(_w)
+	WeightedEdge(int _u = 0, int _v = 0, WeightType _w = 0) : u(_u), v(_v), weight(_w)
 	{
 	
 	}
