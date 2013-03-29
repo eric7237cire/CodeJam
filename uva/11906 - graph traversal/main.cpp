@@ -669,8 +669,7 @@ int main() {
 		}
 		
 		int nEven = 0;
-		int nOdd = 0;
-					
+		int nOdd = 0;					
 		
 		queue<ii> toVisit;
 		set<ii> visited;
@@ -720,8 +719,6 @@ int main() {
 		}
 			
 		printf("Case %d: %d %d\n", t, nEven, nOdd);
-
-		//scanf("%d", &nSeg);
 		
 	}
 	return 0;
