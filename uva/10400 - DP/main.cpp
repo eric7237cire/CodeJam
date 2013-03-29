@@ -58,6 +58,66 @@ int cmp(T a, T b, T epsilon = tolerance)
 
 //STOPCOMMON
 
+#include <sstream>
+#include <cstring>
+#include <algorithm>
+
+const int MAX_N = 32000;
+const int SIZE = 100;
+
+int seq[SIZE];
+
+int memo[SIZE+1][2 * MAX_N + 1];
+//int next[SIZE+1][2 * MAX_N + 2];
+
+int maxIndex;
+int target;
+vector<string> ans;
+
+
+bool getExp( int curIdx, int curVal )
+{
+	if (curVal < -32000 || curVal > 32000)
+		return false;
+		
+	//printf("idx = %d ; num =%d  cur Val %d  \n", curIdx, seq[curIdx], curVal);
+	int& ret = memo[curIdx][curVal];
+	
+	if (ret != -1 && ret == 0)
+		return false;
+	
+	if (curIdx == maxIndex)
+		return ret = curVal == target;
+
+	ostringstream os; 
+	if ( getExp( curIdx + 1, curVal + seq[curIdx] ) )
+	{
+		os << '+' << seq[curIdx] ;
+		ans.pb(os.str());
+		return ret = true;
+	}
+	if ( getExp( curIdx + 1, curVal - seq[curIdx] ) )
+	{
+		os << '-' << seq[curIdx] ;
+		ans.pb(os.str());
+		return ret = true;
+	}
+	if ( curVal % seq[curIdx] == 0 && getExp( curIdx + 1, curVal / seq[curIdx] ) )
+	{
+		os << '/' << seq[curIdx] ;
+		ans.pb(os.str());
+		return ret = true;
+	}
+	if ( getExp( curIdx + 1, curVal * seq[curIdx] ) )
+	{
+		os << '*' << seq[curIdx] ;
+		ans.pb(os.str());
+		return ret = true;
+	}
+	
+	return ret = false;
+}
+
 int main() {
 
 	int T;
@@ -66,8 +126,42 @@ int main() {
 	while(T--)
 	{
 		
-		if (T > 0)
-			printf("\n");
+		scanf("%d", &maxIndex);
+		
+		FOR(i, 0, maxIndex)
+			scanf("%d", &seq[i]);
+			
+		
+		scanf("%d", &target);
+		
+		memset(memo, -1, sizeof memo);
+		//memset(next, 0, sizeof next);
+		
+		//dp[size][ target + 32001 ] = target;
+		
+		//ans.str ( string() );
+		//ans.clear();
+		ans.clear();
+		bool ok = getExp(1, seq[0]);
+		
+		if (!ok)
+		{
+			puts("NO EXPRESSION");
+			continue;
+		}
+		
+		
+		cout << seq[0];
+				
+		for(int i = ans.size() - 1; i >= 0; --i)
+			cout << ans[i];
+			
+		cout << '=' << target << endl;
+		//string ansStr = ans.str();
+		//reverse(all(ansStr));
+		
+		//cout << ansStr << endl;
+		
 		
 	}
 	return 0;
