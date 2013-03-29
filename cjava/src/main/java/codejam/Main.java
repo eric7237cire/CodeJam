@@ -541,7 +541,8 @@ public class Main
 
     }
 
-    static void roundFinal_2008(String args[])
+    public static void main(String args[]) throws Exception
+    //static void roundFinal_2008(String args[])
     {
         //2008 Finals  Cheated all the way...
 
@@ -551,15 +552,16 @@ public class Main
          * Finding max points A,B,C satisfying some A*,B*,C* with
          * A*+B*+C* = 10000 and each A<=A*, etc 
          */
-        codejam.y2008.round_final.juice.Main m = new codejam.y2008.round_final.juice.Main();
+        //codejam.y2008.round_final.juice.Main m = new codejam.y2008.round_final.juice.Main();
 
         /**
          * Problem 2
          *
+         * Change of basis
          * Defining a coord system, recognizing non decreasing sequence
          * How many points in a rectangle hit by 2 vectors
          */
-        //codejam.y2008.round_final.ping_pong_balls.Main m = new codejam.y2008.round_final.ping_pong_balls.Main();
+        codejam.y2008.round_final.ping_pong_balls.Main m = new codejam.y2008.round_final.ping_pong_balls.Main();
 
         //A clever trick, also understanding there are not really multiple solutions to watch out for
         //codejam.y2008.round_final.mine_layer.Main m = new codejam.y2008.round_final.mine_layer.Main();
@@ -1393,8 +1395,8 @@ public class Main
 
     }
 
-    public static void main(String args[]) throws Exception
-    //static void round1C_2012(String args[])
+    //public static void main(String args[]) throws Exception
+    static void round1C_2012(String args[])
     {
 
         //2012 1C
