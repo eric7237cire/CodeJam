@@ -1,54 +1,47 @@
-#include "stdio.h"
-#include <algorithm>
-//#include <vector>
-#include <cstring>
-//#include <limits>
-//#include <string>
+#include <vector>
 #include <list>
-#include <cassert>
-//#include <iostream>
-#include <stdlib.h>
-
+#include <map>
+#include <set>
+#include <deque>
+#include <queue>
+#include <stack>
+#include <bitset>
+#include <algorithm>
+#include <functional>
+#include <numeric>
+#include <utility>
+#include <sstream>
+#include <iostream>
+#include <iomanip>
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
+#include <cctype>
+#include <string>
+#include <cstring>
+#include <cstdio>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
-#define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
-#define pb push_back
- 
-int main()
-{
+int main(){
+	//freopen("testI.txt", "r", stdin);
+	//freopen("testO.txt", "w", stdout);
 	int T;
-	scanf("%d", &T);
-	
-	while(T--)
-	{
-		int N;
-		scanf("%d", &N);
-		
-		list<int> trains;
-		
-		while(N--)
-		{
-			int train;
-			scanf("%d", &train);
-			
-			trains.push_back(train);
+	cin >> T;
+	for (int t = 1; t <= T; t++){
+		string url[10];
+		int val[10];
+		int M = 0, i;
+		for (i = 0; i < 10; i++){
+			cin >> url[i] >> val[i];
+			M = max(val[i], M);
 		}
-		
-		int ans = 0;
-		
-		while(trains.size() > 1)
-		{
-			list<int>::iterator it = find(trains.begin(), trains.end(), trains.size() );
-			
-			assert(it != trains.end());
-			
-			ans += -1 + distance(it, trains.end() );
-			
-			trains.erase(it);
-		}
-		
-		printf("Optimal train swapping takes %d swaps.\n", ans);
+		cout << "Case #" << t << ":\n";
+		for (i = 0; i < 10; i++)
+			if( val[i] == M )
+				cout << url[i] << endl;
 	}
-
 	return 0;
 }

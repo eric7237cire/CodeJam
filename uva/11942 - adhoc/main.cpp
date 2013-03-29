@@ -1,54 +1,44 @@
-#include "stdio.h"
+#include <iostream>
 #include <algorithm>
-//#include <vector>
-#include <cstring>
-//#include <limits>
-//#include <string>
-#include <list>
-#include <cassert>
-//#include <iostream>
-#include <stdlib.h>
-
 using namespace std;
 
-#define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
-#define pb push_back
- 
-int main()
-{
-	int T;
-	scanf("%d", &T);
-	
-	while(T--)
-	{
-		int N;
-		scanf("%d", &N);
-		
-		list<int> trains;
-		
-		while(N--)
-		{
-			int train;
-			scanf("%d", &train);
-			
-			trains.push_back(train);
-		}
-		
-		int ans = 0;
-		
-		while(trains.size() > 1)
-		{
-			list<int>::iterator it = find(trains.begin(), trains.end(), trains.size() );
-			
-			assert(it != trains.end());
-			
-			ans += -1 + distance(it, trains.end() );
-			
-			trains.erase(it);
-		}
-		
-		printf("Optimal train swapping takes %d swaps.\n", ans);
-	}
+bool is_ordered(int len[10]) {
+  bool result = true;
 
-	return 0;
+  for (int i = 1; i < 10; i++) {
+    if (len[i] < len[i-1])
+      return false;
+  }
+
+  return result;
+}
+
+int main(void) {
+  int n;
+  int len[10];
+
+  cin >> n;
+
+  cout << "Lumberjacks:" << endl;
+
+  while (n--) {
+    for (int i = 0; i < 10; i++)
+      cin >> len[i];
+
+    if (is_ordered(len)) {
+      cout << "Ordered" << endl;
+      continue;
+    }
+
+    reverse(len, len + 10);
+
+    if (is_ordered(len)) {
+      cout << "Ordered" << endl;
+      continue;
+    }
+
+    cout << "Unordered" << endl;
+  }
+
+  return 0;
 }
