@@ -15,6 +15,7 @@
 #include <cctype>
 #include <cmath>
 #include <functional>
+#include <cstring>
 #include <queue>
 using namespace std;
 
@@ -535,6 +536,14 @@ double distance( CoordType x1, CoordType y1,
 	CoordType x2, CoordType y2)
 {
 	return sqrt( (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) );
+}
+
+template<typename CoordType>
+CoordType distanceSq( const pair<CoordType,CoordType>& pt1, 
+	const pair<CoordType,CoordType>& pt2)
+{
+	return (pt1.first-pt2.first)*(pt1.first-pt2.first) + 
+	(pt1.second-pt2.second)*(pt1.second-pt2.second) ;
 }
 
 template<typename WeightType>
