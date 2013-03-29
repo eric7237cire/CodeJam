@@ -1,29 +1,30 @@
-#include "stdio.h"
-
+#include<iostream>
 using namespace std;
 
-#define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
- 
-int main()
-{
-	int T;
-	scanf("%d", &T);
-	
-	while(T--)
-	{
-		int f;
-		scanf("%d", &f);
-		
-		int ans = 0;
-		while(f--)
-		{
-			int area, anim, env;
-			scanf("%d%d%d", &area, &anim, &env);
-			ans += area * env; //anim cancels out
-		}
-		
-		printf("%d\n", ans);		
-	}
-
-	return 0;
+int main(){
+    for(;;){
+            int t;
+            cin>>t;
+            if(t==0)
+                    break;
+            int x0,y0;
+            cin>>x0>>y0;
+            for(int i=0;i<t;i++){
+                    int x,y;
+                    cin>>x>>y;
+                    int dx=x-x0;
+                    int dy=y-y0;
+                    if(dx>0 && dy>0)
+                            cout<<"NE"<<endl;
+                    else if(dx<0 && dy>0)
+                            cout<<"NO"<<endl;
+                    else if(dx<0 && dy<0)
+                            cout<<"SO"<<endl;
+                    else if(dx>0 && dy<0)
+                            cout<<"SE"<<endl;
+                    else
+                            cout<<"divisa"<<endl;
+            }
+    }
+    return 0;
 }
