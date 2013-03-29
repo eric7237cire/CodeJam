@@ -56,6 +56,11 @@ const bool debug = false;
 
 const int notConnected = numeric_limits<int>::max();
 
+template<typename T> T gcd(T a, T b)
+{
+    while(b) b ^= a ^= b ^= a %= b;
+    return a;
+}
 
 template<typename T>
 ostream& operator<<( ostream& os, const vector<T>& vec )
@@ -541,7 +546,7 @@ public:
 	
 	WeightType weight;
 	
-	WeightedEdge(int _u = 0, int _v = 0, WeightType _w = 0) : u(_u), v(_v), weight(_w)
+	WeightedEdge(int _u = 0, int _v = 0, WeightType _w = WeightType()) : u(_u), v(_v), weight(_w)
 	{
 	
 	}

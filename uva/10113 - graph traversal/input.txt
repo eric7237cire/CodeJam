@@ -1,3 +1,19 @@
-10 12
- 10 14
- 100 200
+! 1 day = 24 hour
+! 60 minute = 1 hour
+! 1 minute = 60 second
+! 1 week = 7 day
+? day = second
+? hour = second
+? second = week
+! 365 day = 1 year
+? year = second
+? year = flog
+.
+
+
+! 6 shirt = 15 sock
+! 47 underwear = 9 pant
+? sock = shirt
+? shirt = pant
+! 2 sock = 1 underwear
+? pant = shirt
