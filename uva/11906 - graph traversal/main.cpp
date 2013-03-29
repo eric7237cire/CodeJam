@@ -638,11 +638,17 @@ public:
 
 //STOPCOMMON
 
-int steps[4][2] = {
-{1, 0},
-{-1, 0},
-{0, 1},
-{0, -1} };
+//steps[i] =  x = [0] * M + [1] * N ; y = [2] * M + [3] * N
+int steps[8][4] = {
+{1, 0,  0, 1},
+{-1, 0,  0, 1},
+{1, 0,  0, -1},
+{-1, 0,  0, -1},
+{0, 1, 1, 0},
+{0, -1, 1, 0},
+{0, 1, -1, 0},
+{0, -1, -1, 0}
+ };
 int main() {
 
 	int T;
@@ -664,14 +670,8 @@ int main() {
 		
 		int nEven = 0;
 		int nOdd = 0;
+					
 		
-		
-			
-		/*Use jump coordinates, x' and y'
-		
-		x' * N + y' * M = x
-		x' * M = y' * N = y
-		*/
 		queue<ii> toVisit;
 		set<ii> visited;
 		
@@ -686,33 +686,32 @@ int main() {
 				
 			visited.insert(cur);
 			
-			int curx = cur.first * N + cur.second * M;
-			int cury = cur.first * M + cur.second * N;
-				
-			printf("Visiting x',y' =(%d, %d) x, y = (%d, %d)\n", cur.first, cur.second, curx, cury);
+			int x = cur.first;
+			int y = cur.second;
+			
+			//printf("Visiting x, y = (%d, %d)\n", cur.first, cur.second);
 			int nSq = 0;
-			FORE(stepIdx, 0, 3)
+			FORE(stepIdx, 0,  7)
 			{
-				int xx = steps[stepIdx][0];
-				int yy = steps[stepIdx][1];
+				int xx = cur.first + M * steps[stepIdx][0] + N * steps[stepIdx][1];
+				int yy = cur.second + M * steps[stepIdx][2] + N * steps[stepIdx][3];
 					
-				ii next = ii(cur.first + xx, cur.second + yy);
+				//printf("Considering x, y = (%d, %d)\n", xx, yy);
 				
-				int x = next.first * N + next.second * M;
-				int y = next.first * M + next.second * N;
-				
-				printf("Considering x',y' =(%d, %d) x, y = (%d, %d)\n", next.first, next.second, x, y);
-				
-				if (x < 0 || x >= xMax || y < 0 || y >= yMax)
+				if (xx < 0 || xx >= xMax || yy < 0 || yy >= yMax  )
 					continue;
 					
-				if (contains(waterPts, ii(x, y)))
+				if (contains(waterPts, ii(xx, yy)))
 					continue;
-					
-				toVisit.push(next);
+				
+				//printf("Valid x, y = (%d, %d)\n", xx, yy);
+				toVisit.push(ii(xx, yy));
 				nSq ++;
 			
 			}
+			
+			if (M == 0 || N == 0 || M == N)
+				nSq /= 2;
 			
 			if (nSq % 2 == 0)
 				nEven ++;
