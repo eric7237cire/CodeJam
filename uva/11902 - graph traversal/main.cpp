@@ -639,52 +639,42 @@ public:
 //STOPCOMMON
 
 bool adjMatrix[100][100];
-int reached[100];
-int pathSize;
+bool reached[100];
 bool dominated[100][100];
 bool visited[100];
 int V;
 
-
-int search( int curV )
+//DFS
+void  dfs( int curV, int disabledV, bool vis[100] )
 {
-	assert(visited[curV] == true);
+	if (curV == disabledV)
+		return;
+		
+	vis[curV] = true;
 
-	reached[curV] = true;
+	//printf("Search %d disabled %d\n", curV, disabledV);
 	
-	/*
-	We arrived at curV, loop through current path.  Dominated is the collective
-	anding of all possible paths 
-	*/
-	FOR(x, 0, V)
+	FOR(nextV, 0, V)
 	{
-		dominated[x][curV] &= visited[x];
-	}
-	
-	FOR(y, 0, V)
-	{
-		//avoid graph cycles, wouldn't change the answer 
-		if (visited[y])
+		if (vis[nextV] || !adjMatrix[curV][nextV])
 			continue;
-	
-		if (!adjMatrix[curV][y])
-			continue;
-			
-		visited[y] = true;
-		search(y);
-		visited[y] = false;
+
+		dfs(nextV, disabledV, vis);
 	}
 }
 
 int main() 
 {
-
+	
 	int T;
 	scanf("%d", &T);
-
+	//printf("T %d \n", T);
+	
 	FORE(t, 1, T)
 	{
+		
 		scanf("%d", &V);
+		//printf("V %d \n", V);
 		
 		memset(adjMatrix, 0, sizeof(adjMatrix));
 		
@@ -693,23 +683,40 @@ int main()
 			char isCon;
 			scanf(" %c", &isCon);
 			adjMatrix[i][j] = isCon == '1';
+			//printf("Scanning %d %d %c\n", i, j , isCon);
 		}
 		
-		memset(visited, 0, sizeof(visited));
 		memset(reached, 0, sizeof(reached));
-		memset(dominated, 1, sizeof(dominated));
 		
-		visited[0] = true;
-		search(0);
+		//Init to true since we and all the paths together
+		memset(dominated, 0, sizeof(dominated));
 		
-		//Check for disconnected verticies.  Those are not domininated by any vertex
-		FOR(v, 0, V)
+		dominated[0][0] = true;
+		
+		//Determine connected verticies
+		dfs(0, -1, reached);
+		
+		/*
+		To check domination, remove vertex v, and vertex that is no
+		longer visited must be dominated by the removed vertex			
+		*/
+		FOR(v, 1, V)
 		{
 			if (reached[v])
-				continue;
+				dominated[0][v] = true;
+				
+			memset(visited, 0, sizeof(visited));
+						
+			dfs( 0, v, visited);
 			
-			FOR(x, 0, V)
-				dominated[x][v] = false;
+			FOR(y, 0, V)
+			{
+				if (reached[y] && !visited[y])
+				{
+					dominated[v][y] = true;
+				}
+			}
+			
 		}
 		
 		//Output
@@ -734,9 +741,7 @@ int main()
 				}		
 			}
 			puts("");
-		}
-		//scanf("%d", &nSeg);
-		
+		}		
 	}
 	return 0;
 }
