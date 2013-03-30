@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <cmath>
 #include <vector>
 #include "stdio.h" 
@@ -56,3 +57,58 @@ int cmp(T a, T b, T epsilon = tolerance)
 	return -1;
 }  
 
+
+//STOPCOMMON
+int N;
+int M;
+
+ii people[20];
+int dist[20];
+
+int perm[20];
+
+int main() {
+
+	while( 2 == scanf("%d%d", &N, &M) && (N||M))
+	{
+		FOR(m, 0, M)
+		{
+			scanf("%d%d%d", &people[m].first, &people[m].second, &dist[m]);
+		}
+		
+		FOR(n, 0, N)
+			perm[n] = n;
+			
+		int count = 0;
+		do 
+		{
+			bool ok = true;
+			FOR(m, 0, M)
+			{
+				int curPos1 = perm[ people[m].first ] ;
+				int curPos2 = perm[ people[m].second ] ;
+				
+				if (dist[m] >= 0 )
+				{
+					if ( abs(curPos1 - curPos2) > dist[m])
+					{
+						ok = false;
+						break;
+					}						
+				} else {
+					if ( abs(curPos1 - curPos2) < -dist[m])
+					{
+						ok = false;
+						break;
+					}						
+				}
+			}
+			
+			count += ok;
+		
+		} while (next_permutation(perm, perm + N) );
+	
+		printf("%d\n", count);
+	}
+	return 0;
+}
