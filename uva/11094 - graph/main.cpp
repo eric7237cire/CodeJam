@@ -641,44 +641,45 @@ public:
 int M, N;
 
 const int waterCompId = 400;
-char map[20][20];
+char landMap[20][20];
 
-int dirs[2][2] =
-{
-	{1, 0},
-	{0, 1}
-};
 	
 int main() {
 
-	while(2 == scanf("%d%d", &M, &N))
+	while(2 == scanf("%d%d%*c", &M, &N))
 	{
-		FOR(m, 0, M) FOR(n, 0, N)
-			scanf(" %c", &map[m][n]);
-			
+		FOR(m, 0, M)
+		{
+			FOR(n, 0, N)
+			{
+				scanf("%c", &landMap[m][n]);
+				//printf("Read[%c]\n", landMap[m][n]);
+			}
+			//eat newline
+			scanf("%*c");
+		}
 		int bossRow, bossCol;
 		scanf("%d%d", &bossRow, &bossCol);
 		
 		UnionFind uf;
 		uf.initSet(401);
 		
-		
+		const char landLetter = landMap[bossRow][bossCol];
 		
 		FOR(m, 0, M) FOR(n, 0, N)
 		{
 			int gid = m*N + n;
-			if (map[m][n] == 'w')
+			if (landMap[m][n] != landLetter)
 			{
-				uf.unionSet(gid, waterCompId);
 				continue;
 			}
 			
 			int nextCol = (n + 1) % N;
 			
-			if (map[m][nextCol] == 'l')
+			if (landMap[m][nextCol] == landLetter)
 				uf.unionSet(gid, m*N + nextCol);
 				
-			if (m > 0 && map[m-1][n] == 'l')
+			if (m > 0 && landMap[m-1][n] == landLetter)
 				uf.unionSet(gid, gid - N);
 				
 			
@@ -689,7 +690,7 @@ int main() {
 		FOR(m, 0, M) FOR(n, 0, N)
 		{
 			int gid = m*N + n;
-			if (map[m][n] == 'w')
+			if (landMap[m][n] != landLetter)
 				continue;
 				
 			if (uf.findSet(gid) == bossCompId)
@@ -698,7 +699,7 @@ int main() {
 			maxLandSize = max(maxLandSize, uf.size(gid) );			
 		}
 		
-		printf("%d\n\n", maxLandSize);
+		printf("%d\n", maxLandSize);
 
 		//scanf("%d", &nSeg);
 		
