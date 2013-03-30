@@ -83,7 +83,8 @@ int main() {
 		{
 			for(int totalWeight = P; totalWeight <= T; ++totalWeight)
 			{
-				for(int itemWeight= P; totalWeight-itemWeight >= P; ++itemWeight)
+				const int maxItemWeight = totalWeight - (nItems - 1) * P;
+				for(int itemWeight= P; itemWeight <= maxItemWeight; ++itemWeight)
 				{
 					dp[nItems][totalWeight] += dp[nItems - 1][totalWeight-itemWeight];
 				}
