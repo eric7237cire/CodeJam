@@ -59,16 +59,62 @@ int cmp(T a, T b, T epsilon = tolerance)
 
 //STOPCOMMON
 
+// dp[i][j] =  courses 0..i ; time used 
+int dp[10][101];
+int examResults[10][101];
+
 int main() {
 
 	int T;
 	scanf("%d", &T);
-
+	
 	while(T--)
 	{
+		memset(dp, 0, sizeof dp);
+		int nExams, nHours;
 		
-		if (T > 0)
-			printf("\n");
+		
+		scanf("%d%d", &nExams, &nHours);
+		
+		FOR(i, 0, nExams) FORE(j, 1, nHours)
+		{
+			scanf("%d", &examResults[i][j]);
+			//assert( j == 1 || examResults[i][j-1] <= examResults[i][j-1]);
+		}
+		
+		//Fill in exam 1
+		FORE(hoursSpent, 1, nHours)
+			dp[0][hoursSpent] = examResults[0][hoursSpent] >= 5 ? examResults[0][hoursSpent] : 0;
+			
+		FOR(examIdx, 1, nExams)
+		{
+			FORE(totalHoursSpent, 1, nHours)
+			{
+				FORE(hoursSpent, 1, totalHoursSpent)
+				{
+					//printf("%d %d %d\n", examIdx, totalHoursSpent, hoursSpent);
+					if (examResults[examIdx][hoursSpent] < 5)
+						continue;
+				
+					int hoursLeft = totalHoursSpent - hoursSpent;
+					assert(hoursLeft >= 0 && hoursLeft < 101);
+					
+					//Impossible to pass previous exams
+					if (dp[examIdx-1][hoursLeft] == 0)
+						continue;
+						
+					dp[examIdx][totalHoursSpent] = max( dp[examIdx][totalHoursSpent],
+						dp[examIdx-1][hoursLeft] + examResults[examIdx][hoursSpent]);
+		
+				}
+			}
+		}
+					
+		if (dp[nExams-1][nHours] == 0)
+			puts("Peter, you shouldn't have played billiard that much.");
+		else
+			//printf("Maximal possible average mark - %.2lf.\n", ((double)ans) / nExams);
+			printf("Maximal possible average mark - %.2lf.\n", (1e-9 + dp[nExams-1][nHours]) / nExams);
 		
 	}
 	return 0;
