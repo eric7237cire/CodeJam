@@ -911,7 +911,7 @@ bool circle2PtsRad(const Point<T>& p1, const Point<T>& p2,
   /**
   if m is midway between p1 and p2
 
-  ratio mc_1 / mp_1
+  ratio segments mc_1 / mp_1
 
   pythag says r^2 = mp_1^2 + mc_1^2
 
