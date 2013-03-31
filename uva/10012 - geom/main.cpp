@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <iostream>
 #include <map>
 #include <list>
@@ -1175,3 +1176,30 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
 }
+//STOPCOMMON
+
+#include "stdio.h"
+int main() {
+
+	int T;
+	scanf("%d", &T);
+
+	FOR(t, 0, T)
+	{
+		/*
+		use similar triangles
+		
+		r1 + r2 is the hypotneus 
+		abs(r1-r2) is the height
+		
+		
+		*/
+		if (t > 0)
+			printf("\n");
+
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
+}
+

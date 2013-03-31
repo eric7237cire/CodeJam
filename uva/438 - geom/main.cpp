@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <iostream>
 #include <map>
 #include <list>
@@ -1175,3 +1176,24 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
 }
+//STOPCOMMON
+
+#include "stdio.h"
+int main() {
+
+	PointD p1, p2, p3;
+
+	while(cin >> p1 >> p2 >> p3)
+	{
+		double radius;
+		PointD center;
+		
+		findCircle(p1, p2, p3, radius, center);
+		
+		printf("%.2lf\n", 3.141592653589793 * 2 * radius );
+		
+		
+	}
+	return 0;
+}
+
