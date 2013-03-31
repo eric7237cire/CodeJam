@@ -58,17 +58,20 @@ struct l2d {
 struct c2d {
 	p2d center;
 	double r;
-	c2d(){}
-	c2d(p2d p0, p2d p1, double _r){
-		p2d mid = (p1 + p0)/(double)2, v = (p1 - p0);
-		double q = p0.dist(p1), d = sqrt(r * r - q * q / (double) 4);
+	//c2d(){}
+	c2d(p2d p0, p2d p1, double _r) : r(_r){
+		p2d mid = (p1 + p0)/(double)2;
+		p2d v = (p1 - p0);
+		double q = p0.dist(p1);
+		//printf("HEY r=%lf q=%lf %lf %lf\n", _r, q, r * r,  (q * q) / (double) 4);
+		double d = sqrt(r * r - (q * q) / (double) 4);
 		v = v / v.mod();
 		swap(v.x, v.y);
 		v.x = -v.x;
 		center = mid + v * d;
 		r = _r;
 	};
-	c2d(p2d p0, p2d p1, p2d p2){
+	c2d(p2d p0, p2d p1, p2d p2, bool what){
 
 	};
 };
@@ -81,15 +84,25 @@ int main(void){
 		int pc = 0, maxcnt = 1;
 		double x, y;
 		for(pc = 0; fgets(line, 1024, stdin); ){
-			if(sscanf(line, "%lf %lf", &x, &y) == 2) p[pc++] = p2d(x, y);
+			if(sscanf(line, "%lf %lf", &x, &y) == 2)
+			{
+				p[pc++] = p2d(x, y);
+				//printf("Read %lf %lf\n", x, y);
+			}
 			else if(pc != 0) break;
 		}
 		for(int i = 0; i < pc; ++i)
 			for(int j = 0; j < pc; ++j){
 				if(i == j) continue;
+				
 				if(p[i].dist(p[j]) - 5.0 > EPS) continue;
+				
+				//printf("Dist %lf  EPS %lf  Point %d %lf %lf and %d %lf %lf\n", p[i].dist(p[j]), EPS,
+				//i, p[i].x, p[i].y, j, p[j].x, p[j].y);
+				
 				c2d circle = c2d(p[i], p[j], 2.5);
 				int cnt = 0;
+				//printf("Circle center %lf %lf\n", circle.center.x, circle.center.y);
 				for(int k = 0; k < pc; ++k)
 					cnt += circle.center.dist(p[k]) < (2.5 + EPS);
 				if(cnt > maxcnt) maxcnt = cnt;
