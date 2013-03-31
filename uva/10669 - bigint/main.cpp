@@ -1099,25 +1099,48 @@ ostream& operator<<( ostream& os, const vector<T>& vec )
 
 //STOPCOMMON
 
+BigInt pow3[70];
+
 int main() {
 
 	string s;
 
-	while(cin >> s)
+	pow3[0] = 1;
+	
+	FOR(i, 1, 68)
+		pow3[i] = pow3[i-1] * 3;
+	
+	while(cin >> s && s != "0")
 	{
 		BigInt bi(s);
 		
-		vector<bool> bits;
+		//vector<bool> bits;
 		
+		bi -= 1;
+		bool firstPrinted = false;
+		cout << "{";
+		int bitNum = 0;
 		while( bi > 0 )
 		{
 			BigInt bit = bi % 2;
-			bits.pb( bit == 1 );
 			
+			if ( bit == 1 )
+			{
+				if (firstPrinted)
+				{
+					cout << ",";
+				} else {
+					firstPrinted = true;
+				}
+				
+				cout << " " << pow3[bitNum];
+			}
+						
+			bitNum ++;
 			bi /= 2;
 		}
 		
-		
+		cout << " }" << endl;
 		
 
 		//scanf("%d", &nSeg);
