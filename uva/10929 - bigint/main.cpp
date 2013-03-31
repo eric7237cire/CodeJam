@@ -1085,20 +1085,21 @@ ostream& operator<<( ostream& os, const vector<T>& vec )
 
 int main() {
 
-	
-	//f(n)=f(n-1)+2*(n-1) f(n)=n^2-n+2,
-// n = n.multiply(n).add(n.negate()).add(BigInteger.valueOf(2));
 	string s;
 
 	while( cin >> s)
 	{
 		if (s == "0")
-			cout << "1" << endl;
+			break;
+
+		BigInt bi(s);
+		BigInt eleven("11");
+		if (bi % eleven == 0)
+			cout << s << " is a multiple of 11." << endl;
 		else 
-		{
-			BigInt n(s);
-			cout << n*n - n + 2 << endl;
-		}
+			cout << s << " is not a multiple of 11." << endl;
+
+		
 	}
 	return 0;
 }

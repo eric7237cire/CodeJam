@@ -1,18 +1,59 @@
-#include "stdio.h"
-#include <algorithm>
-#include <cstring>
-#include <cassert>
+//STARTCOMMON
+
+#include <cmath>
 #include <vector>
+#include "stdio.h" 
+#include <limits>
+#include <cassert>
 #include <string>
 #include <iostream>
-#include <limits>
-#include <stdlib.h>
 
 using namespace std;
 
-#define FOR(k,a,b) for(int k=(a); k <  (b); ++k)
-#define pb push_back
- 
+#define mp make_pair 
+#define pb push_back 
+#define contains(c,x) ((c).find(x) != (c).end()) 
+#define all(c) (c).begin(),(c).end() 
+
+typedef unsigned int uint;
+typedef long long ll;
+typedef unsigned long long ull;
+
+#define FORE(k,a,b) for(int k=(a); k <= (b); ++k)
+#define FOR(k,a,b) for(int k=(a); k < (b); ++k)
+
+typedef vector<int> vi; 
+typedef vector<double> vd;
+typedef vector<bool> vb;
+typedef vector<vb> vvb;
+typedef vector<vi> vvi;
+typedef vector<uint> uvi; 
+typedef vector<uvi> uvvi;
+typedef vector<vd> vvd;
+typedef pair<int,int> ii;
+typedef pair<uint,uint> uu;
+typedef vector<ii> vii;
+typedef vector<vii> vvii;
+
+
+const double tolerance = 0.000002;
+template<typename T> 
+int cmp(T a, T b, T epsilon = tolerance)
+{
+	T dif = a - b;
+	if (abs(dif) <= epsilon)
+	{
+		return 0;
+	}
+	
+	if (dif > 0)
+	{
+		return 1; //a > b
+	}
+	
+	return -1;
+}  
+
 
 
 #ifndef _BIGINT_H
@@ -285,7 +326,7 @@ BigInt::BigInt(const string & s)
     for(k=s.length() - 1; k >= limit; k--)
     {   if (! isdigit(s[k]))
         {   cerr << "badly formed BigInt value = " << s << endl;
-            abort();
+            assert(false);
         }
         AddSigDigit(s[k]-'0');
     }
@@ -865,7 +906,7 @@ const BigInt & BigInt::operator /=(int num)
     if (0 == num)       // handle division by zero 
     {
         cerr << "division by zero error" << endl;
-		abort();
+		assert(false);
     }
     else
     {
@@ -918,19 +959,174 @@ const BigInt & BigInt::operator %=(const BigInt & rhs)
     return *this;
 }
 
-string s;
-string s2;
 
-int main()
+BigInt expo(int a, int b){
+  BigInt result(1);
+  BigInt base(a);
+  
+  while (b){
+    if (b%2==1){
+      result *= base;
+    }
+    b /= 2;
+    base *= base;
+  }
+
+  return result;
+}
+
+bool miller_rabin_32(uint n);
+
+bool isPrime(uint n) {
+	return miller_rabin_32(n);
+}
+
+int modular_exponent_32(int base, int power, int modulus) {
+	unsigned long long result = 1;
+	for (int i = 31; i >= 0; i--) {
+		result = (result*result) % modulus;
+		if ((power & (1 << i)) != 0) {
+			result = (result*base) % modulus;
+		}
+	}
+	return (int)result; // Will not truncate since modulus is an int
+}
+
+
+
+
+bool miller_rabin_pass_32(int a, int n) {
+	int d = n - 1;
+	int s = 0;
+
+	while ((d % 2) == 0) {
+		d /= 2;
+		s++;
+	}
+
+	int a_to_power = modular_exponent_32(a, d, n);
+	if (a_to_power == 1) return true;
+	for (int i = 0; i < s-1; i++) {
+		if (a_to_power == n-1) return true;
+		a_to_power = modular_exponent_32(a_to_power, 2, n);
+	}
+	if (a_to_power == n-1) return true;
+	return false;
+}
+
+bool miller_rabin_32(uint n) {
+	if (n <= 1) return false;
+	else if (n == 2) return true;
+	else if (miller_rabin_pass_32( 2, n) &&
+		(n <= 7  || miller_rabin_pass_32( 7, n)) &&
+		(n <= 61 || miller_rabin_pass_32(61, n)))
+		return true;
+	else
+		return false;
+}
+
+vector<bool> vbIsPrime;
+
+vector<int> primes;
+
+void generatePrimes( int maxPrime ) 
 {
+	vbIsPrime.assign(maxPrime + 1, true);
+	vbIsPrime[0] = false;
+	vbIsPrime[1] = false;
 	
-		
-	while( getline(cin, s) && getline(cin, s2))
+	primes.clear();
+
+	//Since we are eliminating via prime factors, a factor is at most sqrt(n)
+	int upperLimit = static_cast<int>(sqrt(maxPrime));
+
+	for(int i = 2; i <= upperLimit; ++i) {
+		if (!vbIsPrime[i]) {
+			continue;
+		}
+
+		//Loop through all multiples of the prime factor i.  Start with i*i, because the rest
+		//were already covered by previous factors.  Ex, i == 7, we start at 49 because 7*2 through 7*6 
+		//we already covered by previous prime factors.
+		for(int j = i * i; j <= maxPrime; j += i) {
+			vbIsPrime[j] = false;
+		}
+	}
+
+	for(int i = 0; i <= maxPrime; ++i) {
+		if (vbIsPrime[i])
+			primes.push_back(i);
+	}
+
+}
+
+int addFactors(int n, int maxPIdx)
+{
+	for(int pIdx = 0; pIdx <= maxPIdx; ++pIdx)
 	{
-		BigInt x(s);
-		BigInt y(s2);
-		cout << x*y << endl;		
+		while( n % primes[pIdx] == 0 )
+		{
+			//total[pIdx] ++;
+			n /= primes[pIdx];
+		}
 	}
 	
+	return n;
+
+}
+
+int sumDigits(int num)
+{
+	int sum = 0;
+	while(num)
+	{
+		sum += num % 10;
+		num /= 10;
+	}
+	return sum;
+	
+}
+
+template<typename T>
+ostream& operator<<( ostream& os, const vector<T>& vec )
+{
+    FOR(i, 0, vec.size())
+    {
+        os <<  vec[i] << endl;
+    }
+    return os;
+}
+
+//STOPCOMMON
+
+BigInt pows [16][151];
+
+int main() {
+
+	FORE(i, 0, 150)
+		pows[0][i] = 0;
+		
+	FORE(a, 1, 15)
+		pows[a][1] = a;
+		
+	FORE(n, 2, 150) FORE(a, 1, 15)
+		pows[a][n] = a * pows[a][n-1];
+	
+	int N, A;
+	
+
+	while(cin >> N >> A)
+	{
+		
+		BigInt bi = A;
+		FORE(n, 2, N) 
+			bi += n * pows[A][n]; //expo(A, n);
+		
+		cout << bi << endl;
+			
+
+		//scanf("%d", &nSeg);
+		
+	}
 	return 0;
 }

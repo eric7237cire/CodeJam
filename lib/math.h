@@ -958,6 +958,22 @@ const BigInt & BigInt::operator %=(const BigInt & rhs)
     return *this;
 }
 
+
+BigInt expo(int a, int b){
+  BigInt result(1);
+  BigInt base(a);
+  
+  while (b){
+    if (b%2==1){
+      result *= base;
+    }
+    b /= 2;
+    base *= base;
+  }
+
+  return result;
+}
+
 bool miller_rabin_32(uint n);
 
 bool isPrime(uint n) {
