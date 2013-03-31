@@ -708,19 +708,19 @@ p + t r = q + u s
 
 Cross both sides with s, getting
 
-(p + t r) × s = (q + u s) × s
+(p + t r) ï¿½ s = (q + u s) ï¿½ s
 
-And since s × s = 0, this means
+And since s ï¿½ s = 0, this means
 
-t(r × s) = (q - p) × s
+t(r ï¿½ s) = (q - p) ï¿½ s
 
 And therefore, solving for t:
 
-t = (q - p) × s / (r × s)
+t = (q - p) ï¿½ s / (r ï¿½ s)
 
 In the same way, we can solve for u:
 
-u = (q - p) × r / (r × s)
+u = (q - p) ï¿½ r / (r ï¿½ s)
 */
 
     //P + t*r intersects q + u*s
@@ -1178,6 +1178,14 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
 }
 //STOPCOMMON
 
+double radii[10];
+int N;
+
+double distBet[10][10];
+
+double centerLoc[10];
+int permArray[10];
+
 #include "stdio.h"
 int main() {
 
@@ -1186,18 +1194,66 @@ int main() {
 
 	FOR(t, 0, T)
 	{
+        scanf("%d", &N);
+        FOR(n, 0, N)
+        {
+            scanf("%lf", &radii[n]);
+            distBet[n][n] = 0;
+            permArray[n] = n;
+        }
 		/*
-		use similar triangles
+		use triangles between centers
 		
 		r1 + r2 is the hypotneus 
 		abs(r1-r2) is the height
 		
-		
+		so distance between centers is 3rd side of the triangle
 		*/
-		if (t > 0)
-			printf("\n");
-
-		//scanf("%d", &nSeg);
+		FOR(n, 0, N) FOR(m, n+1, N)
+		{
+		    double d =
+		    sqrt( sqr( radii[n] + radii[m] ) - sqr( radii[n] - radii[m] ) );
+		    distBet[n][m] = distBet[m][n] = d;
+		    //printf("Dist between %d r=%lf and %d r=%lf is %lf\n",
+		      //  n, radii[n], m, radii[m], d);
+		}
+		
+		double minBoxLen = numeric_limits<double>::max();
+		do
+		{
+		    double boxLen = 0;
+		    FOR(n, 0, N)
+		    {
+		        int curIdx = permArray[n];
+		        
+		        //must be at least radius units from left wall
+		        centerLoc[n] = radii[curIdx];
+		         
+		        /*Go through each of the previously placed circles and
+		        find what the center would be if the current circle were
+		        placed directly next to it.
+		        Distance is the maximum of all those.
+		        
+		        This is to handle cases where one huge circle is followed
+		        by many smaller ones
+		        */
+		        FOR(prev, 0, n)
+		        {
+		            int prevIdx = permArray[prev];
+		            
+		            centerLoc[n] = max(centerLoc[n],
+		                distBet[prevIdx][curIdx] + centerLoc[prev]);
+		        }
+		        
+		        //printf("Center %d (really %d) placed at %lf\n", n, curIdx, centerLoc[n]);
+		        boxLen = max(boxLen, centerLoc[n] + radii[curIdx]);
+		    }
+		    
+		    minBoxLen = min(minBoxLen, boxLen);
+		    
+		} while (next_permutation(permArray, permArray + N) );
+		
+		printf("%.3lf\n", minBoxLen);
 		
 	}
 	return 0;
