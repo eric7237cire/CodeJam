@@ -6,7 +6,7 @@ if sys.argv[2] == "common":
 elif sys.argv[2] == "graph":
 	headerF = open("""/home/eric/CodeJam/lib/graph.h""", 'r')
 else:
-	headerF = open("""~/CodeJam/lib/geom.h""", 'r')
+	headerF = open("""/home/eric/CodeJam/lib/geom.h""", 'r')
 sourceFile = open( sys.argv[1], 'r')
 backupFile = open( sys.argv[1] + 'backup', 'w')
 

@@ -1,5 +1,5 @@
 #cmake  .
-#python3 ../../lib/replaceInFile2.py main.cpp common
+#python3 ../../lib/replaceInFile2.py main.cpp geom
 make clean all
 #g++ -O2 p2.cpp -o p2
 #g++ -O2 p3.cpp -o p3

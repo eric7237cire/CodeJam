@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <iostream>
 #include <map>
 #include <list>
@@ -1175,3 +1176,32 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
 }
+//STOPCOMMON
+
+#include "stdio.h"
+int n;
+double area;
+
+int main() 
+{
+    const double pi = 2 * acos(0);
+    
+    int t = 0;
+	while(2 == scanf("%d %lf", &n, &area) && n >= 3)
+	{
+	    double apothem = sqrt(area / n / tan(pi / n) );
+	    double radius = sqrt( area *2 / n / sin(2 * pi/n) );
+	    
+	    double areaInnerCircle = sqr(apothem) * pi;
+	    double areaOuterCircle = sqr(radius) * pi;
+	    
+		//Area of Polygon = n × Apothem2 × tan(π/n)
+		//Area of Polygon = ½ × n × Radius2 × sin(2 × π/n)
+		printf("Case %d: %.5lf %.5lf\n", ++t, areaOuterCircle - area, area - areaInnerCircle );
+
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
+}
+
