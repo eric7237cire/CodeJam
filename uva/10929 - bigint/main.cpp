@@ -959,6 +959,22 @@ const BigInt & BigInt::operator %=(const BigInt & rhs)
     return *this;
 }
 
+
+BigInt expo(int a, int b){
+  BigInt result(1);
+  BigInt base(a);
+  
+  while (b){
+    if (b%2==1){
+      result *= base;
+    }
+    b /= 2;
+    base *= base;
+  }
+
+  return result;
+}
+
 bool miller_rabin_32(uint n);
 
 bool isPrime(uint n) {
@@ -1086,19 +1102,34 @@ ostream& operator<<( ostream& os, const vector<T>& vec )
 int main() {
 
 	string s;
-
+	//BigInt eleven("11");
+	//BigInt zero("0");
+	
 	while( cin >> s)
 	{
 		if (s == "0")
 			break;
 
-		BigInt bi(s);
-		BigInt eleven("11");
-		if (bi % eleven == 0)
+		int sign = 1;
+		int sum = 0;
+		for( int i = s.length() - 1; i >= 0; --i)
+		{
+			sum += sign * (s[i] - '0');
+			sign *= -1;
+		}
+		
+		if (sum % 11 == 0)
 			cout << s << " is a multiple of 11." << endl;
 		else 
 			cout << s << " is not a multiple of 11." << endl;
-
+		/*
+		BigInt bi(s);
+		
+		if (bi % eleven == zero)
+			cout << s << " is a multiple of 11." << endl;
+		else 
+			cout << s << " is not a multiple of 11." << endl;
+*/
 		
 	}
 	return 0;
