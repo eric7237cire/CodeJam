@@ -821,17 +821,22 @@ double distSegmentToPoint( const PointD& A, const PointD& B,
 	PointD v1 = P - A;
 	PointD v2 = B - A;
 	
+	double magV2squared = magnitude2(v2);
 	
+	if (magV2squared == 0)
+	{
+	     return dist(A, P);   
+	}
 // Consider the line extending the segment, parameterized as v + t (w - v).
 // We find projection of point p onto the line. 
 // It falls where u = [(p-v) . (w-v)] / |w-v|^2
 	const double u = dot(v1, v2) / magnitude2(v2) ;
-	if (u < 0.0) 
+	if (u < 0) 
 	{
 		closest = A;
 		return dist(P, A);       // Beyond the 'v' end of the segment
 	}
-	else if (u > 1.0) 
+	else if (u > 1) 
 	{
 		closest = B;  
 		return dist(P, B);  // Beyond the 'w' end of the segment

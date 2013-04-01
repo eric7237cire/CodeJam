@@ -822,17 +822,22 @@ double distSegmentToPoint( const PointD& A, const PointD& B,
 	PointD v1 = P - A;
 	PointD v2 = B - A;
 	
+	double magV2squared = magnitude2(v2);
 	
+	if (magV2squared == 0)
+	{
+	     return dist(A, P);   
+	}
 // Consider the line extending the segment, parameterized as v + t (w - v).
 // We find projection of point p onto the line. 
 // It falls where u = [(p-v) . (w-v)] / |w-v|^2
 	const double u = dot(v1, v2) / magnitude2(v2) ;
-	if (u < 0.0) 
+	if (u < 0) 
 	{
 		closest = A;
 		return dist(P, A);       // Beyond the 'v' end of the segment
 	}
-	else if (u > 1.0) 
+	else if (u > 1) 
 	{
 		closest = B;  
 		return dist(P, B);  // Beyond the 'w' end of the segment
@@ -1412,69 +1417,44 @@ int main() {
 	    assert(5 == scanf("%lf %lf %lf %lf %lf", &x0, &y0, &x1, &y1, &r));
 	    
 	    p2d orig = p2d(0, 0), p0 = p2d(x0, y0), p1 = p2d(x1, y1);
-		double distSeg = orig.point_line_segment_distance(p0, p1);
-		if(distSeg < r){
-			p2d t1, t2, t3, t4;
-			double arc = 2e15, temp;
-			calc_tangent(x0, y0, r, &t1, &t2);
-			calc_tangent(x1, y1, r, &t3, &t4);
-			arc = min(arc, calc_arc(t1, t3));
-			arc = min(arc, calc_arc(t1, t4));
-			arc = min(arc, calc_arc(t2, t3));
-			arc = min(arc, calc_arc(t2, t4));
-			printf("%.3lf\n", p0.dist(t1) + p1.dist(t3) + arc * r);
-			continue;
-		} else {
-		    printf("%.3lf\n", p0.dist(p1));
-		    continue;
-		}
+	    
 	    const PointD C(0,0);
 	    PointD P1(x0, y0);
 	    PointD P2(x1, y1);	
 	    PointD Int1;
 	    radius = r;
-	    //cin >> P1 >> P2 >> radius;
 	    
-	    //bool intersects = getPointsIntersectingLine(P1, P2, C,
-	      //  radius, Int1, Int2);
-			
+		//double distSeg = orig.point_line_segment_distance(p0, p1);
 		double distToSeg = distSegmentToPoint(P1, P2, C, Int1);
-	    /*
-	    if (debug) cout << "Point 1 " << P1 << " Point 2 " << P2 << " dist bet "
-	    << dist(P1, P2) << endl;
+		//cout << distSeg << endl;
+		//cout << distToSeg << endl;
+		//assert(distSeg == distToSeg);
 		
-		if (debug) cout << "Dist to origin Point 1  " << dist(C,P1) << " Point 2 " 
-		<< dist(C, P2) <<  endl;
-	    */
+		
 	    if (distToSeg >= radius)
 	    {
 	        printf("%.3lf\n", dist(P1, P2));
 	        continue;
 	    }
-	    /*
-	    if (!onSegment(P1, P2, Int1) || !onSegment(P1, P2, Int2) )
-		{
-			printf("%.3lf\n", dist(P1, P2));
-	        continue;
-		}*/
+	    
 		
 		PointD T1[2];
 		
 		PointD T2[2];
 		
-		calc_tangent(P1.x, P1.y, radius, T1[0], T1[1]);
-		calc_tangent(P2.x, P2.y, radius, T2[0], T2[1]);
+		//calc_tangent(P1.x, P1.y, radius, T1[0], T1[1]);
+		//calc_tangent(P2.x, P2.y, radius, T2[0], T2[1]);
 			
-		/*getPointsTangentToLine( P1, C,
+		getPointsTangentToLine( P1, C,
 		    radius, T1[0], T1[1]);
 		
-		if (debug) cout << "Tang points to P1 " << T1[0] << " and " << T1[1] << endl;
+		//if (debug) cout << "Tang points to P1 " << T1[0] << " and " << T1[1] << endl;
 		
 		getPointsTangentToLine( P2, C,
 		    radius, T2[0], T2[1]);
 		
-		if (debug) cout << "Tang points to P " << T2[0] << " and " << T2[1] << endl;
-		*/
+		//if (debug) cout << "Tang points to P " << T2[0] << " and " << T2[1] << endl;
+		
 		double arc = numeric_limits<double>::max();
 		
 		
