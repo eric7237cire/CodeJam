@@ -763,7 +763,7 @@ u = (q - p) X r / (r X s)
     
     double t = cross( q-p,  s / rCrossS);
     
-    inter = p + t*r;
+    inter = p + r*t;
     
 	if (t+tolerance < 0 || t-tolerance > 1)
 		return false;
@@ -837,9 +837,9 @@ double distSegmentToPoint( const PointD& A, const PointD& B,
 		return dist(P, B);  // Beyond the 'w' end of the segment
 	}
 
-	const PointD projection = A + u * (B - A);  // Projection falls on the segment
-	closest = projection;
-	return dist(P, projection);
+	closest = A + v2 * u;  // Projection falls on the segment
+	
+	return dist(P, closest);
 }
 
 /*
