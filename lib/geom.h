@@ -160,7 +160,7 @@ struct Point
 
 typedef Point<double> PointD;
 typedef Point<int> PointI;
-typedef Point<int> pi;
+
 typedef pair<PointD, PointD> SegmentD;
 typedef vector<PointD> vp;
 typedef vector<PointI> vpi;
@@ -295,7 +295,21 @@ T cross( const Point<T>& A, const Point<T>& B )
     return A.x*B.y - A.y*B.x;
 }
 
-
+    
+PointD rotate(const PointD& pt, double ang) 
+{
+    double cosTh = cos(ang);
+    double sinTh = sin(ang);
+    return PointD(pt.x * cosTh - pt.y * sinTh,
+            pt.x * sinTh + pt.y * cosTh);
+}
+    
+PointD rotateAbout(const PointD& pt, const PointD& pivot, double ang) 
+{
+    return rotate( pt - pivot, ang ) + pivot ;
+}
+    
+    
 
 //Rotate about origin counter clockwise
 template<typename T>
@@ -747,8 +761,8 @@ u = (q - p) X r / (r X s)
 template<typename T>
 double dist( const Point<T>& p1, const Point<T>& p2 )
 {
-	//return hypot( p1.x-p2.x, p1.y - p2.y );
-	return sqrt( (p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y) );
+	return hypot( p1.x-p2.x, p1.y - p2.y );
+	//return sqrt( (p1.x-p2.x)*(p1.x-p2.x) + (p1.y-p2.y)*(p1.y-p2.y) );
 }
 
 template<typename T>
@@ -971,6 +985,78 @@ void findCircle( PointD p1, PointD p2, PointD p3, double& radius, PointD& center
 		
 	radius = dist(center, p1);
 				
+}
+
+/*
+Given a circle and a point, find the 2 points from that point
+creating a line tangent to the circle
+*/
+void getPointsTangentToLine(PointD P, const PointD& C, double r, PointD& T1, PointD& T2) 
+{
+    //the hypotneus of a triangle connecting T, P and C
+    double disPC = dist(P, C);
+	    
+    // Line CT and CP are perpendicular
+    double disTC = r;
+	    
+	double disPT = sqrt(disPC*disPC - disTC*disTC);
+	    
+	double a = asin(disTC / disPC);
+	    
+    /*
+     * These angles are equal, we have all sides so we can choose any
+     */
+    //double a2 = Math.acos(disPT / disPC);	    
+    //double a3 = Math.atan(disTC / disPT);
+
+    //Take vector PC, make it the correct length, rotate it, then
+    //move it back to P
+    T1 =  rotate( (C-P) * (disPT / disPC), -a) +  P;
+    T2 =  rotate( (C-P) * (disPT / disPC), a) +  P;
+    //Point T2 = C.translate(P).scale(disPT / disPC).
+      //      rotate(a).translate( P.scale(-1));
+    
+    
+    //return new Point[] {T, T2};
+	    
+}
+
+int sgn(double x) 
+{
+    if (x < 0)
+        return -1;
+    return 1;
+}
+    
+/*
+Intersection line defined by A and B and circle center C radius r 
+*/
+bool getPointsIntersectingLine( PointD A, PointD B, PointD C, double r,
+    PointD& Inter1,
+    PointD& Inter2
+    ) 
+{
+    //Move circle to origin, translate A and B
+    PointD Bt = B - C;
+    PointD At = A - C;
+    
+    double dx = Bt.x - At.x;
+    double dy = Bt.y - At.y;
+    double dr = sqrt(dx*dx+dy*dy);
+    double D = cross(At, Bt); 
+    
+    double disc =r*r*dr*dr-D*D;
+    if (disc < 0)
+        return false;
+    
+    double discSqRt = sqrt(disc);
+    Inter1.x = C.x+ (D*dy+sgn(dy)*dx*discSqRt) / (dr*dr);
+    Inter1.y = C.y+ (-D*dx+abs(dy) * discSqRt) / (dr*dr);
+    
+    Inter2.x = C.x+ (D*dy-sgn(dy)*dx*discSqRt) / (dr*dr);
+    Inter2.y = C.y+ (-D*dx-abs(dy) * discSqRt) / (dr*dr);
+    
+    return true;
 }
 
 /*

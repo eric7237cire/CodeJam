@@ -259,7 +259,7 @@ public class Circle {
 	
 	
 	/**
-     *
+     * Line from to center looks like.
      * 
      * (x-x.p)2 + (y-y.p)2 = r.p^2
      * 
