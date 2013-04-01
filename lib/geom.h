@@ -43,7 +43,7 @@ typedef map<string, int> msi;
 Util
 */
 
-const double tolerance = 0.000002;
+const double tolerance = 1e-15;
 
 template<typename T> T gcd(T a, T b)
 {
@@ -118,12 +118,13 @@ int cmp(T a, T b, T epsilon = tolerance)
 }  
 
 
-template<typename T>
-bool isBetween(T x, T a, T b)
+template<typename T> bool isBetween(T a, T b, T x)
 {
-	return (a <= x && x <= b) ||
-		(b <= x && x <= a);
+	return  ( cmp(a, x) <= 0 && cmp(x, b) <= 0 )
+	|| ( cmp(b, x) <= 0 && cmp(x, a) <= 0 );
+	
 }
+
 
 
 template<typename T>
@@ -149,12 +150,13 @@ struct Point
     Point(T xx, T yy) : x(xx), y(yy) {}
 	Point() : x(), y() {}
 
+	/*
 	template < typename U >
     operator Point<U> (  ) const
     {
     	Point<U> result( (U) x, (U) y );
     	return result;
-    }
+    }*/
 };
 
 
@@ -206,12 +208,12 @@ Point<T> operator*( const Point<T>& lhs, const T&  rhs)
 	return ret;
 }
 
-
+/*
 template<typename T> 
 Point<T> operator*( const T&  lhs, const Point<T>& rhs) 
 {
 	return rhs * lhs;
-}
+}*/
 
 /*
 template<typename T> 
@@ -295,6 +297,10 @@ T cross( const Point<T>& A, const Point<T>& B )
     return A.x*B.y - A.y*B.x;
 }
 
+double angBetween( PointD p1, PointD p2 )
+{ 
+	return acos( dot(p1,p2) /( mag(p1) * mag(p2) ) ); 
+}
     
 PointD rotate(const PointD& pt, double ang) 
 {
@@ -575,6 +581,18 @@ class Segment
 	}
 };
 
+/*
+Assuming all 3 points are on the same line, is the 3rd point on the segment
+defined by pt A and B?
+*/
+template<typename T> 
+bool onSegment( const Point<T>& pt1, const Point<T>& pt2, const Point<T>& ptTest)
+{
+	return isBetween( pt1.x, pt2.x, ptTest.x ) &&
+		isBetween(pt1.y,  pt2.y, ptTest.y );	
+}
+
+
 template<typename T> 
 ostream& operator<<( ostream& os, const Segment<T>& rhs) 
 {
@@ -777,6 +795,11 @@ T length_squared(const Point<T>& v, const Point<T>& w)
 	return sqr(v.x - w.x) + sqr(v.y - w.y); 
 }
 
+template<typename T>
+T magnitude2(const Point<T>& v)
+{
+	return v.x*v.x + v.y*v.y;
+}
 
 double length_squared(const SegmentD& seg)
 {
@@ -788,29 +811,35 @@ double length_squared(const SegmentD& seg)
 
 
 /**
- distance of point to segment
+ distance of point P to segment A-B
  
  http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
 */
-double minimum_distance( const PointD& v, const PointD& w, const PointD& p, PointD& closest) {
-  // Return minimum distance between line segment vw and point p
-  const double l2 = length_squared(v, w);  // i.e. |w-v|^2 -  avoid a sqrt
-  if (l2 == 0.0) return dist(p, v);   // v == w case
-  // Consider the line extending the segment, parameterized as v + t (w - v).
-  // We find projection of point p onto the line. 
-  // It falls where t = [(p-v) . (w-v)] / |w-v|^2
-  const double t = dot(p - v, w - v) / l2;
-  if (t < 0.0) {
-	  closest = v;
-	  return dist(p, v);       // Beyond the 'v' end of the segment
-  }
-  else if (t > 1.0) {
-		closest = w;  
-	  return dist(p, w);  // Beyond the 'w' end of the segment
-  }
-  const PointD projection = v + t * (w - v);  // Projection falls on the segment
-  closest = projection;
-  return dist(p, projection);
+double distSegmentToPoint( const PointD& A, const PointD& B, 
+	const PointD& P, PointD& closest) 
+{
+	PointD v1 = P - A;
+	PointD v2 = B - A;
+	
+	
+// Consider the line extending the segment, parameterized as v + t (w - v).
+// We find projection of point p onto the line. 
+// It falls where u = [(p-v) . (w-v)] / |w-v|^2
+	const double u = dot(v1, v2) / magnitude2(v2) ;
+	if (u < 0.0) 
+	{
+		closest = A;
+		return dist(P, A);       // Beyond the 'v' end of the segment
+	}
+	else if (u > 1.0) 
+	{
+		closest = B;  
+		return dist(P, B);  // Beyond the 'w' end of the segment
+	}
+
+	const PointD projection = A + u * (B - A);  // Projection falls on the segment
+	closest = projection;
+	return dist(P, projection);
 }
 
 /*
@@ -1059,6 +1088,37 @@ bool getPointsIntersectingLine( PointD A, PointD B, PointD C, double r,
     return true;
 }
 
+//Assumes circle is at origin
+void calc_tangent(double xp, double yp, double r, PointD& p1, PointD& p2)
+{
+	double a, b, c, r2, delta, xp2, yp2;
+	r2 = r * r;
+	xp2 = xp * xp;
+	yp2 = yp * yp;
+	double x1, x2, y1, y2;
+	a = xp2 + yp2;
+	if(abs(xp) > tolerance)
+	{
+		b = - 2 * r2 * yp;
+		c = r2 *(r2 - xp2);
+		delta = sqrt(b * b - 4 * a * c);
+		y1 = (-b + delta)/(2 * a);
+		x1 = (r2 - yp * y1)/xp;
+		y2 = (-b - delta)/(2 * a);
+		x2 = (r2 - yp * y2)/xp;
+	} else {
+		b = - 2 * r2 * xp;
+		c = r2 * (r2 - yp2);
+		delta = sqrt(b * b - 4 * a * c);
+		x1 = (-b + delta)/(2 * a);
+		y1 = (r2 - xp * x1)/yp;
+		x2 = (-b - delta)/(2 * a);
+		y2 = (r2 - xp * x2)/yp;
+	}
+	p1 = PointD(x1, y1);
+	p2 = PointD(x2, y2);
+}
+
 /*
 Rectangle
 */
@@ -1117,11 +1177,11 @@ bool inTriangle2( const PointD& p, const PointD& tri1,
 {
 	PointD closest;
 	//not sure if this is necesary for not degenerate triangles
-	if ( abs(minimum_distance(tri1, tri2, p, closest)) < tolerance)
+	if ( abs(distSegmentToPoint(tri1, tri2, p, closest)) < tolerance)
 		return false;
-	if ( abs(minimum_distance(tri1, tri3, p, closest)) < tolerance)
+	if ( abs(distSegmentToPoint(tri1, tri3, p, closest)) < tolerance)
 		return false;
-	if ( abs(minimum_distance(tri2, tri3, p, closest)) < tolerance)
+	if ( abs(distSegmentToPoint(tri2, tri3, p, closest)) < tolerance)
 		return false;
 
 
