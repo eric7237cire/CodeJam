@@ -1,0 +1,6 @@
+cmake_minimum_required (VERSION 2.6)
+project (project)
+add_definitions(-DONLINE_JUDGE)
+add_executable(addrev ADDREV.cpp)
+add_executable(test TEST.cpp)
+add_executable(FCTRL FCTRL.cpp)
