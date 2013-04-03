@@ -1,4 +1,4 @@
-python c:\codejam\codejam\lib\replaceInFile.py %1.cpp math
+rem python c:\codejam\codejam\lib\replaceInFile.py %1.cpp math
 cmake -G "MSYS Makefiles" . 
 make all
 cat %1.txt | %1
