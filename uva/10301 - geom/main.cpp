@@ -1416,7 +1416,10 @@ int main() {
 				maxCompSize = max(maxCompSize, uf.size(i));
 			}
 		}
-		printf("%d rings.\n", maxCompSize);
+		if (maxCompSize == 1)
+			printf("The largest component contains 1 ring.\n");
+		else
+			printf("The largest component contains %d rings.\n", maxCompSize);
 		
 	}
 	return 0;

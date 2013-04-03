@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <iostream>
 #include <map>
 #include <list>
@@ -1336,3 +1337,42 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
 }
+//STOPCOMMON
+
+#include "stdio.h"
+
+char buf[200];
+
+int main() {
+
+	int T;
+	scanf("%d ", &T);
+
+	FOR(t, 0, T)
+	{
+		fgets(buf, 200, stdin);
+		
+		int i1, i2;
+		
+		int nInts = sscanf(buf, "%d%d", &i1, &i2);
+		
+		if (nInts == 1)
+		{
+			// if only t is given
+			printf("%0.4lf\n", pi * sqr(i1) / 8);
+		}
+		else if (nInts == 2) 
+		{
+		/*
+		 pi * [ (i1+i2) / 2 ] ^ 2 - pi (i1)^2 - pi (i2) ^ 2
+		 pi (i1+i2)^2 / 4
+		*/
+			printf("%0.4lf\n", pi * sqr(i1+i2)  - pi * sqr(i1) - pi * sqr(i2) );
+		}
+		
+		
+		
+	}
+	return 0;
+}
+

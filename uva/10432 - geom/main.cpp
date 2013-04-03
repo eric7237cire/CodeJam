@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <iostream>
 #include <map>
 #include <list>
@@ -1335,4 +1336,20 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
+}
+//STOPCOMMON
+
+int N;
+double radius;
+
+int main() {
+
+	while(2 == scanf("%lf %d", &radius, &N))
+	{
+		//Area of Polygon = ½ × n × Radius^2 × sin(2 × p/n)
+		printf("%.3lf\n", .5 * N * sqr(radius) * sin(2 * pi / N));
+		
+		
+	}
+	return 0;
 }
