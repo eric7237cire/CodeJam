@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <iostream>
 #include <map>
 #include <list>
@@ -1355,3 +1356,52 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
 }
+//STOPCOMMON
+
+#include "stdio.h"
+PointI segments[50][2];
+bool isolated[50];
+int N;
+
+PointD inter;
+
+int main() {
+
+	int T;
+	scanf("%d", &T);
+
+	FOR(t, 0, T)
+	{
+		scanf("%d", &N);
+		FOR(i, 0, N)
+		{
+			scanf("%d%d%d%d", &segments[i][0].x, &segments[i][0].y, &segments[i][1].x, &segments[i][1].y);
+			
+			isolated[i] = true;
+		}
+		
+		int sum = 0;
+		FOR(i, 0, N) 
+		{
+			FOR(j, i+1, N)
+			{
+				bool ok = getIntersection(segments[i][0], segments[i][1],
+				segments[j][0], segments[j][1], inter);
+				
+				if (ok)
+				{
+					isolated[i]=false;
+					isolated[j] = false;
+				}
+			}
+			
+			if (isolated[i])
+				++sum;
+		}
+		
+		printf("%d\n", sum);
+		
+	}
+	return 0;
+}
+
