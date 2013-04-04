@@ -652,9 +652,13 @@ bool isParallel( const Point<T>& a1, const Point<T>& a2,
 	return false;
 }
 
+/*
+Given line segment A-B, determines which side P lies
+*/
 template<typename T>
 int getSide( const Point<T>& A, const Point<T>& B, const Point<T>& P)
 {
+	//make A the origin
     T z = cross(B-A, P-A);
     
 	if (numeric_limits<T>::is_exact) {
@@ -723,6 +727,55 @@ bool intersects(const Point<T>& a1,const Point<T>& a2,
     return true;
 }
 
+
+template<typename T>
+bool doesSegmentIntersect(const Point<T>& a1,const Point<T>& a2,
+				const Point<T>& b1,const Point<T>& b2)
+{
+	bool aIsSeg = a1 != a2;
+	bool bIsSeg = b1 != b2;
+	
+	if (!aIsSeg && !bIsSeg)
+	{
+		return a1 == b1;
+	} else 	
+	if (aIsSeg && !bIsSeg)
+	{
+		return isBetween(a1.x, a2.x, b1.x) && isBetween(a1.y, a2.y, b1.y);
+	} else 	
+	if (bIsSeg && !aIsSeg)
+	{
+		return isBetween(b1.x, b2.x, a1.x) && isBetween(b1.y, b2.y, a1.y);
+	}
+	
+	//At this point we have 2 segments of non zero length 
+	int side_b1 = getSide(a1, a2, b1);
+	int side_b2 = getSide(a1, a2, b2);
+	
+	if (side_b1 == 0 &&  side_b2 == 0)
+	{
+		//puts("colin");
+		//segments are colinear, so 1 point needs to be between the other segment.
+		//The 4 checks are needed in cases like 0, 0 10, 10 and 3,3 5,5    neitherer a1 nor a2 are between b1 and b2
+		return ( isBetween(a1.x, a2.x, b1.x) && isBetween(a1.y, a2.y, b1.y) )
+		|| ( isBetween(a1.x, a2.x, b2.x) && isBetween(a1.y, a2.y, b2.y) )
+		|| ( isBetween(b1.x, b2.x, a1.x) && isBetween(b1.y, b2.y, a1.y) )
+		|| ( isBetween(b1.x, b2.x, a2.x) && isBetween(b1.y, b2.y, a2.y) );
+	}
+	
+	//puts("not colin");
+	
+	if (side_b1 == getSide(a1, a2, b2))
+		return false;
+		
+	int side_a1 = getSide(b1, b2, a1);
+	if ( side_a1 == getSide(b1, b2, a2))
+		return false;
+		
+	return true;
+}
+
+	
 //http://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
 template<typename T>
 bool getIntersection(const Point<T>& a1,const Point<T>& a2,
@@ -770,9 +823,29 @@ u = (q - p) X r / (r X s)
 		if ( cmp( cross(q - p, r), 0.0 ) == 0)
 		{
 			//lines are colinear
-			return ( ( isBetween(b1.x, b2.x, a1.x) && isBetween(b1.y, b2.y, a1.y) ) || (
-			isBetween(b1.x, b2.x, a2.x) && isBetween(b1.y, b2.y, a2.y)) );
-		} else {
+			
+			
+			if ( isBetween(a1.x, a2.x, b1.x) && isBetween(a1.y, a2.y, b1.y) )
+			{
+				inter = b1;
+				return true;
+			}
+			if ( isBetween(a1.x, a2.x, b2.x) && isBetween(a1.y, a2.y, b2.y) )
+			{
+				inter = b2;
+				return true;
+			}
+			if ( isBetween(b1.x, b2.x, a1.x) && isBetween(b1.y, b2.y, a1.y) )
+			{
+				inter = a1;
+				return true;
+			}
+			if ( isBetween(b1.x, b2.x, a2.x) && isBetween(b1.y, b2.y, a2.y) )
+			{
+				inter = a2;
+				return true;
+			}
+		
 			return false;
 		}
         return false;
@@ -785,12 +858,14 @@ u = (q - p) X r / (r X s)
     inter = p + r*t;
     
 	//printf("inter (%lf, %lf)\n", inter.x, inter.y);
-	if (t+tolerance < 0 || t-tolerance > 1)
+	if ( cmp(t, 0.0) < 0 || cmp(t, 1.0, 1e-7) > 0)
 		return false;
    
 	double u = cross(q-p, r / rCrossS);
     
-    if (u+tolerance < 0 || u-tolerance > 1)
+	//printf("u %lf\n", u);
+	
+    if ( cmp(u, 0.0) < 0 || cmp(u, 1.0) > 0)
 		return false;
 
     return true;
