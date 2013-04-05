@@ -1,4 +1,4 @@
-//STARTCOMMON
+
 #include <cmath>
 #include <vector>
 #include "stdio.h" 
@@ -24,6 +24,26 @@ typedef unsigned long long ull;
 
 #define FORE(k,a,b) for(int k=(a); k <= (b); ++k)
 #define FOR(k,a,b) for(int k=(a); k < (b); ++k)
+
+
+typedef vector<int> vi; 
+
+template<typename T> 
+int cmp(T a, T b)
+{
+	
+	if (a == b)
+	{
+		return 0;
+	}
+	
+	if (a > b)
+	{
+		return 1; //a > b
+	}
+	
+	return -1;
+}  
 
 
 class UnionFind
@@ -117,7 +137,69 @@ int diag[4][2] =
 	{1, -1},
 	{-1, 1}
 };
-int main() {
+
+/* Problem: Chess UVa 278
+   Programmer: Md. Mahmud Ahsan
+   Description: AD HOC
+   Compiled: Visual C++ 7.0
+   Date: 26-10-05
+*/
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+char board[20][20];
+int white, black;
+
+int main(){
+	//freopen("input.txt", "r", stdin);
+	int test, m, n, i, j, result;
+	char c;
+
+	cin >> test;
+	while (test--){
+		cin >> c >> m >> n;
+
+		if (c == 'k'){//knight
+			bool flag = false;
+			white = black = 0;
+
+			//generating the board to obtain the number of black and white room
+			for (i = 0; i < m; ++i){
+				if (!flag) flag = true;
+				else flag = false;
+
+				for (j = 0; j < n; j+=2){
+					if (flag) ++white;// board[i][j] = 'w';
+					else ++black; //board[i][j] = 'b';
+				}
+
+				for (j = 1; j < n; j+=2){
+					if (!flag) ++white; //board[i][j] = 'w';
+					else ++black; //board[i][j] = 'b';
+				}
+			}
+			result = max(black, white);
+			cout << result << endl;
+		}
+		else if (c == 'r'){//rook
+			result = min(m,n);
+			cout << result << endl;
+		}
+		else if (c == 'Q'){//queen
+			result = min(m,n);
+			cout << result << endl;
+		}
+		else if (c == 'K'){//king
+			result = ( ((m+1) / 2) * ((n+1)/2));
+			cout << result << endl;
+		}
+	}
+
+	return 0;
+}
+
+int main2() {
 
 //r, k, Q, K  m x n
 	int T;
@@ -129,6 +211,8 @@ int main() {
 		
 		UnionFind uf;
 		uf.initSet(M * N);
+		
+		int maxDisconnected = 0;
 		
 		FOR(r, 0, M) FOR(c, 0, N)
 		{
@@ -183,7 +267,7 @@ int main() {
 				}
 				
 				case 'r':
-				case 'Q':
+				
 				
 				FOR(rr, 0, M)
 				{
@@ -197,10 +281,13 @@ int main() {
 				}
 				
 				break;
+			}
+			
+			maxDisconnected = max(maxDisconnected,
+			 M*N - uf.size(curSq) );
 		}
 		
-		if (T > 0)
-			printf("\n");
+		printf("%d\n", maxDisconnected);
 		
 	}
 	return 0;
