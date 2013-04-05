@@ -664,15 +664,15 @@ int getSide( const Point<T>& A, const Point<T>& B, const Point<T>& P)
     
 	if (numeric_limits<T>::is_exact) {
 		if (z > 0) {
-#ifndef ONLINE_JUDGE
-			//cout << "Points " << A << " " << B << " " << P << " 1 " << endl;
-#endif
+
+			//cout << "Points " << A << " " << B << " " << P << " 1 " << z << endl;
+
 			return 1;
 		}
 		if (z < 0) {
-#ifndef ONLINE_JUDGE
-		//	cout << "Points " << A << " " << B << " " << P << " -1 " << endl;
-#endif
+
+			//cout << "Points " << A << " " << B << " " << P << " -1 " << z << endl;
+
 			return -1;
 		}
 	}
@@ -683,9 +683,9 @@ int getSide( const Point<T>& A, const Point<T>& B, const Point<T>& P)
 			return -1; 
 	}
 
-#ifndef ONLINE_JUDGE
+
 	//cout << "Points " << A << " " << B << " " << P << " 0 " << endl;
-#endif
+
     return 0; 
 }
 
@@ -1314,24 +1314,39 @@ bool inOrOnTriangle( const Point<T>& p, const Point<T>& tri1,
     const Point<T>& tri2, const Point<T>& tri3)
 {
 	
+	//cout << tri1 << endl;
+	//cout << tri2 << endl;
+	//cout << tri3 << endl;
+	
+	//cout << p << endl;
 	if (doesSegmentIntersect( tri1, tri3, p, p) ||
 		doesSegmentIntersect( tri1, tri2, p, p) ||
 		doesSegmentIntersect( tri2, tri3, p, p) )
+		{
 			return true;
-		
+		}
 	
 	
 	if (isColinear(tri1, tri2, tri3))
+	{
+		//cout << "Colinear" << endl;
 		return false;
+	}
 		
+	//cout << "1" << endl;
+	
     if ( getSide(p, tri1, tri2) != 
         getSide(tri3, tri1, tri2) )
         return false;
-        
+    
+	//cout << "2" << endl;
+    
     if ( getSide(p, tri1, tri3) != 
         getSide(tri2, tri1, tri3) )
         return false;
-    
+
+	//cout << "3" << endl;
+	
     if ( getSide(p, tri2, tri3) != 
         getSide(tri1, tri2, tri3) )
         return false;
@@ -1470,40 +1485,119 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
 //STOPCOMMON
 
 PointD Ad, Bd, Cd;
-double x1, y1, x2, y2, x3, y3;
-const PointD origin(0,0);
+double dbl[6];
+const Point<int> origin(0,0);
+
+int doubleToInt(double d, int powTen)
+{
+	cout << d << endl;
+	cout << (d * powTen + 1e-15) << endl;
+	cout << int(d * powTen + 1e-12) << endl;
+	return d * powTen + 1e-15;
+	
+}
+
+#include <cstring>
+char buf[10];
+int readNextDouble()
+{
+	int d1, d2;
+	
+	int r = scanf("%d.%s ", &d1, buf);
+	//int r = scanf("%d", &d1, &d2);
+	
+	d2 = atoi(buf);
+	//printf("%d %d %d\n", r, d1, d2);
+	if (r == 1)
+	{
+		return d1 * 100;
+	}
+	
+	assert(r == 2);
+	
+	int len = strlen(buf);
+	
+	assert(len <= 2);
+	
+	if (len == 1)	
+		return d1 * 100 + d2 * 10;
+	else if (len == 2)
+		return d1 * 100 + d2;
+	
+	return 0;
+}
+
 int main() 
 {
 
-	while(	scanf("%lf %lf %lf %lf %lf %lf", &x1, &y1, &x2, &y2, &x3, &y3) == 6 )
+	while(	true ) //scanf("%lf %lf %lf %lf %lf %lf", &dbl[0],&dbl[1], &dbl[2], &dbl[3], &dbl[4], &dbl[5]) == 6 )
 	{
-		Point<int> A(Ad.x * 100, Ad.y * 100);
-		Point<int> B(, Bd, Cd;
-		Point<int> A
+		int inputInts[6];
+		FOR(i, 0, 6)
+			inputInts[i] = readNextDouble();
+			
+		Point<int> A( inputInts[0], inputInts[1] );
+		Point<int> B( inputInts[2], inputInts[3] );
+		Point<int> C( inputInts[4], inputInts[5] );
+		
+		//cout << A << endl;
+		//cout << B << endl;
+		//cout << C << endl;
+		//break;
+		//Point<int> A( doubleToInt(dbl[0], 100), doubleToInt(dbl[1], 100));
+		//Point<int> B( doubleToInt(dbl[2], 100), doubleToInt(dbl[3], 100));
+		//Point<int> C( doubleToInt(dbl[4], 100), doubleToInt(dbl[5], 100));
 		if (A == origin && B == origin && C == origin)
 			break;
 			
-		double minX = min( min(A.x, B.x), C.x);
-		double minY = min( min(A.y, B.y), C.y);
-		double maxX = max( max(A.x, B.x), C.x);
-		double maxY = max( max(A.y, B.y), C.y);
+		int minX = min( min(A.x, B.x), C.x);
+		int minY = min( min(A.y, B.y), C.y);
+		int maxX = max( max(A.x, B.x), C.x);
+		int maxY = max( max(A.y, B.y), C.y);
 
-		int c[4];
-		c[0] = (int) max(1.0, floor(minX));
-		c[1] = (int) min(99.0, floor(maxX) + 1);
-		c[2] = (int) max(1.0, floor(minY));
-		c[3] = (int) min(99.0, floor(maxY) + 1);
+		//cout << inOrOnTriangle( Point<int>(9700,500), A, B, C) << endl;
+		
+		//cout << inOrOnTriangle( Point<int>(9400,500), A, B, C) << endl;
+		//cout << inOrOnTriangle( Point<int>(9300,500), A, B, C) << endl;
+		//cout << inOrOnTriangle( Point<int>(9200,500), A, B, C) << endl;
+		
+		//break;
+		
+		minX =  max(100, ( minX / 100) * 100 );
+		maxX =  min(9900, (100+maxX) / 100 * 100);
+		minY =  max(100, minY / 100 * 100);
+		maxY =  min(9900, (100+maxY) / 100 * 100 );
 		
 		int sum = 0;
-		FORE(x, c[0], c[1]) FORE(y, c[2], c[3])
+		for(int y = minY; y <= maxY; y += 100)
 		{
-			if (inOrOnTriangle( PointD(x,y), A, B, C))
+			int startX = 100000000;
+			int stopX = -1000;
+			for(int x = minX; x <= maxX; x += 100)		
 			{
-				//printf("%d %d\n", x, y);
-				++sum;
+				
+				if (inOrOnTriangle( Point<int>(x,y), A, B, C))
+				{
+					startX = min(startX, x / 100);
+					stopX = max(stopX, x / 100);
+					
+					++sum;
+				}
 			}
+			
+			//printf("y=%d x=[%d %d]\n", y/100, startX, stopX);
+			
+			//double d1, d2, d3;
+			//PointD closest;
+			//d1 = distSegmentToPoint( B, C, PointD(startX*100-100, y), closest );
+			//d2 = distSegmentToPoint( A, B, PointD(startX*100-100, y), closest);
+			
+			
+			//d3 = distSegmentToPoint( A, C, PointD(stopX*100+100,y), closest );
+			//printf("\ny=%d x=[%d %d]\n", y/100, startX, stopX);
+			//printf("d1 %lf d2 %lf d3 %lf\n", d1, d2, d3);
 		}
-
+		
 		printf("%4d\n", sum);
 
 		

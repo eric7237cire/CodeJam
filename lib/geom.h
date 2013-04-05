@@ -663,15 +663,15 @@ int getSide( const Point<T>& A, const Point<T>& B, const Point<T>& P)
     
 	if (numeric_limits<T>::is_exact) {
 		if (z > 0) {
-#ifndef ONLINE_JUDGE
-			//cout << "Points " << A << " " << B << " " << P << " 1 " << endl;
-#endif
+
+			//cout << "Points " << A << " " << B << " " << P << " 1 " << z << endl;
+
 			return 1;
 		}
 		if (z < 0) {
-#ifndef ONLINE_JUDGE
-		//	cout << "Points " << A << " " << B << " " << P << " -1 " << endl;
-#endif
+
+			//cout << "Points " << A << " " << B << " " << P << " -1 " << z << endl;
+
 			return -1;
 		}
 	}
@@ -682,9 +682,9 @@ int getSide( const Point<T>& A, const Point<T>& B, const Point<T>& P)
 			return -1; 
 	}
 
-#ifndef ONLINE_JUDGE
+
 	//cout << "Points " << A << " " << B << " " << P << " 0 " << endl;
-#endif
+
     return 0; 
 }
 
@@ -1313,24 +1313,39 @@ bool inOrOnTriangle( const Point<T>& p, const Point<T>& tri1,
     const Point<T>& tri2, const Point<T>& tri3)
 {
 	
+	//cout << tri1 << endl;
+	//cout << tri2 << endl;
+	//cout << tri3 << endl;
+	
+	//cout << p << endl;
 	if (doesSegmentIntersect( tri1, tri3, p, p) ||
 		doesSegmentIntersect( tri1, tri2, p, p) ||
 		doesSegmentIntersect( tri2, tri3, p, p) )
+		{
 			return true;
-		
+		}
 	
 	
 	if (isColinear(tri1, tri2, tri3))
+	{
+		//cout << "Colinear" << endl;
 		return false;
+	}
 		
+	//cout << "1" << endl;
+	
     if ( getSide(p, tri1, tri2) != 
         getSide(tri3, tri1, tri2) )
         return false;
-        
+    
+	//cout << "2" << endl;
+    
     if ( getSide(p, tri1, tri3) != 
         getSide(tri2, tri1, tri3) )
         return false;
-    
+
+	//cout << "3" << endl;
+	
     if ( getSide(p, tri2, tri3) != 
         getSide(tri1, tri2, tri3) )
         return false;
