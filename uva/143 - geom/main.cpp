@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <iostream>
 #include <map>
 #include <list>
@@ -1466,3 +1467,47 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
 }
+//STOPCOMMON
+
+PointD Ad, Bd, Cd;
+double x1, y1, x2, y2, x3, y3;
+const PointD origin(0,0);
+int main() 
+{
+
+	while(	scanf("%lf %lf %lf %lf %lf %lf", &x1, &y1, &x2, &y2, &x3, &y3) == 6 )
+	{
+		Point<int> A(Ad.x * 100, Ad.y * 100);
+		Point<int> B(, Bd, Cd;
+		Point<int> A
+		if (A == origin && B == origin && C == origin)
+			break;
+			
+		double minX = min( min(A.x, B.x), C.x);
+		double minY = min( min(A.y, B.y), C.y);
+		double maxX = max( max(A.x, B.x), C.x);
+		double maxY = max( max(A.y, B.y), C.y);
+
+		int c[4];
+		c[0] = (int) max(1.0, floor(minX));
+		c[1] = (int) min(99.0, floor(maxX) + 1);
+		c[2] = (int) max(1.0, floor(minY));
+		c[3] = (int) min(99.0, floor(maxY) + 1);
+		
+		int sum = 0;
+		FORE(x, c[0], c[1]) FORE(y, c[2], c[3])
+		{
+			if (inOrOnTriangle( PointD(x,y), A, B, C))
+			{
+				//printf("%d %d\n", x, y);
+				++sum;
+			}
+		}
+
+		printf("%4d\n", sum);
+
+		
+	}
+	return 0;
+}
+
