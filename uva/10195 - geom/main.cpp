@@ -1484,91 +1484,27 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
 }
 //STOPCOMMON
 
-PointD Ad, Bd, Cd;
-double dbl[6];
-const Point<int> origin(0,0);
+double a, b, c;
 
-int doubleToInt(double d, int powTen)
-{
-	cout << d << endl;
-	cout << (d * powTen + 1e-15) << endl;
-	cout << int(d * powTen + 1e-12) << endl;
-	return d * powTen + 1e-15;
-	
-}
+#include "stdio.h"
+int main() {
 
-#include <cstring>
-char buf[10];
-int readNextDouble()
-{
-	int d1, d2;
-	
-	int r = scanf("%d.%s ", &d1, buf);
-		
-	d2 = atoi(buf);
-	
-	if (r == 1)
+	while(3 == scanf("%lf %lf %lf", &a, &b, &c))
 	{
-		return d1 * 100;
-	}
-	
-	assert(r == 2);
-	
-	int len = strlen(buf);
-	
-	assert(len <= 2);
-	
-	if (len == 1)	
-		return d1 * 100 + d2 * 10;
-	else if (len == 2)
-		return d1 * 100 + d2;
-	
-	return 0;
-}
-
-int inputInts[6];
-
-int main() 
-{
-
-	while(	true )
-	{
-		
-		FOR(i, 0, 6)
-			inputInts[i] = readNextDouble();
-			
-		Point<int> A( inputInts[0], inputInts[1] );
-		Point<int> B( inputInts[2], inputInts[3] );
-		Point<int> C( inputInts[4], inputInts[5] );
-		
-		if (A == origin && B == origin && C == origin)
-			break;
-			
-		int minX = min( min(A.x, B.x), C.x);
-		int minY = min( min(A.y, B.y), C.y);
-		int maxX = max( max(A.x, B.x), C.x);
-		int maxY = max( max(A.y, B.y), C.y);
-
-		minX =  max(100, ( minX / 100) * 100 );
-		maxX =  min(9900, (100+maxX) / 100 * 100);
-		minY =  max(100, minY / 100 * 100);
-		maxY =  min(9900, (100+maxY) / 100 * 100 );
-		
-		int sum = 0;
-		for(int y = minY; y <= maxY; y += 100)
+		if (a==0 || b == 0 || c ==0 )
 		{
-			for(int x = minX; x <= maxX; x += 100)		
-			{
-				
-				if (inOrOnTriangle( Point<int>(x,y), A, B, C))
-				{
-					++sum;
-				}
-			}
+			printf("The radius of the round table is: %.3lf\n", 0);
+			continue;
 		}
+		double p = (a+b+c);
+		double s = p / 2;
 		
-		printf("%4d\n", sum);
-
+		double area = sqrt(s * (s-a) * (s-b) * (s-c) );
+		
+		double radius = 2 * area / p;
+		//http://en.wikipedia.org/wiki/Incircle_and_excircles_of_a_triangle
+		printf("The radius of the round table is: %.3lf\n", radius);
+		
 		
 	}
 	return 0;
