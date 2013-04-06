@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <iostream>
 #include <map>
 #include <list>
@@ -1525,3 +1526,44 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
 }
+//STOPCOMMON
+
+double r1, r2, r3;
+int main() {
+
+	int T;
+	scanf("%d", &T);
+
+	FOR(t, 0, T)
+	{
+		scanf("%lf%lf%lf", &r1, &r2, &r3);
+		
+		
+		double a = r1 + r2;
+		double b = r2 + r3;
+		double c = r1 + r3;
+		
+		//angle if trinangle section in circl3, use r1+r2 for opposite angle (3rd param)
+		double ang3 = getAngle(b, c, a);
+		
+		double ang2 = getAngle(a, b, c);
+		
+		double ang1 = getAngle(a, c, b);
+		
+		double areaTri ;
+		bool ok = areaTriangle(a, b, c, areaTri);
+		
+		
+		double areaSec = areaTri;
+		
+		//pi * r3 * r3 * ang3 / (2*pi)
+		areaSec -= r3*r3*ang3 / 2;
+		areaSec -= r2*r2*ang2 / 2;
+		areaSec -= r1*r1*ang1 / 2;
+		
+		printf("%.6lf\n", areaSec);
+		
+	}
+	return 0;
+}
+
