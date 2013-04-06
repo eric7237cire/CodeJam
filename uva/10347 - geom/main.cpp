@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <iostream>
 #include <map>
 #include <list>
@@ -1519,3 +1520,26 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
 }
+//STOPCOMMON
+
+double a, b, c;
+
+int main() {
+
+	
+
+	while(scanf("%lf %lf %lf", &a, &b, &c) == 3)
+	{
+		double area;
+		bool ok = areaTriangle(a,b,c, area);
+		if (ok)
+			printf("%.3lf\n", 4.0 * area / 3.0);
+		else	
+			printf("%.3lf\n", -1.0);
+
+		//scanf("%d", &nSeg);
+		
+	}
+	return 0;
+}
+
