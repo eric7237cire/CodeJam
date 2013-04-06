@@ -1,3 +1,4 @@
+//STARTCOMMON
 #include <iostream>
 #include <map>
 #include <list>
@@ -1504,3 +1505,120 @@ void grahamScan(const vector<Point<T> >& pointsIn, vector<Point<T> >& hullList)
    
    hullList.insert(hullList.end(), hull.rbegin(), hull.rend());
 }
+//STOPCOMMON
+
+#include "stdio.h"
+
+PointD A, B, C;
+PointD center;
+double radius;
+int nSides;
+
+int main() 
+{
+	int t = 0;
+	while( 1 == scanf("%d", &nSides) && nSides  )
+	{
+		cin >> A >> B >> C;
+		
+		findCircle(A, B, C, radius, center);
+		
+		double ang = 2 * pi / nSides;
+		
+		const PointD cenVec = A - center;
+		
+		double minX = numeric_limits<double>::max();
+		double maxX = -numeric_limits<double>::max();
+		
+		double minY = numeric_limits<double>::max();
+		double maxY = -numeric_limits<double>::max();
+		
+		FOR(i, 0, nSides)
+		{
+			PointD rotVec = rotate(cenVec, ang*i);
+			
+			PointD pt = center + rotVec;
+			
+			//cout << pt << endl;
+			minX = min(minX, pt.x);
+			maxX = max(maxX, pt.x);
+			minY = min(minY, pt.y);
+			maxY = max(maxY, pt.y);
+		}
+		
+		/*cout << minX << endl;
+		cout << maxX << endl;
+		cout << minY << endl;
+		cout << maxY << endl;*/
+		
+		printf("Polygon %d: %.3lf\n", ++t, (maxX - minX) * (maxY - minY));
+	}
+}
+
+
+//Walks the points of a polygon given side and length
+int main2() {
+
+	nSides = 6;
+	int lenSide = 10;
+
+	double extAngle = pi -  (nSides-2) * pi / nSides;
+	
+	PointD p(0,0);
+	PointD dir(1, 0);
+	
+	
+	// C = sqrt(A*A + B*B)
+	//     sqrt(C^2 AA + C^@ B*B
+	vector<PointD> points;
+	FOR(i, 0, nSides)
+	{
+		p = p + dir * (double)lenSide;
+		cout << p << endl;
+		points.pb(p);
+		
+		dir = rotate(dir, extAngle);
+	}
+	
+	typedef map< pair<double, double>, double > RatioMap;
+	
+	map< pair<double, double>, double > ratioMap;
+	
+	FOR(i, 0, points.size()) FOR(j, i+1, points.size()) FOR(k, j+1, points.size())
+	{
+		double distBet[3];
+		distBet[0] = dist(points[i], points[j]);
+		distBet[1] = dist(points[i], points[k]);
+		distBet[2] = dist(points[j], points[k]);
+	
+		sort(distBet, distBet + 3);
+		
+		double shortestSide = distBet[0];
+		
+		FOR(db, 1, 3)
+			distBet[db] /= shortestSide;
+			
+		distBet[0] = 1;
+		
+		double polySizeFactor = shortestSide / lenSide;
+		
+		printf("i=%d j=%d k=%d  ratio 2nd %lf 3rd %lf.  Ratio shortest / poly side %lf\n", i, j, k, distBet[1], distBet[2], polySizeFactor);
+		
+		pair<double, double> sideRatios(distBet[1], distBet[2]);
+		
+		if ( ratioMap.find( sideRatios ) != ratioMap.end() )
+		{
+			cout << "ok" << endl;
+			assert( ratioMap[sideRatios] == polySizeFactor );
+		} else {
+			ratioMap.insert( mp( sideRatios, polySizeFactor) );
+		}
+	}
+	
+	for(RatioMap::iterator it = ratioMap.begin(); it != ratioMap.end(); ++it)
+	{
+		printf("%lf %lf  = %lf \n", it->first.first, it->first.second, it->second);
+	}
+	return 0;
+}
+
