@@ -1,8 +1,13 @@
 import sys
 import re
 
+commonF = open("""C:\codejam\CodeJam\lib\common.h""", 'r')
+
+headerContents = commonF.read()
+
 if sys.argv[2] == "common":
-	headerF = open("""C:\codejam\CodeJam\lib\common.h""", 'r')
+	#headerF = open("""C:\codejam\CodeJam\lib\common.h""", 'r')
+	headerF = 0
 elif sys.argv[2] == "graph":
 	headerF = open("""C:\codejam\CodeJam\lib\graph.h""", 'r')
 elif sys.argv[2] == "math":
@@ -12,7 +17,7 @@ else:
 sourceFile = open( sys.argv[1], 'r')
 backupFile = open( sys.argv[1] + 'backup', 'w')
 
-headerContents = headerF.read()
+headerContents = headerContents + "\n" + headerF.read()
 sourceContents = sourceFile.read()
 
 #print(headerContents)

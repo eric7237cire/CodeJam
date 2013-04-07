@@ -38,7 +38,7 @@ typedef vector<ii> vii;
 typedef vector<vii> vvii;
 
 
-const double tolerance = 0.000002;
+const double tolerance = 1e-15;
 template<typename T> 
 int cmp(T a, T b, T epsilon = tolerance)
 {
@@ -112,6 +112,29 @@ void next_int(int& val)
 	}
 }
 
+void next_string(char* strBuf)
+{
+	char c;
+	do {
+		c = next_char();
+		//printf("1 Read %c\n", c);
+	} while( isspace(c) );
+	
+	do {
+		
+		*strBuf++ = c;
+		c = next_char();
+		//printf("2 Read %c\n", c);
+		
+	} while( !isspace(c) );
+	
+	/*do {
+		c = next_char();
+		printf("3 Read %c\n", c);
+	} while( isspace(c) );
+	*/
+}
+
 void write_flush() 
 {
 	fwrite( outputBuffer , sizeof( char ) , curOutputBufferSize , stdout ) ;//flushes the output to stdout
@@ -124,6 +147,14 @@ void write_char( char c )
 	if( curOutputBufferSize == MAX_OUTPUT_BUFFER_SIZE ) 
 	{//array full so let's flush it
 		write_flush() ;
+	}
+}
+
+void write_str(  const char * str )
+{
+	while( *str != '\0' )
+	{
+		write_char( *str++ );
 	}
 }
 
@@ -144,7 +175,8 @@ void write_int( int val )
 {
 	if(val==0)
     {
-        write_char('0');        
+        write_char('0');
+		return;
     }
 	
 	int size;
