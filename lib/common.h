@@ -85,6 +85,17 @@ char next_char()
 	return inputBuffer[ curCharInputBuffer++ ] ;//nowL1 points to the current character in the buf1 array
 }
 
+char next_nonwsChar()
+{
+	char c;
+	do {
+		c = next_char();
+		//printf("1 Read %c\n", c);
+	} while( isspace(c) );
+	
+	return c;
+}
+
 void next_int(int& val) 
 {
 	char c ;
