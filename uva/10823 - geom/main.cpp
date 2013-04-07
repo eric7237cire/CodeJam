@@ -1824,7 +1824,7 @@ int main() {
 						++n;
 					}
 				} else {
-					assert(shapeType[i][0] == 'S' );
+					//assert(shapeType[i][0] == 'S' );
 					
 					if (pt.x < points[i].x || pt.x > points[i].x + data[i])
 						continue;
