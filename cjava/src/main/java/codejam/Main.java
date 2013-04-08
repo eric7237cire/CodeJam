@@ -10,6 +10,7 @@ import codejam.y2008.round_1C.ugly_numbers.UglyNumbers;
 import codejam.y2009.round_1A.collecting_cards.CollectingCards;
 import codejam.y2011aa.round_qual.building_house.BuildingHouse;
 import codejam.y2012.round_1C.boxes.BoxFactorySolution;
+import codejam.y2013.round_online.babyheight.BabyHeight;
 import codejam.y2013.round_online.hedgemony.Hedgemony;
 
 public class Main
@@ -1608,7 +1609,9 @@ public class Main
     public static void main(String args[])
     //static void roundOnline_2013(String args[])
     {
-        Hedgemony m = new Hedgemony();
+        //Hedgemony m = new Hedgemony();
+        
+        BabyHeight m = new BabyHeight();
         
         String[] files = Main.getFiles(m, args);
         for (String file : files)
