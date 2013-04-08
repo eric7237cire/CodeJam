@@ -6,6 +6,7 @@
 */
 #include <iostream>
 #include <string>
+#include <cstring>
 using namespace std;
 
 char str[2000], grid[2000][2000];
