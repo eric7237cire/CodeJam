@@ -17,7 +17,9 @@ else:
 sourceFile = open( sys.argv[1], 'r')
 backupFile = open( sys.argv[1] + 'backup', 'w')
 
-headerContents = headerContents + "\n" + headerF.read()
+headerContents = headerContents + "\n" 
+if not isinstance( headerF, int ):
+	headerContents = headerContents + headerF.read()
 sourceContents = sourceFile.read()
 
 #print(headerContents)
