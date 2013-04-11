@@ -943,15 +943,21 @@ int main() {
 	
 	
 
-	while(2 == scanf("%d%d", &V, &E) && (V||E))
+	while(true)
 	{
+		next_int(V);
+		next_int(E);
+		
+		if ( !V && !E ) break;
 		
 		FOR(v, 0, V) adjList[v].clear();
 		
 		FOR(e, 0, E)
 		{
 			int u, v;
-			scanf("%d%d", &u, &v);
+			//scanf("%d%d", &u, &v);
+			next_int(u);
+			next_int(v);
 			--u; --v;
 			adjList[u].pb(v);
 		}
@@ -969,12 +975,17 @@ int main() {
 		if (ok)
 			for(int i = topoSortSize - 1; i >= 0; --i)
 			{
-				printf("%d\n", topoSort[i] + 1);
+				//printf("%d\n", topoSort[i] + 1);
+				write_int(topoSort[i] + 1);
+				write_char('\n');
 			}
 		else
-			puts("IMPOSSIBLE");
+			write_str("IMPOSSIBLE\n");
+			//puts("IMPOSSIBLE");
 		
 		
 	}
+	
+	write_flush();
 	return 0;
 }
