@@ -384,10 +384,7 @@ int dfsNumberCounter, dfsRoot, rootChildren;
 <<<<<<< HEAD
 vvi adjList;
 =======
-//outgoing edges
-vvi adjList;
-//Incoming edges
-vvi incAdjList;
+
 >>>>>>> a
 vvb  needed;
 
