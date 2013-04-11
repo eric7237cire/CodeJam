@@ -1,5 +1,3 @@
-#define USING_DFS 1
-
 //STARTCOMMON
 #include <cmath>
 #include <vector>
@@ -642,14 +640,10 @@ vi dfs_parent;
 
 vi articulation_vertex;
 int dfsNumberCounter, dfsRoot, rootChildren;
-<<<<<<< HEAD
-vvi adjList;
-=======
 //outgoing edges
 vvi adjList;
 //Incoming edges
 vvi incAdjList;
->>>>>>> a
 vvb  needed;
 
 vi S;
@@ -666,10 +660,7 @@ void reset()
 	
 	articulation_vertex.assign(V, false);
 	adjList.assign(V, vi() );
-<<<<<<< HEAD
-=======
 	incAdjList.assign(V, vi() );
->>>>>>> a
 	needed.assign(V, vb(V, false) );
 	dfsNumberCounter = 0;
 	dfs_num.assign(V, -1);
@@ -687,18 +678,6 @@ void reset()
 
 }
 
-<<<<<<< HEAD
-
-/*
-for (int i = 0; i < V; i++)            
-			if (dfs_num[i] == -1)
-				dfs2(i);
-				*/
-void dfs2(int u) 
-{    // change function name to differentiate with original dfs
-	dfs_num[u] = 0;
-	for (int j = 0; j < (int)adjList[u].size(); j++) 
-=======
 void addEdge(int u, int v)
 {
 	adjList[u].pb(v);
@@ -711,7 +690,6 @@ void dfs2(int u)
 	//reverse order to put lower indexed vertices earlier in the revered topological order
 	//for (int j = adjList[u].size() - 1; j >= 0; --j) 
 	for (int j = 0; j < adjList[u].size(); ++j) 
->>>>>>> a
 	{
 		int v = adjList[u][j];
 		if (dfs_num[v] == -1)
@@ -773,13 +751,6 @@ void articulationPointAndBridge(int u)
 	}
 } 
 
-/*
-Puts each strongly connected component in SCC
-
-for (int i = 0; i < V; i++)
-    if (dfs_num[i] == -1)
-      tarjanSCC(i);
-	  */
 void tarjanSCC(int u) 
 {
 	dfs_low[u] = dfs_num[u] = dfsNumberCounter++;      // dfs_low[u] <= dfs_num[u]
@@ -816,8 +787,6 @@ void tarjanSCC(int u)
 } 
 	
 }
-
-using namespace DFS;
 #endif 
 
 
@@ -928,88 +897,114 @@ public:
 //STOPCOMMON
 
 
+/*
+curOrder -- vector holding the current ordering.  Length stays constant
 
-
-string bev1, bev2;
-
-using namespace DFS;
-int main() 
+*/
+void backtrack( string& curOrder, int usedLetters,
+    int numSet,
+    const vi& placedBefore,
+    int existMask,
+    vector<string>& ans)
 {
-	int t = 0;
-	
-	while(scanf("%d", &V) == 1)
-	{
-		map<string, int> mapNameId;
-		map<int, string> mapNames;
-		
-		FOR(i, 0, V)
-		{
-			cin >> bev1;
-			getId(mapNameId, mapNames, bev1, mapNames.size());
-			
-		}
-		
-		reset();
-		
-		scanf("%d", &E);
-		
-		FOR(i, 0, E)
-		{
-			cin >> bev1 >> bev2;
-			
-			int idBev1 = getId(mapNameId, mapNames, bev1, mapNames.size());
-			int idBev2 = getId(mapNameId, mapNames, bev2, mapNames.size());
-			
-			addEdge(idBev1, idBev2);
-		}
+    
+    if (numSet == curOrder.length())
+    {
+        ans.pb(curOrder);
+        return;
+    }
+    
+    FOR(let, 0, 26)
+    {
+		//Each letter that precedes this one must have been already placed
+        if ( (usedLetters & placedBefore[let]) != placedBefore[let])
+            continue;
+        
+		//Letter must exist 
+        if ( ( 1<<let & existMask ) == 0) 
+            continue;
+        
+        //Letter must not have already been used
+        if ( ( 1<<let & usedLetters ) != 0) 
+            continue;
+        
+        //Since there is a space between, multiply index by 2
+        curOrder[numSet] = let + 'a';
+        
+        //Continue searching
+        backtrack(curOrder, 
+            usedLetters | 1 << let, //update usedLetters to avoid repeats
+            numSet+1,
+            placedBefore, existMask, ans);
+            
+        
+    }
+    
+}
 
-		priority_queue<int, vi, greater<int> > pq;
+char vars[1000];
+char cons[1000];
+
+int main() {
+
+	int t = 0;
+	while( gets(vars) && gets(cons) )
+	{
+		int usedLetters = ~0;
 		
-		FOR(v, 0, V)
+		
+		
+		int existMask = 0;
+		//printf("%s--%s\n", vars, cons);
+		int totalVar = 0;
+		
+		for(char* chPt = vars; *chPt != '\0'; ++chPt)
 		{
-			if (incAdjList[v].empty())
-				pq.push(v);
+			if (*chPt >= 'a' && *chPt <= 'z')
+			{
+				existMask |= 1 << *chPt - 'a';
+				++totalVar;
+			}
+			
 		}
 		
-		printf("Case #%d: Dilbert should drink beverages in this order:", ++t);
+		vi placedBefore(26, 0);
 		
-		vi removedIn(V, 0);
+		char c1 = '\0';
 		
-		while (!pq.empty()) 
+		for(char* chPt = cons; *chPt != '\0'; ++chPt)
 		{
-			int u = pq.top();
-			pq.pop();
-			
-			printf(" ");
-			cout << mapNames[ u ];
-		
-			FOR(a, 0, adjList[u].size())
+			if (*chPt >= 'a' && *chPt <= 'z')
 			{
-				int v = adjList[u][a];
-				removedIn[v]++;
-				
-				//No more incoming edges
-				if (removedIn[v] == incAdjList[v].size())
+				if (c1 == '\0')
 				{
-					pq.push(v);
+					c1 = *chPt;
+				} else {
+					placedBefore[ *chPt - 'a' ] |= 1 <<  c1 - 'a' ;
+					c1 = 0;
 				}
 			}
-		}
-
-		cout << ".\n" << endl;		
-			/*
-		for (int i = V-1; i >= 0; --i)            // this part is the same as finding CCs
-			if (dfs_num[i] == -1)
-				dfs2(i);
-				
 		
-		for(int i = topoSort.size() - 1; i >= 0; --i)
+		}
+		
+		vector<string> ans;
+		string curOrder(totalVar, ' ');
+		
+		
+		backtrack(curOrder, 0, 0, placedBefore, existMask, ans);
+		
+		if (t > 0)
 		{
-			printf(" ");
-			cout << mapNames[ topoSort[i] ];
+			cout << endl;			
+		}
+		t ++;
+		//cout << "t " << t << endl;
+		FOR(i, 0, ans.size())
+		{
+			cout << ans[i] << endl;
 		}
 		
-		*/
+		
 	}
 	return 0;
 }
