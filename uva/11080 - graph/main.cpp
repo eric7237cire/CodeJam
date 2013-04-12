@@ -1,5 +1,3 @@
-#define USING_DFS 1
-
 //STARTCOMMON
 #include <cmath>
 #include <vector>
@@ -908,89 +906,91 @@ public:
 };
 //STOPCOMMON
 
+int main() {
 
+	int T;
+	next_int(T);
 
-
-string bev1, bev2;
-
-using namespace DFS;
-int main() 
-{
-	int t = 0;
 	
-	while(scanf("%d", &V) == 1)
-	{
-		map<string, int> mapNameId;
-		map<int, string> mapNames;
-		
-		FOR(i, 0, V)
-		{
-			cin >> bev1;
-			getId(mapNameId, mapNames, bev1, mapNames.size());
-			
-		}
-		
-		reset();
-		
-		scanf("%d", &E);
-		
-		FOR(i, 0, E)
-		{
-			cin >> bev1 >> bev2;
-			
-			int idBev1 = getId(mapNameId, mapNames, bev1, mapNames.size());
-			int idBev2 = getId(mapNameId, mapNames, bev2, mapNames.size());
-			
-			addEdge(idBev1, idBev2);
-		}
 
-		priority_queue<int, vi, greater<int> > pq;
+	while(T--)
+	{
+		int V, E; 
 		
-		FOR(v, 0, V)
+		next_int(V);
+		next_int(E);
+		
+		vvi connections(V, vi());
+		
+		FOR(e, 0, E)
 		{
-			if (incAdjList[v].empty())
-				pq.push(v);
+			int n1, n2;
+			next_int(n1);
+			next_int(n2);
+			
+			connections[n1].pb(n2);
+			connections[n2].pb(n1);
+		
 		}
 		
-		printf("Case #%d: Dilbert should drink beverages in this order:", ++t);
 		
-		vi removedIn(V, 0);
+		vi color(V, -1);
+		int ans = 0;
 		
-		while (!pq.empty()) 
+		bool isBipartite = true; 
+		
+		for(int n = 0; n < V && isBipartite; ++n)
 		{
-			int u = pq.top();
-			pq.pop();
+			int count[2] = {0,0};
+			if (color[n] >= 0)
+				continue;
 			
-			printf(" ");
-			cout << mapNames[ u ];
-		
-			FOR(a, 0, adjList[u].size())
-			{
-				int v = adjList[u][a];
-				removedIn[v]++;
+			queue<int> q; 
+			q.push(n);
+			color[n] = 0;
+			
+			
+			
+			while (!q.empty()) 
+			{ 
+				int cur = q.front(); q.pop();
 				
-				//No more incoming edges
-				if (removedIn[v] == incAdjList[v].size())
+				assert(color[cur] >= 0 && color[cur] <= 1);
+				
+				count[ color[cur] ]++;
+				
+				for (int adjIdx = 0; adjIdx < connections[cur].size(); adjIdx++) 
 				{
-					pq.push(v);
+					int adj = connections[cur][adjIdx];
+					
+					if ( color[adj] == -1 )
+					{
+						color[adj] = 1 - color[cur];
+						q.push(adj);
+					} else if ( color[cur] == color[adj] ) 
+					{
+						//set flag but continue the search as all connected nodes are not invitable;
+						isBipartite = false;
+						break;
+					}
 				}
 			}
+			//printf("Node %d counts %d %d bipart %c\n", n+1, count[0], count[1], isBipartite ? 'Y' : 'N');
+			if (isBipartite)
+				ans += max(1, min( count[0], count[1] ) );
 		}
-
-		cout << ".\n" << endl;		
-			/*
-		for (int i = V-1; i >= 0; --i)            // this part is the same as finding CCs
-			if (dfs_num[i] == -1)
-				dfs2(i);
-				
 		
-		for(int i = topoSort.size() - 1; i >= 0; --i)
+		if (isBipartite) 
 		{
-			printf(" ");
-			cout << mapNames[ topoSort[i] ];
+			write_int(ans);
+			write_char('\n');
 		}
-		
-		*/
+		else
+		{
+			write_str("-1\n");
+		}
 	}
+	
+	write_flush();
 	return 0;
 }
