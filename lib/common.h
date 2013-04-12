@@ -73,15 +73,19 @@ char next_char()
 	if( curCharInputBuffer == inputBufferSize ) 
 	{
 		inputBufferSize = fread( inputBuffer , sizeof( char ), MAX_INPUT_BUFFER_SIZE , stdin ) ;//let's load the array using fread 
+		
+		curCharInputBuffer = 0 ;
+		
 		//this is just to check if there's no input
 		if( inputBufferSize == 0 ) 
 		{ 
 			return 0; 
 		}
 		
-		curCharInputBuffer = 0 ;
+		
 	}
  
+	//printf("Read [%c] buf %d  %d %s\n", inputBuffer[ curCharInputBuffer ], curCharInputBuffer, inputBufferSize, &inputBuffer[curCharInputBuffer]);
 	return inputBuffer[ curCharInputBuffer++ ] ;//nowL1 points to the current character in the buf1 array
 }
 
@@ -96,11 +100,15 @@ char next_nonwsChar()
 	return c;
 }
 
-void next_int(int& val) 
+bool next_int(int& val) 
 {
 	char c ;
+	//printf("Start %d\n", curCharInputBuffer);
 	do {
 		c = next_char() ;
+		
+		if (c == 0)
+			return false;
 	} while( c < '-' ) ;//this while loop will continue until it finds '-' or ' ' or '\n'
 
 	val = 0 ;
@@ -121,6 +129,8 @@ void next_int(int& val)
         }
 		//return the positive number
 	}
+	
+	return true;
 }
 
 void next_string(char* strBuf)
