@@ -1,0 +1,17 @@
+5 
+aue oizer piqoi oizer 
+doy oizer hweqlo hweqlo 
+hweqlo piqoi aue 
+oizer piqoi 
+piqoi aue aue 
+9
+a b 
+b a
+c d
+d e
+e c
+f g
+g h
+h i
+i f
+0
