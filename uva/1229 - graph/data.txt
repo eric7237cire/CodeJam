@@ -1,3 +1,9 @@
+3
+a b
+b a
+c a b
+
+0
 5 
 aue oizer piqoi oizer 
 doy oizer hweqlo hweqlo 

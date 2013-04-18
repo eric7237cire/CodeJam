@@ -433,16 +433,16 @@ void addEdge(int u, int v)
 /*
 for (int i = 0; i < V; i++)            
 			if (dfs_num[i] == -1)
-				dfs2(i);
+				dfsTopoSort(i);
 				*/
-void dfs2(int u) 
+void dfsTopoSort(int u) 
 {    // change function name to differentiate with original dfs
 	dfs_num[u] = 0;
 	for (int j = 0; j < (int)adjList[u].size(); j++) 
 	{
 		int v = adjList[u][j];
 		if (dfs_num[v] == -1)
-			dfs2(v);
+			dfsTopoSort(v);
 	}
 
 	topoSort.push_back(u); 

@@ -704,16 +704,16 @@ void addEdge(int u, int v)
 /*
 for (int i = 0; i < V; i++)            
 			if (dfs_num[i] == -1)
-				dfs2(i);
+				dfsTopoSort(i);
 				*/
-void dfs2(int u) 
+void dfsTopoSort(int u) 
 {    // change function name to differentiate with original dfs
 	dfs_num[u] = 0;
 	for (int j = 0; j < (int)adjList[u].size(); j++) 
 	{
 		int v = adjList[u][j];
 		if (dfs_num[v] == -1)
-			dfs2(v);
+			dfsTopoSort(v);
 	}
 
 	topoSort.push_back(u); 
@@ -928,6 +928,19 @@ public:
 
 string line;
 
+void dfs(int u) 
+{    // change function name to differentiate with original dfs
+	assert(visited[u] == false);
+	visited[u] = true;
+	for (int j = 0; j < (int)adjList[u].size(); j++) 
+	{
+		int v = adjList[u][j];
+		if (!visited[v])
+			dfs(v);
+	}
+	
+}   
+
 int main() {
 
 	
@@ -963,32 +976,36 @@ int main() {
 			}
 		}
 		
+		for (int i = 0; i < V; i++)            
+			if (dfs_num[i] == -1)
+				dfsTopoSort(i);
+				
+		dfs_num.assign(V, -1);
+		
 		for (int i = 0; i < V; i++)
 			if (dfs_num[i] == -1)
 				tarjanSCC(i);
 			
-		int smallest = V * 2;
-		int smallestIdx = -1;
-		FOR(i, 0, SCC.size())
-		{
-			if (SCC[i].size() < smallest && SCC[i].size() > 1)
-			{
-				smallest = SCC[i].size();
-				smallestIdx = i;
-			}
-		}
-		
+		visited.assign(V, 0);
 		vector<string> ans;
 		
-		if (smallestIdx == -1)
+		for(int i = SCC.size() - 1; i >= 0; --i)
 		{
-			FOR(v, 0, V)
-				ans.pb( mapNames[ v ] );
-		} else {
-			FOR(i, 0, SCC[smallestIdx].size())
-			ans.pb( mapNames[ SCC[smallestIdx][i] ] );
+			vi& scc = SCC[i];
+			//This strongly connected component already visited
+			if (visited[ scc[0] ])
+				continue;
+				
+			FOR(j, 0, scc.size())
+			{
+				printf("SCC comp %d: %d %s\n", i, scc[j], mapNames[scc[j] ].c_str() );
+				ans.pb( mapNames[scc[j] ] );
+				dfs( scc[j] );
+			}
 			
 		}
+		
+		
 		sort(all(ans));
 		
 		cout << ans.size() << endl;
