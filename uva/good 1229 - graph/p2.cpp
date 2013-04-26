@@ -77,18 +77,28 @@ int main() {
         memset(V, 0, sizeof(V));
         memset(O, 0, sizeof(O));
 
+		//Create a dfs tree
         for(int i = 1; i <= n; i++)
             if(!V[i]) DFS(i);
 
+		//reset visited
         memset(V, 0, sizeof(V));
 
         int comp = 0;
+		//DFS tree traversal order is stored in reverse
         for(int i = n; i > 0; i--) {
             if(!V[O[i]]) {
+				
                 comp++;
+				//cout << "Comp: " << comp << " v: " << O[i] << " " << W[O[i]] << endl;
+				
+				//DFSt will follow all back edges to non visited nodes
+				
+				//If there are more than 1 in the SCC or the word never appears in the definition of another word
                 if (DFSt(O[i], comp) > 1 || GR[O[i]] == 0) {
                     for(int j=1;j<=n;j++) {
                         if (CO[j] == comp) {
+							//cout << "Ins word : " << j << " " << W[j] << endl;
                             words.insert(j);
                         }
                     }
