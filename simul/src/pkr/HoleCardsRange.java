@@ -13,7 +13,8 @@ public class HoleCardsRange {
     private static Logger log = LoggerFactory.getLogger("main");
     
     boolean mask[][];
-    
+    public boolean inRangeCard1[];
+    public boolean inRangeCard2[];
     List<HoleCards> cards;
     
   //AKo 8Ts 99  len 2 / 3
@@ -21,6 +22,8 @@ public class HoleCardsRange {
     public HoleCardsRange(String rangeStr) {
         
         mask = new boolean[52][52];
+        inRangeCard1 = new boolean[52];
+        inRangeCard2 = new boolean[52];
         cards = Lists.newArrayList();
         
         String[] ranges = rangeStr.split("\\s*[, ]\\s*");
@@ -75,6 +78,9 @@ List<HoleCards> ret = Lists.newArrayList();
                     } else {
                         for(int j = 0; j < 4; ++j) 
                         {
+                            //We only want unsuited
+                            if (j==i)
+                                continue;
                             suit2 = Suit.fromIndex(j);
                             
                             ret.add( new HoleCards( new Card(suit1, rank1), new Card(suit2, rank2)));
@@ -91,6 +97,9 @@ List<HoleCards> ret = Lists.newArrayList();
             //log.debug("hc {} {} {}", hc.getCards(), hc.getCards()[0].toInt(), hc.getCards()[1].toInt());
             mask[hc.getCards()[0].toInt()][hc.getCards()[1].toInt()] = true;
             mask[hc.getCards()[1].toInt()][hc.getCards()[0].toInt()] = true;
+            
+            inRangeCard1[hc.getCards()[0].toInt()] = true;
+            inRangeCard2[hc.getCards()[1].toInt()] = true;
         }
     }
     
