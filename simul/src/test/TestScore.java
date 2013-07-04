@@ -127,18 +127,19 @@ public class TestScore {
         assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.FULL_HOUSE);
         assertTrue(evals[handNum].getScore().getKickers()[0] == CardRank.THREE);
         assertTrue(evals[handNum].getScore().getKickers()[1] == CardRank.FOUR);
-        
+        assertEquals(0, evals[handNum].getRealEquity(), 0.00001);
         ++handNum;
         
         assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.FULL_HOUSE);
         assertTrue(evals[handNum].getScore().getKickers()[0] == CardRank.FOUR);
         assertTrue(evals[handNum].getScore().getKickers()[1] == CardRank.THREE);
-        
+        assertEquals(.5, evals[handNum].getRealEquity(), 0.00001);
         ++handNum;
         
         assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.FULL_HOUSE);
         assertTrue(evals[handNum].getScore().getKickers()[0] == CardRank.FOUR);
         assertTrue(evals[handNum].getScore().getKickers()[1] == CardRank.THREE);
+        assertEquals(.5, evals[handNum].getRealEquity(), 0.00001);
         
         Arrays.sort(evals);
         
@@ -146,5 +147,43 @@ public class TestScore {
         //assertTrue(evals[1].getHoleCards().equals(h2));
         assertTrue(evals[0].getHoleCards().equals(h1));
         
+    }
+    
+    @Test
+    public void testThreeWayTie() {
+        HoleCards h1 = new HoleCards(Card.parseCards("2s 2c"));
+        HoleCards h2 = new HoleCards(Card.parseCards("3h 3c"));                
+        HoleCards h3 = new HoleCards(Card.parseCards("4h 4c"));
+                               
+        Flop f = new Flop(Card.parseCards("5s 5h 5d"));
+        
+        Evaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2, h3},
+                f, Card.parseCard("4d"), Card.parseCard("5c"));
+        
+        int handNum = 0;
+        assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.QUADS);
+        assertTrue(evals[handNum].getScore().getKickers()[0] == CardRank.FIVE);
+        assertTrue(evals[handNum].getScore().getKickers()[1] == CardRank.FOUR);
+        assertEquals(1.0/3, evals[handNum].getRealEquity(), 0.00001);
+        
+        ++handNum;
+        
+        assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.QUADS);
+        assertTrue(evals[handNum].getScore().getKickers()[0] == CardRank.FIVE);
+        assertTrue(evals[handNum].getScore().getKickers()[1] == CardRank.FOUR);
+        assertEquals(1.0/3, evals[handNum].getRealEquity(), 0.00001);
+        
+        ++handNum;
+        
+        assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.QUADS);
+        assertTrue(evals[handNum].getScore().getKickers()[0] == CardRank.FIVE);
+        assertTrue(evals[handNum].getScore().getKickers()[1] == CardRank.FOUR);
+        assertEquals(1.0/3, evals[handNum].getRealEquity(), 0.00001);
+        
+        Arrays.sort(evals);
+        
+        assertTrue(evals[2].getScore().compareTo(evals[1].getScore()) == 0);
+        //assertTrue(evals[1].getHoleCards().equals(h2));
+        assertTrue(evals[0].getHoleCards().equals(h1));
     }
 }

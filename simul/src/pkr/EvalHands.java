@@ -12,6 +12,8 @@ public class EvalHands {
 
         boolean[] seenCard = new boolean[52];
         
+        final int numPlayers = cards.length;
+        
         List<Card> allCards = Lists.newArrayList();
 
         
@@ -36,9 +38,48 @@ public class EvalHands {
 
         Evaluation[] evals = new Evaluation[cards.length];
         
-        for(int i = 0; i < cards.length; ++i) {
+        for(int i = 0; i < numPlayers; ++i) {
             evals[i] = evaluateSingleHand(cards[i], flop, turn, river);
+            evals[i].setPosition(i);
         }
+        
+        Evaluation[] resultsSortedByScore = new Evaluation[numPlayers];
+        
+        for(int i = 0; i < numPlayers; ++i) {
+            resultsSortedByScore[i] = evals[i];
+        }
+        
+        Arrays.sort(resultsSortedByScore);
+        
+        resultsSortedByScore[numPlayers - 1].setWon(true);
+        resultsSortedByScore[numPlayers - 1].setRealEquity(1.0);
+        
+        if (resultsSortedByScore[numPlayers - 1].getScore().compareTo(
+                resultsSortedByScore[numPlayers - 2].getScore())==0) {
+            resultsSortedByScore[numPlayers - 1].setTied(true);
+            int numTied = 1;
+            
+            int i = numPlayers - 2;
+            
+            for(; i >= 0; --i) {
+                if (resultsSortedByScore[numPlayers - 1].getScore().compareTo(
+                        resultsSortedByScore[i].getScore())==0) {
+                    resultsSortedByScore[i].setTied(true);
+                    ++numTied;
+                } else {
+                    break;
+                }
+            }
+            
+            for(int j = numPlayers - 1; j > i; --j) {
+                resultsSortedByScore[j].setRealEquity(1.0 / numTied);
+            }
+            
+        }
+        
+            
+        
+        
         return evals;
     }
 
@@ -131,10 +172,12 @@ public class EvalHands {
 
             // Find first non quad kicker
             for (int r = 14; r >= 0; --r) {
-                if (freqCard[r] != 4) {
+                if (freqCard[r] < 4 && freqCard[r] > 0) {
                     eval.getScore()
                             .setKickers(
-                                    new CardRank[] { CardRank
+                                    new CardRank[] { 
+                                            CardRank.getFromZeroBasedValue(fourKind),
+                                            CardRank
                                             .getFromZeroBasedValue(r) });
                     break;
                 }

@@ -58,4 +58,30 @@ public enum CardRank {
     public char toChar() {
         return theChar;
     }
+    
+    public static CardRank fromChar(char rankChar) {
+        CardRank rank;
+        
+        switch(rankChar) {
+        case 'a': case 'A':
+            rank = CardRank.ACE;
+            break;
+        case 'k': case 'K':
+            rank = CardRank.KING;
+            break;
+        case 'q': case 'Q':
+            rank = CardRank.QUEEN;
+            break;
+        case 'j': case 'J':
+            rank = CardRank.JACK;
+            break;
+        case 't': case 'T':
+            rank = CardRank.TEN;
+            break;
+            default:
+                rank = CardRank.getFromFaceValue(Character.digit(rankChar,10));
+        }
+        
+        return rank;
+    }
 }

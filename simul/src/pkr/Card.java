@@ -36,29 +36,9 @@ public class Card implements Comparable<Card>{
     public static Card parseCard(String cardStr) {
         Preconditions.checkArgument(cardStr.length() == 2);
         
-        CardRank rank;
+        CardRank rank = CardRank.fromChar(cardStr.charAt(0));
         
-        switch(cardStr.charAt(0)) {
-        case 'a': case 'A':
-            rank = CardRank.ACE;
-            break;
-        case 'k': case 'K':
-            rank = CardRank.KING;
-            break;
-        case 'q': case 'Q':
-            rank = CardRank.QUEEN;
-            break;
-        case 'j': case 'J':
-            rank = CardRank.JACK;
-            break;
-        case 't': case 'T':
-            rank = CardRank.TEN;
-            break;
-            default:
-                rank = CardRank.getFromFaceValue(Integer.valueOf(cardStr.substring(0, 1)));
-        }
-        
-        Preconditions.checkArgument(rank != null);
+        Preconditions.checkArgument(rank != null, cardStr);
         
         Suit suit = null;
         

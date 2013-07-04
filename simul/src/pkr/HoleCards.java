@@ -1,15 +1,53 @@
 package pkr;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.Lists;
 
+/**
+ * 
+ * 2nd card is always > in index
+ *
+ */
 public class HoleCards {
     private Card[] cards;
 
+    private static HoleCards[] mapHoleCards;
+    private static  int[][] indexes;
+    
+    
+    static {
+        
+        indexes = new int[52][52];
+        mapHoleCards = new HoleCards[52 * 26];
+        
+        int index = 0;
+        for(int i = 0; i < 52; ++i) 
+        {
+            for(int j = i+1; j < 52; ++j) 
+            {
+                indexes[i][j] = index;
+                mapHoleCards[index++] =  new HoleCards(new Card(i), new Card(j));
+            }
+        }
+    }
+    
+    public static HoleCards getByIndices(int card1, int card2) {
+        return mapHoleCards[ indexes[card1][card2] ];
+    }
+    
+    
+    
     public HoleCards(Card card1, Card card2) {
         super();
-        this.cards = new Card[] {card1, card2 };
+        if (card1.toInt() > card2.toInt()) {
+            this.cards = new Card[] {card2, card1 };
+        } else {
+            this.cards = new Card[] {card1, card2 };
+        }
     }
     
     public HoleCards(Card[] cards) {
@@ -52,8 +90,8 @@ public class HoleCards {
         if (rhs.cards[0] == cards[0] && rhs.cards[1] == cards[1])
             return true;
         
-        if (rhs.cards[0] == cards[1] && rhs.cards[1] == cards[0])
-            return true;
+        //if (rhs.cards[0] == cards[1] && rhs.cards[1] == cards[0])
+          //  return true;
         
         return false;
     }

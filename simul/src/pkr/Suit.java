@@ -13,6 +13,10 @@ public enum Suit {
     private Suit(char theChar) {
         this.theChar = theChar;
     }
+    
+    public static Suit fromIndex(int index) {
+        return Suit.values()[index];
+    }
 
     static {
 
