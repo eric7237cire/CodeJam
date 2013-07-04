@@ -90,11 +90,17 @@ List<HoleCards> ret = Lists.newArrayList();
         for(HoleCards hc : cards) {
             //log.debug("hc {} {} {}", hc.getCards(), hc.getCards()[0].toInt(), hc.getCards()[1].toInt());
             mask[hc.getCards()[0].toInt()][hc.getCards()[1].toInt()] = true;
+            mask[hc.getCards()[1].toInt()][hc.getCards()[0].toInt()] = true;
         }
     }
     
+    /**
+     * Order of card1 and card2 does not matter
+     * @param card1
+     * @param card2
+     * @return
+     */
     public boolean inRange(int card1, int card2) {
-        Preconditions.checkState(card2 > card1);
         
         return mask[card1][card2];
     }

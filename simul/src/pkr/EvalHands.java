@@ -4,10 +4,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 public class EvalHands {
+    
+    private static Logger log = LoggerFactory.getLogger(EvalHands.class);
+    
     public static Evaluation[] evaluate(HoleCards[] cards, Flop flop, Card turn, Card river) {
 
         boolean[] seenCard = new boolean[52];
@@ -31,6 +37,12 @@ public class EvalHands {
 
                 
         for (Card card : allCards) {
+            
+            
+            if (seenCard[card.toInt()]) {
+                log.warn("Cards {} flop {} turn {} river{}", cards, flop, turn, river);
+            }
+            
             Preconditions.checkState(!seenCard[card.toInt()], card.toString());
 
             seenCard[card.toInt()] = true;
@@ -87,7 +99,10 @@ public class EvalHands {
             15 + (1 << 12), // a + 2 to 4
             31, 31 << 1, 31 << 2, 31 << 3, 31 << 4, 31 << 5, 31 << 6, 31 << 7,
             31 << 8 };
+    
+    private static final int NUM_RANKS = 13;
 
+    @SuppressWarnings("unused")
     public static Evaluation evaluateSingleHand(HoleCards cards, Flop flop,  Card turn, Card river) {
         Evaluation eval = new Evaluation();
 
@@ -107,7 +122,7 @@ public class EvalHands {
         
         int ranks = 0;
 
-        int[] freqCard = new int[15];
+        int[] freqCard = new int[NUM_RANKS];
         int[] freqSuit = new int[4];
 
         boolean flush = false;
@@ -140,7 +155,7 @@ public class EvalHands {
         int secondPair = -1;
         List<Integer> singleCard = Lists.newArrayList();
 
-        for (int r = 14; r >= 0; --r) {
+        for (int r = NUM_RANKS-1; r >= 0; --r) {
             if (freqCard[r] == 4) {
                 fourKind = r;
             } else if (threeKind == -1 && freqCard[r] == 3) {
@@ -149,7 +164,7 @@ public class EvalHands {
             } else if ( (freqCard[r] == 2 || freqCard[r] == 3)  && firstPair == -1) {
                 //first pair could be trips, ie 333222 really has a pair of 2's
                 firstPair = r;
-            } else if (freqCard[r] == 2) {
+            } else if (freqCard[r] == 2 && secondPair == -1) {
                 secondPair = r;
             } else if (freqCard[r] == 1) {
                 singleCard.add(r);
@@ -171,7 +186,7 @@ public class EvalHands {
             eval.getScore().setHandLevel(HandLevel.QUADS);
 
             // Find first non quad kicker
-            for (int r = 14; r >= 0; --r) {
+            for (int r = NUM_RANKS-1; r >= 0; --r) {
                 if (freqCard[r] < 4 && freqCard[r] > 0) {
                     eval.getScore()
                             .setKickers(
@@ -217,6 +232,8 @@ public class EvalHands {
 
                 eval.getScore().getKickers()[kickerIndex++] = card.getRank();
 
+                if (kickerIndex == 5)
+                    break;
             }
             return eval;
         }
@@ -241,7 +258,7 @@ public class EvalHands {
             eval.getScore().getKickers()[0] = CardRank
                     .getFromZeroBasedValue(threeKind);
 
-            for (int r = 14; r >= 0; --r) {
+            for (int r = NUM_RANKS-1; r >= 0; --r) {
                 if (freqCard[r] == 1) {
                     eval.getScore().getKickers()[kickers++] = CardRank
                             .getFromZeroBasedValue(r);
@@ -265,14 +282,14 @@ public class EvalHands {
             eval.getScore().getKickers()[1] = CardRank
                     .getFromZeroBasedValue(secondPair);
 
-            for (int r = 14; r >= 0; --r) {
-                if (freqCard[r] == 1) {
-                    eval.getScore().getKickers()[2] = CardRank
-                            .getFromZeroBasedValue(r);
-
+            for (int r = NUM_RANKS-1; r >= 0; --r) {
+                if (freqCard[r] >= 1 && r != firstPair && r != secondPair) {
+                    eval.getScore().getKickers()[2] = 
+                            CardRank.getFromZeroBasedValue(r);
+                    break;
                 }
 
-                break;
+                
             }
             return eval;
 
@@ -288,7 +305,7 @@ public class EvalHands {
             eval.getScore().getKickers()[0] = CardRank
                     .getFromZeroBasedValue(firstPair);
 
-            for (int r = 14; r >= 0; --r) {
+            for (int r = NUM_RANKS-1; r >= 0; --r) {
                 if (freqCard[r] == 1) {
                     eval.getScore().getKickers()[kickers++] = CardRank
                             .getFromZeroBasedValue(r);
@@ -309,7 +326,7 @@ public class EvalHands {
         eval.getScore().setKickers(new CardRank[5]);
 
         
-        for (int r = 14; r >= 0; --r) {
+        for (int r = NUM_RANKS-1; r >= 0; --r) {
             if (freqCard[r] == 1) {
                 eval.getScore().getKickers()[kickers++] = CardRank
                         .getFromZeroBasedValue(r);

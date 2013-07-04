@@ -7,7 +7,16 @@ public class Card implements Comparable<Card>{
     private Suit suit;
     
     private CardRank rank;
+    
+    public  static Card[] listByIndex;
 
+    static {
+        listByIndex = new Card[52];
+        for(int i = 0; i < 52; ++i) {
+            listByIndex[i] = new Card(i);
+        }
+    }
+    
     public Card(Suit suit, CardRank rank) {
         
         super();
@@ -81,8 +90,7 @@ public class Card implements Comparable<Card>{
      */
     @Override
     public int compareTo(Card rhs) {
-        return ComparisonChain.start().compare(rhs.rank.getIndex(), rank.getIndex())
-                .compare(suit.ordinal(), rhs.suit.ordinal()).result();
+        return ComparisonChain.start().compare(toInt(), rhs.toInt()).result();
     }
 
     /**
@@ -106,6 +114,23 @@ public class Card implements Comparable<Card>{
     public String toString() {
         
         return "" + rank.toChar() + suit.toChar();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((rank == null) ? 0 : rank.hashCode());
+        result = prime * result + ((suit == null) ? 0 : suit.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        Preconditions.checkState(false);
+        return false;
     }
     
     

@@ -4,7 +4,8 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 public enum Suit {
-    HEARTS('h'), CLUBS('c'), DIAMONDS('d'), SPADES('s');
+    HEARTS('h'), CLUBS('c'), 
+    DIAMONDS('d'), SPADES('s');
 
     private static BiMap<Integer, Suit> sMap = HashBiMap.create(13);
 

@@ -14,8 +14,12 @@ public class Simulator {
     public static void main(String[] args) {
         List<String> playerHoleCards = Lists.newArrayList();
         
-        playerHoleCards.add("AA, KK, QQ, JJ, TT, 99, 88, 77, 66, 55, 44, 33, 22, AK, AQ, AJ");
-        playerHoleCards.add("AA, AKs, 27, 93, 44, 99");
+       // playerHoleCards.add("AA, KK, QQ, JJ, TT, 99, 88, 77, 66, 55, 44, 33, 22, AK, AQ, AJ");
+        //playerHoleCards.add("AA, AKs, 27, 93, 44, 99");
+      playerHoleCards.add("AA");
+        playerHoleCards.add("JJ");
+         
+        
         
         simulate(playerHoleCards);
     }
@@ -33,8 +37,13 @@ public class Simulator {
         
         double[] equity = new double[numPlayers];
         
-        for(int simulNum = 0; simulNum < 100000; ++simulNum) {
+        final int TOTAL_SIMULATIONS = 50000000;
+        for(int simulNum = 0; simulNum < TOTAL_SIMULATIONS; ++simulNum) {
             Evaluation[] evals = simulateOneRound(listRanges);
+            
+            if (simulNum % 5000000 == 0) {
+                log.debug("# of simulations {} of {}", simulNum, TOTAL_SIMULATIONS );
+            }
             
             //Does not match the ranges
             if (evals == null)
@@ -45,13 +54,15 @@ public class Simulator {
             for(int p = 0; p < numPlayers; ++p) {
                 equity[p] += evals[p].realEquity;
                 
-                log.debug("eq {} player {}", evals[p].realEquity, p);
+                //log.debug("eq {} player {}", evals[p].realEquity, p);
             }
         }
         
         if (actualRounds == 0) {
             log.warn("none valid");
         }
+        
+        log.info("{} valid rounds", actualRounds);
         for(int p = 0; p < numPlayers; ++p) {
             equity[p] /= actualRounds;
             
@@ -70,24 +81,19 @@ public class Simulator {
         for (int i = 0; i < NUM_CARDS; i++)
             deck[i] = i;
         
-        deck[0] = 12;
-        deck[1] = 25;
-        deck[2] = 38;
-        deck[3] = 51;
-        
-        for (int i = 4; i < NUM_CARDS; i++) {
-            // int from remainder of deck
-            int r = i + (int) (Math.random() * (NUM_CARDS - i));
-            int swap = deck[r];
-            deck[r] = deck[i];
-            deck[i] = swap;
-        }
-     
         //See if the shuffle matches our ranges
         HoleCards[] holeCards = new HoleCards[listRanges.length];
         
         for(int i = 0; i < listRanges.length; ++i) {
             
+            //"Shuffle" only what is needed, the next 2 cards
+            for (int deckIdx = 2*i; deckIdx <= 2*i + 1; ++deckIdx) {
+                // int from remainder of deck
+                int r = deckIdx + (int) (Math.random() * (NUM_CARDS - deckIdx));
+                int swap = deck[r];
+                deck[r] = deck[deckIdx];
+                deck[deckIdx] = swap;
+            }
             
             //0  0 1
             //1  2 3
@@ -101,16 +107,28 @@ public class Simulator {
                 return null;
             
             holeCards[i] = HoleCards.getByIndices(card1Index, card2Index);
+            
+            //log.debug("Hole cards ({}) {} idx 1 {} idx 2 {}", i, holeCards[i], card1Index, card2Index);
         }
         
         //Everything matches evaluate
         
+        //Pick the 5 remaining cards for the flop, turn, and river
+        for (int deckIdx = 2*numPlayers; deckIdx <= 2*numPlayers + 4; ++deckIdx) {
+            // int from remainder of deck
+            int r = deckIdx + (int) (Math.random() * (NUM_CARDS - deckIdx));
+            int swap = deck[r];
+            deck[r] = deck[deckIdx];
+            deck[deckIdx] = swap;
+        }
         
         Evaluation[] evals = EvalHands.evaluate(holeCards, new Flop(new Card[] { 
-                new Card(2 * numPlayers),
-                new Card(2 * numPlayers+1),
-                new Card(2 * numPlayers+2)
-        }), new Card(2 * numPlayers+3), new Card(2 * numPlayers+4));
+                Card.listByIndex[ deck[ 2 * numPlayers ] ],
+                Card.listByIndex[ deck[ 2 * numPlayers + 1] ],
+                Card.listByIndex[ deck[ 2 * numPlayers + 2] ]
+                
+        }),  Card.listByIndex[ deck[ 2 * numPlayers + 3] ], 
+        Card.listByIndex[ deck[ 2 * numPlayers + 4] ]);
         
         return evals;
     }

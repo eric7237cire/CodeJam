@@ -22,6 +22,12 @@ public class Flop {
     public Card[] getCards() {
         return cards;
     }
+
+    @Override
+    public String toString()
+    {
+        return "[ Flop  " + cards[0] + " " + cards[1] + " " + cards[2] + "]";
+    }
     
     
 }
