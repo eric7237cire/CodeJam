@@ -2,19 +2,37 @@ package pkr;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 public class HoleCardsRange {
+    
+    private static Logger log = LoggerFactory.getLogger("main");
+    
     boolean mask[][];
     
     List<HoleCards> cards;
     
   //AKo 8Ts 99  len 2 / 3
     //or AsKh 9s9h len 4
-    public HoleCardsRange(String code) {
+    public HoleCardsRange(String rangeStr) {
         
-        List<HoleCards> ret = Lists.newArrayList();
+        mask = new boolean[52][52];
+        cards = Lists.newArrayList();
+        
+        String[] ranges = rangeStr.split("\\s*[, ]\\s*");
+        
+        for(String code : ranges) {
+            log.debug("Parse code [{}] of {}", code, rangeStr);
+            addCode(code);
+        }
+    }
+    
+    private void addCode(String code) {
+List<HoleCards> ret = Lists.newArrayList();
         
         Preconditions.checkArgument(code.length() >= 2 && code.length() <= 4);
         
@@ -67,9 +85,10 @@ public class HoleCardsRange {
             }
         }
         
-        cards = ret;
+        cards.addAll(ret);
         
         for(HoleCards hc : cards) {
+            //log.debug("hc {} {} {}", hc.getCards(), hc.getCards()[0].toInt(), hc.getCards()[1].toInt());
             mask[hc.getCards()[0].toInt()][hc.getCards()[1].toInt()] = true;
         }
     }

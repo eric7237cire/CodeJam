@@ -58,7 +58,7 @@ public class Card implements Comparable<Card>{
         
         }
         
-        Preconditions.checkArgument(suit != null);
+        Preconditions.checkArgument(suit != null, cardStr);
         
         return  new Card(suit, rank);
     }
