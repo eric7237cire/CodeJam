@@ -5,7 +5,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 public class Simulator {
@@ -17,15 +16,15 @@ public class Simulator {
         
        // playerHoleCards.add("AA, KK, QQ, JJ, TT, 99, 88, 77, 66, 55, 44, 33, 22, AK, AQ, AJ");
         //playerHoleCards.add("AA, AKs, 27, 93, 44, 99");
-     // playerHoleCards.add("AA");
-        //playerHoleCards.add("JJ, AQs, KJ");
+      playerHoleCards.add("AA");
+        playerHoleCards.add("JJ, AQs, KJo");
         
         //BUG with this range
         //playerHoleCards.add("JJ, KJ");
-        //playerHoleCards.add("27o, 38s");
+        playerHoleCards.add("27o, 38s");
 
-        playerHoleCards.add("JJ, KJo");
-        playerHoleCards.add("27o");
+       // playerHoleCards.add("JJ, KJo");
+       // playerHoleCards.add("27o");
         
        // playerHoleCards.clear(); 
        // playerHoleCards.add("AA");
@@ -48,7 +47,7 @@ public class Simulator {
         
         double[] equity = new double[numPlayers];
         
-        final int TOTAL_SIMULATIONS = 1000000;
+        final int TOTAL_SIMULATIONS = 5000000;
         for(int simulNum = 0; simulNum < TOTAL_SIMULATIONS; ++simulNum) {
             Evaluation[] evals = simulateOneRound(listRanges);
             
@@ -110,29 +109,11 @@ public class Simulator {
         
         int choice = (int) (Math.random() * numAvail);
         
-        return range.cards.get(choice);
+        return range.cards.get( availableCards[choice] );
         
     }
     
-    private static int chooseValidAvailableCard(boolean[] usedCards, boolean[] validCards) {
-       
-        int numAvail = 0;
-        
-        for(int i = 0; i < 52; ++i) 
-        {
-            if (!usedCards[i] && validCards[i]) {
-                availableCards[numAvail++] = i;
-            }
-        }
-        
-        if (numAvail == 0)
-            return -1;
-        
-        int choice = (int) (Math.random() * numAvail);
-        
-        return availableCards[choice];
-        
-    }
+    
     
     private static int[] chooseRemainingCards(boolean[] usedCards) {
         
@@ -162,17 +143,13 @@ public class Simulator {
     }
             
     
-    private static final int NUM_CARDS = 52;
+    //private static final int NUM_CARDS = 52;
     
     private static Evaluation[] simulateOneRound(HoleCardsRange[] listRanges) {
         
-        final int numPlayers = listRanges.length;
+        //final int numPlayers = listRanges.length;
         
-        //int deck[] = new int[NUM_CARDS];
-        /*
-        for (int i = 0; i < NUM_CARDS; i++)
-            deck[i] = i;
-        */
+        
         
         //See if the shuffle matches our ranges
         HoleCards[] holeCards = new HoleCards[listRanges.length];
@@ -187,52 +164,22 @@ public class Simulator {
             HoleCardsRange range = listRanges[i];
             
             //"Shuffle" only what is needed, the next 2 cards
-            /*
-            for (int deckIdx = 2*i; deckIdx <= 2*i + 1; ++deckIdx) {
-                // int from remainder of deck
-                int r = deckIdx + (int) (Math.random() * (NUM_CARDS - deckIdx));
-                int swap = deck[r];
-                deck[r] = deck[deckIdx];
-                deck[deckIdx] = swap;
-            }*/
             
             //0  0 1
             //1  2 3
             //2  4 5
             //3  6 7
             //x  2x 2x+1
-            int card1Index = chooseValidAvailableCard(usedCards, range.inRangeCard1 );
             
             /*
              * List of holeCards, need to choose among those still left
              */
             
-            /*
-            if (card1Index == -1)
-                return null;
-            
-            usedCards[card1Index] = true;
-            
-            
-            int card2Index = chooseValidAvailableCard(usedCards, range.mask[card1Index]
-                    );
-            
-            if (card2Index == -1) {
-                //log.debug("Range {} card 1 {} ", range, Card.listByIndex[card1Index]);
-                return null;
-            }
-            
-            usedCards[card2Index] = true;
-            */
             HoleCards hc = chooseValidAvailableCard(usedCards, range);
             
             if (hc == null)
                 return null;
             
-            //if (!listRanges[i].inRange(card1Index, card2Index))
-              //  return null;
-            
-            //holeCards[i] = HoleCards.getByIndices(card1Index, card2Index);
             usedCards[ hc.getCards()[0].toInt() ] = true;
             usedCards[ hc.getCards()[1].toInt() ] = true;
             holeCards[i] = hc;
