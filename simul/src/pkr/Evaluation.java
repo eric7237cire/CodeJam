@@ -35,6 +35,13 @@ public class Evaluation implements Comparable<Evaluation>{
     public Score getScore() {
         return score;
     }
+    @Override
+    public String toString()
+    {
+        return "Score " + score.toString() + " pos " 
+    + getPosition() + " eq " + getRealEquity() + " won ? " + won + " tied ? "  + tied;
+        
+    }
     /**
      * @param score the score to set
      */

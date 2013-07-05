@@ -26,7 +26,7 @@ public class Flop {
     @Override
     public String toString()
     {
-        return "[ Flop  " + cards[0] + " " + cards[1] + " " + cards[2] + "]";
+        return "[ " + cards[0] + " " + cards[1] + " " + cards[2] + "]";
     }
     
     

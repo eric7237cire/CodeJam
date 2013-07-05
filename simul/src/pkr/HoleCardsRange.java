@@ -8,6 +8,16 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
+/*
+ * 
+ * XX -- 6 / 1326
+ * XYs -- 4 / 1326
+ * XYo -- 12 / 1326
+ * XY -- 16 / 1326
+ * 
+ * 13 * 6 + 169-13 / 2 * 16   1248
+ */
+
 public class HoleCardsRange {
     
     private static Logger log = LoggerFactory.getLogger("main");
@@ -15,11 +25,15 @@ public class HoleCardsRange {
     boolean mask[][];
     public boolean inRangeCard1[];
     public boolean inRangeCard2[];
+    private String rangeStr;
     List<HoleCards> cards;
+    double[] relativeFreq;
     
   //AKo 8Ts 99  len 2 / 3
     //or AsKh 9s9h len 4
     public HoleCardsRange(String rangeStr) {
+        
+        this.rangeStr = rangeStr;
         
         mask = new boolean[52][52];
         inRangeCard1 = new boolean[52];
@@ -34,6 +48,12 @@ public class HoleCardsRange {
         }
     }
     
+    @Override
+    public String toString()
+    {
+        return rangeStr;
+    }
+
     private void addCode(String code) {
 List<HoleCards> ret = Lists.newArrayList();
         
@@ -65,7 +85,7 @@ List<HoleCards> ret = Lists.newArrayList();
                     
             } else {
                 boolean suited = code.length() == 3 && code.charAt(2) == 's';
-                
+                boolean unSuited = code.length() == 3 && code.charAt(2) == 'o';
                 Suit suit1;
                 Suit suit2;
                 for(int i = 0; i < 4; ++i) 
@@ -79,7 +99,7 @@ List<HoleCards> ret = Lists.newArrayList();
                         for(int j = 0; j < 4; ++j) 
                         {
                             //We only want unsuited
-                            if (j==i)
+                            if (unSuited && j==i)
                                 continue;
                             suit2 = Suit.fromIndex(j);
                             

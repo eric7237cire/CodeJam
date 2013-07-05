@@ -1,5 +1,6 @@
 package pkr;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.base.Preconditions;
@@ -60,6 +61,13 @@ public class Score implements Comparable<Score> {
         }
         
         return 0;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Score [handLevel=" + handLevel.name() +
+                ", kickers=" + Arrays.toString(kickers) + "]";
     }
     
     

@@ -192,6 +192,35 @@ public class TestScore {
     }
     
     @Test
+    public void testTwoPairVsPair() {
+        HoleCards h1 = new HoleCards(Card.parseCards("Jh Jd"));
+        HoleCards h2 = new HoleCards(Card.parseCards("7h 2d"));
+                               
+        Flop f = new Flop(Card.parseCards("3s Qc 6d"));
+        
+        Evaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2},
+                f, Card.parseCard("Kc"), Card.parseCard("Kh"));
+        
+        int handNum = 0;
+        assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.TWO_PAIR);
+        assertTrue(evals[handNum].getScore().getKickers()[0] == CardRank.KING);
+        assertTrue(evals[handNum].getScore().getKickers()[1] == CardRank.JACK);
+        assertTrue(evals[handNum].getScore().getKickers()[2] == CardRank.QUEEN);
+        assertEquals(1, evals[handNum].getRealEquity(), 0.00001);
+        ++handNum;
+        
+        assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.PAIR);
+        assertTrue(evals[handNum].getScore().getKickers()[0] == CardRank.KING);
+        assertTrue(evals[handNum].getScore().getKickers()[1] == CardRank.QUEEN);
+        assertTrue(evals[handNum].getScore().getKickers()[2] == CardRank.SEVEN);
+        assertTrue(evals[handNum].getScore().getKickers()[3] == CardRank.SIX);
+        assertEquals(0, evals[handNum].getRealEquity(), 0.00001);
+        ++handNum;
+        
+        
+    }
+    
+    @Test
     public void testTwoPair() {
         HoleCards h1 = new HoleCards(Card.parseCards("8c 8h"));
         HoleCards h2 = new HoleCards(Card.parseCards("2h 7h"));                

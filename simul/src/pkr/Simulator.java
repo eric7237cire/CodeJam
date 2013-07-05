@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 public class Simulator {
@@ -16,12 +17,20 @@ public class Simulator {
         
        // playerHoleCards.add("AA, KK, QQ, JJ, TT, 99, 88, 77, 66, 55, 44, 33, 22, AK, AQ, AJ");
         //playerHoleCards.add("AA, AKs, 27, 93, 44, 99");
-      playerHoleCards.add("AA");
-        //playerHoleCards.add("JJ");
-       // playerHoleCards.add("27o, 38s");
-      playerHoleCards.add("27o");
-         
+     // playerHoleCards.add("AA");
+        //playerHoleCards.add("JJ, AQs, KJ");
         
+        //BUG with this range
+        //playerHoleCards.add("JJ, KJ");
+        //playerHoleCards.add("27o, 38s");
+
+        playerHoleCards.add("JJ, KJo");
+        playerHoleCards.add("27o");
+        
+       // playerHoleCards.clear(); 
+       // playerHoleCards.add("AA");
+     //  playerHoleCards.add("AQs");
+      // playerHoleCards.add("KJo");
         
         simulate(playerHoleCards);
     }
@@ -43,10 +52,14 @@ public class Simulator {
         for(int simulNum = 0; simulNum < TOTAL_SIMULATIONS; ++simulNum) {
             Evaluation[] evals = simulateOneRound(listRanges);
             
-            if (simulNum % 50000 == 0) {
+            if (simulNum % 150000 == 0) {
                 log.debug("# of simulations {} of {}", simulNum, TOTAL_SIMULATIONS );
                 
-                
+                log.info("{} valid rounds", actualRounds);
+                for(int p = 0; p < numPlayers; ++p) {
+                                       
+                    log.info("Players {} {}", p, (equity[p] /actualRounds) * 100.0);
+                }
             }
             
             //Does not match the ranges
@@ -70,12 +83,36 @@ public class Simulator {
         for(int p = 0; p < numPlayers; ++p) {
             equity[p] /= actualRounds;
             
-            log.info("Players {} {}", p, equity[p] * 100);
+            log.info("Players {} range {} =  {}", p, listRanges[p], equity[p] * 100);
         }
         
     }
     
     private static int[] availableCards = new int[52];
+    
+    
+    private static HoleCards chooseValidAvailableCard(boolean[] usedCards, HoleCardsRange range) 
+    {
+        int numAvail = 0;
+        
+        for(int i  = 0; i < range.cards.size(); ++i)
+        {
+            HoleCards hc = range.cards.get(i);
+            if (!usedCards[hc.getCards()[0].toInt()]
+                   && !usedCards[hc.getCards()[1].toInt()]) 
+            {
+                availableCards[numAvail++] = i;
+            }
+        }
+        
+        if (numAvail == 0) 
+            return null;
+        
+        int choice = (int) (Math.random() * numAvail);
+        
+        return range.cards.get(choice);
+        
+    }
     
     private static int chooseValidAvailableCard(boolean[] usedCards, boolean[] validCards) {
        
@@ -166,6 +203,11 @@ public class Simulator {
             //x  2x 2x+1
             int card1Index = chooseValidAvailableCard(usedCards, range.inRangeCard1 );
             
+            /*
+             * List of holeCards, need to choose among those still left
+             */
+            
+            /*
             if (card1Index == -1)
                 return null;
             
@@ -175,14 +217,25 @@ public class Simulator {
             int card2Index = chooseValidAvailableCard(usedCards, range.mask[card1Index]
                     );
             
+            if (card2Index == -1) {
+                //log.debug("Range {} card 1 {} ", range, Card.listByIndex[card1Index]);
+                return null;
+            }
+            
             usedCards[card2Index] = true;
-            if (card2Index == -1)
+            */
+            HoleCards hc = chooseValidAvailableCard(usedCards, range);
+            
+            if (hc == null)
                 return null;
             
-            if (!listRanges[i].inRange(card1Index, card2Index))
-                return null;
+            //if (!listRanges[i].inRange(card1Index, card2Index))
+              //  return null;
             
-            holeCards[i] = HoleCards.getByIndices(card1Index, card2Index);
+            //holeCards[i] = HoleCards.getByIndices(card1Index, card2Index);
+            usedCards[ hc.getCards()[0].toInt() ] = true;
+            usedCards[ hc.getCards()[1].toInt() ] = true;
+            holeCards[i] = hc;
             
             //log.debug("Hole cards ({}) {} idx 1 {} idx 2 {}", i, holeCards[i], card1Index, card2Index);
         }
@@ -201,10 +254,15 @@ public class Simulator {
                 flop,  Card.listByIndex[ flopTurnRiver[3] ], 
         Card.listByIndex[ flopTurnRiver[4] ]);
         
-        
-        if (evals[1].won = true) {
-            //log.debug("Flop {} turn {} river {}", flop, Card.listByIndex[ flopTurnRiver[3] ], Card.listByIndex[ flopTurnRiver[4] ]);
-        }
+        /*
+        if (evals[1].won == true) {
+            
+            log.debug("\nh1 {} eval: {}  \n h2  {} eval: {}  \n Flop {} turn {} river {}", 
+                    holeCards[0], evals[0].toString(),
+                    holeCards[1], evals[1].toString(),
+                    flop, 
+                    Card.listByIndex[ flopTurnRiver[3] ], Card.listByIndex[ flopTurnRiver[4] ]);
+        }*/
         return evals;
     }
 }
