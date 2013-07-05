@@ -2,6 +2,7 @@ package pkr;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -80,6 +81,7 @@ public class EvalHands {
         
         populateFlopTexture(evals, flop, turn, river);
         
+        //TODO redundant ?
         Evaluation[] resultsSortedByScore = new Evaluation[numPlayers];
         
         for(int i = 0; i < numPlayers; ++i) {
@@ -119,6 +121,7 @@ public class EvalHands {
         }
         
             
+        populateEvalutionNodeWithRelativeHandRankings(evals);
         
         
         
@@ -148,7 +151,7 @@ public class EvalHands {
         }
         
         for(Evaluation eval : evals) {
-            eval.setFlopTexture(flopTexture);
+            eval.setRoundTexture(0, flopTexture);
         }
         
     }
@@ -166,13 +169,13 @@ public class EvalHands {
 
         eval.setHoleCards(cards);
         
-        eval.setFlopScore(scoreSingleHand(cards, flop, null, null));
-        eval.setTurnScore(scoreSingleHand(cards, flop, turn, null));
-        eval.setRiverScore(scoreSingleHand(cards, flop, turn, river));
+        eval.setRoundScore(0, scoreSingleHand(cards, flop, null, null));
+        eval.setRoundScore(1, scoreSingleHand(cards, flop, turn, null));
+        eval.setRoundScore(2, scoreSingleHand(cards, flop, turn, river));
         
-        eval.setFlopEval(evaluateNodeSingleHand(cards, eval.getFlopScore(), flop, null, null ));
-        eval.setTurnEval(evaluateNodeSingleHand(cards, eval.getTurnScore(), flop, turn, null ));
-        eval.setRiverEval(evaluateNodeSingleHand(cards, eval.getRiverScore(), flop, turn, river ));
+        eval.setRoundEval(0, evaluateNodeSingleHand(cards, eval.getRoundScore(0), flop, null, null ));
+        eval.setRoundEval(1, evaluateNodeSingleHand(cards, eval.getRoundScore(1), flop, turn, null ));
+        eval.setRoundEval(2, evaluateNodeSingleHand(cards, eval.getRoundScore(2), flop, turn, river ));
         return eval;
     }
     
@@ -194,7 +197,106 @@ public class EvalHands {
         return evalNode;
     }
     
+    private static class CompareByRoundScore implements Comparator<Evaluation>
+    {
+        final int round;
+        
+        private CompareByRoundScore(int round) {
+            super();
+            this.round = round;
+        }
+
+        @Override
+        public int compare(Evaluation o1, Evaluation o2)
+        {
+            return o1.getRoundScore(round).compareTo(o2.getRoundScore(round));
+        }
+    }
+    
     public static void populateEvalutionNodeWithRelativeHandRankings( Evaluation[] eval ) {
+     
+        Evaluation[][] resultsSortedByRoundScore = new Evaluation[3][eval.length];
+        
+        for(int i = 0; i < eval.length; ++i) {
+            resultsSortedByRoundScore[0][i] = eval[i];
+            resultsSortedByRoundScore[1][i] = eval[i];
+            resultsSortedByRoundScore[2][i] = eval[i];
+        }
+        
+        for(int round = 0; round < 3; ++round) 
+        {
+            Arrays.sort(resultsSortedByRoundScore[round], new CompareByRoundScore(round));
+            
+            int sortedEvalIndex = eval.length - 1;
+            final int bestHandIndex = eval.length - 1;
+            
+            final Score bestHandScore =  resultsSortedByRoundScore[round][bestHandIndex].getRoundScore(round);
+            
+            for(; sortedEvalIndex >= 0; --sortedEvalIndex)
+            {
+                Evaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex]; 
+                if (bestHandScore
+                        .equals(curEval.getRoundScore(round)))
+                {
+                    curEval.getRoundEval(round).setFlag(EvaluationCategory.WINNING);
+                } else {
+                    break;
+                }
+            }
+            
+            final int bestSecondHandIndex = sortedEvalIndex;
+            
+            for(; sortedEvalIndex >= 0; --sortedEvalIndex)
+            {
+                Evaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
+                curEval.getRoundEval(round).setFlag(EvaluationCategory.LOSING);
+            }
+            
+            if (bestSecondHandIndex >= 0) {
+                
+                final Score secondHandScore =  resultsSortedByRoundScore[round][bestSecondHandIndex].getRoundScore(round);
+                
+                //either the 3rd best or -1 if no 3rd place
+                int thirdBestHand = bestSecondHandIndex - 1;
+                
+                while( thirdBestHand >= 0 && 
+                        secondHandScore
+                                .equals(resultsSortedByRoundScore[round][thirdBestHand].getRoundScore(round)))
+                {
+                    --thirdBestHand;
+                }
+                
+                
+                EvaluationCategory cat = null;
+                if (bestHandScore.getHandLevel() != secondHandScore.getHandLevel()) {
+                    cat = EvaluationCategory.BY_HAND;
+                } else if (bestHandScore.getKickers()[0] != secondHandScore.getKickers()[0]) {
+                    cat = EvaluationCategory.BY_KICKER_1;
+                } else if (bestHandScore.getKickers()[1] != secondHandScore.getKickers()[1]) {
+                    cat = EvaluationCategory.BY_KICKER_2;
+                } else if (bestHandScore.getKickers()[2] != secondHandScore.getKickers()[2]) {
+                    cat = EvaluationCategory.BY_KICKER_3_PLUS;
+                }
+                
+                for(sortedEvalIndex = bestHandIndex; sortedEvalIndex > thirdBestHand; --sortedEvalIndex) 
+                {
+                    Evaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
+                    curEval.getRoundEval(round).setFlag(cat);
+                }
+                
+            } else {
+                //Just say that the all way tie won by a hand
+                for(sortedEvalIndex = bestHandIndex; sortedEvalIndex >= 0; --sortedEvalIndex) {
+                    Evaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
+                    curEval.getRoundEval(round).setFlag(EvaluationCategory.BY_HAND);
+                }
+            }
+        }
+        
+    }
+    
+    private static void populateEvalutionNodeWithRelativeHandRankingsHelper(EvaluationNode evalNode,
+            Evaluation[] sortedEvals, int round ) {
         
     }
     

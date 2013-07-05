@@ -16,101 +16,63 @@ import pkr.possTree.FlopTextureNode;
 public class Evaluation implements Comparable<Evaluation>{
     private HoleCards holeCards;
     
-    private Score flopScore;
-    private Score turnScore;
-    private Score riverScore;
+    private Score[] roundScores;
+    
     private int position;
+    
+    public static int ROUND_FLOP = 0;
+    public static int ROUND_TURN = 1;
+    public static int ROUND_RIVER = 2;
     
     //1st 2nd 3rd etc
     boolean won = false;
     boolean tied = false;
     
-    FlopTextureNode flopTexture;
-    public Score getFlopScore()
-    {
-        return flopScore;
-    }
-    public void setFlopScore(Score flopScore)
-    {
-        this.flopScore = flopScore;
-    }
-    public Score getTurnScore()
-    {
-        return turnScore;
-    }
-    public void setTurnScore(Score turnScore)
-    {
-        this.turnScore = turnScore;
-    }
-    public Score getRiverScore()
-    {
-        return riverScore;
-    }
-    public void setRiverScore(Score riverScore)
-    {
-        this.riverScore = riverScore;
-    }
-    public FlopTextureNode getFlopTexture()
-    {
-        return flopTexture;
-    }
-    public void setFlopTexture(FlopTextureNode flopTexture)
-    {
-        this.flopTexture = flopTexture;
-    }
-    public FlopTextureNode getTurnTexture()
-    {
-        return turnTexture;
-    }
-    public void setTurnTexture(FlopTextureNode turnTexture)
-    {
-        this.turnTexture = turnTexture;
-    }
-    public FlopTextureNode getRiverTexture()
-    {
-        return riverTexture;
-    }
-    public void setRiverTexture(FlopTextureNode riverTexture)
-    {
-        this.riverTexture = riverTexture;
-    }
-    public EvaluationNode getFlopEval()
-    {
-        return flopEval;
-    }
-    public void setFlopEval(EvaluationNode flopEval)
-    {
-        this.flopEval = flopEval;
-    }
-    public EvaluationNode getTurnEval()
-    {
-        return turnEval;
-    }
-    public void setTurnEval(EvaluationNode turnEval)
-    {
-        this.turnEval = turnEval;
-    }
-    public EvaluationNode getRiverEval()
-    {
-        return riverEval;
-    }
-    public void setRiverEval(EvaluationNode riverEval)
-    {
-        this.riverEval = riverEval;
-    }
-    FlopTextureNode turnTexture;
-    FlopTextureNode riverTexture;
-    EvaluationNode flopEval;
-    EvaluationNode turnEval;
-    EvaluationNode riverEval;
+    FlopTextureNode[] roundTexture;
+    EvaluationNode[] roundEval;
     
     //1 if won, a fraction for a tie, 0 if lost
     double realEquity;
     
+    public Score getRoundScore(int round) {
+        return roundScores[round];
+    }
+    public void setRoundScore(int round, Score score) 
+    {
+        roundScores[round] = score;
+    }
+    public FlopTextureNode getRoundTexture(int round)
+    {
+        return roundTexture[round];
+    }
+    public void setRoundTexture(int round, FlopTextureNode roundTexture)
+    {
+        this.roundTexture[round] = roundTexture;
+    }
+   
+    public EvaluationNode getRoundEval(int round)
+    {
+        return roundEval[round];
+    }
+    public void setRoundEval(int round, EvaluationNode flopEval)
+    {
+        this.roundEval[round] = flopEval;
+    }
+    
+    
     public Evaluation() {
         super();
         
-        riverScore = new Score();
+        
+        roundScores = new Score[3];
+        roundEval = new EvaluationNode[3];
+        roundTexture = new FlopTextureNode[3];
+        
+        for(int i = 0; i < 3; ++i) 
+        {
+            roundScores[i] = new Score();
+            roundEval[i] = new EvaluationNode();
+        }
     }
     /**
      * @return the holeCards
@@ -128,21 +90,16 @@ public class Evaluation implements Comparable<Evaluation>{
      * @return the score
      */
     public Score getScore() {
-        return riverScore;
+        return getRoundScore(ROUND_RIVER);
     }
     @Override
     public String toString()
     {
-        return "Score " + riverScore.toString() + " pos " 
+        return "Score " + getScore().toString() + " pos " 
     + getPosition() + " eq " + getRealEquity() + " won ? " + won + " tied ? "  + tied;
         
     }
-    /**
-     * @param score the score to set
-     */
-    public void setScore(Score score) {
-        this.riverScore = score;
-    }
+    
     /* (non-Javadoc)
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */

@@ -21,6 +21,9 @@ import pkr.HoleCards;
 import pkr.possTree.EvaluationNode.EvaluationCategory;
 import pkr.possTree.FlopTextureNode.TextureCategory;
 
+
+import static pkr.Evaluation.*;
+
 public class TestEvalNodes
 {
 
@@ -41,38 +44,47 @@ public class TestEvalNodes
                 f, Card.parseCard("Ac"), Card.parseCard("Qd"));
         
         int handNum = 0;
-        assertTrue(evals[handNum].getFlopScore().getHandLevel() == HandLevel.PAIR);
-        assertTrue(evals[handNum].getFlopScore().getKickers()[0] == CardRank.QUEEN);
-        assertTrue(evals[handNum].getFlopScore().getKickers()[1] == CardRank.KING);
-        assertTrue(evals[handNum].getFlopScore().getKickers()[2] == CardRank.EIGHT);
-        assertTrue(evals[handNum].getFlopScore().getKickers()[3] == CardRank.FIVE);
+        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getHandLevel() == HandLevel.PAIR);
+        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[0] == CardRank.QUEEN);
+        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[1] == CardRank.KING);
+        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[2] == CardRank.EIGHT);
+        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[3] == CardRank.FIVE);
         
-        assertTrue( evals[handNum].getFlopEval().hasFlag( EvaluationCategory.TOP_PAIR));
-        assertFalse( evals[handNum].getFlopEval().hasFlag( EvaluationCategory.LOSING));
-        assertTrue( evals[handNum].getFlopEval().hasFlag( EvaluationCategory.WINNING));
-        assertTrue( evals[handNum].getFlopEval().hasFlag( EvaluationCategory.BY_KICKER_2));
+        assertTrue( evals[handNum].getRoundEval(ROUND_FLOP).hasFlag( EvaluationCategory.TOP_PAIR));
+        assertFalse( evals[handNum].getRoundEval(ROUND_FLOP).hasFlag( EvaluationCategory.LOSING));
+        assertTrue( evals[handNum].getRoundEval(ROUND_FLOP).hasFlag( EvaluationCategory.WINNING));
+        assertTrue( evals[handNum].getRoundEval(ROUND_FLOP).hasFlag( EvaluationCategory.BY_KICKER_2));
+        assertFalse( evals[handNum].getRoundEval(ROUND_FLOP).hasFlag( EvaluationCategory.BY_KICKER_1));
         
-        assertTrue( evals[handNum].getFlopTexture().hasFlag(TextureCategory.SAME_SUIT_2));
-        assertFalse( evals[handNum].getFlopTexture().hasFlag(TextureCategory.HAS_AT_LEAST_ONE_ACE));
+        assertTrue( evals[handNum].getRoundTexture(ROUND_FLOP).hasFlag(TextureCategory.SAME_SUIT_2));
+        assertFalse( evals[handNum].getRoundTexture(ROUND_FLOP).hasFlag(TextureCategory.HAS_AT_LEAST_ONE_ACE));
         ++handNum;
         
-        assertTrue(evals[handNum].getFlopScore().getHandLevel() == HandLevel.PAIR);
-        assertTrue(evals[handNum].getFlopScore().getKickers()[0] == CardRank.QUEEN);
-        assertTrue(evals[handNum].getFlopScore().getKickers()[1] == CardRank.KING);
-        assertTrue(evals[handNum].getFlopScore().getKickers()[2] == CardRank.EIGHT);
-        assertTrue(evals[handNum].getFlopScore().getKickers()[3] == CardRank.FIVE);
+        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getHandLevel() == HandLevel.PAIR);
+        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[0] == CardRank.QUEEN);
+        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[1] == CardRank.JACK);
+        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[2] == CardRank.EIGHT);
+        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[3] == CardRank.FIVE);
         
-        assertTrue( evals[handNum].getFlopEval().hasFlag( EvaluationCategory.TOP_PAIR));
-        assertTrue( evals[handNum].getFlopEval().hasFlag( EvaluationCategory.LOSING));
-        assertFalse( evals[handNum].getFlopEval().hasFlag( EvaluationCategory.WINNING));
-        assertTrue( evals[handNum].getFlopEval().hasFlag( EvaluationCategory.BY_KICKER_2));
+        assertTrue( evals[handNum].getRoundEval(ROUND_FLOP).hasFlag( EvaluationCategory.TOP_PAIR));
+        assertTrue( evals[handNum].getRoundEval(ROUND_FLOP).hasFlag( EvaluationCategory.LOSING));
+        assertFalse( evals[handNum].getRoundEval(ROUND_FLOP).hasFlag( EvaluationCategory.WINNING));
+        assertTrue( evals[handNum].getRoundEval(ROUND_FLOP).hasFlag( EvaluationCategory.BY_KICKER_2));
+        assertFalse( evals[handNum].getRoundEval(ROUND_FLOP).hasFlag( EvaluationCategory.BY_KICKER_1));
 
         
-        assertTrue( evals[0].getFlopTexture().equals(evals[1].getFlopTexture()) );
+        assertTrue( evals[0].getRoundTexture(ROUND_FLOP).equals(evals[1].getRoundTexture(ROUND_FLOP)) );
        
         
         
     }
     
     //Test for top pair on a paired board
+    
+    
+    //Test tie for 1st and 2nd place (5 players)
+    
+    //Test for 3 way tie (no second place)
+    
+    //Test for tie for 1st and 2nd but no 3rd place (5 players)
 }

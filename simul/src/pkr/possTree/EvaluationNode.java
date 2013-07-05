@@ -32,6 +32,7 @@ public class EvaluationNode
         BY_HAND("Det by hand"),
         BY_KICKER_1("Determined by first kicker"),
         BY_KICKER_2("Determined by second kicker"),
+        BY_KICKER_3_PLUS("Determined by 3rd or later kicker");
         
         ;
         
