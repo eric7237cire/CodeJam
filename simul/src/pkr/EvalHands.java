@@ -141,13 +141,21 @@ public class EvalHands {
             freqSuit[card.getSuit().ordinal()]++;
         }
         
+        boolean rainbow = true;
+        
         for(int s = 0; s < 4; ++s)
         {
             if (freqSuit[s] == 2) {
                 flopTexture.setFlag(TextureCategory.SAME_SUIT_2);
+                rainbow = false;
             } else if (freqSuit[s] == 3) {
                 flopTexture.setFlag(TextureCategory.SAME_SUIT_3);
+                rainbow = false;
             }
+        }
+        
+        if (rainbow) {
+            flopTexture.setFlag(TextureCategory.UNSUITED);
         }
         
         for(Evaluation eval : evals) {
@@ -244,7 +252,7 @@ public class EvalHands {
                 }
             }
             
-            final int bestSecondHandIndex = sortedEvalIndex;
+            final int secondBestHandIndex = sortedEvalIndex;
             
             for(; sortedEvalIndex >= 0; --sortedEvalIndex)
             {
@@ -252,12 +260,12 @@ public class EvalHands {
                 curEval.getRoundEval(round).setFlag(EvaluationCategory.LOSING);
             }
             
-            if (bestSecondHandIndex >= 0) {
+            if (secondBestHandIndex >= 0) {
                 
-                final Score secondHandScore =  resultsSortedByRoundScore[round][bestSecondHandIndex].getRoundScore(round);
+                final Score secondHandScore =  resultsSortedByRoundScore[round][secondBestHandIndex].getRoundScore(round);
                 
                 //either the 3rd best or -1 if no 3rd place
-                int thirdBestHand = bestSecondHandIndex - 1;
+                int thirdBestHand = secondBestHandIndex - 1;
                 
                 while( thirdBestHand >= 0 && 
                         secondHandScore
@@ -266,23 +274,41 @@ public class EvalHands {
                     --thirdBestHand;
                 }
                 
-                
-                EvaluationCategory cat = null;
-                if (bestHandScore.getHandLevel() != secondHandScore.getHandLevel()) {
-                    cat = EvaluationCategory.BY_HAND;
-                } else if (bestHandScore.getKickers()[0] != secondHandScore.getKickers()[0]) {
-                    cat = EvaluationCategory.BY_KICKER_1;
-                } else if (bestHandScore.getKickers()[1] != secondHandScore.getKickers()[1]) {
-                    cat = EvaluationCategory.BY_KICKER_2;
-                } else if (bestHandScore.getKickers()[2] != secondHandScore.getKickers()[2]) {
-                    cat = EvaluationCategory.BY_KICKER_3_PLUS;
-                }
-                
-                for(sortedEvalIndex = bestHandIndex; sortedEvalIndex > thirdBestHand; --sortedEvalIndex) 
+                //Set flags for all losing hands
+                for(sortedEvalIndex = secondBestHandIndex; sortedEvalIndex >= 0; --sortedEvalIndex) 
                 {
                     Evaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
+                    Score curScore = curEval.getRoundScore(round);
+                
+                    EvaluationCategory cat = null;
+                    if (bestHandScore.getHandLevel() != curScore.getHandLevel()) {
+                        cat = EvaluationCategory.BY_HAND;
+                    } else if (bestHandScore.getKickers()[0] != curScore.getKickers()[0]) {
+                        cat = EvaluationCategory.BY_KICKER_1;
+                    } else if (bestHandScore.getKickers()[1] != curScore.getKickers()[1]) {
+                        cat = EvaluationCategory.BY_KICKER_2;
+                    } else if (bestHandScore.getKickers()[2] != curScore.getKickers()[2]) {
+                        cat = EvaluationCategory.BY_KICKER_3_PLUS;
+                    }
+                    
                     curEval.getRoundEval(round).setFlag(cat);
+                    
+                    if (sortedEvalIndex > thirdBestHand) {
+                        curEval.getRoundEval(round).setFlag(EvaluationCategory.SECOND_BEST_HAND);
+                    }
+                    
+                    if (sortedEvalIndex == secondBestHandIndex) {
+                        //we can just used the flag for the 2nd best hand in the best hand as they won for the same reason the 2nd best hand lost
+                        for(int winningEvalIndex = bestHandIndex; winningEvalIndex > secondBestHandIndex; --winningEvalIndex)
+                        {
+                            Evaluation winEval = resultsSortedByRoundScore[round][winningEvalIndex];
+                        
+                            winEval.getRoundEval(round).setFlag(cat);
+                        }
+                    }
                 }
+                
+                
                 
             } else {
                 //Just say that the all way tie won by a hand
@@ -295,10 +321,7 @@ public class EvalHands {
         
     }
     
-    private static void populateEvalutionNodeWithRelativeHandRankingsHelper(EvaluationNode evalNode,
-            Evaluation[] sortedEvals, int round ) {
-        
-    }
+    
     
     public static Score scoreSingleHand(HoleCards cards, Flop flop,  Card turn, Card river) {
         

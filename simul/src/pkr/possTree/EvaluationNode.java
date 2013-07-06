@@ -28,6 +28,7 @@ public class EvaluationNode
         OVER_PAIR("Over pair"),
         SECOND_BEST_PAIR("2nd best pair"), //on board
         WINNING("Winning / tied"),
+        SECOND_BEST_HAND("Second best hand"),
         LOSING("Losing"),
         BY_HAND("Det by hand"),
         BY_KICKER_1("Determined by first kicker"),
