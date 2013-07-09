@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 import pkr.Card;
 import pkr.CardRank;
 import pkr.EvalHands;
-import pkr.Evaluation;
+import pkr.CompleteEvaluation;
 import pkr.Flop;
 import pkr.HandLevel;
 import pkr.HoleCards;
@@ -22,7 +22,7 @@ import pkr.possTree.EvaluationNode.EvaluationCategory;
 import pkr.possTree.FlopTextureNode.TextureCategory;
 
 
-import static pkr.Evaluation.*;
+import static pkr.CompleteEvaluation.*;
 
 public class TestEvalNodes
 {
@@ -40,7 +40,7 @@ public class TestEvalNodes
                                
         Flop f = new Flop(Card.parseCards("Qs 8s 5h"));
         
-        Evaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2},
+        CompleteEvaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2},
                 f, Card.parseCard("Ac"), Card.parseCard("Qd"));
         
         int handNum = 0;
@@ -94,7 +94,7 @@ public class TestEvalNodes
                                
         Flop f = new Flop(Card.parseCards("5d 3s 4h"));
         
-        Evaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2, h3, h4, h5},
+        CompleteEvaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2, h3, h4, h5},
                 f, Card.parseCard("Ac"), Card.parseCard("Qd"));
         
         assertTrue( evals[0].getRoundTexture(ROUND_FLOP).equals(evals[1].getRoundTexture(ROUND_FLOP)) );

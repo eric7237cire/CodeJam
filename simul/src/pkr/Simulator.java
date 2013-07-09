@@ -49,7 +49,7 @@ public class Simulator {
         
         final int TOTAL_SIMULATIONS = 5000000;
         for(int simulNum = 0; simulNum < TOTAL_SIMULATIONS; ++simulNum) {
-            Evaluation[] evals = simulateOneRound(listRanges);
+            CompleteEvaluation[] evals = simulateOneRound(listRanges);
             
             if (simulNum % 150000 == 0) {
                 log.debug("# of simulations {} of {}", simulNum, TOTAL_SIMULATIONS );
@@ -145,7 +145,7 @@ public class Simulator {
     
     //private static final int NUM_CARDS = 52;
     
-    private static Evaluation[] simulateOneRound(HoleCardsRange[] listRanges) {
+    private static CompleteEvaluation[] simulateOneRound(HoleCardsRange[] listRanges) {
         
         //final int numPlayers = listRanges.length;
         
@@ -197,7 +197,7 @@ public class Simulator {
                 Card.listByIndex[ flopTurnRiver[1] ],
                 Card.listByIndex[ flopTurnRiver[2] ]
         });
-        Evaluation[] evals = EvalHands.evaluate(holeCards, 
+        CompleteEvaluation[] evals = EvalHands.evaluate(holeCards, 
                 flop,  Card.listByIndex[ flopTurnRiver[3] ], 
         Card.listByIndex[ flopTurnRiver[4] ]);
         

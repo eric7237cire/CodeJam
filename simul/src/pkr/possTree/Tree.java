@@ -7,11 +7,27 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import pkr.CompleteEvaluation;
+
 public class Tree
 {
 
+    @SuppressWarnings("unchecked")
     public Tree() {
-        // TODO Auto-generated constructor stub
+        rootNode = new TreeNode();
+    }
+    
+    /*
+     * 6 levels
+     * flop texture, eval
+     * turn texture, eval
+     * river texture, eval
+     */
+    TreeNode rootNode;
+        
+    public void addCompleteEvaluation(CompleteEvaluation eval) 
+    {
+        rootNode.getChildren().contains(new TreeNode(eval.getRoundTexture(0)));
     }
 
     public static void main(String[] args) 

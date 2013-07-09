@@ -57,7 +57,7 @@ public class EvalHands {
         return allCards;
     }
     
-    public static Evaluation[] evaluate(HoleCards[] cards, Flop flop, Card turn, Card river) {
+    public static CompleteEvaluation[] evaluate(HoleCards[] cards, Flop flop, Card turn, Card river) {
 
         
         
@@ -69,7 +69,7 @@ public class EvalHands {
         //Check uniqueness
         checkUniqueness(allCards);
 
-        Evaluation[] evals = new Evaluation[cards.length];
+        CompleteEvaluation[] evals = new CompleteEvaluation[cards.length];
         
         for(int i = 0; i < numPlayers; ++i) {
             evals[i] = evaluateSingleHand(cards[i], flop, turn, river);
@@ -82,7 +82,7 @@ public class EvalHands {
         populateFlopTexture(evals, flop, turn, river);
         
         //TODO redundant ?
-        Evaluation[] resultsSortedByScore = new Evaluation[numPlayers];
+        CompleteEvaluation[] resultsSortedByScore = new CompleteEvaluation[numPlayers];
         
         for(int i = 0; i < numPlayers; ++i) {
             resultsSortedByScore[i] = evals[i];
@@ -128,7 +128,7 @@ public class EvalHands {
         return evals;
     }
     
-    private static void populateFlopTexture(Evaluation[] evals, Flop flop, Card turn, Card river) 
+    private static void populateFlopTexture(CompleteEvaluation[] evals, Flop flop, Card turn, Card river) 
     {
         int[] freqCard = new int[NUM_RANKS];
         int[] freqSuit = new int[4];
@@ -158,7 +158,7 @@ public class EvalHands {
             flopTexture.setFlag(TextureCategory.UNSUITED);
         }
         
-        for(Evaluation eval : evals) {
+        for(CompleteEvaluation eval : evals) {
             eval.setRoundTexture(0, flopTexture);
         }
         
@@ -171,9 +171,9 @@ public class EvalHands {
     
     private static final int NUM_RANKS = 13;
 
-    public static Evaluation evaluateSingleHand(HoleCards cards, Flop flop,  Card turn, Card river)
+    public static CompleteEvaluation evaluateSingleHand(HoleCards cards, Flop flop,  Card turn, Card river)
     {
-        Evaluation eval = new Evaluation();
+        CompleteEvaluation eval = new CompleteEvaluation();
 
         eval.setHoleCards(cards);
         
@@ -205,7 +205,7 @@ public class EvalHands {
         return evalNode;
     }
     
-    private static class CompareByRoundScore implements Comparator<Evaluation>
+    private static class CompareByRoundScore implements Comparator<CompleteEvaluation>
     {
         final int round;
         
@@ -215,15 +215,15 @@ public class EvalHands {
         }
 
         @Override
-        public int compare(Evaluation o1, Evaluation o2)
+        public int compare(CompleteEvaluation o1, CompleteEvaluation o2)
         {
             return o1.getRoundScore(round).compareTo(o2.getRoundScore(round));
         }
     }
     
-    public static void populateEvalutionNodeWithRelativeHandRankings( Evaluation[] eval ) {
+    public static void populateEvalutionNodeWithRelativeHandRankings( CompleteEvaluation[] eval ) {
      
-        Evaluation[][] resultsSortedByRoundScore = new Evaluation[3][eval.length];
+        CompleteEvaluation[][] resultsSortedByRoundScore = new CompleteEvaluation[3][eval.length];
         
         for(int i = 0; i < eval.length; ++i) {
             resultsSortedByRoundScore[0][i] = eval[i];
@@ -242,7 +242,7 @@ public class EvalHands {
             
             for(; sortedEvalIndex >= 0; --sortedEvalIndex)
             {
-                Evaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex]; 
+                CompleteEvaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex]; 
                 if (bestHandScore
                         .equals(curEval.getRoundScore(round)))
                 {
@@ -256,7 +256,7 @@ public class EvalHands {
             
             for(; sortedEvalIndex >= 0; --sortedEvalIndex)
             {
-                Evaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
+                CompleteEvaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
                 curEval.getRoundEval(round).setFlag(EvaluationCategory.LOSING);
             }
             
@@ -277,7 +277,7 @@ public class EvalHands {
                 //Set flags for all losing hands
                 for(sortedEvalIndex = secondBestHandIndex; sortedEvalIndex >= 0; --sortedEvalIndex) 
                 {
-                    Evaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
+                    CompleteEvaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
                     Score curScore = curEval.getRoundScore(round);
                 
                     EvaluationCategory cat = null;
@@ -301,7 +301,7 @@ public class EvalHands {
                         //we can just used the flag for the 2nd best hand in the best hand as they won for the same reason the 2nd best hand lost
                         for(int winningEvalIndex = bestHandIndex; winningEvalIndex > secondBestHandIndex; --winningEvalIndex)
                         {
-                            Evaluation winEval = resultsSortedByRoundScore[round][winningEvalIndex];
+                            CompleteEvaluation winEval = resultsSortedByRoundScore[round][winningEvalIndex];
                         
                             winEval.getRoundEval(round).setFlag(cat);
                         }
@@ -313,7 +313,7 @@ public class EvalHands {
             } else {
                 //Just say that the all way tie won by a hand
                 for(sortedEvalIndex = bestHandIndex; sortedEvalIndex >= 0; --sortedEvalIndex) {
-                    Evaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
+                    CompleteEvaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
                     curEval.getRoundEval(round).setFlag(EvaluationCategory.BY_HAND);
                 }
             }

@@ -1,8 +1,10 @@
 package pkr.possTree;
 
+import javax.xml.stream.XMLStreamWriter;
+
 import pkr.possTree.FlopTextureNode.TextureCategory;
 
-public class EvaluationNode
+public class EvaluationNode implements iDisplayNode
 {
 
     /*
@@ -59,4 +61,52 @@ public class EvaluationNode
     public boolean hasFlag(EvaluationCategory flag) {
         return (flags & 1L << flag.ordinal()) != 0;
     }
+
+    /* (non-Javadoc)
+     * @see pkr.possTree.iDisplayNode#serialize(javax.xml.stream.XMLStreamWriter)
+     */
+    @Override
+    public void serialize(XMLStreamWriter writer) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    /* (non-Javadoc)
+     * @see pkr.possTree.iDisplayNode#toLong()
+     */
+    @Override
+    public long toLong() {
+        
+        return flags;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (int) (flags ^ (flags >>> 32));
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        EvaluationNode other = (EvaluationNode) obj;
+        if (flags != other.flags)
+            return false;
+        return true;
+    }
+    
+    
 }

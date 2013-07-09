@@ -1,5 +1,7 @@
 package pkr.possTree;
 
+import java.util.List;
+
 public class PossibilityNode
 {
 
@@ -28,4 +30,8 @@ public class PossibilityNode
         // TODO Auto-generated constructor stub
     }
 
+    //Map<iDisplayNode>
+    public List<iDisplayNode> getChildren() {
+        return null;
+    }
 }
