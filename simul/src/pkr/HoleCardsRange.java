@@ -21,6 +21,9 @@ import com.google.common.collect.Lists;
 public class HoleCardsRange {
     
     public static String SUITED_ACES= "A2s A3s A4s A5s A6s A7s A8s A9s ATs AJs AQs AKs";
+    
+    
+    
     private static Logger log = LoggerFactory.getLogger("main");
     
     boolean mask[][];

@@ -38,10 +38,10 @@ public class EvaluationNode implements iDisplayNode
         WINNING("WinningOrTied"),
         SECOND_BEST_HAND("Second best hand"),
         LOSING("Losing"),
-        BY_HAND("Det by hand"),
-        BY_KICKER_1("Determined by first kicker"),
-        BY_KICKER_2("Determined by second kicker"),
-        BY_KICKER_3_PLUS("Determined by 3rd or later kicker");
+        BY_HAND("Det by hand category"),
+        BY_KICKER_1("Determined by hand"),
+        BY_KICKER_2("Determined by first kicker"),
+        BY_KICKER_3_PLUS("Determined by 2nd or later kicker");
         
         ;
         
