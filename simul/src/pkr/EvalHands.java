@@ -41,10 +41,10 @@ public class EvalHands {
     {
         List<Card> allCards = Lists.newArrayList();
 
-        
-        for (HoleCards hCards : cards) {
-            allCards.addAll(Arrays.asList(hCards.getCards()));            
-        }
+        if (cards!=null)
+            for (HoleCards hCards : cards) {
+                allCards.addAll(Arrays.asList(hCards.getCards()));            
+            }
         
         allCards.addAll(Arrays.asList(flop.getCards()));
         
@@ -79,7 +79,9 @@ public class EvalHands {
            evals[i].setPosition(i);
         }
         
-        populateFlopTexture(evals, flop, turn, river);
+        populateFlopTexture(evals, 0, flop, null, null);
+        populateFlopTexture(evals, 1, flop, turn, null);
+        populateFlopTexture(evals, 2, flop, turn, river);
         
         //TODO redundant ?
         CompleteEvaluation[] resultsSortedByScore = new CompleteEvaluation[numPlayers];
@@ -128,18 +130,23 @@ public class EvalHands {
         return evals;
     }
     
-    private static void populateFlopTexture(CompleteEvaluation[] evals, Flop flop, Card turn, Card river) 
+    private static void populateFlopTexture(CompleteEvaluation[] evals, int round, Flop flop, Card turn, Card river) 
     {
         int[] freqCard = new int[NUM_RANKS];
         int[] freqSuit = new int[4];
 
-        FlopTextureNode flopTexture = new FlopTextureNode(flop.getCards());
+        List<Card> allCards = getAllCards(null, flop, turn, river);
+        Card[] allCardsArr = allCards.toArray(new Card[allCards.size()]);
+        
+        FlopTextureNode flopTexture = new FlopTextureNode( allCardsArr );
 
-        for (Card card : flop.getCards()) {
+        for (Card card : allCardsArr) {
            // suits |= 1 << card.getSuit().ordinal();            
             freqCard[card.getRank().getIndex()]++;
             freqSuit[card.getSuit().ordinal()]++;
         }
+        
+        
         
         boolean rainbow = true;
         
@@ -159,7 +166,7 @@ public class EvalHands {
         }
         
         for(CompleteEvaluation eval : evals) {
-            eval.setRoundTexture(0, flopTexture);
+            eval.setRoundTexture(round, flopTexture);
         }
         
     }
@@ -289,7 +296,13 @@ public class EvalHands {
                         cat = EvaluationCategory.BY_KICKER_2;
                     } else if (bestHandScore.getKickers()[2] != curScore.getKickers()[2]) {
                         cat = EvaluationCategory.BY_KICKER_3_PLUS;
+                    } else if (bestHandScore.getKickers()[3] != curScore.getKickers()[3]) {
+                        cat = EvaluationCategory.BY_KICKER_3_PLUS;
+                    } else if (bestHandScore.getKickers()[4] != curScore.getKickers()[4]) {
+                        cat = EvaluationCategory.BY_KICKER_3_PLUS;
                     }
+                    
+                    Preconditions.checkNotNull(cat);
                     
                     curEval.getRoundEval(round).setFlag(cat);
                     

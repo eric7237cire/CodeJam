@@ -1,6 +1,12 @@
 package pkr.possTree;
 
+import java.util.List;
+
 import javax.xml.stream.XMLStreamWriter;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Lists;
 
 import pkr.possTree.FlopTextureNode.TextureCategory;
 
@@ -29,7 +35,7 @@ public class EvaluationNode implements iDisplayNode
         TOP_PAIR("Top pair"),
         OVER_PAIR("Over pair"),
         SECOND_BEST_PAIR("2nd best pair"), //on board
-        WINNING("Winning / tied"),
+        WINNING("WinningOrTied"),
         SECOND_BEST_HAND("Second best hand"),
         LOSING("Losing"),
         BY_HAND("Det by hand"),
@@ -108,5 +114,17 @@ public class EvaluationNode implements iDisplayNode
         return true;
     }
     
+    @Override
+    public String toString() {
+        List<String> ret = Lists.newArrayList();
+        
+        for(EvaluationCategory cat : EvaluationCategory.values()) {
+            if ( (flags & 1 << cat.ordinal()) != 0 ) {
+                ret.add(cat.desc.replace(' ', '_'));
+            }
+        }
+        return Joiner.on("--").join(ret) + "-" + flags;
+    }
+
     
 }

@@ -1,13 +1,78 @@
 package pkr.possTree;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 public class TreeNode
 {
 
-    public TreeNode() {
+    public TreeNode(iDisplayNode data) {
+        this.data = data;
+        mapChildren = Maps.newHashMap();
+        count = 0;
+        children = Sets.newHashSet();
+        parent = null;
+    }
+    
+    public static DecimalFormat df = new DecimalFormat("0.#");
+    static {
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
+    }
+    
+    public void serialize(XMLStreamWriter writer) throws XMLStreamException
+    {
+        if (data == null) {
+            writer.writeStartElement("root");
+        } else {
+            String perc = "P_" + df.format(100.0 * count / getParent().count) + "%";
+            writer.writeStartElement(perc + "_" + data.toString());
+        }
+        writer.writeAttribute("count", Integer.toString(count));
+        if (data != null)
+            writer.writeAttribute("desc", data.toString());
         
+        List<TreeNode> sortedByCountRev = Lists.newArrayList(children);
+        
+        Collections.sort(sortedByCountRev, new Comparator<TreeNode>() {
+
+            /* (non-Javadoc)
+             * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+             */
+            @Override
+            public int compare(TreeNode o1, TreeNode o2) {
+                return ComparisonChain.start().compare(o2.count, o1.count).result(); 
+            }
+            
+        });
+        
+        
+        for(TreeNode child : sortedByCountRev) {
+            child.serialize(writer);
+        }
+        
+        writer.writeEndElement();
+    }
+    
+    public void addChild(TreeNode child) 
+    {
+        children.add(child);
+        mapChildren.put(child.data, child);
     }
     
     iDisplayNode data;

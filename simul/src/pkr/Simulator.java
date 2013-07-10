@@ -5,6 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pkr.possTree.Tree;
+
 import com.google.common.collect.Lists;
 
 public class Simulator {
@@ -16,12 +18,19 @@ public class Simulator {
         
        // playerHoleCards.add("AA, KK, QQ, JJ, TT, 99, 88, 77, 66, 55, 44, 33, 22, AK, AQ, AJ");
         //playerHoleCards.add("AA, AKs, 27, 93, 44, 99");
-      playerHoleCards.add("AA");
+      playerHoleCards.add("KTs");
+      
+      
         playerHoleCards.add("JJ, AQs, KJo");
         
         //BUG with this range
         //playerHoleCards.add("JJ, KJ");
-        playerHoleCards.add("27o, 38s");
+        playerHoleCards.add(HoleCardsRange.SUITED_ACES);
+        
+        String fileName = "C:\\codejam\\CodeJam\\simul\\out.xml";
+        
+        Tree tree = simulate(playerHoleCards);
+        tree.output(fileName);
 
        // playerHoleCards.add("JJ, KJo");
        // playerHoleCards.add("27o");
@@ -31,9 +40,12 @@ public class Simulator {
      //  playerHoleCards.add("AQs");
       // playerHoleCards.add("KJo");
         
-        simulate(playerHoleCards);
+        
     }
-    public static void simulate(List<String> playerHoleCards) {
+    public static Tree simulate(List<String> playerHoleCards) {
+        
+        Tree tree = new Tree();
+        
         //Setup the ranges
         HoleCardsRange[] listRanges = new HoleCardsRange[playerHoleCards.size()];
         
@@ -47,9 +59,11 @@ public class Simulator {
         
         double[] equity = new double[numPlayers];
         
-        final int TOTAL_SIMULATIONS = 5000000;
+        final int TOTAL_SIMULATIONS = 10000;
         for(int simulNum = 0; simulNum < TOTAL_SIMULATIONS; ++simulNum) {
             CompleteEvaluation[] evals = simulateOneRound(listRanges);
+            
+            tree.addCompleteEvaluation(evals[0]);
             
             if (simulNum % 150000 == 0) {
                 log.debug("# of simulations {} of {}", simulNum, TOTAL_SIMULATIONS );
@@ -84,6 +98,8 @@ public class Simulator {
             
             log.info("Players {} range {} =  {}", p, listRanges[p], equity[p] * 100);
         }
+        
+        return tree;
         
     }
     

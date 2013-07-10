@@ -1,8 +1,18 @@
 package pkr.possTree;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
 import javax.xml.stream.XMLStreamWriter;
 
 import pkr.Card;
+
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
 
 public class FlopTextureNode implements iDisplayNode
 {
@@ -83,6 +93,8 @@ public class FlopTextureNode implements iDisplayNode
         // TODO Auto-generated method stub
         
     }
+    
+    
 
     /* (non-Javadoc)
      * @see pkr.possTree.iDisplayNode#toLong()
@@ -120,5 +132,23 @@ public class FlopTextureNode implements iDisplayNode
             return false;
         return true;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        List<String> ret = Lists.newArrayList();
+        
+        for(TextureCategory cat : TextureCategory.values()) {
+            if ( (flags & 1 << cat.ordinal()) != 0 ) {
+                ret.add(cat.desc.replace(' ', '_'));
+            }
+        }
+        return Joiner.on("--").join(ret) ;
+    }
+    
+   
+    
 
 }
