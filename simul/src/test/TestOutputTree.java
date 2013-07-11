@@ -1,22 +1,18 @@
 package test;
 
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.junit.Assert.*;
 
 import pkr.Card;
-import pkr.CardRank;
-import pkr.EvalHands;
 import pkr.CompleteEvaluation;
+import pkr.EvalHands;
 import pkr.Flop;
-import pkr.HandLevel;
 import pkr.HoleCards;
+import pkr.possTree.PossibilityNode.TextureCategory;
 import pkr.possTree.Tree;
-import pkr.possTree.FlopTextureNode.TextureCategory;
 
 
 
@@ -34,8 +30,8 @@ public class TestOutputTree {
         CompleteEvaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2, h3},
                 f, Card.parseCard("Qc"), Card.parseCard("Qd"));
         
-        assertTrue(evals[0].getRoundTexture(1).hasFlag(TextureCategory.SAME_SUIT_3));
-        assertTrue(evals[0].getRoundTexture(2).hasFlag(TextureCategory.SAME_SUIT_3));
+        assertTrue(evals[0].getPossibilityNode(1,0).hasFlag(TextureCategory.SAME_SUIT_3));
+        assertTrue(evals[0].getPossibilityNode(2,0).hasFlag(TextureCategory.SAME_SUIT_3));
         
         Tree tree = new Tree();
         tree.addCompleteEvaluation(evals[0]);

@@ -8,10 +8,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pkr.possTree.EvaluationNode;
-import pkr.possTree.EvaluationNode.EvaluationCategory;
-import pkr.possTree.FlopTextureNode;
-import pkr.possTree.FlopTextureNode.TextureCategory;
+
+import pkr.possTree.PossibilityNode;
+
+import static pkr.possTree.PossibilityNode.TextureCategory;
+import static pkr.possTree.PossibilityNode.WinningLosingCategory;
+import static pkr.possTree.PossibilityNode.WinningLosingSubCategory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -138,7 +140,7 @@ public class EvalHands {
         List<Card> allCards = getAllCards(null, flop, turn, river);
         Card[] allCardsArr = allCards.toArray(new Card[allCards.size()]);
         
-        FlopTextureNode flopTexture = new FlopTextureNode( allCardsArr );
+        PossibilityNode flopTexture = new PossibilityNode( PossibilityNode.TextureCategory.values() );
 
         for (Card card : allCardsArr) {
            // suits |= 1 << card.getSuit().ordinal();            
@@ -153,7 +155,7 @@ public class EvalHands {
         for(int s = 0; s < 4; ++s)
         {
             if (freqSuit[s] == 2) {
-                flopTexture.setFlag(TextureCategory.SAME_SUIT_2);
+                flopTexture.setFlag(PossibilityNode.TextureCategory.SAME_SUIT_2);
                 rainbow = false;
             } else if (freqSuit[s] == 3) {
                 flopTexture.setFlag(TextureCategory.SAME_SUIT_3);
@@ -166,7 +168,7 @@ public class EvalHands {
         }
         
         for(CompleteEvaluation eval : evals) {
-            eval.setRoundTexture(round, flopTexture);
+            eval.setPossibilityNode(round, 0, flopTexture);
         }
         
     }
@@ -188,15 +190,30 @@ public class EvalHands {
         eval.setRoundScore(1, scoreSingleHand(cards, flop, turn, null));
         eval.setRoundScore(2, scoreSingleHand(cards, flop, turn, river));
         
-        eval.setRoundEval(0, evaluateNodeSingleHand(cards, eval.getRoundScore(0), flop, null, null ));
-        eval.setRoundEval(1, evaluateNodeSingleHand(cards, eval.getRoundScore(1), flop, turn, null ));
-        eval.setRoundEval(2, evaluateNodeSingleHand(cards, eval.getRoundScore(2), flop, turn, river ));
+         evaluateNodeSingleHand(
+                eval.getPossibilityNode(0,1),eval.getPossibilityNode(0,2), 
+                cards, eval.getRoundScore(0), flop, null, null );
+         evaluateNodeSingleHand(
+                eval.getPossibilityNode(1,1),eval.getPossibilityNode(1,2),
+                cards, eval.getRoundScore(0), flop, turn, null );
+        evaluateNodeSingleHand(
+                eval.getPossibilityNode(2,1),eval.getPossibilityNode(2,2),
+                cards, eval.getRoundScore(0), flop, turn, river );
+        
+        /*
+        for(int i = 1; i < 3; ++i)
+        {
+            eval.setPossibilityNode(0, i, evalFlop[i]);
+            eval.setPossibilityNode(1, i, evalTurn[i]);
+            eval.setPossibilityNode(2, i, evalRiver[i]);
+        }*/
         return eval;
     }
     
-    public static EvaluationNode evaluateNodeSingleHand(HoleCards cards, Score score, Flop flop,  Card turn, Card river)
+    public static void evaluateNodeSingleHand(PossibilityNode winLose, 
+            PossibilityNode winLoseSub, HoleCards cards, Score score, Flop flop,  Card turn, Card river)
     {
-        EvaluationNode evalNode = new EvaluationNode();
+        
         
         //Top pair?
         if (score.handLevel == HandLevel.PAIR)
@@ -205,11 +222,9 @@ public class EvalHands {
             
             if (!flop.isPaired && score.kickers[0] == flop.getSortedCards()[2].getRank()) 
             {
-                evalNode.setFlag(EvaluationCategory.TOP_PAIR);
+                winLoseSub.setFlag(WinningLosingSubCategory.TOP_PAIR);
             }
         }
-        
-        return evalNode;
     }
     
     private static class CompareByRoundScore implements Comparator<CompleteEvaluation>
@@ -253,7 +268,7 @@ public class EvalHands {
                 if (bestHandScore
                         .equals(curEval.getRoundScore(round)))
                 {
-                    curEval.getRoundEval(round).setFlag(EvaluationCategory.WINNING);
+                    curEval.getPossibilityNode(round,1).setFlag(WinningLosingCategory.WINNING);
                 } else {
                     break;
                 }
@@ -264,7 +279,7 @@ public class EvalHands {
             for(; sortedEvalIndex >= 0; --sortedEvalIndex)
             {
                 CompleteEvaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
-                curEval.getRoundEval(round).setFlag(EvaluationCategory.LOSING);
+                curEval.getPossibilityNode(round, 1).setFlag(WinningLosingCategory.LOSING);
             }
             
             if (secondBestHandIndex >= 0) {
@@ -287,27 +302,27 @@ public class EvalHands {
                     CompleteEvaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
                     Score curScore = curEval.getRoundScore(round);
                 
-                    EvaluationCategory cat = null;
+                    WinningLosingSubCategory cat = null;
                     if (bestHandScore.getHandLevel() != curScore.getHandLevel()) {
-                        cat = EvaluationCategory.BY_HAND;
+                        cat = WinningLosingSubCategory.BY_HAND;
                     } else if (bestHandScore.getKickers()[0] != curScore.getKickers()[0]) {
-                        cat = EvaluationCategory.BY_KICKER_1;
+                        cat = WinningLosingSubCategory.BY_KICKER_1;
                     } else if (bestHandScore.getKickers()[1] != curScore.getKickers()[1]) {
-                        cat = EvaluationCategory.BY_KICKER_2;
+                        cat = WinningLosingSubCategory.BY_KICKER_2;
                     } else if (bestHandScore.getKickers()[2] != curScore.getKickers()[2]) {
-                        cat = EvaluationCategory.BY_KICKER_3_PLUS;
+                        cat = WinningLosingSubCategory.BY_KICKER_3_PLUS;
                     } else if (bestHandScore.getKickers()[3] != curScore.getKickers()[3]) {
-                        cat = EvaluationCategory.BY_KICKER_3_PLUS;
+                        cat = WinningLosingSubCategory.BY_KICKER_3_PLUS;
                     } else if (bestHandScore.getKickers()[4] != curScore.getKickers()[4]) {
-                        cat = EvaluationCategory.BY_KICKER_3_PLUS;
+                        cat = WinningLosingSubCategory.BY_KICKER_3_PLUS;
                     }
                     
                     Preconditions.checkNotNull(cat);
                     
-                    curEval.getRoundEval(round).setFlag(cat);
+                    curEval.getPossibilityNode(round, 2).setFlag(cat);
                     
                     if (sortedEvalIndex > thirdBestHand) {
-                        curEval.getRoundEval(round).setFlag(EvaluationCategory.SECOND_BEST_HAND);
+                        curEval.getPossibilityNode(round, 1).setFlag(WinningLosingCategory.SECOND_BEST_HAND);
                     }
                     
                     if (sortedEvalIndex == secondBestHandIndex) {
@@ -316,7 +331,7 @@ public class EvalHands {
                         {
                             CompleteEvaluation winEval = resultsSortedByRoundScore[round][winningEvalIndex];
                         
-                            winEval.getRoundEval(round).setFlag(cat);
+                            winEval.getPossibilityNode(round, 2).setFlag(cat);
                         }
                     }
                 }
@@ -327,7 +342,7 @@ public class EvalHands {
                 //Just say that the all way tie won by a hand
                 for(sortedEvalIndex = bestHandIndex; sortedEvalIndex >= 0; --sortedEvalIndex) {
                     CompleteEvaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
-                    curEval.getRoundEval(round).setFlag(EvaluationCategory.BY_HAND);
+                    curEval.getPossibilityNode(round,2).setFlag(WinningLosingSubCategory.BY_HAND);
                 }
             }
         }

@@ -1,7 +1,6 @@
 package pkr;
 
-import pkr.possTree.EvaluationNode;
-import pkr.possTree.FlopTextureNode;
+import pkr.possTree.PossibilityNode;
 
 /*
  * winning at flop
@@ -28,9 +27,9 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
     boolean won = false;
     boolean tied = false;
     
-    FlopTextureNode[] roundTexture;
-    EvaluationNode[] roundEval;
-    
+    //indexs -- round, level [ texture / win losisg / win losisg sub ]
+    PossibilityNode[][] possibilityNodes;
+        
     //1 if won, a fraction for a tie, 0 if lost
     double realEquity;
     
@@ -41,22 +40,14 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
     {
         roundScores[round] = score;
     }
-    public FlopTextureNode getRoundTexture(int round)
+    public PossibilityNode getPossibilityNode(int round, int level)
     {
-        return roundTexture[round];
+        return possibilityNodes[round][level];
     }
-    public void setRoundTexture(int round, FlopTextureNode roundTexture)
+     
+    public void setPossibilityNode(int round, int level, PossibilityNode node)
     {
-        this.roundTexture[round] = roundTexture;
-    }
-   
-    public EvaluationNode getRoundEval(int round)
-    {
-        return roundEval[round];
-    }
-    public void setRoundEval(int round, EvaluationNode flopEval)
-    {
-        this.roundEval[round] = flopEval;
+        possibilityNodes[round][level] = node;
     }
     
     
@@ -65,13 +56,14 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
         
         
         roundScores = new Score[3];
-        roundEval = new EvaluationNode[3];
-        roundTexture = new FlopTextureNode[3];
+        possibilityNodes = new PossibilityNode[3][3];
         
         for(int i = 0; i < 3; ++i) 
         {
             roundScores[i] = new Score();
-            roundEval[i] = new EvaluationNode();
+            possibilityNodes[i][0] = new PossibilityNode(PossibilityNode.TextureCategory.values());
+            possibilityNodes[i][1] = new PossibilityNode(PossibilityNode.WinningLosingCategory.values());
+            possibilityNodes[i][2] = new PossibilityNode(PossibilityNode.WinningLosingSubCategory.values());
         }
     }
     /**

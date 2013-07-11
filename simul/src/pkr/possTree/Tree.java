@@ -34,29 +34,30 @@ public class Tree
         TreeNode curNode = rootNode;
         curNode.count++;
         
-        for(int i = 0; i < 6; ++i) {
-            //0 2 4 are textures  1 3 5 are evals
-            iDisplayNode dispNode = null;
+        for(int round = 0; round < 3; ++round) 
+        {
+            for(int possLevel = 0; possLevel < 3; ++possLevel) 
+            {
+                //0 2 4 are textures  1 3 5 are evals
+                iDisplayNode dispNode = null;
+                
+                
+                dispNode = eval.getPossibilityNode(round, possLevel);
             
-            if (i % 2 == 0) {
-                dispNode = eval.getRoundTexture(i / 2);
-            } else {
-                dispNode = eval.getRoundEval( (i-1) / 2);
+                TreeNode curChildNode = null;
+                if (!curNode.getMapChildren().containsKey(dispNode)) {
+                    curChildNode = new TreeNode(dispNode);
+                    curChildNode.setParent(curNode);
+                    curNode.addChild(curChildNode);
+                } 
+                
+                curChildNode = curNode.getMapChildren().get(dispNode);
+                Preconditions.checkState(curChildNode.getParent().equals(curNode));
+                
+                curChildNode.count++;
+                
+                curNode = curChildNode;
             }
-        
-            TreeNode curChildNode = null;
-            if (!curNode.getMapChildren().containsKey(dispNode)) {
-                curChildNode = new TreeNode(dispNode);
-                curChildNode.setParent(curNode);
-                curNode.addChild(curChildNode);
-            } 
-            
-            curChildNode = curNode.getMapChildren().get(dispNode);
-            Preconditions.checkState(curChildNode.getParent().equals(curNode));
-            
-            curChildNode.count++;
-            
-            curNode = curChildNode;
         }
          
         

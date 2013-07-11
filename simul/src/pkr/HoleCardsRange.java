@@ -26,7 +26,7 @@ public class HoleCardsRange {
     
     
     
-    private static Logger log = LoggerFactory.getLogger("main");
+    private static Logger log = LoggerFactory.getLogger(HoleCardsRange.class);
     
     boolean mask[][];
     public boolean inRangeCard1[];

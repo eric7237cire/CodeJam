@@ -11,7 +11,7 @@ import com.google.common.collect.Lists;
 
 public class Simulator {
     
-    private static Logger log = LoggerFactory.getLogger("main");
+    private static Logger log = LoggerFactory.getLogger(Simulator.class);
     
     public static void main(String[] args) {
         List<String> playerHoleCards = Lists.newArrayList();
@@ -69,6 +69,11 @@ public class Simulator {
         for(int simulNum = 0; simulNum < TOTAL_SIMULATIONS; ++simulNum) {
             CompleteEvaluation[] evals = simulateOneRound(listRanges);
             
+          //Does not match the ranges
+            if (evals == null)
+            {
+                continue;
+            }
             tree.addCompleteEvaluation(evals[0]);
             
             if (simulNum % 150000 == 0) {
@@ -81,9 +86,7 @@ public class Simulator {
                 }
             }
             
-            //Does not match the ranges
-            if (evals == null)
-                continue;
+            
             
             ++actualRounds;
             
@@ -115,7 +118,7 @@ public class Simulator {
     private static HoleCards chooseValidAvailableCard(boolean[] usedCards, HoleCardsRange range) 
     {
         int numAvail = 0;
-        
+        log.debug("Choosing range {} ", range);
         
         for(int i = 0; i < range.getCardsList().size(); ++i)
         {
@@ -124,9 +127,11 @@ public class Simulator {
                    && !usedCards[hc.getCards()[1].toInt()]) 
             {
                 availableHoleCards[numAvail++] = i;
+                log.debug("{} available in {} ", hc, range);
+            } else {
+                log.debug("{} not available in {} ", hc, range);
             }
             
-            ++i;
         }
         
         if (numAvail == 0) 
@@ -202,8 +207,11 @@ public class Simulator {
             
             HoleCards hc = chooseValidAvailableCard(usedCards, range);
             
-            if (hc == null)
+            if (hc == null) {
+                log.debug("No hole cards found for range {}  " +
+                		"prev holeCards {}", range, holeCards );
                 return null;
+            }
             
             usedCards[ hc.getCards()[0].toInt() ] = true;
             usedCards[ hc.getCards()[1].toInt() ] = true;
