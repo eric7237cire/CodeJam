@@ -20,12 +20,18 @@ public class Simulator {
         //playerHoleCards.add("AA, AKs, 27, 93, 44, 99");
       playerHoleCards.add("KTs");
       
-      
-        playerHoleCards.add("JJ, AQs, KJo");
+      playerHoleCards.add("72o, 32");
+      playerHoleCards.add("27s");
+    //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
+      //playerHoleCards.add("Q2s+, J2+, T2+, 32+");
+       // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
+        //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
+        //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
+        
         
         //BUG with this range
         //playerHoleCards.add("JJ, KJ");
-        playerHoleCards.add(HoleCardsRange.SUITED_ACES);
+       // playerHoleCards.add(HoleCardsRange.SUITED_ACES);
         
         String fileName = "C:\\codejam\\CodeJam\\simul\\out.xml";
         
@@ -104,20 +110,23 @@ public class Simulator {
     }
     
     private static int[] availableCards = new int[52];
-    
+    private static int[] availableHoleCards = new int[1326];    
     
     private static HoleCards chooseValidAvailableCard(boolean[] usedCards, HoleCardsRange range) 
     {
         int numAvail = 0;
         
-        for(int i  = 0; i < range.cards.size(); ++i)
+        
+        for(int i = 0; i < range.getCardsList().size(); ++i)
         {
-            HoleCards hc = range.cards.get(i);
+            HoleCards hc = range.getCardsList().get(i);
             if (!usedCards[hc.getCards()[0].toInt()]
                    && !usedCards[hc.getCards()[1].toInt()]) 
             {
-                availableCards[numAvail++] = i;
+                availableHoleCards[numAvail++] = i;
             }
+            
+            ++i;
         }
         
         if (numAvail == 0) 
@@ -125,7 +134,7 @@ public class Simulator {
         
         int choice = (int) (Math.random() * numAvail);
         
-        return range.cards.get( availableCards[choice] );
+        return range.getCardsList().get( availableHoleCards[choice] );
         
     }
     

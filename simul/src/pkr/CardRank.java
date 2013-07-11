@@ -36,7 +36,7 @@ public enum CardRank {
      * @param value
      * @return
      */
-    public static CardRank getFromFaceValue(int value) {
+    private static CardRank getFromFaceValue(int value) {
         if (value == 1 || value == 14)
             return CardRank.ACE;
         
