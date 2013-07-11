@@ -297,11 +297,11 @@ public class TestScore {
          * 
          * 
          */
-        HoleCards h1 = HoleCards.getByIndices(0, 13);
+        HoleCards h1 = HoleCards.getByIndices(0, 1);
         log.debug("Hole cards {}", h1);
         assertTrue(h1.equals(new HoleCards(Card.parseCards("2h 2c"))));
         
-        h1 = HoleCards.getByIndices(26, 39);
+        h1 = HoleCards.getByIndices(2, 3);
         log.debug("Hole cards {}", h1);
         assertTrue(h1.equals(new HoleCards(Card.parseCards("2d 2s"))));
     }
