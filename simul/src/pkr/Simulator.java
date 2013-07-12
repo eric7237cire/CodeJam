@@ -230,7 +230,7 @@ public class Simulator {
                 Card.listByIndex[ flopTurnRiver[1] ],
                 Card.listByIndex[ flopTurnRiver[2] ]
         });
-        CompleteEvaluation[] evals = EvalHands.evaluate(holeCards, 
+        CompleteEvaluation[] evals = EvalHands.evaluate(true, holeCards, 
                 flop,  Card.listByIndex[ flopTurnRiver[3] ], 
         Card.listByIndex[ flopTurnRiver[4] ]);
         

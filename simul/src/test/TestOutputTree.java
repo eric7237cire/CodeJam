@@ -27,7 +27,7 @@ public class TestOutputTree {
                                        
         Flop f = new Flop(Card.parseCards("5c 3s Kc"));
         
-        CompleteEvaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2, h3},
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2, h3},
                 f, Card.parseCard("Qc"), Card.parseCard("Qd"));
         
         assertTrue(evals[0].getPossibilityNode(1,0).hasFlag(TextureCategory.SAME_SUIT_3));

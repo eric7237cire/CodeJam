@@ -1,7 +1,9 @@
 package test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.util.Arrays;
-import java.util.Collections;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,12 +11,10 @@ import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.*;
-
 import pkr.Card;
 import pkr.CardRank;
-import pkr.EvalHands;
 import pkr.CompleteEvaluation;
+import pkr.EvalHands;
 import pkr.Flop;
 import pkr.HandLevel;
 import pkr.HoleCards;
@@ -34,7 +34,7 @@ public class TestScore {
                
         Flop f = new Flop(Card.parseCards("2h 7h kh"));
         
-        EvalHands.evaluate(new HoleCards[] {h1, h2}, f, null, null);
+        EvalHands.evaluate(false, new HoleCards[] {h1, h2}, f, null, null);
     }
     
     @Test
@@ -44,7 +44,7 @@ public class TestScore {
                                
         Flop f = new Flop(Card.parseCards("2h 7h kh"));
         
-        CompleteEvaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2}, f, null, null);
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2}, f, null, null);
         
         assertTrue(evals[0].getScore().getHandLevel() == HandLevel.HIGH_CARD);
         assertTrue(evals[0].getScore().getKickers()[0] == CardRank.KING);
@@ -70,7 +70,7 @@ public class TestScore {
                                
         Flop f = new Flop(Card.parseCards("2h 7h 4h"));
         
-        CompleteEvaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2},
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2},
                 f, Card.parseCard("Qd"), Card.parseCard("5s"));
         
         assertTrue(evals[0].getScore().getHandLevel() == HandLevel.HIGH_CARD);
@@ -99,7 +99,7 @@ public class TestScore {
                                
         Flop f = new Flop(Card.parseCards("2h 8h 4h"));
         
-        CompleteEvaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2, h3},
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2, h3},
                 f, Card.parseCard("3d"), Card.parseCard("5s"));
         
         assertTrue(evals[0].getScore().getHandLevel() == HandLevel.STRAIGHT);
@@ -124,7 +124,7 @@ public class TestScore {
                                
         Flop f = new Flop(Card.parseCards("3s 2h 3d"));
         
-        CompleteEvaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2, h3},
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2, h3},
                 f, Card.parseCard("4d"), Card.parseCard("4s"));
         
         int handNum = 0;
@@ -161,7 +161,7 @@ public class TestScore {
                                
         Flop f = new Flop(Card.parseCards("6s 8s 5s"));
         
-        CompleteEvaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2, h3},
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2, h3},
                 f, Card.parseCard("7s"), Card.parseCard("Qs"));
         
         int handNum = 0;
@@ -198,7 +198,7 @@ public class TestScore {
                                
         Flop f = new Flop(Card.parseCards("3s Qc 6d"));
         
-        CompleteEvaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2},
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2},
                 f, Card.parseCard("Kc"), Card.parseCard("Kh"));
         
         int handNum = 0;
@@ -227,7 +227,7 @@ public class TestScore {
                                        
         Flop f = new Flop(Card.parseCards("3c Th 3h"));
         
-        CompleteEvaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2},
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2},
                 f, Card.parseCard("6c"), Card.parseCard("Td"));
         
         int handNum = 0;
@@ -257,7 +257,7 @@ public class TestScore {
                                
         Flop f = new Flop(Card.parseCards("5s 5h 5d"));
         
-        CompleteEvaluation[] evals = EvalHands.evaluate(new HoleCards[] {h1, h2, h3},
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2, h3},
                 f, Card.parseCard("4d"), Card.parseCard("5c"));
         
         int handNum = 0;

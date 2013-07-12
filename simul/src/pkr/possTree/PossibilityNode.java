@@ -7,16 +7,25 @@ import com.google.common.collect.Lists;
 
 public class PossibilityNode implements iDisplayNode {
 
-    public static enum WinningLosingSubCategory implements iFlag {
-        TOP_PAIR("Top pair"),
-        OVER_PAIR("Over pair"),
-        SECOND_BEST_PAIR("2nd best pair"), //on board        
-        BY_HAND("Det by hand category"),
-        BY_KICKER_1("Determined by hand"),
-        BY_KICKER_2("Determined by first kicker"),
-        BY_KICKER_3_PLUS("Determined by 2nd or later kicker");
+    public static enum Levels {
+        TEXTURE,
+        WIN_LOSE,
+        HAND_CATEGORY,
+        HAND_SUB_CATEGORY
+    }
+    
+    
+
+    public enum TextureCategory  implements iFlag {
+        UNSUITED("Rainbow board"),
+        SAME_SUIT_2("2 of the same suit"),
+        SAME_SUIT_3("3 of the same suit"),
+        SAME_SUIT_4("4 of the same suit"),
+        SAME_SUIT_5("5 of the same suit"),
+        HAS_AT_LEAST_ONE_ACE("At least 1 Ace");
         
-        WinningLosingSubCategory(String desc) {
+        
+        TextureCategory(String desc) {
             this.desc = desc;
         }
 
@@ -26,7 +35,7 @@ public class PossibilityNode implements iDisplayNode {
         {
             return desc;
         }
-
+        
         /* (non-Javadoc)
          * @see pkr.possTree.iFlag#getIndex()
          */
@@ -42,7 +51,6 @@ public class PossibilityNode implements iDisplayNode {
         public String getDescription() {
             return desc;
         }
-        
         
     }
     
@@ -83,16 +91,20 @@ public class PossibilityNode implements iDisplayNode {
         
     }
     
-    public enum TextureCategory implements iFlag {
-        UNSUITED("Rainbow board"),
-        SAME_SUIT_2("2 of the same suit"),
-        SAME_SUIT_3("3 of the same suit"),
-        SAME_SUIT_4("4 of the same suit"),
-        SAME_SUIT_5("5 of the same suit"),
-        HAS_AT_LEAST_ONE_ACE("At least 1 Ace");
+    public static enum HandCategory implements iFlag {
         
+        OVER_PAIR("Over pair"),
+        TOP_PAIR("Pair"),
+        SECOND_VISIBLE_PAIR("2nd Pair"),
+        PAIR("3rd Pair"),
+        TWO_PAIR("Two pair"),
+        VISIBLE_SET("Visible set"),
+        HIDDEN_SET("Hidden set"),
+        FLUSH("Flush"),
+        STRAIGHT("Straight")
+        ;
         
-        TextureCategory(String desc) {
+        HandCategory(String desc) {
             this.desc = desc;
         }
 
@@ -102,7 +114,7 @@ public class PossibilityNode implements iDisplayNode {
         {
             return desc;
         }
-        
+
         /* (non-Javadoc)
          * @see pkr.possTree.iFlag#getIndex()
          */
@@ -119,7 +131,49 @@ public class PossibilityNode implements iDisplayNode {
             return desc;
         }
         
+        
     }
+    
+    public static enum HandSubCategory implements iFlag {
+        
+        SECOND_BEST_PAIR("2nd best pair"), //on board        
+        BY_HAND_CATEGORY("Det by hand category"),
+        BY_KICKER_HAND("Determined by hand"),
+        BY_KICKER_1("Determined by first kicker"),
+        BY_KICKER_2_PLUS("Determined by 2nd or later kicker");
+        
+        HandSubCategory(String desc) {
+            this.desc = desc;
+        }
+
+        private String desc;
+
+        public String getDesc()
+        {
+            return desc;
+        }
+
+        /* (non-Javadoc)
+         * @see pkr.possTree.iFlag#getIndex()
+         */
+        @Override
+        public int getIndex() {
+            return ordinal();
+        }
+
+        /* (non-Javadoc)
+         * @see pkr.possTree.iFlag#getDescription()
+         */
+        @Override
+        public String getDescription() {
+            return desc;
+        }
+        
+        
+    }
+    
+    
+    
     iFlag[] allFlags;
 
     public PossibilityNode(iFlag[] allFlags) {
