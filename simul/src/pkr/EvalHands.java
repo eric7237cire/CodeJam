@@ -8,13 +8,18 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pkr.possTree.EvaluationNode;
-import pkr.possTree.EvaluationNode.EvaluationCategory;
-import pkr.possTree.FlopTextureNode;
-import pkr.possTree.FlopTextureNode.TextureCategory;
+
+import pkr.possTree.PossibilityNode;
+
+import static pkr.possTree.PossibilityNode.TextureCategory;
+import static pkr.possTree.PossibilityNode.WinningLosingCategory;
+import static pkr.possTree.PossibilityNode.HandSubCategory;
+import static pkr.possTree.PossibilityNode.HandCategory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+
+import static pkr.Card.NUM_RANKS;
 
 public class EvalHands {
     
@@ -41,10 +46,10 @@ public class EvalHands {
     {
         List<Card> allCards = Lists.newArrayList();
 
-        
-        for (HoleCards hCards : cards) {
-            allCards.addAll(Arrays.asList(hCards.getCards()));            
-        }
+        if (cards!=null)
+            for (HoleCards hCards : cards) {
+                allCards.addAll(Arrays.asList(hCards.getCards()));            
+            }
         
         allCards.addAll(Arrays.asList(flop.getCards()));
         
@@ -57,7 +62,7 @@ public class EvalHands {
         return allCards;
     }
     
-    public static Evaluation[] evaluate(HoleCards[] cards, Flop flop, Card turn, Card river) {
+    public static CompleteEvaluation[] evaluate(boolean heroOnly, HoleCards[] cards, Flop flop, Card turn, Card river) {
 
         
         
@@ -69,58 +74,21 @@ public class EvalHands {
         //Check uniqueness
         checkUniqueness(allCards);
 
-        Evaluation[] evals = new Evaluation[cards.length];
+        CompleteEvaluation[] evals = new CompleteEvaluation[cards.length];
         
         for(int i = 0; i < numPlayers; ++i) {
-            evals[i] = evaluateSingleHand(cards[i], flop, turn, river);
+            evals[i] = evaluateSingleHand(heroOnly && i > 0, cards[i], flop, turn, river);
             
             //Evaluation flopEval = evaluateSingleHand(cards[i], flop, null, null);
             
            evals[i].setPosition(i);
         }
         
-        populateFlopTexture(evals, flop, turn, river);
+        populateFlopTexture(evals, 0, flop, null, null);
+        populateFlopTexture(evals, 1, flop, turn, null);
+        populateFlopTexture(evals, 2, flop, turn, river);
         
-        //TODO redundant ?
-        Evaluation[] resultsSortedByScore = new Evaluation[numPlayers];
-        
-        for(int i = 0; i < numPlayers; ++i) {
-            resultsSortedByScore[i] = evals[i];
-        }
-        
-        Arrays.sort(resultsSortedByScore);
-        
-        resultsSortedByScore[numPlayers - 1].setWon(true);
-        resultsSortedByScore[numPlayers - 1].setRealEquity(1.0);
-        
-        int secondBestHandIndex = numPlayers - 2;
-        
-        if (resultsSortedByScore[numPlayers - 1].getScore().compareTo(
-                resultsSortedByScore[numPlayers - 2].getScore())==0) {
-            resultsSortedByScore[numPlayers - 1].setTied(true);
-            int numTied = 1;
-            
-            
-            
-            for(; secondBestHandIndex >= 0; --secondBestHandIndex) {
-                if (resultsSortedByScore[numPlayers - 1].getScore().compareTo(
-                        resultsSortedByScore[secondBestHandIndex].getScore())==0) {
-                    resultsSortedByScore[secondBestHandIndex].setTied(true);
-                    ++numTied;
-                } else {
-                    break;
-                }
-            }
-            
-            secondBestHandIndex += 1;
-            
-            for(int j = numPlayers - 1; j >= secondBestHandIndex; --j) {
-                resultsSortedByScore[j].setRealEquity(1.0 / numTied);
-            }
-            
-        }
-        
-            
+                    
         populateEvalutionNodeWithRelativeHandRankings(evals);
         
         
@@ -128,25 +96,30 @@ public class EvalHands {
         return evals;
     }
     
-    private static void populateFlopTexture(Evaluation[] evals, Flop flop, Card turn, Card river) 
+    private static void populateFlopTexture(CompleteEvaluation[] evals, int round, Flop flop, Card turn, Card river) 
     {
         int[] freqCard = new int[NUM_RANKS];
         int[] freqSuit = new int[4];
 
-        FlopTextureNode flopTexture = new FlopTextureNode(flop.getCards());
+        List<Card> allCards = getAllCards(null, flop, turn, river);
+        Card[] allCardsArr = allCards.toArray(new Card[allCards.size()]);
+        
+        PossibilityNode flopTexture = new PossibilityNode( PossibilityNode.TextureCategory.values() );
 
-        for (Card card : flop.getCards()) {
+        for (Card card : allCardsArr) {
            // suits |= 1 << card.getSuit().ordinal();            
             freqCard[card.getRank().getIndex()]++;
             freqSuit[card.getSuit().ordinal()]++;
         }
+        
+        
         
         boolean rainbow = true;
         
         for(int s = 0; s < 4; ++s)
         {
             if (freqSuit[s] == 2) {
-                flopTexture.setFlag(TextureCategory.SAME_SUIT_2);
+                flopTexture.setFlag(PossibilityNode.TextureCategory.SAME_SUIT_2);
                 rainbow = false;
             } else if (freqSuit[s] == 3) {
                 flopTexture.setFlag(TextureCategory.SAME_SUIT_3);
@@ -158,54 +131,109 @@ public class EvalHands {
             flopTexture.setFlag(TextureCategory.UNSUITED);
         }
         
-        for(Evaluation eval : evals) {
-            eval.setRoundTexture(0, flopTexture);
+        for(CompleteEvaluation eval : evals) {
+            eval.setPossibilityNode(round, 0, flopTexture);
         }
         
     }
 
-    private static int[] straightBitMasks = {
-            15 + (1 << 12), // a + 2 to 4
-            31, 31 << 1, 31 << 2, 31 << 3, 31 << 4, 31 << 5, 31 << 6, 31 << 7,
-            31 << 8 };
     
-    private static final int NUM_RANKS = 13;
+    
+    
 
-    public static Evaluation evaluateSingleHand(HoleCards cards, Flop flop,  Card turn, Card river)
+    /**
+     * Calculates all non relative metrics for a single player given the flop/turn/river
+     * for each round
+     * 
+     * @param scoreOnly
+     * @param cards
+     * @param flop
+     * @param turn
+     * @param river
+     * @return
+     */
+    public static CompleteEvaluation evaluateSingleHand(boolean scoreOnly, HoleCards cards, Flop flop,  Card turn, Card river)
     {
-        Evaluation eval = new Evaluation();
+        CompleteEvaluation eval = new CompleteEvaluation();
 
         eval.setHoleCards(cards);
         
-        eval.setRoundScore(0, scoreSingleHand(cards, flop, null, null));
-        eval.setRoundScore(1, scoreSingleHand(cards, flop, turn, null));
-        eval.setRoundScore(2, scoreSingleHand(cards, flop, turn, river));
+        TextureInfo texInfo = new TextureInfo();
+        texInfo.addCards(cards.getCards());
+        texInfo.addCards(flop.getCards());        
+        texInfo.calculate();
         
-        eval.setRoundEval(0, evaluateNodeSingleHand(cards, eval.getRoundScore(0), flop, null, null ));
-        eval.setRoundEval(1, evaluateNodeSingleHand(cards, eval.getRoundScore(1), flop, turn, null ));
-        eval.setRoundEval(2, evaluateNodeSingleHand(cards, eval.getRoundScore(2), flop, turn, river ));
+        TextureInfo texInfoTurn = new TextureInfo();
+        texInfoTurn.addCards(cards.getCards());
+        texInfoTurn.addCards(flop.getCards());
+        texInfoTurn.addCard(turn);
+        texInfoTurn.calculate();
+        
+        TextureInfo texInfoRiver = new TextureInfo();
+        texInfoRiver.addCards(cards.getCards());
+        texInfoRiver.addCards(flop.getCards());
+        texInfoRiver.addCard(turn);
+        texInfoRiver.addCard(river);
+        texInfoRiver.calculate();
+        
+        eval.setRoundScore(0, scoreSingleHand(texInfo));
+        eval.setRoundScore(1, scoreSingleHand(texInfoTurn));
+        eval.setRoundScore(2, scoreSingleHand(texInfoRiver));
+        
+        if (!scoreOnly) {
+         evaluateNodeSingleHand(
+                eval, CompleteEvaluation.ROUND_FLOP,  texInfo, 
+                eval.getRoundScore(CompleteEvaluation.ROUND_FLOP), flop, null, null );
+         evaluateNodeSingleHand(
+                eval, CompleteEvaluation.ROUND_TURN, texInfoTurn, 
+                eval.getRoundScore(CompleteEvaluation.ROUND_TURN), flop, turn, null );
+        evaluateNodeSingleHand(
+                eval, CompleteEvaluation.ROUND_RIVER, texInfoRiver, 
+                eval.getRoundScore( CompleteEvaluation.ROUND_RIVER), flop, turn, river );
+        }
+        
         return eval;
     }
     
-    public static EvaluationNode evaluateNodeSingleHand(HoleCards cards, Score score, Flop flop,  Card turn, Card river)
+    public static void evaluateNodeSingleHand(CompleteEvaluation eval, 
+            int round,
+            TextureInfo allCardsTexInfo, Score score, Flop flop,  Card turn, Card river)
     {
-        EvaluationNode evalNode = new EvaluationNode();
+        
+        TextureInfo communityCards = new TextureInfo();
+        communityCards.addCards(flop.getCards());
+        communityCards.addCard(turn);
+        communityCards.addCard(river);
+        communityCards.calculate();
         
         //Top pair?
         if (score.handLevel == HandLevel.PAIR)
         {
             //exclude cases like 72  flop TT4
             
-            if (!flop.isPaired && score.kickers[0] == flop.getSortedCards()[2].getRank()) 
+            if (communityCards.firstPair == -1
+                    && score.kickers[0] == communityCards.sortedCards.get(communityCards.sortedCards.size()-1)
+                            .getRank()) 
             {
-                evalNode.setFlag(EvaluationCategory.TOP_PAIR);
+                eval.setFlag(round, HandCategory.TOP_PAIR);
+            } else if (communityCards.firstPair == -1
+                    && score.kickers[0].getIndex() > 
+                    communityCards.getHighestRank().getIndex()
+                    ) {
+                eval.setFlag(round, HandCategory.OVER_PAIR);
+            }
+        } else if (score.handLevel == HandLevel.TRIPS) 
+        {
+            if (communityCards.firstPair == -1) 
+            {
+                eval.setFlag(round, HandCategory.HIDDEN_SET);
+            } else {
+                eval.setFlag(round, HandCategory.VISIBLE_SET);
             }
         }
-        
-        return evalNode;
     }
     
-    private static class CompareByRoundScore implements Comparator<Evaluation>
+    private static class CompareByRoundScore implements Comparator<CompleteEvaluation>
     {
         final int round;
         
@@ -215,15 +243,15 @@ public class EvalHands {
         }
 
         @Override
-        public int compare(Evaluation o1, Evaluation o2)
+        public int compare(CompleteEvaluation o1, CompleteEvaluation o2)
         {
             return o1.getRoundScore(round).compareTo(o2.getRoundScore(round));
         }
     }
     
-    public static void populateEvalutionNodeWithRelativeHandRankings( Evaluation[] eval ) {
+    public static void populateEvalutionNodeWithRelativeHandRankings( CompleteEvaluation[] eval ) {
      
-        Evaluation[][] resultsSortedByRoundScore = new Evaluation[3][eval.length];
+        CompleteEvaluation[][] resultsSortedByRoundScore = new CompleteEvaluation[3][eval.length];
         
         for(int i = 0; i < eval.length; ++i) {
             resultsSortedByRoundScore[0][i] = eval[i];
@@ -239,14 +267,16 @@ public class EvalHands {
             final int bestHandIndex = eval.length - 1;
             
             final Score bestHandScore =  resultsSortedByRoundScore[round][bestHandIndex].getRoundScore(round);
+            int numTiedForFirst = 0;
             
             for(; sortedEvalIndex >= 0; --sortedEvalIndex)
             {
-                Evaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex]; 
+                CompleteEvaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex]; 
                 if (bestHandScore
                         .equals(curEval.getRoundScore(round)))
                 {
-                    curEval.getRoundEval(round).setFlag(EvaluationCategory.WINNING);
+                    curEval.setFlag(round, WinningLosingCategory.WINNING);
+                    numTiedForFirst++;
                 } else {
                     break;
                 }
@@ -254,14 +284,14 @@ public class EvalHands {
             
             final int secondBestHandIndex = sortedEvalIndex;
             
-            for(; sortedEvalIndex >= 0; --sortedEvalIndex)
+            for(int winningEvalIndex = eval.length - 1; winningEvalIndex > secondBestHandIndex; --winningEvalIndex)
             {
-                Evaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
-                curEval.getRoundEval(round).setFlag(EvaluationCategory.LOSING);
+                CompleteEvaluation winEval = resultsSortedByRoundScore[round][winningEvalIndex];            
+                winEval.setRealEquity(1.0 / numTiedForFirst);
             }
             
             if (secondBestHandIndex >= 0) {
-                
+                //Second best hand exists
                 final Score secondHandScore =  resultsSortedByRoundScore[round][secondBestHandIndex].getRoundScore(round);
                 
                 //either the 3rd best or -1 if no 3rd place
@@ -277,33 +307,45 @@ public class EvalHands {
                 //Set flags for all losing hands
                 for(sortedEvalIndex = secondBestHandIndex; sortedEvalIndex >= 0; --sortedEvalIndex) 
                 {
-                    Evaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
+                    CompleteEvaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
                     Score curScore = curEval.getRoundScore(round);
                 
-                    EvaluationCategory cat = null;
+                    HandSubCategory cat = null;
                     if (bestHandScore.getHandLevel() != curScore.getHandLevel()) {
-                        cat = EvaluationCategory.BY_HAND;
+                        cat = HandSubCategory.BY_HAND_CATEGORY;
                     } else if (bestHandScore.getKickers()[0] != curScore.getKickers()[0]) {
-                        cat = EvaluationCategory.BY_KICKER_1;
+                        cat = HandSubCategory.BY_KICKER_HAND;
                     } else if (bestHandScore.getKickers()[1] != curScore.getKickers()[1]) {
-                        cat = EvaluationCategory.BY_KICKER_2;
+                        cat = HandSubCategory.BY_KICKER_1;
                     } else if (bestHandScore.getKickers()[2] != curScore.getKickers()[2]) {
-                        cat = EvaluationCategory.BY_KICKER_3_PLUS;
+                        cat = HandSubCategory.BY_KICKER_2_PLUS;
+                    } else if (bestHandScore.getKickers()[3] != curScore.getKickers()[3]) {
+                        cat = HandSubCategory.BY_KICKER_2_PLUS;
+                    } else if (bestHandScore.getKickers()[4] != curScore.getKickers()[4]) {
+                        cat = HandSubCategory.BY_KICKER_2_PLUS;
                     }
                     
-                    curEval.getRoundEval(round).setFlag(cat);
+                    Preconditions.checkNotNull(cat);
+                    
+                    curEval.setFlag(round, cat);
+                    curEval.setRealEquity(0);
                     
                     if (sortedEvalIndex > thirdBestHand) {
-                        curEval.getRoundEval(round).setFlag(EvaluationCategory.SECOND_BEST_HAND);
+                        curEval.setFlag(round, WinningLosingCategory.SECOND_BEST_HAND);
+                    } else {
+                        curEval.setFlag(round, WinningLosingCategory.LOSING);
                     }
                     
+                    /*
+                     * Set flags for best hand
+                     */
                     if (sortedEvalIndex == secondBestHandIndex) {
                         //we can just used the flag for the 2nd best hand in the best hand as they won for the same reason the 2nd best hand lost
                         for(int winningEvalIndex = bestHandIndex; winningEvalIndex > secondBestHandIndex; --winningEvalIndex)
                         {
-                            Evaluation winEval = resultsSortedByRoundScore[round][winningEvalIndex];
+                            CompleteEvaluation winEval = resultsSortedByRoundScore[round][winningEvalIndex];
                         
-                            winEval.getRoundEval(round).setFlag(cat);
+                            winEval.setFlag(round, cat);
                         }
                     }
                 }
@@ -311,10 +353,10 @@ public class EvalHands {
                 
                 
             } else {
-                //Just say that the all way tie won by a hand
+                //Second best hand does not exist; all way tie, just say that the all way tie won by a hand
                 for(sortedEvalIndex = bestHandIndex; sortedEvalIndex >= 0; --sortedEvalIndex) {
-                    Evaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
-                    curEval.getRoundEval(round).setFlag(EvaluationCategory.BY_HAND);
+                    CompleteEvaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
+                    curEval.setFlag(round, HandSubCategory.BY_HAND_CATEGORY);
                 }
             }
         }
@@ -323,119 +365,51 @@ public class EvalHands {
     
     
     
-    public static Score scoreSingleHand(HoleCards cards, Flop flop,  Card turn, Card river) {
+    public static Score scoreSingleHand(TextureInfo texInfo) {
         
         Score score = new Score();
         
-        List<Card> hand = Lists.newArrayList();
-
-        hand.addAll(Arrays.asList(cards.getCards()));
-        hand.addAll(Arrays.asList(flop.getCards()));
-        if (turn != null)
-            hand.add(turn);
+            
         
-        if (river != null)
-            hand.add(river);
-        Collections.sort(hand);
-
-        
-        int ranks = 0;
-
-        int[] freqCard = new int[NUM_RANKS];
-        int[] freqSuit = new int[4];
-
-        boolean flush = false;
-        Suit flushSuit = null;
-
-        for (Card card : hand) {
-           // suits |= 1 << card.getSuit().ordinal();
-            ranks |= (1 << card.getRank().getIndex());
-            freqCard[card.getRank().getIndex()]++;
-            freqSuit[card.getSuit().ordinal()]++;
-
-            if (freqSuit[card.getSuit().ordinal()] >= 5) {
-                flush = true;
-                flushSuit = card.getSuit();
-            }
-        }
-
-        int straightRank = -1;
-
-        for (int sbmIdx = straightBitMasks.length - 1; sbmIdx >= 0 ; --sbmIdx) {
-            if ( (ranks & straightBitMasks[sbmIdx]) == straightBitMasks[sbmIdx] ) {
-                straightRank = sbmIdx + 3;
-                break;
-            }
-        }
-
-        int fourKind = -1;
-        int threeKind = -1;
-        int firstPair = -1;
-        int secondPair = -1;
-        List<Integer> singleCard = Lists.newArrayList();
-
-        for (int r = NUM_RANKS-1; r >= 0; --r) {
-            if (freqCard[r] == 4) {
-                fourKind = r;
-            } else if (threeKind == -1 && freqCard[r] == 3) {
-                threeKind = r;
-                
-            } else if ( (freqCard[r] == 2 || freqCard[r] == 3)  && firstPair == -1) {
-                //first pair could be trips, ie 333222 really has a pair of 2's
-                firstPair = r;
-            } else if (freqCard[r] == 2 && secondPair == -1) {
-                secondPair = r;
-            } else if (freqCard[r] == 1) {
-                singleCard.add(r);
-            }
-        }
 
 
         // straight flush
-        if (straightRank >= 0 && flush) {
+        if (texInfo.straightRank >= 0 && texInfo.flush) {
             score.setHandLevel(HandLevel.STRAIGHT_FLUSH);
             score.setKickers(
-                    new CardRank[] { CardRank
-                            .getFromZeroBasedValue(straightRank ) });
+                    new CardRank[] { CardRank.ranks[texInfo.straightRank]
+                             });
             return score;
         }
 
         // 4 kind
-        if (fourKind >= 0) {
+        if (texInfo.fourKind >= 0) {
             score.setHandLevel(HandLevel.QUADS);
 
-            // Find first non quad kicker
-            for (int r = NUM_RANKS-1; r >= 0; --r) {
-                if (freqCard[r] < 4 && freqCard[r] > 0) {
-                    score
-                            .setKickers(
-                                    new CardRank[] { 
-                                            CardRank.getFromZeroBasedValue(fourKind),
-                                            CardRank
-                                            .getFromZeroBasedValue(r) });
-                    break;
-                }
-            }
+            CardRank kicker = texInfo.getHighestRank(CardRank.ranks[texInfo.fourKind],null);
+            
+            score.setKickers(
+                    new CardRank[] { 
+                            CardRank.ranks[texInfo.fourKind],
+                            kicker });
+    
             return score;
         }
 
         // full house
-        if (threeKind >= 0 && firstPair >= 0) {
+        if (texInfo.threeKind >= 0 && texInfo.firstPair >= 0) {
 
             score.setHandLevel(HandLevel.FULL_HOUSE);
             
             score
             .setKickers(
                     new CardRank[] { 
-                            CardRank.getFromZeroBasedValue(threeKind)
-                            ,CardRank.getFromZeroBasedValue(firstPair) });
-            return score;
-    
-            
-            
+                            CardRank.ranks[texInfo.threeKind],
+                            CardRank.ranks[texInfo.firstPair] });
+            return score;            
         }
 
-        if (flush) {
+        if (texInfo.flush) {
            
             score.setHandLevel(HandLevel.FLUSH);
 
@@ -443,10 +417,10 @@ public class EvalHands {
 
             // ace to two
             int kickerIndex = 0;
-            for (int cardIdx = hand.size() - 1; cardIdx >= 0; --cardIdx) {
-                Card card = hand.get(cardIdx);
+            for (int cardIdx = texInfo.sortedCards.size() - 1; cardIdx >= 0; --cardIdx) {
+                Card card = texInfo.sortedCards.get(cardIdx);
 
-                if (card.getSuit() != flushSuit)
+                if (card.getSuit() != texInfo.flushSuit)
                     continue;
 
                 score.getKickers()[kickerIndex++] = card.getRank();
@@ -458,82 +432,66 @@ public class EvalHands {
         }
 
         // straight
-        if (straightRank >= 0) {
+        if (texInfo.straightRank >= 0) {
             score.setHandLevel(HandLevel.STRAIGHT);
             score.setKickers(
-                    new CardRank[] { CardRank
-                            .getFromZeroBasedValue(straightRank ) });
+                    new CardRank[] { CardRank.ranks[texInfo.straightRank] });
             return score;
         }
 
         // 3 kind
-        if (threeKind >= 0) {
+        if (texInfo.threeKind >= 0) {
             score.setHandLevel(HandLevel.TRIPS);
-
-            int kickers = 1;
 
             score.setKickers(new CardRank[3]);
 
-            score.getKickers()[0] = CardRank
-                    .getFromZeroBasedValue(threeKind);
-
-            for (int r = NUM_RANKS-1; r >= 0; --r) {
-                if (freqCard[r] == 1) {
-                    score.getKickers()[kickers++] = CardRank
-                            .getFromZeroBasedValue(r);
-
-                }
-
-                if (kickers == 3)
-                    break;
-            }
+            score.getKickers()[0] = CardRank.ranks[texInfo.threeKind];
+            score.getKickers()[1] = texInfo.getHighestRank(score.getKickers()[0], null);            
+            score.getKickers()[2] = texInfo.getHighestRank(score.getKickers()[0], score.getKickers()[1]);
+            
             return score;
         }
 
         // 2 pair
-        if (firstPair >= 0 && secondPair >= 0) {
+        if (texInfo.firstPair >= 0 && texInfo.secondPair >= 0) {
             score.setHandLevel(HandLevel.TWO_PAIR);
 
             score.setKickers(new CardRank[3]);
 
-            score.getKickers()[0] = CardRank
-                    .getFromZeroBasedValue(firstPair);
-            score.getKickers()[1] = CardRank
-                    .getFromZeroBasedValue(secondPair);
+            score.getKickers()[0] = CardRank.ranks[texInfo.firstPair];
+            score.getKickers()[1] = CardRank.ranks[texInfo.secondPair];
+            
+            score.getKickers()[2] = texInfo.getHighestRank(score.getKickers()[0], score.getKickers()[1]);
 
-            for (int r = NUM_RANKS-1; r >= 0; --r) {
-                if (freqCard[r] >= 1 && r != firstPair && r != secondPair) {
-                    score.getKickers()[2] = 
-                            CardRank.getFromZeroBasedValue(r);
-                    break;
-                }
-
-                
-            }
             return score;
 
         }
 
         // Pair
-        if (firstPair >= 0) {
+        if (texInfo.firstPair >= 0) {
             score.setHandLevel(HandLevel.PAIR);
 
             int kickers = 1;
             score.setKickers(new CardRank[4]);
 
             score.getKickers()[0] = CardRank
-                    .getFromZeroBasedValue(firstPair);
+                    .getFromZeroBasedValue(texInfo.firstPair);
 
-            for (int r = NUM_RANKS-1; r >= 0; --r) {
-                if (freqCard[r] == 1) {
-                    score.getKickers()[kickers++] = CardRank
-                            .getFromZeroBasedValue(r);
+            for (int cardIdx = texInfo.sortedCards.size() - 1; cardIdx >= 0; --cardIdx) {
+                Card card = texInfo.sortedCards.get(cardIdx);
+                
+                if (card.getRank() == score.getKickers()[0])
+                    continue;
 
-                }
+                Preconditions.checkState(texInfo.freqCard[card.getRank().getIndex()] == 1);
+                
+                score.getKickers()[kickers++] = card.getRank();
 
                 if (kickers == 4)
                     break;
             }
+            
+            Preconditions.checkState(kickers == 4);
             return score;
 
         }
@@ -543,19 +501,21 @@ public class EvalHands {
 
         int kickers = 0;
         score.setKickers(new CardRank[5]);
-
         
-        for (int r = NUM_RANKS-1; r >= 0; --r) {
-            if (freqCard[r] == 1) {
-                score.getKickers()[kickers++] = CardRank
-                        .getFromZeroBasedValue(r);
+        for (int cardIdx = texInfo.sortedCards.size() - 1; cardIdx >= 0; --cardIdx) {
+            Card card = texInfo.sortedCards.get(cardIdx);
 
-            }
+            Preconditions.checkState(texInfo.freqCard[card.getRank().getIndex()] == 1);
+            
+            score.getKickers()[kickers++] = card.getRank();
 
             if (kickers == 5)
                 break;
         }
+        
+        Preconditions.checkState(kickers == 5);
         return score;
+        
 
     }
 }

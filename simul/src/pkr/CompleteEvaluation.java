@@ -1,7 +1,12 @@
 package pkr;
 
-import pkr.possTree.EvaluationNode;
-import pkr.possTree.FlopTextureNode;
+import pkr.possTree.PossibilityNode;
+import pkr.possTree.PossibilityNode.WinningLosingCategory;
+
+import pkr.possTree.PossibilityNode.TextureCategory;
+import pkr.possTree.PossibilityNode.WinningLosingCategory;
+import pkr.possTree.PossibilityNode.HandSubCategory;
+import pkr.possTree.PossibilityNode.HandCategory;
 
 /*
  * winning at flop
@@ -13,7 +18,7 @@ import pkr.possTree.FlopTextureNode;
  * 
  * 
  */
-public class Evaluation implements Comparable<Evaluation>{
+public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
     private HoleCards holeCards;
     
     private Score[] roundScores;
@@ -28,9 +33,9 @@ public class Evaluation implements Comparable<Evaluation>{
     boolean won = false;
     boolean tied = false;
     
-    FlopTextureNode[] roundTexture;
-    EvaluationNode[] roundEval;
-    
+    //indexs -- round, level [ texture / win losisg / win losisg sub ]
+    PossibilityNode[][] possibilityNodes;
+        
     //1 if won, a fraction for a tie, 0 if lost
     double realEquity;
     
@@ -41,37 +46,71 @@ public class Evaluation implements Comparable<Evaluation>{
     {
         roundScores[round] = score;
     }
-    public FlopTextureNode getRoundTexture(int round)
+    public PossibilityNode getPossibilityNode(int round, int level)
     {
-        return roundTexture[round];
+        return possibilityNodes[round][level];
     }
-    public void setRoundTexture(int round, FlopTextureNode roundTexture)
+    
+    public boolean hasFlag(int round, WinningLosingCategory cat) 
     {
-        this.roundTexture[round] = roundTexture;
+        return possibilityNodes[round][PossibilityNode.Levels.WIN_LOSE.ordinal()].hasFlag(cat);
     }
-   
-    public EvaluationNode getRoundEval(int round)
+    
+    public boolean hasFlag(int round, TextureCategory cat) 
     {
-        return roundEval[round];
+        return possibilityNodes[round][PossibilityNode.Levels.TEXTURE.ordinal()].hasFlag(cat);
     }
-    public void setRoundEval(int round, EvaluationNode flopEval)
+    
+    public boolean hasFlag(int round, HandCategory cat) 
     {
-        this.roundEval[round] = flopEval;
+        return possibilityNodes[round][PossibilityNode.Levels.HAND_CATEGORY.ordinal()].hasFlag(cat);
+    }
+    
+    public boolean hasFlag(int round, HandSubCategory cat) 
+    {
+        return possibilityNodes[round][PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal()].hasFlag(cat);
+    }
+    
+    public void setFlag(int round, WinningLosingCategory cat) 
+    {
+        possibilityNodes[round][PossibilityNode.Levels.WIN_LOSE.ordinal()].setFlag(cat);
+    }
+    
+    public void setFlag(int round, TextureCategory cat) 
+    {
+        possibilityNodes[round][PossibilityNode.Levels.TEXTURE.ordinal()].setFlag(cat);
+    }
+    
+    public void setFlag(int round, HandCategory cat) 
+    {
+        possibilityNodes[round][PossibilityNode.Levels.HAND_CATEGORY.ordinal()].setFlag(cat);
+    }
+    
+    public void setFlag(int round, HandSubCategory cat) 
+    {
+        possibilityNodes[round][PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal()].setFlag(cat);
+    }
+     
+    public void setPossibilityNode(int round, int level, PossibilityNode node)
+    {
+        possibilityNodes[round][level] = node;
     }
     
     
-    public Evaluation() {
+    public CompleteEvaluation() {
         super();
         
         
         roundScores = new Score[3];
-        roundEval = new EvaluationNode[3];
-        roundTexture = new FlopTextureNode[3];
+        possibilityNodes = new PossibilityNode[3][4];
         
         for(int i = 0; i < 3; ++i) 
         {
             roundScores[i] = new Score();
-            roundEval[i] = new EvaluationNode();
+            possibilityNodes[i][0] = new PossibilityNode(PossibilityNode.TextureCategory.values());
+            possibilityNodes[i][1] = new PossibilityNode(PossibilityNode.WinningLosingCategory.values());
+            possibilityNodes[i][2] = new PossibilityNode(PossibilityNode.HandCategory.values());
+            possibilityNodes[i][3] = new PossibilityNode(PossibilityNode.HandSubCategory.values());
         }
     }
     /**
@@ -104,7 +143,7 @@ public class Evaluation implements Comparable<Evaluation>{
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     @Override
-    public int compareTo(Evaluation o) {
+    public int compareTo(CompleteEvaluation o) {
         return getScore().compareTo(o.getScore());
     }
     /**

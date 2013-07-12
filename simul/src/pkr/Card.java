@@ -8,6 +8,8 @@ public class Card implements Comparable<Card>{
     
     private CardRank rank;
     
+    public static final int NUM_RANKS = 13;
+    
     public  static Card[] listByIndex;
 
     static {
@@ -27,12 +29,13 @@ public class Card implements Comparable<Card>{
     }
     
     public int toInt() {
-        return suit.ordinal() * 13 + rank.getIndex();
+        return suit.ordinal() + rank.getIndex() * 4;
     }
     
     public Card(int deckNumber) {
-        int suitInt = deckNumber / 13;
-        int rankInt = deckNumber % 13;
+        int rankInt = deckNumber / 4;
+        int suitInt = deckNumber % 4;
+        
         
         Suit suit = Suit.getFromValue(suitInt);
         
@@ -71,8 +74,22 @@ public class Card implements Comparable<Card>{
         
         return  new Card(suit, rank);
     }
+    
+    /**
+     * white space not needed if 2 cards
+     * @param allCardsStr can be AcKs or Ac Ks Qj 2d Ad 
+     * @return
+     */
     public static Card[] parseCards(String allCardsStr) {
-        String[] tokens = allCardsStr.toUpperCase().split("\\s+");
+        String[] tokens = null;
+        
+        if (allCardsStr.length() == 4) {
+            tokens = new String[] { allCardsStr.substring(0, 2),
+                    allCardsStr.substring(2, 4) };
+            
+        } else {
+            tokens = allCardsStr.toUpperCase().split("\\s+");
+        }
         Card[] cards = new Card[tokens.length];
         
         for(int i = 0; i < tokens.length; ++i) {

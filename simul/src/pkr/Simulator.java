@@ -5,23 +5,38 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pkr.possTree.Tree;
+
 import com.google.common.collect.Lists;
 
 public class Simulator {
     
-    private static Logger log = LoggerFactory.getLogger("main");
+    private static Logger log = LoggerFactory.getLogger(Simulator.class);
     
     public static void main(String[] args) {
         List<String> playerHoleCards = Lists.newArrayList();
         
        // playerHoleCards.add("AA, KK, QQ, JJ, TT, 99, 88, 77, 66, 55, 44, 33, 22, AK, AQ, AJ");
         //playerHoleCards.add("AA, AKs, 27, 93, 44, 99");
-      playerHoleCards.add("AA");
-        playerHoleCards.add("JJ, AQs, KJo");
+      playerHoleCards.add("KTs");
+      
+      playerHoleCards.add("72o, 32");
+      playerHoleCards.add("27s");
+    //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
+      //playerHoleCards.add("Q2s+, J2+, T2+, 32+");
+       // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
+        //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
+        //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
+        
         
         //BUG with this range
         //playerHoleCards.add("JJ, KJ");
-        playerHoleCards.add("27o, 38s");
+       // playerHoleCards.add(HoleCardsRange.SUITED_ACES);
+        
+        String fileName = "C:\\codejam\\CodeJam\\simul\\out.xml";
+        
+        Tree tree = simulate(playerHoleCards);
+        tree.output(fileName);
 
        // playerHoleCards.add("JJ, KJo");
        // playerHoleCards.add("27o");
@@ -31,9 +46,12 @@ public class Simulator {
      //  playerHoleCards.add("AQs");
       // playerHoleCards.add("KJo");
         
-        simulate(playerHoleCards);
+        
     }
-    public static void simulate(List<String> playerHoleCards) {
+    public static Tree simulate(List<String> playerHoleCards) {
+        
+        Tree tree = new Tree();
+        
         //Setup the ranges
         HoleCardsRange[] listRanges = new HoleCardsRange[playerHoleCards.size()];
         
@@ -47,9 +65,16 @@ public class Simulator {
         
         double[] equity = new double[numPlayers];
         
-        final int TOTAL_SIMULATIONS = 5000000;
+        final int TOTAL_SIMULATIONS = 10000;
         for(int simulNum = 0; simulNum < TOTAL_SIMULATIONS; ++simulNum) {
-            Evaluation[] evals = simulateOneRound(listRanges);
+            CompleteEvaluation[] evals = simulateOneRound(listRanges);
+            
+          //Does not match the ranges
+            if (evals == null)
+            {
+                continue;
+            }
+            tree.addCompleteEvaluation(evals[0]);
             
             if (simulNum % 150000 == 0) {
                 log.debug("# of simulations {} of {}", simulNum, TOTAL_SIMULATIONS );
@@ -61,9 +86,7 @@ public class Simulator {
                 }
             }
             
-            //Does not match the ranges
-            if (evals == null)
-                continue;
+            
             
             ++actualRounds;
             
@@ -85,23 +108,30 @@ public class Simulator {
             log.info("Players {} range {} =  {}", p, listRanges[p], equity[p] * 100);
         }
         
+        return tree;
+        
     }
     
     private static int[] availableCards = new int[52];
-    
+    private static int[] availableHoleCards = new int[1326];    
     
     private static HoleCards chooseValidAvailableCard(boolean[] usedCards, HoleCardsRange range) 
     {
         int numAvail = 0;
+        log.debug("Choosing range {} ", range);
         
-        for(int i  = 0; i < range.cards.size(); ++i)
+        for(int i = 0; i < range.getCardsList().size(); ++i)
         {
-            HoleCards hc = range.cards.get(i);
+            HoleCards hc = range.getCardsList().get(i);
             if (!usedCards[hc.getCards()[0].toInt()]
                    && !usedCards[hc.getCards()[1].toInt()]) 
             {
-                availableCards[numAvail++] = i;
+                availableHoleCards[numAvail++] = i;
+                log.debug("{} available in {} ", hc, range);
+            } else {
+                log.debug("{} not available in {} ", hc, range);
             }
+            
         }
         
         if (numAvail == 0) 
@@ -109,7 +139,7 @@ public class Simulator {
         
         int choice = (int) (Math.random() * numAvail);
         
-        return range.cards.get( availableCards[choice] );
+        return range.getCardsList().get( availableHoleCards[choice] );
         
     }
     
@@ -145,7 +175,7 @@ public class Simulator {
     
     //private static final int NUM_CARDS = 52;
     
-    private static Evaluation[] simulateOneRound(HoleCardsRange[] listRanges) {
+    private static CompleteEvaluation[] simulateOneRound(HoleCardsRange[] listRanges) {
         
         //final int numPlayers = listRanges.length;
         
@@ -177,8 +207,11 @@ public class Simulator {
             
             HoleCards hc = chooseValidAvailableCard(usedCards, range);
             
-            if (hc == null)
+            if (hc == null) {
+                log.debug("No hole cards found for range {}  " +
+                		"prev holeCards {}", range, holeCards );
                 return null;
+            }
             
             usedCards[ hc.getCards()[0].toInt() ] = true;
             usedCards[ hc.getCards()[1].toInt() ] = true;
@@ -197,7 +230,7 @@ public class Simulator {
                 Card.listByIndex[ flopTurnRiver[1] ],
                 Card.listByIndex[ flopTurnRiver[2] ]
         });
-        Evaluation[] evals = EvalHands.evaluate(holeCards, 
+        CompleteEvaluation[] evals = EvalHands.evaluate(true, holeCards, 
                 flop,  Card.listByIndex[ flopTurnRiver[3] ], 
         Card.listByIndex[ flopTurnRiver[4] ]);
         
