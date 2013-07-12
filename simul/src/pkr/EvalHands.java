@@ -158,29 +158,48 @@ public class EvalHands {
 
         eval.setHoleCards(cards);
         
-        eval.setRoundScore(0, scoreSingleHand(cards, flop, null, null));
-        eval.setRoundScore(1, scoreSingleHand(cards, flop, turn, null));
-        eval.setRoundScore(2, scoreSingleHand(cards, flop, turn, river));
+        TextureInfo texInfo = new TextureInfo();
+        texInfo.addCards(cards.getCards());
+        texInfo.addCards(flop.getCards());        
+        texInfo.calculate();
+        
+        TextureInfo texInfoTurn = new TextureInfo();
+        texInfoTurn.addCards(cards.getCards());
+        texInfoTurn.addCards(flop.getCards());
+        texInfoTurn.addCard(turn);
+        texInfoTurn.calculate();
+        
+        TextureInfo texInfoRiver = new TextureInfo();
+        texInfoRiver.addCards(cards.getCards());
+        texInfoRiver.addCards(flop.getCards());
+        texInfoRiver.addCard(turn);
+        texInfoRiver.addCard(river);
+        texInfoRiver.calculate();
+        
+        eval.setRoundScore(0, scoreSingleHand(texInfo));
+        eval.setRoundScore(1, scoreSingleHand(texInfoTurn));
+        eval.setRoundScore(2, scoreSingleHand(texInfoRiver));
         
         if (!scoreOnly) {
          evaluateNodeSingleHand(
-                eval.getPossibilityNode(0,1),eval.getPossibilityNode(0,2),eval.getPossibilityNode(0,3), 
-                cards, eval.getRoundScore(0), flop, null, null );
+                eval,  texInfo, eval.getRoundScore(0), flop, null, null );
          evaluateNodeSingleHand(
-                eval.getPossibilityNode(1,1),eval.getPossibilityNode(1,2),eval.getPossibilityNode(0,3),
-                cards, eval.getRoundScore(0), flop, turn, null );
+                eval, texInfoTurn, eval.getRoundScore(0), flop, turn, null );
         evaluateNodeSingleHand(
-                eval.getPossibilityNode(2,1),eval.getPossibilityNode(2,2),eval.getPossibilityNode(0,3),
-                cards, eval.getRoundScore(0), flop, turn, river );
+                eval,texInfoRiver, eval.getRoundScore(0), flop, turn, river );
         }
         
         return eval;
     }
     
-    public static void evaluateNodeSingleHand(PossibilityNode winLose, 
-            PossibilityNode handCat, PossibilityNode subHandCat, HoleCards cards, Score score, Flop flop,  Card turn, Card river)
+    public static void evaluateNodeSingleHand(CompleteEvaluation eval, 
+            TextureInfo allCardsTexInfo, Score score, Flop flop,  Card turn, Card river)
     {
         
+        TextureInfo justCommunityCards = new TextureInfo();
+        justCommunityCards.addCards(flop.getCards());
+        justCommunityCards.addCard(turn);
+        justCommunityCards.addCard(river);
         
         //Top pair?
         if (score.handLevel == HandLevel.PAIR)
@@ -326,19 +345,11 @@ public class EvalHands {
     
     
     
-    public static Score scoreSingleHand(HoleCards cards, Flop flop,  Card turn, Card river) {
+    public static Score scoreSingleHand(TextureInfo texInfo) {
         
         Score score = new Score();
         
-        
-
-        TextureInfo texInfo = new TextureInfo();
-        texInfo.addCards(cards.getCards());
-        texInfo.addCards(flop.getCards());
-        texInfo.addCard(turn);
-        texInfo.addCard(river);
-        texInfo.calculate();
-        
+            
         
 
 
