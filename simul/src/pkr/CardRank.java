@@ -13,12 +13,17 @@ public enum CardRank {
     
     private static BiMap<Integer, CardRank> cardMap = HashBiMap.create(13);
     
+    //2 to Ace
+    public static CardRank[] ranks;
+    
     private char theChar;
     
     static {
+        ranks = new CardRank[13];
         
         for (CardRank cardRank : CardRank.values()) {
             cardMap.put(12 - cardRank.ordinal(), cardRank);
+            ranks[12 - cardRank.ordinal()] = cardRank;
         }
     }
     private CardRank(String str) {
