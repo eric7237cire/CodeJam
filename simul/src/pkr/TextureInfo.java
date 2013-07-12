@@ -38,6 +38,10 @@ public class TextureInfo {
         31, 31 << 1, 31 << 2, 31 << 3, 31 << 4, 31 << 5, 31 << 6, 31 << 7,
         31 << 8 };
 
+    public CardRank getHighestRank() 
+    {
+        return sortedCards.get(sortedCards.size()-1).getRank();
+    }
     public CardRank getHighestRank(CardRank ignore1, CardRank ignore2)
     {
         int rank = rankBitmask;

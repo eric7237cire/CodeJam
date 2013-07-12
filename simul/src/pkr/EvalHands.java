@@ -182,33 +182,53 @@ public class EvalHands {
         
         if (!scoreOnly) {
          evaluateNodeSingleHand(
-                eval,  texInfo, eval.getRoundScore(0), flop, null, null );
+                eval, CompleteEvaluation.ROUND_FLOP,  texInfo, 
+                eval.getRoundScore(CompleteEvaluation.ROUND_FLOP), flop, null, null );
          evaluateNodeSingleHand(
-                eval, texInfoTurn, eval.getRoundScore(0), flop, turn, null );
+                eval, CompleteEvaluation.ROUND_TURN, texInfoTurn, 
+                eval.getRoundScore(CompleteEvaluation.ROUND_TURN), flop, turn, null );
         evaluateNodeSingleHand(
-                eval,texInfoRiver, eval.getRoundScore(0), flop, turn, river );
+                eval, CompleteEvaluation.ROUND_RIVER, texInfoRiver, 
+                eval.getRoundScore( CompleteEvaluation.ROUND_RIVER), flop, turn, river );
         }
         
         return eval;
     }
     
     public static void evaluateNodeSingleHand(CompleteEvaluation eval, 
+            int round,
             TextureInfo allCardsTexInfo, Score score, Flop flop,  Card turn, Card river)
     {
         
-        TextureInfo justCommunityCards = new TextureInfo();
-        justCommunityCards.addCards(flop.getCards());
-        justCommunityCards.addCard(turn);
-        justCommunityCards.addCard(river);
+        TextureInfo communityCards = new TextureInfo();
+        communityCards.addCards(flop.getCards());
+        communityCards.addCard(turn);
+        communityCards.addCard(river);
+        communityCards.calculate();
         
         //Top pair?
         if (score.handLevel == HandLevel.PAIR)
         {
             //exclude cases like 72  flop TT4
             
-            if (!flop.isPaired && score.kickers[0] == flop.getSortedCards()[2].getRank()) 
+            if (communityCards.firstPair == -1
+                    && score.kickers[0] == communityCards.sortedCards.get(communityCards.sortedCards.size()-1)
+                            .getRank()) 
             {
-                handCat.setFlag(HandCategory.TOP_PAIR);
+                eval.setFlag(round, HandCategory.TOP_PAIR);
+            } else if (communityCards.firstPair == -1
+                    && score.kickers[0].getIndex() > 
+                    communityCards.getHighestRank().getIndex()
+                    ) {
+                eval.setFlag(round, HandCategory.OVER_PAIR);
+            }
+        } else if (score.handLevel == HandLevel.TRIPS) 
+        {
+            if (communityCards.firstPair == -1) 
+            {
+                eval.setFlag(round, HandCategory.HIDDEN_SET);
+            } else {
+                eval.setFlag(round, HandCategory.VISIBLE_SET);
             }
         }
     }
