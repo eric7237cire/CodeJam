@@ -39,11 +39,16 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
     //1 if won, a fraction for a tie, 0 if lost
     double realEquity;
     
+    boolean quads = false;
+    
     public Score getRoundScore(int round) {
         return roundScores[round];
     }
     public void setRoundScore(int round, Score score) 
     {
+        if (score.handLevel == HandLevel.QUADS) {
+            quads = true;
+        }
         roundScores[round] = score;
     }
     public PossibilityNode getPossibilityNode(int round, int level)

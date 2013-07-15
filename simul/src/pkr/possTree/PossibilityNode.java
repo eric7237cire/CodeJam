@@ -98,6 +98,7 @@ public class PossibilityNode implements iDisplayNode {
         SECOND_VISIBLE_PAIR("2nd Pair"),
         PAIR("3rd Pair"),
         TWO_PAIR("Two pair"),
+        HIDDEN_TWO_PAIR("Two pair (unpaired board)"),
         VISIBLE_SET("Visible set"),
         HIDDEN_SET("Hidden set"),
         FLUSH("Flush"),

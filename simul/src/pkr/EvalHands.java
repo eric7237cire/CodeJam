@@ -230,6 +230,11 @@ public class EvalHands {
             } else {
                 eval.setFlag(round, HandCategory.VISIBLE_SET);
             }
+        } else if (score.handLevel == HandLevel.TWO_PAIR) 
+        {
+            if (communityCards.firstPair == -1) {
+                eval.setFlag(round, HandCategory.HIDDEN_TWO_PAIR);
+            }
         }
     }
     

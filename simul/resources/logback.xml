@@ -41,7 +41,8 @@
    </logger>
    
    <logger name="main" level="DEBUG"/>
-   <logger name="pkr.Simulator" level="INFO"/>
+   <logger name="mainOutput" level="DEBUG"/>
+   <logger name="pkr.Simulator" level="WARN"/>
    <logger name="pkr.HoleCardsRange" level="INFO"/>
    
       

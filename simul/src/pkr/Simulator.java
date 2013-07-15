@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pkr.possTree.PossibilityNode.HandCategory;
 import pkr.possTree.Tree;
 
 import com.google.common.collect.Lists;
@@ -12,19 +13,24 @@ import com.google.common.collect.Lists;
 public class Simulator {
     
     private static Logger log = LoggerFactory.getLogger(Simulator.class);
+    private static Logger logOutput = LoggerFactory.getLogger("mainOutput");
     
     public static void main(String[] args) {
         List<String> playerHoleCards = Lists.newArrayList();
         
        // playerHoleCards.add("AA, KK, QQ, JJ, TT, 99, 88, 77, 66, 55, 44, 33, 22, AK, AQ, AJ");
         //playerHoleCards.add("AA, AKs, 27, 93, 44, 99");
-      playerHoleCards.add("KTs");
+      //playerHoleCards.add("KTs");
       
-      playerHoleCards.add("72o, 32");
-      playerHoleCards.add("27s");
+    //  playerHoleCards.add("72o, 32");
+     // playerHoleCards.add("27s");
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
       //playerHoleCards.add("Q2s+, J2+, T2+, 32+");
-       // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
+        
+        for(int i = 0; i < 4; ++i) {
+            playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
+        }
+       // 
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
         
@@ -65,7 +71,13 @@ public class Simulator {
         
         double[] equity = new double[numPlayers];
         
-        final int TOTAL_SIMULATIONS = 10000;
+        final int TOTAL_SIMULATIONS = 10001;
+        int quadCount = 0;
+        int lotsOFSets = 0;
+        int royals = 0;
+        int fullHouse = 0;
+        int flops2Pair = 0;
+        
         for(int simulNum = 0; simulNum < TOTAL_SIMULATIONS; ++simulNum) {
             CompleteEvaluation[] evals = simulateOneRound(listRanges);
             
@@ -76,24 +88,60 @@ public class Simulator {
             }
             tree.addCompleteEvaluation(evals[0]);
             
-            if (simulNum % 150000 == 0) {
-                log.debug("# of simulations {} of {}", simulNum, TOTAL_SIMULATIONS );
-                
-                log.info("{} valid rounds", actualRounds);
-                for(int p = 0; p < numPlayers; ++p) {
-                                       
-                    log.info("Players {} {}", p, (equity[p] /actualRounds) * 100.0);
-                }
-            }
+           
             
             
             
             ++actualRounds;
             
+            int sets = 0;
+            
             for(int p = 0; p < numPlayers; ++p) {
                 equity[p] += evals[p].realEquity;
                 
+                if (p==0) {
+                if (evals[p].quads) {
+                    ++quadCount;
+                }
+                
+                if (evals[p].getScore().handLevel == HandLevel.TRIPS) {
+                    //++sets;
+                }
+                if (evals[p].getScore().handLevel == HandLevel.STRAIGHT_FLUSH && evals[p].getScore().getKickers()[0] == CardRank.ACE) {
+                    ++royals;
+                }
+                if (evals[p].getScore().handLevel == HandLevel.FULL_HOUSE) {
+                    ++fullHouse;
+                }
+                if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.HIDDEN_TWO_PAIR)) {
+                    ++flops2Pair;
+                }
+                if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.HIDDEN_SET)) {
+                    ++sets;
+                }
+                
+                }
                 //log.debug("eq {} player {}", evals[p].realEquity, p);
+            }
+            
+            if (sets >= 1)
+            {
+                lotsOFSets ++;
+            }
+            
+            if (simulNum > 0 && simulNum % 1000 == 0) {
+                logOutput.debug("# of simulations {} of {}", simulNum, TOTAL_SIMULATIONS );
+                logOutput.debug("# of quads {}.  %{} ", quadCount, 100.0 * quadCount / simulNum);
+                logOutput.debug("# of str8 flushes {}.  %{} ", royals, 100.0 * royals / simulNum);
+                logOutput.debug("# of flopped sets {}.  %{} ", lotsOFSets, 100.0 * lotsOFSets / simulNum);
+                logOutput.debug("# of fullhouse {}.  %{} ", fullHouse, 100.0 * fullHouse / simulNum);
+                logOutput.debug("# of flopping 2 pair {}.  %{} ", flops2Pair, 100.0 * flops2Pair / simulNum);
+                
+                logOutput.info("{} valid rounds", actualRounds);
+                for(int p = 0; p < numPlayers; ++p) {
+                                       
+                    logOutput.info("Players {} {}", p, (equity[p] /actualRounds) * 100.0);
+                }
             }
         }
         
@@ -102,6 +150,7 @@ public class Simulator {
         }
         
         log.info("{} valid rounds", actualRounds);
+        
         for(int p = 0; p < numPlayers; ++p) {
             equity[p] /= actualRounds;
             
