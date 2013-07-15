@@ -1,12 +1,10 @@
 package pkr;
 
 import pkr.possTree.PossibilityNode;
-import pkr.possTree.PossibilityNode.WinningLosingCategory;
-
+import pkr.possTree.PossibilityNode.HandCategory;
+import pkr.possTree.PossibilityNode.HandSubCategory;
 import pkr.possTree.PossibilityNode.TextureCategory;
 import pkr.possTree.PossibilityNode.WinningLosingCategory;
-import pkr.possTree.PossibilityNode.HandSubCategory;
-import pkr.possTree.PossibilityNode.HandCategory;
 
 /*
  * winning at flop
@@ -29,9 +27,7 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
     public static int ROUND_TURN = 1;
     public static int ROUND_RIVER = 2;
     
-    //1st 2nd 3rd etc
-    boolean won = false;
-    boolean tied = false;
+   
     
     //indexs -- round, level [ texture / win losisg / win losisg sub ]
     PossibilityNode[][] possibilityNodes;
@@ -40,6 +36,23 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
     double realEquity;
     
     boolean quads = false;
+    
+    public CompleteEvaluation() {
+        super();
+        
+        
+        roundScores = new Score[3];
+        possibilityNodes = new PossibilityNode[3][4];
+        
+        for(int i = 0; i < 3; ++i) 
+        {
+            roundScores[i] = new Score();
+            possibilityNodes[i][PossibilityNode.Levels.TEXTURE.ordinal()] = new PossibilityNode(PossibilityNode.TextureCategory.values());
+            possibilityNodes[i][PossibilityNode.Levels.WIN_LOSE.ordinal()] = new PossibilityNode(PossibilityNode.WinningLosingCategory.values());
+            possibilityNodes[i][PossibilityNode.Levels.HAND_CATEGORY.ordinal()] = new PossibilityNode(PossibilityNode.HandCategory.values());
+            possibilityNodes[i][PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal()] = new PossibilityNode(PossibilityNode.HandSubCategory.values());
+        }
+    }
     
     public Score getRoundScore(int round) {
         return roundScores[round];
@@ -102,22 +115,7 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
     }
     
     
-    public CompleteEvaluation() {
-        super();
-        
-        
-        roundScores = new Score[3];
-        possibilityNodes = new PossibilityNode[3][4];
-        
-        for(int i = 0; i < 3; ++i) 
-        {
-            roundScores[i] = new Score();
-            possibilityNodes[i][0] = new PossibilityNode(PossibilityNode.TextureCategory.values());
-            possibilityNodes[i][1] = new PossibilityNode(PossibilityNode.WinningLosingCategory.values());
-            possibilityNodes[i][2] = new PossibilityNode(PossibilityNode.HandCategory.values());
-            possibilityNodes[i][3] = new PossibilityNode(PossibilityNode.HandSubCategory.values());
-        }
-    }
+   
     /**
      * @return the holeCards
      */
@@ -140,7 +138,7 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
     public String toString()
     {
         return "Score " + getScore().toString() + " pos " 
-    + getPosition() + " eq " + getRealEquity() + " won ? " + won + " tied ? "  + tied;
+    + getPosition() + " eq " + getRealEquity() ;
         
     }
     
@@ -163,30 +161,7 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
     public void setPosition(int position) {
         this.position = position;
     }
-    /**
-     * @return the won
-     */
-    public boolean isWon() {
-        return won;
-    }
-    /**
-     * @param won the won to set
-     */
-    public void setWon(boolean won) {
-        this.won = won;
-    }
-    /**
-     * @return the tied
-     */
-    public boolean isTied() {
-        return tied;
-    }
-    /**
-     * @param tied the tied to set
-     */
-    public void setTied(boolean tied) {
-        this.tied = tied;
-    }
+    
     /**
      * @return the realEquity
      */

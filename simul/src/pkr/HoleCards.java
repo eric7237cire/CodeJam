@@ -39,6 +39,22 @@ public class HoleCards {
         }
     }
     
+    //TODO make this faster, auto mapping to integer based on card indexes
+    public String toStartingHandString() {
+        if (cards[0].getRank() == cards[1].getRank()) {
+            return "" + cards[0].getRank().toChar() + cards[0].getRank().toChar();
+        } 
+        
+        boolean isSuited = cards[0].getSuit() == cards[1].getSuit();
+        
+        if (cards[0].getRank().getIndex() > cards[1].getRank().getIndex()) {
+            return "" + cards[0].getRank().toChar() + cards[1].getRank().toChar() + (isSuited ? 's' : 'o');
+        }
+        
+        return "" + cards[1].getRank().toChar() 
+                + cards[0].getRank().toChar() + (isSuited ? 's' : 'o');
+    }
+    
     /**
      * Order does not matter of card1 / card 2
      * @param card1

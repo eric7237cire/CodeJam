@@ -1,25 +1,22 @@
 package pkr;
 
+import static pkr.Card.NUM_RANKS;
+
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import pkr.possTree.PossibilityNode;
-
-import static pkr.possTree.PossibilityNode.TextureCategory;
-import static pkr.possTree.PossibilityNode.WinningLosingCategory;
-import static pkr.possTree.PossibilityNode.HandSubCategory;
-import static pkr.possTree.PossibilityNode.HandCategory;
+import pkr.possTree.PossibilityNode.HandCategory;
+import pkr.possTree.PossibilityNode.HandSubCategory;
+import pkr.possTree.PossibilityNode.TextureCategory;
+import pkr.possTree.PossibilityNode.WinningLosingCategory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-
-import static pkr.Card.NUM_RANKS;
 
 public class EvalHands {
     
@@ -104,7 +101,7 @@ public class EvalHands {
         List<Card> allCards = getAllCards(null, flop, turn, river);
         Card[] allCardsArr = allCards.toArray(new Card[allCards.size()]);
         
-        PossibilityNode flopTexture = new PossibilityNode( PossibilityNode.TextureCategory.values() );
+       // PossibilityNode flopTexture = new PossibilityNode( PossibilityNode.TextureCategory.values() );
 
         for (Card card : allCardsArr) {
            // suits |= 1 << card.getSuit().ordinal();            
@@ -119,20 +116,21 @@ public class EvalHands {
         for(int s = 0; s < 4; ++s)
         {
             if (freqSuit[s] == 2) {
-                flopTexture.setFlag(PossibilityNode.TextureCategory.SAME_SUIT_2);
+                evals[0].setFlag(round, PossibilityNode.TextureCategory.SAME_SUIT_2);
                 rainbow = false;
             } else if (freqSuit[s] == 3) {
-                flopTexture.setFlag(TextureCategory.SAME_SUIT_3);
+                evals[0].setFlag(round, TextureCategory.SAME_SUIT_3);
                 rainbow = false;
             }
         }
         
         if (rainbow) {
-            flopTexture.setFlag(TextureCategory.UNSUITED);
+            evals[0].setFlag(round, TextureCategory.UNSUITED);
         }
         
         for(CompleteEvaluation eval : evals) {
-            eval.setPossibilityNode(round, 0, flopTexture);
+            eval.setPossibilityNode(round, PossibilityNode.Levels.TEXTURE.ordinal(),
+                    evals[0].getPossibilityNode(round, PossibilityNode.Levels.TEXTURE.ordinal()));
         }
         
     }
@@ -221,6 +219,8 @@ public class EvalHands {
                     communityCards.getHighestRank().getIndex()
                     ) {
                 eval.setFlag(round, HandCategory.OVER_PAIR);
+            } else {
+                eval.setFlag(round, HandCategory.THIRD_PAIR);
             }
         } else if (score.handLevel == HandLevel.TRIPS) 
         {
@@ -234,7 +234,16 @@ public class EvalHands {
         {
             if (communityCards.firstPair == -1) {
                 eval.setFlag(round, HandCategory.HIDDEN_TWO_PAIR);
+            } else {
+                eval.setFlag(round, HandCategory.TWO_PAIR);
             }
+        } else if (score.handLevel == HandLevel.FULL_HOUSE) 
+        {
+            eval.setFlag(round, HandCategory.FULL_HOUSE);
+        } else if (score.handLevel == HandLevel.HIGH_CARD) {
+            eval.setFlag(round, HandCategory.HIGH_CARD);
+        } else if (score.handLevel == HandLevel.QUADS) {
+            eval.setFlag(round, HandCategory.QUADS);
         }
     }
     

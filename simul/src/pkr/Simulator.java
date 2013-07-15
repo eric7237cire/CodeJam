@@ -27,8 +27,16 @@ public class Simulator {
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
       //playerHoleCards.add("Q2s+, J2+, T2+, 32+");
         
-        for(int i = 0; i < 4; ++i) {
-            playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
+        playerHoleCards.add("QQ");
+        
+        //random
+        playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
+        
+        //3 loose all in calls
+        for(int i = 0; i < 3; ++i) {
+            playerHoleCards.add("A2+, K2s+, K7o+, Q2s+, Q7o+, J2s+, " +
+            		"J7o+, T2s+, T7o+, 92s+, 97o+, 82s+, 85o+, 72s+, " +
+            		"76o, 62s+, 65o, 52s+, 54o, 42s+, 43o, 22+");
         }
        // 
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");

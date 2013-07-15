@@ -1,16 +1,25 @@
 package pkr.possTree;
 
 import java.util.List;
+import java.util.Map;
+
+import pkr.HoleCards;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
+/**
+ * Stores flags for 1 player in 1 round
+ * 
+ *
+ */
 public class PossibilityNode implements iDisplayNode {
 
     public static enum Levels {
         TEXTURE,
-        WIN_LOSE,
         HAND_CATEGORY,
+        WIN_LOSE,        
         HAND_SUB_CATEGORY
     }
     
@@ -94,15 +103,19 @@ public class PossibilityNode implements iDisplayNode {
     public static enum HandCategory implements iFlag {
         
         OVER_PAIR("Over pair"),
+        NON_OVER_PAIR("Non over pair"),
         TOP_PAIR("Pair"),
         SECOND_VISIBLE_PAIR("2nd Pair"),
-        PAIR("3rd Pair"),
+        THIRD_PAIR("3rd Pair"),
         TWO_PAIR("Two pair"),
         HIDDEN_TWO_PAIR("Two pair (unpaired board)"),
         VISIBLE_SET("Visible set"),
         HIDDEN_SET("Hidden set"),
         FLUSH("Flush"),
-        STRAIGHT("Straight")
+        STRAIGHT("Straight"),
+        FULL_HOUSE("Full house"),
+        HIGH_CARD("High card"),
+        QUADS("4 of a kind")
         ;
         
         HandCategory(String desc) {
@@ -176,14 +189,37 @@ public class PossibilityNode implements iDisplayNode {
     
     
     iFlag[] allFlags;
+    
+    //int[] cardsFreq;
+    Map<String, Integer> cardsFreqMap;
 
     public PossibilityNode(iFlag[] allFlags) {
         this.allFlags = allFlags;
+        
+        cardsFreqMap = Maps.newHashMap();
+        
+        
+        //cardsFreq = new int[52];
+    }
+    
+    public void addHoleCards(HoleCards hc) {
+        String hcStr = hc.toStartingHandString();
+        if (!cardsFreqMap.containsKey(hcStr)) {
+            cardsFreqMap.put(hcStr, 0);
+        }
+        
+        int count = cardsFreqMap.get(hcStr);
+        ++count;
+        cardsFreqMap.put(hcStr, count);
     }
 
     // Map<iDisplayNode>
     public List<iDisplayNode> getChildren() {
         return null;
+    }
+    
+    public String getTopFive() {
+        
     }
 
     long flags;

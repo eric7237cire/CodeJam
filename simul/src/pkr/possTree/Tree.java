@@ -14,7 +14,7 @@ import pkr.CompleteEvaluation;
 public class Tree
 {
 
-    @SuppressWarnings("unchecked")
+    //@SuppressWarnings("unchecked")
     public Tree() {
         rootNode = new TreeNode(null);
     }
@@ -36,7 +36,7 @@ public class Tree
         
         for(int round = 0; round < 3; ++round) 
         {
-            for(int possLevel = 0; possLevel < 3; ++possLevel) 
+            for(int possLevel = 0; possLevel < PossibilityNode.Levels.values().length; ++possLevel) 
             {
                 //0 2 4 are textures  1 3 5 are evals
                 iDisplayNode dispNode = null;
@@ -74,7 +74,7 @@ public class Tree
         try {
             xtw = xof.createXMLStreamWriter(new FileWriter(fileName));
 
-            final String prefix = "http://www.w3.org/TR/REC-html40";
+           // final String prefix = "http://www.w3.org/TR/REC-html40";
 
             xtw.writeStartDocument("utf-8", "1.0");
             //xtw.setPrefix("html", "http://www.w3.org/TR/REC-html40");
