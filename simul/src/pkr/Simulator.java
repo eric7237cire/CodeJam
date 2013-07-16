@@ -33,10 +33,17 @@ public class Simulator {
         playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
         //3 loose all in calls
-        for(int i = 0; i < 3; ++i) {
+        for(int i = 0; i < 1; ++i) {
             playerHoleCards.add("A2+, K2s+, K7o+, Q2s+, Q7o+, J2s+, " +
             		"J7o+, T2s+, T7o+, 92s+, 97o+, 82s+, 85o+, 72s+, " +
             		"76o, 62s+, 65o, 52s+, 54o, 42s+, 43o, 22+");
+        }
+        
+        //2 semi reasonable calls
+        for(int i = 0; i < 1; ++i) {
+        playerHoleCards.add("A2+, K2s+, K9o+, Q8s+, Q9o+, J7s+, " +
+                "J8o+, T8s+, T9o+, 97s+, 98o+, 85s+, 87o+, 75s+, " +
+                "76o, 64s+, 65o, 53s+, 54o, 42s+, 43o, 22+");
         }
        // 
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
@@ -79,7 +86,7 @@ public class Simulator {
         
         double[] equity = new double[numPlayers];
         
-        final int TOTAL_SIMULATIONS = 10001;
+        final int TOTAL_SIMULATIONS = 100001;
         int quadCount = 0;
         int lotsOFSets = 0;
         int royals = 0;

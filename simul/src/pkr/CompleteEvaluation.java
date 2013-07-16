@@ -27,7 +27,11 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
     public static int ROUND_TURN = 1;
     public static int ROUND_RIVER = 2;
     
-   
+
+    HoleCards[] bestHand;
+    
+    HoleCards[] secondBestHand;
+
     
     //indexs -- round, level [ texture / win losisg / win losisg sub ]
     PossibilityNode[][] possibilityNodes;
@@ -43,6 +47,9 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
         
         roundScores = new Score[3];
         possibilityNodes = new PossibilityNode[3][4];
+        
+        bestHand = new HoleCards[3];
+        secondBestHand = new HoleCards[3];
         
         for(int i = 0; i < 3; ++i) 
         {
@@ -107,6 +114,34 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
     public void setFlag(int round, HandSubCategory cat) 
     {
         possibilityNodes[round][PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal()].setFlag(cat);
+    }
+    
+    public void addSecondBestHand(int round, HoleCards hc) {
+        
+        
+       secondBestHand[round] = hc;
+        
+        
+       // possibilityNodes[round][PossibilityNode.Levels.WIN_LOSE.ordinal()].setHoleCards(hc);
+       // possibilityNodes[round][PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal()].setHoleCards(hc);
+    }
+    
+    public void addBestHand(int round, HoleCards hc) {
+        bestHand[round] = hc;
+       /*for(int i = 0; i < PossibilityNode.Levels.values().length; ++i) {
+            possibilityNodes[round][PossibilityNode.Levels.WIN_LOSE.ordinal()].setHoleCards(hc);
+            possibilityNodes[round][PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal()].setHoleCards(hc);
+        }*/
+    }
+    
+    public HoleCards getSecondBestHand(int round) 
+    {
+        return secondBestHand[round];
+    }
+    
+    public HoleCards getBestHand(int round) 
+    {
+        return bestHand[round];
     }
      
     public void setPossibilityNode(int round, int level, PossibilityNode node)

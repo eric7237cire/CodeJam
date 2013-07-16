@@ -7,6 +7,8 @@ import static pkr.CompleteEvaluation.ROUND_TURN;
 import static pkr.CompleteEvaluation.ROUND_RIVER;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import pkr.Card;
 import pkr.CardRank;
@@ -20,6 +22,7 @@ import pkr.possTree.PossibilityNode.WinningLosingCategory;
 import pkr.possTree.PossibilityNode.HandSubCategory;
 import pkr.possTree.PossibilityNode.HandCategory;
 
+@RunWith(JUnit4.class)
 public class TestEvalNodes
 {
 

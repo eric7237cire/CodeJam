@@ -7,13 +7,22 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Preconditions;
 
 import pkr.CompleteEvaluation;
+import pkr.EvalHands;
+import pkr.possTree.PossibilityNode.TextureCategory;
+
+import static pkr.possTree.PossibilityNode.*;
 
 public class Tree
 {
 
+    private static Logger log = LoggerFactory.getLogger(Tree.class);
+    
     //@SuppressWarnings("unchecked")
     public Tree() {
         rootNode = new TreeNode(null);
@@ -34,12 +43,26 @@ public class Tree
         TreeNode curNode = rootNode;
         curNode.count++;
         
+        /*
+        boolean check1 = false;
+        if (eval.hasFlag(0, TextureCategory.SAME_SUIT_2) &&
+                eval.hasFlag(0, HandCategory.OVER_PAIR) &&
+                eval.hasFlag(0, WinningLosingCategory.SECOND_BEST_HAND) &&
+                eval.hasFlag(0, HandSubCategory.BY_KICKER_HAND)
+             //   &&   ( !eval.getBestHand(0).toStartingHandString().equals("AA") &&
+               //         !eval.getBestHand(0).toStartingHandString().equals("KK") )
+                        )
+                        {
+            log.info("what");
+            check1 = true;
+                        }*/
+        
         for(int round = 0; round < 3; ++round) 
         {
             for(int possLevel = 0; possLevel < PossibilityNode.Levels.values().length; ++possLevel) 
             {
                 //0 2 4 are textures  1 3 5 are evals
-                iDisplayNode dispNode = null;
+                PossibilityNode dispNode = null;
                 
                 
                 dispNode = eval.getPossibilityNode(round, possLevel);
@@ -53,6 +76,15 @@ public class Tree
                 
                 curChildNode = curNode.getMapChildren().get(dispNode);
                 Preconditions.checkState(curChildNode.getParent().equals(curNode));
+                
+                curChildNode.addBestHand(eval.getBestHand(round));
+                curChildNode.addSecondBestHand(eval.getSecondBestHand(round));
+                
+                /*if (possLevel == 3 && round == 0 && check1) {
+                    if (curChildNode.bestHandCardsFreqMap.size() > 2) {
+                        log.warn("hmmm");
+                    }
+                }*/
                 
                 curChildNode.count++;
                 

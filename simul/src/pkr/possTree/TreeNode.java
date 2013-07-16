@@ -13,21 +13,42 @@ import java.util.Set;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
+import pkr.HoleCards;
+
+import com.google.common.base.Joiner;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 
 public class TreeNode
 {
 
+    PossibilityNode data;
+    
+    int count;
+    
+    Set<TreeNode> children;
+    TreeNode parent;
+    
+    Map<iDisplayNode, TreeNode> mapChildren;
+    
+    Map<String, Integer> bestHandCardsFreqMap;
+    Map<String, Integer> secondBestHandCardsFreqMap;
 
-    public TreeNode(iDisplayNode data) {
+    public TreeNode(PossibilityNode data) {
         this.data = data;
         mapChildren = Maps.newHashMap();
         count = 0;
         children = Sets.newHashSet();
         parent = null;
+        
+        bestHandCardsFreqMap = Maps.newHashMap();
+        secondBestHandCardsFreqMap = Maps.newHashMap();
     }
     
     public static DecimalFormat df = new DecimalFormat("0.#");
@@ -46,7 +67,21 @@ public class TreeNode
         }
         writer.writeAttribute("count", Integer.toString(count));
         if (data != null)
+        {
             writer.writeAttribute("desc", data.toString());
+        
+            
+        }
+        
+        String hands = getTopFive(bestHandCardsFreqMap);
+        if (hands.length() > 0) {
+            writer.writeAttribute("bestHands", hands);
+        }
+        
+        hands = getTopFive(secondBestHandCardsFreqMap);
+        if (hands.length() > 0) {
+            writer.writeAttribute("secondBestHands", hands);
+        }
         
         List<TreeNode> sortedByCountRev = Lists.newArrayList(children);
         
@@ -76,26 +111,63 @@ public class TreeNode
         mapChildren.put(child.data, child);
     }
     
-    iDisplayNode data;
+    private static void addHand(HoleCards hc, Map<String, Integer> map) 
+    {
+        if (hc == null) 
+            return;
+        
+        String hcStr = hc.toStartingHandString();
+        if (!map.containsKey(hcStr)) {
+            map.put(hcStr, 0);
+        }
+        
+        int count = map.get(hcStr);
+        ++count;
+        map.put(hcStr, count);
+    }
     
-    int count;
+    public void addBestHand(HoleCards hc) {
+        addHand(hc, bestHandCardsFreqMap);
+        
+    }
     
-    Set<TreeNode> children;
-    TreeNode parent;
+    public void addSecondBestHand(HoleCards hc) {
+        addHand(hc, secondBestHandCardsFreqMap);
+    }
+     
     
-    Map<iDisplayNode, TreeNode> mapChildren;
+    public String getTopFive( Map<String, Integer> map) {
+        List<Pair<Integer, String>> liste = Lists.newArrayList();
+        for(String key : map.keySet()) {
+            Pair<Integer, String> freqPair = 
+                    new ImmutablePair<>(map.get(key), key);
+            liste.add(freqPair);
+        }
+        
+        Collections.sort(liste, Ordering.natural().reverse() );
+        
+        StringBuffer sb = new StringBuffer();
+        for(int i = 0; i < 5 && i < liste.size(); ++i) {
+            sb.append(liste.get(i).getValue());
+            sb.append(" (");
+            sb.append(liste.get(i).getKey());
+            sb.append(") ");
+        }
+                
+        return sb.toString();
+    }
 
     /**
      * @return the data
      */
-    public iDisplayNode getData() {
+    public PossibilityNode getData() {
         return data;
     }
 
     /**
      * @param data the data to set
      */
-    public void setData(iDisplayNode data) {
+    public void setData(PossibilityNode data) {
         this.data = data;
     }
 

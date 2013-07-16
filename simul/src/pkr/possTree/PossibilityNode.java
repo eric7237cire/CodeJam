@@ -1,17 +1,22 @@
 package pkr.possTree;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import pkr.HoleCards;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Ordering;
 
 /**
- * Stores flags for 1 player in 1 round
- * 
+ * Stockage des drapaux pour un jouer, un Stores flags for 1 player in 1 round
+ * in one "Level" ie flop texture, winning/losing etc
  *
  */
 public class PossibilityNode implements iDisplayNode {
@@ -191,36 +196,22 @@ public class PossibilityNode implements iDisplayNode {
     iFlag[] allFlags;
     
     //int[] cardsFreq;
-    Map<String, Integer> cardsFreqMap;
-
+    
     public PossibilityNode(iFlag[] allFlags) {
         this.allFlags = allFlags;
         
-        cardsFreqMap = Maps.newHashMap();
+       
         
         
         //cardsFreq = new int[52];
     }
     
-    public void addHoleCards(HoleCards hc) {
-        String hcStr = hc.toStartingHandString();
-        if (!cardsFreqMap.containsKey(hcStr)) {
-            cardsFreqMap.put(hcStr, 0);
-        }
-        
-        int count = cardsFreqMap.get(hcStr);
-        ++count;
-        cardsFreqMap.put(hcStr, count);
-    }
-
+  
     // Map<iDisplayNode>
     public List<iDisplayNode> getChildren() {
         return null;
     }
     
-    public String getTopFive() {
-        
-    }
 
     long flags;
 
@@ -286,4 +277,6 @@ public class PossibilityNode implements iDisplayNode {
         }
         return Joiner.on("--").join(ret) + "-" + flags;
     }
+
+
 }

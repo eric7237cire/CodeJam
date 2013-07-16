@@ -285,7 +285,9 @@ public class EvalHands {
             
             for(; sortedEvalIndex >= 0; --sortedEvalIndex)
             {
-                CompleteEvaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex]; 
+                CompleteEvaluation curEval = 
+                        resultsSortedByRoundScore[round][sortedEvalIndex]; 
+                
                 if (bestHandScore
                         .equals(curEval.getRoundScore(round)))
                 {
@@ -298,6 +300,7 @@ public class EvalHands {
             
             final int secondBestHandIndex = sortedEvalIndex;
             
+            //Set winning round's equity
             for(int winningEvalIndex = eval.length - 1; winningEvalIndex > secondBestHandIndex; --winningEvalIndex)
             {
                 CompleteEvaluation winEval = resultsSortedByRoundScore[round][winningEvalIndex];            
@@ -305,6 +308,19 @@ public class EvalHands {
             }
             
             if (secondBestHandIndex >= 0) {
+                
+                /**
+                 * Nous voulons que si le héro a gagné, on ajoute la deuxième meilleur main
+                 * à la liste
+                 */
+               // if (eval[0].hasFlag(round, WinningLosingCategory.WINNING)) {
+                    eval[0].addSecondBestHand(round, resultsSortedByRoundScore[round][secondBestHandIndex].getHoleCards());
+               // } else {
+                    eval[0].addBestHand(round, resultsSortedByRoundScore[round][bestHandIndex].getHoleCards() );
+               // }
+                
+                
+                
                 //Second best hand exists
                 final Score secondHandScore =  resultsSortedByRoundScore[round][secondBestHandIndex].getRoundScore(round);
                 
