@@ -251,6 +251,8 @@ public class EvalHands {
             eval.setFlag(round, HandCategory.QUADS);
         } else if (score.handLevel == HandLevel.FLUSH) {
             eval.setFlag(round, HandCategory.FLUSH);
+        } else if (score.handLevel == HandLevel.STRAIGHT) {
+            eval.setFlag(round, HandCategory.STRAIGHT);
         }
     }
     
