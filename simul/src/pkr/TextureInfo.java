@@ -25,6 +25,8 @@ public class TextureInfo {
     boolean flush;
     Suit flushSuit;
     
+    int highestFreqSuit = 0;
+    
     public TextureInfo() {
         super();
         this.cards = new ArrayList<>(7);
@@ -96,13 +98,21 @@ public class TextureInfo {
         freqCard[card.getRank().getIndex()]++;
         freqSuit[card.getSuit().ordinal()]++;
         
-        if (freqSuit[card.getSuit().ordinal()] >= 5) {
+        if (freqSuit[card.getSuit().ordinal()] > highestFreqSuit) {
+            highestFreqSuit = freqSuit[card.getSuit().ordinal()];
+        }
+        
+        if (highestFreqSuit >= 5) {
             flush = true;
             flushSuit = card.getSuit();
         }
         
         this.cards.add(card);
         this.sortedCards.add(card);
+    }
+    
+    public boolean noPairedCards() {
+        return firstPair == -1;
     }
     
     public void addCards(Collection<Card> cards) 

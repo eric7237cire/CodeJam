@@ -36,6 +36,8 @@ public class PossibilityNode implements iDisplayNode {
         SAME_SUIT_3("3 of the same suit"),
         SAME_SUIT_4("4 of the same suit"),
         SAME_SUIT_5("5 of the same suit"),
+        PAIRED_BOARD("Paired board"),
+        UNPAIRED_BOARD("Un paired board"),
         HAS_AT_LEAST_ONE_ACE("At least 1 Ace");
         
         

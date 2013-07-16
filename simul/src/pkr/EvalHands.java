@@ -73,17 +73,70 @@ public class EvalHands {
 
         CompleteEvaluation[] evals = new CompleteEvaluation[cards.length];
         
+       
+        TextureInfo communityCardsFlop = new TextureInfo();
+        communityCardsFlop.addCards(flop.getCards());
+        communityCardsFlop.calculate();
+        
+        TextureInfo communityCardsTurn = new TextureInfo();
+        communityCardsTurn.addCards(flop.getCards());
+        communityCardsTurn.addCard(turn);
+        communityCardsTurn.calculate();
+        
+        TextureInfo communityCardsRiver = new TextureInfo();
+        communityCardsRiver.addCards(flop.getCards());
+        communityCardsRiver.addCard(turn);
+        communityCardsRiver.addCard(river);
+        communityCardsRiver.calculate();
+        
         for(int i = 0; i < numPlayers; ++i) {
-            evals[i] = evaluateSingleHand(heroOnly && i > 0, cards[i], flop, turn, river);
             
-            //Evaluation flopEval = evaluateSingleHand(cards[i], flop, null, null);
+            HoleCards holeCards = cards[i];
+            TextureInfo texInfo = new TextureInfo();
+            texInfo.addCards(holeCards.getCards());
+            texInfo.addCards(flop.getCards());        
+            texInfo.calculate();
+            
+            TextureInfo texInfoTurn = new TextureInfo();
+            texInfoTurn.addCards(holeCards.getCards());
+            texInfoTurn.addCards(flop.getCards());
+            texInfoTurn.addCard(turn);
+            texInfoTurn.calculate();
+            
+            TextureInfo texInfoRiver = new TextureInfo();
+            texInfoRiver.addCards(holeCards.getCards());
+            texInfoRiver.addCards(flop.getCards());
+            texInfoRiver.addCard(turn);
+            texInfoRiver.addCard(river);
+            texInfoRiver.calculate();
+            
+            evals[i] = new CompleteEvaluation();
+
+            evals[i].setHoleCards(holeCards);
+                       
+            
+            evals[i].setRoundScore(0, scoreSingleHand(texInfo));
+            evals[i].setRoundScore(1, scoreSingleHand(texInfoTurn));
+            evals[i].setRoundScore(2, scoreSingleHand(texInfoRiver));
+            
             
            evals[i].setPosition(i);
-        }
         
-        populateFlopTexture(evals, 0, flop, null, null);
-        populateFlopTexture(evals, 1, flop, turn, null);
-        populateFlopTexture(evals, 2, flop, turn, river);
+           if (i == 0 || !heroOnly) {
+            evaluateNodeSingleHand(
+                   evals[i], CompleteEvaluation.ROUND_FLOP,  texInfo, communityCardsFlop,
+                   evals[i].getRoundScore(CompleteEvaluation.ROUND_FLOP), flop, null, null );
+            evaluateNodeSingleHand(
+                    evals[i], CompleteEvaluation.ROUND_TURN, texInfoTurn, communityCardsTurn,
+                    evals[i].getRoundScore(CompleteEvaluation.ROUND_TURN), flop, turn, null );
+           evaluateNodeSingleHand(
+                   evals[i], CompleteEvaluation.ROUND_RIVER, texInfoRiver, communityCardsRiver,
+                   evals[i].getRoundScore( CompleteEvaluation.ROUND_RIVER), flop, turn, river );
+           }
+        }
+        populateFlopTexture(evals, communityCardsFlop, 0, flop, null, null);
+        populateFlopTexture(evals, communityCardsTurn, 1, flop, turn, null);
+        populateFlopTexture(evals, communityCardsRiver, 2, flop, turn, river);
         
                     
         populateEvalutionNodeWithRelativeHandRankings(evals);
@@ -93,7 +146,7 @@ public class EvalHands {
         return evals;
     }
     
-    private static void populateFlopTexture(CompleteEvaluation[] evals, int round, Flop flop, Card turn, Card river) 
+    private static void populateFlopTexture(CompleteEvaluation[] evals, TextureInfo communityCards, int round, Flop flop, Card turn, Card river) 
     {
         int[] freqCard = new int[NUM_RANKS];
         int[] freqSuit = new int[4];
@@ -110,22 +163,30 @@ public class EvalHands {
         }
         
         
-        
-        boolean rainbow = true;
-        
-        for(int s = 0; s < 4; ++s)
+       
+        switch(communityCards.highestFreqSuit )
         {
-            if (freqSuit[s] == 2) {
-                evals[0].setFlag(round, PossibilityNode.TextureCategory.SAME_SUIT_2);
-                rainbow = false;
-            } else if (freqSuit[s] == 3) {
-                evals[0].setFlag(round, TextureCategory.SAME_SUIT_3);
-                rainbow = false;
-            }
+        case 1:
+            evals[0].setFlag(round, TextureCategory.UNSUITED);
+            break;
+        case 2:
+            evals[0].setFlag(round, PossibilityNode.TextureCategory.SAME_SUIT_2);
+            break;
+        case 3:
+            evals[0].setFlag(round, PossibilityNode.TextureCategory.SAME_SUIT_3);
+            break;
+        case 4:
+            evals[0].setFlag(round, PossibilityNode.TextureCategory.SAME_SUIT_4);
+            break;
+        case 5:
+            evals[0].setFlag(round, PossibilityNode.TextureCategory.SAME_SUIT_5);
+            break;
         }
         
-        if (rainbow) {
-            evals[0].setFlag(round, TextureCategory.UNSUITED);
+        if (communityCards.noPairedCards()) {
+            evals[0].setFlag(round, TextureCategory.UNPAIRED_BOARD);
+        } else {
+            evals[0].setFlag(round, TextureCategory.PAIRED_BOARD);
         }
         
         for(CompleteEvaluation eval : evals) {
@@ -139,70 +200,14 @@ public class EvalHands {
     
     
 
-    /**
-     * Calculates all non relative metrics for a single player given the flop/turn/river
-     * for each round
-     * 
-     * @param scoreOnly
-     * @param cards
-     * @param flop
-     * @param turn
-     * @param river
-     * @return
-     */
-    public static CompleteEvaluation evaluateSingleHand(boolean scoreOnly, HoleCards cards, Flop flop,  Card turn, Card river)
-    {
-        CompleteEvaluation eval = new CompleteEvaluation();
-
-        eval.setHoleCards(cards);
-        
-        TextureInfo texInfo = new TextureInfo();
-        texInfo.addCards(cards.getCards());
-        texInfo.addCards(flop.getCards());        
-        texInfo.calculate();
-        
-        TextureInfo texInfoTurn = new TextureInfo();
-        texInfoTurn.addCards(cards.getCards());
-        texInfoTurn.addCards(flop.getCards());
-        texInfoTurn.addCard(turn);
-        texInfoTurn.calculate();
-        
-        TextureInfo texInfoRiver = new TextureInfo();
-        texInfoRiver.addCards(cards.getCards());
-        texInfoRiver.addCards(flop.getCards());
-        texInfoRiver.addCard(turn);
-        texInfoRiver.addCard(river);
-        texInfoRiver.calculate();
-        
-        eval.setRoundScore(0, scoreSingleHand(texInfo));
-        eval.setRoundScore(1, scoreSingleHand(texInfoTurn));
-        eval.setRoundScore(2, scoreSingleHand(texInfoRiver));
-        
-        if (!scoreOnly) {
-         evaluateNodeSingleHand(
-                eval, CompleteEvaluation.ROUND_FLOP,  texInfo, 
-                eval.getRoundScore(CompleteEvaluation.ROUND_FLOP), flop, null, null );
-         evaluateNodeSingleHand(
-                eval, CompleteEvaluation.ROUND_TURN, texInfoTurn, 
-                eval.getRoundScore(CompleteEvaluation.ROUND_TURN), flop, turn, null );
-        evaluateNodeSingleHand(
-                eval, CompleteEvaluation.ROUND_RIVER, texInfoRiver, 
-                eval.getRoundScore( CompleteEvaluation.ROUND_RIVER), flop, turn, river );
-        }
-        
-        return eval;
-    }
+   
     
     public static void evaluateNodeSingleHand(CompleteEvaluation eval, 
             int round,
-            TextureInfo allCardsTexInfo, Score score, Flop flop,  Card turn, Card river)
+            TextureInfo allCardsTexInfo, TextureInfo communityCards, Score score, Flop flop,  Card turn, Card river)
     {
         
-        TextureInfo communityCards = new TextureInfo();
-        communityCards.addCards(flop.getCards());
-        communityCards.addCard(turn);
-        communityCards.addCard(river);
-        communityCards.calculate();
+        
         
         //Top pair?
         if (score.handLevel == HandLevel.PAIR)
