@@ -249,6 +249,8 @@ public class EvalHands {
             eval.setFlag(round, HandCategory.HIGH_CARD);
         } else if (score.handLevel == HandLevel.QUADS) {
             eval.setFlag(round, HandCategory.QUADS);
+        } else if (score.handLevel == HandLevel.FLUSH) {
+            eval.setFlag(round, HandCategory.FLUSH);
         }
     }
     
