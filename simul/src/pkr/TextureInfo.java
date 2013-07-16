@@ -100,12 +100,14 @@ public class TextureInfo {
         
         if (freqSuit[card.getSuit().ordinal()] > highestFreqSuit) {
             highestFreqSuit = freqSuit[card.getSuit().ordinal()];
+            
+            if (highestFreqSuit >= 5) {
+                flush = true;
+                flushSuit = card.getSuit();
+            }
         }
         
-        if (highestFreqSuit >= 5) {
-            flush = true;
-            flushSuit = card.getSuit();
-        }
+        
         
         this.cards.add(card);
         this.sortedCards.add(card);
