@@ -135,6 +135,7 @@ public class TreeNode
         addHand(hc, secondBestHandCardsFreqMap);
     }
      
+    final static int TOP_N_CARDS = 10;
     
     public String getTopFive( Map<String, Integer> map) {
         List<Pair<Integer, String>> liste = Lists.newArrayList();
@@ -147,7 +148,7 @@ public class TreeNode
         Collections.sort(liste, Ordering.natural().reverse() );
         
         StringBuffer sb = new StringBuffer();
-        for(int i = 0; i < 5 && i < liste.size(); ++i) {
+        for(int i = 0; i < TOP_N_CARDS && i < liste.size(); ++i) {
             sb.append(liste.get(i).getValue());
             sb.append(" (");
             sb.append(liste.get(i).getKey());

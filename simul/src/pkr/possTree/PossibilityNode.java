@@ -120,6 +120,8 @@ public class PossibilityNode implements iDisplayNode {
         HIDDEN_SET("Hidden set"),
         FLUSH("Flush"),
         STRAIGHT("Straight"),
+        GUT_SHOT("Gutshot"),
+        STRAIGHT_DRAW("Straight draw"),
         FULL_HOUSE("Full house"),
         HIGH_CARD("High card"),
         QUADS("4 of a kind")
@@ -277,7 +279,7 @@ public class PossibilityNode implements iDisplayNode {
                 ret.add(cat.getDescription().replace(' ', '_'));
             }
         }
-        return Joiner.on("--").join(ret) + "-" + flags;
+        return Joiner.on("--").join(ret) ;
     }
 
 

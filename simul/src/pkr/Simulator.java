@@ -27,7 +27,7 @@ public class Simulator {
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
       //playerHoleCards.add("Q2s+, J2+, T2+, 32+");
         
-        playerHoleCards.add("JTs");
+        playerHoleCards.add("99");
         
         //random
         playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
@@ -86,7 +86,7 @@ public class Simulator {
         
         double[] equity = new double[numPlayers];
         
-        final int TOTAL_SIMULATIONS = 30001;
+        final int TOTAL_SIMULATIONS = 100001;
         int quadCount = 0;
         int lotsOFSets = 0;
         int royals = 0;
