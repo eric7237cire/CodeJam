@@ -1,9 +1,11 @@
 package pkr;
 
 import com.google.common.collect.BiMap;
+import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.HashBiMap;
 
-public enum CardRank {
+public enum CardRank  
+{
     
     ACE("A"), KING("K"), 
     QUEEN("Q"), JACK("J"), TEN("T"), NINE("9"),
@@ -56,6 +58,9 @@ public enum CardRank {
     }
 
 
+    public static int compare(CardRank lhs, CardRank rhs) {
+        return Integer.compare(lhs.getIndex(), rhs.getIndex());
+    }
 
     /**
      * @return the theChar
@@ -89,4 +94,6 @@ public enum CardRank {
         
         return rank;
     }
+    
+    
 }

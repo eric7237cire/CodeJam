@@ -49,7 +49,7 @@ public class TestEvalNodes
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[2] == CardRank.EIGHT);
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[3] == CardRank.FIVE);
         
-        assertTrue( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.TOP_PAIR));
+        assertTrue( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.PAIR_OVERCARDS_0));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.LOSING));
         assertTrue( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.WINNING));
         assertTrue( evals[handNum].hasFlag(ROUND_FLOP, HandSubCategory.BY_KICKER_1));
@@ -65,7 +65,7 @@ public class TestEvalNodes
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[2] == CardRank.EIGHT);
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[3] == CardRank.FIVE);
         
-        assertTrue( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.TOP_PAIR));
+        assertTrue( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.PAIR_OVERCARDS_0));
         assertTrue( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.SECOND_BEST_HAND));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.WINNING));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.LOSING));
@@ -124,7 +124,7 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getHandLevel() == HandLevel.HIGH_CARD);
          
-        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.TOP_PAIR));
+        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.PAIR_OVERCARDS_0));
         assertTrue( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.SECOND_BEST_HAND));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.WINNING));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.LOSING));
@@ -200,7 +200,7 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getHandLevel() == HandLevel.STRAIGHT);
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[0] == CardRank.SIX);
         //2nd
-        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.TOP_PAIR));
+        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.PAIR_OVERCARDS_0));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.LOSING));
         assertTrue( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.SECOND_BEST_HAND));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.WINNING));
@@ -213,7 +213,7 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[0] == CardRank.SEVEN);
         
         //1st
-        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.TOP_PAIR));
+        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.PAIR_OVERCARDS_0));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.LOSING));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.SECOND_BEST_HAND));
         assertTrue( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.WINNING));
@@ -226,7 +226,7 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[0] == CardRank.SEVEN);
         
         //1st
-        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.TOP_PAIR));
+        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.PAIR_OVERCARDS_0));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.LOSING));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.SECOND_BEST_HAND));
         assertTrue( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.WINNING));
@@ -240,7 +240,7 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[0] == CardRank.SIX);
         
         //2nd
-        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.TOP_PAIR));
+        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.PAIR_OVERCARDS_0));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.LOSING));
         assertTrue( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.SECOND_BEST_HAND));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.WINNING));
@@ -254,7 +254,7 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[0] == CardRank.FIVE);
         
         //3rd
-        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.TOP_PAIR));
+        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.PAIR_OVERCARDS_0));
         assertTrue( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.LOSING));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.WINNING));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.SECOND_BEST_HAND));
@@ -292,8 +292,8 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getHandLevel() == HandLevel.PAIR);
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[0] == CardRank.JACK);
         
-        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.TOP_PAIR));
-        assertTrue( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.OVER_PAIR));
+        assertTrue( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.PAIR_OVERCARDS_0));
+        assertTrue( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.HIDDEN_PAIR));
         
         assertTrue( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.WINNING));        
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.LOSING));
@@ -302,11 +302,12 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandSubCategory.BY_KICKER_1));
         
         //turn
+        int round  = ROUND_TURN;
         assertTrue(evals[handNum].getRoundScore(ROUND_TURN).getHandLevel() == HandLevel.PAIR);
         assertTrue(evals[handNum].getRoundScore(ROUND_TURN).getKickers()[0] == CardRank.JACK);
         
-        assertFalse( evals[handNum].hasFlag(ROUND_TURN, HandCategory.TOP_PAIR));
-        assertFalse( evals[handNum].hasFlag(ROUND_TURN, HandCategory.OVER_PAIR));
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.PAIR_OVERCARDS_1));
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.HIDDEN_PAIR));
         
         assertFalse( evals[handNum].hasFlag(ROUND_TURN, WinningLosingCategory.WINNING));        
         assertFalse( evals[handNum].hasFlag(ROUND_TURN, WinningLosingCategory.LOSING));
@@ -318,8 +319,9 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         assertTrue(evals[handNum].getRoundScore(ROUND_RIVER).getHandLevel() == HandLevel.TRIPS);
         assertTrue(evals[handNum].getRoundScore(ROUND_RIVER).getKickers()[0] == CardRank.JACK);
         
-        assertFalse( evals[handNum].hasFlag(ROUND_RIVER, HandCategory.TOP_PAIR));
-        assertFalse( evals[handNum].hasFlag(ROUND_RIVER, HandCategory.OVER_PAIR));
+        assertFalse( evals[handNum].hasFlag(ROUND_RIVER, HandCategory.PAIR_OVERCARDS_1));
+        assertFalse( evals[handNum].hasFlag(ROUND_RIVER, HandCategory.HIDDEN_PAIR));
+        
         assertTrue( evals[handNum].hasFlag(ROUND_RIVER, HandCategory.HIDDEN_SET));
         
         assertFalse( evals[handNum].hasFlag(ROUND_TURN, WinningLosingCategory.WINNING));        
@@ -332,5 +334,61 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         assertTrue(evals[handNum].getRoundScore(ROUND_RIVER).getHandLevel() == HandLevel.STRAIGHT);
         assertTrue(evals[handNum].getRoundScore(ROUND_RIVER).getKickers()[0] == CardRank.JACK);
         
+    }
+    
+    @Test
+    public void testStraightDraws()
+    {
+        HoleCards h1 = new HoleCards(Card.parseCards("As 2c"));               
+        HoleCards h2 = new HoleCards(Card.parseCards("Ad 5h"));  
+        HoleCards h3 = new HoleCards(Card.parseCards("6d 5d"));  
+                               
+        Flop f = new Flop(Card.parseCards("4d 3s Th"));
+        
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, 
+                new HoleCards[] {h1, h2, h3},
+                f, Card.parseCard("2d"), Card.parseCard("7d"));
+        
+        
+        //assertFalse( evals[0].getPossibilityNode(ROUND_FLOP,0).hasFlag(TextureCategory.SAME_SUIT_2));
+        //assertFalse( evals[0].getPossibilityNode(ROUND_FLOP,0).hasFlag(TextureCategory.HAS_AT_LEAST_ONE_ACE));
+        //assertTrue( evals[0].getPossibilityNode(ROUND_FLOP,0).hasFlag(TextureCategory.UNSUITED));
+        
+        int handNum = 0;
+        int round  = ROUND_FLOP;
+        
+        //flop
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.HIGH_CARD);
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
+        
+        handNum = 1;
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.HIGH_CARD);
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
+        
+        handNum  = 2;
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.HIGH_CARD);
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_2));
+        
+        //turn
+        round  = ROUND_TURN;
+        handNum = 0;
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.PAIR);
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
+        
+        handNum = 1;
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.STRAIGHT);
+        //Can make 2345 [6]
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_2));
+        
+        handNum  = 2;
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.STRAIGHT);
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
+        
+     
+        
+        handNum = 2;
+        assertTrue(evals[handNum].getRoundScore(ROUND_RIVER).getHandLevel() == HandLevel.STRAIGHT);
+        assertTrue(evals[handNum].getRoundScore(ROUND_RIVER).getKickers()[0] == CardRank.JACK);
     }
 }

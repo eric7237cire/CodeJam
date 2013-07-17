@@ -74,6 +74,9 @@ public class HoleCards {
         } else {
             this.cards = new Card[] {card1, card2 };
         }
+        
+        Preconditions.checkState(CardRank.compare(cards[0].getRank(),
+                cards[1].getRank()) <= 0);
     }
     
     public HoleCards(Card[] cards) {
@@ -87,6 +90,16 @@ public class HoleCards {
             cards[1] = tmp;
         }
         
+        Preconditions.checkState(CardRank.compare(cards[0].getRank(),
+                cards[1].getRank()) <= 0);
+    }
+    
+    public CardRank getHigherRank() {
+        return cards[1].getRank();
+    }
+    
+    public CardRank getLowerRank() {
+        return cards[0].getRank();
     }
 
     /**

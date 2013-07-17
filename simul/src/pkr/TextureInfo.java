@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.base.Preconditions;
+
 public class TextureInfo {
     
     List<Card> cards;
@@ -24,6 +26,10 @@ public class TextureInfo {
     
     boolean flush;
     Suit flushSuit;
+    
+    // A 2 ... K A 
+    int[] conseqCardsLeft = new int[16];
+    int[] conseqCardsRight = new int[16];
     
     int highestFreqSuit = 0;
     
@@ -44,6 +50,23 @@ public class TextureInfo {
     {
         return sortedCards.get(sortedCards.size()-1).getRank();
     }
+    
+    public int getRanksAbove(CardRank rank) 
+    {
+        int ranksAbove = 0;
+        for( int i = sortedCards.size() - 1; i >= 0; --i)
+        {
+            CardRank boardRank = sortedCards.get(i).getRank();
+            if (boardRank.getIndex() <= rank.getIndex()) {
+                return ranksAbove;
+            }
+            
+            ranksAbove++;
+        }
+        
+        return ranksAbove;
+    }
+    
     public CardRank getHighestRank(CardRank ignore1, CardRank ignore2)
     {
         int rank = rankBitmask;
@@ -77,9 +100,28 @@ public class TextureInfo {
             } else if (freqCard[r] == 2 && secondPair == -1) {
                 secondPair = r;
             } 
+            
+            
+            if (freqCard[r] > 0 ) {
+                conseqCardsRight[r+2] = conseqCardsRight[r+3] + 1;
+            }
         }
         
+        if (freqCard[CardRank.ACE.getIndex()] > 0) {
+            conseqCardsLeft[1] = 1;
+        }
         
+        // A-1  K-13 A-14 
+        for (int r = 0; r < NUM_RANKS; ++r) {
+            if (freqCard[r] > 0 ) {
+                conseqCardsLeft[r+2] = 
+                         1 + conseqCardsLeft[r+1];
+            }
+        }
+        
+        if (freqCard[CardRank.ACE.getIndex()] > 0) {
+            conseqCardsRight[1] = conseqCardsRight[1] + 1;
+        }
 
         for (int sbmIdx = straightBitMasks.length - 1; sbmIdx >= 0 ; --sbmIdx) {
             if ( (rankBitmask & straightBitMasks[sbmIdx]) == straightBitMasks[sbmIdx] ) {
@@ -89,6 +131,33 @@ public class TextureInfo {
         }
         
         Collections.sort(sortedCards);
+    }
+    
+    public int getStraightDrawCount(HoleCards hc) {
+        
+        int straightDraws = 0;
+        
+        //A -- 1  2 -- 2  T -- 9 K -- 13 A -- 14
+        int minStr8Rank = Math.max(hc.getLowerRank().getIndex() + 1 - 4, 1);
+        int maxStr8Rank = Math.min(hc.getHigherRank().getIndex() + 1 + 4, conseqCardsRight.length-2);
+        
+        for(int str8Rank = minStr8Rank; str8Rank <= maxStr8Rank; ++str8Rank)
+        {
+            //la carte ne doit pas exister
+            if (conseqCardsLeft[str8Rank] != 0)
+            {
+                Preconditions.checkState(conseqCardsRight[str8Rank] != 0);
+                continue;                
+            }
+        
+            if (conseqCardsLeft[str8Rank -1] + conseqCardsRight[str8Rank+1]  >= 4)
+            {
+                ++straightDraws;
+            }
+            
+        }
+        
+        return straightDraws;
     }
     
     public void addCard(Card card) {

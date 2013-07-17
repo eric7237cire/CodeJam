@@ -206,27 +206,52 @@ public class EvalHands {
             int round,
             TextureInfo allCardsTexInfo, TextureInfo communityCards, Score score, Flop flop,  Card turn, Card river)
     {
+        int straightDrawCount = allCardsTexInfo.getStraightDrawCount(eval.getHoleCards());
         
-        
+        switch(straightDrawCount) {
+        case 0:
+            break;
+        case 1:
+            eval.setFlag(round, HandCategory.STRAIGHT_DRAW_1);
+            break;
+        case 2:
+            eval.setFlag(round, HandCategory.STRAIGHT_DRAW_2);
+            break;
+            default:
+                log.warn("3 straight draws?");
+        }
         
         //Top pair?
         if (score.handLevel == HandLevel.PAIR)
         {
-            //exclude cases like 72  flop TT4
-            
-            if (communityCards.firstPair == -1
-                    && score.kickers[0] == communityCards.sortedCards.get(communityCards.sortedCards.size()-1)
-                            .getRank()) 
-            {
-                eval.setFlag(round, HandCategory.TOP_PAIR);
-            } else if (communityCards.firstPair == -1
-                    && score.kickers[0].getIndex() > 
-                    communityCards.getHighestRank().getIndex()
-                    ) {
-                eval.setFlag(round, HandCategory.OVER_PAIR);
+            if (communityCards.noPairedCards()) {
+                int ranksAbove = communityCards.getRanksAbove(score.kickers[0]);
+                switch(ranksAbove) 
+                {
+                case 0:
+                    eval.setFlag(round, HandCategory.PAIR_OVERCARDS_0);
+                    break;
+                case 1:
+                    eval.setFlag(round, HandCategory.PAIR_OVERCARDS_1);
+                    break;
+                case 2:
+                    eval.setFlag(round, HandCategory.PAIR_OVERCARDS_2);
+                    break;
+                case 3:
+                    default:
+                    eval.setFlag(round, HandCategory.PAIR_OVERCARDS_3);
+                    break;
+                }
+                
+                if (eval.getHoleCards().getCards()[0].getRank() == eval.getHoleCards().getCards()[1].getRank()) {
+                    eval.setFlag(round, HandCategory.HIDDEN_PAIR);
+                }
+                
             } else {
-                eval.setFlag(round, HandCategory.THIRD_PAIR);
+                eval.setFlag(round, HandCategory.PAIR_ON_PAIRED_BOARD);
             }
+            
+            
         } else if (score.handLevel == HandLevel.TRIPS) 
         {
             if (communityCards.firstPair == -1) 
