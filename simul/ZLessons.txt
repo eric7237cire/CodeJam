@@ -12,3 +12,10 @@ with QQ, even against a beginner.  Wait until you see their range is loose.
 
 
 ** AK vs 3 others.  If I hit top pair, most likely beat by hidden trips, watch for reraises!
+
+AK vs 2.  If I do not hit the flop, about 1/3 I am winning w/ high card.
+
+Early position, should check (unless I want to cbet)
+Late position, bet if both check (they probably would have bet their pairs)
+
+drawing hands need 4 to 5 callers (30% of hitting something, 25-20% bet)

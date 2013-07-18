@@ -120,6 +120,7 @@ public class PossibilityNode implements iDisplayNode {
         VISIBLE_SET("Visible set"),
         HIDDEN_SET("Hidden set"),
         FLUSH("Flush"),
+        FLUSH_DRAW("Flush draw"),
         STRAIGHT("Straight"),
         STRAIGHT_DRAW_2("Straight draw"),
         STRAIGHT_DRAW_1("Gut shot"),
@@ -164,7 +165,15 @@ public class PossibilityNode implements iDisplayNode {
         BY_HAND_CATEGORY("Det by hand category"),
         BY_KICKER_HAND("Determined by hand"),
         BY_KICKER_1("Determined by first kicker"),
-        BY_KICKER_2_PLUS("Determined by 2nd or later kicker");
+        BY_KICKER_2_PLUS("Determined by 2nd or later kicker"),
+        VILLAIN_HIGH_CARD("Vs high card"),
+        VILLAIN_PAIR("Vs pair"),
+        VILLAIN_TWO_PAIR("Vs 2 pair"),
+        VILLAIN_TRIPS("Vs trips"),
+        VILLAIN_STRAIGHT("Vs straight"),
+        VILLAIN_FLUSH("Vs flush"),
+        VILLAIN_OTHER("Vs other"),
+        ;
         
         HandSubCategory(String desc) {
             this.desc = desc;
@@ -224,6 +233,9 @@ public class PossibilityNode implements iDisplayNode {
         flags |= 1L << flag.getIndex();
     }
 
+    public void clearFlag(iFlag flag) {
+        flags &= ~(1L << flag.getIndex());
+    }
     public boolean hasFlag(iFlag flag) {
         return (flags & 1L << flag.getIndex()) != 0;
     }

@@ -42,30 +42,18 @@ public class Tree
         
         TreeNode curNode = rootNode;
         curNode.count++;
-        
-        /*
-        boolean check1 = false;
-        if (eval.hasFlag(0, TextureCategory.SAME_SUIT_2) &&
-                eval.hasFlag(0, HandCategory.OVER_PAIR) &&
-                eval.hasFlag(0, WinningLosingCategory.SECOND_BEST_HAND) &&
-                eval.hasFlag(0, HandSubCategory.BY_KICKER_HAND)
-             //   &&   ( !eval.getBestHand(0).toStartingHandString().equals("AA") &&
-               //         !eval.getBestHand(0).toStartingHandString().equals("KK") )
-                        )
-                        {
-            log.info("what");
-            check1 = true;
-                        }*/
-        
+               
         for(int round = 0; round < 3; ++round) 
         {
             for(int possLevel = 0; possLevel < PossibilityNode.Levels.values().length; ++possLevel) 
             {
-                //0 2 4 are textures  1 3 5 are evals
-                PossibilityNode dispNode = null;
+                PossibilityNode dispNode = eval.getPossibilityNode(round, possLevel);
                 
-                
-                dispNode = eval.getPossibilityNode(round, possLevel);
+                if (possLevel == PossibilityNode.Levels.WIN_LOSE.ordinal() && 
+                        dispNode.hasFlag(WinningLosingCategory.SECOND_BEST_HAND)) {
+                    dispNode.clearFlag(WinningLosingCategory.SECOND_BEST_HAND);
+                    dispNode.setFlag(WinningLosingCategory.LOSING);
+                }
             
                 TreeNode curChildNode = null;
                 if (!curNode.getMapChildren().containsKey(dispNode)) {

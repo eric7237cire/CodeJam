@@ -149,8 +149,7 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
         possibilityNodes[round][level] = node;
     }
     
-    
-   
+      
     /**
      * @return the holeCards
      */

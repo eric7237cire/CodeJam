@@ -134,9 +134,9 @@ public class EvalHands {
                    evals[i].getRoundScore( CompleteEvaluation.ROUND_RIVER), flop, turn, river );
            }
         }
-        populateFlopTexture(evals, communityCardsFlop, 0, flop, null, null);
-        populateFlopTexture(evals, communityCardsTurn, 1, flop, turn, null);
-        populateFlopTexture(evals, communityCardsRiver, 2, flop, turn, river);
+        populateFlopTexture(heroOnly, evals, communityCardsFlop, 0, flop, null, null);
+        populateFlopTexture(heroOnly, evals, communityCardsTurn, 1, flop, turn, null);
+        populateFlopTexture(heroOnly, evals, communityCardsRiver, 2, flop, turn, river);
         
                     
         populateEvalutionNodeWithRelativeHandRankings(evals);
@@ -146,7 +146,7 @@ public class EvalHands {
         return evals;
     }
     
-    private static void populateFlopTexture(CompleteEvaluation[] evals, TextureInfo communityCards, int round, Flop flop, Card turn, Card river) 
+    private static void populateFlopTexture(boolean heroOnly, CompleteEvaluation[] evals, TextureInfo communityCards, int round, Flop flop, Card turn, Card river) 
     {
         int[] freqCard = new int[NUM_RANKS];
         int[] freqSuit = new int[4];
@@ -189,6 +189,9 @@ public class EvalHands {
             evals[0].setFlag(round, TextureCategory.PAIRED_BOARD);
         }
         
+        if (heroOnly)
+            return;
+        
         for(CompleteEvaluation eval : evals) {
             eval.setPossibilityNode(round, PossibilityNode.Levels.TEXTURE.ordinal(),
                     evals[0].getPossibilityNode(round, PossibilityNode.Levels.TEXTURE.ordinal()));
@@ -200,13 +203,39 @@ public class EvalHands {
     
     
 
-   
+   /**
+    * Sets non relative flags on hand strength / draws 
+    * @param eval
+    * @param round
+    * @param allCardsTexInfo
+    * @param communityCards
+    * @param score
+    * @param flop
+    * @param turn
+    * @param river
+    */
     
     public static void evaluateNodeSingleHand(CompleteEvaluation eval, 
             int round,
             TextureInfo allCardsTexInfo, TextureInfo communityCards, Score score, Flop flop,  Card turn, Card river)
     {
         int straightDrawCount = allCardsTexInfo.getStraightDrawCount(eval.getHoleCards());
+        
+        if(eval.getHoleCards().isSuited())
+            {
+            if (communityCards.freqSuit[eval.getHoleCards().getCards()[0].getSuit().ordinal()] == 2)
+            {
+                  eval.setFlag(round, HandCategory.FLUSH_DRAW);
+            }
+        } else if (communityCards.freqSuit[eval.getHoleCards().getCards()[0].getSuit().ordinal()] == 3)
+        {
+            eval.setFlag(round, HandCategory.FLUSH_DRAW);
+        }
+        else if (communityCards.freqSuit[eval.getHoleCards().getCards()[1].getSuit().ordinal()] == 3)
+        {
+            eval.setFlag(round, HandCategory.FLUSH_DRAW);
+        }   
+        
         
         switch(straightDrawCount) {
         case 0:
@@ -297,6 +326,90 @@ public class EvalHands {
         }
     }
     
+    /**
+     * 
+     * side effet -- sets winning flag
+     * @param round
+     * @param resultsSortedByScore
+     * @return -1 for all way tie
+     */
+    private static int getNextBestHandIndex(int start, int round, CompleteEvaluation[] resultsSortedByScore)
+    {
+        int sortedEvalIndex = start;
+        
+        final Score bestHandScore =  resultsSortedByScore[sortedEvalIndex].getRoundScore(round);
+        
+        for(; sortedEvalIndex >= 0; --sortedEvalIndex)
+        {
+            CompleteEvaluation curEval = 
+                    resultsSortedByScore[sortedEvalIndex]; 
+            
+            if (!bestHandScore
+                    .equals(curEval.getRoundScore(round)))            
+                break;            
+        }
+        
+        return sortedEvalIndex;
+    }
+    
+    private static void setWinningFlags(int round, CompleteEvaluation[] resultsSortedByScore, int secondBestHandIndex)
+    {
+        int numTiedForFirst = resultsSortedByScore.length-1 - secondBestHandIndex;
+        
+        for(int winningEvalIndex = resultsSortedByScore.length-1; winningEvalIndex > secondBestHandIndex; --winningEvalIndex)
+        {
+            CompleteEvaluation winEval = resultsSortedByScore[winningEvalIndex];            
+            winEval.setRealEquity(1.0 / numTiedForFirst);
+            winEval.setFlag(round, WinningLosingCategory.WINNING);
+        }
+    }
+    
+    private static void setVillianHands(int round, CompleteEvaluation hero, Score bestHandScore )
+    {
+        if (hero.hasFlag(round, WinningLosingCategory.WINNING))
+            return;
+        
+        if (bestHandScore.handLevel == HandLevel.HIGH_CARD) {
+            hero.setFlag(round, HandSubCategory.VILLAIN_HIGH_CARD);
+        } else if (bestHandScore.handLevel == HandLevel.PAIR) {
+            hero.setFlag(round, HandSubCategory.VILLAIN_PAIR);
+        } else if (bestHandScore.handLevel == HandLevel.TWO_PAIR) {
+            hero.setFlag(round, HandSubCategory.VILLAIN_TWO_PAIR);
+        } else if (bestHandScore.handLevel == HandLevel.TRIPS) {
+            hero.setFlag(round, HandSubCategory.VILLAIN_TRIPS);
+        } else if (bestHandScore.handLevel == HandLevel.STRAIGHT) {
+            hero.setFlag(round, HandSubCategory.VILLAIN_STRAIGHT);
+        } else if (bestHandScore.handLevel == HandLevel.FLUSH) {
+            hero.setFlag(round, HandSubCategory.VILLAIN_FLUSH);
+        } else {
+            hero.setFlag(round, HandSubCategory.VILLAIN_OTHER);
+        }
+    
+    }
+    
+    private static HandSubCategory getWonByFlag(Score bestHandScore, Score curScore)
+    {
+        HandSubCategory cat = null;
+        if (bestHandScore.getHandLevel() != curScore.getHandLevel()) {
+            cat = HandSubCategory.BY_HAND_CATEGORY;
+        } else if (bestHandScore.getKickers()[0] != curScore.getKickers()[0]) {
+            cat = HandSubCategory.BY_KICKER_HAND;
+        } else if (bestHandScore.getKickers()[1] != curScore.getKickers()[1]) {
+            cat = HandSubCategory.BY_KICKER_1;
+        } else if (bestHandScore.getKickers()[2] != curScore.getKickers()[2]) {
+            cat = HandSubCategory.BY_KICKER_2_PLUS;
+        } else if (bestHandScore.getKickers()[3] != curScore.getKickers()[3]) {
+            cat = HandSubCategory.BY_KICKER_2_PLUS;
+        } else if (bestHandScore.getKickers()[4] != curScore.getKickers()[4]) {
+            cat = HandSubCategory.BY_KICKER_2_PLUS;
+        }
+        
+        Preconditions.checkNotNull(cat);
+
+
+        return cat;
+    }
+    
     public static void populateEvalutionNodeWithRelativeHandRankings( CompleteEvaluation[] eval ) {
      
         CompleteEvaluation[][] resultsSortedByRoundScore = new CompleteEvaluation[3][eval.length];
@@ -315,58 +428,31 @@ public class EvalHands {
             final int bestHandIndex = eval.length - 1;
             
             final Score bestHandScore =  resultsSortedByRoundScore[round][bestHandIndex].getRoundScore(round);
-            int numTiedForFirst = 0;
+                                    
+            final int secondBestHandIndex = getNextBestHandIndex(bestHandIndex, round, resultsSortedByRoundScore[round]);
             
-            for(; sortedEvalIndex >= 0; --sortedEvalIndex)
-            {
-                CompleteEvaluation curEval = 
-                        resultsSortedByRoundScore[round][sortedEvalIndex]; 
-                
-                if (bestHandScore
-                        .equals(curEval.getRoundScore(round)))
-                {
-                    curEval.setFlag(round, WinningLosingCategory.WINNING);
-                    numTiedForFirst++;
-                } else {
-                    break;
-                }
-            }
+            setWinningFlags(round, resultsSortedByRoundScore[round], secondBestHandIndex);
             
-            final int secondBestHandIndex = sortedEvalIndex;
-            
-            //Set winning round's equity
-            for(int winningEvalIndex = eval.length - 1; winningEvalIndex > secondBestHandIndex; --winningEvalIndex)
-            {
-                CompleteEvaluation winEval = resultsSortedByRoundScore[round][winningEvalIndex];            
-                winEval.setRealEquity(1.0 / numTiedForFirst);
-            }
             
             if (secondBestHandIndex >= 0) {
                 
                 /**
-                 * Nous voulons que si le héro a gagné, on ajoute la deuxième meilleur main
-                 * à la liste
+                 * Nous voulons que si le héro a gagné, on ajoute la deuxième
+                 * meilleur main à la liste
                  */
-               // if (eval[0].hasFlag(round, WinningLosingCategory.WINNING)) {
-                    eval[0].addSecondBestHand(round, resultsSortedByRoundScore[round][secondBestHandIndex].getHoleCards());
-               // } else {
-                    eval[0].addBestHand(round, resultsSortedByRoundScore[round][bestHandIndex].getHoleCards() );
-               // }
-                
-                
-                
-                //Second best hand exists
-                final Score secondHandScore =  resultsSortedByRoundScore[round][secondBestHandIndex].getRoundScore(round);
-                
+                eval[0].addSecondBestHand(round,
+                        resultsSortedByRoundScore[round][secondBestHandIndex]
+                                .getHoleCards());
+                eval[0].addBestHand(round,
+                        resultsSortedByRoundScore[round][bestHandIndex]
+                                .getHoleCards());
+
+                setVillianHands(round, eval[0], bestHandScore);
+
+                // Second best hand exists
+
                 //either the 3rd best or -1 if no 3rd place
-                int thirdBestHand = secondBestHandIndex - 1;
-                
-                while( thirdBestHand >= 0 && 
-                        secondHandScore
-                                .equals(resultsSortedByRoundScore[round][thirdBestHand].getRoundScore(round)))
-                {
-                    --thirdBestHand;
-                }
+                int thirdBestHand = getNextBestHandIndex(secondBestHandIndex, round, resultsSortedByRoundScore[round]);
                 
                 //Set flags for all losing hands
                 for(sortedEvalIndex = secondBestHandIndex; sortedEvalIndex >= 0; --sortedEvalIndex) 
@@ -374,22 +460,7 @@ public class EvalHands {
                     CompleteEvaluation curEval = resultsSortedByRoundScore[round][sortedEvalIndex];
                     Score curScore = curEval.getRoundScore(round);
                 
-                    HandSubCategory cat = null;
-                    if (bestHandScore.getHandLevel() != curScore.getHandLevel()) {
-                        cat = HandSubCategory.BY_HAND_CATEGORY;
-                    } else if (bestHandScore.getKickers()[0] != curScore.getKickers()[0]) {
-                        cat = HandSubCategory.BY_KICKER_HAND;
-                    } else if (bestHandScore.getKickers()[1] != curScore.getKickers()[1]) {
-                        cat = HandSubCategory.BY_KICKER_1;
-                    } else if (bestHandScore.getKickers()[2] != curScore.getKickers()[2]) {
-                        cat = HandSubCategory.BY_KICKER_2_PLUS;
-                    } else if (bestHandScore.getKickers()[3] != curScore.getKickers()[3]) {
-                        cat = HandSubCategory.BY_KICKER_2_PLUS;
-                    } else if (bestHandScore.getKickers()[4] != curScore.getKickers()[4]) {
-                        cat = HandSubCategory.BY_KICKER_2_PLUS;
-                    }
-                    
-                    Preconditions.checkNotNull(cat);
+                    HandSubCategory cat = getWonByFlag(bestHandScore, curScore);
                     
                     curEval.setFlag(round, cat);
                     curEval.setRealEquity(0);
@@ -433,10 +504,6 @@ public class EvalHands {
         
         Score score = new Score();
         
-            
-        
-
-
         // straight flush
         if (texInfo.straightRank >= 0 && texInfo.flush) {
             score.setHandLevel(HandLevel.STRAIGHT_FLUSH);

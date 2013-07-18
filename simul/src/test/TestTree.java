@@ -26,7 +26,7 @@ import pkr.possTree.PossibilityNode.HandCategory;
 
 @RunWith(JUnit4.class)
 public class TestTree {
-    @Test
+    
     public void testTree() 
     {
         
