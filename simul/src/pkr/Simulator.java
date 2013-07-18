@@ -27,23 +27,31 @@ public class Simulator {
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
       //playerHoleCards.add("Q2s+, J2+, T2+, 32+");
         
-        playerHoleCards.add("JTs");
+       // playerHoleCards.add("JJ");
+        //playerHoleCards.add("KJo");
+        playerHoleCards.add("ATo");
+        //playerHoleCards.add("J3s");
         
-        //random
+        playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
+        if (1==2) {
+        //random
+        //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
+        
         //1 loose all in call
-        for(int i = 0; i < 1; ++i) {
+        for(int i = 0; i < 0; ++i) {
             playerHoleCards.add("A2+, K2s+, K7o+, Q2s+, Q7o+, J2s+, " +
             		"J7o+, T2s+, T7o+, 92s+, 97o+, 82s+, 85o+, 72s+, " +
             		"76o, 62s+, 65o, 52s+, 54o, 42s+, 43o, 22+");
         }
         
         //2 semi reasonable calls, no AK, AA, KK, QQ as no 3 bet
-        for(int i = 0; i < 2; ++i) {
+        for(int i = 0; i < 3; ++i) {
         playerHoleCards.add("A2, A3, A4, A5, A6, A7, A8, A9, AT, AJ, AQ, K2s+, K9o+, Q8s+, Q9o+, J7s+, " +
                 "J8o+, T8s+, T9o+, 97s+, 98o+, 85s+, 87o+, 75s+, " +
                 "76o, 64s+, 65o, 53s+, 54o, 42s+, 43o, 22, 33, 44, 55, 66, 77, 88, 99, TT, JJ");
+        }
         }
        // 
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
@@ -86,7 +94,7 @@ public class Simulator {
         
         double[] equity = new double[numPlayers];
         
-        final int TOTAL_SIMULATIONS = 30001;
+        final int TOTAL_SIMULATIONS = 330001;
         int quadCount = 0;
         int lotsOFSets = 0;
         int royals = 0;

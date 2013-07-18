@@ -254,7 +254,7 @@ public class EvalHands {
             
         } else if (score.handLevel == HandLevel.TRIPS) 
         {
-            if (communityCards.firstPair == -1) 
+            if (communityCards.noPairedCards()) 
             {
                 eval.setFlag(round, HandCategory.HIDDEN_SET);
             } else {

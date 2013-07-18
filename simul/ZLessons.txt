@@ -9,3 +9,6 @@ do not rereaise with AQ or some crap like that willy nilly
 
 ** Someone doing some crazy preflop raise like 1 million, think twice about calling
 with QQ, even against a beginner.  Wait until you see their range is loose.
+
+
+** AK vs 3 others.  If I hit top pair, most likely beat by hidden trips, watch for reraises!
