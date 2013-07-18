@@ -433,6 +433,9 @@ public class EvalHands {
             
             setWinningFlags(round, resultsSortedByRoundScore[round], secondBestHandIndex);
             
+            eval[0].addBestHand(round,
+                    resultsSortedByRoundScore[round][bestHandIndex]
+                            .getHoleCards());
             
             if (secondBestHandIndex >= 0) {
                 
@@ -443,9 +446,7 @@ public class EvalHands {
                 eval[0].addSecondBestHand(round,
                         resultsSortedByRoundScore[round][secondBestHandIndex]
                                 .getHoleCards());
-                eval[0].addBestHand(round,
-                        resultsSortedByRoundScore[round][bestHandIndex]
-                                .getHoleCards());
+                
 
                 setVillianHands(round, eval[0], bestHandScore);
 
