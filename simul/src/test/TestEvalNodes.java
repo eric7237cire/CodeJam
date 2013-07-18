@@ -341,13 +341,13 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
     {
         HoleCards h1 = new HoleCards(Card.parseCards("As 2c"));               
         HoleCards h2 = new HoleCards(Card.parseCards("Ad 5h"));  
-        HoleCards h3 = new HoleCards(Card.parseCards("6d 5d"));  
+        HoleCards h3 = new HoleCards(Card.parseCards("6c 5d"));  
                                
         Flop f = new Flop(Card.parseCards("4d 3s Th"));
         
         CompleteEvaluation[] evals = EvalHands.evaluate(false, 
                 new HoleCards[] {h1, h2, h3},
-                f, Card.parseCard("2d"), Card.parseCard("7d"));
+                f, Card.parseCard("2d"), Card.parseCard("7c"));
         
         
         //assertFalse( evals[0].getPossibilityNode(ROUND_FLOP,0).hasFlag(TextureCategory.SAME_SUIT_2));
@@ -389,6 +389,92 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         
         handNum = 2;
         assertTrue(evals[handNum].getRoundScore(ROUND_RIVER).getHandLevel() == HandLevel.STRAIGHT);
-        assertTrue(evals[handNum].getRoundScore(ROUND_RIVER).getKickers()[0] == CardRank.JACK);
+        assertTrue(evals[handNum].getRoundScore(ROUND_RIVER).getKickers()[0] == CardRank.SEVEN);
+    }
+    
+    @Test
+    public void testStraightDraws2()
+    {
+        HoleCards h1 = new HoleCards(Card.parseCards("7s 8c"));               
+        HoleCards h2 = new HoleCards(Card.parseCards("8d Ah"));  
+        HoleCards h3 = new HoleCards(Card.parseCards("Ac Kd"));  
+                               
+        Flop f = new Flop(Card.parseCards("9d Ts Jh"));
+        
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, 
+                new HoleCards[] {h1, h2, h3},
+                f, Card.parseCard("Qd"), Card.parseCard("Kc"));
+        
+        
+        //assertFalse( evals[0].getPossibilityNode(ROUND_FLOP,0).hasFlag(TextureCategory.SAME_SUIT_2));
+        //assertFalse( evals[0].getPossibilityNode(ROUND_FLOP,0).hasFlag(TextureCategory.HAS_AT_LEAST_ONE_ACE));
+        //assertTrue( evals[0].getPossibilityNode(ROUND_FLOP,0).hasFlag(TextureCategory.UNSUITED));
+        
+        int handNum = 0;
+        int round  = ROUND_FLOP;
+        
+        //flop
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.STRAIGHT);
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
+        assertTrue(evals[handNum].getRoundScore(round).getKickers()[0] == CardRank.JACK);
+        
+        handNum = 1;
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.HIGH_CARD);
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_2));
+        
+        handNum  = 2;
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.HIGH_CARD);
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
+        
+        //turn
+        round  = ROUND_TURN;
+        handNum = 0;
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.STRAIGHT);
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_2));
+        assertTrue( evals[handNum].hasFlag(round, WinningLosingCategory.SECOND_BEST_HAND));
+        assertTrue(evals[handNum].getRoundScore(round).getKickers()[0] == CardRank.QUEEN);
+        
+        handNum = 1;
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.STRAIGHT);
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1)); //king makes a better straight
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_2));
+        assertTrue( evals[handNum].hasFlag(round, WinningLosingCategory.SECOND_BEST_HAND));
+        assertTrue(evals[handNum].getRoundScore(round).getKickers()[0] == CardRank.QUEEN);
+        
+        handNum  = 2;
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.STRAIGHT);
+        assertTrue( evals[handNum].hasFlag(round, WinningLosingCategory.WINNING));
+        assertFalse( evals[handNum].hasFlag(round, WinningLosingCategory.SECOND_BEST_HAND));
+        assertTrue(evals[handNum].getRoundScore(round).getKickers()[0] == CardRank.ACE);
+        
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_2));
+        
+       
+     
+        round = ROUND_RIVER;
+        handNum = 0;
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.STRAIGHT);
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_2));
+        assertTrue( evals[handNum].hasFlag(round, WinningLosingCategory.SECOND_BEST_HAND));
+        assertTrue(evals[handNum].getRoundScore(round).getKickers()[0] == CardRank.KING);
+        
+        handNum = 1;
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.STRAIGHT);
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_2));
+        assertTrue( evals[handNum].hasFlag(round, WinningLosingCategory.WINNING));
+        assertFalse( evals[handNum].hasFlag(round, WinningLosingCategory.SECOND_BEST_HAND));
+        assertTrue(evals[handNum].getRoundScore(round).getKickers()[0] == CardRank.ACE);
+        
+        handNum  = 2;
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.STRAIGHT);
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_2));
+        assertTrue( evals[handNum].hasFlag(round, WinningLosingCategory.WINNING));
+        assertFalse( evals[handNum].hasFlag(round, WinningLosingCategory.SECOND_BEST_HAND));
+        assertTrue(evals[handNum].getRoundScore(round).getKickers()[0] == CardRank.ACE);
     }
 }

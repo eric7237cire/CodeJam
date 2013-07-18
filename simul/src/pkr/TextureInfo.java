@@ -27,7 +27,7 @@ public class TextureInfo {
     boolean flush;
     Suit flushSuit;
     
-    // A 2 ... K A 
+    // blank A (1) 2 (2) ... K (13) A (14) blank (15)
     int[] conseqCardsLeft = new int[16];
     int[] conseqCardsRight = new int[16];
     
@@ -138,8 +138,8 @@ public class TextureInfo {
         int straightDraws = 0;
         
         //A -- 1  2 -- 2  T -- 9 K -- 13 A -- 14
-        int minStr8Rank = Math.max(hc.getLowerRank().getIndex() + 1 - 4, 1);
-        int maxStr8Rank = Math.min(hc.getHigherRank().getIndex() + 1 + 4, conseqCardsRight.length-2);
+        int minStr8Rank = Math.max(hc.getLowerRank().getIndex() + 2 - 4, 1);
+        int maxStr8Rank = Math.min(hc.getHigherRank().getIndex() + 2 + 4, conseqCardsRight.length-2);
         
         for(int str8Rank = minStr8Rank; str8Rank <= maxStr8Rank; ++str8Rank)
         {
@@ -150,10 +150,27 @@ public class TextureInfo {
                 continue;                
             }
         
-            if (conseqCardsLeft[str8Rank -1] + conseqCardsRight[str8Rank+1]  >= 4)
+            if (conseqCardsLeft[str8Rank -1] + conseqCardsRight[str8Rank+1]  < 4)
+                continue;
+            
+            if (straightRank != -1)
             {
-                ++straightDraws;
+                CardRank drawingTo = CardRank.getFromZeroBasedValue(
+                        str8Rank - 2 + //current index 
+                        Math.min(4,conseqCardsRight[str8Rank+1]) //can use at most 4 cards 
+                        );
+                
+                CardRank curStraight = CardRank.getFromZeroBasedValue(straightRank);
+                
+                if (CardRank.compare(drawingTo, curStraight) < 0) {
+                    continue;
+                }
             }
+            
+            //Si nous avons déjà une quinte, il faut que ce soit meilleur que l'actuelle 
+               
+            ++straightDraws;
+            
             
         }
         

@@ -32,12 +32,12 @@ public class Simulator {
         playerHoleCards.add("ATo");
         //playerHoleCards.add("J3s");
         
-        playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
-        playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
+       // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
+       // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
-        if (1==2) {
+        
         //random
-        //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
+        playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
         //1 loose all in call
         for(int i = 0; i < 0; ++i) {
@@ -52,7 +52,7 @@ public class Simulator {
                 "J8o+, T8s+, T9o+, 97s+, 98o+, 85s+, 87o+, 75s+, " +
                 "76o, 64s+, 65o, 53s+, 54o, 42s+, 43o, 22, 33, 44, 55, 66, 77, 88, 99, TT, JJ");
         }
-        }
+        
        // 
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
