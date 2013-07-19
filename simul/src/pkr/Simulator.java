@@ -23,9 +23,10 @@ public class Simulator {
       //playerHoleCards.add("KTs");
       
     //  playerHoleCards.add("72o, 32");
-     // playerHoleCards.add("27s");
+    //  playerHoleCards.add("AKs");
+        playerHoleCards.add("A5");
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
-      playerHoleCards.add("QQ");
+     // playerHoleCards.add("QQ");
         
        // playerHoleCards.add("JJ");
         //playerHoleCards.add("KJo");
@@ -36,24 +37,33 @@ public class Simulator {
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
+      int NUM_RANDOM = 4;
+        int NUM_LOOSE_CALLS = 0;
+        int NUM_OK_CALLS = 0;
+        int NUM_PREM_HANDS = 0;
         
         //random
-        //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
+        for(int i = 0; i < NUM_RANDOM; ++i) {
+            playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
+        }
         
-        //1 loose all in call
-        for(int i = 0; i < 2; ++i) {
+        //loose all in call
+        for(int i = 0; i < NUM_LOOSE_CALLS; ++i) {
             playerHoleCards.add("A2+, K2s+, K7o+, Q2s+, Q7o+, J2s+, " +
             		"J7o+, T2s+, T7o+, 92s+, 97o+, 82s+, 85o+, 72s+, " +
             		"76o, 62s+, 65o, 52s+, 54o, 42s+, 43o, 22+");
         }
         
-        //2 semi reasonable calls, no AK, AA, KK, QQ as no 3 bet
-        for(int i = 0; i < 2; ++i) {
+        //semi reasonable calls, no AK, AA, KK, QQ as no 3 bet
+        for(int i = 0; i < NUM_OK_CALLS; ++i) {
         playerHoleCards.add("A2, A3, A4, A5, A6, A7, A8, A9, AT, AJ, AQ, K2s+, K9o+, Q8s+, Q9o+, J7s+, " +
                 "J8o+, T8s+, T9o+, 97s+, 98o+, 85s+, 87o+, 75s+, " +
                 "76o, 64s+, 65o, 53s+, 54o, 42s+, 43o, 22, 33, 44, 55, 66, 77, 88, 99, TT, JJ");
         }
         
+        for(int i = 0; i < NUM_PREM_HANDS; ++i) {
+        playerHoleCards.add("AK, TT+");
+        }
        // 
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
