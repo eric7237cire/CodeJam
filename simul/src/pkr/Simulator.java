@@ -26,7 +26,7 @@ public class Simulator {
     //  playerHoleCards.add("AKs");
       //  playerHoleCards.add("KJ");
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
-      playerHoleCards.add("AA");
+      playerHoleCards.add("86s");
         
         //playerHoleCards.add("J7o");
         //playerHoleCards.add("KJo");
@@ -37,10 +37,14 @@ public class Simulator {
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
-      int NUM_RANDOM =1;
-        int NUM_LOOSE_CALLS = 3;
+      int NUM_RANDOM =2;
+        int NUM_LOOSE_CALLS = 2;
         int NUM_OK_CALLS = 0;
         int NUM_GOOD_HANDS = 0;
+        
+        //offsuit A2 K7 Q8 J8 T8 T9 98(limit)
+        //suited A2 K2 Q4 J6 T6 96 86?
+        //22+
         
         //random
         for(int i = 0; i < NUM_RANDOM; ++i) {
@@ -194,6 +198,13 @@ public class Simulator {
     private static int[] availableCards = new int[52];
     private static int[] availableHoleCards = new int[1326];    
     
+    /**
+     * Choisir au hasard deux cartes dans un éventail
+     * 
+     * @param usedCards si les cartes ont été utilisées  
+     * @param range l'eventail de cartes possible
+     * @return null si rien trouvé
+     */
     private static HoleCards chooseValidAvailableCard(boolean[] usedCards, HoleCardsRange range) 
     {
         int numAvail = 0;
@@ -223,7 +234,11 @@ public class Simulator {
     }
     
     
-    
+    /**
+     * Choiser le flop, turn, et river parmi les cartes disponibles
+     * @param usedCards
+     * @return
+     */
     private static int[] chooseRemainingCards(boolean[] usedCards) {
         
         int numAvail = 0;
