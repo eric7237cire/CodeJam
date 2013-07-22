@@ -22,14 +22,24 @@ public class TextureInfo {
     int threeKind = -1;
     int firstPair = -1;
     int secondPair = -1;
-    int straightRank = -1;
+    int straightRank = 0;
     
     boolean flush;
     Suit flushSuit;
     
     // blank A (1) 2 (2) ... K (13) A (14) blank (15)
-    int[] conseqCardsLeft = new int[16];
-    int[] conseqCardsRight = new int[16];
+    //int[] conseqCardsLeft = new int[16];
+   // int[] conseqCardsRight = new int[16];
+    
+    
+    //Cards needed to complete straight ; index is straight rank 5 to ace
+    int[] cardsNeededForStraight = new int[NUM_RANKS];
+    
+    //index is  rank
+    int[] cardMakesStraight = new int[NUM_RANKS];
+    
+    //A -- 0 2 -- 1  K -- 12 A -- 13
+    boolean[] straightRanks = new boolean[14];
     
     int highestFreqSuit = 0;
     
@@ -40,11 +50,6 @@ public class TextureInfo {
     }
 
 
-
-    private static int[] straightBitMasks = {
-        15 + (1 << 12), // a + 2 to 4
-        31, 31 << 1, 31 << 2, 31 << 3, 31 << 4, 31 << 5, 31 << 6, 31 << 7,
-        31 << 8 };
 
     public CardRank getHighestRank() 
     {
@@ -84,6 +89,41 @@ public class TextureInfo {
         return CardRank.ranks[bestRank];
     }
     
+    private void calculateStraightInfo()
+    {
+        int missingRank = -1;
+        int missing = 0;
+        
+        
+        for(int strRank = 0; strRank <= 13; ++strRank)
+        {
+            //card no longer in the straight is no longer missing
+            if (strRank >= 5 && !straightRanks[strRank-5]) {
+                missing --;
+            }
+            
+            if(!straightRanks[strRank]) {
+                missing++;
+                missingRank = strRank;
+            }
+            
+            if (strRank < 4) 
+                continue;
+            
+            cardsNeededForStraight[strRank-1] = missing;
+            
+            if (missing == 1) {
+                if (missingRank == 0) {
+                    cardMakesStraight[CardRank.ACE.getIndex()] = strRank - 1;
+                } else {
+                    cardMakesStraight[missingRank-1] = strRank - 1;
+                }
+            } else if (missing == 0) {
+                straightRank = strRank - 1;
+            }
+        }
+    }
+    
     public void calculate() {
         
         
@@ -101,12 +141,12 @@ public class TextureInfo {
                 secondPair = r;
             } 
             
-            
+            /*
             if (freqCard[r] > 0 ) {
                 conseqCardsRight[r+2] = conseqCardsRight[r+3] + 1;
-            }
+            }*/
         }
-        
+        /*
         if (freqCard[CardRank.ACE.getIndex()] > 0) {
             conseqCardsLeft[1] = 1;
         }
@@ -121,14 +161,17 @@ public class TextureInfo {
         
         if (freqCard[CardRank.ACE.getIndex()] > 0) {
             conseqCardsRight[1] = conseqCardsRight[1] + 1;
-        }
+        }*/
 
+        /*
         for (int sbmIdx = straightBitMasks.length - 1; sbmIdx >= 0 ; --sbmIdx) {
             if ( (rankBitmask & straightBitMasks[sbmIdx]) == straightBitMasks[sbmIdx] ) {
                 straightRank = sbmIdx + 3;
                 break;
             }
-        }
+        }*/
+        
+        calculateStraightInfo();
         
         Collections.sort(sortedCards);
     }
@@ -136,42 +179,13 @@ public class TextureInfo {
     public int getStraightDrawCount(HoleCards hc) {
         
         int straightDraws = 0;
-        
-        //A -- 1  2 -- 2  T -- 9 K -- 13 A -- 14
-        int minStr8Rank = Math.max(hc.getLowerRank().getIndex() + 2 - 4, 1);
-        int maxStr8Rank = Math.min(hc.getHigherRank().getIndex() + 2 + 4, conseqCardsRight.length-2);
-        
-        for(int str8Rank = minStr8Rank; str8Rank <= maxStr8Rank; ++str8Rank)
+                
+        for(int cardRank = 0; cardRank <= 12; ++cardRank)
         {
-            //la carte ne doit pas exister
-            if (conseqCardsLeft[str8Rank] != 0)
+            if (cardMakesStraight[cardRank] != 0 && cardMakesStraight[cardRank] > straightRank)
             {
-                Preconditions.checkState(conseqCardsRight[str8Rank] != 0);
-                continue;                
+                ++straightDraws;
             }
-        
-            if (conseqCardsLeft[str8Rank -1] + conseqCardsRight[str8Rank+1]  < 4)
-                continue;
-            
-            if (straightRank != -1)
-            {
-                CardRank drawingTo = CardRank.getFromZeroBasedValue(
-                        str8Rank - 2 + //current index 
-                        Math.min(4,conseqCardsRight[str8Rank+1]) //can use at most 4 cards 
-                        );
-                
-                CardRank curStraight = CardRank.getFromZeroBasedValue(straightRank);
-                
-                if (CardRank.compare(drawingTo, curStraight) < 0) {
-                    continue;
-                }
-            }
-            
-            //Si nous avons déjà une quinte, il faut que ce soit meilleur que l'actuelle 
-               
-            ++straightDraws;
-            
-            
         }
         
         return straightDraws;
@@ -183,6 +197,11 @@ public class TextureInfo {
         rankBitmask |= (1 << card.getRank().getIndex());
         freqCard[card.getRank().getIndex()]++;
         freqSuit[card.getSuit().ordinal()]++;
+        straightRanks[1+card.getRank().getIndex()] = true;
+        
+        if (card.getRank() == CardRank.ACE) {
+            straightRanks[0] = true;
+        }
         
         if (freqSuit[card.getSuit().ordinal()] > highestFreqSuit) {
             highestFreqSuit = freqSuit[card.getSuit().ordinal()];

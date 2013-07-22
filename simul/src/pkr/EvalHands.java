@@ -246,7 +246,7 @@ public class EvalHands {
         case 2:
             eval.setFlag(round, HandCategory.STRAIGHT_DRAW_2);
             break;
-            default:
+            default: //[0, 0, 0, 2, 1, 1, 1, 2, 3, 4, 4, 3, 3]
                 log.warn("3 straight draws?");
         }
         
@@ -506,7 +506,7 @@ public class EvalHands {
         Score score = new Score();
         
         // straight flush
-        if (texInfo.straightRank >= 0 && texInfo.flush) {
+        if (texInfo.straightRank > 0 && texInfo.flush) {
             score.setHandLevel(HandLevel.STRAIGHT_FLUSH);
             score.setKickers(
                     new CardRank[] { CardRank.ranks[texInfo.straightRank]
@@ -564,7 +564,7 @@ public class EvalHands {
         }
 
         // straight
-        if (texInfo.straightRank >= 0) {
+        if (texInfo.straightRank > 0) {
             score.setHandLevel(HandLevel.STRAIGHT);
             score.setKickers(
                     new CardRank[] { CardRank.ranks[texInfo.straightRank] });

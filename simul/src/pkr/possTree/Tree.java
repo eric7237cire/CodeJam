@@ -54,6 +54,16 @@ public class Tree
                     dispNode.clearFlag(WinningLosingCategory.SECOND_BEST_HAND);
                     dispNode.setFlag(WinningLosingCategory.LOSING);
                 }
+                
+                if (possLevel == PossibilityNode.Levels.HAND_CATEGORY.ordinal()) {
+                    dispNode.clearFlag(HandCategory.FLUSH_DRAW);
+                    dispNode.clearFlag(HandCategory.STRAIGHT_DRAW_1);
+                }
+                
+                if (possLevel == PossibilityNode.Levels.TEXTURE.ordinal()) {
+                    dispNode.clearFlag(TextureCategory.UNSUITED);
+                    dispNode.clearFlag(TextureCategory.SAME_SUIT_2);
+                }
             
                 TreeNode curChildNode = null;
                 if (!curNode.getMapChildren().containsKey(dispNode)) {

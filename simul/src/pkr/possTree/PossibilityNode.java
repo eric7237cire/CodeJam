@@ -23,8 +23,9 @@ public class PossibilityNode implements iDisplayNode {
 
     public static enum Levels {
         TEXTURE,
+         
         HAND_CATEGORY,
-        WIN_LOSE,        
+        WIN_LOSE,
         HAND_SUB_CATEGORY
     }
     

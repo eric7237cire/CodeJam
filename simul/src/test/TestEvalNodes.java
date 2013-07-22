@@ -1,7 +1,7 @@
 package test;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static pkr.CompleteEvaluation.ROUND_FLOP;
 import static pkr.CompleteEvaluation.ROUND_TURN;
 import static pkr.CompleteEvaluation.ROUND_RIVER;
@@ -17,6 +17,7 @@ import pkr.EvalHands;
 import pkr.Flop;
 import pkr.HandLevel;
 import pkr.HoleCards;
+import pkr.TextureInfo;
 import pkr.possTree.PossibilityNode.TextureCategory;
 import pkr.possTree.PossibilityNode.WinningLosingCategory;
 import pkr.possTree.PossibilityNode.HandSubCategory;
@@ -337,6 +338,21 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
     }
     
     @Test
+    public void testStraightDrawsInTextureInfo()
+    {
+        TextureInfo ti = new TextureInfo();
+        ti.addCards(Card.parseCards("As 2c 4d 3s Th"));
+        ti.calculate();
+        
+        assertEquals(1, ti.getStraightDrawCount(new HoleCards(Card.parseCards("As 2c"))));
+        
+        ti = new TextureInfo();
+        ti.addCards(Card.parseCards("As 5h 4d 3s Th"));
+        ti.calculate();
+        
+        assertEquals(1, ti.getStraightDrawCount(new HoleCards(Card.parseCards("As 5d"))));
+    }
+    @Test
     public void testStraightDraws()
     {
         HoleCards h1 = new HoleCards(Card.parseCards("As 2c"));               
@@ -430,7 +446,7 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         round  = ROUND_TURN;
         handNum = 0;
         assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.STRAIGHT);
-        assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
         assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_2));
         assertTrue( evals[handNum].hasFlag(round, WinningLosingCategory.SECOND_BEST_HAND));
         assertTrue(evals[handNum].getRoundScore(round).getKickers()[0] == CardRank.QUEEN);
@@ -456,7 +472,7 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         round = ROUND_RIVER;
         handNum = 0;
         assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.STRAIGHT);
-        assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_1));
         assertFalse( evals[handNum].hasFlag(round, HandCategory.STRAIGHT_DRAW_2));
         assertTrue( evals[handNum].hasFlag(round, WinningLosingCategory.SECOND_BEST_HAND));
         assertTrue(evals[handNum].getRoundScore(round).getKickers()[0] == CardRank.KING);

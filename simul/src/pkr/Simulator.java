@@ -24,11 +24,11 @@ public class Simulator {
       
     //  playerHoleCards.add("72o, 32");
     //  playerHoleCards.add("AKs");
-        playerHoleCards.add("A5");
+      //  playerHoleCards.add("KJ");
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
-     // playerHoleCards.add("QQ");
+      playerHoleCards.add("AA");
         
-       // playerHoleCards.add("JJ");
+        //playerHoleCards.add("J7o");
         //playerHoleCards.add("KJo");
       //  playerHoleCards.add("AKo");
        // playerHoleCards.add("JTs");
@@ -37,32 +37,29 @@ public class Simulator {
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
-      int NUM_RANDOM = 4;
-        int NUM_LOOSE_CALLS = 0;
+      int NUM_RANDOM =1;
+        int NUM_LOOSE_CALLS = 3;
         int NUM_OK_CALLS = 0;
-        int NUM_PREM_HANDS = 0;
+        int NUM_GOOD_HANDS = 0;
         
         //random
         for(int i = 0; i < NUM_RANDOM; ++i) {
-            playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
+            playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+,22+");
         }
         
-        //loose all in call
+        //loose all in call, top 50% of hands
         for(int i = 0; i < NUM_LOOSE_CALLS; ++i) {
-            playerHoleCards.add("A2+, K2s+, K7o+, Q2s+, Q7o+, J2s+, " +
-            		"J7o+, T2s+, T7o+, 92s+, 97o+, 82s+, 85o+, 72s+, " +
-            		"76o, 62s+, 65o, 52s+, 54o, 42s+, 43o, 22+");
+            playerHoleCards.add("22+, A2s+, K2s+, Q2s+, J4s+, T6s+, 96s+, 86s+, 75s+, 65s, 54s, A2o+, K2o+, Q5o+, J7o+, T7o+, 98o, 87o, 76o, 65o");
         }
         
-        //semi reasonable calls, no AK, AA, KK, QQ as no 3 bet
+        //top 36%
         for(int i = 0; i < NUM_OK_CALLS; ++i) {
-        playerHoleCards.add("A2, A3, A4, A5, A6, A7, A8, A9, AT, AJ, AQ, K2s+, K9o+, Q8s+, Q9o+, J7s+, " +
-                "J8o+, T8s+, T9o+, 97s+, 98o+, 85s+, 87o+, 75s+, " +
-                "76o, 64s+, 65o, 53s+, 54o, 42s+, 43o, 22, 33, 44, 55, 66, 77, 88, 99, TT, JJ");
+        playerHoleCards.add("22+, A2s+, K7s+, Q7s+, J7s+, T7s+, 98s, 87s, A2o+, K8o+, Q9o+, J9o+, T9o");
         }
         
-        for(int i = 0; i < NUM_PREM_HANDS; ++i) {
-        playerHoleCards.add("AK, TT+");
+        //top 18%
+        for(int i = 0; i < NUM_GOOD_HANDS; ++i) {
+        playerHoleCards.add("55+, A8s+, K9s+, QTs+, JTs, T9s, 98s, 87s, A8o+, KJo+, QJo, JTo");
         }
        // 
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
@@ -75,7 +72,7 @@ public class Simulator {
         
         String fileName = "C:\\codejam\\CodeJam\\simul\\out.xml";
         
-        Tree tree = simulate(30001, playerHoleCards);
+        Tree tree = simulate(80001, playerHoleCards);
         tree.output(fileName);
 
        // playerHoleCards.add("JJ, KJo");

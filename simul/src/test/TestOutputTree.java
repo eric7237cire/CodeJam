@@ -16,7 +16,7 @@ import pkr.possTree.Tree;
 
 
 
-@RunWith(JUnit4.class)
+//@RunWith(JUnit4.class)
 public class TestOutputTree {
     @Test
     public void testSimpleCase() 
