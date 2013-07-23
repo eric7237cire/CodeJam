@@ -15,17 +15,17 @@ public class TextureInfo {
     List<Card> sortedCards;
     
     int rankBitmask;
-    int[] freqCard = new int[NUM_RANKS];
-    int[] freqSuit = new int[4];
+    public int[] freqCard = new int[NUM_RANKS];
+    public int[] freqSuit = new int[4];
     
-    int fourKind = -1;
-    int threeKind = -1;
-    int firstPair = -1;
-    int secondPair = -1;
-    int straightRank = 0;
+    public int fourKind = -1;
+    public int threeKind = -1;
+    public int firstPair = -1;
+    public int secondPair = -1;
+    public int straightRank = 0;
     
-    boolean flush;
-    Suit flushSuit;
+    public boolean flush;
+    public Suit flushSuit;
     
     // blank A (1) 2 (2) ... K (13) A (14) blank (15)
     //int[] conseqCardsLeft = new int[16];
@@ -33,15 +33,15 @@ public class TextureInfo {
     
     
     //Cards needed to complete straight ; index is straight rank 5 to ace
-    int[] cardsNeededForStraight = new int[NUM_RANKS];
+    public int[] cardsNeededForStraight = new int[NUM_RANKS];
     
     //index is  rank
-    int[] cardMakesStraight = new int[NUM_RANKS];
+    public int[] cardMakesStraight = new int[NUM_RANKS];
     
     //A -- 0 2 -- 1  K -- 12 A -- 13
     boolean[] straightRanks = new boolean[14];
     
-    int highestFreqSuit = 0;
+    public int highestFreqSuit = 0;
     
     public TextureInfo() {
         super();
@@ -126,7 +126,7 @@ public class TextureInfo {
     
     public void calculate() {
         
-        
+        firstPair = secondPair = threeKind = fourKind = -1;
 
         for (int r = NUM_RANKS-1; r >= 0; --r) {
             if (freqCard[r] == 4) {
@@ -236,6 +236,12 @@ public class TextureInfo {
         }
     }
 
+    public void addCards(Card[] cards, int num) 
+    {
+        for(int i = 0; i < num; ++i) {
+            addCard(cards[i]);
+        }
+    }
 
 
     /* (non-Javadoc)

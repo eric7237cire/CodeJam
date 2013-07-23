@@ -34,7 +34,7 @@ public class HoleCards {
             {
                 indexes[i][j] = index;
                 indexes[j][i] = index;
-                mapHoleCards[index++] =  new HoleCards(new Card(i), new Card(j));
+                mapHoleCards[index++] =  new HoleCards(Card.listByIndex[i], Card.listByIndex[j]);
             }
         }
     }
@@ -73,7 +73,7 @@ public class HoleCards {
     
     public HoleCards(Card card1, Card card2) {
         super();
-        if (card1.toInt() > card2.toInt()) {
+        if (card1.index > card2.index) {
             this.cards = new Card[] {card2, card1 };
         } else {
             this.cards = new Card[] {card1, card2 };
@@ -88,7 +88,7 @@ public class HoleCards {
         Preconditions.checkArgument(cards.length == 2);
         this.cards = cards;
         
-        if (cards[0].toInt() > cards[1].toInt()) {
+        if (cards[0].index > cards[1].index) {
             Card tmp = cards[0];
             cards[0] = cards[1];
             cards[1] = tmp;
@@ -137,8 +137,8 @@ public class HoleCards {
             return false;
         HoleCards rhs = (HoleCards) obj;
         
-        if (rhs.cards[0].toInt() == cards[0].toInt() &&
-                rhs.cards[1].toInt() == cards[1].toInt())
+        if (rhs.cards[0].index == cards[0].index &&
+                rhs.cards[1].index == cards[1].index)
             return true;
         
         //if (rhs.cards[0] == cards[1] && rhs.cards[1] == cards[0])
