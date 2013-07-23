@@ -7,21 +7,18 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import pkr.CompleteEvaluation;
+import pkr.possTree.PossibilityNode.HandCategory;
+import pkr.possTree.PossibilityNode.HandSubCategory;
+import pkr.possTree.PossibilityNode.TextureCategory;
+import pkr.possTree.PossibilityNode.WinningLosingCategory;
 
 import com.google.common.base.Preconditions;
-
-import pkr.CompleteEvaluation;
-import pkr.EvalHands;
-import pkr.possTree.PossibilityNode.TextureCategory;
-
-import static pkr.possTree.PossibilityNode.*;
 
 public class Tree
 {
 
-    private static Logger log = LoggerFactory.getLogger(Tree.class);
+  //  private static Logger log = LoggerFactory.getLogger(Tree.class);
     
     //@SuppressWarnings("unchecked")
     public Tree() {
@@ -49,20 +46,30 @@ public class Tree
             {
                 PossibilityNode dispNode = eval.getPossibilityNode(round, possLevel);
                 
+                //2nd best hand ==> losing
                 if (possLevel == PossibilityNode.Levels.WIN_LOSE.ordinal() && 
                         dispNode.hasFlag(WinningLosingCategory.SECOND_BEST_HAND)) {
                     dispNode.clearFlag(WinningLosingCategory.SECOND_BEST_HAND);
                     dispNode.setFlag(WinningLosingCategory.LOSING);
                 }
                 
+                //Don't show gutshots
                 if (possLevel == PossibilityNode.Levels.HAND_CATEGORY.ordinal()) {
-                    dispNode.clearFlag(HandCategory.FLUSH_DRAW);
+                   // dispNode.clearFlag(HandCategory.FLUSH_DRAW);
                     dispNode.clearFlag(HandCategory.STRAIGHT_DRAW_1);
                 }
                 
+                //
                 if (possLevel == PossibilityNode.Levels.TEXTURE.ordinal()) {
                     dispNode.clearFlag(TextureCategory.UNSUITED);
                     dispNode.clearFlag(TextureCategory.SAME_SUIT_2);
+                }
+                
+                if (possLevel == PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal()
+                        && dispNode.hasFlag(HandSubCategory.BY_KICKER_2_PLUS))
+                         {
+                    dispNode.clearFlag(HandSubCategory.BY_KICKER_2_PLUS);
+                    dispNode.setFlag(HandSubCategory.BY_KICKER_1);
                 }
             
                 TreeNode curChildNode = null;

@@ -8,6 +8,8 @@ public class Card implements Comparable<Card>{
     
     private CardRank rank;
     
+    final int index;
+    
     public static final int NUM_RANKS = 13;
     
     public  static Card[] listByIndex;
@@ -18,24 +20,28 @@ public class Card implements Comparable<Card>{
             listByIndex[i] = new Card(i);
         }
     }
+    /*
+     * 0 - 2
+     * 1 - 2
+     * 2 - 2
+     * 3 - 2
+     * 4 - 3
+     * 5 - 3 
+     * etc
+     */
     
-    public Card(Suit suit, CardRank rank) {
+    public static Card getCard(Suit suit, CardRank rank) {
         
-        super();
-        this.suit = suit;
-        this.rank = rank;
-        Preconditions.checkNotNull(suit);
-        Preconditions.checkNotNull(rank);
+        return listByIndex[rank.getIndex() * 4 + suit.ordinal()];
+       
     }
     
-    public int toInt() {
-        return suit.ordinal() + rank.getIndex() * 4;
-    }
     
-    public Card(int deckNumber) {
+    
+    private Card(int deckNumber) {
         int rankInt = deckNumber / 4;
         int suitInt = deckNumber % 4;
-        
+        index = deckNumber;
         
         Suit suit = Suit.getFromValue(suitInt);
         
@@ -72,7 +78,7 @@ public class Card implements Comparable<Card>{
         
         Preconditions.checkArgument(suit != null, cardStr);
         
-        return  new Card(suit, rank);
+        return  getCard(suit, rank);
     }
     
     /**
@@ -107,7 +113,7 @@ public class Card implements Comparable<Card>{
      */
     @Override
     public int compareTo(Card rhs) {
-        return ComparisonChain.start().compare(toInt(), rhs.toInt()).result();
+        return ComparisonChain.start().compare(index, rhs.index).result();
     }
 
     /**
@@ -149,6 +155,14 @@ public class Card implements Comparable<Card>{
         Preconditions.checkState(false);
         return false;
     }
+
+    /**
+     * @return the index
+     */
+    public int getIndex() {
+        return index;
+    }
+
     
     
 }

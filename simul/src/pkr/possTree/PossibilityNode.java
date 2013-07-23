@@ -1,18 +1,9 @@
 package pkr.possTree;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
-import pkr.HoleCards;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Ordering;
 
 /**
  * Stockage des drapaux pour un jouer, un Stores flags for 1 player in 1 round
@@ -23,9 +14,8 @@ public class PossibilityNode implements iDisplayNode {
 
     public static enum Levels {
         TEXTURE,
-         
-        HAND_CATEGORY,
         WIN_LOSE,
+        HAND_CATEGORY,        
         HAND_SUB_CATEGORY
     }
     

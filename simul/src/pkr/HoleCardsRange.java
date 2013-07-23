@@ -22,15 +22,12 @@ import com.google.common.collect.Sets;
 
 public class HoleCardsRange {
     
-    public static String SUITED_ACES= "A2s A3s A4s A5s A6s A7s A8s A9s ATs AJs AQs AKs";
-    
+  
     
     
     private static Logger log = LoggerFactory.getLogger(HoleCardsRange.class);
     
-    boolean mask[][];
-    public boolean inRangeCard1[];
-    public boolean inRangeCard2[];
+    
     private String rangeStr;
     private Set<HoleCards> cards;
     private List<HoleCards> cardsList;
@@ -42,9 +39,6 @@ public class HoleCardsRange {
         
         this.rangeStr = rangeStr;
         
-        mask = new boolean[52][52];
-        inRangeCard1 = new boolean[52];
-        inRangeCard2 = new boolean[52];
         cards = Sets.newHashSet();
         cardsList = Lists.newArrayList();
         
@@ -100,7 +94,8 @@ public class HoleCardsRange {
                         {
                             suit2 = Suit.fromIndex(j);
                             
-                            ret.add( new HoleCards( new Card(suit1, rank), new Card(suit2, rank)));
+                            ret.add( new HoleCards( Card.getCard(suit1, rank), 
+                                    Card.getCard(suit2, rank)));
                         }
                     }
                        
@@ -133,7 +128,8 @@ public class HoleCardsRange {
                         
                         if (suited) {
                             suit2 = Suit.fromIndex(i);
-                            ret.add( new HoleCards( new Card(suit1, rank1), new Card(suit2, rank)));
+                            ret.add( new HoleCards( Card.getCard(suit1, rank1),
+                                    Card.getCard(suit2, rank)));
                         } 
                         
                         if (unSuited) {
@@ -144,7 +140,7 @@ public class HoleCardsRange {
                                     continue;
                                 suit2 = Suit.fromIndex(j);
                                 
-                                ret.add( new HoleCards( new Card(suit1, rank1), new Card(suit2, rank)));
+                                ret.add( new HoleCards( Card.getCard(suit1, rank1), Card.getCard(suit2, rank)));
                             }
                         }
                     }
@@ -158,30 +154,12 @@ public class HoleCardsRange {
             Preconditions.checkState(!cards.contains(hc), hc.toString() + "  " + this.toString());
             cards.add(hc);
             cardsList.add(hc);
-            //log.debug("hc {} {} {}", hc.getCards(), hc.getCards()[0].toInt(), hc.getCards()[1].toInt());
-            mask[hc.getCards()[0].toInt()][hc.getCards()[1].toInt()] = true;
-            mask[hc.getCards()[1].toInt()][hc.getCards()[0].toInt()] = true;
-            
-            inRangeCard1[hc.getCards()[0].toInt()] = true;
-            inRangeCard2[hc.getCards()[1].toInt()] = true;
+            //log.debug("hc {} {} {}", hc.getCards(), hc.getCards()[0].index, hc.getCards()[1].index);
+           
         }
     }
     
-    public boolean inRange(Card[] cards) {
-        Preconditions.checkArgument(cards.length == 2);
-        
-        return inRange(cards[0].toInt(), cards[1].toInt());
-    }
-    /**
-     * Order of card1 and card2 does not matter
-     * @param card1
-     * @param card2
-     * @return
-     */
-    public boolean inRange(int card1, int card2) {
-        
-        return mask[card1][card2];
-    }
+  
 
     /**
      * @return the cards
@@ -197,5 +175,10 @@ public class HoleCardsRange {
         return cardsList;
     }
     
+    public boolean inRange(Card[] cards) 
+    {
+        HoleCards hc = new HoleCards(cards);
+        return this.cards.contains(hc);
+    }
     
 }

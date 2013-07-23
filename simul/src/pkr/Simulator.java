@@ -26,7 +26,7 @@ public class Simulator {
     //  playerHoleCards.add("AKs");
       //  playerHoleCards.add("KJ");
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
-      playerHoleCards.add("AA");
+      playerHoleCards.add("A2o, A3o, A4o, A5o");
         
         //playerHoleCards.add("J7o");
         //playerHoleCards.add("KJo");
@@ -37,10 +37,14 @@ public class Simulator {
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
-      int NUM_RANDOM =1;
-        int NUM_LOOSE_CALLS = 3;
+      int NUM_RANDOM =2;
+        int NUM_LOOSE_CALLS = 2;
         int NUM_OK_CALLS = 0;
         int NUM_GOOD_HANDS = 0;
+        
+        //offsuit A2 K7 Q8 J8 T8 T9 98(limit)
+        //suited A2 K2 Q4 J6 T6 96 86?
+        //22+
         
         //random
         for(int i = 0; i < NUM_RANDOM; ++i) {
@@ -51,6 +55,8 @@ public class Simulator {
         for(int i = 0; i < NUM_LOOSE_CALLS; ++i) {
             playerHoleCards.add("22+, A2s+, K2s+, Q2s+, J4s+, T6s+, 96s+, 86s+, 75s+, 65s, 54s, A2o+, K2o+, Q5o+, J7o+, T7o+, 98o, 87o, 76o, 65o");
         }
+        
+        final String MY_LIST = "22+, A2s+, K2s+, Q4s+, J6s+, T6s+, 96s+, 86s+, 76s, 65s, 54s, A2o+, K8o+, Q8o+, J8o+, T8o+, T9o, 98o, 22+";
         
         //top 36%
         for(int i = 0; i < NUM_OK_CALLS; ++i) {
@@ -108,6 +114,8 @@ public class Simulator {
         int fullHouse = 0;
         int flops2Pair = 0;
         
+        long startTime = System.currentTimeMillis();
+        
         for(int simulNum = 0; simulNum < TOTAL_SIMULATIONS; ++simulNum) {
             CompleteEvaluation[] evals = simulateOneRound(listRanges);
             
@@ -159,7 +167,7 @@ public class Simulator {
                 lotsOFSets ++;
             }
             
-            if (simulNum > 0 && simulNum % 1000 == 0) {
+            if (simulNum > 0 && simulNum % 5000 == 0) {
                 logOutput.debug("# of simulations {} of {}", simulNum, TOTAL_SIMULATIONS );
                 logOutput.debug("# of quads {}.  %{} ", quadCount, 100.0 * quadCount / simulNum);
                 logOutput.debug("# of str8 flushes {}.  %{} ", royals, 100.0 * royals / simulNum);
@@ -181,19 +189,31 @@ public class Simulator {
         
         log.info("{} valid rounds", actualRounds);
         
+        long endTime = System.currentTimeMillis();
+        
         for(int p = 0; p < numPlayers; ++p) {
             equity[p] /= actualRounds;
             
             log.info("Players {} range {} =  {}", p, listRanges[p], equity[p] * 100);
         }
         
+        logOutput.info("Seconds passed {}", (endTime-startTime) / 1000.0);
+        
         return tree;
         
     }
     
     private static int[] availableCards = new int[52];
+    private static Card[] flopTurnRiver = new Card[52];
     private static int[] availableHoleCards = new int[1326];    
     
+    /**
+     * Choisir au hasard deux cartes dans un éventail
+     * 
+     * @param usedCards si les cartes ont été utilisées  
+     * @param range l'eventail de cartes possible
+     * @return null si rien trouvé
+     */
     private static HoleCards chooseValidAvailableCard(boolean[] usedCards, HoleCardsRange range) 
     {
         int numAvail = 0;
@@ -202,13 +222,13 @@ public class Simulator {
         for(int i = 0; i < range.getCardsList().size(); ++i)
         {
             HoleCards hc = range.getCardsList().get(i);
-            if (!usedCards[hc.getCards()[0].toInt()]
-                   && !usedCards[hc.getCards()[1].toInt()]) 
+            if (!usedCards[hc.getCards()[0].index]
+                   && !usedCards[hc.getCards()[1].index]) 
             {
                 availableHoleCards[numAvail++] = i;
-                log.debug("{} available in {} ", hc, range);
+               // log.debug("{} available in {} ", hc, range);
             } else {
-                log.debug("{} not available in {} ", hc, range);
+               // log.debug("{} not available in {} ", hc, range);
             }
             
         }
@@ -223,8 +243,12 @@ public class Simulator {
     }
     
     
-    
-    private static int[] chooseRemainingCards(boolean[] usedCards) {
+    /**
+     * Choiser le flop, turn, et river parmi les cartes disponibles
+     * @param usedCards
+     * @return
+     */
+    private static void chooseRemainingCards(boolean[] usedCards) {
         
         int numAvail = 0;
         
@@ -235,7 +259,6 @@ public class Simulator {
             }
         }
         
-        int[] remCards = new int[5];
         
         for (int deckIdx = 0; deckIdx < 5; ++deckIdx) {
             // int from remainder of deck
@@ -244,10 +267,10 @@ public class Simulator {
             availableCards[r] = availableCards[deckIdx];
             availableCards[deckIdx] = swap;
             
-            remCards[deckIdx] = availableCards[deckIdx];
+            flopTurnRiver[deckIdx] = Card.listByIndex[availableCards[deckIdx]];
+            
         }
         
-        return remCards;
         
     }
             
@@ -292,8 +315,8 @@ public class Simulator {
                 return null;
             }
             
-            usedCards[ hc.getCards()[0].toInt() ] = true;
-            usedCards[ hc.getCards()[1].toInt() ] = true;
+            usedCards[ hc.getCards()[0].index ] = true;
+            usedCards[ hc.getCards()[1].index ] = true;
             holeCards[i] = hc;
             
             //log.debug("Hole cards ({}) {} idx 1 {} idx 2 {}", i, holeCards[i], card1Index, card2Index);
@@ -302,16 +325,10 @@ public class Simulator {
         //Everything matches evaluate
         
         //Pick the 5 remaining cards for the flop, turn, and river
-        int[] flopTurnRiver = chooseRemainingCards(usedCards);
+        chooseRemainingCards(usedCards);
         
-        Flop flop = new Flop(new Card[] { 
-                Card.listByIndex[ flopTurnRiver[0] ],
-                Card.listByIndex[ flopTurnRiver[1] ],
-                Card.listByIndex[ flopTurnRiver[2] ]
-        });
-        CompleteEvaluation[] evals = EvalHands.evaluate(true, holeCards, 
-                flop,  Card.listByIndex[ flopTurnRiver[3] ], 
-        Card.listByIndex[ flopTurnRiver[4] ]);
+        CompleteEvaluation[] evals = EvalHands.evaluate(true, holeCards, flopTurnRiver); 
+                
         
         /*
         if (evals[1].won == true) {
