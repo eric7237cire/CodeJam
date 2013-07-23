@@ -28,6 +28,9 @@ a straight ; 2 pair is most likely
 85% -- turn 
 75% -- river
 
+board pairing ; about 42% winning with 2 pair
+27% losing to trips, 27% it paired someone else's trips
+
 A6-AT
 
 AJ-AK
