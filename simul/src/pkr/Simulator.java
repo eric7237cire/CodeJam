@@ -26,7 +26,7 @@ public class Simulator {
     //  playerHoleCards.add("AKs");
       //  playerHoleCards.add("KJ");
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
-      playerHoleCards.add("86s");
+      playerHoleCards.add("A2o, A3o, A4o, A5o");
         
         //playerHoleCards.add("J7o");
         //playerHoleCards.add("KJo");
@@ -55,6 +55,8 @@ public class Simulator {
         for(int i = 0; i < NUM_LOOSE_CALLS; ++i) {
             playerHoleCards.add("22+, A2s+, K2s+, Q2s+, J4s+, T6s+, 96s+, 86s+, 75s+, 65s, 54s, A2o+, K2o+, Q5o+, J7o+, T7o+, 98o, 87o, 76o, 65o");
         }
+        
+        final String MY_LIST = "22+, A2s+, K2s+, Q4s+, J6s+, T6s+, 96s+, 86s+, 76s, 65s, 54s, A2o+, K8o+, Q8o+, J8o+, T8o+, T9o, 98o, 22+";
         
         //top 36%
         for(int i = 0; i < NUM_OK_CALLS; ++i) {

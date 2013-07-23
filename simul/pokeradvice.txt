@@ -7,3 +7,70 @@ vs 2 people about 30-33% chance
 
 vs 5 other people, once 3rd colour hits, about 27% chance someone has it
 vs 4 other people, about 
+
+
+offsuits
+
+A2-A5
+
+19% winning; 
+48% with a top pair
+25% with a bottom pair
+
+assuming top pair :
+
+if 3rd card hits, about 4*# of players chance
+someone hit their flush ; very common semi bluff
+
+another 15% chance someone hit trips, 2 pair, or
+a straight ; 2 pair is most likely
+
+85% -- turn 
+75% -- river
+
+A6-AT
+
+AJ-AK
+
+
+K8-KT
+
+KJ-KQ
+
+
+Q8-QJ
+
+
+J8-JT
+
+T9; 98
+
+suited
+
+A2-A5s
+
+A6-ATs
+
+AJ-AKs
+
+
+K8-KTs
+
+KJ-KQs
+
+
+Q8-QJs
+
+
+J8-JTs
+
+T9; 98; 87; 76; 65
+
+
+pairs
+
+22-77
+
+88-JJ
+
+QQ-AA
