@@ -124,7 +124,13 @@ public class DiscoveryPreflopState implements State
                 Preconditions.checkState(betAmt == amtToEnter);
             }
             
+            if (playerBets.containsKey(playerName)) {
+                log.debug("Player suit une relance");
+                pot -= playerBets.get(playerName);
+            }
+            
             playerBets.put(playerName, betAmt);
+            pot += betAmt;
             
             if (players.contains(playerName)) 
             {

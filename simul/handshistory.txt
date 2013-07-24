@@ -47,8 +47,6 @@ Teri remporte le pot (4 280 000 $) avec une quinte (K).
 _____________________________
  
 + 24 XP pour avoir gagné une main.
-xxxx
-xxxx
 Carroll a suivi de 40 000.
 Eric a relancé de 160 000.
 Teri a suivi de 160 000.
@@ -84,14 +82,18 @@ Elizabeth se couche.
 Teri a suivi de 40 000.
 Carroll a suivi de 40 000.
 Eric a suivi de 40 000.
+
 Carroll a parlé.
 Eric a relancé de 40 000.
 Teri a suivi de 40 000.
 Carroll se couche.
+
 Eric a relancé de 80 000.
 Teri a suivi de 80 000.
+
 Eric a relancé de 160 000.
 Teri a suivi de 160 000.
+
 Eric remporte le pot (680 000 $) avec une paire de 10, une paire de 5 et un A en kicker.
 _____________________________
  

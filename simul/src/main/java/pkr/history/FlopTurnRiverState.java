@@ -39,6 +39,8 @@ public class FlopTurnRiverState implements State
         
         hasFolded = Maps.newHashMap();
         playerBets = Maps.newHashMap();
+        
+        log.debug("Nouveau round.  Players {} pot {}", players.size(), pot);
     }
     
     private State getNextState(String line) {
@@ -217,6 +219,35 @@ public class FlopTurnRiverState implements State
         {
             String playerName = matGagne.group(1);
             log.debug("{} gagne", playerName);
+            return new UnitializedState();
+        }
+        
+        String regexTapis = "(.*) a fait tapis.";
+        Pattern patTapis = Pattern.compile(regexTapis);
+        Matcher matTapis = patTapis.matcher(line);
+        
+        if (matTapis.matches())
+        {
+            //Tapis est un cas diffil car on ne sais pas si c'est un relancement ou pas ; aussi on ne sais plus le pot
+            String playerName = matTapis.group(1);
+            log.debug("{} Tapis", playerName);
+            return new UnitializedState();
+        }
+        
+        String regexShowdown = "(.*) remporte le pot \\(([\\d ]+) \\$\\) .*\\.";
+        Pattern patShowdown = Pattern.compile(regexShowdown);
+        Matcher matShowdown = patShowdown.matcher(line);
+        
+        if (matShowdown.matches())
+        {
+            //Showdown est un cas diffil car on ne sais pas si c'est un relancement ou pas ; aussi on ne sais plus le pot
+            String playerName = matShowdown.group(1);
+            String potStr = matShowdown.group(2);
+            
+            int finalPot = Integer.parseInt(potStr.replace(" ", ""), 10);
+            
+            Preconditions.checkState(finalPot == pot, "Pot " + pot + " real " + finalPot);
+            log.debug("{} Showdown pot {}", playerName, finalPot);
             return new UnitializedState();
         }
         
