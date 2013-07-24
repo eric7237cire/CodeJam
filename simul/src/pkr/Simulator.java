@@ -26,7 +26,9 @@ public class Simulator {
     //  playerHoleCards.add("AKs");
       //  playerHoleCards.add("KJ");
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
-      playerHoleCards.add("A2o, A3o, A4o, A5o");
+     // playerHoleCards.add("A2o, A3o, A4o, A5o");
+        
+        playerHoleCards.add("Q8o");
         
         //playerHoleCards.add("J7o");
         //playerHoleCards.add("KJo");
