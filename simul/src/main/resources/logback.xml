@@ -29,6 +29,16 @@
       
     </encoder>
   </appender>
+  
+  <appender name="HANDOUTPUT" class="ch.qos.logback.core.FileAppender">
+    <file>C:/codejam/CodeJam/simul/handOutput.txt</file>
+    <append>false</append>
+    <encoder>
+    <pattern>%m%n</pattern>
+    <!-- <pattern>%d{HH:mm:ss:SSS} %r - %m%n</pattern> -->
+      
+    </encoder>
+  </appender>
   <!--
   <pattern>%date [%file:%line] %msg%n</pattern> 
   <logger name="com.eric.codejam.multithread" level="OFF"/>
@@ -38,6 +48,10 @@
    
    <logger name="file" level="ALL" additivity="false">
      <appender-ref ref="FILE"/>
+   </logger>
+   
+    <logger name="handOutput" level="ALL" additivity="false">
+     <appender-ref ref="HANDOUTPUT"/>
    </logger>
    
    <logger name="main" level="DEBUG"/>

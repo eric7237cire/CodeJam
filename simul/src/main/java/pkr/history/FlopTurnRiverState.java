@@ -1,7 +1,14 @@
 package pkr.history;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+
+import javax.swing.text.NumberFormatter;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
@@ -15,6 +22,7 @@ import com.google.common.collect.Maps;
 public class FlopTurnRiverState implements ParserListener
 {
     static Logger log = LoggerFactory.getLogger(Parser.class);
+    static Logger logOutput = LoggerFactory.getLogger("handOutput");
     
     List<String> players;
     int pot;
@@ -26,18 +34,32 @@ public class FlopTurnRiverState implements ParserListener
     Map<String , Boolean> hasFolded;
     Map<String, Integer> playerBets;
     
-    boolean replayLine = false;
     
-    public FlopTurnRiverState(List<String> players, int pot, boolean replayLine) {
+    int currentPlayer = 0;
+    
+    boolean replayLine = false;
+    int round;
+    
+    
+    public FlopTurnRiverState(List<String> players, int pot, boolean replayLine, int round) {
         super();
         this.players = players;
         this.pot = pot;
         this.replayLine = replayLine;
+        this.round = round;
         
         hasFolded = Maps.newHashMap();
         playerBets = Maps.newHashMap();
         
         log.debug("Nouveau round.  Players {} pot {}", players.size(), pot);
+        
+       // logOutput.debug("\n***********************************************");
+        logOutput.debug("\nStarting round {} with {} players.  Pot is ${}\n",
+                round == 0 ? "FLOP" : (round == 1 ? "TURN" : "RIVER"),
+                        players.size(),
+                        moneyFormat.format(pot));
+                        
+        
     }
     
     public static int updatePlayerBet(Map<String, Integer> playerBets, String playerName, int playerBet, int pot) 
@@ -70,7 +92,7 @@ public class FlopTurnRiverState implements ParserListener
             }
         }
         
-        FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder, pot, replayLine);
+        FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder, pot, replayLine, 1+round);
         return ftrState;
     }
 
@@ -106,7 +128,61 @@ public class FlopTurnRiverState implements ParserListener
         return true;
     }
 
+    private void incrementPlayer(String playerName)
+    {
+        Preconditions.checkState(players.get(currentPlayer).equals(playerName));
+        
+        while(true)
+        {
+            ++currentPlayer;
+            if (currentPlayer == players.size()) {
+                currentPlayer = 0;
+            }
+            
+            if (BooleanUtils.isNotTrue(hasFolded.get(playerName))) {
+                return;
+            }
+        }
+    }
+    
+    public final static DecimalFormat df2;
+    public final static DecimalFormat moneyFormat;
+    
+    static {
+        
+        df2 = new DecimalFormat("0.##");
+        df2.setRoundingMode(RoundingMode.HALF_UP);
+        df2.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
+        
+        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance();
+        symbols.setGroupingSeparator(' ');
 
+        moneyFormat = new DecimalFormat("###,###", symbols);
+    }
+    
+    private void printHandHistory(String action)
+    {
+        
+        logOutput.debug("Player {} position {} Action {}", 
+                players.get(currentPlayer), 1+currentPlayer, action);
+        
+        Integer playerBet = playerBets.get(players.get(currentPlayer)); 
+        if (playerBet == null)
+            playerBet = 0;
+        
+        if (amtToCall > playerBet)
+        {
+            int diff = amtToCall - playerBet;
+            double perc = 100.0 * diff / (pot + diff);
+            double ratio = pot * 1.0 / diff;
+            
+            double outsOne = perc / 2;
+            
+            logOutput.debug("Amount to call {} for pot {}.  Pot ratio : {}%  or 1 to {}  or {} outs", 
+                    moneyFormat.format(amtToCall), moneyFormat.format(pot),
+                    df2.format(perc), df2.format(ratio), df2.format(outsOne));
+        }
+    }
 
     @Override
     public ParserListener handleSuivi(String playerName, int betAmt)
@@ -115,6 +191,9 @@ public class FlopTurnRiverState implements ParserListener
         
         Preconditions.checkState(amtToCall > 0); 
         Preconditions.checkState(betAmt == amtToCall);
+        
+        incrementPlayer(playerName);
+        printHandHistory("Call");
         
         pot = updatePlayerBet(playerBets, playerName, betAmt, pot);
         
@@ -134,6 +213,9 @@ public class FlopTurnRiverState implements ParserListener
     {
         Preconditions.checkState(betAmt > amtToCall);
         
+        incrementPlayer(playerName);
+        printHandHistory("Raise $" + moneyFormat.format(betAmt));
+        
         amtToCall = betAmt;
         
         pot = updatePlayerBet(playerBets, playerName, betAmt, pot);
@@ -145,6 +227,9 @@ public class FlopTurnRiverState implements ParserListener
     public ParserListener handleCoucher(String playerName)
     {
         Preconditions.checkState(players.contains(playerName));
+        
+        printHandHistory("Fold");
+        incrementPlayer(playerName);
         
         hasFolded.put(playerName, true);
         
@@ -166,7 +251,8 @@ public class FlopTurnRiverState implements ParserListener
         }
         //Preconditions.checkState(!playerBets.containsKey(playerName));
         
-        
+        incrementPlayer(playerName);
+        printHandHistory("Check");
         
         playerBets.put(playerName, 0);
         

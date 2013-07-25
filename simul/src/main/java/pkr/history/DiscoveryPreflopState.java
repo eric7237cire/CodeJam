@@ -17,6 +17,7 @@ import com.google.common.collect.Maps;
 public class DiscoveryPreflopState implements ParserListener
 {
     static Logger log = LoggerFactory.getLogger(Parser.class);
+    static Logger logOutput = LoggerFactory.getLogger("handOutput");
     
     List<String> players;
     int pot;
@@ -24,6 +25,7 @@ public class DiscoveryPreflopState implements ParserListener
     final static int MAX_PLAYERS = 5;
     
     int amtToEnter = 0;
+    int currentPlayer = 0;
     
     Map<String , Boolean> hasFolded;
     Map<String, Integer> playerBets;
@@ -35,6 +37,9 @@ public class DiscoveryPreflopState implements ParserListener
         
         hasFolded = Maps.newHashMap();
         playerBets = Maps.newHashMap();
+        
+        logOutput.debug("\n***********************************************");
+        logOutput.debug("Starting new Hand");
     }
     
     private boolean potsGood() 
@@ -64,6 +69,41 @@ public class DiscoveryPreflopState implements ParserListener
         return true;
     }
     
+    /**
+     * 
+     * @return true if playerName has been seen
+     */
+    private boolean incrementPlayer(String playerName)
+    {
+        if (!players.contains(playerName))
+        {
+            log.debug("Player [{}] ajouté avec index {} ", playerName, players.size());
+            players.add(playerName);
+            currentPlayer = players.size() - 1;
+            return false;
+        }
+              
+        
+        
+        
+        while(true)
+        {
+            ++currentPlayer;
+            if (currentPlayer == players.size()) {
+                currentPlayer = 0;
+            }
+            
+            if (BooleanUtils.isNotTrue(hasFolded.get(playerName))) {
+                
+                Preconditions.checkState(players.get(currentPlayer).equals(playerName));
+                
+                return true;
+            }
+        }
+        
+        
+    }
+    
     private ParserListener getNextState(boolean replayline) {
         log.debug("Preflop fini : Tous les joueurs pris en compte");
         List<String> playersInOrder = Lists.newArrayList();
@@ -90,7 +130,7 @@ public class DiscoveryPreflopState implements ParserListener
             }
         }
         
-        FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder, pot, replayline);
+        FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder, pot, replayline, 0);
         
         return ftrState;
     }
@@ -101,6 +141,9 @@ public class DiscoveryPreflopState implements ParserListener
     @Override
     public ParserListener handleSuivi(String playerName, int betAmt)
     {
+        boolean seenPlayer = incrementPlayer(playerName);
+        printHandHistory("Call");
+        
         if (amtToEnter == 0) 
         {
             amtToEnter = betAmt;
@@ -113,14 +156,10 @@ public class DiscoveryPreflopState implements ParserListener
         
         pot = FlopTurnRiverState.updatePlayerBet(playerBets, playerName, betAmt, pot);
         
-        if (players.contains(playerName)) 
+        if (seenPlayer && potsGood())
         {
-            if (potsGood()) 
-                return getNextState(false);
-        } else {
-            log.debug("Player [{}] ajouté avec index {} ", playerName, players.size());
-            players.add(playerName);                
-        }
+           return getNextState(false);
+        } 
         
         return this;
     }
@@ -128,18 +167,17 @@ public class DiscoveryPreflopState implements ParserListener
     @Override
     public ParserListener handleRelance(String playerName, int betAmt)
     {
+        boolean seenPlayer = incrementPlayer(playerName);
+        printHandHistory("Raise");
+        
         Preconditions.checkState(betAmt > amtToEnter);
         
         amtToEnter = betAmt;
         
         pot = FlopTurnRiverState.updatePlayerBet(playerBets, playerName, betAmt, pot);
         
-        if (!players.contains(playerName)) 
-        {
-            log.debug("Player [{}] ajouté avec index {} ", playerName, players.size());
-            players.add(playerName);
-            playerBets.put(playerName, betAmt);
-        }
+        playerBets.put(playerName, betAmt);
+        
         
         return this;
     }
@@ -147,17 +185,15 @@ public class DiscoveryPreflopState implements ParserListener
     @Override
     public ParserListener handleCoucher(String playerName)
     {
+        boolean seenPlayer = incrementPlayer(playerName);
+        printHandHistory("Fold");
+        
         hasFolded.put(playerName, true);
         
-        if (players.contains(playerName)) 
+        if (seenPlayer && potsGood()) 
         {
-            if (potsGood())
-                return getNextState(false);
-        } else {
-            log.debug("couché Player [{}] ajouté avec index {} ", playerName, players.size());
-            players.add(playerName);
-            
-        }
+            return getNextState(false);
+        } 
         
         return this;
     }
@@ -195,6 +231,22 @@ public class DiscoveryPreflopState implements ParserListener
         return false;
     }
 
-    
+    private void printHandHistory(String action)
+    {
+        
+        logOutput.debug("Player {} position {} Action {}", 
+                players.get(currentPlayer), 1+currentPlayer, action);
+        
+        Integer playerBet = playerBets.get(players.get(currentPlayer)); 
+        if (playerBet != null && amtToEnter > playerBet)
+        {
+            int diff = amtToEnter - playerBet;
+            double perc = 1.0 * diff / (pot + diff);
+            double ratio = pot * 1.0 / diff;
+            
+            log.debug("Amount to call {}.  {}%   {} 1 to {}", 
+                    amtToEnter, FlopTurnRiverState.df2.format(perc), FlopTurnRiverState.df2.format(ratio));
+        }
+    }
 
 }

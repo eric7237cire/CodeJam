@@ -27,7 +27,7 @@ public class Parser {
             Pattern.compile(".* a atteint la réalisation suivante : .* !");
     
     private final static Pattern ADJUSTEMENT =
-            Pattern.compile(".* a fait un ajustement automatique.");
+            Pattern.compile(".* a fait un.* automatique.");
     
     static boolean isIgnoreLine(String line) 
     {
@@ -58,7 +58,7 @@ public class Parser {
     private static Pattern patHandBoundary = Pattern.compile("_*");
     
     public static void main(String[] args) throws IOException {
-        String fileName = "C:\\codejam\\CodeJam\\simul\\handshistory.txt";
+        String fileName = "C:\\codejam\\CodeJam\\simul\\hands.txt";
         File file = new File(fileName);
         List<String> lines = Files.readLines(file, Charsets.ISO_8859_1);
         
