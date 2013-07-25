@@ -28,7 +28,7 @@ public class Simulator {
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
      // playerHoleCards.add("A2o, A3o, A4o, A5o");
         
-        playerHoleCards.add("Q8o");
+        playerHoleCards.add("K8o, K9o, KTo");
         
         //playerHoleCards.add("J7o");
         //playerHoleCards.add("KJo");
@@ -39,7 +39,7 @@ public class Simulator {
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
-      int NUM_RANDOM =4;
+      int NUM_RANDOM =3;
         int NUM_LOOSE_CALLS = 0;
         int NUM_OK_CALLS = 0;
         int NUM_GOOD_HANDS = 0;

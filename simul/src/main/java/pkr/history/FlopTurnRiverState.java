@@ -2,8 +2,6 @@ package pkr.history;
 
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
@@ -14,9 +12,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 
-import pkr.history.Parser.State;
-
-public class FlopTurnRiverState implements State
+public class FlopTurnRiverState implements ParserListener
 {
     static Logger log = LoggerFactory.getLogger(Parser.class);
     
@@ -30,12 +26,13 @@ public class FlopTurnRiverState implements State
     Map<String , Boolean> hasFolded;
     Map<String, Integer> playerBets;
     
+    boolean replayLine = false;
     
-    
-    public FlopTurnRiverState(List<String> players, int pot) {
+    public FlopTurnRiverState(List<String> players, int pot, boolean replayLine) {
         super();
         this.players = players;
         this.pot = pot;
+        this.replayLine = replayLine;
         
         hasFolded = Maps.newHashMap();
         playerBets = Maps.newHashMap();
@@ -43,7 +40,23 @@ public class FlopTurnRiverState implements State
         log.debug("Nouveau round.  Players {} pot {}", players.size(), pot);
     }
     
-    private State getNextState(String line) {
+    public static int updatePlayerBet(Map<String, Integer> playerBets, String playerName, int playerBet, int pot) 
+    {
+        if (playerBets.containsKey(playerName)) {
+           // log.debug("Player suit une relance");
+            pot -= playerBets.get(playerName);
+        }
+        
+        pot += playerBet;
+        
+        playerBets.put(playerName, playerBet);
+        
+        log.debug("After {} {} pot = {}",  playerName, playerBet, pot);
+        
+        return pot;
+    }
+    
+    private ParserListener getNextState(boolean replayLine) {
         log.debug("Tous les joueurs pris en compte");
         List<String> playersInOrder = Lists.newArrayList();
         
@@ -51,14 +64,13 @@ public class FlopTurnRiverState implements State
         
         for(int i = 0; i < players.size() ; ++i) {
             String playerName = players.get(i);
-            if (BooleanUtils.isNotFalse(hasFolded.get(playerName))) {
+            if (BooleanUtils.isNotTrue(hasFolded.get(playerName))) {
                 log.debug("Adding player {}", playerName);
                 playersInOrder.add(playerName);
             }
         }
         
-        FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder, pot);
-        ftrState.handleLine(line);
+        FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder, pot, replayLine);
         return ftrState;
     }
 
@@ -95,164 +107,110 @@ public class FlopTurnRiverState implements State
     }
 
 
-    public State handleLine(String line) {
-        if (Parser.isIgnoreLine(line))
-            return this;
+
+    @Override
+    public ParserListener handleSuivi(String playerName, int betAmt)
+    {
+        log.debug("Suivi player {} bet {} ; pot {}", playerName, betAmt, pot);
         
-        log.debug("\nFlopTurnRiverState line [{}]\n", line);
-       
-        String regexSuivi = "(.*) a suivi de ([\\d ]+)\\.";
+        Preconditions.checkState(amtToCall > 0); 
+        Preconditions.checkState(betAmt == amtToCall);
         
-        Pattern patSuivi = Pattern.compile(regexSuivi);
+        pot = updatePlayerBet(playerBets, playerName, betAmt, pot);
         
-        Matcher matSuivi = patSuivi.matcher(line);
+        Preconditions.checkState(players.contains(playerName));
         
-        if (matSuivi.matches()) {
-            
-            String playerName = matSuivi.group(1);
-            String betAmtStr = matSuivi.group(2);
-            
-            int betAmt = Integer.parseInt(betAmtStr.replace(" ", ""), 10);
-            log.debug("Correspondance player {} bet {} = {}", playerName, betAmtStr, betAmt);
-            
-            if (amtToCall == 0) 
-            {
-                amtToCall = betAmt;
-                log.debug("Table mise à {}", amtToCall);
-            } else {
-                Preconditions.checkState(betAmt == amtToCall);
-            }
-            
-            playerBets.put(playerName, betAmt);
-            
-            if (players.contains(playerName)) 
-            {
-                if (potsGood()) 
-                    return getNextState(line);
-            } else {
-                log.debug("Player [{}] ajouté avec index {} ", playerName, players.size());
-                players.add(playerName);                
-            }
-            
-            return this;
-        }
         
-        String regexParle = "(.*) a parlé.";
-        Pattern patParle = Pattern.compile(regexParle);
-        Matcher matParle = patParle.matcher(line);
-        
-        if (matParle.matches()) 
+        if (potsGood()) 
         {
-            String playerName = matParle.group(1);
-            /*
-            
-            
-            //Should be first player to act
-            int playerIndex = players.indexOf(playerName);
-            */
-            if (playerBets.containsKey(playerName)) 
-            {
-                log.warn("Next round appears to have started; maybe a player left?");
-                return new UnitializedState();
-            }
-            //Preconditions.checkState(!playerBets.containsKey(playerName));
-            
-            
-            
-            playerBets.put(playerName, 0);
-            
-            if (potsGood())
-            {
-                //La ligne actuel était prise en compte
-                return getNextState("");
-            }
-            
-            return this;
+            return getNextState(false);
         }
-        
-        String regexRelance = "(.*) a relancé de ([\\d ]+).";
-        Pattern patRelance = Pattern.compile(regexRelance);
-        Matcher matRelance = patRelance.matcher(line);
-        
-        if (matRelance.matches())
-        {
-            String playerName = matRelance.group(1);
-            String betAmtStr = matRelance.group(2);
-            
-            int betAmt = Integer.parseInt(betAmtStr.replace(" ", ""), 10);
-            log.debug("Relance player {} bet {} = {}", playerName, betAmtStr, betAmt);
-            
-            Preconditions.checkState(betAmt > amtToCall);
-            
-            amtToCall = betAmt;
-            
-            playerBets.put(playerName, betAmt);
-            
-            return this;
-        }
-        
-        String regexCouche = "(.*) se couche.";
-        Pattern patCouche = Pattern.compile(regexCouche);
-        Matcher matCouche = patCouche.matcher(line);
-        
-        if (matCouche.matches())
-        {
-            String playerName = matCouche.group(1);
-            
-            Preconditions.checkState(players.contains(playerName));
-            
-            hasFolded.put(playerName, true);
-            
-            if (potsGood()) 
-            {
-                return getNextState("");
-            }
-            
-            return this;
-        }
-        
-        String regexGagne = "(.*) gagne.";
-        Pattern patGagne = Pattern.compile(regexGagne);
-        Matcher matGagne = patGagne.matcher(line);
-        
-        if (matGagne.matches())
-        {
-            String playerName = matGagne.group(1);
-            log.debug("{} gagne", playerName);
-            return new UnitializedState();
-        }
-        
-        String regexTapis = "(.*) a fait tapis.";
-        Pattern patTapis = Pattern.compile(regexTapis);
-        Matcher matTapis = patTapis.matcher(line);
-        
-        if (matTapis.matches())
-        {
-            //Tapis est un cas diffil car on ne sais pas si c'est un relancement ou pas ; aussi on ne sais plus le pot
-            String playerName = matTapis.group(1);
-            log.debug("{} Tapis", playerName);
-            return new UnitializedState();
-        }
-        
-        String regexShowdown = "(.*) remporte le pot \\(([\\d ]+) \\$\\) .*\\.";
-        Pattern patShowdown = Pattern.compile(regexShowdown);
-        Matcher matShowdown = patShowdown.matcher(line);
-        
-        if (matShowdown.matches())
-        {
-            //Showdown est un cas diffil car on ne sais pas si c'est un relancement ou pas ; aussi on ne sais plus le pot
-            String playerName = matShowdown.group(1);
-            String potStr = matShowdown.group(2);
-            
-            int finalPot = Integer.parseInt(potStr.replace(" ", ""), 10);
-            
-            Preconditions.checkState(finalPot == pot, "Pot " + pot + " real " + finalPot);
-            log.debug("{} Showdown pot {}", playerName, finalPot);
-            return new UnitializedState();
-        }
-        
-        Preconditions.checkState(false, line);
+    
         return this;
+    }
+
+    @Override
+    public ParserListener handleRelance(String playerName, int betAmt)
+    {
+        Preconditions.checkState(betAmt > amtToCall);
         
+        amtToCall = betAmt;
+        
+        pot = updatePlayerBet(playerBets, playerName, betAmt, pot);
+        
+        return this;
+    }
+
+    @Override
+    public ParserListener handleCoucher(String playerName)
+    {
+        Preconditions.checkState(players.contains(playerName));
+        
+        hasFolded.put(playerName, true);
+        
+        if (potsGood()) 
+        {
+            return getNextState(false);
+        }
+        
+        return this;
+    }
+
+    @Override
+    public ParserListener handleParole(String playerName)
+    {
+        if (playerBets.containsKey(playerName)) 
+        {
+            log.warn("Next round appears to have started; maybe a player left?");
+            return null;
+        }
+        //Preconditions.checkState(!playerBets.containsKey(playerName));
+        
+        
+        
+        playerBets.put(playerName, 0);
+        
+        if (potsGood())
+        {
+            //La ligne actuel était prise en compte
+            return getNextState(false);
+        }
+        
+        return this;
+    }
+
+    @Override
+    public ParserListener handleTapis(String playerName)
+    {
+      //Tapis est un cas diffil car on ne sais pas si c'est un relancement ou pas ; aussi on ne sais plus le pot
+        log.debug("{} Tapis", playerName);
+        return null;
+    }
+
+    @Override
+    public ParserListener handleShowdown(String playerName, int finalPot)
+    {
+        if (finalPot != pot ) {
+            log.warn("Final pot calculated as {} but is {}", pot, finalPot);
+        }
+        log.debug("{} Showdown pot {}", playerName, finalPot);
+        return null;
+    }
+
+    @Override
+    public ParserListener handleGagne(String playerName)
+    {
+        log.debug("{} gagne", playerName);
+        return null;
+    }
+
+    @Override
+    public boolean replayLine()
+    {
+        if (replayLine) {
+            replayLine = false;
+            return true;
+        }
+        return false;
     }
 }
