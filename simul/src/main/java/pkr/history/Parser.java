@@ -2,6 +2,7 @@ package pkr.history;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,8 +59,8 @@ public class Parser {
     private static Pattern patHandBoundary = Pattern.compile("_*");
     
     public static void main(String[] args) throws IOException {
-        //String fileName = "C:\\codejam\\CodeJam\\simul\\hands.txt";
-        String fileName = "C:\\codejam\\CodeJam\\simul\\handshistory.txt";
+        String fileName = "C:\\codejam\\CodeJam\\simul\\hands.txt";
+       // String fileName = "C:\\codejam\\CodeJam\\simul\\handshistory.txt";
         File file = new File(fileName);
         List<String> lines = Files.readLines(file, Charsets.ISO_8859_1);
         
@@ -80,14 +81,15 @@ public class Parser {
             
             Matcher match = null;
             
-            if (curState == null)
-            {
+            //if (curState == null)
+            //{
                 match = patHandBoundary.matcher(line);
                 if (match.matches()) {
-                    curState = new DiscoveryPreflopState();                    
+                    curState = new FlopTurnRiverState(new ArrayList<String>(), 0, false, 0);  
+                    continue;
                 }
-                continue;
-            }
+               // continue;
+           // }
             
             try{
             

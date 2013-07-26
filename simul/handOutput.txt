@@ -1,241 +1,102 @@
 
 ***********************************************
 Starting new Hand
-Player Paul position 1 Action Call
-Player Christophe position 2 Action Raise
-Player Eric position 3 Action Fold
-Player Kévin position 4 Action Fold
-Player Jean-pascal position 5 Action Call
-Player Paul position 1 Action Fold
 
-Starting round FLOP with 2 players.  Pot is $200 000
+Starting round PREFLOP with 0 players.  Pot is $0
 
-Player Christophe position 2 Action Check
-Player Jean-pascal position 1 Action Raise $80 000
-Player Jean-pascal position 1 Action Fold
-Amount to call 80 000 for pot 280 000.  Pot ratio : 22.22%  or 1 to 3.5  or 11.11 outs
+** Player Carroll position 1 Action Call 40 000
+** Player Eric position 2 Action Raise $160 000
+Raise amt $120 000 bluff % chance everyone must fold 75%
+** Player Teri position 3 Action Call 160 000
+** Player Carroll position 1 Action Call 160 000
 
-Starting round TURN with 1 players.  Pot is $280 000
+Starting round FLOP with 3 players.  Pot is $480 000
 
+** Player Eric position 1 Action Raise $480 000
+Raise amt $480 000 bluff % chance everyone must fold 50%
+** Player Teri position 2 Action Fold
+Amount to call $480 000 for pot $960 000.  Pot ratio : 33.33%  or 1 to 2  or 16.67 outs
+Calling a bluff % chance must be ahead 33.33%
+** Player Carroll position 3 Action Call 480 000
+Amount to call $480 000 for pot $960 000.  Pot ratio : 33.33%  or 1 to 2  or 16.67 outs
+Calling a bluff % chance must be ahead 33.33%
 
-***********************************************
-Starting new Hand
-Player Christophe position 1 Action Call
-Player Eric position 2 Action Raise
-Player Kévin position 3 Action Fold
-Player Paul position 4 Action Fold
-Player Christophe position 1 Action Call
+Starting round TURN with 2 players.  Pot is $1 440 000
 
-Starting round FLOP with 2 players.  Pot is $240 000
+** Player Eric position 1 Action Raise $1 440 000
+Raise amt $1 440 000 bluff % chance everyone must fold 50%
+** Player Carroll position 2 Action Call 1 440 000
+Amount to call $1 440 000 for pot $2 880 000.  Pot ratio : 33.33%  or 1 to 2  or 16.67 outs
+Calling a bluff % chance must be ahead 33.33%
 
-Player Eric position 2 Action Raise $40 000
-Player Christophe position 1 Action Call
+Starting round RIVER with 2 players.  Pot is $4 320 000
 
-Starting round TURN with 2 players.  Pot is $320 000
+** Player Eric position 1 Action Raise $1 950 000
+Raise amt $1 950 000 bluff % chance everyone must fold 31.1%
+** Player Carroll position 2 Action Fold
+Amount to call $1 950 000 for pot $6 270 000.  Pot ratio : 23.72%  or 1 to 3.22  or 11.86 outs
+Calling a bluff % chance must be ahead 23.72%
 
-Player Eric position 2 Action Check
-Player Christophe position 1 Action Check
-
-Starting round RIVER with 2 players.  Pot is $320 000
-
-Player Eric position 2 Action Raise $2 100 000
-Player Eric position 2 Action Fold
-Amount to call 2 100 000 for pot 2 420 000.  Pot ratio : 46.46%  or 1 to 1.15  or 23.23 outs
-
-Starting round RIVER with 1 players.  Pot is $2 420 000
+Starting round RIVER with 1 players.  Pot is $6 270 000
 
 
 ***********************************************
 Starting new Hand
-Player Eric position 1 Action Fold
-Player Kévin position 2 Action Fold
-Player Paul position 3 Action Call
-Player Christophe position 4 Action Call
 
-***********************************************
-Starting new Hand
-Player Kévin position 1 Action Call
-Player Paul position 2 Action Call
-Player Christophe position 3 Action Raise
-Player Eric position 4 Action Call
-Player Kévin position 1 Action Call
-Player Paul position 2 Action Call
-
-Starting round FLOP with 4 players.  Pot is $320 000
-
-Player Eric position 2 Action Raise $40 000
-Player Kévin position 3 Action Call
-Amount to call 40 000 for pot 360 000.  Pot ratio : 10%  or 1 to 9  or 5 outs
-Player Paul position 4 Action Call
-Amount to call 40 000 for pot 400 000.  Pot ratio : 9.09%  or 1 to 10  or 4.55 outs
-Player Christophe position 1 Action Call
-
-Starting round TURN with 4 players.  Pot is $480 000
-
-Player Eric position 2 Action Raise $40 000
-Player Kévin position 3 Action Call
-Amount to call 40 000 for pot 520 000.  Pot ratio : 7.14%  or 1 to 13  or 3.57 outs
-Player Paul position 4 Action Call
-Amount to call 40 000 for pot 560 000.  Pot ratio : 6.67%  or 1 to 14  or 3.33 outs
-Player Christophe position 1 Action Call
-
-Starting round RIVER with 4 players.  Pot is $640 000
-
-Player Eric position 2 Action Raise $1 250 000
-Player Eric position 2 Action Fold
-Amount to call 1 250 000 for pot 1 890 000.  Pot ratio : 39.81%  or 1 to 1.51  or 19.9 outs
-Player Kévin position 3 Action Fold
-Amount to call 1 250 000 for pot 1 890 000.  Pot ratio : 39.81%  or 1 to 1.51  or 19.9 outs
-
-***********************************************
-Starting new Hand
-Player Christophe position 1 Action Call
-Player Eric position 2 Action Call
-Player Kévin position 3 Action Call
-
-***********************************************
-Starting new Hand
-Player Christophe position 1 Action Call
-Player Eric position 2 Action Fold
-Player Kévin position 3 Action Call
-Player Samba position 4 Action Call
-
-Starting round FLOP with 3 players.  Pot is $120 000
-
-Player Samba position 2 Action Check
-Player Samba position 2 Action Fold
-Player Kévin position 1 Action Check
-
-Starting round TURN with 2 players.  Pot is $120 000
-
-Player Christophe position 2 Action Check
-Player Kévin position 1 Action Check
-
-Starting round RIVER with 2 players.  Pot is $120 000
-
-Player Christophe position 2 Action Check
-Player Kévin position 1 Action Check
-
-Starting round RIVER with 2 players.  Pot is $120 000
+Starting round PREFLOP with 0 players.  Pot is $0
 
 
 ***********************************************
 Starting new Hand
-Player Eric position 1 Action Fold
-Player Kévin position 2 Action Fold
-Player Samba position 3 Action Call
-Player Christophe position 4 Action Call
 
-Starting round FLOP with 2 players.  Pot is $80 000
+Starting round PREFLOP with 0 players.  Pot is $0
 
-Player Christophe position 2 Action Check
-Player Samba position 1 Action Raise $700 000
-Player Samba position 1 Action Fold
-Amount to call 700 000 for pot 780 000.  Pot ratio : 47.3%  or 1 to 1.11  or 23.65 outs
+** Player Komin position 1 Action Fold
+** Player Eric position 2 Action Call 40 000
+** Player Robert position 3 Action Call 40 000
+** Player Matt position 4 Action Call 40 000
+** Player Chappell position 5 Action Call 40 000
 
-Starting round TURN with 1 players.  Pot is $780 000
+Starting round FLOP with 4 players.  Pot is $160 000
 
+** Player Matt position 1 Action Check
+** Player Chappell position 2 Action Check
+** Player Eric position 3 Action Check
+** Player Robert position 4 Action Raise $40 000
+Raise amt $40 000 bluff % chance everyone must fold 20%
+** Player Matt position 1 Action Call 40 000
+Amount to call $40 000 for pot $200 000.  Pot ratio : 16.67%  or 1 to 5  or 8.33 outs
+Calling a bluff % chance must be ahead 16.67%
+** Player Chappell position 2 Action Call 40 000
+Amount to call $40 000 for pot $240 000.  Pot ratio : 14.29%  or 1 to 6  or 7.14 outs
+Calling a bluff % chance must be ahead 14.29%
+** Player Eric position 3 Action Fold
+Amount to call $40 000 for pot $280 000.  Pot ratio : 12.5%  or 1 to 7  or 6.25 outs
+Calling a bluff % chance must be ahead 12.5%
 
-***********************************************
-Starting new Hand
-Player Kévin position 1 Action Fold
-Player Samba position 2 Action Call
-Player Christophe position 3 Action Call
-Player Eric position 4 Action Call
+Starting round TURN with 3 players.  Pot is $280 000
 
-***********************************************
-Starting new Hand
-Player Samba position 1 Action Call
-Player Christophe position 2 Action Call
-Player Eric position 3 Action Call
-Player Kévin position 4 Action Call
+** Player Matt position 1 Action Fold
+** Player Chappell position 2 Action Check
+** Player Robert position 3 Action Check
 
-***********************************************
-Starting new Hand
-Player Christophe position 1 Action Call
-Player Eric position 2 Action Call
-Player Kévin position 3 Action Call
-Player Samba position 4 Action Fold
+Starting round RIVER with 2 players.  Pot is $280 000
 
-Starting round FLOP with 3 players.  Pot is $120 000
+** Player Chappell position 1 Action Raise $165 956
+Raise amt $165 956 bluff % chance everyone must fold 37.21%
+** Player Robert position 2 Action Raise $483 379
+Amount to call $165 956 for pot $445 956.  Pot ratio : 27.12%  or 1 to 2.69  or 13.56 outs
+Calling a bluff % chance must be ahead 27.12%
+Raise amt $317 423 bluff % chance everyone must fold 41.58%
+** Player Chappell position 1 Action Call 483 379
+Amount to call $317 423 for pot $929 335.  Pot ratio : 25.46%  or 1 to 2.93  or 12.73 outs
+Calling a bluff % chance must be ahead 25.46%
 
-Player Christophe position 2 Action Check
-Player Eric position 3 Action Check
-Player Kévin position 1 Action Check
-
-Starting round TURN with 3 players.  Pot is $120 000
-
-Player Christophe position 2 Action Check
-Player Eric position 3 Action Raise $40 000
-Player Eric position 3 Action Fold
-Amount to call 40 000 for pot 160 000.  Pot ratio : 20%  or 1 to 4  or 10 outs
-Player Kévin position 1 Action Fold
-Amount to call 40 000 for pot 160 000.  Pot ratio : 20%  or 1 to 4  or 10 outs
-
-Starting round RIVER with 1 players.  Pot is $160 000
+Starting round RIVER with 2 players.  Pot is $1 246 758
 
 
 ***********************************************
 Starting new Hand
-Player Eric position 1 Action Fold
-Player Kévin position 2 Action Fold
-Player Samba position 3 Action Call
-Player Christophe position 4 Action Call
 
-Starting round FLOP with 2 players.  Pot is $80 000
+Starting round PREFLOP with 0 players.  Pot is $0
 
-Player Christophe position 2 Action Check
-Player Samba position 1 Action Raise $40 000
-Player Christophe position 2 Action Call
-
-Starting round TURN with 2 players.  Pot is $160 000
-
-Player Christophe position 2 Action Check
-Player Samba position 1 Action Raise $40 000
-Player Christophe position 2 Action Call
-
-Starting round RIVER with 2 players.  Pot is $240 000
-
-Player Christophe position 2 Action Check
-Player Samba position 1 Action Raise $40 000
-Player Christophe position 2 Action Call
-
-Starting round RIVER with 2 players.  Pot is $320 000
-
-
-***********************************************
-Starting new Hand
-Player Kévin position 1 Action Fold
-Player Samba position 2 Action Fold
-Player Med position 3 Action Call
-Player Christophe position 4 Action Call
-Player Eric position 5 Action Call
-
-Starting round FLOP with 3 players.  Pot is $120 000
-
-Player Eric position 2 Action Check
-Player Med position 3 Action Raise $80 000
-Player Christophe position 1 Action Call
-Amount to call 80 000 for pot 200 000.  Pot ratio : 28.57%  or 1 to 2.5  or 14.29 outs
-Player Christophe position 1 Action Fold
-Amount to call 80 000 for pot 280 000.  Pot ratio : 22.22%  or 1 to 3.5  or 11.11 outs
-
-Starting round TURN with 2 players.  Pot is $280 000
-
-Player Med position 2 Action Check
-Player Eric position 1 Action Raise $160 000
-Player Eric position 1 Action Fold
-Amount to call 160 000 for pot 440 000.  Pot ratio : 26.67%  or 1 to 2.75  or 13.33 outs
-
-Starting round RIVER with 1 players.  Pot is $440 000
-
-
-***********************************************
-Starting new Hand
-Player Samba position 1 Action Call
-Player Med position 2 Action Call
-Player Christophe position 3 Action Fold
-Player Eric position 4 Action Fold
-
-***********************************************
-Starting new Hand

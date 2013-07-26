@@ -53,6 +53,13 @@ public class DiscoveryPreflopState implements ParserListener
             
             Integer playerBet = playerBets.get(playerName);
             
+            if (playerBet == null) 
+            {
+                log.debug("Pot is not good.  Player {} idx {} has not acted",
+                        playerName, i);
+                return false;
+            }
+            
             Preconditions.checkNotNull(playerBet);
             
             if (playerBet < amtToEnter)

@@ -48,14 +48,22 @@ public class FlopTurnRiverState implements ParserListener
         this.replayLine = replayLine;
         this.round = round;
         
+        this.currentPlayer = players.size() - 1;
+        
         hasFolded = Maps.newHashMap();
         playerBets = Maps.newHashMap();
         
+        if (round == 0) {
+            logOutput.debug("\n***********************************************");
+            logOutput.debug("Starting new Hand");
+        }
         log.debug("Nouveau round.  Players {} pot {}", players.size(), pot);
         
        // logOutput.debug("\n***********************************************");
         logOutput.debug("\nStarting round {} with {} players.  Pot is ${}\n",
-                round == 0 ? "FLOP" : (round == 1 ? "TURN" : "RIVER"),
+                round == 0 ? "PREFLOP" :
+                    round == 1 ? "FLOP" :
+                    (round == 2 ? "TURN" : "RIVER"),
                         players.size(),
                         moneyFormat.format(pot));
                         
@@ -78,8 +86,43 @@ public class FlopTurnRiverState implements ParserListener
         return pot;
     }
     
+    private ParserListener getNextStateAfterPreflop(boolean replayline) {
+        log.debug("Preflop fini : Tous les joueurs pris en compte");
+        List<String> playersInOrder = Lists.newArrayList();
+        
+        //add sb
+        String playerSB = players.get(players.size()-2);
+        String playerBB = players.get(players.size()-1);
+        
+        if (BooleanUtils.isNotTrue(hasFolded.get(playerSB))) {
+            log.debug("Adding small blind {}", playerSB);
+            playersInOrder.add(playerSB);
+        }
+        
+        if (BooleanUtils.isNotTrue(hasFolded.get(playerBB))) {
+            log.debug("Adding big blind {}", playerBB);
+            playersInOrder.add(playerBB);
+        }
+        
+        for(int i = 0; i < players.size() - 2; ++i) {
+            String playerName = players.get(i);
+            if (BooleanUtils.isNotTrue(hasFolded.get(playerName))) {
+                log.debug("Adding player {}", playerName);
+                playersInOrder.add(playerName);
+            }
+        }
+        
+        FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder, pot, replayline, 1);
+        
+        return ftrState;
+    }
+    
     private ParserListener getNextState(boolean replayLine) {
         log.debug("Tous les joueurs pris en compte");
+        
+        if (round == 0) {
+            return getNextStateAfterPreflop(replayLine);
+        }
         List<String> playersInOrder = Lists.newArrayList();
         
         
@@ -128,19 +171,39 @@ public class FlopTurnRiverState implements ParserListener
         return true;
     }
 
-    private void incrementPlayer(String playerName)
+    /*
+     * Position currentPlayer au joeur courant
+     */
+    private boolean incrementPlayer(String playerName)
     {
-        Preconditions.checkState(players.get(currentPlayer).equals(playerName));
+        if (!players.contains(playerName))
+        {
+            log.debug("Player [{}] ajouté avec index {} ", playerName, players.size());
+            players.add(playerName);
+            currentPlayer = players.size() - 1;
+            return false;
+        }
+              
+        
+        int loopCheck = 0;
+        
         
         while(true)
         {
+            ++loopCheck;
+            
+            if (loopCheck > 15) {
+                Preconditions.checkState(false, "Loop all players folded");
+            }
             ++currentPlayer;
             if (currentPlayer == players.size()) {
                 currentPlayer = 0;
             }
             
             if (BooleanUtils.isNotTrue(hasFolded.get(playerName))) {
-                return;
+                Preconditions.checkState(players.get(currentPlayer).equals(playerName), "Player name " + playerName + " cur " + currentPlayer + " " + players.get(currentPlayer));
+                
+                return true;
             }
         }
     }
@@ -174,7 +237,7 @@ public class FlopTurnRiverState implements ParserListener
         if (playerBet == null)
             playerBet = 0;
         
-        if (amtToCall > playerBet)
+        if (round > 0 && amtToCall > playerBet)
         {
             int diff = amtToCall - playerBet;
             double perc = 100.0 * diff / (pot + diff);
@@ -187,8 +250,8 @@ public class FlopTurnRiverState implements ParserListener
             double callBluff = 100*betSizeToPot / (1+betSizeToPot);
             
             
-            logOutput.debug("Amount to call {} for pot {}.  Pot ratio : {}%  or 1 to {}  or {} outs", 
-                    moneyFormat.format(amtToCall), moneyFormat.format(pot),
+            logOutput.debug("Amount to call ${} for pot ${}.  Pot ratio : {}%  or 1 to {}  or {} outs", 
+                    moneyFormat.format(diff), moneyFormat.format(pot),
                     df2.format(perc), df2.format(ratio), df2.format(outsOne));
             logOutput.debug("Calling a bluff % chance must be ahead {}%", 
                     df2.format(callBluff));
@@ -196,11 +259,12 @@ public class FlopTurnRiverState implements ParserListener
         
         if (raiseAmt > playerBet)
         {
-            int diff = raiseAmt - playerBet;
+            int diff = raiseAmt - amtToCall;
             double betSizeToPot = 1.0 * diff / pot;
             double bluff = 100.0*(betSizeToPot) / (1+betSizeToPot);
             
-            logOutput.debug("bluff % chance everyone must fold {}%", 
+            logOutput.debug("Raise amt ${} bluff % chance everyone must fold {}%",
+                    moneyFormat.format(diff),
                      df2.format(bluff));
         }
     }
@@ -210,18 +274,27 @@ public class FlopTurnRiverState implements ParserListener
     {
         log.debug("Suivi player {} bet {} ; pot {}", playerName, betAmt, pot);
         
+        if (round == 0 && amtToCall == 0) 
+        {
+            amtToCall = betAmt;
+            log.debug("Table mise à {}", amtToCall);
+        } else {
+        
         Preconditions.checkState(amtToCall > 0); 
         Preconditions.checkState(betAmt == amtToCall);
+        }
         
-        incrementPlayer(playerName);
-        printHandHistory("Call");
+        boolean seenPlayer = incrementPlayer(playerName);
+        printHandHistory("Call " + moneyFormat.format(betAmt));
+        
+        
         
         pot = updatePlayerBet(playerBets, playerName, betAmt, pot);
         
         Preconditions.checkState(players.contains(playerName));
         
         
-        if (potsGood()) 
+        if (seenPlayer && potsGood()) 
         {
             return getNextState(false);
         }
@@ -237,6 +310,7 @@ public class FlopTurnRiverState implements ParserListener
         incrementPlayer(playerName);
         printHandHistory("Raise $" + moneyFormat.format(betAmt), betAmt);
         
+        
         amtToCall = betAmt;
         
         pot = updatePlayerBet(playerBets, playerName, betAmt, pot);
@@ -247,14 +321,15 @@ public class FlopTurnRiverState implements ParserListener
     @Override
     public ParserListener handleCoucher(String playerName)
     {
-        Preconditions.checkState(players.contains(playerName));
+        //Preconditions.checkState(players.contains(playerName));
         
+        
+        boolean seenPlayer = incrementPlayer(playerName);
         printHandHistory("Fold");
-        incrementPlayer(playerName);
         
         hasFolded.put(playerName, true);
         
-        if (potsGood()) 
+        if (seenPlayer && potsGood()) 
         {
             return getNextState(false);
         }
@@ -265,15 +340,27 @@ public class FlopTurnRiverState implements ParserListener
     @Override
     public ParserListener handleParole(String playerName)
     {
+        /*
         if (playerBets.containsKey(playerName)) 
         {
             log.warn("Next round appears to have started; maybe a player left?");
             return null;
-        }
+        }*/
         //Preconditions.checkState(!playerBets.containsKey(playerName));
         
-        incrementPlayer(playerName);
+        
+        
+        
+        //Le prochain round a commencé
+        if (round == 0 && players.contains(playerName) && potsGood())
+        {
+            return getNextState(true);
+        }
+        
+        boolean seenPlayer = incrementPlayer(playerName);
         printHandHistory("Check");
+        
+        
         
         playerBets.put(playerName, 0);
         
