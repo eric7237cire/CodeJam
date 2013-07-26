@@ -39,10 +39,10 @@ public class Simulator {
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
-      int NUM_RANDOM =0;
+      int NUM_RANDOM =8;
         int NUM_LOOSE_CALLS = 0;
         int NUM_OK_CALLS = 0;
-        int NUM_GOOD_HANDS = 1;
+        int NUM_GOOD_HANDS = 0;
         
         //offsuit A2 K7 Q8 J8 T8 T9 98(limit)
         //suited A2 K2 Q4 J6 T6 96 86?
