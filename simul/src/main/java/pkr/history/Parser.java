@@ -58,7 +58,8 @@ public class Parser {
     private static Pattern patHandBoundary = Pattern.compile("_*");
     
     public static void main(String[] args) throws IOException {
-        String fileName = "C:\\codejam\\CodeJam\\simul\\hands.txt";
+        //String fileName = "C:\\codejam\\CodeJam\\simul\\hands.txt";
+        String fileName = "C:\\codejam\\CodeJam\\simul\\handshistory.txt";
         File file = new File(fileName);
         List<String> lines = Files.readLines(file, Charsets.ISO_8859_1);
         

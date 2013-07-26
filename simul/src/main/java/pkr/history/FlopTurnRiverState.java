@@ -162,8 +162,12 @@ public class FlopTurnRiverState implements ParserListener
     
     private void printHandHistory(String action)
     {
+        printHandHistory(action, 0);
+    }
+    private void printHandHistory(String action, int raiseAmt)
+    {
         
-        logOutput.debug("Player {} position {} Action {}", 
+        logOutput.debug("** Player {} position {} Action {}", 
                 players.get(currentPlayer), 1+currentPlayer, action);
         
         Integer playerBet = playerBets.get(players.get(currentPlayer)); 
@@ -174,13 +178,30 @@ public class FlopTurnRiverState implements ParserListener
         {
             int diff = amtToCall - playerBet;
             double perc = 100.0 * diff / (pot + diff);
-            double ratio = pot * 1.0 / diff;
+            double ratio = pot * 1.0 / diff; 
             
             double outsOne = perc / 2;
+            
+            double betSizeToPot = 1.0 * diff / pot;
+            //% must be ahead
+            double callBluff = 100*betSizeToPot / (1+betSizeToPot);
+            
             
             logOutput.debug("Amount to call {} for pot {}.  Pot ratio : {}%  or 1 to {}  or {} outs", 
                     moneyFormat.format(amtToCall), moneyFormat.format(pot),
                     df2.format(perc), df2.format(ratio), df2.format(outsOne));
+            logOutput.debug("Calling a bluff % chance must be ahead {}%", 
+                    df2.format(callBluff));
+        }
+        
+        if (raiseAmt > playerBet)
+        {
+            int diff = raiseAmt - playerBet;
+            double betSizeToPot = 1.0 * diff / pot;
+            double bluff = 100.0*(betSizeToPot) / (1+betSizeToPot);
+            
+            logOutput.debug("bluff % chance everyone must fold {}%", 
+                     df2.format(bluff));
         }
     }
 
@@ -214,7 +235,7 @@ public class FlopTurnRiverState implements ParserListener
         Preconditions.checkState(betAmt > amtToCall);
         
         incrementPlayer(playerName);
-        printHandHistory("Raise $" + moneyFormat.format(betAmt));
+        printHandHistory("Raise $" + moneyFormat.format(betAmt), betAmt);
         
         amtToCall = betAmt;
         

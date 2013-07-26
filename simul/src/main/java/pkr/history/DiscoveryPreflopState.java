@@ -84,11 +84,16 @@ public class DiscoveryPreflopState implements ParserListener
         }
               
         
-        
+        int loopCheck = 0;
         
         while(true)
         {
             ++currentPlayer;
+            ++loopCheck;
+            
+            if (loopCheck > 15) {
+                Preconditions.checkState(false, "Loop all players folded");
+            }
             if (currentPlayer == players.size()) {
                 currentPlayer = 0;
             }
