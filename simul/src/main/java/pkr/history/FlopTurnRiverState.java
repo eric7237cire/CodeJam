@@ -122,10 +122,12 @@ public class FlopTurnRiverState implements ParserListener
         
         if (round == 0) {
             return getNextStateAfterPreflop(replayLine);
+        } 
+        
+        if (round == 3) {
+            return null;
         }
         List<String> playersInOrder = Lists.newArrayList();
-        
-        
         
         for(int i = 0; i < players.size() ; ++i) {
             String playerName = players.get(i);
@@ -251,14 +253,14 @@ public class FlopTurnRiverState implements ParserListener
             double callBluff = 100*betSizeToPot / (1+betSizeToPot);
             
             
-            logOutput.debug("Amount to call ${} for pot ${}.  Pot ratio : {}%  or 1 to {}  or {} outs", 
+            logOutput.debug("Amount to call ${} for pot ${}.  Pot ratio : {}%  / 1 to {} / {} outs", 
                     moneyFormat.format(diff), moneyFormat.format(pot),
                     df2.format(perc), df2.format(ratio), df2.format(outsOne));
-            logOutput.debug("Calling a bluff % chance must be ahead {}%", 
+            logOutput.debug("Must be ahead {}% of the time to call a bluff", 
                     df2.format(callBluff));
         }
         
-        if (raiseAmt > playerBet)
+        if (round > 0 && raiseAmt > playerBet)
         {
             int diff = raiseAmt - amtToCall;
             double betSizeToPot = 1.0 * diff / pot;

@@ -30,7 +30,7 @@ public class Simulator {
         
         //playerHoleCards.add("K8o, K9o, KTo");
         
-        playerHoleCards.add("T2o");
+        playerHoleCards.add("AKo");
         //playerHoleCards.add("KJo");
       //  playerHoleCards.add("AKo");
        // playerHoleCards.add("JTs");
@@ -42,7 +42,7 @@ public class Simulator {
       int NUM_RANDOM =0;
         int NUM_LOOSE_CALLS = 0;
         int NUM_OK_CALLS = 0;
-        int NUM_GOOD_HANDS = 0;
+        int NUM_GOOD_HANDS = 1;
         
         //offsuit A2 K7 Q8 J8 T8 T9 98(limit)
         //suited A2 K2 Q4 J6 T6 96 86?
@@ -80,7 +80,7 @@ public class Simulator {
         
         String fileName = "C:\\codejam\\CodeJam\\simul\\out.xml";
         
-        Tree tree = simulate(180001, playerHoleCards);
+        Tree tree = simulate(100001, playerHoleCards);
         tree.output(fileName);
 
        // playerHoleCards.add("JJ, KJo");
