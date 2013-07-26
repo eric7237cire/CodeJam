@@ -62,7 +62,7 @@ public class Parser {
         String fileName = "C:\\codejam\\CodeJam\\simul\\hands.txt";
        // String fileName = "C:\\codejam\\CodeJam\\simul\\handshistory.txt";
         File file = new File(fileName);
-        List<String> lines = Files.readLines(file, Charsets.ISO_8859_1);
+        List<String> lines = Files.readLines(file, Charsets.UTF_8);
         
         ParserListener curState = null;
         
@@ -81,8 +81,7 @@ public class Parser {
             
             Matcher match = null;
             
-            //if (curState == null)
-            //{
+            
                 match = patHandBoundary.matcher(line);
                 if (match.matches()) {
                     curState = new FlopTurnRiverState(new ArrayList<String>(), 0, false, 0);  
@@ -91,6 +90,9 @@ public class Parser {
                // continue;
            // }
             
+              if (curState == null)
+                continue;
+              
             try{
             
             match = patSuivi.matcher(line);

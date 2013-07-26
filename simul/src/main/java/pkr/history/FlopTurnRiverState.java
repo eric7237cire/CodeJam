@@ -200,8 +200,9 @@ public class FlopTurnRiverState implements ParserListener
                 currentPlayer = 0;
             }
             
-            if (BooleanUtils.isNotTrue(hasFolded.get(playerName))) {
-                Preconditions.checkState(players.get(currentPlayer).equals(playerName), "Player name " + playerName + " cur " + currentPlayer + " " + players.get(currentPlayer));
+            String loopPlayerName = players.get(currentPlayer);
+            if (BooleanUtils.isNotTrue(hasFolded.get(loopPlayerName))) {
+                Preconditions.checkState(loopPlayerName.equals(playerName), "Player name " + playerName + " cur " + currentPlayer + " " + loopPlayerName);
                 
                 return true;
             }

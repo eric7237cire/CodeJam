@@ -30,7 +30,7 @@ public class Simulator {
         
         //playerHoleCards.add("K8o, K9o, KTo");
         
-        playerHoleCards.add("66");
+        playerHoleCards.add("T2o");
         //playerHoleCards.add("KJo");
       //  playerHoleCards.add("AKo");
        // playerHoleCards.add("JTs");
@@ -41,7 +41,7 @@ public class Simulator {
         
       int NUM_RANDOM =0;
         int NUM_LOOSE_CALLS = 0;
-        int NUM_OK_CALLS = 2;
+        int NUM_OK_CALLS = 0;
         int NUM_GOOD_HANDS = 0;
         
         //offsuit A2 K7 Q8 J8 T8 T9 98(limit)
@@ -80,7 +80,7 @@ public class Simulator {
         
         String fileName = "C:\\codejam\\CodeJam\\simul\\out.xml";
         
-        Tree tree = simulate(80001, playerHoleCards);
+        Tree tree = simulate(180001, playerHoleCards);
         tree.output(fileName);
 
        // playerHoleCards.add("JJ, KJo");
@@ -115,6 +115,7 @@ public class Simulator {
         int royals = 0;
         int fullHouse = 0;
         int flops2Pair = 0;
+        int river2Pair = 0;
         
         long startTime = System.currentTimeMillis();
         
@@ -156,6 +157,9 @@ public class Simulator {
                 if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.HIDDEN_TWO_PAIR)) {
                     ++flops2Pair;
                 }
+                if (evals[p].hasFlag(CompleteEvaluation.ROUND_RIVER, HandCategory.HIDDEN_TWO_PAIR)) {
+                    ++river2Pair;
+                }
                 if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.HIDDEN_SET)) {
                     ++sets;
                 }
@@ -176,6 +180,7 @@ public class Simulator {
                 logOutput.debug("# of flopped sets {}.  %{} ", lotsOFSets, 100.0 * lotsOFSets / simulNum);
                 logOutput.debug("# of fullhouse {}.  %{} ", fullHouse, 100.0 * fullHouse / simulNum);
                 logOutput.debug("# of flopping 2 pair {}.  %{} ", flops2Pair, 100.0 * flops2Pair / simulNum);
+                logOutput.debug("# of rivering 2 pair {}.  %{} ", river2Pair, 100.0 * river2Pair / simulNum);
                 
                 logOutput.info("{} valid rounds", actualRounds);
                 for(int p = 0; p < numPlayers; ++p) {
