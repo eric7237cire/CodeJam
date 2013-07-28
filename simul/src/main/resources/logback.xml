@@ -21,7 +21,7 @@
   </appender>
   
    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>C:/codejam/CodeJam/simul/test.txt</file>
+    <file>C:/codejam/CodeJam/simul/log.txt</file>
     <append>false</append>
     <encoder>
     <pattern>%m%n</pattern>
@@ -57,7 +57,9 @@
    <logger name="main" level="DEBUG"/>
    <logger name="mainOutput" level="DEBUG"/>
    <logger name="pkr.Simulator" level="WARN"/>
-   <logger name="pkr.HoleCardsRange" level="INFO"/>
+   <logger name="pkr.HoleCardsRange" level="DEBUG">
+    <appender-ref ref="FILE"/>
+   </logger>
    
       
   <root level="${root-level:-DEBUG}">

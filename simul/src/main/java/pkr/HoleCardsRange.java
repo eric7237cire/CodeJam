@@ -6,6 +6,8 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pkr.history.FlopTurnRiverState;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -33,6 +35,9 @@ public class HoleCardsRange {
     private List<HoleCards> cardsList;
     double[] relativeFreq;
     
+    int totalHands = 0;
+    int[] rankFreq;
+    
   //AKo 8Ts 99  len 2 / 3
     //or AsKh 9s9h len 4
     public HoleCardsRange(String rangeStr) {
@@ -42,11 +47,25 @@ public class HoleCardsRange {
         cards = Sets.newHashSet();
         cardsList = Lists.newArrayList();
         
+        rankFreq = new int[13];
+        
         String[] ranges = rangeStr.split("\\s*[, ]\\s*");
         
         for(String code : ranges) {
-            log.debug("Parse code [{}] of {}", code, rangeStr);
+            //log.debug("Parse code [{}] of {}", code, rangeStr);
             addCode(code);
+        }
+        
+        log.debug("HandRange {} has {} hands of {}.  %{}", 
+                rangeStr,
+                totalHands, 52*51,
+                FlopTurnRiverState.df2.format(100.0*totalHands / 52*51));
+        for(CardRank rank : CardRank.values())
+        {
+            log.debug("Card Rank {} {} of {} is %{} ", rank.name(),
+                    rankFreq[rank.getIndex()],
+                    totalHands,
+                    FlopTurnRiverState.df2.format(100.0*rankFreq[rank.getIndex()] / totalHands));
         }
     }
     
@@ -154,6 +173,16 @@ public class HoleCardsRange {
             Preconditions.checkState(!cards.contains(hc), hc.toString() + "  " + this.toString());
             cards.add(hc);
             cardsList.add(hc);
+            
+            ++totalHands;
+            
+            if (hc.getHigherRank() != hc.getLowerRank())
+            {
+                this.rankFreq[hc.getHigherRank().getIndex()]++;
+                this.rankFreq[hc.getLowerRank().getIndex()]++;
+            } else {
+                this.rankFreq[hc.getHigherRank().getIndex()]++;
+            }
             //log.debug("hc {} {} {}", hc.getCards(), hc.getCards()[0].index, hc.getCards()[1].index);
            
         }

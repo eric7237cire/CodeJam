@@ -191,6 +191,11 @@ public class TextureInfo {
         return straightDraws;
     }
     
+    public boolean hasStraight() 
+    {
+        return straightRank > 0;
+    }
+    
     public void addCard(Card card) {
         if (card == null)
             return;

@@ -59,7 +59,7 @@ public class FlopTurnRiverState implements ParserListener
         }
         log.debug("Nouveau round.  Players {} pot {}", players.size(), pot);
         
-       // logOutput.debug("\n***********************************************");
+        logOutput.debug("\n------------------------------");
         logOutput.debug("\nStarting round {} with {} players.  Pot is ${}\n",
                 round == 0 ? "PREFLOP" :
                     round == 1 ? "FLOP" :
@@ -233,14 +233,14 @@ public class FlopTurnRiverState implements ParserListener
     private void printHandHistory(String action, int raiseAmt)
     {
         
-        logOutput.debug("** Player {} position {} Action {}", 
+        logOutput.debug("** Player {} position {} Action [< {} >]", 
                 players.get(currentPlayer), 1+currentPlayer, action);
         
         Integer playerBet = playerBets.get(players.get(currentPlayer)); 
         if (playerBet == null)
             playerBet = 0;
         
-        if (round > 0 && amtToCall > playerBet)
+        if (round >= 0 && amtToCall > playerBet)
         {
             int diff = amtToCall - playerBet;
             double perc = 100.0 * diff / (pot + diff);
@@ -253,23 +253,27 @@ public class FlopTurnRiverState implements ParserListener
             double callBluff = 100*betSizeToPot / (1+betSizeToPot);
             
             
-            logOutput.debug("Amount to call ${} for pot ${}.  Pot ratio : {}%  / 1 to {} / {} outs", 
+            logOutput.debug("Amount to call ${} for pot ${}.\n  Pot ratio : {}%  | 1 to {} | {} outs", 
                     moneyFormat.format(diff), moneyFormat.format(pot),
                     df2.format(perc), df2.format(ratio), df2.format(outsOne));
-            logOutput.debug("Must be ahead {}% of the time to call a bluff", 
-                    df2.format(callBluff));
+          //  logOutput.debug("Must be ahead {}% of the time to call a bluff", 
+              //      df2.format(callBluff));
         }
         
-        if (round > 0 && raiseAmt > playerBet)
+        if (round >= 0 && raiseAmt > playerBet)
         {
             int diff = raiseAmt - amtToCall;
             double betSizeToPot = 1.0 * diff / pot;
             double bluff = 100.0*(betSizeToPot) / (1+betSizeToPot);
             
-            logOutput.debug("Raise amt ${} bluff % chance everyone must fold {}%",
+            logOutput.debug("Raise amt ${} | %{} of pot " +
+            		"\nbluff % chance everyone must fold {}%",
                     moneyFormat.format(diff),
+                    df2.format(100*betSizeToPot),
                      df2.format(bluff));
         }
+        
+        logOutput.debug("\n");
     }
 
     @Override
@@ -288,7 +292,7 @@ public class FlopTurnRiverState implements ParserListener
         }
         
         boolean seenPlayer = incrementPlayer(playerName);
-        printHandHistory("Call " + moneyFormat.format(betAmt));
+        printHandHistory("Call $" + moneyFormat.format(betAmt));
         
         
         
@@ -297,7 +301,7 @@ public class FlopTurnRiverState implements ParserListener
         Preconditions.checkState(players.contains(playerName));
         
         
-        if (seenPlayer && potsGood()) 
+        if (seenPlayer && potsGood() && round < 3) 
         {
             return getNextState(false);
         }
@@ -308,6 +312,14 @@ public class FlopTurnRiverState implements ParserListener
     @Override
     public ParserListener handleRelance(String playerName, int betAmt)
     {
+      //Le prochain round a commencé
+        if (round == 0 && 
+                players.contains(playerName) && 
+                potsGood())
+        {
+            return getNextState(true);
+        }
+        
         Preconditions.checkState(betAmt > amtToCall);
         
         incrementPlayer(playerName);
@@ -390,7 +402,8 @@ public class FlopTurnRiverState implements ParserListener
         if (finalPot != pot ) {
             log.warn("Final pot calculated as {} but is {}", pot, finalPot);
         }
-        log.debug("{} Showdown pot {}", playerName, finalPot);
+        logOutput.debug("{} wins showdown with pot ${}", playerName, 
+                moneyFormat.format(finalPot));
         return null;
     }
 

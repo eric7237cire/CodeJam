@@ -18,7 +18,7 @@ public class Parser {
     
     static Logger log = LoggerFactory.getLogger(Parser.class);
     
-  
+    static Logger logOutput = LoggerFactory.getLogger("handOutput");
     
     
     private final static Pattern XP_LINE = 
@@ -29,6 +29,9 @@ public class Parser {
     
     private final static Pattern ADJUSTEMENT =
             Pattern.compile(".* a fait un.* automatique.");
+    
+    private final static Pattern COMMENT =
+            Pattern.compile("//.*");
     
     static boolean isIgnoreLine(String line) 
     {
@@ -43,6 +46,12 @@ public class Parser {
         
         if (ADJUSTEMENT.matcher(line).matches()) 
             return true;
+    
+        if (COMMENT.matcher(line).matches())
+        {
+            logOutput.debug(line);
+            return true;
+        }
         
         return false;
     }
