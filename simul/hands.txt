@@ -288,6 +288,7 @@ Mostapha a suivi de 160 000.
 Mostapha a parlé.
 //I flopped a flush draw
 Frankk a relancé de 280 000.
+//The implied odds I needed were 1 182 000 which is reasonable, a bit borderline
 Eric a suivi de 280 000.
 Mostapha se couche.
 //On the turn, a 5 hits, pairing middle pair on board
