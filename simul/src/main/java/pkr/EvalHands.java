@@ -242,6 +242,11 @@ public class EvalHands {
             evals[0].setFlag(round, TextureCategory.PAIRED_BOARD);
         }
         
+        if (communityCards.hasStraight())
+        {
+            evals[0].setFlag(round, TextureCategory.STRAIGHT);
+        }
+        
         if (heroOnly)
             return;
         
@@ -560,7 +565,7 @@ public class EvalHands {
         Score score = new Score();
         
         // straight flush
-        if (texInfo.straightRank > 0 && texInfo.flush) {
+        if (texInfo.hasStraight() && texInfo.flush) {
             score.setHandLevel(HandLevel.STRAIGHT_FLUSH);
             score.setKickers(
                     new CardRank[] { CardRank.ranks[texInfo.straightRank]
@@ -618,7 +623,7 @@ public class EvalHands {
         }
 
         // straight
-        if (texInfo.straightRank > 0) {
+        if (texInfo.hasStraight()) {
             score.setHandLevel(HandLevel.STRAIGHT);
             score.setKickers(
                     new CardRank[] { CardRank.ranks[texInfo.straightRank] });

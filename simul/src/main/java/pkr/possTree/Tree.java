@@ -9,9 +9,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import pkr.CompleteEvaluation;
 import pkr.possTree.PossibilityNode.HandCategory;
-import pkr.possTree.PossibilityNode.HandSubCategory;
-import pkr.possTree.PossibilityNode.TextureCategory;
-import pkr.possTree.PossibilityNode.WinningLosingCategory;
+import pkr.possTree.PossibilityNode.Levels;
 
 import com.google.common.base.Preconditions;
 
@@ -46,6 +44,30 @@ public class Tree
             {
                 PossibilityNode dispNode = eval.getPossibilityNode(round, possLevel);
                 
+                //Clear all flop flags
+                if (round < 2 || (round == 2 && possLevel == 1))
+                {
+                   // continue;
+                    /*
+                    for( Levels level : PossibilityNode.Levels.values())
+                    {
+                        if (possLevel == level.ordinal())
+                        {
+                            for(iFlag flag : level.getFlags())
+                            {
+                                dispNode.clearFlag(flag);
+                            }
+                        }
+                    }*/
+                }
+                
+              //Don't show gutshots
+                if (possLevel == PossibilityNode.Levels.HAND_CATEGORY.ordinal()) {
+                    dispNode.clearFlag(HandCategory.FLUSH_DRAW);
+                    dispNode.clearFlag(HandCategory.STRAIGHT_DRAW_1);
+                    dispNode.clearFlag(HandCategory.STRAIGHT_DRAW_2);
+                }
+                /*
                 //2nd best hand ==> losing
                 if (possLevel == PossibilityNode.Levels.WIN_LOSE.ordinal() && 
                         dispNode.hasFlag(WinningLosingCategory.SECOND_BEST_HAND)) {
@@ -53,11 +75,7 @@ public class Tree
                     dispNode.setFlag(WinningLosingCategory.LOSING);
                 }
                 
-                //Don't show gutshots
-                if (possLevel == PossibilityNode.Levels.HAND_CATEGORY.ordinal()) {
-                   // dispNode.clearFlag(HandCategory.FLUSH_DRAW);
-                    dispNode.clearFlag(HandCategory.STRAIGHT_DRAW_1);
-                }
+                
                 
                 //
                 if (possLevel == PossibilityNode.Levels.TEXTURE.ordinal()) {
@@ -68,9 +86,11 @@ public class Tree
                 if (possLevel == PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal()
                         && dispNode.hasFlag(HandSubCategory.BY_KICKER_2_PLUS))
                          {
-                    //dispNode.clearFlag(HandSubCategory.BY_KICKER_2_PLUS);
-                    //dispNode.setFlag(HandSubCategory.BY_KICKER_1);
-                }
+
+                    dispNode.clearFlag(HandSubCategory.BY_KICKER_2_PLUS);
+                    dispNode.setFlag(HandSubCategory.BY_KICKER_1);
+                }*/
+
             
                 TreeNode curChildNode = null;
                 if (!curNode.getMapChildren().containsKey(dispNode)) {

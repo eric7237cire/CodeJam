@@ -1,15 +1,302 @@
 _____________________________
- 
-Laurence se couche.
-Mitch a suivi de 40 000.
+// Lost to a better straight ; I had 56o board was 789, turn was J, villian had AT
+// The mistake was not realizing one card made a better straight, thus value betting was not a good idea
+Dejan a suivi de 40 000.
+Eric a suivi de 40 000.
+יוסי a suivi de 40 000.
+Eric a relancé de 40 000.
+יוסי a suivi de 40 000.
+Dejan se couche.
+Eric a relancé de 80 000.
+יוסי a suivi de 80 000.
 Eric a relancé de 160 000.
-Juano a suivi de 160 000.
-Mitch se couche.
+יוסי a relancé de 320 000.
+Eric a suivi de 320 000.
+יוסי remporte le pot (1 000 000 $) avec une quinte (J).
+_____________________________
 
-Eric a relancé de 160 000.
-Juano a suivi de 160 000.
-Eric a relancé de 320 000.
-Juano a suivi de 320 000.
-Eric a relancé de 250 000.
-Juano a suivi de 250 000.
-Eric remporte le pot (1 820 000 $) avec une paire de K et un A en kicker.
+//I did not respect a 3 bet, had JJ him QQ 
+Artan a suivi de 40 000.
+Eric a relancé de 120 000.
+ג'ני se couche.
+Reks a relancé de 594 800.
+Artan se couche.
+Eric a relancé de 1 712 000.
+Reks a fait tapis.
+Reks remporte le pot (3 484 000 $) avec une paire de Q, une paire de 8 et un 10 en kicker.
+_____________________________
+
+//After I lost AA to KT with a runner runner straight a few hands ago, 
+//Zynga decides to give me some super ness
+Noureddine a suivi de 40 000.
+Matthieu se couche.
+Eric a suivi de 40 000.
+Jean-luc a suivi de 40 000.
+
+Eric a relancé de 80 000.
+Jean-luc a suivi de 80 000.
+Noureddine a suivi de 80 000.
+
+//At this point I had the Full house
+Eric a relancé de 120 000.
+Jean-luc a relancé de 560 000.
+Noureddine a suivi de 560 000.
+Eric a suivi de 560 000.
+
+//At the river, I decide to tease the maniac, who hit a straight
+Eric a relancé de 900 000.
+Jean-luc a relancé de 3 400 000.
+Noureddine se couche.
+Eric a fait tapis.
+Jean-luc a suivi de 7 620 000.
+Eric remporte le pot (17 280 000 $) avec un full de 9 par les 8.
+_____________________________
+Jean-luc a suivi de 40 000.
+Noureddine a suivi de 40 000.
+Matthieu a suivi de 40 000.
+Eric a suivi de 40 000.
+//Of all things, I flop a king high spades flush
+Matthieu a parlé.
+Eric a parlé.
+Jean-luc a relancé de 440 000.
+Noureddine se couche.
+Matthieu se couche.
+//I do a crazy all in
+Eric a fait tapis.
+//Which he calls with Jspades 6 other
+Jean-luc a suivi de 17 200 000.
+Eric remporte le pot (34 560 000 $) avec une couleur à K.
+_____________________________
+
+//Had AK, then flopped a flush draw
+Jean-luc a relancé de 320 000.
+Noureddine a suivi de 320 000.
+Mario se couche.
+Eric a suivi de 320 000.
+Eric a parlé.
+Jean-luc a relancé de 320 000.
+Noureddine a suivi de 320 000.
+Eric a suivi de 320 000.
+Eric a parlé.
+Jean-luc a relancé de 1 000 000.
+Noureddine se couche.
+//Even though it was probably correct to call, I did not feel like gambling.  I probably had more than 25% equity
+//but it was a pretty large bet, and if he had 2 pair or a set, I would need a flush and
+//I did not have the odds to chase it.  Poker stove, against a range including pairs, I had 36%
+//But vs hands better than a pair, I had 25%, so assuming he did have something really good
+//to warrant such a huge turn bet; it was borderline
+Eric se couche.
+Jean-luc gagne.
+_____________________________
+//I hit him again
+Jean-luc a relancé de 280 000.
+Hugo se couche.
+Jack a suivi de 280 000.
+Eric a suivi de 280 000.
+
+//At this point, I had folded to his pre flop raises on the flop
+//FLop is 3 clubs, I hit a set 444
+Jack a parlé.
+Eric a parlé.
+Jean-luc a relancé de 160 000.
+Jack a suivi de 160 000.
+Eric a suivi de 160 000.
+//Tens pair, got my house
+Jack a parlé.
+Eric a parlé.
+Jean-luc a relancé de 160 000.
+Jack a suivi de 160 000.
+Eric a suivi de 160 000.
+Jack a parlé.
+Eric a parlé.
+Jean-luc a relancé de 200 000.
+Jack a suivi de 200 000.
+//He actually flopped the nut flush
+Eric a relancé de 2 000 000.
+//Thinks he is clever
+Jean-luc a relancé de 6 300 000.
+Jack se couche.
+//I do not reraise, worrying about a better full house, who knows...
+Eric a suivi de 6 300 000.
+Eric remporte le pot (14 600 000 $) avec un full de 4 par les 10.
+_____________________________
+
+//I had 9T, flop was 9TA 9T of spades, him JT with jack spades
+Eric a suivi de 40 000.
+Ruben a suivi de 40 000.
+Bruno a suivi de 40 000.
+Chan Rithy a suivi de 40 000.
+Bruno a parlé.
+Chan Rithy a relancé de 160 000.
+//No slow playing for me
+Eric a relancé de 525 000.
+Ruben se couche.
+Bruno se couche.
+Chan Rithy a suivi de 525 000.
+Chan Rithy a parlé.
+//Another spade drops, I do not check because I do not want him to all in bluff
+Eric a relancé de 650 000.
+Chan Rithy a suivi de 650 000.
+Chan Rithy a parlé.
+//I hate check raises..., he would have probably folded 
+Eric a parlé.
+Eric remporte le pot (2 510 000 $) avec une paire de 10, une paire de 9 et un A en kicker.
+_____________________________
+
++ 5 XP pour avoir joué une main.
+Alain se couche.
+Ruben se couche.
+Gregory a suivi de 40 000.
+Chan Rithy a suivi de 40 000.
+Eric a suivi de 40 000.
+Chan Rithy a parlé.
+Eric a parlé.
+Gregory a parlé.
+Chan Rithy a parlé.
+//Flop was 8d 7d 2d villian had KS 9d  I had 8J o non diamonds
+//My equity was actually 48% at flop ; 68% at turn
+Eric a relancé de 80 000.
+//He actually had correct odds to call ; 32% equity and 28% pot odds
+Gregory a suivi de 80 000.
+Chan Rithy se couche.
+Eric a parlé.
+Gregory a parlé.
+Gregory remporte le pot (280 000 $) avec une paire de 9 et un K en kicker.
+_____________________________
+Eric a fait un ajustement automatique.
+Lucie se couche.
+Marie Pierre se couche.
+Pete a suivi de 80 000.
+Fadia a suivi de 80 000.
+Anthony a suivi de 80 000.
+Jad a relancé de 240 000.
+Nelson a suivi de 240 000.
+Eric se couche.
+Rohat se couche.
+Pete se couche.
+Fadia a suivi de 240 000.
+Anthony a suivi de 240 000.
+Fadia a parlé.
+Anthony a relancé de 80 000.
+Jad a relancé de 560 000.
+Nelson a relancé de 1 040 000.
+Fadia a relancé de 4 100 000.
+Anthony se couche.
+Jad a suivi de 4 100 000.
+Nelson a relancé de 7 580 000.
+Fadia a fait tapis.
+Jad a fait tapis.
+Nelson remporte le pot (1 742 156 $) avec une paire de K, une paire de Q et un A en kicker.
+Nelson remporte le pot (21 366 766 $) avec une paire de K, une paire de Q et un A en kicker.
+_____________________________
+Carlo a relancé de 80 000.
+Nicola se couche.
+Therese a suivi de 80 000.
+Eric a suivi de 80 000.
+Aurore a suivi de 80 000.
+//I had JT with T of clubs; flop is 3 clubs
+Eric a parlé.
+Aurore a parlé.
+Carlo a relancé de 40 000.
+Therese se couche.
+Eric a suivi de 40 000.
+Aurore a suivi de 40 000.
+//At this point, I pick up a straight draw  8  9, I bluff, even vs random I had only 45% equity
+Eric a relancé de 240 000.
+Aurore a suivi de 240 000.
+Carlo a suivi de 240 000.
+Eric a parlé.
+Aurore a parlé.
+Carlo a relancé de 880 000.
+//Even though I made a flush, I finally folded a river bet
+Eric se couche.
+Aurore a suivi de 880 000.
+Carlo remporte le pot (2 920 000 $) avec une couleur à A.
+_____________________________
+
+//I had 68 board had 57 A
+Eric a fait un ajustement automatique.
+Guy a suivi de 40 000.
+Therese a suivi de 40 000.
+Eric a suivi de 40 000.
+Aurore a suivi de 40 000.
+Sébastien a suivi de 40 000.
+Aurore a parlé.
+Sébastien a relancé de 200 000.
+Guy se couche.
+Therese a suivi de 200 000.
+//I think this was OK, the implied odds were there as this guy is crazy ; 2 rounds to go
+//
+Eric a suivi de 200 000.
+
+Aurore se couche.
+Sébastien a relancé de 480 000.
+Therese se couche.
+//This was limit ; probably better to fold. 
+// The implied odds to cover my call was $2 340 000
+//
+Eric a suivi de 480 000.
+
+Sébastien a relancé de 840 000.
+Eric se couche.
+Sébastien gagne.
+_____________________________
+Olivier a suivi de 40 000.
+Eric a suivi de 40 000.
+Expédita a suivi de 40 000.
+Guy a suivi de 40 000.
+Expédita a parlé.
+Guy a parlé.
+Olivier a parlé.
+Eric a relancé de 40 000.
+Expédita a suivi de 40 000.
+Guy se couche.
+Olivier se couche.
+Expédita a parlé.
+Eric a relancé de 120 000.
+Expédita a suivi de 120 000.
+Expédita a parlé.
+Eric a relancé de 400 000.
+//Again a check raise!!!!
+Expédita a fait tapis.
+//I had a full house, 66767   7x was my hand
+//Actually it is not as crazy as it seems for her to have a 6, 7% chance
+//Also this player had not done maniac type behavior, definitle a mistake!  
+Eric a suivi de 7 640 000.
+Expédita remporte le pot (15 760 000 $) avec un carré de 6 et un J en kicker.
+_____________________________
+ 
+Vicky se couche.
+Guy a suivi de 40 000.
+Noble a fait tapis.
+Eric a relancé de 760 000.
+Expédita se couche.
+Guy a suivi de 760 000.
+//Board is 88Q  rainbow, I had AQo him QJo, I get my shit back after losing to 4 of a kind
+Eric a relancé de 1 000 000.
+Guy a relancé de 7 540 000.
+Eric a fait tapis.
+Eric remporte le pot (15 920 000 $) avec une paire de Q, une paire de 8 et un A en kicker.
+Eric remporte le pot (1 060 000 $) avec une paire de Q, une paire de 8 et un A en kicker.
+_____________________________
+
+Eric a fait un ajustement automatique.
+Frankk a relancé de 160 000.
+Eric a suivi de 160 000.
+Yaacov se couche.
+Mostapha a suivi de 160 000.
+Mostapha a parlé.
+//I flopped a flush draw
+Frankk a relancé de 280 000.
+//The implied odds I needed were 1 182 000 which is reasonable, a bit borderline
+Eric a suivi de 280 000.
+Mostapha se couche.
+//On the turn, a 5 hits, pairing middle pair on board
+Frankk a relancé de 120 000.
+//I semi bluff, I had 38% equity estiming board is 8h 5h Js  turn 5s
+//I think it was a decent bluff, 50-50 he folds his AK
+Eric a relancé de 1 120 000.
+Frankk a fait tapis.
+Frankk remporte le pot (3 300 000 $) avec une paire de 5 et un A en kicker.
+_____________________________
+ 

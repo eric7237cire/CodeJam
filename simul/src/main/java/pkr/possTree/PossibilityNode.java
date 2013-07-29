@@ -13,10 +13,23 @@ import com.google.common.collect.Lists;
 public class PossibilityNode implements iDisplayNode {
 
     public static enum Levels {
-        TEXTURE,
-        WIN_LOSE,
-        HAND_CATEGORY,        
-        HAND_SUB_CATEGORY
+        TEXTURE(TextureCategory.values()),
+        WIN_LOSE(WinningLosingCategory.values()),
+        HAND_CATEGORY(HandCategory.values()),        
+        HAND_SUB_CATEGORY(HandSubCategory.values());
+        
+        iFlag[] flags;
+
+        private Levels( iFlag[] flags) {
+            this.flags = flags;
+        }
+
+        public iFlag[] getFlags()
+        {
+            return flags;
+        }
+        
+        
     }
     
     
@@ -27,6 +40,7 @@ public class PossibilityNode implements iDisplayNode {
         SAME_SUIT_3("3 of the same suit"),
         SAME_SUIT_4("4 of the same suit"),
         SAME_SUIT_5("5 of the same suit"),
+        STRAIGHT("Straight on board"),
         PAIRED_BOARD("Paired board"),
         UNPAIRED_BOARD("Un paired board"),
         HAS_AT_LEAST_ONE_ACE("At least 1 Ace");

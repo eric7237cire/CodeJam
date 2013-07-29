@@ -6,8 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.possTree.PossibilityNode.HandCategory;
+import pkr.possTree.PossibilityNode.TextureCategory;
 import pkr.possTree.Tree;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 public class Simulator {
@@ -22,7 +24,7 @@ public class Simulator {
         //playerHoleCards.add("AA, AKs, 27, 93, 44, 99");
       //playerHoleCards.add("KTs");
       
-    //  playerHoleCards.add("72o, 32");
+      playerHoleCards.add("J7o");
     //  playerHoleCards.add("AKs");
       //  playerHoleCards.add("KJ");
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
@@ -30,7 +32,7 @@ public class Simulator {
         
         //playerHoleCards.add("K8o, K9o, KTo");
         
-        playerHoleCards.add("AKo");
+        //playerHoleCards.add("AA");
         //playerHoleCards.add("KJo");
       //  playerHoleCards.add("AKo");
        // playerHoleCards.add("JTs");
@@ -58,7 +60,15 @@ public class Simulator {
             playerHoleCards.add("22+, A2s+, K2s+, Q2s+, J4s+, T6s+, 96s+, 86s+, 75s+, 65s, 54s, A2o+, K2o+, Q5o+, J7o+, T7o+, 98o, 87o, 76o, 65o");
         }
         
-        final String MY_LIST = "22+, A2s+, K2s+, Q4s+, J6s+, T6s+, 96s+, 86s+, 76s, 65s, 54s, A2o+, K8o+, Q8o+, J8o+, T8o+, T9o, 98o, 22+";
+        final String MY_LIST = "22+, A2s+, K2s+, Q4s+, J6s+, T6s+, " +
+        		"96s+, 86s+, 76s, 65s, 54s," +
+        		" A2o+, K8o+, Q8o+, J8o+, T8o+, 98o";
+        //playerHoleCards.add(MY_LIST);
+        
+        final String LOOSE_ALL_IN = "22+, A2+, K9+, Q9s+, QTo+, JT+ " 
+        		;
+        
+        //playerHoleCards.add(LOOSE_ALL_IN);
         
         //top 36%
         for(int i = 0; i < NUM_OK_CALLS; ++i) {
@@ -80,7 +90,7 @@ public class Simulator {
         
         String fileName = "C:\\codejam\\CodeJam\\simul\\out.xml";
         
-        Tree tree = simulate(100001, playerHoleCards);
+        Tree tree = simulate(1000001, playerHoleCards);
         tree.output(fileName);
 
        // playerHoleCards.add("JJ, KJo");
@@ -114,13 +124,27 @@ public class Simulator {
         int lotsOFSets = 0;
         int royals = 0;
         int fullHouse = 0;
-        int flops2Pair = 0;
-        int river2Pair = 0;
+        int hidden2Pair = 0;
+        int flopVisibleSet = 0;
+        int pairedBoards = 0;
+        int unpairedBoards = 0;
+        int someoneFloppedSomethingCount = 0;
+        
+        int pair0Count = 0;
+        int pair1Count = 0;
+        int pair2Count = 0;
+        int pair3Count = 0;
+        int noPairCount = 0;
+        int betterThanPairCount = 0;
+        
+       // final int roundCheck = CompleteEvaluation.ROUND_FLOP;
+      //  final int roundCheck = CompleteEvaluation.ROUND_RIVER;
+        final int roundCheck = CompleteEvaluation.ROUND_TURN;
         
         long startTime = System.currentTimeMillis();
         
         for(int simulNum = 0; simulNum < TOTAL_SIMULATIONS; ++simulNum) {
-            CompleteEvaluation[] evals = simulateOneRound(listRanges);
+            CompleteEvaluation[] evals = simulateOneRound(false, listRanges);
             
           //Does not match the ranges
             if (evals == null)
@@ -136,33 +160,106 @@ public class Simulator {
             ++actualRounds;
             
             int sets = 0;
+            int floppedSet = 0;
+            boolean someoneFloppedSomething = false;
             
+            boolean any0Pair = false;
+            boolean any1Pair = false;
+            boolean any2Pair = false;
+            boolean any3Pair = false;
+            boolean any4Pair = false;
+            boolean anyHiddenPair = false;
+            boolean beatsPair = false;
+            
+            boolean onlyHighCard = true;
+                        
             for(int p = 0; p < numPlayers; ++p) {
                 equity[p] += evals[p].realEquity;
                 
-                if (p==0) {
-                if (evals[p].quads) {
-                    ++quadCount;
-                }
-                
-                if (evals[p].getScore().handLevel == HandLevel.TRIPS) {
-                    //++sets;
-                }
-                if (evals[p].getScore().handLevel == HandLevel.STRAIGHT_FLUSH && evals[p].getScore().getKickers()[0] == CardRank.ACE) {
-                    ++royals;
-                }
-                if (evals[p].getScore().handLevel == HandLevel.FULL_HOUSE) {
-                    ++fullHouse;
-                }
-                if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.HIDDEN_TWO_PAIR)) {
-                    ++flops2Pair;
-                }
-                if (evals[p].hasFlag(CompleteEvaluation.ROUND_RIVER, HandCategory.HIDDEN_TWO_PAIR)) {
-                    ++river2Pair;
-                }
-                if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.HIDDEN_SET)) {
-                    ++sets;
-                }
+                if ( true || p==0) {
+                    if (evals[p].quads) {
+                        ++quadCount;
+                    }
+                    
+                    if (evals[p].getScore().handLevel == HandLevel.TRIPS) {
+                        //++sets;
+                    }
+                    if (evals[p].getScore().handLevel == HandLevel.STRAIGHT_FLUSH && evals[p].getScore().getKickers()[0] == CardRank.ACE) {
+                        ++royals;
+                    }
+                    if (evals[p].getScore().handLevel == HandLevel.FULL_HOUSE) {
+                        ++fullHouse;
+                    }
+                    
+                    
+                    if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.HIDDEN_SET)) {
+                        ++sets;
+                    }
+            
+                    if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, TextureCategory.PAIRED_BOARD))
+                    {
+                        if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.FULL_HOUSE))  {
+                            someoneFloppedSomething = true;
+                        } else if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.TWO_PAIR))  {
+                            someoneFloppedSomething = true;
+                        } else if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.VISIBLE_SET))  {
+                            someoneFloppedSomething = true;
+                        } 
+                    }
+                    
+                    if (evals[0].hasFlag(roundCheck, TextureCategory.UNPAIRED_BOARD)
+                            && !evals[0].hasFlag(roundCheck, TextureCategory.STRAIGHT)
+                            && (evals[0].hasFlag(roundCheck, TextureCategory.UNSUITED)
+                                    || evals[0].hasFlag(roundCheck, TextureCategory.SAME_SUIT_2)
+                            ))
+                    {
+                        if (evals[p].hasFlag(roundCheck, HandCategory.PAIR_OVERCARDS_0))  {
+                            any0Pair = true;
+                            any1Pair = true;
+                            any2Pair = true;
+                            any3Pair = true;
+
+                        } else if (evals[p].hasFlag(roundCheck, HandCategory.PAIR_OVERCARDS_1))  {
+                            any1Pair = true;
+                            any2Pair = true;
+                            any3Pair = true;
+
+                        } else if (evals[p].hasFlag(roundCheck, HandCategory.PAIR_OVERCARDS_2))  {
+                            any2Pair = true;
+                            any3Pair = true;
+
+                        }  else if (evals[p].hasFlag(roundCheck, HandCategory.PAIR_OVERCARDS_3))  {
+                            any3Pair = true;
+
+                        } 
+                        
+                        if (!evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.HIGH_CARD)  
+                                // && evals[p].getHoleCards().getHigherRank() != evals[p].getHoleCards().getLowerRank()
+                                )
+                        {
+                            onlyHighCard = false;
+                        }
+                        
+                        if (evals[p].getRoundScore(roundCheck).handLevel != HandLevel.PAIR  
+                                && evals[p].getRoundScore(roundCheck).handLevel != HandLevel.HIGH_CARD
+                                )
+                        {
+                            beatsPair = true;
+                        }
+                        
+                        if (evals[p].hasFlag(roundCheck, HandCategory.HIDDEN_TWO_PAIR)) {
+                            anyHiddenPair = true;
+                            //Preconditions.checkState(evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, TextureCategory.UNPAIRED_BOARD));
+                        }
+                    }
+                    
+                    if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.VISIBLE_SET)) {
+                        ++floppedSet;
+
+                       // Preconditions.checkState(evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, TextureCategory.PAIRED_BOARD));
+                        //if (p > 2) 
+                        //    throw new RuntimeException("ha");
+                    }
                 
                 }
                 //log.debug("eq {} player {}", evals[p].realEquity, p);
@@ -173,14 +270,80 @@ public class Simulator {
                 lotsOFSets ++;
             }
             
-            if (simulNum > 0 && simulNum % 5000 == 0) {
+            //if (evals[0].hasFlag(CompleteEvaluation.ROUND_FLOP, TextureCategory.PAIRED_BOARD)) 
+            if (evals[0].hasFlag(CompleteEvaluation.ROUND_RIVER, TextureCategory.PAIRED_BOARD))
+            {
+                ++pairedBoards;
+            }
+            
+            //if (evals[0].hasFlag(CompleteEvaluation.ROUND_FLOP, TextureCategory.UNPAIRED_BOARD)) 
+            
+            if (evals[0].hasFlag(roundCheck, TextureCategory.UNPAIRED_BOARD)
+                    && !evals[0].hasFlag(roundCheck, TextureCategory.STRAIGHT)
+                    && (evals[0].hasFlag(roundCheck, TextureCategory.UNSUITED)
+                            || evals[0].hasFlag(roundCheck, TextureCategory.SAME_SUIT_2))
+                    )
+            {
+                ++unpairedBoards;
+                
+                if (any0Pair) 
+                {
+                    ++pair0Count;
+                }
+                if (any1Pair) 
+                {
+                    ++pair1Count;
+                }
+                if (any2Pair) 
+                {
+                    ++pair2Count;
+                }
+                if (any3Pair) 
+                {
+                    ++pair3Count;
+                }
+                if (onlyHighCard)
+                {
+                    ++noPairCount;
+                }
+                if( anyHiddenPair)
+                {
+                    ++hidden2Pair;
+                }
+                if (beatsPair)
+                {
+                    ++betterThanPairCount;
+                }
+            }
+            
+            if (floppedSet >= 1) 
+            {
+                ++flopVisibleSet;
+            }
+            
+            
+            
+            if (someoneFloppedSomething) {
+                ++someoneFloppedSomethingCount;
+            }
+            
+            if (simulNum > 0 && simulNum % 25000 == 0) {
                 logOutput.debug("# of simulations {} of {}", simulNum, TOTAL_SIMULATIONS );
                 logOutput.debug("# of quads {}.  %{} ", quadCount, 100.0 * quadCount / simulNum);
                 logOutput.debug("# of str8 flushes {}.  %{} ", royals, 100.0 * royals / simulNum);
-                logOutput.debug("# of flopped sets {}.  %{} ", lotsOFSets, 100.0 * lotsOFSets / simulNum);
+                logOutput.debug("# of flopped hidden sets {}.  %{} ", lotsOFSets, 100.0 * lotsOFSets / simulNum);
+                logOutput.debug("# of flopped visible sets {} on paired boards.  %{} ", flopVisibleSet, 100.0 * flopVisibleSet / pairedBoards);
+                logOutput.debug("# of someone flopping anything on a paired board. {}  %{} ", someoneFloppedSomethingCount, 100.0 * someoneFloppedSomethingCount / pairedBoards);
                 logOutput.debug("# of fullhouse {}.  %{} ", fullHouse, 100.0 * fullHouse / simulNum);
-                logOutput.debug("# of flopping 2 pair {}.  %{} ", flops2Pair, 100.0 * flops2Pair / simulNum);
-                logOutput.debug("# of rivering 2 pair {}.  %{} ", river2Pair, 100.0 * river2Pair / simulNum);
+                logOutput.debug("# of pairing both cards on unpaired board {}.  %{} ", hidden2Pair, 100.0 * hidden2Pair / unpairedBoards);
+                
+                
+                logOutput.debug("# of pairs w/ 0 overcards {}.  %{} ", pair0Count, 100.0 * pair0Count / unpairedBoards);
+                logOutput.debug("# of pairs w/ 1 overcards {}.  %{} ", pair1Count, 100.0 * pair1Count / unpairedBoards);
+                logOutput.debug("# of pairs w/ 2 overcards {}.  %{} ", pair2Count, 100.0 * pair2Count / unpairedBoards);
+                logOutput.debug("# of pairs w/ 3 overcards {}.  %{} ", pair3Count, 100.0 * pair3Count / unpairedBoards);
+                logOutput.debug("# of highcard only {}.  %{} ", noPairCount, 100.0 * noPairCount / unpairedBoards);
+                logOutput.debug("# of better than pair {}.  %{} ", betterThanPairCount, 100.0 * betterThanPairCount / unpairedBoards);
                 
                 logOutput.info("{} valid rounds", actualRounds);
                 for(int p = 0; p < numPlayers; ++p) {
@@ -284,7 +447,7 @@ public class Simulator {
     
     //private static final int NUM_CARDS = 52;
     
-    private static CompleteEvaluation[] simulateOneRound(HoleCardsRange[] listRanges) {
+    private static CompleteEvaluation[] simulateOneRound(boolean heroOnly, HoleCardsRange[] listRanges) {
         
         //final int numPlayers = listRanges.length;
         
@@ -334,7 +497,7 @@ public class Simulator {
         //Pick the 5 remaining cards for the flop, turn, and river
         chooseRemainingCards(usedCards);
         
-        CompleteEvaluation[] evals = EvalHands.evaluate(true, holeCards, flopTurnRiver); 
+        CompleteEvaluation[] evals = EvalHands.evaluate(heroOnly, holeCards, flopTurnRiver); 
                 
         
         /*
