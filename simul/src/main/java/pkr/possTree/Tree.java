@@ -68,8 +68,8 @@ public class Tree
                 if (possLevel == PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal()
                         && dispNode.hasFlag(HandSubCategory.BY_KICKER_2_PLUS))
                          {
-                    dispNode.clearFlag(HandSubCategory.BY_KICKER_2_PLUS);
-                    dispNode.setFlag(HandSubCategory.BY_KICKER_1);
+                    //dispNode.clearFlag(HandSubCategory.BY_KICKER_2_PLUS);
+                    //dispNode.setFlag(HandSubCategory.BY_KICKER_1);
                 }
             
                 TreeNode curChildNode = null;
