@@ -71,6 +71,12 @@ public class Preprocessor {
         
         void addLine(String line)
         {
+            //line = line.trim();
+           /*
+            *  if (line.isEmpty())  return;
+            */
+              
+            
             Matcher m = patHandBoundary.matcher(line);
             
             if (!m.matches())
@@ -150,7 +156,7 @@ public class Preprocessor {
     private static void addNextBlock(List<Block> blocks, Block newBlock)
     {
         newBlock.cleanUnfinished();
-        log.debug("Adding block {}", newBlock);
+       // log.debug("Adding block {}", newBlock);
         
         blocks.add(newBlock);
         
@@ -209,7 +215,7 @@ public class Preprocessor {
                 
                 String handInPrev = blockPrev.getHandStr(handIdx);
                 String handInNext = blockNext.getHandStr(blockIdx);
-                
+                if( false)
                 log.debug(" hand in prev idx {} {} hand Next idx {} {} ",
                         handIdx, handInPrev,
                         blockIdx, handInNext);

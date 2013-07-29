@@ -23,13 +23,13 @@ import static org.junit.Assert.*;
 public class TestPreproc {
     private static Logger log = LoggerFactory.getLogger(TestPreproc.class);
     
-    @Test
-    public void test1() throws Exception
+    public void test(int testNum) throws Exception
     {
-        URL testInputUrl = getClass().getResource("/handsPreProc/test1.txt");
-        URL resultUrl = getClass().getResource("/handsPreProc/result1.txt");
+        URL testInputUrl = getClass().getResource("/handsPreProc/test" + testNum + ".txt");
+        URL resultUrl = getClass().getResource("/handsPreProc/result" + testNum + ".txt");
         
-        String testOutputUrlStr = resultUrl.toString().replace("result1.txt", "testOutput1.txt");
+        String testOutputUrlStr = resultUrl.toString().replace("result" + testNum + ".txt", 
+                "testOutput" + testNum + ".txt");
         URL testOutputURL = new URL(testOutputUrlStr);
         File testOutputFile = new File(testOutputURL.toURI());
         log.debug("{}", testOutputFile.getCanonicalPath());
@@ -52,7 +52,19 @@ public class TestPreproc {
             String resultLine = resultOutput.get(i);
             String testOutputLine = testOutput.get(i);
             
-            assertEquals(resultLine, testOutputLine);
+            assertEquals("Line " + (i + 1), resultLine, testOutputLine);
         }
+    }
+    
+    @Test
+    public void test1() throws Exception
+    {
+        test(1);
+    }
+    
+    @Test
+    public void test2() throws Exception
+    {
+        test(2);
     }
 }
