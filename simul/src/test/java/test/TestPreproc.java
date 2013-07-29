@@ -47,7 +47,7 @@ public class TestPreproc {
         
         for(int i = 0; i < resultOutput.size(); ++i)
         {
-            assertTrue(testOutput.size() > i);
+            assertTrue(" Missing " + i, testOutput.size() > i);
             
             String resultLine = resultOutput.get(i);
             String testOutputLine = testOutput.get(i);

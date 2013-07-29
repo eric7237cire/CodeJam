@@ -105,6 +105,36 @@ public class Preprocessor {
                 lines.remove(i);
             }
         }
+        
+        void removeFirst(int n)
+        {
+            for(int i = 0; i < n; ++i)
+            {
+                handStarts.remove(0);
+            }
+            
+            
+        }
+        
+        void addLinesToOutput(List<String> output)
+        {
+            int startLine = handStarts.get(0);
+            int endLine = handStarts.get(handStarts.size() -1);
+            
+            output.addAll(lines.subList(startLine, endLine));
+        }
+        
+        String getHandStr(int handIdx)
+        {
+            int startLine = handStarts.get(handIdx);
+            int endLine = handStarts.get(handIdx+1);
+            return Joiner.on("\n").join(lines.subList(startLine, endLine));
+        }
+        
+        int getNumHands()
+        {
+            return handStarts.size() - 1;
+        }
 
         /* (non-Javadoc)
          * @see java.lang.Object#toString()
@@ -169,7 +199,35 @@ public class Preprocessor {
     
     private static void removeRedundant( Block blockPrev, Block blockNext)
     {
-        
+        outer:
+        for(int startHandIdx = 0; startHandIdx < blockPrev.getNumHands(); ++startHandIdx)
+        {
+            log.debug("Compaing startHandIdx {}", startHandIdx);
+            for(int handIdx = startHandIdx; handIdx < blockPrev.getNumHands(); ++handIdx)
+            {
+                int blockIdx = handIdx - startHandIdx;
+                
+                String handInPrev = blockPrev.getHandStr(handIdx);
+                String handInNext = blockNext.getHandStr(blockIdx);
+                
+                log.debug(" hand in prev idx {} {} hand Next idx {} {} ",
+                        handIdx, handInPrev,
+                        blockIdx, handInNext);
+                if (!handInNext.equals(handInPrev))
+                {
+                    continue outer;
+                }
+            }
+            
+            int numToRemove = blockPrev.getNumHands() - startHandIdx;
+            
+            log.debug("Removing {} from next block", numToRemove);
+            blockNext.removeFirst(numToRemove);
+            return;
+        }
+    
+        log.debug("No redundant hands found");
+        return;
     }
     
     public static void clean(List<String> inputLines, List<String> outputLines)
@@ -181,12 +239,19 @@ public class Preprocessor {
         while( (currentLine = getNextBlock(blocks, currentLine, inputLines)) >= 0)
         {
             cleanBlock( blocks.get(blocks.size() - 1));
+            
+            if (blocks.size() >= 2)
+            {
+                removeRedundant(blocks.get(blocks.size() - 2), blocks.get(blocks.size() - 1));
+            }
         }
         
         //int startCurrentBlock = -1;
         for(Block block : blocks)
         {
-            outputLines.addAll(block.lines);
+            block.addLinesToOutput(outputLines);
         }
+        
+        outputLines.add("_____________________________\n");
     }
 }
