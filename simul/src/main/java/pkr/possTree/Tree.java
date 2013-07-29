@@ -9,7 +9,6 @@ import javax.xml.stream.XMLStreamWriter;
 
 import pkr.CompleteEvaluation;
 import pkr.possTree.PossibilityNode.HandCategory;
-import pkr.possTree.PossibilityNode.Levels;
 
 import com.google.common.base.Preconditions;
 

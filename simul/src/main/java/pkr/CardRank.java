@@ -1,7 +1,6 @@
 package pkr;
 
 import com.google.common.collect.BiMap;
-import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.HashBiMap;
 
 public enum CardRank  
