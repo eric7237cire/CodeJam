@@ -19,13 +19,18 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
+/*
+ * Hand copy pastes seperated by **\n
+ * 
+ * Assumption is they follow in time
+ */
 public class Preprocessor {
     private static Pattern patHandBoundary = Pattern.compile("_*");
     private final static Pattern COMMENT =
             Pattern.compile("//.*");
     private final static Pattern CUT_PASTE_BOUNDARY = Pattern.compile("\\*\\*");
     
-    private static Logger log = LoggerFactory.getLogger(TestPreproc.class);
+    private static Logger log = LoggerFactory.getLogger(Preprocessor.class);
     
     public static void clean(File inputFile, File outputFile) throws IOException
     {
@@ -104,6 +109,12 @@ public class Preprocessor {
         
         void cleanUnfinished()
         {
+            if (getNumHands() == 0)
+            {
+                log.debug("Block complètement vide");
+                lines.clear();
+                return;
+            }
             int lastIndex = handStarts.get(handStarts.size() - 1);
             
             for(int i = lines.size() - 1; i > lastIndex; --i)
@@ -132,6 +143,11 @@ public class Preprocessor {
         
         void addLinesToOutput(List<String> output)
         {
+            if (getNumHands() <= 0)
+            {
+                log.debug("Pas d'output");
+                return;
+            }
             int startLine = handStarts.get(0);
             int endLine = handStarts.get(handStarts.size() -1);
             
@@ -150,7 +166,7 @@ public class Preprocessor {
         
         int getNumHands()
         {
-            return handStarts.size() - 1;
+            return Math.max(0, handStarts.size() - 1);
         }
 
         /* (non-Javadoc)
@@ -158,7 +174,8 @@ public class Preprocessor {
          */
         @Override
         public String toString() {
-            
+           // if (1==1)
+            //    throw new RuntimeException("oeu");
             //return "Block [lines=" + Joiner.on("\n").join(lines) + ", handStarts=" + handStarts + "]";
             return "Block [lines=" + lines.size() + ", handStarts=" + handStarts + ", num hands = " + getNumHands() + "]";
         }
@@ -219,20 +236,26 @@ public class Preprocessor {
     private static void removeRedundant( Block blockPrev, Block blockNext)
     {
         log.debug("Remove redundant prev\n{} next\n{}", blockPrev, blockNext);
+        
+        int maxRedondant = Math.min(blockPrev.getNumHands(), blockNext.getNumHands());
+        
+        int minPrevStart = blockPrev.getNumHands() - maxRedondant;
+        
         outer:
-        for(int startHandIdx = 0; startHandIdx < blockPrev.getNumHands(); ++startHandIdx)
+        for(int blockPrevStartHandIdx = minPrevStart; 
+                blockPrevStartHandIdx < blockPrev.getNumHands(); ++blockPrevStartHandIdx)
         {
-            log.debug("Compaing startHandIdx {}", startHandIdx);
-            for(int handIdx = startHandIdx; handIdx < blockPrev.getNumHands(); ++handIdx)
+            log.debug("Comparison startHandIdx {}", blockPrevStartHandIdx);
+            for(int blockprevHandIdx = blockPrevStartHandIdx; blockprevHandIdx < blockPrev.getNumHands(); ++blockprevHandIdx)
             {
-                int blockIdx = handIdx - startHandIdx;
+                int blockNextHandIdx = blockprevHandIdx - blockPrevStartHandIdx;
                 
-                String handInPrev = blockPrev.getHandStr(handIdx);
-                String handInNext = blockNext.getHandStr(blockIdx);
+                String handInPrev = blockPrev.getHandStr(blockprevHandIdx);
+                String handInNext = blockNext.getHandStr(blockNextHandIdx);
                 
                 log.debug(" hand in prev \nidx {} \n{}\nhand Next idx {}\n{}\nDONE",
-                        handIdx, handInPrev,
-                        blockIdx, handInNext);
+                        blockprevHandIdx, handInPrev,
+                        blockNextHandIdx, handInNext);
                 if (!handInNext.equals(handInPrev))
                 {
                     log.debug("NO MATCH");
@@ -243,9 +266,9 @@ public class Preprocessor {
             }
             
             //À ce point, tous les blocs entre startHandIdx et blocPrev.size() - 1 inclu sont des doublons 
-            int numToRemove = blockPrev.getNumHands() - startHandIdx;
+            int numToRemove = blockPrev.getNumHands() - blockPrevStartHandIdx;
             
-            log.debug("Removing {} from next block", numToRemove);
+            log.debug("Removing {} from prev block", numToRemove);
             //TODO delete from blockPrev
             blockPrev.removeLast(numToRemove);
             return;

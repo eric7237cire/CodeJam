@@ -58,8 +58,12 @@
    <logger name="mainOutput" level="DEBUG"/>
    <logger name="pkr.Simulator" level="WARN"/>
    <logger name="pkr.HoleCardsRange" level="DEBUG">
+   
     <appender-ref ref="FILE"/>
    </logger>
+   
+   <logger name="pkr.history.Preprocessor" level="DEBUG"/>
+   
    
       
   <root level="${root-level:-DEBUG}">

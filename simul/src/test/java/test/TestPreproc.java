@@ -79,4 +79,10 @@ public class TestPreproc {
     {
         test(4);
     }
+    
+    @Test
+    public void test5() throws Exception
+    {
+        test(5);
+    }
 }
