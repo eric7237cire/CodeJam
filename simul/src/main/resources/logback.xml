@@ -62,7 +62,7 @@
     <appender-ref ref="FILE"/>
    </logger>
    
-   <logger name="pkr.history.Preprocessor" level="DEBUG"/>
+   <logger name="pkr.history.Preprocessor" level="INFO"/>
    
    
       

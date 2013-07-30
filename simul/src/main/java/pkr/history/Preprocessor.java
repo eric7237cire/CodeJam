@@ -11,8 +11,6 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import test.TestPreproc;
-
 import com.google.common.base.Charsets;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
@@ -26,8 +24,7 @@ import com.google.common.io.Files;
  */
 public class Preprocessor {
     private static Pattern patHandBoundary = Pattern.compile("_*");
-    private final static Pattern COMMENT =
-            Pattern.compile("//.*");
+    //private final static Pattern COMMENT = Pattern.compile("//.*");
     private final static Pattern CUT_PASTE_BOUNDARY = Pattern.compile("\\*\\*");
     
     private static Logger log = LoggerFactory.getLogger(Preprocessor.class);
@@ -107,22 +104,9 @@ public class Preprocessor {
             }
         }
         
-        void cleanUnfinished()
-        {
-            if (getNumHands() == 0)
-            {
-                log.debug("Block complètement vide");
-                lines.clear();
-                return;
-            }
-            int lastIndex = handStarts.get(handStarts.size() - 1);
-            
-            for(int i = lines.size() - 1; i > lastIndex; --i)
-            {
-                lines.remove(i);
-            }
-        }
         
+        
+        /*
         void removeFirst(int n)
         {
             for(int i = 0; i < n; ++i)
@@ -131,7 +115,7 @@ public class Preprocessor {
             }
             
             
-        }
+        }*/
         
         void removeLast(int n)
         {
@@ -185,7 +169,6 @@ public class Preprocessor {
     
     private static void addNextBlock(List<Block> blocks, Block newBlock)
     {
-        newBlock.cleanUnfinished();
         log.debug("Adding block {}", newBlock);
         
         blocks.add(newBlock);
@@ -250,6 +233,8 @@ public class Preprocessor {
             {
                 int blockNextHandIdx = blockprevHandIdx - blockPrevStartHandIdx;
                 
+                Preconditions.checkState(blockNextHandIdx >= 0 && blockNextHandIdx < blockNext.getNumHands());
+                
                 String handInPrev = blockPrev.getHandStr(blockprevHandIdx);
                 String handInNext = blockNext.getHandStr(blockNextHandIdx);
                 
@@ -269,7 +254,7 @@ public class Preprocessor {
             int numToRemove = blockPrev.getNumHands() - blockPrevStartHandIdx;
             
             log.debug("Removing {} from prev block", numToRemove);
-            //TODO delete from blockPrev
+
             blockPrev.removeLast(numToRemove);
             return;
         }
