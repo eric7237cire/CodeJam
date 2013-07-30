@@ -18,23 +18,74 @@ K 7 2
 
 Q 7 2
 
+
+
+Straight draws (reversable, hole cards JT has 3 straight draws possible)
+
+.KQ - JT
+.KJ - QT
+.KT - QJ
+
+.QJ - KT, T9
+.QT - KJ, J9
+.Q9 - JT
+
+.JT - KQ, Q9, 98
+.J9 - QT, T8
+.J8 - T9
+
+.T9 - QJ, J8, 87
+.T8 - J9, 96
+.T7 - 89
+
+.98 - JT, T7, 76
+.97 - T8, 86
+.96 - 87
+
+.87 - T9, 96, 65
+.86 - 97, 75
+.85 - 76
+
+.76 - 98, 85, 54
+.75 - 86, 64
+.74 - 65
+
+.65 - 87, 74, 43
+.64 - 75, 53
+.63 - 54
+
+.54 - 76, 63, 32
+.53 - 64, 42
+.52 - 43
+
+.43 - 65, 52
+.42 - 53
+.4A
+
+.32 - 54
+.3A
+
+.2A
+ 
+
 Straights
 
 1. AT   
 
+//Only gut shots possible
 AK ; QJT
 AQ ; KJT
 AJ ; KQT
 AT ; KQJ
 
-KQ ; AJT
-KJ ; AQT
-KT ; AQJ
+KQ ; AJT  (JT)
+KJ ; AQT  (QT) 
+KT ; AQJ  (QJ)
 
-QJ ; AKT
-QT ; AKJ
+QJ ; AKT   (KT)
+QT ; AKJ   (KJ)
 
-JT ; AKQ
+JT ; AKQ   (KQ)
 
 2. K9
 

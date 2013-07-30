@@ -122,10 +122,21 @@ public class Preprocessor {
             
         }
         
+        void removeLast(int n)
+        {
+            for(int i = 0; i < n; ++i)
+            {
+                handStarts.remove( handStarts.size() - 1 );
+            }
+        }
+        
         void addLinesToOutput(List<String> output)
         {
             int startLine = handStarts.get(0);
             int endLine = handStarts.get(handStarts.size() -1);
+            
+            log.debug("Adding to output\nOUTPUT  {}", 
+                    Joiner.on("\nOUTPUT  ").join(lines.subList(startLine, endLine)));
             
             output.addAll(lines.subList(startLine, endLine));
         }
@@ -147,7 +158,9 @@ public class Preprocessor {
          */
         @Override
         public String toString() {
-            return "Block [lines=" + Joiner.on("\n").join(lines) + ", handStarts=" + handStarts + "]";
+            
+            //return "Block [lines=" + Joiner.on("\n").join(lines) + ", handStarts=" + handStarts + "]";
+            return "Block [lines=" + lines.size() + ", handStarts=" + handStarts + ", num hands = " + getNumHands() + "]";
         }
         
         
@@ -156,7 +169,7 @@ public class Preprocessor {
     private static void addNextBlock(List<Block> blocks, Block newBlock)
     {
         newBlock.cleanUnfinished();
-       // log.debug("Adding block {}", newBlock);
+        log.debug("Adding block {}", newBlock);
         
         blocks.add(newBlock);
         
@@ -205,6 +218,7 @@ public class Preprocessor {
     
     private static void removeRedundant( Block blockPrev, Block blockNext)
     {
+        log.debug("Remove redundant prev\n{} next\n{}", blockPrev, blockNext);
         outer:
         for(int startHandIdx = 0; startHandIdx < blockPrev.getNumHands(); ++startHandIdx)
         {
@@ -215,20 +229,25 @@ public class Preprocessor {
                 
                 String handInPrev = blockPrev.getHandStr(handIdx);
                 String handInNext = blockNext.getHandStr(blockIdx);
-                if( false)
-                log.debug(" hand in prev idx {} {} hand Next idx {} {} ",
+                
+                log.debug(" hand in prev \nidx {} \n{}\nhand Next idx {}\n{}\nDONE",
                         handIdx, handInPrev,
                         blockIdx, handInNext);
                 if (!handInNext.equals(handInPrev))
                 {
+                    log.debug("NO MATCH");
                     continue outer;
+                } else {
+                    log.debug("MATCH");
                 }
             }
             
+            //À ce point, tous les blocs entre startHandIdx et blocPrev.size() - 1 inclu sont des doublons 
             int numToRemove = blockPrev.getNumHands() - startHandIdx;
             
             log.debug("Removing {} from next block", numToRemove);
-            blockNext.removeFirst(numToRemove);
+            //TODO delete from blockPrev
+            blockPrev.removeLast(numToRemove);
             return;
         }
     
@@ -244,12 +263,15 @@ public class Preprocessor {
         
         while( (currentLine = getNextBlock(blocks, currentLine, inputLines)) >= 0)
         {
-            cleanBlock( blocks.get(blocks.size() - 1));
+            Block currentBlock = blocks.get(blocks.size() - 1); 
+            cleanBlock( currentBlock );
             
             if (blocks.size() >= 2)
             {
-                removeRedundant(blocks.get(blocks.size() - 2), blocks.get(blocks.size() - 1));
+                removeRedundant(blocks.get(blocks.size() - 2), currentBlock);
             }
+            
+           // currentBlock.addLinesToOutput(outputLines);
         }
         
         //int startCurrentBlock = -1;
