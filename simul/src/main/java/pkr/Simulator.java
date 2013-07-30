@@ -24,7 +24,7 @@ public class Simulator {
         //playerHoleCards.add("AA, AKs, 27, 93, 44, 99");
       //playerHoleCards.add("KTs");
       
-      playerHoleCards.add("J7o");
+      playerHoleCards.add("99");
     //  playerHoleCards.add("AKs");
       //  playerHoleCards.add("KJ");
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
@@ -90,7 +90,7 @@ public class Simulator {
         
         String fileName = "C:\\codejam\\CodeJam\\simul\\out.xml";
         
-        Tree tree = simulate(1000001, playerHoleCards);
+        Tree tree = simulate(60001, playerHoleCards);
         tree.output(fileName);
 
        // playerHoleCards.add("JJ, KJo");
