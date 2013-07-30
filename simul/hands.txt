@@ -336,3 +336,21 @@ Monika se couche.
 Eric se couche.
 Mll Gigi gagne.
 _____________________________
+Qasm se couche.
+Ioannis a suivi de 40 000.
+Zahi a relancé de 200 000.
+Branko se couche.
+Eric a suivi de 200 000.
+Ioannis a suivi de 200 000.
+//I flop the nut flush, he flops K high flush
+Eric a parlé.
+Ioannis a relancé de 620 000.
+Zahi se couche.
+Eric a suivi de 620 000.
+Eric a parlé.
+Ioannis a relancé de 1 860 000.
+//Now that he is more or less committed, we jam, just
+Eric a relancé de 4 200 000.
+Ioannis a fait tapis.
+Eric remporte le pot (10 260 000 $) avec une couleur à A.
+_____________________________
