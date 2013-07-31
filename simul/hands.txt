@@ -354,3 +354,41 @@ Eric a relancé de 4 200 000.
 Ioannis a fait tapis.
 Eric remporte le pot (10 260 000 $) avec une couleur à A.
 _____________________________
+Eric a suivi de 40 000.
+David a relancé de 80 000.
+Tety a suivi de 80 000.
+Eric a suivi de 80 000.
+//Flop AQx  turn was T
+David a relancé de 40 000.
+Tety a suivi de 40 000.
+Eric a suivi de 40 000.
+//tety does not slowplay
+David a relancé de 120 000.
+Tety a relancé de 992 733.
+Eric se couche.
+David a suivi de 992 733.
+David a relancé de 375 000.
+Tety a fait tapis.
+David a suivi de 1 803 720.
+Tety remporte le pot (5 952 906 $) avec une quinte (A).
+_____________________________
++ 5 XP pour avoir joué une main.
+Frédéric a suivi de 40 000.
+Adrien se couche.
+Jhon a suivi de 40 000.
+Eric a suivi de 40 000.
+Odile a suivi de 40 000.
+//I had J7, flop was J6h5h enemy had Ah8h; turn was 4c, river 7d
+Eric a relancé de 120 000.
+Odile se couche.
+Frédéric se couche.
+Jhon a suivi de 120 000.
+//I was winning, I gave him the free card he needed, though he would have 
+//called with such a strong draw (9 + 3 outs)
+Eric a parlé.
+Jhon a parlé.
+Eric a parlé.
+Jhon a relancé de 400 000.
+Eric a suivi de 400 000.
+Jhon remporte le pot (1 200 000 $) avec une quinte (8).
+_____________________________

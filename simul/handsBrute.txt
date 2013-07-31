@@ -1,200 +1,184 @@
-Artan se couche.
-ג'ני a suivi de 120 000.
-Reks a relancé de 40 000.
-ג'ני a relancé de 80 000.
-Reks a suivi de 80 000.
-Reks a relancé de 40 000.
-ג'ני a relancé de 120 000.
-Reks se couche.
-ג'ני gagne.
+Reynald se couche.
++ 24 XP pour avoir gagné une main.
+Eric gagne.
 _____________________________
  
-ג'ני a suivi de 40 000.
-Reks a relancé de 160 000.
-Artan a suivi de 160 000.
-Eric a suivi de 160 000.
-ג'ני a suivi de 160 000.
-Artan a parlé.
-Eric a relancé de 320 000.
-ג'ני se couche.
-Reks se couche.
-Artan a suivi de 320 000.
-Artan a parlé.
-Eric a parlé.
-Artan a relancé de 40 000.
+Reynald a suivi de 40 000.
 Eric a suivi de 40 000.
-Eric remporte le pot (1 360 000 $) avec une paire de J, une paire de 8 et un 7 en kicker.
-_____________________________
- 
-Reks a suivi de 40 000.
-Artan a suivi de 40 000.
-Eric a suivi de 40 000.
-ג'ני a suivi de 40 000.
-Eric a parlé.
-ג'ני a relancé de 120 000.
-Reks a suivi de 120 000.
-Artan a suivi de 120 000.
+Odile a relancé de 200 000.
+Frédéric se couche.
+Jhon se couche.
+Reynald se couche.
 Eric se couche.
-ג'ני a relancé de 160 000.
-Reks a suivi de 160 000.
-Artan a suivi de 160 000.
-ג'ני a relancé de 160 000.
-Reks se couche.
-Artan a suivi de 160 000.
-ג'ני remporte le pot (1 320 000 $) avec une paire de 8 et un K en kicker.
++ 5 XP pour avoir joué une main.
+Odile gagne.
 _____________________________
  
-Artan a suivi de 40 000.
 Eric a suivi de 40 000.
-ג'ני a suivi de 40 000.
-Reks a suivi de 40 000.
-ג'ני a parlé.
-Reks a parlé.
-Artan se couche.
-Eric a parlé.
-ג'ני a relancé de 80 000.
-Reks se couche.
+Odile a suivi de 40 000.
+Frédéric a suivi de 40 000.
+Jhon a suivi de 40 000.
+Reynald a relancé de 240 000.
 Eric se couche.
-ג'ני gagne.
+Odile se couche.
+Frédéric se couche.
+Jhon se couche.
++ 5 XP pour avoir joué une main.
+Reynald gagne.
 _____________________________
  
-Eric a relancé de 120 000.
-ג'ני se couche.
-Reks a suivi de 120 000.
-Artan a suivi de 120 000.
-Reks a parlé.
-Artan a parlé.
-Eric a parlé.
-Reks a relancé de 200 000.
-Artan a suivi de 200 000.
+Odile a relancé de 80 000.
+Frédéric a suivi de 80 000.
+Jhon se couche.
+Reynald se couche.
 Eric se couche.
-Reks a relancé de 40 000.
-Artan a suivi de 40 000.
-Artan remporte le pot (840 000 $) avec une paire de Q et un J en kicker.
+Odile a parlé.
+Frédéric a parlé.
+Odile a relancé de 40 000.
+Frédéric a suivi de 40 000.
+Odile a relancé de 180 000.
+Frédéric a fait tapis.
+Odile remporte le pot (660 000 $) avec une paire de Q et un A en kicker.
 _____________________________
  
-ג'ני a suivi de 40 000.
-Reks a suivi de 40 000.
-Artan a suivi de 40 000.
++ 5 XP pour avoir joué une main.
+Frédéric a fait une cave automatique.
+Frédéric se couche.
+Jhon a suivi de 40 000.
+Reynald a relancé de 200 000.
+Eric a suivi de 200 000.
+Odile se couche.
+Jhon a suivi de 200 000.
+Eric a relancé de 440 000.
+Jhon se couche.
+Reynald se couche.
++ 24 XP pour avoir gagné une main.
+Eric gagne.
+_____________________________
+ 
+Jhon a fait tapis.
+Reynald se couche.
+Eric se couche.
+Odile se couche.
+Frédéric a suivi de 390 880.
+Jhon remporte le pot (801 760 $) avec une quinte (Q).
+_____________________________
+ 
++ 5 XP pour avoir joué une main.
+Reynald se couche.
 Eric a suivi de 40 000.
-Artan a parlé.
+Odile a relancé de 80 000.
+Frédéric a fait tapis.
+Jhon a suivi de 80 000.
+Eric a suivi de 80 000.
+Jhon a fait tapis.
+Eric se couche.
+Odile se couche.
+Jhon remporte le pot (36 480 $) avec une paire de 10 et un Q en kicker.
+_____________________________
+ 
++ 5 XP pour avoir joué une main.
+Frédéric a fait une cave automatique.
+Odile se couche.
+Frédéric a suivi de 40 000.
+Jhon a suivi de 40 000.
+Eric a suivi de 40 000.
+Jhon a relancé de 120 000.
+Eric se couche.
+Frédéric se couche.
++ 5 XP pour avoir joué une main.
+Jhon gagne.
+_____________________________
+ 
+Frédéric se couche.
+Jhon se couche.
+Eric se couche.
++ 5 XP pour avoir joué une main.
+Odile gagne.
+_____________________________
+ 
+Jhon se couche.
+Eric se couche.
+Odile a suivi de 40 000.
+Frédéric a suivi de 40 000.
+Odile a parlé.
+Frédéric a parlé.
+Odile a parlé.
+Frédéric a parlé.
+Odile a relancé de 40 000.
+Frédéric a suivi de 40 000.
+Frédéric remporte le pot (160 000 $) avec une paire de Q, une paire de J et un K en kicker.
+_____________________________
+ 
++ 5 XP pour avoir joué une main.
+Jhon a suivi de 40 000.
+Eric a suivi de 40 000.
+Odile se couche.
+Frédéric a suivi de 40 000.
+Adrien a suivi de 40 000.
+Frédéric a parlé.
+Adrien a parlé.
+Jhon a parlé.
+Eric a parlé.
+Frédéric a parlé.
+Adrien a parlé.
+Jhon a parlé.
+Eric a parlé.
+Frédéric a parlé.
+Adrien a parlé.
+Jhon a relancé de 40 000.
+Eric a suivi de 40 000.
+Frédéric se couche.
+Adrien se couche.
+Jhon remporte le pot (240 000 $) avec une paire de K et un Q en kicker.
+_____________________________
+ 
++ 5 XP pour avoir joué une main.
 Eric a relancé de 80 000.
-ג'ני a suivi de 80 000.
-Reks a suivi de 80 000.
-Artan se couche.
+Odile a suivi de 80 000.
+Frédéric se couche.
+Adrien a suivi de 80 000.
+Jhon a suivi de 80 000.
+Adrien a parlé.
+Jhon a parlé.
 Eric a parlé.
-ג'ני a parlé.
-Reks a parlé.
-Eric a parlé.
-ג'ני a parlé.
-Reks a relancé de 400 000.
+Odile a parlé.
+Adrien a relancé de 40 000.
+Jhon se couche.
 Eric se couche.
-ג'ני se couche.
-Reks a atteint le niveau 8 !
-Reks gagne.
+Odile se couche.
++ 5 XP pour avoir joué une main.
+Adrien gagne.
 _____________________________
  
-Reks a relancé de 80 000.
-Artan se couche.
+Odile se couche.
+Frédéric a relancé de 80 000.
+Adrien se couche.
+Jhon a suivi de 80 000.
 Eric se couche.
-ג'ני a suivi de 80 000.
-ג'ני a parlé.
-Reks a relancé de 80 000.
-ג'ני se couche.
-Reks gagne.
+Jhon a parlé.
+Frédéric a parlé.
+Jhon a parlé.
+Frédéric a parlé.
+Jhon a relancé de 49 333.
+Frédéric a suivi de 49 333.
+Frédéric remporte le pot (298 666 $) avec une paire de 5 et un A en kicker.
 _____________________________
  
-Artan a suivi de 40 000.
-Eric a relancé de 120 000.
-ג'ני se couche.
-Reks a relancé de 594 800.
-Artan se couche.
-Eric a relancé de 1 712 000.
-Reks a fait tapis.
-Reks remporte le pot (3 484 000 $) avec une paire de Q, une paire de 8 et un 10 en kicker.
-_____________________________
+
  
-Eric a fait un ajustement automatique.
++ 5 XP pour avoir joué une main.
+Adrien se couche.
+Jhon se couche.
 Eric se couche.
-ג'ני a suivi de 40 000.
-Reks a suivi de 40 000.
-Artan a suivi de 40 000.
-Reks a relancé de 120 000.
-Artan se couche.
-ג'ני se couche.
-Reks gagne.
+Odile a suivi de 40 000.
+Frédéric a suivi de 40 000.
+Odile a parlé.
+Frédéric a parlé.
+Odile a parlé.
+Frédéric a fait tapis.
+Odile se couche.
++ 5 XP pour avoir joué une main.
+Frédéric gagne.
 _____________________________
  
-ג'ני a suivi de 40 000.
-Reks a suivi de 40 000.
-Artan a suivi de 40 000.
-Eric a suivi de 40 000.
-Artan a parlé.
-Eric a parlé.
-ג'ני a parlé.
-Reks a parlé.
-Artan a parlé.
-Eric a parlé.
-ג'ני a relancé de 129 800.
-Reks a suivi de 129 800.
-Artan se couche.
-Eric se couche.
-ג'ני a relancé de 363 983.
-Reks se couche.
-ג'ני gagne.
-_____________________________
- 
-Eric a fait un ajustement automatique.
-Reks a suivi de 40 000.
-Noval a suivi de 40 000.
-Artan a suivi de 40 000.
-Eric a suivi de 40 000.
-ג'ני a suivi de 40 000.
-Eric a parlé.
-ג'ני a parlé.
-Noval a parlé.
-Artan a parlé.
-Eric a parlé.
-ג'ני a parlé.
-Noval a parlé.
-Artan a parlé.
-Eric a parlé.
-ג'ני a parlé.
-Noval a parlé.
-Artan a parlé.
-Artan remporte le pot (200 000 $) avec une paire de 6, une paire de 3 et un A en kicker.
-_____________________________
- 
-Eric a fait un ajustement automatique.
-Artan se couche.
-Eric a suivi de 40 000.
-ג'ני a relancé de 120 000.
-Noval se couche.
-Eric se couche.
-ג'ני gagne.
-_____________________________
- 
-Eric a fait un ajustement automatique.
-Eric se couche.
-ג'ני a suivi de 40 000.
-Noval a suivi de 40 000.
-Artan a relancé de 80 000.
-ג'ני a suivi de 80 000.
-Noval se couche.
-Artan a relancé de 40 000.
-ג'ני a relancé de 80 000.
-Artan a suivi de 80 000.
-Artan a parlé.
-ג'ני a relancé de 120 000.
-Artan a suivi de 120 000.
-Artan a parlé.
-ג'ני a relancé de 200 000.
-Artan se couche.
-ג'ני gagne.
-_____________________________
- 
-ג'ני a suivi de 40 000.
-Noval a fait tapis.
-Artan se couche.
-Eric se couche.
-ג'ני a suivi de 280 000.
