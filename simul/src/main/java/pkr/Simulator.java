@@ -9,7 +9,6 @@ import pkr.possTree.PossibilityNode.HandCategory;
 import pkr.possTree.PossibilityNode.TextureCategory;
 import pkr.possTree.Tree;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 public class Simulator {
@@ -17,6 +16,7 @@ public class Simulator {
     private static Logger log = LoggerFactory.getLogger(Simulator.class);
     private static Logger logOutput = LoggerFactory.getLogger("mainOutput");
     
+    @SuppressWarnings("unused")
     public static void main(String[] args) {
         List<String> playerHoleCards = Lists.newArrayList();
         
@@ -24,7 +24,7 @@ public class Simulator {
         //playerHoleCards.add("AA, AKs, 27, 93, 44, 99");
       //playerHoleCards.add("KTs");
       
-      playerHoleCards.add("99");
+     // playerHoleCards.add("99");
     //  playerHoleCards.add("AKs");
       //  playerHoleCards.add("KJ");
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
@@ -35,14 +35,14 @@ public class Simulator {
         //playerHoleCards.add("AA");
         //playerHoleCards.add("KJo");
       //  playerHoleCards.add("AKo");
-       // playerHoleCards.add("JTs");
+      //  playerHoleCards.add("JTs");
         //playerHoleCards.add("J3s");
         
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
-      int NUM_RANDOM =4;
-        int NUM_LOOSE_CALLS = 0;
+      int NUM_RANDOM =2;
+        int NUM_LOOSE_CALLS = 1;
         int NUM_OK_CALLS = 0;
         int NUM_GOOD_HANDS = 0;
         
@@ -55,9 +55,19 @@ public class Simulator {
             playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+,22+");
         }
         
-        //loose all in call, top 50% of hands
+        final String SUPER_LOOSE = "22+, A2s+, K2s+, Q2s+, J2s+, T2s+, 92s+, 82s+, 72s+," +
+                " 62s+, 52s+, 42s+, 32s," +
+                "A2o+, K2o+, Q2o+, J2o+, T2o+, 95o+, 85o+, 75o+, 64o+, 54o, 43o, 32o";
+        
+        final String LOOSE = "22+, A2s+, K2s+, Q2s+, J2s+, T2s+, 92s+, 85s+, 74s+," +
+                " 63s+, 53s+, 42s+, 32s," +
+                "A2o+, K2o+, Q2o+, J4o+, T5o+, 95o+, 85o+, 75o+, 64o+, 54o";
+        
+        //loose call, top 50% of hands
         for(int i = 0; i < NUM_LOOSE_CALLS; ++i) {
-            playerHoleCards.add("22+, A2s+, K2s+, Q2s+, J4s+, T6s+, 96s+, 86s+, 75s+, 65s, 54s, A2o+, K2o+, Q5o+, J7o+, T7o+, 98o, 87o, 76o, 65o");
+            //playerHoleCards.add("22+, A2s+, K2s+, Q2s+, J4s+, T6s+, 96s+, 86s+, 75s+, 65s, 54s, A2o+, K2o+, Q5o+, J7o+, T7o+, 98o, 87o, 76o, 65o");
+           // playerHoleCards.add(SUPER_LOOSE);
+            playerHoleCards.add(LOOSE);
         }
         
         final String MY_LIST = "22+, A2s+, K2s+, Q4s+, J6s+, T6s+, " +
@@ -83,26 +93,135 @@ public class Simulator {
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
         
-        
-        //BUG with this range
-        //playerHoleCards.add("JJ, KJ");
-       // playerHoleCards.add(HoleCardsRange.SUITED_ACES);
-        
+                
         String fileName = "C:\\codejam\\CodeJam\\simul\\out.xml";
         
         Tree tree = simulate(60001, playerHoleCards);
         tree.output(fileName);
 
-       // playerHoleCards.add("JJ, KJo");
-       // playerHoleCards.add("27o");
-        
-       // playerHoleCards.clear(); 
-       // playerHoleCards.add("AA");
-     //  playerHoleCards.add("AQs");
-      // playerHoleCards.add("KJo");
         
         
     }
+    
+    public static interface iCriteria
+    {
+        public boolean matches(CompleteEvaluation[] evals);
+        public boolean isApplicable(CompleteEvaluation eval);
+    }
+        
+    public static class Criteria implements iCriteria
+    {
+        int round;
+        String desc;
+        boolean heroOnly;
+        boolean allMustMatch;
+                
+        //Any match will do
+        List<HandCategory> matchHandCat;
+        
+        //For applicable
+        List<TextureCategory> mustHave;
+        List<TextureCategory> mustNotHave;
+        
+        int applicableCount = 0;
+        int matches = 0;
+        
+        private Criteria(int round, String desc) {
+            super();
+            this.round = round;
+            this.desc = desc;
+            
+            mustHave = Lists.newArrayList();
+            mustNotHave = Lists.newArrayList();
+            
+            matchHandCat = Lists.newArrayList();
+        }
+        
+        public void printMsg() {
+            if (applicableCount == 0) {
+                logOutput.debug("{}.  No applicable cases", desc);
+                return;
+            }
+            logOutput.debug("{}.  {} / {} =  %{} ", desc, matches, applicableCount,
+                    100.0 * matches / applicableCount);
+        }
+
+        /* (non-Javadoc)
+         * @see pkr.Simulator.iCriteria#matches(pkr.CompleteEvaluation[])
+         */
+        @Override
+        public boolean matches(CompleteEvaluation[] evals) {
+            if (heroOnly)
+            {
+                for(HandCategory cat : matchHandCat)
+                {
+                    if (evals[0].hasFlag(round, cat))
+                        return true;
+                }
+                 
+            } else if (allMustMatch) 
+            {
+                for (CompleteEvaluation eval : evals) {
+                    boolean ok = false;
+                    for(HandCategory cat : matchHandCat)
+                    {
+                        if (eval.hasFlag(round, cat))
+                        {
+                            ok = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!ok)
+                        return false;
+                }
+                
+                return true;
+            } else {
+                for (CompleteEvaluation eval : evals) {
+                    for(HandCategory cat : matchHandCat)
+                    {
+                        if (eval.hasFlag(round, cat))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        
+        public void calculate(CompleteEvaluation[] evals)
+        {
+            if (!isApplicable(evals[0]))
+                return;
+            
+            ++applicableCount;
+            
+            if (matches(evals)) 
+                ++matches;
+        }
+
+        /* (non-Javadoc)
+         * @see pkr.Simulator.iCriteria#isApplicable(pkr.CompleteEvaluation)
+         */
+        @Override
+        public boolean isApplicable(CompleteEvaluation eval) {
+            for(TextureCategory cat : mustHave)
+            {
+                if (!eval.hasFlag(round, cat))
+                    return false;
+            }
+            
+            for(TextureCategory cat : mustNotHave)
+            {
+                if (eval.hasFlag(round, cat))
+                    return false;
+            }
+            return true;
+        }
+    }
+    
     public static Tree simulate(int TOTAL_SIMULATIONS, List<String> playerHoleCards) {
         
         Tree tree = new Tree();
@@ -120,27 +239,139 @@ public class Simulator {
         
         double[] equity = new double[numPlayers];
         
-        int quadCount = 0;
-        int lotsOFSets = 0;
-        int royals = 0;
-        int fullHouse = 0;
-        int hidden2Pair = 0;
-        int flopVisibleSet = 0;
-        int pairedBoards = 0;
-        int unpairedBoards = 0;
-        int someoneFloppedSomethingCount = 0;
+        List<Criteria> criteres = Lists.newArrayList();
         
-        int pair0Count = 0;
-        int pair1Count = 0;
-        int pair2Count = 0;
-        int pair3Count = 0;
-        int noPairCount = 0;
-        int betterThanPairCount = 0;
         
-       // final int roundCheck = CompleteEvaluation.ROUND_FLOP;
-      //  final int roundCheck = CompleteEvaluation.ROUND_RIVER;
-        final int roundCheck = CompleteEvaluation.ROUND_TURN;
         
+        for(int round = 0; round < 3; ++round)
+        {
+            String roundStr =  
+                round == 0 ? "FLOP " :
+                (round == 1 ? "TURN " : "RIVER");
+            
+            Criteria anythingOnPairedFlop = new Criteria(round, roundStr + " Anyone on paired board");
+            anythingOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);
+            anythingOnPairedFlop.matchHandCat.add( HandCategory.TWO_PAIR_USING_ONE );
+            anythingOnPairedFlop.matchHandCat.add( HandCategory.SET_USING_ONE );
+            anythingOnPairedFlop.matchHandCat.add( HandCategory.FULL_HOUSE );
+            anythingOnPairedFlop.matchHandCat.add( HandCategory.QUADS );
+            
+            Criteria tripsOnPairedFlop = new Criteria(round, roundStr + " Anyone trips on paired board");
+            tripsOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
+            tripsOnPairedFlop.matchHandCat.add( HandCategory.SET_USING_ONE );
+            
+            Criteria twoPairOnPairedFlop = new Criteria(round, roundStr + " 2 pair on paired board");
+            twoPairOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
+            twoPairOnPairedFlop.matchHandCat.add( HandCategory.TWO_PAIR_USING_ONE );
+            
+            Criteria nothingOnPairedFlop = new Criteria(round, roundStr + " nothing on paired board");
+            nothingOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
+            nothingOnPairedFlop.matchHandCat.add( HandCategory.PAIR_ON_PAIRED_BOARD );
+            nothingOnPairedFlop.allMustMatch = true;
+            
+            
+            criteres.add(anythingOnPairedFlop);
+            criteres.add(tripsOnPairedFlop);
+            criteres.add(twoPairOnPairedFlop);
+            criteres.add(nothingOnPairedFlop);
+            
+            Criteria flushDrawCrit = new Criteria(round, roundStr + " flush draw");
+            //nothingOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
+            flushDrawCrit.matchHandCat.add( HandCategory.FLUSH_DRAW );
+            
+            Criteria straightDrawCrit = new Criteria(round, roundStr + " straight draw (inc gutshots)");
+            //nothingOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
+            straightDrawCrit.matchHandCat.add( HandCategory.STRAIGHT_DRAW_2 );
+            straightDrawCrit.matchHandCat.add( HandCategory.STRAIGHT_DRAW_1 );
+
+            Criteria straight2DrawCrit = new Criteria(round, roundStr + " straight draw");
+            //nothingOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
+            straight2DrawCrit.matchHandCat.add( HandCategory.STRAIGHT_DRAW_2 );
+            
+
+            criteres.add(flushDrawCrit);
+            criteres.add(straightDrawCrit);
+            criteres.add(straight2DrawCrit);
+            
+            Criteria highCardOnly  = new Criteria(round, roundStr + " nothing on unpaired board");
+            highCardOnly.allMustMatch = true;
+            highCardOnly.matchHandCat.add(HandCategory.HIGH_CARD);
+            highCardOnly.mustHave.add(TextureCategory.UNPAIRED_BOARD);
+            
+        Criteria meTwoPairFlop = new Criteria(round, roundStr + " 2 pair");
+        meTwoPairFlop.mustHave.add(TextureCategory.UNPAIRED_BOARD);
+        meTwoPairFlop.matchHandCat.add(HandCategory.TWO_PAIR_USING_BOTH);
+        meTwoPairFlop.heroOnly = true;
+        
+        Criteria anyTwoPairFlop = new Criteria(round, roundStr +" Anyone 2 pair on unpaired board");
+        anyTwoPairFlop.mustHave.add(TextureCategory.UNPAIRED_BOARD);
+        anyTwoPairFlop.matchHandCat.add( HandCategory.TWO_PAIR_USING_BOTH );
+        
+        
+        
+        Criteria any0PairCrit = new Criteria(round, roundStr + " Anyone top/over pair");
+        any0PairCrit.mustHave.add(TextureCategory.UNPAIRED_BOARD);
+        any0PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_5);
+        any0PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_4);
+        any0PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_0);
+        
+        Criteria any1PairCrit = new Criteria(round, roundStr + " Anyone pair 1 overcard");
+        any1PairCrit.mustHave.add(TextureCategory.UNPAIRED_BOARD);
+        any1PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_5);
+        any1PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_4);
+        any1PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_0);
+        any1PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_1);
+        
+        Criteria any2PairCrit = new Criteria(round, roundStr +" Anyone pair 2 overcards");
+        any2PairCrit.mustHave.add(TextureCategory.UNPAIRED_BOARD);
+        any2PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_5);
+        any2PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_4);
+        any2PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_0);
+        any2PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_1);
+        any2PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_2);
+        
+        Criteria any3PairCrit = new Criteria(round, roundStr + " Anyone pair 3 overcards");
+        any3PairCrit.mustHave.add(TextureCategory.UNPAIRED_BOARD);
+        any3PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_5);
+        any3PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_4);
+        any3PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_0);
+        any3PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_1);
+        any3PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_2);
+        any3PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_3);
+        
+        Criteria tripsCrit = new Criteria(round, roundStr + " Anyone Trips ");
+
+        tripsCrit.matchHandCat.add( HandCategory.SET_USING_BOTH );
+        tripsCrit.matchHandCat.add( HandCategory.SET_USING_ONE );
+        
+        Criteria straightCrit = new Criteria(round, roundStr + " Anyone Straight");
+
+        straightCrit.matchHandCat.add( HandCategory.STRAIGHT );
+        
+        Criteria flushCrit = new Criteria(round, roundStr + " Anyone Flush");
+
+        flushCrit.matchHandCat.add( HandCategory.FLUSH );
+        
+        Criteria fullHouseOrBetter = new Criteria(round, roundStr + " Anyone Full house or better");
+
+        fullHouseOrBetter.matchHandCat.add( HandCategory.FULL_HOUSE );
+        fullHouseOrBetter.matchHandCat.add( HandCategory.QUADS );
+        fullHouseOrBetter.matchHandCat.add( HandCategory.STRAIGHT_FLUSH);
+        
+        criteres.add(highCardOnly);
+       // criteres.add(meTwoPairFlop);
+        criteres.add(anyTwoPairFlop);
+        criteres.add(any0PairCrit);
+        criteres.add(any1PairCrit);
+        criteres.add(any2PairCrit);
+        criteres.add(any3PairCrit);
+        criteres.add(tripsCrit);
+        criteres.add(straightCrit);
+        criteres.add(flushCrit);
+        criteres.add(fullHouseOrBetter);
+        }
+        
+                
         long startTime = System.currentTimeMillis();
         
         for(int simulNum = 0; simulNum < TOTAL_SIMULATIONS; ++simulNum) {
@@ -151,199 +382,31 @@ public class Simulator {
             {
                 continue;
             }
+            
+            for(Criteria c : criteres) {
+                c.calculate(evals);
+            }
+            
             tree.addCompleteEvaluation(evals[0]);
-            
-           
-            
-            
             
             ++actualRounds;
             
-            int sets = 0;
-            int floppedSet = 0;
-            boolean someoneFloppedSomething = false;
             
-            boolean any0Pair = false;
-            boolean any1Pair = false;
-            boolean any2Pair = false;
-            boolean any3Pair = false;
-            boolean any4Pair = false;
-            boolean anyHiddenPair = false;
-            boolean beatsPair = false;
             
-            boolean onlyHighCard = true;
                         
             for(int p = 0; p < numPlayers; ++p) {
                 equity[p] += evals[p].realEquity;
                 
-                if ( true || p==0) {
-                    if (evals[p].quads) {
-                        ++quadCount;
-                    }
-                    
-                    if (evals[p].getScore().handLevel == HandLevel.TRIPS) {
-                        //++sets;
-                    }
-                    if (evals[p].getScore().handLevel == HandLevel.STRAIGHT_FLUSH && evals[p].getScore().getKickers()[0] == CardRank.ACE) {
-                        ++royals;
-                    }
-                    if (evals[p].getScore().handLevel == HandLevel.FULL_HOUSE) {
-                        ++fullHouse;
-                    }
-                    
-                    
-                    if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.HIDDEN_SET)) {
-                        ++sets;
-                    }
-            
-                    if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, TextureCategory.PAIRED_BOARD))
-                    {
-                        if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.FULL_HOUSE))  {
-                            someoneFloppedSomething = true;
-                        } else if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.TWO_PAIR))  {
-                            someoneFloppedSomething = true;
-                        } else if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.VISIBLE_SET))  {
-                            someoneFloppedSomething = true;
-                        } 
-                    }
-                    
-                    if (evals[0].hasFlag(roundCheck, TextureCategory.UNPAIRED_BOARD)
-                            && !evals[0].hasFlag(roundCheck, TextureCategory.STRAIGHT)
-                            && (evals[0].hasFlag(roundCheck, TextureCategory.UNSUITED)
-                                    || evals[0].hasFlag(roundCheck, TextureCategory.SAME_SUIT_2)
-                            ))
-                    {
-                        if (evals[p].hasFlag(roundCheck, HandCategory.PAIR_OVERCARDS_0))  {
-                            any0Pair = true;
-                            any1Pair = true;
-                            any2Pair = true;
-                            any3Pair = true;
-
-                        } else if (evals[p].hasFlag(roundCheck, HandCategory.PAIR_OVERCARDS_1))  {
-                            any1Pair = true;
-                            any2Pair = true;
-                            any3Pair = true;
-
-                        } else if (evals[p].hasFlag(roundCheck, HandCategory.PAIR_OVERCARDS_2))  {
-                            any2Pair = true;
-                            any3Pair = true;
-
-                        }  else if (evals[p].hasFlag(roundCheck, HandCategory.PAIR_OVERCARDS_3))  {
-                            any3Pair = true;
-
-                        } 
-                        
-                        if (!evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.HIGH_CARD)  
-                                // && evals[p].getHoleCards().getHigherRank() != evals[p].getHoleCards().getLowerRank()
-                                )
-                        {
-                            onlyHighCard = false;
-                        }
-                        
-                        if (evals[p].getRoundScore(roundCheck).handLevel != HandLevel.PAIR  
-                                && evals[p].getRoundScore(roundCheck).handLevel != HandLevel.HIGH_CARD
-                                )
-                        {
-                            beatsPair = true;
-                        }
-                        
-                        if (evals[p].hasFlag(roundCheck, HandCategory.HIDDEN_TWO_PAIR)) {
-                            anyHiddenPair = true;
-                            //Preconditions.checkState(evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, TextureCategory.UNPAIRED_BOARD));
-                        }
-                    }
-                    
-                    if (evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, HandCategory.VISIBLE_SET)) {
-                        ++floppedSet;
-
-                       // Preconditions.checkState(evals[p].hasFlag(CompleteEvaluation.ROUND_FLOP, TextureCategory.PAIRED_BOARD));
-                        //if (p > 2) 
-                        //    throw new RuntimeException("ha");
-                    }
                 
-                }
                 //log.debug("eq {} player {}", evals[p].realEquity, p);
             }
-            
-            if (sets >= 1)
-            {
-                lotsOFSets ++;
-            }
-            
-            //if (evals[0].hasFlag(CompleteEvaluation.ROUND_FLOP, TextureCategory.PAIRED_BOARD)) 
-            if (evals[0].hasFlag(CompleteEvaluation.ROUND_RIVER, TextureCategory.PAIRED_BOARD))
-            {
-                ++pairedBoards;
-            }
-            
-            //if (evals[0].hasFlag(CompleteEvaluation.ROUND_FLOP, TextureCategory.UNPAIRED_BOARD)) 
-            
-            if (evals[0].hasFlag(roundCheck, TextureCategory.UNPAIRED_BOARD)
-                    && !evals[0].hasFlag(roundCheck, TextureCategory.STRAIGHT)
-                    && (evals[0].hasFlag(roundCheck, TextureCategory.UNSUITED)
-                            || evals[0].hasFlag(roundCheck, TextureCategory.SAME_SUIT_2))
-                    )
-            {
-                ++unpairedBoards;
-                
-                if (any0Pair) 
-                {
-                    ++pair0Count;
-                }
-                if (any1Pair) 
-                {
-                    ++pair1Count;
-                }
-                if (any2Pair) 
-                {
-                    ++pair2Count;
-                }
-                if (any3Pair) 
-                {
-                    ++pair3Count;
-                }
-                if (onlyHighCard)
-                {
-                    ++noPairCount;
-                }
-                if( anyHiddenPair)
-                {
-                    ++hidden2Pair;
-                }
-                if (beatsPair)
-                {
-                    ++betterThanPairCount;
-                }
-            }
-            
-            if (floppedSet >= 1) 
-            {
-                ++flopVisibleSet;
-            }
-            
-            
-            
-            if (someoneFloppedSomething) {
-                ++someoneFloppedSomethingCount;
-            }
-            
-            if (simulNum > 0 && simulNum % 25000 == 0) {
+                        
+            if (simulNum > 0 && simulNum % 5000 == 0) {
                 logOutput.debug("# of simulations {} of {}", simulNum, TOTAL_SIMULATIONS );
-                logOutput.debug("# of quads {}.  %{} ", quadCount, 100.0 * quadCount / simulNum);
-                logOutput.debug("# of str8 flushes {}.  %{} ", royals, 100.0 * royals / simulNum);
-                logOutput.debug("# of flopped hidden sets {}.  %{} ", lotsOFSets, 100.0 * lotsOFSets / simulNum);
-                logOutput.debug("# of flopped visible sets {} on paired boards.  %{} ", flopVisibleSet, 100.0 * flopVisibleSet / pairedBoards);
-                logOutput.debug("# of someone flopping anything on a paired board. {}  %{} ", someoneFloppedSomethingCount, 100.0 * someoneFloppedSomethingCount / pairedBoards);
-                logOutput.debug("# of fullhouse {}.  %{} ", fullHouse, 100.0 * fullHouse / simulNum);
-                logOutput.debug("# of pairing both cards on unpaired board {}.  %{} ", hidden2Pair, 100.0 * hidden2Pair / unpairedBoards);
-                
-                
-                logOutput.debug("# of pairs w/ 0 overcards {}.  %{} ", pair0Count, 100.0 * pair0Count / unpairedBoards);
-                logOutput.debug("# of pairs w/ 1 overcards {}.  %{} ", pair1Count, 100.0 * pair1Count / unpairedBoards);
-                logOutput.debug("# of pairs w/ 2 overcards {}.  %{} ", pair2Count, 100.0 * pair2Count / unpairedBoards);
-                logOutput.debug("# of pairs w/ 3 overcards {}.  %{} ", pair3Count, 100.0 * pair3Count / unpairedBoards);
-                logOutput.debug("# of highcard only {}.  %{} ", noPairCount, 100.0 * noPairCount / unpairedBoards);
-                logOutput.debug("# of better than pair {}.  %{} ", betterThanPairCount, 100.0 * betterThanPairCount / unpairedBoards);
+                                
+                for(Criteria c : criteres) {
+                    c.printMsg();
+                }
                 
                 logOutput.info("{} valid rounds", actualRounds);
                 for(int p = 0; p < numPlayers; ++p) {

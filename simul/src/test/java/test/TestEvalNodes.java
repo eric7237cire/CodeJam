@@ -1,10 +1,11 @@
 package test;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import static pkr.CompleteEvaluation.ROUND_FLOP;
-import static pkr.CompleteEvaluation.ROUND_TURN;
 import static pkr.CompleteEvaluation.ROUND_RIVER;
+import static pkr.CompleteEvaluation.ROUND_TURN;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,14 +15,13 @@ import pkr.Card;
 import pkr.CardRank;
 import pkr.CompleteEvaluation;
 import pkr.EvalHands;
-import pkr.Flop;
 import pkr.HandLevel;
 import pkr.HoleCards;
 import pkr.TextureInfo;
+import pkr.possTree.PossibilityNode.HandCategory;
+import pkr.possTree.PossibilityNode.HandSubCategory;
 import pkr.possTree.PossibilityNode.TextureCategory;
 import pkr.possTree.PossibilityNode.WinningLosingCategory;
-import pkr.possTree.PossibilityNode.HandSubCategory;
-import pkr.possTree.PossibilityNode.HandCategory;
 
 @RunWith(JUnit4.class)
 public class TestEvalNodes
@@ -38,10 +38,8 @@ public class TestEvalNodes
         HoleCards h1 = new HoleCards(Card.parseCards("Ks Qc"));                
         HoleCards h2 = new HoleCards(Card.parseCards("Qh Jd"));
                                
-        Flop f = new Flop(Card.parseCards("Qs 8s 5h"));
-        
         CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2},
-                f, Card.parseCard("Ac"), Card.parseCard("Qd"));
+                Card.parseCards("Qs 8s 5h Ac Qd"));
         
         int handNum = 0;
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getHandLevel() == HandLevel.PAIR);
@@ -80,30 +78,15 @@ public class TestEvalNodes
         
     }
     
-    @Test
-    public void testFiveWayEvaluation() {
-        
-        HoleCards h1 = new HoleCards(Card.parseCards("Kh Ah"));                
-        HoleCards h2 = new HoleCards(Card.parseCards("Jh Qs"));
-        HoleCards h3 = new HoleCards(Card.parseCards("2h 7h"));                
-        HoleCards h4 = new HoleCards(Card.parseCards("7d Kd"));
-        HoleCards h5 = new HoleCards(Card.parseCards("Js Qc"));
-        
-Flop f = new Flop(Card.parseCards("4s 9s Ks"));
-        
-        CompleteEvaluation[] evals = EvalHands.evaluate(true, new HoleCards[] {h1, h2,h3,h4,h5},
-                f, Card.parseCard("6s"), Card.parseCard("Kc"));
-    }
+    
     @Test
     public void testFlush() {
         
         HoleCards h1 = new HoleCards(Card.parseCards("Kh Qh"));                
         HoleCards h2 = new HoleCards(Card.parseCards("Ah Jd"));
                                
-        Flop f = new Flop(Card.parseCards("Th 8h 5h"));
-        
         CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2},
-                f, Card.parseCard("Ac"), Card.parseCard("9h"));
+                Card.parseCards("Th 8h 5h Ac 9h"));
         
         int handNum = 0;
         assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getHandLevel() == HandLevel.FLUSH);
@@ -183,10 +166,9 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         HoleCards h4 = new HoleCards(Card.parseCards("2h 6s")); //2
         HoleCards h5 = new HoleCards(Card.parseCards("2c Ad")); //3
                                
-        Flop f = new Flop(Card.parseCards("5d 3s 4h"));
         
         CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2, h3, h4, h5},
-                f, Card.parseCard("Ac"), Card.parseCard("Qd"));
+                Card.parseCards("5d 3s 4h Ac Qd"));
         
         //all flop nodes the same
         assertTrue( evals[0].getPossibilityNode(ROUND_FLOP,0).equals(evals[1].getPossibilityNode(ROUND_FLOP,0)) );
@@ -276,12 +258,10 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         HoleCards h1 = new HoleCards(Card.parseCards("Js Jc"));               
         HoleCards h2 = new HoleCards(Card.parseCards("Kd 5h"));  
         HoleCards h3 = new HoleCards(Card.parseCards("9d Td"));  
-                               
-        Flop f = new Flop(Card.parseCards("7d 8s 4h"));
-        
+                                       
         CompleteEvaluation[] evals = EvalHands.evaluate(false, 
                 new HoleCards[] {h1, h2, h3},
-                f, Card.parseCard("Kc"), Card.parseCard("Jd"));
+                Card.parseCards("7d 8s 4h Kc Jd"));
         
         
         //assertFalse( evals[0].getPossibilityNode(ROUND_FLOP,0).hasFlag(TextureCategory.SAME_SUIT_2));
@@ -323,7 +303,7 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         assertFalse( evals[handNum].hasFlag(ROUND_RIVER, HandCategory.PAIR_OVERCARDS_1));
         assertFalse( evals[handNum].hasFlag(ROUND_RIVER, HandCategory.HIDDEN_PAIR));
         
-        assertTrue( evals[handNum].hasFlag(ROUND_RIVER, HandCategory.HIDDEN_SET));
+        assertTrue( evals[handNum].hasFlag(ROUND_RIVER, HandCategory.SET_USING_BOTH));
         
         assertFalse( evals[handNum].hasFlag(ROUND_TURN, WinningLosingCategory.WINNING));        
         assertFalse( evals[handNum].hasFlag(ROUND_TURN, WinningLosingCategory.LOSING));
@@ -358,17 +338,11 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         HoleCards h1 = new HoleCards(Card.parseCards("As 2c"));               
         HoleCards h2 = new HoleCards(Card.parseCards("Ad 5h"));  
         HoleCards h3 = new HoleCards(Card.parseCards("6c 5d"));  
-                               
-        Flop f = new Flop(Card.parseCards("4d 3s Th"));
-        
+                                       
         CompleteEvaluation[] evals = EvalHands.evaluate(false, 
                 new HoleCards[] {h1, h2, h3},
-                f, Card.parseCard("2d"), Card.parseCard("7c"));
+                Card.parseCards("4d 3s Th 2d 7c"));
         
-        
-        //assertFalse( evals[0].getPossibilityNode(ROUND_FLOP,0).hasFlag(TextureCategory.SAME_SUIT_2));
-        //assertFalse( evals[0].getPossibilityNode(ROUND_FLOP,0).hasFlag(TextureCategory.HAS_AT_LEAST_ONE_ACE));
-        //assertTrue( evals[0].getPossibilityNode(ROUND_FLOP,0).hasFlag(TextureCategory.UNSUITED));
         
         int handNum = 0;
         int round  = ROUND_FLOP;
@@ -414,12 +388,11 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         HoleCards h1 = new HoleCards(Card.parseCards("7s 8c"));               
         HoleCards h2 = new HoleCards(Card.parseCards("8d Ah"));  
         HoleCards h3 = new HoleCards(Card.parseCards("Ac Kd"));  
-                               
-        Flop f = new Flop(Card.parseCards("9d Ts Jh"));
+                            
         
         CompleteEvaluation[] evals = EvalHands.evaluate(false, 
                 new HoleCards[] {h1, h2, h3},
-                f, Card.parseCard("Qd"), Card.parseCard("Kc"));
+                Card.parseCards("9d Ts Jh Qd Kc"));
         
         
         //assertFalse( evals[0].getPossibilityNode(ROUND_FLOP,0).hasFlag(TextureCategory.SAME_SUIT_2));
@@ -492,5 +465,100 @@ Flop f = new Flop(Card.parseCards("4s 9s Ks"));
         assertTrue( evals[handNum].hasFlag(round, WinningLosingCategory.WINNING));
         assertFalse( evals[handNum].hasFlag(round, WinningLosingCategory.SECOND_BEST_HAND));
         assertTrue(evals[handNum].getRoundScore(round).getKickers()[0] == CardRank.ACE);
+    }
+    
+    
+    @Test
+    public void testBoardFull()
+    {
+        HoleCards h1 = new HoleCards(Card.parseCards("2s 2c"));               
+        HoleCards h2 = new HoleCards(Card.parseCards("3d Ah"));  
+        HoleCards h3 = new HoleCards(Card.parseCards("Ks 4d"));  
+                                       
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, 
+                new HoleCards[] {h1, h2, h3},
+                Card.parseCards("Kd As Kh Ad Kc"));
+        
+        
+        int handNum = 0;
+        int round  = ROUND_FLOP;
+        
+        //flop
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_ONE));
+        
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+        handNum = 1;
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_ONE));
+        
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+        handNum  = 2;
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_ONE));
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.SET_USING_ONE));
+        
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));        
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+        //turn
+        round  = ROUND_TURN;
+        handNum = 0;
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_NONE));
+        
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+        handNum = 1;
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.FULL_HOUSE));
+        
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+        handNum  = 2;
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.FULL_HOUSE));
+        
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+     
+        
+        round  = ROUND_RIVER;
+        handNum = 0;
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.FULL_HOUSE));
+        
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+        handNum = 1;
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.FULL_HOUSE));
+        
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+        handNum  = 2;
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.QUADS));
+        
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
     }
 }

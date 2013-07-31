@@ -15,7 +15,6 @@ import pkr.Card;
 import pkr.CardRank;
 import pkr.CompleteEvaluation;
 import pkr.EvalHands;
-import pkr.Flop;
 import pkr.HandLevel;
 import pkr.HoleCards;
 
@@ -31,20 +30,15 @@ public class TestScore {
         HoleCards h1 = new HoleCards(Card.parseCards("5c 8s"));
         HoleCards h2 = new HoleCards(Card.parseCards("6c 8s"));                
                 
-               
-        Flop f = new Flop(Card.parseCards("2h 7h kh"));
-        
-        EvalHands.evaluate(false, new HoleCards[] {h1, h2}, f, null, null);
+        EvalHands.evaluate(false, new HoleCards[] {h1, h2}, Card.parseCards("2h 7h kh"));
     }
     
     @Test
     public void testHighCardVsPair() {
         HoleCards h1 = new HoleCards(Card.parseCards("5c 8s"));
         HoleCards h2 = new HoleCards(Card.parseCards("6c Ks"));                
-                               
-        Flop f = new Flop(Card.parseCards("2h 7h kh"));
-        
-        CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2}, f, null, null);
+                                       
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2}, Card.parseCards("2h 7h kh"));
         
         assertTrue(evals[0].getScore().getHandLevel() == HandLevel.HIGH_CARD);
         assertTrue(evals[0].getScore().getKickers()[0] == CardRank.KING);
@@ -67,11 +61,9 @@ public class TestScore {
     public void testHighCardVsHighCardThirdKicker() {
         HoleCards h1 = new HoleCards(Card.parseCards("Kc 8s"));
         HoleCards h2 = new HoleCards(Card.parseCards("6c Ks"));                
-                               
-        Flop f = new Flop(Card.parseCards("2h 7h 4h"));
         
         CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2},
-                f, Card.parseCard("Qd"), Card.parseCard("5s"));
+                Card.parseCards("2h 7h 4h Qd 5s"));
         
         assertTrue(evals[0].getScore().getHandLevel() == HandLevel.HIGH_CARD);
         assertTrue(evals[0].getScore().getKickers()[0] == CardRank.KING);
@@ -96,11 +88,9 @@ public class TestScore {
         HoleCards h1 = new HoleCards(Card.parseCards("Ac 8s"));
         HoleCards h2 = new HoleCards(Card.parseCards("6c 7s"));                
         HoleCards h3 = new HoleCards(Card.parseCards("6s 2s"));
-                               
-        Flop f = new Flop(Card.parseCards("2h 8h 4h"));
-        
+                       
         CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2, h3},
-                f, Card.parseCard("3d"), Card.parseCard("5s"));
+                Card.parseCards("2h 8h 4h 3d 5s"));
         
         assertTrue(evals[0].getScore().getHandLevel() == HandLevel.STRAIGHT);
         assertTrue(evals[0].getScore().getKickers()[0] == CardRank.FIVE);
@@ -121,11 +111,9 @@ public class TestScore {
         HoleCards h1 = new HoleCards(Card.parseCards("2s 3c"));
         HoleCards h2 = new HoleCards(Card.parseCards("4h 2c"));                
         HoleCards h3 = new HoleCards(Card.parseCards("3h 4c"));
-                               
-        Flop f = new Flop(Card.parseCards("3s 2h 3d"));
-        
+                                       
         CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2, h3},
-                f, Card.parseCard("4d"), Card.parseCard("4s"));
+                Card.parseCards("3s 2h 3d 4d 4s"));
         
         int handNum = 0;
         assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.FULL_HOUSE);
@@ -158,11 +146,9 @@ public class TestScore {
         HoleCards h1 = new HoleCards(Card.parseCards("2s 3s"));
         HoleCards h2 = new HoleCards(Card.parseCards("Ks Js"));                
         HoleCards h3 = new HoleCards(Card.parseCards("Ts 4s"));
-                               
-        Flop f = new Flop(Card.parseCards("6s 8s 5s"));
-        
+                                       
         CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2, h3},
-                f, Card.parseCard("7s"), Card.parseCard("Qs"));
+                Card.parseCards("6s 8s 5s 7s Qs"));
         
         int handNum = 0;
         assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.FLUSH);
@@ -196,10 +182,8 @@ public class TestScore {
         HoleCards h1 = new HoleCards(Card.parseCards("Jh Jd"));
         HoleCards h2 = new HoleCards(Card.parseCards("7h 2d"));
                                
-        Flop f = new Flop(Card.parseCards("3s Qc 6d"));
-        
         CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2},
-                f, Card.parseCard("Kc"), Card.parseCard("Kh"));
+                Card.parseCards("3s Qc 6d Kc Kh"));
         
         int handNum = 0;
         assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.TWO_PAIR);
@@ -224,11 +208,9 @@ public class TestScore {
     public void testTwoPair() {
         HoleCards h1 = new HoleCards(Card.parseCards("8c 8h"));
         HoleCards h2 = new HoleCards(Card.parseCards("2h 7h"));                
-                                       
-        Flop f = new Flop(Card.parseCards("3c Th 3h"));
-        
+                                 
         CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2},
-                f, Card.parseCard("6c"), Card.parseCard("Td"));
+                Card.parseCards("3c Th 3h 6c Td"));
         
         int handNum = 0;
         assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.TWO_PAIR);
@@ -254,11 +236,9 @@ public class TestScore {
         HoleCards h1 = new HoleCards(Card.parseCards("2s 2c"));
         HoleCards h2 = new HoleCards(Card.parseCards("3h 3c"));                
         HoleCards h3 = new HoleCards(Card.parseCards("4h 4c"));
-                               
-        Flop f = new Flop(Card.parseCards("5s 5h 5d"));
-        
+                                       
         CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2, h3},
-                f, Card.parseCard("4d"), Card.parseCard("5c"));
+                Card.parseCards("5s 5h 5d 4d 5c"));
         
         int handNum = 0;
         assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.QUADS);

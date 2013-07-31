@@ -1,10 +1,7 @@
 package pkr;
 
-import static pkr.Card.NUM_RANKS;
-
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,17 +13,16 @@ import pkr.possTree.PossibilityNode.TextureCategory;
 import pkr.possTree.PossibilityNode.WinningLosingCategory;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 
 public class EvalHands {
     
     private static Logger log = LoggerFactory.getLogger(EvalHands.class);
     
-    private static void checkUniqueness(List<Card> allCards)
+    private static void checkUniqueness(TextureInfo allCards)
     {
         boolean[] seenCard = new boolean[52];
         
-        for (Card card : allCards) {
+        for (Card card : allCards.cards) {
             
             
             if (seenCard[card.index]) {
@@ -39,35 +35,21 @@ public class EvalHands {
         }
     }
     
-    private static List<Card> getAllCards(HoleCards[] cards, Flop flop, Card turn, Card river)
+    private static TextureInfo getAllCards(HoleCards[] cards, Card[] flopTurnRiver)
     {
-        List<Card> allCards = Lists.newArrayList();
+        TextureInfo allCards = new TextureInfo();
 
         if (cards!=null)
             for (HoleCards hCards : cards) {
-                allCards.addAll(Arrays.asList(hCards.getCards()));            
+                allCards.addCards(hCards.getCards());            
             }
         
-        allCards.addAll(Arrays.asList(flop.getCards()));
-        
-        if (turn != null)
-            allCards.add(turn);
-        
-        if (river != null)
-            allCards.add(river);
+        allCards.addCards(flopTurnRiver);
         
         return allCards;
     }
     
-    public static CompleteEvaluation[] evaluate(boolean heroOnly, HoleCards[] cards, Flop flop, Card turn, Card river) {
-        Card[] cardArray = new Card[5];
-        for(int i = 0; i < 3; ++i)
-            cardArray[i] = flop.getCards()[i];
-        
-        cardArray[3] = turn;
-        cardArray[4] = river;
-        return evaluate(heroOnly, cards, cardArray);
-    }
+    
     public static CompleteEvaluation[] evaluate(boolean heroOnly, HoleCards[] cards, Card[] flopTurnRiver) {
 
         
@@ -75,10 +57,10 @@ public class EvalHands {
         final int numPlayers = cards.length;
         
         //Add all cards to same list
-        //List<Card> allCards = getAllCards(cards, flop, turn, river);
+        TextureInfo allCards = getAllCards(cards, flopTurnRiver);
                 
         //Check uniqueness
-       // checkUniqueness(allCards);
+        checkUniqueness(allCards);
 
         CompleteEvaluation[] evals = new CompleteEvaluation[cards.length];
         
@@ -87,14 +69,6 @@ public class EvalHands {
         communityCards.addCards(flopTurnRiver, 3);
         communityCards.calculate();
         
-        /*
-        TextureInfo communityCardsTurn = new TextureInfo();
-        communityCardsTurn.addCards(flopTurnRiver, 4);
-        communityCardsTurn.calculate();
-        
-        TextureInfo communityCardsRiver = new TextureInfo();
-        communityCardsRiver.addCards(flopTurnRiver, 5);
-        communityCardsRiver.calculate();*/
         
         TextureInfo[] texInfoPlayers = new TextureInfo[numPlayers];
         
@@ -123,11 +97,11 @@ public class EvalHands {
         populateFlopTexture(heroOnly, evals, communityCards, 0);
         
         //TURN
-        communityCards.addCard(flopTurnRiver[3]);
+        communityCards.addCard(flopTurnRiver.length < 4 ? null : flopTurnRiver[3]);
         communityCards.calculate();
         
         for(int i = 0; i < numPlayers; ++i) {
-            texInfoPlayers[i].addCard(flopTurnRiver[3]);
+            texInfoPlayers[i].addCard(flopTurnRiver.length < 4 ? null : flopTurnRiver[3]);
             texInfoPlayers[i].calculate();
             
             evals[i].setRoundScore(1, scoreSingleHand(texInfoPlayers[i]));
@@ -143,11 +117,11 @@ public class EvalHands {
         populateFlopTexture(heroOnly, evals, communityCards, 1);
         
         //RIVER
-        communityCards.addCard(flopTurnRiver[4]);
+        communityCards.addCard(flopTurnRiver.length < 5 ? null : flopTurnRiver[4]);
         communityCards.calculate();
         
         for(int i = 0; i < numPlayers; ++i) {
-            texInfoPlayers[i].addCard(flopTurnRiver[4]);
+            texInfoPlayers[i].addCard(flopTurnRiver.length < 5 ? null : flopTurnRiver[4]);
             texInfoPlayers[i].calculate();
             
             evals[i].setRoundScore(CompleteEvaluation.ROUND_RIVER, scoreSingleHand(texInfoPlayers[i]));
@@ -161,52 +135,8 @@ public class EvalHands {
         }
         
         populateFlopTexture(heroOnly, evals, communityCards, CompleteEvaluation.ROUND_RIVER);
-        /*
-        for(int i = 0; i < numPlayers; ++i) {
-            
-            HoleCards holeCards = cards[i];
-            TextureInfo texInfo = new TextureInfo();
-            texInfo.addCards(holeCards.getCards());
-            texInfo.addCards(flopTurnRiver, 3);       
-            texInfo.calculate();
-            
-            TextureInfo texInfoTurn = new TextureInfo();
-            texInfoTurn.addCards(holeCards.getCards());
-            texInfoTurn.addCards(flopTurnRiver, 4);
-            texInfoTurn.calculate();
-            
-            TextureInfo texInfoRiver = new TextureInfo();
-            texInfoRiver.addCards(holeCards.getCards());
-            texInfoRiver.addCards(flopTurnRiver, 5);
-            texInfoRiver.calculate();
-                                   
-            
-            
-            
-            evals[i].setRoundScore(2, scoreSingleHand(texInfoRiver));
-            
-            
-           evals[i].setPosition(i);
-        
-           if (i == 0 || !heroOnly) {
-            evaluateNodeSingleHand(
-                   evals[i], CompleteEvaluation.ROUND_FLOP,  texInfo, communityCardsFlop,
-                   evals[i].getRoundScore(CompleteEvaluation.ROUND_FLOP) );
-            evaluateNodeSingleHand(
-                    evals[i], CompleteEvaluation.ROUND_TURN, texInfoTurn, communityCardsTurn,
-                    evals[i].getRoundScore(CompleteEvaluation.ROUND_TURN) );
-           evaluateNodeSingleHand(
-                   evals[i], CompleteEvaluation.ROUND_RIVER, texInfoRiver, communityCardsRiver,
-                   evals[i].getRoundScore( CompleteEvaluation.ROUND_RIVER) );
-           }
-        }
-        
-       populateFlopTexture(heroOnly, evals, communityCardsRiver, 2);
-        
-                    */
+       
         populateEvalutionNodeWithRelativeHandRankings(evals);
-        
-        
         
         return evals;
     }
@@ -236,10 +166,14 @@ public class EvalHands {
             break;
         }
         
-        if (communityCards.noPairedCards()) {
-            evals[0].setFlag(round, TextureCategory.UNPAIRED_BOARD);
-        } else {
+        if (communityCards.hasFullHouse()) {
+            evals[0].setFlag(round, TextureCategory.FULL_BOARD);
+        } else if (communityCards.hasTwoPair()) {
+            evals[0].setFlag(round, TextureCategory.TWO_PAIRED_BOARD);
+        } else if (!communityCards.noPairedCards()) {
             evals[0].setFlag(round, TextureCategory.PAIRED_BOARD);
+        } else {
+            evals[0].setFlag(round, TextureCategory.UNPAIRED_BOARD);
         }
         
         if (communityCards.hasStraight())
@@ -344,16 +278,35 @@ public class EvalHands {
         {
             if (communityCards.noPairedCards()) 
             {
-                eval.setFlag(round, HandCategory.HIDDEN_SET);
+                eval.setFlag(round, HandCategory.SET_USING_BOTH);
             } else {
-                eval.setFlag(round, HandCategory.VISIBLE_SET);
+                eval.setFlag(round, HandCategory.SET_USING_ONE);
             }
         } else if (score.handLevel == HandLevel.TWO_PAIR) 
         {
-            if (communityCards.firstPair == -1) {
-                eval.setFlag(round, HandCategory.HIDDEN_TWO_PAIR);
+            if (communityCards.noPairedCards()) {
+                eval.setFlag(round, HandCategory.TWO_PAIR_USING_BOTH);
+            } else if (communityCards.hasTwoPair()) {
+                //See if the lower ranked card is used
+                if (communityCards.firstPair != eval.getRoundScore(round).kickers[0].getIndex()
+                        ||
+                        communityCards.secondPair != eval.getRoundScore(round).kickers[1].getIndex())
+                {
+                    eval.setFlag(round, HandCategory.TWO_PAIR_USING_ONE);
+                } else {
+                    //May just be a 3rd kicker though, like A2 on a board 77 66 K
+                    eval.setFlag(round, HandCategory.TWO_PAIR_USING_NONE);
+                }
+                
             } else {
-                eval.setFlag(round, HandCategory.TWO_PAIR);
+                //just paired
+                if (eval.getRoundScore(round).kickers[1].getIndex() > communityCards.firstPair)
+                {
+                    //If second kicker is better than pair on board, like AK on AK772
+                    eval.setFlag(round, HandCategory.TWO_PAIR_USING_BOTH);
+                } else {
+                    eval.setFlag(round, HandCategory.TWO_PAIR_USING_ONE);
+                }
             }
         } else if (score.handLevel == HandLevel.FULL_HOUSE) 
         {
@@ -366,6 +319,8 @@ public class EvalHands {
             eval.setFlag(round, HandCategory.FLUSH);
         } else if (score.handLevel == HandLevel.STRAIGHT) {
             eval.setFlag(round, HandCategory.STRAIGHT);
+        } else if (score.handLevel == HandLevel.STRAIGHT_FLUSH) {
+            eval.setFlag(round, HandCategory.STRAIGHT_FLUSH);
         }
     }
     
