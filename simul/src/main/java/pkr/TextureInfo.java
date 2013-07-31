@@ -228,6 +228,14 @@ public class TextureInfo {
         return firstPair == -1;
     }
     
+    public boolean hasTwoPair() {
+        return firstPair >= 0 && secondPair >= 0;
+    }
+    
+    public boolean hasFullHouse() {
+        return threeKind >= 0 && firstPair >= 0;
+    }
+    
     public void addCards(Collection<Card> cards) 
     {
         for(Card card : cards) {

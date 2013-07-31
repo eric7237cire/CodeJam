@@ -251,18 +251,18 @@ public class Simulator {
             
             Criteria anythingOnPairedFlop = new Criteria(round, roundStr + " Anyone on paired board");
             anythingOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);
-            anythingOnPairedFlop.matchHandCat.add( HandCategory.TWO_PAIR_ON_PAIRED_BOARD );
-            anythingOnPairedFlop.matchHandCat.add( HandCategory.VISIBLE_SET );
+            anythingOnPairedFlop.matchHandCat.add( HandCategory.TWO_PAIR_USING_ONE );
+            anythingOnPairedFlop.matchHandCat.add( HandCategory.SET_USING_ONE );
             anythingOnPairedFlop.matchHandCat.add( HandCategory.FULL_HOUSE );
             anythingOnPairedFlop.matchHandCat.add( HandCategory.QUADS );
             
             Criteria tripsOnPairedFlop = new Criteria(round, roundStr + " Anyone trips on paired board");
             tripsOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
-            tripsOnPairedFlop.matchHandCat.add( HandCategory.VISIBLE_SET );
+            tripsOnPairedFlop.matchHandCat.add( HandCategory.SET_USING_ONE );
             
             Criteria twoPairOnPairedFlop = new Criteria(round, roundStr + " 2 pair on paired board");
             twoPairOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
-            twoPairOnPairedFlop.matchHandCat.add( HandCategory.TWO_PAIR_ON_PAIRED_BOARD );
+            twoPairOnPairedFlop.matchHandCat.add( HandCategory.TWO_PAIR_USING_ONE );
             
             Criteria nothingOnPairedFlop = new Criteria(round, roundStr + " nothing on paired board");
             nothingOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
@@ -300,12 +300,12 @@ public class Simulator {
             
         Criteria meTwoPairFlop = new Criteria(round, roundStr + " 2 pair");
         meTwoPairFlop.mustHave.add(TextureCategory.UNPAIRED_BOARD);
-        meTwoPairFlop.matchHandCat.add(HandCategory.HIDDEN_TWO_PAIR);
+        meTwoPairFlop.matchHandCat.add(HandCategory.TWO_PAIR_USING_BOTH);
         meTwoPairFlop.heroOnly = true;
         
         Criteria anyTwoPairFlop = new Criteria(round, roundStr +" Anyone 2 pair on unpaired board");
         anyTwoPairFlop.mustHave.add(TextureCategory.UNPAIRED_BOARD);
-        anyTwoPairFlop.matchHandCat.add( HandCategory.HIDDEN_TWO_PAIR );
+        anyTwoPairFlop.matchHandCat.add( HandCategory.TWO_PAIR_USING_BOTH );
         
         
         
@@ -341,8 +341,8 @@ public class Simulator {
         
         Criteria tripsCrit = new Criteria(round, roundStr + " Anyone Trips ");
 
-        tripsCrit.matchHandCat.add( HandCategory.HIDDEN_SET );
-        tripsCrit.matchHandCat.add( HandCategory.VISIBLE_SET );
+        tripsCrit.matchHandCat.add( HandCategory.SET_USING_BOTH );
+        tripsCrit.matchHandCat.add( HandCategory.SET_USING_ONE );
         
         Criteria straightCrit = new Criteria(round, roundStr + " Anyone Straight");
 

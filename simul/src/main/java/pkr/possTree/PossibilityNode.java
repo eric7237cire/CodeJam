@@ -42,6 +42,8 @@ public class PossibilityNode implements iDisplayNode {
         SAME_SUIT_5("5 of the same suit"),
         STRAIGHT("Straight on board"),
         PAIRED_BOARD("Paired board"),
+        TWO_PAIRED_BOARD("2 Pairs on board"),
+        FULL_BOARD("full house on board"),
         UNPAIRED_BOARD("Un paired board"),
         HAS_AT_LEAST_ONE_ACE("At least 1 Ace");
         
@@ -120,10 +122,12 @@ public class PossibilityNode implements iDisplayNode {
         PAIR_OVERCARDS_2("Pair 2 overcards"), //low pair or hidden between 2nd and 3rd
         PAIR_OVERCARDS_3("Pair 3 or more overcards"), // very low pair or hidden below 3rd best visible rank
         PAIR_ON_PAIRED_BOARD("Pair on board"),
-        TWO_PAIR_ON_PAIRED_BOARD("Two pair (paired board)"),
-        HIDDEN_TWO_PAIR("Two pair (unpaired board)"),
-        VISIBLE_SET("Visible set"),
-        HIDDEN_SET("Hidden set"),
+        TWO_PAIR_USING_ONE("Two pair (paired board)"),
+        TWO_PAIR_USING_BOTH("Two pair (unpaired board)"),
+        TWO_PAIR_USING_NONE("Two pair (2 pairs on board)"),
+        SET_USING_NONE("Set on board"),
+        SET_USING_ONE("Visible set"),
+        SET_USING_BOTH("Hidden set"),
         FLUSH("Flush"),
         FLUSH_DRAW("Flush draw"),
         STRAIGHT("Straight"),

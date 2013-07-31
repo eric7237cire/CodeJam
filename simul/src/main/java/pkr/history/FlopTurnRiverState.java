@@ -3,12 +3,9 @@ package pkr.history;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.swing.text.NumberFormatter;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
@@ -248,9 +245,9 @@ public class FlopTurnRiverState implements ParserListener
             
             double outsOne = perc / 2;
             
-            double betSizeToPot = 1.0 * diff / pot;
+           // double betSizeToPot = 1.0 * diff / pot;
             //% must be ahead
-            double callBluff = 100*betSizeToPot / (1+betSizeToPot);
+           // double callBluff = 100*betSizeToPot / (1+betSizeToPot);
             
             
             logOutput.debug("Amount to call ${} for pot ${}.\n  Pot ratio : {}%  | 1 to {} | {} outs", 
@@ -372,7 +369,8 @@ public class FlopTurnRiverState implements ParserListener
             return getNextState(true);
         }
         
-        boolean seenPlayer = incrementPlayer(playerName);
+      //  boolean seenPlayer = 
+        incrementPlayer(playerName);
         printHandHistory("Check");
         
         

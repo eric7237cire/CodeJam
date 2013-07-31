@@ -1,11 +1,7 @@
 package test;
 
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.*;
-import static pkr.CompleteEvaluation.ROUND_FLOP;
-import static pkr.CompleteEvaluation.ROUND_TURN;
-import static pkr.CompleteEvaluation.ROUND_RIVER;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,17 +9,8 @@ import org.junit.runners.JUnit4;
 
 import pkr.Card;
 import pkr.CardRank;
-import pkr.CompleteEvaluation;
-import pkr.EvalHands;
-import pkr.Flop;
-import pkr.HandLevel;
-import pkr.HoleCards;
 import pkr.Suit;
 import pkr.TextureInfo;
-import pkr.possTree.PossibilityNode.TextureCategory;
-import pkr.possTree.PossibilityNode.WinningLosingCategory;
-import pkr.possTree.PossibilityNode.HandSubCategory;
-import pkr.possTree.PossibilityNode.HandCategory;
 
 @RunWith(JUnit4.class)
 
