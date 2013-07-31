@@ -7,8 +7,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.base.Preconditions;
-
 public class TextureInfo {
     
     List<Card> cards;
@@ -220,7 +218,10 @@ public class TextureInfo {
         
         
         this.cards.add(card);
+        
         this.sortedCards.add(card);
+        
+        
     }
     
     public boolean noPairedCards() {

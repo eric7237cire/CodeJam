@@ -120,7 +120,7 @@ public class PossibilityNode implements iDisplayNode {
         PAIR_OVERCARDS_2("Pair 2 overcards"), //low pair or hidden between 2nd and 3rd
         PAIR_OVERCARDS_3("Pair 3 or more overcards"), // very low pair or hidden below 3rd best visible rank
         PAIR_ON_PAIRED_BOARD("Pair on board"),
-        TWO_PAIR("Two pair (paired board)"),
+        TWO_PAIR_ON_PAIRED_BOARD("Two pair (paired board)"),
         HIDDEN_TWO_PAIR("Two pair (unpaired board)"),
         VISIBLE_SET("Visible set"),
         HIDDEN_SET("Hidden set"),
@@ -130,6 +130,7 @@ public class PossibilityNode implements iDisplayNode {
         STRAIGHT_DRAW_2("Straight draw"),
         STRAIGHT_DRAW_1("Gut shot"),
         FULL_HOUSE("Full house"),
+        STRAIGHT_FLUSH("Straight flush"),
         HIGH_CARD("High card"),
         QUADS("4 of a kind")
         ;

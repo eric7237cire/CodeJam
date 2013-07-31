@@ -56,10 +56,10 @@ public class HoleCardsRange {
             addCode(code);
         }
         
-        log.debug("HandRange {} has {} hands of {}.  %{}", 
+        log.debug("HandRange {}\n has {} hands of {}.  %{}", 
                 rangeStr,
-                totalHands, 52*51,
-                FlopTurnRiverState.df2.format(100.0*totalHands / 52*51));
+                totalHands, 26*51,
+                FlopTurnRiverState.df2.format(100.0*totalHands / (26*51)));
         for(CardRank rank : CardRank.values())
         {
             log.debug("Card Rank {} {} of {} is %{} ", rank.name(),
