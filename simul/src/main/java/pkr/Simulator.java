@@ -42,7 +42,7 @@ public class Simulator {
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
       int NUM_RANDOM =2;
-        int NUM_LOOSE_CALLS = 1;
+        int NUM_LOOSE_CALLS = 0;
         int NUM_OK_CALLS = 0;
         int NUM_GOOD_HANDS = 0;
         
@@ -82,7 +82,7 @@ public class Simulator {
         
         //top 36%
         for(int i = 0; i < NUM_OK_CALLS; ++i) {
-        playerHoleCards.add("22+, A2s+, K7s+, Q7s+, J7s+, T7s+, 98s, 87s, A2o+, K8o+, Q9o+, J9o+, T9o");
+        playerHoleCards.add("22+, A2s+, K7s+, Q7s+, J7s+, T7s+, 98s, 87s, 76s, A2o+, K7o+, Q8o+, J9o+, T9o, 98o");
         }
         
         //top 18%
@@ -118,6 +118,7 @@ public class Simulator {
                 
         //Any match will do
         List<HandCategory> matchHandCat;
+        List<HandCategory> matchNegHandCat;
         
         //For applicable
         List<TextureCategory> mustHave;
@@ -135,6 +136,7 @@ public class Simulator {
             mustNotHave = Lists.newArrayList();
             
             matchHandCat = Lists.newArrayList();
+            matchNegHandCat = Lists.newArrayList();
         }
         
         public void printMsg() {
@@ -174,6 +176,15 @@ public class Simulator {
                     
                     if (!ok)
                         return false;
+                    
+                    for(HandCategory cat : matchNegHandCat)
+                    {
+                        if (eval.hasFlag(round, cat))
+                        {
+                            return false;
+                        }
+                    }
+                    
                 }
                 
                 return true;
@@ -240,7 +251,9 @@ public class Simulator {
         double[] equity = new double[numPlayers];
         
         List<Criteria> criteres = Lists.newArrayList();
-        
+        List<Criteria> pairedBoardCriteres = Lists.newArrayList();
+        List<Criteria> unPairedBoardCriteres = Lists.newArrayList();
+        List<Criteria> allBoardCriteres = Lists.newArrayList();
         
         
         for(int round = 0; round < 3; ++round)
@@ -269,11 +282,11 @@ public class Simulator {
             nothingOnPairedFlop.matchHandCat.add( HandCategory.PAIR_ON_PAIRED_BOARD );
             nothingOnPairedFlop.allMustMatch = true;
             
+            pairedBoardCriteres.add(anythingOnPairedFlop);
+            pairedBoardCriteres.add(tripsOnPairedFlop);
+            pairedBoardCriteres.add(twoPairOnPairedFlop);
+            pairedBoardCriteres.add(nothingOnPairedFlop);
             
-            criteres.add(anythingOnPairedFlop);
-            criteres.add(tripsOnPairedFlop);
-            criteres.add(twoPairOnPairedFlop);
-            criteres.add(nothingOnPairedFlop);
             
             Criteria flushDrawCrit = new Criteria(round, roundStr + " flush draw");
             //nothingOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
@@ -289,14 +302,26 @@ public class Simulator {
             straight2DrawCrit.matchHandCat.add( HandCategory.STRAIGHT_DRAW_2 );
             
 
-            criteres.add(flushDrawCrit);
-            criteres.add(straightDrawCrit);
-            criteres.add(straight2DrawCrit);
+            allBoardCriteres.add(flushDrawCrit);
+            allBoardCriteres.add(straightDrawCrit);
+            allBoardCriteres.add(straight2DrawCrit);
+            
+            
             
             Criteria highCardOnly  = new Criteria(round, roundStr + " nothing on unpaired board");
             highCardOnly.allMustMatch = true;
             highCardOnly.matchHandCat.add(HandCategory.HIGH_CARD);
             highCardOnly.mustHave.add(TextureCategory.UNPAIRED_BOARD);
+            
+            unPairedBoardCriteres.add(highCardOnly);
+            
+            Criteria reallyNothing = new Criteria(round, roundStr + " no pairs no draws on unpaired board");
+            reallyNothing.allMustMatch = true;
+            reallyNothing.matchHandCat.add(HandCategory.HIGH_CARD);
+            reallyNothing.matchNegHandCat.add(HandCategory.FLUSH_DRAW);
+            reallyNothing.matchNegHandCat.add(HandCategory.STRAIGHT_DRAW_2);
+            reallyNothing.mustHave.add(TextureCategory.UNPAIRED_BOARD);
+            unPairedBoardCriteres.add(reallyNothing);
             
         Criteria meTwoPairFlop = new Criteria(round, roundStr + " 2 pair");
         meTwoPairFlop.mustHave.add(TextureCategory.UNPAIRED_BOARD);
@@ -307,7 +332,8 @@ public class Simulator {
         anyTwoPairFlop.mustHave.add(TextureCategory.UNPAIRED_BOARD);
         anyTwoPairFlop.matchHandCat.add( HandCategory.TWO_PAIR_USING_BOTH );
         
-        
+        unPairedBoardCriteres.add(meTwoPairFlop);
+        unPairedBoardCriteres.add(anyTwoPairFlop);
         
         Criteria any0PairCrit = new Criteria(round, roundStr + " Anyone top/over pair");
         any0PairCrit.mustHave.add(TextureCategory.UNPAIRED_BOARD);
@@ -339,18 +365,29 @@ public class Simulator {
         any3PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_2);
         any3PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_3);
         
+        unPairedBoardCriteres.add(any0PairCrit);
+        unPairedBoardCriteres.add(any1PairCrit);
+        unPairedBoardCriteres.add(any2PairCrit);
+        unPairedBoardCriteres.add(any3PairCrit);
+        
         Criteria tripsCrit = new Criteria(round, roundStr + " Anyone Trips ");
 
         tripsCrit.matchHandCat.add( HandCategory.SET_USING_BOTH );
         tripsCrit.matchHandCat.add( HandCategory.SET_USING_ONE );
         
+        allBoardCriteres.add(tripsCrit);
+        
         Criteria straightCrit = new Criteria(round, roundStr + " Anyone Straight");
 
         straightCrit.matchHandCat.add( HandCategory.STRAIGHT );
         
+        allBoardCriteres.add(straightCrit);
+        
         Criteria flushCrit = new Criteria(round, roundStr + " Anyone Flush");
 
         flushCrit.matchHandCat.add( HandCategory.FLUSH );
+        
+        allBoardCriteres.add(flushCrit);
         
         Criteria fullHouseOrBetter = new Criteria(round, roundStr + " Anyone Full house or better");
 
@@ -358,17 +395,12 @@ public class Simulator {
         fullHouseOrBetter.matchHandCat.add( HandCategory.QUADS );
         fullHouseOrBetter.matchHandCat.add( HandCategory.STRAIGHT_FLUSH);
         
-        criteres.add(highCardOnly);
-       // criteres.add(meTwoPairFlop);
-        criteres.add(anyTwoPairFlop);
-        criteres.add(any0PairCrit);
-        criteres.add(any1PairCrit);
-        criteres.add(any2PairCrit);
-        criteres.add(any3PairCrit);
-        criteres.add(tripsCrit);
-        criteres.add(straightCrit);
-        criteres.add(flushCrit);
-        criteres.add(fullHouseOrBetter);
+        allBoardCriteres.add(fullHouseOrBetter);
+        
+        criteres.addAll(pairedBoardCriteres);
+        criteres.addAll(unPairedBoardCriteres);
+        criteres.addAll(allBoardCriteres);
+        
         }
         
                 
@@ -401,10 +433,19 @@ public class Simulator {
                 //log.debug("eq {} player {}", evals[p].realEquity, p);
             }
                         
-            if (simulNum > 0 && simulNum % 5000 == 0) {
+            if (simulNum >= 0 && simulNum % 5000 == 0) {
                 logOutput.debug("# of simulations {} of {}", simulNum, TOTAL_SIMULATIONS );
                                 
-                for(Criteria c : criteres) {
+                logOutput.debug("\nPaired board criteria\n");
+                for(Criteria c : pairedBoardCriteres) {
+                    c.printMsg();
+                }
+                logOutput.debug("\nUn paired board criteria\n");
+                for(Criteria c : unPairedBoardCriteres) {
+                    c.printMsg();
+                }
+                logOutput.debug("\nAll board criteria\n");
+                for(Criteria c : allBoardCriteres) {
                     c.printMsg();
                 }
                 
