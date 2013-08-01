@@ -89,34 +89,44 @@ public class TestEvalNodes
                 Card.parseCards("Th 8h 5h Ac 9h"));
         
         int handNum = 0;
-        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getHandLevel() == HandLevel.FLUSH);
-        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[0] == CardRank.KING);
-        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[1] == CardRank.QUEEN);
-        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[2] == CardRank.TEN);
-        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[3] == CardRank.EIGHT);
-        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getKickers()[4] == CardRank.FIVE);
         
-        assertTrue( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.FLUSH));
-        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.LOSING));
-        assertTrue( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.WINNING));
-        assertTrue( evals[handNum].hasFlag(ROUND_FLOP, HandSubCategory.BY_HAND_CATEGORY));
-        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandSubCategory.BY_KICKER_HAND));
+        int round = ROUND_FLOP;
         
-        assertTrue( evals[handNum].getPossibilityNode(ROUND_FLOP,0).hasFlag(TextureCategory.SAME_SUIT_3));
-        assertFalse( evals[handNum].getPossibilityNode(ROUND_FLOP,0).hasFlag(TextureCategory.HAS_AT_LEAST_ONE_ACE));
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.FLUSH);
+        assertTrue(evals[handNum].getRoundScore(round).getKickers()[0] == CardRank.KING);
+        assertTrue(evals[handNum].getRoundScore(round).getKickers()[1] == CardRank.QUEEN);
+        assertTrue(evals[handNum].getRoundScore(round).getKickers()[2] == CardRank.TEN);
+        assertTrue(evals[handNum].getRoundScore(round).getKickers()[3] == CardRank.EIGHT);
+        assertTrue(evals[handNum].getRoundScore(round).getKickers()[4] == CardRank.FIVE);
+        
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.FLUSH));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.FLUSH_DRAW));
+        assertFalse( evals[handNum].hasFlag(round, WinningLosingCategory.LOSING));
+        assertTrue( evals[handNum].hasFlag(round, WinningLosingCategory.WINNING));
+        assertTrue( evals[handNum].hasFlag(round, HandSubCategory.BY_HAND_CATEGORY));
+        assertFalse( evals[handNum].hasFlag(round, HandSubCategory.BY_KICKER_HAND));
+        
+        assertTrue( evals[handNum].getPossibilityNode(round,0).hasFlag(TextureCategory.SAME_SUIT_3));
+        assertFalse( evals[handNum].getPossibilityNode(round,0).hasFlag(TextureCategory.HAS_AT_LEAST_ONE_ACE));
         ++handNum;
         
-        assertTrue(evals[handNum].getRoundScore(ROUND_FLOP).getHandLevel() == HandLevel.HIGH_CARD);
+        assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.HIGH_CARD);
          
-        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandCategory.PAIR_OVERCARDS_0));
-        assertTrue( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.SECOND_BEST_HAND));
-        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.WINNING));
-        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, WinningLosingCategory.LOSING));
-        assertTrue( evals[handNum].hasFlag(ROUND_FLOP, HandSubCategory.BY_HAND_CATEGORY));
-        assertFalse( evals[handNum].hasFlag(ROUND_FLOP, HandSubCategory.BY_KICKER_HAND));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.PAIR_OVERCARDS_0));
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.FLUSH_DRAW));
+        assertTrue( evals[handNum].hasFlag(round, WinningLosingCategory.SECOND_BEST_HAND));
+        assertFalse( evals[handNum].hasFlag(round, WinningLosingCategory.WINNING));
+        assertFalse( evals[handNum].hasFlag(round, WinningLosingCategory.LOSING));
+        assertTrue( evals[handNum].hasFlag(round, HandSubCategory.BY_HAND_CATEGORY));
+        assertFalse( evals[handNum].hasFlag(round, HandSubCategory.BY_KICKER_HAND));
 
+        handNum=1;
+        round = ROUND_TURN;
+        
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.FLUSH_DRAW));
+        
         handNum=0;
-        int round = ROUND_RIVER;
+        round = ROUND_RIVER;
         assertTrue(evals[handNum].getRoundScore(round).getHandLevel() == HandLevel.FLUSH);
         assertTrue(evals[handNum].getRoundScore(round).getKickers()[0] == CardRank.KING);
         assertTrue(evals[handNum].getRoundScore(round).getKickers()[1] == CardRank.QUEEN);
@@ -125,6 +135,7 @@ public class TestEvalNodes
         assertTrue(evals[handNum].getRoundScore(round).getKickers()[4] == CardRank.EIGHT);
         
         assertTrue( evals[handNum].hasFlag(round, HandCategory.FLUSH));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.FLUSH_DRAW));
         assertFalse( evals[handNum].hasFlag(round, WinningLosingCategory.LOSING));
         assertTrue( evals[handNum].hasFlag(round, WinningLosingCategory.SECOND_BEST_HAND));
         assertFalse( evals[handNum].hasFlag(round, HandSubCategory.BY_HAND_CATEGORY));
@@ -560,5 +571,119 @@ public class TestEvalNodes
         assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
         assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
         assertTrue( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+    }
+    
+    @Test
+    public void testTopPairTwoPair()
+    {
+        HoleCards h1 = new HoleCards(Card.parseCards("Ac Kc"));               
+        HoleCards h2 = new HoleCards(Card.parseCards("4h Ah"));  
+        HoleCards h3 = new HoleCards(Card.parseCards("Qs Ad"));  
+                                       
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, 
+                new HoleCards[] {h1, h2, h3},
+                Card.parseCards("7d As 7h 4d Qc"));
+        
+        
+        int handNum = 0;
+        int round  = ROUND_FLOP;
+        
+        //flop
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_ONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_NONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_BOTH));
+        
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+        handNum = 1;
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_ONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_NONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_BOTH));
+        
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+        handNum  = 2;
+        
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_ONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_NONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_BOTH));
+        
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+        //turn
+        round  = ROUND_TURN;
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_ONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_NONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_BOTH));
+        
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+        handNum = 1;
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_ONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_NONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_BOTH));
+        
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+        handNum  = 2;
+        
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_ONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_NONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_BOTH));
+        
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+     
+        
+        round  = ROUND_RIVER;
+        handNum = 0;
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_ONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_NONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_BOTH));
+        
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+        handNum = 1;
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_ONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_NONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_BOTH));
+        
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
+        
+        handNum  = 2;
+        
+        
+        assertTrue( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_BOTH));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_NONE));
+        assertFalse( evals[handNum].hasFlag(round, HandCategory.TWO_PAIR_USING_ONE));
+        
+        assertTrue( evals[handNum].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.UNPAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.TWO_PAIRED_BOARD));
+        assertFalse( evals[handNum].hasFlag(round, TextureCategory.FULL_BOARD));
     }
 }

@@ -392,3 +392,93 @@ Jhon a relancé de 400 000.
 Eric a suivi de 400 000.
 Jhon remporte le pot (1 200 000 $) avec une quinte (8).
 _____________________________
++ 5 XP pour avoir joué une main.
+Sophie a suivi de 40 000.
+Lilou se couche.
+Antonio a suivi de 40 000.
+//73d 
+Eric a suivi de 40 000.
+Stephanie a suivi de 40 000.
+//Flop is 33T
+Eric a relancé de 120 000.
+Stephanie a suivi de 120 000.
+Sophie a suivi de 120 000.
+Antonio se couche.
+//Turn is T 33TT
+Eric a relancé de 80 000.
+Stephanie a relancé de 160 000.
+Sophie se couche.
+Eric a suivi de 160 000.
+Eric a parlé.
+Stephanie a relancé de 520 000.
+Eric se couche.
++ 5 XP pour avoir joué une main.
+Stephanie gagne.
+_____________________________
+Eric a fait un ajustement automatique.
+Jean se couche.
+Fred a relancé de 80 000.
+Annie a suivi de 80 000.
+Eric a suivi de 80 000.
+Annie2 a suivi de 80 000.
+Eric a parlé.
+Annie2 se couche.
+Fred a parlé.
+Annie a parlé.
+Eric a relancé de 120 000.
+Fred a suivi de 120 000.
+//Because of fred's call, he more than had the odds to call
+Annie a suivi de 120 000.
+//He made a backdoor flush, me trips
+Eric a relancé de 160 000.
+Fred se couche.
+Annie a fait tapis.
+//A mistake, that is sure, not a trips play, beginners do not hide their strength either
+Eric a suivi de 1 140 000.
+Annie remporte le pot (2 960 000 $) avec une couleur à A.
+_____________________________
++ 5 XP pour avoir joué une main.
+Hakarugby a suivi de 40 000.
+Didier a suivi de 40 000.
+Eric a suivi de 40 000.
+Elie Yoel a suivi de 40 000.
+Eric a parlé.
+Elie Yoel a parlé.
+Hakarugby a relancé de 40 000.
+Didier se couche.
+//2 overcards
+Eric a suivi de 40 000.
+Elie Yoel a suivi de 40 000.
+Eric a parlé.
+Elie Yoel a relancé de 40 000.
+Hakarugby a suivi de 40 000.
+//On turn, I had a nut straight draw
+Eric a suivi de 40 000.
+Eric a parlé.
+Elie Yoel a relancé de 400 000.
+Hakarugby se couche.
+Eric se couche.
++ 5 XP pour avoir joué une main.
+Elie Yoel gagne.
+_____________________________
+Elie Yoel a suivi de 40 000.
+Hakarugby a suivi de 40 000.
+Toto a suivi de 40 000.
+Didier a suivi de 40 000.
+Eric a suivi de 40 000.
+Didier a parlé.
+Eric a relancé de 120 000.
+Elie Yoel a relancé de 240 000.
+Hakarugby se couche.
+Toto a suivi de 240 000.
+Didier se couche.
+Eric a suivi de 240 000.
+Eric a relancé de 320 000.
+Elie Yoel a suivi de 320 000.
+Toto a fait tapis.
+Eric a parlé.
+Elie Yoel a relancé de 1 840 000.
+//folded straight, afraid of full house due to size of bet, 10s were paired
+Eric se couche.
+Toto remporte le pot (1 760 000 $) avec une quinte (A).
+_____________________________
