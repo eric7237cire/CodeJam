@@ -79,12 +79,13 @@ public class Tree
                 
                 
                 
-                //
+                //ne montre pas unsuited ni tirage de couleur
                 if (possLevel == PossibilityNode.Levels.TEXTURE.ordinal()) {
                     dispNode.clearFlag(TextureCategory.UNSUITED);
                     dispNode.clearFlag(TextureCategory.SAME_SUIT_2);
                 }
                 
+                //Fusion kicker + 2 et kicker + 1
                 if (possLevel == PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal()
                         && dispNode.hasFlag(HandSubCategory.BY_KICKER_2_PLUS))
                          {
