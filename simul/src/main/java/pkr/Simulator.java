@@ -42,7 +42,7 @@ public class Simulator {
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
       int NUM_RANDOM =2;
-        int NUM_LOOSE_CALLS = 1;
+        int NUM_LOOSE_CALLS = 2;
         int NUM_OK_CALLS = 0;
         int NUM_GOOD_HANDS = 0;
         
@@ -63,11 +63,17 @@ public class Simulator {
                 " 63s+, 53s+, 42s+, 32s," +
                 "A2o+, K2o+, Q2o+, J4o+, T5o+, 95o+, 85o+, 75o+, 64o+, 54o";
         
+        final String LESS_LOOSE = "22+, A2s+, K2s+, Q2s+, J4s+, T4s+, 96s+, 86s+, 75s+," +
+                " 63s+, 53s+, " +
+                "A2o+, K2o+, Q5o+, J5o+, T5o+, 97o+, 86o+, 75o+, 64o+, 54o";
+        
+        
         //loose call, top 50% of hands
         for(int i = 0; i < NUM_LOOSE_CALLS; ++i) {
             //playerHoleCards.add("22+, A2s+, K2s+, Q2s+, J4s+, T6s+, 96s+, 86s+, 75s+, 65s, 54s, A2o+, K2o+, Q5o+, J7o+, T7o+, 98o, 87o, 76o, 65o");
            // playerHoleCards.add(SUPER_LOOSE);
-            playerHoleCards.add(LOOSE);
+            //playerHoleCards.add(LOOSE);
+            playerHoleCards.add(LESS_LOOSE);
         }
         
         final String MY_LIST = "22+, A2s+, K2s+, Q4s+, J6s+, T6s+, " +
