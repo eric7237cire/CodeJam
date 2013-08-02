@@ -43,7 +43,7 @@ public class Simulator {
         
 
       int NUM_RANDOM =3;
-        int NUM_LOOSE_CALLS = 2;
+        int NUM_LOOSE_CALLS = 0;
         int NUM_OK_CALLS = 0;
 
         int NUM_GOOD_HANDS = 0;
