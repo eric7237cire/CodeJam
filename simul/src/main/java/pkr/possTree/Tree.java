@@ -7,6 +7,9 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import pkr.CompleteEvaluation;
 import pkr.possTree.PossibilityNode.HandCategory;
 import pkr.possTree.PossibilityNode.HandSubCategory;
@@ -18,7 +21,7 @@ import com.google.common.base.Preconditions;
 public class Tree
 {
 
-  //  private static Logger log = LoggerFactory.getLogger(Tree.class);
+    private static Logger log = LoggerFactory.getLogger(Tree.class);
     
     //@SuppressWarnings("unchecked")
     public Tree() {
@@ -148,9 +151,9 @@ public class Tree
             xtw.flush();
             xtw.close();
         } catch (XMLStreamException ex) {
-
+        	log.error("ex", ex);
         } catch (IOException ex) {
-
+        	log.error("ex", ex);
         }
     }
 

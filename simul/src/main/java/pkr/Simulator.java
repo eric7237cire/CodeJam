@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import pkr.possTree.PossibilityNode.HandCategory;
 import pkr.possTree.PossibilityNode.TextureCategory;
+import pkr.possTree.PossibilityNode.WinningLosingCategory;
 import pkr.possTree.Tree;
 
 import com.google.common.collect.Lists;
@@ -24,7 +25,7 @@ public class Simulator {
         //playerHoleCards.add("AA, AKs, 27, 93, 44, 99");
       //playerHoleCards.add("KTs");
       
-     // playerHoleCards.add("99");
+      playerHoleCards.add("AA");
     //  playerHoleCards.add("AKs");
       //  playerHoleCards.add("KJ");
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
@@ -36,13 +37,13 @@ public class Simulator {
         //playerHoleCards.add("KJo");
       //  playerHoleCards.add("AKo");
       //  playerHoleCards.add("JTs");
-        playerHoleCards.add("A4o");
+       // playerHoleCards.add("A4o");
         
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
 
-      int NUM_RANDOM =3;
+      int NUM_RANDOM =4;
         int NUM_LOOSE_CALLS = 0;
         int NUM_OK_CALLS = 0;
 
@@ -128,6 +129,9 @@ public class Simulator {
         List<HandCategory> matchHandCat;
         List<HandCategory> matchNegHandCat;
         
+        //Only for hero only
+        List<WinningLosingCategory> winLoseCat;
+        
         //For applicable
         List<TextureCategory> mustHave;
         List<TextureCategory> mustNotHave;
@@ -145,6 +149,8 @@ public class Simulator {
             
             matchHandCat = Lists.newArrayList();
             matchNegHandCat = Lists.newArrayList();
+            
+            winLoseCat = Lists.newArrayList();
         }
         
         public void printMsg() {
@@ -163,6 +169,22 @@ public class Simulator {
         public boolean matches(CompleteEvaluation[] evals) {
             if (heroOnly)
             {
+            	boolean matchesWinLose = winLoseCat.size() == 0;
+            	
+            	for(WinningLosingCategory cat : winLoseCat)
+            	{
+            		if (evals[0].hasFlag(round, cat))
+            		{
+            			matchesWinLose = true;
+            			break;
+            		}
+            	}
+            	
+            	if (!matchesWinLose)
+            	{
+            		return false;
+            		
+            	}
                 for(HandCategory cat : matchHandCat)
                 {
                     if (evals[0].hasFlag(round, cat))
@@ -405,10 +427,24 @@ public class Simulator {
         
         allBoardCriteres.add(fullHouseOrBetter);
         
+        
+        Criteria winWithFlush = new Criteria(round,  roundStr + " me win with flush");
+        winWithFlush.heroOnly = true;
+        winWithFlush.matchHandCat.add(HandCategory.FLUSH);
+        winWithFlush.winLoseCat.add(WinningLosingCategory.WINNING);
+        
+        Criteria loseWithFlush = new Criteria(round,  roundStr + " me lose with flush");
+        loseWithFlush.heroOnly = true;
+        loseWithFlush.matchHandCat.add(HandCategory.FLUSH);
+        loseWithFlush.winLoseCat.add(WinningLosingCategory.LOSING);
+        loseWithFlush.winLoseCat.add(WinningLosingCategory.SECOND_BEST_HAND);
+        
+        allBoardCriteres.add(winWithFlush);
+        allBoardCriteres.add(loseWithFlush);
+
         criteres.addAll(pairedBoardCriteres);
         criteres.addAll(unPairedBoardCriteres);
         criteres.addAll(allBoardCriteres);
-        
         }
         
                 
