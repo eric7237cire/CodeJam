@@ -27,6 +27,7 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
     public static int ROUND_TURN = 1;
     public static int ROUND_RIVER = 2;
     
+    public TextureInfo communityCards;
 
     HoleCards[] bestHand;
     

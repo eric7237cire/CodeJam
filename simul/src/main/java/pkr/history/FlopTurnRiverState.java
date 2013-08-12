@@ -335,6 +335,11 @@ public class FlopTurnRiverState implements ParserListener
     {
         //Preconditions.checkState(players.contains(playerName));
         
+        //Il est possible le flop a commencé avec un joeur qui se couche
+        if (round == 0 && players.contains(playerName) && potsGood())
+        {
+            return getNextState(true);
+        }
         
         boolean seenPlayer = incrementPlayer(playerName);
         printHandHistory("Fold");

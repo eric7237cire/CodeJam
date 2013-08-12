@@ -22,6 +22,9 @@ public class TextureInfo {
     public int secondPair = -1;
     public int straightRank = 0;
     
+    //any straight is possible
+    public boolean straightPossible;
+    
     public boolean flush;
     public Suit flushSuit;
     
@@ -40,6 +43,8 @@ public class TextureInfo {
     boolean[] straightRanks = new boolean[14];
     
     public int highestFreqSuit = 0;
+    
+    
     
     public TextureInfo() {
         super();
@@ -118,6 +123,8 @@ public class TextureInfo {
                 }
             } else if (missing == 0) {
                 straightRank = strRank - 1;
+            } else if (missing == 2) {
+                straightPossible = true;
             }
         }
     }
@@ -174,7 +181,7 @@ public class TextureInfo {
         Collections.sort(sortedCards);
     }
     
-    public int getStraightDrawCount(HoleCards hc) {
+    public int getStraightDrawCount() {
         
         int straightDraws = 0;
                 

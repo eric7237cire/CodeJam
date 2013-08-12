@@ -25,9 +25,9 @@ public class Simulator {
         //playerHoleCards.add("AA, AKs, 27, 93, 44, 99");
       //playerHoleCards.add("KTs");
       
-      playerHoleCards.add("AA");
+    //  playerHoleCards.add("22");
     //  playerHoleCards.add("AKs");
-      //  playerHoleCards.add("KJ");
+       // playerHoleCards.add("T8");
     //  playerHoleCards.add("Q2s+, J2+, T2+, 32+");
      // playerHoleCards.add("A2o, A3o, A4o, A5o");
         
@@ -43,11 +43,11 @@ public class Simulator {
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
 
-      int NUM_RANDOM =4;
+      int NUM_RANDOM =1;
         int NUM_LOOSE_CALLS = 0;
-        int NUM_OK_CALLS = 0;
+        int NUM_OK_CALLS = 1;
 
-        int NUM_GOOD_HANDS = 0;
+        int NUM_GOOD_HANDS = 1;
         
         //offsuit A2 K7 Q8 J8 T8 T9 98(limit)
         //suited A2 K2 Q4 J6 T6 96 86?
@@ -58,17 +58,11 @@ public class Simulator {
             playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+,22+");
         }
         
-        final String SUPER_LOOSE = "22+, A2s+, K2s+, Q2s+, J2s+, T2s+, 92s+, 82s+, 72s+," +
-                " 62s+, 52s+, 42s+, 32s," +
-                "A2o+, K2o+, Q2o+, J2o+, T2o+, 95o+, 85o+, 75o+, 64o+, 54o, 43o, 32o";
         
-        final String LOOSE = "22+, A2s+, K2s+, Q2s+, J2s+, T2s+, 92s+, 85s+, 74s+," +
-                " 63s+, 53s+, 42s+, 32s," +
-                "A2o+, K2o+, Q2o+, J4o+, T5o+, 95o+, 85o+, 75o+, 64o+, 54o";
         
-        final String LESS_LOOSE = "22+, A2s+, K2s+, Q2s+, J4s+, T4s+, 96s+, 86s+, 75s+," +
-                " 63s+, 53s+, " +
-                "A2o+, K2o+, Q5o+, J5o+, T5o+, 97o+, 86o+, 75o+, 64o+, 54o";
+        final String LESS_LOOSE = "22+, A2s+, K2s+, Q2s+, J3s+, T6s+, 96s+, 86s+, 75s+," +
+                " 63s+, 53s+, 43s, 32s, " +
+                "A2o+, K4o+, Q6o+, J8o+, T8o+, 98o+, 87o+, 75o+, 65o+, 54o";
         
         
         //loose call, top 50% of hands
@@ -80,9 +74,9 @@ public class Simulator {
         }
         
         final String MY_LIST = "22+, A2s+, K2s+, Q4s+, J6s+, T6s+, " +
-        		"96s+, 86s+, 76s, 65s, 54s," +
-        		" A2o+, K8o+, Q8o+, J8o+, T8o+, 98o";
-        //playerHoleCards.add(MY_LIST);
+        		"96s+, 86s+, 76s, 65s, 54s, " +
+        		" A2o+, K7o+, Q8o+, J8o+, T8o+, 98o";
+        
         
         final String LOOSE_ALL_IN = "22+, A2+, K9+, Q9s+, QTo+, JT+ " 
         		;
@@ -91,7 +85,8 @@ public class Simulator {
         
         //top 36%
         for(int i = 0; i < NUM_OK_CALLS; ++i) {
-        playerHoleCards.add("22+, A2s+, K7s+, Q7s+, J7s+, T7s+, 98s, 87s, 76s, A2o+, K7o+, Q8o+, J9o+, T9o, 98o");
+       // playerHoleCards.add("22+, A2s+, K7s+, Q7s+, J7s+, T7s+, 98s, 87s, 76s, A2o+, K7o+, Q8o+, J9o+, T9o, 98o");
+            playerHoleCards.add(MY_LIST);
         }
         
         //top 18%
@@ -101,6 +96,9 @@ public class Simulator {
        // 
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
+        
+        //vs crazy all ins (ie around 40% of the time)
+        final String ALL_IN_DEFENSE = "A7o, KJo, 55+, QJs, KTs+, A6s+";
         
                 
         String fileName = "C:\\codejam\\CodeJam\\simul\\out.xml";
@@ -118,150 +116,10 @@ public class Simulator {
         public boolean isApplicable(CompleteEvaluation eval);
     }
         
-    public static class Criteria implements iCriteria
-    {
-        int round;
-        String desc;
-        boolean heroOnly;
-        boolean allMustMatch;
-                
-        //Any match will do
-        List<HandCategory> matchHandCat;
-        List<HandCategory> matchNegHandCat;
-        
-        //Only for hero only
-        List<WinningLosingCategory> winLoseCat;
-        
-        //For applicable
-        List<TextureCategory> mustHave;
-        List<TextureCategory> mustNotHave;
-        
-        int applicableCount = 0;
-        int matches = 0;
-        
-        private Criteria(int round, String desc) {
-            super();
-            this.round = round;
-            this.desc = desc;
-            
-            mustHave = Lists.newArrayList();
-            mustNotHave = Lists.newArrayList();
-            
-            matchHandCat = Lists.newArrayList();
-            matchNegHandCat = Lists.newArrayList();
-            
-            winLoseCat = Lists.newArrayList();
-        }
-        
-        public void printMsg() {
-            if (applicableCount == 0) {
-                logOutput.debug("{}.  No applicable cases", desc);
-                return;
-            }
-            logOutput.debug("{}.  {} / {} =  %{} ", desc, matches, applicableCount,
-                    100.0 * matches / applicableCount);
-        }
-
-        /* (non-Javadoc)
-         * @see pkr.Simulator.iCriteria#matches(pkr.CompleteEvaluation[])
-         */
-        @Override
-        public boolean matches(CompleteEvaluation[] evals) {
-            if (heroOnly)
-            {
-            	boolean matchesWinLose = winLoseCat.size() == 0;
-            	
-            	for(WinningLosingCategory cat : winLoseCat)
-            	{
-            		if (evals[0].hasFlag(round, cat))
-            		{
-            			matchesWinLose = true;
-            			break;
-            		}
-            	}
-            	
-            	if (!matchesWinLose)
-            	{
-            		return false;
-            		
-            	}
-                for(HandCategory cat : matchHandCat)
-                {
-                    if (evals[0].hasFlag(round, cat))
-                        return true;
-                }
-                 
-            } else if (allMustMatch) 
-            {
-                for (CompleteEvaluation eval : evals) {
-                    boolean ok = false;
-                    for(HandCategory cat : matchHandCat)
-                    {
-                        if (eval.hasFlag(round, cat))
-                        {
-                            ok = true;
-                            break;
-                        }
-                    }
-                    
-                    if (!ok)
-                        return false;
-                    
-                    for(HandCategory cat : matchNegHandCat)
-                    {
-                        if (eval.hasFlag(round, cat))
-                        {
-                            return false;
-                        }
-                    }
-                    
-                }
-                
-                return true;
-            } else {
-                for (CompleteEvaluation eval : evals) {
-                    for(HandCategory cat : matchHandCat)
-                    {
-                        if (eval.hasFlag(round, cat))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
-        }
-        
-        public void calculate(CompleteEvaluation[] evals)
-        {
-            if (!isApplicable(evals[0]))
-                return;
-            
-            ++applicableCount;
-            
-            if (matches(evals)) 
-                ++matches;
-        }
-
-        /* (non-Javadoc)
-         * @see pkr.Simulator.iCriteria#isApplicable(pkr.CompleteEvaluation)
-         */
-        @Override
-        public boolean isApplicable(CompleteEvaluation eval) {
-            for(TextureCategory cat : mustHave)
-            {
-                if (!eval.hasFlag(round, cat))
-                    return false;
-            }
-            
-            for(TextureCategory cat : mustNotHave)
-            {
-                if (eval.hasFlag(round, cat))
-                    return false;
-            }
-            return true;
-        }
-    }
+   
+    
+    
+    
     
     public static Tree simulate(int TOTAL_SIMULATIONS, List<String> playerHoleCards) {
         
@@ -281,172 +139,29 @@ public class Simulator {
         double[] equity = new double[numPlayers];
         
         List<Criteria> criteres = Lists.newArrayList();
+        
         List<Criteria> pairedBoardCriteres = Lists.newArrayList();
         List<Criteria> unPairedBoardCriteres = Lists.newArrayList();
         List<Criteria> allBoardCriteres = Lists.newArrayList();
-        
         
         for(int round = 0; round < 3; ++round)
         {
             String roundStr =  
                 round == 0 ? "FLOP " :
                 (round == 1 ? "TURN " : "RIVER");
+        
+                        
+            Criteria.addUnpairedBoardCriteria(round, roundStr, unPairedBoardCriteres);
+            Criteria.addPairedBoardCriteria(round, roundStr, pairedBoardCriteres);
+            //addAnyBoardCriteria(round, roundStr, allBoardCriteres);
+            Criteria.addAnyBoardCriteria(round, roundStr, allBoardCriteres);
+           
             
-            Criteria anythingOnPairedFlop = new Criteria(round, roundStr + " Anyone on paired board");
-            anythingOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);
-            anythingOnPairedFlop.matchHandCat.add( HandCategory.TWO_PAIR_USING_ONE );
-            anythingOnPairedFlop.matchHandCat.add( HandCategory.SET_USING_ONE );
-            anythingOnPairedFlop.matchHandCat.add( HandCategory.FULL_HOUSE );
-            anythingOnPairedFlop.matchHandCat.add( HandCategory.QUADS );
-            
-            Criteria tripsOnPairedFlop = new Criteria(round, roundStr + " Anyone trips on paired board");
-            tripsOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
-            tripsOnPairedFlop.matchHandCat.add( HandCategory.SET_USING_ONE );
-            
-            Criteria twoPairOnPairedFlop = new Criteria(round, roundStr + " 2 pair on paired board");
-            twoPairOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
-            twoPairOnPairedFlop.matchHandCat.add( HandCategory.TWO_PAIR_USING_ONE );
-            
-            Criteria nothingOnPairedFlop = new Criteria(round, roundStr + " nothing on paired board");
-            nothingOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
-            nothingOnPairedFlop.matchHandCat.add( HandCategory.PAIR_ON_PAIRED_BOARD );
-            nothingOnPairedFlop.allMustMatch = true;
-            
-            pairedBoardCriteres.add(anythingOnPairedFlop);
-            pairedBoardCriteres.add(tripsOnPairedFlop);
-            pairedBoardCriteres.add(twoPairOnPairedFlop);
-            pairedBoardCriteres.add(nothingOnPairedFlop);
-            
-            
-            Criteria flushDrawCrit = new Criteria(round, roundStr + " flush draw");
-            //nothingOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
-            flushDrawCrit.matchHandCat.add( HandCategory.FLUSH_DRAW );
-            
-            Criteria straightDrawCrit = new Criteria(round, roundStr + " straight draw (inc gutshots)");
-            //nothingOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
-            straightDrawCrit.matchHandCat.add( HandCategory.STRAIGHT_DRAW_2 );
-            straightDrawCrit.matchHandCat.add( HandCategory.STRAIGHT_DRAW_1 );
-
-            Criteria straight2DrawCrit = new Criteria(round, roundStr + " straight draw");
-            //nothingOnPairedFlop.mustHave.add(TextureCategory.PAIRED_BOARD);            
-            straight2DrawCrit.matchHandCat.add( HandCategory.STRAIGHT_DRAW_2 );
-            
-
-            allBoardCriteres.add(flushDrawCrit);
-            allBoardCriteres.add(straightDrawCrit);
-            allBoardCriteres.add(straight2DrawCrit);
-            
-            
-            
-            Criteria highCardOnly  = new Criteria(round, roundStr + " nothing on unpaired board");
-            highCardOnly.allMustMatch = true;
-            highCardOnly.matchHandCat.add(HandCategory.HIGH_CARD);
-            highCardOnly.mustHave.add(TextureCategory.UNPAIRED_BOARD);
-            
-            unPairedBoardCriteres.add(highCardOnly);
-            
-            Criteria reallyNothing = new Criteria(round, roundStr + " no pairs no draws on unpaired board");
-            reallyNothing.allMustMatch = true;
-            reallyNothing.matchHandCat.add(HandCategory.HIGH_CARD);
-            reallyNothing.matchNegHandCat.add(HandCategory.FLUSH_DRAW);
-            reallyNothing.matchNegHandCat.add(HandCategory.STRAIGHT_DRAW_2);
-            reallyNothing.mustHave.add(TextureCategory.UNPAIRED_BOARD);
-            unPairedBoardCriteres.add(reallyNothing);
-            
-        Criteria meTwoPairFlop = new Criteria(round, roundStr + " 2 pair");
-        meTwoPairFlop.mustHave.add(TextureCategory.UNPAIRED_BOARD);
-        meTwoPairFlop.matchHandCat.add(HandCategory.TWO_PAIR_USING_BOTH);
-        meTwoPairFlop.heroOnly = true;
-        
-        Criteria anyTwoPairFlop = new Criteria(round, roundStr +" Anyone 2 pair on unpaired board");
-        anyTwoPairFlop.mustHave.add(TextureCategory.UNPAIRED_BOARD);
-        anyTwoPairFlop.matchHandCat.add( HandCategory.TWO_PAIR_USING_BOTH );
-        
-        unPairedBoardCriteres.add(meTwoPairFlop);
-        unPairedBoardCriteres.add(anyTwoPairFlop);
-        
-        Criteria any0PairCrit = new Criteria(round, roundStr + " Anyone top/over pair");
-        any0PairCrit.mustHave.add(TextureCategory.UNPAIRED_BOARD);
-        any0PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_5);
-        any0PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_4);
-        any0PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_0);
-        
-        Criteria any1PairCrit = new Criteria(round, roundStr + " Anyone pair 1 overcard");
-        any1PairCrit.mustHave.add(TextureCategory.UNPAIRED_BOARD);
-        any1PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_5);
-        any1PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_4);
-        any1PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_0);
-        any1PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_1);
-        
-        Criteria any2PairCrit = new Criteria(round, roundStr +" Anyone pair 2 overcards");
-        any2PairCrit.mustHave.add(TextureCategory.UNPAIRED_BOARD);
-        any2PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_5);
-        any2PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_4);
-        any2PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_0);
-        any2PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_1);
-        any2PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_2);
-        
-        Criteria any3PairCrit = new Criteria(round, roundStr + " Anyone pair 3 overcards");
-        any3PairCrit.mustHave.add(TextureCategory.UNPAIRED_BOARD);
-        any3PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_5);
-        any3PairCrit.mustNotHave.add(TextureCategory.SAME_SUIT_4);
-        any3PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_0);
-        any3PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_1);
-        any3PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_2);
-        any3PairCrit.matchHandCat.add( HandCategory.PAIR_OVERCARDS_3);
-        
-        unPairedBoardCriteres.add(any0PairCrit);
-        unPairedBoardCriteres.add(any1PairCrit);
-        unPairedBoardCriteres.add(any2PairCrit);
-        unPairedBoardCriteres.add(any3PairCrit);
-        
-        Criteria tripsCrit = new Criteria(round, roundStr + " Anyone Trips ");
-
-        tripsCrit.matchHandCat.add( HandCategory.SET_USING_BOTH );
-        tripsCrit.matchHandCat.add( HandCategory.SET_USING_ONE );
-        
-        allBoardCriteres.add(tripsCrit);
-        
-        Criteria straightCrit = new Criteria(round, roundStr + " Anyone Straight");
-
-        straightCrit.matchHandCat.add( HandCategory.STRAIGHT );
-        
-        allBoardCriteres.add(straightCrit);
-        
-        Criteria flushCrit = new Criteria(round, roundStr + " Anyone Flush");
-
-        flushCrit.matchHandCat.add( HandCategory.FLUSH );
-        
-        allBoardCriteres.add(flushCrit);
-        
-        Criteria fullHouseOrBetter = new Criteria(round, roundStr + " Anyone Full house or better");
-
-        fullHouseOrBetter.matchHandCat.add( HandCategory.FULL_HOUSE );
-        fullHouseOrBetter.matchHandCat.add( HandCategory.QUADS );
-        fullHouseOrBetter.matchHandCat.add( HandCategory.STRAIGHT_FLUSH);
-        
-        allBoardCriteres.add(fullHouseOrBetter);
-        
-        
-        Criteria winWithFlush = new Criteria(round,  roundStr + " me win with flush");
-        winWithFlush.heroOnly = true;
-        winWithFlush.matchHandCat.add(HandCategory.FLUSH);
-        winWithFlush.winLoseCat.add(WinningLosingCategory.WINNING);
-        
-        Criteria loseWithFlush = new Criteria(round,  roundStr + " me lose with flush");
-        loseWithFlush.heroOnly = true;
-        loseWithFlush.matchHandCat.add(HandCategory.FLUSH);
-        loseWithFlush.winLoseCat.add(WinningLosingCategory.LOSING);
-        loseWithFlush.winLoseCat.add(WinningLosingCategory.SECOND_BEST_HAND);
-        
-        allBoardCriteres.add(winWithFlush);
-        allBoardCriteres.add(loseWithFlush);
-
-        criteres.addAll(pairedBoardCriteres);
-        criteres.addAll(unPairedBoardCriteres);
-        criteres.addAll(allBoardCriteres);
         }
         
+        criteres.addAll(pairedBoardCriteres);
+        criteres.addAll(unPairedBoardCriteres);
+       criteres.addAll(allBoardCriteres);
                 
         long startTime = System.currentTimeMillis();
         
@@ -460,6 +175,7 @@ public class Simulator {
             }
             
             for(Criteria c : criteres) {
+                log.debug("Calculate criteria {}", c.desc);
                 c.calculate(evals);
             }
             

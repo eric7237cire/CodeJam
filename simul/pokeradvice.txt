@@ -1,4 +1,10 @@
+Situation :
+T8 high pair vs good hands
+About a 50/50 shot at flop, 30% kicker, 50% pocket pairs, 20% trips/2pair
 
+5 -- look to have top pair
+
+Top pair becoming non top pair vs 2 or 3
 
 5 handed at least 20% equity
 

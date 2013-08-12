@@ -42,8 +42,10 @@ public class PossibilityNode implements iDisplayNode {
         SAME_SUIT_4("4 of the same suit"),
         SAME_SUIT_5("5 of the same suit"),
         STRAIGHT("Straight on board"),
+        STRAIGHT_POSSIBLE("Straight possible on board"),
         PAIRED_BOARD("Paired board"),
         TWO_PAIRED_BOARD("2 Pairs on board"),
+        TRIPS_BOARD("Trips board"),
         FULL_BOARD("full house on board"),
         UNPAIRED_BOARD("Un paired board"),
         HAS_AT_LEAST_ONE_ACE("At least 1 Ace");

@@ -335,13 +335,13 @@ public class TestEvalNodes
         ti.addCards(Card.parseCards("As 2c 4d 3s Th"));
         ti.calculate();
         
-        assertEquals(1, ti.getStraightDrawCount(new HoleCards(Card.parseCards("As 2c"))));
+        assertEquals(1, ti.getStraightDrawCount());
         
         ti = new TextureInfo();
         ti.addCards(Card.parseCards("As 5h 4d 3s Th"));
         ti.calculate();
         
-        assertEquals(1, ti.getStraightDrawCount(new HoleCards(Card.parseCards("As 5d"))));
+        assertEquals(1, ti.getStraightDrawCount());
     }
     @Test
     public void testStraightDraws()
