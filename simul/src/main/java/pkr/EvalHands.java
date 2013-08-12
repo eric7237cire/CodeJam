@@ -84,6 +84,8 @@ public class EvalHands {
 
             evals[i].setHoleCards(holeCards);
             
+            
+            
             evals[i].setRoundScore(0, scoreSingleHand(texInfoPlayers[i]));
             
             if (i == 0 || !heroOnly) {
@@ -124,6 +126,8 @@ public class EvalHands {
             texInfoPlayers[i].addCard(flopTurnRiver.length < 5 ? null : flopTurnRiver[4]);
             texInfoPlayers[i].calculate();
             
+            evals[i].communityCards = communityCards; 
+                    
             evals[i].setRoundScore(CompleteEvaluation.ROUND_RIVER, scoreSingleHand(texInfoPlayers[i]));
             
             if (i == 0 || !heroOnly) {
@@ -170,15 +174,22 @@ public class EvalHands {
             evals[0].setFlag(round, TextureCategory.FULL_BOARD);
         } else if (communityCards.hasTwoPair()) {
             evals[0].setFlag(round, TextureCategory.TWO_PAIRED_BOARD);
+        } else if (communityCards.threeKind != -1) {
+            evals[0].setFlag(round, TextureCategory.TRIPS_BOARD);
         } else if (!communityCards.noPairedCards()) {
             evals[0].setFlag(round, TextureCategory.PAIRED_BOARD);
-        } else {
+        } else  {
             evals[0].setFlag(round, TextureCategory.UNPAIRED_BOARD);
         }
         
         if (communityCards.hasStraight())
         {
             evals[0].setFlag(round, TextureCategory.STRAIGHT);
+        }
+        
+        if (communityCards.straightPossible)
+        {
+            evals[0].setFlag(round, TextureCategory.STRAIGHT_POSSIBLE);
         }
         
         if (heroOnly)
@@ -212,7 +223,7 @@ public class EvalHands {
             TextureInfo allCardsTexInfo, TextureInfo communityCards, Score score
             /*Flop flop,  Card turn, Card river*/)
     {
-        int straightDrawCount = allCardsTexInfo.getStraightDrawCount(eval.getHoleCards());
+        int straightDrawCount = allCardsTexInfo.getStraightDrawCount();
         
         if(eval.getHoleCards().isSuited())
             {

@@ -1,0 +1,153 @@
+//After I lost AA to KT with a runner runner straight a few hands ago, 
+//Zynga decides to give me some super ness
+Noureddine a suivi de 40 000.
+Matthieu se couche.
+Eric a suivi de 40 000.
+Jean-luc a suivi de 40 000.
+
+Eric a relancé de 80 000.
+Jean-luc a suivi de 80 000.
+Noureddine a suivi de 80 000.
+
+//At this point I had the Full house
+Eric a relancé de 120 000.
+Jean-luc a relancé de 560 000.
+Noureddine a suivi de 560 000.
+Eric a suivi de 560 000.
+
+//At the river, I decide to tease the maniac, who hit a straight
+Eric a relancé de 900 000.
+Jean-luc a relancé de 3 400 000.
+Noureddine se couche.
+Eric a fait tapis.
+Jean-luc a suivi de 7 620 000.
+Eric remporte le pot (17 280 000 $) avec un full de 9 par les 8.
+_____________________________
+Jean-luc a suivi de 40 000.
+Noureddine a suivi de 40 000.
+Matthieu a suivi de 40 000.
+Eric a suivi de 40 000.
+//Of all things, I flop a king high spades flush
+Matthieu a parlé.
+Eric a parlé.
+Jean-luc a relancé de 440 000.
+Noureddine se couche.
+Matthieu se couche.
+//I do a crazy all in
+Eric a fait tapis.
+//Which he calls with Jspades 6 other
+Jean-luc a suivi de 17 200 000.
+Eric remporte le pot (34 560 000 $) avec une couleur à K.
+_____________________________
+
+//I hit him again
+Jean-luc a relancé de 280 000.
+Hugo se couche.
+Jack a suivi de 280 000.
+Eric a suivi de 280 000.
+
+//At this point, I had folded to his pre flop raises on the flop
+//FLop is 3 clubs, I hit a set 444
+Jack a parlé.
+Eric a parlé.
+Jean-luc a relancé de 160 000.
+Jack a suivi de 160 000.
+Eric a suivi de 160 000.
+//Tens pair, got my house
+Jack a parlé.
+Eric a parlé.
+Jean-luc a relancé de 160 000.
+Jack a suivi de 160 000.
+Eric a suivi de 160 000.
+Jack a parlé.
+Eric a parlé.
+Jean-luc a relancé de 200 000.
+Jack a suivi de 200 000.
+//He actually flopped the nut flush
+Eric a relancé de 2 000 000.
+//Thinks he is clever
+Jean-luc a relancé de 6 300 000.
+Jack se couche.
+//I do not reraise, worrying about a better full house, who knows...
+Eric a suivi de 6 300 000.
+Eric remporte le pot (14 600 000 $) avec un full de 4 par les 10.
+_____________________________
+Vicky se couche.
+Guy a suivi de 40 000.
+Noble a fait tapis.
+Eric a relancé de 760 000.
+Expédita se couche.
+Guy a suivi de 760 000.
+//Board is 88Q  rainbow, I had AQo him QJo, I get my shit back after losing to 4 of a kind
+Eric a relancé de 1 000 000.
+Guy a relancé de 7 540 000.
+Eric a fait tapis.
+Eric remporte le pot (15 920 000 $) avec une paire de Q, une paire de 8 et un A en kicker.
+Eric remporte le pot (1 060 000 $) avec une paire de Q, une paire de 8 et un A en kicker.
+_____________________________
+Qasm se couche.
+Ioannis a suivi de 40 000.
+Zahi a relancé de 200 000.
+Branko se couche.
+Eric a suivi de 200 000.
+Ioannis a suivi de 200 000.
+//I flop the nut flush, he flops K high flush
+Eric a parlé.
+Ioannis a relancé de 620 000.
+Zahi se couche.
+Eric a suivi de 620 000.
+Eric a parlé.
+Ioannis a relancé de 1 860 000.
+//Now that he is more or less committed, we jam, just
+Eric a relancé de 4 200 000.
+Ioannis a fait tapis.
+Eric remporte le pot (10 260 000 $) avec une couleur à A.
+_____________________________
++ 5 XP pour avoir joué une main.
+Eno se couche.
+Eric a relancé de 160 000.
+Waheb a suivi de 160 000.
+Eric a relancé de 160 000.
+//This may have annoyed him ; he has 110 million, so not a super fish
+Waheb se couche.
++ 5 XP pour avoir joué une main.
+Eric gagne.
+_____________________________
+ 
+Eric a suivi de 80 000.
+Waheb a relancé de 160 000.
+Eno a suivi de 160 000.
+Eric a suivi de 160 000.
+//I flop 2 pair QT2, bicolor ; as most people would slow play a set
+//I feel my 2 pair is good
+Waheb a relancé de 1 900 000.
+Eno se couche.
+//So I do a crazy reraise
+Eric a fait tapis.
+Waheb a suivi de 14 720 000.
+//He shows KK
+Eric remporte le pot (29 920 000 $) avec une paire de J, une paire de 10 et un Q en kicker.
+_____________________________
+//This table has been lose and crazy, at one point, I was
+//down to 6 million, so my image was pretty eracti.  I had
+//made some all ins (<3 mil) without the nuts
+Mike a suivi de 80 000.
+Harold se couche.
+Eric a suivi de 80 000.
+Joseph a suivi de 80 000.
+Zaman a suivi de 80 000.
+Joseph a parlé.
+Zaman a parlé.
+Mike a parlé.
+Eric a relancé de 240 000.
+Joseph se couche.
+Zaman se couche.
+Mike a suivi de 240 000.
+Mike a parlé.
+Eric a parlé.
+Mike a relancé de 800 000.
+Eric a fait tapis.
+//Final board was A Ad x 5d d and dimands and mike had the nut couleur
+Mike a suivi de 11 366 138.
+Eric remporte le pot (23 532 276 $) avec un full de A par les 5.
+_____________________________

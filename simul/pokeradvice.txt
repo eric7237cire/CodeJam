@@ -1,4 +1,10 @@
+Situation :
+T8 high pair vs good hands
+About a 50/50 shot at flop, 30% kicker, 50% pocket pairs, 20% trips/2pair
 
+5 -- look to have top pair
+
+Top pair becoming non top pair vs 2 or 3
 
 5 handed at least 20% equity
 
@@ -13,9 +19,14 @@ A2 --
 
 Dream hands like 227 are rare ; problem is a flop like AA7 can get slapped down by better aces. 
 
-Early position --
+Early position 
 
 Throw away A2 - A5
+
+Q4s -- 
+
+0 overcards, winning 65% of the time
+1 overcard, winning 37% of the time
 
 
 No str8 draw or only gutshots

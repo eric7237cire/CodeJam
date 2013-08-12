@@ -61,7 +61,7 @@ public class TreeNode
         if (data == null) {
             writer.writeStartElement("root");
         } else {
-            String perc = "P_" + df.format(100.0 * count / getParent().count) + "%";
+            String perc = "P_" + df.format(100.0 * count / getParent().count); // + "%";
             writer.writeStartElement(perc + "_" + data.toString());
         }
         writer.writeAttribute("count", Integer.toString(count));

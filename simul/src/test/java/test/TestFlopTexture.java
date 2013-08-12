@@ -1,7 +1,8 @@
 package test;
 
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+import static pkr.CompleteEvaluation.*;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,8 +10,12 @@ import org.junit.runners.JUnit4;
 
 import pkr.Card;
 import pkr.CardRank;
+import pkr.CompleteEvaluation;
+import pkr.EvalHands;
+import pkr.HoleCards;
 import pkr.Suit;
 import pkr.TextureInfo;
+import pkr.possTree.PossibilityNode.TextureCategory;
 
 @RunWith(JUnit4.class)
 
@@ -49,5 +54,29 @@ public class TestFlopTexture {
         
         assertEquals(CardRank.ACE.getIndex(), ti.firstPair);
         
+    }
+    
+    @Test
+    public void testTripsOnBoard()
+    {
+        HoleCards h1 = new HoleCards(Card.parseCards("Ac Kc"));               
+        HoleCards h2 = new HoleCards(Card.parseCards("4h Ah"));  
+        HoleCards h3 = new HoleCards(Card.parseCards("Qs Ad"));  
+                                       
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, 
+                new HoleCards[] {h1, h2, h3},
+                Card.parseCards("7d As 7h 4d 7c"));
+        
+        
+        int handNum = 0;
+        int round = ROUND_TURN;
+        
+        assertTrue(evals[0].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertFalse(evals[0].hasFlag(round, TextureCategory.TRIPS_BOARD));
+        
+        round  = ROUND_RIVER;
+        
+        assertFalse(evals[0].hasFlag(round, TextureCategory.PAIRED_BOARD));
+        assertTrue(evals[0].hasFlag(round, TextureCategory.TRIPS_BOARD));
     }
 }
