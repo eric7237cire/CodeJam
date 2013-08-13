@@ -1,0 +1,44 @@
+<simul>
+
+    <sets>
+        <set name="random">
+            A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 
+            72+, 62+, 52+, 42+, 32+,22+
+        </set>
+        <set name="loose">
+            22+,
+            A2o+, K4o+, Q6o+, J8o+, T8o+, 98o+, 87o+, 75o+, 65o+, 54o,
+            A2s+, K2s+, Q2s+, J3s+, T6s+, 96s+, 86s+, 75s+, 63s+, 53s+, 43s, 32s
+        </set>
+
+        <set name="good">
+            55+, A8s+, K9s+, QTs+, JTs, T9s, 98s, 87s, A8o+, KJo+, QJo, JTo
+        </set>
+
+        <set name="my_calling">
+            22-77
+            A2o-ATo, K7o-KJo, Q8o-QTo, J9o+, T9o, 98o,
+            A2s-A9s, K2s-KTs, Q4s-QTs, J6s-J8s, T6s-T8s,
+            96s+, 86s+, 76s, 65s, 54s
+        </set>
+
+        <set name="my_raising">
+            99+,
+            AJo+, KQo+, QJo, JTo,
+            ATs+, KJs+, QJs+, J9s+, T9s
+        </set>
+
+    </sets>
+
+    <scenarios>
+        <scenario name="2Random" iterCount="1000">
+            <player set="random" count="2"/>            
+        </scenario>
+        <scenario name="multiWayDraw" iterCount="20">
+            <player set="random" count="2"/>
+            <player>AJo</player>
+            <player>AKo</player>
+        </scenario>
+    </scenarios>
+
+</simul>

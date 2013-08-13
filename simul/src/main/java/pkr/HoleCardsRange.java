@@ -2,6 +2,8 @@ package pkr;
 
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,97 +77,183 @@ public class HoleCardsRange {
         return rangeStr;
     }
 
+    private static String cardCode = "([2-9AKQJT][2-9AKQJT][so]?)";
+    private static Pattern begStopPat = Pattern.compile(cardCode + "-" + cardCode, Pattern.CASE_INSENSITIVE);
+    private static Pattern plusPat = Pattern.compile(cardCode + "\\+?", Pattern.CASE_INSENSITIVE);
+    private static Pattern exact = Pattern.compile( "([2-9AKQJT][hscd][2-9AKQJT][hscd])");
+    
+    private static class SingleCode
+    {
+        CardRank rankGrand;
+        CardRank rankPetit;
+        
+        boolean suited;
+        boolean unsuited;
+        private SingleCode(SingleCode other) {
+            super();
+            this.rankGrand = other.rankGrand;
+            this.rankPetit = other.rankPetit;
+            this.suited = other.suited;
+            this.unsuited = other.unsuited;
+        }
+        
+        private SingleCode() {
+            super();            
+        }
+    }
+    
+    private SingleCode parseSingleCode(String code)
+    {
+        SingleCode ret = new SingleCode();
+        ret.rankGrand = CardRank.fromChar(code.charAt(0));
+        ret.rankPetit = CardRank.fromChar(code.charAt(1));
+        
+        if (ret.rankGrand.getIndex() < 
+                ret.rankPetit.getIndex())
+        {
+            CardRank ex = ret.rankGrand;
+            ret.rankGrand = ret.rankPetit;
+            ret.rankPetit = ex;
+        }
+                
+        Preconditions.checkState(ret.rankGrand.getIndex() >= 
+                ret.rankPetit.getIndex(), code);
+        
+        if (code.length() > 2 && code.charAt(2) == 's')
+        {
+            Preconditions.checkState(ret.rankGrand != ret.rankPetit);
+            ret.suited = true;
+            ret.unsuited = false;
+        } else if (code.length() > 2 && code.charAt(2) == 'o')
+        {
+            Preconditions.checkState(ret.rankGrand != ret.rankPetit);
+            ret.suited = false;
+            ret.unsuited = true;
+        } else {
+            ret.suited = ret.rankGrand != ret.rankPetit;
+            ret.unsuited = true;
+        }
+        
+        return ret;
+    }
+    
     private void addCode(String code) {
         List<HoleCards> ret = Lists.newArrayList();
         
-        Preconditions.checkArgument(code.length() >= 2 && code.length() <= 4);
+        Preconditions.checkArgument(code.length() >= 2 && code.length() <= 7);
         
-        boolean hasPlus = false;
-        if (code.charAt(code.length()-1) == '+') 
+        if (exact.matcher(code).matches())
         {
-            hasPlus = true;
-            code = code.substring(0, code.length()-1);
-        }
-        
-        if (code.length() == 4) {
             HoleCards hc = new HoleCards( Card.parseCard(code.substring(0,2)),
                     Card.parseCard(code.substring(2,4)));
             ret.add(hc);
-        } else {
-            CardRank rank1 = CardRank.fromChar(code.charAt(0));
-            CardRank rank2 = CardRank.fromChar(code.charAt(1));
+            return;
+        }
+        
+        Matcher plusMatch = plusPat.matcher(code);
+        
+        SingleCode start = null;
+        SingleCode stop = null;
+        
+        if (plusMatch.matches())
+        {
+            start = parseSingleCode(plusMatch.group(1));
+            stop = new SingleCode(start);
             
-            //pairs
-            if (rank1 == rank2) {
-                
-                CardRank toRank = hasPlus ? CardRank.ACE : rank1;
-                
-                for(int rankIndex = rank1.getIndex(); rankIndex <= toRank.getIndex(); ++rankIndex) 
+            boolean toEnd = code.charAt(code.length()-1) =='+';
+            
+            if (toEnd)
+            {
+                if (start.rankGrand == start.rankPetit)
                 {
-                    CardRank rank = CardRank.getFromZeroBasedValue(rankIndex);
-                    
-                    Suit suit1;
-                    Suit suit2;
-                    for(int i = 0; i < 4; ++i) 
+                    stop.rankPetit = CardRank.ACE;
+                    stop.rankGrand = CardRank.ACE;
+             
+                } else {
+                    stop.rankPetit = CardRank.getFromZeroBasedValue(start.rankGrand.getIndex() - 1);
+                }
+            }
+        }
+        
+        Matcher begStopMatch = begStopPat.matcher(code); 
+        
+        if (begStopMatch.matches())
+        {
+            start = parseSingleCode(begStopMatch.group(1));
+            stop = parseSingleCode(begStopMatch.group(2));
+        }
+        
+        Preconditions.checkNotNull(stop, code);
+        
+        
+        CardRank rank1 = start.rankGrand;
+        CardRank rank2 = start.rankPetit;
+        
+        //pairs
+        if (rank1 == rank2) {
+            
+            CardRank toRank = stop.rankGrand;
+            
+            for(int rankIndex = rank1.getIndex(); rankIndex <= toRank.getIndex(); ++rankIndex) 
+            {
+                CardRank rank = CardRank.getFromZeroBasedValue(rankIndex);
+                
+                Suit suit1;
+                Suit suit2;
+                for(int i = 0; i < 4; ++i) 
+                {
+                    suit1 = Suit.fromIndex(i);
+                    for(int j = i+1; j < 4; ++j) 
                     {
-                        suit1 = Suit.fromIndex(i);
-                        for(int j = i+1; j < 4; ++j) 
+                        suit2 = Suit.fromIndex(j);
+                        
+                        ret.add( new HoleCards( Card.getCard(suit1, rank), 
+                                Card.getCard(suit2, rank)));
+                    }
+                }
+                   
+            }
+        } else {
+            boolean suited = start.suited;
+            boolean unSuited = start.unsuited;
+            
+            
+            Preconditions.checkState(rank1.getIndex() > rank2.getIndex());
+            
+            int toRank2Index = stop.rankPetit.getIndex();
+            
+            for(int rankIndex = rank2.getIndex(); rankIndex <= toRank2Index; ++rankIndex)
+            {
+                CardRank rank = CardRank.getFromZeroBasedValue(rankIndex);
+                Preconditions.checkNotNull(rank, code + "r index " + rankIndex);
+                
+                Suit suit1;
+                Suit suit2;
+                for(int i = 0; i < 4; ++i) 
+                {
+                    suit1 = Suit.fromIndex(i);
+                    
+                    if (suited) {
+                        suit2 = Suit.fromIndex(i);
+                        ret.add( new HoleCards( Card.getCard(suit1, rank1),
+                                Card.getCard(suit2, rank)));
+                    } 
+                    
+                    if (unSuited) {
+                        for(int j = 0; j < 4; ++j) 
                         {
+                            //We only want unsuited
+                            if (unSuited && j==i)
+                                continue;
                             suit2 = Suit.fromIndex(j);
                             
-                            ret.add( new HoleCards( Card.getCard(suit1, rank), 
-                                    Card.getCard(suit2, rank)));
-                        }
-                    }
-                       
-                }
-            } else {
-                boolean suited = code.length() == 2 || (code.length() == 3 && code.charAt(2) == 's');
-                boolean unSuited = code.length() == 2 || (code.length() == 3 && code.charAt(2) == 'o');
-                
-                //First card is highest
-                if (rank2.getIndex() > rank1.getIndex()) 
-                {
-                    CardRank tmp = rank2;
-                    rank2 = rank1;
-                    rank1 = tmp;                            
-                }
-                Preconditions.checkState(rank1.getIndex() > rank2.getIndex());
-                
-                int toRank2Index = hasPlus ? rank1.getIndex()-1 : rank2.getIndex();
-                
-                for(int rankIndex = rank2.getIndex(); rankIndex <= toRank2Index; ++rankIndex)
-                {
-                    CardRank rank = CardRank.getFromZeroBasedValue(rankIndex);
-                    Preconditions.checkNotNull(rank, code + "r index " + rankIndex);
-                    
-                    Suit suit1;
-                    Suit suit2;
-                    for(int i = 0; i < 4; ++i) 
-                    {
-                        suit1 = Suit.fromIndex(i);
-                        
-                        if (suited) {
-                            suit2 = Suit.fromIndex(i);
-                            ret.add( new HoleCards( Card.getCard(suit1, rank1),
-                                    Card.getCard(suit2, rank)));
-                        } 
-                        
-                        if (unSuited) {
-                            for(int j = 0; j < 4; ++j) 
-                            {
-                                //We only want unsuited
-                                if (unSuited && j==i)
-                                    continue;
-                                suit2 = Suit.fromIndex(j);
-                                
-                                ret.add( new HoleCards( Card.getCard(suit1, rank1), Card.getCard(suit2, rank)));
-                            }
+                            ret.add( new HoleCards( Card.getCard(suit1, rank1), Card.getCard(suit2, rank)));
                         }
                     }
                 }
-                
             }
+                
+            
         }
         
         

@@ -55,7 +55,9 @@
    </logger>
    
    <logger name="main" level="DEBUG"/>
-   <logger name="mainOutput" level="DEBUG"/>
+   <logger name="mainOutput" level="DEBUG">
+    <appender-ref ref="FILE"/>
+    </logger>
    <logger name="pkr.Simulator" level="WARN"/>
    <logger name="pkr.HoleCardsRange" level="DEBUG">
    

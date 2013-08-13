@@ -33,7 +33,7 @@ public class TestRanges {
     @Test
     public void testRangeSuitedAndUnsuited2() 
     {
-        HoleCardsRange range1  = new HoleCardsRange("77+, J4s+, 93o+, 27, 82s");
+        HoleCardsRange range1  = new HoleCardsRange("77+, \tJ4s+,  93o+,\n 27, \n\n\n82s");
         
         assertTrue(range1.inRange(Card.parseCards("7c7s")));
         assertTrue(range1.inRange(Card.parseCards("AsAc")));
@@ -67,6 +67,32 @@ public class TestRanges {
         
         range1 = new HoleCardsRange("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
         assertEquals(range1.getCardsList().size(), 1248);
+    }
+    
+    @Test
+    public void testMinus() 
+    {
+        HoleCardsRange range1  = new HoleCardsRange("44-66,\t\n A9s-AQs");
+        
+        assertTrue(range1.inRange(Card.parseCards("AhJh")));
+        
+        assertTrue(range1.inRange(Card.parseCards("AdTd")));
+        
+        assertTrue(range1.inRange(Card.parseCards("AsQs")));
+        
+        assertFalse(range1.inRange(Card.parseCards("AsKs")));
+        
+        assertFalse(range1.inRange(Card.parseCards("Ac8c")));
+        
+        assertTrue(range1.inRange(Card.parseCards("4h4c")));
+        
+        assertTrue(range1.inRange(Card.parseCards("5d5h")));
+        
+        assertTrue(range1.inRange(Card.parseCards("6h6s")));
+        
+        assertFalse(range1.inRange(Card.parseCards("7s7h")));
+        
+        assertFalse(range1.inRange(Card.parseCards("3c3d")));
     }
     
 }
