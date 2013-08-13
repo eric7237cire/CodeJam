@@ -42,13 +42,64 @@ public class Simulator {
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
        // playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+, 22+");
         
+        List<String> groups = Lists.newArrayList();
 
 
-      int NUM_RANDOM =0;
+        //Raise
+        /*
+         * These are monster hands in any 6-max game and should almost always be played with the most aggression possible pf.  
+         */
+        groups.add("TT+, AQ+");
+        
+        /*
+         * 88-99/AJs-ATs/AJo/KQs 
+
+
+These hands are very strong and should generally be raised or 3-bet pf. If it’s 3-bets cold to you, you may fold depending on the conditions. 
+         */
+        groups.add("88+, AJo+, ATs+, KQs ");
+        
+        /*
+         * 77-66/A9s-A7s/ATo/KJs-KTs/KQo-KJo/QJs-QTs 
+
+
+These hands are also strong and should be raised from any position 
+if there has not been a raise. The better of these hands can be
+ 3-bet against overaggressive players or late position raisers.
+  They should generally be folded for a raise coming from early position. 
+         */
+        groups.add("66+, ATo+, A7s+, KJo+, KTs+, QTs+");
+        
+        /*
+         * 55-22/A6s-A2s/A9o-A2o/K9s/KTo/Q9s/QJo-QTo/JTs-J9s/JTo
+
+
+These hands should generally be folded UTG and MP with the exception of
+ A9o, A8o, K9s, KTo, and JTs, which should be raised in MP. 
+ If there's a limper, these hands should be played either for a call 
+ or a raise depending on the exact hand and the likelihood of a raise 
+ making it heads up to the flop. All these hands should be raised in 
+ opened from late position and the small blind. 
+         */
+        groups.add("22+, A2o+, A2s+, KTo+, K9s+, QTo+, Q9s+, JTo, J9s+");
+        
+        /*
+         * K8s-K6s/K9o-K7o/Q8s/T9s-T8s/T9o/98s
+
+
+These are hands that you should open from the CO, BT, and SB, 
+but should generally fold otherwise unless both your hand is
+ suited and there are at least two limpers
+         */
+        groups.add("22+, A2o+, A2s+, K7o+, K6s+, QTo+, Q8s+, JTo, J9s+, T9o, T8s+, 98s");
+
+      int NUM_RANDOM =2;
         int NUM_LOOSE_CALLS = 0;
         int NUM_OK_CALLS = 0;
+
         int NUM_GOOD_HANDS = 0;
-        int NUM_RAISING_HANDS = 1;
+        
+        int NUM_MY_RAISING_RANGE = 0;
         
         //offsuit A2 K7 Q8 J8 T8 T9 98(limit)
         //suited A2 K2 Q4 J6 T6 96 86?
@@ -95,10 +146,11 @@ public class Simulator {
         playerHoleCards.add("55+, A8s+, K9s+, QTs+, JTs, T9s, 98s, 87s, A8o+, KJo+, QJo, JTo");
         }
         
-        for(int i = 0; i < NUM_RAISING_HANDS; ++i) {
-            playerHoleCards.add("TT+, ATs+, KJs+, QTs+, JTs, T9s, 98s, AJo+, KQo+");
+
+        for(int i = 0; i < NUM_MY_RAISING_RANGE; ++i) {
+            playerHoleCards.add("99+, AJo+, ATs+, KQo+, KJs+, QJo, QJs+, JTo, J9s+, T9s");
             }
-        
+
        // 
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
@@ -158,9 +210,10 @@ public class Simulator {
         
                         
             Criteria.addUnpairedBoardCriteria(round, roundStr, unPairedBoardCriteres);
-            //Criteria.addPairedBoardCriteria(round, roundStr, pairedBoardCriteres);
-            //addAnyBoardCriteria(round, roundStr, allBoardCriteres);
-          //  Criteria.addAnyBoardCriteria(round, roundStr, allBoardCriteres);
+            Criteria.addPairedBoardCriteria(round, roundStr, pairedBoardCriteres);
+
+            Criteria.addAnyBoardCriteria(round, roundStr, allBoardCriteres);
+
            
             
         }
