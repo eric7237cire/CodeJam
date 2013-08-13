@@ -44,10 +44,11 @@ public class Simulator {
         
 
 
-      int NUM_RANDOM =1;
+      int NUM_RANDOM =0;
         int NUM_LOOSE_CALLS = 0;
-        int NUM_OK_CALLS = 1;
-        int NUM_GOOD_HANDS = 1;
+        int NUM_OK_CALLS = 0;
+        int NUM_GOOD_HANDS = 0;
+        int NUM_RAISING_HANDS = 1;
         
         //offsuit A2 K7 Q8 J8 T8 T9 98(limit)
         //suited A2 K2 Q4 J6 T6 96 86?
@@ -93,6 +94,11 @@ public class Simulator {
         for(int i = 0; i < NUM_GOOD_HANDS; ++i) {
         playerHoleCards.add("55+, A8s+, K9s+, QTs+, JTs, T9s, 98s, 87s, A8o+, KJo+, QJo, JTo");
         }
+        
+        for(int i = 0; i < NUM_RAISING_HANDS; ++i) {
+            playerHoleCards.add("TT+, ATs+, KJs+, QTs+, JTs, T9s, 98s, AJo+, KQo+");
+            }
+        
        // 
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
         //playerHoleCards.add("A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 72+, 62+, 52+, 42+, 32+");
@@ -152,9 +158,9 @@ public class Simulator {
         
                         
             Criteria.addUnpairedBoardCriteria(round, roundStr, unPairedBoardCriteres);
-            Criteria.addPairedBoardCriteria(round, roundStr, pairedBoardCriteres);
+            //Criteria.addPairedBoardCriteria(round, roundStr, pairedBoardCriteres);
             //addAnyBoardCriteria(round, roundStr, allBoardCriteres);
-            Criteria.addAnyBoardCriteria(round, roundStr, allBoardCriteres);
+          //  Criteria.addAnyBoardCriteria(round, roundStr, allBoardCriteres);
            
             
         }
