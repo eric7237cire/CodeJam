@@ -1,9 +1,14 @@
 ** Reraise is generally a sign of strength for beginners
 
-** 2 pair is not the nuts, only go all in against a real established fish
-particularly after I've established strength.  no real point in re-reaising
+** 2 pair is not the nuts, only go all in against a 
+real established fish particularly after I've established strength.
+ no real point in re-reaising
+ 
+ best spot is catching someone with an overpair and flopping 2
+ pair.
 
-** Never decide you have won, watch out, particularly after flopping something like 2 pair or TPTK
+** Never decide you have won, watch out, particularly after
+ flopping something like 2 pair or TPTK
 
 ** I tend to call too easily w/ shortstacked players.
 
@@ -13,14 +18,18 @@ particularly after I've established strength.  no real point in re-reaising
 
 ** Bewary of deep stacks!  
 
-** It seems I can value bet the river more in later position after no river bets,
-have yet to be check raised, too much fear of that.  An exception is in 5 hand, check raises
+** It seems I can value bet the river more in later position after
+ no river bets,
+have yet to be check raised, too much fear of that. 
+ An exception is in 5 hand, check raises
 more common
 
 ** In 3 way hand with TPTK, bet 1/3 to 2/3 pot max pot, not all in!
 
-Early position flop/turn/river pot sized bet into my 2 pair 54 board J54
-50k 200k 400k is indicative of a pretty good hand, better than a pair.
+Early position flop/turn/river pot sized bet into my 2 pair 54 board
+ J54
+50k 200k 400k is indicative of a pretty good hand, 
+better than a pair.
 
 Could have reraised early to get an idea of strength of his hand
 
@@ -33,17 +42,22 @@ Could be holding 2 pair / straight / etc
 ** Trying to bluff into a unknown element
 ** Deciding to bluff w/o really looking at flop texture
 
-Early position continuel pot or near size pot size bets generally means 2 pair or better.  If I have the lowest 2 pair, I should consider folding.  
+Early position continuel pot or near size pot size bets 
+generally means 2 pair or better.  If I have the lowest 2 pair,
+ I should consider folding.  
 
 I can beat overpair, top pair but not better 2 pair or set
 
 
-**Someone calling a short stack all in may still have a premium pocket pair,
+**Someone calling a short stack all in may still have a 
+premium pocket pair,
 do not rereaise with AQ or some crap like that willy nilly
 
 
-** Someone doing some crazy preflop raise like 1 million, think twice about calling
-with QQ, even against a beginner.  Wait until you see their range is loose.
+** Someone doing some crazy preflop raise like 1 million, 
+think twice about calling
+with QQ, even against a beginner.  
+Wait until you see their range is loose.
 
 
 
@@ -51,3 +65,8 @@ with QQ, even against a beginner.  Wait until you see their range is loose.
 
 ** STOP CALLING ALL INS WITH TOP PAIR!  only vs real maniacs
 AGAIN AGAIN AGAIN AGAIN
+
+** Stop 4 betting with crap. ie AQ vs villians KK.
+
+Unless player is an established maniac, respect the raise and just call.
+

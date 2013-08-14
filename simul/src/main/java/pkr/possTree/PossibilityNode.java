@@ -17,7 +17,8 @@ public class PossibilityNode implements iDisplayNode {
         
         HAND_CATEGORY(HandCategory.values()),
         WIN_LOSE(WinningLosingCategory.values()),
-        HAND_SUB_CATEGORY(HandSubCategory.values());
+        HAND_SUB_CATEGORY(HandSubCategory.values())
+        ;
         
         iFlag[] flags;
 

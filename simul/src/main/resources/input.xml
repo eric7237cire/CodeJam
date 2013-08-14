@@ -18,11 +18,11 @@
             K9s
         </set>        
         <set name="btn">
-            22+
+            22+,
+            AKo-ATo, KQo-KTo, QJo-QTo, JTo,
             A2s+,
             T9s,98s,87s, 76s, 65s, 54s, 43s,
-            KQs-KTs, QJs-QTs, JTs, 
-            AKo-ATo, KQo-KTo, QJo-QTo, JTo
+            KQs-KTs, QJs-QTs, JTs,             
             J9s, T8s, 97s, 75s, 53s, Q9s, J8s, T7s, 96s, 85s, 74s, Q8s, J7s,  
             K9s-K6s
         </set>
@@ -36,9 +36,9 @@
             A2s+, K2s+, Q2s+, J2s+, T2s+, 92s+, 82s+, 72s+, 62s+, 52s+, 42s+, 32s
         </set>
         <set name="loose">
-            22+,
-            A2o+, K4o+, Q6o+, J8o+, T8o+, 98o+, 87o+, 75o+, 65o+, 54o,
-            A2s+, K2s+, Q2s+, J3s+, T6s+, 96s+, 86s+, 75s+, 63s+, 53s+, 43s, 32s
+            22-99,
+            A2o-AJo, K4o-KJo, Q6o+, J8o+, T8o+, 98o+, 87o+, 75o+, 65o+, 54o,
+            A2s-A9s, K2s-K9s, Q2s+, J3s+, T6s+, 96s+, 86s+, 75s+, 63s+, 53s+, 43s, 32s
         </set>
 		<set name="ok">
             22+,
@@ -95,8 +95,11 @@
         
 		<scenario name="vs loose" iterCount="40000">
             <!--  <player set="co" count="1"/>-->
-            <player>
+            <player count="0">
             76s, 65s, 54s, 43s,
+            </player>
+            <player count="1">
+            K8o
             </player>
 			<player set="loose" count="3"/>
         </scenario>        

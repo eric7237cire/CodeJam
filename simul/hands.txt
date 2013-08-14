@@ -1,34 +1,4 @@
 _____________________________
-// Lost to a better straight ; I had 56o board was 789, turn was J, villian had AT
-// The mistake was not realizing one card made 
-//a better straight, thus value betting was not a good idea
-Dejan a suivi de 40 000.
-Eric a suivi de 40 000.
-יוסי a suivi de 40 000.
-Eric a relancé de 40 000.
-יוסי a suivi de 40 000.
-Dejan se couche.
-Eric a relancé de 80 000.
-יוסי a suivi de 80 000.
-Eric a relancé de 160 000.
-יוסי a relancé de 320 000.
-Eric a suivi de 320 000.
-יוסי remporte le pot (1 000 000 $) avec une quinte (J).
-_____________________________
-
-//I did not respect a 3 bet, had JJ him QQ 
-Artan a suivi de 40 000.
-Eric a relancé de 120 000.
-ג'ני se couche.
-Reks a relancé de 594 800.
-Artan se couche.
-Eric a relancé de 1 712 000.
-Reks a fait tapis.
-Reks remporte le pot (3 484 000 $) avec une paire de Q, une paire de 8 et un 10 en kicker.
-_____________________________
-
-
-
 
 //Had AK, then flopped a flush draw
 Jean-luc a relancé de 320 000.

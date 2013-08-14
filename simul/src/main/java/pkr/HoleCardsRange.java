@@ -79,8 +79,9 @@ public class HoleCardsRange {
                     */
         }
         
+        buf.append('\n');
         log.debug(buf.toString());
-        log.debug("\n");
+        
     }
     
     @Override
@@ -194,6 +195,7 @@ public class HoleCardsRange {
             start = parseSingleCode(begStopMatch.group(1));
             stop = parseSingleCode(begStopMatch.group(2));
             
+            //Vérifier que la fin est plus grande que le début
             if (start.rankPetit.getIndex() > stop.rankPetit.getIndex())
             {
                 SingleCode tmp = stop;

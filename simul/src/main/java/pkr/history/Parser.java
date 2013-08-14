@@ -31,7 +31,7 @@ public class Parser {
             Pattern.compile(".* a fait un.* automatique.");
     
     private final static Pattern COMMENT =
-            Pattern.compile("//.*");
+            Pattern.compile("\\s*//.*");
     
     static boolean isIgnoreLine(String line) 
     {
@@ -84,7 +84,7 @@ public class Parser {
             
             String line = lines.get(i);
             
-            log.debug("\nProcessing line {}\n", line);
+            log.debug("\nProcessing line [{}]\n", line);
             if (isIgnoreLine(line))
                 continue;
             

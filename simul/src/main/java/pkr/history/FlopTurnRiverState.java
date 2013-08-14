@@ -250,7 +250,7 @@ public class FlopTurnRiverState implements ParserListener
            // double callBluff = 100*betSizeToPot / (1+betSizeToPot);
             
             
-            logOutput.debug("Amount to call ${} for pot ${}.\n  Pot ratio : {}%  | 1 to {} | {} outs", 
+            logOutput.debug("Amount to call ${} for pot ${}.\n  Pot ratio (bluff catching) : {}%  | 1 to {} | {} outs", 
                     moneyFormat.format(diff), moneyFormat.format(pot),
                     df2.format(perc), df2.format(ratio), df2.format(outsOne));
           //  logOutput.debug("Must be ahead {}% of the time to call a bluff", 

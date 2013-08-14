@@ -47,6 +47,9 @@ public class Tree
         {
             for(int possLevel = 0; possLevel < PossibilityNode.Levels.values().length; ++possLevel) 
             {
+                if (possLevel == PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal())
+                    continue;
+                
                 PossibilityNode dispNode = eval.getPossibilityNode(round, possLevel);
                 
                 //Clear all flop flags
@@ -89,6 +92,7 @@ public class Tree
                 }
                 
                 //Fusion kicker + 2 et kicker + 1
+                
                 if (possLevel == PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal()
                         && dispNode.hasFlag(HandSubCategory.BY_KICKER_2_PLUS))
                          {
