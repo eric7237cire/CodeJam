@@ -23,7 +23,7 @@ public class Criteria implements iCriteria
         highCardOnly.allMustMatch = true;
         highCardOnly.matchHandCat.add(HandCategory.HIGH_CARD);
                 
-        unPairedBoardCriteres.add(highCardOnly);
+        //unPairedBoardCriteres.add(highCardOnly);
         
         Criteria reallyNothing = new Criteria(round, roundStr + " no pairs no draws on unpaired board");
         reallyNothing.allMustMatch = true;
@@ -38,8 +38,8 @@ public class Criteria implements iCriteria
         Criteria anyTwoPairFlop = new Criteria(round, roundStr +" Anyone 2 pair on unpaired board");
         anyTwoPairFlop.matchHandCat.add( HandCategory.TWO_PAIR_USING_BOTH );
         
-        unPairedBoardCriteres.add(meTwoPairFlop);
-        unPairedBoardCriteres.add(anyTwoPairFlop);
+      //  unPairedBoardCriteres.add(meTwoPairFlop);
+      //  unPairedBoardCriteres.add(anyTwoPairFlop);
         
         
         Criteria any0PairCrit = new Criteria(round, roundStr + " Anyone top/over pair");

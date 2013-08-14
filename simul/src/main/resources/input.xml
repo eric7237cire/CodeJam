@@ -5,40 +5,71 @@
             A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 
             72+, 62+, 52+, 42+, 32+,22+
         </set>
+        <set name="small blind">
+            22+,
+            A2o+, K2o+, Q2o+, J2o+, T2o+, 92o+, 84o+, 74o+, 64o+, 54o, 43o, 32o,
+            A2s+, K2s+, Q2s+, J2s+, T2s+, 92s+, 82s+, 72s+, 62s+, 52s+, 42s+, 32s
+        </set>
         <set name="loose">
             22+,
             A2o+, K4o+, Q6o+, J8o+, T8o+, 98o+, 87o+, 75o+, 65o+, 54o,
             A2s+, K2s+, Q2s+, J3s+, T6s+, 96s+, 86s+, 75s+, 63s+, 53s+, 43s, 32s
         </set>
-
+		<set name="ok">
+            22+,
+            A2o+, K4o+, Q6o+, J8o+, T9o+, 98o+, 87o+, 76o+
+            A2s+, K2s+, Q2s+, J6s+, T6s+, 96s+, 86s+, 76s+, 65s+, 54s+, 43s
+        </set>
         <set name="good">
             55+, A8s+, K9s+, QTs+, JTs, T9s, 98s, 87s, A8o+, KJo+, QJo, JTo
         </set>
 
-        <set name="my_calling">
+        <set name="my calling">
             22-77
             A2o-ATo, K7o-KJo, Q8o-QTo, J9o+, T9o, 98o,
-            A2s-A9s, K2s-KTs, Q4s-QTs, J6s-J8s, T6s-T8s,
-            96s+, 86s+, 76s, 65s, 54s
+            A2s-A9s, K2s-KTs, Q4s-QTs, J6s-J8s, T8s,
+            97s+, 86s+, 76s, 65s, 54s
         </set>
 
-        <set name="my_raising">
-            99+,
-            AJo+, KQo+, QJo, JTo,
-            ATs+, KJs+, QJs+, J9s+, T9s
+        <set name="my raising">
+            66+,
+            ATo+, KJo+, QTo+, JTo,
+            A4s+, K8s+, Q9s+, J9s+, T9s, 98s
+        </set>
+        
+        <set name="blind attack">
+            22+,
+            A2o+, K9o+, QTo+, JTo+, 
+            A2s+, K8s+, Q9s+, J9s+, T8s+, 98s+, 87s+
+        </set>
+        <set name="estimated blind defense">
+            22+,
+            A2o+, K4o+, Q6o+, J8o+, T8o+, 98o+, 87o+
+            A2s+, K2s+, Q2s+, J3s+, T6s+, 96s+, 86s+, 75s+
         </set>
 
     </sets>
-
-    <scenarios>
-        <scenario name="2Random" iterCount="1000">
+<!--
+<scenario name="2Random" iterCount="1000">
             <player set="random" count="2"/>            
         </scenario>
-        <scenario name="multiWayDraw" iterCount="20">
-            <player set="random" count="2"/>
-            <player>AJo</player>
-            <player>AKo</player>
+		
+		 <scenario name="blinds" iterCount="60000">
+            <player set="blind attack" />
+            <player set="estimated blind defense" count="2"/>
         </scenario>
+-->
+    <scenarios>
+        
+		<scenario name="vs loose" iterCount="60000">
+            <player set="my raising" count="1"/>
+			<player set="loose" count="3"/>
+        </scenario>        
+       
+	   <scenario name="vs ok" iterCount="60000">
+            <player set="my raising" count="1"/>
+			<player set="ok" count="2"/>
+        </scenario>        
     </scenarios>
 
 </simul>

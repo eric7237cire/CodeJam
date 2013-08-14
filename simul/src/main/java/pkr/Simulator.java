@@ -77,7 +77,7 @@ public class Simulator {
         {
             List<String> playerHoleCards = Lists.newArrayList();
             
-            String fileName = "C:\\codejam\\CodeJam\\simul\\out.xml";
+            String fileName = "C:\\codejam\\CodeJam\\simul\\" + scenario.getName() + ".xml";
             
             for(Player player : scenario.getPlayer())
             {
@@ -101,6 +101,9 @@ public class Simulator {
             
             int iters = scenario.getIterCount().intValue();
             
+            logOutput.debug("\n\n************************************************************************");
+            logOutput.debug("*  {}  ** rounds : {}", scenario.getName(), iters);
+            logOutput.debug("************************************************************************");
             Tree tree = simulate(iters, playerHoleCards);
             tree.output(fileName);
         }

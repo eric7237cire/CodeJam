@@ -62,13 +62,25 @@ public class HoleCardsRange {
                 rangeStr,
                 totalHands, 26*51,
                 FlopTurnRiverState.df2.format(100.0*totalHands / (26*51)));
+        StringBuffer buf = new StringBuffer();
+        
         for(CardRank rank : CardRank.values())
         {
+            buf.append(rank.name());
+            buf.append(": ");
+            buf.append(FlopTurnRiverState.df2.format(100.0*rankFreq[rank.getIndex()] / totalHands));
+            buf.append("%");
+            buf.append("  ");
+            /*
             log.debug("Card Rank {} {} of {} is %{} ", rank.name(),
                     rankFreq[rank.getIndex()],
                     totalHands,
                     FlopTurnRiverState.df2.format(100.0*rankFreq[rank.getIndex()] / totalHands));
+                    */
         }
+        
+        log.debug(buf.toString());
+        log.debug("\n");
     }
     
     @Override
