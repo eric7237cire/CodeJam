@@ -11,10 +11,10 @@
         <set name="co">
             22+
             A2s+,
-            T9s,98s,87s, 76s
+            T9s,98s,87s, 76s, 65s, 54s,
             KQs-KTs, QJs-QTs, JTs, 
-            AKo-AJo, KQo-KJo,
-            J9s, T8s, Q9s, J8s, 
+            AKo-AJo, KQo-KTo, QJo-QTo, JTo
+            J9s, T8s, 97s, 75s, Q9s, J8s, 
             K9s
         </set>        
         <set name="btn">
@@ -22,8 +22,8 @@
             A2s+,
             T9s,98s,87s, 76s, 65s, 54s, 43s,
             KQs-KTs, QJs-QTs, JTs, 
-            AKo-ATo, KQo-KTo, QJo-QTo,
-            J9s, T8s, 97s, 75s, Q9s, J8s, 
+            AKo-ATo, KQo-KTo, QJo-QTo, JTo
+            J9s, T8s, 97s, 75s, 53s, Q9s, J8s, T7s, 96s, 85s, 74s, Q8s, J7s 
             K9s-K6s
         </set>
         <set name="random">
