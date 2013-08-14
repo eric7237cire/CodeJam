@@ -1,6 +1,31 @@
 <simul>
 
     <sets>
+        <set name="utg">
+            22+
+            A8s-A9s,
+            T9s,98s,
+            AKs-ATs, KQs-KJs, QJs, JTs, 
+            AKo-AJo, KQo
+        </set>  
+        <set name="co">
+            22+
+            A2s+,
+            T9s,98s,87s, 76s
+            KQs-KTs, QJs-QTs, JTs, 
+            AKo-AJo, KQo-KJo,
+            J9s, T8s, Q9s, J8s, 
+            K9s
+        </set>        
+        <set name="btn">
+            22+
+            A2s+,
+            T9s,98s,87s, 76s, 65s, 54s, 43s,
+            KQs-KTs, QJs-QTs, JTs, 
+            AKo-ATo, KQo-KTo, QJo-QTo,
+            J9s, T8s, 97s, 75s, Q9s, J8s, 
+            K9s-K6s
+        </set>
         <set name="random">
             A2+, K2+, Q2+, J2+, T2+, 92+, 82+, 
             72+, 62+, 52+, 42+, 32+,22+
