@@ -23,7 +23,7 @@
             T9s,98s,87s, 76s, 65s, 54s, 43s,
             KQs-KTs, QJs-QTs, JTs, 
             AKo-ATo, KQo-KTo, QJo-QTo, JTo
-            J9s, T8s, 97s, 75s, 53s, Q9s, J8s, T7s, 96s, 85s, 74s, Q8s, J7s 
+            J9s, T8s, 97s, 75s, 53s, Q9s, J8s, T7s, 96s, 85s, 74s, Q8s, J7s,  
             K9s-K6s
         </set>
         <set name="random">
@@ -83,15 +83,25 @@
             <player set="blind attack" />
             <player set="estimated blind defense" count="2"/>
         </scenario>
+        
+        <scenario name="test" iterCount="10000">
+            <player set="my raising" count="1"/>
+            <player set="btn" count="1"/>
+        </scenario>  
 -->
     <scenarios>
         
-		<scenario name="vs loose" iterCount="60000">
-            <player set="my raising" count="1"/>
+        
+        
+		<scenario name="vs loose" iterCount="40000">
+            <!--  <player set="co" count="1"/>-->
+            <player>
+            76s, 65s, 54s, 43s,
+            </player>
 			<player set="loose" count="3"/>
         </scenario>        
        
-	   <scenario name="vs ok" iterCount="60000">
+	   <scenario name="vs ok" iterCount="60">
             <player set="my raising" count="1"/>
 			<player set="ok" count="2"/>
         </scenario>        

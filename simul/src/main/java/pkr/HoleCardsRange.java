@@ -51,7 +51,7 @@ public class HoleCardsRange {
         
         rankFreq = new int[13];
         
-        String[] ranges = rangeStr.split("\\s*[, ]\\s*");
+        String[] ranges = rangeStr.split("[, \\s]+");
         
         for(String code : ranges) {
             //log.debug("Parse code [{}] of {}", code, rangeStr);
@@ -152,7 +152,7 @@ public class HoleCardsRange {
     private void addCode(String code) {
         List<HoleCards> ret = Lists.newArrayList();
         
-        Preconditions.checkArgument(code.length() >= 2 && code.length() <= 7);
+        Preconditions.checkArgument(code.length() >= 2 && code.length() <= 7, code);
         
         if (exact.matcher(code).matches())
         {
@@ -193,6 +193,13 @@ public class HoleCardsRange {
         {
             start = parseSingleCode(begStopMatch.group(1));
             stop = parseSingleCode(begStopMatch.group(2));
+            
+            if (start.rankPetit.getIndex() > stop.rankPetit.getIndex())
+            {
+                SingleCode tmp = stop;
+                stop = start;
+                start = tmp;
+            }
         }
         
         Preconditions.checkNotNull(stop, code);

@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -15,6 +18,30 @@ import pkr.HoleCardsRange;
 
 @RunWith(JUnit4.class)
 public class TestRanges {
+    
+    @Test
+    public void testBtn()
+    {
+        HoleCardsRange range1  = new HoleCardsRange("22+\n" +
+        "A2s+,\n" +
+        "T9s,98s,87s, 76s, 65s, 54s, 43s,\n" +
+        "KQs-KTs, QJs-QTs, JTs, \n" +
+        "AKo-ATo, KQo-KTo, QJo-QTo, JTo\n" +
+        "J9s, T8s, 97s, 75s, 53s, Q9s, J8s, T7s, 96s, 85s, 74s, Q8s, J7s,\n" +  
+        "K9s-K6s\n");
+        
+        List<String> suits = Arrays.asList("c", "s", "h", "d");
+        for(String suitStr : suits)
+        {
+            assertTrue(range1.inRange(Card.parseCards("K" + suitStr + "6" + suitStr)));
+            assertTrue(range1.inRange(Card.parseCards("K" + suitStr + "7" + suitStr)));
+            assertTrue(range1.inRange(Card.parseCards("K" + suitStr + "8" + suitStr)));
+            assertTrue(range1.inRange(Card.parseCards("K" + suitStr + "9" + suitStr)));
+            assertTrue(range1.inRange(Card.parseCards("K" + suitStr + "T" + suitStr)));
+            assertTrue(range1.inRange(Card.parseCards("K" + suitStr + "J" + suitStr)));
+            assertTrue(range1.inRange(Card.parseCards("K" + suitStr + "Q" + suitStr)));
+        }
+    }
     
     @Test
     public void testRangeSuitedAndUnsuited() 

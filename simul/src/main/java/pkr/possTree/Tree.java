@@ -68,8 +68,8 @@ public class Tree
                 
               //Don't show gutshots
                 if (possLevel == PossibilityNode.Levels.HAND_CATEGORY.ordinal()) {
-                    dispNode.clearFlag(HandCategory.FLUSH_DRAW);
-                    dispNode.clearFlag(HandCategory.STRAIGHT_DRAW_1);
+                    //dispNode.clearFlag(HandCategory.FLUSH_DRAW);
+                   // dispNode.clearFlag(HandCategory.STRAIGHT_DRAW_1);
                    // dispNode.clearFlag(HandCategory.STRAIGHT_DRAW_2);
                 }
                 
@@ -85,7 +85,7 @@ public class Tree
                 //ne montre pas unsuited ni tirage de couleur
                 if (possLevel == PossibilityNode.Levels.TEXTURE.ordinal()) {
                     dispNode.clearFlag(TextureCategory.UNSUITED);
-                    dispNode.clearFlag(TextureCategory.SAME_SUIT_2);
+                    //dispNode.clearFlag(TextureCategory.SAME_SUIT_2);
                 }
                 
                 //Fusion kicker + 2 et kicker + 1
