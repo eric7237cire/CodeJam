@@ -1,12 +1,12 @@
 package pkr.history;
 
 public class StatsSessionPlayer {
-    int totalHands;
+    public int totalHands;
     
     //not counting big blind, non raised
-    int vpipNumerator;
-    int vpipDenom;
+    public int vpipNumerator;
+    public int vpipDenom;
     
-    int potsRaised;
+    public int potsRaised;
     
 }

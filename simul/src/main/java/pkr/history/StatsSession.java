@@ -7,9 +7,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 public class StatsSession {
-    Map<String, StatsSessionPlayer> playerSessionStats;
+    public Map<String, StatsSessionPlayer> playerSessionStats;
 
-    List<String> currentPlayerList;
+    public List<String> currentPlayerList;
     
     StatsSession() {
         super();

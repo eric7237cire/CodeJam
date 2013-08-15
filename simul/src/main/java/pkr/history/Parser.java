@@ -29,10 +29,13 @@ public class Parser {
     private final static Pattern REALISATION_LINE = 
             Pattern.compile(".* a atteint .* !");
     
-    
     private final static Pattern ADJUSTEMENT =
             Pattern.compile(".* a fait un.* automatique.");
     
+    private final static Pattern HORS_LIGNE =
+            Pattern.compile(".* est hors ligne.");
+    
+       
     private final static Pattern COMMENT =
             Pattern.compile("\\s*//.*");
     
@@ -48,6 +51,9 @@ public class Parser {
             return true;
         
         if (ADJUSTEMENT.matcher(line).matches()) 
+            return true;
+        
+        if (HORS_LIGNE.matcher(line).matches())
             return true;
     
         if (COMMENT.matcher(line).matches())
@@ -66,6 +72,7 @@ public class Parser {
     private static Pattern patRelance = Pattern.compile("(.*) a relancé de ([\\d ]+).");
     private static Pattern patCouche = Pattern.compile("(.*) se couche.");
     private static Pattern patTapis = Pattern.compile("(.*) a fait tapis."); 
+    private static Pattern patTapis2 = Pattern.compile("(.*) fait automatiquement tapis .*");
     private static Pattern patShowdown = Pattern.compile("(.*) remporte le pot \\(([\\d ]+) \\$\\) .*\\.");
     private static Pattern patGagne = Pattern.compile("(.*) gagne.");
     private static Pattern patHandBoundary = Pattern.compile("_*");
@@ -76,7 +83,9 @@ public class Parser {
         File file = new File(fileName);
         File inputFile = new File(brutefileName);
         
-        parseFile(inputFile, file);
+        List<FlopTurnRiverState[]> hands = parseFile(inputFile, file);
+        
+        StatsSession stats = computeStats(hands);
     }
     
     public static StatsSession computeStats(List<FlopTurnRiverState[]> hands)
@@ -165,6 +174,16 @@ public class Parser {
             }
             
             match = patTapis.matcher(line);
+            
+            if (match.matches()) 
+            {
+                String playerName = match.group(1);
+             
+                curState = curState.handleTapis(playerName);
+                continue;
+            }
+            
+            match = patTapis2.matcher(line);
             
             if (match.matches()) 
             {

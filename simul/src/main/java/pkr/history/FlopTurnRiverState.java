@@ -429,7 +429,8 @@ public class FlopTurnRiverState implements ParserListener
         
         hasFolded.put(playerName, true);
         
-        if (seenPlayer && potsGood()) 
+        //Want to process winning line
+        if (round < 3 && seenPlayer && potsGood()) 
         {
             return getNextState(false);
         }
@@ -465,7 +466,8 @@ public class FlopTurnRiverState implements ParserListener
         
         playerBets.put(playerName, 0);
         
-        if (potsGood())
+        //We exclude the river since we want to parse the last line showdown
+        if (round < 3 && potsGood())
         {
             //La ligne actuel était prise en compte
             return getNextState(false);

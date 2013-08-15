@@ -3,23 +3,50 @@ package pkr.history;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import sun.rmi.runtime.Log;
 
 public class StatsComputer
 {
 
+     Logger log = LoggerFactory.getLogger(StatsComputer.class);
+    
     public StatsComputer(List<FlopTurnRiverState[]> hands ) {
 
         stats = new StatsSession();
         
         for(FlopTurnRiverState[] ftrStates : hands)
         {
+            log.debug("\nStats hand");
+            
             for(String preFlopPlayer : ftrStates[0].players)
             {
+                log.debug("Player {}", preFlopPlayer);
                 StatsSessionPlayer playerSesStat = getSessionStats(preFlopPlayer);
                 
                 playerSesStat.totalHands++;
                 
-                if (BooleanUtils.isTrue(ftrStates[0].hasFolded.get(preFlopPlayer)))
+                //Checking BB does not affect stats
+                if (preFlopPlayer.equals(ftrStates[0].playerBB)
+                        && ftrStates[0].tableStakes == ftrStates[0].getCurrentBet(preFlopPlayer)
+                        )
+                {
+                    log.debug("Player {} is an unraised big  blind", preFlopPlayer);
+                    continue;
+                }
+                
+                Integer playerBet = ftrStates[0].playerBets.get(preFlopPlayer);
+                
+                playerSesStat.vpipDenom++;
+                
+                if (playerBet != null && playerBet >= ftrStates[0].tableStakes)
+                {
+                    playerSesStat.vpipNumerator++;
+                }
+                //if (BooleanUtils.isTrue(ftrStates[0].hasFolded.get(preFlopPlayer)))
+                /*
                 {
                     playerSesStat.vpipDenom++;
                 } else if (!preFlopPlayer.equals(ftrStates[0].playerBB)
@@ -29,7 +56,7 @@ public class StatsComputer
                     //Player is either not the big blind or had to put in extra
                     playerSesStat.vpipNumerator++;
                     playerSesStat.vpipDenom++;
-                }
+                }*/
                 
             }
         }
