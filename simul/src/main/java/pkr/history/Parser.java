@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
 public class Parser {
@@ -25,7 +27,8 @@ public class Parser {
             Pattern.compile("\\+ \\d+ XP pour avoir (?:joué|gagné) une main.");
     
     private final static Pattern REALISATION_LINE = 
-            Pattern.compile(".* a atteint la réalisation suivante : .* !");
+            Pattern.compile(".* a atteint .* !");
+    
     
     private final static Pattern ADJUSTEMENT =
             Pattern.compile(".* a fait un.* automatique.");
@@ -66,14 +69,40 @@ public class Parser {
     private static Pattern patShowdown = Pattern.compile("(.*) remporte le pot \\(([\\d ]+) \\$\\) .*\\.");
     private static Pattern patGagne = Pattern.compile("(.*) gagne.");
     private static Pattern patHandBoundary = Pattern.compile("_*");
-    
+        
     public static void main(String[] args) throws IOException {
-        String fileName = "C:\\codejam\\CodeJam\\simul\\hands.txt";
-       // String fileName = "C:\\codejam\\CodeJam\\simul\\handshistory.txt";
+        String brutefileName = "C:\\codejam\\CodeJam\\simul\\handshistory.txt";
+        String fileName =  "C:\\codejam\\CodeJam\\simul\\cleanhandshistory.txt";
         File file = new File(fileName);
-        List<String> lines = Files.readLines(file, Charsets.UTF_8);
+        File inputFile = new File(brutefileName);
+        
+        parseFile(inputFile, file);
+    }
+    
+    public static StatsSession computeStats(List<FlopTurnRiverState[]> hands)
+    {
+        StatsComputer sc = new StatsComputer(hands);
+        
+        for(String player : sc.stats.currentPlayerList)
+        {
+            StatsSessionPlayer ssp = sc.stats.playerSessionStats.get(player);
+            log.debug("Player [ {} ] -- Hands played {} VPIP %{}", player,  ssp.totalHands,
+                    FlopTurnRiverState.df2.format(100.0 * ssp.vpipNumerator / ssp.vpipDenom));
+        }
+        
+        return sc.stats;
+    }
+    
+    public static List<FlopTurnRiverState[]> parseFile(File rawHandHistory, File cleanedHandHistory) throws IOException {
+        //String fileName = "C:\\codejam\\CodeJam\\simul\\hands.txt";
+        
+        Preprocessor.clean(rawHandHistory, cleanedHandHistory);
+        
+        List<String> lines = Files.readLines(cleanedHandHistory, Charsets.UTF_8);
         
         ParserListener curState = null;
+        
+        List<FlopTurnRiverState[]> masterList = Lists.newArrayList();
         
         for(int i = 0; i < lines.size(); ++i)
         {
@@ -81,25 +110,23 @@ public class Parser {
                 log.debug("Replaying line");
                 --i;
             }
-            
+
             String line = lines.get(i);
-            
+
             log.debug("\nProcessing line [{}]\n", line);
             if (isIgnoreLine(line))
                 continue;
-            
+
             Matcher match = null;
-            
-            
-                match = patHandBoundary.matcher(line);
-                if (match.matches()) {
-                    curState = new FlopTurnRiverState(new ArrayList<String>(), 0, false, 0);  
-                    continue;
-                }
-               // continue;
-           // }
-            
-              if (curState == null)
+
+            match = patHandBoundary.matcher(line);
+            if (match.matches())
+            {
+                curState = new FlopTurnRiverState(new ArrayList<String>(), 0, false, 0,  masterList, new FlopTurnRiverState[4]);
+                continue;
+            }
+           
+            if (curState == null)
                 continue;
               
             try{
@@ -192,6 +219,11 @@ public class Parser {
             Preconditions.checkState(false, line);
             //log.debug("Line {}", line);
         }
+    
         
+        
+        return masterList;
     }
+    
+    
 }

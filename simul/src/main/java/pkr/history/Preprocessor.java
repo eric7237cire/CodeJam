@@ -1,9 +1,14 @@
 package pkr.history;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,6 +36,7 @@ public class Preprocessor {
     
     public static void clean(File inputFile, File outputFile) throws IOException
     {
+        
         List<String> inputLines = Files.readLines(inputFile, Charsets.UTF_8);
         List<String> outputLines = Lists.newArrayList();
         
@@ -41,11 +47,17 @@ public class Preprocessor {
         
         Preconditions.checkState(ok);
         
-        BufferedWriter os = new BufferedWriter(new FileWriter(outputFile, false));
+        OutputStreamWriter char_output = new OutputStreamWriter(
+                new FileOutputStream(outputFile, false),
+                Charset.forName("UTF-8").newEncoder() 
+            );
+        
+        BufferedWriter os = new BufferedWriter(char_output);
         
         for(String line : outputLines)
         {
             os.write(line);
+            log.debug(line);
             os.write("\n");
         }
         

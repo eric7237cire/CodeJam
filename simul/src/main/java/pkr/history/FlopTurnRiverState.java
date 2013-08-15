@@ -21,6 +21,10 @@ public class FlopTurnRiverState implements ParserListener
     static Logger log = LoggerFactory.getLogger(Parser.class);
     static Logger logOutput = LoggerFactory.getLogger("handOutput");
     
+    List<FlopTurnRiverState[]> masterList; 
+    FlopTurnRiverState[] roundStates;
+    
+    
     List<String> players;
     int pot;
     
@@ -29,31 +33,64 @@ public class FlopTurnRiverState implements ParserListener
     int amtToCall = 0;
     
     Map<String , Boolean> hasFolded;
+    Map<String, Integer> allInBet;
+    Map<String, Boolean> allInBetExact;
+    String lastTapisPlayer;
     Map<String, Integer> playerBets;
+    
+    String playerSB;
+    String playerBB;
+    int tableStakes;
     
     
     int currentPlayer = 0;
     
     boolean replayLine = false;
-    int round;
+    final int round;
     
     
-    public FlopTurnRiverState(List<String> players, int pot, boolean replayLine, int round) {
+    /**
+     * Each object is a round in a hand
+     * 
+     * @param players
+     * @param pot
+     * @param replayLine
+     * @param round
+     * @param stats
+     * @param masterList   holds for all hands in a session
+     * @param roundStates  holds all objects for the hand 
+     */
+    public FlopTurnRiverState(List<String> players, int pot, boolean replayLine, int round, 
+            List<FlopTurnRiverState[]> masterList, FlopTurnRiverState[] roundStates) 
+    {
         super();
+        Preconditions.checkNotNull(roundStates);
+        Preconditions.checkNotNull(masterList);
+        
         this.players = players;
         this.pot = pot;
         this.replayLine = replayLine;
         this.round = round;
+        this.masterList = masterList;
+        this.roundStates = roundStates;
         
         this.currentPlayer = players.size() - 1;
         
         hasFolded = Maps.newHashMap();
         playerBets = Maps.newHashMap();
+        allInBet = Maps.newHashMap();
+        allInBetExact = Maps.newHashMap();
         
         if (round == 0) {
             logOutput.debug("\n***********************************************");
             logOutput.debug("Starting new Hand");
+            
         }
+        
+        Preconditions.checkState(roundStates.length == 4);
+        Preconditions.checkState(roundStates[round] == null);
+        roundStates[round] = this;
+        
         log.debug("Nouveau round.  Players {} pot {}", players.size(), pot);
         
         logOutput.debug("\n------------------------------");
@@ -83,13 +120,36 @@ public class FlopTurnRiverState implements ParserListener
         return pot;
     }
     
+    public int getCurrentBet(String playerName)
+    {
+        Integer bet = playerBets.get(playerName);
+            
+        if (bet == null)
+            return 0;
+        
+        
+        return bet;
+    }
+    
+    public int getAllInBet(String playerName)
+    {
+        Integer bet = allInBet.get(playerName);
+        
+        if (bet == null)
+            return 0;
+        
+        return bet;
+    }
+    
+    
+    
     private ParserListener getNextStateAfterPreflop(boolean replayline) {
         log.debug("Preflop fini : Tous les joueurs pris en compte");
         List<String> playersInOrder = Lists.newArrayList();
         
         //add sb
-        String playerSB = players.get(players.size()-2);
-        String playerBB = players.get(players.size()-1);
+        playerSB = players.get(players.size()-2);
+        playerBB = players.get(players.size()-1);
         
         if (BooleanUtils.isNotTrue(hasFolded.get(playerSB))) {
             log.debug("Adding small blind {}", playerSB);
@@ -109,7 +169,7 @@ public class FlopTurnRiverState implements ParserListener
             }
         }
         
-        FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder, pot, replayline, 1);
+        FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder, pot, replayline, 1, masterList, roundStates);
         
         return ftrState;
     }
@@ -134,7 +194,7 @@ public class FlopTurnRiverState implements ParserListener
             }
         }
         
-        FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder, pot, replayLine, 1+round);
+        FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder, pot, replayLine, 1+round, masterList, roundStates);
         return ftrState;
     }
 
@@ -280,13 +340,32 @@ public class FlopTurnRiverState implements ParserListener
         
         if (round == 0 && amtToCall == 0) 
         {
+            //Set table stakes
             amtToCall = betAmt;
             log.debug("Table mise à {}", amtToCall);
+            tableStakes = amtToCall;
         } else {
-        
-        Preconditions.checkState(amtToCall > 0); 
-        Preconditions.checkState(betAmt == amtToCall);
+            
+            //Check if there is an unknown tapis we can deduce
+            if (lastTapisPlayer != null)
+            {
+                int diff = betAmt - amtToCall;
+                
+                int tapisGuess = getAllInBet(lastTapisPlayer);
+                
+                amtToCall = tapisGuess + diff;
+                log.debug("Adjusting tapis guess to {}", tapisGuess + diff);
+                
+                pot = updatePlayerBet(playerBets, lastTapisPlayer, tapisGuess+ diff, pot);
+                lastTapisPlayer = null;
+                allInBet.remove(lastTapisPlayer);
+            }
+            
+            //Check internal state
+            Preconditions.checkState(amtToCall > 0); 
+            Preconditions.checkState(betAmt == amtToCall);
         }
+        
         
         boolean seenPlayer = incrementPlayer(playerName);
         printHandHistory("Call $" + moneyFormat.format(betAmt));
@@ -340,6 +419,10 @@ public class FlopTurnRiverState implements ParserListener
         {
             return getNextState(true);
         }
+        
+        //Stats
+        Integer bet = playerBets.get(playerName);
+        
         
         boolean seenPlayer = incrementPlayer(playerName);
         printHandHistory("Fold");
@@ -396,7 +479,18 @@ public class FlopTurnRiverState implements ParserListener
     {
       //Tapis est un cas diffil car on ne sais pas si c'est un relancement ou pas ; aussi on ne sais plus le pot
         log.debug("{} Tapis", playerName);
-        return null;
+        
+        incrementPlayer(playerName);
+        printHandHistory("All in for unknown amount");
+        
+        allInBet.put(playerName, 1 + amtToCall);
+        
+        amtToCall = getAllInBet(playerName);
+        
+        pot = updatePlayerBet(playerBets, playerName, amtToCall, pot);
+        lastTapisPlayer = playerName;
+        
+        return this;
     }
 
     @Override
@@ -407,6 +501,9 @@ public class FlopTurnRiverState implements ParserListener
         }
         logOutput.debug("{} wins showdown with pot ${}", playerName, 
                 moneyFormat.format(finalPot));
+        
+        this.masterList.add(this.roundStates);
+        
         return null;
     }
 
@@ -414,6 +511,8 @@ public class FlopTurnRiverState implements ParserListener
     public ParserListener handleGagne(String playerName)
     {
         log.debug("{} gagne", playerName);
+        
+        this.masterList.add(this.roundStates);
         return null;
     }
 

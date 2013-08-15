@@ -14,9 +14,9 @@ public class PossibilityNode implements iDisplayNode {
 
     public static enum Levels {
         TEXTURE(TextureCategory.values()),
-        
-        HAND_CATEGORY(HandCategory.values()),
         WIN_LOSE(WinningLosingCategory.values()),
+        HAND_CATEGORY(HandCategory.values()),
+        
         HAND_SUB_CATEGORY(HandSubCategory.values())
         ;
         
