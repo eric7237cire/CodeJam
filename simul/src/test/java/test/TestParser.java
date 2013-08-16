@@ -105,4 +105,128 @@ public class TestParser
         assertEquals(2, players.get(playerNum).vpipDenom );
         assertEquals(3, players.get(playerNum).totalHands );
     }
+    
+    @Test
+    public void testVPIP2() throws Exception
+    {
+        List<FlopTurnRiverState[]> results = getList("testVPIP2");
+        
+        assertEquals(1, results.size());
+                                 
+        StatsSession stats = Parser.computeStats(results);
+        
+        //Eric  -   1        -  2 
+        //Morris  - 1     4  -    3
+        //*       -   2       - 
+        //Billy   - 1 2 3   5 - 
+        //Anto    -     3     -    4
+        
+        List<StatsSessionPlayer> players = Arrays.asList(
+                stats.playerSessionStats.get("Eric"),
+                stats.playerSessionStats.get("Ahmed"),
+                stats.playerSessionStats.get("Bena"));
+        
+        int playerNum = 0;
+        assertEquals(1, players.get(playerNum).vpipNumerator );
+        assertEquals(1, players.get(playerNum).vpipDenom );
+        assertEquals(1, players.get(playerNum).totalHands );
+        
+        playerNum = 1;
+        assertEquals(1, players.get(playerNum).vpipNumerator );
+        assertEquals(1, players.get(playerNum).vpipDenom );
+        assertEquals(1, players.get(playerNum).totalHands );
+        
+        playerNum = 2;
+        assertEquals(1, players.get(playerNum).vpipNumerator );
+        assertEquals(1, players.get(playerNum).vpipDenom );
+        assertEquals(1,  players.get(playerNum).totalHands );
+        
+    }
+    
+    @Test
+    public void testPFR1() throws Exception
+    {
+        List<FlopTurnRiverState[]> results = getList("testPFR1");
+        
+        assertEquals(6, results.size());
+                                 
+        StatsSession stats = Parser.computeStats(results);
+        
+        //Eric  -   1        -  2 
+        //Morris  - 1     4  -    3
+        //*       -   2       - 
+        //Billy   - 1 2 3   5 - 
+        //Anto    -     3     -    4
+        
+        List<StatsSessionPlayer> players = Arrays.asList(
+                stats.playerSessionStats.get("Serge"),
+                stats.playerSessionStats.get("Marc"),
+                stats.playerSessionStats.get("Thomas"),
+                stats.playerSessionStats.get("Eric"),
+                stats.playerSessionStats.get("Ahmed"),
+                stats.playerSessionStats.get("Yara"),
+                stats.playerSessionStats.get("Bena")
+                );
+        
+        int playerNum = 0;
+        assertEquals(1, players.get(playerNum).vpipNumerator );
+        assertEquals(6, players.get(playerNum).vpipDenom );
+        assertEquals(6, players.get(playerNum).totalHands );
+        assertEquals(0, players.get(playerNum).preFlopRaises );
+        assertEquals(0, players.get(playerNum).callOpenNumerator );
+        assertEquals(4, players.get(playerNum).callOpenDenom );
+        
+        
+        playerNum = 1;
+        assertEquals(2, players.get(playerNum).vpipNumerator );
+        assertEquals(3, players.get(playerNum).vpipDenom );
+        assertEquals(3, players.get(playerNum).totalHands );
+        assertEquals(0, players.get(playerNum).preFlopRaises );
+        assertEquals(0, players.get(playerNum).callOpenNumerator );
+        assertEquals(2, players.get(playerNum).callOpenDenom );
+        
+        playerNum = 2;
+        assertEquals(2, players.get(playerNum).vpipNumerator );
+        assertEquals(3, players.get(playerNum).vpipDenom );
+        assertEquals(3, players.get(playerNum).totalHands );
+        assertEquals(2, players.get(playerNum).preFlopRaises );
+        assertEquals(2, players.get(playerNum).preFlopTapis );
+        assertEquals(0, players.get(playerNum).callOpenNumerator );
+        assertEquals(0, players.get(playerNum).callOpenDenom );
+        
+        //Eric
+        playerNum = 3;
+        assertEquals(2, players.get(playerNum).vpipNumerator );
+        assertEquals(6, players.get(playerNum).vpipDenom );
+        assertEquals(6, players.get(playerNum).totalHands );
+        assertEquals(0, players.get(playerNum).preFlopRaises );
+        assertEquals(1, players.get(playerNum).callOpenNumerator );
+        assertEquals(5, players.get(playerNum).callOpenDenom );
+        
+        playerNum = 4;
+        assertEquals(1, players.get(playerNum).vpipNumerator );
+        assertEquals(5, players.get(playerNum).vpipDenom );
+        assertEquals(6, players.get(playerNum).totalHands );
+        assertEquals(0, players.get(playerNum).preFlopRaises );
+        assertEquals(1, players.get(playerNum).callOpenNumerator );
+        assertEquals(5, players.get(playerNum).callOpenDenom );
+        
+        playerNum = 5;
+        assertEquals(3, players.get(playerNum).vpipNumerator );
+        assertEquals(3, players.get(playerNum).vpipDenom );
+        assertEquals(3, players.get(playerNum).totalHands );
+        assertEquals(3, players.get(playerNum).preFlopRaises );
+        assertEquals(3, players.get(playerNum).preFlopTapis );
+        assertEquals(0, players.get(playerNum).callOpenNumerator );
+        assertEquals(0, players.get(playerNum).callOpenDenom );
+        
+        playerNum = 6;
+        assertEquals(1, players.get(playerNum).vpipNumerator );
+        assertEquals(3, players.get(playerNum).vpipDenom );
+        assertEquals(3, players.get(playerNum).totalHands );
+        assertEquals(0, players.get(playerNum).preFlopRaises );
+        assertEquals(1, players.get(playerNum).callOpenNumerator );
+        assertEquals(3, players.get(playerNum).callOpenDenom );
+        
+    }
 }

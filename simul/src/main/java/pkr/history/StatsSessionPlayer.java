@@ -7,6 +7,11 @@ public class StatsSessionPlayer {
     public int vpipNumerator;
     public int vpipDenom;
     
-    public int potsRaised;
+    //Calling a pre flop raise
+    public int callOpenNumerator;
+    public int callOpenDenom;
+    
+    public int preFlopRaises;
+    public int preFlopTapis;
     
 }

@@ -3,6 +3,7 @@ package pkr.history;
 import java.util.List;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,14 +38,39 @@ public class StatsComputer
                     continue;
                 }
                 
-                Integer playerBet = ftrStates[0].playerBets.get(preFlopPlayer);
+                int playerBet = ftrStates[0].getCurrentBet(preFlopPlayer);
                 
                 playerSesStat.vpipDenom++;
                 
-                if (playerBet != null && playerBet >= ftrStates[0].tableStakes)
+                if (playerBet >= ftrStates[0].tableStakes)
                 {
+                    log.debug("Player {} entered pot for VPIP", preFlopPlayer);
                     playerSesStat.vpipNumerator++;
                 }
+                
+                if (ftrStates[0].roundInitialBetter != null && 
+                        !ftrStates[0].roundInitialBetter.equals(preFlopPlayer) &&
+                        BooleanUtils.isNotTrue(ftrStates[0].hasFolded.get(preFlopPlayer))
+                        ) 
+                {
+                    log.debug("Player {} called an initial raise", preFlopPlayer);
+                    playerSesStat.callOpenDenom++;
+                    playerSesStat.callOpenNumerator++;
+                } else if (BooleanUtils.isTrue(ftrStates[0].foldedToBet.get(preFlopPlayer))) {
+                    playerSesStat.callOpenDenom++;
+                }
+                
+                
+                if (StringUtils.equals(ftrStates[0].roundInitialBetter, preFlopPlayer))
+                {
+                    playerSesStat.preFlopRaises ++;
+                    
+                    if (ftrStates[0].allInBet.containsKey(preFlopPlayer))
+                    {
+                        playerSesStat.preFlopTapis++;
+                    }
+                }
+                
                 //if (BooleanUtils.isTrue(ftrStates[0].hasFolded.get(preFlopPlayer)))
                 /*
                 {
@@ -61,7 +87,8 @@ public class StatsComputer
             }
         }
         
-        stats.currentPlayerList = hands.get(hands.size()-1)[0].players;
+        if (hands.size() > 0)
+            stats.currentPlayerList = hands.get(hands.size()-1)[0].players;
     }
     
     public StatsSession stats = null;

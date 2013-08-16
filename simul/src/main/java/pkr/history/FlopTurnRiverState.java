@@ -30,6 +30,7 @@ public class FlopTurnRiverState implements ParserListener
     
     final static int MAX_PLAYERS = 5;
     
+    //Full amount needed to stay in
     int amtToCall = 0;
     
     Map<String , Boolean> hasFolded;
@@ -37,6 +38,11 @@ public class FlopTurnRiverState implements ParserListener
     Map<String, Boolean> allInBetExact;
     String lastTapisPlayer;
     Map<String, Integer> playerBets;
+    
+    String roundInitialBetter;
+    String roundInitialReRaiser;  
+    Map<String, Boolean> foldedToBet;
+    Map<String, Boolean> foldedToRaise;
     
     String playerSB;
     String playerBB;
@@ -80,6 +86,9 @@ public class FlopTurnRiverState implements ParserListener
         playerBets = Maps.newHashMap();
         allInBet = Maps.newHashMap();
         allInBetExact = Maps.newHashMap();
+        
+        foldedToBet = Maps.newHashMap();
+        foldedToRaise = Maps.newHashMap();
         
         if (round == 0) {
             logOutput.debug("\n***********************************************");
@@ -358,7 +367,7 @@ public class FlopTurnRiverState implements ParserListener
                 
                 pot = updatePlayerBet(playerBets, lastTapisPlayer, tapisGuess+ diff, pot);
                 lastTapisPlayer = null;
-                allInBet.remove(lastTapisPlayer);
+                allInBet.put(lastTapisPlayer, amtToCall);
             }
             
             //Check internal state
@@ -398,6 +407,16 @@ public class FlopTurnRiverState implements ParserListener
         
         Preconditions.checkState(betAmt > amtToCall);
         
+        if (roundInitialBetter == null) {
+            roundInitialBetter = playerName;
+        }
+        
+        if (round == 0 && tableStakes <= 0)
+        {
+            //we have to guess what the stakes were
+            tableStakes = 1;
+        }
+        
         incrementPlayer(playerName);
         printHandHistory("Raise $" + moneyFormat.format(betAmt), betAmt);
         
@@ -421,7 +440,10 @@ public class FlopTurnRiverState implements ParserListener
         }
         
         //Stats
-        Integer bet = playerBets.get(playerName);
+        if (roundInitialBetter != null) 
+        {
+            foldedToBet.put(playerName, true);
+        }
         
         
         boolean seenPlayer = incrementPlayer(playerName);
@@ -481,6 +503,17 @@ public class FlopTurnRiverState implements ParserListener
     {
       //Tapis est un cas diffil car on ne sais pas si c'est un relancement ou pas ; aussi on ne sais plus le pot
         log.debug("{} Tapis", playerName);
+        
+        //If the user has less than the buy in this will be wrong but that's rare
+        if (roundInitialBetter == null) {
+            roundInitialBetter = playerName;
+        }
+        
+        if (round == 0 && tableStakes <= 0)
+        {
+            //we have to guess what the stakes were
+            tableStakes = 1;
+        }
         
         incrementPlayer(playerName);
         printHandHistory("All in for unknown amount");
