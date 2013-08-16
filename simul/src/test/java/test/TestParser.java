@@ -1,6 +1,8 @@
 package test;
 
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -14,12 +16,8 @@ import org.junit.runners.JUnit4;
 
 import pkr.history.FlopTurnRiverState;
 import pkr.history.Parser;
-import pkr.history.StatPlayerHand;
 import pkr.history.StatsSession;
 import pkr.history.StatsSessionPlayer;
-
-
-import static org.junit.Assert.*;
 
 @RunWith(JUnit4.class)
 public class TestParser
@@ -44,6 +42,7 @@ public class TestParser
         return Parser.parseFile(testInputRaw, testInput);
     }
 
+    @SuppressWarnings("unused")
     @Test
     public void testTapisSuivi1() throws Exception
     {
@@ -56,6 +55,7 @@ public class TestParser
         StatsSession stats = Parser.computeStats(results);
     }
     
+    @SuppressWarnings("unused")
     @Test
     public void testTurnTapis() throws Exception
     {
@@ -240,6 +240,61 @@ public class TestParser
         assertEquals(0, players.get(playerNum).preFlopRaises );
         assertEquals(1, players.get(playerNum).callOpenNumerator );
         assertEquals(3, players.get(playerNum).callOpenDenom );
+        
+    }
+    
+    @Test
+    public void testRoundStats() throws Exception
+    {
+        List<FlopTurnRiverState[]> results = getList("testRoundStats");
+        
+        assertEquals(6, results.size());
+                                 
+        StatsSession stats = Parser.computeStats(results);
+        
+        //Eric  -   1        -  2 
+        //Morris  - 1     4  -    3
+        //*       -   2       - 
+        //Billy   - 1 2 3   5 - 
+        //Anto    -     3     -    4
+        
+        StatsSessionPlayer ericStats  =
+                stats.playerSessionStats.get("Eric");
+        
+        
+        assertEquals(1+0+1+1+1+0, ericStats.vpipNumerator );
+        assertEquals(1+0+1+1+1+1, ericStats.vpipDenom );
+        assertEquals(6, ericStats.totalHands );
+        assertEquals(0+0+1+1+1+0, ericStats.preFlopRaises );
+        assertEquals(0+0+0+0+0+0, ericStats.callOpenNumerator );
+        assertEquals(0+0+0+0+0+0, ericStats.callOpenDenom );
+        
+        assertEquals(1+0+0+0+1+0, ericStats.flopStats.calls );
+        assertEquals(0+0+0+0+0+0, ericStats.flopStats.folded );
+        assertEquals(0+1+0+0+1+0, ericStats.flopStats.bets );
+        assertEquals(0+0+1+0+0+0, ericStats.flopStats.reraises );
+        assertEquals(1+1+1+1+1+0, ericStats.flopStats.seen );
+        assertEquals(0+0+0+0+0+0, ericStats.flopStats.checkRaises );
+        assertEquals(0+0+0+0+0+0, ericStats.flopStats.allIn );
+        
+        assertEquals(0+0+1+0+0+0, ericStats.turnStats.calls );
+        assertEquals(0+0+0+0+1+0, ericStats.turnStats.folded );
+        assertEquals(1+1+0+0+0+0, ericStats.turnStats.bets );
+        assertEquals(1+0+0+0+0+0, ericStats.turnStats.reraises );
+        assertEquals(1+1+1+1+1+0, ericStats.turnStats.seen );
+        assertEquals(0+0+0+0+0+0, ericStats.turnStats.checkRaises );
+        assertEquals(0+0+0+0+0+0, ericStats.turnStats.allIn );
+        
+        
+        assertEquals(0+1+0+0+0+0, ericStats.riverStats.calls );
+        assertEquals(0+0+0+0+0+0, ericStats.riverStats.folded );
+        assertEquals(1+1+0+0+0+0, ericStats.riverStats.bets );
+        assertEquals(0+0+0+0+0+0, ericStats.riverStats.reraises );
+        assertEquals(1+1+0+1+0+0, ericStats.riverStats.seen );
+        assertEquals(0+0+0+0+0+0, ericStats.riverStats.checkRaises );
+        assertEquals(0+0+0+0+0+0, ericStats.riverStats.allIn );
+        
+        
         
     }
 }

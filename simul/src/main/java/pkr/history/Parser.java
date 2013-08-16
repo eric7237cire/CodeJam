@@ -107,6 +107,33 @@ public class Parser {
                     FlopTurnRiverState.df2.format(100.0 * ssp.callOpenNumerator / ssp.callOpenDenom)
                     
                     );
+            
+            
+            for(int round = 0; round < 3; ++round)
+            {
+                logMainOutput.debug("Round {} stats",
+                        
+                        round == 0 ? "flop" :
+                            (round == 1 ? "turn" : "river")
+                        
+                        );
+
+                logMainOutput.debug("Seen {} [ checks %{} bets %{} ]  in raised pots {} [ calls %{} folded %{} raised %{} ] re raises : {}  check raises : {}",
+
+                ssp.roundStats[round].seen,
+                
+                    FlopTurnRiverState.df2.format(100.0 * ssp.roundStats[round].checks / ssp.roundStats[round].seen),
+                    FlopTurnRiverState.df2.format(100.0 * ssp.roundStats[round].bets / ssp.roundStats[round].seen),
+                    ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough,
+                    FlopTurnRiverState.df2.format(100.0 * ssp.roundStats[round].calls / (ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough)),
+                    FlopTurnRiverState.df2.format(100.0 * ssp.roundStats[round].folded / (ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough)),
+                    FlopTurnRiverState.df2.format(100.0 * ssp.roundStats[round].bets / (ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough)),
+                    ssp.roundStats[round].reraises,
+                    ssp.roundStats[round].checkRaises
+
+                );
+
+            }
         }
         
         return sc.stats;

@@ -41,8 +41,15 @@ public class FlopTurnRiverState implements ParserListener
     
     String roundInitialBetter;
     String roundInitialReRaiser;  
-    Map<String, Boolean> foldedToBet;
-    Map<String, Boolean> foldedToRaise;
+   
+    
+    Map<String, Boolean> calledABetOrRaise;
+    Map<String, Boolean> foldedToBetOrRaise;
+   // Map<String, Boolean> foldedToBet;
+    Map<String, Boolean> hasBet;
+    Map<String, Boolean> hasReraised;
+    Map<String, Boolean> hasChecked;
+    
     
     String playerSB;
     String playerBB;
@@ -87,8 +94,12 @@ public class FlopTurnRiverState implements ParserListener
         allInBet = Maps.newHashMap();
         allInBetExact = Maps.newHashMap();
         
-        foldedToBet = Maps.newHashMap();
-        foldedToRaise = Maps.newHashMap();
+        calledABetOrRaise = Maps.newHashMap();
+        foldedToBetOrRaise = Maps.newHashMap();
+      //  foldedToBet = Maps.newHashMap();
+        hasBet = Maps.newHashMap();
+        hasReraised = Maps.newHashMap();
+        hasChecked = Maps.newHashMap();
         
         if (round == 0) {
             logOutput.debug("\n***********************************************");
@@ -393,6 +404,7 @@ public class FlopTurnRiverState implements ParserListener
             Preconditions.checkState(betAmt == amtToCall);
         }
         
+        calledABetOrRaise.put(playerName, true);
         
         boolean seenPlayer = incrementPlayer(playerName);
         printHandHistory("Call $" + moneyFormat.format(betAmt));
@@ -427,6 +439,10 @@ public class FlopTurnRiverState implements ParserListener
         
         if (roundInitialBetter == null) {
             roundInitialBetter = playerName;
+            hasBet.put(playerName, true);
+        } else {
+            hasReraised.put(playerName, true);
+            
         }
         
         if (round == 0 && tableStakes <= 0)
@@ -458,9 +474,12 @@ public class FlopTurnRiverState implements ParserListener
         }
         
         //Stats
-        if (roundInitialBetter != null) 
+        
+        
+        
+        if (roundInitialBetter != null)
         {
-            foldedToBet.put(playerName, true);
+            foldedToBetOrRaise.put(playerName, true);
         }
         
         
@@ -506,6 +525,7 @@ public class FlopTurnRiverState implements ParserListener
             return getNextState(true);
         }
         
+        hasChecked.put(playerName, true);
         
       //  boolean seenPlayer = 
         incrementPlayer(playerName);
