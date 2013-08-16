@@ -44,12 +44,24 @@ public class TestParser
         return Parser.parseFile(testInputRaw, testInput);
     }
 
-    //@Test
+    @Test
     public void testTapisSuivi1() throws Exception
     {
         List<FlopTurnRiverState[]> results = getList("testTapisSuivi1");
         
         assertEquals(1, results.size());
+        
+        FlopTurnRiverState[] handStates = results.get(0);
+        
+        StatsSession stats = Parser.computeStats(results);
+    }
+    
+    @Test
+    public void testTurnTapis() throws Exception
+    {
+        List<FlopTurnRiverState[]> results = getList("testNonPreflopTapis1");
+        
+        assertEquals(4, results.size());
         
         FlopTurnRiverState[] handStates = results.get(0);
         
@@ -203,6 +215,7 @@ public class TestParser
         assertEquals(1, players.get(playerNum).callOpenNumerator );
         assertEquals(5, players.get(playerNum).callOpenDenom );
         
+        //Amed
         playerNum = 4;
         assertEquals(1, players.get(playerNum).vpipNumerator );
         assertEquals(5, players.get(playerNum).vpipDenom );

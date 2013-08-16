@@ -116,7 +116,6 @@ public class FlopTurnRiverState implements ParserListener
     public static int updatePlayerBet(Map<String, Integer> playerBets, String playerName, int playerBet, int pot) 
     {
         if (playerBets.containsKey(playerName)) {
-           // log.debug("Player suit une relance");
             pot -= playerBets.get(playerName);
         }
         
@@ -124,7 +123,7 @@ public class FlopTurnRiverState implements ParserListener
         
         playerBets.put(playerName, playerBet);
         
-        log.debug("After {} {} pot = {}",  playerName, playerBet, pot);
+        log.debug("Update player {} with bet {} in pot {}",  playerName, playerBet, pot);
         
         return pot;
     }
@@ -163,11 +162,25 @@ public class FlopTurnRiverState implements ParserListener
         if (BooleanUtils.isNotTrue(hasFolded.get(playerSB))) {
             log.debug("Adding small blind {}", playerSB);
             playersInOrder.add(playerSB);
+        } else {
+            //Adjust pot if necessary
+            
+            if (getCurrentBet(playerSB) == 0)
+            {
+                log.debug("Adding small blind from player {}  bet {} tablestakes {}", playerSB, tableStakes/2, tableStakes);
+                pot = updatePlayerBet(playerBets, playerSB, tableStakes / 2, pot);
+            }
         }
         
         if (BooleanUtils.isNotTrue(hasFolded.get(playerBB))) {
             log.debug("Adding big blind {}", playerBB);
             playersInOrder.add(playerBB);
+        } else {
+            if (getCurrentBet(playerBB) == 0)
+            {
+                log.debug("Adding big blinds to pot");
+                pot = updatePlayerBet(playerBets, playerBB, tableStakes, pot);
+            }
         }
         
         for(int i = 0; i < players.size() - 2; ++i) {
@@ -197,7 +210,10 @@ public class FlopTurnRiverState implements ParserListener
         
         for(int i = 0; i < players.size() ; ++i) {
             String playerName = players.get(i);
-            if (BooleanUtils.isNotTrue(hasFolded.get(playerName))) {
+            if (BooleanUtils.isNotTrue(hasFolded.get(playerName))
+                    && !allInBet.containsKey(playerName)
+                    
+                    ) {
                 log.debug("Adding player {}", playerName);
                 playersInOrder.add(playerName);
             }

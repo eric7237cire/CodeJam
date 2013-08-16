@@ -32,21 +32,32 @@ public class StatsComputer
                 //Checking BB does not affect stats
                 if (preFlopPlayer.equals(ftrStates[0].playerBB)
                         && ftrStates[0].tableStakes == ftrStates[0].getCurrentBet(preFlopPlayer)
+                        && ftrStates[0].roundInitialBetter == null
                         )
                 {
                     log.debug("Player {} is an unraised big  blind", preFlopPlayer);
                     continue;
                 }
                 
+                
+                
                 int playerBet = ftrStates[0].getCurrentBet(preFlopPlayer);
                 
                 playerSesStat.vpipDenom++;
                 
-                if (playerBet >= ftrStates[0].tableStakes)
+                if ( (!preFlopPlayer.equals(ftrStates[0].playerBB) && playerBet >= ftrStates[0].tableStakes)
+                        ||
+                        (preFlopPlayer.equals(ftrStates[0].playerBB) && playerBet > ftrStates[0].tableStakes))
                 {
-                    log.debug("Player {} entered pot for VPIP", preFlopPlayer);
+                    log.debug("Player {} entered pot for VPIP.  table stakes {}  player bet {} bb {}", preFlopPlayer,
+                            ftrStates[0].tableStakes,
+                            ftrStates[0].getCurrentBet(preFlopPlayer),
+                            ftrStates[0].playerBB
+                            );
                     playerSesStat.vpipNumerator++;
                 }
+                
+                
                 
                 if (ftrStates[0].roundInitialBetter != null && 
                         !ftrStates[0].roundInitialBetter.equals(preFlopPlayer) &&

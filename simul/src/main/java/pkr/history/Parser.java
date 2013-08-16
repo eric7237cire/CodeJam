@@ -20,7 +20,9 @@ public class Parser {
     
     static Logger log = LoggerFactory.getLogger(Parser.class);
     
-    static Logger logOutput = LoggerFactory.getLogger("handOutput");
+    static Logger logParsedHandOutput = LoggerFactory.getLogger("handOutput");
+    
+    private static Logger logMainOutput = LoggerFactory.getLogger("mainOutput");
     
     
     private final static Pattern XP_LINE = 
@@ -58,7 +60,7 @@ public class Parser {
     
         if (COMMENT.matcher(line).matches())
         {
-            logOutput.debug(line);
+            logParsedHandOutput.debug(line);
             return true;
         }
         
@@ -95,8 +97,16 @@ public class Parser {
         for(String player : sc.stats.currentPlayerList)
         {
             StatsSessionPlayer ssp = sc.stats.playerSessionStats.get(player);
-            log.debug("Player [ {} ] -- Hands played {} VPIP %{}", player,  ssp.totalHands,
-                    FlopTurnRiverState.df2.format(100.0 * ssp.vpipNumerator / ssp.vpipDenom));
+            logMainOutput.debug("\nPlayer [ {} ] -- \n " +
+            		"Hands played {} VPIP %{}  PFR %{} (tapis %{})  Call open %{}", 
+            		
+            		player,  ssp.totalHands,
+                    FlopTurnRiverState.df2.format(100.0 * ssp.vpipNumerator / ssp.vpipDenom),
+                    FlopTurnRiverState.df2.format(100.0 * ssp.preFlopRaises / ssp.totalHands),
+                    FlopTurnRiverState.df2.format(100.0 * ssp.preFlopTapis / ssp.totalHands),
+                    FlopTurnRiverState.df2.format(100.0 * ssp.callOpenNumerator / ssp.callOpenDenom)
+                    
+                    );
         }
         
         return sc.stats;
@@ -224,13 +234,14 @@ public class Parser {
                 String betAmtStr = match.group(2);
                 
                 int betAmt = Integer.parseInt(betAmtStr.replace(" ", ""), 10);
-                //log.debug("Relance player {} bet {} = {} ", playerName, betAmtStr, betAmt);
+                log.info("Showdown line {} player {} bet {} = {} ", i, 
+                        playerName, betAmtStr, betAmt);
                 curState = curState.handleShowdown(playerName, betAmt);
                 continue;
             }
             
             } catch (IllegalStateException ex) {
-                log.warn("state", ex);
+                log.warn("Problem line {}", i,  ex);
                 curState = null;
                 continue;
             }

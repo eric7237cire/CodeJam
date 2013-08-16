@@ -65,7 +65,8 @@
    </logger>
    
    <logger name="pkr.history.Preprocessor" level="INFO"/>
-   
+   <logger name="pkr.history.Parser" level="DEBUG"/>
+   <logger name="pkr.history.StatsComputer" level="DEBUG"/>
    
       
   <root level="${root-level:-DEBUG}">
