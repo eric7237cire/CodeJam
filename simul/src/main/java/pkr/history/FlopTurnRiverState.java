@@ -159,7 +159,7 @@ public class FlopTurnRiverState implements ParserListener
         playerSB = players.get(players.size()-2);
         playerBB = players.get(players.size()-1);
         
-        if (BooleanUtils.isNotTrue(hasFolded.get(playerSB))) {
+        if (BooleanUtils.isNotTrue(hasFolded.get(playerSB)) &&  !allInBet.containsKey(playerSB)) {
             log.debug("Adding small blind {}", playerSB);
             playersInOrder.add(playerSB);
         } else {
@@ -172,7 +172,7 @@ public class FlopTurnRiverState implements ParserListener
             }
         }
         
-        if (BooleanUtils.isNotTrue(hasFolded.get(playerBB))) {
+        if (BooleanUtils.isNotTrue(hasFolded.get(playerBB)) &&  !allInBet.containsKey(playerBB)) {
             log.debug("Adding big blind {}", playerBB);
             playersInOrder.add(playerBB);
         } else {
@@ -185,7 +185,9 @@ public class FlopTurnRiverState implements ParserListener
         
         for(int i = 0; i < players.size() - 2; ++i) {
             String playerName = players.get(i);
-            if (BooleanUtils.isNotTrue(hasFolded.get(playerName))) {
+            if (BooleanUtils.isNotTrue(hasFolded.get(playerName))
+                    &&  !allInBet.containsKey(playerName)
+                    ) {
                 log.debug("Adding player {}", playerName);
                 playersInOrder.add(playerName);
             }
@@ -421,7 +423,7 @@ public class FlopTurnRiverState implements ParserListener
             return getNextState(true);
         }
         
-        Preconditions.checkState(betAmt > amtToCall);
+        Preconditions.checkState(betAmt > amtToCall, "Player %s betAmt %s amtToCall %s", playerName, betAmt, amtToCall );
         
         if (roundInitialBetter == null) {
             roundInitialBetter = playerName;
@@ -496,6 +498,15 @@ public class FlopTurnRiverState implements ParserListener
             return getNextState(true);
         }
         
+        //If there is a check after a tapis we assume the next round started
+        if (lastTapisPlayer != null)
+        {
+            log.debug("Parole après une tapis, le dernier tapis était un suivi", playerName);
+            allInBet.put(lastTapisPlayer, getAllInBet(lastTapisPlayer) - 1);
+            return getNextState(true);
+        }
+        
+        
       //  boolean seenPlayer = 
         incrementPlayer(playerName);
         printHandHistory("Check");
@@ -562,6 +573,7 @@ public class FlopTurnRiverState implements ParserListener
     public ParserListener handleGagne(String playerName)
     {
         log.debug("{} gagne", playerName);
+        incrementPlayer(playerName);
         
         this.masterList.add(this.roundStates);
         return null;

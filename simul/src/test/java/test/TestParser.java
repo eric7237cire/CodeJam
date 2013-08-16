@@ -49,7 +49,7 @@ public class TestParser
     {
         List<FlopTurnRiverState[]> results = getList("testTapisSuivi1");
         
-        assertEquals(1, results.size());
+        assertEquals(3, results.size());
         
         FlopTurnRiverState[] handStates = results.get(0);
         
