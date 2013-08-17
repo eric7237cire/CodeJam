@@ -81,7 +81,7 @@ public class Parser {
         
     public static void main(String[] args) throws IOException {
         String brutefileName = "C:\\codejam\\CodeJam\\simul\\handshistory.txt";
-        String fileName =  "C:\\codejam\\CodeJam\\simul\\cleanhandshistory.txt";
+        String fileName =  "C:\\codejam\\CodeJam\\simul\\output\\cleanhandshistory.txt";
         File file = new File(fileName);
         File inputFile = new File(brutefileName);
         

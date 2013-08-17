@@ -37,7 +37,7 @@
         </set>
         <set name="loose">
             22-99,
-            A2o-AJo, K4o-KJo, Q6o+, J8o+, T8o+, 98o+, 87o+, 75o+, 65o+, 54o,
+            A2o-AJo, K4o-KJo, Q6o+, J8o+, T8o+, 98o+, 87o+, 75o+, 65o+, 53o+,
             A2s-A9s, K2s-K9s, Q2s+, J3s+, T6s+, 96s+, 86s+, 75s+, 63s+, 53s+, 43s, 32s
         </set>
 		<set name="ok">
@@ -103,6 +103,16 @@
             </player>
 			<player set="loose" count="3"/>
         </scenario>        
+       
+       <scenario name="underdog" iterCount="40000">
+       <player count="1">
+            A5s
+            </player>
+            <player count="1">
+            JJ+
+            </player>
+            
+       </scenario>
        
 	   <scenario name="vs ok" iterCount="60">
             <player set="my raising" count="1"/>

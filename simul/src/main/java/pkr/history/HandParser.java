@@ -13,7 +13,7 @@ public class HandParser
 
     public static void main(String[] args) throws IOException {
         String brutefileName = "C:\\codejam\\CodeJam\\simul\\hands.txt";
-        String fileName =  "C:\\codejam\\CodeJam\\simul\\cleanhands.txt";
+        String fileName =  "C:\\codejam\\CodeJam\\simul\\output\\cleanhands.txt";
         File file = new File(fileName);
         File inputFile = new File(brutefileName);
         

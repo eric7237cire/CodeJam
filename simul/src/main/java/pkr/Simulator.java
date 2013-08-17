@@ -77,7 +77,7 @@ public class Simulator {
         {
             List<String> playerHoleCards = Lists.newArrayList();
             
-            String fileName = "C:\\codejam\\CodeJam\\simul\\" + scenario.getName() + ".xml";
+            String fileName = "C:\\codejam\\CodeJam\\simul\\output\\" + scenario.getName() + ".xml";
             
             for(Player player : scenario.getPlayer())
             {

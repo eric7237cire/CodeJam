@@ -21,7 +21,7 @@
   </appender>
   
    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>C:/codejam/CodeJam/simul/log.txt</file>
+    <file>C:/codejam/CodeJam/simul/output/log.txt</file>
     <append>false</append>
     <encoder>
     <pattern>%m%n</pattern>
@@ -31,7 +31,7 @@
   </appender>
   
   <appender name="parserLogFile" class="ch.qos.logback.core.FileAppender">
-    <file>C:/codejam/CodeJam/simul/parserLog.txt</file>
+    <file>C:/codejam/CodeJam/simul/output/parserLog.txt</file>
     <append>false</append>
     <encoder>
     <pattern>%m%n</pattern>
