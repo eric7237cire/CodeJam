@@ -268,6 +268,7 @@ public class FlopTurnRiverState implements ParserListener
         return true;
     }
 
+    
     /*
      * Position currentPlayer au joeur courant
      */
@@ -298,7 +299,9 @@ public class FlopTurnRiverState implements ParserListener
             }
             
             String loopPlayerName = players.get(currentPlayer);
-            if (BooleanUtils.isNotTrue(hasFolded.get(loopPlayerName))) {
+            if (BooleanUtils.isNotTrue(hasFolded.get(loopPlayerName))
+                    && !allInBet.containsKey(loopPlayerName)
+                    ) {
                 Preconditions.checkState(loopPlayerName.equals(playerName), "Player name " + playerName + " cur " + currentPlayer + " " + loopPlayerName);
                 
                 return true;
@@ -601,7 +604,14 @@ public class FlopTurnRiverState implements ParserListener
     public ParserListener handleGagne(String playerName)
     {
         log.debug("{} gagne", playerName);
-        incrementPlayer(playerName);
+        
+        //To make sure the player list is accurate
+        if (!players.contains(playerName))
+        {
+            log.debug("Player [{}] ajouté avec index {} ", playerName, players.size());
+            players.add(playerName);
+            currentPlayer = players.size() - 1;
+        }
         
         this.masterList.add(this.roundStates);
         return null;

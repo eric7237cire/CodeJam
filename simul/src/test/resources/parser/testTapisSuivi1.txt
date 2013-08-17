@@ -56,3 +56,31 @@ Laurent a fait tapis.
 Laurent remporte le pot (5 518 390 $) avec une couleur à Q.
 Laurent remporte le pot (6 000 000 $) avec une couleur à Q.
 _____________________________
+
+**
+_____________________________
+Eric a relancé de 600 000.
+Demir a suivi de 600 000.
+Cuong a suivi de 600 000.
+Adnan a suivi de 600 000.
+Sisca a suivi de 600 000.
+
+Adnan a parlé.
+Sisca a parlé.
+Eric a parlé.
+Demir a parlé.
+Cuong a parlé.
+
+Adnan a parlé.
+Sisca a relancé de 400 000.
+Eric a suivi de 400 000.
+Demir se couche.
+Cuong a suivi de 400 000.
+Adnan se couche.
+
+Sisca a fait tapis.
+Eric a suivi de 1 600 000.
+Cuong a relancé de 5 800 000.
+Eric se couche.
+Cuong gagne.
+_____________________________
