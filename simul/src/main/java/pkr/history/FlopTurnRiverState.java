@@ -254,7 +254,7 @@ public class FlopTurnRiverState implements ParserListener
                 return false;
             }
             
-            if (playerBet < amtToCall)
+            if (!allInBet.containsKey(playerName) && playerBet < amtToCall)
             {
                 log.debug("Pot is not good.  Player {} idx {} bet only {}",
                         playerName, i, playerBet);
@@ -262,7 +262,7 @@ public class FlopTurnRiverState implements ParserListener
                 return false;
             }
             
-            Preconditions.checkState(amtToCall == playerBet);
+            Preconditions.checkState(allInBet.containsKey(playerName) || amtToCall == playerBet, "Player %s amtToCall %s  bet %s", playerName, amtToCall, playerBet);
         }
         
         return true;
@@ -404,7 +404,7 @@ public class FlopTurnRiverState implements ParserListener
             
             //Check internal state
             Preconditions.checkState(amtToCall > 0); 
-            Preconditions.checkState(betAmt == amtToCall);
+            Preconditions.checkState(betAmt == amtToCall, "Bet amount %s does not equal incoming amount to call %s", betAmt, amtToCall);
         }
         
         calledABetOrRaise.put(playerName, true);
@@ -452,6 +452,16 @@ public class FlopTurnRiverState implements ParserListener
         {
             //we have to guess what the stakes were
             tableStakes = 1;
+        }
+        
+        //Check if there is an unknown tapis we can only guess their bet is less than the current amount
+        if (lastTapisPlayer != null)
+        {
+            int tapisGuess = getAllInBet(lastTapisPlayer);
+            
+            log.debug("Reraise after tapis, no real guess possible {}", tapisGuess );
+            
+            lastTapisPlayer = null;
         }
         
         incrementPlayer(playerName);
@@ -568,10 +578,13 @@ public class FlopTurnRiverState implements ParserListener
         if (amtToCall > 0)
         {
             calledABetOrRaise.put(playerName, true);
+
+            //we don't know...it's a guess
+            hasReraised.put(playerName,true);
+        } else {
+            hasBet.put(playerName, true);
         }
         
-        //we don't know...it's a guess
-        hasReraised.put(playerName,true);
         
         incrementPlayer(playerName);
         printHandHistory("All in for unknown amount");

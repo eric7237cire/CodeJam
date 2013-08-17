@@ -30,6 +30,16 @@
     </encoder>
   </appender>
   
+  <appender name="parserLogFile" class="ch.qos.logback.core.FileAppender">
+    <file>C:/codejam/CodeJam/simul/parserLog.txt</file>
+    <append>false</append>
+    <encoder>
+    <pattern>%m%n</pattern>
+    <!-- <pattern>%d{HH:mm:ss:SSS} %r - %m%n</pattern> -->
+      
+    </encoder>
+  </appender>
+  
   <appender name="HANDOUTPUT" class="ch.qos.logback.core.FileAppender">
     <file>C:/codejam/CodeJam/simul/handOutput.txt</file>
     <append>false</append>
@@ -65,8 +75,10 @@
    </logger>
    
    <logger name="pkr.history.Preprocessor" level="INFO"/>
-   <logger name="pkr.history.Parser" level="INFO"/>
-   <logger name="pkr.history.StatsComputer" level="DEBUG"/>
+   <logger name="pkr.history.Parser" level="DEBUG">
+    <appender-ref ref="parserLogFile"/>
+   </logger>
+   <logger name="pkr.history.StatsComputer" level="INFO"/>
    
       
   <root level="${root-level:-DEBUG}">
