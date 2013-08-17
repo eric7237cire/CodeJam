@@ -24,7 +24,7 @@ public class FlopTurnRiverState implements ParserListener
     List<FlopTurnRiverState[]> masterList; 
     FlopTurnRiverState[] roundStates;
     
-    
+    //La liste de joeurs dans l'ordre à parler 
     List<String> players;
     int pot;
     
@@ -39,13 +39,16 @@ public class FlopTurnRiverState implements ParserListener
     String lastTapisPlayer;
     Map<String, Integer> playerBets;
     
+    Map<String, Double> betToPotSize;
+    Map<String, Double> foldToBetSize;
+    
     String roundInitialBetter;
-    String roundInitialReRaiser;  
+//    String roundInitialReRaiser;  
    
     
     Map<String, Boolean> calledABetOrRaise;
     Map<String, Boolean> foldedToBetOrRaise;
-   // Map<String, Boolean> foldedToBet;
+
     Map<String, Boolean> hasBet;
     Map<String, Boolean> hasReraised;
     Map<String, Boolean> hasChecked;
@@ -86,6 +89,9 @@ public class FlopTurnRiverState implements ParserListener
         this.round = round;
         this.masterList = masterList;
         this.roundStates = roundStates;
+        
+        this.betToPotSize = Maps.newHashMap();
+        this.foldToBetSize = Maps.newHashMap();
         
         this.currentPlayer = players.size() - 1;
         
@@ -443,6 +449,15 @@ public class FlopTurnRiverState implements ParserListener
         if (roundInitialBetter == null) {
             roundInitialBetter = playerName;
             hasBet.put(playerName, true);
+            
+            Preconditions.checkState(round == 0 || amtToCall == 0);
+            
+            int raiseAmt = betAmt - amtToCall;
+            double potRatio = 1.0 * raiseAmt / pot;
+            
+            log.debug("Player %{} bet %{} of pot", playerName, df2.format(potRatio));
+            betToPotSize.put(playerName, potRatio);
+            
         } else {
             hasReraised.put(playerName, true);
             
@@ -488,7 +503,13 @@ public class FlopTurnRiverState implements ParserListener
         
         //Stats
         
+        int raiseAmt = amtToCall - getCurrentBet(playerName);
         
+        double potRatio = pot > 0 ? 1.0 * raiseAmt / pot : 0;
+        
+        Preconditions.checkArgument(potRatio >= 0, "Amttocall %s  current bet %s", amtToCall, getCurrentBet(playerName));
+        
+        foldToBetSize.put(playerName, potRatio);
         
         if (roundInitialBetter != null)
         {
@@ -582,7 +603,8 @@ public class FlopTurnRiverState implements ParserListener
             //we don't know...it's a guess
             hasReraised.put(playerName,true);
         } else {
-            hasBet.put(playerName, true);
+            //Tapis count just as tapis
+            //hasBet.put(playerName, true);
         }
         
         

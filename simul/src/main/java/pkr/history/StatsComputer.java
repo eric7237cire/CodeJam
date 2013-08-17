@@ -18,9 +18,10 @@ public class StatsComputer
 
         stats = new StatsSession();
         
-        for(FlopTurnRiverState[] ftrStates : hands)
+        for(int hand = 0; hand < hands.size(); ++hand )
         {
-            log.debug("\nStats hand");
+            FlopTurnRiverState[] ftrStates = hands.get(hand);
+            log.debug("\nStats hand : {}", hand);
             
             for(String preFlopPlayer : ftrStates[0].players)
             {
@@ -100,8 +101,21 @@ public class StatsComputer
             }
         }
         
+        
+        
         if (hands.size() > 0)
             stats.currentPlayerList = hands.get(hands.size()-1)[0].players;
+        
+        for(String playerName : stats.currentPlayerList)
+        {
+            StatsSessionPlayer pStats = stats.playerSessionStats.get(playerName);
+            
+            for(int r = 0; r < 3; ++r)
+            {
+                pStats.roundStats[r].avgBetToPot /= pStats.roundStats[r].bets;
+                pStats.roundStats[r].avgFoldToBetToPot /= pStats.roundStats[r].folded;
+            }
+        }
     }
     
     public StatsSession stats = null;
@@ -123,6 +137,30 @@ public class StatsComputer
             if (ftrStates[r+1].amtToCall == 0)
             {
                 player.roundStats[r].checkedThrough++;
+            } else {
+                //Make sure only 1 raise / fold / call is true
+                /*
+                int check = 0;
+                if (BooleanUtils.isTrue(ftrStates[r+1].hasBet.get(playerName)))
+                   ++check;
+            
+                if (BooleanUtils.isTrue(ftrStates[r+1].foldedToBetOrRaise.get(playerName)))
+                    ++check;
+                
+                if (BooleanUtils.isTrue(ftrStates[r+1].calledABetOrRaise.get(playerName)))
+                    ++check;
+                
+                if (BooleanUtils.isTrue(ftrStates[r+1].allInBet.containsKey(playerName)))
+                    ++check;
+                
+                Preconditions.checkState(1 <= check && check <= 2, "Player %s has not just bet/folded/called in a raised round %s.\n  has bet [%s] has folded [%s]  has called [%s] has all in [%s]",
+                        playerName, r,
+                        ftrStates[r+1].hasBet.get(playerName),
+                        ftrStates[r+1].foldedToBetOrRaise.get(playerName),
+                        ftrStates[r+1].calledABetOrRaise.get(playerName),
+                        ftrStates[r+1].allInBet.containsKey(playerName)
+                        );
+                        */
             }
             
             log.debug("Player {} is in round {}", playerName, r+1);
@@ -135,11 +173,18 @@ public class StatsComputer
             if (BooleanUtils.isTrue(ftrStates[r+1].foldedToBetOrRaise.get(playerName)))
             {
                 player.roundStats[r].folded++;
+                player.roundStats[r].avgFoldToBetToPot += ftrStates[r+1].foldToBetSize.get(playerName); 
             }
             
             if (BooleanUtils.isTrue(ftrStates[r+1].hasBet.get(playerName)))
             {
                 player.roundStats[r].bets++;
+                player.roundStats[r].avgBetToPot += ftrStates[r+1].betToPotSize.get(playerName);
+            }
+            
+            if (BooleanUtils.isTrue(ftrStates[r+1].allInBet.containsKey(playerName)))
+            {
+                player.roundStats[r].allIn++; 
             }
             
             if (BooleanUtils.isTrue(ftrStates[r+1].hasReraised.get(playerName)))

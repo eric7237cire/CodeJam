@@ -32,6 +32,12 @@ public class StatsSessionPlayer {
         public int calls;
         public int folded;
         public int checks;
+        
+        //Folded to a reraise
+        public int betFold;
+        
+        public double avgBetToPot;
+        public double avgFoldToBetToPot;
     }
     
     public RoundStats flopStats;
