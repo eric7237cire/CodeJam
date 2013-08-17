@@ -562,6 +562,14 @@ public class FlopTurnRiverState implements ParserListener
             tableStakes = 1;
         }
         
+        if (amtToCall > 0)
+        {
+            calledABetOrRaise.put(playerName, true);
+        }
+        
+        //we don't know...it's a guess
+        hasReraised.put(playerName,true);
+        
         incrementPlayer(playerName);
         printHandHistory("All in for unknown amount");
         
