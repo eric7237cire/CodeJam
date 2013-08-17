@@ -80,7 +80,7 @@ public class Parser {
     private static Pattern patHandBoundary = Pattern.compile("_*");
         
     public static void main(String[] args) throws IOException {
-        String brutefileName = "C:\\codejam\\CodeJam\\simul\\handshistory.txt";
+        String brutefileName = "C:\\codejam\\CodeJam\\simul\\input\\handshistory.txt";
         String fileName =  "C:\\codejam\\CodeJam\\simul\\output\\cleanhandshistory.txt";
         File file = new File(fileName);
         File inputFile = new File(brutefileName);
@@ -118,25 +118,41 @@ public class Parser {
                         
                         );
 
-                logMainOutput.debug("Seen {} [ checks %{} bets %{} ]  in raised pots {} [ calls %{} folded %{} raised %{} ] re raises : {}  check raises : {}",
+                logMainOutput.debug("Seen {} [ checks %{} bets %{} all ins %{} ]  in raised pots {} [ calls %{} folded %{} raised %{} all in %{} ] re raises : {}  check raises : {}",
 
                 ssp.roundStats[round].seen,
                 
-                    FlopTurnRiverState.df2.format(100.0 * ssp.roundStats[round].checks / ssp.roundStats[round].seen),
-                    FlopTurnRiverState.df2.format(100.0 * ssp.roundStats[round].bets / ssp.roundStats[round].seen),
+                    formatPercent( ssp.roundStats[round].checks, ssp.roundStats[round].seen),
+                    formatPercent( ssp.roundStats[round].bets, ssp.roundStats[round].seen),
+                    formatPercent( ssp.roundStats[round].allIn, ssp.roundStats[round].seen),
                     ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough,
-                    FlopTurnRiverState.df2.format(100.0 * ssp.roundStats[round].calls / (ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough)),
-                    FlopTurnRiverState.df2.format(100.0 * ssp.roundStats[round].folded / (ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough)),
-                    FlopTurnRiverState.df2.format(100.0 * ssp.roundStats[round].bets / (ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough)),
+                    formatPercent( ssp.roundStats[round].calls, (ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough)),
+                    formatPercent( ssp.roundStats[round].folded, (ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough)),
+                    formatPercent( ssp.roundStats[round].bets,  (ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough)),
+                    formatPercent( ssp.roundStats[round].allIn, ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough),
                     ssp.roundStats[round].reraises,
                     ssp.roundStats[round].checkRaises
 
                 );
+                
+                logMainOutput.debug("Average bet size %{}  average fold to bet size %{} ",
+                        formatPercent(ssp.roundStats[round].avgBetToPot, 1),
+                        formatPercent(ssp.roundStats[round].avgFoldToBetToPot, 1));
 
             }
         }
         
         return sc.stats;
+    }
+    
+    private static String formatPercent(double decimalNum, double decimalDenom)
+    {
+        if (Double.isNaN(decimalDenom) || Double.isNaN(decimalNum) || decimalDenom < 0.0001)
+            return "n/a";
+        
+        
+        
+        return FlopTurnRiverState.df2.format(100.0 * decimalNum / decimalDenom);
     }
     
     public static List<FlopTurnRiverState[]> parseFile(File rawHandHistory, File cleanedHandHistory) throws IOException {
@@ -169,6 +185,7 @@ public class Parser {
             if (match.matches())
             {
                 curState = new FlopTurnRiverState(new ArrayList<String>(), 0, false, 0,  masterList, new FlopTurnRiverState[4]);
+                log.debug("Hand # {} starts on line {}", masterList.size(), i);
                 continue;
             }
            
