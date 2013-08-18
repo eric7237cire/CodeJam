@@ -404,8 +404,15 @@ public class FlopTurnRiverState implements ParserListener
                 log.debug("Adjusting tapis guess to {}", tapisGuess + diff);
                 
                 pot = updatePlayerBet(playerBets, lastTapisPlayer, tapisGuess+ diff, pot);
-                lastTapisPlayer = null;
+                
                 allInBet.put(lastTapisPlayer, amtToCall);
+                
+                //Nous savons que le tapis était une relance et pas un suivi
+                calledABetOrRaise.remove(lastTapisPlayer);
+                
+                lastTapisPlayer = null;
+                
+                
             }
             
             //Check internal state

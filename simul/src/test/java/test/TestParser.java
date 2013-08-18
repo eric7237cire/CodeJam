@@ -269,30 +269,28 @@ public class TestParser
         assertEquals(0+0+0+0+0+0, ericStats.callOpenNumerator );
         assertEquals(0+0+0+0+0+0, ericStats.callOpenDenom );
         
-        assertEquals(1+0+0+0+1+0, ericStats.flopStats.calls );
+        assertEquals(1+0+0+0+0+0, ericStats.flopStats.calls );
+        assertEquals(0+0+0+0+1+0, ericStats.flopStats.callReraise );
         assertEquals(0+0+0+0+0+0, ericStats.flopStats.folded );
         assertEquals(0+1+0+0+1+0, ericStats.flopStats.bets );
-        assertEquals(0+0+1+0+0+0, ericStats.flopStats.reraises );
+        assertEquals(0+0+1+0+0+0, ericStats.flopStats.reRaiseOpened );
         assertEquals(1+1+1+1+1+0, ericStats.flopStats.seen );
         assertEquals(0+0+0+0+0+0, ericStats.flopStats.checkRaises );
-        assertEquals(0+0+0+0+0+0, ericStats.flopStats.allIn );
         
         assertEquals(0+0+1+0+0+0, ericStats.turnStats.calls );
         assertEquals(0+0+0+0+1+0, ericStats.turnStats.folded );
         assertEquals(1+1+0+0+0+0, ericStats.turnStats.bets );
-        assertEquals(1+0+0+0+0+0, ericStats.turnStats.reraises );
+        assertEquals(1+0+0+0+0+0, ericStats.turnStats.reRaiseUnopened );
         assertEquals(1+1+1+1+1+0, ericStats.turnStats.seen );
         assertEquals(0+0+0+0+0+0, ericStats.turnStats.checkRaises );
-        assertEquals(0+0+0+0+0+0, ericStats.turnStats.allIn );
         
         
-        assertEquals(0+1+0+0+0+0, ericStats.riverStats.calls );
+        assertEquals(0+1+0+0+0+0, ericStats.riverStats.callReraise );
         assertEquals(0+0+0+0+0+0, ericStats.riverStats.folded );
         assertEquals(1+1+0+0+0+0, ericStats.riverStats.bets );
-        assertEquals(0+0+0+0+0+0, ericStats.riverStats.reraises );
+        assertEquals(0+0+0+0+0+0, ericStats.riverStats.reRaiseOpened );
         assertEquals(1+1+0+1+0+0, ericStats.riverStats.seen );
         assertEquals(0+0+0+0+0+0, ericStats.riverStats.checkRaises );
-        assertEquals(0+0+0+0+0+0, ericStats.riverStats.allIn );
         
         
         

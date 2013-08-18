@@ -21,17 +21,26 @@ public class StatsSessionPlayer {
         public int seen;
         
         public int checkedThrough;
+        //Quand le jouer n'a pas misé en premier
+        public int openedBySomeoneElse;
         
-        public int checkRaises;
+        //Quand personne à relancé au tour du joeur
+        public int unopened;
+        
+        public int checksUnopened;
         public int bets;
+        public int callReraise;
+        public int betAllIn;
+        public int reRaiseUnopened;
         
-        public int reraises;
-        public int allIn;
-        
+        //When pot is opened by someone else
+        public int checksOpened;
+        public int checkRaises;
+        public int reRaiseOpened;
         //Calling in the round max 1, just calling big blind counts
         public int calls;
         public int folded;
-        public int checks;
+        public int raiseCallAllIn;
         
         //Folded to a reraise
         public int betFold;

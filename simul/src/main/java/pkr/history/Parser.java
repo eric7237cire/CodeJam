@@ -4,12 +4,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import pkr.history.StatsSessionPlayer.RoundStats;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
@@ -111,27 +112,30 @@ public class Parser {
             
             for(int round = 0; round < 3; ++round)
             {
-                logMainOutput.debug("Round {} stats",
+                RoundStats rs = ssp.roundStats[round];
+                
+                logMainOutput.debug("\nRound {} stats.  Seen : [{}] checked through : [{}] Unopened : [{}] Opened : [{}]" ,
                         
-                        round == 0 ? "flop" :
-                            (round == 1 ? "turn" : "river")
-                        
+                        round == 0 ? "Flop" :
+                            (round == 1 ? "Turn" : "River"),
+                            rs.seen,
+                            rs.checkedThrough,
+                            rs.unopened,
+                            rs.openedBySomeoneElse
                         );
 
-                logMainOutput.debug("Seen {} [ checks %{} bets %{} all ins %{} ]  in raised pots {} [ calls %{} folded %{} raised %{} all in %{} ] re raises : {}  check raises : {}",
-
-                ssp.roundStats[round].seen,
                 
-                    formatPercent( ssp.roundStats[round].checks, ssp.roundStats[round].seen),
-                    formatPercent( ssp.roundStats[round].bets, ssp.roundStats[round].seen),
-                    formatPercent( ssp.roundStats[round].allIn, ssp.roundStats[round].seen),
-                    ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough,
-                    formatPercent( ssp.roundStats[round].calls, (ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough)),
-                    formatPercent( ssp.roundStats[round].folded, (ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough)),
-                    formatPercent( ssp.roundStats[round].bets,  (ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough)),
-                    formatPercent( ssp.roundStats[round].allIn, ssp.roundStats[round].seen-ssp.roundStats[round].checkedThrough),
-                    ssp.roundStats[round].reraises,
-                    ssp.roundStats[round].checkRaises
+                logMainOutput.debug(" Unopened : [ checks %{} bets %{} all ins %{} ]  Opened : [ checks %{} calls %{} folded %{} raised %{} all in %{} ] re raises (unopened): {}  check raises : {}",                
+                    formatPercent( rs.checksUnopened, rs.unopened),
+                    formatPercent( rs.bets, rs.unopened),
+                    formatPercent( rs.betAllIn, rs.unopened),                    
+                    formatPercent( rs.checksOpened, rs.openedBySomeoneElse),
+                    formatPercent( rs.calls, rs.openedBySomeoneElse),
+                    formatPercent( rs.folded, rs.openedBySomeoneElse),
+                    formatPercent( rs.reRaiseOpened, rs.openedBySomeoneElse),
+                    formatPercent( rs.raiseCallAllIn, rs.openedBySomeoneElse),
+                    rs.reRaiseUnopened,
+                    rs.checkRaises
 
                 );
                 

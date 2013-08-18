@@ -7,6 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pkr.history.StatsSessionPlayer.RoundStats;
+
 import com.google.common.base.Preconditions;
 
 public class StatsComputer
@@ -134,10 +136,7 @@ public class StatsComputer
         {
             player.roundStats[r].seen++;
             
-            if (ftrStates[r+1].amtToCall == 0)
-            {
-                player.roundStats[r].checkedThrough++;
-            } else {
+            
                 //Make sure only 1 raise / fold / call is true
                 /*
                 int check = 0;
@@ -161,46 +160,99 @@ public class StatsComputer
                         ftrStates[r+1].allInBet.containsKey(playerName)
                         );
                         */
-            }
+            
             
             log.debug("Player {} is in round {}", playerName, r+1);
             
+            final boolean isInitialBetter = StringUtils.equals(ftrStates[r+1].roundInitialBetter, playerName);
+            
+            RoundStats rs = player.roundStats[r];
+            
+            if (ftrStates[r+1].amtToCall == 0)
+            {
+                rs.checkedThrough++;
+            }
+            
+            final boolean opened = ftrStates[r+1].amtToCall > 0 && !isInitialBetter; 
+            if (opened)
+            {
+                rs.openedBySomeoneElse++;
+            }
+            
+            final boolean unOpened = (ftrStates[r+1].amtToCall == 0 || isInitialBetter);
+            
+            if (unOpened)
+            {
+                rs.unopened++;
+            }
+            
             if (BooleanUtils.isTrue(ftrStates[r+1].calledABetOrRaise.get(playerName)))
             {
-                player.roundStats[r].calls++;
+                if (opened)
+                {
+                    log.debug("Player {} called the opened pot", playerName);
+                    rs.calls++;
+                } else {
+                    rs.callReraise++;
+                }
+                
+                //Preconditions.checkState(opened, playerName);
             }
             
             if (BooleanUtils.isTrue(ftrStates[r+1].foldedToBetOrRaise.get(playerName)))
             {
-                player.roundStats[r].folded++;
-                player.roundStats[r].avgFoldToBetToPot += ftrStates[r+1].foldToBetSize.get(playerName); 
+                if (unOpened)
+                {
+                    rs.betFold++;
+                } else {
+                    log.debug("Player {} folded an opened pot", player);
+                    rs.folded++;
+                }
+                rs.avgFoldToBetToPot += ftrStates[r+1].foldToBetSize.get(playerName); 
             }
             
             if (BooleanUtils.isTrue(ftrStates[r+1].hasBet.get(playerName)))
             {
-                player.roundStats[r].bets++;
-                player.roundStats[r].avgBetToPot += ftrStates[r+1].betToPotSize.get(playerName);
+                rs.bets++;
+                rs.avgBetToPot += ftrStates[r+1].betToPotSize.get(playerName);
             }
             
             if (BooleanUtils.isTrue(ftrStates[r+1].allInBet.containsKey(playerName)))
             {
-                player.roundStats[r].allIn++; 
+                if (unOpened)
+                {
+                    log.debug("Player {} all in unopened", playerName);
+                    rs.betAllIn++;
+                }
+                else
+                    rs.raiseCallAllIn++;
             }
             
             if (BooleanUtils.isTrue(ftrStates[r+1].hasReraised.get(playerName)))
             {
-                player.roundStats[r].reraises++;
+                if (unOpened)
+                {
+                    rs.reRaiseUnopened++;
+                } else {
+                    rs.reRaiseOpened++;
+                }
             }
             
             if (BooleanUtils.isTrue(ftrStates[r+1].hasChecked.get(playerName)))
             {
-                player.roundStats[r].checks++;
+                if (unOpened)
+                    rs.checksUnopened++;
+                else
+                {
+                    log.debug("Player {} checked the opened pot", playerName);
+                    rs.checksOpened++;
+                }
             }
             
             if (BooleanUtils.isTrue(ftrStates[r+1].hasChecked.get(playerName)) &&
                     BooleanUtils.isTrue(ftrStates[r+1].hasReraised.get(playerName)))
             {
-                player.roundStats[r].checkRaises++;
+                rs.checkRaises++;
             }
         }
         }
