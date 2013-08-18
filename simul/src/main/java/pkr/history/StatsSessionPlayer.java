@@ -32,6 +32,9 @@ public class StatsSessionPlayer {
         public int callReraise;
         public int betAllIn;
         public int reRaiseUnopened;
+      //Folded to a reraise
+        public int betFold;
+        public int checkFold;
         
         //When pot is opened by someone else
         public int checksOpened;
@@ -42,8 +45,7 @@ public class StatsSessionPlayer {
         public int folded;
         public int raiseCallAllIn;
         
-        //Folded to a reraise
-        public int betFold;
+        
         
         public double avgBetToPot;
         public double avgFoldToBetToPot;

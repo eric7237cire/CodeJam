@@ -125,10 +125,14 @@ public class Parser {
                         );
 
                 
-                logMainOutput.debug(" Unopened : [ checks %{} bets %{} all ins %{} ]  Opened : [ checks %{} calls %{} folded %{} raised %{} all in %{} ] re raises (unopened): {}  check raises : {}",                
+                logMainOutput.debug(" Unopened [{}] : [ checks %{} bets %{} all ins %{} calls rr : {} fold rr : {} ]  Opened [{}] : [ checks %{} calls %{} folded %{} raised %{} all in %{} ] re raises (unopened): {}  check raises : {}",
+                        rs.unopened,
                     formatPercent( rs.checksUnopened, rs.unopened),
                     formatPercent( rs.bets, rs.unopened),
-                    formatPercent( rs.betAllIn, rs.unopened),                    
+                    formatPercent( rs.betAllIn, rs.unopened),
+                     rs.callReraise,
+                     rs.betFold, 
+                    rs.openedBySomeoneElse,
                     formatPercent( rs.checksOpened, rs.openedBySomeoneElse),
                     formatPercent( rs.calls, rs.openedBySomeoneElse),
                     formatPercent( rs.folded, rs.openedBySomeoneElse),
@@ -190,6 +194,7 @@ public class Parser {
             {
                 curState = new FlopTurnRiverState(new ArrayList<String>(), 0, false, 0,  masterList, new FlopTurnRiverState[4]);
                 log.debug("Hand # {} starts on line {}", masterList.size(), i);
+                ((FlopTurnRiverState) curState).lineNumber = i;
                 continue;
             }
            

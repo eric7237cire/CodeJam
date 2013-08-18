@@ -21,6 +21,8 @@ public class FlopTurnRiverState implements ParserListener
     static Logger log = LoggerFactory.getLogger(Parser.class);
     static Logger logOutput = LoggerFactory.getLogger("handOutput");
     
+    public int lineNumber;
+    
     List<FlopTurnRiverState[]> masterList; 
     FlopTurnRiverState[] roundStates;
     

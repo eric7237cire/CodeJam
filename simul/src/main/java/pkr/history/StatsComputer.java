@@ -23,7 +23,7 @@ public class StatsComputer
         for(int hand = 0; hand < hands.size(); ++hand )
         {
             FlopTurnRiverState[] ftrStates = hands.get(hand);
-            log.debug("\nStats hand : {}", hand);
+            log.debug("\nStats hand : {} line # : {}", hand, ftrStates[0].lineNumber);
             
             for(String preFlopPlayer : ftrStates[0].players)
             {
@@ -180,6 +180,7 @@ public class StatsComputer
             }
             
             final boolean unOpened = (ftrStates[r+1].amtToCall == 0 || isInitialBetter);
+            final boolean playerHasBet = BooleanUtils.isTrue(ftrStates[r+1].hasBet.get(playerName));
             
             if (unOpened)
             {
@@ -203,15 +204,21 @@ public class StatsComputer
             {
                 if (unOpened)
                 {
-                    rs.betFold++;
+                    log.debug("Player {} folded to a reraise", playerName);
+                    if (playerHasBet)
+                        rs.betFold++;
+                    else
+                    {
+                        rs.checkFold++;
+                    }
                 } else {
-                    log.debug("Player {} folded an opened pot", player);
+                    log.debug("Player {} folded an opened pot", playerName);
                     rs.folded++;
                 }
                 rs.avgFoldToBetToPot += ftrStates[r+1].foldToBetSize.get(playerName); 
             }
             
-            if (BooleanUtils.isTrue(ftrStates[r+1].hasBet.get(playerName)))
+            if (playerHasBet)
             {
                 rs.bets++;
                 rs.avgBetToPot += ftrStates[r+1].betToPotSize.get(playerName);
