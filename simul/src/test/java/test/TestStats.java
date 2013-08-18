@@ -285,5 +285,64 @@ public class TestStats
         ////////////////////////////////
     }
 
-   
+    
+    @Test
+    public void testStats3() throws Exception
+    {
+        List<FlopTurnRiverState[]> results = getList("testStats3");
+        
+        assertEquals(2, results.size());
+        
+        FlopTurnRiverState[] handStates = results.get(0);
+        
+        StatsSession stats = Parser.computeStats(results);
+        
+        StatsSessionPlayer pStats = stats.playerSessionStats.get("Dhimiter");
+        RoundStats rs = pStats.roundStats[0];
+        
+        rs = pStats.roundStats[0];
+        //Unopened stats
+          assertEquals(1, rs.bets);
+          assertEquals(0, rs.checksUnopened);
+          assertEquals(0, rs.betAllIn);
+          assertEquals(0, rs.callReraise);
+          assertEquals(0, rs.betFold);
+          
+          //Opened stats
+          assertEquals(0, rs.calls);        
+          assertEquals(0, rs.checkRaises);
+          assertEquals(0, rs.checksOpened);
+          assertEquals(1, rs.folded);
+          assertEquals(0, rs.raiseCallAllIn);
+          assertEquals(0, rs.reRaiseOpened);
+          
+          //Counters
+          assertEquals(1, rs.openedBySomeoneElse);
+          assertEquals(0, rs.checkedThrough);
+          assertEquals(2, rs.seen);
+          assertEquals(1, rs.unopened);
+          
+          rs = pStats.roundStats[1];
+          
+          //Unopened stats
+          assertEquals(1, rs.bets);
+          assertEquals(0, rs.checksUnopened);
+          assertEquals(0, rs.betAllIn);
+          assertEquals(0, rs.callReraise);
+          assertEquals(1, rs.betFold);
+          
+          //Opened stats
+          assertEquals(0, rs.calls);        
+          assertEquals(0, rs.checkRaises);
+          assertEquals(0, rs.checksOpened);
+          assertEquals(0, rs.folded);
+          assertEquals(0, rs.raiseCallAllIn);
+          assertEquals(0, rs.reRaiseOpened);
+          
+          //Counters
+          assertEquals(0, rs.openedBySomeoneElse);
+          assertEquals(0, rs.checkedThrough);
+          assertEquals(1, rs.seen);
+          assertEquals(1, rs.unopened);
+    }
 }

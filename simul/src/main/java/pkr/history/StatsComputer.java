@@ -137,10 +137,31 @@ public class StatsComputer
             player.roundStats[r].seen++;
             
             
-                //Make sure only 1 raise / fold / call is true
-                /*
+                
+            
+            
+            log.debug("Player {} is in round {}  0 -- flop 1 -- turn  2 -- river", playerName, r+1);
+            
+            final boolean isInitialBetter = StringUtils.equals(ftrStates[r+1].roundInitialBetter, playerName);
+            
+            RoundStats rs = player.roundStats[r];
+            
+            if (ftrStates[r+1].amtToCall == 0)
+            {
+                rs.checkedThrough++;
+            }
+            
+            final boolean hasReraised = (BooleanUtils.isTrue(ftrStates[r+1].hasReraised.get(playerName)));
+            
+            final boolean opened = ftrStates[r+1].amtToCall > 0 && !isInitialBetter; 
+            if (opened)
+            {
+                rs.openedBySomeoneElse++;
+                
+                //Make sure at least 1 raise / fold / call is true
+                
                 int check = 0;
-                if (BooleanUtils.isTrue(ftrStates[r+1].hasBet.get(playerName)))
+                if (hasReraised)
                    ++check;
             
                 if (BooleanUtils.isTrue(ftrStates[r+1].foldedToBetOrRaise.get(playerName)))
@@ -152,31 +173,17 @@ public class StatsComputer
                 if (BooleanUtils.isTrue(ftrStates[r+1].allInBet.containsKey(playerName)))
                     ++check;
                 
-                Preconditions.checkState(1 <= check && check <= 2, "Player %s has not just bet/folded/called in a raised round %s.\n  has bet [%s] has folded [%s]  has called [%s] has all in [%s]",
+                Preconditions.checkState(1 <= check && check <= 3,
+                        "%s Player %s has not just bet/folded/called in a raised round %s.\n " +
+                        " has bet [%s] has folded [%s]  has called [%s] has all in [%s]",
+                        check,
                         playerName, r,
-                        ftrStates[r+1].hasBet.get(playerName),
+                        hasReraised,
                         ftrStates[r+1].foldedToBetOrRaise.get(playerName),
                         ftrStates[r+1].calledABetOrRaise.get(playerName),
                         ftrStates[r+1].allInBet.containsKey(playerName)
                         );
-                        */
-            
-            
-            log.debug("Player {} is in round {}", playerName, r+1);
-            
-            final boolean isInitialBetter = StringUtils.equals(ftrStates[r+1].roundInitialBetter, playerName);
-            
-            RoundStats rs = player.roundStats[r];
-            
-            if (ftrStates[r+1].amtToCall == 0)
-            {
-                rs.checkedThrough++;
-            }
-            
-            final boolean opened = ftrStates[r+1].amtToCall > 0 && !isInitialBetter; 
-            if (opened)
-            {
-                rs.openedBySomeoneElse++;
+                        
             }
             
             final boolean unOpened = (ftrStates[r+1].amtToCall == 0 || isInitialBetter);

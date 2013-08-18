@@ -30,7 +30,7 @@ public class Parser {
             Pattern.compile("\\+ \\d+ XP pour avoir (?:joué|gagné) une main.");
     
     private final static Pattern REALISATION_LINE = 
-            Pattern.compile(".* a atteint .* !");
+            Pattern.compile(".* (?:a|avez) atteint .* !");
     
     private final static Pattern ADJUSTEMENT =
             Pattern.compile(".* a fait un.* automatique.");

@@ -1,0 +1,39 @@
+_____________________________
+ 
+Dhimiter a relancé de 400 000.
+Kinor a suivi de 400 000.
+Iso a suivi de 400 000.
+Sinan a suivi de 400 000.
+Eric a suivi de 400 000.
+
+Sinan a parlé.
+Eric a parlé.
+Dhimiter a relancé de 1 000 000.
+Kinor se couche.
+Iso a suivi de 1 000 000.
+Sinan se couche.
+Eric se couche.
+
+Dhimiter a relancé de 200 000.
+Iso a fait tapis.
+Dhimiter se couche.
++ 5 XP pour avoir joué une main.
+Iso gagne.
+_____________________________
+ 
+Eric a fait un ajustement automatique.
+Iso a suivi de 200 000.
+Sinan a suivi de 200 000.
+Eric se couche.
+Dhimiter a suivi de 200 000.
+Kinor a suivi de 200 000.
+
+//Folded to a zero bet size
+Dhimiter se couche.
+Kinor a parlé.
+Iso a relancé de 800 000.
+Sinan se couche.
+Kinor se couche.
++ 5 XP pour avoir joué une main.
+Iso gagne.
+_____________________________
