@@ -194,8 +194,10 @@ public class StatsComputer
                     log.debug("Player {} called the opened pot", playerName);
                     rs.calls++;
                 } else {
+                    log.debug("Player {} called a reraise in an unopened pot", playerName);
                     rs.callReraise++;
                 }
+                
                 
                 //Preconditions.checkState(opened, playerName);
             }

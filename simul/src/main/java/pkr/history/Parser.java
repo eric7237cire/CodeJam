@@ -125,7 +125,7 @@ public class Parser {
                         );
 
                 
-                logMainOutput.debug(" Unopened [{}] : [ checks %{} bets %{} all ins %{} calls rr : {} fold rr : {} ]  Opened [{}] : [ checks %{} calls %{} folded %{} raised %{} all in %{} ] re raises (unopened): {}  check raises : {}",
+                logMainOutput.debug(" Unopened [{}] : [ checks %{} bets %{} all ins %{} calls rr : {} fold rr : {} ]  \nOpened [{}] : [ checks %{} calls %{} folded %{} raised %{} all in %{} ] re raises (unopened): {}  check raises : {}",
                         rs.unopened,
                     formatPercent( rs.checksUnopened, rs.unopened),
                     formatPercent( rs.bets, rs.unopened),
