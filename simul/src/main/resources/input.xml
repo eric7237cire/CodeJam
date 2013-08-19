@@ -93,7 +93,7 @@
         
         
         
-		<scenario name="vs loose" iterCount="40000">
+		<scenario name="vs loose" iterCount="40">
             <!--  <player set="co" count="1"/>-->
             <player count="0">
             76s, 65s, 54s, 43s,
@@ -104,16 +104,16 @@
 			<player set="loose" count="3"/>
         </scenario>        
        
-	   <scenario name="2rand" iterCount="40000">
+	   <scenario name="2rand" iterCount="40">
 			<player set="random" count="2"/>
 	   </scenario>
-	   <scenario name="2good" iterCount="40000">
+	   <scenario name="2good" iterCount="40">
             <player set="good" count="2"/>
        </scenario>
        
-       <scenario name="underdog" iterCount="40000">
+       <scenario name="underdog" iterCount="10000">
        <player count="1">
-            A5s
+            A2s+
             </player>
             <player count="1">
             JJ+
