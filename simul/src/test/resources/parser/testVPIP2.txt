@@ -11,3 +11,41 @@ Bena se couche.
 + 5 XP pour avoir joué une main.
 Eric gagne.
 _____________________________
+Eric a relancé de 900 000.
+Ahmed a suivi de 900 000.
+Serge se couche.
+Yara se couche.
+Bena se couche.
+Eric a relancé de 800 000.
+Ahmed se couche.
+Bena se couche.
++ 5 XP pour avoir joué une main.
+Eric gagne.
+_____________________________
+Eric a relancé de 800 000.
+Ahmed a suivi de 800 000.
+Serge se couche.
+Yara se couche.
+Bena a suivi de 800 000.
+Bena a parlé.
+Eric a relancé de 800 000.
+Ahmed se couche.
+Bena se couche.
++ 5 XP pour avoir joué une main.
+Eric gagne.
+_____________________________
+//EP
+Eric a fait tapis.
+//MP
+Ahmed a suivi de 800 000.
+//LP
+Serge se couche.
+//SB
+Yara se couche.
+//BB
+Bena a suivi de 800 000.
+Bena a relancé de 200 000.
+Ahmed se couche.
++ 5 XP pour avoir joué une main.
+Bena gagne.
+_____________________________

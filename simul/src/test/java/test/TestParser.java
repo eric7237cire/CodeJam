@@ -118,12 +118,16 @@ public class TestParser
         assertEquals(3, players.get(playerNum).totalHands );
     }
     
+    /**
+     * Test raised pots
+     * @throws Exception
+     */
     @Test
     public void testVPIP2() throws Exception
     {
         List<FlopTurnRiverState[]> results = getList("testVPIP2");
         
-        assertEquals(1, results.size());
+        assertEquals(4, results.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         
@@ -139,19 +143,33 @@ public class TestParser
                 stats.playerSessionStats.get("Bena"));
         
         int playerNum = 0;
-        assertEquals(1, players.get(playerNum).vpipNumerator );
-        assertEquals(1, players.get(playerNum).vpipDenom );
-        assertEquals(1, players.get(playerNum).totalHands );
+        StatsSessionPlayer pStats =  players.get(playerNum); 
+        assertEquals(4, pStats.vpipNumerator );
+        assertEquals(4, players.get(playerNum).vpipDenom );
+        assertEquals(4, players.get(playerNum).totalHands );
+        assertEquals(3, pStats.preFlopRaises );
+        assertEquals(766666.66, pStats.preFlopRaiseTotalAmt / pStats.preFlopRaises, .1 );
+        assertEquals(0, pStats.callOpenNumerator );
+        assertEquals(0, pStats.callOpenDenom );
+        
+        assertEquals(1, pStats.preFlopTapis );
         
         playerNum = 1;
-        assertEquals(1, players.get(playerNum).vpipNumerator );
-        assertEquals(1, players.get(playerNum).vpipDenom );
-        assertEquals(1, players.get(playerNum).totalHands );
+        pStats =  players.get(playerNum);
+        assertEquals(4, players.get(playerNum).vpipNumerator );
+        assertEquals(4, players.get(playerNum).vpipDenom );
+        assertEquals(4, players.get(playerNum).totalHands );
+        assertEquals(4, pStats.callOpenNumerator );
+        assertEquals(4, pStats.callOpenDenom );
+        
         
         playerNum = 2;
-        assertEquals(1, players.get(playerNum).vpipNumerator );
-        assertEquals(1, players.get(playerNum).vpipDenom );
-        assertEquals(1,  players.get(playerNum).totalHands );
+        pStats =  players.get(playerNum); 
+        assertEquals(3, players.get(playerNum).vpipNumerator );
+        assertEquals(4, players.get(playerNum).vpipDenom );
+        assertEquals(4,  players.get(playerNum).totalHands );
+        assertEquals(3, pStats.callOpenNumerator );
+        assertEquals(4, pStats.callOpenDenom );
         
     }
     
@@ -201,7 +219,7 @@ public class TestParser
         assertEquals(2, players.get(playerNum).vpipNumerator );
         assertEquals(3, players.get(playerNum).vpipDenom );
         assertEquals(3, players.get(playerNum).totalHands );
-        assertEquals(2, players.get(playerNum).preFlopRaises );
+        assertEquals(0, players.get(playerNum).preFlopRaises );
         assertEquals(2, players.get(playerNum).preFlopTapis );
         assertEquals(0, players.get(playerNum).callOpenNumerator );
         assertEquals(0, players.get(playerNum).callOpenDenom );
@@ -228,7 +246,7 @@ public class TestParser
         assertEquals(3, players.get(playerNum).vpipNumerator );
         assertEquals(3, players.get(playerNum).vpipDenom );
         assertEquals(3, players.get(playerNum).totalHands );
-        assertEquals(3, players.get(playerNum).preFlopRaises );
+        assertEquals(0, players.get(playerNum).preFlopRaises );
         assertEquals(3, players.get(playerNum).preFlopTapis );
         assertEquals(0, players.get(playerNum).callOpenNumerator );
         assertEquals(0, players.get(playerNum).callOpenDenom );

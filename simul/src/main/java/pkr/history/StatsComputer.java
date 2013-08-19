@@ -25,81 +25,18 @@ public class StatsComputer
             FlopTurnRiverState[] ftrStates = hands.get(hand);
             log.debug("\nStats hand : {} line # : {}", hand, ftrStates[0].lineNumber);
             
-            for(String preFlopPlayer : ftrStates[0].players)
+            for(String playerName : ftrStates[0].players)
             {
-                log.debug("Player {}", preFlopPlayer);
-                StatsSessionPlayer playerSesStat = getSessionStats(preFlopPlayer);
+                log.debug("Player {}", playerName);
+                StatsSessionPlayer playerSesStat = getSessionStats(playerName);
                 
                 playerSesStat.totalHands++;
                 
-                handleRoundStats(ftrStates, playerSesStat, preFlopPlayer);
+                handlePreflopStats(ftrStates, playerSesStat, playerName);
                 
-                //Checking BB does not affect stats
-                if (preFlopPlayer.equals(ftrStates[0].playerBB)
-                        && ftrStates[0].tableStakes == ftrStates[0].getCurrentBet(preFlopPlayer)
-                        && ftrStates[0].roundInitialBetter == null
-                        )
-                {
-                    log.debug("Player {} is an unraised big  blind", preFlopPlayer);
-                    continue;
-                }
+                handleRoundStats(ftrStates, playerSesStat, playerName);
                 
-                
-                
-                int playerBet = ftrStates[0].getCurrentBet(preFlopPlayer);
-                
-                playerSesStat.vpipDenom++;
-                
-                if ( (!preFlopPlayer.equals(ftrStates[0].playerBB) && playerBet >= ftrStates[0].tableStakes)
-                        ||
-                        (preFlopPlayer.equals(ftrStates[0].playerBB) && playerBet > ftrStates[0].tableStakes))
-                {
-                    log.debug("Player {} entered pot for VPIP.  table stakes {}  player bet {} bb {}", preFlopPlayer,
-                            ftrStates[0].tableStakes,
-                            ftrStates[0].getCurrentBet(preFlopPlayer),
-                            ftrStates[0].playerBB
-                            );
-                    playerSesStat.vpipNumerator++;
-                }
-                
-                final boolean isPreFlopRaiser = StringUtils.equals(ftrStates[0].roundInitialBetter, preFlopPlayer);
-                
-                if (!isPreFlopRaiser &&
-                        ftrStates[0].roundInitialBetter != null &&
-                        BooleanUtils.isNotTrue(ftrStates[0].hasFolded.get(preFlopPlayer))
-                        ) 
-                {
-                    log.debug("Player {} called an initial raise", preFlopPlayer);
-                    playerSesStat.callOpenDenom++;
-                    playerSesStat.callOpenNumerator++;
-                } else if (BooleanUtils.isTrue(ftrStates[0].foldedToBetOrRaise.get(preFlopPlayer))) {
-                    playerSesStat.callOpenDenom++;
-                    log.debug("Folded to a preflop raise {}", preFlopPlayer);
-                }
-                
-                
-                if (StringUtils.equals(ftrStates[0].roundInitialBetter, preFlopPlayer))
-                {
-                    playerSesStat.preFlopRaises ++;
-                    
-                    if (ftrStates[0].allInBet.containsKey(preFlopPlayer))
-                    {
-                        playerSesStat.preFlopTapis++;
-                    }
-                }
-                
-                //if (BooleanUtils.isTrue(ftrStates[0].hasFolded.get(preFlopPlayer)))
-                /*
-                {
-                    playerSesStat.vpipDenom++;
-                } else if (!preFlopPlayer.equals(ftrStates[0].playerBB)
-                        || ftrStates[0].tableStakes > ftrStates[0].playerBets.get(preFlopPlayer)
-                        ) 
-                {
-                    //Player is either not the big blind or had to put in extra
-                    playerSesStat.vpipNumerator++;
-                    playerSesStat.vpipDenom++;
-                }*/
+               
                 
             }
         }
@@ -123,6 +60,82 @@ public class StatsComputer
     
     public StatsSession stats = null;
     
+    private void handlePreflopStats(FlopTurnRiverState[] ftrStates, StatsSessionPlayer playerSesStat, String preFlopPlayer)
+    {
+        //Checking BB does not affect stats
+        if (preFlopPlayer.equals(ftrStates[0].playerBB)
+                && ftrStates[0].tableStakes == ftrStates[0].getCurrentBet(preFlopPlayer)
+                && ftrStates[0].roundInitialBetter == null
+                )
+        {
+            log.debug("Player {} is an unraised big  blind", preFlopPlayer);
+            return;
+        }
+        
+        
+        
+        int playerBet = ftrStates[0].getCurrentBet(preFlopPlayer);
+        
+        final boolean playerAllin = ftrStates[0].allInBet.containsKey(preFlopPlayer);
+        
+        playerSesStat.vpipDenom++;
+        
+        if ( (!preFlopPlayer.equals(ftrStates[0].playerBB) && playerBet >= ftrStates[0].tableStakes)
+                ||
+                (preFlopPlayer.equals(ftrStates[0].playerBB) && playerBet > ftrStates[0].tableStakes)
+                ||
+                //Supposons qu'un tapis est une relance
+                playerAllin
+                )
+        {
+            log.debug("Player {} entered pot for VPIP.  table stakes {}  player bet {} bb {}", preFlopPlayer,
+                    ftrStates[0].tableStakes,
+                    ftrStates[0].getCurrentBet(preFlopPlayer),
+                    ftrStates[0].playerBB
+                    );
+            playerSesStat.vpipNumerator++;
+        }
+        
+        final boolean isPreFlopRaiser = StringUtils.equals(ftrStates[0].roundInitialBetter, preFlopPlayer);
+        
+        if (!isPreFlopRaiser &&
+                ftrStates[0].roundInitialBetter != null &&
+                BooleanUtils.isNotTrue(ftrStates[0].hasFolded.get(preFlopPlayer))
+                ) 
+        {
+            log.debug("Player {} called an initial raise", preFlopPlayer);
+            playerSesStat.callOpenDenom++;
+            playerSesStat.callOpenNumerator++;
+        } else if (BooleanUtils.isTrue(ftrStates[0].foldedToBetOrRaise.get(preFlopPlayer))) {
+            playerSesStat.callOpenDenom++;
+            log.debug("Folded to a preflop raise {}", preFlopPlayer);
+        }
+        
+        
+        if (isPreFlopRaiser && !playerAllin)
+        {
+            playerSesStat.preFlopRaises ++;
+            playerSesStat.preFlopRaiseTotalAmt += playerBet;
+        }
+        
+        if (playerAllin && isPreFlopRaiser)
+        {
+            playerSesStat.preFlopTapis++;
+        }
+        
+        //if (BooleanUtils.isTrue(ftrStates[0].hasFolded.get(preFlopPlayer)))
+        /*
+        {
+            playerSesStat.vpipDenom++;
+        } else if (!preFlopPlayer.equals(ftrStates[0].playerBB)
+                || ftrStates[0].tableStakes > ftrStates[0].playerBets.get(preFlopPlayer)
+                ) 
+        {
+            //Player is either not the big blind or had to put in extra
+            playerSesStat.vpipNumerator++;
+            playerSesStat.vpipDenom++;
+        }*/
+    }
     private void handleRoundStats(FlopTurnRiverState[] ftrStates, StatsSessionPlayer player, String playerName)
     {
         Preconditions.checkNotNull(ftrStates);

@@ -100,6 +100,7 @@ public class Parser {
     {
         StatsComputer sc = new StatsComputer(hands);
         
+        //VPIP and PFR / position
         for(String player : sc.stats.currentPlayerList)
         {
             StatsSessionPlayer ssp = sc.stats.playerSessionStats.get(player);
