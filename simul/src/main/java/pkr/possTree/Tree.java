@@ -47,9 +47,10 @@ public class Tree
         {
             for(int possLevel = 0; possLevel < PossibilityNode.Levels.values().length; ++possLevel) 
             {
+                /*
                 if (possLevel == PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal())
                     continue;
-                
+                */
                 PossibilityNode dispNode = eval.getPossibilityNode(round, possLevel);
                 
                 //Clear all flop flags

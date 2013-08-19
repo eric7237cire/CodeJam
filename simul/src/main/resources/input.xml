@@ -91,7 +91,15 @@
 -->
     <scenarios>
         
-        
+        <scenario name="allCouleur" iterCount="40000">
+       <player count="1">
+            AJo
+            </player>
+            <player count="2">
+            AT+, 55+
+            </player>
+            
+       </scenario>
         
 		<scenario name="vs loose" iterCount="40000">
             <!--  <player set="co" count="1"/>-->
