@@ -1,12 +1,9 @@
 package pkr.history;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -64,6 +61,10 @@ public class Preprocessor {
         os.close();
     }
     
+    /**
+     * Un bloc continue (entre deux **)
+     *
+     */
     private static class Block
     {
         List<String> lines;
@@ -115,19 +116,6 @@ public class Preprocessor {
                 handStarts.add(lines.size() - 1);
             }
         }
-        
-        
-        
-        /*
-        void removeFirst(int n)
-        {
-            for(int i = 0; i < n; ++i)
-            {
-                handStarts.remove(0);
-            }
-            
-            
-        }*/
         
         void removeLast(int n)
         {
@@ -194,6 +182,7 @@ public class Preprocessor {
         
         while(true)
         {
+            //Plus d'entrée
             if (curLineIdx >= inputLines.size())
             {
                 if (newBlock.containsSomething())
@@ -210,6 +199,7 @@ public class Preprocessor {
             
             Matcher m = CUT_PASTE_BOUNDARY.matcher(curLine);
             
+            //Bloc est fini
             if (m.matches())
             {
                 addNextBlock(blocks, newBlock);
@@ -217,16 +207,10 @@ public class Preprocessor {
             }            
             
             newBlock.addLine(curLine);
-            
-            
-            
         }
     }
     
-    private static void cleanBlock( Block block)
-    {
-        
-    }
+    
     
     private static void removeRedundant( Block blockPrev, Block blockNext)
     {
@@ -284,17 +268,14 @@ public class Preprocessor {
         while( (currentLine = getNextBlock(blocks, currentLine, inputLines)) >= 0)
         {
             Block currentBlock = blocks.get(blocks.size() - 1); 
-            cleanBlock( currentBlock );
             
             if (blocks.size() >= 2)
             {
                 removeRedundant(blocks.get(blocks.size() - 2), currentBlock);
             }
             
-           // currentBlock.addLinesToOutput(outputLines);
         }
         
-        //int startCurrentBlock = -1;
         for(Block block : blocks)
         {
             block.addLinesToOutput(outputLines);

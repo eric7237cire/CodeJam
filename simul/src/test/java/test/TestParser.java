@@ -68,6 +68,7 @@ public class TestParser
         StatsSession stats = Parser.computeStats(results);
     }
     
+    @SuppressWarnings("unused")
     @Test
     public void testVPIP1() throws Exception
     {

@@ -68,7 +68,6 @@ public class TestFlopTexture {
                 Card.parseCards("7d As 7h 4d 7c"));
         
         
-        int handNum = 0;
         int round = ROUND_TURN;
         
         assertTrue(evals[0].hasFlag(round, TextureCategory.PAIRED_BOARD));

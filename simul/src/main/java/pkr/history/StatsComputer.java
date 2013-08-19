@@ -23,7 +23,7 @@ public class StatsComputer
         for(int hand = 0; hand < hands.size(); ++hand )
         {
             FlopTurnRiverState[] ftrStates = hands.get(hand);
-            log.debug("\nStats hand : {} line # : {}", hand, ftrStates[0].lineNumber);
+            log.debug("\nStats hand : {} line # : {}", hand+1, ftrStates[0].lineNumber);
             
             for(String playerName : ftrStates[0].players)
             {
@@ -35,13 +35,8 @@ public class StatsComputer
                 handlePreflopStats(ftrStates, playerSesStat, playerName);
                 
                 handleRoundStats(ftrStates, playerSesStat, playerName);
-                
-               
-                
             }
         }
-        
-        
         
         if (hands.size() > 0)
             stats.currentPlayerList = hands.get(hands.size()-1)[0].players;
@@ -123,18 +118,7 @@ public class StatsComputer
             playerSesStat.preFlopTapis++;
         }
         
-        //if (BooleanUtils.isTrue(ftrStates[0].hasFolded.get(preFlopPlayer)))
-        /*
-        {
-            playerSesStat.vpipDenom++;
-        } else if (!preFlopPlayer.equals(ftrStates[0].playerBB)
-                || ftrStates[0].tableStakes > ftrStates[0].playerBets.get(preFlopPlayer)
-                ) 
-        {
-            //Player is either not the big blind or had to put in extra
-            playerSesStat.vpipNumerator++;
-            playerSesStat.vpipDenom++;
-        }*/
+       
     }
     private void handleRoundStats(FlopTurnRiverState[] ftrStates, StatsSessionPlayer player, String playerName)
     {
@@ -150,11 +134,7 @@ public class StatsComputer
         {
             player.roundStats[r].seen++;
             
-            
-                
-            
-            
-            log.debug("Player {} is in round {}  0 -- flop 1 -- turn  2 -- river", playerName, r+1);
+            log.debug("Player {} is in round {}", playerName, FlopTurnRiverState.roundToStr(r + 1));
             
             final boolean isInitialBetter = StringUtils.equals(ftrStates[r+1].roundInitialBetter, playerName);
             

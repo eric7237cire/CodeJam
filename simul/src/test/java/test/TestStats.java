@@ -19,13 +19,12 @@ import pkr.history.StatsSessionPlayer;
 import pkr.history.StatsSessionPlayer.RoundStats;
 import static org.junit.Assert.*;
 
+@SuppressWarnings("unused")
 @RunWith(JUnit4.class)
 public class TestStats
 {
 
-    public TestStats() {
-        // TODO Auto-generated constructor stub
-    }
+    
     
     public List<FlopTurnRiverState[]> getList(String testFile) throws URISyntaxException, IOException
     {
@@ -42,7 +41,6 @@ public class TestStats
         return Parser.parseFile(testInputRaw, testInput);
     }
 
-    @SuppressWarnings("unused")
     @Test
     public void testStats1() throws Exception
     {
@@ -285,7 +283,6 @@ public class TestStats
         ////////////////////////////////
     }
 
-    
     @Test
     public void testStats3() throws Exception
     {
