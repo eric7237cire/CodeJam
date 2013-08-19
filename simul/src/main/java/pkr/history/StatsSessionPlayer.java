@@ -9,6 +9,7 @@ public class StatsSessionPlayer {
     
     //Calling a pre flop raise
     public int callOpenNumerator;
+    //In a preflop raise situation (not the initial raiser)
     public int callOpenDenom;
     
     public int preFlopRaises;

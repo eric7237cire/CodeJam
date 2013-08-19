@@ -520,9 +520,15 @@ public class FlopTurnRiverState implements ParserListener
         
         foldToBetSize.put(playerName, potRatio);
         
-        //if (roundInitialBetter != null)
+        /*
+         * Il est possible que personne a misé, 
+         * mais on considère qu'il s'est couché après une relance.
+         * 
+         * 
+         */
+        if (roundInitialBetter != null || round > 0)
         {
-            //Il est possible que personne a misé, mais on considère qu'il s'est couché après une relance
+            
             foldedToBetOrRaise.put(playerName, true);
         }
         

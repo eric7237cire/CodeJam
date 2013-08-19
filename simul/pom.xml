@@ -170,7 +170,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>codejam.Main</mainClass>
+							<mainClass>pkr.history.Parser</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -183,6 +183,8 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			
 		</plugins>
 	</build>
 </project>

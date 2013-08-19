@@ -62,10 +62,10 @@ public class StatsComputer
                     playerSesStat.vpipNumerator++;
                 }
                 
+                final boolean isPreFlopRaiser = StringUtils.equals(ftrStates[0].roundInitialBetter, preFlopPlayer);
                 
-                
-                if (ftrStates[0].roundInitialBetter != null && 
-                        !ftrStates[0].roundInitialBetter.equals(preFlopPlayer) &&
+                if (!isPreFlopRaiser &&
+                        ftrStates[0].roundInitialBetter != null &&
                         BooleanUtils.isNotTrue(ftrStates[0].hasFolded.get(preFlopPlayer))
                         ) 
                 {
@@ -74,6 +74,7 @@ public class StatsComputer
                     playerSesStat.callOpenNumerator++;
                 } else if (BooleanUtils.isTrue(ftrStates[0].foldedToBetOrRaise.get(preFlopPlayer))) {
                     playerSesStat.callOpenDenom++;
+                    log.debug("Folded to a preflop raise {}", preFlopPlayer);
                 }
                 
                 
@@ -188,6 +189,7 @@ public class StatsComputer
             
             final boolean unOpened = (ftrStates[r+1].amtToCall == 0 || isInitialBetter);
             final boolean playerHasBet = BooleanUtils.isTrue(ftrStates[r+1].hasBet.get(playerName));
+            final boolean playerHasReraised = BooleanUtils.isTrue(ftrStates[r+1].hasReraised.get(playerName));
             
             if (unOpened)
             {
@@ -244,10 +246,11 @@ public class StatsComputer
                     rs.raiseCallAllIn++;
             }
             
-            if (BooleanUtils.isTrue(ftrStates[r+1].hasReraised.get(playerName)))
+            if (playerHasReraised)
             {
                 if (unOpened)
                 {
+                    log.debug("Player {} has reraised unopened", playerName);
                     rs.reRaiseUnopened++;
                 } else {
                     rs.reRaiseOpened++;
@@ -266,7 +269,7 @@ public class StatsComputer
             }
             
             if (BooleanUtils.isTrue(ftrStates[r+1].hasChecked.get(playerName)) &&
-                    BooleanUtils.isTrue(ftrStates[r+1].hasReraised.get(playerName)))
+                    playerHasReraised)
             {
                 rs.checkRaises++;
             }

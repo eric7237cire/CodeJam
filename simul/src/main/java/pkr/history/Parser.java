@@ -42,7 +42,7 @@ public class Parser {
     private final static Pattern COMMENT =
             Pattern.compile("\\s*//.*");
     
-    static boolean isIgnoreLine(String line) 
+    private static boolean isIgnoreLine(String line) 
     {
         if (line.trim().equals(""))
             return true;
@@ -80,9 +80,14 @@ public class Parser {
     private static Pattern patGagne = Pattern.compile("(.*) gagne.");
     private static Pattern patHandBoundary = Pattern.compile("_*");
         
+    @SuppressWarnings("unused")
     public static void main(String[] args) throws IOException {
         String brutefileName = "C:\\codejam\\CodeJam\\simul\\input\\handshistory.txt";
         String fileName =  "C:\\codejam\\CodeJam\\simul\\output\\cleanhandshistory.txt";
+        
+        log.debug("Working Directory = {}",
+                System.getProperty("user.dir"));
+        
         File file = new File(fileName);
         File inputFile = new File(brutefileName);
         
@@ -99,13 +104,13 @@ public class Parser {
         {
             StatsSessionPlayer ssp = sc.stats.playerSessionStats.get(player);
             logMainOutput.debug("\nPlayer [ {} ] -- \n " +
-            		"Hands played {} VPIP %{}  PFR %{} (tapis %{})  Call open %{}", 
+            		"Preflop Hands played {} VPIP %{}  PFR %{} (tapis %{})  Call open %{}", 
             		
             		player,  ssp.totalHands,
-                    FlopTurnRiverState.df2.format(100.0 * ssp.vpipNumerator / ssp.vpipDenom),
-                    FlopTurnRiverState.df2.format(100.0 * ssp.preFlopRaises / ssp.totalHands),
-                    FlopTurnRiverState.df2.format(100.0 * ssp.preFlopTapis / ssp.totalHands),
-                    FlopTurnRiverState.df2.format(100.0 * ssp.callOpenNumerator / ssp.callOpenDenom)
+            		formatPercent(ssp.vpipNumerator, ssp.vpipDenom),
+            		formatPercent(ssp.preFlopRaises, ssp.totalHands),
+            		formatPercent(ssp.preFlopTapis, ssp.totalHands),
+                    formatPercent(ssp.callOpenNumerator, ssp.callOpenDenom)
                     
                     );
             
@@ -125,21 +130,23 @@ public class Parser {
                         );
 
                 
-                logMainOutput.debug(" Unopened [{}] : [ checks %{} bets %{} all ins %{} calls rr : {} fold rr : {} ]  \nOpened [{}] : [ checks %{} calls %{} folded %{} raised %{} all in %{} ] re raises (unopened): {}  check raises : {}",
+                logMainOutput.debug(" Unopened [{}] : [ checks %{} bets %{} all ins %{} calls rr : {} fold rr : {} rr : {} cr: {}]  \n" +
+                		" Opened [{}] : [ checks %{} calls %{} folded %{} raised %{} all in %{} ] ",
                         rs.unopened,
                     formatPercent( rs.checksUnopened, rs.unopened),
                     formatPercent( rs.bets, rs.unopened),
                     formatPercent( rs.betAllIn, rs.unopened),
                      rs.callReraise,
-                     rs.betFold, 
+                     rs.betFold,
+                     rs.reRaiseUnopened,
+                     rs.checkRaises,
                     rs.openedBySomeoneElse,
                     formatPercent( rs.checksOpened, rs.openedBySomeoneElse),
                     formatPercent( rs.calls, rs.openedBySomeoneElse),
                     formatPercent( rs.folded, rs.openedBySomeoneElse),
                     formatPercent( rs.reRaiseOpened, rs.openedBySomeoneElse),
-                    formatPercent( rs.raiseCallAllIn, rs.openedBySomeoneElse),
-                    rs.reRaiseUnopened,
-                    rs.checkRaises
+                    formatPercent( rs.raiseCallAllIn, rs.openedBySomeoneElse)
+                    
 
                 );
                 
