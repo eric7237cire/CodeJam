@@ -123,13 +123,18 @@ public class FlopTurnRiverState implements ParserListener
         
         logOutput.debug("\n------------------------------");
         logOutput.debug("\nStarting round {} with {} players.  Pot is ${}\n",
-                round == 0 ? "PREFLOP" :
-                    round == 1 ? "FLOP" :
-                    (round == 2 ? "TURN" : "RIVER"),
+               roundToStr(round),
                         players.size(),
                         moneyFormat.format(pot));
                         
         
+    }
+    
+    public static String roundToStr(int round)
+    {
+        return round == 0 ? "Preflop" :
+            round == 1 ? "Flop" :
+            (round == 2 ? "Turn" : "River");
     }
     
     public static int updatePlayerBet(Map<String, Integer> playerBets, String playerName, int playerBet, int pot) 

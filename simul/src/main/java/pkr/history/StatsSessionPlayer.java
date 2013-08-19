@@ -12,7 +12,10 @@ public class StatsSessionPlayer {
     //In a preflop raise situation (not the initial raiser)
     public int callOpenDenom;
     
+    //excludes tapis
     public int preFlopRaises;
+    public double preFlopRaiseTotalAmt;
+    
     public int preFlopTapis;
     
     

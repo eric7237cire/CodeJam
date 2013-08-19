@@ -100,15 +100,17 @@ public class Parser {
     {
         StatsComputer sc = new StatsComputer(hands);
         
+        //VPIP and PFR / position
         for(String player : sc.stats.currentPlayerList)
         {
             StatsSessionPlayer ssp = sc.stats.playerSessionStats.get(player);
             logMainOutput.debug("\nPlayer [ {} ] -- \n " +
-            		"Preflop Hands played {} VPIP %{}  PFR %{} (tapis %{})  Call open %{}", 
+            		"Preflop Hands played {} VPIP %{}  PFR %{} Avg Amt ${} (tapis %{})  Call open %{}", 
             		
             		player,  ssp.totalHands,
             		formatPercent(ssp.vpipNumerator, ssp.vpipDenom),
             		formatPercent(ssp.preFlopRaises, ssp.totalHands),
+            		 FlopTurnRiverState.moneyFormat.format( ssp.preFlopRaises == 0 ? 0 : (int) (ssp.preFlopRaiseTotalAmt / ssp.preFlopRaises) ),
             		formatPercent(ssp.preFlopTapis, ssp.totalHands),
                     formatPercent(ssp.callOpenNumerator, ssp.callOpenDenom)
                     
@@ -121,8 +123,7 @@ public class Parser {
                 
                 logMainOutput.debug("\nRound {} stats.  Seen : [{}] checked through : [{}] Unopened : [{}] Opened : [{}]" ,
                         
-                        round == 0 ? "Flop" :
-                            (round == 1 ? "Turn" : "River"),
+                        FlopTurnRiverState.roundToStr(round + 1),
                             rs.seen,
                             rs.checkedThrough,
                             rs.unopened,
@@ -200,7 +201,7 @@ public class Parser {
             if (match.matches())
             {
                 curState = new FlopTurnRiverState(new ArrayList<String>(), 0, false, 0,  masterList, new FlopTurnRiverState[4]);
-                log.debug("Hand # {} starts on line {}", masterList.size(), i);
+                log.debug("Hand # {} starts on line {}", masterList.size()+1, i);
                 ((FlopTurnRiverState) curState).lineNumber = i;
                 continue;
             }
