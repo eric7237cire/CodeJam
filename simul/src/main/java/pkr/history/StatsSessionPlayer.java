@@ -2,6 +2,7 @@ package pkr.history;
 
 import java.util.Map;
 
+import pkr.history.stats.Pfr;
 import pkr.history.stats.Vpip;
 
 import com.google.common.collect.Maps;
@@ -89,6 +90,9 @@ public class StatsSessionPlayer {
         stats = Maps.newHashMap();
         
         iPlayerStatistic s = new Vpip(playerName);
+        stats.put(s.getId(), s);
+        
+        s = new Pfr(playerName);
         stats.put(s.getId(), s);
         
         roundStats = new RoundStats[] { flopStats, turnStats, riverStats };

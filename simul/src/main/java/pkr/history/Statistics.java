@@ -20,4 +20,14 @@ public class Statistics {
         
         return FlopTurnRiverState.df1.format(100.0 * decimalNum / decimalDenom) + "%";
     }
+    
+    public static String formatMoney(double amtNum, int amtDenom)
+    {
+        if (amtDenom == 0)
+        {
+            return "$0";
+        }
+        
+        return "$" + FlopTurnRiverState.moneyFormat.format( (int) (amtNum / amtDenom) );
+    }
 }

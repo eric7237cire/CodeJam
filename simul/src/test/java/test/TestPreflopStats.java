@@ -358,4 +358,19 @@ public class TestPreflopStats
         assertEquals(3, pStat.totalHands );
     }
     
+    @Test
+    public void testPFR2() throws Exception
+    {
+        List<FlopTurnRiverState[]> results = getList("testPFR2");
+        
+        assertEquals(1, results.size());
+                                 
+        StatsSession stats = Parser.computeStats(results);
+        
+        StatsSessionPlayer pStats = stats.playerSessionStats.get("Idan");
+        
+        assertEquals("Pfr : 100% (1/1) Avg amt : $1 600 000 Tapis : 0", pStats.getStatValue("pfr"));
+        
+        
+    }
 }

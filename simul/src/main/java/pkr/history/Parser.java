@@ -107,14 +107,11 @@ public class Parser {
         {
             StatsSessionPlayer ssp = sc.stats.playerSessionStats.get(player);
             logMainOutput.debug("\nPlayer [ {} ] -- \n " +
-            		"Preflop Hands played {} VPIP %{} {} PFR %{} Avg Amt ${} (tapis %{})  Call open %{}", 
+            		"Preflop Hands played {} {} [ {} ]  Call open %{}", 
             		
             		player,  ssp.totalHands,
-            		formatPercent(ssp.vpipNumerator, ssp.vpipDenom),
             		ssp.getStatValue("vpip"),
-            		formatPercent(ssp.preFlopRaises, ssp.totalHands),
-            		 FlopTurnRiverState.moneyFormat.format( ssp.preFlopRaises == 0 ? 0 : (int) (ssp.preFlopRaiseTotalAmt / ssp.preFlopRaises) ),
-            		formatPercent(ssp.preFlopTapis, ssp.totalHands),
+            		ssp.getStatValue("pfr"),
                     formatPercent(ssp.notFoldRaisedPreflop, ssp.raisedPreflopDenom)
                     
                     );

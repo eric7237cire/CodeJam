@@ -27,7 +27,7 @@ public class FlopTurnRiverState implements ParserListener
     FlopTurnRiverState[] roundStates;
     
     //La liste de joeurs dans l'ordre à parler 
-    List<String> players;
+    public List<String> players;
     int pot;
     
     final static int MAX_PLAYERS = 5;
@@ -611,6 +611,14 @@ public class FlopTurnRiverState implements ParserListener
     {
       //Tapis est un cas diffil car on ne sais pas si c'est un relancement ou pas ; aussi on ne sais plus le pot
         log.debug("{} Tapis", playerName);
+        
+      //Le prochain round a commencé
+        if (round == 0 && 
+                players.contains(playerName) && 
+                potsGood())
+        {
+            return getNextState(true);
+        }
         
         //If the user has less than the buy in this will be wrong but that's rare
         if (roundInitialBetter == null) {
