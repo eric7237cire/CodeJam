@@ -5,7 +5,7 @@ public interface iPlayerStatistic {
     
     //String getName();
     
-    String getValue();
+  //  String getValue();
     
    // iPlayerStatistic create(String playerName, int round);
     

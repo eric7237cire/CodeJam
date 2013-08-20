@@ -2,6 +2,8 @@ package pkr.history;
 
 import java.util.Map;
 
+import pkr.history.stats.Vpip;
+
 import com.google.common.collect.Maps;
 
 
@@ -86,7 +88,7 @@ public class StatsSessionPlayer {
         this.playerName = pplayerName;
         stats = Maps.newHashMap();
         
-        iPlayerStatistic s = new Statistics.Vpip(playerName);
+        iPlayerStatistic s = new Vpip(playerName);
         stats.put(s.getId(), s);
         
         roundStats = new RoundStats[] { flopStats, turnStats, riverStats };

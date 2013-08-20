@@ -36,7 +36,7 @@ public class FlopTurnRiverState implements ParserListener
     int amtToCall = 0;
     
     Map<String , Boolean> hasFolded;
-    Map<String, Integer> allInBet;
+    public Map<String, Integer> allInBet;
     Map<String, Boolean> allInBetExact;
     String lastTapisPlayer;
     Map<String, Integer> playerBets;
@@ -44,21 +44,21 @@ public class FlopTurnRiverState implements ParserListener
     Map<String, Double> betToPotSize;
     Map<String, Double> foldToBetSize;
     
-    String roundInitialBetter;
+    public String roundInitialBetter;
 //    String roundInitialReRaiser;  
    
     
-    Map<String, Boolean> calledABetOrRaise;
-    Map<String, Boolean> foldedToBetOrRaise;
+    public Map<String, Boolean> calledABetOrRaise;
+    public Map<String, Boolean> foldedToBetOrRaise;
 
     Map<String, Boolean> hasBet;
-    Map<String, Boolean> hasReraised;
+    public Map<String, Boolean> hasReraised;
     Map<String, Boolean> hasChecked;
     
     
     String playerSB;
-    String playerBB;
-    int tableStakes;
+    public String playerBB;
+    public int tableStakes;
     
     
     int currentPlayer = 0;

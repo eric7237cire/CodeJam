@@ -94,7 +94,7 @@ public class TestPreflopStats
         int playerNum = 0;
         StatsSessionPlayer pStats =  stats.playerSessionStats.get("Eric");
         
-        assertEquals("25%", pStats.stats.get("vpip").getValue());
+        assertEquals("Vpip : 25%", (String) pStats.getStatValue("vpip"));
         assertEquals(1, players.get(playerNum).vpipNumerator );
         assertEquals(4, players.get(playerNum).vpipDenom );
         assertEquals(5, players.get(playerNum).totalHands );
@@ -105,7 +105,7 @@ public class TestPreflopStats
         assertEquals(4, players.get(playerNum).vpipDenom );
         
         
-        assertEquals("50%", pStats.stats.get("vpip").getValue());
+        assertEquals("Vpip : 50%", pStats.getStatValue("vpip"));
         assertEquals(5, players.get(playerNum).totalHands );
         
         playerNum = 2;
@@ -113,20 +113,20 @@ public class TestPreflopStats
         assertEquals(1, players.get(playerNum).vpipNumerator );
         assertEquals(3, players.get(playerNum).vpipDenom );
         assertEquals(3, players.get(playerNum).totalHands );
-        assertEquals("33.3%", pStats.stats.get("vpip").getValue());
+        assertEquals("Vpip : 33.3%", pStats.getStatValue("vpip"));
         
         playerNum = 3;
         pStats =  stats.playerSessionStats.get("Billy");
         assertEquals(4, players.get(playerNum).vpipNumerator );
         assertEquals(5, players.get(playerNum).vpipDenom );
         assertEquals(5, players.get(playerNum).totalHands );
-        assertEquals("80%", pStats.stats.get("vpip").getValue());
+        assertEquals("Vpip : 80%", pStats.getStatValue("vpip"));
         
         playerNum = 4;
         pStats =  stats.playerSessionStats.get("Anto");
         assertEquals(1, players.get(playerNum).vpipNumerator );
         assertEquals(2, players.get(playerNum).vpipDenom );
-        assertEquals("50%", pStats.stats.get("vpip").getValue());
+        assertEquals("Vpip : 50%", pStats.getStatValue("vpip"));
         assertEquals(3, players.get(playerNum).totalHands );
     }
     
