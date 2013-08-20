@@ -1,23 +1,35 @@
 package pkr.history;
 
+import java.util.Map;
+
+import com.google.common.collect.Maps;
+
+
+//class stat
+//round[0].isInitial + 
 public class StatsSessionPlayer {
+    
+    public Map<String, iPlayerStatistic> stats;
     public int totalHands;
     
     //not counting big blind, non raised
     public int vpipNumerator;
     public int vpipDenom;
     
-    //Calling a pre flop raise
-    public int callOpenNumerator;
+    //Suivre ou relance une relancement avant le flop
+    public int notFoldRaisedPreflop;
     //In a preflop raise situation (not the initial raiser)
-    public int callOpenDenom;
+    public int raisedPreflopDenom;
+    
+    //Suivre ou relance une relancement avant le flop
+    public int notFoldReraisedPreflop;
+    public int reraisedPreflopDenom;
     
     //excludes tapis
     public int preFlopRaises;
-    public double preFlopRaiseTotalAmt;
-    
+    public double preFlopRaiseTotalAmt;    
     public int preFlopTapis;
-    
+    public int preFlopReraise;
     
     public static class RoundStats
     {
@@ -62,14 +74,27 @@ public class StatsSessionPlayer {
     public RoundStats riverStats;
     
     public RoundStats[] roundStats;
+    
+    private String playerName;
 
-    public StatsSessionPlayer() {
+    public StatsSessionPlayer(String pplayerName) {
         super();
         flopStats = new RoundStats();
         turnStats = new RoundStats();
         riverStats = new RoundStats();
         
+        this.playerName = pplayerName;
+        stats = Maps.newHashMap();
+        
+        iPlayerStatistic s = new Statistics.Vpip(playerName);
+        stats.put(s.getId(), s);
+        
         roundStats = new RoundStats[] { flopStats, turnStats, riverStats };
+    }
+    
+    public String getStatValue(String statId)
+    {
+        return stats.get(statId).toString();
     }
     
     

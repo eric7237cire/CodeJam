@@ -20,16 +20,14 @@ import pkr.history.StatsSession;
 import pkr.history.StatsSessionPlayer;
 
 @RunWith(JUnit4.class)
-public class TestParser
+public class TestPreflopStats
 {
 
-    public TestParser() {
-        // TODO Auto-generated constructor stub
-    }
     
-    public List<FlopTurnRiverState[]> getList(String testFile) throws URISyntaxException, IOException
+    
+    public static List<FlopTurnRiverState[]> getList(String testFile) throws URISyntaxException, IOException
     {
-        URL testInputUrl = getClass().getResource("/parser/" + testFile + ".txt");
+        URL testInputUrl = TestPreflopStats.class.getResource("/parser/" + testFile + ".txt");
         //URL cleanInputUrl = getClass().getResource("/parser/clean" + testFile + ".txt");
         
         String testOutputUrlStr = testInputUrl.toString().replace(testFile, 
@@ -94,28 +92,41 @@ public class TestParser
                 stats.playerSessionStats.get("Anto"));
         
         int playerNum = 0;
+        StatsSessionPlayer pStats =  stats.playerSessionStats.get("Eric");
+        
+        assertEquals("25%", pStats.stats.get("vpip").getValue());
         assertEquals(1, players.get(playerNum).vpipNumerator );
         assertEquals(4, players.get(playerNum).vpipDenom );
         assertEquals(5, players.get(playerNum).totalHands );
         
         playerNum = 1;
+        pStats =  stats.playerSessionStats.get("Morris");
         assertEquals(2, players.get(playerNum).vpipNumerator );
         assertEquals(4, players.get(playerNum).vpipDenom );
+        
+        
+        assertEquals("50%", pStats.stats.get("vpip").getValue());
         assertEquals(5, players.get(playerNum).totalHands );
         
         playerNum = 2;
+        pStats =  stats.playerSessionStats.get("מוריס");
         assertEquals(1, players.get(playerNum).vpipNumerator );
         assertEquals(3, players.get(playerNum).vpipDenom );
         assertEquals(3, players.get(playerNum).totalHands );
+        assertEquals("33.3%", pStats.stats.get("vpip").getValue());
         
         playerNum = 3;
+        pStats =  stats.playerSessionStats.get("Billy");
         assertEquals(4, players.get(playerNum).vpipNumerator );
         assertEquals(5, players.get(playerNum).vpipDenom );
         assertEquals(5, players.get(playerNum).totalHands );
+        assertEquals("80%", pStats.stats.get("vpip").getValue());
         
         playerNum = 4;
+        pStats =  stats.playerSessionStats.get("Anto");
         assertEquals(1, players.get(playerNum).vpipNumerator );
         assertEquals(2, players.get(playerNum).vpipDenom );
+        assertEquals("50%", pStats.stats.get("vpip").getValue());
         assertEquals(3, players.get(playerNum).totalHands );
     }
     
@@ -150,8 +161,8 @@ public class TestParser
         assertEquals(4, players.get(playerNum).totalHands );
         assertEquals(3, pStats.preFlopRaises );
         assertEquals(766666.66, pStats.preFlopRaiseTotalAmt / pStats.preFlopRaises, .1 );
-        assertEquals(0, pStats.callOpenNumerator );
-        assertEquals(0, pStats.callOpenDenom );
+        assertEquals(0, pStats.notFoldRaisedPreflop );
+        assertEquals(0, pStats.raisedPreflopDenom );
         
         assertEquals(1, pStats.preFlopTapis );
         
@@ -160,8 +171,8 @@ public class TestParser
         assertEquals(4, players.get(playerNum).vpipNumerator );
         assertEquals(4, players.get(playerNum).vpipDenom );
         assertEquals(4, players.get(playerNum).totalHands );
-        assertEquals(4, pStats.callOpenNumerator );
-        assertEquals(4, pStats.callOpenDenom );
+        assertEquals(4, pStats.notFoldRaisedPreflop );
+        assertEquals(4, pStats.raisedPreflopDenom );
         
         
         playerNum = 2;
@@ -169,8 +180,8 @@ public class TestParser
         assertEquals(3, players.get(playerNum).vpipNumerator );
         assertEquals(4, players.get(playerNum).vpipDenom );
         assertEquals(4,  players.get(playerNum).totalHands );
-        assertEquals(3, pStats.callOpenNumerator );
-        assertEquals(4, pStats.callOpenDenom );
+        assertEquals(3, pStats.notFoldRaisedPreflop );
+        assertEquals(4, pStats.raisedPreflopDenom );
         
     }
     
@@ -204,8 +215,8 @@ public class TestParser
         assertEquals(6, players.get(playerNum).vpipDenom );
         assertEquals(6, players.get(playerNum).totalHands );
         assertEquals(0, players.get(playerNum).preFlopRaises );
-        assertEquals(0, players.get(playerNum).callOpenNumerator );
-        assertEquals(4, players.get(playerNum).callOpenDenom );
+        assertEquals(0, players.get(playerNum).notFoldRaisedPreflop );
+        assertEquals(4, players.get(playerNum).raisedPreflopDenom );
         
         
         playerNum = 1;
@@ -213,8 +224,8 @@ public class TestParser
         assertEquals(3, players.get(playerNum).vpipDenom );
         assertEquals(3, players.get(playerNum).totalHands );
         assertEquals(0, players.get(playerNum).preFlopRaises );
-        assertEquals(0, players.get(playerNum).callOpenNumerator );
-        assertEquals(2, players.get(playerNum).callOpenDenom );
+        assertEquals(0, players.get(playerNum).notFoldRaisedPreflop );
+        assertEquals(2, players.get(playerNum).raisedPreflopDenom );
         
         playerNum = 2;
         assertEquals(2, players.get(playerNum).vpipNumerator );
@@ -222,8 +233,8 @@ public class TestParser
         assertEquals(3, players.get(playerNum).totalHands );
         assertEquals(0, players.get(playerNum).preFlopRaises );
         assertEquals(2, players.get(playerNum).preFlopTapis );
-        assertEquals(0, players.get(playerNum).callOpenNumerator );
-        assertEquals(0, players.get(playerNum).callOpenDenom );
+        assertEquals(0, players.get(playerNum).notFoldRaisedPreflop );
+        assertEquals(0, players.get(playerNum).raisedPreflopDenom );
         
         //Eric
         playerNum = 3;
@@ -231,8 +242,8 @@ public class TestParser
         assertEquals(6, players.get(playerNum).vpipDenom );
         assertEquals(6, players.get(playerNum).totalHands );
         assertEquals(0, players.get(playerNum).preFlopRaises );
-        assertEquals(1, players.get(playerNum).callOpenNumerator );
-        assertEquals(5, players.get(playerNum).callOpenDenom );
+        assertEquals(1, players.get(playerNum).notFoldRaisedPreflop );
+        assertEquals(5, players.get(playerNum).raisedPreflopDenom );
         
         //Amed
         playerNum = 4;
@@ -240,8 +251,8 @@ public class TestParser
         assertEquals(5, players.get(playerNum).vpipDenom );
         assertEquals(6, players.get(playerNum).totalHands );
         assertEquals(0, players.get(playerNum).preFlopRaises );
-        assertEquals(1, players.get(playerNum).callOpenNumerator );
-        assertEquals(5, players.get(playerNum).callOpenDenom );
+        assertEquals(1, players.get(playerNum).notFoldRaisedPreflop );
+        assertEquals(5, players.get(playerNum).raisedPreflopDenom );
         
         playerNum = 5;
         assertEquals(3, players.get(playerNum).vpipNumerator );
@@ -249,23 +260,23 @@ public class TestParser
         assertEquals(3, players.get(playerNum).totalHands );
         assertEquals(0, players.get(playerNum).preFlopRaises );
         assertEquals(3, players.get(playerNum).preFlopTapis );
-        assertEquals(0, players.get(playerNum).callOpenNumerator );
-        assertEquals(0, players.get(playerNum).callOpenDenom );
+        assertEquals(0, players.get(playerNum).notFoldRaisedPreflop );
+        assertEquals(0, players.get(playerNum).raisedPreflopDenom );
         
         playerNum = 6;
         assertEquals(1, players.get(playerNum).vpipNumerator );
         assertEquals(3, players.get(playerNum).vpipDenom );
         assertEquals(3, players.get(playerNum).totalHands );
         assertEquals(0, players.get(playerNum).preFlopRaises );
-        assertEquals(1, players.get(playerNum).callOpenNumerator );
-        assertEquals(3, players.get(playerNum).callOpenDenom );
+        assertEquals(1, players.get(playerNum).notFoldRaisedPreflop );
+        assertEquals(3, players.get(playerNum).raisedPreflopDenom );
         
     }
     
     @Test
-    public void testRoundStats() throws Exception
+    public void test3bet1() throws Exception
     {
-        List<FlopTurnRiverState[]> results = getList("testRoundStats");
+        List<FlopTurnRiverState[]> results = getList("test3bet1");
         
         assertEquals(6, results.size());
                                  
@@ -277,41 +288,74 @@ public class TestParser
         //Billy   - 1 2 3   5 - 
         //Anto    -     3     -    4
         
-        StatsSessionPlayer ericStats  =
+        StatsSessionPlayer pStat = 
                 stats.playerSessionStats.get("Eric");
         
+        assertEquals(4, pStat.vpipNumerator );
+        assertEquals(4, pStat.vpipDenom );
+        assertEquals(4, pStat.totalHands );
+        assertEquals(0, pStat.preFlopRaises );
         
-        assertEquals(1+0+1+1+1+0, ericStats.vpipNumerator );
-        assertEquals(1+0+1+1+1+1, ericStats.vpipDenom );
-        assertEquals(6, ericStats.totalHands );
-        assertEquals(0+0+1+1+1+0, ericStats.preFlopRaises );
-        assertEquals(0+0+0+0+0+0, ericStats.callOpenNumerator );
-        assertEquals(0+0+0+0+0+0, ericStats.callOpenDenom );
+        assertEquals(1, pStat.notFoldRaisedPreflop );
+        assertEquals(4, pStat.raisedPreflopDenom );
         
-        assertEquals(1+0+0+0+0+0, ericStats.flopStats.calls );
-        assertEquals(0+0+0+0+1+0, ericStats.flopStats.callReraise );
-        assertEquals(0+0+0+0+0+0, ericStats.flopStats.folded );
-        assertEquals(0+1+0+0+1+0, ericStats.flopStats.bets );
-        assertEquals(0+0+1+0+0+0, ericStats.flopStats.reRaiseOpened );
-        assertEquals(1+1+1+1+1+0, ericStats.flopStats.seen );
-        assertEquals(0+0+0+0+0+0, ericStats.flopStats.checkRaises );
+        assertEquals(1, pStat.notFoldReraisedPreflop );
+        assertEquals(3, pStat.reraisedPreflopDenom );
         
-        assertEquals(0+0+1+0+0+0, ericStats.turnStats.calls );
-        assertEquals(0+0+0+0+1+0, ericStats.turnStats.folded );
-        assertEquals(1+1+0+0+0+0, ericStats.turnStats.bets );
-        assertEquals(1+0+0+0+0+0, ericStats.turnStats.reRaiseUnopened );
-        assertEquals(1+1+1+1+1+0, ericStats.turnStats.seen );
-        assertEquals(0+0+0+0+0+0, ericStats.turnStats.checkRaises );
+        assertEquals(3, pStat.preFlopRaiseTotalAmt / pStat.preFlopRaises, 0.1  );
+        assertEquals(3, pStat.preFlopTapis );
+        assertEquals(3, pStat.totalHands );
         
+        pStat = 
+                stats.playerSessionStats.get("Joe");
         
-        assertEquals(0+1+0+0+0+0, ericStats.riverStats.callReraise );
-        assertEquals(0+0+0+0+0+0, ericStats.riverStats.folded );
-        assertEquals(1+1+0+0+0+0, ericStats.riverStats.bets );
-        assertEquals(0+0+0+0+0+0, ericStats.riverStats.reRaiseOpened );
-        assertEquals(1+1+0+1+0+0, ericStats.riverStats.seen );
-        assertEquals(0+0+0+0+0+0, ericStats.riverStats.checkRaises );
+        assertEquals(4, pStat.vpipNumerator );
+        assertEquals(4, pStat.vpipDenom );
+        assertEquals(4, pStat.totalHands );
+        assertEquals(0, pStat.preFlopRaises );
+        assertEquals(1, pStat.notFoldRaisedPreflop );
+        assertEquals(1, pStat.raisedPreflopDenom );
         
+        assertEquals(0, pStat.notFoldReraisedPreflop );
+        assertEquals(1, pStat.reraisedPreflopDenom );
         
+        assertEquals(3, pStat.preFlopRaiseTotalAmt / pStat.preFlopRaises, 0.1  );
+        assertEquals(3, pStat.preFlopTapis );
+        assertEquals(3, pStat.totalHands );
         
+        pStat = 
+                stats.playerSessionStats.get("Bill");
+        
+        assertEquals(4, pStat.vpipNumerator );
+        assertEquals(4, pStat.vpipDenom );
+        assertEquals(4, pStat.totalHands );
+        assertEquals(0, pStat.preFlopRaises );
+        assertEquals(1, pStat.notFoldRaisedPreflop );
+        assertEquals(1, pStat.raisedPreflopDenom );
+        
+        assertEquals(0, pStat.notFoldReraisedPreflop );
+        assertEquals(1, pStat.reraisedPreflopDenom );
+        
+        assertEquals(3, pStat.preFlopRaiseTotalAmt / pStat.preFlopRaises, 0.1  );
+        assertEquals(3, pStat.preFlopTapis );
+        assertEquals(3, pStat.totalHands );
+        
+        pStat = 
+                stats.playerSessionStats.get("Ivana");
+        
+        assertEquals(4, pStat.vpipNumerator );
+        assertEquals(4, pStat.vpipDenom );
+        assertEquals(4, pStat.totalHands );
+        assertEquals(0, pStat.preFlopRaises );
+        assertEquals(1, pStat.notFoldRaisedPreflop );
+        assertEquals(1, pStat.raisedPreflopDenom );
+        
+        assertEquals(0, pStat.notFoldReraisedPreflop );
+        assertEquals(1, pStat.reraisedPreflopDenom );
+        
+        assertEquals(3, pStat.preFlopRaiseTotalAmt / pStat.preFlopRaises, 0.1  );
+        assertEquals(3, pStat.preFlopTapis );
+        assertEquals(3, pStat.totalHands );
     }
+    
 }

@@ -1,6 +1,7 @@
 package pkr.history;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -35,6 +36,8 @@ public class StatsComputer
                 handlePreflopStats(ftrStates, playerSesStat, playerName);
                 
                 handleRoundStats(ftrStates, playerSesStat, playerName);
+                
+                handleStats(ftrStates, playerSesStat, playerName);
             }
         }
         
@@ -99,10 +102,10 @@ public class StatsComputer
                 ) 
         {
             log.debug("Player {} called an initial raise", preFlopPlayer);
-            playerSesStat.callOpenDenom++;
-            playerSesStat.callOpenNumerator++;
+            playerSesStat.raisedPreflopDenom++;
+            playerSesStat.notFoldRaisedPreflop++;
         } else if (BooleanUtils.isTrue(ftrStates[0].foldedToBetOrRaise.get(preFlopPlayer))) {
-            playerSesStat.callOpenDenom++;
+            playerSesStat.raisedPreflopDenom++;
             log.debug("Folded to a preflop raise {}", preFlopPlayer);
         }
         
@@ -270,6 +273,13 @@ public class StatsComputer
         }
     }
     
+    private void handleStats(FlopTurnRiverState[] ftrStates, StatsSessionPlayer player, String playerName)
+    {
+        for(Map.Entry<String, iPlayerStatistic> entries : player.stats.entrySet())
+        {
+            entries.getValue().calculate(ftrStates);
+        }
+    }
     
     StatsSessionPlayer getSessionStats(String playerName)
     {
@@ -277,7 +287,7 @@ public class StatsComputer
         
         if (ret == null)
         {
-            ret = new StatsSessionPlayer();
+            ret = new StatsSessionPlayer(playerName);
             stats.playerSessionStats.put(playerName, ret);
         }
         

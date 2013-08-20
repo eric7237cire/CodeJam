@@ -21,30 +21,17 @@ import static org.junit.Assert.*;
 
 @SuppressWarnings("unused")
 @RunWith(JUnit4.class)
-public class TestStats
+public class TestRoundStats
 {
 
     
     
-    public List<FlopTurnRiverState[]> getList(String testFile) throws URISyntaxException, IOException
-    {
-        URL testInputUrl = getClass().getResource("/parser/" + testFile + ".txt");
-        //URL cleanInputUrl = getClass().getResource("/parser/clean" + testFile + ".txt");
-        
-        String testOutputUrlStr = testInputUrl.toString().replace(testFile, 
-                "clean" + testFile);
-        URL cleanInputUrl = new URL(testOutputUrlStr);
-        
-        File testInputRaw = new File(testInputUrl.toURI());
-        File testInput = new File(cleanInputUrl.toURI());
-        
-        return Parser.parseFile(testInputRaw, testInput);
-    }
+   
 
     @Test
     public void testStats1() throws Exception
     {
-        List<FlopTurnRiverState[]> results = getList("testStats1");
+        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testStats1");
         
         assertEquals(1, results.size());
         
@@ -61,7 +48,7 @@ public class TestStats
     @Test
     public void testStats2() throws Exception
     {
-        List<FlopTurnRiverState[]> results = getList("testStats2");
+        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testStats2");
         
         assertEquals(1, results.size());
         
@@ -286,7 +273,7 @@ public class TestStats
     @Test
     public void testStats3() throws Exception
     {
-        List<FlopTurnRiverState[]> results = getList("testStats3");
+        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testStats3");
         
         assertEquals(2, results.size());
         
@@ -341,5 +328,58 @@ public class TestStats
           assertEquals(0, rs.checkedThrough);
           assertEquals(1, rs.seen);
           assertEquals(1, rs.unopened);
+    }
+    
+    @Test
+    public void testRoundStats() throws Exception
+    {
+        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testRoundStats");
+        
+        assertEquals(6, results.size());
+                                 
+        StatsSession stats = Parser.computeStats(results);
+        
+        //Eric  -   1        -  2 
+        //Morris  - 1     4  -    3
+        //*       -   2       - 
+        //Billy   - 1 2 3   5 - 
+        //Anto    -     3     -    4
+        
+        StatsSessionPlayer ericStats  =
+                stats.playerSessionStats.get("Eric");
+        
+        
+        assertEquals(1+0+1+1+1+0, ericStats.vpipNumerator );
+        assertEquals(1+0+1+1+1+1, ericStats.vpipDenom );
+        assertEquals(6, ericStats.totalHands );
+        assertEquals(0+0+1+1+1+0, ericStats.preFlopRaises );
+        assertEquals(0+0+0+0+0+0, ericStats.notFoldRaisedPreflop );
+        assertEquals(0+0+0+0+0+0, ericStats.raisedPreflopDenom );
+        
+        assertEquals(1+0+0+0+0+0, ericStats.flopStats.calls );
+        assertEquals(0+0+0+0+1+0, ericStats.flopStats.callReraise );
+        assertEquals(0+0+0+0+0+0, ericStats.flopStats.folded );
+        assertEquals(0+1+0+0+1+0, ericStats.flopStats.bets );
+        assertEquals(0+0+1+0+0+0, ericStats.flopStats.reRaiseOpened );
+        assertEquals(1+1+1+1+1+0, ericStats.flopStats.seen );
+        assertEquals(0+0+0+0+0+0, ericStats.flopStats.checkRaises );
+        
+        assertEquals(0+0+1+0+0+0, ericStats.turnStats.calls );
+        assertEquals(0+0+0+0+1+0, ericStats.turnStats.folded );
+        assertEquals(1+1+0+0+0+0, ericStats.turnStats.bets );
+        assertEquals(1+0+0+0+0+0, ericStats.turnStats.reRaiseUnopened );
+        assertEquals(1+1+1+1+1+0, ericStats.turnStats.seen );
+        assertEquals(0+0+0+0+0+0, ericStats.turnStats.checkRaises );
+        
+        
+        assertEquals(0+1+0+0+0+0, ericStats.riverStats.callReraise );
+        assertEquals(0+0+0+0+0+0, ericStats.riverStats.folded );
+        assertEquals(1+1+0+0+0+0, ericStats.riverStats.bets );
+        assertEquals(0+0+0+0+0+0, ericStats.riverStats.reRaiseOpened );
+        assertEquals(1+1+0+1+0+0, ericStats.riverStats.seen );
+        assertEquals(0+0+0+0+0+0, ericStats.riverStats.checkRaises );
+        
+        
+        
     }
 }

@@ -92,6 +92,9 @@
     <appender-ref ref="statsLogFile"/>
    </logger>
    
+   <logger name="pkr.history.Statsistics" level="DEBUG" additivity="true">
+   
+   </logger>
       
   <root level="${root-level:-INFO}">
     <appender-ref ref="console"/>

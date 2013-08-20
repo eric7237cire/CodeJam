@@ -1,0 +1,51 @@
+_____________________________
+ 
+Eric a relancé de 400 000.
+Bill a relancé de 600 000.
+Manfred se couche.
+Ivana se couche.
+Joe a suivi de 600 000.
+Eric a relancé de 1 000 000.
+Bill a relancé de 1 200 000.
+Joe se couche.
+Eric se couche.
+
+Bill gagne.
+_____________________________
+
+Eric a suivi de 200 000.
+Bill a relancé de 600 000.
+Manfred se couche.
+Ivana se couche.
+Joe a suivi de 600 000.
+Eric a relancé de 1 000 000.
+Bill se couche.
+Joe a fait tapis.
+Eric a suivi de 2 000 000.
+
+Eric remporte le pot (4 700 000 $) avec une quinte (K).
+_____________________________
+
+Eric a suivi de 200 000.
+Bill a relancé de 600 000.
+Manfred se couche.
+Ivana se couche.
+Joe a relancé de 1 000 000.
+Eric a suivi de 1 000 000.
+Joe a fait tapis.
+
+Eric remporte le pot (3 100 000 $) avec une quinte (K).
+_____________________________
+
+Eric a suivi de 200 000.
+Bill a relancé de 600 000.
+Manfred se couche.
+//SB
+Ivana se couche.
+//BB
+Joe a relancé de 1 000 000.
+Eric a suivi de 1 000 000.
+Joe a suivi de 1 000 000.
+
+Eric remporte le pot (3 100 000 $) avec une quinte (K).
+_____________________________

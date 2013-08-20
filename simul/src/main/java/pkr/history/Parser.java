@@ -17,6 +17,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
+//TODO cbet/ donk bet
+//TODO tests 3 bet
 public class Parser {
     
     static Logger log = LoggerFactory.getLogger(Parser.class);
@@ -105,14 +107,15 @@ public class Parser {
         {
             StatsSessionPlayer ssp = sc.stats.playerSessionStats.get(player);
             logMainOutput.debug("\nPlayer [ {} ] -- \n " +
-            		"Preflop Hands played {} VPIP %{}  PFR %{} Avg Amt ${} (tapis %{})  Call open %{}", 
+            		"Preflop Hands played {} VPIP %{} {} PFR %{} Avg Amt ${} (tapis %{})  Call open %{}", 
             		
             		player,  ssp.totalHands,
             		formatPercent(ssp.vpipNumerator, ssp.vpipDenom),
+            		ssp.getStatValue("vpip"),
             		formatPercent(ssp.preFlopRaises, ssp.totalHands),
             		 FlopTurnRiverState.moneyFormat.format( ssp.preFlopRaises == 0 ? 0 : (int) (ssp.preFlopRaiseTotalAmt / ssp.preFlopRaises) ),
             		formatPercent(ssp.preFlopTapis, ssp.totalHands),
-                    formatPercent(ssp.callOpenNumerator, ssp.callOpenDenom)
+                    formatPercent(ssp.notFoldRaisedPreflop, ssp.raisedPreflopDenom)
                     
                     );
             

@@ -322,10 +322,16 @@ public class FlopTurnRiverState implements ParserListener
         }
     }
     
+    public final static DecimalFormat df1;
     public final static DecimalFormat df2;
     public final static DecimalFormat moneyFormat;
     
     static {
+        
+        df1 = new DecimalFormat("0.#");
+        df1.setRoundingMode(RoundingMode.HALF_UP);
+        df1.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
+        
         
         df2 = new DecimalFormat("0.##");
         df2.setRoundingMode(RoundingMode.HALF_UP);
