@@ -66,7 +66,7 @@ public class Pfr implements iPlayerStatistic
         
         int raiserPosition = ftrStates[0].roundInitialBetter != null ? ftrStates[0].players.indexOf( ftrStates[0].roundInitialBetter ) : -1; 
         
-        if (isPreFlopRaiser || raiserPosition > playerPosition )
+        if (isPreFlopRaiser || raiserPosition > playerPosition || raiserPosition == -1 )
         {
             log.debug("Player {} could have preflop raised");
             ++unraisedToPlayer;
