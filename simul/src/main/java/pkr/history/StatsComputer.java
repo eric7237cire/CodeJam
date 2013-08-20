@@ -111,6 +111,7 @@ public class StatsComputer
         {
             playerSesStat.preFlopRaises ++;
             playerSesStat.preFlopRaiseTotalAmt += playerBet;
+            log.debug("Player {} pre flop raised {}", preFlopPlayer, playerBet);
         }
         
         if (playerAllin && isPreFlopRaiser)
