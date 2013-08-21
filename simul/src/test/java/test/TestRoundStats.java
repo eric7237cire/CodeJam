@@ -349,8 +349,9 @@ public class TestRoundStats
                 stats.playerSessionStats.get("Eric");
         
         
-        assertEquals(1+0+1+1+1+0, ericStats.vpipNumerator );
-        assertEquals(1+0+1+1+1+1, ericStats.vpipDenom );
+        //assertEquals(1+0+1+1+1+0, ericStats.vpipNumerator );
+        //assertEquals(1+0+1+1+1+1, ericStats.vpipDenom );
+        assertEquals("Vpip : 80% (4/5)", ericStats.getStatValue("vpip"));
         assertEquals(6, ericStats.totalHands );
         assertEquals(0+0+1+1+1+0, ericStats.preFlopRaises );
         assertEquals(0+0+0+0+0+0, ericStats.notFoldRaisedPreflop );

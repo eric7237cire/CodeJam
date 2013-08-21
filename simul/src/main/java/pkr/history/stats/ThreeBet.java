@@ -2,18 +2,14 @@ package pkr.history.stats;
 
 import java.util.List;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.history.FlopTurnRiverState;
 import pkr.history.PlayerAction;
+import pkr.history.PlayerAction.Action;
 import pkr.history.Statistics;
 import pkr.history.iPlayerStatistic;
-import pkr.history.PlayerAction.Action;
-
-import com.google.common.base.Preconditions;
 
 public class ThreeBet implements iPlayerStatistic
 {
@@ -67,45 +63,31 @@ public class ThreeBet implements iPlayerStatistic
     @Override
     public void calculate(FlopTurnRiverState[] ftrStates) {
         
-        final boolean isPreFlopRaiser = StringUtils.equals(ftrStates[0].roundInitialBetter, playerName);
         
         int playerPos = ftrStates[0].players.indexOf(playerName);
         
         List<Integer> actionIdx = ftrStates[0].playerPosToActions.get(playerPos);
         
-        int globalRaiseCount = 0;
         
-        outerloop:
+        
         for(int i = 0; i < actionIdx.size(); ++i)
         {
-            int startActionIndex = i == 0 ? 0 : actionIdx.get(i-1) ;
+            //int startActionIndex = i == 0 ? 0 : actionIdx.get(i-1) ;
             int endActionIndex = actionIdx.get(i);
             
+            PlayerAction currentAction = ftrStates[0].actions.get(endActionIndex);
+            int globalRaiseCount = currentAction.globalRaiseCount;
             
-            for(int actionIndex = startActionIndex; actionIndex < endActionIndex; ++actionIndex)
-            {
-                PlayerAction action = ftrStates[0].actions.get(actionIndex);
-                
-                //Preconditions.checkState(!action.playerName.equals(playerName));
-                
-                if (action.action == Action.RAISE || action.action == Action.ALL_IN)
-                {
-                    ++globalRaiseCount;
-                    log.debug("P action idx {}  action idx {} player {} raise count now {}", i, actionIndex, action.playerName, globalRaiseCount);
-                    
-                }
-            }
+            
+            PlayerAction prevAction = i==0 ? null : ftrStates[0].actions.get(actionIdx.get(i-1));
+            
+            log.debug("Player {} action {}", playerName, endActionIndex);
             
             if (globalRaiseCount == 1)
             {
                 log.debug("Player {} could have 3 bet", playerName);
                 ++thBetDenom;
             }
-            
-            PlayerAction currentAction = ftrStates[0].actions.get(endActionIndex);
-            PlayerAction prevAction = i==0 ? null : ftrStates[0].actions.get(actionIdx.get(i-1));
-            
-            log.debug("Player {} action {}", playerName, endActionIndex);
             
             if (globalRaiseCount == 1 && (currentAction.action == Action.RAISE ||
                     currentAction.action == Action.ALL_IN) )

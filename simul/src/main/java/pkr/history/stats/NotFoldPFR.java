@@ -1,15 +1,19 @@
 package pkr.history.stats;
 
+import java.util.List;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.history.FlopTurnRiverState;
+import pkr.history.PlayerAction;
+import pkr.history.PlayerAction.Action;
 import pkr.history.Statistics;
 import pkr.history.iPlayerStatistic;
 
-public class ColdCall implements iPlayerStatistic
+public class NotFoldPFR implements iPlayerStatistic
 {
 
     private static Logger log = LoggerFactory.getLogger(Statistics.class);
@@ -26,7 +30,7 @@ public class ColdCall implements iPlayerStatistic
     private String preFlopPlayer;
     
     
-    public ColdCall(String playerName) {
+    public NotFoldPFR(String playerName) {
         super();
         this.preFlopPlayer = playerName;
     }
@@ -38,7 +42,7 @@ public class ColdCall implements iPlayerStatistic
     
     @Override
     public String getId() {
-        return "coldcall";
+        return "notfpfr";
     }
 
     @Override
@@ -60,30 +64,40 @@ public class ColdCall implements iPlayerStatistic
     @Override
     public void calculate(FlopTurnRiverState[] ftrStates) {
         
-        final boolean isPreFlopRaiser = StringUtils.equals(ftrStates[0].roundInitialBetter, preFlopPlayer);
+        //final boolean isPreFlopRaiser = StringUtils.equals(ftrStates[0].roundInitialBetter, preFlopPlayer);
         
-        final boolean playerAllin = ftrStates[0].allInBet.containsKey(preFlopPlayer);
+        //final boolean playerAllin = ftrStates[0].allInBet.containsKey(preFlopPlayer);
         
         int playerPosition = ftrStates[0].players.indexOf(preFlopPlayer);
         
-        int raiserPosition = ftrStates[0].roundInitialBetter != null ? ftrStates[0].players.indexOf( ftrStates[0].roundInitialBetter ) : -1; 
+        //int raiserPosition = ftrStates[0].roundInitialBetter != null ? ftrStates[0].players.indexOf( ftrStates[0].roundInitialBetter ) : -1; 
+        
+        
+        List<Integer> actionIdx = ftrStates[0].playerPosToActions.get(playerPosition);
         
         
         
-        if (!isPreFlopRaiser &&
-                ftrStates[0].roundInitialBetter != null &&
-                BooleanUtils.isNotTrue(ftrStates[0].hasFolded.get(preFlopPlayer))
-                ) 
+        for(int i = 0; i < actionIdx.size(); ++i)
         {
-            log.debug("Player {} called an initial raise", preFlopPlayer);
-            raisedToPlayer++;
-            calledARaisedPreflop++;
-        } else if (BooleanUtils.isTrue(ftrStates[0].foldedToBetOrRaise.get(preFlopPlayer))) {
-            raisedToPlayer++;
-            log.debug("Folded to a preflop raise {}", preFlopPlayer);
-        }
+            PlayerAction currentAction = ftrStates[0].actions.get(actionIdx.get(i));
+            
+            
+            if (currentAction.globalRaiseCount > 0 && currentAction.action != Action.FOLD)
+            {
+                log.debug("Player {} called a raise preflop", preFlopPlayer);
+                raisedToPlayer++;
+                calledARaisedPreflop++;
+                return;
+            }
+            
+            if (currentAction.globalRaiseCount > 0 && currentAction.action == Action.FOLD)
+            {
+                raisedToPlayer++;
+                log.debug("Folded to a preflop raise {}", preFlopPlayer);
+                return;
+            }
         
-                
+           /*     
         int playerBet = ftrStates[0].getCurrentBet(preFlopPlayer);
         
         if (isPreFlopRaiser)
@@ -95,6 +109,7 @@ public class ColdCall implements iPlayerStatistic
             } else {
                 nTapis++;
             }
+        }*/
         }
         
     }

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pkr.history.PlayerAction.Action;
 import pkr.history.StatsSessionPlayer.RoundStats;
 
 import com.google.common.base.Preconditions;
@@ -76,23 +77,7 @@ public class StatsComputer
         
         final boolean playerAllin = ftrStates[0].allInBet.containsKey(preFlopPlayer);
         
-        playerSesStat.vpipDenom++;
         
-        if ( (!preFlopPlayer.equals(ftrStates[0].playerBB) && playerBet >= ftrStates[0].tableStakes)
-                ||
-                (preFlopPlayer.equals(ftrStates[0].playerBB) && playerBet > ftrStates[0].tableStakes)
-                ||
-                //Supposons qu'un tapis est une relance
-                playerAllin
-                )
-        {
-            log.debug("Player {} entered pot for VPIP.  table stakes {}  player bet {} bb {}", preFlopPlayer,
-                    ftrStates[0].tableStakes,
-                    ftrStates[0].getCurrentBet(preFlopPlayer),
-                    ftrStates[0].playerBB
-                    );
-            playerSesStat.vpipNumerator++;
-        }
         
         final boolean isPreFlopRaiser = StringUtils.equals(ftrStates[0].roundInitialBetter, preFlopPlayer);
         
@@ -276,6 +261,23 @@ public class StatsComputer
     
     private void handleStats(FlopTurnRiverState[] ftrStates, StatsSessionPlayer player, String playerName)
     {
+        //Precompute common traits
+        int globalRaiseCount = 0;
+        
+        for(int actionIndex = 0; actionIndex < ftrStates[0].actions.size(); ++actionIndex)
+        {
+            PlayerAction action = ftrStates[0].actions.get(actionIndex);
+            
+            //Preconditions.checkState(!action.playerName.equals(playerName));
+            action.globalRaiseCount = globalRaiseCount;
+            log.debug("action idx {} player {} raise count now {}", actionIndex, action.playerName, globalRaiseCount);
+            
+            if (action.action == Action.RAISE || action.action == Action.ALL_IN)
+            {
+                ++globalRaiseCount;                
+            }
+        }
+        
         for(Map.Entry<String, iPlayerStatistic> entries : player.stats.entrySet())
         {
             entries.getValue().calculate(ftrStates);

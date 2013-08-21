@@ -39,7 +39,7 @@ public class Vpip implements iPlayerStatistic
     }
 
     public String getValue() {
-        return  Statistics.formatPercent(num, denom);
+        return  Statistics.formatPercent(num, denom, true);
     }
 
     @Override

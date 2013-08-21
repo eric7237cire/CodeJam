@@ -18,6 +18,9 @@ public class PlayerAction {
     //Le pot avant l'action
     public int pot;
     
+    //Raises before this action (allins count)
+    public int globalRaiseCount;
+    
     private PlayerAction()
     {
         

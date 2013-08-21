@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import pkr.history.stats.ColdCall;
+import pkr.history.stats.NotFoldPFR;
 import pkr.history.stats.Pfr;
 import pkr.history.stats.ThreeBet;
 import pkr.history.stats.Vpip;
@@ -16,12 +16,11 @@ import com.google.common.collect.Maps;
 //round[0].isInitial + 
 public class StatsSessionPlayer {
     
+    //stat id ==> obj
     public Map<String, iPlayerStatistic> stats;
     public int totalHands;
     
-    //not counting big blind, non raised
-    public int vpipNumerator;
-    public int vpipDenom;
+    
     
     //Suivre ou relance une relancement avant le flop
     public int notFoldRaisedPreflop;
@@ -96,7 +95,7 @@ public class StatsSessionPlayer {
         List<iPlayerStatistic> lst = Arrays.asList(
                 new Vpip(playerName),
                 new Pfr(playerName),
-                new ColdCall(playerName),
+                new NotFoldPFR(playerName),
                 new ThreeBet(playerName));
          
         for(iPlayerStatistic s : lst)
