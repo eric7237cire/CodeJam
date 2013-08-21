@@ -35,7 +35,7 @@ public class FlopTurnRiverState implements ParserListener
     //Full amount needed to stay in
     int amtToCall = 0;
     
-    Map<String , Boolean> hasFolded;
+    public Map<String , Boolean> hasFolded;
     public Map<String, Integer> allInBet;
     Map<String, Boolean> allInBetExact;
     String lastTapisPlayer;

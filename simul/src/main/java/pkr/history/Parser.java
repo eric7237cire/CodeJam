@@ -107,12 +107,12 @@ public class Parser {
         {
             StatsSessionPlayer ssp = sc.stats.playerSessionStats.get(player);
             logMainOutput.debug("\nPlayer [ {} ] -- \n " +
-            		"Preflop Hands played {} {} [ {} ]  Call open %{}", 
+            		"Preflop Hands played {} {} [ {} ]  [ {} ]", 
             		
             		player,  ssp.totalHands,
             		ssp.getStatValue("vpip"),
             		ssp.getStatValue("pfr"),
-                    formatPercent(ssp.notFoldRaisedPreflop, ssp.raisedPreflopDenom)
+            		ssp.getStatValue("coldcall")
                     
                     );
             

@@ -2,6 +2,7 @@ package pkr.history;
 
 import java.util.Map;
 
+import pkr.history.stats.ColdCall;
 import pkr.history.stats.Pfr;
 import pkr.history.stats.Vpip;
 
@@ -93,6 +94,9 @@ public class StatsSessionPlayer {
         stats.put(s.getId(), s);
         
         s = new Pfr(playerName);
+        stats.put(s.getId(), s);
+        
+        s = new ColdCall(playerName);
         stats.put(s.getId(), s);
         
         roundStats = new RoundStats[] { flopStats, turnStats, riverStats };
