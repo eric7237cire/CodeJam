@@ -133,6 +133,7 @@ public class Parser {
 
                 logMainOutput.debug("{}", ssp.getStatValue("dcl" + (round+1)));
                 
+                /*
                 logMainOutput.debug(" Unopened [{}] : [ checks %{} bets %{} all ins %{} calls rr : {} fold rr : {} rr : {} cr: {}]  \n" +
                 		" Opened [{}] : [ checks %{} calls %{} folded %{} raised %{} all in %{} ] ",
                         rs.unopened,
@@ -151,7 +152,7 @@ public class Parser {
                     Statistics.formatPercent( rs.raiseCallAllIn, rs.openedBySomeoneElse)
                     
 
-                );
+                );*/
                 
                 logMainOutput.debug("Average bet size %{}  average fold to bet size %{} ",
                         Statistics.formatPercent(ssp.roundStats[round].avgBetToPot, 1),

@@ -696,6 +696,8 @@ public class FlopTurnRiverState implements ParserListener
             log.debug("Player [{}] ajouté avec index {} ", playerName, players.size());
             players.add(playerName);
             currentPlayer = players.size() - 1;
+            
+            playerPosToActions.add( new ArrayList<Integer>() );
         }
         
         this.masterList.add(this.roundStates);

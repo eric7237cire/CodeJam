@@ -92,7 +92,7 @@
     <appender-ref ref="statsLogFile"/>
    </logger>
    
-   <logger name="pkr.history.Statistics" level="DEBUG" additivity="true">
+   <logger name="pkr.history.Statistics" level="DEBUG" additivity="false">
     <appender-ref ref="statsLogFile"/>
    </logger>
       

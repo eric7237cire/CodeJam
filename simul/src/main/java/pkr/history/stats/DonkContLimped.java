@@ -77,29 +77,29 @@ public class DonkContLimped implements iPlayerStatistic
     public String toString() {
         StringBuffer sb = new StringBuffer();
         
-        sb.append("Limp bet ");
-        sb.append(Statistics.formatPercent(limpBet, canDonkBet, true));
+        sb.append("Limp [bet ");
+        sb.append(Statistics.formatPercent(limpBet, canLimpBet, true));
         sb.append(" call ");
-        sb.append(Statistics.formatPercent(limpCall, canDonkCall, true));
+        sb.append(Statistics.formatPercent(limpCall, canLimpCall, true));
         sb.append(" raise ");
-        sb.append(Statistics.formatPercent(limpRaise, canDonkRaise, true));
+        sb.append(Statistics.formatPercent(limpRaise, canLimpRaise, true));
         sb.append(" fold ");
-        sb.append(Statistics.formatPercent(limpFold, canDonkFold, true));
+        sb.append(Statistics.formatPercent(limpFold, canLimpFold, true));
         
-        sb.append("\n");
+        sb.append("]\n");
         
-        sb.append("Cont bet ");
-        sb.append(Statistics.formatPercent(contBet, canDonkBet, true));
+        sb.append("Is Agg. [ bet ");
+        sb.append(Statistics.formatPercent(contBet, canContBet, true));
         sb.append(" call ");
-        sb.append(Statistics.formatPercent(contCall, canDonkCall, true));
+        sb.append(Statistics.formatPercent(contCall, canContCall, true));
         sb.append(" raise ");
-        sb.append(Statistics.formatPercent(contRaise, canDonkRaise, true));
+        sb.append(Statistics.formatPercent(contRaise, canContRaise, true));
         sb.append(" fold ");
-        sb.append(Statistics.formatPercent(contFold, canDonkFold, true));
+        sb.append(Statistics.formatPercent(contFold, canContFold, true));
         
-        sb.append("\n");
+        sb.append("]\n");
         
-        sb.append("Donk bet ");
+        sb.append("Not agg [ bet ");
         sb.append(Statistics.formatPercent(donkBet, canDonkBet, true));
         sb.append(" call ");
         sb.append(Statistics.formatPercent(donkCall, canDonkCall, true));
@@ -108,7 +108,7 @@ public class DonkContLimped implements iPlayerStatistic
         sb.append(" fold ");
         sb.append(Statistics.formatPercent(donkFold, canDonkFold, true));
         
-        
+        sb.append("]");
         
         return sb.toString();
     }
@@ -142,13 +142,16 @@ public class DonkContLimped implements iPlayerStatistic
         final boolean estLimped = ftr.agresseur == null;
         final boolean estAgresseur = !estLimped ?  ftr.agresseur.equals(playerName) : false;
         
+        log.debug("DonkContLimt START limped? {} agresseur {} player {} round {}",estLimped
+                , estAgresseur, playerName, round);
+        
         for(int i = 0; i < actionIdx.size(); ++i)
         {
             PlayerAction currentAction = ftr.actions.get(actionIdx.get(i));
                         
             PlayerAction prevAction = i==0 ? null : ftr.actions.get(actionIdx.get(i-1));
             
-            log.debug("Player {} action {}", playerName, actionIdx.get(i));
+            log.debug("Player {} action {} raise count {}", playerName, actionIdx.get(i), currentAction.globalRaiseCount);
             
             if (currentAction.globalRaiseCount == 0)
             {
@@ -196,7 +199,7 @@ public class DonkContLimped implements iPlayerStatistic
                     
                     if (currentAction.action == Action.CALL)
                     {
-                        log.debug("Player {} did limp bet", playerName);
+                        log.debug("Player {} did limp call", playerName);
                         ++limpCall;
                     } else if (currentAction.action == Action.FOLD) 
                     {
@@ -214,7 +217,7 @@ public class DonkContLimped implements iPlayerStatistic
                     
                     if (currentAction.action == Action.CALL)
                     {
-                        log.debug("Player {} did cont bet", playerName);
+                        log.debug("Player {} did cont call      ", playerName);
                         ++contCall;
                     } else if (currentAction.action == Action.FOLD) 
                     {
@@ -231,13 +234,16 @@ public class DonkContLimped implements iPlayerStatistic
                     
                     if (currentAction.action == Action.CALL)
                     {
-                        log.debug("Player {} did donk bet", playerName);
                         ++donkCall;
+                        log.debug("Player {} did donk call.  count {}", playerName, donkCall);
+                       
                     } else if (currentAction.action == Action.FOLD) 
                     {
+                        log.debug("Player {} did donk fold", playerName);                        
                         ++donkFold;
                     } else if (currentAction.action == Action.RAISE)
                     {
+                        log.debug("Player {} did donk raise", playerName);                        
                         ++donkRaise;
                     }
                 }

@@ -14,7 +14,7 @@ import pkr.history.iPlayerStatistic;
 public class ThreeBet implements iPlayerStatistic
 {
 
-    private static Logger log = LoggerFactory.getLogger(Statistics.class);
+    private static Logger log = LoggerFactory.getLogger(ThreeBet.class);
     
     //Opted to 3 bet
     int thBetNum;
@@ -60,10 +60,28 @@ public class ThreeBet implements iPlayerStatistic
     @Override
     public void calculate(FlopTurnRiverState[] ftrStates) {
         
+        if (ftrStates[0] == null) {
+            return;
+        }
+        if (ftrStates[0].players.size() < 2)
+        {
+            return;
+        }
         
-        int playerPos = ftrStates[0].players.indexOf(playerName);
+        int playerPosition = ftrStates[0].players.indexOf(playerName);
         
-        List<Integer> actionIdx = ftrStates[0].playerPosToActions.get(playerPos);
+        if (ftrStates[0].players.size() < playerPosition)
+        {
+            log.warn("Problem 3 bet");
+            return;
+        }
+        
+        if (ftrStates[0].playerPosToActions.size() != ftrStates[0].players.size())
+        {
+            log.warn("Problem 3 bet");
+        }
+        
+        List<Integer> actionIdx = ftrStates[0].playerPosToActions.get(playerPosition);
         
         
         

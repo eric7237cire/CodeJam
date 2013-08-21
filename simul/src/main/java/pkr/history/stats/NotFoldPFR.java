@@ -63,11 +63,24 @@ public class NotFoldPFR implements iPlayerStatistic
         
         //final boolean playerAllin = ftrStates[0].allInBet.containsKey(preFlopPlayer);
         
+        if (ftrStates[0] == null) {
+            return;
+        }
+        
         int playerPosition = ftrStates[0].players.indexOf(preFlopPlayer);
         
         //int raiserPosition = ftrStates[0].roundInitialBetter != null ? ftrStates[0].players.indexOf( ftrStates[0].roundInitialBetter ) : -1; 
         
+        if (ftrStates[0].players.size() < 2)
+        {
+            return;
+        }
         
+        if (ftrStates[0].players.size() < playerPosition)
+        {
+            log.warn("Problem");
+            return;
+        }
         List<Integer> actionIdx = ftrStates[0].playerPosToActions.get(playerPosition);
         
         

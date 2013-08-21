@@ -43,6 +43,9 @@ public class TestRoundStats
         assertEquals(1, pStats.roundStats[0].calls);
         assertEquals(1, pStats.roundStats[1].betAllIn);
         assertEquals(0, pStats.roundStats[1].raiseCallAllIn);
+        
+        String n = pStats.getStatValue("dcl1");
+        assertEquals("", n);
     }
     
     @Test

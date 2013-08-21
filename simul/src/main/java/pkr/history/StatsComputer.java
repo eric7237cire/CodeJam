@@ -285,25 +285,39 @@ public class StatsComputer
        
     }
     
+    private void calculateGlobalRaiseCount(FlopTurnRiverState[] ftrStates)
+    {
+        
+        
+        for(int round = 0; round <= 3; ++round)
+        {
+            int globalRaiseCount = 0;
+            
+            FlopTurnRiverState ftr = ftrStates[round];
+            if (ftr == null)
+                continue;
+            
+            for(int actionIndex = 0; actionIndex < ftr.actions.size(); ++actionIndex)
+            {
+                PlayerAction action = ftr.actions.get(actionIndex);
+                
+                //Preconditions.checkState(!action.playerName.equals(playerName));
+                action.globalRaiseCount = globalRaiseCount;
+                log.debug("action idx {} player {} raise count now {}", actionIndex, action.playerName, globalRaiseCount);
+                
+                if (action.action == Action.RAISE || action.action == Action.ALL_IN)
+                {
+                    ++globalRaiseCount;                
+                }
+            }
+        }   
+    }
+    
     private void handleStats(FlopTurnRiverState[] ftrStates, StatsSessionPlayer player, String playerName)
     {
         //Precompute common traits
-        int globalRaiseCount = 0;
         
-        for(int actionIndex = 0; actionIndex < ftrStates[0].actions.size(); ++actionIndex)
-        {
-            PlayerAction action = ftrStates[0].actions.get(actionIndex);
-            
-            //Preconditions.checkState(!action.playerName.equals(playerName));
-            action.globalRaiseCount = globalRaiseCount;
-            log.debug("action idx {} player {} raise count now {}", actionIndex, action.playerName, globalRaiseCount);
-            
-            if (action.action == Action.RAISE || action.action == Action.ALL_IN)
-            {
-                ++globalRaiseCount;                
-            }
-        }
-        
+        calculateGlobalRaiseCount(ftrStates);
         getAgresseur(ftrStates);
         
         
