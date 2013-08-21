@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.history.FlopTurnRiverState;
+import pkr.history.Statistics;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -61,14 +62,14 @@ public class HoleCardsRange {
         log.debug("HandRange {}\n has {} hands of {}.  %{}", 
                 rangeStr,
                 totalHands, 26*51,
-                FlopTurnRiverState.df2.format(100.0*totalHands / (26*51)));
+                Statistics.df2.format(100.0*totalHands / (26*51)));
         StringBuffer buf = new StringBuffer();
         
         for(CardRank rank : CardRank.values())
         {
             buf.append(rank.name());
             buf.append(": ");
-            buf.append(FlopTurnRiverState.df2.format(100.0*rankFreq[rank.getIndex()] / totalHands));
+            buf.append(Statistics.df2.format(100.0*rankFreq[rank.getIndex()] / totalHands));
             buf.append("%");
             buf.append("  ");
             /*

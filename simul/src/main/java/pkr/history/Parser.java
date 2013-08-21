@@ -134,26 +134,26 @@ public class Parser {
                 logMainOutput.debug(" Unopened [{}] : [ checks %{} bets %{} all ins %{} calls rr : {} fold rr : {} rr : {} cr: {}]  \n" +
                 		" Opened [{}] : [ checks %{} calls %{} folded %{} raised %{} all in %{} ] ",
                         rs.unopened,
-                    formatPercent( rs.checksUnopened, rs.unopened),
-                    formatPercent( rs.bets, rs.unopened),
-                    formatPercent( rs.betAllIn, rs.unopened),
+                    Statistics.formatPercent( rs.checksUnopened, rs.unopened),
+                    Statistics.formatPercent( rs.bets, rs.unopened),
+                    Statistics.formatPercent( rs.betAllIn, rs.unopened),
                      rs.callReraise,
                      rs.betFold,
                      rs.reRaiseUnopened,
                      rs.checkRaises,
                     rs.openedBySomeoneElse,
-                    formatPercent( rs.checksOpened, rs.openedBySomeoneElse),
-                    formatPercent( rs.calls, rs.openedBySomeoneElse),
-                    formatPercent( rs.folded, rs.openedBySomeoneElse),
-                    formatPercent( rs.reRaiseOpened, rs.openedBySomeoneElse),
-                    formatPercent( rs.raiseCallAllIn, rs.openedBySomeoneElse)
+                    Statistics.formatPercent( rs.checksOpened, rs.openedBySomeoneElse),
+                    Statistics.formatPercent( rs.calls, rs.openedBySomeoneElse),
+                    Statistics.formatPercent( rs.folded, rs.openedBySomeoneElse),
+                    Statistics.formatPercent( rs.reRaiseOpened, rs.openedBySomeoneElse),
+                    Statistics.formatPercent( rs.raiseCallAllIn, rs.openedBySomeoneElse)
                     
 
                 );
                 
                 logMainOutput.debug("Average bet size %{}  average fold to bet size %{} ",
-                        formatPercent(ssp.roundStats[round].avgBetToPot, 1),
-                        formatPercent(ssp.roundStats[round].avgFoldToBetToPot, 1));
+                        Statistics.formatPercent(ssp.roundStats[round].avgBetToPot, 1),
+                        Statistics.formatPercent(ssp.roundStats[round].avgFoldToBetToPot, 1));
 
             }
         }
@@ -161,15 +161,7 @@ public class Parser {
         return sc.stats;
     }
     
-    private static String formatPercent(double decimalNum, double decimalDenom)
-    {
-        if (Double.isNaN(decimalDenom) || Double.isNaN(decimalNum) || decimalDenom < 0.0001)
-            return "n/a";
-        
-        
-        
-        return FlopTurnRiverState.df2.format(100.0 * decimalNum / decimalDenom);
-    }
+    
     
     public static List<FlopTurnRiverState[]> parseFile(File rawHandHistory, File cleanedHandHistory) throws IOException {
         //String fileName = "C:\\codejam\\CodeJam\\simul\\hands.txt";

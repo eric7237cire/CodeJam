@@ -1,13 +1,19 @@
 package pkr.history.stats;
 
+import java.util.List;
+
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.history.FlopTurnRiverState;
+import pkr.history.PlayerAction;
 import pkr.history.Statistics;
 import pkr.history.iPlayerStatistic;
+import pkr.history.PlayerAction.Action;
+
+import com.google.common.base.Preconditions;
 
 public class ThreeBet implements iPlayerStatistic
 {
@@ -16,8 +22,11 @@ public class ThreeBet implements iPlayerStatistic
     
     //Opted to 3 bet
     int thBetNum;
+    int nonAllInThBet;
     //Incoming pre flop raise
     int thBetDenom;
+    
+    double avgAmt;
     
     int thBetCallNum;
     int thBetFoldNum;
@@ -43,7 +52,14 @@ public class ThreeBet implements iPlayerStatistic
 
     @Override
     public String toString() {
-        return "3bet : " ;
+        StringBuffer sb = new StringBuffer();
+        sb.append("3bet : ");
+        sb.append(Statistics.formatPercent(thBetNum, thBetDenom, true));        
+        sb.append(" Avg amt : ");
+        sb.append(Statistics.formatMoney(avgAmt, nonAllInThBet));
+        sb.append(" Call : ");
+        sb.append( Statistics.formatPercent(thBetCallNum, wasThBetCount, true));
+        return sb.toString();
     }
 
     
@@ -53,46 +69,90 @@ public class ThreeBet implements iPlayerStatistic
         
         final boolean isPreFlopRaiser = StringUtils.equals(ftrStates[0].roundInitialBetter, playerName);
         
-        if (!isPreFlopRaiser)
+        int playerPos = ftrStates[0].players.indexOf(playerName);
+        
+        List<Integer> actionIdx = ftrStates[0].playerPosToActions.get(playerPos);
+        
+        int globalRaiseCount = 0;
+        
+        outerloop:
+        for(int i = 0; i < actionIdx.size(); ++i)
         {
-            log.debug("Player {} could have 3 bet", playerName);
-            ++thBetDenom;
-        }
-        final boolean playerHasReraised = 
-                BooleanUtils.isTrue(ftrStates[0].hasReraised.get(playerName));
-        
-        if (playerHasReraised)
-        {
-            log.debug("Player {} has 3 bet", playerName);
-            ++thBetNum;
-        }
-        
-        final boolean playerHasFoldedReraise = 
-                BooleanUtils.isTrue(ftrStates[0].foldedToBetOrRaise.get(playerName));
-        
-        final boolean playerHasCalledReraise = 
-                BooleanUtils.isTrue(ftrStates[0].calledABetOrRaise.get(playerName));
-        
-        if (isPreFlopRaiser && (playerHasReraised || playerHasFoldedReraise || playerHasCalledReraise))
-        {
-            log.debug("Player {} was 3 bet", playerName);
-            ++wasThBetCount;
+            int startActionIndex = i == 0 ? 0 : actionIdx.get(i-1) ;
+            int endActionIndex = actionIdx.get(i);
             
-            if (playerHasCalledReraise || playerHasReraised)
+            
+            for(int actionIndex = startActionIndex; actionIndex < endActionIndex; ++actionIndex)
             {
-                log.debug("Player {} did not fold", playerName);
-                ++thBetCallNum;
-            } else  if (playerHasFoldedReraise)
-            {
-                log.debug("Player {} folded to a  3 bet", playerName);
-                ++thBetFoldNum;
+                PlayerAction action = ftrStates[0].actions.get(actionIndex);
+                
+                //Preconditions.checkState(!action.playerName.equals(playerName));
+                
+                if (action.action == Action.RAISE || action.action == Action.ALL_IN)
+                {
+                    ++globalRaiseCount;
+                    log.debug("P action idx {}  action idx {} player {} raise count now {}", i, actionIndex, action.playerName, globalRaiseCount);
+                    
+                }
             }
+            
+            if (globalRaiseCount == 1)
+            {
+                log.debug("Player {} could have 3 bet", playerName);
+                ++thBetDenom;
+            }
+            
+            PlayerAction currentAction = ftrStates[0].actions.get(endActionIndex);
+            PlayerAction prevAction = i==0 ? null : ftrStates[0].actions.get(actionIdx.get(i-1));
+            
+            log.debug("Player {} action {}", playerName, endActionIndex);
+            
+            if (globalRaiseCount == 1 && (currentAction.action == Action.RAISE ||
+                    currentAction.action == Action.ALL_IN) )
+            {
+                log.debug("Player {} has 3 bet.  raises : {} p action idx : {}", playerName, globalRaiseCount, i);
+                ++thBetNum;
+                
+                if (currentAction.action == Action.RAISE) {
+                    ++nonAllInThBet;
+                    avgAmt += currentAction.amountRaised;
+                }
+            }
+            
+            if (globalRaiseCount == 2 && (prevAction == null || prevAction.action != Action.RAISE))
+            {
+                log.debug("Player {} can cold call a 3 bet", playerName);
+                ++wasThBetCount;
+                
+                if (currentAction.action == Action.FOLD)
+                {
+                    log.debug("Player {} folded a 3 bet", playerName);
+                    ++thBetFoldNum;
+                } else {
+                    ++thBetCallNum;
+                }
+            }
+            
+            if (globalRaiseCount == 2 && (prevAction != null && prevAction.action == Action.RAISE))
+            {
+                log.debug("Player {} can call a 3 bet.  raises: {} p action idx : {}", playerName, globalRaiseCount, i);
+                ++wasThBetCount;
+                
+                if (currentAction.action == Action.FOLD)
+                {
+                    log.debug("Player {} folded their pfr to a  3 bet", playerName);
+                    ++thBetFoldNum;
+                } else {
+                    ++thBetCallNum;
+                }
+            }
+            
+            if (globalRaiseCount >= 2)
+                break;
         }
         
-        
-        //int playerBet = ftrStates[0].getCurrentBet(playerName);
-        //final boolean playerAllin = ftrStates[0].allInBet.containsKey(playerName);
-        
+       
+                
         
     }
 

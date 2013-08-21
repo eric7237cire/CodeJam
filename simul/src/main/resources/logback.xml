@@ -92,8 +92,8 @@
     <appender-ref ref="statsLogFile"/>
    </logger>
    
-   <logger name="pkr.history.Statsistics" level="DEBUG" additivity="true">
-   
+   <logger name="pkr.history.Statistics" level="DEBUG" additivity="true">
+    <appender-ref ref="statsLogFile"/>
    </logger>
       
   <root level="${root-level:-INFO}">

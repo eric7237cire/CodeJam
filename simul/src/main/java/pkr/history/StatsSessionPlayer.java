@@ -1,9 +1,12 @@
 package pkr.history;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import pkr.history.stats.ColdCall;
 import pkr.history.stats.Pfr;
+import pkr.history.stats.ThreeBet;
 import pkr.history.stats.Vpip;
 
 import com.google.common.collect.Maps;
@@ -90,15 +93,17 @@ public class StatsSessionPlayer {
         this.playerName = pplayerName;
         stats = Maps.newHashMap();
         
-        iPlayerStatistic s = new Vpip(playerName);
-        stats.put(s.getId(), s);
-        
-        s = new Pfr(playerName);
-        stats.put(s.getId(), s);
-        
-        s = new ColdCall(playerName);
-        stats.put(s.getId(), s);
-        
+        List<iPlayerStatistic> lst = Arrays.asList(
+                new Vpip(playerName),
+                new Pfr(playerName),
+                new ColdCall(playerName),
+                new ThreeBet(playerName));
+         
+        for(iPlayerStatistic s : lst)
+        {
+            stats.put(s.getId(), s);
+        }
+                
         roundStats = new RoundStats[] { flopStats, turnStats, riverStats };
     }
     

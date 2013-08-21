@@ -1,10 +1,13 @@
 _____________________________
  
 Eric a relancé de 400 000.
+//3 bet
 Bill a relancé de 600 000.
 Manfred se couche.
 Ivana se couche.
+//3 bet call
 Joe a suivi de 600 000.
+//3 bet call and a 4 bet
 Eric a relancé de 1 000 000.
 Bill a relancé de 1 200 000.
 Joe se couche.
@@ -18,9 +21,12 @@ Bill a relancé de 600 000.
 Manfred se couche.
 Ivana se couche.
 Joe a suivi de 600 000.
+//3 bet
 Eric a relancé de 1 000 000.
 Bill se couche.
+//4 bet / 3 bet call
 Joe a fait tapis.
+//4 bet call
 Eric a suivi de 2 000 000.
 
 Eric remporte le pot (4 700 000 $) avec une quinte (K).
@@ -30,9 +36,20 @@ Eric a suivi de 200 000.
 Bill a relancé de 600 000.
 Manfred se couche.
 Ivana se couche.
+//a 3 bet
 Joe a relancé de 1 000 000.
+//3 bet call
 Eric a suivi de 1 000 000.
-Joe a fait tapis.
+Bill a fait tapis.
+
+Joe a parlé.
+Eric a parlé.
+
+Joe a parlé.
+Eric a parlé.
+
+Joe a parlé.
+Eric a parlé.
 
 Eric remporte le pot (3 100 000 $) avec une quinte (K).
 _____________________________
@@ -43,9 +60,22 @@ Manfred se couche.
 //SB
 Ivana se couche.
 //BB
-Joe a relancé de 1 000 000.
-Eric a suivi de 1 000 000.
-Joe a suivi de 1 000 000.
+Joe a relancé de 1 200 000.
+//3 bet call
+Eric a suivi de 1 200 000.
+Bill a suivi de 1 200 000.
 
-Eric remporte le pot (3 100 000 $) avec une quinte (K).
+Joe a parlé.
+Eric a parlé.
+Bill a parlé.
+
+Joe a parlé.
+Eric a parlé.
+Bill a parlé.
+
+Joe a parlé.
+Eric a parlé.
+Bill a parlé.
+
+Eric remporte le pot (3 700 000 $) avec une quinte (K).
 _____________________________

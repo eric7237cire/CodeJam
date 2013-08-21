@@ -1,10 +1,7 @@
 package pkr.history;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.lang3.BooleanUtils;
@@ -25,6 +22,10 @@ public class FlopTurnRiverState implements ParserListener
     
     List<FlopTurnRiverState[]> masterList; 
     FlopTurnRiverState[] roundStates;
+    
+    //La liste complète d'actions faites dans la main
+    public List<PlayerAction> actions;    
+    public List<List<Integer>> playerPosToActions;
     
     //La liste de joeurs dans l'ordre à parler 
     public List<String> players;
@@ -95,6 +96,14 @@ public class FlopTurnRiverState implements ParserListener
         this.betToPotSize = Maps.newHashMap();
         this.foldToBetSize = Maps.newHashMap();
         
+        actions = Lists.newArrayList();
+        playerPosToActions = Lists.newArrayList();
+        
+        for (int i  = 0; i < players.size(); ++i)
+        {
+            playerPosToActions.add(new ArrayList<Integer>());
+        }
+        
         this.currentPlayer = players.size() - 1;
         
         hasFolded = Maps.newHashMap();
@@ -125,7 +134,7 @@ public class FlopTurnRiverState implements ParserListener
         logOutput.debug("\nStarting round {} with {} players.  Pot is ${}\n",
                roundToStr(round),
                         players.size(),
-                        moneyFormat.format(pot));
+                        Statistics.moneyFormat.format(pot));
                         
         
     }
@@ -150,6 +159,12 @@ public class FlopTurnRiverState implements ParserListener
         log.debug("Update player {} with bet {} in pot {}",  playerName, playerBet, pot);
         
         return pot;
+    }
+    
+    public void addAction(PlayerAction action)
+    {
+        actions.add(action);
+        playerPosToActions.get(currentPlayer).add(actions.size()-1);
     }
     
     public int getCurrentBet(String playerName)
@@ -284,6 +299,8 @@ public class FlopTurnRiverState implements ParserListener
     
     /*
      * Position currentPlayer au joeur courant
+     * 
+     * Post condition : currentPlayer positionné à playerName
      */
     private boolean incrementPlayer(String playerName)
     {
@@ -291,6 +308,8 @@ public class FlopTurnRiverState implements ParserListener
         {
             log.debug("Player [{}] ajouté avec index {} ", playerName, players.size());
             players.add(playerName);
+            
+            playerPosToActions.add( new ArrayList<Integer>() );
             currentPlayer = players.size() - 1;
             return false;
         }
@@ -322,26 +341,7 @@ public class FlopTurnRiverState implements ParserListener
         }
     }
     
-    public final static DecimalFormat df1;
-    public final static DecimalFormat df2;
-    public final static DecimalFormat moneyFormat;
     
-    static {
-        
-        df1 = new DecimalFormat("0.#");
-        df1.setRoundingMode(RoundingMode.HALF_UP);
-        df1.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
-        
-        
-        df2 = new DecimalFormat("0.##");
-        df2.setRoundingMode(RoundingMode.HALF_UP);
-        df2.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.US));
-        
-        DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance();
-        symbols.setGroupingSeparator(' ');
-
-        moneyFormat = new DecimalFormat("###,###", symbols);
-    }
     
     private void printHandHistory(String action)
     {
@@ -371,10 +371,10 @@ public class FlopTurnRiverState implements ParserListener
             
             
             logOutput.debug("Amount to call ${} for pot ${}.\n  Pot ratio (bluff catching) : {}%  | 1 to {} | {} outs", 
-                    moneyFormat.format(diff), moneyFormat.format(pot),
-                    df2.format(perc), df2.format(ratio), df2.format(outsOne));
+                    Statistics.moneyFormat.format(diff), Statistics.moneyFormat.format(pot),
+                    Statistics.df2.format(perc), Statistics.df2.format(ratio), Statistics.df2.format(outsOne));
           //  logOutput.debug("Must be ahead {}% of the time to call a bluff", 
-              //      df2.format(callBluff));
+              //      Statistics.df2.format(callBluff));
         }
         
         if (round >= 0 && raiseAmt > playerBet)
@@ -385,9 +385,9 @@ public class FlopTurnRiverState implements ParserListener
             
             logOutput.debug("Raise amt ${} | %{} of pot " +
             		"\nbluff % chance everyone must fold {}%",
-                    moneyFormat.format(diff),
-                    df2.format(100*betSizeToPot),
-                     df2.format(bluff));
+                    Statistics.moneyFormat.format(diff),
+                    Statistics.df2.format(100*betSizeToPot),
+                     Statistics.df2.format(bluff));
         }
         
         logOutput.debug("\n");
@@ -436,9 +436,10 @@ public class FlopTurnRiverState implements ParserListener
         calledABetOrRaise.put(playerName, true);
         
         boolean seenPlayer = incrementPlayer(playerName);
-        printHandHistory("Call $" + moneyFormat.format(betAmt));
+        printHandHistory("Call $" + Statistics.moneyFormat.format(betAmt));
         
-        
+        PlayerAction action = PlayerAction.createCall(currentPlayer, playerName, betAmt, pot);
+        addAction(action);
         
         pot = updatePlayerBet(playerBets, playerName, betAmt, pot);
         
@@ -475,12 +476,11 @@ public class FlopTurnRiverState implements ParserListener
             int raiseAmt = betAmt - amtToCall;
             double potRatio = 1.0 * raiseAmt / pot;
             
-            log.debug("Player %{} bet %{} of pot", playerName, df2.format(potRatio));
+            log.debug("Player %{} bet %{} of pot", playerName, Statistics.df2.format(potRatio));
             betToPotSize.put(playerName, potRatio);
             
         } else {
             hasReraised.put(playerName, true);
-            
         }
         
         if (round == 0 && tableStakes <= 0)
@@ -500,8 +500,10 @@ public class FlopTurnRiverState implements ParserListener
         }
         
         incrementPlayer(playerName);
-        printHandHistory("Raise $" + moneyFormat.format(betAmt), betAmt);
+        printHandHistory("Raise $" + Statistics.moneyFormat.format(betAmt), betAmt);
         
+        PlayerAction action = PlayerAction.createReraise(currentPlayer, playerName, amtToCall, betAmt, pot);
+        addAction(action);
         
         amtToCall = betAmt;
         
@@ -547,6 +549,8 @@ public class FlopTurnRiverState implements ParserListener
         boolean seenPlayer = incrementPlayer(playerName);
         printHandHistory("Fold");
         
+        addAction(PlayerAction.createFold(currentPlayer, playerName, amtToCall, pot));
+        
         hasFolded.put(playerName, true);
         
         //Want to process winning line
@@ -586,13 +590,15 @@ public class FlopTurnRiverState implements ParserListener
             return getNextState(true);
         }
         
+        Preconditions.checkState(amtToCall == 0);
+        
         hasChecked.put(playerName, true);
         
       //  boolean seenPlayer = 
         incrementPlayer(playerName);
         printHandHistory("Check");
         
-        
+        addAction(PlayerAction.createCheck(currentPlayer, playerName, pot));
         
         playerBets.put(playerName, 0);
         
@@ -646,6 +652,8 @@ public class FlopTurnRiverState implements ParserListener
         incrementPlayer(playerName);
         printHandHistory("All in for unknown amount");
         
+        addAction(PlayerAction.createAllin(currentPlayer, playerName, amtToCall, pot));
+        
         allInBet.put(playerName, 1 + amtToCall);
         
         amtToCall = getAllInBet(playerName);
@@ -663,7 +671,7 @@ public class FlopTurnRiverState implements ParserListener
             log.warn("Final pot calculated as {} but is {}", pot, finalPot);
         }
         logOutput.debug("{} wins showdown with pot ${}", playerName, 
-                moneyFormat.format(finalPot));
+                Statistics.moneyFormat.format(finalPot));
         
         this.masterList.add(this.roundStates);
         
