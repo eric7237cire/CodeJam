@@ -36,10 +36,7 @@ public class ThreeBet implements iPlayerStatistic
         this.playerName = playerName;
     }
 
-    static Vpip create(String playerName, int round)
-    {
-        return new Vpip(playerName);
-    }
+    
     
     @Override
     public String getId() {

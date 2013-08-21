@@ -131,6 +131,7 @@ public class Parser {
                             rs.openedBySomeoneElse
                         );
 
+                logMainOutput.debug("{}", ssp.getStatValue("dcl" + (round+1)));
                 
                 logMainOutput.debug(" Unopened [{}] : [ checks %{} bets %{} all ins %{} calls rr : {} fold rr : {} rr : {} cr: {}]  \n" +
                 		" Opened [{}] : [ checks %{} calls %{} folded %{} raised %{} all in %{} ] ",

@@ -18,6 +18,7 @@ public class FlopTurnRiverState implements ParserListener
     static Logger log = LoggerFactory.getLogger(Parser.class);
     static Logger logOutput = LoggerFactory.getLogger("handOutput");
     
+    
     public int lineNumber;
     
     List<FlopTurnRiverState[]> masterList; 
@@ -26,6 +27,9 @@ public class FlopTurnRiverState implements ParserListener
     //La liste complète d'actions faites dans la main
     public List<PlayerAction> actions;    
     public List<List<Integer>> playerPosToActions;
+    
+    //Qui a fait la dernière action aggressive dans la tournée précédente
+    public String agresseur;
     
     //La liste de joeurs dans l'ordre à parler 
     public List<String> players;
@@ -37,6 +41,7 @@ public class FlopTurnRiverState implements ParserListener
     int amtToCall = 0;
     
     public Map<String , Boolean> hasFolded;
+    public boolean[] hasFoldedArr;
     public Map<String, Integer> allInBet;
     Map<String, Boolean> allInBetExact;
     String lastTapisPlayer;
@@ -107,6 +112,7 @@ public class FlopTurnRiverState implements ParserListener
         this.currentPlayer = players.size() - 1;
         
         hasFolded = Maps.newHashMap();
+        hasFoldedArr = new boolean[MAX_PLAYERS];
         playerBets = Maps.newHashMap();
         allInBet = Maps.newHashMap();
         allInBetExact = Maps.newHashMap();
@@ -551,6 +557,7 @@ public class FlopTurnRiverState implements ParserListener
         
         addAction(PlayerAction.createFold(currentPlayer, playerName, amtToCall, pot));
         
+        hasFoldedArr[currentPlayer] = true;
         hasFolded.put(playerName, true);
         
         //Want to process winning line

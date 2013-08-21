@@ -34,11 +34,6 @@ public class NotFoldPFR implements iPlayerStatistic
         super();
         this.preFlopPlayer = playerName;
     }
-
-    static Vpip create(String playerName, int round)
-    {
-        return new Vpip(playerName);
-    }
     
     @Override
     public String getId() {

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import pkr.history.stats.DonkContLimped;
 import pkr.history.stats.NotFoldPFR;
 import pkr.history.stats.Pfr;
 import pkr.history.stats.ThreeBet;
@@ -102,6 +103,10 @@ public class StatsSessionPlayer {
         {
             stats.put(s.getId(), s);
         }
+        
+        stats.put("dcl1", new DonkContLimped(playerName, 1));
+        stats.put("dcl2", new DonkContLimped(playerName, 2));
+        stats.put("dcl3", new DonkContLimped(playerName, 3));
                 
         roundStats = new RoundStats[] { flopStats, turnStats, riverStats };
     }

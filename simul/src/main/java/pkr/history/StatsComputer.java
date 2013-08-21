@@ -259,6 +259,32 @@ public class StatsComputer
         }
     }
     
+    void getAgresseur(FlopTurnRiverState[] ftrStates)
+    {
+        for(int round = 1; round <= 3; ++round)
+        {
+            if (ftrStates[round] == null)
+                return;
+            
+            List<PlayerAction> actions = ftrStates[round-1].actions;
+            
+            for(int actionIdx = actions.size() - 1; actionIdx >= 0; --actionIdx)
+            {
+                PlayerAction action = actions.get(actionIdx);
+                
+                if (action.action == Action.RAISE && !ftrStates[round-1].hasFoldedArr[action.playerPosition])
+                {
+                    log.debug("Player {} dans position {} était l'agresseur de la tournée précédente {}", round);
+                    ftrStates[round].agresseur = action.playerName;
+                }
+            }
+            
+            log.debug("Il n'y avais pas d'agresseur dans la tournée précédente {}", round);
+        }
+        
+       
+    }
+    
     private void handleStats(FlopTurnRiverState[] ftrStates, StatsSessionPlayer player, String playerName)
     {
         //Precompute common traits
@@ -277,6 +303,9 @@ public class StatsComputer
                 ++globalRaiseCount;                
             }
         }
+        
+        getAgresseur(ftrStates);
+        
         
         for(Map.Entry<String, iPlayerStatistic> entries : player.stats.entrySet())
         {
