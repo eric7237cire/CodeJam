@@ -156,7 +156,7 @@ public class StatsComputer
                 if (BooleanUtils.isTrue(ftrStates[r+1].allInBet.containsKey(playerName)))
                     ++check;
                 
-                Preconditions.checkState(1 <= check && check <= 3,
+               if (false) Preconditions.checkState(1 <= check && check <= 3,
                         "%s Player %s has not just bet/folded/called in a raised round %s.\n " +
                         " has bet [%s] has folded [%s]  has called [%s] has all in [%s]",
                         check,
