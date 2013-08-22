@@ -318,9 +318,50 @@ public class StatsComputer
         }   
     }
     
+    /**
+     * Déterminer si les all-ins était des calls ou des relances
+     * @param ftrStates
+     */
+    private void defineAllins(FlopTurnRiverState[] ftrStates)
+    {
+        for(int round = 0; round <= 3; ++round)
+        {
+            FlopTurnRiverState ftr = ftrStates[round];
+            if (ftr == null)
+                continue;
+            
+            Action lastAction = null;
+            for(int actionIndex = ftr.actions.size() - 1; actionIndex >= 0; --actionIndex)
+            {
+                PlayerAction action = ftr.actions.get(actionIndex);
+                
+                if (action.action == Action.ALL_IN)
+                {
+                    if (lastAction == null || lastAction == Action.CHECK) {
+                        action.action = Action.CALL_ALL_IN;
+                    } else if ( lastAction == Action.CALL )
+                    {
+                        action.action = Action.RAISE_ALL_IN;
+                    } else if ( lastAction == Action.RAISE )
+                    {
+                        log.debug("All in at index, guessing it was a call");
+                        action.action = Action.CALL_ALL_IN;
+                    }
+                          
+                } else if ( action.action == Action.CALL ||
+                            action.action == Action.RAISE ||
+                            action.action == Action.CHECK)
+                {
+                    lastAction = action.action;
+                }
+            }
+        }
+    }
+    
     private void handleStats(FlopTurnRiverState[] ftrStates, StatsSessionPlayer player, String playerName)
     {
         //Precompute common traits
+       // defineAllins(ftrStates);
         
         calculateGlobalRaiseCount(ftrStates);
         getAgresseur(ftrStates);

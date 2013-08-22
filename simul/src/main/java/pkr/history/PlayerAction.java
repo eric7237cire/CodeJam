@@ -6,7 +6,11 @@ public class PlayerAction {
     
     public enum Action
     {
-        FOLD, RAISE, CALL, CHECK, ALL_IN;
+        FOLD, 
+        RAISE, //bet / reraise
+        CALL, CHECK, 
+        ALL_IN, //unknown if it is a raise or call
+        RAISE_ALL_IN, CALL_ALL_IN;
     }
     
     public Action action;
@@ -81,6 +85,21 @@ public class PlayerAction {
         action.pot = pot;
         
         action.incomingBetOrRaise = 0;
+        action.amountRaised = -1;
+        
+        return action;
+    }
+    
+    static PlayerAction createBetAllin(int playerPosition, String playerName, 
+            int amountToCall, int pot)
+    {
+        PlayerAction action = new PlayerAction();
+        action.playerPosition = playerPosition;
+        action.playerName = playerName;
+        action.action = Action.RAISE_ALL_IN;
+        action.pot = pot;
+        
+        action.incomingBetOrRaise = amountToCall;
         action.amountRaised = -1;
         
         return action;

@@ -8,6 +8,8 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pkr.history.PlayerAction.Action;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -424,6 +426,16 @@ public class FlopTurnRiverState implements ParserListener
                 //Nous savons que le tapis était une relance et pas un suivi
                 calledABetOrRaise.remove(lastTapisPlayer);
                 
+                
+                int tapisPos = players.indexOf(lastTapisPlayer);
+                List<Integer> actionIndexes = playerPosToActions.get(tapisPos);
+                PlayerAction tapisAction = actions.get(actionIndexes.get(actionIndexes.size()-1));
+                
+                Preconditions.checkState(tapisAction.action == Action.ALL_IN || tapisAction.action == Action.RAISE_ALL_IN);
+                
+                tapisAction.action = Action.RAISE_ALL_IN;
+                
+                
                 lastTapisPlayer = null;
                 
                 
@@ -497,7 +509,20 @@ public class FlopTurnRiverState implements ParserListener
             
             log.debug("Reraise after tapis, no real guess possible {}", tapisGuess );
             
+            
+            int tapisPos = players.indexOf(lastTapisPlayer);
+            List<Integer> actionIndexes = playerPosToActions.get(tapisPos);
+            PlayerAction tapisAction = actions.get(actionIndexes.get(actionIndexes.size()-1));
+            
+            Preconditions.checkState(tapisAction.action == Action.ALL_IN || tapisAction.action == Action.RAISE_ALL_IN);
+            if (tapisAction.action == Action.ALL_IN)
+            {
+                log.debug("All in guessed to be a call");
+                tapisAction.action = Action.CALL_ALL_IN;
+            }
+            
             lastTapisPlayer = null;
+            
         }
         
         incrementPlayer(playerName);
@@ -589,6 +614,15 @@ public class FlopTurnRiverState implements ParserListener
         {
             log.debug("Parole après une tapis, le dernier tapis était un suivi", playerName);
             allInBet.put(lastTapisPlayer, getAllInBet(lastTapisPlayer) - 1);
+            
+            int tapisPos = players.indexOf(lastTapisPlayer);
+            List<Integer> actionIndexes = playerPosToActions.get(tapisPos);
+            PlayerAction tapisAction = actions.get(actionIndexes.get(actionIndexes.size()-1));
+            
+            Preconditions.checkState(tapisAction.action == Action.ALL_IN);
+            
+            tapisAction.action = Action.CALL_ALL_IN;
+            
             return getNextState(true);
         }
         
@@ -654,7 +688,12 @@ public class FlopTurnRiverState implements ParserListener
         incrementPlayer(playerName);
         printHandHistory("All in for unknown amount");
         
-        addAction(PlayerAction.createAllin(currentPlayer, playerName, amtToCall, pot));
+        if (amtToCall == 0)
+        {
+            addAction(PlayerAction.createBetAllin(currentPlayer, playerName, amtToCall, pot));
+        } else {
+            addAction(PlayerAction.createAllin(currentPlayer, playerName, amtToCall, pot));
+        }
         
         allInBet.put(playerName, 1 + amtToCall);
         

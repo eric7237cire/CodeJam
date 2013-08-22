@@ -30,11 +30,14 @@ public class DonkContLimped implements iPlayerStatistic
     public static final int CALL = 0;
     public static final int BET = 1;
     public static final int FOLD = 2;
+    //Excludes bet all in
     public static final int ALL_IN = 3;
     public static final int RAISE = 4;
     public static final int RERAISE = 5;
     
+    public static final int BET_ALLIN = 6;
     
+    int[] count ;
     
     private String playerName;
     private int round;
@@ -45,6 +48,7 @@ public class DonkContLimped implements iPlayerStatistic
         this.round = round;
         this.actions = new int[3][6];
         this.actionPossible = new int[3][6];
+        this.count = new int[] {0,0,0};
         //No preflop
         Preconditions.checkArgument(round >= 1 && round <= 3);
     }
@@ -73,6 +77,11 @@ public class DonkContLimped implements iPlayerStatistic
                 sb.append("Not Agg.");
                 break;
             }
+            
+            sb.append("(");
+            sb.append(count[i]);
+            sb.append(")");
+            
             sb.append(" [bet ");
             sb.append(Statistics.formatPercent(actions[i][BET], actionPossible[i][BET], true));
             sb.append(" call ");
@@ -126,6 +135,10 @@ public class DonkContLimped implements iPlayerStatistic
         final int type = estLimped ? LIMPED : (estAgresseur ? IS_AGGRES : NOT_AGGRES);
         
         
+        ++actionPossible[type][ALL_IN];
+        ++count[type];
+        boolean didGoAllIn = false;
+        
         log.debug("DonkContLimt START limped? {} agresseur {} player {} round {}",estLimped
                 , estAgresseur, playerName,Statistics.roundToStr(round));
         
@@ -137,14 +150,22 @@ public class DonkContLimped implements iPlayerStatistic
             
             log.debug("Player {} action {} raise count {}", playerName, actionIdx.get(i), currentAction.globalRaiseCount);
             
+            if (currentAction.action == Action.CALL_ALL_IN
+                    || currentAction.action == Action.RAISE_ALL_IN
+                    || currentAction.action == Action.ALL_IN
+                    )
+            {
+                didGoAllIn = true;
+            }
+            
             if (currentAction.globalRaiseCount == 0)
             {
                 
                 log.debug("Player {} can bet.  type {}", playerName, type);
                 ++actionPossible[type][BET];
-                ++actionPossible[type][ALL_IN];
                 
-                if (currentAction.action == Action.RAISE)
+                
+                if (currentAction.action == Action.RAISE || currentAction.action == Action.RAISE_ALL_IN)
                 {
                     log.debug("Player {} did bet. type {}", playerName, type);
                     ++actions[type][BET];
@@ -162,9 +183,9 @@ public class DonkContLimped implements iPlayerStatistic
                 ++actionPossible[type][CALL];
                 ++actionPossible[type][FOLD];
                 ++actionPossible[type][RAISE];
-                ++actionPossible[type][ALL_IN];
+               
                 
-                if (currentAction.action == Action.CALL)
+                if (currentAction.action == Action.CALL || currentAction.action == Action.CALL_ALL_IN)
                 {
                     log.debug("Player {} did call. type {}", playerName, type);
                     ++actions[type][CALL];
@@ -173,39 +194,31 @@ public class DonkContLimped implements iPlayerStatistic
                     log.debug("Player {} did fold. type {}", playerName, type);
                     
                     ++actions[type][FOLD];
-                } else if (currentAction.action == Action.RAISE)
+                } else if (currentAction.action == Action.RAISE || currentAction.action == Action.RAISE_ALL_IN)
                 {
                     log.debug("Player {} did raise. type {}", playerName, type);
                     
                     ++actions[type][RAISE];
-                } else  if (currentAction.action == Action.ALL_IN)
-                {
-                    log.debug("Player {} did all in. type {}", playerName, type);
-                    
-                    ++actions[type][ALL_IN];
-                }
-            
+                }             
             
             } else if (currentAction.globalRaiseCount >= 2) {
                 log.debug("Player {} fac can limp call / fold / re - raise.  type {}", playerName, type);
                 
                 ++actionPossible[type][RERAISE];
-                ++actionPossible[type][ALL_IN];
                 
-                if (currentAction.action == Action.RAISE)
+                if (currentAction.action == Action.RAISE || currentAction.action == Action.RAISE_ALL_IN)
                 {
                     log.debug("Player {} did re-raise. type {}", playerName, type);
                     
                     ++actions[type][RERAISE];
-                } else  if (currentAction.action == Action.ALL_IN)
-                {
-                    log.debug("Player {} did reraise/call all in. type {}", playerName, type);
-                    
-                    ++actions[type][ALL_IN];
-                }
-                //break;
+                } 
             }
             
+        }
+        
+        if (didGoAllIn)
+        {
+            ++actions[type][ALL_IN];
         }
         
        

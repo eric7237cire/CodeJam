@@ -60,8 +60,8 @@ public class TestRoundStats
         
         dcl = (DonkContLimped) pStats.stats.get("dcl2");
         
-        assertEquals(1, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.ALL_IN]);
-        assertEquals(1, dcl.actionPossible[DonkContLimped.NOT_AGGRES][DonkContLimped.ALL_IN]);
+        assertEquals(1, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.BET]);
+        assertEquals(1, dcl.actionPossible[DonkContLimped.NOT_AGGRES][DonkContLimped.BET]);
         
         assertEquals(0, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.RAISE]);
         assertEquals(0, dcl.actionPossible[DonkContLimped.NOT_AGGRES][DonkContLimped.RAISE]);
