@@ -56,7 +56,7 @@ public class Vpip implements iPlayerStatistic
         ++denom;
         
         int playerBet = ftrStates[0].getCurrentBet(preFlopPlayer);
-        final boolean playerAllin = ftrStates[0].allInBet.containsKey(preFlopPlayer);
+        final boolean playerAllin = ftrStates[0].allInMinimum.containsKey(preFlopPlayer);
         
         if ( (!preFlopPlayer.equals(ftrStates[0].playerBB) && playerBet >= ftrStates[0].tableStakes)
                 ||

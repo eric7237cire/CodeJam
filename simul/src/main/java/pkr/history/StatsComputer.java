@@ -75,7 +75,7 @@ public class StatsComputer
         
         int playerBet = ftrStates[0].getCurrentBet(preFlopPlayer);
         
-        final boolean playerAllin = ftrStates[0].allInBet.containsKey(preFlopPlayer);
+        final boolean playerAllin = ftrStates[0].allInMinimum.containsKey(preFlopPlayer);
         
         
         
@@ -129,17 +129,12 @@ public class StatsComputer
             
             RoundStats rs = player.roundStats[r];
             
-            if (ftrStates[r+1].amtToCall == 0)
-            {
-                rs.checkedThrough++;
-            }
-            
+                        
             final boolean hasReraised = (BooleanUtils.isTrue(ftrStates[r+1].hasReraised.get(playerName)));
             
             final boolean opened = ftrStates[r+1].amtToCall > 0 && !isInitialBetter; 
             if (opened)
             {
-                rs.openedBySomeoneElse++;
                 
                 //Make sure at least 1 raise / fold / call is true
                 
@@ -153,7 +148,7 @@ public class StatsComputer
                 if (BooleanUtils.isTrue(ftrStates[r+1].calledABetOrRaise.get(playerName)))
                     ++check;
                 
-                if (BooleanUtils.isTrue(ftrStates[r+1].allInBet.containsKey(playerName)))
+                if (BooleanUtils.isTrue(ftrStates[r+1].allInMinimum.containsKey(playerName)))
                     ++check;
                 
                 Preconditions.checkState(1 <= check && check <= 3,
@@ -164,7 +159,7 @@ public class StatsComputer
                         hasReraised,
                         ftrStates[r+1].foldedToBetOrRaise.get(playerName),
                         ftrStates[r+1].calledABetOrRaise.get(playerName),
-                        ftrStates[r+1].allInBet.containsKey(playerName)
+                        ftrStates[r+1].allInMinimum.containsKey(playerName)
                         );
                         
             }
@@ -173,10 +168,7 @@ public class StatsComputer
             final boolean playerHasBet = BooleanUtils.isTrue(ftrStates[r+1].hasBet.get(playerName));
             final boolean playerHasReraised = BooleanUtils.isTrue(ftrStates[r+1].hasReraised.get(playerName));
             
-            if (unOpened)
-            {
-                rs.unopened++;
-            }
+            
             
             if (BooleanUtils.isTrue(ftrStates[r+1].calledABetOrRaise.get(playerName)))
             {
@@ -217,7 +209,7 @@ public class StatsComputer
                 rs.avgBetToPot += ftrStates[r+1].betToPotSize.get(playerName);
             }
             
-            if (BooleanUtils.isTrue(ftrStates[r+1].allInBet.containsKey(playerName)))
+            if (BooleanUtils.isTrue(ftrStates[r+1].allInMinimum.containsKey(playerName)))
             {
                 if (unOpened)
                 {

@@ -2,17 +2,16 @@ package pkr.history.stats;
 
 import java.util.List;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
-
 import pkr.history.FlopTurnRiverState;
 import pkr.history.PlayerAction;
+import pkr.history.PlayerAction.Action;
 import pkr.history.Statistics;
 import pkr.history.iPlayerStatistic;
-import pkr.history.PlayerAction.Action;
+
+import com.google.common.base.Preconditions;
 
 public class DonkContLimped implements iPlayerStatistic
 {
@@ -34,9 +33,11 @@ public class DonkContLimped implements iPlayerStatistic
     public static final int ALL_IN = 3;
     public static final int RAISE = 4;
     public static final int RERAISE = 5;
+    public static final int CHECK_RAISE = 6;
     
-    public static final int BET_ALLIN = 6;
-    
+    public static final int FOLD_CR = 7;
+    public static final int FOLD_RAISE = 8;
+        
     public int[] count ;
     
     private String playerName;
@@ -46,8 +47,8 @@ public class DonkContLimped implements iPlayerStatistic
         super();
         this.playerName = playerName;
         this.round = round;
-        this.actions = new int[3][6];
-        this.actionPossible = new int[3][6];
+        this.actions = new int[3][9];
+        this.actionPossible = new int[3][9];
         this.count = new int[] {0,0,0};
         //No preflop
         Preconditions.checkArgument(round >= 1 && round <= 3);
@@ -202,6 +203,20 @@ public class DonkContLimped implements iPlayerStatistic
                 }             
             
             } else if (currentAction.globalRaiseCount >= 2) {
+                
+                if (currentAction.globalRaiseCount == 2 &&
+                        prevAction != null &&
+                        prevAction.action == Action.RAISE)
+                {
+                    log.debug("Player {} was check raised", playerName);
+                    ++actionPossible[type][FOLD_CR];
+                    
+                    if (currentAction.action == Action.FOLD)
+                    {
+                        ++actions[type][FOLD_CR];
+                    }
+                }
+                
                 log.debug("Player {} fac can limp call / fold / re - raise.  type {}", playerName, type);
                 
                 ++actionPossible[type][RERAISE];

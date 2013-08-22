@@ -44,7 +44,7 @@ public class FlopTurnRiverState implements ParserListener
     
     public Map<String , Boolean> hasFolded;
     public boolean[] hasFoldedArr;
-    public Map<String, Integer> allInBet;
+    public Map<String, Integer> allInMinimum;
     Map<String, Boolean> allInBetExact;
     String lastTapisPlayer;
     Map<String, Integer> playerBets;
@@ -116,7 +116,7 @@ public class FlopTurnRiverState implements ParserListener
         hasFolded = Maps.newHashMap();
         hasFoldedArr = new boolean[MAX_PLAYERS];
         playerBets = Maps.newHashMap();
-        allInBet = Maps.newHashMap();
+        allInMinimum = Maps.newHashMap();
         allInBetExact = Maps.newHashMap();
         
         calledABetOrRaise = Maps.newHashMap();
@@ -183,7 +183,7 @@ public class FlopTurnRiverState implements ParserListener
     
     public int getAllInBet(String playerName)
     {
-        Integer bet = allInBet.get(playerName);
+        Integer bet = allInMinimum.get(playerName);
         
         if (bet == null)
             return 0;
@@ -201,7 +201,7 @@ public class FlopTurnRiverState implements ParserListener
         playerSB = players.get(players.size()-2);
         playerBB = players.get(players.size()-1);
         
-        if (BooleanUtils.isNotTrue(hasFolded.get(playerSB)) &&  !allInBet.containsKey(playerSB)) {
+        if (BooleanUtils.isNotTrue(hasFolded.get(playerSB)) &&  !allInMinimum.containsKey(playerSB)) {
             log.debug("Adding small blind {}", playerSB);
             playersInOrder.add(playerSB);
         } else {
@@ -214,7 +214,7 @@ public class FlopTurnRiverState implements ParserListener
             }
         }
         
-        if (BooleanUtils.isNotTrue(hasFolded.get(playerBB)) &&  !allInBet.containsKey(playerBB)) {
+        if (BooleanUtils.isNotTrue(hasFolded.get(playerBB)) &&  !allInMinimum.containsKey(playerBB)) {
             log.debug("Adding big blind {}", playerBB);
             playersInOrder.add(playerBB);
         } else {
@@ -228,7 +228,7 @@ public class FlopTurnRiverState implements ParserListener
         for(int i = 0; i < players.size() - 2; ++i) {
             String playerName = players.get(i);
             if (BooleanUtils.isNotTrue(hasFolded.get(playerName))
-                    &&  !allInBet.containsKey(playerName)
+                    &&  !allInMinimum.containsKey(playerName)
                     ) {
                 log.debug("Adding player {}", playerName);
                 playersInOrder.add(playerName);
@@ -255,7 +255,7 @@ public class FlopTurnRiverState implements ParserListener
         for(int i = 0; i < players.size() ; ++i) {
             String playerName = players.get(i);
             if (BooleanUtils.isNotTrue(hasFolded.get(playerName))
-                    && !allInBet.containsKey(playerName)
+                    && !allInMinimum.containsKey(playerName)
                     
                     ) {
                 log.debug("Adding player {}", playerName);
@@ -285,7 +285,7 @@ public class FlopTurnRiverState implements ParserListener
                 return false;
             }
             
-            if (!allInBet.containsKey(playerName) && playerBet < amtToCall)
+            if (!allInMinimum.containsKey(playerName) && playerBet < amtToCall)
             {
                 log.debug("Pot is not good.  Player {} idx {} bet only {}",
                         playerName, i, playerBet);
@@ -293,7 +293,7 @@ public class FlopTurnRiverState implements ParserListener
                 return false;
             }
             
-            Preconditions.checkState(allInBet.containsKey(playerName) || amtToCall == playerBet, "Player %s amtToCall %s  bet %s", playerName, amtToCall, playerBet);
+            Preconditions.checkState(allInMinimum.containsKey(playerName) || amtToCall == playerBet, "Player %s amtToCall %s  bet %s", playerName, amtToCall, playerBet);
         }
         
         return true;
@@ -335,7 +335,7 @@ public class FlopTurnRiverState implements ParserListener
             
             String loopPlayerName = players.get(currentPlayer);
             if (BooleanUtils.isNotTrue(hasFolded.get(loopPlayerName))
-                    && !allInBet.containsKey(loopPlayerName)
+                    && !allInMinimum.containsKey(loopPlayerName)
                     ) {
                 Preconditions.checkState(loopPlayerName.equals(playerName), "Player name " + playerName + " cur " + currentPlayer + " " + loopPlayerName);
                 
@@ -412,29 +412,42 @@ public class FlopTurnRiverState implements ParserListener
             //Check if there is an unknown tapis we can deduce
             if (lastTapisPlayer != null)
             {
-                int diff = betAmt - amtToCall;
-                
-                int tapisGuess = getAllInBet(lastTapisPlayer);
-                
-                amtToCall = tapisGuess + diff;
-                log.debug("Adjusting tapis guess to {}", tapisGuess + diff);
-                
-                pot = updatePlayerBet(playerBets, lastTapisPlayer, tapisGuess+ diff, pot);
-                
-                allInBet.put(lastTapisPlayer, amtToCall);
-                
-                //Nous savons que le tapis était une relance et pas un suivi
-                calledABetOrRaise.remove(lastTapisPlayer);
-                
-                
-                int tapisPos = players.indexOf(lastTapisPlayer);
-                List<Integer> actionIndexes = playerPosToActions.get(tapisPos);
-                PlayerAction tapisAction = actions.get(actionIndexes.get(actionIndexes.size()-1));
-                
-                Preconditions.checkState(tapisAction.action == Action.ALL_IN || tapisAction.action == Action.RAISE_ALL_IN);
-                
-                tapisAction.action = Action.RAISE_ALL_IN;
-                
+                if (betAmt < amtToCall)
+                {
+                    log.debug("Last tapis was a call");
+                    int tapisPos = players.indexOf(lastTapisPlayer);
+                    List<Integer> actionIndexes = playerPosToActions.get(tapisPos);
+                    PlayerAction tapisAction = actions.get(actionIndexes.get(actionIndexes.size()-1));
+                    
+                    Preconditions.checkState(tapisAction.action == Action.ALL_IN || tapisAction.action == Action.RAISE_ALL_IN);
+                    
+                    tapisAction.action = Action.CALL_ALL_IN;
+                    amtToCall = betAmt;
+                } else {
+                    int diff = betAmt - amtToCall;
+                    
+                    int tapisGuess = getAllInBet(lastTapisPlayer);
+                    
+                    //+1 was added in handleTapis to make it act like a raise
+                    amtToCall = tapisGuess + diff + 1;
+                    log.debug("Adjusting tapis guess to {}", tapisGuess + diff);
+                    
+                    pot = updatePlayerBet(playerBets, lastTapisPlayer, tapisGuess+ diff, pot);
+                    
+                    allInMinimum.put(lastTapisPlayer, amtToCall);
+                    
+                    //Nous savons que le tapis était une relance et pas un suivi
+                    calledABetOrRaise.remove(lastTapisPlayer);
+                    
+                    
+                    int tapisPos = players.indexOf(lastTapisPlayer);
+                    List<Integer> actionIndexes = playerPosToActions.get(tapisPos);
+                    PlayerAction tapisAction = actions.get(actionIndexes.get(actionIndexes.size()-1));
+                    
+                    Preconditions.checkState(tapisAction.action == Action.ALL_IN || tapisAction.action == Action.RAISE_ALL_IN);
+                    
+                    tapisAction.action = Action.RAISE_ALL_IN;
+                }
                 
                 lastTapisPlayer = null;
                 
@@ -613,7 +626,7 @@ public class FlopTurnRiverState implements ParserListener
         if (lastTapisPlayer != null)
         {
             log.debug("Parole après une tapis, le dernier tapis était un suivi", playerName);
-            allInBet.put(lastTapisPlayer, getAllInBet(lastTapisPlayer) - 1);
+            allInMinimum.put(lastTapisPlayer, getAllInBet(lastTapisPlayer) - 1);
             
             int tapisPos = players.indexOf(lastTapisPlayer);
             List<Integer> actionIndexes = playerPosToActions.get(tapisPos);
@@ -654,7 +667,7 @@ public class FlopTurnRiverState implements ParserListener
       //Tapis est un cas diffil car on ne sais pas si c'est un relancement ou pas ; aussi on ne sais plus le pot
         log.debug("{} Tapis", playerName);
         
-      //Le prochain round a commencé
+        //Le prochain round a commencé
         if (round == 0 && 
                 players.contains(playerName) && 
                 potsGood())
@@ -691,13 +704,20 @@ public class FlopTurnRiverState implements ParserListener
         if (amtToCall == 0)
         {
             addAction(PlayerAction.createBetAllin(currentPlayer, playerName, amtToCall, pot));
+                        
         } else {
             addAction(PlayerAction.createAllin(currentPlayer, playerName, amtToCall, pot));
+            
+            
         }
         
-        allInBet.put(playerName, 1 + amtToCall);
+        allInMinimum.put(playerName, amtToCall);
         
-        amtToCall = getAllInBet(playerName);
+      //Assume it was  a raise
+        amtToCall += 1;
+        
+        //Guess it was a raise
+        //amtToCall = 1+getAllInBet(playerName);
         
         pot = updatePlayerBet(playerBets, playerName, amtToCall, pot);
         lastTapisPlayer = playerName;

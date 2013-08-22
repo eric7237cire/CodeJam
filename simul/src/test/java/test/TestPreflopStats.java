@@ -283,7 +283,7 @@ public class TestPreflopStats
         StatsSessionPlayer pStat = 
                 stats.playerSessionStats.get("Eric");
         
-        String s = pStat.getStatValue("3bet");
+        //String s = pStat.getStatValue("3bet");
         assertEquals("3bet : 100% (1/1) Avg amt : $1 000 000 Call : 100% (3/3)", pStat.getStatValue("3bet") );
         
         

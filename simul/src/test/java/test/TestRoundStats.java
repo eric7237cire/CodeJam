@@ -85,6 +85,8 @@ public class TestRoundStats
         StatsSessionPlayer pStats = stats.playerSessionStats.get("Gilles");
         RoundStats rs = pStats.roundStats[0];
         
+        DonkContLimped dcl = (DonkContLimped) pStats.stats.get("dcl1");
+        
         //Unopened stats
         assertEquals(0, rs.bets);
         assertEquals(0, rs.checksUnopened);
@@ -100,11 +102,7 @@ public class TestRoundStats
         assertEquals(0, rs.raiseCallAllIn);
         assertEquals(0, rs.reRaiseOpened);
         
-        //Counters
-        assertEquals(1, rs.openedBySomeoneElse);
-        assertEquals(0, rs.checkedThrough);
-        assertEquals(1, rs.seen);
-        assertEquals(0, rs.unopened);
+        
         
         rs = pStats.roundStats[1];
         
@@ -123,11 +121,6 @@ public class TestRoundStats
         assertEquals(0, rs.raiseCallAllIn);
         assertEquals(0, rs.reRaiseOpened);
         
-        //Counters
-        assertEquals(1, rs.openedBySomeoneElse);
-        assertEquals(0, rs.checkedThrough);
-        assertEquals(1, rs.seen);
-        assertEquals(0, rs.unopened);
         
         rs = pStats.roundStats[2];
       //Unopened stats
@@ -145,11 +138,6 @@ public class TestRoundStats
         assertEquals(0, rs.raiseCallAllIn);
         assertEquals(0, rs.reRaiseOpened);
         
-        //Counters
-        assertEquals(0, rs.openedBySomeoneElse);
-        assertEquals(0, rs.checkedThrough);
-        assertEquals(0, rs.seen);
-        assertEquals(0, rs.unopened);
         
         ////////////////////////////////
         
@@ -171,11 +159,6 @@ public class TestRoundStats
         assertEquals(0, rs.raiseCallAllIn);
         assertEquals(0, rs.reRaiseOpened);
         
-        //Counters
-        assertEquals(1, rs.openedBySomeoneElse);
-        assertEquals(0, rs.checkedThrough);
-        assertEquals(1, rs.seen);
-        assertEquals(0, rs.unopened);
         
         rs = pStats.roundStats[1];
         
@@ -194,11 +177,6 @@ public class TestRoundStats
         assertEquals(1, rs.raiseCallAllIn);
         assertEquals(1, rs.reRaiseOpened);
         
-        //Counters
-        assertEquals(1, rs.openedBySomeoneElse);
-        assertEquals(0, rs.checkedThrough);
-        assertEquals(1, rs.seen);
-        assertEquals(0, rs.unopened);
         
         rs = pStats.roundStats[2];
       //Unopened stats
@@ -216,11 +194,6 @@ public class TestRoundStats
         assertEquals(0, rs.raiseCallAllIn);
         assertEquals(0, rs.reRaiseOpened);
         
-        //Counters
-        assertEquals(0, rs.openedBySomeoneElse);
-        assertEquals(0, rs.checkedThrough);
-        assertEquals(0, rs.seen);
-        assertEquals(0, rs.unopened);
         
         ////////////////////////////////
       
@@ -242,11 +215,6 @@ public class TestRoundStats
         assertEquals(0, rs.raiseCallAllIn);
         assertEquals(0, rs.reRaiseOpened);
         
-        //Counters
-        assertEquals(0, rs.openedBySomeoneElse);
-        assertEquals(0, rs.checkedThrough);
-        assertEquals(1, rs.seen);
-        assertEquals(1, rs.unopened);
         
         rs = pStats.roundStats[1];
         
@@ -265,11 +233,6 @@ public class TestRoundStats
         assertEquals(0, rs.raiseCallAllIn);
         assertEquals(0, rs.reRaiseOpened);
         
-        //Counters
-        assertEquals(0, rs.openedBySomeoneElse);
-        assertEquals(0, rs.checkedThrough);
-        assertEquals(1, rs.seen);
-        assertEquals(1, rs.unopened);
         
         rs = pStats.roundStats[2];
       //Unopened stats
@@ -287,11 +250,6 @@ public class TestRoundStats
         assertEquals(0, rs.raiseCallAllIn);
         assertEquals(0, rs.reRaiseOpened);
         
-        //Counters
-        assertEquals(0, rs.openedBySomeoneElse);
-        assertEquals(0, rs.checkedThrough);
-        assertEquals(0, rs.seen);
-        assertEquals(0, rs.unopened);
         
         ////////////////////////////////
     }
@@ -326,11 +284,6 @@ public class TestRoundStats
           assertEquals(0, rs.raiseCallAllIn);
           assertEquals(0, rs.reRaiseOpened);
           
-          //Counters
-          assertEquals(1, rs.openedBySomeoneElse);
-          assertEquals(0, rs.checkedThrough);
-          assertEquals(2, rs.seen);
-          assertEquals(1, rs.unopened);
           
           rs = pStats.roundStats[1];
           
@@ -349,11 +302,6 @@ public class TestRoundStats
           assertEquals(0, rs.raiseCallAllIn);
           assertEquals(0, rs.reRaiseOpened);
           
-          //Counters
-          assertEquals(0, rs.openedBySomeoneElse);
-          assertEquals(0, rs.checkedThrough);
-          assertEquals(1, rs.seen);
-          assertEquals(1, rs.unopened);
     }
     
     @Test
@@ -429,8 +377,30 @@ public class TestRoundStats
                 stats.playerSessionStats.get("Eric");
         
         DonkContLimped dcl = (DonkContLimped) pStats.stats.get("dcl1");
+        
+        assertEquals(1, dcl.count[DonkContLimped.NOT_AGGRES]);
+        assertEquals(1, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.BET]);
+        assertEquals(1, dcl.actionPossible[DonkContLimped.NOT_AGGRES][DonkContLimped.BET]);
+        
+        assertEquals(0, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.FOLD_CR]);
+        assertEquals(1, dcl.actionPossible[DonkContLimped.NOT_AGGRES][DonkContLimped.FOLD_CR]);
+        
         dcl = (DonkContLimped) pStats.stats.get("dcl2");
+        
+        assertEquals(1, dcl.count[DonkContLimped.NOT_AGGRES]);
+        
+        assertEquals(1, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.CALL]);
+        assertEquals(1, dcl.actionPossible[DonkContLimped.NOT_AGGRES][DonkContLimped.CALL]);
+
+        assertEquals(1, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.ALL_IN]);
+        assertEquals(1, dcl.actionPossible[DonkContLimped.NOT_AGGRES][DonkContLimped.ALL_IN]);
+        
+        
         dcl = (DonkContLimped) pStats.stats.get("dcl3");
+        
+        assertEquals(0, dcl.count[DonkContLimped.NOT_AGGRES]);
+        assertEquals(0, dcl.count[DonkContLimped.IS_AGGRES]);
+        assertEquals(0, dcl.count[DonkContLimped.LIMPED]);
         
         pStats  =
                 stats.playerSessionStats.get("Ivana");

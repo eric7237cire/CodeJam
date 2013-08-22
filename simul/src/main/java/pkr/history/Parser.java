@@ -122,13 +122,11 @@ public class Parser {
             {
                 RoundStats rs = ssp.roundStats[round];
                 
-                logMainOutput.debug("\nRound {} stats.  Seen : [{}] checked through : [{}] Unopened : [{}] Opened : [{}]" ,
+                logMainOutput.debug("\nRound {} stats.  Seen : [{}] " ,
                         
                         Statistics.roundToStr(round + 1),
-                            rs.seen,
-                            rs.checkedThrough,
-                            rs.unopened,
-                            rs.openedBySomeoneElse
+                            rs.seen
+                           
                         );
 
                 logMainOutput.debug("{}", ssp.getStatValue("dcl" + (round+1)));
