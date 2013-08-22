@@ -56,7 +56,7 @@ public class Pfr implements iPlayerStatistic
         
         final boolean isPreFlopRaiser = StringUtils.equals(ftrStates[0].roundInitialBetter, preFlopPlayer);
         
-        final boolean playerAllin = ftrStates[0].allInBet.containsKey(preFlopPlayer);
+        final boolean playerAllin = ftrStates[0].allInMinimum.containsKey(preFlopPlayer);
         
         int playerPosition = ftrStates[0].players.indexOf(preFlopPlayer);
         

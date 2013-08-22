@@ -105,7 +105,9 @@ public class ThreeBet implements iPlayerStatistic
             }
             
             if (globalRaiseCount == 1 && (currentAction.action == Action.RAISE ||
-                    currentAction.action == Action.ALL_IN) )
+                    currentAction.action == Action.ALL_IN ||
+                    currentAction.action == Action.RAISE_ALL_IN
+                    ) )
             {
                 log.debug("Player {} has 3 bet.  raises : {} p action idx : {}", playerName, globalRaiseCount, i);
                 ++thBetNum;

@@ -43,12 +43,7 @@ public class StatsSessionPlayer {
         //# of times seen flop/turn/river
         public int seen;
         
-        public int checkedThrough;
-        //Quand le jouer n'a pas misé en premier
-        public int openedBySomeoneElse;
         
-        //Quand personne à relancé au tour du joeur
-        public int unopened;
         
         public int checksUnopened;
         public int bets;

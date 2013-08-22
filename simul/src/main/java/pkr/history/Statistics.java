@@ -3,13 +3,10 @@ package pkr.history;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.List;
 import java.util.Locale;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.Lists;
 
 public class Statistics {
 
@@ -55,6 +52,13 @@ public class Statistics {
         }
         
         return "$" + moneyFormat.format( (int) (amtNum / amtDenom) );
+    }
+    
+    public static String roundToStr(int round)
+    {
+        return round == 0 ? "Preflop" :
+            round == 1 ? "Flop" :
+            (round == 2 ? "Turn" : "River");
     }
     
     public final static DecimalFormat df1;

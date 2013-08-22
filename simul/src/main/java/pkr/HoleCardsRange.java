@@ -8,7 +8,6 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pkr.history.FlopTurnRiverState;
 import pkr.history.Statistics;
 
 import com.google.common.base.Preconditions;

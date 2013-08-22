@@ -8,6 +8,7 @@ Joe a suivi de 200 000.
 
 Ivana a parlé.
 Joe a parlé.
+//Limped bet
 Eric a relancé de 400 000.
 Bill a suivi de 400 000.
 Manfred a suivi de 400 000.

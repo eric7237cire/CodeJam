@@ -75,7 +75,7 @@ public class StatsComputer
         
         int playerBet = ftrStates[0].getCurrentBet(preFlopPlayer);
         
-        final boolean playerAllin = ftrStates[0].allInBet.containsKey(preFlopPlayer);
+        final boolean playerAllin = ftrStates[0].allInMinimum.containsKey(preFlopPlayer);
         
         
         
@@ -123,23 +123,18 @@ public class StatsComputer
         {
             player.roundStats[r].seen++;
             
-            log.debug("Player {} is in round {}", playerName, FlopTurnRiverState.roundToStr(r + 1));
+            log.debug("Player {} is in round {}", playerName, Statistics.roundToStr(r + 1));
             
             final boolean isInitialBetter = StringUtils.equals(ftrStates[r+1].roundInitialBetter, playerName);
             
             RoundStats rs = player.roundStats[r];
             
-            if (ftrStates[r+1].amtToCall == 0)
-            {
-                rs.checkedThrough++;
-            }
-            
+                        
             final boolean hasReraised = (BooleanUtils.isTrue(ftrStates[r+1].hasReraised.get(playerName)));
             
             final boolean opened = ftrStates[r+1].amtToCall > 0 && !isInitialBetter; 
             if (opened)
             {
-                rs.openedBySomeoneElse++;
                 
                 //Make sure at least 1 raise / fold / call is true
                 
@@ -153,7 +148,7 @@ public class StatsComputer
                 if (BooleanUtils.isTrue(ftrStates[r+1].calledABetOrRaise.get(playerName)))
                     ++check;
                 
-                if (BooleanUtils.isTrue(ftrStates[r+1].allInBet.containsKey(playerName)))
+                if (BooleanUtils.isTrue(ftrStates[r+1].allInMinimum.containsKey(playerName)))
                     ++check;
                 
                if (false) Preconditions.checkState(1 <= check && check <= 3,
@@ -164,7 +159,7 @@ public class StatsComputer
                         hasReraised,
                         ftrStates[r+1].foldedToBetOrRaise.get(playerName),
                         ftrStates[r+1].calledABetOrRaise.get(playerName),
-                        ftrStates[r+1].allInBet.containsKey(playerName)
+                        ftrStates[r+1].allInMinimum.containsKey(playerName)
                         );
                         
             }
@@ -173,10 +168,7 @@ public class StatsComputer
             final boolean playerHasBet = BooleanUtils.isTrue(ftrStates[r+1].hasBet.get(playerName));
             final boolean playerHasReraised = BooleanUtils.isTrue(ftrStates[r+1].hasReraised.get(playerName));
             
-            if (unOpened)
-            {
-                rs.unopened++;
-            }
+            
             
             if (BooleanUtils.isTrue(ftrStates[r+1].calledABetOrRaise.get(playerName)))
             {
@@ -217,7 +209,7 @@ public class StatsComputer
                 rs.avgBetToPot += ftrStates[r+1].betToPotSize.get(playerName);
             }
             
-            if (BooleanUtils.isTrue(ftrStates[r+1].allInBet.containsKey(playerName)))
+            if (BooleanUtils.isTrue(ftrStates[r+1].allInMinimum.containsKey(playerName)))
             {
                 if (unOpened)
                 {
@@ -261,6 +253,7 @@ public class StatsComputer
     
     void getAgresseur(FlopTurnRiverState[] ftrStates)
     {
+        nextRound:
         for(int round = 1; round <= 3; ++round)
         {
             if (ftrStates[round] == null)
@@ -274,8 +267,12 @@ public class StatsComputer
                 
                 if (action.action == Action.RAISE && !ftrStates[round-1].hasFoldedArr[action.playerPosition])
                 {
-                    log.debug("Player {} dans position {} était l'agresseur de la tournée précédente {}", round);
+                    log.debug("Player {} dans position {} était l'agresseur de la tournée précédente {}",
+                            action.playerName,
+                            action.playerPosition,
+                            round);
                     ftrStates[round].agresseur = action.playerName;
+                    continue nextRound;
                 }
             }
             
@@ -305,7 +302,7 @@ public class StatsComputer
                 action.globalRaiseCount = globalRaiseCount;
                 log.debug("action idx {} player {} raise count now {}", actionIndex, action.playerName, globalRaiseCount);
                 
-                if (action.action == Action.RAISE || action.action == Action.ALL_IN)
+                if (action.action == Action.RAISE || action.action == Action.RAISE_ALL_IN)
                 {
                     ++globalRaiseCount;                
                 }
@@ -313,9 +310,50 @@ public class StatsComputer
         }   
     }
     
+    /**
+     * Déterminer si les all-ins était des calls ou des relances
+     * @param ftrStates
+     */
+    private void defineAllins(FlopTurnRiverState[] ftrStates)
+    {
+        for(int round = 0; round <= 3; ++round)
+        {
+            FlopTurnRiverState ftr = ftrStates[round];
+            if (ftr == null)
+                continue;
+            
+            Action lastAction = null;
+            for(int actionIndex = ftr.actions.size() - 1; actionIndex >= 0; --actionIndex)
+            {
+                PlayerAction action = ftr.actions.get(actionIndex);
+                
+                if (action.action == Action.ALL_IN)
+                {
+                    if (lastAction == null || lastAction == Action.CHECK) {
+                        action.action = Action.CALL_ALL_IN;
+                    } else if ( lastAction == Action.CALL )
+                    {
+                        action.action = Action.RAISE_ALL_IN;
+                    } else if ( lastAction == Action.RAISE )
+                    {
+                        log.debug("All in at index, guessing it was a call");
+                        action.action = Action.CALL_ALL_IN;
+                    }
+                          
+                } else if ( action.action == Action.CALL ||
+                            action.action == Action.RAISE ||
+                            action.action == Action.CHECK)
+                {
+                    lastAction = action.action;
+                }
+            }
+        }
+    }
+    
     private void handleStats(FlopTurnRiverState[] ftrStates, StatsSessionPlayer player, String playerName)
     {
         //Precompute common traits
+       // defineAllins(ftrStates);
         
         calculateGlobalRaiseCount(ftrStates);
         getAgresseur(ftrStates);
