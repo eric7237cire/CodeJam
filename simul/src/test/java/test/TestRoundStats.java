@@ -442,4 +442,36 @@ public class TestRoundStats
         dcl = (DonkContLimped) pStats.stats.get("dcl2");
         dcl = (DonkContLimped) pStats.stats.get("dcl3");
     }
+    
+    @Test
+    public void testNonAgg1() throws Exception
+    {
+        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testNonAgg1");
+        
+        assertEquals(2, results.size());
+        
+        FlopTurnRiverState[] handStates = results.get(0);
+        
+        StatsSession stats = Parser.computeStats(results);
+        
+        StatsSessionPlayer pStats = stats.playerSessionStats.get("Nasrullah"); 
+        
+        DonkContLimped dcl = (DonkContLimped) pStats.stats.get("dcl1");
+        String s = dcl.toString();
+        
+        assertEquals(2, dcl.count[DonkContLimped.NOT_AGGRES]);
+        
+        assertEquals(0, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.CALL]);
+        assertEquals(2, dcl.actionPossible[DonkContLimped.NOT_AGGRES][DonkContLimped.CALL]);
+        
+        
+        
+        
+        dcl = (DonkContLimped) pStats.stats.get("dcl2");
+        
+        
+        
+        s = dcl.toString();
+        
+    }
 }

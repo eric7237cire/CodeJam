@@ -37,7 +37,7 @@ public class DonkContLimped implements iPlayerStatistic
     
     public static final int BET_ALLIN = 6;
     
-    int[] count ;
+    public int[] count ;
     
     private String playerName;
     private int round;

@@ -310,7 +310,7 @@ public class StatsComputer
                 action.globalRaiseCount = globalRaiseCount;
                 log.debug("action idx {} player {} raise count now {}", actionIndex, action.playerName, globalRaiseCount);
                 
-                if (action.action == Action.RAISE || action.action == Action.ALL_IN)
+                if (action.action == Action.RAISE || action.action == Action.RAISE_ALL_IN)
                 {
                     ++globalRaiseCount;                
                 }
