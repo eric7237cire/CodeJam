@@ -123,7 +123,7 @@ public class StatsComputer
         {
             player.roundStats[r].seen++;
             
-            log.debug("Player {} is in round {}", playerName, FlopTurnRiverState.roundToStr(r + 1));
+            log.debug("Player {} is in round {}", playerName, Statistics.roundToStr(r + 1));
             
             final boolean isInitialBetter = StringUtils.equals(ftrStates[r+1].roundInitialBetter, playerName);
             
@@ -261,6 +261,7 @@ public class StatsComputer
     
     void getAgresseur(FlopTurnRiverState[] ftrStates)
     {
+        nextRound:
         for(int round = 1; round <= 3; ++round)
         {
             if (ftrStates[round] == null)
@@ -274,8 +275,12 @@ public class StatsComputer
                 
                 if (action.action == Action.RAISE && !ftrStates[round-1].hasFoldedArr[action.playerPosition])
                 {
-                    log.debug("Player {} dans position {} était l'agresseur de la tournée précédente {}", round);
+                    log.debug("Player {} dans position {} était l'agresseur de la tournée précédente {}",
+                            action.playerName,
+                            action.playerPosition,
+                            round);
                     ftrStates[round].agresseur = action.playerName;
+                    continue nextRound;
                 }
             }
             

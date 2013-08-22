@@ -124,7 +124,7 @@ public class Parser {
                 
                 logMainOutput.debug("\nRound {} stats.  Seen : [{}] checked through : [{}] Unopened : [{}] Opened : [{}]" ,
                         
-                        FlopTurnRiverState.roundToStr(round + 1),
+                        Statistics.roundToStr(round + 1),
                             rs.seen,
                             rs.checkedThrough,
                             rs.unopened,

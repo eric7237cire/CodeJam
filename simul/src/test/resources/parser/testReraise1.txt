@@ -1,0 +1,36 @@
+_____________________________
+ 
+Eric a relancé de 400 000.
+Bill a relancé de 600 000.
+//SB
+Manfred a suivi de 600 000.
+//BB
+Ivana a relancé de 800 000.
+Eric a suivi de 800 000.
+Bill a suivi de 800 000.
+Manfred a suivi de 800 000.
+
+//Flop with check raise
+Manfred a parlé.
+Ivana a parlé.
+Eric a relancé de 200 000.
+Bill se couche.
+Manfred a suivi de 200 000.
+Ivana a relancé de 400 000.
+Eric a suivi de 400 000.
+Manfred a suivi de 400 000.
+
+//Turn w/ all in call
+Manfred a parlé.
+Ivana a relancé de 200 000.
+Eric a fait tapis.
+Manfred a suivi de 200 000.
+
+//River with reraise
+Manfred a relancé de 400 000.
+Ivana a relancé de 800 000.
+Manfred a fait tapis.
+Ivana a suivi de 2 000 000.
+
+Manfred remporte le pot (4 700 000 $) avec une quinte (K).
+_____________________________

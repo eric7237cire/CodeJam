@@ -57,6 +57,13 @@ public class Statistics {
         return "$" + moneyFormat.format( (int) (amtNum / amtDenom) );
     }
     
+    public static String roundToStr(int round)
+    {
+        return round == 0 ? "Preflop" :
+            round == 1 ? "Flop" :
+            (round == 2 ? "Turn" : "River");
+    }
+    
     public final static DecimalFormat df1;
     public final static DecimalFormat df2;
     public final static DecimalFormat moneyFormat;
