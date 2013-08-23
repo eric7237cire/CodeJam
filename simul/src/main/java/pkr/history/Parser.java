@@ -1,9 +1,14 @@
 package pkr.history;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +19,10 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 
 //TODO cbet/ donk bet
 //TODO tests 3 bet
@@ -96,9 +105,58 @@ public class Parser {
         StatsSession stats = computeStats(hands);
     }
     
+    public static void outputStats(StatsComputer sc)
+    {
+      //Freemarker configuration object
+        Configuration cfg = new Configuration();
+        
+        cfg.setClassForTemplateLoading(Parser.class, "/");
+        
+        try {
+            //Load template from source folder
+            Template template = cfg.getTemplate("output.ftl");
+             
+            // Build the data-model
+            Map<String, Object> data = new HashMap<String, Object>();
+            data.put("message", "Hello World!");
+ 
+            //List parsing 
+            List<String> countries = new ArrayList<String>();
+            countries.add("India");
+            countries.add("United States");
+            countries.add("Germany");
+            countries.add("France");
+             
+            data.put("countries", countries);
+ 
+            data.put("stats", sc.stats);
+             
+            // Console output
+            Writer out = new OutputStreamWriter(System.out);
+            template.process(data, out);
+            out.flush();
+ 
+            // File output
+            Writer file = new FileWriter (new File("C:\\codejam\\CodeJam\\simul\\output\\FTL_helloworld.xhtml"));
+            template.process(data, file);
+            file.flush();
+            file.close();
+             
+        } catch (IOException e) {
+            log.error("ex",e);
+        } catch (TemplateException e) {
+            log.error("ex",e);
+        }
+    }
     public static StatsSession computeStats(List<FlopTurnRiverState[]> hands)
     {
+        
         StatsComputer sc = new StatsComputer(hands);
+        
+        outputStats(sc);
+        
+        if (1==1)
+            return sc.stats;
         
         //VPIP and PFR / position
         for(String player : sc.stats.currentPlayerList)

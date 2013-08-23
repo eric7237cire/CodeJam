@@ -16,4 +16,25 @@ public class StatsSession {
         currentPlayerList = Lists.newArrayList();
         playerSessionStats = Maps.newHashMap();
     }
+
+    /**
+     * @return the currentPlayerList
+     */
+    public List<String> getCurrentPlayerList() {
+        return currentPlayerList;
+    }
+
+    /**
+     * @param currentPlayerList the currentPlayerList to set
+     */
+    public void setCurrentPlayerList(List<String> currentPlayerList) {
+        this.currentPlayerList = currentPlayerList;
+    }
+
+    /**
+     * @return the playerSessionStats
+     */
+    public Map<String, StatsSessionPlayer> getPlayerSessionStats() {
+        return playerSessionStats;
+    }
 }

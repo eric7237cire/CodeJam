@@ -70,6 +70,20 @@ public class StatsSessionPlayer {
     {
         return stats.get(statId).toString();
     }
+
+    /**
+     * @return the totalHands
+     */
+    public int getTotalHands() {
+        return totalHands;
+    }
+
+    /**
+     * @return the stats
+     */
+    public Map<String, iPlayerStatistic> getStats() {
+        return stats;
+    }
     
     
     
