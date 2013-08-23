@@ -280,5 +280,16 @@ public class DonkContLimped implements iPlayerStatistic
         
     }
 
+
+    /**
+     * @return the actions
+     */
+    public String getActionStr(int a, int b) {
+        return Statistics.formatPercent( actions[a][b], actionPossible[a][b], true);
+    }
+
+
+    
+
 }
 
