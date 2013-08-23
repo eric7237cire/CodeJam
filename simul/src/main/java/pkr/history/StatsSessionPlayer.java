@@ -38,52 +38,13 @@ public class StatsSessionPlayer {
     public int preFlopTapis;
     public int preFlopReraise;
     
-    public static class RoundStats
-    {
-        //# of times seen flop/turn/river
-        public int seen;
-        
-        
-        
-        public int checksUnopened;
-        public int bets;
-        public int callReraise;
-        public int betAllIn;
-        public int reRaiseUnopened;
-      //Folded to a reraise
-        public int betFold;
-        public int checkFold;
-        
-        //When pot is opened by someone else
-        public int checksOpened;
-        public int checkRaises;
-        public int reRaiseOpened;
-        //Calling in the round max 1, just calling big blind counts
-        public int calls;
-        public int folded;
-        public int raiseCallAllIn;
-        
-        
-        
-        public double avgBetToPot;
-        public double avgFoldToBetToPot;
-    }
     
-    public RoundStats flopStats;
-    
-    public RoundStats turnStats;
-    
-    public RoundStats riverStats;
-    
-    public RoundStats[] roundStats;
     
     private String playerName;
 
     public StatsSessionPlayer(String pplayerName) {
         super();
-        flopStats = new RoundStats();
-        turnStats = new RoundStats();
-        riverStats = new RoundStats();
+        
         
         this.playerName = pplayerName;
         stats = Maps.newHashMap();
@@ -103,7 +64,6 @@ public class StatsSessionPlayer {
         stats.put("dcl2", new DonkContLimped(playerName, 2));
         stats.put("dcl3", new DonkContLimped(playerName, 3));
                 
-        roundStats = new RoundStats[] { flopStats, turnStats, riverStats };
     }
     
     public String getStatValue(String statId)

@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.history.PlayerAction.Action;
-import pkr.history.StatsSessionPlayer.RoundStats;
 
 import com.google.common.base.Preconditions;
 
@@ -49,11 +48,7 @@ public class StatsComputer
         {
             StatsSessionPlayer pStats = stats.playerSessionStats.get(playerName);
             
-            for(int r = 0; r < 3; ++r)
-            {
-                pStats.roundStats[r].avgBetToPot /= pStats.roundStats[r].bets;
-                pStats.roundStats[r].avgFoldToBetToPot /= pStats.roundStats[r].folded;
-            }
+
         }
     }
     
@@ -121,13 +116,12 @@ public class StatsComputer
                 ftrStates[r+1].players.size() > 1 && 
                 ftrStates[r+1].players.contains(playerName))
         {
-            player.roundStats[r].seen++;
             
             log.debug("Player {} is in round {}", playerName, Statistics.roundToStr(r + 1));
             
             final boolean isInitialBetter = StringUtils.equals(ftrStates[r+1].roundInitialBetter, playerName);
             
-            RoundStats rs = player.roundStats[r];
+            
             
                         
             final boolean hasReraised = (BooleanUtils.isTrue(ftrStates[r+1].hasReraised.get(playerName)));
@@ -170,83 +164,8 @@ public class StatsComputer
             
             
             
-            if (BooleanUtils.isTrue(ftrStates[r+1].calledABetOrRaise.get(playerName)))
-            {
-                if (opened)
-                {
-                    log.debug("Player {} called the opened pot", playerName);
-                    rs.calls++;
-                } else {
-                    log.debug("Player {} called a reraise in an unopened pot", playerName);
-                    rs.callReraise++;
-                }
-                
-                
-                //Preconditions.checkState(opened, playerName);
-            }
             
-            if (BooleanUtils.isTrue(ftrStates[r+1].foldedToBetOrRaise.get(playerName)))
-            {
-                if (unOpened)
-                {
-                    log.debug("Player {} folded to a reraise", playerName);
-                    if (playerHasBet)
-                        rs.betFold++;
-                    else
-                    {
-                        rs.checkFold++;
-                    }
-                } else {
-                    log.debug("Player {} folded an opened pot", playerName);
-                    rs.folded++;
-                }
-                rs.avgFoldToBetToPot += ftrStates[r+1].foldToBetSize.get(playerName); 
-            }
             
-            if (playerHasBet)
-            {
-                rs.bets++;
-                rs.avgBetToPot += ftrStates[r+1].betToPotSize.get(playerName);
-            }
-            
-            if (BooleanUtils.isTrue(ftrStates[r+1].allInMinimum.containsKey(playerName)))
-            {
-                if (unOpened)
-                {
-                    log.debug("Player {} all in unopened", playerName);
-                    rs.betAllIn++;
-                }
-                else
-                    rs.raiseCallAllIn++;
-            }
-            
-            if (playerHasReraised)
-            {
-                if (unOpened)
-                {
-                    log.debug("Player {} has reraised unopened", playerName);
-                    rs.reRaiseUnopened++;
-                } else {
-                    rs.reRaiseOpened++;
-                }
-            }
-            
-            if (BooleanUtils.isTrue(ftrStates[r+1].hasChecked.get(playerName)))
-            {
-                if (unOpened)
-                    rs.checksUnopened++;
-                else
-                {
-                    log.debug("Player {} checked the opened pot", playerName);
-                    rs.checksOpened++;
-                }
-            }
-            
-            if (BooleanUtils.isTrue(ftrStates[r+1].hasChecked.get(playerName)) &&
-                    playerHasReraised)
-            {
-                rs.checkRaises++;
-            }
         }
         }
     }

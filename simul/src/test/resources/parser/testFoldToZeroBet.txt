@@ -1,3 +1,4 @@
+//Test folding to zero bet size
 _____________________________
  
 Dhimiter a relancé de 400 000.

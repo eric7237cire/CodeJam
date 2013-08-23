@@ -10,8 +10,6 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pkr.history.StatsSessionPlayer.RoundStats;
-
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -120,12 +118,10 @@ public class Parser {
             
             for(int round = 0; round < 3; ++round)
             {
-                RoundStats rs = ssp.roundStats[round];
                 
-                logMainOutput.debug("\nRound {} stats.  Seen : [{}] " ,
+                logMainOutput.debug("\nRound {} stats. " ,
                         
-                        Statistics.roundToStr(round + 1),
-                            rs.seen
+                        Statistics.roundToStr(round + 1)
                            
                         );
 
@@ -152,10 +148,10 @@ public class Parser {
 
                 );*/
                 
-                logMainOutput.debug("Average bet size %{}  average fold to bet size %{} ",
+                /*logMainOutput.debug("Average bet size %{}  average fold to bet size %{} ",
                         Statistics.formatPercent(ssp.roundStats[round].avgBetToPot, 1),
                         Statistics.formatPercent(ssp.roundStats[round].avgFoldToBetToPot, 1));
-
+*/
             }
         }
         

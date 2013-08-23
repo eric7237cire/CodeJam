@@ -2,10 +2,6 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.List;
 
 import org.junit.Test;
@@ -16,12 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import pkr.history.FlopTurnRiverState;
 import pkr.history.Parser;
-import pkr.history.Statistics;
 import pkr.history.StatsSession;
 import pkr.history.StatsSessionPlayer;
-import pkr.history.StatsSessionPlayer.RoundStats;
 import pkr.history.stats.DonkContLimped;
-import static org.junit.Assert.*;
 
 @SuppressWarnings("unused")
 @RunWith(JUnit4.class)
@@ -44,10 +37,7 @@ public class TestRoundStats
         StatsSession stats = Parser.computeStats(results);
         
         StatsSessionPlayer pStats = stats.playerSessionStats.get("Manfred"); 
-        assertEquals(1, pStats.roundStats[0].calls);
-        assertEquals(1, pStats.roundStats[1].betAllIn);
-        assertEquals(0, pStats.roundStats[1].raiseCallAllIn);
-        
+       
         DonkContLimped dcl = (DonkContLimped) pStats.stats.get("dcl1");
         String s = dcl.toString();
         
@@ -71,193 +61,12 @@ public class TestRoundStats
         
     }
     
-    @Test
-    public void testStats2() throws Exception
-    {
-        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testStats2");
-        
-        assertEquals(1, results.size());
-        
-        FlopTurnRiverState[] handStates = results.get(0);
-        
-        StatsSession stats = Parser.computeStats(results);
-        
-        StatsSessionPlayer pStats = stats.playerSessionStats.get("Gilles");
-        RoundStats rs = pStats.roundStats[0];
-        
-        DonkContLimped dcl = (DonkContLimped) pStats.stats.get("dcl1");
-        
-        //Unopened stats
-        assertEquals(0, rs.bets);
-        assertEquals(0, rs.checksUnopened);
-        assertEquals(0, rs.betAllIn);
-        assertEquals(0, rs.callReraise);
-        assertEquals(0, rs.betFold);
-        
-        //Opened stats
-        assertEquals(1, rs.calls);        
-        assertEquals(0, rs.checkRaises);
-        assertEquals(1, rs.checksOpened);
-        assertEquals(0, rs.folded);
-        assertEquals(0, rs.raiseCallAllIn);
-        assertEquals(0, rs.reRaiseOpened);
-        
-        
-        
-        rs = pStats.roundStats[1];
-        
-      //Unopened stats
-        assertEquals(0, rs.bets);
-        assertEquals(0, rs.checksUnopened);
-        assertEquals(0, rs.betAllIn);
-        assertEquals(0, rs.callReraise);
-        assertEquals(0, rs.betFold);
-        
-        //Opened stats
-        assertEquals(0, rs.calls);        
-        assertEquals(0, rs.checkRaises);
-        assertEquals(1, rs.checksOpened);
-        assertEquals(1, rs.folded);
-        assertEquals(0, rs.raiseCallAllIn);
-        assertEquals(0, rs.reRaiseOpened);
-        
-        
-        rs = pStats.roundStats[2];
-      //Unopened stats
-        assertEquals(0, rs.bets);
-        assertEquals(0, rs.checksUnopened);
-        assertEquals(0, rs.betAllIn);
-        assertEquals(0, rs.callReraise);
-        assertEquals(0, rs.betFold);
-        
-        //Opened stats
-        assertEquals(0, rs.calls);        
-        assertEquals(0, rs.checkRaises);
-        assertEquals(0, rs.checksOpened);
-        assertEquals(0, rs.folded);
-        assertEquals(0, rs.raiseCallAllIn);
-        assertEquals(0, rs.reRaiseOpened);
-        
-        
-        ////////////////////////////////
-        
-        pStats = stats.playerSessionStats.get("Sakis");
-        rs = pStats.roundStats[0];
-        
-        //Unopened stats
-        assertEquals(0, rs.bets);
-        assertEquals(0, rs.checksUnopened);
-        assertEquals(0, rs.betAllIn);
-        assertEquals(0, rs.callReraise);
-        assertEquals(0, rs.betFold);
-        
-        //Opened stats
-        assertEquals(1, rs.calls);        
-        assertEquals(0, rs.checkRaises);
-        assertEquals(1, rs.checksOpened);
-        assertEquals(0, rs.folded);
-        assertEquals(0, rs.raiseCallAllIn);
-        assertEquals(0, rs.reRaiseOpened);
-        
-        
-        rs = pStats.roundStats[1];
-        
-      //Unopened stats
-        assertEquals(0, rs.bets);
-        assertEquals(0, rs.checksUnopened);
-        assertEquals(0, rs.betAllIn);
-        assertEquals(0, rs.callReraise);
-        assertEquals(0, rs.betFold);
-        
-        //Opened stats
-        assertEquals(0, rs.calls);        
-        assertEquals(1, rs.checkRaises);
-        assertEquals(1, rs.checksOpened);
-        assertEquals(0, rs.folded);
-        assertEquals(1, rs.raiseCallAllIn);
-        assertEquals(1, rs.reRaiseOpened);
-        
-        
-        rs = pStats.roundStats[2];
-      //Unopened stats
-        assertEquals(0, rs.bets);
-        assertEquals(0, rs.checksUnopened);
-        assertEquals(0, rs.betAllIn);
-        assertEquals(0, rs.callReraise);
-        assertEquals(0, rs.betFold);
-        
-        //Opened stats
-        assertEquals(0, rs.calls);        
-        assertEquals(0, rs.checkRaises);
-        assertEquals(0, rs.checksOpened);
-        assertEquals(0, rs.folded);
-        assertEquals(0, rs.raiseCallAllIn);
-        assertEquals(0, rs.reRaiseOpened);
-        
-        
-        ////////////////////////////////
-      
-        pStats = stats.playerSessionStats.get("Francis");
-        rs = pStats.roundStats[0];
-        
-        //Unopened stats
-        assertEquals(1, rs.bets);
-        assertEquals(0, rs.checksUnopened);
-        assertEquals(0, rs.betAllIn);
-        assertEquals(0, rs.callReraise);
-        assertEquals(0, rs.betFold);
-        
-        //Opened stats
-        assertEquals(0, rs.calls);        
-        assertEquals(0, rs.checkRaises);
-        assertEquals(0, rs.checksOpened);
-        assertEquals(0, rs.folded);
-        assertEquals(0, rs.raiseCallAllIn);
-        assertEquals(0, rs.reRaiseOpened);
-        
-        
-        rs = pStats.roundStats[1];
-        
-      //Unopened stats
-        assertEquals(1, rs.bets);
-        assertEquals(0, rs.checksUnopened);
-        assertEquals(0, rs.betAllIn);
-        assertEquals(1, rs.callReraise);
-        assertEquals(0, rs.betFold);
-        
-        //Opened stats
-        assertEquals(0, rs.calls);        
-        assertEquals(0, rs.checkRaises);
-        assertEquals(0, rs.checksOpened);
-        assertEquals(0, rs.folded);
-        assertEquals(0, rs.raiseCallAllIn);
-        assertEquals(0, rs.reRaiseOpened);
-        
-        
-        rs = pStats.roundStats[2];
-      //Unopened stats
-        assertEquals(0, rs.bets);
-        assertEquals(0, rs.checksUnopened);
-        assertEquals(0, rs.betAllIn);
-        assertEquals(0, rs.callReraise);
-        assertEquals(0, rs.betFold);
-        
-        //Opened stats
-        assertEquals(0, rs.calls);        
-        assertEquals(0, rs.checkRaises);
-        assertEquals(0, rs.checksOpened);
-        assertEquals(0, rs.folded);
-        assertEquals(0, rs.raiseCallAllIn);
-        assertEquals(0, rs.reRaiseOpened);
-        
-        
-        ////////////////////////////////
-    }
+    
 
     @Test
-    public void testStats3() throws Exception
+    public void testFoldToZeroBet() throws Exception
     {
-        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testStats3");
+        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testFoldToZeroBet");
         
         assertEquals(2, results.size());
         
@@ -266,41 +75,13 @@ public class TestRoundStats
         StatsSession stats = Parser.computeStats(results);
         
         StatsSessionPlayer pStats = stats.playerSessionStats.get("Dhimiter");
-        RoundStats rs = pStats.roundStats[0];
         
-        rs = pStats.roundStats[0];
-        //Unopened stats
-          assertEquals(1, rs.bets);
-          assertEquals(0, rs.checksUnopened);
-          assertEquals(0, rs.betAllIn);
-          assertEquals(0, rs.callReraise);
-          assertEquals(0, rs.betFold);
-          
-          //Opened stats
-          assertEquals(0, rs.calls);        
-          assertEquals(0, rs.checkRaises);
-          assertEquals(0, rs.checksOpened);
-          assertEquals(1, rs.folded);
-          assertEquals(0, rs.raiseCallAllIn);
-          assertEquals(0, rs.reRaiseOpened);
-          
-          
-          rs = pStats.roundStats[1];
-          
-          //Unopened stats
-          assertEquals(1, rs.bets);
-          assertEquals(0, rs.checksUnopened);
-          assertEquals(0, rs.betAllIn);
-          assertEquals(0, rs.callReraise);
-          assertEquals(1, rs.betFold);
-          
-          //Opened stats
-          assertEquals(0, rs.calls);        
-          assertEquals(0, rs.checkRaises);
-          assertEquals(0, rs.checksOpened);
-          assertEquals(0, rs.folded);
-          assertEquals(0, rs.raiseCallAllIn);
-          assertEquals(0, rs.reRaiseOpened);
+        DonkContLimped dcl = (DonkContLimped) pStats.stats.get("dcl1");
+        int type = DonkContLimped.LIMPED;
+        
+
+        assertEquals(0, dcl.actions[type][DonkContLimped.FOLD] );
+        assertEquals(0, dcl.actionPossible[type][DonkContLimped.FOLD] );
           
     }
     
@@ -331,28 +112,31 @@ public class TestRoundStats
         assertEquals(0+0+0+0+0+0, ericStats.notFoldRaisedPreflop );
         assertEquals(0+0+0+0+0+0, ericStats.raisedPreflopDenom );
         
-        assertEquals(1+0+0+0+0+0, ericStats.flopStats.calls );
-        assertEquals(0+0+0+0+1+0, ericStats.flopStats.callReraise );
-        assertEquals(0+0+0+0+0+0, ericStats.flopStats.folded );
-        assertEquals(0+1+0+0+1+0, ericStats.flopStats.bets );
-        assertEquals(0+0+1+0+0+0, ericStats.flopStats.reRaiseOpened );
-        assertEquals(1+1+1+1+1+0, ericStats.flopStats.seen );
-        assertEquals(0+0+0+0+0+0, ericStats.flopStats.checkRaises );
+                
+        DonkContLimped dcl = (DonkContLimped) ericStats.stats.get("dcl1");
+        int type = DonkContLimped.LIMPED;
         
-        assertEquals(0+0+1+0+0+0, ericStats.turnStats.calls );
-        assertEquals(0+0+0+0+1+0, ericStats.turnStats.folded );
-        assertEquals(1+1+0+0+0+0, ericStats.turnStats.bets );
-        assertEquals(1+0+0+0+0+0, ericStats.turnStats.reRaiseUnopened );
-        assertEquals(1+1+1+1+1+0, ericStats.turnStats.seen );
-        assertEquals(0+0+0+0+0+0, ericStats.turnStats.checkRaises );
+        assertEquals(1+0+0+0+0+0, dcl.actions[type][DonkContLimped.CALL]);
         
         
-        assertEquals(0+1+0+0+0+0, ericStats.riverStats.callReraise );
-        assertEquals(0+0+0+0+0+0, ericStats.riverStats.folded );
-        assertEquals(1+1+0+0+0+0, ericStats.riverStats.bets );
-        assertEquals(0+0+0+0+0+0, ericStats.riverStats.reRaiseOpened );
-        assertEquals(1+1+0+1+0+0, ericStats.riverStats.seen );
-        assertEquals(0+0+0+0+0+0, ericStats.riverStats.checkRaises );
+        assertEquals(0+0+0+0+0+0, dcl.actions[type][DonkContLimped.FOLD] );
+        
+        assertEquals(1, dcl.actions[type][DonkContLimped.BET] );
+        assertEquals(2, dcl.actionPossible[type][DonkContLimped.BET] );
+        assertEquals(2, dcl.count[type] );
+        
+        type  = DonkContLimped.IS_AGGRES;
+        
+        assertEquals(0, dcl.actions[type][DonkContLimped.FOLD_RAISE] );
+        assertEquals(1, dcl.actionPossible[type][DonkContLimped.FOLD_RAISE] );
+        
+        dcl = (DonkContLimped) ericStats.stats.get("dcl2");
+        type = DonkContLimped.NOT_AGGRES;
+        
+        assertEquals(1, dcl.actions[type][DonkContLimped.RERAISE] );
+        assertEquals(1, dcl.actionPossible[type][DonkContLimped.RERAISE] );
+        
+        
         
         
         
