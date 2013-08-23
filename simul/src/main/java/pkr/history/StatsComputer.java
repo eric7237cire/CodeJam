@@ -294,17 +294,37 @@ public class StatsComputer
             if (ftr == null)
                 continue;
             
+            int playersLeft = ftr.players.size();
+            int folded = 0;
+            int allins = 0;
+            
             for(int actionIndex = 0; actionIndex < ftr.actions.size(); ++actionIndex)
             {
                 PlayerAction action = ftr.actions.get(actionIndex);
                 
                 //Preconditions.checkState(!action.playerName.equals(playerName));
                 action.globalRaiseCount = globalRaiseCount;
+                action.playersFolded = folded;
+                action.playersLeft = playersLeft;
+                action.playersAllIn = allins;
+                
                 log.debug("action idx {} player {} raise count now {}", actionIndex, action.playerName, globalRaiseCount);
                 
                 if (action.action == Action.RAISE || action.action == Action.RAISE_ALL_IN)
                 {
                     ++globalRaiseCount;                
+                }
+                
+                if (action.action == Action.FOLD)
+                {
+                    ++folded;
+                    --playersLeft;
+                }
+                
+                if (action.action == Action.ALL_IN || action.action == Action.CALL_ALL_IN || action.action == Action.RAISE_ALL_IN)
+                {
+                    ++allins;
+                    --playersLeft;
                 }
             }
         }   

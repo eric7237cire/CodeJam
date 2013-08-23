@@ -382,8 +382,8 @@ public class TestRoundStats
         assertEquals(1, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.BET]);
         assertEquals(1, dcl.actionPossible[DonkContLimped.NOT_AGGRES][DonkContLimped.BET]);
         
-        assertEquals(0, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.FOLD_CR]);
-        assertEquals(1, dcl.actionPossible[DonkContLimped.NOT_AGGRES][DonkContLimped.FOLD_CR]);
+        assertEquals(0, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.FOLD_RAISE]);
+        assertEquals(1, dcl.actionPossible[DonkContLimped.NOT_AGGRES][DonkContLimped.FOLD_RAISE]);
         
         dcl = (DonkContLimped) pStats.stats.get("dcl2");
         
@@ -407,10 +407,106 @@ public class TestRoundStats
         
         dcl = (DonkContLimped) pStats.stats.get("dcl1");
         
+        assertEquals(1, dcl.count[DonkContLimped.IS_AGGRES]);
+        
+        assertEquals(1, dcl.actions[DonkContLimped.IS_AGGRES][DonkContLimped.CHECK_RAISE]);
+        assertEquals(1, dcl.actionPossible[DonkContLimped.IS_AGGRES][DonkContLimped.CHECK_RAISE]);
+
+        assertEquals(1, dcl.actions[DonkContLimped.IS_AGGRES][DonkContLimped.RAISE]);
+        assertEquals(1, dcl.actionPossible[DonkContLimped.IS_AGGRES][DonkContLimped.RAISE]);
+
+        
         log.debug(dcl.toString());
         
         dcl = (DonkContLimped) pStats.stats.get("dcl2");
+        
+        assertEquals(1, dcl.count[DonkContLimped.IS_AGGRES]);
+        
+        assertEquals(0, dcl.actions[DonkContLimped.IS_AGGRES][DonkContLimped.CHECK_RAISE]);
+        assertEquals(0, dcl.actionPossible[DonkContLimped.IS_AGGRES][DonkContLimped.CHECK_RAISE]);
+
+        assertEquals(0, dcl.actions[DonkContLimped.IS_AGGRES][DonkContLimped.RAISE]);
+        assertEquals(0, dcl.actionPossible[DonkContLimped.IS_AGGRES][DonkContLimped.RAISE]);
+
+        assertEquals(1, dcl.actions[DonkContLimped.IS_AGGRES][DonkContLimped.BET]);
+        assertEquals(1, dcl.actionPossible[DonkContLimped.IS_AGGRES][DonkContLimped.BET]);
+
+        
         dcl = (DonkContLimped) pStats.stats.get("dcl3");
+        
+        assertEquals(1, dcl.count[DonkContLimped.IS_AGGRES]);
+        
+        assertEquals(0, dcl.actions[DonkContLimped.IS_AGGRES][DonkContLimped.CHECK_RAISE]);
+        assertEquals(0, dcl.actionPossible[DonkContLimped.IS_AGGRES][DonkContLimped.CHECK_RAISE]);
+
+        assertEquals(1, dcl.actions[DonkContLimped.IS_AGGRES][DonkContLimped.RAISE]);
+        assertEquals(1, dcl.actionPossible[DonkContLimped.IS_AGGRES][DonkContLimped.RAISE]);
+
+        assertEquals(0, dcl.actions[DonkContLimped.IS_AGGRES][DonkContLimped.BET]);
+        assertEquals(0, dcl.actionPossible[DonkContLimped.IS_AGGRES][DonkContLimped.BET]);
+
+        assertEquals(0, dcl.actions[DonkContLimped.IS_AGGRES][DonkContLimped.RERAISE]);
+        assertEquals(0, dcl.actionPossible[DonkContLimped.IS_AGGRES][DonkContLimped.RERAISE]);
+
+        
+        pStats  =
+                stats.playerSessionStats.get("Manfred");
+        
+        dcl = (DonkContLimped) pStats.stats.get("dcl1");
+        
+        int type = DonkContLimped.NOT_AGGRES;
+        assertEquals(1, dcl.count[type]);
+        
+        assertEquals(0, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.BET]);
+        assertEquals(1, dcl.actionPossible[type][DonkContLimped.BET]);
+        
+        assertEquals(0, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.CHECK_RAISE]);
+        assertEquals(1, dcl.actionPossible[DonkContLimped.NOT_AGGRES][DonkContLimped.CHECK_RAISE]);
+        
+        assertEquals(0, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.FOLD]);
+        assertEquals(1, dcl.actionPossible[type][DonkContLimped.FOLD]);
+
+        assertEquals(1, dcl.actions[type][DonkContLimped.CALL]);
+        assertEquals(1, dcl.actionPossible[type][DonkContLimped.CALL]);
+        
+        assertEquals(0, dcl.actions[type][DonkContLimped.FOLD_RAISE]);
+        assertEquals(1, dcl.actionPossible[type][DonkContLimped.FOLD_RAISE]);
+        
+        dcl = (DonkContLimped) pStats.stats.get("dcl2");
+        
+        type = DonkContLimped.NOT_AGGRES;
+        assertEquals(1, dcl.count[type]);
+        
+        assertEquals(0, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.BET]);
+        assertEquals(1, dcl.actionPossible[type][DonkContLimped.BET]);
+        
+        
+        assertEquals(1, dcl.actions[type][DonkContLimped.CALL]);
+        assertEquals(1, dcl.actionPossible[type][DonkContLimped.CALL]);
+        
+        
+        dcl = (DonkContLimped) pStats.stats.get("dcl3");
+        
+        type = DonkContLimped.NOT_AGGRES;
+        assertEquals(1, dcl.count[type]);
+        
+        assertEquals(1, dcl.actions[DonkContLimped.NOT_AGGRES][DonkContLimped.BET]);
+        assertEquals(1, dcl.actionPossible[type][DonkContLimped.BET]);
+        
+        
+        assertEquals(0, dcl.actions[type][DonkContLimped.CALL]);
+        assertEquals(0, dcl.actionPossible[type][DonkContLimped.CALL]);
+        
+        assertEquals(0, dcl.actions[type][DonkContLimped.FOLD_RAISE]);
+        assertEquals(1, dcl.actionPossible[type][DonkContLimped.FOLD_RAISE]);
+        
+        assertEquals(1, dcl.actions[type][DonkContLimped.RERAISE]);
+        assertEquals(1, dcl.actionPossible[type][DonkContLimped.RERAISE]);
+        
+        assertEquals(1, dcl.actions[type][DonkContLimped.ALL_IN]);
+        assertEquals(1, dcl.actionPossible[type][DonkContLimped.ALL_IN]);
+        
+        
     }
     
     @Test

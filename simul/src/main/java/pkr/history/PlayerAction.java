@@ -25,6 +25,11 @@ public class PlayerAction {
     //Raises before this action (allins count)
     public int globalRaiseCount;
     
+    //Stats before player acts
+    public int playersLeft;
+    public int playersAllIn;
+    public int playersFolded;
+    
     private PlayerAction()
     {
         

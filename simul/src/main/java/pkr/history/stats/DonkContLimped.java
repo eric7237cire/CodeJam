@@ -26,17 +26,23 @@ public class DonkContLimped implements iPlayerStatistic
     public static final int IS_AGGRES = 1;
     public static final int NOT_AGGRES = 2;
     
+    //Calling a bet
     public static final int CALL = 0;
     public static final int BET = 1;
+    //Just folding to a bet
     public static final int FOLD = 2;
-    //Excludes bet all in
+    
+    //Any all in
     public static final int ALL_IN = 3;
+    //2nd raise
     public static final int RAISE = 4;
+    //Any re-raise ( 3rd or + raises)
     public static final int RERAISE = 5;
     public static final int CHECK_RAISE = 6;
     
-    public static final int FOLD_CR = 7;
-    public static final int FOLD_RAISE = 8;
+    
+    //Folding a reraise after betting / raising
+    public static final int FOLD_RAISE = 7;
         
     public int[] count ;
     
@@ -83,15 +89,24 @@ public class DonkContLimped implements iPlayerStatistic
             sb.append(count[i]);
             sb.append(")");
             
-            sb.append(" [bet ");
+            sb.append(" [B ");
             sb.append(Statistics.formatPercent(actions[i][BET], actionPossible[i][BET], true));
-            sb.append(" call ");
-            sb.append(Statistics.formatPercent(actions[i][CALL], actionPossible[i][CALL], true));
-            sb.append(" raise ");
+            sb.append(" | R ");
             sb.append(Statistics.formatPercent(actions[i][RAISE], actionPossible[i][RAISE], true));
-            sb.append(" fold ");
+            sb.append(" | RR ");
+            sb.append(Statistics.formatPercent(actions[i][RERAISE], actionPossible[i][RERAISE], true));
+            sb.append(" | C/R ");
+            sb.append(Statistics.formatPercent(actions[i][CHECK_RAISE], actionPossible[i][CHECK_RAISE], true));
+            
+            sb.append(" | Call b ");
+            sb.append(Statistics.formatPercent(actions[i][CALL], actionPossible[i][CALL], true));
+            
+            sb.append(" | Fold b ");
             sb.append(Statistics.formatPercent(actions[i][FOLD], actionPossible[i][FOLD], true));
-            sb.append(" allin ");
+            sb.append(" | Fold r ");
+            sb.append(Statistics.formatPercent(actions[i][FOLD_RAISE], actionPossible[i][FOLD_RAISE], true));
+            
+            sb.append(" | allin ");
             sb.append(Statistics.formatPercent(actions[i][ALL_IN], actionPossible[i][ALL_IN], true));
             
             sb.append("]");
@@ -185,6 +200,11 @@ public class DonkContLimped implements iPlayerStatistic
                 ++actionPossible[type][FOLD];
                 ++actionPossible[type][RAISE];
                
+                if (prevAction != null &&
+                        prevAction.action == Action.CHECK)
+                {
+                    ++actionPossible[type][CHECK_RAISE];
+                }
                 
                 if (currentAction.action == Action.CALL || currentAction.action == Action.CALL_ALL_IN)
                 {
@@ -200,6 +220,13 @@ public class DonkContLimped implements iPlayerStatistic
                     log.debug("Player {} did raise. type {}", playerName, type);
                     
                     ++actions[type][RAISE];
+                    
+                    if (prevAction != null &&
+                        prevAction.action == Action.CHECK)
+                    {
+                        log.debug("Player {} check raised. type {}", playerName, type);
+                        ++actions[type][CHECK_RAISE];
+                    }
                 }             
             
             } else if (currentAction.globalRaiseCount >= 2) {
@@ -209,24 +236,36 @@ public class DonkContLimped implements iPlayerStatistic
                         prevAction.action == Action.RAISE)
                 {
                     log.debug("Player {} was check raised", playerName);
-                    ++actionPossible[type][FOLD_CR];
+                    ++actionPossible[type][FOLD_RAISE];
                     
                     if (currentAction.action == Action.FOLD)
                     {
-                        ++actions[type][FOLD_CR];
+                        ++actions[type][FOLD_RAISE];
+                    }
+                } else {
+                    log.debug("Player {} facing a raise", playerName);
+                    ++actionPossible[type][FOLD_RAISE];
+                    
+                    if (currentAction.action == Action.FOLD)
+                    {
+                        ++actions[type][FOLD_RAISE];
                     }
                 }
                 
-                log.debug("Player {} fac can limp call / fold / re - raise.  type {}", playerName, type);
                 
-                ++actionPossible[type][RERAISE];
-                
-                if (currentAction.action == Action.RAISE || currentAction.action == Action.RAISE_ALL_IN)
+                if (currentAction.playersLeft > 1)
                 {
-                    log.debug("Player {} did re-raise. type {}", playerName, type);
+                    log.debug("Player {} fac can re-raise.  type {}", playerName, type);
                     
-                    ++actions[type][RERAISE];
-                } 
+                    ++actionPossible[type][RERAISE];
+                    
+                    if (currentAction.action == Action.RAISE || currentAction.action == Action.RAISE_ALL_IN)
+                    {
+                        log.debug("Player {} did re-raise. type {}", playerName, type);
+                        
+                        ++actions[type][RERAISE];
+                    }
+                }
             }
             
         }
