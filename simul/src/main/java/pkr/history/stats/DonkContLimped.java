@@ -98,12 +98,12 @@ public class DonkContLimped implements iPlayerStatistic
             sb.append(" | C/R ");
             sb.append(Statistics.formatPercent(actions[i][CHECK_RAISE], actionPossible[i][CHECK_RAISE], true));
             
-            sb.append(" | Call b ");
+            sb.append(" | Call B ");
             sb.append(Statistics.formatPercent(actions[i][CALL], actionPossible[i][CALL], true));
             
-            sb.append(" | Fold b ");
+            sb.append(" | Fold B ");
             sb.append(Statistics.formatPercent(actions[i][FOLD], actionPossible[i][FOLD], true));
-            sb.append(" | Fold r ");
+            sb.append(" | Fold R ");
             sb.append(Statistics.formatPercent(actions[i][FOLD_RAISE], actionPossible[i][FOLD_RAISE], true));
             
             sb.append(" | allin ");
