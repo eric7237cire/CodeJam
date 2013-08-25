@@ -1,6 +1,9 @@
 package test;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.net.URL;
 import java.util.List;
@@ -15,8 +18,6 @@ import pkr.history.Preprocessor;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-
-import static org.junit.Assert.*;
 
 
 @RunWith(JUnit4.class)

@@ -2,6 +2,7 @@ package pkr.history.stats;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,12 +22,13 @@ public class DonkContLimped implements iPlayerStatistic
     //actions[ condition -- limped/aggres/not aggres ] [ call/bet/raise/fold ]
     public int[][] actions;
     public int[][] actionPossible;
+    public StringBuffer[][] actionsDesc;
     
     public static final int LIMPED = 0;
     public static final int IS_AGGRES = 1;
     public static final int NOT_AGGRES = 2;
     
-    //Calling a bet
+    //Calling a bet, not a raise or reraise
     public static final int CALL = 0;
     public static final int BET = 1;
     //Just folding to a bet
@@ -55,6 +57,14 @@ public class DonkContLimped implements iPlayerStatistic
         this.round = round;
         this.actions = new int[3][9];
         this.actionPossible = new int[3][9];
+        this.actionsDesc = new StringBuffer[3][9];
+        for(int i = 0; i < 3; ++i)
+        {
+            for(int j = 0; j < 9; ++j)
+            {
+                this.actionsDesc[i][j] = new StringBuffer();
+            }
+        }
         this.count = new int[] {0,0,0};
         //No preflop
         Preconditions.checkArgument(round >= 1 && round <= 3);
@@ -93,10 +103,6 @@ public class DonkContLimped implements iPlayerStatistic
             sb.append(Statistics.formatPercent(actions[i][BET], actionPossible[i][BET], true));
             sb.append(" | R ");
             sb.append(Statistics.formatPercent(actions[i][RAISE], actionPossible[i][RAISE], true));
-            sb.append(" | RR ");
-            sb.append(Statistics.formatPercent(actions[i][RERAISE], actionPossible[i][RERAISE], true));
-            sb.append(" | C/R ");
-            sb.append(Statistics.formatPercent(actions[i][CHECK_RAISE], actionPossible[i][CHECK_RAISE], true));
             
             sb.append(" | Call B ");
             sb.append(Statistics.formatPercent(actions[i][CALL], actionPossible[i][CALL], true));
@@ -105,6 +111,11 @@ public class DonkContLimped implements iPlayerStatistic
             sb.append(Statistics.formatPercent(actions[i][FOLD], actionPossible[i][FOLD], true));
             sb.append(" | Fold R ");
             sb.append(Statistics.formatPercent(actions[i][FOLD_RAISE], actionPossible[i][FOLD_RAISE], true));
+            
+            sb.append(" | RR ");
+            sb.append(Statistics.formatPercent(actions[i][RERAISE], actionPossible[i][RERAISE], true));
+            sb.append(" | C/R ");
+            sb.append(Statistics.formatPercent(actions[i][CHECK_RAISE], actionPossible[i][CHECK_RAISE], true));
             
             sb.append(" | allin ");
             sb.append(Statistics.formatPercent(actions[i][ALL_IN], actionPossible[i][ALL_IN], true));
@@ -126,6 +137,7 @@ public class DonkContLimped implements iPlayerStatistic
         
         FlopTurnRiverState ftr = ftrStates[round];
         
+        //Vérification que la tournée est en bonne état
         if (ftr == null)
             return;
         
@@ -142,6 +154,7 @@ public class DonkContLimped implements iPlayerStatistic
         {
             return;
         }
+        /////////////////////////////////
         
         List<Integer> actionIdx = ftr.playerPosToActions.get(playerPos);
         
@@ -185,6 +198,19 @@ public class DonkContLimped implements iPlayerStatistic
                 {
                     log.debug("Player {} did bet. type {}", playerName, type);
                     ++actions[type][BET];
+                    actionsDesc[type][BET].append("Player ").append(playerName)
+                    .append(" bet ")
+                    .append(Statistics.formatMoney(currentAction.amountRaised))
+                    .append(" into pot ")
+                    .append(Statistics.formatMoney(currentAction.pot))
+                    .append( " with ")
+                    .append(currentAction.playersLeft)
+                    .append(" players ")
+                    .append(" Line #")
+                    .append(ftrStates[0].lineNumber)
+                    .append("&lt;br /&gt;");
+                    
+                    
                 } else if (currentAction.action == Action.ALL_IN)
                 {
                     log.debug("Player {} did all in after no raises. type {}", playerName, type);
@@ -210,16 +236,56 @@ public class DonkContLimped implements iPlayerStatistic
                 {
                     log.debug("Player {} did call. type {}", playerName, type);
                     ++actions[type][CALL];
+                    
+                    actionsDesc[type][CALL].append("Player ").append(playerName)
+                    .append(" call ")
+                    .append(Statistics.formatMoney(currentAction.incomingBetOrRaise))
+                    .append(" into pot ")
+                    .append(Statistics.formatMoney(currentAction.pot))
+                    .append( " with ")
+                    .append(currentAction.playersLeft)
+                    .append(" players ")
+                    .append(" Line #")
+                    .append(ftrStates[0].lineNumber)
+                    .append("&lt;br /&gt;");
+                    
                 } else if (currentAction.action == Action.FOLD) 
                 {
                     log.debug("Player {} did fold. type {}", playerName, type);
                     
                     ++actions[type][FOLD];
+                    
+                    actionsDesc[type][FOLD].append("Player ").append(playerName)
+                    .append(" folded to a bet of ")
+                    .append(Statistics.formatMoney(currentAction.incomingBetOrRaise))
+                    .append(" into pot ")
+                    .append(Statistics.formatMoney(currentAction.pot))
+                    .append( " with ")
+                    .append(currentAction.playersLeft)
+                    .append(" players ")
+                    .append(" Line #")
+                    .append(ftrStates[0].lineNumber)
+                    .append("&lt;br /&gt;");
+                    
                 } else if (currentAction.action == Action.RAISE || currentAction.action == Action.RAISE_ALL_IN)
                 {
                     log.debug("Player {} did raise. type {}", playerName, type);
                     
                     ++actions[type][RAISE];
+                    
+                    actionsDesc[type][RAISE].append("Player ").append(playerName)
+                    .append(" raise a bet of ")
+                    .append(Statistics.formatMoney(currentAction.incomingBetOrRaise))
+                    .append(" to ")
+                    .append(Statistics.formatMoney(currentAction.amountRaised))
+                    .append(" into pot ")
+                    .append(Statistics.formatMoney(currentAction.pot))
+                    .append( " with ")
+                    .append(currentAction.playersLeft)
+                    .append(" players ")
+                    .append(" Line #")
+                    .append(ftrStates[0].lineNumber)
+                    .append("&lt;br /&gt;");
                     
                     if (prevAction != null &&
                         prevAction.action == Action.CHECK)
@@ -288,7 +354,32 @@ public class DonkContLimped implements iPlayerStatistic
         return Statistics.formatPercent( actions[a][b], actionPossible[a][b], true);
     }
 
+    public String getActionDesc(int a, int b) {
+        //
+        //return StringEscapeUtils.escapeEcmaScript(actionsDesc[a][b].toString());
+        return (actionsDesc[a][b].toString());
+    }
 
+
+    public int getCount(int type)
+    {
+        return count[type];
+    }
+
+
+    public String getTypeStr(int type)
+    {
+        switch(type)
+        {
+    case 0:
+        return("Limp");
+    case 1:
+        return("Is Agg.");
+    case 2:
+        return("Not Agg.");
+    }
+        return "";
+    }
     
 
 }

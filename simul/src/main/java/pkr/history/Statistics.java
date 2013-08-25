@@ -54,6 +54,11 @@ public class Statistics {
         return "$" + moneyFormat.format( (int) (amtNum / amtDenom) );
     }
     
+    public static String formatMoney(int amtNum)
+    {
+        return "$" + moneyFormat.format( amtNum );
+    }
+    
     public static String roundToStr(int round)
     {
         return round == 0 ? "Preflop" :

@@ -2,10 +2,10 @@ package pkr;
 
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 import pkr.possTree.PossibilityNode.HandCategory;
 import pkr.possTree.PossibilityNode.WinningLosingCategory;
+
+import com.google.common.collect.Lists;
 
 public class HeroCriteria extends Criteria
 {

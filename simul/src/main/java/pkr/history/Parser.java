@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +25,14 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-//TODO cbet/ donk bet
-//TODO tests 3 bet
+/*
+ * Bet/fold to bet sizing
+ * Action to win ratio
+ * 
+check/reraise should count as check/raise
+
+discount single gagne from playerlist
+ */
 public class Parser {
     
     static Logger log = LoggerFactory.getLogger(Parser.class);
@@ -118,24 +125,17 @@ public class Parser {
              
             // Build the data-model
             Map<String, Object> data = new HashMap<String, Object>();
-            data.put("message", "Hello World!");
- 
-            //List parsing 
-            List<String> countries = new ArrayList<String>();
-            countries.add("India");
-            countries.add("United States");
-            countries.add("Germany");
-            countries.add("France");
-             
-            data.put("countries", countries);
+           
+            template.setEncoding("UTF-8");
  
             data.put("stats", sc.stats);
              
             // Console output
+            /*
             Writer out = new OutputStreamWriter(System.out);
             template.process(data, out);
             out.flush();
- 
+ */
             // File output
             Writer file = new FileWriter (new File("C:\\codejam\\CodeJam\\simul\\output\\FTL_helloworld.xhtml"));
             template.process(data, file);
@@ -153,10 +153,15 @@ public class Parser {
         
         StatsComputer sc = new StatsComputer(hands);
         
+
+        Collections.sort(sc.stats.currentPlayerList);
+        
         outputStats(sc);
         
         if (1==1)
             return sc.stats;
+        
+        sc.stats.currentPlayerList.remove("Eric");
         
         //VPIP and PFR / position
         for(String player : sc.stats.currentPlayerList)
@@ -247,9 +252,11 @@ public class Parser {
             match = patHandBoundary.matcher(line);
             if (match.matches())
             {
-                curState = new FlopTurnRiverState(new ArrayList<String>(), 0, false, 0,  masterList, new FlopTurnRiverState[4]);
+                curState = new FlopTurnRiverState(new ArrayList<String>(), 0, false, 0,  masterList, 
+                        i,
+                        new FlopTurnRiverState[4]);
                 log.debug("Hand # {} starts on line {}", masterList.size()+1, i);
-                ((FlopTurnRiverState) curState).lineNumber = i;
+                
                 continue;
             }
            
@@ -349,7 +356,7 @@ public class Parser {
             }
             
             } catch (IllegalStateException ex) {
-                log.warn("Problem line {}", i,  ex);
+                log.error("Problem line {}", i,  ex);
                 curState = null;
                 continue;
             }

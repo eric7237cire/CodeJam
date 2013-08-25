@@ -41,8 +41,15 @@ public class StatsComputer
             }
         }
         
-        if (hands.size() > 0)
-            stats.currentPlayerList = hands.get(hands.size()-1)[0].players;
+        for(int hs = hands.size() - 1; hs >= 0; --hs)
+        {
+            List<String> p = hands.get(hs)[0].players;
+            if (p.size() > 1)
+            {
+                stats.currentPlayerList = p;
+                break;
+            }
+        }
         
         for(String playerName : stats.currentPlayerList)
         {

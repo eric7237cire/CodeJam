@@ -18,6 +18,10 @@
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
       <level>DEBUG</level>
     </filter>
+    <filter class="pkr.util.LogFilter">
+        <logger>pkr.history.Parser</logger>
+        <level>ERROR</level>
+    </filter>
   </appender>
   
    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
@@ -85,9 +89,10 @@
    </logger>
    
    <logger name="pkr.history.Preprocessor" level="INFO"/>
-   <logger name="pkr.history.Parser" level="DEBUG" additivity="false">
+   <logger name="pkr.history.Parser" level="DEBUG" additivity="true">
     <appender-ref ref="parserLogFile"/>
    </logger>
+     
    <logger name="pkr.history.StatsComputer" level="DEBUG" additivity="false">
     <appender-ref ref="statsLogFile"/>
    </logger>

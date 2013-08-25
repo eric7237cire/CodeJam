@@ -6,7 +6,7 @@
 
 Global $Paused
 HotKeySet("{F3}", "TogglePause")
-HotKeySet("{F5}", "Terminate")
+HotKeySet("{F4}", "Terminate")
 ;HotKeySet("d", "ShowMessage")  ;Shift-Alt-d
 HotKeySet("{F2}", "TakeText")  ;Shift-Alt-d
 
@@ -58,6 +58,9 @@ EndIf
 Local $a = FileWrite($file, $text)
 FileWrite($file, @CRLF & "**" & @CRLF)
 FileClose($file)
+
+$a = Run("C:\codejam\codejam\simul\runsimul.bat", "C:\codejam\codejam\simul", @SW_MINIMIZE)
+;MsgBox(0, "Error", $a)
 
 endif
 

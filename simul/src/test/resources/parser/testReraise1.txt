@@ -34,3 +34,20 @@ Ivana a suivi de 2 000 000.
 
 Manfred remporte le pot (4 700 000 $) avec une quinte (K).
 _____________________________
+
+ 
+Rachel se couche.
+Vhia a suivi de 400 000.
+Eric a suivi de 400 000.
+Hewar se couche.
+Zhoe a suivi de 400 000.
+Zhoe a parlé.
+Vhia a relancé de 800 000.
+Eric a relancé de 2 000 000.
+Zhoe se couche.
+//Should be a reraise
+Vhia a fait tapis.
+Eric se couche.
++ 5 XP pour avoir joué une main.
+Vhia gagne.
+_____________________________
