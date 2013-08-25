@@ -146,20 +146,13 @@ public class TestPreflopStats
         StatsSessionPlayer pStats =  players.get(playerNum); 
         assertEquals("Vpip : 100% (4/4)", pStats.getStatValue("vpip"));
         assertEquals(4, players.get(playerNum).totalHands );
-        assertEquals(3, pStats.preFlopRaises );
-        assertEquals(766666.66, pStats.preFlopRaiseTotalAmt / pStats.preFlopRaises, .1 );
-        assertEquals(0, pStats.notFoldRaisedPreflop );
-        assertEquals(0, pStats.raisedPreflopDenom );
         
-        assertEquals(1, pStats.preFlopTapis );
         
         playerNum = 1;
         pStats =  players.get(playerNum);
         
         assertEquals("Vpip : 100% (4/4)", pStats.getStatValue("vpip"));
         assertEquals(4, players.get(playerNum).totalHands );
-        assertEquals(4, pStats.notFoldRaisedPreflop );
-        assertEquals(4, pStats.raisedPreflopDenom );
         
         
         playerNum = 2;
@@ -167,8 +160,6 @@ public class TestPreflopStats
         
         assertEquals("Vpip : 75% (3/4)", pStats.getStatValue("vpip"));
         assertEquals(4,  players.get(playerNum).totalHands );
-        assertEquals(3, pStats.notFoldRaisedPreflop );
-        assertEquals(4, pStats.raisedPreflopDenom );
         
     }
     
@@ -201,9 +192,6 @@ public class TestPreflopStats
         StatsSessionPlayer pStats =  players.get(playerNum);
         assertEquals("Vpip : 16.7% (1/6)", pStats.getStatValue("vpip"));
         assertEquals(6, players.get(playerNum).totalHands );
-        assertEquals(0, players.get(playerNum).preFlopRaises );
-        assertEquals(0, players.get(playerNum).notFoldRaisedPreflop );
-        assertEquals(4, players.get(playerNum).raisedPreflopDenom );
         
         
         playerNum = 1;
@@ -211,18 +199,11 @@ public class TestPreflopStats
         
         assertEquals("Vpip : 66.7% (2/3)", pStats.getStatValue("vpip"));
         assertEquals(3, players.get(playerNum).totalHands );
-        assertEquals(0, players.get(playerNum).preFlopRaises );
-        assertEquals(0, players.get(playerNum).notFoldRaisedPreflop );
-        assertEquals(2, players.get(playerNum).raisedPreflopDenom );
         
         playerNum = 2;
         pStats =  players.get(playerNum);
         assertEquals("Vpip : 66.7% (2/3)", pStats.getStatValue("vpip"));
         assertEquals(3, players.get(playerNum).totalHands );
-        assertEquals(0, players.get(playerNum).preFlopRaises );
-        assertEquals(2, players.get(playerNum).preFlopTapis );
-        assertEquals(0, players.get(playerNum).notFoldRaisedPreflop );
-        assertEquals(0, players.get(playerNum).raisedPreflopDenom );
         
         //Eric
         playerNum = 3;
@@ -230,9 +211,6 @@ public class TestPreflopStats
         
         assertEquals("Vpip : 33.3% (2/6)", pStats.getStatValue("vpip"));
         assertEquals(6, players.get(playerNum).totalHands );
-        assertEquals(0, players.get(playerNum).preFlopRaises );
-        assertEquals(1, players.get(playerNum).notFoldRaisedPreflop );
-        assertEquals(5, players.get(playerNum).raisedPreflopDenom );
         
         //Amed
         playerNum = 4;
@@ -241,28 +219,17 @@ public class TestPreflopStats
         assertEquals("Vpip : 20% (1/5)", pStats.getStatValue("vpip"));
         
         assertEquals(6, players.get(playerNum).totalHands );
-        assertEquals(0, players.get(playerNum).preFlopRaises );
-        assertEquals(1, players.get(playerNum).notFoldRaisedPreflop );
-        assertEquals(5, players.get(playerNum).raisedPreflopDenom );
         
         playerNum = 5;
         pStats =  players.get(playerNum);
         
         assertEquals("Vpip : 100% (3/3)", pStats.getStatValue("vpip"));
         assertEquals(3, players.get(playerNum).totalHands );
-        assertEquals(0, players.get(playerNum).preFlopRaises );
-        assertEquals(3, players.get(playerNum).preFlopTapis );
-        assertEquals(0, players.get(playerNum).notFoldRaisedPreflop );
-        assertEquals(0, players.get(playerNum).raisedPreflopDenom );
         
         playerNum = 6;
         pStats =  players.get(playerNum);
         assertEquals("Vpip : 33.3% (1/3)", pStats.getStatValue("vpip"));
         assertEquals(3, players.get(playerNum).totalHands );
-        assertEquals(0, players.get(playerNum).preFlopRaises );
-        assertEquals(1, players.get(playerNum).notFoldRaisedPreflop );
-        assertEquals(3, players.get(playerNum).raisedPreflopDenom );
-        
     }
     
     @Test

@@ -32,9 +32,7 @@ public class StatsComputer
                 StatsSessionPlayer playerSesStat = getSessionStats(playerName);
                 
                 playerSesStat.totalHands++;
-                
-                handlePreflopStats(ftrStates, playerSesStat, playerName);
-                
+                                
                 handleRoundStats(ftrStates, playerSesStat, playerName);
                 
                 handleStats(ftrStates, playerSesStat, playerName);
@@ -61,56 +59,7 @@ public class StatsComputer
     
     public StatsSession stats = null;
     
-    private void handlePreflopStats(FlopTurnRiverState[] ftrStates, StatsSessionPlayer playerSesStat, String preFlopPlayer)
-    {
-        //Checking BB does not affect stats
-        if (preFlopPlayer.equals(ftrStates[0].playerBB)
-                && ftrStates[0].tableStakes == ftrStates[0].getCurrentBet(preFlopPlayer)
-                && ftrStates[0].roundInitialBetter == null
-                )
-        {
-            log.debug("Player {} is an unraised big  blind", preFlopPlayer);
-            return;
-        }
-        
-        
-        
-        int playerBet = ftrStates[0].getCurrentBet(preFlopPlayer);
-        
-        final boolean playerAllin = ftrStates[0].allInMinimum.containsKey(preFlopPlayer);
-        
-        
-        
-        final boolean isPreFlopRaiser = StringUtils.equals(ftrStates[0].roundInitialBetter, preFlopPlayer);
-        
-        if (!isPreFlopRaiser &&
-                ftrStates[0].roundInitialBetter != null &&
-                BooleanUtils.isNotTrue(ftrStates[0].hasFolded.get(preFlopPlayer))
-                ) 
-        {
-            log.debug("Player {} called an initial raise", preFlopPlayer);
-            playerSesStat.raisedPreflopDenom++;
-            playerSesStat.notFoldRaisedPreflop++;
-        } else if (BooleanUtils.isTrue(ftrStates[0].foldedToBetOrRaise.get(preFlopPlayer))) {
-            playerSesStat.raisedPreflopDenom++;
-            log.debug("Folded to a preflop raise {}", preFlopPlayer);
-        }
-        
-        
-        if (isPreFlopRaiser && !playerAllin)
-        {
-            playerSesStat.preFlopRaises ++;
-            playerSesStat.preFlopRaiseTotalAmt += playerBet;
-            log.debug("Player {} pre flop raised {}", preFlopPlayer, playerBet);
-        }
-        
-        if (playerAllin && isPreFlopRaiser)
-        {
-            playerSesStat.preFlopTapis++;
-        }
-        
-       
-    }
+    
     private void handleRoundStats(FlopTurnRiverState[] ftrStates, StatsSessionPlayer player, String playerName)
     {
         Preconditions.checkNotNull(ftrStates);
@@ -129,47 +78,10 @@ public class StatsComputer
             final boolean isInitialBetter = StringUtils.equals(ftrStates[r+1].roundInitialBetter, playerName);
             
             
-            
-                        
-            final boolean hasReraised = (BooleanUtils.isTrue(ftrStates[r+1].hasReraised.get(playerName)));
-            
             final boolean opened = ftrStates[r+1].amtToCall > 0 && !isInitialBetter; 
-            if (opened)
-            {
-                
-                //Make sure at least 1 raise / fold / call is true
-                
-                int check = 0;
-                if (hasReraised)
-                   ++check;
-            
-                if (BooleanUtils.isTrue(ftrStates[r+1].foldedToBetOrRaise.get(playerName)))
-                    ++check;
-                
-                if (BooleanUtils.isTrue(ftrStates[r+1].calledABetOrRaise.get(playerName)))
-                    ++check;
-                
-                if (BooleanUtils.isTrue(ftrStates[r+1].allInMinimum.containsKey(playerName)))
-                    ++check;
-                
-               if (false) Preconditions.checkState(1 <= check && check <= 3,
-                        "%s Player %s has not just bet/folded/called in a raised round %s.\n " +
-                        " has bet [%s] has folded [%s]  has called [%s] has all in [%s]",
-                        check,
-                        playerName, r,
-                        hasReraised,
-                        ftrStates[r+1].foldedToBetOrRaise.get(playerName),
-                        ftrStates[r+1].calledABetOrRaise.get(playerName),
-                        ftrStates[r+1].allInMinimum.containsKey(playerName)
-                        );
-                        
-            }
-            
+           
             final boolean unOpened = (ftrStates[r+1].amtToCall == 0 || isInitialBetter);
-            final boolean playerHasBet = BooleanUtils.isTrue(ftrStates[r+1].hasBet.get(playerName));
-            final boolean playerHasReraised = BooleanUtils.isTrue(ftrStates[r+1].hasReraised.get(playerName));
-            
-            
+           
             
             
             

@@ -23,21 +23,6 @@ public class StatsSessionPlayer {
     
     
     
-    //Suivre ou relance une relancement avant le flop
-    public int notFoldRaisedPreflop;
-    //In a preflop raise situation (not the initial raiser)
-    public int raisedPreflopDenom;
-    
-    //Suivre ou relance une relancement avant le flop
-    public int notFoldReraisedPreflop;
-    public int reraisedPreflopDenom;
-    
-    //excludes tapis
-    public int preFlopRaises;
-    public double preFlopRaiseTotalAmt;    
-    public int preFlopTapis;
-    public int preFlopReraise;
-    
     
     
     private String playerName;

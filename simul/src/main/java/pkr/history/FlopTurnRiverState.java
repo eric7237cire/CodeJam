@@ -45,7 +45,7 @@ public class FlopTurnRiverState implements ParserListener
     public Map<String , Boolean> hasFolded;
     public boolean[] hasFoldedArr;
     public Map<String, Integer> allInMinimum;
-    Map<String, Boolean> allInBetExact;
+    
     String lastTapisPlayer;
     Map<String, Integer> playerBets;
     
@@ -53,15 +53,8 @@ public class FlopTurnRiverState implements ParserListener
     Map<String, Double> foldToBetSize;
     
     public String roundInitialBetter;
-//    String roundInitialReRaiser;  
    
     
-    public Map<String, Boolean> calledABetOrRaise;
-    public Map<String, Boolean> foldedToBetOrRaise;
-
-    Map<String, Boolean> hasBet;
-    public Map<String, Boolean> hasReraised;
-    Map<String, Boolean> hasChecked;
     
     
     String playerSB;
@@ -118,14 +111,7 @@ public class FlopTurnRiverState implements ParserListener
         hasFoldedArr = new boolean[MAX_PLAYERS];
         playerBets = Maps.newHashMap();
         allInMinimum = Maps.newHashMap();
-        allInBetExact = Maps.newHashMap();
         
-        calledABetOrRaise = Maps.newHashMap();
-        foldedToBetOrRaise = Maps.newHashMap();
-      //  foldedToBet = Maps.newHashMap();
-        hasBet = Maps.newHashMap();
-        hasReraised = Maps.newHashMap();
-        hasChecked = Maps.newHashMap();
         
         if (round == 0) {
             logOutput.debug("\n***********************************************");
@@ -447,8 +433,6 @@ public class FlopTurnRiverState implements ParserListener
                     
                     allInMinimum.put(lastTapisPlayer, amtToCall);
                     
-                    //Nous savons que le tapis était une relance et pas un suivi
-                    calledABetOrRaise.remove(lastTapisPlayer);
                     
                     
                     changeLastTapisAction( Action.RAISE_ALL_IN, true );
@@ -463,7 +447,6 @@ public class FlopTurnRiverState implements ParserListener
             Preconditions.checkState(betAmt == amtToCall, "Bet amount %s does not equal incoming amount to call %s", betAmt, amtToCall);
         }
         
-        calledABetOrRaise.put(playerName, true);
         
         boolean seenPlayer = incrementPlayer(playerName);
         printHandHistory("Call $" + Statistics.moneyFormat.format(betAmt));
@@ -499,7 +482,7 @@ public class FlopTurnRiverState implements ParserListener
         
         if (roundInitialBetter == null) {
             roundInitialBetter = playerName;
-            hasBet.put(playerName, true);
+           
             
             Preconditions.checkState(round == 0 || amtToCall == 0);
             
@@ -509,9 +492,7 @@ public class FlopTurnRiverState implements ParserListener
             log.debug("Player %{} bet %{} of pot", playerName, Statistics.df2.format(potRatio));
             betToPotSize.put(playerName, potRatio);
             
-        } else {
-            hasReraised.put(playerName, true);
-        }
+        } 
         
         if (round == 0 && tableStakes <= 0)
         {
@@ -585,17 +566,7 @@ public class FlopTurnRiverState implements ParserListener
         
         foldToBetSize.put(playerName, potRatio);
         
-        /*
-         * Il est possible que personne a misé, 
-         * mais on considère qu'il s'est couché après une relance.
-         * 
-         * 
-         */
-        if (roundInitialBetter != null || round > 0)
-        {
-            
-            foldedToBetOrRaise.put(playerName, true);
-        }
+        
         
         
         boolean seenPlayer = incrementPlayer(playerName);
@@ -654,7 +625,6 @@ public class FlopTurnRiverState implements ParserListener
         
         Preconditions.checkState(amtToCall == 0);
         
-        hasChecked.put(playerName, true);
         
       //  boolean seenPlayer = 
         incrementPlayer(playerName);
@@ -698,18 +668,7 @@ public class FlopTurnRiverState implements ParserListener
             //we have to guess what the stakes were
             tableStakes = 1;
         }
-        
-        if (amtToCall > 0)
-        {
-            calledABetOrRaise.put(playerName, true);
-
-            //we don't know...it's a guess
-            hasReraised.put(playerName,true);
-        } else {
-            //Tapis count just as tapis
-            //hasBet.put(playerName, true);
-        }
-        
+                
         
         incrementPlayer(playerName);
         printHandHistory("All in for unknown amount");
