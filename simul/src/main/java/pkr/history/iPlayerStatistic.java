@@ -1,5 +1,6 @@
 package pkr.history;
 
+
 public interface iPlayerStatistic {
     String getId();
     
@@ -9,5 +10,5 @@ public interface iPlayerStatistic {
     
    // iPlayerStatistic create(String playerName, int round);
     
-    void calculate(FlopTurnRiverState[] state);
+    void calculate(HandInfo state);
 }

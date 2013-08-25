@@ -1,8 +1,6 @@
 package test;
 
-import static org.junit.Assert.*;
-
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.history.FlopTurnRiverState;
+import pkr.history.HandInfoCollector;
 import pkr.history.Parser;
 import pkr.history.StatsSession;
 import pkr.history.StatsSessionPlayer;
@@ -28,11 +27,11 @@ public class TestRoundStats
     @Test
     public void testDonkContLimped1() throws Exception
     {
-        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testStats1");
+        HandInfoCollector results = TestPreflopStats.getList("testStats1");
         
-        assertEquals(1, results.size());
+        assertEquals(1, results.masterList.size());
         
-        FlopTurnRiverState[] handStates = results.get(0);
+        FlopTurnRiverState[] handStates = results.masterList.get(0);
         
         StatsSession stats = Parser.computeStats(results);
         
@@ -66,11 +65,11 @@ public class TestRoundStats
     @Test
     public void testFoldToZeroBet() throws Exception
     {
-        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testFoldToZeroBet");
+        HandInfoCollector results = TestPreflopStats.getList("testFoldToZeroBet");
         
-        assertEquals(2, results.size());
+        assertEquals(2, results.masterList.size());
         
-        FlopTurnRiverState[] handStates = results.get(0);
+        FlopTurnRiverState[] handStates = results.masterList.get(0);
         
         StatsSession stats = Parser.computeStats(results);
         
@@ -88,9 +87,9 @@ public class TestRoundStats
     @Test
     public void testRoundStats() throws Exception
     {
-        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testRoundStats");
+        HandInfoCollector results = TestPreflopStats.getList("testRoundStats");
         
-        assertEquals(6, results.size());
+        assertEquals(6, results.masterList.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         
@@ -142,9 +141,9 @@ public class TestRoundStats
     @Test
     public void testReraise1() throws Exception
     {
-        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testReraise1");
+        HandInfoCollector results = TestPreflopStats.getList("testReraise1");
         
-        assertEquals(2, results.size());
+        assertEquals(2, results.masterList.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         
@@ -316,9 +315,9 @@ public class TestRoundStats
     @Test
     public void testReraise2() throws Exception
     {
-        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testReraise2");
+        HandInfoCollector results = TestPreflopStats.getList("testReraise2");
         
-        assertEquals(1, results.size());
+        assertEquals(1, results.masterList.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         
@@ -341,11 +340,11 @@ public class TestRoundStats
     @Test
     public void testNonAgg1() throws Exception
     {
-        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testNonAgg1");
+        HandInfoCollector results = TestPreflopStats.getList("testNonAgg1");
         
-        assertEquals(2, results.size());
+        assertEquals(2, results.masterList.size());
         
-        FlopTurnRiverState[] handStates = results.get(0);
+        FlopTurnRiverState[] handStates = results.masterList.get(0);
         
         StatsSession stats = Parser.computeStats(results);
         
@@ -374,11 +373,11 @@ public class TestRoundStats
     @Test
     public void testRaise1() throws Exception
     {
-        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testRaise1");
+        HandInfoCollector results = TestPreflopStats.getList("testRaise1");
         
-        assertEquals(6, results.size());
+        assertEquals(6, results.masterList.size());
         
-        FlopTurnRiverState[] handStates = results.get(0);
+        FlopTurnRiverState[] handStates = results.masterList.get(0);
         
         StatsSession stats = Parser.computeStats(results);
         
@@ -405,8 +404,8 @@ public class TestRoundStats
     @Test
     public void testPlayerLeft() throws Exception
     {
-        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testPlayerLeft");
+        HandInfoCollector results = TestPreflopStats.getList("testPlayerLeft");
         
-        assertEquals(0, results.size());
+        assertEquals(0, results.masterList.size());
     }
 }

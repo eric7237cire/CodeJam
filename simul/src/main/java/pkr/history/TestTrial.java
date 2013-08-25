@@ -2,7 +2,6 @@ package pkr.history;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 public class TestTrial
 {
@@ -16,7 +15,7 @@ public class TestTrial
         File file = new File(fileName);
         File inputFile = new File(brutefileName);
         
-        List<FlopTurnRiverState[]> hands = Parser.parseFile(inputFile, file);
+        HandInfoCollector hands = Parser.parseFile(inputFile, file);
         
         StatsSession stats = Parser.computeStats(hands);
     }

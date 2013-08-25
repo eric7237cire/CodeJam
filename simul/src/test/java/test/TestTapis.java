@@ -1,8 +1,6 @@
 package test;
 
-import static org.junit.Assert.*;
-
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.history.FlopTurnRiverState;
+import pkr.history.HandInfoCollector;
 import pkr.history.Parser;
 import pkr.history.StatsSession;
 import pkr.history.StatsSessionPlayer;
@@ -28,11 +27,11 @@ public class TestTapis
     @Test
     public void testTapis1() throws Exception
     {
-        List<FlopTurnRiverState[]> results = TestPreflopStats.getList("testTapis1");
+        HandInfoCollector results = TestPreflopStats.getList("testTapis1");
         
-        assertEquals(1, results.size());
+        assertEquals(1, results.masterList.size());
         
-        FlopTurnRiverState[] handStates = results.get(0);
+        FlopTurnRiverState[] roundStates = results.masterList.get(0);
         
         StatsSession stats = Parser.computeStats(results);
         

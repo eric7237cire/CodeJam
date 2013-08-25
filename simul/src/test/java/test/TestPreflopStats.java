@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import pkr.history.FlopTurnRiverState;
+import pkr.history.HandInfoCollector;
 import pkr.history.Parser;
 import pkr.history.StatsSession;
 import pkr.history.StatsSessionPlayer;
@@ -25,7 +26,7 @@ public class TestPreflopStats
 
     
     
-    public static List<FlopTurnRiverState[]> getList(String testFile) throws URISyntaxException, IOException
+    public static HandInfoCollector getList(String testFile) throws URISyntaxException, IOException
     {
         URL testInputUrl = TestPreflopStats.class.getResource("/parser/" + testFile + ".txt");
         //URL cleanInputUrl = getClass().getResource("/parser/clean" + testFile + ".txt");
@@ -44,11 +45,11 @@ public class TestPreflopStats
     @Test
     public void testTapisSuivi1() throws Exception
     {
-        List<FlopTurnRiverState[]> results = getList("testTapisSuivi1");
+        HandInfoCollector results = getList("testTapisSuivi1");
         
-        assertEquals(5, results.size());
+        assertEquals(5, results.masterList.size());
         
-        FlopTurnRiverState[] handStates = results.get(0);
+        FlopTurnRiverState[] handStates = results.masterList.get(0);
         
         StatsSession stats = Parser.computeStats(results);
     }
@@ -57,11 +58,11 @@ public class TestPreflopStats
     @Test
     public void testTurnTapis() throws Exception
     {
-        List<FlopTurnRiverState[]> results = getList("testNonPreflopTapis1");
+        HandInfoCollector results = getList("testNonPreflopTapis1");
         
-        assertEquals(4, results.size());
+        assertEquals(4, results.masterList.size());
         
-        FlopTurnRiverState[] handStates = results.get(0);
+        FlopTurnRiverState[] handStates = results.masterList.get(0);
         
         StatsSession stats = Parser.computeStats(results);
     }
@@ -70,11 +71,11 @@ public class TestPreflopStats
     @Test
     public void testVPIP1() throws Exception
     {
-        List<FlopTurnRiverState[]> results = getList("testVPIP1");
+        HandInfoCollector results = getList("testVPIP1");
         
-        assertEquals(5, results.size());
+        assertEquals(5, results.masterList.size());
         
-        FlopTurnRiverState[] handStates = results.get(0);
+        FlopTurnRiverState[] handStates = results.masterList.get(0);
         
         StatsSession stats = Parser.computeStats(results);
         
@@ -125,9 +126,9 @@ public class TestPreflopStats
     @Test
     public void testVPIP2() throws Exception
     {
-        List<FlopTurnRiverState[]> results = getList("testVPIP2");
+        HandInfoCollector results = getList("testVPIP2");
         
-        assertEquals(4, results.size());
+        assertEquals(4, results.masterList.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         
@@ -166,9 +167,9 @@ public class TestPreflopStats
     @Test
     public void testPFR1() throws Exception
     {
-        List<FlopTurnRiverState[]> results = getList("testPFR1");
+        HandInfoCollector results = getList("testPFR1");
         
-        assertEquals(6, results.size());
+        assertEquals(6, results.masterList.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         
@@ -235,9 +236,9 @@ public class TestPreflopStats
     @Test
     public void test3bet1() throws Exception
     {
-        List<FlopTurnRiverState[]> results = getList("test3bet1");
+        HandInfoCollector results = getList("test3bet1");
         
-        assertEquals(4, results.size());
+        assertEquals(4, results.masterList.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         
@@ -278,9 +279,9 @@ public class TestPreflopStats
     @Test
     public void testPFR2() throws Exception
     {
-        List<FlopTurnRiverState[]> results = getList("testPFR2");
+        HandInfoCollector results = getList("testPFR2");
         
-        assertEquals(1, results.size());
+        assertEquals(1, results.masterList.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         

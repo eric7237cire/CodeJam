@@ -13,14 +13,14 @@ public class StatsComputer
 
      Logger log = LoggerFactory.getLogger(StatsComputer.class);
     
-    public StatsComputer(List<FlopTurnRiverState[]> hands ) {
+    public StatsComputer(HandInfoCollector hands ) {
 
         stats = new StatsSession();
         
-        for(int hand = 0; hand < hands.size(); ++hand )
+        for(int hand = 0; hand < hands.masterList.size(); ++hand )
         {
-            FlopTurnRiverState[] ftrStates = hands.get(hand);
-            log.debug("\nStats hand : {} line # : {}", hand+1, ftrStates[0].lineNumber);
+            FlopTurnRiverState[] ftrStates = hands.masterList.get(hand);
+            log.debug("\nStats hand : {} line # : {}", hand+1, hands.startingLines.get(hand));
             
             for(String playerName : ftrStates[0].players)
             {
@@ -29,13 +29,13 @@ public class StatsComputer
                 
                 playerSesStat.totalHands++;
                                                 
-                handleStats(ftrStates, playerSesStat, playerName);
+                handleStats(hands.listHandInfo.get(hand), playerSesStat, playerName);
             }
         }
         
-        for(int hs = hands.size() - 1; hs >= 0; --hs)
+        for(int hs = hands.masterList.size() - 1; hs >= 0; --hs)
         {
-            List<String> p = hands.get(hs)[0].players;
+            List<String> p = hands.masterList.get(hs)[0].players;
             if (p.size() > 1)
             {
                 stats.currentPlayerList = p;
@@ -132,18 +132,18 @@ public class StatsComputer
     
    
     
-    private void handleStats(FlopTurnRiverState[] ftrStates, StatsSessionPlayer player, String playerName)
+    private void handleStats(HandInfo handInfo, StatsSessionPlayer player, String playerName)
     {
         //Precompute common traits
        // defineAllins(ftrStates);
         
-        calculateGlobalRaiseCount(ftrStates);
-        getAgresseur(ftrStates);
+        calculateGlobalRaiseCount(handInfo.roundStates);
+        getAgresseur(handInfo.roundStates);
         
         
         for(Map.Entry<String, iPlayerStatistic> entries : player.stats.entrySet())
         {
-            entries.getValue().calculate(ftrStates);
+            entries.getValue().calculate(handInfo);
         }
     }
     

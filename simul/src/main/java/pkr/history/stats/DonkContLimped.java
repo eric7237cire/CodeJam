@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.history.FlopTurnRiverState;
+import pkr.history.HandInfo;
 import pkr.history.PlayerAction;
 import pkr.history.PlayerAction.Action;
 import pkr.history.Statistics;
@@ -130,11 +131,21 @@ public class DonkContLimped implements iPlayerStatistic
         return sb.toString();
     }
 
-    
+    private static String buildLink(HandInfo handInfo)
+    {
+        StringBuffer sb = new StringBuffer();
+        sb
+        .append("&lt;a href=\"handsLog.xhtml#hand_" )
+        .append(handInfo.handIndex)
+        .append("\"  target=\"_blank\" &gt;link&lt;/a&gt;");
+        
+        return sb.toString();
+    }
 
     @Override
-    public void calculate(FlopTurnRiverState[] ftrStates) {
+    public void calculate(HandInfo handInfo) {
         
+        FlopTurnRiverState[] ftrStates = handInfo.roundStates;
         FlopTurnRiverState ftr = ftrStates[round];
         
         //Vérification que la tournée est en bonne état
@@ -163,6 +174,7 @@ public class DonkContLimped implements iPlayerStatistic
         
         final int type = estLimped ? LIMPED : (estAgresseur ? IS_AGGRES : NOT_AGGRES);
         
+        final String link = buildLink(handInfo);
         
         ++actionPossible[type][ALL_IN];
         ++count[type];
@@ -206,8 +218,9 @@ public class DonkContLimped implements iPlayerStatistic
                     .append( " with ")
                     .append(currentAction.playersLeft)
                     .append(" players ")
+                    .append(link)
                     .append(" Line #")
-                    .append(ftrStates[0].lineNumber)
+                    .append(handInfo.startingLine)
                     .append("&lt;br /&gt;");
                     
                     
@@ -245,8 +258,9 @@ public class DonkContLimped implements iPlayerStatistic
                     .append( " with ")
                     .append(currentAction.playersLeft)
                     .append(" players ")
+                    .append(link)
                     .append(" Line #")
-                    .append(ftrStates[0].lineNumber)
+                    .append(handInfo.startingLine)
                     .append("&lt;br /&gt;");
                     
                 } else if (currentAction.action == Action.FOLD) 
@@ -263,8 +277,9 @@ public class DonkContLimped implements iPlayerStatistic
                     .append( " with ")
                     .append(currentAction.playersLeft)
                     .append(" players ")
+                    .append(link)
                     .append(" Line #")
-                    .append(ftrStates[0].lineNumber)
+                    .append(handInfo.startingLine)
                     .append("&lt;br /&gt;");
                     
                 } else if (currentAction.action == Action.RAISE || currentAction.action == Action.RAISE_ALL_IN)
@@ -283,8 +298,9 @@ public class DonkContLimped implements iPlayerStatistic
                     .append( " with ")
                     .append(currentAction.playersLeft)
                     .append(" players ")
+                    .append(link)
                     .append(" Line #")
-                    .append(ftrStates[0].lineNumber)
+                    .append(handInfo.startingLine)
                     .append("&lt;br /&gt;");
                     
                     if (prevAction != null &&
@@ -340,8 +356,9 @@ public class DonkContLimped implements iPlayerStatistic
                     .append( " with ")
                     .append(currentAction.playersLeft)
                     .append(" players ")
+                    .append(link)
                     .append(" Line #")
-                    .append(ftrStates[0].lineNumber)
+                    .append(handInfo.startingLine)
                     .append("&lt;br /&gt;");
                 }
                 

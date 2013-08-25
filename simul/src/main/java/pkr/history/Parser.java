@@ -3,7 +3,6 @@ package pkr.history;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 
 import freemarker.template.Configuration;
@@ -107,7 +105,7 @@ public class Parser {
         File file = new File(fileName);
         File inputFile = new File(brutefileName);
         
-        List<FlopTurnRiverState[]> hands = parseFile(inputFile, file);
+        HandInfoCollector hands = parseFile(inputFile, file);
         
         StatsSession stats = computeStats(hands);
     }
@@ -148,7 +146,45 @@ public class Parser {
             log.error("ex",e);
         }
     }
-    public static StatsSession computeStats(List<FlopTurnRiverState[]> hands)
+    
+    public static void outputHands(HandInfoCollector hc)
+    {
+      //Freemarker configuration object
+        Configuration cfg = new Configuration();
+        
+        cfg.setClassForTemplateLoading(Parser.class, "/");
+        
+        try {
+            //Load template from source folder
+            Template template = cfg.getTemplate("handsLog.ftl");
+             
+            // Build the data-model
+            Map<String, Object> data = new HashMap<String, Object>();
+           
+            template.setEncoding("UTF-8");
+ 
+            data.put("hands", hc.listHandInfo);
+             
+            // Console output
+            /*
+            Writer out = new OutputStreamWriter(System.out);
+            template.process(data, out);
+            out.flush();
+ */
+            // File output
+            Writer file = new FileWriter (new File("C:\\codejam\\CodeJam\\simul\\output\\handsLog.xhtml"));
+            template.process(data, file);
+            file.flush();
+            file.close();
+             
+        } catch (IOException e) {
+            log.error("ex",e);
+        } catch (TemplateException e) {
+            log.error("ex",e);
+        }
+    }
+    
+    public static StatsSession computeStats(HandInfoCollector hands)
     {
         
         StatsComputer sc = new StatsComputer(hands);
@@ -157,6 +193,8 @@ public class Parser {
         Collections.sort(sc.stats.currentPlayerList);
         
         outputStats(sc);
+        
+        outputHands(hands);
         
         if (1==1)
             return sc.stats;
@@ -221,9 +259,8 @@ public class Parser {
         return sc.stats;
     }
     
-    
-    
-    public static List<FlopTurnRiverState[]> parseFile(File rawHandHistory, File cleanedHandHistory) throws IOException {
+   
+    public static HandInfoCollector parseFile(File rawHandHistory, File cleanedHandHistory) throws IOException {
         //String fileName = "C:\\codejam\\CodeJam\\simul\\hands.txt";
         
         Preprocessor.clean(rawHandHistory, cleanedHandHistory);
@@ -232,7 +269,7 @@ public class Parser {
         
         ParserListener curState = null;
         
-        List<FlopTurnRiverState[]> masterList = Lists.newArrayList();
+        HandInfoCollector handInfoCollector = new HandInfoCollector();
         
         for(int i = 0; i < lines.size(); ++i)
         {
@@ -252,11 +289,10 @@ public class Parser {
             match = patHandBoundary.matcher(line);
             if (match.matches())
             {
-                curState = new FlopTurnRiverState(new ArrayList<String>(), 0, false, 0,  masterList, 
-                        i,
-                        new FlopTurnRiverState[4]);
-                log.debug("Hand # {} starts on line {}", masterList.size()+1, i);
-                
+                curState = new FlopTurnRiverState(new ArrayList<String>(), 0, false, 0, handInfoCollector,
+                        new HandInfo(i, handInfoCollector.masterList.size()));
+                log.debug("Hand # {} starts on line {}", handInfoCollector.masterList.size()+1, i);
+                handInfoCollector.startingLines.add(i);
                 continue;
             }
            
@@ -367,7 +403,7 @@ public class Parser {
     
         
         
-        return masterList;
+        return handInfoCollector;
     }
     
     

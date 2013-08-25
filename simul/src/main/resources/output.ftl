@@ -62,12 +62,16 @@ $('#${idPrefix}_action${actionId}').qtip({ // Grab some elements to apply the to
     },
      position: {
         my: 'top left',  // Position my top left...
-        at: 'bottom right', // at the bottom right of...
-        target: 'mouse' // my target
+        at: 'left center', // at the bottom right of...
+        target: 'event' // my target
     },
     style: {
         width: '800px'
-    }
+    },
+    hide: {
+             event: 'click',
+             inactive: 3000
+         }
 });           
            </#list>
         </#list>   

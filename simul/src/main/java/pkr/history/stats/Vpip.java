@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.history.FlopTurnRiverState;
+import pkr.history.HandInfo;
 import pkr.history.Statistics;
 import pkr.history.iPlayerStatistic;
 
@@ -43,7 +44,10 @@ public class Vpip implements iPlayerStatistic
     }
 
     @Override
-    public void calculate(FlopTurnRiverState[] ftrStates) {
+    public void calculate(HandInfo handInfo) {
+        
+        FlopTurnRiverState[] ftrStates = handInfo.roundStates;
+        
         if (preFlopPlayer.equals(ftrStates[0].playerBB)
                 && ftrStates[0].tableStakes == ftrStates[0].getCurrentBet(preFlopPlayer)
                 && ftrStates[0].roundInitialBetter == null

@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.history.FlopTurnRiverState;
+import pkr.history.HandInfo;
 import pkr.history.PlayerAction;
 import pkr.history.PlayerAction.Action;
 import pkr.history.Statistics;
@@ -58,8 +59,9 @@ public class ThreeBet implements iPlayerStatistic
     
 
     @Override
-    public void calculate(FlopTurnRiverState[] ftrStates) {
+    public void calculate(HandInfo handInfo) {
         
+        FlopTurnRiverState[] ftrStates = handInfo.roundStates;
         if (ftrStates[0] == null) {
             return;
         }

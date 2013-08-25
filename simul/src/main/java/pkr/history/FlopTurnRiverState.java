@@ -18,13 +18,14 @@ import com.google.common.collect.Maps;
 public class FlopTurnRiverState implements ParserListener
 {
     static Logger log = LoggerFactory.getLogger(Parser.class);
-    static Logger logOutput = LoggerFactory.getLogger("handOutput");
+    //static Logger logOutput = LoggerFactory.getLogger("handOutput");
     
     
-    public int lineNumber;
+    HandInfoCollector handInfoCollector; 
     
-    List<FlopTurnRiverState[]> masterList; 
-    FlopTurnRiverState[] roundStates;
+    
+    
+    HandInfo handInfo;
     
     //La liste complète d'actions faites dans la main
     public List<PlayerAction> actions;    
@@ -80,19 +81,18 @@ public class FlopTurnRiverState implements ParserListener
      * @param roundStates  holds all objects for the hand 
      */
     public FlopTurnRiverState(List<String> players, int pot, boolean replayLine, int round, 
-            List<FlopTurnRiverState[]> masterList, int lineNumber, FlopTurnRiverState[] roundStates) 
+            HandInfoCollector handInfoCollector,  HandInfo handInfo) 
     {
         super();
-        Preconditions.checkNotNull(roundStates);
-        Preconditions.checkNotNull(masterList);
+        Preconditions.checkNotNull(handInfoCollector);
+        Preconditions.checkNotNull(handInfo);
         
         this.players = players;
         this.pot = pot;
         this.replayLine = replayLine;
         this.round = round;
-        this.masterList = masterList;
-        this.roundStates = roundStates;
-        this.lineNumber = lineNumber;
+        this.handInfoCollector = handInfoCollector;
+        this.handInfo = handInfo;
         
         this.betToPotSize = Maps.newHashMap();
         this.foldToBetSize = Maps.newHashMap();
@@ -114,22 +114,28 @@ public class FlopTurnRiverState implements ParserListener
         
         
         if (round == 0) {
-            logOutput.debug("\n***********************************************");
-            logOutput.debug("Starting Hand {} line {}", masterList.size()+1,lineNumber);
+            handInfo.handLog.append("\n***********************************************");
+            handInfo.handLog.append("Starting Hand ")
+            .append(handInfoCollector.masterList.size()+1)
+            .append(" line ")
+            .append(handInfo.startingLine);
             
         }
         
-        Preconditions.checkState(roundStates.length == 4);
-        Preconditions.checkState(roundStates[round] == null);
-        roundStates[round] = this;
+        Preconditions.checkState(handInfo.roundStates.length == 4);
+        Preconditions.checkState(handInfo.roundStates[round] == null);
+        handInfo.roundStates[round] = this;
         
         log.debug("Nouveau round.  Players {} pot {}", players.size(), pot);
         
-        logOutput.debug("\n------------------------------");
-        logOutput.debug("\nStarting round {} with {} players.  Pot is ${}\n",
-               Statistics.roundToStr(round),
-                        players.size(),
-                        Statistics.moneyFormat.format(pot));
+        handInfo.handLog.append("\n------------------------------");
+        handInfo.handLog.append("\nStarting round ")
+        .append(Statistics.roundToStr(round))
+        .append(" with ")
+        .append(players.size())
+        .append(" players.  Pot is $")
+        .append(Statistics.moneyFormat.format(pot))
+        .append("\n");
                         
         
     }
@@ -223,7 +229,7 @@ public class FlopTurnRiverState implements ParserListener
         }
         
         FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder,
-                pot, replayline, 1, masterList, lineNumber,roundStates);
+                pot, replayline, 1, handInfoCollector, handInfo);
         
         return ftrState;
     }
@@ -252,7 +258,7 @@ public class FlopTurnRiverState implements ParserListener
         }
         
         FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder, 
-                pot, replayLine, 1+round, masterList, lineNumber, roundStates);
+                pot, replayLine, 1+round, handInfoCollector, handInfo);
         
         return ftrState;
     }
@@ -343,8 +349,14 @@ public class FlopTurnRiverState implements ParserListener
     private void printHandHistory(String action, int raiseAmt)
     {
         
-        logOutput.debug("** Player {} position {} Action [< {} >]", 
-                players.get(currentPlayer), 1+currentPlayer, action);
+        handInfo.handLog.append("\n** Player ")
+        .append(players.get(currentPlayer))
+        .append(" position ")
+        .append(1+currentPlayer)
+        .append("  Action [< ")
+        .append(action)
+        .append(" >]\n");
+                
         
         Integer playerBet = playerBets.get(players.get(currentPlayer)); 
         if (playerBet == null)
@@ -363,9 +375,16 @@ public class FlopTurnRiverState implements ParserListener
            // double callBluff = 100*betSizeToPot / (1+betSizeToPot);
             
             
-            logOutput.debug("Amount to call ${} for pot ${}.\n  Pot ratio (bluff catching) : {}%  | 1 to {} | {} outs", 
-                    Statistics.moneyFormat.format(diff), Statistics.moneyFormat.format(pot),
-                    Statistics.df2.format(perc), Statistics.df2.format(ratio), Statistics.df2.format(outsOne));
+            handInfo.handLog.append("Amount to call $")
+            .append(Statistics.moneyFormat.format(diff))
+            .append(" for pot $")
+            .append(Statistics.moneyFormat.format(pot))
+            .append(".\n  Pot ratio (bluff catching) : ")
+            .append(Statistics.df2.format(perc))
+            .append("%  | 1 to ")
+            .append(Statistics.df2.format(ratio))
+            .append(" | ")
+            .append(Statistics.df2.format(outsOne));
           //  logOutput.debug("Must be ahead {}% of the time to call a bluff", 
               //      Statistics.df2.format(callBluff));
         }
@@ -376,14 +395,17 @@ public class FlopTurnRiverState implements ParserListener
             double betSizeToPot = 1.0 * diff / pot;
             double bluff = 100.0*(betSizeToPot) / (1+betSizeToPot);
             
-            logOutput.debug("Raise amt ${} | %{} of pot " +
-            		"\nbluff % chance everyone must fold {}%",
-                    Statistics.moneyFormat.format(diff),
-                    Statistics.df2.format(100*betSizeToPot),
-                     Statistics.df2.format(bluff));
+            handInfo.handLog.append("Raise amt $")
+            .append(Statistics.moneyFormat.format(diff))
+            .append(" | %")
+            .append(Statistics.df2.format(100*betSizeToPot))
+            .append(" of pot ")
+            .append("\nbluff % chance everyone must fold ")
+            .append(Statistics.df2.format(bluff))
+            .append("%");
         }
         
-        logOutput.debug("\n");
+        handInfo.handLog.append("\n");
     }
 
     private void changeLastTapisAction(PlayerAction.Action pAction, boolean clearLastTapisPlayer)
@@ -706,10 +728,12 @@ public class FlopTurnRiverState implements ParserListener
         if (finalPot != pot ) {
             log.warn("Final pot calculated as {} but is {}", pot, finalPot);
         }
-        logOutput.debug("{} wins showdown with pot ${}", playerName, 
-                Statistics.moneyFormat.format(finalPot));
+        handInfo.handLog.append(playerName)
+        .append(" wins showdown with pot $")
+        .append(Statistics.moneyFormat.format(finalPot))
+        .append("");
         
-        this.masterList.add(this.roundStates);
+        this.handInfoCollector.handFinished(handInfo);
         
         return null;
     }
@@ -728,8 +752,8 @@ public class FlopTurnRiverState implements ParserListener
             
             playerPosToActions.add( new ArrayList<Integer>() );
         }
+        this.handInfoCollector.handFinished(handInfo);
         
-        this.masterList.add(this.roundStates);
         return null;
     }
 

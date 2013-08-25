@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.history.FlopTurnRiverState;
+import pkr.history.HandInfo;
 import pkr.history.Statistics;
 import pkr.history.iPlayerStatistic;
 
@@ -52,7 +53,9 @@ public class Pfr implements iPlayerStatistic
     }
 
     @Override
-    public void calculate(FlopTurnRiverState[] ftrStates) {
+    public void calculate(HandInfo handInfo) {
+        
+        FlopTurnRiverState[] ftrStates = handInfo.roundStates;
         
         final boolean isPreFlopRaiser = StringUtils.equals(ftrStates[0].roundInitialBetter, preFlopPlayer);
         
