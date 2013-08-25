@@ -572,7 +572,8 @@ public class FlopTurnRiverState implements ParserListener
         boolean seenPlayer = incrementPlayer(playerName);
         printHandHistory("Fold");
         
-        addAction(PlayerAction.createFold(currentPlayer, playerName, amtToCall, pot));
+        addAction(PlayerAction.createFold(currentPlayer, 
+                playerName, amtToCall, pot, playerBet));
         
         hasFoldedArr[currentPlayer] = true;
         hasFolded.put(playerName, true);

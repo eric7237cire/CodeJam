@@ -15,10 +15,13 @@ public class PlayerAction {
     
     public Action action;
     
-    //Called or raised this amount -or- folded to amount
+    //bet or raised this amount 
     public int amountRaised;
     
     public int incomingBetOrRaise;
+    
+    public int playerAmtPutInPotThisRound;
+    
     //Le pot avant l'action
     public int pot;
     
@@ -66,7 +69,7 @@ public class PlayerAction {
     }
     
     static PlayerAction createFold(int playerPosition, String playerName, 
-            int amountToCall, int pot)
+            int amountToCall, int pot, int playerAmtPutInPotThisRound)
     {
         PlayerAction action = new PlayerAction();
         action.playerPosition = playerPosition;
@@ -76,6 +79,8 @@ public class PlayerAction {
         
         action.incomingBetOrRaise = amountToCall;
         action.amountRaised = -1;
+        
+        action.playerAmtPutInPotThisRound = playerAmtPutInPotThisRound;
         
         return action;
     }

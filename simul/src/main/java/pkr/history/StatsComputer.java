@@ -3,14 +3,10 @@ package pkr.history;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.history.PlayerAction.Action;
-
-import com.google.common.base.Preconditions;
 
 public class StatsComputer
 {
@@ -32,9 +28,7 @@ public class StatsComputer
                 StatsSessionPlayer playerSesStat = getSessionStats(playerName);
                 
                 playerSesStat.totalHands++;
-                                
-                handleRoundStats(ftrStates, playerSesStat, playerName);
-                
+                                                
                 handleStats(ftrStates, playerSesStat, playerName);
             }
         }
@@ -49,45 +43,13 @@ public class StatsComputer
             }
         }
         
-        for(String playerName : stats.currentPlayerList)
-        {
-            StatsSessionPlayer pStats = stats.playerSessionStats.get(playerName);
-            
-
-        }
+       
     }
     
     public StatsSession stats = null;
     
     
-    private void handleRoundStats(FlopTurnRiverState[] ftrStates, StatsSessionPlayer player, String playerName)
-    {
-        Preconditions.checkNotNull(ftrStates);
-        Preconditions.checkArgument(ftrStates.length == 4);
-        
-        for(int r = 0; r < 3; ++r)
-        {
-        if (ftrStates[r+1] != null && 
-                ftrStates[r+1].players != null && 
-                ftrStates[r+1].players.size() > 1 && 
-                ftrStates[r+1].players.contains(playerName))
-        {
-            
-            log.debug("Player {} is in round {}", playerName, Statistics.roundToStr(r + 1));
-            
-            final boolean isInitialBetter = StringUtils.equals(ftrStates[r+1].roundInitialBetter, playerName);
-            
-            
-            final boolean opened = ftrStates[r+1].amtToCall > 0 && !isInitialBetter; 
-           
-            final boolean unOpened = (ftrStates[r+1].amtToCall == 0 || isInitialBetter);
-           
-            
-            
-            
-        }
-        }
-    }
+    
     
     void getAgresseur(FlopTurnRiverState[] ftrStates)
     {
@@ -168,45 +130,7 @@ public class StatsComputer
         }   
     }
     
-    /**
-     * Déterminer si les all-ins était des calls ou des relances
-     * @param ftrStates
-     */
-    private void defineAllins(FlopTurnRiverState[] ftrStates)
-    {
-        for(int round = 0; round <= 3; ++round)
-        {
-            FlopTurnRiverState ftr = ftrStates[round];
-            if (ftr == null)
-                continue;
-            
-            Action lastAction = null;
-            for(int actionIndex = ftr.actions.size() - 1; actionIndex >= 0; --actionIndex)
-            {
-                PlayerAction action = ftr.actions.get(actionIndex);
-                
-                if (action.action == Action.ALL_IN)
-                {
-                    if (lastAction == null || lastAction == Action.CHECK) {
-                        action.action = Action.CALL_ALL_IN;
-                    } else if ( lastAction == Action.CALL )
-                    {
-                        action.action = Action.RAISE_ALL_IN;
-                    } else if ( lastAction == Action.RAISE )
-                    {
-                        log.debug("All in at index, guessing it was a call");
-                        action.action = Action.CALL_ALL_IN;
-                    }
-                          
-                } else if ( action.action == Action.CALL ||
-                            action.action == Action.RAISE ||
-                            action.action == Action.CHECK)
-                {
-                    lastAction = action.action;
-                }
-            }
-        }
-    }
+   
     
     private void handleStats(FlopTurnRiverState[] ftrStates, StatsSessionPlayer player, String playerName)
     {

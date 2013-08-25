@@ -297,6 +297,7 @@ public class DonkContLimped implements iPlayerStatistic
             
             } else if (currentAction.globalRaiseCount >= 2) {
                 
+                boolean foldToRaise = false;
                 if (currentAction.globalRaiseCount == 2 &&
                         prevAction != null &&
                         prevAction.action == Action.RAISE)
@@ -306,6 +307,7 @@ public class DonkContLimped implements iPlayerStatistic
                     
                     if (currentAction.action == Action.FOLD)
                     {
+                        foldToRaise = true;
                         ++actions[type][FOLD_RAISE];
                     }
                 } else {
@@ -315,9 +317,33 @@ public class DonkContLimped implements iPlayerStatistic
                     if (currentAction.action == Action.FOLD)
                     {
                         ++actions[type][FOLD_RAISE];
+                        foldToRaise = true;
+                        
                     }
                 }
                 
+                if (foldToRaise)
+                {
+                    actionsDesc[type][FOLD_RAISE].append("Player ").append(playerName);
+                    if (currentAction.incomingBetOrRaise == currentAction.playerAmtPutInPotThisRound + 1)
+                    {
+                        actionsDesc[type][FOLD_RAISE].append(" folded to an all in");
+                    } else {
+                        actionsDesc[type][FOLD_RAISE].append(" folded to a raise of ")
+                        .append(Statistics.formatMoney(currentAction.incomingBetOrRaise));
+                    }
+                    
+                    actionsDesc[type][FOLD_RAISE].append(" having put in ")
+                    .append(Statistics.formatMoney(currentAction.playerAmtPutInPotThisRound))
+                    .append(" into pot ")
+                    .append(Statistics.formatMoney(currentAction.pot))
+                    .append( " with ")
+                    .append(currentAction.playersLeft)
+                    .append(" players ")
+                    .append(" Line #")
+                    .append(ftrStates[0].lineNumber)
+                    .append("&lt;br /&gt;");
+                }
                 
                 if (currentAction.playersLeft > 1)
                 {
