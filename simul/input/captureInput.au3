@@ -38,12 +38,22 @@ EndFunc
 Func TakeText()
 
 Send("^a")
-sleep(30)
+sleep(260)
+Send("^a")
+sleep(260)
 Send("^c")
-sleep(30)
+sleep(260)
 Send("^c")
+sleep(260)
 
 Local $text = ClipGet() 
+
+ClipPut("")
+Local $t = ClipPut(@HOUR & " " & @MIN & " " & @SEC & @CRLF)
+
+if $t <> 1 then
+MsgBox(0, "Clipput failed", $t)
+endif
 
 if ( StringInStr($text, "_____________________________") = 0) then
 MsgBox(0, "Clipboard contains:", $text)
@@ -56,8 +66,11 @@ If $file = -1 Then
     Exit
 EndIf
 Local $a = FileWrite($file, $text)
+;FileWrite($file, @CRLF & "//" & @HOUR & " " & @MIN & " " & @SEC & @CRLF)
 FileWrite($file, @CRLF & "**" & @CRLF)
 FileClose($file)
+
+sleep(60)
 
 $a = Run("C:\codejam\codejam\simul\runsimul.bat", "C:\codejam\codejam\simul", @SW_MINIMIZE)
 ;MsgBox(0, "Error", $a)

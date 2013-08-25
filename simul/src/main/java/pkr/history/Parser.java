@@ -361,7 +361,7 @@ public class Parser {
                 continue;
             }
             
-            Preconditions.checkState(false, line);
+            Preconditions.checkState(false, "Line (%s) %s", i,  line);
             //log.debug("Line {}", line);
         }
     

@@ -48,6 +48,9 @@
         <set name="good">
             55+, A8s+, K9s+, QTs+, JTs, T9s, 98s, 87s, A8o+, KJo+, QJo, JTo
         </set>
+		<set name="pfr2000">
+            22+, A6s+, K9s+, Q9s+, JTs, T9s, 98s, 87s, A8o+, KJo+, QJo, JTo
+        </set>
 
         <set name="my calling">
             22-77
@@ -88,21 +91,9 @@
             <player set="my raising" count="1"/>
             <player set="btn" count="1"/>
         </scenario>  
--->
-    <scenarios>
-        
-        <scenario name="allCouleur" iterCount="40000">
-       <player count="1">
-            AJo
-            </player>
-            <player count="2">
-            AT+, 55+
-            </player>
-            
-       </scenario>
-        
+		
 		<scenario name="vs loose" iterCount="40">
-            <!--  <player set="co" count="1"/>-->
+            
             <player count="0">
             76s, 65s, 54s, 43s,
             </player>
@@ -132,7 +123,22 @@
 	   <scenario name="vs ok" iterCount="60">
             <player set="my raising" count="1"/>
 			<player set="ok" count="2"/>
-        </scenario>        
+        </scenario> 
+-->
+    <scenarios>
+        
+        <scenario name="scenario" iterCount="40000">
+       <player count="1">
+            A9o
+            </player>
+            <player set="random" count="2"/>
+			<player set="pfr2000" count="0"/>
+            <player count="0">
+            A8+, 22+, KJ, Q9+
+            </player>
+            
+       </scenario>
+               
     </scenarios>
 
 </simul>
