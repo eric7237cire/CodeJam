@@ -2,9 +2,7 @@ package pkr.history;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,18 +10,14 @@ import pkr.history.PlayerAction.Action;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 
 public class FlopTurnRiverState implements ParserListener
 {
     static Logger log = LoggerFactory.getLogger(Parser.class);
-    //static Logger logOutput = LoggerFactory.getLogger("handOutput");
-    
     
     HandInfoCollector handInfoCollector; 
-    
-    
+        
     
     HandInfo handInfo;
     
