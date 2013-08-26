@@ -113,7 +113,7 @@ public class FlopTurnRiverState implements ParserListener
         if (round == 0) {
             handInfo.handLog.append("\n***********************************************");
             handInfo.handLog.append("Starting Hand ")
-            .append(handInfoCollector.masterList.size()+1)
+            .append(handInfoCollector.listHandInfo.size()+1)
             .append(" line ")
             .append(handInfo.startingLine);
             
@@ -179,14 +179,7 @@ public class FlopTurnRiverState implements ParserListener
         return bet;
     }
     
-    @Deprecated
-    public int getAllInBet(String playerName)
-    {
-        int playerPos = players.indexOf(playerName);
-        
-        return allInMinimum[playerPos];
-        
-    }
+    
     
     
     
@@ -202,7 +195,7 @@ public class FlopTurnRiverState implements ParserListener
         playerBB = players.get(bbPos);
         
         
-        if (!hasFolded[sbPos] &&  allInMinimum[sbPos] <= 0) {
+        if (!hasFolded[sbPos] &&  allInMinimum[sbPos] < 0) {
             log.debug("Adding small blind {}", playerSB);
             playersInOrder.add(playerSB);
         } else {
@@ -215,7 +208,7 @@ public class FlopTurnRiverState implements ParserListener
             }
         }
         
-        if (!hasFolded[bbPos] &&  allInMinimum[bbPos] <= 0) {
+        if (!hasFolded[bbPos] &&  allInMinimum[bbPos] < 0) {
             log.debug("Adding big blind {}", playerBB);
             playersInOrder.add(playerBB);
         } else {
@@ -229,7 +222,7 @@ public class FlopTurnRiverState implements ParserListener
         for(int i = 0; i < players.size() - 2; ++i) {
             String playerName = players.get(i);
             if (!hasFolded[i]
-                    &&  allInMinimum[i] <= 0
+                    &&  allInMinimum[i] < 0
                     ) {
                 log.debug("Adding player {}", playerName);
                 playersInOrder.add(playerName);
@@ -257,7 +250,7 @@ public class FlopTurnRiverState implements ParserListener
         for(int i = 0; i < players.size() ; ++i) {
             String playerName = players.get(i);
             if (!hasFolded[i]
-                    && allInMinimum[i] <= 0
+                    && allInMinimum[i] < 0
                     
                     ) {
                 log.debug("Adding player {}", playerName);
@@ -356,7 +349,7 @@ public class FlopTurnRiverState implements ParserListener
     
     private void printHandHistory(String action)
     {
-        printHandHistory(action, 0);
+        printHandHistory(action, -1);
     }
     private void printHandHistory(String action, int raiseAmt)
     {
@@ -365,9 +358,9 @@ public class FlopTurnRiverState implements ParserListener
         .append(players.get(currentPlayer))
         .append(" position ")
         .append(1+currentPlayer)
-        .append("  Action [< ")
+        .append("  Action [<b> ")
         .append(action)
-        .append(" >]\n");
+        .append(" </b>]\n");
                 
         
         int playerBet = playerBets[currentPlayer]; 
@@ -414,7 +407,7 @@ public class FlopTurnRiverState implements ParserListener
             .append(" of pot ")
             .append("\nbluff % chance everyone must fold ")
             .append(Statistics.formatPercent(betSizeToPot, 1+betSizeToPot))
-            .append("%\n");
+            .append("\n");
         }
         
         handInfo.handLog.append("\n");
@@ -545,7 +538,7 @@ public class FlopTurnRiverState implements ParserListener
         //Check if there is an unknown tapis we can only guess their bet is less than the current amount
         if (lastTapisPlayer != null)
         {
-            int tapisGuess = getAllInBet(lastTapisPlayer);
+            int tapisGuess = allInMinimum[lastTapisPlayerPos];
             
             log.debug("Reraise after tapis, no real guess possible {}", tapisGuess );
             

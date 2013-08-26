@@ -17,10 +17,10 @@ public class StatsComputer
 
         stats = new StatsSession();
         
-        for(int hand = 0; hand < hands.masterList.size(); ++hand )
+        for(int hand = 0; hand < hands.listHandInfo.size(); ++hand )
         {
-            FlopTurnRiverState[] ftrStates = hands.masterList.get(hand);
-            log.debug("\nStats hand : {} line # : {}", hand+1, hands.startingLines.get(hand));
+            FlopTurnRiverState[] ftrStates = hands.listHandInfo.get(hand).roundStates;
+            log.debug("\nStats hand : {} line # : {}", hand+1, hands.listHandInfo.get(hand).startingLine);
             
             for(String playerName : ftrStates[0].players)
             {
@@ -33,9 +33,9 @@ public class StatsComputer
             }
         }
         
-        for(int hs = hands.masterList.size() - 1; hs >= 0; --hs)
+        for(int hs = hands.listHandInfo.size() - 1; hs >= 0; --hs)
         {
-            List<String> p = hands.masterList.get(hs)[0].players;
+            List<String> p = hands.listHandInfo.get(hs).roundStates[0].players;
             if (p.size() > 1)
             {
                 stats.currentPlayerList = p;

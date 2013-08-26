@@ -18,7 +18,8 @@ public class HandInfo
     }
     public String getHandLog()
     {
-        return StringEscapeUtils.escapeXml(handLog.toString());
+        return (handLog.toString());
+        //return StringEscapeUtils.escapeXml(handLog.toString());
     }
     public int getStartingLine()
     {

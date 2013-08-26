@@ -29,9 +29,9 @@ public class TestTapis
     {
         HandInfoCollector results = TestPreflopStats.getList("testTapis1");
         
-        assertEquals(1, results.masterList.size());
+        assertEquals(1, results.listHandInfo.size());
         
-        FlopTurnRiverState[] roundStates = results.masterList.get(0);
+        FlopTurnRiverState[] roundStates = results.listHandInfo.get(0).roundStates;
         
         StatsSession stats = Parser.computeStats(results);
         

@@ -29,9 +29,9 @@ public class TestRoundStats
     {
         HandInfoCollector results = TestPreflopStats.getList("testStats1");
         
-        assertEquals(1, results.masterList.size());
+        assertEquals(1, results.listHandInfo.size());
         
-        FlopTurnRiverState[] handStates = results.masterList.get(0);
+        FlopTurnRiverState[] handStates = results.listHandInfo.get(0).roundStates;
         
         StatsSession stats = Parser.computeStats(results);
         
@@ -67,9 +67,9 @@ public class TestRoundStats
     {
         HandInfoCollector results = TestPreflopStats.getList("testFoldToZeroBet");
         
-        assertEquals(2, results.masterList.size());
+        assertEquals(2, results.listHandInfo.size());
         
-        FlopTurnRiverState[] handStates = results.masterList.get(0);
+        FlopTurnRiverState[] handStates = results.listHandInfo.get(0).roundStates;
         
         StatsSession stats = Parser.computeStats(results);
         
@@ -89,7 +89,7 @@ public class TestRoundStats
     {
         HandInfoCollector results = TestPreflopStats.getList("testRoundStats");
         
-        assertEquals(6, results.masterList.size());
+        assertEquals(6, results.listHandInfo.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         
@@ -143,7 +143,7 @@ public class TestRoundStats
     {
         HandInfoCollector results = TestPreflopStats.getList("testReraise1");
         
-        assertEquals(2, results.masterList.size());
+        assertEquals(2, results.listHandInfo.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         
@@ -317,7 +317,7 @@ public class TestRoundStats
     {
         HandInfoCollector results = TestPreflopStats.getList("testReraise2");
         
-        assertEquals(1, results.masterList.size());
+        assertEquals(1, results.listHandInfo.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         
@@ -342,9 +342,9 @@ public class TestRoundStats
     {
         HandInfoCollector results = TestPreflopStats.getList("testNonAgg1");
         
-        assertEquals(2, results.masterList.size());
+        assertEquals(2, results.listHandInfo.size());
         
-        FlopTurnRiverState[] handStates = results.masterList.get(0);
+        FlopTurnRiverState[] handStates = results.listHandInfo.get(0).roundStates;
         
         StatsSession stats = Parser.computeStats(results);
         
@@ -375,9 +375,9 @@ public class TestRoundStats
     {
         HandInfoCollector results = TestPreflopStats.getList("testRaise1");
         
-        assertEquals(6, results.masterList.size());
+        assertEquals(6, results.listHandInfo.size());
         
-        FlopTurnRiverState[] handStates = results.masterList.get(0);
+        FlopTurnRiverState[] handStates = results.listHandInfo.get(0).roundStates;
         
         StatsSession stats = Parser.computeStats(results);
         
@@ -406,6 +406,6 @@ public class TestRoundStats
     {
         HandInfoCollector results = TestPreflopStats.getList("testPlayerLeft");
         
-        assertEquals(0, results.masterList.size());
+        assertEquals(0, results.listHandInfo.size());
     }
 }

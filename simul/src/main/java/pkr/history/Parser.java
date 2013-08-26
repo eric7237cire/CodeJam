@@ -292,9 +292,9 @@ public class Parser {
             if (match.matches())
             {
                 curState = new FlopTurnRiverState(new ArrayList<String>(), 0, false, 0, handInfoCollector,
-                        new HandInfo(i, handInfoCollector.masterList.size()));
-                log.debug("Hand # {} starts on line {}", handInfoCollector.masterList.size()+1, i);
-                handInfoCollector.startingLines.add(i);
+                        new HandInfo(i, handInfoCollector.listHandInfo.size()));
+                log.debug("Hand # {} starts on line {}", handInfoCollector.listHandInfo.size()+1, i);
+                
                 continue;
             }
            

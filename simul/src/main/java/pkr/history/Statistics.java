@@ -14,7 +14,7 @@ public class Statistics {
     
     public static String formatPercent(double decimalNum, double decimalDenom)
     {
-        if (Double.isNaN(decimalDenom) || Double.isNaN(decimalNum) || decimalDenom < 0.0001)
+        if (Double.isNaN(decimalDenom) || Double.isNaN(decimalNum) || decimalDenom < 0.0001 || Double.isInfinite(decimalNum))
             return "n/a";
         
         

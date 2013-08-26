@@ -47,9 +47,9 @@ public class TestPreflopStats
     {
         HandInfoCollector results = getList("testTapisSuivi1");
         
-        assertEquals(5, results.masterList.size());
+        assertEquals(5, results.listHandInfo.size());
         
-        FlopTurnRiverState[] handStates = results.masterList.get(0);
+        FlopTurnRiverState[] handStates = results.listHandInfo.get(0).roundStates;
         
         StatsSession stats = Parser.computeStats(results);
     }
@@ -60,9 +60,9 @@ public class TestPreflopStats
     {
         HandInfoCollector results = getList("testNonPreflopTapis1");
         
-        assertEquals(4, results.masterList.size());
+        assertEquals(4, results.listHandInfo.size());
         
-        FlopTurnRiverState[] handStates = results.masterList.get(0);
+        FlopTurnRiverState[] handStates = results.listHandInfo.get(0).roundStates;
         
         StatsSession stats = Parser.computeStats(results);
     }
@@ -73,9 +73,9 @@ public class TestPreflopStats
     {
         HandInfoCollector results = getList("testVPIP1");
         
-        assertEquals(5, results.masterList.size());
+        assertEquals(5, results.listHandInfo.size());
         
-        FlopTurnRiverState[] handStates = results.masterList.get(0);
+        FlopTurnRiverState[] handStates = results.listHandInfo.get(0).roundStates;
         
         StatsSession stats = Parser.computeStats(results);
         
@@ -128,7 +128,7 @@ public class TestPreflopStats
     {
         HandInfoCollector results = getList("testVPIP2");
         
-        assertEquals(4, results.masterList.size());
+        assertEquals(4, results.listHandInfo.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         
@@ -169,7 +169,7 @@ public class TestPreflopStats
     {
         HandInfoCollector results = getList("testPFR1");
         
-        assertEquals(6, results.masterList.size());
+        assertEquals(6, results.listHandInfo.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         
@@ -238,7 +238,7 @@ public class TestPreflopStats
     {
         HandInfoCollector results = getList("test3bet1");
         
-        assertEquals(4, results.masterList.size());
+        assertEquals(4, results.listHandInfo.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         
@@ -281,7 +281,7 @@ public class TestPreflopStats
     {
         HandInfoCollector results = getList("testPFR2");
         
-        assertEquals(1, results.masterList.size());
+        assertEquals(1, results.listHandInfo.size());
                                  
         StatsSession stats = Parser.computeStats(results);
         
