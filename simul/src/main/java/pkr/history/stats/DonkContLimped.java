@@ -147,6 +147,52 @@ public class DonkContLimped implements iPlayerStatistic
         
         return StringEscapeUtils.escapeXml(sb.toString());
     }
+    
+    private void calculateCheckRaise(int type, 
+            PlayerAction prevAction, PlayerAction currentAction, String link) 
+    {
+        if (prevAction != null &&
+                prevAction.action == Action.CHECK)
+        {
+            ++actionPossible[type][CHECK_RAISE];
+        } else {
+            return;
+        }
+        
+        if (currentAction.globalRaiseCount >= 1 && (currentAction.action == Action.RAISE || currentAction.action == Action.RAISE_ALL_IN))
+        {
+            log.debug("Player {} did check raise. type {}", playerName, type);
+            
+            ++actions[type][CHECK_RAISE];
+            
+            actionsDesc[type][CHECK_RAISE].append("Player ").append(playerName)
+            .append(" check raised ")
+            .append(Statistics.formatMoney(currentAction.incomingBetOrRaise))
+            .append(" to ")
+            .append(Statistics.formatMoney(currentAction.amountRaised))
+            .append(" into pot ")
+            .append(Statistics.formatMoney(currentAction.pot))
+            .append( " with ")
+            .append(currentAction.playersLeft)
+            .append(" players ")
+            .append(link)            
+            .append("&lt;br /&gt;");
+            
+        }
+        
+    }
+    
+    private void calculateAllIn(int type, 
+            PlayerAction prevAction, PlayerAction currentAction, String link)
+    {
+        if (currentAction.action == Action.CALL_ALL_IN
+                || currentAction.action == Action.RAISE_ALL_IN
+                || currentAction.action == Action.ALL_IN
+                )
+        {
+            ++actions[type][ALL_IN];
+        }
+    }
 
     @Override
     public void calculate(HandInfo handInfo) {
@@ -184,7 +230,7 @@ public class DonkContLimped implements iPlayerStatistic
         
         ++actionPossible[type][ALL_IN];
         ++count[type];
-        boolean didGoAllIn = false;
+        //boolean didGoAllIn = false;
         
         log.debug("DonkContLimt START limped? {} agresseur {} player {} round {}",estLimped
                 , estAgresseur, playerName,Statistics.roundToStr(round));
@@ -197,13 +243,9 @@ public class DonkContLimped implements iPlayerStatistic
             
             log.debug("Player {} action {} raise count {}", playerName, actionIdx.get(i), currentAction.globalRaiseCount);
             
-            if (currentAction.action == Action.CALL_ALL_IN
-                    || currentAction.action == Action.RAISE_ALL_IN
-                    || currentAction.action == Action.ALL_IN
-                    )
-            {
-                didGoAllIn = true;
-            }
+            calculateCheckRaise(type, prevAction, currentAction, link);
+            
+            calculateAllIn(type, prevAction, currentAction, link);
             
             if (currentAction.globalRaiseCount == 0)
             {
@@ -230,11 +272,7 @@ public class DonkContLimped implements iPlayerStatistic
                     .append("&lt;br /&gt;");
                     
                     
-                } else if (currentAction.action == Action.ALL_IN)
-                {
-                    log.debug("Player {} did all in after no raises. type {}", playerName, type);
-                    ++actions[type][ALL_IN];
-                }
+                } 
                
             }        
             else if (currentAction.globalRaiseCount == 1)
@@ -245,11 +283,6 @@ public class DonkContLimped implements iPlayerStatistic
                 ++actionPossible[type][FOLD];
                 ++actionPossible[type][RAISE];
                
-                if (prevAction != null &&
-                        prevAction.action == Action.CHECK)
-                {
-                    ++actionPossible[type][CHECK_RAISE];
-                }
                 
                 if (currentAction.action == Action.CALL || currentAction.action == Action.CALL_ALL_IN)
                 {
@@ -309,12 +342,7 @@ public class DonkContLimped implements iPlayerStatistic
                     .append(handInfo.startingLine)
                     .append("&lt;br /&gt;");
                     
-                    if (prevAction != null &&
-                        prevAction.action == Action.CHECK)
-                    {
-                        log.debug("Player {} check raised. type {}", playerName, type);
-                        ++actions[type][CHECK_RAISE];
-                    }
+                    
                 }             
             
             } else if (currentAction.globalRaiseCount >= 2) {
@@ -385,11 +413,7 @@ public class DonkContLimped implements iPlayerStatistic
             
         }
         
-        if (didGoAllIn)
-        {
-            ++actions[type][ALL_IN];
-        }
-        
+             
        
                 
         

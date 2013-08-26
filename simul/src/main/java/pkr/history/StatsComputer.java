@@ -65,7 +65,7 @@ public class StatsComputer
             {
                 PlayerAction action = actions.get(actionIdx);
                 
-                if (action.action == Action.RAISE && !ftrStates[round-1].hasFoldedArr[action.playerPosition])
+                if (action.action == Action.RAISE && !ftrStates[round-1].hasFolded[action.playerPosition])
                 {
                     log.debug("Player {} dans position {} était l'agresseur de la tournée précédente {}",
                             action.playerName,

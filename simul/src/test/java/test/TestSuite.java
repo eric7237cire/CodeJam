@@ -4,11 +4,17 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TestEvalNodes.class,
-     TestRanges.class, 
-    TestScore.class, TestPreproc.class, 
+@Suite.SuiteClasses({
+    TestCheckRaise.class,
+    TestEvalNodes.class,
+      
+    TestFlopTexture.class,
     TestPreflopStats.class,
-    TestRoundStats.class
+    TestPreproc.class,
+    TestRanges.class,
+    TestRoundStats.class,
+    TestScore.class,
+    TestTapis.class
 })
 public class TestSuite {
 

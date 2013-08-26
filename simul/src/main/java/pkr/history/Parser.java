@@ -24,14 +24,13 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 /*
- * Bet/fold to bet sizing
  * Action to win ratio
  * 
-check/reraise should count as check/raise
 
 showdown results, both
 
 Missing players
+
 
  */
 public class Parser {

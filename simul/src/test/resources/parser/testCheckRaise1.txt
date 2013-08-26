@@ -1,0 +1,31 @@
+_____________________________
+Ahmed a suivi de 200 000.
+Eric a relancé de 600 000.
+Serge se couche.
+Yara se couche.
+//BB
+Bena a suivi de 600 000.
+Ahmed a suivi de 600 000.
+
+Bena a parlé.
+Ahmed a parlé.
+Eric a relancé de 800 000.
+Bena a relancé de 1 600 000.
+Ahmed a relancé de 3 200 000.
+
+Eric a suivi de 3 200 000.
+Bena a relancé de 4 000 000.
+Ahmed a suivi de 4 000 000.
+Eric se couche.
+
+Bena a parlé.
+Ahmed a parlé.
+
+Bena a parlé.
+Ahmed a relancé de 200 000.
+Bena a relancé de 400 000.
+Ahmed a fait tapis.
+Bena se couche.
+
+Ahmed gagne.
+_____________________________

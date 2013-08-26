@@ -48,8 +48,11 @@ public class Vpip implements iPlayerStatistic
         
         FlopTurnRiverState[] ftrStates = handInfo.roundStates;
         
+        int playerPosition = ftrStates[0].players.indexOf(preFlopPlayer);
+        int playerBet = ftrStates[0].playerBets[playerPosition];
+        
         if (preFlopPlayer.equals(ftrStates[0].playerBB)
-                && ftrStates[0].tableStakes == ftrStates[0].getCurrentBet(preFlopPlayer)
+                && ftrStates[0].tableStakes == playerBet
                 && ftrStates[0].roundInitialBetter == null
                 )
         {
@@ -59,8 +62,8 @@ public class Vpip implements iPlayerStatistic
         
         ++denom;
         
-        int playerBet = ftrStates[0].getCurrentBet(preFlopPlayer);
-        final boolean playerAllin = ftrStates[0].allInMinimum.containsKey(preFlopPlayer);
+        
+        final boolean playerAllin = ftrStates[0].allInMinimum[playerPosition] > 0;
         
         if ( (!preFlopPlayer.equals(ftrStates[0].playerBB) && playerBet >= ftrStates[0].tableStakes)
                 ||
