@@ -20,7 +20,15 @@
     </filter>
     <filter class="pkr.util.LogFilter">
         <logger>pkr.history.Parser</logger>
-        <level>ERROR</level>
+        <level>WARN</level>
+    </filter>
+    <filter class="pkr.util.LogFilter">
+        <logger>pkr.history.stats</logger>
+        <level>INFO</level>
+    </filter>
+    <filter class="pkr.util.LogFilter">
+        <logger>pkr.history.FlopTurnRiverState</logger>
+        <level>INFO</level>
     </filter>
   </appender>
   
@@ -28,10 +36,23 @@
     <file>C:/codejam/CodeJam/simul/output/log.txt</file>
     <append>false</append>
     <encoder>
-    <pattern>%m%n</pattern>
+    <pattern>%logger %m%n</pattern>
     <!-- <pattern>%d{HH:mm:ss:SSS} %r - %m%n</pattern> -->
       
     </encoder>
+    <filter class="pkr.util.LogFilter">
+        <logger>pkr.history.Parser</logger>
+        <level>INFO</level>
+    </filter>
+    <filter class="pkr.util.LogFilter">
+        <logger>pkr.history.FlopTurnRiverState</logger>
+        <level>INFO</level>
+    </filter>
+    
+    <filter class="pkr.util.LogFilter">
+        <logger>pkr.history.stats</logger>
+        <level>INFO</level>
+    </filter>
   </appender>
   
   <appender name="parserLogFile" class="ch.qos.logback.core.FileAppender">
@@ -54,15 +75,7 @@
     </encoder>
   </appender>
   
-  <appender name="HANDOUTPUT" class="ch.qos.logback.core.FileAppender">
-    <file>C:/codejam/CodeJam/simul/output/handOutput.txt</file>
-    <append>false</append>
-    <encoder>
-    <pattern>%m%n</pattern>
-    <!-- <pattern>%d{HH:mm:ss:SSS} %r - %m%n</pattern> -->
-      
-    </encoder>
-  </appender>
+  
   <!--
   <pattern>%date [%file:%line] %msg%n</pattern> 
   <logger name="com.eric.codejam.multithread" level="OFF"/>
@@ -70,25 +83,19 @@
    -->
    
    
-   <logger name="file" level="ALL" additivity="false">
-     <appender-ref ref="FILE"/>
-   </logger>
-   
-    <logger name="handOutput" level="ALL" additivity="false">
-     <appender-ref ref="HANDOUTPUT"/>
-   </logger>
    
    <logger name="main" level="DEBUG"/>
-   <logger name="mainOutput" level="DEBUG">
-    <appender-ref ref="FILE"/>
-    </logger>
-   <logger name="pkr.Simulator" level="WARN"/>
-   <logger name="pkr.HoleCardsRange" level="DEBUG">
    
-    <appender-ref ref="FILE"/>
+   <logger name="pkr.Simulator" level="WARN"/>
+   
+   <logger name="pkr.HoleCardsRange" level="DEBUG">
    </logger>
    
    <logger name="pkr.history.Preprocessor" level="INFO"/>
+   
+   <logger name="pkr.history.FlopTurnRiverState" level="DEBUG" additivity="true">
+    <appender-ref ref="parserLogFile"/>
+   </logger>
    <logger name="pkr.history.Parser" level="DEBUG" additivity="true">
     <appender-ref ref="parserLogFile"/>
    </logger>
@@ -101,7 +108,8 @@
     <appender-ref ref="statsLogFile"/>
    </logger>
       
-  <root level="${root-level:-INFO}">
+  <root level="${root-level:-ALL}">
     <appender-ref ref="console"/>
+    <appender-ref ref="FILE"/>
   </root>
 </configuration>

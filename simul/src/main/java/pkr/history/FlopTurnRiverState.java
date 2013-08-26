@@ -14,7 +14,7 @@ import com.google.common.collect.Lists;
 
 public class FlopTurnRiverState implements ParserListener
 {
-    static Logger log = LoggerFactory.getLogger(Parser.class);
+    static Logger log = LoggerFactory.getLogger(FlopTurnRiverState.class);
     
     HandInfoCollector handInfoCollector; 
         
@@ -738,7 +738,7 @@ public class FlopTurnRiverState implements ParserListener
     public ParserListener handleShowdown(String playerName, int finalPot, String line)
     {
         if (finalPot != pot ) {
-            log.warn("Final pot calculated as {} but is {}", pot, finalPot);
+            log.warn("Final pot calculated as {} but is {}.  Hand line {}", pot, finalPot, handInfo.startingLine);
         }
         handInfo.handLog.append(playerName)
         .append(" wins showdown with pot $")

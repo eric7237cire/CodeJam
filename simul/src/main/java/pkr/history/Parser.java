@@ -37,9 +37,7 @@ public class Parser {
     
     static Logger log = LoggerFactory.getLogger(Parser.class);
     
-    static Logger logParsedHandOutput = LoggerFactory.getLogger("handOutput");
     
-    private static Logger logMainOutput = LoggerFactory.getLogger("mainOutput");
     
     
     private final static Pattern XP_LINE = 
@@ -77,7 +75,7 @@ public class Parser {
     
         if (COMMENT.matcher(line).matches())
         {
-            logParsedHandOutput.debug(line);
+            //logParsedHandOutput.debug(line);
             return true;
         }
         
@@ -197,66 +195,6 @@ public class Parser {
         outputStats(sc);
         
         outputHands(hands);
-        
-        if (1==1)
-            return sc.stats;
-        
-        sc.stats.currentPlayerList.remove("Eric");
-        
-        //VPIP and PFR / position
-        for(String player : sc.stats.currentPlayerList)
-        {
-            StatsSessionPlayer ssp = sc.stats.playerSessionStats.get(player);
-            logMainOutput.debug("\nPlayer [ {} ] -- \n " +
-            		"Preflop Hands played {} {} [ {} ] \n  [ {} ] [ {} ]", 
-            		
-            		player,  ssp.totalHands,
-            		ssp.getStatValue("vpip"),
-            		ssp.getStatValue("pfr"),
-            		ssp.getStatValue("notfpfr"),
-            		ssp.getStatValue("3bet")
-                    
-                    );
-            
-            
-            for(int round = 0; round < 3; ++round)
-            {
-                
-                logMainOutput.debug("\nRound {} stats. " ,
-                        
-                        Statistics.roundToStr(round + 1)
-                           
-                        );
-
-                logMainOutput.debug("{}", ssp.getStatValue("dcl" + (round+1)));
-                
-                /*
-                logMainOutput.debug(" Unopened [{}] : [ checks %{} bets %{} all ins %{} calls rr : {} fold rr : {} rr : {} cr: {}]  \n" +
-                		" Opened [{}] : [ checks %{} calls %{} folded %{} raised %{} all in %{} ] ",
-                        rs.unopened,
-                    Statistics.formatPercent( rs.checksUnopened, rs.unopened),
-                    Statistics.formatPercent( rs.bets, rs.unopened),
-                    Statistics.formatPercent( rs.betAllIn, rs.unopened),
-                     rs.callReraise,
-                     rs.betFold,
-                     rs.reRaiseUnopened,
-                     rs.checkRaises,
-                    rs.openedBySomeoneElse,
-                    Statistics.formatPercent( rs.checksOpened, rs.openedBySomeoneElse),
-                    Statistics.formatPercent( rs.calls, rs.openedBySomeoneElse),
-                    Statistics.formatPercent( rs.folded, rs.openedBySomeoneElse),
-                    Statistics.formatPercent( rs.reRaiseOpened, rs.openedBySomeoneElse),
-                    Statistics.formatPercent( rs.raiseCallAllIn, rs.openedBySomeoneElse)
-                    
-
-                );*/
-                
-                /*logMainOutput.debug("Average bet size %{}  average fold to bet size %{} ",
-                        Statistics.formatPercent(ssp.roundStats[round].avgBetToPot, 1),
-                        Statistics.formatPercent(ssp.roundStats[round].avgFoldToBetToPot, 1));
-*/
-            }
-        }
         
         return sc.stats;
     }
@@ -387,7 +325,7 @@ public class Parser {
                 String betAmtStr = match.group(2);
                 
                 int betAmt = Integer.parseInt(betAmtStr.replace(" ", ""), 10);
-                log.info("Showdown line {} player {} bet {} = {} ", i, 
+                log.debug("Showdown line {} player {} bet {} = {} ", i, 
                         playerName, betAmtStr, betAmt);
                 curState = curState.handleShowdown(playerName, betAmt, line);
                 continue;

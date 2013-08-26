@@ -10,7 +10,8 @@ public class PlayerAction {
         RAISE, //bet / reraise
         CALL, CHECK, 
         ALL_IN, //unknown if it is a raise or call
-        RAISE_ALL_IN, CALL_ALL_IN;
+        RAISE_ALL_IN, CALL_ALL_IN,
+        WON;
     }
     
     public Action action;
@@ -33,9 +34,24 @@ public class PlayerAction {
     public int playersAllIn;
     public int playersFolded;
     
+    public String wonDesc;
+    
     private PlayerAction()
     {
         
+    }
+    
+    static PlayerAction createWon(int playerPosition, String playerName, 
+            int pot, String winDesc)
+    {
+        PlayerAction action = new PlayerAction();
+        action.playerPosition = playerPosition;
+        action.playerName = playerName;
+        action.action = Action.WON;
+        action.pot = pot;
+        
+        action.wonDesc = winDesc;
+        return action;
     }
 
     static PlayerAction createCall(int playerPosition, String playerName, 
