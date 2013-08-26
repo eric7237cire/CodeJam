@@ -134,12 +134,18 @@ public class DonkContLimped implements iPlayerStatistic
     private static String buildLink(HandInfo handInfo)
     {
         StringBuffer sb = new StringBuffer();
+        /*
         sb
         .append("&lt;a href=\"handsLog.xhtml#hand_" )
         .append(handInfo.handIndex)
         .append("\"  target=\"_blank\" &gt;link&lt;/a&gt;");
+        */
+        sb
+        .append("<a href=\"handsLog.xhtml#hand_" )
+        .append(handInfo.handIndex)
+        .append("\"  target=\"_blank\" >link</a>");
         
-        return sb.toString();
+        return StringEscapeUtils.escapeXml(sb.toString());
     }
 
     @Override

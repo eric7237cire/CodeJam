@@ -29,7 +29,10 @@ import freemarker.template.TemplateException;
  * 
 check/reraise should count as check/raise
 
-discount single gagne from playerlist
+showdown results, both
+
+Missing players
+
  */
 public class Parser {
     

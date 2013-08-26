@@ -384,7 +384,8 @@ public class FlopTurnRiverState implements ParserListener
             .append("%  | 1 to ")
             .append(Statistics.df2.format(ratio))
             .append(" | ")
-            .append(Statistics.df2.format(outsOne));
+            .append(Statistics.df2.format(outsOne))
+            .append("\n");
           //  logOutput.debug("Must be ahead {}% of the time to call a bluff", 
               //      Statistics.df2.format(callBluff));
         }
@@ -393,22 +394,22 @@ public class FlopTurnRiverState implements ParserListener
         {
             int diff = raiseAmt - amtToCall;
             double betSizeToPot = 1.0 * diff / pot;
-            double bluff = 100.0*(betSizeToPot) / (1+betSizeToPot);
+            //double bluff = 100.0*(betSizeToPot) / (1+betSizeToPot);
             
             handInfo.handLog.append("Raise amt $")
             .append(Statistics.moneyFormat.format(diff))
             .append(" | %")
-            .append(Statistics.df2.format(100*betSizeToPot))
+            .append(Statistics.formatPercent(betSizeToPot, 1))
             .append(" of pot ")
             .append("\nbluff % chance everyone must fold ")
-            .append(Statistics.df2.format(bluff))
-            .append("%");
+            .append(Statistics.formatPercent(betSizeToPot, 1+betSizeToPot))
+            .append("%\n");
         }
         
         handInfo.handLog.append("\n");
     }
 
-    private void changeLastTapisAction(PlayerAction.Action pAction, boolean clearLastTapisPlayer)
+    private void changeLastTapisAction(PlayerAction.Action pAction, Integer tapisAmt, boolean clearLastTapisPlayer)
     {
         int tapisPos = players.indexOf(lastTapisPlayer);
         List<Integer> actionIndexes = playerPosToActions.get(tapisPos);
@@ -417,6 +418,11 @@ public class FlopTurnRiverState implements ParserListener
         Preconditions.checkState(tapisAction.action == Action.ALL_IN || tapisAction.action == Action.RAISE_ALL_IN);
         
         tapisAction.action = pAction;
+        
+        if (tapisAmt != null && tapisAction.action == Action.RAISE_ALL_IN)
+        {
+            tapisAction.amountRaised = tapisAmt;
+        }
         
         if (clearLastTapisPlayer)
             lastTapisPlayer = null;
@@ -440,7 +446,7 @@ public class FlopTurnRiverState implements ParserListener
                 if (betAmt < amtToCall)
                 {
                     log.debug("Last tapis was a call");
-                    changeLastTapisAction( Action.CALL_ALL_IN, true );
+                    changeLastTapisAction( Action.CALL_ALL_IN, null, true );
                     amtToCall = betAmt;
                 } else {
                     int diff = betAmt - amtToCall;
@@ -451,13 +457,13 @@ public class FlopTurnRiverState implements ParserListener
                     amtToCall = tapisGuess + diff + 1;
                     log.debug("Adjusting tapis guess to {}", tapisGuess + diff);
                     
-                    pot = updatePlayerBet(playerBets, lastTapisPlayer, tapisGuess+ diff, pot);
+                    pot = updatePlayerBet(playerBets, lastTapisPlayer, amtToCall, pot);
                     
                     allInMinimum.put(lastTapisPlayer, amtToCall);
                     
                     
                     
-                    changeLastTapisAction( Action.RAISE_ALL_IN, true );
+                    changeLastTapisAction( Action.RAISE_ALL_IN, amtToCall, true );
                 }
                 
                 
@@ -579,7 +585,7 @@ public class FlopTurnRiverState implements ParserListener
         {
             log.debug("{} se couche une relance, alors le dernier tapis était une relance.");
             
-            changeLastTapisAction( Action.RAISE_ALL_IN, false );
+            changeLastTapisAction( Action.RAISE_ALL_IN, null, false );
         }
         
         double potRatio = pot > 0 ? 1.0 * raiseAmt / pot : 0;
