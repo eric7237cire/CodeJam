@@ -742,7 +742,7 @@ public class FlopTurnRiverState implements ParserListener
     }
 
     @Override
-    public ParserListener handleShowdown(String playerName, int finalPot)
+    public ParserListener handleShowdown(String playerName, int finalPot, String line)
     {
         if (finalPot != pot ) {
             log.warn("Final pot calculated as {} but is {}", pot, finalPot);
@@ -750,6 +750,8 @@ public class FlopTurnRiverState implements ParserListener
         handInfo.handLog.append(playerName)
         .append(" wins showdown with pot $")
         .append(Statistics.moneyFormat.format(finalPot))
+        .append("\n")
+        .append(line)
         .append("");
         
         this.handInfoCollector.handFinished(handInfo);

@@ -14,7 +14,7 @@ public interface ParserListener
     
     public ParserListener handleTapis(String playerName);
     
-    public ParserListener handleShowdown(String playerName, int pot);
+    public ParserListener handleShowdown(String playerName, int pot, String line);
     
     public ParserListener handleGagne(String playerName);
     

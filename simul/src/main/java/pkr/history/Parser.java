@@ -389,7 +389,7 @@ public class Parser {
                 int betAmt = Integer.parseInt(betAmtStr.replace(" ", ""), 10);
                 log.info("Showdown line {} player {} bet {} = {} ", i, 
                         playerName, betAmtStr, betAmt);
-                curState = curState.handleShowdown(playerName, betAmt);
+                curState = curState.handleShowdown(playerName, betAmt, line);
                 continue;
             }
             

@@ -43,8 +43,6 @@ Send("^a")
 sleep(260)
 Send("^c")
 sleep(260)
-Send("^c")
-sleep(260)
 
 Local $text = ClipGet() 
 
