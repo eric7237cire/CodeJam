@@ -26,8 +26,6 @@ import freemarker.template.TemplateException;
 /*
  * Action to win ratio
  * 
-check/reraise should count as check/raise
-
 discount single gagne from playerlist
  */
 public class Parser {

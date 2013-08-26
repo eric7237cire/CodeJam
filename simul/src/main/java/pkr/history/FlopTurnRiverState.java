@@ -43,15 +43,15 @@ public class FlopTurnRiverState implements ParserListener
     //Full amount needed to stay in
     int amtToCall = 0;
     
-    public Map<String , Boolean> hasFolded;
-    public boolean[] hasFoldedArr;
-    public Map<String, Integer> allInMinimum;
+    //public Map<String , Boolean> hasFolded;
+    public boolean[] hasFolded;
+    public int[] allInMinimum;
     
     String lastTapisPlayer;
-    Map<String, Integer> playerBets;
+    int lastTapisPlayerPos;
     
-    Map<String, Double> betToPotSize;
-    Map<String, Double> foldToBetSize;
+    public int[] playerBets;
+    
     
     public String roundInitialBetter;
    
@@ -94,23 +94,26 @@ public class FlopTurnRiverState implements ParserListener
         this.handInfoCollector = handInfoCollector;
         this.handInfo = handInfo;
         
-        this.betToPotSize = Maps.newHashMap();
-        this.foldToBetSize = Maps.newHashMap();
         
         actions = Lists.newArrayList();
         playerPosToActions = Lists.newArrayList();
         
+
+        hasFolded = new boolean[MAX_PLAYERS];
+        playerBets = new int[MAX_PLAYERS];
+        allInMinimum = new int[MAX_PLAYERS];
+        
         for (int i  = 0; i < players.size(); ++i)
         {
             playerPosToActions.add(new ArrayList<Integer>());
+            
+            playerBets[i] = -1;
+            allInMinimum[i] = -1;
+                     
         }
         
         this.currentPlayer = players.size() - 1;
         
-        hasFolded = Maps.newHashMap();
-        hasFoldedArr = new boolean[MAX_PLAYERS];
-        playerBets = Maps.newHashMap();
-        allInMinimum = Maps.newHashMap();
         
         
         if (round == 0) {
@@ -142,15 +145,15 @@ public class FlopTurnRiverState implements ParserListener
     
     
     
-    public static int updatePlayerBet(Map<String, Integer> playerBets, String playerName, int playerBet, int pot) 
+    public static int updatePlayerBet( int[] playerBets, int playerPos, String playerName, int playerBet, int pot) 
     {
-        if (playerBets.containsKey(playerName)) {
-            pot -= playerBets.get(playerName);
+        if (playerBets[playerPos] >= 0) {
+            pot -= playerBets[playerPos];
         }
         
         pot += playerBet;
         
-        playerBets.put(playerName, playerBet);
+        playerBets[playerPos] = playerBet;
         
         log.debug("Update player {} with bet {} in pot {}",  playerName, playerBet, pot);
         
@@ -163,9 +166,17 @@ public class FlopTurnRiverState implements ParserListener
         playerPosToActions.get(currentPlayer).add(actions.size()-1);
     }
     
+    
+    @Deprecated
     public int getCurrentBet(String playerName)
     {
-        Integer bet = playerBets.get(playerName);
+        int playerPos = players.indexOf(playerName);
+        
+        if (playerPos == -1)
+        {
+            log.error("Player {} not found in list players {}", playerName, players);
+        }
+        Integer bet = playerBets[playerPos];
             
         if (bet == null)
             return 0;
@@ -174,14 +185,13 @@ public class FlopTurnRiverState implements ParserListener
         return bet;
     }
     
+    @Deprecated
     public int getAllInBet(String playerName)
     {
-        Integer bet = allInMinimum.get(playerName);
+        int playerPos = players.indexOf(playerName);
         
-        if (bet == null)
-            return 0;
+        return allInMinimum[playerPos];
         
-        return bet;
     }
     
     
@@ -191,37 +201,41 @@ public class FlopTurnRiverState implements ParserListener
         List<String> playersInOrder = Lists.newArrayList();
         
         //add sb
-        playerSB = players.get(players.size()-2);
-        playerBB = players.get(players.size()-1);
+        final int sbPos = players.size() - 2;
+        final int bbPos = players.size() - 1;
         
-        if (BooleanUtils.isNotTrue(hasFolded.get(playerSB)) &&  !allInMinimum.containsKey(playerSB)) {
+        playerSB = players.get(sbPos);
+        playerBB = players.get(bbPos);
+        
+        
+        if (!hasFolded[sbPos] &&  allInMinimum[sbPos] <= 0) {
             log.debug("Adding small blind {}", playerSB);
             playersInOrder.add(playerSB);
         } else {
             //Adjust pot if necessary
             
-            if (getCurrentBet(playerSB) == 0)
+            if (playerBets[sbPos] == 0)
             {
                 log.debug("Adding small blind from player {}  bet {} tablestakes {}", playerSB, tableStakes/2, tableStakes);
-                pot = updatePlayerBet(playerBets, playerSB, tableStakes / 2, pot);
+                pot = updatePlayerBet(playerBets, sbPos, playerSB, tableStakes / 2, pot);
             }
         }
         
-        if (BooleanUtils.isNotTrue(hasFolded.get(playerBB)) &&  !allInMinimum.containsKey(playerBB)) {
+        if (!hasFolded[bbPos] &&  allInMinimum[bbPos] <= 0) {
             log.debug("Adding big blind {}", playerBB);
             playersInOrder.add(playerBB);
         } else {
-            if (getCurrentBet(playerBB) == 0)
+            if (playerBets[bbPos] == 0)
             {
                 log.debug("Adding big blinds to pot");
-                pot = updatePlayerBet(playerBets, playerBB, tableStakes, pot);
+                pot = updatePlayerBet(playerBets, bbPos, playerBB, tableStakes, pot);
             }
         }
         
         for(int i = 0; i < players.size() - 2; ++i) {
             String playerName = players.get(i);
-            if (BooleanUtils.isNotTrue(hasFolded.get(playerName))
-                    &&  !allInMinimum.containsKey(playerName)
+            if (!hasFolded[i]
+                    &&  allInMinimum[i] <= 0
                     ) {
                 log.debug("Adding player {}", playerName);
                 playersInOrder.add(playerName);
@@ -248,8 +262,8 @@ public class FlopTurnRiverState implements ParserListener
         
         for(int i = 0; i < players.size() ; ++i) {
             String playerName = players.get(i);
-            if (BooleanUtils.isNotTrue(hasFolded.get(playerName))
-                    && !allInMinimum.containsKey(playerName)
+            if (!hasFolded[i]
+                    && allInMinimum[i] <= 0
                     
                     ) {
                 log.debug("Adding player {}", playerName);
@@ -268,20 +282,20 @@ public class FlopTurnRiverState implements ParserListener
         for(int i = 0; i < players.size(); ++i)
         {
             String playerName = players.get(i);
-            if (BooleanUtils.isTrue(hasFolded.get(playerName))) {
+            if (hasFolded[i]) {
                 continue;
             }
             
-            Integer playerBet = playerBets.get(playerName);
+            int playerBet = playerBets[i];
             
-            if (playerBet == null) 
+            if (playerBet < 0) 
             {
                 log.debug("Pot is not good.  Player {} idx {} has not acted",
                         playerName, i);
                 return false;
             }
             
-            if (!allInMinimum.containsKey(playerName) && playerBet < amtToCall)
+            if (allInMinimum[i] < 0 && playerBet < amtToCall)
             {
                 log.debug("Pot is not good.  Player {} idx {} bet only {}",
                         playerName, i, playerBet);
@@ -289,7 +303,7 @@ public class FlopTurnRiverState implements ParserListener
                 return false;
             }
             
-            Preconditions.checkState(allInMinimum.containsKey(playerName) || amtToCall == playerBet, "Player %s amtToCall %s  bet %s", playerName, amtToCall, playerBet);
+            Preconditions.checkState(allInMinimum[i] > 0 || amtToCall == playerBet, "Player %s amtToCall %s  bet %s", playerName, amtToCall, playerBet);
         }
         
         return true;
@@ -310,6 +324,10 @@ public class FlopTurnRiverState implements ParserListener
             
             playerPosToActions.add( new ArrayList<Integer>() );
             currentPlayer = players.size() - 1;
+            
+            playerBets[currentPlayer] = -1;
+            allInMinimum[currentPlayer] = -1;
+            
             return false;
         }
               
@@ -330,8 +348,8 @@ public class FlopTurnRiverState implements ParserListener
             }
             
             String loopPlayerName = players.get(currentPlayer);
-            if (BooleanUtils.isNotTrue(hasFolded.get(loopPlayerName))
-                    && !allInMinimum.containsKey(loopPlayerName)
+            if (!hasFolded[currentPlayer]
+                    && allInMinimum[currentPlayer] <= 0
                     ) {
                 Preconditions.checkState(loopPlayerName.equals(playerName), "Player name " + playerName + " cur " + currentPlayer + " " + loopPlayerName);
                 
@@ -358,9 +376,8 @@ public class FlopTurnRiverState implements ParserListener
         .append(" >]\n");
                 
         
-        Integer playerBet = playerBets.get(players.get(currentPlayer)); 
-        if (playerBet == null)
-            playerBet = 0;
+        int playerBet = playerBets[currentPlayer]; 
+        
         
         if (round >= 0 && amtToCall > playerBet)
         {
@@ -445,15 +462,17 @@ public class FlopTurnRiverState implements ParserListener
                 } else {
                     int diff = betAmt - amtToCall;
                     
-                    int tapisGuess = getAllInBet(lastTapisPlayer);
+                    int tapisGuess = allInMinimum[lastTapisPlayerPos];
+                    
+                    Preconditions.checkArgument(tapisGuess >= 0);
                     
                     //+1 was added in handleTapis to make it act like a raise
                     amtToCall = tapisGuess + diff + 1;
                     log.debug("Adjusting tapis guess to {}", tapisGuess + diff);
                     
-                    pot = updatePlayerBet(playerBets, lastTapisPlayer, tapisGuess+ diff, pot);
+                    pot = updatePlayerBet(playerBets, lastTapisPlayerPos, lastTapisPlayer, tapisGuess+ diff, pot);
                     
-                    allInMinimum.put(lastTapisPlayer, amtToCall);
+                    allInMinimum[lastTapisPlayerPos] = amtToCall;
                     
                     
                     
@@ -476,7 +495,7 @@ public class FlopTurnRiverState implements ParserListener
         PlayerAction action = PlayerAction.createCall(currentPlayer, playerName, betAmt, pot);
         addAction(action);
         
-        pot = updatePlayerBet(playerBets, playerName, betAmt, pot);
+        pot = updatePlayerBet(playerBets, currentPlayer, playerName, betAmt, pot);
         
         Preconditions.checkState(players.contains(playerName));
         
@@ -512,7 +531,7 @@ public class FlopTurnRiverState implements ParserListener
             double potRatio = 1.0 * raiseAmt / pot;
             
             log.debug("Player %{} bet %{} of pot", playerName, Statistics.df2.format(potRatio));
-            betToPotSize.put(playerName, potRatio);
+            
             
         } 
         
@@ -553,7 +572,7 @@ public class FlopTurnRiverState implements ParserListener
         
         amtToCall = betAmt;
         
-        pot = updatePlayerBet(playerBets, playerName, betAmt, pot);
+        pot = updatePlayerBet(playerBets, currentPlayer, playerName, betAmt, pot);
         
         return this;
     }
@@ -569,8 +588,12 @@ public class FlopTurnRiverState implements ParserListener
             return getNextState(true);
         }
         
+
+        boolean seenPlayer = incrementPlayer(playerName);
+        printHandHistory("Fold");
+        
         //Stats
-        final int playerBet = getCurrentBet(playerName);
+        final int playerBet = playerBets[currentPlayer];
         int raiseAmt = amtToCall - playerBet;
         
         log.debug("Fold raiseAmt {} amtToCall {} player bet {}", raiseAmt, amtToCall, playerBet);
@@ -586,19 +609,13 @@ public class FlopTurnRiverState implements ParserListener
         
         Preconditions.checkArgument(potRatio >= 0, "Amttocall %s  current bet %s", amtToCall, getCurrentBet(playerName));
         
-        foldToBetSize.put(playerName, potRatio);
         
         
-        
-        
-        boolean seenPlayer = incrementPlayer(playerName);
-        printHandHistory("Fold");
         
         addAction(PlayerAction.createFold(currentPlayer, 
                 playerName, amtToCall, pot, playerBet));
         
-        hasFoldedArr[currentPlayer] = true;
-        hasFolded.put(playerName, true);
+        hasFolded[currentPlayer] = true;
         
         //Want to process winning line
         if (round < 3 && seenPlayer && potsGood()) 
@@ -633,7 +650,7 @@ public class FlopTurnRiverState implements ParserListener
         if (lastTapisPlayer != null)
         {
             log.debug("Parole après une tapis, le dernier tapis était un suivi", playerName);
-            allInMinimum.put(lastTapisPlayer, getAllInBet(lastTapisPlayer) - 1);
+            allInMinimum[lastTapisPlayerPos] -= 1;
             
             int tapisPos = players.indexOf(lastTapisPlayer);
             List<Integer> actionIndexes = playerPosToActions.get(tapisPos);
@@ -655,7 +672,7 @@ public class FlopTurnRiverState implements ParserListener
         
         addAction(PlayerAction.createCheck(currentPlayer, playerName, pot));
         
-        playerBets.put(playerName, 0);
+        playerBets[currentPlayer] = 0;
         
         //We exclude the river since we want to parse the last line showdown
         if (round < 3 && potsGood())
@@ -708,7 +725,7 @@ public class FlopTurnRiverState implements ParserListener
             
         }
         
-        allInMinimum.put(playerName, amtToCall);
+        allInMinimum[currentPlayer] = amtToCall;
         
       //Assume it was  a raise
         amtToCall += 1;
@@ -716,8 +733,9 @@ public class FlopTurnRiverState implements ParserListener
         //Guess it was a raise
         //amtToCall = 1+getAllInBet(playerName);
         
-        pot = updatePlayerBet(playerBets, playerName, amtToCall, pot);
+        pot = updatePlayerBet(playerBets, currentPlayer, playerName, amtToCall, pot);
         lastTapisPlayer = playerName;
+        lastTapisPlayerPos = currentPlayer;
         
         return this;
     }

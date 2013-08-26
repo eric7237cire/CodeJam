@@ -266,11 +266,7 @@ public class DonkContLimped implements iPlayerStatistic
                     .append("&lt;br /&gt;");
                     
                     
-                } else if (currentAction.action == Action.ALL_IN)
-                {
-                    log.debug("Player {} did all in after no raises. type {}", playerName, type);
-                    ++actions[type][ALL_IN];
-                }
+                } 
                
             }        
             else if (currentAction.globalRaiseCount == 1)

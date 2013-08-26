@@ -111,6 +111,10 @@
         <outputEncoding>UTF-8</outputEncoding>
         <argLine>-Xms256m -Xmx512m -XX:MaxPermSize=128m -ea
         -Dfile.encoding=UTF-8</argLine>
+        
+        <excludes>
+            <exclude>**/TestSuite*</exclude>
+        </excludes>
     </configuration>
 </plugin>
 
