@@ -114,8 +114,8 @@ public class NotFoldPFR implements iPlayerStatistic
                 {
                     actionsDesc[posIndex].append("to an all in ");
                 } else {
-                    actionsDesc[posIndex].append("a preflop raise of ")
-                    .append(currentAction.incomingBetOrRaise);
+                    actionsDesc[posIndex].append("to a preflop raise of ")
+                    .append(Statistics.formatMoney(currentAction.incomingBetOrRaise));
                 }
                 actionsDesc[posIndex].append(link)
                 .append(DonkContLimped.lineEnd);
@@ -130,8 +130,17 @@ public class NotFoldPFR implements iPlayerStatistic
             if (currentAction.globalRaiseCount > 0 && currentAction.action == Action.FOLD)
             {
                 raisedToPlayer++;
-                actionsDesc[posIndex].append("Player folded a preflop raise of ")
-                .append(currentAction.incomingBetOrRaise)
+                actionsDesc[posIndex].append("Player folded ");
+                
+                if (currentAction.incomingBetOrRaise == 1)
+                {
+                    actionsDesc[posIndex].append("to an all in ");
+                } else {
+                    actionsDesc[posIndex].append("to a preflop raise of ")
+                    .append(Statistics.formatMoney(currentAction.incomingBetOrRaise));
+                }
+                
+                actionsDesc[posIndex]
                 .append(link)
                 .append(DonkContLimped.lineEnd);
                 

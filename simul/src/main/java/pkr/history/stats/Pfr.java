@@ -120,7 +120,7 @@ public class Pfr implements iPlayerStatistic
             if (!playerAllin)
             {
                 actionsDesc[posIndex].append(" raised to ")
-                .append(playerBet);
+                .append(Statistics.formatMoney(playerBet));
                 ++nonAllInRaisePreflop;
                 avgAmt += playerBet;
             } else {

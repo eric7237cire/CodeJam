@@ -275,8 +275,6 @@ public class DonkContLimped implements iPlayerStatistic
                     .append(currentAction.playersLeft)
                     .append(" players ")
                     .append(link)
-                    .append(" Line #")
-                    .append(handInfo.startingLine)
                     .append(lineEnd);
                     
                     
@@ -306,8 +304,6 @@ public class DonkContLimped implements iPlayerStatistic
                     .append(currentAction.playersLeft)
                     .append(" players ")
                     .append(link)
-                    .append(" Line #")
-                    .append(handInfo.startingLine)
                     .append(lineEnd);
                     
                 } else if (currentAction.action == Action.FOLD) 
@@ -325,8 +321,6 @@ public class DonkContLimped implements iPlayerStatistic
                     .append(currentAction.playersLeft)
                     .append(" players ")
                     .append(link)
-                    .append(" Line #")
-                    .append(handInfo.startingLine)
                     .append(lineEnd);
                     
                 } else if (currentAction.action == Action.RAISE || currentAction.action == Action.RAISE_ALL_IN)
@@ -346,8 +340,6 @@ public class DonkContLimped implements iPlayerStatistic
                     .append(currentAction.playersLeft)
                     .append(" players ")
                     .append(link)
-                    .append(" Line #")
-                    .append(handInfo.startingLine)
                     .append(lineEnd);
                     
                     
@@ -399,8 +391,6 @@ public class DonkContLimped implements iPlayerStatistic
                     .append(currentAction.playersLeft)
                     .append(" players ")
                     .append(link)
-                    .append(" Line #")
-                    .append(handInfo.startingLine)
                     .append(lineEnd);
                 }
                 
