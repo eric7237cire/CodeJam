@@ -65,75 +65,6 @@ $('.tooltip').qtip({ // Grab some elements to apply the tooltip to
 <#assign posList = [0, 1, 2, 3, 4]>
 
 
-
-<#list stats.currentPlayerList as playerName>
-    <#assign pStat=stats.playerSessionStats[playerName]/>
-    <#assign seq = ["dcl1", "dcl2", "dcl3"]>
-    <#assign types = [0, 1, 2]>
-    <#list seq as dcl>
-        <#list types as type> 
-           <#assign idPrefix = "player_${playerName_index}_round_${dcl_index}_type_${type}">
-           <#list actionIds as actionId>
-$('#${idPrefix}_action${actionId}').qtip({ // Grab some elements to apply the tooltip to
-    content: {
-        text: '${pStat.stats[dcl].getActionDesc(type, actionId)}'
-    },
-     position: {
-        my: 'top left',  // Position my top left...
-        at: 'left center', // at the bottom right of...
-        target: 'event' // my target
-    },
-    style: {
-        width: '800px'
-    },
-    hide: {
-             event: 'click',
-             inactive: 3000
-         }
-});           
-           </#list>
-        </#list>   
-    </#list>
-    
-    <#list posList as pos> 
-            
-$('#notfpfr_${playerName_index}_${pos}').qtip({ 
-    content: {
-        text: '${pStat.stats.notfpfr.getActionsDesc(pos)}'
-    },
-     position: {
-        my: 'top left',  // Position my top left...
-        at: 'left center', // at the bottom right of...
-        target: 'event' // my target
-    },
-    style: {
-        width: '800px'
-    },
-    hide: {
-             event: 'click',
-             inactive: 3000
-         }
-});       
-
-$('#pfr_${playerName_index}_${pos}').qtip({ 
-    content: {
-        text: '${pStat.stats.pfr.getActionsDesc(pos)}'
-    },
-     position: {
-        my: 'top left',  // Position my top left...
-        at: 'left center', // at the bottom right of...
-        target: 'event' // my target
-    },
-    style: {
-        width: '800px'
-    },
-    hide: {
-             event: 'click',
-             inactive: 3000
-         }
-});       
-    </#list>  
-</#list>
 });
 </script>
 
@@ -161,7 +92,7 @@ $('#pfr_${playerName_index}_${pos}').qtip({
     
     <table>
         <tr>
-        <th>
+            <th></th>
             <th>Small blind</th>
             <th>Big blind</th>
             <th>Early position (btn-2)</th>
@@ -188,7 +119,7 @@ $('#pfr_${playerName_index}_${pos}').qtip({
         <tr>
             <td>PFR</td>
             <#list posList as pos> 
-            <td class="tooltip" title='${pStat.stats.notfpfr.getActionsDesc(pos)}' id="pfr_${playerName_index}_${pos}">${pStat.stats.pfr.getPercentage(pos)}</td>
+            <td class="tooltip" title='${pStat.stats.pfr.getActionsDesc(pos)}' id="pfr_${playerName_index}_${pos}">${pStat.stats.pfr.getPercentage(pos)}</td>
             </#list>  
         </tr>
             

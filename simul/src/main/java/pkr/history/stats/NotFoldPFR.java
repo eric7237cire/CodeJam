@@ -2,6 +2,7 @@ package pkr.history.stats;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +65,7 @@ public class NotFoldPFR implements iPlayerStatistic
      * @return the actionsDesc
      */
     public String getActionsDesc(int posIndex) {
-        return actionsDesc[posIndex].toString();
+        return StringEscapeUtils.escapeXml(actionsDesc[posIndex].toString());
     }
     
     public String getPercentage(int posIndex) {
@@ -109,7 +110,7 @@ public class NotFoldPFR implements iPlayerStatistic
                 actionsDesc[posIndex].append("Player did not fold a preflop raise of ")
                 .append(currentAction.incomingBetOrRaise)
                 .append(link)
-                .append("&lt;br/&gt;");
+                .append(DonkContLimped.lineEnd);
                 
                 raisedToPlayer++;
                 calledARaisedPreflop++;
@@ -124,7 +125,7 @@ public class NotFoldPFR implements iPlayerStatistic
                 actionsDesc[posIndex].append("Player folded a preflop raise of ")
                 .append(currentAction.incomingBetOrRaise)
                 .append(link)
-                .append("&lt;br/&gt;");
+                .append(DonkContLimped.lineEnd);
                 
                 posRaisedToPlayer[posIndex]++;
                                 

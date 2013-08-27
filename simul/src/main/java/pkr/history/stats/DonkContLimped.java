@@ -141,12 +141,20 @@ public class DonkContLimped implements iPlayerStatistic
         .append("\"  target=\"_blank\" &gt;link&lt;/a&gt;");
         */
         sb
-        .append("<a href=\"handsLog.xhtml#hand_" )
+        .append("  <a href=\"handsLog.xhtml#hand_" )
         .append(handInfo.handIndex)
-        .append("\"  target=\"_blank\" >link</a>");
+        .append("\"  target=\"_blank\" >")
+        .append("Hand ")
+        .append(handInfo.handIndex)
+        .append(" line ")
+        .append(handInfo.startingLine)
+        .append("</a>");
         
-        return StringEscapeUtils.escapeXml(sb.toString());
+        return (sb.toString());
+        //return StringEscapeUtils.escapeXml(sb.toString());
     }
+    
+    public static String lineEnd = "<br/>";
     
     private void calculateCheckRaise(int type, 
             PlayerAction prevAction, PlayerAction currentAction, String link) 
@@ -269,7 +277,7 @@ public class DonkContLimped implements iPlayerStatistic
                     .append(link)
                     .append(" Line #")
                     .append(handInfo.startingLine)
-                    .append("&lt;br /&gt;");
+                    .append(lineEnd);
                     
                     
                 } 
@@ -300,7 +308,7 @@ public class DonkContLimped implements iPlayerStatistic
                     .append(link)
                     .append(" Line #")
                     .append(handInfo.startingLine)
-                    .append("&lt;br /&gt;");
+                    .append(lineEnd);
                     
                 } else if (currentAction.action == Action.FOLD) 
                 {
@@ -319,7 +327,7 @@ public class DonkContLimped implements iPlayerStatistic
                     .append(link)
                     .append(" Line #")
                     .append(handInfo.startingLine)
-                    .append("&lt;br /&gt;");
+                    .append(lineEnd);
                     
                 } else if (currentAction.action == Action.RAISE || currentAction.action == Action.RAISE_ALL_IN)
                 {
@@ -340,7 +348,7 @@ public class DonkContLimped implements iPlayerStatistic
                     .append(link)
                     .append(" Line #")
                     .append(handInfo.startingLine)
-                    .append("&lt;br /&gt;");
+                    .append(lineEnd);
                     
                     
                 }             
@@ -393,7 +401,7 @@ public class DonkContLimped implements iPlayerStatistic
                     .append(link)
                     .append(" Line #")
                     .append(handInfo.startingLine)
-                    .append("&lt;br /&gt;");
+                    .append(lineEnd);
                 }
                 
                 if (currentAction.playersLeft > 1)
@@ -429,7 +437,8 @@ public class DonkContLimped implements iPlayerStatistic
 
     public String getActionDesc(int a, int b) {
         //
-        return StringEscapeUtils.escapeEcmaScript(actionsDesc[a][b].toString());
+       // return StringEscapeUtils.escapeEcmaScript(actionsDesc[a][b].toString());
+        return StringEscapeUtils.escapeXml(actionsDesc[a][b].toString());
        // return (actionsDesc[a][b].toString());
     }
 

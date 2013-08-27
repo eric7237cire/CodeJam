@@ -1,5 +1,6 @@
 package pkr.history.stats;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,7 @@ public class Pfr implements iPlayerStatistic
      * @return the actionsDesc
      */
     public String getActionsDesc(int posIndex) {
-        return actionsDesc[posIndex].toString();
+        return StringEscapeUtils.escapeXml(actionsDesc[posIndex].toString());
     }
     
     public String getPercentage(int posIndex) {
@@ -127,7 +128,7 @@ public class Pfr implements iPlayerStatistic
                 nTapis++;
             }
             
-            actionsDesc[posIndex].append(link).append("&lt;br /&gt;");
+            actionsDesc[posIndex].append(link).append(DonkContLimped.lineEnd);
         }
         
     }
