@@ -429,8 +429,8 @@ public class DonkContLimped implements iPlayerStatistic
 
     public String getActionDesc(int a, int b) {
         //
-        //return StringEscapeUtils.escapeEcmaScript(actionsDesc[a][b].toString());
-        return (actionsDesc[a][b].toString());
+        return StringEscapeUtils.escapeEcmaScript(actionsDesc[a][b].toString());
+       // return (actionsDesc[a][b].toString());
     }
 
 

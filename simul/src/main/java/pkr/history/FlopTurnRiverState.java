@@ -112,9 +112,9 @@ public class FlopTurnRiverState implements ParserListener
         
         if (round == 0) {
             handInfo.handLog.append("\n***********************************************");
-            handInfo.handLog.append("Starting Hand ")
+            handInfo.handLog.append("Starting Hand <h1>")
             .append(handInfoCollector.listHandInfo.size()+1)
-            .append(" line ")
+            .append("</h1> line ")
             .append(handInfo.startingLine);
             
         }
@@ -126,9 +126,9 @@ public class FlopTurnRiverState implements ParserListener
         log.debug("Nouveau round.  Players {} pot {}", players.size(), pot);
         
         handInfo.handLog.append("\n------------------------------");
-        handInfo.handLog.append("\nStarting round ")
+        handInfo.handLog.append("\nStarting round <h2>")
         .append(Statistics.roundToStr(round))
-        .append(" with ")
+        .append(" </h2> with ")
         .append(players.size())
         .append(" players.  Pot is $")
         .append(Statistics.moneyFormat.format(pot))
@@ -364,7 +364,8 @@ public class FlopTurnRiverState implements ParserListener
                 
         
         int playerBet = playerBets[currentPlayer]; 
-        
+        if (playerBet < 0)
+            playerBet = 0;
         
         if (round >= 0 && amtToCall > playerBet)
         {
