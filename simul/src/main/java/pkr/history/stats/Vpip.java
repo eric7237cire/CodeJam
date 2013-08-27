@@ -58,6 +58,22 @@ public class Vpip implements iPlayerStatistic
     public String getValue() {
         return  Statistics.formatPercent(moneyIn, played, true);
     }
+    
+    public String getPercentage(int position) {
+        return Statistics.formatPercent(posMoneyIn[position], posPlayed[position], true);
+    }
+    
+    public static int getPositionIndex(int numPlayers, int playerPosition)
+    {
+
+        final int sbPos = numPlayers - 2;
+        
+        int posIndex = playerPosition >= sbPos ? playerPosition - sbPos : 
+            (numPlayers - 1 - playerPosition); 
+        
+        return posIndex;
+    }
+    
 
     @Override
     public void calculate(HandInfo handInfo) {
@@ -85,8 +101,7 @@ public class Vpip implements iPlayerStatistic
         //Size 3 ; Btn 0 ==> 2
         //Size 4 ; Btn 1 ==> 2 ; MP 0 ==> 3
         //Size 5; Btn 2 ==> 2 ; MP 1 ==> 3 ; EP 0 ==> 4
-        int posIndex = playerPosition >= sbPos ? playerPosition - sbPos : 
-            (ftrStates[0].players.size() - 1 - playerPosition); 
+        int posIndex = getPositionIndex(ftrStates[0].players.size(), playerPosition); 
         
         log.debug("Player pos {} pos index {}", playerPosition, posIndex);
             

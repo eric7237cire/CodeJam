@@ -47,9 +47,10 @@ $(document).ready(function() {
 
 
 <#assign actionIds = [0,1,2,3,4,5,6,7,8]>
+<#assign posList = [0, 1, 2, 3, 4]>
 
- <#list stats.currentPlayerList as playerName>
-     <#assign pStat=stats.playerSessionStats[playerName]/>
+<#list stats.currentPlayerList as playerName>
+    <#assign pStat=stats.playerSessionStats[playerName]/>
     <#assign seq = ["dcl1", "dcl2", "dcl3"]>
     <#assign types = [0, 1, 2]>
     <#list seq as dcl>
@@ -76,6 +77,45 @@ $('#${idPrefix}_action${actionId}').qtip({ // Grab some elements to apply the to
            </#list>
         </#list>   
     </#list>
+    
+    <#list posList as pos> 
+            
+$('#notfpfr_${playerName_index}_${pos}').qtip({ 
+    content: {
+        text: '${pStat.stats.notfpfr.getActionsDesc(pos)}'
+    },
+     position: {
+        my: 'top left',  // Position my top left...
+        at: 'left center', // at the bottom right of...
+        target: 'event' // my target
+    },
+    style: {
+        width: '800px'
+    },
+    hide: {
+             event: 'click',
+             inactive: 3000
+         }
+});       
+
+$('#pfr_${playerName_index}_${pos}').qtip({ 
+    content: {
+        text: '${pStat.stats.pfr.getActionsDesc(pos)}'
+    },
+     position: {
+        my: 'top left',  // Position my top left...
+        at: 'left center', // at the bottom right of...
+        target: 'event' // my target
+    },
+    style: {
+        width: '800px'
+    },
+    hide: {
+             event: 'click',
+             inactive: 3000
+         }
+});       
+    </#list>  
 </#list>
 });
 </script>
@@ -98,8 +138,43 @@ $('#${idPrefix}_action${actionId}').qtip({ // Grab some elements to apply the to
     
     
     <tr><td>${pStat.stats.vpip}</td><td>${pStat.stats["3bet"]}</td></tr>
-    <tr><td>${pStat.stats.pfr}</td><td>${pStat.stats.notfpfr}</td></tr>
     
+    <tr><td>${pStat.stats.pfr}</td><td>${pStat.stats.notfpfr}</td></tr>
+    </table>
+    
+    <table>
+        <tr>
+        <th>
+            <th>Small blind</th>
+            <th>Big blind</th>
+            <th>Early position (btn-2)</th>
+            <th>Mid position (btn-1)</th>
+            <th>Button</th>
+        </tr>
+        
+    
+        
+        <tr>
+            <td>VPIP</td>
+            <#list posList as pos> 
+            <td>${pStat.stats.vpip.getPercentage(pos)}</td>
+            </#list>            
+        </tr>
+        
+        <tr>
+            <td>Not fold PFR</td>
+            <#list posList as pos> 
+            <td class="tooltip" title='${pStat.stats.notfpfr.getActionsDesc(pos)}' id="notfpfr_${playerName_index}_${pos}">${pStat.stats.notfpfr.getPercentage(pos)}</td>
+            </#list>  
+        </tr>
+        
+        <tr>
+            <td>PFR</td>
+            <#list posList as pos> 
+            <td class="tooltip" title='${pStat.stats.notfpfr.getActionsDesc(pos)}' id="pfr_${playerName_index}_${pos}">${pStat.stats.pfr.getPercentage(pos)}</td>
+            </#list>  
+        </tr>
+            
     </table>
     
     <table >
@@ -127,7 +202,8 @@ $('#${idPrefix}_action${actionId}').qtip({ // Grab some elements to apply the to
                 <td>${pStat.stats[dcl].getTypeStr(type)}</td>
                 <td >${pStat.stats[dcl].getCount(type)}</td>
             <#list actionIds as actionId>
-                <td id="${idPrefix}_action${actionId}">${pStat.stats[dcl].getActionStr(type, actionId)}</td>
+                <td class="tooltip" id="${idPrefix}_action${actionId}" 
+                title='${pStat.stats[dcl].getActionDesc(type, actionId)}'>${pStat.stats[dcl].getActionStr(type, actionId)}</td>
                 
             </#list>
             </tr>

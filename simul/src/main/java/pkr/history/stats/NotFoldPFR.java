@@ -20,18 +20,25 @@ public class NotFoldPFR implements iPlayerStatistic
     int raisedToPlayer;
     int calledARaisedPreflop;
     
-    //TODO avg fold 2 and call amt?
-    double avgAmt;
-    int nonAllInRaisePreflop;
+    int[] posRaisedToPlayer;
+    int[] posNotFoldARaise;
     
-    int nTapis;
     
     private String preFlopPlayer;
     
+    private StringBuffer[] actionsDesc;
     
     public NotFoldPFR(String playerName) {
         super();
         this.preFlopPlayer = playerName;
+        
+        actionsDesc = new StringBuffer[FlopTurnRiverState.MAX_PLAYERS];
+        posNotFoldARaise = new int[FlopTurnRiverState.MAX_PLAYERS];
+        posRaisedToPlayer = new int[FlopTurnRiverState.MAX_PLAYERS];
+        for(int i = 0; i < actionsDesc.length; ++i)
+        {
+            actionsDesc[i] = new StringBuffer();
+        }
     }
     
     @Override
@@ -50,26 +57,31 @@ public class NotFoldPFR implements iPlayerStatistic
         sb.append(raisedToPlayer);
         sb.append(") ");
         
-        //Tapis : ");
-        //sb.append(nTapis);
         return sb.toString();
     }
+    
+    /**
+     * @return the actionsDesc
+     */
+    public String getActionsDesc(int posIndex) {
+        return actionsDesc[posIndex].toString();
+    }
+    
+    public String getPercentage(int posIndex) {
+        return Statistics.formatPercent(posNotFoldARaise[posIndex], posRaisedToPlayer[posIndex], true);
+    }
+    
 
     @Override
     public void calculate(HandInfo handInfo) {
         
         FlopTurnRiverState[] ftrStates = handInfo.roundStates;
-        //final boolean isPreFlopRaiser = StringUtils.equals(ftrStates[0].roundInitialBetter, preFlopPlayer);
-        
-        //final boolean playerAllin = ftrStates[0].allInBet.containsKey(preFlopPlayer);
-        
+       
         if (ftrStates[0] == null) {
             return;
         }
         
         int playerPosition = ftrStates[0].players.indexOf(preFlopPlayer);
-        
-        //int raiserPosition = ftrStates[0].roundInitialBetter != null ? ftrStates[0].players.indexOf( ftrStates[0].roundInitialBetter ) : -1; 
         
         if (ftrStates[0].players.size() < 2)
         {
@@ -83,7 +95,8 @@ public class NotFoldPFR implements iPlayerStatistic
         }
         List<Integer> actionIdx = ftrStates[0].playerPosToActions.get(playerPosition);
         
-        
+        String link = DonkContLimped.buildLink(handInfo);
+        int posIndex = Vpip.getPositionIndex(ftrStates[0].players.size(), playerPosition);
         
         for(int i = 0; i < actionIdx.size(); ++i)
         {
@@ -92,33 +105,37 @@ public class NotFoldPFR implements iPlayerStatistic
             
             if (currentAction.globalRaiseCount > 0 && currentAction.action != Action.FOLD)
             {
-                log.debug("Player {} called a raise preflop", preFlopPlayer);
+                log.debug("Player {} did not fold a preflop raise", preFlopPlayer);
+                actionsDesc[posIndex].append("Player did not fold a preflop raise of ")
+                .append(currentAction.incomingBetOrRaise)
+                .append(link)
+                .append("&lt;br/&gt;");
+                
                 raisedToPlayer++;
                 calledARaisedPreflop++;
+                posRaisedToPlayer[posIndex]++;
+                posNotFoldARaise[posIndex]++;
                 return;
             }
             
             if (currentAction.globalRaiseCount > 0 && currentAction.action == Action.FOLD)
             {
                 raisedToPlayer++;
+                actionsDesc[posIndex].append("Player folded a preflop raise of ")
+                .append(currentAction.incomingBetOrRaise)
+                .append(link)
+                .append("&lt;br/&gt;");
+                
+                posRaisedToPlayer[posIndex]++;
+                                
                 log.debug("Folded to a preflop raise {}", preFlopPlayer);
                 return;
             }
         
-           /*     
-        int playerBet = ftrStates[0].getCurrentBet(preFlopPlayer);
-        
-        if (isPreFlopRaiser)
-        {            
-            if (!playerAllin)
-            {
-                ++nonAllInRaisePreflop;
-                avgAmt += playerBet;
-            } else {
-                nTapis++;
-            }
-        }*/
+           
         }
         
     }
+
+    
 }

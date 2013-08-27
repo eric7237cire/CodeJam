@@ -131,7 +131,7 @@ public class DonkContLimped implements iPlayerStatistic
         return sb.toString();
     }
 
-    private static String buildLink(HandInfo handInfo)
+    public static String buildLink(HandInfo handInfo)
     {
         StringBuffer sb = new StringBuffer();
         /*

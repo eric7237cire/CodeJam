@@ -135,7 +135,7 @@ public class Parser {
             out.flush();
  */
             // File output
-            Writer file = new FileWriter (new File("C:\\codejam\\CodeJam\\simul\\output\\FTL_helloworld.xhtml"));
+            Writer file = new FileWriter (new File("C:\\codejam\\CodeJam\\simul\\output\\stats.xhtml"));
             template.process(data, file);
             file.flush();
             file.close();

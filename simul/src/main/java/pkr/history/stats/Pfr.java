@@ -17,7 +17,12 @@ public class Pfr implements iPlayerStatistic
     int unraisedToPlayer;
     int raisedPreflop;
     
+    int[] posUnraisedToPlayer;
+    int[] posRaisedPf;
+    StringBuffer[] actionsDesc;
+    
     double avgAmt;
+        
     int nonAllInRaisePreflop;
     
     int nTapis;
@@ -28,8 +33,27 @@ public class Pfr implements iPlayerStatistic
     public Pfr(String playerName) {
         super();
         this.preFlopPlayer = playerName;
+        
+        posUnraisedToPlayer = new int[FlopTurnRiverState.MAX_PLAYERS];
+        posRaisedPf = new int[FlopTurnRiverState.MAX_PLAYERS];
+        actionsDesc = new StringBuffer[FlopTurnRiverState.MAX_PLAYERS];
+        
+        for(int i = 0; i < actionsDesc.length; ++i) {
+            actionsDesc[i] = new StringBuffer();
+        }
+        
     }
 
+    /**
+     * @return the actionsDesc
+     */
+    public String getActionsDesc(int posIndex) {
+        return actionsDesc[posIndex].toString();
+    }
+    
+    public String getPercentage(int posIndex) {
+        return Statistics.formatPercent(posRaisedPf[posIndex], posUnraisedToPlayer[posIndex], true);
+    }
     
     @Override
     public String getId() {
@@ -59,33 +83,51 @@ public class Pfr implements iPlayerStatistic
         
         final boolean isPreFlopRaiser = StringUtils.equals(ftrStates[0].roundInitialBetter, preFlopPlayer);
         
-        int playerPosition = ftrStates[0].players.indexOf(preFlopPlayer);
+        final int playerPosition = ftrStates[0].players.indexOf(preFlopPlayer);
         
         final boolean playerAllin = ftrStates[0].allInMinimum[playerPosition] > 0;
         
+        String link = DonkContLimped.buildLink(handInfo);
+        int posIndex = Vpip.getPositionIndex(ftrStates[0].players.size(), playerPosition);
         
         
+        
+        //TODO  utiliser la position
         int raiserPosition = ftrStates[0].roundInitialBetter != null ? ftrStates[0].players.indexOf( ftrStates[0].roundInitialBetter ) : -1; 
         
         if (isPreFlopRaiser || raiserPosition > playerPosition || raiserPosition == -1 )
         {
             log.debug("Player {} could have preflop raised");
             ++unraisedToPlayer;
+            
+            ++posUnraisedToPlayer[posIndex];
+            
+            
         }
                 
-        int playerBet = ftrStates[0].getCurrentBet(preFlopPlayer);
+        final int playerBet = ftrStates[0].playerBets[playerPosition];
         
         if (isPreFlopRaiser)
         {
             ++raisedPreflop;
             
+            ++posRaisedPf[posIndex];
+            
+            actionsDesc[posIndex].append("Player ")
+            .append(preFlopPlayer);
+            
             if (!playerAllin)
             {
+                actionsDesc[posIndex].append(" raised to ")
+                .append(playerBet);
                 ++nonAllInRaisePreflop;
                 avgAmt += playerBet;
             } else {
+                actionsDesc[posIndex].append(" went all in ");
                 nTapis++;
             }
+            
+            actionsDesc[posIndex].append(link).append("&lt;br /&gt;");
         }
         
     }
