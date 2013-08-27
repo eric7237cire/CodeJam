@@ -1,0 +1,25 @@
+_____________________________
+Eric a relancé de 600 000.
+A a suivi de 600 000.
+B se couche.
+A se couche.
+
+Eric gagne.
+_____________________________
+
+A a suivi de 600 000.
+B a suivi de 600 000.
+Eric a suivi de 600 000.
+B se couche.
+Eric a parlé.
+A se couche.
+Eric gagne.
+_____________________________
+
+B a relancé de 600 000.
+A se couche.
+Eric a suivi de 600 000.
+Eric a relancé de 200 000.
+B se couche.
+Eric gagne.
+_____________________________

@@ -71,7 +71,7 @@ public class StatsComputer
                             action.playerName,
                             action.playerPosition,
                             round);
-                    ftrStates[round].agresseur = action.playerName;
+                    ftrStates[round].prevTourneeAgresseur = action.playerName;
                     continue nextRound;
                 }
             }

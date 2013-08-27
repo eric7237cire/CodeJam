@@ -59,7 +59,7 @@
     <file>C:/codejam/CodeJam/simul/output/parserLog.txt</file>
     <append>false</append>
     <encoder>
-    <pattern>%m%n</pattern>
+    <pattern>%logger %m%n</pattern>
     <!-- <pattern>%d{HH:mm:ss:SSS} %r - %m%n</pattern> -->
       
     </encoder>
@@ -69,7 +69,7 @@
     <file>C:/codejam/CodeJam/simul/output/statsLog.txt</file>
     <append>false</append>
     <encoder>
-    <pattern>%m%n</pattern>
+    <pattern>%logger %m%n</pattern>
     <!-- <pattern>%d{HH:mm:ss:SSS} %r - %m%n</pattern> -->
       
     </encoder>
@@ -108,6 +108,9 @@
     <appender-ref ref="statsLogFile"/>
    </logger>
       
+   <logger name="pkr.history.stats.Vpip" level="DEBUG" additivity="true">
+    <appender-ref ref="statsLogFile"/>
+   </logger>
   <root level="${root-level:-ALL}">
     <appender-ref ref="console"/>
     <appender-ref ref="FILE"/>

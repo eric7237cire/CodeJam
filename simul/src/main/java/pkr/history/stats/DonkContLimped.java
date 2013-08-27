@@ -221,8 +221,8 @@ public class DonkContLimped implements iPlayerStatistic
         
         List<Integer> actionIdx = ftr.playerPosToActions.get(playerPos);
         
-        final boolean estLimped = ftr.agresseur == null;
-        final boolean estAgresseur = !estLimped ?  ftr.agresseur.equals(playerName) : false;
+        final boolean estLimped = ftr.prevTourneeAgresseur == null;
+        final boolean estAgresseur = !estLimped ?  ftr.prevTourneeAgresseur.equals(playerName) : false;
         
         final int type = estLimped ? LIMPED : (estAgresseur ? IS_AGGRES : NOT_AGGRES);
         

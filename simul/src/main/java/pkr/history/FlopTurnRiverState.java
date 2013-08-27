@@ -26,13 +26,13 @@ public class FlopTurnRiverState implements ParserListener
     public List<List<Integer>> playerPosToActions;
     
     //Qui a fait la dernière action aggressive dans la tournée précédente
-    public String agresseur;
+    public String prevTourneeAgresseur;
     
     //La liste de joeurs dans l'ordre à parler 
     public List<String> players;
     int pot;
     
-    final static int MAX_PLAYERS = 5;
+    final public static int MAX_PLAYERS = 5;
     
     //Full amount needed to stay in
     int amtToCall = 0;
@@ -48,7 +48,7 @@ public class FlopTurnRiverState implements ParserListener
     
     
     public String roundInitialBetter;
-   
+    public int roundInitialBetterPos;
     
     
     
@@ -108,7 +108,7 @@ public class FlopTurnRiverState implements ParserListener
         
         this.currentPlayer = players.size() - 1;
         
-        
+        roundInitialBetterPos = -1;
         
         if (round == 0) {
             handInfo.handLog.append("\n***********************************************");
@@ -430,7 +430,10 @@ public class FlopTurnRiverState implements ParserListener
         }
         
         if (clearLastTapisPlayer)
+        {
             lastTapisPlayer = null;
+            lastTapisPlayerPos = -1;
+        }
     }
     @Override
     public ParserListener handleSuivi(String playerName, int betAmt)

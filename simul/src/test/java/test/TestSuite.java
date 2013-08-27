@@ -14,7 +14,8 @@ import org.junit.runners.Suite;
     TestRanges.class,
     TestRoundStats.class,
     TestScore.class,
-    TestTapis.class
+    TestTapis.class,
+    TestVPIP.class
 })
 public class TestSuite {
 

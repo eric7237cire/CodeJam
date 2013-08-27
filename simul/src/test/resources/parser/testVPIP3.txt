@@ -1,0 +1,28 @@
+_____________________________
+Eric a relancé de 600 000.
+Ahmed a suivi de 600 000.
+Eric a parlé.
+Ahmed se couche.
+Eric gagne.
+_____________________________
+
+Eric se couche.
+Ahmed gagne.
+_____________________________
+
+Ahmed a relancé de 400 000.
+Eric se couche.
+Ahmed gagne.
+_____________________________
+
+Ahmed a suivi de 200 000.
+Eric a suivi de 200 000.
+Ahmed se couche.
+Eric gagne.
+_____________________________
+
+Ahmed a suivi de 200 000.
+Eric a relancé de 400 000.
+Ahmed se couche.
+Eric gagne.
+_____________________________
