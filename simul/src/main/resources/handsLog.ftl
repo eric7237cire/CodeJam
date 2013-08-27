@@ -16,9 +16,10 @@
 <p>
 
 <pre>
+<a name = "hand_${handInfo_index}" />
 ${handInfo.getHandLog()}
 </pre>
-<a name = "hand_${1+handInfo_index}" />
+
 
 </p>
 

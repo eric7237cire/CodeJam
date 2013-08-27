@@ -57,12 +57,12 @@ $('.tooltip').qtip({ // Grab some elements to apply the tooltip to
     },
     hide: {
              event: 'click',
-             inactive: 3000
+             inactive: 1200
          }
 });           
 
 <#assign actionIds = [0,1,2,3,4,5,6,7,8]>
-<#assign posList = [0, 1, 2, 3, 4]>
+<#assign posList = [0, 1, 4, 3, 2]>
 
 
 });

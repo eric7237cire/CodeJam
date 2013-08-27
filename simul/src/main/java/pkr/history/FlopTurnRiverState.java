@@ -113,7 +113,7 @@ public class FlopTurnRiverState implements ParserListener
         if (round == 0) {
             handInfo.handLog.append("\n***********************************************");
             handInfo.handLog.append("Starting Hand <h1>")
-            .append(handInfoCollector.listHandInfo.size()+1)
+            .append(handInfoCollector.listHandInfo.size())
             .append("</h1> line ")
             .append(handInfo.startingLine);
             

@@ -107,9 +107,17 @@ public class NotFoldPFR implements iPlayerStatistic
             if (currentAction.globalRaiseCount > 0 && currentAction.action != Action.FOLD)
             {
                 log.debug("Player {} did not fold a preflop raise", preFlopPlayer);
-                actionsDesc[posIndex].append("Player did not fold a preflop raise of ")
-                .append(currentAction.incomingBetOrRaise)
-                .append(link)
+                
+                actionsDesc[posIndex].append("Player did not fold ");
+                
+                if (currentAction.incomingBetOrRaise == 1)
+                {
+                    actionsDesc[posIndex].append("to an all in ");
+                } else {
+                    actionsDesc[posIndex].append("a preflop raise of ")
+                    .append(currentAction.incomingBetOrRaise);
+                }
+                actionsDesc[posIndex].append(link)
                 .append(DonkContLimped.lineEnd);
                 
                 raisedToPlayer++;
