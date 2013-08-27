@@ -45,9 +45,26 @@ verdana, helvetica, arial, sans-serif;
 $(document).ready(function() {
 
 
+$('.tooltip').qtip({ // Grab some elements to apply the tooltip to
+    content: true,
+     position: {
+        my: 'top left',  // Position my top left...
+        at: 'left center', // at the bottom right of...
+        target: 'event' // my target
+    },
+    style: {
+        width: '800px'
+    },
+    hide: {
+             event: 'click',
+             inactive: 3000
+         }
+});           
 
 <#assign actionIds = [0,1,2,3,4,5,6,7,8]>
 <#assign posList = [0, 1, 2, 3, 4]>
+
+
 
 <#list stats.currentPlayerList as playerName>
     <#assign pStat=stats.playerSessionStats[playerName]/>
