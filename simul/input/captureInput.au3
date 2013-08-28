@@ -1,18 +1,15 @@
-
-
-
-
-
-
 Global $Paused
-HotKeySet("{F3}", "TogglePause")
+HotKeySet("{f3}", "TogglePause")
 HotKeySet("{F4}", "Terminate")
 ;HotKeySet("d", "ShowMessage")  ;Shift-Alt-d
 HotKeySet("{F2}", "TakeText")  ;Shift-Alt-d
 
 ;;;; Body of program would go here ;;;;
+Local $a = 3
 While 1
     Sleep(100)
+	$a = $a + 1
+	;ToolTip('Script is ' & $a,0,0)
 WEnd
 ;;;;;;;;
 
