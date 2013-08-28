@@ -110,29 +110,13 @@ public class FlopTurnRiverState implements ParserListener
         
         roundInitialBetterPos = -1;
         
-        if (round == 0) {
-            handInfo.handLog.append("\n***********************************************");
-            handInfo.handLog.append("Starting Hand <h1>")
-            .append(handInfoCollector.listHandInfo.size())
-            .append("</h1> line ")
-            .append(handInfo.startingLine);
-            
-        }
+        
         
         Preconditions.checkState(handInfo.roundStates.length == 4);
         Preconditions.checkState(handInfo.roundStates[round] == null);
         handInfo.roundStates[round] = this;
         
         log.debug("Nouveau round.  Players {} pot {}", players.size(), pot);
-        
-        handInfo.handLog.append("\n------------------------------");
-        handInfo.handLog.append("\nStarting round <h2>")
-        .append(Statistics.roundToStr(round))
-        .append(" </h2> with ")
-        .append(players.size())
-        .append(" players.  Pot is $")
-        .append(Statistics.moneyFormat.format(pot))
-        .append("\n");
                         
         
     }
@@ -344,7 +328,7 @@ public class FlopTurnRiverState implements ParserListener
             }
         }
     }
-    
+    /*
     
     
     private void printHandHistory(String action)
@@ -412,13 +396,45 @@ public class FlopTurnRiverState implements ParserListener
         }
         
         handInfo.handLog.append("\n");
+    }*/
+    
+    /**
+     * Après avoir trouver les montants exact de la tapisAction,
+     * on corrige les actions qui suivaient éventuellement
+     * @param fromActionIndex
+     * @param actions
+     */
+    private static void correctActions(int fromActionIndex, List<PlayerAction> actions)
+    {
+        PlayerAction tapisAction = actions.get(fromActionIndex); 
+        int pot = tapisAction.pot;
+        if (tapisAction.action == Action.CALL_ALL_IN)
+        {
+            pot += tapisAction.incomingBetOrRaise;
+        } else if (tapisAction.action == Action.RAISE_ALL_IN)
+        {
+            pot += tapisAction.amountRaised;
+        }
+        for(int idx = fromActionIndex+1; idx < actions.size(); ++idx)
+        {
+            PlayerAction action = actions.get(idx);
+            
+            if (action.action == Action.FOLD) {
+                action.pot = pot;
+                action.incomingBetOrRaise = tapisAction.action == Action.RAISE_ALL_IN ? 
+                        tapisAction.amountRaised : tapisAction.incomingBetOrRaise;
+            } else {
+                log.debug("Not correction action {}", action);
+            }
+        }
     }
 
     private void changeLastTapisAction(PlayerAction.Action pAction, Integer tapisAmt, boolean clearLastTapisPlayer)
     {
         int tapisPos = players.indexOf(lastTapisPlayer);
         List<Integer> actionIndexes = playerPosToActions.get(tapisPos);
-        PlayerAction tapisAction = actions.get(actionIndexes.get(actionIndexes.size()-1));
+        int tapisActionIndex = actionIndexes.get(actionIndexes.size()-1);
+        PlayerAction tapisAction = actions.get(tapisActionIndex);
         
         Preconditions.checkState(tapisAction.action == Action.ALL_IN || tapisAction.action == Action.RAISE_ALL_IN);
         
@@ -427,6 +443,13 @@ public class FlopTurnRiverState implements ParserListener
         if (tapisAmt != null && tapisAction.action == Action.RAISE_ALL_IN)
         {
             tapisAction.amountRaised = tapisAmt;
+            pot = updatePlayerBet(playerBets, lastTapisPlayerPos, lastTapisPlayer, tapisAmt, pot );
+            correctActions(tapisActionIndex, actions);
+        } else if (tapisAction.action == Action.CALL_ALL_IN)
+        {
+            tapisAction.amountRaised = 0;
+            pot = updatePlayerBet(playerBets, lastTapisPlayerPos, lastTapisPlayer, tapisAction.incomingBetOrRaise, pot );
+            correctActions(tapisActionIndex, actions);
         }
         
         if (clearLastTapisPlayer)
@@ -467,7 +490,7 @@ public class FlopTurnRiverState implements ParserListener
                     amtToCall = tapisGuess + diff + 1;
                     log.debug("Adjusting tapis guess to {}", tapisGuess + diff);
                     
-                    pot = updatePlayerBet(playerBets, lastTapisPlayerPos, lastTapisPlayer, amtToCall, pot);
+                    //pot = updatePlayerBet(playerBets, lastTapisPlayerPos, lastTapisPlayer, amtToCall, pot);
 
                     
                     allInMinimum[lastTapisPlayerPos] = amtToCall;
@@ -488,9 +511,12 @@ public class FlopTurnRiverState implements ParserListener
         
         
         boolean seenPlayer = incrementPlayer(playerName);
-        printHandHistory("Call $" + Statistics.moneyFormat.format(betAmt));
+        //printHandHistory("Call $" + Statistics.moneyFormat.format(betAmt));
         
-        PlayerAction action = PlayerAction.createCall(currentPlayer, playerName, betAmt, pot);
+        int prevBet = playerBets[currentPlayer];
+        if (prevBet < 0)
+            prevBet = 0;
+        PlayerAction action = PlayerAction.createCall(currentPlayer, playerName, prevBet, betAmt, pot);
         addAction(action);
         
         pot = updatePlayerBet(playerBets, currentPlayer, playerName, betAmt, pot);
@@ -563,9 +589,10 @@ public class FlopTurnRiverState implements ParserListener
         }
         
         incrementPlayer(playerName);
-        printHandHistory("Raise $" + Statistics.moneyFormat.format(betAmt), betAmt);
+        //printHandHistory("Raise $" + Statistics.moneyFormat.format(betAmt), betAmt);
         
-        PlayerAction action = PlayerAction.createReraise(currentPlayer, playerName, amtToCall, betAmt, pot);
+        PlayerAction action = PlayerAction.createReraise(currentPlayer, playerName, amtToCall,
+                betAmt, playerBets[currentPlayer], pot);
         addAction(action);
         
         amtToCall = betAmt;
@@ -588,7 +615,7 @@ public class FlopTurnRiverState implements ParserListener
         
 
         boolean seenPlayer = incrementPlayer(playerName);
-        printHandHistory("Fold");
+       // printHandHistory("Fold");
         
         //Stats
         final int playerBet = playerBets[currentPlayer];
@@ -650,13 +677,8 @@ public class FlopTurnRiverState implements ParserListener
             log.debug("Parole après une tapis, le dernier tapis était un suivi", playerName);
             allInMinimum[lastTapisPlayerPos] -= 1;
             
-            int tapisPos = players.indexOf(lastTapisPlayer);
-            List<Integer> actionIndexes = playerPosToActions.get(tapisPos);
-            PlayerAction tapisAction = actions.get(actionIndexes.get(actionIndexes.size()-1));
             
-            Preconditions.checkState(tapisAction.action == Action.ALL_IN);
-            
-            tapisAction.action = Action.CALL_ALL_IN;
+            changeLastTapisAction(Action.CALL_ALL_IN, null, true);
             
             return getNextState(true);
         }
@@ -666,7 +688,7 @@ public class FlopTurnRiverState implements ParserListener
         
       //  boolean seenPlayer = 
         incrementPlayer(playerName);
-        printHandHistory("Check");
+       // printHandHistory("Check");
         
         addAction(PlayerAction.createCheck(currentPlayer, playerName, pot));
         
@@ -709,7 +731,7 @@ public class FlopTurnRiverState implements ParserListener
                 
         
         incrementPlayer(playerName);
-        printHandHistory("All in for unknown amount");
+      //  printHandHistory("All in for unknown amount");
         
         if (amtToCall == 0)
         {
@@ -717,8 +739,11 @@ public class FlopTurnRiverState implements ParserListener
             addAction(PlayerAction.createBetAllin(currentPlayer, playerName, amtToCall, pot));
                         
         } else {
-            log.debug("All in, unknown, was a previous bet");
-            addAction(PlayerAction.createAllin(currentPlayer, playerName, amtToCall, pot));
+            log.debug("All in, unknown, incoming to call was >0 {}", amtToCall);
+            int prevBet = playerBets[currentPlayer];
+            if (prevBet < 0)
+                prevBet = 0;
+            addAction(PlayerAction.createAllin(currentPlayer, playerName, amtToCall,prevBet, pot));
             
             
         }
@@ -744,14 +769,16 @@ public class FlopTurnRiverState implements ParserListener
         if (finalPot != pot ) {
             log.warn("Final pot calculated as {} but is {}.  Hand line {}", pot, finalPot, handInfo.startingLine);
         }
+        
+        
+        this.handInfoCollector.handFinished(handInfo);
+        
         handInfo.handLog.append(playerName)
         .append(" wins showdown with pot $")
         .append(Statistics.moneyFormat.format(finalPot))
         .append("\n")
         .append(line)
         .append("");
-        
-        this.handInfoCollector.handFinished(handInfo);
         
         return null;
     }
@@ -771,6 +798,11 @@ public class FlopTurnRiverState implements ParserListener
             playerPosToActions.add( new ArrayList<Integer>() );
         }
         this.handInfoCollector.handFinished(handInfo);
+        
+        handInfo.handLog.append(playerName)
+        .append(" wins ")
+        .append("\n")
+        .append("");
         
         return null;
     }

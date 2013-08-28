@@ -1,5 +1,7 @@
 package pkr.history;
 
+import com.google.common.base.Preconditions;
+
 public class PlayerAction {
     public  int playerPosition;
     public String playerName;
@@ -54,23 +56,25 @@ public class PlayerAction {
         return action;
     }
 
-    static PlayerAction createCall(int playerPosition, String playerName, 
-            int amount, int potBeforeCall)
+    static PlayerAction createCall(int playerPosition, String playerName,
+            int playerPrevPutInPot,
+            int amountCalled, int potBeforeCall)
     {
+        Preconditions.checkState(playerPrevPutInPot >= 0);
         PlayerAction action = new PlayerAction();
         action.playerPosition = playerPosition;
         action.playerName = playerName;
         action.action = Action.CALL;
         action.pot = potBeforeCall;
-        
-        action.incomingBetOrRaise = amount;
+        action.playerAmtPutInPotThisRound = playerPrevPutInPot;
+        action.incomingBetOrRaise = amountCalled;
         
         return action;
     }
     
     
     static PlayerAction createReraise(int playerPosition, String playerName, 
-            int amountToCall, int raiseAmount, int potBeforeRaise)
+            int amountToCall, int raiseAmount, int playerAmtPutInPotThisRound, int potBeforeRaise)
     {
         PlayerAction action = new PlayerAction();
         action.playerPosition = playerPosition;
@@ -78,6 +82,7 @@ public class PlayerAction {
         action.action = Action.RAISE;
         action.pot = potBeforeRaise;
         
+        action.playerAmtPutInPotThisRound = playerAmtPutInPotThisRound < 0 ? 0 : playerAmtPutInPotThisRound;
         action.incomingBetOrRaise = amountToCall;
         action.amountRaised = raiseAmount;
         
@@ -94,9 +99,9 @@ public class PlayerAction {
         action.pot = pot;
         
         action.incomingBetOrRaise = amountToCall;
-        action.amountRaised = -1;
+        action.amountRaised = 0;
         
-        action.playerAmtPutInPotThisRound = playerAmtPutInPotThisRound;
+        action.playerAmtPutInPotThisRound = (playerAmtPutInPotThisRound < 0) ? 0 : playerAmtPutInPotThisRound;
         
         return action;
     }
@@ -111,12 +116,13 @@ public class PlayerAction {
         action.pot = pot;
         
         action.incomingBetOrRaise = 0;
-        action.amountRaised = -1;
+        action.amountRaised = 0;
         
         return action;
     }
     
-    static PlayerAction createBetAllin(int playerPosition, String playerName, 
+    static PlayerAction createBetAllin(int playerPosition,
+            String playerName, 
             int amountToCall, int pot)
     {
         PlayerAction action = new PlayerAction();
@@ -132,17 +138,97 @@ public class PlayerAction {
     }
     
     static PlayerAction createAllin(int playerPosition, String playerName, 
-            int amountToCall, int pot)
+            int amountToCall, int playerPrevPutInPot, int pot)
     {
         PlayerAction action = new PlayerAction();
         action.playerPosition = playerPosition;
         action.playerName = playerName;
         action.action = Action.ALL_IN;
         action.pot = pot;
+        action.playerAmtPutInPotThisRound = playerPrevPutInPot;
         
         action.incomingBetOrRaise = amountToCall;
         action.amountRaised = -1;
         
         return action;
+    }
+    
+    String getDesc() 
+    {
+        StringBuffer sb = new StringBuffer();
+        sb.append("\n** Player ")
+        .append(playerName)
+        .append(" position ")
+        .append(playerPosition)
+        .append("  Action [<b> ");
+        if (action == Action.CALL)
+        {
+            sb.append("Call ")
+            .append(Statistics.formatMoney(incomingBetOrRaise));
+        } else if (action == Action.RAISE) {
+            sb.append("Raise ")
+            .append(Statistics.formatMoney(amountRaised));
+        }  else if (action == Action.RAISE_ALL_IN) {
+            sb.append("All in (Raise) ")
+            .append(Statistics.formatMoney(amountRaised));
+        } else {
+            sb.append(action);
+       
+        
+        }
+        sb.append(" </b>]\n");
+        
+        int playerBet = playerAmtPutInPotThisRound;
+        int amtToCall = incomingBetOrRaise;
+        if (playerBet < 0)
+            playerBet = 0;
+        
+        if (amtToCall > playerBet)
+        {
+            int diff = amtToCall - playerBet;
+            double perc = 100.0 * diff / (pot + diff);
+            double ratio = pot * 1.0 / diff; 
+            
+            double outsOne = perc / 2;
+            
+           // double betSizeToPot = 1.0 * diff / pot;
+            //% must be ahead
+           // double callBluff = 100*betSizeToPot / (1+betSizeToPot);
+            
+            
+            sb.append("Amount to call $")
+            .append(Statistics.moneyFormat.format(diff))
+            .append(" for pot $")
+            .append(Statistics.moneyFormat.format(pot))
+            .append(".\n  Pot ratio (bluff catching) : ")
+            .append(Statistics.df2.format(perc))
+            .append("%  | 1 to ")
+            .append(Statistics.df2.format(ratio))
+            .append(" | ")
+            .append(Statistics.df2.format(outsOne))
+            .append("\n");
+          //  logOutput.debug("Must be ahead {}% of the time to call a bluff", 
+              //      Statistics.df2.format(callBluff));
+        }
+        
+        if ( action == Action.RAISE || action == Action.RAISE_ALL_IN)
+        {
+            int diff = amountRaised - amtToCall;
+            double betSizeToPot = 1.0 * diff / pot;
+            //double bluff = 100.0*(betSizeToPot) / (1+betSizeToPot);
+            
+            sb.append("Raise amt $")
+            .append(Statistics.moneyFormat.format(diff))
+            .append(" | %")
+            .append(Statistics.formatPercent(betSizeToPot, 1))
+            .append(" of pot ")
+            .append("\nbluff % chance everyone must fold ")
+            .append(Statistics.formatPercent(betSizeToPot, 1+betSizeToPot))
+            .append("\n");
+        }
+        
+        sb.append("\n");
+        
+        return sb.toString();
     }
 }
