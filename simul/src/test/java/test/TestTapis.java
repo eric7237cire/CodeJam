@@ -45,4 +45,20 @@ public class TestTapis
         dcl = (DonkContLimped) pStats.stats.get("dcl1");
         
     }
+    
+    @Test
+    public void testTapis2() throws Exception
+    {
+        HandInfoCollector results = TestPreflopStats.getList("testTapis2");
+        
+        assertEquals(1, results.listHandInfo.size());
+        
+        FlopTurnRiverState[] roundStates = results.listHandInfo.get(0).roundStates;
+        
+        StatsSession stats = Parser.computeStats(results);
+        
+        Parser.outputHands(results);
+        
+        
+    }
 }

@@ -502,6 +502,8 @@ public class FlopTurnRiverState implements ParserListener
             
             log.debug("Reraise after tapis, no real guess possible {}", tapisGuess );
             
+            //It is also possible that the next round started, impossible to tell...see testTapis2
+            //maybe if it is seen that the river is empty...
             
             int tapisPos = players.indexOf(lastTapisPlayer);
             List<Integer> actionIndexes = playerPosToActions.get(tapisPos);
