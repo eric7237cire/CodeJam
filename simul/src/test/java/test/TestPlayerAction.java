@@ -264,7 +264,7 @@ public class TestPlayerAction
         
         actions = roundStates[3].actions;
         
-        assertEquals(2, actions.size());
+        assertEquals(3, actions.size());
         
         action = actions.get(0);
         
