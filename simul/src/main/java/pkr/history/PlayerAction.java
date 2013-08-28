@@ -197,7 +197,8 @@ public class PlayerAction {
         if (playerBet < 0)
             playerBet = 0;
         
-        if (amtToCall > playerBet)
+        if (amtToCall > playerBet && !( action == Action.RAISE || action == Action.RAISE_ALL_IN)
+        )
         {
             int diff = amtToCall - playerBet;
             double perc = 100.0 * diff / (pot + diff);
@@ -221,13 +222,24 @@ public class PlayerAction {
             .append(" | ")
             .append(Statistics.df2.format(outsOne))
             .append("\n");
+            
+            sb.append("Implied odds : ")
+            .append(" | 4 outs ")
+            .append(Statistics.formatMoney((int) (diff * getRatio(getPerc(true, 4)))))
+            .append(" | 5 outs ")
+            .append(Statistics.formatMoney((int) (diff * getRatio(getPerc(true, 5)))))
+            .append(" | 8 outs ")
+            .append(Statistics.formatMoney((int) (diff * getRatio(getPerc(true, 8)))))
+            .append(" | 9 outs ")
+            .append(Statistics.formatMoney((int) (diff * getRatio(getPerc(true, 9)))))
+            .append("\n");
           //  logOutput.debug("Must be ahead {}% of the time to call a bluff", 
               //      Statistics.df2.format(callBluff));
         }
         
         if ( action == Action.RAISE || action == Action.RAISE_ALL_IN)
         {
-            int diff = amountRaised - amtToCall;
+            int diff = amountRaised - playerAmtPutInPotThisRound;
             double betSizeToPot = 1.0 * diff / pot;
             //double bluff = 100.0*(betSizeToPot) / (1+betSizeToPot);
             
@@ -236,6 +248,7 @@ public class PlayerAction {
             .append(" | %")
             .append(Statistics.formatPercent(betSizeToPot, 1))
             .append(" of pot ")
+            .append(Statistics.formatMoney(pot))
             .append("\nbluff % chance everyone must fold ")
             .append(Statistics.formatPercent(betSizeToPot, 1+betSizeToPot))
             .append("\n");
@@ -244,5 +257,19 @@ public class PlayerAction {
         sb.append("\n");
         
         return sb.toString();
+    }
+    
+    private static double getRatio(double perc)
+    {
+        return (1-perc) / perc;
+    }
+    
+    private static double getPerc(boolean turn, int outs)
+    {
+        if (turn) {
+            return (double) outs / 47.0;
+        } else {
+            return (double) outs / 46.0;
+        }
     }
 }
