@@ -6,6 +6,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Preconditions;
+
 import pkr.history.PlayerAction.Action;
 
 public class StatsComputer
@@ -131,11 +133,35 @@ public class StatsComputer
     }
     
    
+    private void calculateWinAction(HandInfo handInfo)
+    {
+        
+        PlayerAction winAction = null;
+        
+        for(int round = 3; round >= 0; --round)
+        {
+           
+            FlopTurnRiverState ftr = handInfo.roundStates[round];
+            if (ftr == null)
+                continue;
+            
+             if (winAction == null)
+            {
+                winAction = ftr.actions.get(ftr.actions.size()-1);
+                Preconditions.checkState(winAction.action == Action.WON);
+                handInfo.winner = winAction;
+                return;
+            }
+            
+        }   
+    }
     
     private void handleStats(HandInfo handInfo, StatsSessionPlayer player, String playerName)
     {
         //Precompute common traits
        // defineAllins(ftrStates);
+        
+        calculateWinAction(handInfo);
         
         calculateGlobalRaiseCount(handInfo.roundStates);
         getAgresseur(handInfo.roundStates);

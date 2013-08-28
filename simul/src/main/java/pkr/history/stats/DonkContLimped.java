@@ -234,7 +234,7 @@ public class DonkContLimped implements iPlayerStatistic
         
         final int type = estLimped ? LIMPED : (estAgresseur ? IS_AGGRES : NOT_AGGRES);
         
-        final String link = buildLink(handInfo);
+        final String link = " winner " + handInfo.winner.playerName + " " + buildLink(handInfo);
         
         ++actionPossible[type][ALL_IN];
         ++count[type];

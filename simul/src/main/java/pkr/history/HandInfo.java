@@ -26,6 +26,6 @@ public class HandInfo
         return startingLine;
     }
     
-    
+    public PlayerAction winner;
 
 }

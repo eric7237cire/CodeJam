@@ -56,8 +56,9 @@ $('.tooltip').qtip({ // Grab some elements to apply the tooltip to
         width: '800px'
     },
     hide: {
-             event: 'click',
-             inactive: 1200
+            // event: 'click',
+             //inactive: 1200,
+             fixed: true
          }
 });           
 

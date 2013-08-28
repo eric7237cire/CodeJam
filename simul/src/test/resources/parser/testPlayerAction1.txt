@@ -1,0 +1,31 @@
+_____________________________
+C a suivi de 400 000.
+D a relancé de 800 000.
+E a suivi de 800 000.
+A a suivi de 800 000.
+B a suivi de 800 000.
+C a fait tapis.
+
+// 4 000 000 pot
+
+A a parlé.
+B a relancé de 800 000.
+D a fait tapis.
+E se couche.
+A a suivi de 2 000 000.
+B a suivi de 2 000 000.
+
+A a relancé de 2 000 000.
+B a relancé de 4 000 000.
+A a relancé de 6 000 000.
+B a relancé de 8 000 000.
+A a relancé de 10 000 000.
+B a relancé de 12 000 000.
+A a suivi de 12 000 000.
+
+A a fait tapis.
+B a suivi de 12 000 004.
+
+B remporte le pot (58 000 008 $) avec une paire de K et un 9 en kicker.
+_____________________________
+ 
