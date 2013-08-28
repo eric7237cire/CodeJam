@@ -6,6 +6,7 @@ public class PlayerAction {
     public  int playerPosition;
     public String playerName;
     
+   
     public enum Action
     {
         FOLD, 
@@ -156,6 +157,19 @@ public class PlayerAction {
     String getDesc() 
     {
         StringBuffer sb = new StringBuffer();
+        
+        if (action == Action.WON)
+        {
+
+            sb.append(playerName)
+            .append(" wins showdown with pot $")
+            .append(Statistics.moneyFormat.format(pot))
+            .append("\n")
+            .append(wonDesc)
+            .append("\n");
+            return sb.toString();
+        }
+        
         sb.append("\n** Player ")
         .append(playerName)
         .append(" position ")

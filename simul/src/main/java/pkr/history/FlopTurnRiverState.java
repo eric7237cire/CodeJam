@@ -690,21 +690,17 @@ public class FlopTurnRiverState implements ParserListener
     }
 
     @Override
-    public ParserListener handleShowdown(String playerName, int finalPot, String line)
+    public ParserListener handleShowdown(String playerName, int finalPot, String winDesc)
     {
         if (finalPot != pot ) {
             log.warn("Final pot calculated as {} but is {}.  Hand line {}", pot, finalPot, handInfo.startingLine);
         }
         
+        int playerPos = players.indexOf(playerName);
+        actions.add( PlayerAction.createWon(playerPos, playerName, finalPot, winDesc) );
         
         this.handInfoCollector.handFinished(handInfo);
         
-        handInfo.handLog.append(playerName)
-        .append(" wins showdown with pot $")
-        .append(Statistics.moneyFormat.format(finalPot))
-        .append("\n")
-        .append(line)
-        .append("");
         
         return null;
     }
@@ -725,11 +721,10 @@ public class FlopTurnRiverState implements ParserListener
         }
         this.handInfoCollector.handFinished(handInfo);
         
-        handInfo.handLog.append(playerName)
-        .append(" wins ")
-        .append("\n")
-        .append("");
+        int playerPos = players.indexOf(playerName);
         
+        actions.add( PlayerAction.createWon(playerPos, playerName, pot, " No showdown") );
+                
         return null;
     }
 
