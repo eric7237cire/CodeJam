@@ -328,76 +328,7 @@ public class FlopTurnRiverState implements ParserListener
             }
         }
     }
-    /*
-    
-    
-    private void printHandHistory(String action)
-    {
-        printHandHistory(action, -1);
-    }
-    private void printHandHistory(String action, int raiseAmt)
-    {
-        
-        handInfo.handLog.append("\n** Player ")
-        .append(players.get(currentPlayer))
-        .append(" position ")
-        .append(1+currentPlayer)
-        .append("  Action [<b> ")
-        .append(action)
-        .append(" </b>]\n");
-                
-        
-        int playerBet = playerBets[currentPlayer]; 
-        if (playerBet < 0)
-            playerBet = 0;
-        
-        if (round >= 0 && amtToCall > playerBet)
-        {
-            int diff = amtToCall - playerBet;
-            double perc = 100.0 * diff / (pot + diff);
-            double ratio = pot * 1.0 / diff; 
-            
-            double outsOne = perc / 2;
-            
-           // double betSizeToPot = 1.0 * diff / pot;
-            //% must be ahead
-           // double callBluff = 100*betSizeToPot / (1+betSizeToPot);
-            
-            
-            handInfo.handLog.append("Amount to call $")
-            .append(Statistics.moneyFormat.format(diff))
-            .append(" for pot $")
-            .append(Statistics.moneyFormat.format(pot))
-            .append(".\n  Pot ratio (bluff catching) : ")
-            .append(Statistics.df2.format(perc))
-            .append("%  | 1 to ")
-            .append(Statistics.df2.format(ratio))
-            .append(" | ")
-            .append(Statistics.df2.format(outsOne))
-            .append("\n");
-          //  logOutput.debug("Must be ahead {}% of the time to call a bluff", 
-              //      Statistics.df2.format(callBluff));
-        }
-        
-        if (round >= 0 && raiseAmt > playerBet)
-        {
-            int diff = raiseAmt - amtToCall;
-            double betSizeToPot = 1.0 * diff / pot;
-            //double bluff = 100.0*(betSizeToPot) / (1+betSizeToPot);
-            
-            handInfo.handLog.append("Raise amt $")
-            .append(Statistics.moneyFormat.format(diff))
-            .append(" | %")
-            .append(Statistics.formatPercent(betSizeToPot, 1))
-            .append(" of pot ")
-            .append("\nbluff % chance everyone must fold ")
-            .append(Statistics.formatPercent(betSizeToPot, 1+betSizeToPot))
-            .append("\n");
-        }
-        
-        handInfo.handLog.append("\n");
-    }*/
-    
+  
     /**
      * Après avoir trouver les montants exact de la tapisAction,
      * on corrige les actions qui suivaient éventuellement
@@ -511,7 +442,6 @@ public class FlopTurnRiverState implements ParserListener
         
         
         boolean seenPlayer = incrementPlayer(playerName);
-        //printHandHistory("Call $" + Statistics.moneyFormat.format(betAmt));
         
         int prevBet = playerBets[currentPlayer];
         if (prevBet < 0)
@@ -589,7 +519,6 @@ public class FlopTurnRiverState implements ParserListener
         }
         
         incrementPlayer(playerName);
-        //printHandHistory("Raise $" + Statistics.moneyFormat.format(betAmt), betAmt);
         
         PlayerAction action = PlayerAction.createReraise(currentPlayer, playerName, amtToCall,
                 betAmt, playerBets[currentPlayer], pot);
@@ -615,7 +544,6 @@ public class FlopTurnRiverState implements ParserListener
         
 
         boolean seenPlayer = incrementPlayer(playerName);
-       // printHandHistory("Fold");
         
         //Stats
         final int playerBet = playerBets[currentPlayer];
@@ -686,9 +614,8 @@ public class FlopTurnRiverState implements ParserListener
         Preconditions.checkState(amtToCall == 0);
         
         
-      //  boolean seenPlayer = 
         incrementPlayer(playerName);
-       // printHandHistory("Check");
+      
         
         addAction(PlayerAction.createCheck(currentPlayer, playerName, pot));
         
@@ -731,7 +658,6 @@ public class FlopTurnRiverState implements ParserListener
                 
         
         incrementPlayer(playerName);
-      //  printHandHistory("All in for unknown amount");
         
         if (amtToCall == 0)
         {
