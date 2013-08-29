@@ -148,7 +148,7 @@ public class DonkContLimped implements iPlayerStatistic
         .append(handInfo.handIndex)
         .append(" line ")
         .append(handInfo.startingLine)
-        .append("</a>  ");
+        .append("</a> ");
         
         return (sb.toString());
         //return StringEscapeUtils.escapeXml(sb.toString());
@@ -234,7 +234,8 @@ public class DonkContLimped implements iPlayerStatistic
         
         final int type = estLimped ? LIMPED : (estAgresseur ? IS_AGGRES : NOT_AGGRES);
         
-        final String link = " winner " + handInfo.winner.playerName + " " + buildLink(handInfo);
+        final String link =  " " + buildLink(handInfo) +
+                " winner " + handInfo.winner.playerName + handInfo.winner.wonDesc + "<br/>";
         
         ++actionPossible[type][ALL_IN];
         ++count[type];
