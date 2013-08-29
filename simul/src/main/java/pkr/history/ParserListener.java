@@ -12,11 +12,11 @@ public interface ParserListener
     
     public ParserListener handleParole(String playerName);
     
-    public ParserListener handleTapis(String playerName);
+    public ParserListener handleTapis(String playerName, int lineNumber);
     
-    public ParserListener handleShowdown(String playerName, int pot, String line);
+    public ParserListener handleShowdown(String playerName, int pot, String lineText);
     
     public ParserListener handleGagne(String playerName);
     
-    public boolean replayLine();
+    public int replayLine();
 }

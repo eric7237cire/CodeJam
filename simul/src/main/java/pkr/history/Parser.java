@@ -213,9 +213,18 @@ public class Parser {
         
         for(int i = 0; i < lines.size(); ++i)
         {
-            if (curState != null && curState.replayLine()) {
-                log.debug("Replaying line");
-                --i;
+            
+            if (curState != null)
+            {
+                int line = curState.replayLine();
+                if (line == -1)
+                {
+                    log.debug("Replaying line");
+                    --i;
+                } else if (line >= 0) {
+                    log.debug("Skipping to line {}", i);
+                    i = line;
+                }
             }
 
             String line = lines.get(i);
@@ -229,7 +238,7 @@ public class Parser {
             match = patHandBoundary.matcher(line);
             if (match.matches())
             {
-                curState = new FlopTurnRiverState(new ArrayList<String>(), 0, false, 0, handInfoCollector,
+                curState = new FlopTurnRiverState(new ArrayList<String>(), 0, -10, 0, handInfoCollector,
                         new HandInfo(i, handInfoCollector.listHandInfo.size()));
                 log.debug("Hand # {} starts on line {}", handInfoCollector.listHandInfo.size()+1, i);
                 
@@ -280,7 +289,7 @@ public class Parser {
             {
                 String playerName = match.group(1);
              
-                curState = curState.handleTapis(playerName);
+                curState = curState.handleTapis(playerName, i);
                 continue;
             }
             
@@ -290,7 +299,7 @@ public class Parser {
             {
                 String playerName = match.group(1);
              
-                curState = curState.handleTapis(playerName);
+                curState = curState.handleTapis(playerName, i);
                 continue;
             }
             
