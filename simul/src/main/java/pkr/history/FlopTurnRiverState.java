@@ -285,6 +285,7 @@ public class FlopTurnRiverState implements ParserListener
             Preconditions.checkState(allInMinimum[i] > 0 || amtToCall == playerBet, "Player %s amtToCall %s  bet %s", playerName, amtToCall, playerBet);
         }
         
+        log.debug("Pot is good");
         return true;
     }
 
@@ -665,13 +666,35 @@ public class FlopTurnRiverState implements ParserListener
         }
                 
         
-        incrementPlayer(playerName);
+        boolean seenPlayer = incrementPlayer(playerName);
         
         if (amtToCall == 0)
         {
             log.debug("All was a bet, no previous bets");
             addAction(PlayerAction.createBetAllin(currentPlayer, playerName, amtToCall, pot));
                         
+        } else if (ambigTapisLineNumber == lineNumber)
+        {
+            //Trying to make it a call
+            int prevBet = playerBets[currentPlayer];
+            if (prevBet < 0)
+                prevBet = 0;
+            
+            
+            addAction(PlayerAction.createAllin(currentPlayer, playerName, amtToCall,prevBet, pot));
+            
+            lastTapisPlayer = playerName;
+            lastTapisPlayerPos = currentPlayer;
+
+            allInMinimum[currentPlayer] = amtToCall;
+            changeLastTapisAction(PlayerAction.Action.CALL_ALL_IN, amtToCall, true, true);
+            ambigTapisLineNumber = -2;
+            
+            if (seenPlayer && potsGood() && round < 3) 
+            {
+                return getNextState(false);
+            }
+            return this;
         } else {
             log.debug("All in, unknown, incoming to call was >0 {}", amtToCall);
             int prevBet = playerBets[currentPlayer];
@@ -699,6 +722,8 @@ public class FlopTurnRiverState implements ParserListener
         } else if (ambigTapisLineNumber == lineNumber) {
             ambigTapisLineNumber = -2;
         }
+        
+       
         
         return this;
     }
