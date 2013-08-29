@@ -43,6 +43,8 @@ public class FlopTurnRiverState implements ParserListener
     
     String lastTapisPlayer;
     int lastTapisPlayerPos;
+    int ambigTapisLineNumber;
+    int ambigTapisActionIndex;
     
     public int[] playerBets;
     
@@ -59,7 +61,7 @@ public class FlopTurnRiverState implements ParserListener
     
     int currentPlayer = 0;
     
-    boolean replayLine = false;
+    int replayLine = -10;
     final int round;
     
     
@@ -74,7 +76,7 @@ public class FlopTurnRiverState implements ParserListener
      * @param masterList   holds for all hands in a session
      * @param roundStates  holds all objects for the hand 
      */
-    public FlopTurnRiverState(List<String> players, int pot, boolean replayLine, int round, 
+    public FlopTurnRiverState(List<String> players, int pot, int round, 
             HandInfoCollector handInfoCollector,  HandInfo handInfo) 
     {
         super();
@@ -83,7 +85,6 @@ public class FlopTurnRiverState implements ParserListener
         
         this.players = players;
         this.pot = pot;
-        this.replayLine = replayLine;
         this.round = round;
         this.handInfoCollector = handInfoCollector;
         this.handInfo = handInfo;
@@ -109,7 +110,7 @@ public class FlopTurnRiverState implements ParserListener
         this.currentPlayer = players.size() - 1;
         
         roundInitialBetterPos = -1;
-        
+        ambigTapisLineNumber = -1;
         
         
         Preconditions.checkState(handInfo.roundStates.length == 4);
@@ -214,7 +215,9 @@ public class FlopTurnRiverState implements ParserListener
         }
         
         FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder,
-                pot, replayline, 1, handInfoCollector, handInfo);
+                pot, 1, handInfoCollector, handInfo);
+        
+        ftrState.replayLine = replayline ? -1 : -10;
         
         return ftrState;
     }
@@ -243,7 +246,9 @@ public class FlopTurnRiverState implements ParserListener
         }
         
         FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder, 
-                pot, replayLine, 1+round, handInfoCollector, handInfo);
+                pot, 1+round, handInfoCollector, handInfo);
+        
+        ftrState.replayLine = replayLine ? -1 : -10;
         
         return ftrState;
     }
@@ -360,7 +365,10 @@ public class FlopTurnRiverState implements ParserListener
         }
     }
 
-    private void changeLastTapisAction(PlayerAction.Action pAction, Integer tapisAmt, boolean clearLastTapisPlayer)
+    private void changeLastTapisAction(PlayerAction.Action pAction, Integer tapisAmt,
+            boolean clearLastTapisPlayer,
+            boolean isNotAmbig
+            )
     {
         int tapisPos = players.indexOf(lastTapisPlayer);
         List<Integer> actionIndexes = playerPosToActions.get(tapisPos);
@@ -388,6 +396,12 @@ public class FlopTurnRiverState implements ParserListener
             lastTapisPlayer = null;
             lastTapisPlayerPos = -1;
         }
+        
+        if (isNotAmbig)
+        {
+            ambigTapisActionIndex = -1;
+            ambigTapisLineNumber = -1;
+        }
     }
     @Override
     public ParserListener handleSuivi(String playerName, int betAmt)
@@ -408,7 +422,7 @@ public class FlopTurnRiverState implements ParserListener
                 if (betAmt < amtToCall)
                 {
                     log.debug("Last tapis was a call");
-                    changeLastTapisAction( Action.CALL_ALL_IN, null, true );
+                    changeLastTapisAction( Action.CALL_ALL_IN, null, true, true );
                     amtToCall = betAmt;
                 } else {
                     int diff = betAmt - amtToCall;
@@ -428,7 +442,7 @@ public class FlopTurnRiverState implements ParserListener
                     
                     
                     
-                    changeLastTapisAction( Action.RAISE_ALL_IN, amtToCall, true );
+                    changeLastTapisAction( Action.RAISE_ALL_IN, amtToCall, true, true );
                 }
                 
                 
@@ -505,18 +519,8 @@ public class FlopTurnRiverState implements ParserListener
             //It is also possible that the next round started, impossible to tell...see testTapis2
             //maybe if it is seen that the river is empty...
             
-            int tapisPos = players.indexOf(lastTapisPlayer);
-            List<Integer> actionIndexes = playerPosToActions.get(tapisPos);
-            PlayerAction tapisAction = actions.get(actionIndexes.get(actionIndexes.size()-1));
-            
-            Preconditions.checkState(tapisAction.action == Action.ALL_IN || tapisAction.action == Action.RAISE_ALL_IN);
-            if (tapisAction.action == Action.ALL_IN)
-            {
-                log.debug("All in guessed to be a call");
-                tapisAction.action = Action.CALL_ALL_IN;
-            }
-            
-            lastTapisPlayer = null;
+            changeLastTapisAction(Action.CALL_ALL_IN, tapisGuess, true, false);
+           
             
         }
         
@@ -557,7 +561,7 @@ public class FlopTurnRiverState implements ParserListener
         {
             log.debug("{} se couche une relance, alors le dernier tapis était une relance.");
             
-            changeLastTapisAction( Action.RAISE_ALL_IN, null, false );
+            changeLastTapisAction( Action.RAISE_ALL_IN, null, false, false );
         }
         
         double potRatio = pot > 0 ? 1.0 * raiseAmt / pot : 0;
@@ -608,7 +612,7 @@ public class FlopTurnRiverState implements ParserListener
             allInMinimum[lastTapisPlayerPos] -= 1;
             
             
-            changeLastTapisAction(Action.CALL_ALL_IN, null, true);
+            changeLastTapisAction(Action.CALL_ALL_IN, null, true, true);
             
             return getNextState(true);
         }
@@ -634,7 +638,7 @@ public class FlopTurnRiverState implements ParserListener
     }
 
     @Override
-    public ParserListener handleTapis(String playerName)
+    public ParserListener handleTapis(String playerName, int lineNumber)
     {
       //Tapis est un cas diffil car on ne sais pas si c'est un relancement ou pas ; aussi on ne sais plus le pot
         log.debug("{} Tapis", playerName);
@@ -687,6 +691,8 @@ public class FlopTurnRiverState implements ParserListener
         pot = updatePlayerBet(playerBets, currentPlayer, playerName, amtToCall, pot);
         lastTapisPlayer = playerName;
         lastTapisPlayerPos = currentPlayer;
+        ambigTapisLineNumber = lineNumber;
+        ambigTapisActionIndex = actions.size();
         
         return this;
     }
@@ -696,6 +702,15 @@ public class FlopTurnRiverState implements ParserListener
     {
         if (finalPot != pot ) {
             log.warn("Final pot calculated as {} but is {}.  Hand line {}", pot, finalPot, handInfo.startingLine);
+        }
+        
+        if(players.size() >= 2 && actions.size() == 0)
+        {
+            log.debug("Showdown tandis que aucun jouer n'a parlé");
+            if (ambigTapisLineNumber > -1) {
+                replayLine = ambigTapisLineNumber;
+                return this;
+            }
         }
         
         int playerPos = players.indexOf(playerName);
@@ -731,12 +746,12 @@ public class FlopTurnRiverState implements ParserListener
     }
 
     @Override
-    public boolean replayLine()
+    public int replayLine()
     {
-        if (replayLine) {
-            replayLine = false;
-            return true;
-        }
-        return false;
+        int ret = replayLine;
+        
+         replayLine = -10; 
+        
+        return ret;
     }
 }
