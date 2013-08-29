@@ -238,7 +238,7 @@ public class Parser {
             match = patHandBoundary.matcher(line);
             if (match.matches())
             {
-                curState = new FlopTurnRiverState(new ArrayList<String>(), 0, -10, 0, handInfoCollector,
+                curState = new FlopTurnRiverState(new ArrayList<String>(), 0,  0, handInfoCollector,
                         new HandInfo(i, handInfoCollector.listHandInfo.size()));
                 log.debug("Hand # {} starts on line {}", handInfoCollector.listHandInfo.size()+1, i);
                 

@@ -44,7 +44,6 @@ public class FlopTurnRiverState implements ParserListener
     String lastTapisPlayer;
     int lastTapisPlayerPos;
     int ambigTapisLineNumber;
-    int ambigTapisActionIndex;
     
     public int[] playerBets;
     
@@ -61,6 +60,7 @@ public class FlopTurnRiverState implements ParserListener
     
     int currentPlayer = 0;
     
+    //-1 means replay last line
     int replayLine = -10;
     final int round;
     
@@ -111,7 +111,8 @@ public class FlopTurnRiverState implements ParserListener
         
         roundInitialBetterPos = -1;
         ambigTapisLineNumber = -1;
-        
+        replayLine = -10; 
+         
         
         Preconditions.checkState(handInfo.roundStates.length == 4);
         Preconditions.checkState(handInfo.roundStates[round] == null);
@@ -218,6 +219,7 @@ public class FlopTurnRiverState implements ParserListener
                 pot, 1, handInfoCollector, handInfo);
         
         ftrState.replayLine = replayline ? -1 : -10;
+        ftrState.ambigTapisLineNumber = ambigTapisLineNumber;
         
         return ftrState;
     }
@@ -249,6 +251,7 @@ public class FlopTurnRiverState implements ParserListener
                 pot, 1+round, handInfoCollector, handInfo);
         
         ftrState.replayLine = replayLine ? -1 : -10;
+        ftrState.ambigTapisLineNumber = ambigTapisLineNumber;
         
         return ftrState;
     }
@@ -399,7 +402,6 @@ public class FlopTurnRiverState implements ParserListener
         
         if (isNotAmbig)
         {
-            ambigTapisActionIndex = -1;
             ambigTapisLineNumber = -1;
         }
     }
@@ -691,8 +693,12 @@ public class FlopTurnRiverState implements ParserListener
         pot = updatePlayerBet(playerBets, currentPlayer, playerName, amtToCall, pot);
         lastTapisPlayer = playerName;
         lastTapisPlayerPos = currentPlayer;
-        ambigTapisLineNumber = lineNumber;
-        ambigTapisActionIndex = actions.size();
+        if (ambigTapisLineNumber == -1)
+        {
+            ambigTapisLineNumber = lineNumber;
+        } else if (ambigTapisLineNumber == lineNumber) {
+            ambigTapisLineNumber = -2;
+        }
         
         return this;
     }
@@ -708,8 +714,11 @@ public class FlopTurnRiverState implements ParserListener
         {
             log.debug("Showdown tandis que aucun jouer n'a parlé");
             if (ambigTapisLineNumber > -1) {
-                replayLine = ambigTapisLineNumber;
-                return this;
+                FlopTurnRiverState restart = new FlopTurnRiverState(new ArrayList<String>(), 0,  0, handInfoCollector,
+                        new HandInfo(handInfo.startingLine, handInfoCollector.listHandInfo.size()));
+                restart.replayLine = handInfo.startingLine + 1; 
+                restart.ambigTapisLineNumber = ambigTapisLineNumber;
+                return restart;
             }
         }
         
