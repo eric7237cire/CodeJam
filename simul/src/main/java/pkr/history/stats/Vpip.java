@@ -88,7 +88,7 @@ public class Vpip implements iPlayerStatistic
         final int bbPos = ftrStates[0].players.size() - 1;
         
         if (playerPosition == bbPos
-                && ftrStates[0].tableStakes == playerBet
+                && ftrStates[0].tableStakes*2 == playerBet
                 && ftrStates[0].roundInitialBetter == null
                 )
         {

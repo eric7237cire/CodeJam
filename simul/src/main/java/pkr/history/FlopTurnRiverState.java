@@ -819,7 +819,7 @@ public class FlopTurnRiverState implements ParserListener
         handInfo.winRound = round;
         handInfo.winnerPlayerName = playerName;
                 
-        return null;
+        return this;
     }
 
     @Override

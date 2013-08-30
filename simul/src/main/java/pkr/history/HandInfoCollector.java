@@ -18,6 +18,8 @@ public class HandInfoCollector
     
     public void handFinished(HandInfo handInfo)
     {
+    	if (handInfo.roundStates[0].actions.size() == 0)
+    		return;
     	
         listHandInfo.add(handInfo);
         

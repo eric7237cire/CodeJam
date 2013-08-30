@@ -47,7 +47,7 @@ public class TestPlayerAction
         
         assertEquals("C",  action.playerName);
         assertEquals(0,  action.playerPosition);
-        assertEquals(0, action.pot);
+        assertEquals(600000, action.pot);
         assertEquals(400000, action.incomingBetOrRaise);
         assertEquals(0, action.playerAmtPutInPotThisRound);
         assertEquals(0, action.amountRaised);
@@ -58,7 +58,7 @@ public class TestPlayerAction
         
         assertEquals("D",  action.playerName);
         assertEquals(1,  action.playerPosition);
-        assertEquals(400000, action.pot);
+        assertEquals(1000000, action.pot);
         assertEquals(400000, action.incomingBetOrRaise);
         assertEquals(0, action.playerAmtPutInPotThisRound);
         assertEquals(800000, action.amountRaised);
@@ -69,7 +69,7 @@ public class TestPlayerAction
         
         assertEquals("E",  action.playerName);
         assertEquals(2,  action.playerPosition);
-        assertEquals(1200000, action.pot);
+        assertEquals(1800000, action.pot);
         assertEquals(800000, action.incomingBetOrRaise);
         assertEquals(0, action.playerAmtPutInPotThisRound);
         assertEquals(0, action.amountRaised);
@@ -80,9 +80,9 @@ public class TestPlayerAction
         
         assertEquals("A",  action.playerName);
         assertEquals(3,  action.playerPosition);
-        assertEquals(2000000, action.pot);
+        assertEquals(2600000, action.pot);
         assertEquals(800000, action.incomingBetOrRaise);
-        assertEquals(0, action.playerAmtPutInPotThisRound);
+        assertEquals(200000, action.playerAmtPutInPotThisRound);
         assertEquals(00000, action.amountRaised);
         assertEquals(PlayerAction.Action.CALL, action.action);
         assertEquals(5, action.playersLeft);
@@ -91,9 +91,9 @@ public class TestPlayerAction
         
         assertEquals("B",  action.playerName);
         assertEquals(4,  action.playerPosition);
-        assertEquals(2800000, action.pot);
+        assertEquals(3200000, action.pot);
         assertEquals(800000, action.incomingBetOrRaise);
-        assertEquals(0, action.playerAmtPutInPotThisRound);
+        assertEquals(400000, action.playerAmtPutInPotThisRound);
         assertEquals(00000, action.amountRaised);
         assertEquals(PlayerAction.Action.CALL, action.action);
         assertEquals(5, action.playersLeft);
@@ -264,7 +264,7 @@ public class TestPlayerAction
         
         actions = roundStates[3].actions;
         
-        assertEquals(3, actions.size());
+        assertEquals(2, actions.size());
         
         action = actions.get(0);
         
