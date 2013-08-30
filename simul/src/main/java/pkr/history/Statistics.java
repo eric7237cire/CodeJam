@@ -5,12 +5,9 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class Statistics {
 
-    private static Logger log = LoggerFactory.getLogger(Statistics.class);
+    //private static Logger log = LoggerFactory.getLogger(Statistics.class);
     
     public static String formatPercent(double decimalNum, double decimalDenom)
     {

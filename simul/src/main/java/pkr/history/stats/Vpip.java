@@ -84,7 +84,7 @@ public class Vpip implements iPlayerStatistic
         int playerPosition = ftrStates[0].players.indexOf(preFlopPlayer);
         int playerBet = ftrStates[0].playerBets[playerPosition];
         
-        final int sbPos = ftrStates[0].players.size() - 2;
+        //final int sbPos = ftrStates[0].players.size() - 2;
         final int bbPos = ftrStates[0].players.size() - 1;
         
         if (playerPosition == bbPos
@@ -121,7 +121,7 @@ public class Vpip implements iPlayerStatistic
             log.debug("Player {} entered pot for VPIP.  table stakes {}  player bet {} bb {}", preFlopPlayer,
                     ftrStates[0].tableStakes,
                     ftrStates[0].playerBets[playerPosition],
-                    ftrStates[0].playerBB
+                    ftrStates[0].players.get(bbPos)
                     );
             moneyIn++;
             posMoneyIn[posIndex]++;

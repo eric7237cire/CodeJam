@@ -238,7 +238,17 @@ public class Parser {
             match = patHandBoundary.matcher(line);
             if (match.matches())
             {
-                curState = new FlopTurnRiverState(new ArrayList<String>(), 0,  0, handInfoCollector,
+            	if (curState != null)
+            	{
+            		FlopTurnRiverState ftr = (FlopTurnRiverState)curState;
+            		if (ftr.handInfo.wonPot != ftr.pot ) {
+                        log.warn("Final pot calculated as {} "
+                        		+ "but is {}.  "
+                        		+ "Hand line {}", ftr.pot, ftr.handInfo.wonPot, ftr.handInfo.startingLine);
+                    }
+            		handInfoCollector.handFinished( ((FlopTurnRiverState)curState).handInfo);
+            	}
+                curState = new FlopTurnRiverState(new ArrayList<String>(), 0,  0, 
                         new HandInfo(i, handInfoCollector.listHandInfo.size()));
                 log.debug("Hand # {} starts on line {}", handInfoCollector.listHandInfo.size()+1, i);
                 

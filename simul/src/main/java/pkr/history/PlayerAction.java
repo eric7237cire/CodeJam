@@ -13,8 +13,7 @@ public class PlayerAction {
         RAISE, //bet / reraise
         CALL, CHECK, 
         ALL_IN, //unknown if it is a raise or call
-        RAISE_ALL_IN, CALL_ALL_IN,
-        WON;
+        RAISE_ALL_IN, CALL_ALL_IN;
     }
     
     public Action action;
@@ -37,25 +36,13 @@ public class PlayerAction {
     public int playersAllIn;
     public int playersFolded;
     
-    public String wonDesc;
     
     private PlayerAction()
     {
         
     }
     
-    static PlayerAction createWon(int playerPosition, String playerName, 
-            int pot, String winDesc)
-    {
-        PlayerAction action = new PlayerAction();
-        action.playerPosition = playerPosition;
-        action.playerName = playerName;
-        action.action = Action.WON;
-        action.pot = pot;
-        
-        action.wonDesc = winDesc;
-        return action;
-    }
+   
 
     static PlayerAction createCall(int playerPosition, String playerName,
             int playerPrevPutInPot,
@@ -158,17 +145,7 @@ public class PlayerAction {
     {
         StringBuffer sb = new StringBuffer();
         
-        if (action == Action.WON)
-        {
-
-            sb.append(playerName)
-            .append(" wins showdown with pot $")
-            .append(Statistics.moneyFormat.format(pot))
-            .append("\n")
-            .append(wonDesc)
-            .append("\n");
-            return sb.toString();
-        }
+        
         
         sb.append("\n** Player ")
         .append(playerName)

@@ -16,10 +16,8 @@ public class FlopTurnRiverState implements ParserListener
 {
     static Logger log = LoggerFactory.getLogger(FlopTurnRiverState.class);
     
-    HandInfoCollector handInfoCollector; 
-        
     
-    HandInfo handInfo;
+    public HandInfo handInfo;
     
     //La liste complète d'actions faites dans la main
     public List<PlayerAction> actions;    
@@ -52,11 +50,10 @@ public class FlopTurnRiverState implements ParserListener
     public int roundInitialBetterPos;
     
     
-    
-    String playerSB;
-    public String playerBB;
+    int sbPos;
+    int  bbPos;
     public int tableStakes;
-    
+    private final static int DEFAULT_TABLE_STAKES = 200000;
     
     int currentPlayer = 0;
     
@@ -76,17 +73,16 @@ public class FlopTurnRiverState implements ParserListener
      * @param masterList   holds for all hands in a session
      * @param roundStates  holds all objects for the hand 
      */
-    public FlopTurnRiverState(List<String> players, int pot, int round, 
-            HandInfoCollector handInfoCollector,  HandInfo handInfo) 
+    public FlopTurnRiverState(List<String> players, int pot, 
+    		int round, 
+            HandInfo handInfo) 
     {
         super();
-        Preconditions.checkNotNull(handInfoCollector);
         Preconditions.checkNotNull(handInfo);
         
         this.players = players;
         this.pot = pot;
         this.round = round;
-        this.handInfoCollector = handInfoCollector;
         this.handInfo = handInfo;
         
         
@@ -174,11 +170,11 @@ public class FlopTurnRiverState implements ParserListener
         List<String> playersInOrder = Lists.newArrayList();
         
         //add sb
-        final int sbPos = players.size() - 2;
-        final int bbPos = players.size() - 1;
+        sbPos = players.size() - 2;
+        bbPos = players.size() - 1;
         
-        playerSB = players.get(sbPos);
-        playerBB = players.get(bbPos);
+        String playerSB = players.get(sbPos);
+        String playerBB = players.get(bbPos);
         
         
         if (!hasFolded[sbPos] &&  allInMinimum[sbPos] < 0) {
@@ -216,7 +212,7 @@ public class FlopTurnRiverState implements ParserListener
         }
         
         FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder,
-                pot, 1, handInfoCollector, handInfo);
+                pot, 1, handInfo);
         
         ftrState.replayLine = replayline ? -1 : -10;
         ftrState.ambigTapisLineNumber = ambigTapisLineNumber;
@@ -228,6 +224,10 @@ public class FlopTurnRiverState implements ParserListener
         log.debug("Tous les joueurs pris en compte");
         
         if (round == 0) {
+        	if (!correction)
+        	{
+        		correctionPotBlinds();
+        	}
             return getNextStateAfterPreflop(replayLine);
         } 
         
@@ -248,7 +248,7 @@ public class FlopTurnRiverState implements ParserListener
         }
         
         FlopTurnRiverState ftrState = new FlopTurnRiverState(playersInOrder, 
-                pot, 1+round, handInfoCollector, handInfo);
+                pot, 1+round, handInfo);
         
         ftrState.replayLine = replayLine ? -1 : -10;
         ftrState.ambigTapisLineNumber = ambigTapisLineNumber;
@@ -289,7 +289,39 @@ public class FlopTurnRiverState implements ParserListener
         return true;
     }
 
-    
+    boolean correction = false;
+    private void correctionPotBlinds()
+    {
+
+    	correction = true;
+        //
+        sbPos = players.size() - 2;
+        bbPos = players.size() - 1;
+        
+        PlayerAction sbAction = actions.get(actions.size()-2);
+        PlayerAction bbAction = actions.get(actions.size()-1);
+        
+        Preconditions.checkState(sbAction.playerPosition == sbPos);
+        Preconditions.checkState(bbAction.playerPosition == bbPos);
+        
+        int potAdj = 0;
+        if (sbAction.action != Action.FOLD)
+        {
+        	potAdj -= tableStakes;
+        	
+        }
+        sbAction.playerAmtPutInPotThisRound = tableStakes;
+        
+        bbAction.pot += potAdj;
+        bbAction.playerAmtPutInPotThisRound = 2 * tableStakes;
+        
+        if (bbAction.action != Action.FOLD)
+        {
+        	potAdj -= 2*tableStakes;
+        }
+        
+        pot += potAdj;
+    }
     /*
      * Position currentPlayer au joeur courant
      * 
@@ -309,6 +341,13 @@ public class FlopTurnRiverState implements ParserListener
             allInMinimum[currentPlayer] = -1;
             
             return false;
+        }
+        
+        //Tous les joeurs sont pris en comptes, adjuste le pot
+        if (!correction && round == 0)
+        {
+        	
+        	correctionPotBlinds();
         }
               
         
@@ -416,7 +455,11 @@ public class FlopTurnRiverState implements ParserListener
             //Set table stakes
             amtToCall = betAmt;
             log.debug("Table mise à {}", amtToCall);
-            tableStakes = amtToCall;
+            tableStakes = amtToCall / 2;
+            
+            //Ajoute les blindes
+            pot = 3 * DEFAULT_TABLE_STAKES;
+             
         } else {
             
             //Check if there is an unknown tapis we can deduce
@@ -482,7 +525,7 @@ public class FlopTurnRiverState implements ParserListener
     @Override
     public ParserListener handleRelance(String playerName, int betAmt)
     {
-      //Le prochain round a commencé
+    	//Le prochain round a commencé
         if (round == 0 && 
                 players.contains(playerName) && 
                 potsGood())
@@ -498,10 +541,7 @@ public class FlopTurnRiverState implements ParserListener
             
             Preconditions.checkState(round == 0 || amtToCall == 0);
             
-            int raiseAmt = betAmt - amtToCall;
-            double potRatio = 1.0 * raiseAmt / pot;
-            
-            log.debug("Player %{} bet %{} of pot", playerName, Statistics.df2.format(potRatio));
+            log.debug("Player %{} bet %{} of pot", playerName);
             
             
         } 
@@ -509,7 +549,9 @@ public class FlopTurnRiverState implements ParserListener
         if (round == 0 && tableStakes <= 0)
         {
             //we have to guess what the stakes were
-            tableStakes = 1;
+            tableStakes = DEFAULT_TABLE_STAKES;
+            pot = 3 * DEFAULT_TABLE_STAKES;
+            
         }
         
         //Check if there is an unknown tapis we can only guess their bet is less than the current amount
@@ -731,29 +773,28 @@ public class FlopTurnRiverState implements ParserListener
     @Override
     public ParserListener handleShowdown(String playerName, int finalPot, String winDesc)
     {
-        if (finalPot != pot ) {
-            log.warn("Final pot calculated as {} but is {}.  Hand line {}", pot, finalPot, handInfo.startingLine);
-        }
+        
         
         if(players.size() >= 2 && actions.size() == 0)
         {
             log.debug("Showdown tandis que aucun jouer n'a parlé");
             if (ambigTapisLineNumber > -1) {
-                FlopTurnRiverState restart = new FlopTurnRiverState(new ArrayList<String>(), 0,  0, handInfoCollector,
-                        new HandInfo(handInfo.startingLine, handInfoCollector.listHandInfo.size()));
+                FlopTurnRiverState restart = new FlopTurnRiverState(new ArrayList<String>(), 0,  0, 
+                        new HandInfo(handInfo.startingLine, handInfo.handIndex));
                 restart.replayLine = handInfo.startingLine + 1; 
                 restart.ambigTapisLineNumber = ambigTapisLineNumber;
                 return restart;
             }
         }
         
-        int playerPos = players.indexOf(playerName);
-        actions.add( PlayerAction.createWon(playerPos, playerName, finalPot, winDesc) );
+        handInfo.wonPot += finalPot;
         
-        this.handInfoCollector.handFinished(handInfo);
+        handInfo.winDesc = winDesc;
+        handInfo.winRound = round;
+        handInfo.winnerPlayerName = playerName;
         
         
-        return null;
+        return this;
     }
 
     @Override
@@ -770,11 +811,13 @@ public class FlopTurnRiverState implements ParserListener
             
             playerPosToActions.add( new ArrayList<Integer>() );
         }
-        this.handInfoCollector.handFinished(handInfo);
         
-        int playerPos = players.indexOf(playerName);
+       // int playerPos = players.indexOf(playerName);
         
-        actions.add( PlayerAction.createWon(playerPos, playerName, pot, " No showdown") );
+        handInfo.wonPot = pot;
+        handInfo.winDesc = " No showdown";
+        handInfo.winRound = round;
+        handInfo.winnerPlayerName = playerName;
                 
         return null;
     }

@@ -1,6 +1,5 @@
 package pkr.history;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 
 public class HandInfo
 {
@@ -26,6 +25,9 @@ public class HandInfo
         return startingLine;
     }
     
-    public PlayerAction winner;
+    public String winDesc;
+    public String winnerPlayerName;
+    public int wonPot;
+    public int winRound;
 
 }

@@ -2,8 +2,6 @@ package pkr.history;
 
 import java.util.List;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-
 import com.google.common.collect.Lists;
 
 public class HandInfoCollector
@@ -20,6 +18,7 @@ public class HandInfoCollector
     
     public void handFinished(HandInfo handInfo)
     {
+    	
         listHandInfo.add(handInfo);
         
         
@@ -43,7 +42,9 @@ public class HandInfoCollector
             .append(" </h2> with ")
             .append(handInfo.roundStates[round].players.size())
             .append(" players.  Pot is $")
-            .append(Statistics.moneyFormat.format(handInfo.roundStates[round].pot))
+            .append(Statistics.moneyFormat.format(
+            		round == 0 ? handInfo.roundStates[round].tableStakes * 3 :
+            			handInfo.roundStates[round-1].pot))
             .append("\n");
             
             List<PlayerAction> actions = handInfo.roundStates[round].actions;
@@ -53,7 +54,17 @@ public class HandInfoCollector
             }
         
             
+           
+            
         }
+        
+        handInfo.handLog
+        .append(handInfo.winnerPlayerName)
+        .append(" wins showdown with pot $")
+        .append(Statistics.moneyFormat.format(handInfo.wonPot))
+        .append("\n")
+        .append(handInfo.winDesc)
+        .append("\n");
     }
 
 }
