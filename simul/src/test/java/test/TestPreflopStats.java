@@ -19,6 +19,7 @@ import pkr.history.HandInfoCollector;
 import pkr.history.Parser;
 import pkr.history.StatsSession;
 import pkr.history.StatsSessionPlayer;
+import pkr.history.stats.Pfr;
 
 @RunWith(JUnit4.class)
 public class TestPreflopStats
@@ -193,6 +194,23 @@ public class TestPreflopStats
         StatsSessionPlayer pStats = stats.playerSessionStats.get("Idan");
         
         assertEquals("Pfr : 100% (1/1) Avg amt : $1 600 000 Tapis : 0", pStats.getStatValue("pfr"));
+        
+        
+    }
+    
+    @Test
+    public void testPFR3() throws Exception
+    {
+        HandInfoCollector results = getList("testPFR3");
+        
+        assertEquals(1, results.listHandInfo.size());
+                                 
+        StatsSession stats = Parser.computeStats(results);
+        
+        StatsSessionPlayer pStats = stats.playerSessionStats.get("Cam");
+        
+        Pfr pfr = (Pfr) pStats.getStats().get("pfr");
+        assertEquals(1, pfr.nTapis);
         
         
     }

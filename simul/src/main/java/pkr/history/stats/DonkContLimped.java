@@ -177,19 +177,18 @@ public class DonkContLimped implements iPlayerStatistic
             
             ++actions[type][CHECK_RAISE];
             
-            actionsDesc[type][CHECK_RAISE]
-            		.append(link)
-            		.append("Player ").append(playerName)
-            .append(" check raised ")
+            StringBuffer actionText = new StringBuffer();
+            
+            actionText.append(" check raised ")
             .append(Statistics.formatMoney(currentAction.incomingBetOrRaise))
-            .append(" to ")
-            .append(Statistics.formatMoney(currentAction.amountRaised))
-            .append(" into pot ")
-            .append(Statistics.formatMoney(currentAction.pot))
-            .append( " with ")
-            .append(currentAction.playersLeft)
-            .append(" players ")
-            .append("<br/>");
+            .append(" to ");
+            
+            buildMessage(
+					actionsDesc[type][CHECK_RAISE],
+					currentAction,
+					actionText.toString() ,
+					currentAction.amountRaised,
+					link);
             
         }
         
@@ -205,6 +204,42 @@ public class DonkContLimped implements iPlayerStatistic
         {
             ++actions[type][ALL_IN];
         }
+    }
+    
+    private static void addAmount(StringBuffer sb, PlayerAction action, int amt)
+    {
+    	if (action.action == Action.RAISE_ALL_IN) {
+        	sb.append(" (allin) " );
+        }
+        
+        if (amt > 0) {
+        	sb.append(Statistics.formatMoney(
+        			amt));
+        } else {
+        	sb.append("Unknown amt");
+        }
+    }
+    
+    private static void buildMessage(StringBuffer sb, 
+    		PlayerAction action,
+    		String actionText,
+    		int moneyAmount,
+    		String link)
+    {
+    	sb.append("Player " )
+    	.append(action.playerName)
+    	.append(actionText);
+    	
+    	addAmount(sb, action, moneyAmount);
+    	//.append(Statistics.f;ormatMoney(moneyAmount))
+    	sb.append(" into pot ")
+		.append(Statistics.formatMoney(action.pot))
+		.append( " with ")
+		.append(action.playersLeft)
+		.append(" players ")
+		.append(lineEnd)
+    	.append(link)
+    	.append(lineEnd);
     }
 
     @Override
@@ -272,27 +307,13 @@ public class DonkContLimped implements iPlayerStatistic
                 {
                     log.debug("Player {} did bet. type {}", playerName, type);
                     ++actions[type][BET];
-                    actionsDesc[type][BET]
-                            .append(link)
-                            .append("Player ").append(playerName)
-                    .append(" bet ");
                     
-                    if (currentAction.action == Action.RAISE_ALL_IN) {
-                    	actionsDesc[type][BET].append(" (allin) " );
-                    }
-                    
-                    if (currentAction.amountRaised > 0) {
-                    	actionsDesc[type][BET].append(Statistics.formatMoney(
-                    			currentAction.amountRaised));
-                    } else {
-                    	actionsDesc[type][BET].append("Unknown amt");
-                    }
-                    actionsDesc[type][BET].append(" into pot ")
-                    .append(Statistics.formatMoney(currentAction.pot))
-                    .append( " with ")
-                    .append(currentAction.playersLeft)
-                    .append(" players ")                    
-                    .append(lineEnd);
+                    buildMessage(
+							actionsDesc[type][BET],
+							currentAction,
+							" bet " ,
+							currentAction.amountRaised,
+							link);
                     
                     
                 } 
@@ -312,18 +333,13 @@ public class DonkContLimped implements iPlayerStatistic
                     log.debug("Player {} did call. type {}", playerName, type);
                     ++actions[type][CALL];
                     
-                    actionsDesc[type][CALL]
-                            .append(link)
-                            .append("Player ").append(playerName)
-                    .append(" call ")
-                    .append(Statistics.formatMoney(currentAction.incomingBetOrRaise))
-                    .append(" into pot ")
-                    .append(Statistics.formatMoney(currentAction.pot))
-                    .append( " with ")
-                    .append(currentAction.playersLeft)
-                    .append(" players ")
                     
-                    .append(lineEnd);
+                    buildMessage(
+							actionsDesc[type][CALL],
+							currentAction,
+							" call " ,
+							currentAction.incomingBetOrRaise,
+							link);
                     
                 } else if (currentAction.action == Action.FOLD) 
                 {
@@ -331,16 +347,12 @@ public class DonkContLimped implements iPlayerStatistic
                     
                     ++actions[type][FOLD];
                     
-                    actionsDesc[type][FOLD].append(link)
-                    .append("Player ").append(playerName)
-                    .append(" folded to a bet of ")
-                    .append(Statistics.formatMoney(currentAction.incomingBetOrRaise))
-                    .append(" into pot ")
-                    .append(Statistics.formatMoney(currentAction.pot))
-                    .append( " with ")
-                    .append(currentAction.playersLeft)
-                    .append(" players ")
-                    .append(lineEnd);
+                    buildMessage(
+							actionsDesc[type][FOLD],
+							currentAction,
+							" folded to bet of " ,
+							currentAction.incomingBetOrRaise,
+							link);
                     
                 } else if (currentAction.action == Action.RAISE || currentAction.action == Action.RAISE_ALL_IN)
                 {
@@ -348,20 +360,15 @@ public class DonkContLimped implements iPlayerStatistic
                     
                     ++actions[type][RAISE];
                     
-                    actionsDesc[type][RAISE]
-                    		.append(link)
-                    		.append("Player ").append(playerName)
-                    		.append(" raise a bet of ")
-                    		.append(Statistics.formatMoney(currentAction.incomingBetOrRaise))
-                    		.append(" to ")
-                    		.append(Statistics.formatMoney(currentAction.amountRaised))
-                    		.append(" into pot ")
-                    		.append(Statistics.formatMoney(currentAction.pot))
-                    		.append( " with ")
-                    		.append(currentAction.playersLeft)
-                    		.append(" players ")
-                    		.append(lineEnd);
-                    
+					buildMessage(
+							actionsDesc[type][RAISE],
+							currentAction,
+							" raise a bet of " + 
+							(Statistics.formatMoney(currentAction.incomingBetOrRaise)) +
+							" to ",
+							currentAction.amountRaised,
+							link);
+                    		
                     
                 }             
             
@@ -394,25 +401,25 @@ public class DonkContLimped implements iPlayerStatistic
                 
                 if (foldToRaise)
                 {
-                    actionsDesc[type][FOLD_RAISE].append("Player ").append(playerName);
+                	StringBuffer actionText = new StringBuffer();
+                    
                     if (currentAction.incomingBetOrRaise == currentAction.playerAmtPutInPotThisRound + 1)
                     {
-                        actionsDesc[type][FOLD_RAISE].append(" folded to an all in");
+                    	actionText.append(" folded to an all in");
                     } else {
-                        actionsDesc[type][FOLD_RAISE].append(" folded to a raise of ")
+                    	actionText.append(" folded to a raise of ")
                         .append(Statistics.formatMoney(currentAction.incomingBetOrRaise));
                     }
                     
-                    actionsDesc[type][FOLD_RAISE]
-                            .append(link)
-                            .append(" having put in ")
-                    .append(Statistics.formatMoney(currentAction.playerAmtPutInPotThisRound))
-                    .append(" into pot ")
-                    .append(Statistics.formatMoney(currentAction.pot))
-                    .append( " with ")
-                    .append(currentAction.playersLeft)
-                    .append(" players ")
-                    .append(lineEnd);
+                    actionText
+                            .append(" having put in ");
+                    
+                    buildMessage(
+							actionsDesc[type][FOLD_RAISE],
+							currentAction,
+							actionText.toString() ,
+							currentAction.playerAmtPutInPotThisRound,
+							link);
                 }
                 
                 if (currentAction.playersLeft > 1)
@@ -426,27 +433,20 @@ public class DonkContLimped implements iPlayerStatistic
                         log.debug("Player {} did re-raise. type {}", playerName, type);
                         
                         ++actions[type][RERAISE];
+                    
+                        StringBuffer actionText = new StringBuffer();
                         
-                        actionsDesc[type][RERAISE]
-                        		.append(link)
-                        		.append("Player ").append(playerName)
-                        		.append(" reraise a raise of ")
+                        actionText		.append(" reraise a raise of ")
                         		.append(Statistics.formatMoney(currentAction.incomingBetOrRaise))
-                        		.append(" to ")
-                        		.append(Statistics.formatMoney(currentAction.amountRaised));
+                        		.append(" to ");
                         
-                        if (currentAction.action == Action.RAISE_ALL_IN)
-                        {
-                        	actionsDesc[type][RERAISE].append(" (AllIn) " );
-                        }
+                        buildMessage(
+    							actionsDesc[type][RERAISE],
+    							currentAction,
+    							actionText.toString() ,
+    							currentAction.amountRaised,
+    							link);
                         
-                        actionsDesc[type][RERAISE]
-                        		.append(" into pot ")
-                        		.append(Statistics.formatMoney(currentAction.pot))
-                        		.append( " with ")
-                        		.append(currentAction.playersLeft)
-                        		.append(" players ")
-                        		.append(lineEnd);
                     }
                 }
             }

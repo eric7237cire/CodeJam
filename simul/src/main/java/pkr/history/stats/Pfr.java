@@ -26,7 +26,7 @@ public class Pfr implements iPlayerStatistic
         
     int nonAllInRaisePreflop;
     
-    int nTapis;
+    public int nTapis;
     
     private String preFlopPlayer;
     
@@ -86,7 +86,7 @@ public class Pfr implements iPlayerStatistic
         
         final int playerPosition = ftrStates[0].players.indexOf(preFlopPlayer);
         
-        final boolean playerAllin = ftrStates[0].allInMinimum[playerPosition] > 0;
+        final boolean playerAllin = ftrStates[0].allInMinimum[playerPosition] >= 0;
         
         String link = DonkContLimped.buildLink(handInfo);
         int posIndex = Vpip.getPositionIndex(ftrStates[0].players.size(), playerPosition);
@@ -114,7 +114,8 @@ public class Pfr implements iPlayerStatistic
             
             ++posRaisedPf[posIndex];
             
-            actionsDesc[posIndex].append("Player ")
+            actionsDesc[posIndex]
+            	.append("Player ")
             .append(preFlopPlayer);
             
             if (!playerAllin)
@@ -128,7 +129,7 @@ public class Pfr implements iPlayerStatistic
                 nTapis++;
             }
             
-            actionsDesc[posIndex].append(link).append(DonkContLimped.lineEnd);
+            actionsDesc[posIndex].append(DonkContLimped.lineEnd).append(link).append(DonkContLimped.lineEnd);
         }
         
     }
