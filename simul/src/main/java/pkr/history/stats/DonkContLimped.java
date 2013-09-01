@@ -275,9 +275,19 @@ public class DonkContLimped implements iPlayerStatistic
                     actionsDesc[type][BET]
                             .append(link)
                             .append("Player ").append(playerName)
-                    .append(" bet ")
-                    .append(Statistics.formatMoney(currentAction.amountRaised))
-                    .append(" into pot ")
+                    .append(" bet ");
+                    
+                    if (currentAction.action == Action.RAISE_ALL_IN) {
+                    	actionsDesc[type][BET].append(" (allin) " );
+                    }
+                    
+                    if (currentAction.amountRaised > 0) {
+                    	actionsDesc[type][BET].append(Statistics.formatMoney(
+                    			currentAction.amountRaised));
+                    } else {
+                    	actionsDesc[type][BET].append("Unknown amt");
+                    }
+                    actionsDesc[type][BET].append(" into pot ")
                     .append(Statistics.formatMoney(currentAction.pot))
                     .append( " with ")
                     .append(currentAction.playersLeft)

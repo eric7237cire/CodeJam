@@ -38,6 +38,9 @@ public class HandInfoCollector
             if (handInfo.roundStates[round] == null)
                 break;
             
+            if (handInfo.roundStates[round].actions.size() == 0)
+            	break;
+            
             handInfo.handLog.append("\n------------------------------");
             handInfo.handLog.append("\nStarting round <h2>")
             .append(Statistics.roundToStr(round))

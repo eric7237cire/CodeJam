@@ -452,7 +452,7 @@ public class FlopTurnRiverState implements ParserListener
             tableStakes = amtToCall / 2;
             
             //Ajoute les blindes
-            pot = 3 * DEFAULT_TABLE_STAKES;
+            pot = 3 * tableStakes;
              
         } else {
             
@@ -769,6 +769,12 @@ public class FlopTurnRiverState implements ParserListener
         {        	
         	correctionPotBlinds();
         }
+    	
+    	if (lastTapisPlayer != null)
+    	{
+    		log.debug("Last tapis was a call");
+    		changeLastTapisAction( Action.CALL_ALL_IN, null, true, true );
+    	}
     	
         if(players.size() >= 2 && actions.size() == 0)
         {

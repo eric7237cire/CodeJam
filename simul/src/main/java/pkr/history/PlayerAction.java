@@ -160,8 +160,12 @@ public class PlayerAction {
             sb.append("Raise ")
             .append(Statistics.formatMoney(amountRaised));
         }  else if (action == Action.RAISE_ALL_IN) {
-            sb.append("All in (Raise) ")
-            .append(Statistics.formatMoney(amountRaised));
+            sb.append("All in (Raise) ");
+            if (amountRaised >= 0) {
+            	sb.append(Statistics.formatMoney(amountRaised));
+            } else {
+            	sb.append(" Unknown amt " );
+            }
         } else {
             sb.append(action);
        
@@ -214,7 +218,7 @@ public class PlayerAction {
               //      Statistics.df2.format(callBluff));
         }
         
-        if ( action == Action.RAISE || action == Action.RAISE_ALL_IN)
+        if ( action == Action.RAISE || (action == Action.RAISE_ALL_IN && amountRaised > 0))
         {
             int diff = amountRaised - playerAmtPutInPotThisRound;
             double betSizeToPot = 1.0 * diff / pot;
