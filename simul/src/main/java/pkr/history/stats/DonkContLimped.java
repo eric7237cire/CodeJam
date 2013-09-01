@@ -220,7 +220,7 @@ public class DonkContLimped implements iPlayerStatistic
         }
     }
     
-    private static void buildMessage(StringBuffer sb, 
+    public static void buildMessage(StringBuffer sb, 
     		PlayerAction action,
     		String actionText,
     		int moneyAmount,

@@ -2,6 +2,7 @@ package pkr.history.stats;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,8 @@ public class ThreeBet implements iPlayerStatistic
     //Incoming pre flop raise
     int thBetDenom;
     
+    public StringBuffer actionsDesc;
+    
     double avgAmt;
     
     int thBetCallNum;
@@ -35,6 +38,8 @@ public class ThreeBet implements iPlayerStatistic
     public ThreeBet(String playerName) {
         super();
         this.playerName = playerName;
+        
+        actionsDesc = new StringBuffer();
     }
 
     
@@ -85,7 +90,7 @@ public class ThreeBet implements iPlayerStatistic
         
         List<Integer> actionIdx = ftrStates[0].playerPosToActions.get(playerPosition);
         
-        
+        final String link = DonkContLimped.buildLink(handInfo);
         
         for(int i = 0; i < actionIdx.size(); ++i)
         {
@@ -113,6 +118,12 @@ public class ThreeBet implements iPlayerStatistic
             {
                 log.debug("Player {} has 3 bet.  raises : {} p action idx : {}", playerName, globalRaiseCount, i);
                 ++thBetNum;
+                
+                DonkContLimped.buildMessage(actionsDesc,
+                		currentAction,
+                		" 3 bet to ",
+                		currentAction.amountRaised,
+                		link);
                 
                 if (currentAction.action == Action.RAISE) {
                     ++nonAllInThBet;
@@ -145,6 +156,12 @@ public class ThreeBet implements iPlayerStatistic
                     ++thBetFoldNum;
                 } else {
                     ++thBetCallNum;
+                    
+                    DonkContLimped.buildMessage(actionsDesc,
+                    		currentAction,
+                    		" called a 3 bet of ",
+                    		currentAction.incomingBetOrRaise,
+                    		link);
                 }
             }
             
@@ -156,5 +173,11 @@ public class ThreeBet implements iPlayerStatistic
                 
         
     }
+
+
+
+	public String getActionsDesc() {
+		return StringEscapeUtils.escapeXml(actionsDesc.toString());
+	}
 
 }

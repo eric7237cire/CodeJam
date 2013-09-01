@@ -89,7 +89,7 @@ $('.tooltip').qtip({ // Grab some elements to apply the tooltip to
     <table class="playerTable">
     
     
-    <tr><td>${pStat.stats.vpip}</td><td>${pStat.stats["3bet"]}</td></tr>
+    <tr><td>${pStat.stats.vpip}</td><td class="tooltip" title="${pStat.stats["3bet"].getActionsDesc()}"  >${pStat.stats["3bet"]}</td></tr>
     
     <tr><td>${pStat.stats.pfr}</td><td>${pStat.stats.notfpfr}</td></tr>
     </table>
