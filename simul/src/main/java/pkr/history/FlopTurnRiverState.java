@@ -810,9 +810,10 @@ public class FlopTurnRiverState implements ParserListener
        // int playerPos = players.indexOf(playerName);
         
         handInfo.wonPot = pot;
-        handInfo.winDesc = " No showdown";
-        handInfo.winRound = round;
+        handInfo.winRound = actions.size() == 0 ? round - 1 : round;
         handInfo.winnerPlayerName = playerName;
+        handInfo.winDesc = playerName + " Round "  +
+        Statistics.roundToStr(handInfo.winRound) + "  No showdown";
                 
         return this;
     }

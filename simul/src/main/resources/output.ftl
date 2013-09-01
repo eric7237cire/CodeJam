@@ -49,7 +49,7 @@ $('.tooltip').qtip({ // Grab some elements to apply the tooltip to
     content: true,
      position: {
         my: 'top left',  // Position my top left...
-        at: 'left center', // at the bottom right of...
+        at: 'center', // at the bottom right of...
         target: 'event' // my target
     },
     style: {
@@ -60,6 +60,9 @@ $('.tooltip').qtip({ // Grab some elements to apply the tooltip to
              //inactive: 1200,
              fixed: true
          }
+    /*position: {
+        viewport: $(window)
+    }*/
 });           
 
 <#assign actionIds = [0,1,2,3,4,5,6,7,8]>

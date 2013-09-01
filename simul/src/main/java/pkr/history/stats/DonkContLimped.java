@@ -145,10 +145,11 @@ public class DonkContLimped implements iPlayerStatistic
         .append(handInfo.startingLine)
         .append("</a> ");
         
-        sb.append(" winner ")
-        .append(handInfo.winnerPlayerName)  
-        .append(" round ")
-        .append( Statistics.roundToStr(handInfo.winRound))
+        sb
+        //.append(" winner ")
+        //.append(handInfo.winnerPlayerName)  
+        //.append(" round ")
+        //.append( Statistics.roundToStr(handInfo.winRound))
         .append(" ")
         .append( handInfo.winDesc )
         .append( "<br/>");
@@ -338,18 +339,18 @@ public class DonkContLimped implements iPlayerStatistic
                     ++actions[type][RAISE];
                     
                     actionsDesc[type][RAISE]
-                            .append(link)
-                            .append("Player ").append(playerName)
-                    .append(" raise a bet of ")
-                    .append(Statistics.formatMoney(currentAction.incomingBetOrRaise))
-                    .append(" to ")
-                    .append(Statistics.formatMoney(currentAction.amountRaised))
-                    .append(" into pot ")
-                    .append(Statistics.formatMoney(currentAction.pot))
-                    .append( " with ")
-                    .append(currentAction.playersLeft)
-                    .append(" players ")
-                    .append(lineEnd);
+                    		.append(link)
+                    		.append("Player ").append(playerName)
+                    		.append(" raise a bet of ")
+                    		.append(Statistics.formatMoney(currentAction.incomingBetOrRaise))
+                    		.append(" to ")
+                    		.append(Statistics.formatMoney(currentAction.amountRaised))
+                    		.append(" into pot ")
+                    		.append(Statistics.formatMoney(currentAction.pot))
+                    		.append( " with ")
+                    		.append(currentAction.playersLeft)
+                    		.append(" players ")
+                    		.append(lineEnd);
                     
                     
                 }             
@@ -415,6 +416,27 @@ public class DonkContLimped implements iPlayerStatistic
                         log.debug("Player {} did re-raise. type {}", playerName, type);
                         
                         ++actions[type][RERAISE];
+                        
+                        actionsDesc[type][RERAISE]
+                        		.append(link)
+                        		.append("Player ").append(playerName)
+                        		.append(" reraise a raise of ")
+                        		.append(Statistics.formatMoney(currentAction.incomingBetOrRaise))
+                        		.append(" to ")
+                        		.append(Statistics.formatMoney(currentAction.amountRaised));
+                        
+                        if (currentAction.action == Action.RAISE_ALL_IN)
+                        {
+                        	actionsDesc[type][RERAISE].append(" (AllIn) " );
+                        }
+                        
+                        actionsDesc[type][RERAISE]
+                        		.append(" into pot ")
+                        		.append(Statistics.formatMoney(currentAction.pot))
+                        		.append( " with ")
+                        		.append(currentAction.playersLeft)
+                        		.append(" players ")
+                        		.append(lineEnd);
                     }
                 }
             }
