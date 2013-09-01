@@ -180,26 +180,12 @@ public class FlopTurnRiverState implements ParserListener
         if (!hasFolded[sbPos] &&  allInMinimum[sbPos] < 0) {
             log.debug("Adding small blind {}", playerSB);
             playersInOrder.add(playerSB);
-        } else {
-            //Adjust pot if necessary
-            
-            if (playerBets[sbPos] == 0)
-            {
-                log.debug("Adding small blind from player {}  bet {} tablestakes {}", playerSB, tableStakes/2, tableStakes);
-                pot = updatePlayerBet(playerBets, sbPos, playerSB, tableStakes / 2, pot);
-            }
-        }
+        } 
         
         if (!hasFolded[bbPos] &&  allInMinimum[bbPos] < 0) {
             log.debug("Adding big blind {}", playerBB);
             playersInOrder.add(playerBB);
-        } else {
-            if (playerBets[bbPos] == 0)
-            {
-                log.debug("Adding big blinds to pot");
-                pot = updatePlayerBet(playerBets, bbPos, playerBB, tableStakes, pot);
-            }
-        }
+        } 
         
         for(int i = 0; i < players.size() - 2; ++i) {
             String playerName = players.get(i);
@@ -368,8 +354,16 @@ public class FlopTurnRiverState implements ParserListener
             
             String loopPlayerName = players.get(currentPlayer);
             if (!hasFolded[currentPlayer]
-                    && allInMinimum[currentPlayer] <= 0
-                    ) {
+                    && allInMinimum[currentPlayer] < 0
+                    ) 
+            {
+            	if (!loopPlayerName.equals(playerName))
+            	{
+            		log.debug("Expected {} but was {} maybe {} left",
+            				playerName, loopPlayerName, loopPlayerName);
+            		hasFolded[currentPlayer] = true;
+            		continue;
+            	}
                 Preconditions.checkState(loopPlayerName.equals(playerName), "Player name " + playerName + " cur " + currentPlayer + " " + loopPlayerName);
                 
                 return true;
@@ -633,16 +627,6 @@ public class FlopTurnRiverState implements ParserListener
     @Override
     public ParserListener handleParole(String playerName)
     {
-        /*
-        if (playerBets.containsKey(playerName)) 
-        {
-            log.warn("Next round appears to have started; maybe a player left?");
-            return null;
-        }*/
-        //Preconditions.checkState(!playerBets.containsKey(playerName));
-        
-        
-        
         
         //Le prochain round a commencé
         if (round == 0 && players.contains(playerName) && potsGood())
@@ -704,9 +688,16 @@ public class FlopTurnRiverState implements ParserListener
         if (round == 0 && tableStakes <= 0)
         {
             //we have to guess what the stakes were
-            tableStakes = 1;
+            tableStakes = DEFAULT_TABLE_STAKES;
+            pot = 3 * DEFAULT_TABLE_STAKES;
+            
         }
                 
+        if (actions.size() > 0 && playerName.equals(actions.get(actions.size()-1).playerName))
+        {
+        	log.debug("Deuxieme tapis d'affiler, ne pas pris en compte");
+        	return this;
+        }
         
         boolean seenPlayer = incrementPlayer(playerName);
         
@@ -774,7 +765,11 @@ public class FlopTurnRiverState implements ParserListener
     public ParserListener handleShowdown(String playerName, int finalPot, String winDesc)
     {
         
-        
+    	if (!correction && round == 0)
+        {        	
+        	correctionPotBlinds();
+        }
+    	
         if(players.size() >= 2 && actions.size() == 0)
         {
             log.debug("Showdown tandis que aucun jouer n'a parlé");

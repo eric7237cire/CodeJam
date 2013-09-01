@@ -24,14 +24,7 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 /*
- * Action to win ratio
  * 
-
-showdown results, both
-
-Missing players
-
-TODO test tapis 2, shows raise all in as call
  */
 public class Parser {
     

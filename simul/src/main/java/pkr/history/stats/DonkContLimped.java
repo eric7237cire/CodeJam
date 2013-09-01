@@ -134,12 +134,7 @@ public class DonkContLimped implements iPlayerStatistic
     public static String buildLink(HandInfo handInfo)
     {
         StringBuffer sb = new StringBuffer();
-        /*
-        sb
-        .append("&lt;a href=\"handsLog.xhtml#hand_" )
-        .append(handInfo.handIndex)
-        .append("\"  target=\"_blank\" &gt;link&lt;/a&gt;");
-        */
+       
         sb
         .append("  <a href=\"handsLog.xhtml#hand_" )
         .append(handInfo.handIndex)
@@ -149,6 +144,14 @@ public class DonkContLimped implements iPlayerStatistic
         .append(" line ")
         .append(handInfo.startingLine)
         .append("</a> ");
+        
+        sb.append(" winner ")
+        .append(handInfo.winnerPlayerName)  
+        .append(" round ")
+        .append( Statistics.roundToStr(handInfo.winRound))
+        .append(" ")
+        .append( handInfo.winDesc )
+        .append( "<br/>");
         
         return (sb.toString());
         //return StringEscapeUtils.escapeXml(sb.toString());
@@ -173,7 +176,9 @@ public class DonkContLimped implements iPlayerStatistic
             
             ++actions[type][CHECK_RAISE];
             
-            actionsDesc[type][CHECK_RAISE].append("Player ").append(playerName)
+            actionsDesc[type][CHECK_RAISE]
+            		.append(link)
+            		.append("Player ").append(playerName)
             .append(" check raised ")
             .append(Statistics.formatMoney(currentAction.incomingBetOrRaise))
             .append(" to ")
@@ -183,8 +188,7 @@ public class DonkContLimped implements iPlayerStatistic
             .append( " with ")
             .append(currentAction.playersLeft)
             .append(" players ")
-            .append(link)            
-            .append("&lt;br /&gt;");
+            .append("<br/>");
             
         }
         
@@ -234,11 +238,8 @@ public class DonkContLimped implements iPlayerStatistic
         
         final int type = estLimped ? LIMPED : (estAgresseur ? IS_AGGRES : NOT_AGGRES);
         
-        final String link =  " " + buildLink(handInfo) +
-                " winner " + handInfo.winnerPlayerName + 
-                " round " + Statistics.roundToStr(handInfo.winRound)
-                +
-                handInfo.winDesc + "<br/>";
+        final String link =   buildLink(handInfo);
+                
         
         ++actionPossible[type][ALL_IN];
         ++count[type];

@@ -31,7 +31,7 @@ public class TestBlindsInPot
     {
         HandInfoCollector results = TestPreflopStats.getList("testBlindsInPot1");
         
-        assertEquals(1, results.listHandInfo.size());
+        assertEquals(2, results.listHandInfo.size());
         
         FlopTurnRiverState[] roundStates = results.listHandInfo.get(0).roundStates;
         
@@ -99,6 +99,45 @@ public class TestBlindsInPot
         assertEquals(PlayerAction.Action.CALL, action.action);
         assertEquals(3, action.playersLeft);
 
+        
+        roundStates = results.listHandInfo.get(1).roundStates;
+        
+        actions = roundStates[0].actions;
+        
+        assertEquals(4, actions.size());
+        
+        action = actions.get(0);
+        
+        assertEquals("Q",  action.playerName);
+        assertEquals(0,  action.playerPosition);
+        assertEquals(600000, action.pot);
+        assertEquals(00000, action.incomingBetOrRaise);
+        assertEquals(0, action.playerAmtPutInPotThisRound);
+        assertEquals(4800000, action.amountRaised);
+        assertEquals(PlayerAction.Action.RAISE_ALL_IN, action.action);
+        assertEquals(4, action.playersLeft);
+        
+        action = actions.get(2);
+        
+        assertEquals("Ari",  action.playerName);
+        assertEquals(2,  action.playerPosition);
+        assertEquals(5400000, action.pot);
+        assertEquals(4800000, action.incomingBetOrRaise);
+        assertEquals(200000, action.playerAmtPutInPotThisRound);
+        assertEquals(0, action.amountRaised);
+        assertEquals(PlayerAction.Action.CALL, action.action);
+        assertEquals(2, action.playersLeft);
+        
+        action = actions.get(3);
+        
+        assertEquals("Eric",  action.playerName);
+        assertEquals(3,  action.playerPosition);
+        assertEquals(10000000, action.pot);
+        assertEquals(4800000, action.incomingBetOrRaise);
+        assertEquals(400000, action.playerAmtPutInPotThisRound);
+        assertEquals(0, action.amountRaised);
+        assertEquals(PlayerAction.Action.FOLD, action.action);
+        assertEquals(2, action.playersLeft);
         
     }
 }

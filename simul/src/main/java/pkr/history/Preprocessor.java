@@ -86,12 +86,7 @@ public class Preprocessor {
         
         void addLine(String line)
         {
-            //line = line.trim();
-           /*
-            *  if (line.isEmpty())  return;
-            */
-              
-            
+                        
             Matcher m = patHandBoundary.matcher(line);
             
             if (!m.matches())
@@ -107,9 +102,6 @@ public class Preprocessor {
                 if (!startFound)
                 {
                     startFound = true;
-                } else {
-                    
-                    
                 }
                 
                 lines.add(line);
@@ -158,10 +150,7 @@ public class Preprocessor {
          */
         @Override
         public String toString() {
-           // if (1==1)
-            //    throw new RuntimeException("oeu");
-            //return "Block [lines=" + Joiner.on("\n").join(lines) + ", handStarts=" + handStarts + "]";
-            return "Block [lines=" + lines.size() + ", handStarts=" + handStarts + ", num hands = " + getNumHands() + "]";
+        	return "Block [lines=" + lines.size() + ", handStarts=" + handStarts + ", num hands = " + getNumHands() + "]";
         }
         
         
@@ -174,6 +163,13 @@ public class Preprocessor {
         blocks.add(newBlock);
         
     }
+    /**
+     * 
+     * @param blocks
+     * @param currentLine
+     * @param inputLines
+     * @return la prochaine ligne a traitee
+     */
     private static int getNextBlock(List<Block> blocks, int currentLine, List<String> inputLines)
     {
         int curLineIdx = currentLine;

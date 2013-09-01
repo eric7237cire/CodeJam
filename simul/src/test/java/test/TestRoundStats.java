@@ -401,11 +401,5 @@ public class TestRoundStats
 
     }
     
-    @Test
-    public void testPlayerLeft() throws Exception
-    {
-        HandInfoCollector results = TestPreflopStats.getList("testPlayerLeft");
-        
-        assertEquals(0, results.listHandInfo.size());
-    }
+    
 }
