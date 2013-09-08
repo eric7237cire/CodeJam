@@ -90,7 +90,7 @@ public class ThreeBet implements iPlayerStatistic
         
         List<Integer> actionIdx = ftrStates[0].playerPosToActions.get(playerPosition);
         
-        final String link = DonkContLimped.buildLink(handInfo);
+        final String link = DonkContLimped.buildLink(handInfo, playerName);
         
         for(int i = 0; i < actionIdx.size(); ++i)
         {

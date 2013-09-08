@@ -96,7 +96,7 @@ public class NotFoldPFR implements iPlayerStatistic
         }
         List<Integer> actionIdx = ftrStates[0].playerPosToActions.get(playerPosition);
         
-        String link = DonkContLimped.buildLink(handInfo);
+        String link = DonkContLimped.buildLink(handInfo, preFlopPlayer);
         int posIndex = Vpip.getPositionIndex(ftrStates[0].players.size(), playerPosition);
         
         for(int i = 0; i < actionIdx.size(); ++i)
@@ -141,7 +141,7 @@ public class NotFoldPFR implements iPlayerStatistic
                 }
                 
                 actionsDesc[posIndex]
-                .append(link)
+               // .append(link)
                 .append(DonkContLimped.lineEnd);
                 
                 posRaisedToPlayer[posIndex]++;

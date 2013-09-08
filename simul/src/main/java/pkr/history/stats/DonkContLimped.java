@@ -3,6 +3,7 @@ package pkr.history.stats;
 import java.util.List;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,7 +132,7 @@ public class DonkContLimped implements iPlayerStatistic
         return sb.toString();
     }
 
-    public static String buildLink(HandInfo handInfo)
+    public static String buildLink(HandInfo handInfo, String playerName)
     {
         StringBuffer sb = new StringBuffer();
        
@@ -150,9 +151,18 @@ public class DonkContLimped implements iPlayerStatistic
         //.append(handInfo.winnerPlayerName)  
         //.append(" round ")
         //.append( Statistics.roundToStr(handInfo.winRound))
-        .append(" ")
-        .append( handInfo.winDesc )
-        .append( "<br/>");
+        .append(" ");
+        
+        if (handInfo.winnerPlayerName[0].equals(playerName) ||
+        		StringUtils.equals(handInfo.winnerPlayerName[1], playerName))
+        {
+        	sb.append("<span style=\"color:green\">");
+        } else {
+        	sb.append("<span style=\"color:red\">");
+        }
+        sb.append( handInfo.winDesc );
+        sb.append("</span>");
+        sb.append( "<br/>");
         
         return (sb.toString());
         //return StringEscapeUtils.escapeXml(sb.toString());
@@ -212,7 +222,7 @@ public class DonkContLimped implements iPlayerStatistic
         	sb.append(" (allin) " );
         }
         
-        if (amt > 0) {
+        if (amt >= 0) {
         	sb.append(Statistics.formatMoney(
         			amt));
         } else {
@@ -274,7 +284,7 @@ public class DonkContLimped implements iPlayerStatistic
         
         final int type = estLimped ? LIMPED : (estAgresseur ? IS_AGGRES : NOT_AGGRES);
         
-        final String link =   buildLink(handInfo);
+        final String link =   buildLink(handInfo, playerName);
                 
         
         ++actionPossible[type][ALL_IN];
@@ -399,15 +409,18 @@ public class DonkContLimped implements iPlayerStatistic
                     }
                 }
                 
-                if (foldToRaise)
+                //if (foldToRaise)
                 {
                 	StringBuffer actionText = new StringBuffer();
                     
+                	if (!foldToRaise) {
+                		actionText.append(" did not");
+                	}
                     if (currentAction.incomingBetOrRaise == currentAction.playerAmtPutInPotThisRound + 1)
                     {
-                    	actionText.append(" folded to an all in");
+                    	actionText.append(" fold to an all in");
                     } else {
-                    	actionText.append(" folded to a raise of ")
+                    	actionText.append(" fold to a raise of ")
                         .append(Statistics.formatMoney(currentAction.incomingBetOrRaise));
                     }
                     

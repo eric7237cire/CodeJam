@@ -14,6 +14,8 @@ public class HandInfo
         this.handIndex = handIndex;
         this.handLog = new StringBuffer();
         this.roundStates = new FlopTurnRiverState[4];
+        
+        this.winnerPlayerName = new String[2];
     }
     public String getHandLog()
     {
@@ -26,7 +28,7 @@ public class HandInfo
     }
     
     public String winDesc;
-    public String winnerPlayerName;
+    public String[] winnerPlayerName;
     public int wonPot;
     public int winRound;
 

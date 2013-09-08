@@ -80,7 +80,7 @@ public class FlopTurnRiverState implements ParserListener
         super();
         Preconditions.checkNotNull(handInfo);
         
-        this.players = players;
+        this.players = Lists.newArrayList();
         this.pot = pot;
         this.round = round;
         this.handInfo = handInfo;
@@ -94,16 +94,15 @@ public class FlopTurnRiverState implements ParserListener
         playerBets = new int[MAX_PLAYERS];
         allInMinimum = new int[MAX_PLAYERS];
         
+        this.currentPlayer = -1;
+        
         for (int i  = 0; i < players.size(); ++i)
         {
-            playerPosToActions.add(new ArrayList<Integer>());
-            
-            playerBets[i] = -1;
-            allInMinimum[i] = -1;
+        	addPlayer(players.get(i));
                      
         }
         
-        this.currentPlayer = players.size() - 1;
+        Preconditions.checkState(this.currentPlayer == players.size() - 1);
         
         roundInitialBetterPos = -1;
         ambigTapisLineNumber = -1;
@@ -308,6 +307,17 @@ public class FlopTurnRiverState implements ParserListener
         
         pot += potAdj;
     }
+    
+    private void addPlayer(String playerName)
+    {
+    	players.add(playerName);
+    	currentPlayer = players.size() - 1;
+        
+        playerPosToActions.add( new ArrayList<Integer>() );
+        playerBets[currentPlayer] = -1;
+        allInMinimum[currentPlayer] = -1;
+    
+    }
     /*
      * Position currentPlayer au joeur courant
      * 
@@ -318,13 +328,14 @@ public class FlopTurnRiverState implements ParserListener
         if (!players.contains(playerName))
         {
             log.debug("Player [{}] ajouté avec index {} ", playerName, players.size());
-            players.add(playerName);
+            addPlayer(playerName);
             
-            playerPosToActions.add( new ArrayList<Integer>() );
-            currentPlayer = players.size() - 1;
+            if (players.size() > MAX_PLAYERS)
+            {
+            	log.error("Too many players hand {} line {}", handInfo.handIndex, handInfo.startingLine);
+            }
             
-            playerBets[currentPlayer] = -1;
-            allInMinimum[currentPlayer] = -1;
+            
             
             return false;
         }
@@ -792,7 +803,7 @@ public class FlopTurnRiverState implements ParserListener
         
         handInfo.winDesc = winDesc;
         handInfo.winRound = round;
-        handInfo.winnerPlayerName = playerName;
+        handInfo.winnerPlayerName[0] = playerName;
         
         
         return this;
@@ -807,17 +818,14 @@ public class FlopTurnRiverState implements ParserListener
         if (!players.contains(playerName))
         {
             log.debug("Player [{}] ajouté avec index {} ", playerName, players.size());
-            players.add(playerName);
-            currentPlayer = players.size() - 1;
-            
-            playerPosToActions.add( new ArrayList<Integer>() );
+            addPlayer(playerName);            
         }
         
        // int playerPos = players.indexOf(playerName);
         
         handInfo.wonPot = pot;
         handInfo.winRound = actions.size() == 0 ? round - 1 : round;
-        handInfo.winnerPlayerName = playerName;
+        handInfo.winnerPlayerName[0] = playerName;
         handInfo.winDesc = playerName + " Round "  +
         Statistics.roundToStr(handInfo.winRound) + "  No showdown";
                 

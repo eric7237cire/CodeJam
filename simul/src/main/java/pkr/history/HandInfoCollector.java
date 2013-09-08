@@ -64,12 +64,23 @@ public class HandInfoCollector
         }
         
         handInfo.handLog
-        .append(handInfo.winnerPlayerName)
+        .append(handInfo.winnerPlayerName[0])
         .append(" wins showdown with pot $")
         .append(Statistics.moneyFormat.format(handInfo.wonPot))
         .append("\n")
         .append(handInfo.winDesc)
         .append("\n");
+        
+        if (handInfo.winnerPlayerName[1] != null) {
+        	handInfo.handLog
+            .append(handInfo.winnerPlayerName[1])
+            .append(" wins splitpot showdown with pot $")
+            .append(Statistics.moneyFormat.format(handInfo.wonPot))
+            .append("\n")
+            .append(handInfo.winDesc)
+            .append("\n");
+            
+        }
     }
 
 }

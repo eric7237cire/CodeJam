@@ -46,7 +46,7 @@
             A2s+, K2s+, Q2s+, J6s+, T6s+, 96s+, 86s+, 76s+, 65s+, 54s+, 43s
         </set>
         <set name="good">
-            55+, A8s+, K9s+, QTs+, JTs, T9s, 98s, 87s, A8o+, KJo+, QJo, JTo
+            22+, A5s+, K9s+, QTs+, JTs, T9s, 98s, 87s, A6o+, KJo+, QJo, JTo
         </set>
 		<set name="pfr2000">
             22+, A6s+, K9s+, Q9s+, JTs, T9s, 98s, 87s, A8o+, KJo+, QJo, JTo
@@ -127,11 +127,13 @@
 -->
     <scenarios>
         
-        <scenario name="scenario" iterCount="40000">
+        <scenario name="scenario" iterCount="180000">
        <player count="1">
-            A9o
+            77
             </player>
-            <player set="random" count="2"/>
+            <player set="loose" count="3"/>
+            <player set="good" count="0"/>
+            <player set="random" count="0"/>
 			<player set="pfr2000" count="0"/>
             <player count="0">
             A8+, 22+, KJ, Q9+

@@ -55,27 +55,41 @@ public class TestVPIP
         int playerNum = 0;
         StatsSessionPlayer pStats =  stats.playerSessionStats.get("Eric");
         
-        assertEquals("Vpip : 25% (1/4)", pStats.getStatValue("vpip"));
+        Vpip vpip = (Vpip) pStats.stats.get("vpip");
+        assertEquals(1, vpip.moneyIn);
+        assertEquals(5, vpip.played);
         assertEquals(5, players.get(playerNum).totalHands );
         
         playerNum = 1;
         pStats =  stats.playerSessionStats.get("Morris");
-        assertEquals("Vpip : 50% (2/4)", pStats.getStatValue("vpip"));
+        vpip = (Vpip) pStats.stats.get("vpip");
+        assertEquals(2, vpip.moneyIn);
+        assertEquals(5, vpip.played);
         assertEquals(5, players.get(playerNum).totalHands );
         
         playerNum = 2;
         pStats =  stats.playerSessionStats.get("מוריס");
         assertEquals(3, players.get(playerNum).totalHands );
+        vpip = (Vpip) pStats.stats.get("vpip");
+        assertEquals(1, vpip.moneyIn);
+        assertEquals(3, vpip.played);
         assertEquals("Vpip : 33.3% (1/3)", pStats.getStatValue("vpip"));
         
         playerNum = 3;
         pStats =  stats.playerSessionStats.get("Billy");
         assertEquals(5, players.get(playerNum).totalHands );
+        vpip = (Vpip) pStats.stats.get("vpip");
+        
+        assertEquals(4, vpip.moneyIn);
+        assertEquals(5, vpip.played);
+        
         assertEquals("Vpip : 80% (4/5)", pStats.getStatValue("vpip"));
         
         playerNum = 4;
         pStats =  stats.playerSessionStats.get("Anto");
-        assertEquals("Vpip : 50% (1/2)", pStats.getStatValue("vpip"));
+        vpip = (Vpip) pStats.stats.get("vpip");
+        assertEquals(1, vpip.moneyIn);
+        assertEquals(3, vpip.played);
         assertEquals(3, players.get(playerNum).totalHands );
     }
     
@@ -140,24 +154,24 @@ public class TestVPIP
         Vpip vpip = (Vpip) pStats.stats.get("vpip");
         
         assertEquals(2, vpip.moneyIn);
-        assertEquals(4, vpip.played);
+        assertEquals(5, vpip.played);
         
         assertEquals(1, vpip.posMoneyIn[Vpip.SB_POS]);
         assertEquals(2, vpip.posPlayed[Vpip.SB_POS]);
         
 
         assertEquals(1, vpip.posMoneyIn[Vpip.BB_POS]);
-        assertEquals(2, vpip.posPlayed[Vpip.BB_POS]);
+        assertEquals(3, vpip.posPlayed[Vpip.BB_POS]);
         
         pStats = stats.playerSessionStats.get("Ahmed"); 
         
         vpip = (Vpip) pStats.stats.get("vpip");
         
         assertEquals(4, vpip.moneyIn);
-        assertEquals(4, vpip.played);
+        assertEquals(5, vpip.played);
         
         assertEquals(1, vpip.posMoneyIn[Vpip.BB_POS]);
-        assertEquals(1, vpip.posPlayed[Vpip.BB_POS]);
+        assertEquals(2, vpip.posPlayed[Vpip.BB_POS]);
         
         assertEquals(3, vpip.posMoneyIn[Vpip.SB_POS]);
         assertEquals(3, vpip.posPlayed[Vpip.SB_POS]);
@@ -180,13 +194,13 @@ public class TestVPIP
         Vpip vpip = (Vpip) pStats.stats.get("vpip");
         
         assertEquals(2, vpip.moneyIn);
-        assertEquals(2, vpip.played);
+        assertEquals(3, vpip.played);
         
         assertEquals(0, vpip.posMoneyIn[Vpip.SB_POS]);
         assertEquals(0, vpip.posPlayed[Vpip.SB_POS]);
         
         assertEquals(1, vpip.posMoneyIn[Vpip.BB_POS]);
-        assertEquals(1, vpip.posPlayed[Vpip.BB_POS]);
+        assertEquals(2, vpip.posPlayed[Vpip.BB_POS]);
         
         assertEquals(1, vpip.posMoneyIn[Vpip.BTN_POS]);
         assertEquals(1, vpip.posPlayed[Vpip.BTN_POS]);
@@ -303,7 +317,7 @@ public class TestVPIP
         vpip = (Vpip) pStats.stats.get("vpip");
         
         assertEquals(1, vpip.moneyIn);
-        assertEquals(1, vpip.played);
+        assertEquals(2, vpip.played);
         
         assertEquals(0, vpip.posMoneyIn[Vpip.MID_POS]);
         assertEquals(0, vpip.posPlayed[Vpip.MID_POS]);
@@ -315,7 +329,7 @@ public class TestVPIP
         assertEquals(0, vpip.posPlayed[Vpip.SB_POS]);
         
         assertEquals(1, vpip.posMoneyIn[Vpip.BB_POS]);
-        assertEquals(1, vpip.posPlayed[Vpip.BB_POS]);
+        assertEquals(2, vpip.posPlayed[Vpip.BB_POS]);
         
         
     }

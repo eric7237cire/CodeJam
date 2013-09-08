@@ -92,8 +92,8 @@ public class Vpip implements iPlayerStatistic
                 && ftrStates[0].roundInitialBetter == null
                 )
         {
-            log.debug("Player {} is an unraised big  blind", preFlopPlayer);
-            return;
+           // log.debug("Player {} is an unraised big  blind", preFlopPlayer);
+          //  return;
         }
         
         ++played;
@@ -110,9 +110,9 @@ public class Vpip implements iPlayerStatistic
         
         final boolean playerAllin = ftrStates[0].allInMinimum[playerPosition] >= 0;
         
-        if ( (playerPosition != bbPos && playerBet >= ftrStates[0].tableStakes)
+        if ( (playerPosition != bbPos && playerBet >= 2 * ftrStates[0].tableStakes)
                 ||
-                (playerPosition == bbPos && playerBet > ftrStates[0].tableStakes)
+                (playerPosition == bbPos && playerBet > 2 * ftrStates[0].tableStakes)
                 ||
                 //Supposons qu'un tapis est une relance
                 playerAllin

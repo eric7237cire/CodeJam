@@ -24,7 +24,23 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 /*
+ * Detection de blindes, utilise jusqu' au un changement
+ * totale gagne / perdu
+ * longue tooltips, utilise un popup?
  * 
+ * went to showdown
+ * won money at showdown
+ * aggression
+ * (raise+bet)/calls
+ * 
+ * split pots (unit test)
+ * 
+ * chart of losses / gains
+ * win/loss by position
+ * 
+ * top 5 wins / losses
+ * 
+ * testParser1.txt -- what happens when small blind leaves table
  */
 public class Parser {
     

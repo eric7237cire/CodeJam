@@ -88,7 +88,7 @@ public class Pfr implements iPlayerStatistic
         
         final boolean playerAllin = ftrStates[0].allInMinimum[playerPosition] >= 0;
         
-        String link = DonkContLimped.buildLink(handInfo);
+        String link = DonkContLimped.buildLink(handInfo, preFlopPlayer);
         int posIndex = Vpip.getPositionIndex(ftrStates[0].players.size(), playerPosition);
         
         

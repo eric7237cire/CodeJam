@@ -1,4 +1,4 @@
-package test;
+	package test;
 
 
 import static org.junit.Assert.assertEquals;
@@ -20,6 +20,7 @@ import pkr.history.Parser;
 import pkr.history.StatsSession;
 import pkr.history.StatsSessionPlayer;
 import pkr.history.stats.Pfr;
+import pkr.history.stats.Vpip;
 
 @RunWith(JUnit4.class)
 public class TestPreflopStats
@@ -97,47 +98,70 @@ public class TestPreflopStats
         
         int playerNum = 0;
         StatsSessionPlayer pStats =  players.get(playerNum);
-        assertEquals("Vpip : 16.7% (1/6)", pStats.getStatValue("vpip"));
+        
+        Vpip vpip = (Vpip) pStats.stats.get("vpip");
+        
+        assertEquals(1, vpip.moneyIn);
+        assertEquals(6, vpip.played);
         assertEquals(6, players.get(playerNum).totalHands );
         
         
-        playerNum = 1;
-        pStats =  players.get(playerNum);
-        
-        assertEquals("Vpip : 66.7% (2/3)", pStats.getStatValue("vpip"));
-        assertEquals(3, players.get(playerNum).totalHands );
-        
-        playerNum = 2;
-        pStats =  players.get(playerNum);
-        assertEquals("Vpip : 66.7% (2/3)", pStats.getStatValue("vpip"));
-        assertEquals(3, players.get(playerNum).totalHands );
-        
-        //Eric
-        playerNum = 3;
-        pStats =  players.get(playerNum);
-        
-        assertEquals("Vpip : 33.3% (2/6)", pStats.getStatValue("vpip"));
-        assertEquals(6, players.get(playerNum).totalHands );
-        
-        //Amed
-        playerNum = 4;
-        pStats =  players.get(playerNum);
-        
-        assertEquals("Vpip : 20% (1/5)", pStats.getStatValue("vpip"));
-        
-        assertEquals(6, players.get(playerNum).totalHands );
-        
-        playerNum = 5;
-        pStats =  players.get(playerNum);
-        
-        assertEquals("Vpip : 100% (3/3)", pStats.getStatValue("vpip"));
-        assertEquals(3, players.get(playerNum).totalHands );
-        
-        playerNum = 6;
-        pStats =  players.get(playerNum);
-        assertEquals("Vpip : 33.3% (1/3)", pStats.getStatValue("vpip"));
-        assertEquals(3, players.get(playerNum).totalHands );
-    }
+		playerNum = 1;
+		pStats = players.get(playerNum);
+		vpip = (Vpip) pStats.stats.get("vpip");
+
+		assertEquals(2, vpip.moneyIn);
+		assertEquals(3, vpip.played);
+		assertEquals("Vpip : 66.7% (2/3)", pStats.getStatValue("vpip"));
+		assertEquals(3, players.get(playerNum).totalHands);
+
+		playerNum = 2;
+		pStats = players.get(playerNum);
+		vpip = (Vpip) pStats.stats.get("vpip");
+
+		assertEquals(2, vpip.moneyIn);
+		assertEquals(3, vpip.played);
+		assertEquals("Vpip : 66.7% (2/3)", pStats.getStatValue("vpip"));
+		assertEquals(3, players.get(playerNum).totalHands);
+
+		// Eric
+		playerNum = 3;
+		pStats = players.get(playerNum);
+		vpip = (Vpip) pStats.stats.get("vpip");
+
+		assertEquals(2, vpip.moneyIn);
+		assertEquals(6, vpip.played);
+		assertEquals("Vpip : 33.3% (2/6)", pStats.getStatValue("vpip"));
+		assertEquals(6, players.get(playerNum).totalHands);
+
+		// Amed
+		playerNum = 4;
+		pStats = players.get(playerNum);
+		vpip = (Vpip) pStats.stats.get("vpip");
+
+		assertEquals(1, vpip.moneyIn);
+		assertEquals(6, vpip.played);
+		
+		assertEquals(6, players.get(playerNum).totalHands);
+
+		playerNum = 5;
+		pStats = players.get(playerNum);
+		vpip = (Vpip) pStats.stats.get("vpip");
+
+		assertEquals(3, vpip.moneyIn);
+		assertEquals(3, vpip.played);
+		assertEquals("Vpip : 100% (3/3)", pStats.getStatValue("vpip"));
+		assertEquals(3, players.get(playerNum).totalHands);
+
+		playerNum = 6;
+		pStats = players.get(playerNum);
+		vpip = (Vpip) pStats.stats.get("vpip");
+
+		assertEquals(1, vpip.moneyIn);
+		assertEquals(3, vpip.played);
+		assertEquals("Vpip : 33.3% (1/3)", pStats.getStatValue("vpip"));
+		assertEquals(3, players.get(playerNum).totalHands);
+	}
     
     @Test
     public void test3bet1() throws Exception
