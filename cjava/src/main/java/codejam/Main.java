@@ -1630,6 +1630,7 @@ public class Main
     //static void roundQual_2013(String args[])
     public static void main(String args[])
     {
+        //Easy bit masks on a grid
         TicTacToeTomek m = new TicTacToeTomek();
         
         String[] files = Main.getFiles(m, args);

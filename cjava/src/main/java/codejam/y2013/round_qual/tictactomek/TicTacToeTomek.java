@@ -2,7 +2,6 @@ package codejam.y2013.round_qual.tictactomek;
 
 import java.util.Scanner;
 
-import codejam.utils.datastructures.BitSetInt;
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -77,8 +76,9 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
             masks[4] |= 1 << 4*i; 
         
         for(int i = 1; i <= 3; ++i)
-            masks[4+i] = masks[4] << 4 * i;
+            masks[4+i] = masks[4] <<  i;
         
+        //diagonal
         masks[8] = 1 | 1 << 5 | 1 << 10 | 1 << 15;
         
         masks[9] = 1 << 3 | 1 << 6 | 1 << 9 | 1 << 12;
