@@ -26,6 +26,7 @@ public class DonkContLimped implements iPlayerStatistic
     public int[][] actionPossible;
     public StringBuffer[][] actionsDesc;
     
+    //Categories
     public static final int LIMPED = 0;
     public static final int IS_AGGRES = 1;
     public static final int NOT_AGGRES = 2;
@@ -476,8 +477,15 @@ public class DonkContLimped implements iPlayerStatistic
     /**
      * @return the actions
      */
-    public String getActionStr(int a, int b) {
-        return Statistics.formatPercent( actions[a][b], actionPossible[a][b], true);
+    public String getActionStr(int category, int action) {
+        return Statistics.formatPercent( actions[category][action], actionPossible[category][action], true);
+    }
+    
+    public String getActionStr(int action) {
+        return Statistics.formatPercent( actions[LIMPED][action]+actions[NOT_AGGRES][action]
+                +actions[IS_AGGRES][action], 
+                actionPossible[LIMPED][action]+actionPossible[NOT_AGGRES][action]
+                        +actionPossible[IS_AGGRES][action], true);
     }
 
     public String getActionDesc(int a, int b) {

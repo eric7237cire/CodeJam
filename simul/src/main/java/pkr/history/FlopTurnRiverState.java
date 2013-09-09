@@ -773,7 +773,7 @@ public class FlopTurnRiverState implements ParserListener
     }
 
     @Override
-    public ParserListener handleShowdown(String playerName, int finalPot, String winDesc)
+    public ParserListener handleShowdown(String playerName, final int finalPot, String winDesc)
     {
         
     	if (!correction && round == 0)
@@ -804,6 +804,37 @@ public class FlopTurnRiverState implements ParserListener
         handInfo.winDesc = winDesc;
         handInfo.winRound = round;
         handInfo.winnerPlayerName[0] = playerName;
+        
+        if (pot == finalPot * 2 )
+        {
+            
+            log.debug("Split pot?");
+            
+            String otherPlayer = null;
+            boolean ok = true;
+            
+            for(int i = 0; i < players.size(); ++i)
+            {
+                if (ok && !hasFolded[i]
+                        && allInMinimum[i] < 0 
+                        && !players.get(i).equals(playerName))
+                {
+                    if (otherPlayer != null)
+                    {
+                        ok = false;
+                        break;
+                    } else {
+                        otherPlayer = players.get(i);
+                    }
+                }
+            }
+            
+            if (ok && otherPlayer != null)
+            {
+                log.debug("Split pot detected");
+                handInfo.winnerPlayerName[1] = otherPlayer;
+            }
+        }
         
         
         return this;

@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import pkr.history.stats.Aggression;
 import pkr.history.stats.DonkContLimped;
 import pkr.history.stats.NotFoldPFR;
 import pkr.history.stats.Pfr;
@@ -38,7 +39,9 @@ public class StatsSessionPlayer {
                 new Vpip(playerName),
                 new Pfr(playerName),
                 new NotFoldPFR(playerName),
-                new ThreeBet(playerName));
+                new ThreeBet(playerName),
+                new Aggression(playerName)
+                );
          
         for(iPlayerStatistic s : lst)
         {

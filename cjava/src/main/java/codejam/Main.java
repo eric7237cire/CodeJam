@@ -13,6 +13,7 @@ import codejam.y2012.round_1C.boxes.BoxFactorySolution;
 import codejam.y2013.round_online.babyheight.BabyHeight;
 import codejam.y2013.round_online.hedgemony.Hedgemony;
 import codejam.y2013.round_online.oceanview.OceanView;
+import codejam.y2013.round_qual.tictactomek.TicTacToeTomek;
 
 public class Main
 {
@@ -1607,14 +1608,29 @@ public class Main
         }
     }
 
-    public static void main(String args[])
-    //static void roundOnline_2013(String args[])
+    //public static void main(String args[])
+    static void roundOnline_2013(String args[])
     {
         OceanView m = new OceanView();
         
         //Hedgemony m = new Hedgemony();
         
         //BabyHeight m = new BabyHeight();
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files)
+        {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+            //Runner.go(file, m, m, 5);
+        }
+    }
+    
+    //static void roundQual_2013(String args[])
+    public static void main(String args[])
+    {
+        TicTacToeTomek m = new TicTacToeTomek();
         
         String[] files = Main.getFiles(m, args);
         for (String file : files)

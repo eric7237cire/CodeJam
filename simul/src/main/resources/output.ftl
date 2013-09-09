@@ -89,9 +89,8 @@ $('.tooltip').qtip({ // Grab some elements to apply the tooltip to
     <table class="playerTable">
     
     
-    <tr><td>${pStat.stats.vpip}</td><td class="tooltip" title="${pStat.stats["3bet"].getActionsDesc()}"  >${pStat.stats["3bet"]}</td></tr>
+    <tr><td>Agg. Freq ${pStat.stats.agg.getPerc()}</td><td class="tooltip" title="${pStat.stats["3bet"].getActionsDesc()}"  >${pStat.stats["3bet"]}</td></tr>
     
-    <tr><td>${pStat.stats.pfr}</td><td>${pStat.stats.notfpfr}</td></tr>
     </table>
     
     <table>
@@ -107,21 +106,21 @@ $('.tooltip').qtip({ // Grab some elements to apply the tooltip to
     
         
         <tr>
-            <td>VPIP</td>
+            <td>${pStat.stats.vpip}</td>
             <#list posList as pos> 
             <td>${pStat.stats.vpip.getPercentage(pos)}</td>
             </#list>            
         </tr>
         
         <tr>
-            <td>Not fold PFR</td>
+            <td>${pStat.stats.notfpfr}</td>
             <#list posList as pos> 
             <td class="tooltip" title='${pStat.stats.notfpfr.getActionsDesc(pos)}' id="notfpfr_${playerName_index}_${pos}">${pStat.stats.notfpfr.getPercentage(pos)}</td>
             </#list>  
         </tr>
         
         <tr>
-            <td>PFR</td>
+            <td>${pStat.stats.pfr}</td>
             <#list posList as pos> 
             <td class="tooltip" title='${pStat.stats.pfr.getActionsDesc(pos)}' id="pfr_${playerName_index}_${pos}">${pStat.stats.pfr.getPercentage(pos)}</td>
             </#list>  
@@ -147,6 +146,14 @@ $('.tooltip').qtip({ // Grab some elements to apply the tooltip to
             <th>Reraise</th>
             <th>Allin</th>
         </tr>
+            <tr>
+                <td>Cumul</td>
+                <td >${pStat.stats[dcl].getCount(0)+pStat.stats[dcl].getCount(1)+pStat.stats[dcl].getCount(2)}</td>
+                <#list actionIds as actionId>
+                <td >${pStat.stats[dcl].getActionStr(actionId)}</td>
+                
+                </#list>
+            </tr>
         <#list types as type> 
             <tr>
             

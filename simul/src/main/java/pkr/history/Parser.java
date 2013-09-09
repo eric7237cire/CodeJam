@@ -30,10 +30,9 @@ import freemarker.template.TemplateException;
  * 
  * went to showdown
  * won money at showdown
- * aggression
- * (raise+bet)/calls
- * 
- * split pots (unit test)
+ * ok -- aggression (raise+bet)/calls
+ *  
+ * ok -- split pots (unit test)
  * 
  * chart of losses / gains
  * win/loss by position
