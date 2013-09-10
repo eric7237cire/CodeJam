@@ -1,7 +1,9 @@
 package codejam.y2013.round_qual.fairsquare;
 
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Scanner;
+import java.util.TreeSet;
 
 import com.google.common.math.DoubleMath;
 
@@ -16,18 +18,18 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
 {
     public FairAndSquare()
     {
-        super("C", 1, 0);
+        super("C", 0, 0);
         //setLogInfo();
         
     }
     
     public String[] getDefaultInputFiles()
     {
-        if (true)
+        if (false)
         {
             return super.getDefaultInputFiles();
         } else {
-            return new String[] { "C-large-practice-1.in" };
+            return new String[] { "C-small-practice.in", "C-large-practice-1.in" };
         }
         
     }
@@ -55,7 +57,45 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     {
         
         
-        return handleCaseBruteForce(in);
+       // return handleCaseBruteForce(in);
+        return handleCaseBruteForceFaster(in);
+       
+    }
+    
+
+    static TreeSet<Long> set = new TreeSet<Long>();
+    
+    public String handleCaseBruteForceFaster(InputData in) 
+    {
+        
+        if (set.size() == 0)
+        {
+        for(long i = 0; i < 100000000; ++i)
+        {
+            if (BruteForce.isPalin(BigInteger.valueOf(i)))
+            {
+                long sq = i * i;
+                if (BruteForce.isPalin(BigInteger.valueOf(sq)))
+                {
+                    log.debug("Adding {}*{}= {}", i, i, sq);
+                    //log.debug("Adding 100000000000000");
+                    set.add(sq);
+                }
+            }
+        }
+        }
+        
+        long start =  in.start.longValue();
+        long stop =  in.stop.longValue();
+        
+        int count = 
+        set.headSet(stop, true).tailSet(start,true).size();
+        
+        log.debug("Start {} stop  {}", start, stop);
+        
+        return String.format("Case #%d: %d", 
+                    in.testCase, count);
+        
        
     }
     
@@ -75,7 +115,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
                 
                 if (sqRoot * sqRoot == i && BruteForce.isPalin(sqRoot)) 
                 {
-                    log.debug("Palin fair & square {}", i);
+                    log.debug("Palin fair & square {} root {}", i, sqRoot);
                     ++count;
                 }
             }
