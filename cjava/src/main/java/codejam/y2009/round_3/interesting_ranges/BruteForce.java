@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class BruteForce {
     
-    final static Logger log = LoggerFactory.getLogger(Main.class);
+    final static Logger log = LoggerFactory.getLogger(InterestingRanges.class);
     
     public static Interval createInterval(int lb, int up) {
         Interval range = new Interval();

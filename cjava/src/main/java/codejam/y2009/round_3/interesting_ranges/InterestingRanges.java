@@ -4,26 +4,25 @@ import java.math.BigInteger;
 import java.util.Scanner;
 import java.util.SortedMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import codejam.utils.main.DefaultInputFiles;
+import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 
 import com.google.common.base.Preconditions;
 
-public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
+public class InterestingRanges extends InputFilesHandler 
+implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>, DefaultInputFiles {
     
-    @Override
-    public String[] getDefaultInputFiles() {
-      //   return new String[] {"sample.in"};
-       //  return new String[] { "D-small-practice.in" };
-       return new String[] { "D-small-practice.in", "D-large-practice.in" };
+    
+    
+    public InterestingRanges()
+    {
+        super("D", 1, 1);
+        //setLogInfo();
+        
     }
 
-    final static Logger log = LoggerFactory.getLogger(Main.class);
-    
     public static PalinSpace palinSpace = new PalinSpace();
 
     /**
@@ -35,7 +34,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      * @param exp
      * @return
      */
-    public static Interval getFullRange(int num, final int exp) {
+    public static Interval getFullRange(final int num, final int exp) {
         
         if (num == 1 && exp ==0 ){
             return new Interval(1);
@@ -59,7 +58,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
      * @param exp
      * @return
      */
-    static Interval getPartialRange(int num, int exp, BigInteger target) {
+    public static Interval getPartialRange(final int num, final int exp, BigInteger target) {
         
         Preconditions.checkArgument(exp >= 0);
         Preconditions.checkArgument(target.compareTo(BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp))) >= 0 );
@@ -69,12 +68,13 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
         Interval total = new Interval();
 
         total = new Interval(BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp)).add(BigInteger.ONE));
-        total.left = BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp)).add(BigInteger.ONE);
-        total.right = total.left;
-        
+                
         if (exp == 0) {
             total.left = BigInteger.ONE;
             total.right = BigInteger.ONE;
+        } else {
+            total.left = BigInteger.valueOf(num).multiply(BigInteger.TEN.pow(exp)).add(BigInteger.ONE);
+            total.right = total.left;
         }
         
         if (total.right.compareTo(target) == 0) {
@@ -83,21 +83,26 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
         Interval palin = new Interval(1);
 
-        int n = num;
-
-        if (n == 1) {
+        
+        if (num == 1) {
 
             Preconditions.checkState(total.left.compareTo(target) <= 0);
+            
+            //Si l'intervalle total contient la cible désirée, nous sommes fini
             if (total.right.compareTo(target) == 0) {
                 return total;
             }
         } else {
-            if (n > 2) {
+            if (num > 2) {
                 // Get to first palin 1001 / 3003 / 9009 etc
+                
+                //si num est 9 alors la taille de l'intervalle est égale à 8 (1-8)
+                //mais la taille ne peut pas surpasser le cible
+                // target - num*10 ^ exp + 1
                 total = Interval.combin(
                         total,
                         Interval.createEmpty(target.subtract(total.right).min(
-                                BigInteger.valueOf(n - 2))));
+                                BigInteger.valueOf(num - 2))));
 
                 if (total.right.compareTo(target) == 0) {
                     return total;
@@ -120,8 +125,7 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
                     .headMap(leftToGo.add(BigInteger.ONE));
 
             if (!map.isEmpty()) {
-                BigInteger chunk = palinSpace.segments.get(exp)
-                        .headMap(leftToGo.add(BigInteger.ONE)).lastKey();
+                BigInteger chunk = map.lastKey();
                 Interval chunkInterval = palinSpace.segments.get(exp)
                         .get(chunk);
 
@@ -178,27 +182,28 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
 
     }
 
-    public static Interval calc(BigInteger numInt) {
+    public static Interval calc(BigInteger numInt) 
+    {
         Preconditions.checkArgument(numInt.compareTo(BigInteger.ZERO) > 0);
         String num = numInt.toString();
 
-        int digit = Character.digit(num.charAt(0), 10);
-        int exp = num.length() - 1;
+        final int firstLeftDigit = Character.digit(num.charAt(0), 10);
+        final int exp = num.length() - 1;
 
         // 4367
 
         // 1 - 4000
-        Interval regularInterval = Main.getFullRange(
-                Character.digit(num.charAt(0), 10), num.length() - 1);
+        Interval regularInterval = InterestingRanges.getFullRange(
+                firstLeftDigit, exp);
 
-        BigInteger leftOverInt = numInt.subtract(BigInteger.valueOf(digit)
+        BigInteger leftOverInt = numInt.subtract(BigInteger.valueOf(firstLeftDigit)
                 .multiply(BigInteger.TEN.pow(exp)));
 
         Preconditions.checkState(leftOverInt.compareTo(BigInteger.ZERO) >= 0);
 
         if (leftOverInt.compareTo(BigInteger.ZERO) > 0) {
             Interval leftOver = getPartialRange(
-                    Character.digit(num.charAt(0), 10), num.length() - 1,
+                    firstLeftDigit, exp,
                     numInt);
 
             Interval total = Interval.combin(regularInterval, leftOver);
@@ -227,11 +232,6 @@ public class Main implements TestCaseHandler<InputData>, TestCaseInputScanner<In
     }
 
    
-
-    public Main() {
-
-        super();
-    }
 
    
 

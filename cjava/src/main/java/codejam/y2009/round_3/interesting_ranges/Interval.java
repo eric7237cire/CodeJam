@@ -12,6 +12,7 @@ public class Interval {
     public BigInteger totalEven;
     BigInteger oddRight;
     BigInteger oddLeft;
+    //how many even intervals end on the right side of the interval (can be extended)
     BigInteger evenRight;
     BigInteger evenLeft;
     boolean isEvenSpanning;
@@ -38,6 +39,10 @@ public class Interval {
         this(BigInteger.valueOf(i));        
     }
     
+    /**
+     * Créer un intervalle contenant qu'un chiffre
+     * @param i
+     */
     Interval(BigInteger i) {
         this();
         
@@ -69,6 +74,7 @@ public class Interval {
         Interval ret = new Interval();
         Preconditions.checkArgument(space.compareTo(BigInteger.ZERO) >= 0);
         ret.size = space;
+        //n * (n+1) / 2 -- formulaire de sommation 
         ret.totalEven = space.multiply( 
                 space.add(BigInteger.ONE)).divide(BigInteger.valueOf(2));
         ret.oddRight = BigInteger.ZERO;

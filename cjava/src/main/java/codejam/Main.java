@@ -13,6 +13,7 @@ import codejam.y2012.round_1C.boxes.BoxFactorySolution;
 import codejam.y2013.round_online.babyheight.BabyHeight;
 import codejam.y2013.round_online.hedgemony.Hedgemony;
 import codejam.y2013.round_online.oceanview.OceanView;
+import codejam.y2013.round_qual.fairsquare.FairAndSquare;
 import codejam.y2013.round_qual.tictactomek.TicTacToeTomek;
 
 public class Main
@@ -734,7 +735,7 @@ public class Main
         }
     }
 
-    //public static void main(String args[]) throws Exception {
+    //public static void main(String args[]) throws Exception 
     static void round3_2009(String args[])
     {
 
@@ -759,8 +760,16 @@ public class Main
         // codejam.y2009.round_3.football_team.Main m = new codejam.y2009.round_3.football_team.Main();
 
         //Counting ranges.  Had to use complex caching to solve in time.  TODO more comments and their solution
-        // codejam.y2009.round_3.interesting_ranges.Main m = new codejam.y2009.round_3.interesting_ranges.Main();
+         codejam.y2009.round_3.interesting_ranges.InterestingRanges m = new codejam.y2009.round_3.interesting_ranges.InterestingRanges();
 
+         String[] files = Main.getFiles(m, args);
+         for (String file : files)
+         {
+             log.info("Input file {}", file);
+
+             //   Runner.goSingleThread(file, m, m);
+             Runner.go(file, m, m, 2);
+         }
     }
 
     static void roundFinal_2009(String args[])
@@ -1631,7 +1640,9 @@ public class Main
     public static void main(String args[])
     {
         //Easy bit masks on a grid
-        TicTacToeTomek m = new TicTacToeTomek();
+        //TicTacToeTomek m = new TicTacToeTomek();
+        
+        FairAndSquare m = new FairAndSquare();
         
         String[] files = Main.getFiles(m, args);
         for (String file : files)

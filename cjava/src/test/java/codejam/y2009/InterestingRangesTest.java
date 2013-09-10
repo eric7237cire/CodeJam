@@ -13,7 +13,7 @@ import codejam.utils.test.TesterBase;
 import codejam.y2009.round_3.interesting_ranges.BruteForce;
 import codejam.y2009.round_3.interesting_ranges.InputData;
 import codejam.y2009.round_3.interesting_ranges.Interval;
-import codejam.y2009.round_3.interesting_ranges.Main;
+import codejam.y2009.round_3.interesting_ranges.InterestingRanges;
 import codejam.y2009.round_3.interesting_ranges.PalinSpace;
 
 
@@ -31,7 +31,7 @@ public class InterestingRangesTest extends TesterBase<InputData> {
 	 *            name of the test case
 	 */
 	public InterestingRangesTest() {
-		super(new Main());
+		super(new InterestingRanges());
 	}
 
 
@@ -42,6 +42,13 @@ public class InterestingRangesTest extends TesterBase<InputData> {
             
     }
 	
+	@Test
+	public void testPartial() 
+	{
+	    
+	    InterestingRanges.getPartialRange(7, 3, BigInteger.valueOf(7500));
+	}
+	
 
 	@Test
 	public void testMainMethod() {
@@ -50,7 +57,7 @@ public class InterestingRangesTest extends TesterBase<InputData> {
 	    for(int i = 1; i < 200; ++i) {
 	        log.debug("i is {}", i);
 	        BigInteger check = BruteForce.countTotal(1, i, true);
-	        Interval intv = Main.calc(BigInteger.valueOf(i));
+	        Interval intv = InterestingRanges.calc(BigInteger.valueOf(i));
 	        assertEquals("Failed at " + i, check, intv.totalEven);
 	    }
 	}
@@ -88,47 +95,47 @@ public class InterestingRangesTest extends TesterBase<InputData> {
 	public void testPalinSpace() {
 	    
 	    
-	    Interval i = Main.palinSpace.segments.get(3).get(new BigInteger("990"));
-	    Interval check = Main.calcEvenPairRanges(new BigInteger("4005"), new BigInteger("4994"));
+	    Interval i = InterestingRanges.palinSpace.segments.get(3).get(new BigInteger("990"));
+	    Interval check = InterestingRanges.calcEvenPairRanges(new BigInteger("4005"), new BigInteger("4994"));
 	    assertEquals(check, i);
 	    
-	    i = Main.palinSpace.segments.get(6).get(new BigInteger("800080"));
-        check = Main.calcEvenPairRanges(new BigInteger("5000006"), new BigInteger("5800085"));
+	    i = InterestingRanges.palinSpace.segments.get(6).get(new BigInteger("800080"));
+        check = InterestingRanges.calcEvenPairRanges(new BigInteger("5000006"), new BigInteger("5800085"));
         assertEquals(check, i);
         
-        i = Main.palinSpace.segments.get(7).get(new BigInteger("77000"));
-        check = Main.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("60077006"));
+        i = InterestingRanges.palinSpace.segments.get(7).get(new BigInteger("77000"));
+        check = InterestingRanges.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("60077006"));
         assertEquals(check, i);
         
-        i = Main.palinSpace.segments.get(7).get(new BigInteger("200200"));
-        check = Main.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("60200206"));
+        i = InterestingRanges.palinSpace.segments.get(7).get(new BigInteger("200200"));
+        check = InterestingRanges.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("60200206"));
         assertEquals(check, i);
         
-        i = Main.palinSpace.segments.get(7).get(new BigInteger("7000070"));
-        check = Main.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("67000076"));
+        i = InterestingRanges.palinSpace.segments.get(7).get(new BigInteger("7000070"));
+        check = InterestingRanges.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("67000076"));
         assertEquals(check, i);
         
-        i = Main.palinSpace.segments.get(7).get(new BigInteger("1000010"));
-        check = Main.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("61000016"));
+        i = InterestingRanges.palinSpace.segments.get(7).get(new BigInteger("1000010"));
+        check = InterestingRanges.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("61000016"));
         assertEquals(check, i);
         
-        i = Main.palinSpace.segments.get(7).get(new BigInteger("11000"));
-        check = Main.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("60011006"));
+        i = InterestingRanges.palinSpace.segments.get(7).get(new BigInteger("11000"));
+        check = InterestingRanges.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("60011006"));
         assertEquals(check, i);
         
-        i = Main.palinSpace.segments.get(7).get(new BigInteger("11000"));
-        check = Main.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("60011006"));
+        i = InterestingRanges.palinSpace.segments.get(7).get(new BigInteger("11000"));
+        check = InterestingRanges.calcEvenPairRanges(new BigInteger("60000007"), new BigInteger("60011006"));
         assertEquals(check, i);
         
-        i = Main.palinSpace.segments.get(7).get(new BigInteger("80000008"));
-        check = Main.calcEvenPairRanges(new BigInteger("10000002"), new BigInteger("90000009"));
+        i = InterestingRanges.palinSpace.segments.get(7).get(new BigInteger("80000008"));
+        check = InterestingRanges.calcEvenPairRanges(new BigInteger("10000002"), new BigInteger("90000009"));
         assertEquals(check, i);
         
-        i = Main.palinSpace.segments.get(7).get(new BigInteger("89999998"));
-        check = Main.calcEvenPairRanges(new BigInteger("10000002"), new BigInteger("99999999"));
+        i = InterestingRanges.palinSpace.segments.get(7).get(new BigInteger("89999998"));
+        check = InterestingRanges.calcEvenPairRanges(new BigInteger("10000002"), new BigInteger("99999999"));
         assertEquals(check, i);
         
-        Main.palinSpace.segments.get(6);
+        InterestingRanges.palinSpace.segments.get(6);
         
 	    assertEquals(check, i);
 	}
@@ -137,7 +144,7 @@ public class InterestingRangesTest extends TesterBase<InputData> {
 	    int exp = 0;
         //1 - 2 until 1 - 10
         for(int num = 1; num <= 10; ++num) {
-            Interval intv = Main.getFullRange(num, exp);
+            Interval intv = InterestingRanges.getFullRange(num, exp);
             Interval check = BruteForce.createInterval(1, num);
             assertEquals("Num " + num, check, intv);
         }
@@ -145,7 +152,7 @@ public class InterestingRangesTest extends TesterBase<InputData> {
         exp = 1;
         //1 - 20 until 1 - 100
         for(int num = 1; num <= 10; ++num) {
-            Interval intv = Main.getFullRange(num, exp);
+            Interval intv = InterestingRanges.getFullRange(num, exp);
             Interval check = BruteForce.createInterval(1, 10*num);
             assertEquals("\nGood\n" + check + "\nBad\n" + intv + " num " + num + " exp " + exp, check, intv);
         }
@@ -158,7 +165,7 @@ public class InterestingRangesTest extends TesterBase<InputData> {
 	    int exp = 0;
 	    //1 - 2 until 1 - 10
 	    for(int num = 2; num <= 10; ++num) {
-	        Interval intv = Main.getRangeSlice(num, exp);
+	        Interval intv = InterestingRanges.getRangeSlice(num, exp);
 	        Interval check = BruteForce.createInterval(1, num);
 	        assertEquals("Num " + num, check, intv);
 	    }
@@ -166,7 +173,7 @@ public class InterestingRangesTest extends TesterBase<InputData> {
 	    exp = 1;
         //11 - 20 until 11 - 100
         for(int num = 2; num <= 10; ++num) {
-            Interval intv = Main.getRangeSlice(num, exp);
+            Interval intv = InterestingRanges.getRangeSlice(num, exp);
             Interval check = BruteForce.createInterval(11, 10*num);
             assertEquals("\nGood\n" + check + "\nBad\n" + intv + " num " + num + " exp " + exp, check, intv);
         }
