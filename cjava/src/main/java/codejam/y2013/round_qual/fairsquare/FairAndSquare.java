@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.TreeSet;
 
+import org.apache.commons.lang3.StringUtils;
+
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
@@ -30,9 +32,9 @@ public class FairAndSquare extends InputFilesHandler implements TestCaseHandler<
             return super.getDefaultInputFiles();
         } else
         {
-           // return new String[] { "C-small-practice.in", "C-large-practice-1.in", "C-large-practice-2.in" };
-            return new String[] { "C-small-practice.in", "C-large-practice-1.in" };
-            //return new String[] { "C-small-practice.in"};
+            return new String[] { "C-small-practice.in", "C-large-practice-1.in", "C-large-practice-2.in" };
+          //  return new String[] { "C-small-practice.in", "C-large-practice-1.in" };
+         //   return new String[] { "C-small-practice.in"};
         }
 
     }
@@ -183,14 +185,18 @@ i 2 root 212 Fair square 44944 size 5
                     BigInteger sq = bi.multiply(bi);
                     Preconditions.checkState(BruteForce.isPalin(sq));
                     
-                   // log.debug("2 root {} Fair square {} size {} ", sbs[i], sq, sq.toString().length());
+                    set2.add(sq);
+                    log.debug("2 root {} Fair square {} size {} ", sbs[i], sq, sq.toString().length());
                 }
                 
                 
             }
             
-            for (int i = 1; i < 400; ++i)
+            for (int i = 1; i < 40000000; ++i)
             {
+                if (Integer.bitCount(i) > 4)
+                    continue;
+                
                 StringBuffer[] palinBase3 = toBaseTwo(i);
                // log.debug("palinBase3 {}", palinBase3);
 
@@ -205,13 +211,14 @@ i 2 root 212 Fair square 44944 size 5
 
                     if (BruteForce.isPalin(sq))
                     {
-                        if (list.size() % 1 == 0 )
+                        if (list.size() % 100000 == 0 )
                         {
                             log.debug("root {} i {} Fair square {} size {} ", palin, i, sq, sq.toString().length());
-                            log.debug("root {} {} {}", palinStr.substring(0, palinStr.length()/2), palinStr.length()/2, palinStr.length());
+                            log.debug("root {} {} {}  1s : {}", palinStr.substring(0, palinStr.length()/2), palinStr.length()/2, 
+                                    palinStr.length(), StringUtils.countMatches(palinStr, "1"));
                         }
-                       // set2.add(sq);
-                        list.add(sq);
+                        set2.add(sq);
+                       // list.add(sq);
                     }
                 }
 
@@ -221,7 +228,7 @@ i 2 root 212 Fair square 44944 size 5
 
         int count = set2.headSet(in.stop, true).tailSet(in.start, true).size();
 
-        if (1==1) throw new RuntimeException("bah");
+       // if (1==1) throw new RuntimeException("bah");
 
         return String.format("Case #%d: %d", in.testCase, count);
 
