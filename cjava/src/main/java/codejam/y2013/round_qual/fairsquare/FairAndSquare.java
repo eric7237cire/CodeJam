@@ -11,6 +11,7 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.y2009.round_3.interesting_ranges.BruteForce;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 
@@ -31,6 +32,7 @@ public class FairAndSquare extends InputFilesHandler implements TestCaseHandler<
         {
            // return new String[] { "C-small-practice.in", "C-large-practice-1.in", "C-large-practice-2.in" };
             return new String[] { "C-small-practice.in", "C-large-practice-1.in" };
+            //return new String[] { "C-small-practice.in"};
         }
 
     }
@@ -59,8 +61,41 @@ public class FairAndSquare extends InputFilesHandler implements TestCaseHandler<
 
         // return handleCaseBruteForce(in);
         //return handleCaseBruteForceFaster(in);
-        return handleCaseBruteForceEvenFaster(in);
+       // return handleCaseBruteForceEvenFaster(in);
+        return handleCaseBruteForceEvenEvenFaster(in);
+    }
+    
+    public StringBuffer[] toBaseTwo(int n)
+    {
+        StringBuffer[] palin = new StringBuffer[4];
+        
+        StringBuffer rev = new StringBuffer();
+        
+        
+        while (n > 0)
+        {
+            int digit = n % 2;
+            
+            rev.append(digit);
+            n /= 2;
+        }
+        
+        for(int i = 0; i < 4; ++i)
+        {
+            palin[i] = new StringBuffer();
+        }
+        StringBuffer nonRev = new StringBuffer(rev);
+        nonRev = nonRev.reverse();
+        
+        palin[0].append( nonRev).append( rev);
+        palin[1].append( nonRev).append('0').append( rev);
+        palin[2].append( nonRev).append('1').append( rev);
+        palin[3].append( nonRev).append('2').append( rev);
+        
+        
+        
 
+        return palin;
     }
 
     public StringBuffer[] toBaseThree(int n)
@@ -91,6 +126,107 @@ public class FairAndSquare extends InputFilesHandler implements TestCaseHandler<
 
     static TreeSet<BigInteger> set2 = new TreeSet<BigInteger>();
 
+    public String handleCaseBruteForceEvenEvenFaster(InputData in)
+    {
+        /*
+         * i 1 root 11 Fair square 121 size 3 
+i 1 root 101 Fair square 10201 size 5 
+i 1 root 111 Fair square 12321 size 5 
+i 1 root 121 Fair square 14641 size 5 
+i 2 root 22 Fair square 484 size 3 
+i 2 root 202 Fair square 40804 size 5 
+i 2 root 212 Fair square 44944 size 5 
+         */
+
+        if (set2.size() == 0)
+        {
+            set2.add(BigInteger.valueOf(1));
+            set2.add(BigInteger.valueOf(4));
+            set2.add(BigInteger.valueOf(9));
+            
+            List<BigInteger> list = Lists.newArrayList();
+            
+            for( int zeros = 0; zeros <= 25; ++zeros)
+            {
+                StringBuffer[] sbs = new StringBuffer[3];
+                for(int i = 0; i < sbs.length; ++i)
+                {
+                    sbs[i] = new StringBuffer();
+                    sbs[i].append('2');
+                }
+                
+                for(int z = 0; z < zeros; ++z)
+                {
+                    for(int i = 0; i < sbs.length; ++i)
+                    {
+                        sbs[i].append('0');
+                    }
+                }
+                
+                sbs[1].append('0');
+                sbs[2].append('1');
+                
+                for(int z = 0; z < zeros; ++z)
+                {
+                    for(int i = 0; i < sbs.length; ++i)
+                    {
+                        sbs[i].append('0');
+                    }
+                }
+                
+                for(int i = 0; i < sbs.length; ++i)
+                {
+                    sbs[i].append('2');
+                    
+                    BigInteger bi = new BigInteger(sbs[i].toString());
+                    
+                    BigInteger sq = bi.multiply(bi);
+                    Preconditions.checkState(BruteForce.isPalin(sq));
+                    
+                   // log.debug("2 root {} Fair square {} size {} ", sbs[i], sq, sq.toString().length());
+                }
+                
+                
+            }
+            
+            for (int i = 1; i < 4000; ++i)
+            {
+                StringBuffer[] palinBase3 = toBaseTwo(i);
+               // log.debug("palinBase3 {}", palinBase3);
+
+                for (int j = 0; j < palinBase3.length; ++j)
+                {
+                    String palinStr = palinBase3[j].toString();
+                    BigInteger palin = new BigInteger(palinStr);
+                    
+                    //log.debug("Éventuelle racine carrée {} palin", palin);
+
+                    BigInteger sq = palin.multiply(palin);
+
+                    if (BruteForce.isPalin(sq))
+                    {
+                        if (list.size() % 1 == 0 )
+                        {
+                            log.debug("root {} i {} Fair square {} size {} ", palin, i, sq, sq.toString().length());
+                            log.debug("root {} {} {}", palinStr.substring(0, palinStr.length()/2), palinStr.length()/2, palinStr.length());
+                        }
+                       // set2.add(sq);
+                        list.add(sq);
+                    }
+                }
+
+            }
+        }
+
+
+        int count = set2.headSet(in.stop, true).tailSet(in.start, true).size();
+
+        if (1==1) throw new RuntimeException("bah");
+
+        return String.format("Case #%d: %d", in.testCase, count);
+
+    }
+    
     public String handleCaseBruteForceEvenFaster(InputData in)
     {
 
@@ -102,7 +238,7 @@ public class FairAndSquare extends InputFilesHandler implements TestCaseHandler<
             
             List<BigInteger> list = Lists.newArrayList();
             
-            for (int i = 1; i < 500; ++i)
+            for (int i = 1; i < 10; ++i)
             {
                 StringBuffer[] palinBase3 = toBaseThree(i);
                // log.debug("palinBase3 {}", palinBase3);
@@ -117,7 +253,8 @@ public class FairAndSquare extends InputFilesHandler implements TestCaseHandler<
 
                     if (BruteForce.isPalin(sq))
                     {
-                        log.debug("i {} root {} Fair square {} size {} ", i, palin, sq, sq.toString().length());
+                        log.debug("i {} root {} Fair square {} size {} ", i,
+                                palin, sq, sq.toString().length());
                        // set2.add(sq);
                         list.add(sq);
                     }
