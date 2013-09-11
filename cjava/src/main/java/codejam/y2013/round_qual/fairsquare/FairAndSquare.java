@@ -128,6 +128,22 @@ public class FairAndSquare extends InputFilesHandler implements TestCaseHandler<
 
     static TreeSet<BigInteger> set2 = new TreeSet<BigInteger>();
 
+    /**
+     * En observation, il n'y a que trois forme
+     * 
+     * 20*[01 ]0*2
+     * 22
+     * 202
+     * 212
+     * 2002
+     * 20102
+     * 20002
+     * 
+     * ou bien
+     * 1....[012].....1 ou il y a maximum 9 1's
+     * @param in
+     * @return
+     */
     public String handleCaseBruteForceEvenEvenFaster(InputData in)
     {
         /*
@@ -146,7 +162,6 @@ i 2 root 212 Fair square 44944 size 5
             set2.add(BigInteger.valueOf(4));
             set2.add(BigInteger.valueOf(9));
             
-            List<BigInteger> list = Lists.newArrayList();
             
             for( int zeros = 0; zeros <= 25; ++zeros)
             {
@@ -211,7 +226,7 @@ i 2 root 212 Fair square 44944 size 5
 
                     if (BruteForce.isPalin(sq))
                     {
-                        if (list.size() % 100000 == 0 )
+                        if (false && set2.size() % 100000 == 0 )
                         {
                             log.debug("root {} i {} Fair square {} size {} ", palin, i, sq, sq.toString().length());
                             log.debug("root {} {} {}  1s : {}", palinStr.substring(0, palinStr.length()/2), palinStr.length()/2, 
@@ -234,53 +249,18 @@ i 2 root 212 Fair square 44944 size 5
 
     }
     
-    public String handleCaseBruteForceEvenFaster(InputData in)
-    {
-
-        if (set2.size() == 0)
-        {
-            set2.add(BigInteger.valueOf(1));
-            set2.add(BigInteger.valueOf(4));
-            set2.add(BigInteger.valueOf(9));
-            
-            List<BigInteger> list = Lists.newArrayList();
-            
-            for (int i = 1; i < 10; ++i)
-            {
-                StringBuffer[] palinBase3 = toBaseThree(i);
-               // log.debug("palinBase3 {}", palinBase3);
-
-                for (int j = 0; j < 4; ++j)
-                {
-                    BigInteger palin = new BigInteger(palinBase3[j].toString());
-                    
-                 //   log.debug("Éventuelle racine carrée {} palin", palin);
-
-                    BigInteger sq = palin.multiply(palin);
-
-                    if (BruteForce.isPalin(sq))
-                    {
-                        log.debug("i {} root {} Fair square {} size {} ", i,
-                                palin, sq, sq.toString().length());
-                       // set2.add(sq);
-                        list.add(sq);
-                    }
-                }
-
-            }
-        }
-
-
-        int count = set2.headSet(in.stop, true).tailSet(in.start, true).size();
-
-        if (1==1) throw new RuntimeException("bah");
-
-        return String.format("Case #%d: %d", in.testCase, count);
-
-    }
+    
 
     static TreeSet<Long> set = new TreeSet<Long>();
 
+    /**
+     * La première idée est il y a beaucoup moins de nombre carré 
+     * dans l'intervalle, alors commence par les racines carrées qui
+     * sont palindrome plutôt que l'inverse est stocke le tout dans
+     * un set
+     * @param in
+     * @return
+     */
     public String handleCaseBruteForceFaster(InputData in)
     {
 
@@ -323,9 +303,9 @@ i 2 root 212 Fair square 44944 size 5
         {
             if (BruteForce.isPalin(i))
             {
-                //log.debug("Palin {}", i);
                 int sqRoot = DoubleMath.roundToInt(Math.sqrt(i), RoundingMode.HALF_EVEN);
 
+                //Satisfaire la condition que c'est un palindrome et sa racine carrée est également un palidrome
                 if (sqRoot * sqRoot == i && BruteForce.isPalin(sqRoot))
                 {
                     log.debug("Palin fair & square {} root {}", i, sqRoot);
