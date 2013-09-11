@@ -189,7 +189,7 @@ i 2 root 212 Fair square 44944 size 5
                 
             }
             
-            for (int i = 1; i < 4000; ++i)
+            for (int i = 1; i < 400; ++i)
             {
                 StringBuffer[] palinBase3 = toBaseTwo(i);
                // log.debug("palinBase3 {}", palinBase3);
