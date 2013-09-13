@@ -129,11 +129,11 @@
         
         <scenario name="scenario" iterCount="180000">
        <player count="1">
-            77
+            KJs
             </player>
-            <player set="loose" count="3"/>
+            <player set="loose" count="0"/>
             <player set="good" count="0"/>
-            <player set="random" count="0"/>
+            <player set="random" count="3"/>
 			<player set="pfr2000" count="0"/>
             <player count="0">
             A8+, 22+, KJ, Q9+
