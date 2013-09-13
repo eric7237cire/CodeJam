@@ -14,7 +14,9 @@ import codejam.y2013.round_online.babyheight.BabyHeight;
 import codejam.y2013.round_online.hedgemony.Hedgemony;
 import codejam.y2013.round_online.oceanview.OceanView;
 import codejam.y2013.round_qual.fairsquare.FairAndSquare;
+import codejam.y2013.round_qual.lawnmower.LawnMower;
 import codejam.y2013.round_qual.tictactomek.TicTacToeTomek;
+import codejam.y2013.round_qual.treasure.Treasure;
 
 public class Main
 {
@@ -1642,7 +1644,13 @@ public class Main
         //Easy bit masks on a grid
         //TicTacToeTomek m = new TicTacToeTomek();
         
-        FairAndSquare m = new FairAndSquare();
+        //Grid, checking rows /cols
+        //LawnMower m = new LawnMower();
+        
+        //Palindromes and squares, large numbers
+        //FairAndSquare m = new FairAndSquare();
+        
+        Treasure m = new Treasure();
         
         String[] files = Main.getFiles(m, args);
         for (String file : files)
