@@ -24,4 +24,6 @@ public class InputData extends AbstractInputData {
     
     List<Integer> startingKeys;
     
+    int maxKey;
+    
 }
