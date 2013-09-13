@@ -2,11 +2,8 @@ package codejam.y2013.round_qual.fairsquare;
 
 import java.math.BigInteger;
 import java.math.RoundingMode;
-import java.util.List;
 import java.util.Scanner;
 import java.util.TreeSet;
-
-import org.apache.commons.lang3.StringUtils;
 
 import codejam.utils.main.InputFilesHandler;
 import codejam.utils.main.Runner.TestCaseInputScanner;
@@ -14,7 +11,6 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.y2009.round_3.interesting_ranges.BruteForce;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.math.DoubleMath;
 
 public class FairAndSquare extends InputFilesHandler implements TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
@@ -27,15 +23,12 @@ public class FairAndSquare extends InputFilesHandler implements TestCaseHandler<
 
     public String[] getDefaultInputFiles()
     {
-        if (false)
-        {
-            return super.getDefaultInputFiles();
-        } else
-        {
-            return new String[] { "C-small-practice.in", "C-large-practice-1.in", "C-large-practice-2.in" };
-          //  return new String[] { "C-small-practice.in", "C-large-practice-1.in" };
-         //   return new String[] { "C-small-practice.in"};
-        }
+
+        return new String[] { "C-small-practice.in", "C-large-practice-1.in",
+                "C-large-practice-2.in" };
+        // return new String[] { "C-small-practice.in", "C-large-practice-1.in"
+        // };
+        // return new String[] { "C-small-practice.in"};
 
     }
 
@@ -207,6 +200,7 @@ i 2 root 212 Fair square 44944 size 5
                 
             }
             
+            //Pour générer les palins > 100 places
             for (int i = 1; i < 40000000; ++i)
             {
                 if (Integer.bitCount(i) > 4)
@@ -226,14 +220,14 @@ i 2 root 212 Fair square 44944 size 5
 
                     if (BruteForce.isPalin(sq))
                     {
+                        /*
                         if (false && set2.size() % 100000 == 0 )
                         {
                             log.debug("root {} i {} Fair square {} size {} ", palin, i, sq, sq.toString().length());
                             log.debug("root {} {} {}  1s : {}", palinStr.substring(0, palinStr.length()/2), palinStr.length()/2, 
                                     palinStr.length(), StringUtils.countMatches(palinStr, "1"));
-                        }
+                        }*/
                         set2.add(sq);
-                       // list.add(sq);
                     }
                 }
 

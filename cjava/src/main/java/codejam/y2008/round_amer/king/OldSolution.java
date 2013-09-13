@@ -7,7 +7,7 @@ import java.util.Set;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import codejam.utils.datastructures.ArticulationPoint;
+import codejam.utils.datastructures.graph.ArticulationPoint;
 import codejam.utils.datastructures.graph.GraphInt;
 import codejam.utils.datastructures.graph.GraphIntAlgorithms;
 import codejam.utils.utils.Direction;

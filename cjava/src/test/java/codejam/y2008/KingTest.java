@@ -8,8 +8,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import codejam.utils.datastructures.ArticulationPoint;
 import codejam.utils.datastructures.BitSetInt;
+import codejam.utils.datastructures.graph.ArticulationPoint;
 import codejam.utils.datastructures.graph.GraphInt;
 import codejam.utils.utils.GridChar;
 import codejam.y2008.round_amer.king.BruteForce;
