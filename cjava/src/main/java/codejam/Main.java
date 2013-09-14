@@ -1650,6 +1650,7 @@ public class Main
         //Palindromes and squares, large numbers
         //FairAndSquare m = new FairAndSquare();
         
+        //Generalization of eulerian path and an understandable proof
         Treasure m = new Treasure();
         
         String[] files = Main.getFiles(m, args);
