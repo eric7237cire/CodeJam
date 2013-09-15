@@ -1,0 +1,31 @@
+_____________________________
+ 
+Adrian a suivi de 400 000.
+Eric a suivi de 400 000.
+Jay se couche.
+Georg a suivi de 400 000.
+Liezel a relancé de 800 000.
+Adrian a suivi de 800 000.
+Eric a suivi de 800 000.
+Georg a suivi de 800 000.
+
+Georg a parlé.
+Liezel a parlé.
+Adrian a relancé de 400 000.
+Eric se couche.
+Georg a suivi de 400 000.
+Liezel a suivi de 400 000.
+
+Georg a relancé de 400 000.
+Liezel a suivi de 400 000.
+Adrian a suivi de 400 000.
+
+
+Georg a parlé.
+Liezel a parlé.
+Adrian a fait tapis.
+Georg se couche.
+Liezel se couche.
++ 5 XP pour avoir joué une main.
+Adrian gagne.
+_____________________________
