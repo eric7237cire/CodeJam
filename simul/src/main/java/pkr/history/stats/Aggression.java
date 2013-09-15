@@ -49,7 +49,7 @@ public class Aggression implements iPlayerStatistic
         
         
         
-        for(int round = 0; round < ftrStates.length; ++round)
+        for(int round = 1; round < ftrStates.length; ++round)
         {
             FlopTurnRiverState ftr = ftrStates[round];
             
@@ -69,7 +69,8 @@ public class Aggression implements iPlayerStatistic
             
             for(int a = 0; a < actionIdxList.size(); ++a)
             {
-                PlayerAction action = ftr.actions.get(a);
+                int actionIdx = actionIdxList.get(a);
+                PlayerAction action = ftr.actions.get(actionIdx);
                 
                 switch(action.action) 
                 {
@@ -81,8 +82,11 @@ public class Aggression implements iPlayerStatistic
                     ++calls;
                     break;
                 case RAISE_ALL_IN:
+                case ALL_IN:
                 case RAISE:
                     ++betsOrRaises;
+                    break;
+                case CHECK:
                     break;
                 }
             }

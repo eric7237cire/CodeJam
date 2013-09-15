@@ -10,6 +10,8 @@ import codejam.y2008.round_1C.ugly_numbers.UglyNumbers;
 import codejam.y2009.round_1A.collecting_cards.CollectingCards;
 import codejam.y2011aa.round_qual.building_house.BuildingHouse;
 import codejam.y2012.round_1C.boxes.BoxFactorySolution;
+import codejam.y2013.round_1A.bullseye.BullsEye;
+import codejam.y2013.round_1A.energy.ManageYourEnergy;
 import codejam.y2013.round_online.babyheight.BabyHeight;
 import codejam.y2013.round_online.hedgemony.Hedgemony;
 import codejam.y2013.round_online.oceanview.OceanView;
@@ -1638,8 +1640,8 @@ public class Main
         }
     }
     
-    //static void roundQual_2013(String args[])
-    public static void main(String args[])
+    static void roundQual_2013(String args[])
+    //public static void main(String args[])
     {
         //Easy bit masks on a grid
         //TicTacToeTomek m = new TicTacToeTomek();
@@ -1652,6 +1654,25 @@ public class Main
         
         //Generalization of eulerian path and an understandable proof
         Treasure m = new Treasure();
+        
+        String[] files = Main.getFiles(m, args);
+        for (String file : files)
+        {
+            log.info("Input file {}", file);
+
+            Runner.goSingleThread(file, m, m);
+            //Runner.go(file, m, m, 5);
+        }
+    }
+    
+  //static void round1A_2013(String args[])
+    public static void main(String args[])
+    {
+        //Binary search, sum formula for arithmetic series
+        //BullsEye m = new BullsEye();
+        
+        //Small solvable with mincost maxflow model
+        ManageYourEnergy m = new ManageYourEnergy();
         
         String[] files = Main.getFiles(m, args);
         for (String file : files)

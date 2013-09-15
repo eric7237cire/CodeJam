@@ -42,4 +42,19 @@ public class TestParse
         
         StatsSessionPlayer pStats = stats.playerSessionStats.get("Eric"); 
     }
+    
+   //second hand in file  has no small blind
+    @Test
+    public void testParse2() throws Exception
+    {
+        HandInfoCollector results = TestPreflopStats.getList("testParse2");
+        
+        assertEquals(2, results.listHandInfo.size());
+        
+        FlopTurnRiverState[] roundStates = results.listHandInfo.get(0).roundStates;
+        
+        StatsSession stats = Parser.computeStats(results);
+        
+        StatsSessionPlayer pStats = stats.playerSessionStats.get("Eric"); 
+    }
 }

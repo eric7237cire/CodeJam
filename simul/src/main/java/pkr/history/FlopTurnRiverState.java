@@ -267,7 +267,7 @@ public class FlopTurnRiverState implements ParserListener
                 return false;
             }
             
-            Preconditions.checkState(allInMinimum[i] > 0 || amtToCall == playerBet, "Player %s amtToCall %s  bet %s", playerName, amtToCall, playerBet);
+            Preconditions.checkState(allInMinimum[i] >= 0 || amtToCall == playerBet, "Player %s amtToCall %s  bet %s  all in %s", playerName, amtToCall, playerBet, allInMinimum[i]);
         }
         
         log.debug("Pot is good");

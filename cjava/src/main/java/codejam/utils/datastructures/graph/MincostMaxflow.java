@@ -113,7 +113,7 @@ public class MincostMaxflow<FlowType, CostType>
         {
             ++iterCheck;
             if (iterCheck % 20 == 0)
-                log.info("Starting getFlow loop {}", iterCheck);
+                log.debug("Starting getFlow loop {}", iterCheck);
             // use dijkstra to find an augmenting path
             int[] from = new int[N];
             Arrays.fill(from, -1);

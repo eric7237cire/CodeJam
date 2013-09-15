@@ -40,6 +40,7 @@ import freemarker.template.TemplateException;
  * top 5 wins / losses
  * 
  * testParser1.txt -- what happens when small blind leaves table
+ * testParser2 -- todo, problem same as parser 1
  */
 public class Parser {
     
