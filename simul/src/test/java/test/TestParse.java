@@ -30,11 +30,12 @@ public class TestParse
     }
 
 
+    @Test
     public void testParse1() throws Exception
     {
         HandInfoCollector results = TestPreflopStats.getList("testParse1");
         
-        assertEquals(0, results.listHandInfo.size());
+        assertEquals(1, results.listHandInfo.size());
         
         FlopTurnRiverState[] roundStates = results.listHandInfo.get(0).roundStates;
         

@@ -30,17 +30,12 @@ import freemarker.template.TemplateException;
  * 
  * went to showdown
  * won money at showdown
- * ok -- aggression (raise+bet)/calls
- *  
- * ok -- split pots (unit test)
- * 
+ *
  * chart of losses / gains
  * win/loss by position
  * 
  * top 5 wins / losses
  * 
- * testParser1.txt -- what happens when small blind leaves table
- * testParser2 -- todo, problem same as parser 1
  */
 public class Parser {
     

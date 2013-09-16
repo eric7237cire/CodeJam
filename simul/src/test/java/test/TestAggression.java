@@ -47,7 +47,9 @@ public class TestAggression
         
         Aggression agg = (Aggression) pStats.stats.get("agg");
         
-        assertEquals(66.6, agg.getPerc(), .1);
+        assertEquals(2, agg.betsOrRaises);
+        assertEquals(0, agg.folds);
+        assertEquals(1, agg.calls);
         
         
     }

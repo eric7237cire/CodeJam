@@ -10,6 +10,7 @@ import pkr.history.stats.NotFoldPFR;
 import pkr.history.stats.Pfr;
 import pkr.history.stats.ThreeBet;
 import pkr.history.stats.Vpip;
+import pkr.history.stats.WentToShowdown;
 
 import com.google.common.collect.Maps;
 
@@ -40,7 +41,8 @@ public class StatsSessionPlayer {
                 new Pfr(playerName),
                 new NotFoldPFR(playerName),
                 new ThreeBet(playerName),
-                new Aggression(playerName)
+                new Aggression(playerName),
+                new WentToShowdown(playerName)
                 );
          
         for(iPlayerStatistic s : lst)

@@ -90,7 +90,7 @@ $('.tooltip').qtip({ // Grab some elements to apply the tooltip to
     
     
     <tr><td>Agg. Freq ${pStat.stats.agg.getPerc()}</td><td class="tooltip" title="${pStat.stats["3bet"].getActionsDesc()}"  >${pStat.stats["3bet"]}</td></tr>
-    
+    <tr><td>Went to showdown ${pStat.stats.wtsd.getWTSD()}</td><td>Won at showdown ${pStat.stats.wtsd.getWonAtSD()}</td></tr>
     </table>
     
     <table>

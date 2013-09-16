@@ -18,9 +18,9 @@ public class Aggression implements iPlayerStatistic
     
     private String playerName;
     
-    int calls;
-    int folds;
-    int betsOrRaises;
+    public int calls;
+    public int folds;
+    public int betsOrRaises;
     
     
     //(total bet + total raise) / (total bet + total raise + total call + total fold) * 100,
@@ -36,9 +36,9 @@ public class Aggression implements iPlayerStatistic
         return "agg";
     }
 
-    public double getPerc() 
+    public String getPerc() 
     {
-        return 100.0d * betsOrRaises / (betsOrRaises + calls + folds); 
+        return Statistics.formatPercent(betsOrRaises, betsOrRaises + calls + folds); 
     }
     
     @Override

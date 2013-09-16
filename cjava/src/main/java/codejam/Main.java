@@ -10,14 +10,8 @@ import codejam.y2008.round_1C.ugly_numbers.UglyNumbers;
 import codejam.y2009.round_1A.collecting_cards.CollectingCards;
 import codejam.y2011aa.round_qual.building_house.BuildingHouse;
 import codejam.y2012.round_1C.boxes.BoxFactorySolution;
-import codejam.y2013.round_1A.bullseye.BullsEye;
 import codejam.y2013.round_1A.energy.ManageYourEnergy;
-import codejam.y2013.round_online.babyheight.BabyHeight;
-import codejam.y2013.round_online.hedgemony.Hedgemony;
 import codejam.y2013.round_online.oceanview.OceanView;
-import codejam.y2013.round_qual.fairsquare.FairAndSquare;
-import codejam.y2013.round_qual.lawnmower.LawnMower;
-import codejam.y2013.round_qual.tictactomek.TicTacToeTomek;
 import codejam.y2013.round_qual.treasure.Treasure;
 
 public class Main

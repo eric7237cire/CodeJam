@@ -1,5 +1,7 @@
 package pkr.history;
 
+import java.util.List;
+
 
 public class HandInfo
 {
@@ -29,6 +31,7 @@ public class HandInfo
     
     public String winDesc;
     public String[] winnerPlayerName;
+    public List<String> losersPlayerName;
     public int wonPot;
     public int winRound;
 

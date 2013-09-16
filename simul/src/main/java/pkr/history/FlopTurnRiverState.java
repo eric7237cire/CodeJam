@@ -370,9 +370,19 @@ public class FlopTurnRiverState implements ParserListener
             {
             	if (!loopPlayerName.equals(playerName))
             	{
-            		log.debug("Expected {} but was {} maybe {} left",
+            		log.debug("Joeur attendu est {} mais c'était  {} maybe {} left",
             				playerName, loopPlayerName, loopPlayerName);
-            		hasFolded[currentPlayer] = true;
+            		
+            		if (round == 1 && actions.size() == 0)
+            		{
+            		    Preconditions.checkState(currentPlayer == 0);
+            		    log.debug("Small blind did not act first, moving small blind to button in case there was no small blind");
+            		    players.remove(currentPlayer);
+            		    players.add(loopPlayerName);
+            		    currentPlayer = players.size()-1;
+            		} else {
+            		    hasFolded[currentPlayer] = true;
+            		}
             		continue;
             	}
                 Preconditions.checkState(loopPlayerName.equals(playerName), "Player name " + playerName + " cur " + currentPlayer + " " + loopPlayerName);
@@ -799,6 +809,17 @@ public class FlopTurnRiverState implements ParserListener
             }
         }
         
+        handInfo.losersPlayerName = Lists.newArrayList();
+        
+        for(int i = 0; i < players.size(); ++i)
+        {
+            if (!hasFolded[i]                    
+                    && !players.get(i).equals(playerName))
+            {
+                handInfo.losersPlayerName.add(players.get(i));
+            }
+        }
+                
         handInfo.wonPot += finalPot;
         
         handInfo.winDesc = winDesc;
@@ -825,6 +846,7 @@ public class FlopTurnRiverState implements ParserListener
                         break;
                     } else {
                         otherPlayer = players.get(i);
+                        
                     }
                 }
             }
@@ -833,6 +855,7 @@ public class FlopTurnRiverState implements ParserListener
             {
                 log.debug("Split pot detected");
                 handInfo.winnerPlayerName[1] = otherPlayer;
+                handInfo.losersPlayerName.remove(otherPlayer);
             }
         }
         
