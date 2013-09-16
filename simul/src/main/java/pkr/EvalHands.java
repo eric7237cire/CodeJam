@@ -670,7 +670,7 @@ public class EvalHands {
                 break;
         }
         
-        Preconditions.checkState(kickers == 5);
+        Preconditions.checkState(kickers == 5, texInfo);
         return score;
         
 

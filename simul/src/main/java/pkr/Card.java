@@ -1,9 +1,18 @@
 package pkr;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Lists;
 
-public class Card implements Comparable<Card>{
+public class Card implements Comparable<Card>
+{
+    private static Logger log = LoggerFactory.getLogger(Card.class);
+    
     private Suit suit;
     
     private CardRank rank;
@@ -89,6 +98,10 @@ public class Card implements Comparable<Card>{
     public static Card[] parseCards(String allCardsStr) {
         String[] tokens = null;
         
+        if (allCardsStr == null) {
+            return new Card[0];
+        }
+        
         if (allCardsStr.length() == 4) {
             tokens = new String[] { allCardsStr.substring(0, 2),
                     allCardsStr.substring(2, 4) };
@@ -96,16 +109,28 @@ public class Card implements Comparable<Card>{
         } else {
             tokens = allCardsStr.toUpperCase().split("\\s+");
         }
-        Card[] cards = new Card[tokens.length];
         
-        for(int i = 0; i < tokens.length; ++i) {
+        List<Card> cards = Lists.newArrayList();
+        for(int i = 0; i < tokens.length; ++i) 
+        {
             
             String cardStr = tokens[i];
                         
-            cards[i] = parseCard(cardStr);
+            try {
+                Card card = parseCard(cardStr);
+                cards.add(card);
+            } catch (IllegalArgumentException ex) {
+                
+            } catch (IllegalStateException ex) {
+                log.warn(cardStr, ex);
+            }
         }
         
-        return cards;
+        Card[] cardsArr = new Card[cards.size()];
+        
+        cardsArr = cards.toArray(cardsArr);
+        
+        return cardsArr;
     }
 
     /* (non-Javadoc)
@@ -139,28 +164,43 @@ public class Card implements Comparable<Card>{
         return "" + rank.toChar() + suit.toChar();
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((rank == null) ? 0 : rank.hashCode());
-        result = prime * result + ((suit == null) ? 0 : suit.hashCode());
+        result = prime * result + index;
         return result;
     }
 
-    @Override
-    public boolean equals(Object obj)
-    {
-        Preconditions.checkState(false);
-        return false;
-    }
+    
 
     /**
      * @return the index
      */
     public int getIndex() {
         return index;
+    }
+
+
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Card other = (Card) obj;
+        if (index != other.index)
+            return false;
+        return true;
     }
 
     

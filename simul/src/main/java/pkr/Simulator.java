@@ -104,7 +104,7 @@ public class Simulator {
             logOutput.debug("\n\n************************************************************************");
             logOutput.debug("*  {}  ** rounds : {}", scenario.getName(), iters);
             logOutput.debug("************************************************************************");
-            Tree tree = simulate(iters, playerHoleCards);
+            Tree tree = simulate(iters, scenario.getFlop(), playerHoleCards);
             tree.output(fileName);
         }
 
@@ -123,7 +123,7 @@ public class Simulator {
     
     
     
-    public static Tree simulate(int TOTAL_SIMULATIONS, List<String> playerHoleCards) {
+    public static Tree simulate(int TOTAL_SIMULATIONS, String preChosenFlop, List<String> playerHoleCards) {
         
         Tree tree = new Tree();
         
@@ -169,7 +169,7 @@ public class Simulator {
         long startTime = System.currentTimeMillis();
         
         for(int simulNum = 0; simulNum < TOTAL_SIMULATIONS; ++simulNum) {
-            CompleteEvaluation[] evals = simulateOneRound(false, listRanges);
+            CompleteEvaluation[] evals = simulateOneRound(false, preChosenFlop, listRanges);
             
           //Does not match the ranges
             if (evals == null)
@@ -284,10 +284,11 @@ public class Simulator {
     
     /**
      * Choiser le flop, turn, et river parmi les cartes disponibles
+     * et mettres les résultats dans flopTurnRiver
      * @param usedCards
      * @return
      */
-    private static void chooseRemainingCards(boolean[] usedCards) {
+    private static void chooseRemainingCards(int nAlreadyChosen, int nToChoose, boolean[] usedCards) {
         
         int numAvail = 0;
         
@@ -299,14 +300,14 @@ public class Simulator {
         }
         
         
-        for (int deckIdx = 0; deckIdx < 5; ++deckIdx) {
+        for (int deckIdx = 0; deckIdx < (nToChoose-nAlreadyChosen); ++deckIdx) {
             // int from remainder of deck
             int r = deckIdx + (int) (Math.random() * (numAvail - deckIdx));
             int swap = availableCards[r];
             availableCards[r] = availableCards[deckIdx];
             availableCards[deckIdx] = swap;
             
-            flopTurnRiver[deckIdx] = Card.listByIndex[availableCards[deckIdx]];
+            flopTurnRiver[deckIdx+nAlreadyChosen] = Card.listByIndex[availableCards[deckIdx]];
             
         }
         
@@ -316,18 +317,21 @@ public class Simulator {
     
     //private static final int NUM_CARDS = 52;
     
-    private static CompleteEvaluation[] simulateOneRound(boolean heroOnly, HoleCardsRange[] listRanges) {
-        
-        //final int numPlayers = listRanges.length;
-        
-        
+    private static CompleteEvaluation[] simulateOneRound(boolean heroOnly, String flop, HoleCardsRange[] listRanges) 
+    {
         
         //See if the shuffle matches our ranges
         HoleCards[] holeCards = new HoleCards[listRanges.length];
         
         boolean[] usedCards = new boolean[52]; 
         
-        
+        Card[] flopPreChosen = Card.parseCards(flop);
+        Preconditions.checkState(flopPreChosen.length <= 5);
+        for(int i = 0; i < flopPreChosen.length; ++i)
+        {
+            usedCards[flopPreChosen[i].getIndex()]=true;
+            flopTurnRiver[i] = flopPreChosen[i];
+        }
         
         
         for(int i = 0; i < listRanges.length; ++i) {
@@ -364,7 +368,7 @@ public class Simulator {
         //Everything matches evaluate
         
         //Pick the 5 remaining cards for the flop, turn, and river
-        chooseRemainingCards(usedCards);
+        chooseRemainingCards(flopPreChosen.length, 5, usedCards);
         
         CompleteEvaluation[] evals = EvalHands.evaluate(heroOnly, holeCards, flopTurnRiver); 
                 
