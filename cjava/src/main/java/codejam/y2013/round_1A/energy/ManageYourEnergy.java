@@ -5,12 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
-
-import com.google.common.base.Preconditions;
-import com.google.common.math.IntMath;
-import com.google.common.math.LongMath;
 
 import codejam.utils.datastructures.graph.MincostMaxflow;
 import codejam.utils.datastructures.graph.MincostMaxflow2;
@@ -20,6 +15,9 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.math.NumericBigInt;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.IntegerPair;
+
+import com.google.common.base.Preconditions;
+import com.google.common.math.LongMath;
 
 
 public class ManageYourEnergy extends InputFilesHandler implements
