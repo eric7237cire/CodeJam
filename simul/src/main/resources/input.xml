@@ -45,6 +45,11 @@
             A2o+, K2o+, Q2o+, J6o+, T8o+, 98o+, 87o+, 75o+, 65o+, 53o+, 42o+, 32o,
             A2s+, K2s+, Q2s+, J2s+, T2s+, 92s+, 82s+, 72s+, 62s+, 52s+, 42s, 32s
         </set>
+        <set name="veryloose_limp">
+            22-TT,
+            A2o-ATo, K2o+, Q2o+, J6o+, T8o+, 98o+, 87o+, 75o+, 65o+, 53o+, 42o+, 32o,
+            A2s-A9s, K2s+, Q2s+, J2s+, T2s+, 92s+, 82s+, 72s+, 62s+, 52s+, 42s, 32s
+        </set>
 		<set name="ok">
             22+,
             A2o+, K4o+, Q6o+, J8o+, T9o+, 98o+, 87o+, 76o+
@@ -133,11 +138,12 @@
     <scenarios>
         
         <scenario name="scenario" iterCount="40000">
-        <flop>Kh Qd 2s</flop>
+        <!-- Jh 5d 2s -->
+        <flop></flop>
        <player count="1">
-            KJs
+            KT
             </player>
-            <player set="veryloose" count="2"/>
+            <player set="veryloose_limp" count="1"/>
             <player set="loose" count="0"/>
             <player set="good" count="0"/>
             <player set="random" count="0"/>
