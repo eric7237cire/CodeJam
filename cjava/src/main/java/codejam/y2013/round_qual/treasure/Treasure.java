@@ -482,7 +482,7 @@ Total time 6648
         
         int[] keySums = new int[curKeyCounts.length];
         int[] keyNeeds = new int[curKeyCounts.length];
-        boolean[] canReach = new boolean[curKeyCounts.length];
+        //boolean[] canReach = new boolean[curKeyCounts.length];
         
         for(int chest = 0; chest < inSolution.length; ++chest)
         {

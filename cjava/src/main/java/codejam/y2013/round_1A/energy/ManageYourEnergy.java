@@ -77,6 +77,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
         
         log.debug("Initial/max energy {} recup {}", in.maxEnergy, in.energyRecup);
         
+        //Initialiser
         for(int act = 0; act < in.nActivity; ++act)
         {
             log.debug("Activity {} value {}", act+1, in.actValue[act]);
@@ -105,7 +106,9 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
                 if (used[idx])
                     break;
                 int dist = index - idx;
-                long energyCantUse = (long)energyAvail[index] - LongMath.checkedMultiply(in.energyRecup, dist);
+                //Chaque activité avant doit avoir au moins energy - dist * R
+                long energyCantUse = (long)energyAvail[index] - 
+                        LongMath.checkedMultiply(in.energyRecup, dist);
                 //Preconditions.checkState(energyCantUse <= canSpend[idx]);
                 //canSpend[idx] -= energyCantUse;
                 Preconditions.checkState((long)Integer.MAX_VALUE >= Math.max(energyCantUse, mustLeaveWith[idx]));
@@ -119,6 +122,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
                 if (used[idx])
                     break;
                 
+                //L'energie disponible pour les activités qui suivent l'activité choisie
                 int maxEnergy = (int) Math.min((long)mustLeaveWith[index]
                         +LongMath.checkedMultiply(in.energyRecup,(idx-index)),
                         (long)in.maxEnergy);

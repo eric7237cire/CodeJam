@@ -10,7 +10,7 @@ import codejam.y2008.round_1C.ugly_numbers.UglyNumbers;
 import codejam.y2009.round_1A.collecting_cards.CollectingCards;
 import codejam.y2011aa.round_qual.building_house.BuildingHouse;
 import codejam.y2012.round_1C.boxes.BoxFactorySolution;
-import codejam.y2013.round_1A.energy.ManageYourEnergy;
+import codejam.y2013.round_1A.goodluck.GoodLuck;
 import codejam.y2013.round_online.oceanview.OceanView;
 import codejam.y2013.round_qual.treasure.Treasure;
 
@@ -1666,7 +1666,9 @@ public class Main
         //BullsEye m = new BullsEye();
         
         //Small solvable with mincost maxflow model
-        ManageYourEnergy m = new ManageYourEnergy();
+        //ManageYourEnergy m = new ManageYourEnergy();
+        
+        GoodLuck m = new GoodLuck();
         
         String[] files = Main.getFiles(m, args);
         for (String file : files)
