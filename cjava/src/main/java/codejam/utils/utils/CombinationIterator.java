@@ -2,7 +2,8 @@ package codejam.utils.utils;
 
 import java.util.Iterator;
 
-final public class CombinationIterator implements Iterator<Long> {
+final public class CombinationIterator //implements Iterator<Long> {
+{
     private int n;
     //private int k;
     private long next;
@@ -13,13 +14,13 @@ final public class CombinationIterator implements Iterator<Long> {
         next = (1L << k) - 1;
     }
 
-    @Override
+    //@Override
     public boolean hasNext() {
         return (next & (1L << n)) == 0;
     }
 
-    @Override
-    public Long next() {
+    //@Override
+    public long next() {
         // Gosper's hack, described by Knuth, referenced in
         // http://en.wikipedia.org/wiki/Combinatorial_number_system#Applications
         long result = next;
@@ -31,7 +32,7 @@ final public class CombinationIterator implements Iterator<Long> {
         return result;
     }
 
-    @Override
+    //@Override
     public void remove() {
         throw new UnsupportedOperationException();
     }

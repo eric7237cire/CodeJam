@@ -19,7 +19,7 @@ public class BruteForce {
     static double minPerim(List<PointLong> list) {
         Preconditions.checkArgument(list.size() <= 62);
 
-        Iterator<Long> comIt = new CombinationIterator(list.size(), 3);
+        CombinationIterator comIt = new CombinationIterator(list.size(), 3);
 
         double min = Double.MAX_VALUE;
 

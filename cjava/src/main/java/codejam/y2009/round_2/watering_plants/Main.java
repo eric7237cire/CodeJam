@@ -85,7 +85,7 @@ public class Main extends InputFilesHandler implements TestCaseHandler<InputData
 		// all pairs and all triples
 		for (int k = 2; k <= 3; ++k) {
 
-			Iterator<Long> it = new CombinationIterator(n, k);
+		    CombinationIterator it = new CombinationIterator(n, k);
 
 			while (it.hasNext()) {
 				final long combin = it.next();

@@ -57,6 +57,10 @@ public class InputFilesHandler implements DefaultInputFiles
         (( ch.qos.logback.classic.Logger) log).setLevel(Level.INFO);
     }
     
+    protected void setLogDebug() {
+        (( ch.qos.logback.classic.Logger) log).setLevel(Level.DEBUG);
+    }
+    
     public InputFilesHandler(String letter,  int small, int large) {
         this(letter, small==1, large==1);
     }
