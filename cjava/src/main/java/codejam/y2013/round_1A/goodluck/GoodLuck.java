@@ -16,11 +16,13 @@ import codejam.utils.main.Runner.TestCaseInputScanner;
 import codejam.utils.math.NumericBigInt;
 import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.CombinationIterator;
+import codejam.utils.utils.CombinationsWithRepetition;
 import codejam.utils.utils.IntegerPair;
 import codejam.utils.utils.PermutationWithRepetition;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
 
@@ -30,7 +32,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
 {
     public GoodLuck()
     {
-        super("C", 1, 0);
+        super("C", 1, 1);
         //setLogInfo();
         setLogDebug();
         
@@ -41,7 +43,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     {
 
         return new String[] {
-                //"sample.in",
+               // "sample.in",
                 "C-small-practice-1.in"
                 //,"C-small-practice-2.in" 
                 };
@@ -91,6 +93,10 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     @Override
     public String handleCase(InputData in) 
     {
+        return handleCaseBruteForce(in);
+    }
+    public String handleCaseBruteForce(InputData in) 
+    {
         
         StringBuffer ans = new StringBuffer();
         
@@ -98,9 +104,16 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
         
         log.debug("Reps {} Product size {}", in.nProductSets, in.productSetSize);
         
+
+        int n = in.maxNumber-1;
+        int k = in.numbersChosen;
+        final int possibleChoicesAmount = IntMath.factorial( n+k-1)
+                / ( IntMath.factorial(k) * IntMath.factorial(n-1));
+        
         for(int r = 0; r < in.nProductSets; ++r)
         {
             log.debug("Product set {}", r);
+            Arrays.sort(in.productValues[r]);
             Integer[] ints = new Integer[in.maxNumber-1];
             
             for(int num = 2; num <= in.maxNumber; ++num)
@@ -108,37 +121,24 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
                 ints[num-2] = num;
             }
             
-            //PermutationWithRepetition<Integer> pr = PermutationWithRepetition.create(ints, out);
-            int[] choices = new int[in.numbersChosen * (in.maxNumber-1)];
-            int index = 0;
-            for(int num = 2; num <= in.maxNumber; ++num)
-            {                
-                for(int i = 0; i < in.numbersChosen; ++i)
-                {
-                    choices[index++] = num;
-                }
+            
+            int[] choices = new int[in.numbersChosen];
+            
+            for(int i = 0; i < choices.length; ++i)
+            {
+                choices[i] = 2;
             }
             
-            CombinationIterator ci = new CombinationIterator(choices.length, in.numbersChosen);
-            
-            
+            log.debug("Possible choices of N {}", possibleChoicesAmount);
+
             int maxHits = -1;
             int[] bestAnswer = null;
             
-            while(ci.hasNext())
+            for(int i = 0; i < possibleChoicesAmount; ++i)
             {
-                long next = ci.next();
+            
+                int[] numChosen = choices;
                 
-                int[] numChosen = new int[in.numbersChosen];
-                int s = 0;
-                for(int i = 0; i < choices.length; ++i)
-                {
-                    if ( (1 << i & next) != 0)
-                    {
-                        numChosen[s++] = choices[i];
-                    }
-                }
-                Preconditions.checkState(s == in.numbersChosen);
                // out = pr.next();
                 log.debug("nums {} prod targ {}", (Object)numChosen, in.productValues[r]);
                 
@@ -147,6 +147,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
                 {
                     int[] ret = runSimul(numChosen, in);
                 
+                    Arrays.sort(ret);
                     if(Arrays.equals(ret, in.productValues[r]))
                     {
                         hits++;
@@ -160,6 +161,8 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
                     bestAnswer = Arrays.copyOf(numChosen, numChosen.length);
                     maxHits = hits;
                 }
+                
+                CombinationsWithRepetition.next_combo(choices, choices.length, 2, in.maxNumber);
             }
             
             
