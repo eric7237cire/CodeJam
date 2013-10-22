@@ -21,7 +21,7 @@
   </appender>
   
    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
-    <file>C:/codejam/CodeJam/cjava/src/main/resources/y2008/pracContest/test.txt</file>
+    <file>C:/codejam/CodeJam/cjava/src/main/resources/y2013/1A/log.txt</file>
     <append>false</append>
     <encoder>
     <pattern>%m%n</pattern>
@@ -55,5 +55,6 @@
       
   <root level="${root-level:-DEBUG}">
     <appender-ref ref="console"/>
+    <appender-ref ref="FILE"/>
   </root>
 </configuration>

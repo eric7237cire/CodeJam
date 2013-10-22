@@ -18,10 +18,12 @@ import codejam.utils.multithread.Consumer.TestCaseHandler;
 import codejam.utils.utils.CombinationIterator;
 import codejam.utils.utils.CombinationsWithRepetition;
 import codejam.utils.utils.IntegerPair;
+import codejam.utils.utils.LargeNumberUtils;
 import codejam.utils.utils.PermutationWithRepetition;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
@@ -33,19 +35,36 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     public GoodLuck()
     {
         super("C", 1, 1);
-        //setLogInfo();
+       // setLogInfo();
         setLogDebug();
         
         
+    }
+    
+    public double getProb(int needed, int total)
+    {
+        int limit = IntMath.pow(2, total);
+        
+        int[] counts = new int[total+1];
+        
+        for(int i = 0; i < limit; ++i)
+        {
+            int bitCount = Integer.bitCount(i);
+            counts[bitCount]++;
+            
+        }
+        
+        log.debug("{}", counts);
+        return 1.0 * counts[needed] / limit;
     }
     
     public String[] getDefaultInputFiles()
     {
 
         return new String[] {
-               // "sample.in",
-                "C-small-practice-1.in"
-                //,"C-small-practice-2.in" 
+               "sample.in"
+                //"C-small-practice-1.in"
+               // "C-small-practice-2.in" 
                 };
         // return new String[] { "C-small-practice.in", "C-large-practice-1.in"
         // };
@@ -70,13 +89,13 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
         in.maxNumber = scanner.nextInt();
         in.productSetSize = scanner.nextInt();
         
-        in.productValues = new int[in.nProductSets][in.productSetSize];
+        in.productValues = new long[in.nProductSets][in.productSetSize];
         
         for(int i = 0; i < in.productValues.length; ++i)
         {
             for(int j = 0; j < in.productValues[i].length; ++j)
             {
-                in.productValues[i][j] = scanner.nextInt();
+                in.productValues[i][j] = scanner.nextLong();
             }
             
         }
@@ -86,6 +105,285 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     }
     
 
+    final int[] factors = new int[] {2, 3,5,7};
+    
+    private int[] getFactors(long num)
+    {
+     
+        int[] mins = new int[factors.length];
+
+        
+        int[] needed = new int[factors.length];
+        for (int fIdx = 0; fIdx < factors.length; ++fIdx) 
+        {
+            int factor = factors[fIdx];
+            while (num % factor == 0) 
+            {
+                ++needed[fIdx];
+                num /= factor;
+            }
+
+            mins[fIdx] = Math.max(mins[fIdx], needed[fIdx]);
+        }
+        Preconditions.checkArgument(num == 1);
+        return mins;
+    }
+    public int[] getRequired(long[] products)
+    {
+        int[] mins = new int[factors.length];
+        
+        for(int i=0; i < products.length; ++i)
+        {
+            int[] needed = getFactors(products[i]);
+            log.info("For product {}, need 2,3,5,7  {}", products[i], needed);
+                
+            for(int fIdx = 0; fIdx < needed.length; ++fIdx)
+            {
+                mins[fIdx] = Math.max(mins[fIdx], needed[fIdx]);
+            }
+            
+        }
+        
+        
+        log.info("For products {} need 2,3,5,7 {}", products, mins);
+        
+        
+        return mins;
+        
+    }
+    
+    private double probToGenerateProduct(int[] numbers, long product)
+    {
+        int[] factorsInProduct = getFactors(product);
+        
+        int totalCombinations = IntMath.pow(2,numbers.length);
+        int hits = 0;
+        
+        for(int i = 0; i < totalCombinations; ++i)
+        {
+            int[] factCount = new int[4];
+            
+            for(int nIdx = 0; nIdx < numbers.length; ++nIdx)
+            {
+                if ( (i & 1 << nIdx ) == 0)
+                {
+                    continue;
+                }
+                switch(numbers[nIdx])
+                {
+                case 2:
+                    factCount[0]++;
+                    break;
+                case 3:
+                    factCount[1]++;
+                    break;
+                case 4:
+                    factCount[0] += 2;
+                    break;
+                case 5:
+                    factCount[2]++;
+                    break;
+                case 6:
+                    factCount[0]++;
+                    factCount[1]++;
+                    break;
+                case 7:
+                    factCount[3]++;
+                    break;
+                case 8:
+                    factCount[0]+=3;
+                    break;
+                }
+            }
+            
+            if (false) log.debug("Factors 2,3,5,7 of {} with choice {} = {}",
+                    numbers,
+                    factCount, Integer.toBinaryString(i)); 
+            
+            if (Arrays.equals(factCount, factorsInProduct))
+            {
+                ++hits;
+            }
+        }
+        
+        double ret = 1.0 * hits / totalCombinations;
+        log.debug("Prob to get product {} with {} : {} / {} = {}%",
+                product, numbers, hits, totalCombinations, ret*100);
+        return ret;
+    }
+    
+    
+    public String handleCaseFaster(InputData in) 
+    {
+        for(int i= 1; i <=12; ++i)
+        {
+            getProb(1, i);
+        }
+        
+        int[][] combin = LargeNumberUtils.generateModedCombin(12, 1000);
+        
+        log.debug("{}", combin);
+        
+        probToGenerateProduct(new int[] {3,3, 2, 2, 3}, 9);
+        probToGenerateProduct(new int[] {3,3, 2, 2, 3}, 27);
+        probToGenerateProduct(new int[] {3,3, 2, 2, 3}, 54);
+        probToGenerateProduct(new int[] {3,3, 2, 2, 3}, 108);
+        probToGenerateProduct(new int[] {3,3, 2, 2, 3}, 1);
+        //if (in != null) return "fah";
+        
+        StringBuffer ans = new StringBuffer();
+        
+        ans.append(String.format("Case #%d:\n", in.testCase));
+        
+        log.debug("Reps {} Product size {}", in.nProductSets, in.productSetSize);
+        
+
+        int n = in.maxNumber-1;
+        int k = in.numbersChosen;
+       // int possibleChoicesAmount = IntMath.factorial( n+k-1)
+        //        / ( IntMath.factorial(k) * IntMath.factorial(n-1));
+        
+        //For each set of products, loop through all possibilities of N choices from 2 to M.
+        for(int r = 0; r < in.nProductSets; ++r)
+        {
+            
+            Arrays.sort(in.productValues[r]);
+            log.info("Product set {}: {}", r, in.productValues[r]);
+            
+            int[] requiredFactorCounts = getRequired(in.productValues[r]);
+            
+            List<Integer> requiredFactors = Lists.newArrayList();
+            
+            
+            //5,7
+            for(int fIdx = 2; fIdx < factors.length; ++fIdx)
+            {
+                for(int rep = 0; rep < requiredFactorCounts[fIdx]; ++rep)
+                {
+                    requiredFactors.add(factors[fIdx]);
+                }
+            }
+            
+            int[] choices = new int[in.numbersChosen];
+            
+            for(int i = 0; i < choices.length; ++i)
+            {
+                choices[i] = 2;
+            }
+            
+            int leftoverToChoose = in.numbersChosen - requiredFactors.size();
+            
+            Preconditions.checkState(leftoverToChoose >= 0);
+            
+            //End of choices are the required ones
+            for(int i = 0; i < requiredFactors.size(); ++i)
+            {
+                choices[leftoverToChoose + i] = requiredFactors.get(i);
+            }
+            
+            
+            int maxHits = -1;
+            double bestProb = 0;
+            int[] bestAnswer = Arrays.copyOf(choices, choices.length);
+            
+            int possibleChoicesAmount = Ints.checkedCast(LongMath.factorial( n+leftoverToChoose-1)
+                    / ( LongMath.factorial(leftoverToChoose) * LongMath.factorial(n-1)));
+            
+            log.debug("Possible choices of N {}  N {} leftover {}", 
+                    possibleChoicesAmount, n, leftoverToChoose);
+
+            
+            
+            for(int i = 0; i < possibleChoicesAmount; ++i)
+            {
+                log.debug("{} of {} : nums {} prod targ {}", i, possibleChoicesAmount, choices, in.productValues[r]);
+            
+                int count2 = 0;
+                int count3 = 0;
+                for(int ci = 0; ci < choices.length; ++ci)
+                {
+                    switch(choices[ci])
+                    {
+                    case 2:
+                        count2++;
+                        break;
+                    case 3:
+                        count3++;
+                        break;
+                    case 4:
+                        count2+=2;
+                        break;
+                    case 6:
+                        count3+=2;
+                        count2++;
+                        break;
+                    case 8:
+                        count2+=3;
+                        break;
+                    }
+                }
+                
+                if (count2 < requiredFactorCounts[0])
+                {
+                    log.debug("not enough 2s");
+                    CombinationsWithRepetition.next_combo(choices, leftoverToChoose, 2, in.maxNumber);
+                    continue;
+                }
+                if (count3 < requiredFactorCounts[1])
+                {
+                    log.debug("not enough 3s");
+                    CombinationsWithRepetition.next_combo(choices, leftoverToChoose, 2, in.maxNumber);
+                    continue;
+                }
+               // out = pr.next();
+                
+                /*
+                int hits = 0;
+                for(int iter = 0; iter < 40000; ++iter)
+                {
+                    int[] ret = runSimul(choices, in);
+                
+                    Arrays.sort(ret);
+                    if(Arrays.equals(ret, in.productValues[r]))
+                    {
+                        hits++;
+                    }
+                    //log.debug("Ret {}", (Object) ret);
+                }
+                
+                if(hits > 0) log.debug("case {} {} has {} hits", r, (Object) choices, hits);
+                if (hits > maxHits && hits > 0)
+                {
+                    bestAnswer = Arrays.copyOf(choices, choices.length);
+                    maxHits = hits;
+                }*/
+                
+                double probTotal = 1;
+                for(int pIdx = 0; pIdx < in.productValues[r].length; ++pIdx)
+                {
+                    double prod = probToGenerateProduct(choices, in.productValues[r][pIdx]);
+                    probTotal *= prod;
+                }
+                
+                log.debug("Prob total {} for {}", probTotal, choices);
+                
+                if (probTotal >= bestProb)
+                {
+                    bestProb = probTotal;
+                    log.debug("New best choices {} for product {}", choices, in.productValues[r]);
+                    bestAnswer = Arrays.copyOf(choices, choices.length);
+                }
+                
+                CombinationsWithRepetition.next_combo(choices, leftoverToChoose, 2, in.maxNumber);
+            }
+            
+            
+            ans.append(Ints.join("", bestAnswer));
+            ans.append("\n");
+            log.info(Ints.join("", bestAnswer));
+        }
+        return ans.toString();
+    }
 
     /* (non-Javadoc)
      * @see codejam.utils.multithread.Consumer.TestCaseHandler#handleCase(java.lang.Object)
@@ -93,7 +391,8 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     @Override
     public String handleCase(InputData in) 
     {
-        return handleCaseBruteForce(in);
+        return handleCaseFaster(in);
+        //return handleCaseBruteForce(in);
     }
     public String handleCaseBruteForce(InputData in) 
     {
@@ -129,6 +428,8 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
                 choices[i] = 2;
             }
             
+            
+            
             log.debug("Possible choices of N {}", possibleChoicesAmount);
 
             int maxHits = -1;
@@ -145,7 +446,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
                 int hits = 0;
                 for(int iter = 0; iter < 40000; ++iter)
                 {
-                    int[] ret = runSimul(numChosen, in);
+                    long[] ret = runSimul(numChosen, in);
                 
                     Arrays.sort(ret);
                     if(Arrays.equals(ret, in.productValues[r]))
@@ -168,7 +469,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
             
             ans.append(Ints.join("", bestAnswer));
             ans.append("\n");
-            log.info("d");
+            log.info(Ints.join("", bestAnswer));
         }
         return ans.toString();
     }
@@ -192,9 +493,9 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
         return numChosen;
     }
     
-    int[] runSimul(int[] numChosen, InputData in)
+    long[] runSimul(int[] numChosen, InputData in)
     {
-        int[] ret = new int[in.productSetSize];
+        long[] ret = new long[in.productSetSize];
         
         //choose N numbers
                 

@@ -16,6 +16,6 @@ public class InputData extends AbstractInputData {
     
     int productSetSize; //K
     
-    int[][] productValues;
+    long[][] productValues;
     
 }
