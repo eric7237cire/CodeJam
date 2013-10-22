@@ -23,15 +23,18 @@ public class LaunchUCI {
     
     static Pattern cp = Pattern.compile("info .* score cp (-?\\d+) .*");
     
-    static String startPos = "rnb1kbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    static String startPos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     //static String endPos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1NBQKBNR w KQkq - 0 1";
-    static String endPos = "1nbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+    static String endPos = "rnbqkbnr/pppppppp/8/8/8/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1";
     
     //The most we can lose going from start position to end position
-    static int threshold = -40;
+    static int threshold = -80;
+    
+    static int isBetterThreshold = -40;
+    static boolean isBetterCheck = false;
     
     //After score Beyond which nothing is a bludner
-    static int maximumScoreNotABlunder = 250;
+    static int maximumScoreNotABlunder = 200;
     
     static boolean isDebug = false;
     
@@ -99,6 +102,11 @@ public class LaunchUCI {
             System.out.println("Its a blunder!");
         } else {
             System.out.println("Its OK!");
+        }
+        
+        if (isBetterCheck && change < isBetterThreshold) 
+        {
+            System.out.print("There is a better move probably");
         }
         
         p.destroy();
