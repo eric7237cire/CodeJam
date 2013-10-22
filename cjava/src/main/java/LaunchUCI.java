@@ -19,31 +19,67 @@ public class LaunchUCI {
     static final int waitTime = 1000;
     static final int bufferTime = 200;
     
-    static int score;
-    
-    static Pattern cp = Pattern.compile("info .* score cp (-?\\d+) .*");
+    final static Pattern cp = Pattern.compile("info .* score cp (-?\\d+) .*");
+    final static Pattern bestMove = Pattern.compile("bestmove (.*)");
     
     static String startPos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     //static String endPos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1NBQKBNR w KQkq - 0 1";
     static String endPos = "rnbqkbnr/pppppppp/8/8/8/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1";
     
     //The most we can lose going from start position to end position
-    static int threshold = -80;
-    
-    static int isBetterThreshold = -40;
-    static boolean isBetterCheck = false;
-    
+    static int isBlunderThreshold = -80;
+
     //After score Beyond which nothing is a bludner
     static int maximumScoreNotABlunder = 200;
     
-    static boolean isDebug = false;
+    static int isBetterThreshold = -40;
+    static boolean isBetterCheck = true;
     
-    static void sendCommand(String cmd, OutputStreamWriter osw) throws IOException
+    static boolean isPos2 = false;
+    
+    static int beforeMoveScore ;
+    
+    static int afterMoveScore ;
+    
+    static boolean isDebug = false;
+    static OutputStreamWriter osw;
+    
+    static void sendCommand(String cmd) throws IOException
     {
         System.out.println("Sending " + cmd);
         osw.write(cmd);
         osw.write("\n");
         osw.flush();
+    }
+    
+    static void launchPosition2() throws IOException
+    {
+        sendCommand("ucinewgame");
+        sendCommand("position fen " + endPos);
+        sendCommand("isready");
+        isPos2 = true;
+        
+    }
+    
+    static void printResults() throws IOException
+    {
+        int change = afterMoveScore - beforeMoveScore;
+        if (LaunchUCI.isDebug)
+            System.out.println("before " + beforeMoveScore +  " After " + afterMoveScore + " change " + change);
+        
+        if (afterMoveScore <= maximumScoreNotABlunder && change < isBlunderThreshold) {
+            System.out.println("Its a blunder!");
+        } else {
+            System.out.println("Its OK!");
+        }
+        
+        if (isBetterCheck && change < isBetterThreshold) 
+        {
+            System.out.println("There is a better move probably");
+        }
+        
+        sendCommand("quit");
+        
     }
     
     public static void main(String[] args) 
@@ -67,51 +103,17 @@ public class LaunchUCI {
         sg1.start();
         sg2.start();
         
-        Thread.sleep(300);
         
         OutputStream os = p.getOutputStream();
         
-        OutputStreamWriter osw = new OutputStreamWriter(os);
+        osw = new OutputStreamWriter(os);
         
-        sendCommand("uci", osw);
-        sendCommand("setoption name Hash value 1024", osw);
-        sendCommand("position fen " + startPos, osw);
+        sendCommand("uci");
+        sendCommand("setoption name Hash value 1024");
+        sendCommand("position fen " + startPos);
+        sendCommand("isready");
         
-        sendCommand("go movetime " + waitTime, osw);
-        
-        Thread.sleep(waitTime + bufferTime);
-        
-        int beforeMoveScore = score;
-        
-        sendCommand("ucinewgame", osw);
-        sendCommand("position fen " + endPos, osw);
-        
-        sendCommand("go movetime " + waitTime, osw);
-        
-        Thread.sleep(waitTime + bufferTime);
-        
-        int afterMoveScore = score;
-        
-        
-        
-        int change = afterMoveScore - beforeMoveScore;
-        if (LaunchUCI.isDebug)
-            System.out.println("before " + beforeMoveScore +  " After " + afterMoveScore + " change " + change);
-        
-        if (afterMoveScore <= maximumScoreNotABlunder && change < threshold) {
-            System.out.println("Its a blunder!");
-        } else {
-            System.out.println("Its OK!");
-        }
-        
-        if (isBetterCheck && change < isBetterThreshold) 
-        {
-            System.out.print("There is a better move probably");
-        }
-        
-        p.destroy();
-        
-        
+        p.waitFor();
         
         } catch (IOException ex) {
             System.err.print("io ex");
@@ -160,6 +162,24 @@ class LaunchThread implements Runnable
                     if (LaunchUCI.isDebug)
                         System.out.println(type + ">" + line);  
                 
+                    if ("readyok".equals(line))
+                    {
+                        LaunchUCI.sendCommand("go movetime " + LaunchUCI.waitTime);
+                        
+                    }
+                    
+                    Matcher bestMove = LaunchUCI.bestMove.matcher(line);
+                    
+                    if (bestMove.matches())
+                    {
+                        if (!LaunchUCI.isPos2) 
+                            LaunchUCI.launchPosition2();
+                        else if (LaunchUCI.isPos2) 
+                            LaunchUCI.printResults();
+                        
+                    }
+                        
+                    
                     
                     
                     Matcher m = LaunchUCI.cp.matcher(line);
@@ -168,7 +188,13 @@ class LaunchThread implements Runnable
                     {
                         int score = Integer.parseInt(m.group(1));
                         if (LaunchUCI.isDebug) System.out.println("Latest score is " + score);
-                        LaunchUCI.score = score;
+                        if (LaunchUCI.isPos2)
+                        {
+                            LaunchUCI.afterMoveScore = score;
+                            
+                        } else {
+                            LaunchUCI.beforeMoveScore = score;
+                        }
                     }
                 }
                 
