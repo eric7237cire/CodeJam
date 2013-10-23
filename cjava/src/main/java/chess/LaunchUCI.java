@@ -31,9 +31,15 @@ public class LaunchUCI {
     static final int waitTime = 3 * 1000;
 
     final static String startPos = 
-            "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+            "3r2k1/1pp2ppp/p2rb3/8/4N3/1P2R3/1PP2PPP/4R1K1 b - - 8 22";
 
-    final static String endPos = startPos + " moves b1c3 ";
+    final static String endPos = startPos + " moves " +
+  //  "d6d1"
+            "d6d5"
+            //"d6d5";
+            //"d6c6"
+            ;
+            //" moves h7h6 ";
     // + " b1a3 ";
 
     // The most we can lose going from start position to end position
@@ -42,6 +48,7 @@ public class LaunchUCI {
     // After score Beyond which nothing is a bludner
     final static int maximumScoreNotABlunder = 350;
 
+    final static int maximumScoreIsBetter = 250; 
     final static int isBetterThreshold = -30;
     final static boolean isBetterCheck = true;
 
@@ -170,7 +177,7 @@ public class LaunchUCI {
         } else {
             System.out.println("Its OK!");
 
-            if (isBetterCheck && change < isBetterThreshold) {
+            if (isBetterCheck && afterMoveScore <= maximumScoreIsBetter && change < isBetterThreshold) {
                 System.out.println("There is a better move probably");
             }
         }
