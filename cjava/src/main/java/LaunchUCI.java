@@ -40,7 +40,7 @@ public class LaunchUCI {
     static int isBlunderThreshold = -60;
 
     //After score Beyond which nothing is a bludner
-    static int maximumScoreNotABlunder = 300;
+    static int maximumScoreNotABlunder = 350;
     
     static int isBetterThreshold = -30;
     static boolean isBetterCheck = true;
