@@ -62,7 +62,7 @@ Develops with a tempo}) 16. Raxe4 Bd6 17. Bf4 Bxf4 18. Rxf4 Be6 19. Rfe4 Rfd8
 [EventDate "2013.??.??"]
 [TimeControl "20/300:0"]
 
-1. e4 {Opp colored bishops, missed a chance to develop an advantage with 2
+1. e4 {Opp colored bishops, missed a chance to develop an advantage with 2 advanced
 pawns and a rook invasion.  TODO Is advantage sufficient to win? Endgame was a unambigous draw.} e5 2. Nf3 Nc6 3. Bb5
 a6 4. Ba4 Nf6 5. O-O Be7 6. d4 exd4 7. e5 Ne4 8. Nxd4 Nxd4 (8... O-O {Better
 book move}) 9. Qxd4 Nc5 10. Nc3 O-O 11. Nd5 d6 12. Nxe7+ Qxe7 13. exd6 Qxd6 14.
@@ -1035,7 +1035,7 @@ Ke7 Bh3 67. Ke8 Qd7# 0-1
 [EventDate "2013.??.??"]
 [TimeControl "8/120:0"]
 
-1. e4 {Black established a knight aggressively and was able to attack} c5 2.
+1. e4 {Black established a knight aggressively and was able to attack.  Problems developed in the opening and never stopped} c5 2.
 Nf3 d6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 a6 6. Be3 Ng4 7. Bg5 h6 8. Bh4 g5 9. Bg3
 Bg7 10. h3 Ne5 11. Nf5 Bxf5 12. exf5 Nbc6 13. Nd5 e6 14. fxe6 fxe6 15. Ne3 O-O
 16. Be2 Qa5+ 17. c3 d5 18. O-O d4 19. cxd4 {The problem with this move is the
