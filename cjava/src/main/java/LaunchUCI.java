@@ -12,27 +12,37 @@ import java.util.regex.Pattern;
 
 public class LaunchUCI {
     
-    static final String dir = "C:\\Documents and Settings\\Groning-E\\Mes documents\\Downloads\\stockfish-4-win\\stockfish-4-win\\Windows";
-    //C:\Documents and Settings\Groning-E\Mes documents\Downloads\stockfish-4-win\stockfish-4-win\Windows
-    static final String execName = "stockfish_4_32bit.exe";
+    //static final String dir = "C:\\Documents and Settings\\Groning-E\\Mes documents\\Downloads\\stockfish-4-win\\stockfish-4-win\\Windows";
+    static final String dir = "C:\\Program Files (x86)\\Common Files\\ChessBase\\Engines.uci\\Houdini 3";
+
+    //static final String execName = "stockfish_4_32bit.exe";
+    static final String execName = "Houdini_3_Pro_x64";
     
-    static final int waitTime = 1000;
-    static final int bufferTime = 200;
+    static final int waitTime = 10 * 1000;
+    //static final int bufferTime = 200;
     
-    final static Pattern cp = Pattern.compile("info .* score cp (-?\\d+) .*");
+    final static Pattern cp = Pattern.compile("info .* depth (\\d+) seldepth (\\d+) score cp (-?\\d+) time (\\d+) .*");
     final static Pattern bestMove = Pattern.compile("bestmove (.*)");
     
-    static String startPos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-    //static String endPos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/1NBQKBNR w KQkq - 0 1";
-    static String endPos = "rnbqkbnr/pppppppp/8/8/8/8/1PPPPPPP/RNBQKBNR w KQkq - 0 1";
+   // 
+    //static String startPos = "2krr3/bpp2qpp/2p2pn1/p1P5/P2PP3/5N1P/1P1B1PP1/R2QR1K1 w - - 0 19";
+    //static String endPos = "2krr3/bpp2qpp/2p2pn1/B1P5/P2PP3/5N1P/1P3PP1/R2QR1K1 b - - 0 19";
+    
+    static String startPos =
+"8/5p1p/1p4p1/6P1/5Pb1/1N6/pK6/3k4 b - - 0 55";
+    
+    static String endPos =
+
+    "8/5p1p/1p2b1p1/6P1/5P2/1N6/pK6/3k4 w - - 0 56";
+
     
     //The most we can lose going from start position to end position
-    static int isBlunderThreshold = -80;
+    static int isBlunderThreshold = -60;
 
     //After score Beyond which nothing is a bludner
-    static int maximumScoreNotABlunder = 200;
+    static int maximumScoreNotABlunder = 300;
     
-    static int isBetterThreshold = -40;
+    static int isBetterThreshold = -30;
     static boolean isBetterCheck = true;
     
     static boolean isPos2 = false;
@@ -42,8 +52,19 @@ public class LaunchUCI {
     static int afterMoveScore ;
     
     static boolean isDebug = false;
+    static boolean isPrintAllOutput = false;
     static OutputStreamWriter osw;
     
+    static void init() throws IOException
+    {
+        sendCommand("uci");
+        //sendCommand("setoption name Hash value 3072");
+        sendCommand("setoption name Hash value 2048");
+        sendCommand("setoption name Threads value 4");
+        sendCommand("setoption name NalimovPath value " + "E:\\ChessDB\\tablebase\\tablebase.sesse.net\\3-4-5" );
+        sendCommand("position fen " + startPos);
+        sendCommand("isready");
+    }
     static void sendCommand(String cmd) throws IOException
     {
         System.out.println("Sending " + cmd);
@@ -71,12 +92,14 @@ public class LaunchUCI {
             System.out.println("Its a blunder!");
         } else {
             System.out.println("Its OK!");
+            
+            if (isBetterCheck && change < isBetterThreshold) 
+            {
+                System.out.println("There is a better move probably");
+            }
         }
         
-        if (isBetterCheck && change < isBetterThreshold) 
-        {
-            System.out.println("There is a better move probably");
-        }
+        
         
         sendCommand("quit");
         
@@ -108,10 +131,7 @@ public class LaunchUCI {
         
         osw = new OutputStreamWriter(os);
         
-        sendCommand("uci");
-        sendCommand("setoption name Hash value 1024");
-        sendCommand("position fen " + startPos);
-        sendCommand("isready");
+        init();
         
         p.waitFor();
         
@@ -159,7 +179,7 @@ class LaunchThread implements Runnable
                 String line=null;
                 while ( (line = br.readLine()) != null)
                 {
-                    if (LaunchUCI.isDebug)
+                    if (LaunchUCI.isPrintAllOutput)
                         System.out.println(type + ">" + line);  
                 
                     if ("readyok".equals(line))
@@ -186,11 +206,19 @@ class LaunchThread implements Runnable
                     
                     if (line != null && m.matches())
                     {
-                        int score = Integer.parseInt(m.group(1));
+                        
+                        int depth = Integer.parseInt(m.group(1));
+                        int seldepth = Integer.parseInt(m.group(2));
+                        int time = Integer.parseInt(m.group(4));
+                        int score = Integer.parseInt(m.group(3));
+                        
+                        System.out.println("depth " + depth + " seldepth " + seldepth + " time " + time);
+                        
                         if (LaunchUCI.isDebug) System.out.println("Latest score is " + score);
                         if (LaunchUCI.isPos2)
                         {
-                            LaunchUCI.afterMoveScore = score;
+                            //Negative car c'est l'adversaire
+                            LaunchUCI.afterMoveScore = -score;
                             
                         } else {
                             LaunchUCI.beforeMoveScore = score;
