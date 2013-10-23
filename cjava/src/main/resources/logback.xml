@@ -48,6 +48,8 @@
    <logger name="codejam.y2010" level="DEBUG"/>
    <logger name="hcodejam.y2010aa" level="DEBUG"/>
    <logger name="codejam.y2011aa" level="DEBUG"/>
+   
+   <logger name="LaunchUCI" level="DEBUG"/>
                  
    <logger name="codejam.utils.multithread" level="DEBUG"/>
    <logger name="codejam.utils" level="DEBUG"/>
@@ -55,6 +57,6 @@
       
   <root level="${root-level:-DEBUG}">
     <appender-ref ref="console"/>
-    <appender-ref ref="FILE"/>
+    <!-- <appender-ref ref="FILE"/> -->
   </root>
 </configuration>
