@@ -5166,3 +5166,34 @@ Kc7 {[%eval 32758,17]} 73. Kd5 {[%eval 32760,18]} Kb7 {[%eval 32760,17]} 74.
 Qf6 {[%eval 32760,18]} Kb8 {[%eval 32762,13]} 75. Kc6 {[%eval 32764,14]} Ka8 {
 [%eval 32764,9]} 76. Qg7 {[%eval 32766,1]} Kb8 {[%eval 32766,11]} 77. Qb7# 1-0
 
+[Event "80"]
+[Site "?"]
+[Date "10.??.??"]
+[Round "?"]
+[White "eric"]
+[Black "Roxy"]
+[Result "1-0"]
+[ECO "B00"]
+[PlyCount "169"]
+[EventDate "10.??.??"]
+
+1. e4 Nc6 2. d4 d6 3. Nc3 Nf6 4. Nf3 Bg4 5. Be3 e5 6. d5 Nb8 7. h3 Bh5 8. g4
+Bg6 9. Qd3 Be7 10. O-O-O O-O 11. g5 (11. Qb5 $2 Nxe4 12. Qxb7 Nxc3 13. bxc3 Nd7
+) (11. Bg2) (11. Nh4) (11. Be2 $6) 11... Nfd7 (11... Nh5) 12. h4 Bh5 (12... f6
+13. gxf6 Bxf6 14. h5 Bf7 15. h6 g6 16. Bh3) 13. Be2 a5 14. Nd2 (14. a4 $6)
+14... g6 15. Bxh5 gxh5 16. Qe2 Na6 17. Qxh5 (17. Nb3 $6) 17... Nb4 18. a3 Re8
+19. Kb1 (19. axb4 axb4 20. Ncb1) 19... Ra6 (19... Na6 20. Nb3 b6) 20. Rdf1 (20.
+axb4 $2 axb4 21. Na2 Qa8) 20... Qa8 21. f4 Rc8 22. f5 Qb8 23. g6 Nf6 24. gxh7+
+Kh8 25. Qxf7 Rf8 26. Qxe7 Qe8 27. Qxe8 Rxe8 28. Ne2 Nbxd5 29. exd5 Nxd5 
+30. Bg5 Rf8 31. f6 Kxh7 32. Ne4 Rc6 33. N2c3 Nxc3+
+34. Nxc3 Rf7 35. Be3 Rc4 36. h5 c6 37. h6 Rg4 38. Bc1 d5 39. Rhg1 Rxf6 40. Rxg4
+Rxf1 41. Rg7+ Kh8 42. Rxb7 Re1 43. Rc7 d4 44. Na2 e4 45. Rxc6 e3 46. Rd6 Rh1
+47. Rxd4 e2 48. Re4 e1=Q 49. Rxe1 Rxe1 50. b3 Kh7 51. Kb2 Kg6 52. Nc3 Re5 53.
+Na2 Re1 54. b4 Re5 55. c4 Re2+ 56. Kb3 a4+ 57. Kxa4 Rxa2 58. b5 Rc2 59. Be3
+Rxc4+ 60. Ka5 Rc3 61. a4 Rxe3 62. b6 Re5+ 63. Ka6 Re6 64. Ka7 Re5 65. Ka6 Re6
+66. a5 Kxh6 67. Ka7 Re7+ 68. b7 Kg6 69. a6 Kf6 70. Ka8 Re6 71. a7 Re7 72. b8=Q
+Rd7 73. Qe8 Re7 74. Qxe7+ Kxe7 75. Kb7 Ke6 76. a8=Q Kd5 77. Qe8 Kd4 78. Kc6 Kd3
+79. Kc5 Kc2 80. Qd7 Kc1 81. Kb4 Kc2 82. Qd4 Kb1 83. Kb3 Kc1 84. Qd8 Kb1 85.
+Qd1# 1-0
+
+

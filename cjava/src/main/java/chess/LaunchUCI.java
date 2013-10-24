@@ -32,9 +32,9 @@ public class LaunchUCI {
     static final int waitTime = 10 * 1000;
 
     final static String startPos = 
-    "rn1q1rk1/ppp1bppp/3p1nb1/3Pp3/4P1P1/2NQBN1P/PPP2P2/2KR1B1R w - - 0 11 moves g4g5 f6d7 h3h4 g6g5";
+    "8/K7/1P4kP/4r3/P7/8/8/8 w - - 0 65";
 
-    final static String endPos = startPos + " f1h3";
+    final static String endPos = startPos + " moves a7a6";
 
     // The most we can lose going from start position to end position
     final static int isBlunderThreshold = -100;
