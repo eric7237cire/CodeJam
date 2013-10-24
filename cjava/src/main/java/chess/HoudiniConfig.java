@@ -39,7 +39,7 @@ public class HoudiniConfig implements IConfiguration {
 
     @Override
     public String getCacheFilename() {
-        return "C:\\Documents and Settings\\Groning-E\\Mes documents\\Downloads\\uci\\objCache";
+        return "C:\\temp\\objCache";
 
     }
 }

@@ -25,31 +25,25 @@ public class LaunchUCI {
 
     static Logger log = LoggerFactory.getLogger(LaunchUCI.class);
 
-    static final IConfiguration config = new StockfishConfig();
+    static final IConfiguration config //= new StockfishConfig();
+        = new HoudiniConfig();
 
     
-    static final int waitTime = 3 * 1000;
+    static final int waitTime = 10 * 1000;
 
     final static String startPos = 
-            "3r2k1/1pp2ppp/p2rb3/8/4N3/1P2R3/1PP2PPP/4R1K1 b - - 8 22";
+    "rn1q1rk1/ppp1bppp/3p1nb1/3Pp3/4P1P1/2NQBN1P/PPP2P2/2KR1B1R w - - 0 11 moves g4g5 f6d7 h3h4 g6g5";
 
-    final static String endPos = startPos + " moves " +
-  //  "d6d1"
-            "d6d5"
-            //"d6d5";
-            //"d6c6"
-            ;
-            //" moves h7h6 ";
-    // + " b1a3 ";
+    final static String endPos = startPos + " f1h3";
 
     // The most we can lose going from start position to end position
-    final static int isBlunderThreshold = -60;
+    final static int isBlunderThreshold = -100;
 
     // After score Beyond which nothing is a bludner
-    final static int maximumScoreNotABlunder = 350;
+    final static int maximumScoreNotABlunder = 600;
 
-    final static int maximumScoreIsBetter = 250; 
-    final static int isBetterThreshold = -30;
+    final static int maximumScoreIsBetter = 300; 
+    final static int isBetterThreshold = -50;
     final static boolean isBetterCheck = true;
 
     final static boolean isDebug = false;
