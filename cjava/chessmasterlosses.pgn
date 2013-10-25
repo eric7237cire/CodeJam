@@ -1090,7 +1090,7 @@ Rd4 34. Re4 Rd2 35. Re2 Rxe2 36. Nxe2 c5 37. bxc5 Kc6) 32. f4 Re3 $4 33. Nd5+
 [EventDate "2013.??.??"]
 [TimeControl "8/120:0"]
 
-1. e4 {TODO review/comment.  Interesting tactics. Endgame bishop and knight, was not able to
+1. e4 {TODO review/comment also see how the endgame can be won if possible.  Interesting tactics. Endgame bishop and knight, was not able to
 activate knight properly.} c6 2. d4 d5 3. e5 Bf5 4. Nf3 e6 5. Be2 c5 6. Be3 Qb6
 7. Nc3 Qxb2 8. Qb1 Qb4 (8... Qxc3+ 9. Bd2 Qxa1 10. Qxa1) 9. a3 {[%eval 32,21]
 dernier coup de la bibliothèque} Qa5 {[%eval 56,20]} 10. Bb5+ {[%eval 33,20]
