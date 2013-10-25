@@ -5172,28 +5172,147 @@ Qf6 {[%eval 32760,18]} Kb8 {[%eval 32762,13]} 75. Kc6 {[%eval 32764,14]} Ka8 {
 [Round "?"]
 [White "eric"]
 [Black "Roxy"]
-[Result "1-0"]
+[Result "*"]
 [ECO "B00"]
 [PlyCount "169"]
 [EventDate "10.??.??"]
 
 1. e4 Nc6 2. d4 d6 3. Nc3 Nf6 4. Nf3 Bg4 5. Be3 e5 6. d5 Nb8 7. h3 Bh5 8. g4
-Bg6 9. Qd3 Be7 10. O-O-O O-O 11. g5 (11. Qb5 $2 Nxe4 12. Qxb7 Nxc3 13. bxc3 Nd7
-) (11. Bg2) (11. Nh4) (11. Be2 $6) 11... Nfd7 (11... Nh5) 12. h4 Bh5 (12... f6
-13. gxf6 Bxf6 14. h5 Bf7 15. h6 g6 16. Bh3) 13. Be2 a5 14. Nd2 (14. a4 $6)
-14... g6 15. Bxh5 gxh5 16. Qe2 Na6 17. Qxh5 (17. Nb3 $6) 17... Nb4 18. a3 Re8
-19. Kb1 (19. axb4 axb4 20. Ncb1) 19... Ra6 (19... Na6 20. Nb3 b6) 20. Rdf1 (20.
-axb4 $2 axb4 21. Na2 Qa8) 20... Qa8 21. f4 Rc8 22. f5 Qb8 23. g6 Nf6 24. gxh7+
-Kh8 25. Qxf7 Rf8 26. Qxe7 Qe8 27. Qxe8 Rxe8 28. Ne2 Nbxd5 29. exd5 Nxd5 
-30. Bg5 Rf8 31. f6 Kxh7 32. Ne4 Rc6 33. N2c3 Nxc3+
-34. Nxc3 Rf7 35. Be3 Rc4 36. h5 c6 37. h6 Rg4 38. Bc1 d5 39. Rhg1 Rxf6 40. Rxg4
-Rxf1 41. Rg7+ Kh8 42. Rxb7 Re1 43. Rc7 d4 44. Na2 e4 45. Rxc6 e3 46. Rd6 Rh1
-47. Rxd4 e2 48. Re4 e1=Q 49. Rxe1 Rxe1 50. b3 Kh7 51. Kb2 Kg6 52. Nc3 Re5 53.
-Na2 Re1 54. b4 Re5 55. c4 Re2+ 56. Kb3 a4+ 57. Kxa4 Rxa2 58. b5 Rc2 59. Be3
-Rxc4+ 60. Ka5 Rc3 61. a4 Rxe3 62. b6 Re5+ 63. Ka6 Re6 64. Ka7 Re5 65. Ka6 Re6
-66. a5 Kxh6 67. Ka7 Re7+ 68. b7 Kg6 69. a6 Kf6 70. Ka8 Re6 71. a7 Re7 72. b8=Q
-Rd7 73. Qe8 Re7 74. Qxe7+ Kxe7 75. Kb7 Ke6 76. a8=Q Kd5 77. Qe8 Kd4 78. Kc6 Kd3
-79. Kc5 Kc2 80. Qd7 Kc1 81. Kb4 Kc2 82. Qd4 Kb1 83. Kb3 Kc1 84. Qd8 Kb1 85.
-Qd1# 1-0
+Bg6 9. Qd3 Be7 10. O-O-O {[%eval 72,19] dernier coup de la bibliothèque} O-O {
+[%eval 83,19]} 11. g5 {[%eval 60,19]} (11. Qb5 $2 Nxe4 12. Qxb7 Nxc3 13. bxc3
+Nd7 $19) (11. Bg2) (11. Nh4) (11. Be2 $6) (11. h4 $1 Nxg4 $4 (11... h5 12. g5
+Nfd7 13. Bh3) (11... h6 $6 12. h5 Bh7 13. Rg1 Nbd7 14. Kb1 Nc5 15. Bxc5 dxc5
+16. g5 hxg5 17. Nxg5 Nxh5 18. Nxh7 Kxh7 19. Rh1) 12. h5) 11... Nfd7 {[%eval 68,
+19]} (11... Nh5) 12. h4 {[%eval 55,20]} Bh5 {[%eval 54,19]} (12... f6 13. gxf6
+Bxf6 14. h5 Bf7 15. h6 g6 16. Bh3) 13. Be2 {[%eval 55,18]} a5 {[%eval 106,20]}
+14. Nd2 {[%eval 99,20]} (14. a4 $6) 14... g6 $4 {[%eval 358,19]} ({Houdini 3
+Pro x64:} 14... Bxe2 {[%eval 99,20]}) 15. Bxh5 {[%eval 332,20]} gxh5 {[%eval
+337,20]} 16. Qe2 {[%eval 295,18]} Na6 {[%eval 329,19]} 17. Qxh5 {[%eval 294,17]
+} (17. Nb3 $6) 17... Nb4 {[%eval 369,17]} ({Houdini 3 Pro x64:} 17... Nac5 {
+[%eval 294,17]}) 18. a3 {[%eval 328,18]} Re8 {[%eval 467,18]} ({Houdini 3 Pro
+x64:} 18... Na6 {[%eval 328,18]}) 19. Kb1 {[%eval 413,17]} (19. axb4 axb4 20.
+Ncb1) 19... Ra6 {[%eval 561,15]} (19... Na6 20. Nb3 b6) ({Houdini 3 Pro x64:} 
+19... Na6 {[%eval 413,17]}) 20. Rdf1 {[%eval 509,15]} (20. axb4 $2 axb4 21. Na2
+Qa8) 20... Qa8 {[%eval 693,18]} ({Houdini 3 Pro x64:} 20... b5 {[%eval 509,15]}
+) 21. f4 {[%eval 666,16]} Rc8 {[%eval 1136,16]} ({Houdini 3 Pro x64:} 21...
+exf4 {[%eval 666,16]}) 22. f5 {[%eval 1162,18]} Qb8 {[%eval 1352,18]} 23. g6 {
+[%eval 1388,19]} Nf6 {[%eval 1352,20]} 24. gxh7+ {[%eval 1379,22]} Kh8 {[%eval
+1338,19]} 25. Qxf7 {[%eval 1373,20]} Rf8 {[%eval 1338,18]} 26. Qxe7 {[%eval
+1345,19]} Qe8 {[%eval 1312,18]} 27. Qxe8 {[%eval 1242,19]} Rxe8 {[%eval 1077,
+15]} 28. Ne2 {[%eval 950,17]} Nbxd5 {[%eval 1016,16]} 29. exd5 {[%eval 994,17]}
+Nxd5 {[%eval 1001,16]} 30. Bg5 {[%eval 1020,17]} Rf8 {[%eval 1074,16]} 31. f6 {
+[%eval 1092,18]} Kxh7 {[%eval 1032,16]} 32. Ne4 {[%eval 1051,17]} Rc6 {[%eval
+1333,17]} ({Houdini 3 Pro x64:} 32... b6 {[%eval 1051,17]}) 33. N2c3 {[%eval
+1207,20]} Nxc3+ {[%eval 1046,19]} 34. Nxc3 {[%eval 1046,20]} Rf7 {[%eval 1024,
+19]} 35. Be3 {[%eval 1062,20]} Rc4 {[%eval 1028,17]} 36. h5 {[%eval 1043,18]}
+c6 {[%eval 1685,19]} ({Houdini 3 Pro x64:} 36... Rg4 {[%eval 1043,18]}) 37. h6
+{[%eval 1531,23]} Rg4 {[%eval 1254,19]} 38. Bc1 {[%eval 1000,20]} ({Houdini 3
+Pro x64:} 38. Rfg1 {[%eval 1254,19]}) 38... d5 {[%eval 953,17]} 39. Rhg1 {
+[%eval 994,18]} Rxf6 {[%eval 965,9]} 40. Rxg4 {[%eval 939,9]} Rxf1 {[%eval 887,
+9]} 41. Rg7+ {[%eval 908,1]} Kh8 {[%eval 898,21]} 42. Rxb7 {[%eval 910,22]} Re1
+{[%eval 891,20]} 43. Rc7 {[%eval 909,21]} d4 {[%eval 875,20]} 44. Na2 {[%eval
+888,21]} e4 {[%eval 870,20]} 45. Rxc6 {[%eval 825,23]} e3 {[%eval 798,21]} 46.
+Rd6 {[%eval 809,23]} Rh1 {[%eval 827,22]} 47. Rxd4 {[%eval 836,23]} e2 {[%eval
+810,22]} 48. Re4 {[%eval 821,23]} e1=Q {[%eval 774,17]} 49. Rxe1 {[%eval 719,
+18]} Rxe1 {[%eval 688,19]} 50. b3 {[%eval 638,23]} Kh7 {[%eval 694,19]} 51. Kb2
+{[%eval 699,21]} Kg6 {[%eval 759,17]} 52. Nc3 {[%eval 623,18]} Re5 {[%eval 616,
+17]} 53. Na2 {[%eval 1,18]} ({Houdini 3 Pro x64:} 53. b4 {[%eval 616,17]})
+53... Re1 {[%eval 759,19]} 54. b4 {[%eval 776,20]} Re5 {[%eval 810,19]} 55. c4
+{[%eval 812,20]} Re2+ {[%eval 871,17]} 56. Kb3 {[%eval 877,18]} a4+ {[%eval
+946,15]} 57. Kxa4 {[%eval 952,16]} Rxa2 {[%eval 944,19]} 58. b5 {[%eval 1045,
+21]} Rc2 {[%eval 998,20]} 59. Be3 {[%eval 1054,21]} Rxc4+ {[%eval 1025,20]} 60.
+Ka5 {[%eval 1087,21]} Rc3 {[%eval 1256,18]} 61. a4 {[%eval 1126,19]} Rxe3 {
+[%eval 1758,20]} ({Houdini 3 Pro x64:} 61... Rb3 {[%eval 1126,19]}) 62. b6 {
+[%eval 1764,21]} Re5+ {[%eval 1389,16]} ({Houdini 3 Pro x64:} 62... Re8 {
+[%eval 1764,21]}) 63. Ka6 {[%eval 1765,23]} Re6 {[%eval 1036,22]} ({Houdini 3
+Pro x64:} 63... Kxh6 {[%eval 1765,23]}) 64. Ka7 {[%eval 301,25]} ({Houdini 3
+Pro x64:} 64. a5 {[%eval 1036,22]}) 64... Re5 {[%eval 298,19]} 65. Ka6 {[%eval
+1,21]} ({Houdini 3 Pro x64:} 65. b7 {[%eval 298,19]}) 65... Re6 {[%eval 1036,
+22]} 66. a5 {[%eval 1018,23]} Kxh6 {[%eval 32732,1]} 67. Ka7 {[%eval 32734,0]}
+Re7+ {[%eval 32734,1]} 68. b7 {[%eval 32736,0]} Kg6 {[%eval 32736,1]} 69. a6 {
+[%eval 32738,0]} Kf6 {[%eval 32738,1]} 70. Ka8 {[%eval 32740,0]} Re6 {[%eval
+32740,1]} 71. a7 {[%eval 32742,0]} Re7 {[%eval 32742,1]} 72. b8=Q {[%eval
+32744,0]} Rd7 {[%eval 32744,0]} 73. Qe8 {[%eval 32746,0]} Re7 {[%eval 32746,0]}
+74. Qxe7+ {[%eval 32748,1]} Kxe7 {[%eval 32748,0]} 75. Kb7 {[%eval 32750,0]}
+Ke6 {[%eval 32750,0]} 76. a8=Q {[%eval 32752,0]} Kd5 {[%eval 32752,0]} 77. Qe8
+{[%eval 32754,1]} Kd4 {[%eval 32754,0]} 78. Kc6 {[%eval 32756,0]} Kd3 {[%eval
+32756,0]} 79. Kc5 {[%eval 32758,1]} Kc2 {[%eval 32758,0]} 80. Qd7 {[%eval
+32758,1]} Kc1 {[%eval 32758,0]} 81. Kb4 {[%eval 32760,1]} Kc2 {[%eval 32760,0]}
+82. Qd4 {[%eval 32762,1]} Kb1 {[%eval 32762,0]} 83. Kb3 {[%eval 32764,1]} Kc1 {
+[%eval 32764,0]} 84. Qd8 {[%eval 32766,1]} Kb1 {[%eval 32766,1]} 85. Qd1# *
 
+[Event "81"]
+[Site "?"]
+[Date "2013.10.24"]
+[Round "?"]
+[White "eric"]
+[Black "Josh - Age 12"]
+[Result "1-0"]
+[ECO "B01"]
+[PlyCount "141"]
+[EventDate "2013.??.??"]
+[TimeControl "10/180:0"]
+
+1. e4 {Very interesting game; opp colored bishops, blacks vulnerable king,
+parying threats and making fewer mistakes in the endgame.} d5 2. exd5 Qxd5 3.
+Nc3 Qa5 4. d4 c6 5. Nf3 Nf6 6. Bc4 b5 7. Bd3 {keeping e4 for knight in case of
+b4} b4 8. Ne4 Nxe4 9. Bxe4 Bg4 10. O-O (10. Bd2 {Just as good} e6) 10... e6 $1
+11. Bf4 (11. Re1 {An alternative line} Be7 12. h3 Bh5 13. Qd3 Bg6 14. Ne5 O-O
+15. Nxg6 hxg6 16. a3) 11... Be7 12. Bxb8 (12. c4 {An alternative line} O-O (
+12... bxc3 13. bxc3 O-O (13... Qxc3 $2 14. Rc1 Qa3 15. Rxc6) 14. Qb3 Nd7 15.
+Bxc6) 13. Qe1 Qa6 14. Ne5 Bf5 15. Bxf5 exf5 16. c5) 12... Rxb8 13. Bxc6+ Kf8
+14. Qd3 (14. h3 {possible to get some space for king first} Bh5 15. Qd3) 14...
+Bxf3 15. Qxf3 (15. Bxf3 {Also possible, in the game it gets very interesting
+with the bishop on c6}) 15... Qc7 16. Rfe1 $1 Bf6 17. Rad1 {Defends threat and
+develops piece} (17. c3 $2 {Simply not as good} bxc3 18. bxc3 e5 19. d5 e4 20.
+Qxe4 Bxc3) (17. d5 $6 Bxb2 18. Rab1 Bf6 19. dxe6 fxe6 20. Rxe6 Kf7) 17... Ke7
+18. d5 $1 (18. Qe4 {Transposes} Rhd8 19. d5) 18... Rhd8 19. Qe4 {All the alts
+are ok, but not as good} (19. Qh3 $2) (19. dxe6 $2) (19. b3 $6) (19. Qe3 $2)
+19... Rd6 20. Qxh7 (20. b3 $2 Bc3 21. Qxh7 (21. Re2 $4 Qxc6) 21... Bxe1 22.
+Rxe1 Rbd8 23. g3 Rxc6 24. dxc6 Qxc6 25. Qxg7 $16) (20. Ba4 {An alternative; I
+prefer it because bishop is ackward on c6} h6 21. Bb3) (20. Rd3 {Another
+alternative}) 20... Bxb2 21. Rb1 $6 (21. dxe6 $2) (21. Rd3 $1 Bc3 22. Ree3 Bf6
+23. h4 Rbd8 24. g4) 21... Bc3 22. Re4 Qa5 23. a4 (23. Qh4+ Bf6 24. Qh5) (23. a3
+{Complicated / better houdini line} Qxa3 24. g4 Qa2 25. Rb3 Rc8 26. Qh4+ Bf6
+27. g5 Bc3 28. g6+ Bf6 29. Qg3 Rcxc6 30. dxc6 Qxc2 31. Rexb4) 23... Rc8 24.
+Qh4+ Bf6 25. Qh3 $6 (25. Qg4 $3 {g4 protects d1 square in case bishop on c6
+gets wacked by c8 rook}) 25... Qc5 26. Qg4 {Covers d1 square and supports a
+threat of Rc4 if bishop retreats to f3; took me many tries to finally see what
+the threats were.  Even so had to get houdinis help to see the move that
+maintains an advantage} (26. Qe3 $2 Qxe3 27. Rxe3 Kf8 $15) (26. Qd3 $2 Rcxc6
+$19) (26. Qb3 $6 Bc3 $11) (26. Bb7 $2 Qxc2 27. Ree1 $11) (26. Re2 $6 a5 $14) (
+26. c4 $6 Rdxc6 27. dxc6 Qxc6 28. Qe3 a5 29. Re1 Qxa4 30. Rxe6+ fxe6 31. Qxe6+
+Kd8 32. Qb6+ Rc7 33. Qb8+ Rc8 34. Qb6+ $11 {Perpetual check}) (26. Bb5 $2 Qxd5
+27. Rexb4 Rxc2 $17) (26. Ree1 $6 a5 27. Rbc1) (26. dxe6 $2 Rcxc6 27. exf7+ Kxf7
+28. Qb3+ Kg6 $19) (26. Rexb4 $2 Rcxc6 27. dxc6 Qxb4 28. Rc1 $19) 26... Qxc2 (
+26... Bc3 27. Rc4 Qb6 28. Rxc3) 27. Rexb4 Kf8 (27... Rcxc6 28. dxc6) 28. g3 (
+28. Qd1 $4 Qxd1+ 29. Rxd1 Rcxc6 $19) (28. R4b2 $4 Bxb2) (28. Qf3 $2 exd5 29.
+Bb5 $11) (28. Qh3 $4 Rcxc6 29. dxc6 Rd1+ 30. Rxd1 Qxd1#) (28. Rb7 {An
+altenative}) 28... Rcd8 29. Rb7 Kg8 {why so passive?   b/c threats of Qh5,
+threating either to invade h8 and  f7 square} (29... exd5 $2 30. Qh5 Kg8 (30...
+g6 31. Qh7) 31. Qxf7+) (29... g6 {A better defense} 30. Qb4 a5 31. Qf4 Qc3) 30.
+Qb4 $6 (30. dxe6) (30. Re1 $1 a5 31. Kg2) 30... exd5 $2 (30... Qf5 {Starting
+threats against f2 square} 31. Rxa7 Bd4) 31. Be8 $1 (31. Bb5 $2 Bd4 32. Rf1 $11
+) 31... Kh8 32. Bxf7 Rb6 33. Rxb6 axb6 34. Re1 $1 Qc3 35. Qb1 {Why is this
+move so good; all the other moves exchange queens which is good for blacks
+exposed king.} (35. Rb1 $2) (35. Re8+ $2) (35. Qxc3 $2) 35... Rf8 36. Qd1 {
+Most of the alts lose the initiative or black can force exchange of queens.} (
+36. Re3 $2 Qa1 {Forces exchange}) (36. Rc1 $2 Qf3 {Also forces exchange} 37.
+Qg6 Bd4 38. Qh5+) (36. Re8 $2 Rxe8 37. Bxe8 Qa1 {Forces exchange}) (36. Be8 $2
+Bd4 37. Re2 Bxf2+ 38. Rxf2 Qe3 39. Qb2 Qe1+ 40. Kg2 {Perpetual check}) (36. Re6
+Qa1 {Forces exchange}) (36. Kg2 $6 Be5 37. Bxd5 {Maintains the advantage}) (36.
+Bg6 $2 Bd4 37. Re2 Qf3 $16 {Black regains much of the initative}) (36. Bxd5 $2
+Bd4) 36... Bg5 37. Qh5+ (37. Bxd5 $6 Bh6 38. Kg2) 37... Bh6 38. Re6 Qc1+ 39.
+Kg2 Qg5 40. Rxb6 (40. Qxg5 $2) (40. Qg6 Qxg6 41. Bxg6 d4 42. Rxb6) 40... Qxh5
+41. Bxh5 Ra8 42. Bg6 $1 Bg5 43. Rb5 (43. Rd6 $6 Rxa4 44. Rxd5 $18) (43. a5 $6)
+(43. Re6 $1 {Cant go to d6 immediately, this threats Re5 as well} Bd2 (43... d4
+44. a5) 44. Rd6 Bc3 45. Rxd5 Kg8 46. Rd6 {Keeps a pawn alive}) 43... Bf6 44. a5
+{why is this better ?} (44. Rxd5 $6 Rxa4) 44... Bd8 45. Rxd5 Bxa5 46. Bf7 $1 {
+Mate threat forces loss of g pawn} (46. h4 $6) 46... g5 47. Rxg5 Bc3 48. f4 Rd8
+49. Kf3 Rd3+ 50. Kg4 Rd7 51. Be6 Rg7 52. Rxg7 Kxg7 {Now care must be taken due
+to wrong rooks pawn} 53. Kf5 Bd4 54. g4 Bg1 55. h4 Bf2 56. h5 Bc5 57. Bd5 Kh6
+58. Bf3 Kg7 59. g5 Kh8 60. Kg6 Be3 61. f5 Bd2 62. f6 Be3 63. Kf5 Kg8 64. g6 Bh6
+65. Ke6 (65. f7+ $2 Kg7 66. Ke6 Bg5 67. Bb7 Kf8 68. Bg2 Bc1 69. Bf1 {is this
+winnable?  Does not look it}) (65. g7 $2 Bxg7 $11) 65... Kf8 66. Kd7 Bc1 67.
+Bd5 Bh6 68. Bc4 $1 {Use mate threat} Bg7 69. fxg7+ Kxg7 70. Ke7 Kh6 71. Kf7 1-0
 
