@@ -5104,7 +5104,7 @@ h5 {[%eval 0,34]} gxh5 {[%eval 0,0]} 50. Kxh5 {[%eval 0,0]} Kg7 {[%eval 0,0]}
 [EventDate "2013.??.??"]
 [TimeControl "8/120:0"]
 
-1. e4 g6 2. d4 Bg7 3. Nf3 d6 4. Nc3 Nf6 5. Be2 O-O 6. O-O Nbd7 7. e5 dxe5 8.
+1. {won a piece early on; afterwards gets interesting with bishop pair vs rook and advanced pawn endgame} e4 g6 2. d4 Bg7 3. Nf3 d6 4. Nc3 Nf6 5. Be2 O-O 6. O-O Nbd7 7. e5 dxe5 8.
 dxe5 Ng4 {[%eval 52,23] dernier coup de la bibliothèque} 9. e6 {[%eval 56,22]}
 fxe6 $4 {[%eval 347,20]} ({Houdini 3 Pro x64:} 9... Nde5 {[%eval 56,22]}) 10.
 Ng5 {[%eval 325,21]} (10. Nd4 $2 Ndf6 (10... Bxd4 11. Qxd4) 11. Bxg4 $6 Nxg4
