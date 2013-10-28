@@ -18,7 +18,8 @@ public class Move {
      */
     @Override
     public String toString() {
-        return moveNumber + ". " + whiteMove.sanTxt + " " + (blackMove != null ? blackMove.sanTxt : '*');
+        return moveNumber + ". " + 
+     (whiteMove != null ? whiteMove.sanTxt : ".." ) + " " + (blackMove != null ? blackMove.sanTxt : '*');
     }
     /**
      * @return the moveNumber
