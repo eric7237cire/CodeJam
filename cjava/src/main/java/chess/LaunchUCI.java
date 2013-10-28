@@ -18,8 +18,10 @@ import java.util.regex.Matcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import com.google.common.io.Files;
 
 public class LaunchUCI {
 
@@ -31,10 +33,10 @@ public class LaunchUCI {
     
     static final int waitTime = 10 * 1000;
 //5r1k/5Bp1/1p3b2/3p4/P7/2q3P1/5P1P/1Q2R1K1 w - - 0 36
-    final static String startPos = 
-    "5k2/3K4/5PPb/3B3P/8/8/8/8 w - - 0 68 moves";
+     String startPos = 
+    "r3kb1r/p2np2p/2p3p1/q4p1b/1p1P4/3B1N1P/PPP2PP1/R1BQR1K1 w kq - 0 14 moves";
 
-    final static String endPos = startPos + " d5c4";
+    String endPos = startPos + " c1d2";
 
     // The most we can lose going from start position to end position
     final static int isBlunderThreshold = -100;
@@ -47,7 +49,7 @@ public class LaunchUCI {
     final static boolean isBetterCheck = true;
 
     final static boolean isDebug = false;
-    final static boolean isPrintAllOutput = false;
+    final static boolean isPrintAllOutput = false; //isDebug;
 
     Map<String, Integer> cache;
 
@@ -112,7 +114,7 @@ public class LaunchUCI {
             sendCommand("setoption " + option);
         }
         
-        Integer score = cache.get(LaunchUCI.startPos);
+        Integer score = cache.get(startPos);
 
         if (score != null) {
             log.info("Using cache for start position");
@@ -125,7 +127,6 @@ public class LaunchUCI {
             return;
         }
 
-        
         sendCommand("position fen " + startPos);
         sendCommand("isready");
     }
@@ -140,15 +141,15 @@ public class LaunchUCI {
     void launchPosition2() throws IOException {
         isPos2 = true;
 
-        Integer score = cache.get(LaunchUCI.endPos);
+        Integer score = cache.get(endPos);
 
         if (score != null) {
             log.info("Using cache for end position");
 
             if (isDebug) {
-                log.debug("Setting score to {}", score);
+                log.debug("Setting score to {}", -score);
             }
-            this.afterMoveScore = score;
+            this.afterMoveScore = -score;
             printResults();
             return;
         }
@@ -221,9 +222,20 @@ public class LaunchUCI {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         LaunchUCI lau = new LaunchUCI();
 
+        String startPos = Files.readFirstLine(new File("C:\\codejam\\CodeJam\\cjava\\startpos.txt"), Charsets.UTF_8);
+        startPos = startPos.replaceAll("[^\\x00-\\x7F]", "");
+        lau.log.info("StartPos {}", startPos);
+        
+        String endPos = Files.readFirstLine(new File("C:\\codejam\\CodeJam\\cjava\\endpos.txt"), Charsets.UTF_8);
+        endPos = endPos.replaceAll("[^\\x00-\\x7F]", "");
+        lau.log.info("EndPos {}", endPos);
+        
+        lau.startPos = startPos;
+        lau.endPos = endPos;
+        
         lau.go();
 
     }
@@ -307,12 +319,12 @@ class StreamGobbler extends Thread {
                             // Negative car c'est l'adversaire
                             launchUCI.afterMoveScore = -score;
 
-                            launchUCI.cache.put(LaunchUCI.endPos, -score);
+                            launchUCI.cache.put(launchUCI.endPos, score);
 
                         } else {
                             launchUCI.beforeMoveScore = score;
 
-                            launchUCI.cache.put(LaunchUCI.startPos, score);
+                            launchUCI.cache.put(launchUCI.startPos, score);
                         }
                     }
                 }

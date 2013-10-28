@@ -5316,3 +5316,357 @@ to wrong rooks pawn} 53. Kf5 Bd4 54. g4 Bg1 55. h4 Bf2 56. h5 Bc5 57. Bd5 Kh6
 winnable?  Does not look it}) (65. g7 $2 Bxg7 $11) 65... Kf8 66. Kd7 Bc1 67.
 Bd5 Bh6 68. Bc4 $1 {Use mate threat} Bg7 69. fxg7+ Kxg7 70. Ke7 Kh6 71. Kf7 1-0
 
+[Event "82"]
+[Site "?"]
+[Date "2013.10.25"]
+[Round "?"]
+[White "eric"]
+[Black "Josh - Age 12"]
+[Result "1-0"]
+[ECO "B01"]
+[PlyCount "113"]
+[EventDate "2013.??.??"]
+[TimeControl "10/180:0"]
+
+1. e4 {His king got stuck in the center and an attack ensued} d5 2. exd5 Qxd5
+3. Nc3 Qa5 4. d4 c6 5. Nf3 Nf6 6. Bc4 b5 7. Bd3 b4 {[%eval 98,20] dernier coup
+de la bibliothèque} 8. Ne4 {[%eval 99,21]} Nxe4 {[%eval 76,21]} 9. Bxe4 {
+[%eval 73,23]} Bg4 {[%eval 139,23]} ({Houdini 3 Pro x64:} 9... Bf5 {[%eval 73,
+23]}) 10. O-O {[%eval 126,21]} f5 {[%eval 239,20]} ({Houdini 3 Pro x64:} 10...
+e6 {[%eval 126,21]}) 11. Bd3 {[%eval 279,21] [%emt 0:00:00]} Nd7 {[%eval 299,
+21]} 12. h3 {[%eval 328,22]} Bh5 {[%eval 328,21]} 13. Re1 {[%eval 280,20]} g6 {
+[%eval 353,20]} ({Houdini 3 Pro x64:} 13... Qd5 {[%eval 280,20]}) 14. Re6 {
+[%eval 316,17]} (14. Qe2 $6) (14. Bd2 $6) (14. Bc4 {A built up of forces until
+it all cracks} Bg7 15. Bf4 Bf6 16. Qe2 Rf8 17. a3 b3 18. cxb3 Rc8 19. Rad1 Qb6
+20. d5 Bxf3 21. Qxf3 a6 22. dxc6 Qxc6 23. Qe3 Rd8 24. Be6 Rh8 25. Qa7 h6 26.
+Bc7 Ra8 27. Bxd7+) 14... Qd5 {[%eval 353,19]} 15. Qe2 {[%eval 383,20]} Bxf3 {
+[%eval 341,17]} 16. gxf3 {[%eval 336,18]} Qxd4 {[%eval 694,21]} ({Houdini 3
+Pro x64:} 16... Nb6 {[%eval 336,18]}) 17. Bg5 {[%eval 721,22]} (17. Rxc6 $2)
+17... Qc5 {[%eval 697,20]} 18. Re1 {[%eval 729,21]} h6 {[%eval 763,17]} 19.
+Bxe7 {[%eval 793,18]} Bxe7 {[%eval 755,19]} 20. Rxe7+ {[%eval 773,20]} Kd8 {
+[%eval 745,21]} 21. Qe6 {[%eval 783,22]} (21. Re8+ $2 Kc7 22. Rxh8 Rxh8) 21...
+Qd5 {[%eval 749,18]} 22. Rxd7+ {[%eval 765,19]} (22. Qxd5 $2) (22. Qxg6 $2)
+22... Qxd7 {[%eval 717,20]} 23. Qf6+ {[%eval 710,24]} Kc7 {[%eval 687,22]} 24.
+Re7 {[%eval 718,23]} Rh7 {[%eval 742,19]} 25. Rxd7+ {[%eval 678,20]} Rxd7 {
+[%eval 626,18]} 26. Qxg6 {[%eval 637,19]} Kb6 {[%eval 685,19]} 27. Qxh6 {
+[%eval 698,20]} Re8 {[%eval 737,19]} 28. Bxf5 {[%eval 768,20]} (28. Kf1) 28...
+Rd1+ {[%eval 810,21]} 29. Kg2 {[%eval 783,19]} Rd5 {[%eval 936,21]} 30. Be4 {
+[%eval 949,22]} Rg8+ {[%eval 1109,20]} 31. Kf1 {[%eval 1101,23]} Rc5 {[%eval
+1072,20]} 32. h4 {[%eval 1085,21]} Rd8 {[%eval 797,14]} ({Houdini 3 Pro x64:} 
+32... a6 {[%eval 1085,21]}) 33. Ke2 {[%eval 837,15]} Re8 {[%eval 1029,22]} 34.
+Kd2 {[%eval 1044,23]} Rd8+ {[%eval 1158,20]} 35. Kc1 {[%eval 1188,21]} a5 {
+[%eval 1011,19]} 36. Qg6 {[%eval 1017,20]} Ra8 {[%eval 1595,22]} ({Houdini 3
+Pro x64:} 36... a4 {[%eval 1017,20]}) 37. h5 {[%eval 1300,24]} a4 {[%eval 1517,
+20]} 38. h6 {[%eval 1433,22]} b3 {[%eval 1703,22]} 39. a3 {[%eval 1693,23]} (
+39. axb3 a3 40. bxa3) 39... bxc2 {[%eval 1660,20]} 40. h7 {[%eval 1638,26]} Rd8
+{[%eval 1617,22]} 41. Bxc2 {[%eval 1611,23]} Ra5 {[%eval 1463,20]} 42. Qg7 {
+[%eval 1137,23]} ({Houdini 3 Pro x64:} 42. Qf6 {[%eval 1463,20]}) 42... Rh5 {
+[%eval 1293,25]} 43. Be4 {[%eval 1289,26]} Rc5+ {[%eval 659,9]} 44. Kb1 {
+[%eval 671,9]} Rd1+ {[%eval 761,1]} 45. Ka2 {[%eval 1109,24]} Rcc1 {[%eval
+1213,20]} 46. Qd4+ {[%eval 1224,21]} (46. h8=Q) (46. b4 $2) (46. b3 Ra1+ 47.
+Kb2) 46... Rxd4 {[%eval 1075,22]} 47. h8=Q {[%eval 1111,25]} Rdd1 {[%eval 1226,
+22]} 48. Qb8+ {[%eval 1218,23]} Ka6 {[%eval 1216,23]} 49. Qa8+ {[%eval 1142,24]
+} Kb6 {[%eval 1085,22]} (49... Kb5 {what if?} 50. Qb7+ Ka5 51. b4+ axb3+ 52.
+Kb2) 50. Qxa4 {[%eval 1096,23]} Re1 {[%eval 1926,22]} ({Houdini 3 Pro x64:} 
+50... Kc7 {[%eval 1096,23]}) 51. f4 {[%eval 1937,23]} Red1 {[%eval 32710,24]} (
+{Houdini 3 Pro x64:} 51... Ra1+ {[%eval 1937,23]}) 52. f5 {[%eval 15086,25]}
+Ra1+ {[%eval 613,1]} 53. Kb3 {[%eval 15082,26]} Rac1 {[%eval 1815,22]} 54. f6 {
+[%eval 2070,24]} Rc5 {[%eval 2279,19]} 55. f7 {[%eval 2256,20]} Rd8 {[%eval
+2603,25]} 56. Bxc6 {[%eval 2736,27]} Rxc6 {[%eval 2266,24]} 57. Qb4+ {[%eval
+2271,25]} 1-0
+
+[Event "83"]
+[Site "?"]
+[Date "2013.10.25"]
+[Round "?"]
+[White "Josh - Age 12"]
+[Black "eric"]
+[Result "0-1"]
+[ECO "C47"]
+[PlyCount "118"]
+[EventDate "2013.??.??"]
+[TimeControl "10/180:0"]
+
+1. e4 e5 2. Nf3 Nc6 3. Nc3 Nf6 4. g3 Bb4 {[%eval 4,19] dernier coup de la
+bibliothèque} 5. a3 {[%eval -84,20]} (5. Bg2 Bxc3 6. dxc3 d6 7. O-O O-O 8. Nh4)
+({Houdini 3 Pro x64:} 5. Bg2 {[%eval 4,19]}) 5... Bxc3 {[%eval -64,19]} 6. dxc3
+{[%eval -88,20]} Nxe4 {[%eval -58,18]} (6... d6) 7. Nd2 {[%eval -120,21]} ({
+Houdini 3 Pro x64:} 7. Bg2 {[%eval -58,18]}) 7... Nf6 {[%eval -95,19]} (7...
+Nxd2 $6) 8. Nb3 {[%eval -126,20]} h6 {[%eval -104,20]} 9. Bb5 {[%eval -132,20]}
+O-O {[%eval -135,19]} 10. f4 {[%eval -201,20]} ({Houdini 3 Pro x64:} 10. O-O {
+[%eval -135,19]}) 10... exf4 {[%eval -208,20]} 11. O-O {[%eval -291,21]} ({
+Houdini 3 Pro x64:} 11. Bxf4 {[%eval -208,20]}) 11... fxg3 {[%eval -290,19]}
+12. hxg3 {[%eval -289,20]} Ne5 {[%eval -292,18]} 13. Bf4 {[%eval -295,20]} d6 {
+[%eval -308,17]} 14. Bxe5 {[%eval -288,19]} dxe5 {[%eval -246,20]} (14... Bg4
+$2) 15. Be2 {[%eval -316,20]} ({Houdini 3 Pro x64:} 15. Qxd8 {[%eval -246,20]})
+15... Bh3 {[%eval -322,21]} 16. Qxd8 {[%eval -301,23]} Raxd8 {[%eval -270,21]}
+17. Rfe1 {[%eval -247,20]} b6 {[%eval -260,21]} 18. Bb5 $1 {[%eval -269,20]
+white regains initiative} e4 {[%eval -248,20]} (18... Rd5 $6) (18... Ng4 19.
+Rad1 f5) 19. Bc6 {[%eval -229,20]} Bf5 $6 {[%eval -187,21]} (19... Be6 $1 20.
+Bxe4 Bxb3 21. cxb3 Rd2 22. Rab1 Re8 23. Bf3) 20. Nd4 {[%eval -191,20]} Bg6 {
+[%eval -191,20]} 21. Rf1 {[%eval -208,21]} Nd7 {[%eval -156,20]} 22. Rae1 {
+[%eval -165,21]} Rfe8 {[%eval -152,20]} (22... Ne5 $6) 23. Re2 {[%eval -216,21]
+} ({Houdini 3 Pro x64:} 23. Rd1 {[%eval -152,20]}) 23... Re5 {[%eval -217,19]}
+24. Bxd7 $6 {[%eval -268,19] whites bishop was being quite annoying, this
+feels like a mistake} Rxd7 {[%eval -276,20]} 25. Nc6 {[%eval -274,21]} Re6 {
+[%eval -271,24]} (25... Rg5) 26. Nd4 {[%eval -264,23]} (26. Nxa7 $2 {Check this
+} c6 27. Nc8 c5 $3 (27... Rb7 28. Rd2 e3 29. Rd8+ Kh7) 28. c4 Rc7 29. Nxb6 Rxb6
+) 26... Re8 {[%eval -234,20]} 27. Re3 {[%eval -286,23]} c5 {[%eval -286,21]}
+28. Nb3 {[%eval -333,22]} Red8 {[%eval -309,22]} 29. a4 {[%eval -359,21]} Rd1 {
+[%eval -346,20]} 30. a5 {[%eval -390,24]} Rxf1+ {[%eval -393,21]} 31. Kxf1 {
+[%eval -358,22]} Rd1+ {[%eval -371,21]} 32. Re1 {[%eval -356,21]} Rxe1+ {
+[%eval -343,20]} 33. Kxe1 {[%eval -323,21]} f5 {[%eval -324,21]} 34. Nd2 {
+[%eval -321,22]} Bf7 $1 {[%eval -327,21] Slowing down knights ideas of c4} 35.
+axb6 {[%eval -354,18]} (35. Kf2 g5 (35... h5) 36. g4) 35... axb6 {[%eval -362,
+20]} 36. Kf2 {[%eval -366,18]} g5 {[%eval -377,19]} (36... Kh7 {Alternative
+Keep pawns where there are} 37. b4 (37. g4 fxg4 38. Nxe4 Bg6) 37... Kg6 38.
+bxc5 bxc5 39. Nf1 Kf6 40. Nd2 Ke5) 37. g4 {[%eval -408,20]} fxg4 {[%eval -419,
+21]} (37... f4 $2 {Still wins} 38. Nxe4 Bg6 39. Nd6 Bxc2) 38. Nxe4 {[%eval
+-381,20]} Bg6 {[%eval -403,21]} 39. Nf6+ {[%eval -378,18]} Kg7 {[%eval -358,22]
+} 40. Nxg4 {[%eval -315,20]} Bxc2 {[%eval -319,21]} 41. Ne5 {[%eval -428,18]} (
+{Houdini 3 Pro x64:} 41. Ne3 {[%eval -319,21]}) 41... Bf5 {[%eval -457,19]} (
+41... b5 {A bit simpler}) 42. Nc4 {[%eval -436,18]} b5 {[%eval -446,19]} 43.
+Nd6 {[%eval -447,20]} Bd7 {[%eval -451,21]} 44. Ne4 {[%eval -541,19]} c4 {
+[%eval -619,20]} 45. Nc5 {[%eval -505,19]} Bc6 {[%eval -555,20]} 46. Ne6+ {
+[%eval -704,21]} ({Houdini 3 Pro x64:} 46. b3 {[%eval -555,20]}) 46... Kf6 {
+[%eval -709,22]} 47. Nd4 {[%eval -633,19]} Bd7 {[%eval -610,20]} 48. b3 {
+[%eval -689,20]} h5 {[%eval -694,21]} 49. bxc4 {[%eval -1140,21]} ({Houdini 3
+Pro x64:} 49. Ke3 {[%eval -694,21]}) 49... bxc4 {[%eval -840,22]} 50. Nc2 {
+[%eval -1610,18]} ({Houdini 3 Pro x64:} 50. Ke3 {[%eval -840,22]}) 50... h4 {
+[%eval -1519,21]} 51. Ne3 {[%eval -1520,19]} Be6 {[%eval -1488,23]} 52. Nc2 {
+[%eval -1958,23]} ({Houdini 3 Pro x64:} 52. Kg1 {[%eval -1488,23]}) 52... Ke5 {
+[%eval -1982,24]} 53. Kg1 {[%eval -1789,20]} Ke4 {[%eval -1911,22]} 54. Nd4 {
+[%eval -1789,19]} Bd7 {[%eval -1845,21]} 55. Kf2 {[%eval -1809,19]} Kd3 {
+[%eval -1765,20]} 56. Nf3 {[%eval -1520,17]} Kxc3 {[%eval -1747,19]} 57. Nxg5 {
+[%eval -32729,22]} ({Houdini 3 Pro x64:} 57. Ne5 {[%eval -1747,19]}) 57... Kb2
+{[%eval -32727,23]} 58. Nf3 {[%eval -32731,21]} c3 {[%eval -12961,22]} 59. Nd4
+{[%eval -32735,23]} ({Houdini 3 Pro x64:} 59. Ne1 {[%eval -12961,22]}) 59... c2
+{[%eval -32739,28]} 0-1
+
+[Event "84"]
+[Site "?"]
+[Date "2013.10.26"]
+[Round "?"]
+[White "Rick"]
+[Black "eric"]
+[Result "0-1"]
+[ECO "C33"]
+[PlyCount "96"]
+[EventDate "2013.??.??"]
+[TimeControl "10/180:0"]
+
+1. e4 {A trouncing} e5 2. f4 exf4 3. Be2 Nc6 4. Nf3 d6 5. Rf1 g5 6. Bb5 Bd7 7.
+b3 Bg7 8. c3 g4 9. Ng1 Qh4+ 10. Rf2 Qxh2 {Obvious once I see it} (10... g3) (
+10... O-O-O) 11. Kf1 Nf6 $1 12. g3 Qxg3 13. d3 Nh5 14. Bxc6 Bxc6 (14... bxc6 {
+Better}) (14... a6) 15. Rg2 Qh4 16. Rxg4 Ng3+ 17. Ke1 (17. Kg2 {what if?} Qh1+
+18. Kf2 Qh2+ 19. Kf3 Bf6) 17... Qh1 (17... Qh2 {Better} 18. Ne2) 18. Rxg3 fxg3
+19. Be3 h5 (19... O-O-O $2) 20. a4 h4 21. Qg4 Bh6 (21... Be5 22. d4 h3 23. dxe5
+h2 24. exd6 Qxg1+ 25. Bxg1 hxg1=Q+ 26. Kd2 Rh2+) 22. Bd4 Bd7 23. Qf3 Qxf3 (
+23... g2 $6) 24. Nxf3 h3 (24... Rg8 $2) 25. Ra2 h2 (25... Bd2+ 26. Rxd2 h2 27.
+Rxh2) 26. Rxh2 (26. Nxh2 Bd2+ 27. Rxd2 gxh2) 26... gxh2 27. Nxh2 Rg8 28. Nf1
+O-O-O 29. Bf2 Kb8 30. Ng3 Bg4 31. Na3 a6 32. Nc4 Rdf8 33. a5 f5 34. e5 dxe5 35.
+Nf1 Bg7 36. Nfe3 Rh8 37. Bg1 Rd8 38. Nxg4 fxg4 39. Ke2 Rh3 40. Ne3 g3 41. Nf5
+Bh6 42. Kf3 Rxd3+ 43. Kg2 Rh5 44. Nxg3 Rg5 45. Bf2 Rxc3 46. b4 Rg8 47. Be1
+Rcxg3+ 48. Bxg3 Bf4 0-1
+
+[Event "85"]
+[Site "?"]
+[Date "2013.10.26"]
+[Round "?"]
+[White "eric"]
+[Black "Rick"]
+[Result "1-0"]
+[ECO "C01"]
+[PlyCount "103"]
+[EventDate "2013.??.??"]
+[TimeControl "10/180:0"]
+
+1. e4 {Got help at end to see how to kill more efficiently} Nf6 2. e5 Nd5 3. d4
+e6 4. Nf3 Bb4+ 5. Bd2 Be7 6. c4 Nb4 7. a3 N4c6 {Now white has a great lead in
+development and the b8 knight has no good square to go} 8. d5 exd5 9. cxd5 Nxe5
+10. Nxe5 O-O 11. Bd3 Bf6 12. Nc4 Re8+ 13. Be2 (13. Ne3 $6) 13... d6 (13... b5 {
+what if} 14. Ne3 Bxb2 15. Ra2 Be5 16. O-O a6 17. Ba5 d6 18. Rc2 Ra7 19. Nd2 Bf4
+20. Nf3 Nd7 21. Qd4 Bxe3 22. fxe3 Rb7 23. e4) 14. Nc3 Bg4 15. O-O Bxe2 16. Nxe2
+c6 17. Bc3 cxd5 18. Ne3 Nd7 19. Nxd5 Bxc3 20. Nexc3 Re5 21. Re1 Nc5 22. b4 Ne6
+23. Qf3 a5 24. Rxe5 dxe5 25. Rd1 (25. Qe3 $6 axb4 26. Nxb4) (25. bxa5 Rxa5 26.
+Qe4 f6 27. Rd1 Rxa3 28. Qb4 Qa8 (28... Ra8 $2 29. Ne7+) 29. Qe7 Nd4 30. Nxf6+
+gxf6 31. Ne4 Ra6 (31... Qf8 $2 32. Nxf6+ Kh8 33. Qxh7#) 32. Nxf6+ Rxf6 33. Qxf6
+) 25... Nd4 26. Qe4 axb4 27. axb4 f6 28. Ne2 Nxe2+ 29. Qxe2 Qd6 30. Qc4 Kf8 31.
+Ne3 (31. Qc5 $2) 31... Qc6 32. Qg4 (32. Qxc6 $2) 32... b5 33. h4 {All pieces
+on good squares so look for a pawn break...; other moves are ok just not as
+good} (33. Rd7 $2) (33. Nf5 $2) (33. Nd5 $2) (33. Qh3 $2) (33. f4 $2) (33. g3
+$2) 33... g6 34. h5 Qe8 35. hxg6 (35. Rd7 $2) 35... hxg6 36. Nd5 (36. Qh3 $1
+Kg7 (36... Kg8 37. Rd7) (36... Rd8 37. Qh8+ Kf7 38. Rxd8) 37. Rd7+) 36... Qf7
+37. Qh4 {Multiple threats} (37. Qf3 $2) 37... Kg7 38. Nxf6 $1 (38. Nb6 $2)
+38... Qxf6 39. Rd7+ Qf7 40. Rxf7+ Kxf7 41. Qe4 Ra1+ 42. Kh2 Rc1 43. Qxe5 Rd1
+44. Qxb5 Rd4 45. Qc5 Rh4+ 46. Kg1 Rh5 47. Qc6 Re5 48. b5 Re1+ 49. Kh2 Rb1 50.
+b6 Kg7 51. Qc7+ Kf6 52. b7 1-0
+
+[Event "86"]
+[Site "?"]
+[Date "2013.10.26"]
+[Round "?"]
+[White "Rand"]
+[Black "eric"]
+[Result "0-1"]
+[ECO "A11"]
+[PlyCount "103"]
+[EventDate "2013.??.??"]
+[TimeControl "10/180:0"]
+
+1. Nf3 {Won using some hard to see tactics, blunder checkerama} Nf6 2. g3 d5 3.
+Bg2 c6 4. c4 dxc4 5. O-O Nbd7 6. Na3 Nb6 7. Qc2 g6 8. d3 cxd3 {[%emt 0:00:00]}
+9. exd3 Bg7 10. Ne5 O-O 11. Re1 Re8 (11... Be6 $6) (11... Bf5 {Probably better}
+) 12. Nxc6 $2 bxc6 13. Bxc6 Bd7 14. Bxa8 Qxa8 15. Qe2 Bh3 (15... Ng4 {Even
+better, most moves are met with Ne5, threatening Nf3+} 16. Rb1 (16. Rd1 Ne5 17.
+Bf4 Nf3+ 18. Kf1 Bh3#) (16. Be3 Ne5 17. f4 Nf3+ 18. Kf2 Bg4) 16... Ne5) 16. f3
+Ng4 $3 {Just much better than alternatives} (16... Qd5 $2) (16... Nh5 $2) (
+16... h5 $2) (16... Na4 $2) (16... Nfd5 $2) 17. Nb5 (17. fxg4 Bd4+ 18. Be3
+Bxe3+ 19. Qxe3 Qg2#) 17... Ne5 (17... a6 $2) 18. Nc7 {This position did not
+seem to me in blacks favor during the game} Nxf3+ (18... Qxf3 $2) 19. Kf2 Qc6 (
+19... Bd4+ $2) (19... Nd4 $2) (19... Qd8 20. Nxe8 Nxe1 21. Kxe1 Qxe8 22. Bf4
+Qb5 23. Qxe7 Bxb2) 20. Nxe8 Nxe1 (20... Nd4 $2) (20... Bd4+ $2) 21. Kxe1 $6
+Qh1+ (21... Qxe8 $2) 22. Kd2 Bh6+ 23. Kc2 Qc6+ (23... Nd5 $4 24. Bxh6) 24. Kd1
+Qh1+ (24... Qa4+ $2) (24... Bxc1 $2) (24... Qxe8 $2 $16) 25. Kc2 Qc6+ (25...
+Nd5 $2) (25... Bf1 $2) 26. Kd1 f5 $3 {Mating attacks prevent queen or king
+moving} (26... Qh1+) (26... Qxe8) 27. Bxh6 (27. Ke1 Qh1+ 28. Kf2 Qxh2+ 29. Kf3
+Bg4#) (27. Qc2 Qh1+ 28. Ke2 Qf1#) 27... Bg4 28. Rc1 Bxe2+ 29. Kxe2 Qxe8 30. Be3
+Qb5 31. Rc2 Qd5 32. b3 Kf7 33. Bf2 Qg2 34. Rc7 Qxh2 35. Rxa7 f4 36. gxf4 Nd5
+37. Ra5 Nxf4+ 38. Ke3 g5 39. Rxg5 Nh3 40. Rf5+ Ke6 41. Rf3 Nxf2 42. Rxf2 Qe5+
+43. Kd2 Qg5+ (43... h5 $2) 44. Kd1 h5 45. Re2+ Kd6 46. Re4 h4 47. Rd4+ Kc5 48.
+Rc4+ Kb5 49. a3 h3 50. Rb4+ Kc6 51. Re4 h2 52. Re1 0-1
+
+[Event "87"]
+[Site "?"]
+[Date "2013.10.27"]
+[Round "?"]
+[White "eric"]
+[Black "Doc"]
+[Result "1-0"]
+[ECO "B00"]
+[PlyCount "47"]
+[TimeControl "10/180:0"]
+
+{1024MB, Hiarcs14fBook.ctg, thresh-PC} 1. e4 {Misplayed opening, but
+suprisingly Doc let me do a mate in 5} Nc6 2. d4 {[%emt 0:00:00]} d5 {[%eval 0,
+0] [%emt 0:00:00]} 3. e5 a6 (3... f6 4. f4 Bf5 5. c3 Qd7 6. Nf3) 4. f4 Bf5 5.
+c3 e6 6. Nf3 Be7 7. Be3 Nh6 8. Bd3 (8. h3 Bh4+ 9. Nxh4 Qxh4+) 8... Bxd3 9. Qxd3
+Ng4 10. Nbd2 Qd7 11. O-O Nxe3 12. Qxe3 Na5 13. b4 Nc6 14. a3 (14. a4 O-O 15.
+Qd3 h6 16. Rfc1 Rfe8 17. Nf1 Bf8 18. a5 Na7 19. Ne3 Nb5 20. Rf1 Qc6 21. Rac1
+Qd7 22. Rfd1 Rad8 23. Rc2 Na3 24. Ra2 Nb5 25. Rc1 Qc6 26. Raa1 Be7) 14... Na7
+15. h3 a5 16. Nh2 O-O 17. g4 Nb5 18. f5 (18. a4 {Did not like} Na7 19. b5 c6)
+18... exf5 19. gxf5 axb4 20. f6 (20. axb4 $2) (20. cxb4 $6) 20... bxc3 21. Qg5
+$1 (21. fxe7 $2) 21... Qg4+ 22. Nxg4 Bxf6 23. exf6 g6 24. Qh6 1-0
+
+[Event "88"]
+[Site "?"]
+[Date "2013.10.27"]
+[Round "?"]
+[White "eric"]
+[Black "Doc"]
+[Result "1-0"]
+[ECO "B01"]
+[PlyCount "126"]
+[EventDate "2013.??.??"]
+[TimeControl "10/180:0"]
+
+1. e4 {Almost lost because of a misread of blundercheck, but fought back a
+victory after some mistakes} d5 2. exd5 Qxd5 3. Nc3 Qa5 4. d4 Nf6 5. Nf3 Bf5 6.
+Ne5 c6 7. Bf4 Nbd7 8. Nc4 Qd8 9. Ne3 Bg6 10. h4 Nh5 11. Bh2 e5 12. dxe5 $6 (12.
+Be2 $2 exd4 13. Qxd4 Bxc2) (12. g4 $1 Nhf6 13. h5 Be4 14. Nxe4 Nxe4 15. Bg2
+Bb4+ 16. Kf1 Ng5 17. c3 Be7 18. dxe5 O-O 19. Qe2) 12... Bc5 13. Qf3 {Protects
+e3} (13. Bd3 $2 Bxe3 14. fxe3 Qxh4+) (13. Qg4 $6 f5 (13... Bxe3 14. fxe3) 14.
+Qh3 O-O 15. O-O-O $16) (13. g4 $2 Bxe3 14. gxh5 Bf5 15. fxe3 Qxh4+ $14) (13. e6
+$2 fxe6 14. Bd6) (13. Be2 $2 Bxe3 14. e6 (14. Bxh5 $2 Qxh4) 14... fxe6 15. Bxh5
+O-O 16. Bf3 Qxh4 $15) 13... Qe7 (13... Qxh4 14. g4) (13... O-O {alternative}
+14. O-O-O Qe7 15. g4) 14. g4 Nxe5 15. Bxe5 Qxe5 16. gxh5 Bxh5 17. Qe4 Qxe4 18.
+Nxe4 Bxe3 19. fxe3 Bf3 20. Nf2 $2 Bxh1 21. Nxh1 O-O-O 22. Nf2 Kc7 23. Nd3 Rhe8
+24. Kf2 g6 25. Bg2 (25. Be2 Rd6) 25... Rd6 26. Re1 Rf6+ 27. Kg3 a5 28. e4 Rfe6
+29. Kg4 f6 30. Kf4 R6e7 31. Bf3 b6 32. Rg1 Rf8 33. h5 g5+ 34. Ke3 f5 $2 35.
+Rxg5 (35. e5) 35... fxe4 36. Bxe4 Rfe8 37. Nf2 Kb8 38. b3 (38. Rf5 $1 Kc7 39.
+Rf6 Re6 40. Rxe6 Rxe6 41. Ng4) 38... Re5 39. Rxe5 Rxe5 40. h6 Kc7 41. Ng4 Re7
+42. Kf4 (42. a4 $6) 42... Kd6 43. a4 $2 (43. Bd3) 43... b5 44. Ne3 (44. Nf6 $2)
+(44. Bd3 $1) 44... Kc5 45. Ng4 (45. Nf5 $2 Re6 {White cant make progress now})
+(45. Bd3 $2 {Too slow} bxa4 46. bxa4 Kb4 47. Nf5) (45. c3 $2 {Ok, just not as
+good} b4 46. c4) (45. c4 $2 Rf7+ 46. Nf5 Rf6 47. cxb5 cxb5 48. axb5 $16) (45.
+axb5 $2 Rf7+) 45... Kd6 46. Bd3 Rc7 47. Nf6 bxa4 48. bxa4 Rf7 49. Kg5 Ke5 50.
+Nxh7 Rf4 51. Kg6 Rh4 52. Ng5 Kd6 53. h7 Kc5 54. Nf7 Rxh7 55. Kxh7 Kb4 56. Ne5
+c5 57. Bb5 Kc3 58. Kg7 Kxc2 59. Kf6 Kb3 60. Ke6 Kc3 61. Kd6 Kd4 62. Nc4 Ke4 63.
+Kxc5 Kf5 1-0
+
+[Event "89"]
+[Site "?"]
+[Date "2013.10.27"]
+[Round "?"]
+[White "Vanessa"]
+[Black "eric"]
+[Result "1/2-1/2"]
+[ECO "D30"]
+[PlyCount "131"]
+[EventDate "2013.??.??"]
+[TimeControl "10/180:0"]
+
+1. d4 {Misplayed opening and vanessa carried advantage almost the whole game;
+but did not push advantage} d5 2. c4 c6 3. Nf3 Nf6 4. e3 e6 5. Bd2 Ne4 $6 {
+This is a mistake, black gets behind in development} (5... Nbd7 {[%emt 0:00:00]
+} 6. Nc3 Bd6) 6. Bd3 Nxd2 $6 (6... Bd6 {Somewhat better} 7. Nc3 (7. Bxe4 $6
+dxe4 8. Ng1) 7... f5) 7. Nbxd2 Nd7 8. Qc2 Nf6 $6 {I should have been
+developing other pieces} (8... g6 {Stops cold whites ideas of h7}) 9. a3 dxc4
+$6 {Should have been developing} (9... g6) 10. Nxc4 Be7 11. e4 a6 $6 {c6 is
+too weak to support b5, so this move does nothing} (11... b5 $6 12. Nce5 Bb7
+13. Nxc6) (11... Nd7) 12. O-O c5 $6 {Again, given lack of development, should
+not be opening lines} (12... b5 $2) (12... h6) 13. dxc5 Bxc5 14. b4 $6 (14. e5
+Nd5 15. Be4 h6 16. b4 Be7 17. Rfd1 O-O 18. Qb3 $16) 14... Be7 15. e5 Nd5 16.
+Be4 b5 $6 (16... Bd7 17. Rfd1 Rc8) 17. Nd6+ Bxd6 18. Qc6+ Bd7 19. Qxd6 Qe7 20.
+Bxd5 (20. Rac1) 20... Qxd6 $6 21. exd6 exd5 22. Rac1 (22. Rfe1+ $1 Be6 23. Ne5
+Rd8 24. d7+ Ke7 25. Nc6+ Kxd7 26. Nxd8 Rxd8) 22... O-O 23. Rfe1 Be6 $6 (23...
+Rac8 $6) (23... Rfd8) 24. Nd4 Rfd8 (24... Rfe8 $6) (24... Rac8 $6) 25. Nxe6
+fxe6 26. Rxe6 Kf7 27. Re7+ Kf6 28. Rcc7 Rxd6 29. Rf7+ Ke5 30. Rxg7 h6 31. Rce7+
+Kd4 32. Re3 Kc4 (32... Rc8 $4) 33. Rc7+ Kd4 34. Rc1 a5 35. bxa5 Rxa5 36. h3
+Rda6 37. Rcc3 Ra4 38. Red3+ Ke4 39. Rb3 d4 40. f3+ Kd5 41. Rd1 Rxa3 42. Rxb5+
+Kc4 43. Rbb1 Rd3 44. Rdc1+ Rc3 45. Re1 Rc2 46. Re8 Raa2 47. Rc8+ Kd3 48. Rg8
+Rd2 49. Rf1 Kc2 50. f4 d3 51. f5 Rd1 52. Rxd1 Kxd1 53. Rd8 d2 54. f6 Ra7 55.
+Kf2 Kc1 56. Rc8+ Kd1 57. Rc6 Rd7 58. g3 Rd5 59. g4 Rd4 60. h4 Rxg4 61. Kf3 Rg8
+62. Kf2 Rf8 63. h5 Rf7 64. Rd6 Kc1 65. Rc6+ Kd1 66. Rd6 1/2-1/2
+
+[Event "90"]
+[Site "?"]
+[Date "2013.10.27"]
+[Round "?"]
+[White "eric"]
+[Black "Vanessa"]
+[Result "1-0"]
+[ECO "C66"]
+[PlyCount "137"]
+[EventDate "2013.??.??"]
+[TimeControl "10/180:0"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 Nf6 4. d3 d6 5. O-O g6 6. d4 exd4 7. Nxd4 Bd7 8.
+Nxc6 $6 (8. Re1 $1 Bg7 9. Bxc6 bxc6 10. e5 dxe5 (10... Nd5 11. exd6+) 11. Rxe5+
+Kf8) 8... bxc6 9. Bc4 Bg7 10. Nc3 O-O 11. Bg5 h6 12. Bh4 g5 13. Bg3 Re8 14. f3
+Qb8 15. Bb3 Nh5 16. Bf2 Bxc3 $6 17. bxc3 Qd8 18. Re1 (18. Rb1) (18. Qd4 $6 c5
+19. Qd2) (18. g3 $1 Nf6 19. Qd3 a5 20. e5 Nd5 (20... dxe5 $4 21. Qg6+ Kh8 22.
+Bxf7 Nh7) 21. exd6 cxd6 22. Rfe1 Qf6 23. Bd4) 18... Nf4 19. Qd2 (19. Ba4 {A
+viable alternative} Ng6 20. Qd2 Ne5) 19... Qe7 20. Be3 (20. Rab1 c5 (20... a5
+21. Ba4 c5 22. Bxd7 Qxd7 23. Rb7 Qa4) 21. Be3 Qe5) (20. Ba4 Rab8 21. h4 Ng6 22.
+hxg5 hxg5) (20. Rad1 {best line} a5 21. a4 Be6 22. c4 c5) 20... Ng6 (20... Qe5
+21. Bxf4 Qxf4 22. Qxf4 gxf4 23. Rab1) 21. Rab1 c5 22. f4 $1 (22. Bd5 $6) (22.
+Bc4 $6) (22. Qd5 $2) (22. e5 $2) (22. Bf2 $6) (22. Red1 $6) 22... gxf4 23. Bxf4
+Be6 $6 (23... Nxf4 24. Qxf4 Kh7 25. Rf1 Be6 26. Bxe6 Qxe6 27. Qxf7+ Qxf7 28.
+Rxf7+ Kg6 29. Rxc7 Rxe4 30. Rd1 Rd8 31. Rxa7 Re2 32. Ra6 Rxc2 33. Raxd6+ Rxd6
+34. Rxd6+ Kg7 35. Rd3 Rxa2 36. Rd5 c4 37. Rc5 Ra4 38. Kf2 $16) 24. Bxh6 Rab8 (
+24... c4 $2 25. Ba4 Rec8 26. Rb5 Ne5 27. Qf4) 25. Bg5 (25. Bxe6 $6) (25. e5 $6)
+(25. a4 $6) 25... f6 26. Be3 (26. Bh6 $1) 26... Bxb3 $6 (26... c4 {Bishop is
+safe on a4, rooks cant attack} 27. Ba4 Red8) 27. cxb3 (27. axb3 $1 {Usse a
+file to attack} Qf7 28. Bf2 a5 29. Ra1) 27... Qe5 28. Bf2 (28. Rf1 Qxe4 29.
+Rbe1 Qe5 30. b4 cxb4 31. cxb4 Ra8 32. Bxa7 Qg5) 28... Qg5 29. Qxg5 (29. Qd1 a5
+30. Rb2) 29... fxg5 30. Bg3 Kg7 31. Re3 c4 32. b4 Re6 33. Rbe1 a6 34. a4 (34.
+Kf2 $6) 34... Rbe8 35. Kf2 Ne5 36. Bxe5+ Rxe5 37. Kg3 d5 38. Kf2 Rxe4 $6 39.
+Rxe4 dxe4 40. Rd1 (40. Ke3 $6) 40... e3+ $6 41. Ke2 Re7 42. Rd4 c6 43. Rxc4 Re6
+44. Rc5 (44. Rg4 $6) 44... Kg6 45. Ra5 c5 46. Rxc5 g4 47. Rc4 Kf5 48. g3 (48.
+Rd4 $2) 48... Rh6 49. Kxe3 Rxh2 50. Rc5+ Ke6 51. Rc6+ (51. Kf4) 51... Kd7 (
+51... Kd5 52. Rxa6) 52. Rxa6 Rc2 53. Kd4 (53. Kf4 $2) 53... Rg2 54. Rg6 Rxg3
+55. a5 Rh3 56. Rxg4 Kc7 57. b5 Rh7 58. c4 Rd7+ 59. Kc5 Kb7 60. a6+ Ka7 61. Kc6
+Rf7 62. Rd4 Rf6+ 63. Rd6 Rf8 64. Rd7+ Kb8 65. b6 Kc8 66. a7 Rf6+ 67. Rd6 Rxd6+
+68. Kxd6 Kb7 69. c5 1-0
+
