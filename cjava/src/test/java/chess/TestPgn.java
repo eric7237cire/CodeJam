@@ -21,8 +21,9 @@ public class TestPgn {
     Logger log = LoggerFactory.getLogger(TestPgn.class);
     
     @Test
-    public void test() throws IOException
+    public void testParseTag() throws IOException
     {
+        /*
         InputStream is = TestPgn.class.getResourceAsStream(
                 "test1.pgn");
         
@@ -33,7 +34,7 @@ public class TestPgn {
         {
             log.debug(line);
         }
-        
+        */
         Pair<TagName, String> tag1 = PgnParser.parseTag("[TimeControl \"20/300:0\"]");
         assertEquals(TagName.TimeControl, tag1.getKey());
         assertEquals("20/300:0", tag1.getValue()); 
@@ -41,7 +42,7 @@ public class TestPgn {
     }
     
     @Test
-    public void test2() 
+    public void parseTest1() 
     {
         
         Input input = new Input(TestPgn.class.getResourceAsStream(

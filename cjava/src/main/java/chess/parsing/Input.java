@@ -50,6 +50,7 @@ public class Input {
                 }
                 
                 sb.append(line);
+                sb.append('\n');
             } catch (IOException ex) {
                 log.error("ex",ex);
                 doneReading = true;
