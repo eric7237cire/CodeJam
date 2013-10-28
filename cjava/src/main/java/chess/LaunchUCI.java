@@ -27,16 +27,18 @@ public class LaunchUCI {
 
     static Logger log = LoggerFactory.getLogger(LaunchUCI.class);
 
-    static final IConfiguration config //= new StockfishConfig();
-        = new HoudiniConfig();
+    static final IConfiguration config = new StockfishConfig();
+      //  = new HoudiniConfig();
 
     
-    static final int waitTime = 10 * 1000;
+    static final int waitTime = 1 * 1000;
 //5r1k/5Bp1/1p3b2/3p4/P7/2q3P1/5P1P/1Q2R1K1 w - - 0 36
+
      String startPos = 
     "r3kb1r/p2np2p/2p3p1/q4p1b/1p1P4/3B1N1P/PPP2PP1/R1BQR1K1 w kq - 0 14 moves";
 
     String endPos = startPos + " c1d2";
+
 
     // The most we can lose going from start position to end position
     final static int isBlunderThreshold = -100;
@@ -48,8 +50,10 @@ public class LaunchUCI {
     final static int isBetterThreshold = -50;
     final static boolean isBetterCheck = true;
 
+
     final static boolean isDebug = false;
     final static boolean isPrintAllOutput = false; //isDebug;
+
 
     Map<String, Integer> cache;
 
@@ -62,6 +66,16 @@ public class LaunchUCI {
     // ..K.....
     // ........
     // "8/8/2k5/2pp4/4N3/8/2K5/8 w - - 0 55";
+    
+    // ........
+    // k.......
+    // .qq.....
+    // ........
+    // ........
+    // .RR.....
+    // K.......
+    // ........
+    // "8/k7/1qq5/8/8/1QQ5/K7/8 b - - 0 55";
 
     boolean isPos2 = false;
 
