@@ -1,28 +1,9 @@
 console.log("hello body");
 
 $( document ).ready(function() {
-console.log("hello " + $('.tooltip').length);
-console.log(jQuery.fn.jquery);
 
-$('.tooltip').qtip({ // Grab some elements to apply the tooltip to
-    content: true,
-     position: {
-        my: 'top left',  // Position my top left...
-        at: 'center', // at the bottom right of...
-        target: 'event' // my target
-    },
-    style: {
-        width: '800px'
-    },
-    hide: {
-            // event: 'click',
-             //inactive: 1200,
-             fixed: true
-         }
-    /*position: {
-        viewport: $(window)
-    }*/
-});    
+
+
 
 console.log( jQuery("#tree").length );
 
@@ -53,6 +34,30 @@ console.log( jQuery("#tree").length );
 
     });
 
-	
+
+	console.log("tooltip elems " + $('.tooltip').length);
+console.log(jQuery.fn.jquery);
+
+$('div').qtip('a');
+
+$('.tooltip').qtip({ // Grab some elements to apply the tooltip to
+    content: true,
+     position: {
+        my: 'top left',  // Position my top left...
+        at: 'center', // at the bottom right of...
+        target: 'event' // my target
+    },
+    style: {
+        width: '800px'
+    },
+    hide: {
+            // event: 'click',
+             //inactive: 1200,
+             fixed: true
+         }
+    /*position: {
+        viewport: $(window)
+    }*/
+});    	
 
 });
