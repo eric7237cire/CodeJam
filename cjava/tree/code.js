@@ -10,6 +10,8 @@ console.log( jQuery("#tree").length );
   jQuery("#tree")
 	.bind('loaded.jstree', function(e, data)
 	{
+		 jQuery("#tree").jstree('open_all');
+		 return;
 		/**
 		* Open nodes on load (until x'th level)
 		*/
@@ -29,7 +31,25 @@ console.log( jQuery("#tree").length );
 			"dots" : true,
 			"icons" : false
 		},
-		"plugins" : [ "themes", "html_data" ]
+		"json_data" : {
+			"data" : 
+			[
+				{ 
+					"data" : "A node", 
+					"metadata" : { id : 23 },
+					"children" : [ "Child 1", "A Child 2" ]
+				},
+				{ 
+					"attr" : { "id" : "li.node.id1" }, 
+					"data" : { 
+						"title" : "Long format demo", 
+						"attr" : { "href" : "#" } 
+					} 
+				},
+				allData
+			]
+		},
+		"plugins" : [ "themes", "json_data" ]
        
 
     });

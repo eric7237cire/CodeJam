@@ -1,8 +1,5 @@
 package chess.parsing;
 
-import java.util.List;
-
-import chess.Piece;
 
 public class Move {
     public Move() {

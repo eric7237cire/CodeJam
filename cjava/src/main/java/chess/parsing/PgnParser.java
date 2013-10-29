@@ -85,13 +85,15 @@ public class PgnParser {
         this.input = input;
     }
     
-    public void parse() {
+    public Game parseGame() {
+        Game game = new Game();
         log.debug("Starting parse");
         int loopCheck = 0;
         while(hasTag())
         {
             if (loopCheck++ > 20)
             {
+                log.error("Too many tags");
                 System.exit(1);
             }
             CharSequence curBlock = input.getCurrentBlock();
@@ -103,7 +105,7 @@ public class PgnParser {
             }
             
             Pair<TagName, String> tag = parseTag(m);
-            
+            game.tags.add(tag);
             
             int endMarker = m.end();
             
@@ -112,7 +114,9 @@ public class PgnParser {
             input.setCurMarker( input.getCurMarker() + endMarker );
         }
         
-        parseMoveList(false);
+        game.moves = parseMoveList(false);
+        
+        return game;
         
     }
     
