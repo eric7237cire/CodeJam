@@ -37,7 +37,7 @@ public class JsonNode {
         return data.title;
     }
     
-    private static final String newLine = "<br/>";
+    //private static final String newLine = "<br/>";
     
     private static void addVariation(JsonNode parent, List<Move> moveList)
     {
@@ -46,13 +46,13 @@ public class JsonNode {
         
         Ply firstPly = firstMove.whiteMove == null ? firstMove.blackMove : firstMove.whiteMove;
         
-        JsonNode plyNode = addPly(parent, firstPly, true);
+        JsonNode plyNode = addPly(parent, firstPly, true, false);
         
         if (firstMove.whiteMove == null) {
-            addMovesToNode(plyNode, moveList.subList(1, moveList.size()));
+            addMovesToNode(plyNode, moveList.subList(1, moveList.size()), false);
         } else {
             firstMove.whiteMove = null;
-            addMovesToNode(plyNode, moveList);
+            addMovesToNode(plyNode, moveList, false);
         }
     }
     
@@ -62,7 +62,10 @@ public class JsonNode {
      * @param ply
      * @return newParent
      */
-    private static JsonNode addPly(JsonNode parent, Ply ply, boolean returnPlyNodeForce)
+    private static JsonNode addPly(JsonNode parent, Ply ply, 
+            boolean returnPlyNodeForce,
+            boolean isMainLine
+            )
     {
         if (ply == null)
             return parent;
@@ -72,9 +75,19 @@ public class JsonNode {
         
         String txt = ply.toString();
         JsonNode plyNode = new JsonNode(txt);
+        
+        
+        
         parent.children.add(plyNode);
         
         if (ply.variations.size() > 0) {
+        
+            
+                if (isMainLine ) {
+                    plyNode.state = "open";
+                } else {
+                    plyNode.state = "closed";
+                }
             
             for(int varIdx = 0; varIdx < ply.variations.size(); ++varIdx)
                 addVariation(parent, ply.variations.get(varIdx));
@@ -84,15 +97,15 @@ public class JsonNode {
         
         return returnPlyNodeForce ? plyNode : parent;
     }
-    private static void addMovesToNode(JsonNode parent, List<Move> moveList)
+    private static void addMovesToNode(JsonNode parent, List<Move> moveList, boolean isMainLine)
     {
         for(int i = 0; i < moveList.size(); ++i)
         {
             Move move = moveList.get(i);
             
-            parent = addPly(parent, move.whiteMove, false);
+            parent = addPly(parent, move.whiteMove, false, isMainLine);
             
-            parent = addPly(parent, move.blackMove, false);
+            parent = addPly(parent, move.blackMove, false, isMainLine);
             
             
             
@@ -102,10 +115,10 @@ public class JsonNode {
     public static JsonNode buildFromGame(Game g)
     {
         JsonNode game = new JsonNode("game");
-        
+        game.state = "open";
         JsonNode parent = game;
         
-        addMovesToNode(parent, g.moves);
+        addMovesToNode(parent, g.moves, true);
         
         
         return game;

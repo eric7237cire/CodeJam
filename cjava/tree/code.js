@@ -10,8 +10,9 @@ console.log( jQuery("#tree").length );
   jQuery("#tree")
 	.bind('loaded.jstree', function(e, data)
 	{
+		return;
 		 jQuery("#tree").jstree('open_all');
-		 return;
+		 
 		/**
 		* Open nodes on load (until x'th level)
 		*/
@@ -34,18 +35,7 @@ console.log( jQuery("#tree").length );
 		"json_data" : {
 			"data" : 
 			[
-				{ 
-					"data" : "A node", 
-					"metadata" : { id : 23 },
-					"children" : [ "Child 1", "A Child 2" ]
-				},
-				{ 
-					"attr" : { "id" : "li.node.id1" }, 
-					"data" : { 
-						"title" : "Long format demo", 
-						"attr" : { "href" : "#" } 
-					} 
-				},
+				
 				allData
 			]
 		},
