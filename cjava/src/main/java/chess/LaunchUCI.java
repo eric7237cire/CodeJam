@@ -18,6 +18,8 @@ import java.util.regex.Matcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import chess.parsing.Fen;
+
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
@@ -27,11 +29,12 @@ public class LaunchUCI {
 
     static Logger log = LoggerFactory.getLogger(LaunchUCI.class);
 
-    static final IConfiguration config //new StockfishConfig();
-        = new HoudiniConfig();
+    static final IConfiguration config
+     = new StockfishConfig();
+       // = new HoudiniConfig();
 
     
-    static final int waitTime = 10 * 1000;
+    static final int waitTime = 1 * 1000;
 //5r1k/5Bp1/1p3b2/3p4/P7/2q3P1/5P1P/1Q2R1K1 w - - 0 36
 
      String startPos = 
@@ -250,6 +253,11 @@ public class LaunchUCI {
         lau.startPos = startPos;
         lau.endPos = endPos;
         
+        Board b = Fen.parseFen(startPos);
+        log.info("Starting Pos\n{}", b.toString());
+        
+        b = Fen.parseFen(endPos);
+        log.info("Ending Pos\n{}", b.toString());
         lau.go();
 
     }

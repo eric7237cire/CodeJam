@@ -34,6 +34,7 @@ public class StockfishConfig implements IConfiguration {
                 "name Hash value 256",
                 "name Threads value 1",
                 "name Ponder value false",
+                "name Contempt Factor value 0"
                 
         };
     }
