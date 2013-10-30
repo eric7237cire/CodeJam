@@ -241,11 +241,11 @@ public class LaunchUCI {
 
         String startPos = Files.readFirstLine(new File("C:\\codejam\\CodeJam\\cjava\\startpos.txt"), Charsets.UTF_8);
         startPos = startPos.replaceAll("[^\\x00-\\x7F]", "");
-        lau.log.info("StartPos {}", startPos);
+        log.info("StartPos {}", startPos);
         
         String endPos = Files.readFirstLine(new File("C:\\codejam\\CodeJam\\cjava\\endpos.txt"), Charsets.UTF_8);
         endPos = endPos.replaceAll("[^\\x00-\\x7F]", "");
-        lau.log.info("EndPos {}", endPos);
+        log.info("EndPos {}", endPos);
         
         lau.startPos = startPos;
         lau.endPos = endPos;

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ public class Input {
     
     StringBuffer sb = new StringBuffer();
     
-    private InputStream is;
+   // private InputStream is;
     BufferedReader br;
     
     private final int minBlockLength = 255;
@@ -26,9 +27,16 @@ public class Input {
     
     public Input(InputStream is) {
         super();
-        this.is = is;
+        //this.is = is;
         
         br = new BufferedReader(new InputStreamReader(is));
+    }
+    
+    public Input(String is) {
+        super();
+        
+        
+        br = new BufferedReader( new StringReader(is) );
     }
 
 
@@ -50,6 +58,7 @@ public class Input {
                 }
                 
                 sb.append(line);
+                sb.append('\n');
             } catch (IOException ex) {
                 log.error("ex",ex);
                 doneReading = true;

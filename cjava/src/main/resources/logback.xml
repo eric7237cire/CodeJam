@@ -13,7 +13,7 @@
     <!-- 
     %d{HH:mm:ss:SSS} %r - 
      -->
-      <pattern>%m%n</pattern>
+      <pattern>%p %m%n</pattern>
     </encoder>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
       <level>DEBUG</level>
