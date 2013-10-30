@@ -27,11 +27,11 @@ public class LaunchUCI {
 
     static Logger log = LoggerFactory.getLogger(LaunchUCI.class);
 
-    static final IConfiguration config = new StockfishConfig();
-      //  = new HoudiniConfig();
+    static final IConfiguration config //new StockfishConfig();
+        = new HoudiniConfig();
 
     
-    static final int waitTime = 1 * 1000;
+    static final int waitTime = 10 * 1000;
 //5r1k/5Bp1/1p3b2/3p4/P7/2q3P1/5P1P/1Q2R1K1 w - - 0 36
 
      String startPos = 
@@ -51,7 +51,7 @@ public class LaunchUCI {
     final static boolean isBetterCheck = true;
 
 
-    final static boolean isDebug = false;
+    final static boolean isDebug = true;
     final static boolean isPrintAllOutput = false; //isDebug;
 
 
@@ -291,6 +291,7 @@ class StreamGobbler extends Thread {
                 // Quand le moteur est prêt, lancer le calcul
                 if ("readyok".equals(line)) {
                     launchUCI.sendCommand("go movetime " + LaunchUCI.waitTime);
+                    //launchUCI.sendCommand("go maxdepth 5");
 
                 }
 

@@ -5670,3 +5670,81 @@ Rd4 $2) 48... Rh6 49. Kxe3 Rxh2 50. Rc5+ Ke6 51. Rc6+ (51. Kf4) 51... Kd7 (
 Rf7 62. Rd4 Rf6+ 63. Rd6 Rf8 64. Rd7+ Kb8 65. b6 Kc8 66. a7 Rf6+ 67. Rd6 Rxd6+
 68. Kxd6 Kb7 69. c5 1-0
 
+[Event "91"]
+[Site "?"]
+[Date "2013.10.28"]
+[Round "?"]
+[White "eric"]
+[Black "Vanessa"]
+[Result "1-0"]
+[ECO "C64"]
+[PlyCount "133"]
+[EventDate "2013.??.??"]
+[TimeControl "10/180:0"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 Bc5 4. c3 Bb6 5. d4 exd4 6. cxd4 a6 7. Ba4 Ba5+ {
+[%emt 0:00:00]} 8. Nc3 b5 9. Bb3 (9. Bc2 $2 b4 10. Ne2 b3+) 9... Bb7 10. O-O
+Bxc3 11. bxc3 Na5 12. Bc2 Ne7 13. Bg5 (13. a4 $1 {Creating added threats on
+queenside, more space, and allows Ba3 later on if needed} O-O (13... Nc4 14.
+Nd2 Nb6 15. a5 Na4) 14. e5 d6 15. Bxh7+ Kxh7 16. Ng5+ Kg8 17. Qh5 Be4 18. Nxe4
+Qc8) 13... f6 14. Bh4 (14. Bc1 {Bishop is more useful here, not restricted to
+h4 and g3}) 14... d6 15. Re1 {Chose b/c improving pieces before doing pawn
+breaks} (15. e5 $6 fxe5 (15... dxe5 16. dxe5 Qxd1 17. Raxd1 Bxf3 18. gxf3 $14)
+16. dxe5 Bxf3 17. Qxf3 dxe5) (15. a4 $1 O-O 16. axb5 axb5 17. Rb1 Ba6) (15. Bd3
+$1 O-O 16. a4 Qd7 17. Qb1) 15... Qd7 (15... O-O 16. e5 $6 Ng6 (16... fxe5 $2
+17. dxe5 Bxf3 (17... dxe5 18. Rxe5) 18. gxf3 $2 dxe5 19. Qxd8)) 16. e5 $1 O-O
+17. exf6 $1 {Creating a permanent weakness} gxf6 18. a4 $1 (18. Qd3 $6 Ng6 19.
+Bg3 {less initiative}) 18... Nd5 (18... Nc4 19. Nd2 Ng6 20. Bg3 f5 21. Nxc4
+bxc4 22. Rb1 Rab8 23. Qh5) 19. Qb1 $1 {Prevents Nc4, which would be an
+annoying outpost for black} (19. Ra3 $2 Nc4 20. Rb3 $11 Rae8 (20... Rab8 21.
+axb5 axb5) 21. axb5 Rxe1+ 22. Nxe1 axb5 23. Bg3 {Black has well posted knights}
+) (19. Qd2 $6 Nc4 20. Qh6 Qg7) (19. axb5 $6 axb5 20. Ra3 Nc4 21. Rxa8 Bxa8 {
+Black has 2 good knights}) (19. Bb3 $2 Nxb3 20. Qxb3 Qc6 {black regains
+iniative}) (19. Qe2 $2 Nxc3 20. Qd3 b4 $17) (19. Qc1 $2 Nxc3 20. Bxh7+ Qxh7 21.
+Qxc3 Nc4 $11) (19. Qd3 $6 Nc4 20. Nd2 Nf4 21. Qg3+ Qg7) 19... f5 $6 (19... Nc4
+20. axb5 axb5 21. Rxa8 Bxa8 22. Bf5 Qc6 $4 (22... Qg7 {cant defend h7 and b5
+at the same time}) 23. Bxh7+) (19... Qg7 $1 20. Bg3 Bc6 21. Bf5 Nc4 22. Be6+
+Kh8 $16) 20. Bd3 (20. Bg5 $1) 20... Qf7 21. Bg5 {Prevents Nf4} (21. Ng5 $6 Qh5
+22. axb5 axb5 23. Ne6 Qxh4 24. Nxf8 Kxf8 25. Qxb5 Bc6 26. Rxa5 Bxb5 27. Rxa8+
+Kf7 28. g3) (21. c4 $2 Nf4 $17) (21. Bxb5 $2 axb5 22. axb5 $19) (21. Qc1 $6 Qg6
+) (21. Ra3 $2 Nf4) (21. Rc1 $2 Nf4) (21. axb5 $6 axb5) 21... Qg7 22. Bxf5 (22.
+axb5 {ALternative} axb5 23. Bd2 Nb6 24. Nh4 Nac4 25. Rxa8 Bxa8 26. Bc1 Be4 27.
+Bxe4 fxe4 28. Qxe4) 22... Kh8 23. axb5 $6 (23. Qd3) 23... Nxc3 24. Qd3 (24. Qb4
+$2 Rxf5 25. Qxc3 Rxf3 26. gxf3 Qxg5+ $19) 24... axb5 25. Qxc3 Bxf3 26. Qxf3
+Qxg5 27. g4 Qg8 $4 28. Re7 (28. Qh3 $4 Rxf5) (28. d5 $2 Qg7) (28. Qe3 $4 Rxf5)
+(28. Qc3 $4 Rxf5) 28... Ra7 29. d5 (29. Qc3 $2 Rxf5 $11) (29. Qh3 $2 Rxf5 $19)
+29... Nc6 30. Qc3+ (30. Qh3 $4 Rxa1+) (30. Rxa7 $2 Nxe7 $18) 30... Ne5 31. Rxa7
+Rxf5 32. Qd4 $6 (32. Raxc7 $2) (32. Kf1) (32. Qh3) (32. Qg3 $6) (32. Qxc7 $4
+Qxg4+ 33. Kf1 Qd1+ 34. Kg2 Rg5+ 35. Kh3 Qh5#) (32. Qa1 $2 Qxg4+ 33. Kf1) (32.
+Ra8 $2 Qxa8 33. gxf5 Qxd5 34. f6 $18) (32. Kh1 $2 Qxd5+ 33. Kg1 Qd1+ 34. Kg2
+Qxg4+ $11) (32. Re8 $2 Qxe8 33. gxf5) (32. Rexc7 $2 $11) (32. h3 $3 {Should
+have checked the positions}) (32. f4 $2) (32. Rxh7+ $2 Kxh7 33. Qh3+ Kg7 34.
+gxf5 $18) 32... Rg5 33. h3 Qd8 34. Raxc7 Rg7 35. Rxg7 (35. Qxe5 $3 dxe5 36.
+Rxg7 h6 37. Rh7+ Kg8 38. Rcg7+ Kf8 39. Rh8+ Kxg7 40. Rxd8 Kf7 41. Rh8 Ke7 42.
+Rxh6) 35... Nf3+ 36. Kg2 Qxc7 37. Rxc7+ Nxd4 38. Rd7 Ne2 39. Rxd6 Nf4+ 40. Kg3
+(40. Kf3 Nxh3) 40... Ne2+ 41. Kh4 Kg7 42. Rb6 Nc3 43. d6 Kf7 44. f4 Ke8 45. Rb7
+Kd8 46. d7 Ne4 47. Rxb5 Kxd7 48. Rb7+ Kd6 49. Rxh7 Nf6 50. Rh6 Ke7 51. Rxf6
+Kxf6 52. Kh5 Kf7 53. Kh6 Kf6 54. Kh7 Ke6 55. h4 Kd5 56. h5 Ke4 57. f5 Kf4 58.
+Kg6 Kxg4 59. h6 Kf4 60. h7 Ke4 61. f6 Kd3 62. f7 Kc4 63. h8=Q Kb3 64. Qd4 Kc2
+65. f8=Q Kb3 66. Qd2 Kc4 67. Qfb4# 1-0
+
+[Event "92"]
+[Site "?"]
+[Date "2013.10.29"]
+[Round "?"]
+[White "Vanessa"]
+[Black "eric"]
+[Result "*"]
+[ECO "D47"]
+[PlyCount "79"]
+[EventDate "2013.??.??"]
+[TimeControl "10/180:0"]
+
+1. d4 d5 2. c4 c6 3. Nc3 Nf6 4. e3 e6 5. Nf3 Nbd7 6. Bd3 dxc4 7. Bxc4 b5 8. Bd3
+Bb7 9. e4 b4 10. Na4 c5 11. e5 Nd5 12. O-O cxd4 13. Re1 g6 14. Bg5 Qa5 15. Nxd4
+a6 16. a3 bxa3 17. bxa3 Bg7 18. Rb1 Rb8 19. Bd2 Qd8 20. f4 O-O 21. Be4 Ba8 22.
+Rc1 Rc8 23. Kh1 Rxc1 24. Qxc1 Qc8 25. Qxc8 Rxc8 26. Bd3 Bh6 (26... Bb7) (26...
+Nc5) 27. Bxa6 Rc7 28. Ne2 Ra7 29. Bb5 Nxe5 30. Nec3 Nxc3 31. Nxc3 Rxa3 32. Rc1
+Ng4 33. Be2 Nf6 34. Kg1 Rb3 35. Rb1 Rxb1+ 36. Nxb1 Ne4 37. Bc1 e5 38. Bf3 Bxf4
+39. Bxf4 exf4 40. Na3 *
+

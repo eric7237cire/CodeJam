@@ -33,7 +33,10 @@ public class HoudiniConfig implements IConfiguration {
         return new String[] {
                 "name Hash value 2048",
                 "name Threads value 4",
-                "name NalimovPath value " + "E:\\ChessDB\\tablebase\\tablebase.sesse.net\\3-4-5" 
+                "name NalimovPath value " + "E:\\ChessDB\\tablebase\\tablebase.sesse.net\\3-4-5",
+                
+                "name Contempt value 0"
+                
         };
     }
 
