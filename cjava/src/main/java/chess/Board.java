@@ -1,5 +1,6 @@
 package chess;
 
+import chess.parsing.Fen;
 import codejam.utils.utils.GridChar;
 
 public class Board {
@@ -10,13 +11,19 @@ public class Board {
         grid.setyZeroOnTop(false);
     }
     
+    public void resetToInitial()
+    {
+        Board b = Fen.parseFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
+        this.grid = b.grid;
+        
+    }
+    
     public String toString2()
     {
         StringBuffer gridStr = new StringBuffer();
         gridStr.append("  a b c d e f g h\n");
         for (int rIdx = 0; rIdx < grid.getRows(); ++rIdx) {
-            int r = 
-                r = grid.getRows() - rIdx - 1;
+            int r = grid.getRows() - rIdx - 1;
             
             gridStr.append(1+r);
             gridStr.append(" |");

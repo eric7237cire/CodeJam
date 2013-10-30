@@ -63,7 +63,7 @@ public class PgnParser {
         TagName tag = null; 
         
         try {
-            TagName.valueOf(tagStr);
+            tag = TagName.valueOf(tagStr);
         } catch (IllegalArgumentException ex) {
             log.error("Unrecognized tag {}", tagStr);
             return null;
@@ -125,8 +125,11 @@ public class PgnParser {
         List<Move> ret = Lists.newArrayList();
         
         Move move = null;
+        int loopcount = 0;
         while( true ) 
         {
+            if (loopcount++ > 5)
+                break;
             boolean isEnd = parseMoveListEnd(isVariation);
             if (isEnd)
                 break;
@@ -437,7 +440,7 @@ public class PgnParser {
         CharSequence curBlock = input.getCurrentBlock();
         
         Matcher m = startTag.matcher(input.getCurrentBlock());
-        log.debug("Checking currentBlock BEGIN\n{}\nEND for tags.  Matches? {}", curBlock, m.matches());
+       // log.debug("Checking currentBlock BEGIN\n{}\nEND for tags.  Matches? {}", curBlock, m.matches());
         return m.matches();
     }
 }
