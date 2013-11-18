@@ -136,6 +136,7 @@ public class PgnParser {
                 
         for(int moveNum = 0; moveNum < moves.size(); ++moveNum)
         {
+            
             Move move = moves.get(moveNum); 
             log.debug("fillBoardPositions {} {}", moveNum, move);
             move.getWhiteMove().setBoardBeforeMove(b1);

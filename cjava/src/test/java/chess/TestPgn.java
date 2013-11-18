@@ -134,13 +134,16 @@ public class TestPgn {
          new Board("rnbqkbnr/ppp1p1pp/8/3pPp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3"),
          new Board("rnbqkbnr/ppp1p1pp/5P2/3p4/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 3")};
         
+        for (int i = 0; i < boards.length; ++i) {
+            log.debug(boards[i].toFenString());
+        }
         PgnParser p = new PgnParser(input);
         
         Game g = p.parseGame();
         
         assertEquals(boards[0], g.getMoves().get(0).getWhiteMove().getBoardBeforeMove());
         
-        Board chk = g.getMoves().get(0).getWhiteMove().getBoardAfterMove();
+       // Board chk = g.getMoves().get(0).getWhiteMove().getBoardAfterMove();
         
         assertEquals(boards[1], g.getMoves().get(0).getWhiteMove().getBoardAfterMove());
         
