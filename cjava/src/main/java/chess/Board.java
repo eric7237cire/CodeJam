@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
@@ -15,10 +16,8 @@ public class Board {
     public GridChar grid;
     
     boolean whiteToMove;
-    boolean whiteCastleKingside;
-    boolean whiteCastleQueenside;
-    boolean blackCastleKingside;
-    boolean blackCastleQueenside;
+    //white kingside / queenside black kingside / queenside
+    boolean[] castling;
     
     int moveNumber;
     
@@ -27,10 +26,18 @@ public class Board {
     public Board() {
         grid = GridChar.buildEmptyGrid(8, 8, '.');
         grid.setyZeroOnTop(false);
-        
+        castling = new boolean[] {true,true,true,true};
         enPassantSquare = -1;
     }
     
+    public Board(Board rhs) {
+        grid = new GridChar(rhs.grid);
+        castling = new boolean[4];
+        System.arraycopy(rhs.castling,0,castling,0,rhs.castling.length);
+        moveNumber = rhs.moveNumber;
+        enPassantSquare = rhs.enPassantSquare;
+        whiteToMove = rhs.whiteToMove;
+    }
     public Board(String fenStr) {
         
         this();
@@ -94,9 +101,8 @@ public class Board {
     public static String initialFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
     
     public Board makeMove(Ply ply) {
-        Board b = new Board();
-        b.grid = new GridChar(this.grid);
-        
+        Board b = new Board(this);
+                
         switch(ply.getMovedPiece().getPiece())
         {
         case Pawn:
@@ -112,6 +118,8 @@ public class Board {
     
     private void movePawn(Ply ply)
     {
+        Preconditions.checkState(ply.isWhiteMove() == this.whiteToMove);
+        
         int rankDir = ply.isWhiteMove() ? 1 : -1;
         int initialTwoMovesRank = ply.isWhiteMove() ? 3 : 4;
         
@@ -136,6 +144,8 @@ public class Board {
                 //1 square
                 sourceRank = ply.getTargetRank() -  rankDir;
                 sourceFile = ply.getTargetFile();
+                
+                enPassantSquare = -1;
             }
             
             
@@ -143,6 +153,14 @@ public class Board {
             Preconditions.checkState(ply.getSourceRank() == -1);
             Preconditions.checkState(ply.getSourceFile() != -1);
             
+            int targetSquare = grid.getIndex(ply.getTargetRank(), ply.getTargetFile());
+            
+            Preconditions.checkState(
+                    (targetSquare == enPassantSquare && grid.getEntry(targetSquare) == grid.getInvalidSquare())
+                    || (enPassantSquare == -1 && grid.getEntry(targetSquare) != grid.getInvalidSquare()));
+            
+            enPassantSquare = -1;
+            grid.setEntry(ply.getTargetRank() - rankDir, ply.getTargetFile(), grid.getInvalidSquare());
             sourceRank = ply.getTargetRank() -  rankDir;
             sourceFile = ply.getSourceFile();
         }
@@ -152,6 +170,8 @@ public class Board {
                 ply.toString()
                 );
         move(sourceRank, sourceFile, ply.getTargetRank(), ply.getTargetFile());
+        
+        this.whiteToMove = !this.whiteToMove;
     }
     
     private void move(int srcRank, int srcFile, int tarRank, int tarFile)
@@ -199,7 +219,7 @@ public class Board {
             if (rIdx != grid.getRows() - 1)
                 gridStr.append("\n");
         }
-        
+        gridStr.append("\n");
         gridStr.append(whiteToMove ? "White to move\n" : "Black to move\n");
         gridStr.append("EP ");
         if (enPassantSquare == -1) {
@@ -210,6 +230,15 @@ public class Board {
             gridStr.append( (char) (rowCol[0] + '1'));
         }
         gridStr.append("\n");
+        gridStr.append("Castling : ");
+        if (castling[0])
+            gridStr.append("K");
+        if (castling[1])
+            gridStr.append("Q");
+        if (castling[2])
+            gridStr.append("k");
+        if (castling[3])
+            gridStr.append("q");
         return gridStr.toString();
     }
 
@@ -220,13 +249,9 @@ public class Board {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (blackCastleKingside ? 1231 : 1237);
-        result = prime * result + (blackCastleQueenside ? 1231 : 1237);
         result = prime * result + ((grid == null) ? 0 : grid.hashCode());
         result = prime * result + moveNumber;
-        result = prime * result + (whiteCastleKingside ? 1231 : 1237);
-        result = prime * result + (whiteCastleQueenside ? 1231 : 1237);
-        result = prime * result + (whiteToMove ? 1231 : 1237);
+       result = prime * result + (whiteToMove ? 1231 : 1237);
         return result;
     }
 
@@ -242,11 +267,8 @@ public class Board {
         if (getClass() != obj.getClass())
             return false;
         Board other = (Board) obj;
-        return blackCastleKingside == other.blackCastleKingside
-                && blackCastleQueenside == other.blackCastleQueenside
+        return Arrays.equals(castling, other.castling)
                 && Objects.equal(grid, other.grid)
-                && whiteCastleKingside == other.whiteCastleKingside
-                && whiteCastleQueenside == other.whiteCastleQueenside
                 && whiteToMove == other.whiteToMove
                 && enPassantSquare == other.enPassantSquare;
             
@@ -266,61 +288,7 @@ public class Board {
         this.whiteToMove = whiteToMove;
     }
 
-    /**
-     * @return the whiteCastleKingside
-     */
-    public boolean isWhiteCastleKingside() {
-        return whiteCastleKingside;
-    }
-
-    /**
-     * @param whiteCastleKingside the whiteCastleKingside to set
-     */
-    public void setWhiteCastleKingside(boolean whiteCastleKingside) {
-        this.whiteCastleKingside = whiteCastleKingside;
-    }
-
-    /**
-     * @return the whiteCastleQueenside
-     */
-    public boolean isWhiteCastleQueenside() {
-        return whiteCastleQueenside;
-    }
-
-    /**
-     * @param whiteCastleQueenside the whiteCastleQueenside to set
-     */
-    public void setWhiteCastleQueenside(boolean whiteCastleQueenside) {
-        this.whiteCastleQueenside = whiteCastleQueenside;
-    }
-
-    /**
-     * @return the blackCastleKingside
-     */
-    public boolean isBlackCastleKingside() {
-        return blackCastleKingside;
-    }
-
-    /**
-     * @param blackCastleKingside the blackCastleKingside to set
-     */
-    public void setBlackCastleKingside(boolean blackCastleKingside) {
-        this.blackCastleKingside = blackCastleKingside;
-    }
-
-    /**
-     * @return the blackCastleQueenside
-     */
-    public boolean isBlackCastleQueenside() {
-        return blackCastleQueenside;
-    }
-
-    /**
-     * @param blackCastleQueenside the blackCastleQueenside to set
-     */
-    public void setBlackCastleQueenside(boolean blackCastleQueenside) {
-        this.blackCastleQueenside = blackCastleQueenside;
-    }
+   
 
     /**
      * @return the moveNumber
