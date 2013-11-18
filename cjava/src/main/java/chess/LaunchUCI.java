@@ -34,7 +34,7 @@ public class LaunchUCI {
        // = new HoudiniConfig();
 
     
-    static final int waitTime = 1 * 1000;
+    static final int waitTime = 2 * 1000;
 //5r1k/5Bp1/1p3b2/3p4/P7/2q3P1/5P1P/1Q2R1K1 w - - 0 36
 
      String startPos = 
@@ -55,7 +55,7 @@ public class LaunchUCI {
 
 
     final static boolean isDebug = true;
-    final static boolean isPrintAllOutput = false; //isDebug;
+    final static boolean isPrintAllOutput = true; //isDebug;
 
 
     Map<String, Integer> cache;
@@ -101,7 +101,7 @@ public class LaunchUCI {
             int timeUsed = ois.readInt();
 
             if (timeUsed == LaunchUCI.waitTime) {
-                cache = (Map<String, Integer>) ois.readObject();
+               // cache = (Map<String, Integer>) ois.readObject();
             }
 
             ois.close();
