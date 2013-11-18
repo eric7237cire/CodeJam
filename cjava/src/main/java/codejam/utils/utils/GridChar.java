@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
 public class GridChar {
@@ -120,6 +121,30 @@ public class GridChar {
         grid = new char[rows*cols];
         Arrays.fill(grid, invalidSq);
         
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(cols, grid, rows);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        GridChar other = (GridChar) obj;
+        if (cols != other.cols)
+            return false;
+        
+        return Objects.equal(rows, other.rows)
+                && Objects.equal(cols, other.cols) &&
+                Arrays.equals(grid, other.grid) &&
+                Objects.equal(invalidSquare, other.invalidSquare);
+                
     }
     
     public int getSize() {

@@ -1,16 +1,11 @@
 package chess;
 
 public enum Piece {
-    Pawn('p'),
-    Knight('n'),
-    Bishop('b'),    
-    Rook('r'),
-    Queen('q'),
-    King('k');
+    Pawn(),
+    Knight(),
+    Bishop(),    
+    Rook(),
+    Queen(),
+    King(),    
     
-    private char ch;
-    
-    Piece(char pieceCh) {
-        this.ch = pieceCh;
-    }
 }

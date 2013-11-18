@@ -2,14 +2,23 @@ package chess.parsing;
 
 import java.util.List;
 
-import chess.Piece;
+import chess.Board;
+import chess.ColoredPiece;
 
 public class Ply {
     boolean isWhiteMove;
 
-    Piece movedPiece;
+    ColoredPiece movedPiece;
 
-    Piece capturedPiece;
+    //Piece capturedPiece;
+    
+    int targetFile;
+    int targetRank;
+    
+    int sourceFile;
+    int sourceRank;
+    
+    boolean isCapture;
 
     int moveNumber;
 
@@ -19,8 +28,12 @@ public class Ply {
     
     String comment;
     
-    String nagComment;
+    //http://en.wikipedia.org/wiki/Numeric_Annotation_Glyphs
+    String nagComment; //like ! or ??
     Integer nagValue;
+    
+    Board boardBeforeMove;
+    Board boardAfterMove;
     
 
     /*
@@ -66,7 +79,7 @@ public class Ply {
     /**
      * @return the movedPiece
      */
-    public Piece getMovedPiece() {
+    public ColoredPiece getMovedPiece() {
         return movedPiece;
     }
 
@@ -74,25 +87,11 @@ public class Ply {
     /**
      * @param movedPiece the movedPiece to set
      */
-    public void setMovedPiece(Piece movedPiece) {
+    public void setMovedPiece(ColoredPiece movedPiece) {
         this.movedPiece = movedPiece;
     }
 
 
-    /**
-     * @return the capturedPiece
-     */
-    public Piece getCapturedPiece() {
-        return capturedPiece;
-    }
-
-
-    /**
-     * @param capturedPiece the capturedPiece to set
-     */
-    public void setCapturedPiece(Piece capturedPiece) {
-        this.capturedPiece = capturedPiece;
-    }
 
 
     /**
@@ -188,5 +187,117 @@ public class Ply {
      */
     public void setNagValue(Integer nagValue) {
         this.nagValue = nagValue;
+    }
+
+
+    /**
+     * @return the boardBeforeMove
+     */
+    public Board getBoardBeforeMove() {
+        return boardBeforeMove;
+    }
+
+
+    /**
+     * @param boardBeforeMove the boardBeforeMove to set
+     */
+    public void setBoardBeforeMove(Board boardBeforeMove) {
+        this.boardBeforeMove = boardBeforeMove;
+    }
+
+
+    /**
+     * @return the boardAfterMove
+     */
+    public Board getBoardAfterMove() {
+        return boardAfterMove;
+    }
+
+
+    /**
+     * @param boardAfterMove the boardAfterMove to set
+     */
+    public void setBoardAfterMove(Board boardAfterMove) {
+        this.boardAfterMove = boardAfterMove;
+    }
+
+
+    /**
+     * @return the targetFile
+     */
+    public int getTargetFile() {
+        return targetFile;
+    }
+
+
+    /**
+     * @param targetFile the targetFile to set
+     */
+    public void setTargetFile(int targetFile) {
+        this.targetFile = targetFile;
+    }
+
+
+    /**
+     * @return the targetRank
+     */
+    public int getTargetRank() {
+        return targetRank;
+    }
+
+
+    /**
+     * @param targetRank the targetRank to set
+     */
+    public void setTargetRank(int targetRank) {
+        this.targetRank = targetRank;
+    }
+
+
+    /**
+     * @return the isCapture
+     */
+    public boolean isCapture() {
+        return isCapture;
+    }
+
+
+    /**
+     * @param isCapture the isCapture to set
+     */
+    public void setCapture(boolean isCapture) {
+        this.isCapture = isCapture;
+    }
+
+
+    /**
+     * @return the sourceFile
+     */
+    public int getSourceFile() {
+        return sourceFile;
+    }
+
+
+    /**
+     * @param sourceFile the sourceFile to set
+     */
+    public void setSourceFile(int sourceFile) {
+        this.sourceFile = sourceFile;
+    }
+
+
+    /**
+     * @return the sourceRank
+     */
+    public int getSourceRank() {
+        return sourceRank;
+    }
+
+
+    /**
+     * @param sourceRank the sourceRank to set
+     */
+    public void setSourceRank(int sourceRank) {
+        this.sourceRank = sourceRank;
     }
 }

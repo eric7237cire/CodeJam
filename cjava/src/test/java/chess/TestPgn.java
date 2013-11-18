@@ -121,4 +121,48 @@ public class TestPgn {
         FileUtils.write(f, ";", true);
         log.info(s);
     }
+    
+    @Test
+    public void testPositions() throws Exception
+    {
+        Input input = new Input("1. e4 d5 2. e5 f5 3. exf6 *");
+        
+        Board[] boards = new Board[] { new Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"),
+         new Board("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"),
+         new Board("rnbqkbnr/ppp1pppp/8/3p4/4P3/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2"),
+         new Board("rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 2"),
+         new Board("rnbqkbnr/ppp1p1pp/8/3pPp2/8/8/PPPP1PPP/RNBQKBNR w KQkq f6 0 3"),
+         new Board("rnbqkbnr/ppp1p1pp/5P2/3p4/8/8/PPPP1PPP/RNBQKBNR b KQkq - 0 3")};
+        
+        PgnParser p = new PgnParser(input);
+        
+        Game g = p.parseGame();
+        
+        assertEquals(boards[0], g.getMoves().get(0).getWhiteMove().getBoardBeforeMove());
+        
+        Board chk = g.getMoves().get(0).getWhiteMove().getBoardAfterMove();
+        
+        assertEquals(boards[1], g.getMoves().get(0).getWhiteMove().getBoardAfterMove());
+        
+        assertEquals(boards[1], g.getMoves().get(0).getBlackMove().getBoardBeforeMove());
+        assertEquals(boards[2], g.getMoves().get(0).getBlackMove().getBoardAfterMove());
+
+        assertEquals(boards[2], g.getMoves().get(1).getWhiteMove().getBoardBeforeMove());
+        assertEquals(boards[3], g.getMoves().get(1).getWhiteMove().getBoardAfterMove());
+        
+        assertEquals(boards[3], g.getMoves().get(1).getBlackMove().getBoardBeforeMove());
+        assertEquals(boards[4], g.getMoves().get(1).getBlackMove().getBoardAfterMove());
+        
+        assertEquals(boards[4], g.getMoves().get(2).getWhiteMove().getBoardBeforeMove());
+        assertEquals(boards[5], g.getMoves().get(2).getWhiteMove().getBoardAfterMove());
+        
+       // assertEquals(boards[0], g.getMoves().get(0).getBlackMove().getBoardBeforeMove());
+       // assertEquals(boards[1], g.getMoves().get(0).getBlackMove().getBoardAfterMove());
+        
+        
+        
+        for (int i = 0; i < boards.length; ++i) {
+            log.debug(boards[i].toString());
+        }
+    }
 }

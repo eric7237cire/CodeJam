@@ -10,6 +10,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import chess.Board;
+import chess.ColoredPiece;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -89,6 +92,9 @@ public class PgnParser {
         Game game = new Game();
         log.debug("Starting parse");
         int loopCheck = 0;
+        /*********************************************
+         * Tags
+         *********************************************/
         while(hasTag())
         {
             if (loopCheck++ > 20)
@@ -114,9 +120,40 @@ public class PgnParser {
             input.setCurMarker( input.getCurMarker() + endMarker );
         }
         
+        /*********************************************
+         * Moves
+         *********************************************/
         game.moves = parseMoveList(false);
         
+        fillBoardPositions(game.moves);
+        
         return game;
+        
+    }
+    
+    private void fillBoardPositions(List<Move> moves) {
+        Board b1 = new Board(Board.initialFen);
+                
+        for(int moveNum = 0; moveNum < moves.size(); ++moveNum)
+        {
+            Move move = moves.get(moveNum); 
+            log.debug("fillBoardPositions {} {}", moveNum, move);
+            move.getWhiteMove().setBoardBeforeMove(b1);
+            
+            Board b2 = b1.makeMove(move.getWhiteMove());
+            
+            move.getWhiteMove().setBoardAfterMove(b2);
+            
+            if (move.getBlackMove() == null)
+                continue;
+            
+            move.getBlackMove().setBoardBeforeMove(b2);
+            
+            b1 = b2.makeMove(move.getBlackMove());
+            
+            move.getBlackMove().setBoardAfterMove(b1);
+        }
+        
         
     }
     
@@ -128,11 +165,15 @@ public class PgnParser {
         int loopcount = 0;
         while( true ) 
         {
-            if (loopcount++ > 5)
+            //Loop check
+            if (loopcount++ > 500)
                 break;
+            
+            //Fin de liste
             boolean isEnd = parseMoveListEnd(isVariation);
             if (isEnd)
                 break;
+            
             move = parseMove();
             
             Preconditions.checkState(move != null);
@@ -146,6 +187,7 @@ public class PgnParser {
     
     private boolean parseMoveListEnd(boolean isVariation)
     {
+        //TODO, end of input, [ charactère  
         CharSequence curBlock = input.getCurrentBlock();
         
         Pattern[] ends;
@@ -193,9 +235,8 @@ public class PgnParser {
         if (skipWhiteMove) {
             move.whiteMove = null;
         } else {
-            move.whiteMove = parsePly();
-            move.whiteMove.isWhiteMove = true;
-        
+            move.whiteMove = parsePly(true);
+                    
             parseVariations(move.whiteMove);
         
             if (move.whiteMove.variations.size() > 0) {
@@ -206,18 +247,18 @@ public class PgnParser {
             move.whiteMove.moveNumber = moveNumber;
         }
         
-        move.blackMove = parsePly();
+        move.blackMove = parsePly(false);
        
-        parseVariations(move.blackMove);
-        
-        
-        move.blackMove.moveNumber = moveNumber;
-        
+        if (move.blackMove != null) {
+            parseVariations(move.blackMove);
+            move.blackMove.moveNumber = moveNumber;
+        }
         return move;
     }
     
     private void parseVariations(Ply ply)
     {
+        
         List<List<Move>> variations = Lists.newArrayList();
         ply.variations = variations;
         
@@ -260,11 +301,18 @@ public class PgnParser {
         
     }
     
-    private Ply parsePly()
+    private Ply parsePly(boolean isWhiteMove)
     {
         Ply ret = new Ply();
         
-        ret.sanTxt = parseSanMove();
+        ret.isWhiteMove = isWhiteMove;
+        
+        boolean ok = parseSanMove(ret);
+        
+        if (!ok) {
+            return null;
+        }
+        Preconditions.checkState(ok);
         
         parseNagCode(ret);
         
@@ -339,18 +387,18 @@ public class PgnParser {
         return m.group(1);
     }
     
-    private String parseSanMove() 
+    private boolean parseSanMove(Ply ply) 
     {
         CharSequence curBlock = input.getCurrentBlock();
         
         Pattern sanTxt = Pattern.compile(
                 "(" +
-                "[QKRBN]?" + //piece
-                 "[abcdefgh]?" + //disambiguation file (precedence)
-                 "[12345678]?" + //disambiguation file 
-                 "x?" +
-                "[abcdefgh]" + //target file
-                "[12345678]" + //target rank 
+                "([QKRBN]?)" + //piece
+                 "([abcdefgh]?)" + //disambiguation file (precedence)
+                 "([12345678]?)" + //disambiguation rank 
+                 "(x?)" +
+                "([abcdefgh])" + //target file
+                "([12345678])" + //target rank 
                 
                         "[+#]?"  //Check or mate
                 + ")\\s*") ;
@@ -359,8 +407,26 @@ public class PgnParser {
         
         if (m.lookingAt()) {
             input.setCurMarker( input.getCurMarker() + m.end() );
+            int gNum = 1;
+            ply.sanTxt = m.group(gNum++);
             
-            return m.group(1);
+            String piece = m.group(gNum++);
+            if (piece.length() > 0) {
+                ply.movedPiece = ColoredPiece.ToPiece(piece);
+            } else {
+                ply.movedPiece = ply.isWhiteMove ? ColoredPiece.WPawn : ColoredPiece.BPawn;
+            }
+            
+            String sourceFile = m.group(gNum++);
+            ply.sourceFile = sourceFile.length() > 0 ? sourceFile.charAt(0) - 'a' : -1;
+            String sourceRank = m.group(gNum++);  
+            ply.sourceRank = sourceRank.length() > 0 ? sourceRank.charAt(0) - '1' : -1;
+            
+            ply.isCapture = m.group(gNum++).equals("x");
+            ply.targetFile = m.group(gNum++).charAt(0) - 'a';
+            ply.targetRank = m.group(gNum++).charAt(0) - '1';
+            
+            return true; 
             
             
         }
@@ -371,15 +437,15 @@ public class PgnParser {
         
         if (m.lookingAt()) {
             input.setCurMarker( input.getCurMarker() + m.end() );
-            
-            return m.group(1);
+            ply.sanTxt = m.group(1);
+            return true;
             
             
         }
         
         
         log.debug("Pas trouvé sanTxt.  curBlock {}", curBlock);
-        return null;
+        return false ;
     }
     
     private boolean parseSkipWhiteMove() 

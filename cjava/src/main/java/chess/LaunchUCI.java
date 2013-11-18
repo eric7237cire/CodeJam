@@ -253,10 +253,10 @@ public class LaunchUCI {
         lau.startPos = startPos;
         lau.endPos = endPos;
         
-        Board b = Fen.parseFen(startPos);
+        Board b = new Board(startPos);
         log.info("Starting Pos\n{}", b.toString());
         
-        b = Fen.parseFen(endPos);
+        b = new Board(endPos);
         log.info("Ending Pos\n{}", b.toString());
         lau.go();
 
