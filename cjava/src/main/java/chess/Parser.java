@@ -11,7 +11,7 @@ public class Parser {
     final static Pattern seldepth = Pattern.compile("seldepth (\\d+)");
 
     // When search is done
-    final static Pattern bestMove = Pattern.compile("bestmove (.*)");
+    final static Pattern bestMove = Pattern.compile("bestmove (.*)(?: ponder .*)?");
     
     static Integer getInteger(String infoStr, Pattern pattern) {
         Matcher m = pattern.matcher(infoStr);

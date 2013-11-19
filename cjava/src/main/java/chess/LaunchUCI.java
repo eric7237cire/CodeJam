@@ -13,12 +13,13 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Map;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import chess.parsing.Fen;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
@@ -56,6 +57,14 @@ public class LaunchUCI {
 
     final static boolean isDebug = true;
     final static boolean isPrintAllOutput = true; //isDebug;
+    
+    public final Lock lock = new ReentrantLock();
+    
+    public final Condition readyOK = lock.newCondition();
+    
+    public final Condition bestMoveCond = lock.newCondition();
+
+    boolean ready = false;
 
 
     Map<String, Integer> cache;
@@ -80,14 +89,13 @@ public class LaunchUCI {
     // ........
     // "8/k7/1qq5/8/8/1QQ5/K7/8 b - - 0 55";
 
-    boolean isPos2 = false;
 
-    int beforeMoveScore = -9999999;
 
-    int afterMoveScore = -9999999;
+    int score;
+    String bestMove;
 
     OutputStreamWriter osw;
-    
+    Process p = null;
 
     @SuppressWarnings("unchecked")
     void loadCache() throws FileNotFoundException, IOException,
@@ -101,7 +109,7 @@ public class LaunchUCI {
             int timeUsed = ois.readInt();
 
             if (timeUsed == LaunchUCI.waitTime) {
-               // cache = (Map<String, Integer>) ois.readObject();
+               cache = (Map<String, Integer>) ois.readObject();
             }
 
             ois.close();
@@ -131,21 +139,57 @@ public class LaunchUCI {
             sendCommand("setoption " + option);
         }
         
-        Integer score = cache.get(startPos);
-
-        if (score != null) {
-            log.info("Using cache for start position");
-
-            if (isDebug) {
-                log.debug("Setting score to {}", score);
-            }
-            this.beforeMoveScore = score;
-            launchPosition2();
-            return;
+        
+        
+        log.debug("Done init");
+    }
+    
+    int evalPosition(String position) throws IOException, InterruptedException
+    {
+        Integer cacheScore = cache.get(position);
+        
+        if (cacheScore != null) {
+            return cacheScore;
         }
-
-        sendCommand("position fen " + startPos);
+        
+        sendCommand("ucinewgame");
+        sendCommand("position fen " + position);
+        
+        checkEngineIsReady();
+        
+        ready = false;
+        lock.lock();
+        sendCommand("go movetime " + waitTime);
+        
+        while(!ready) {
+            log.debug("Waiting for ready {}", ready);
+            bestMoveCond.await();
+        }
+        
+        cache.put(position, score);
+        
+        return score;
+        
+    }
+    
+    void checkEngineIsReady() {
+        ready = false;
+        lock.lock();
+        try {
         sendCommand("isready");
+        
+        while(!ready) {
+            log.debug("Waiting for ready {}", ready);
+            readyOK.await();
+        }
+        
+        } catch (IOException ex) {
+            log.error("ex", ex);
+        } catch (InterruptedException ex) {
+            log.error("ex", ex);
+        }
+        
+        log.debug("Done waiting for ready");
     }
 
     void sendCommand(String cmd) throws IOException {
@@ -155,51 +199,29 @@ public class LaunchUCI {
         osw.flush();
     }
 
-    void launchPosition2() throws IOException {
-        isPos2 = true;
+    
 
-        Integer score = cache.get(endPos);
-
-        if (score != null) {
-            log.info("Using cache for end position");
-
-            if (isDebug) {
-                log.debug("Setting score to {}", -score);
-            }
-            this.afterMoveScore = -score;
-            printResults();
-            return;
-        }
-
-        sendCommand("ucinewgame");
-        sendCommand("position fen " + endPos);
-        sendCommand("isready");
-
-    }
-
-    void printResults() throws IOException {
+    void printResults(int beforeMoveScore, int afterMoveScore) throws IOException {
         int change = afterMoveScore - beforeMoveScore;
         if (LaunchUCI.isDebug)
-            System.out.println("before " + beforeMoveScore + " After "
-                    + afterMoveScore + " change " + change);
+            log.debug("before {} After {} change {}", beforeMoveScore, afterMoveScore, change);
 
         if (afterMoveScore <= maximumScoreNotABlunder
                 && change < isBlunderThreshold) {
-            System.out.println("Its a blunder!");
+            log.info("Its a blunder!");
         } else {
-            System.out.println("Its OK!");
+            log.info("Its OK!");
 
             if (isBetterCheck && afterMoveScore <= maximumScoreIsBetter && change < isBetterThreshold) {
-                System.out.println("There is a better move probably");
+                log.info("There is a better move probably");
             }
         }
 
-        sendCommand("quit");
 
     }
 
     public void go() {
-        Process p = null;
+        
 
         try {
             loadCache();
@@ -222,11 +244,42 @@ public class LaunchUCI {
             osw = new OutputStreamWriter(os);
 
             init();
+            
+            checkEngineIsReady();
 
+            
+        } catch (IOException ex) {
+            log.error("ex", ex);
+            p.destroy();
+        } catch (Exception ex) {
+            log.error("ex", ex);
+            p.destroy();
+        }
+    }
+    
+    public void evalStartEndPos() {
+        int startScore;
+        try {
+            startScore = evalPosition(startPos);
+        
+        int endScore = evalPosition(endPos);            
+        endScore = -endScore;
+        
+        printResults(startScore, endScore);
+        
+        } catch (IOException ex) {
+            log.error("ex",ex);
+        } catch (InterruptedException ex) {
+            log.error("ex",ex);
+        }
+        
+    }
+    
+    public void quit() {
+        
+        try {
+            sendCommand("quit");
             p.waitFor();
-
-            writeCache();
-
         } catch (IOException ex) {
             log.error("ex", ex);
             p.destroy();
@@ -237,6 +290,8 @@ public class LaunchUCI {
             log.error("ex", ex);
             p.destroy();
         }
+
+        writeCache();
     }
 
     public static void main(String[] args) throws IOException {
@@ -259,6 +314,10 @@ public class LaunchUCI {
         b = new Board(endPos);
         log.info("Ending Pos\n{}", b.toString());
         lau.go();
+        
+        lau.evalStartEndPos();
+        
+        lau.quit();
 
     }
 
@@ -298,8 +357,15 @@ class StreamGobbler extends Thread {
 
                 // Quand le moteur est prêt, lancer le calcul
                 if ("readyok".equals(line)) {
-                    launchUCI.sendCommand("go movetime " + LaunchUCI.waitTime);
-                    //launchUCI.sendCommand("go maxdepth 5");
+                    LaunchUCI.log.debug("readyok recieved");
+                    launchUCI.lock.lock();
+                    try {
+                    launchUCI.ready = true;
+                    launchUCI.readyOK.signal();
+                    } finally {
+                        launchUCI.lock.unlock();
+                    }
+                    
 
                 }
 
@@ -307,10 +373,18 @@ class StreamGobbler extends Thread {
                 Matcher bestMove = Parser.bestMove.matcher(line);
 
                 if (bestMove.matches()) {
+                    /*
                     if (!launchUCI.isPos2)
                         launchUCI.launchPosition2();
                     else if (launchUCI.isPos2)
                         launchUCI.printResults();
+                        */
+                    launchUCI.lock.lock();
+                    
+                    launchUCI.ready = true;
+                    launchUCI.bestMoveCond.signal();
+                    
+                    launchUCI.lock.unlock();
                 }
 
                 if (line != null && line.startsWith("info")) {
@@ -338,17 +412,9 @@ class StreamGobbler extends Thread {
                     if (score != null) {
                         if (LaunchUCI.isDebug)
                             System.out.println("Latest score is " + score);
-                        if (launchUCI.isPos2) {
-                            // Negative car c'est l'adversaire
-                            launchUCI.afterMoveScore = -score;
-
-                            launchUCI.cache.put(launchUCI.endPos, score);
-
-                        } else {
-                            launchUCI.beforeMoveScore = score;
-
-                            launchUCI.cache.put(launchUCI.startPos, score);
-                        }
+                        
+                        launchUCI.score = score;
+                        
                     }
                 }
             }
