@@ -24,6 +24,15 @@ public class Game {
     public List<Move> getMoves() {
         return moves;
     }
+    
+    public Ply getPly(int moveNumber, boolean isWhite) {
+        Move move = moves.get(moveNumber);
+        
+        if (isWhite)
+            return move.getWhiteMove();
+        else
+            return move.getBlackMove();
+    }
 
     /**
      * @param moves the moves to set
