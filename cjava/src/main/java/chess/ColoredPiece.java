@@ -38,6 +38,26 @@ public enum ColoredPiece {
             return BPawn;
         case 'P':
             return WPawn;
+        case 'Q':
+            return WQueen;
+        case 'q':
+            return BQueen;
+        case 'n':
+            return BKnight;
+        case 'N':
+            return WKnight;
+        case 'b':
+            return BBishop;
+        case 'B':
+            return WBishop;
+        case 'r':
+            return BRook;
+        case 'R':
+            return WRook;
+        case 'k':
+            return BKing;
+        case 'K':
+            return WKing;
         }
             return null;
     }

@@ -2,10 +2,12 @@ package chess;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 
 import chess.parsing.Fen;
@@ -113,13 +115,135 @@ public class Board {
             b.movePawn(ply);
 
             break;
+        case Queen:
+            b.moveQueen(ply);
+            break;
+        case Knight:
+            b.moveKnight(ply);
+            break;
         default:
-            Preconditions.checkState(false);
+            Preconditions.checkState(false, ply);
         }
 
         return b;
     }
 
+    private void moveQueen(Ply ply) {
+        char queenChar = ply.isWhiteMove() ? 'Q' : 'q';
+        
+        final int targetRank = ply.getTargetRank();
+        final int targetFile = ply.getTargetFile();
+        
+        int[] queenPos = getMovedPieceIndex(queenChar, ply, new Predicate<Integer>() {
+
+            @Override
+            public boolean apply(Integer piecePosGridIndex) {
+                int[] rankFile = grid.getRowCol(piecePosGridIndex);
+                
+                if (Math.abs(targetFile - rankFile[1]) + Math.abs(targetRank - rankFile[0]) == 3)
+                    return true;
+                
+                return false;
+            }
+            
+        });
+        
+        move(queenPos[0], queenPos[1], ply.getTargetRank(), ply.getTargetFile());
+        
+    }
+    
+    private boolean emptyBetween(int sourceRank, int sourceFile, int targetRank, int targetFile)
+    {
+        /*
+        if (sourceRank == targetRank)
+        {
+            for(int file = Math.min(targetFile, sourceFile) + 1; file < Math.max(targetFile, sourceFile); ++file)
+            {
+                if (grid.getEntry(sourceRank, file) != grid.getInvalidSquare()) {
+                    return false;
+                }
+            }
+        } else if (sourceFile == targetFile) {
+            for(int rank = Math.min(targetRank, sourceRank) + 1; rank < Math.max(targetRank, sourceRank); ++rank)
+            {
+                if (grid.getEntry(rank, sourceFile) != grid.getInvalidSquare()) {
+                    return false;
+                }
+            }
+        } else {
+        */
+        int slopeRank = targetRank - sourceRank;
+        int slopeFile = targetFile - sourceFile;
+        
+        Preconditions.checkState(slopeRank * slopeFile == 0 || Math.abs(slopeRank) == Math.abs(slopeFile));
+            
+        int div = Math.max( Math.abs(slopeFile), Math.abs(slopeFile));
+        
+        slopeFile /= div;
+        slopeRank /= div;
+        
+        Preconditions.checkState(slopeRank >= -1 && slopeRank <= 1);
+        Preconditions.checkState(slopeFile >= -1 && slopeFile <= 1);
+        
+        return true;
+    }
+    
+    private void moveKnight(Ply ply) {
+        char knightChar = ply.isWhiteMove() ? 'N' : 'n';
+        
+        final int targetRank = ply.getTargetRank();
+        final int targetFile = ply.getTargetFile();
+        
+        int[] knightPos = getMovedPieceIndex(knightChar, ply, new Predicate<Integer>() {
+
+            @Override
+            public boolean apply(Integer piecePosGridIndex) {
+                int[] rankFile = grid.getRowCol(piecePosGridIndex);
+                
+                if (Math.abs(targetFile - rankFile[1]) + Math.abs(targetRank - rankFile[0]) == 3)
+                    return true;
+                
+                return false;
+            }
+            
+        });
+        
+        move(knightPos[0], knightPos[1], ply.getTargetRank(), ply.getTargetFile());
+
+        
+    }
+    
+    private int[] getMovedPieceIndex(char pieceChar, Ply ply, Predicate<Integer> sourcePieceCheck)
+    {
+        Set<Integer> piecePos = grid.getIndexesOf(pieceChar);
+        
+        Preconditions.checkState(piecePos.size() > 0);
+        
+        if (piecePos.size() == 1) {
+            return grid.getRowCol(piecePos.iterator().next());
+        }
+        
+        
+        for(Integer piecePosGridIndex : piecePos)
+        {
+            int[] rankFile = grid.getRowCol(piecePosGridIndex);
+            
+            if (ply.getSourceRank() != -1 && ply.getSourceRank() != rankFile[0])
+                continue;
+            
+            if (ply.getSourceFile() != -1 && ply.getSourceFile() != rankFile[1])
+                continue;
+            
+            if (!sourcePieceCheck.apply(piecePosGridIndex))
+                continue;
+            
+            return rankFile;
+        }
+        
+        Preconditions.checkState(false);
+        return null;
+    }
+    
     private void movePawn(Ply ply) {
         Preconditions.checkState(ply.isWhiteMove() == this.whiteToMove);
 
@@ -161,16 +285,21 @@ public class Board {
             int targetSquare = grid.getIndex(ply.getTargetRank(),
                     ply.getTargetFile());
 
-            Preconditions
-                    .checkState((targetSquare == enPassantSquare && grid
-                            .getEntry(targetSquare) == grid.getInvalidSquare())
-                            || (enPassantSquare == -1 && grid
-                                    .getEntry(targetSquare) != grid
-                                    .getInvalidSquare()));
+            if (enPassantSquare == targetSquare) {
+                Preconditions.checkState('P' == Character.toUpperCase( grid.getEntry(ply.getTargetRank() - rankDir, ply.getTargetFile())));
+                                        
+                //Remove enemy pawn
+                grid.setEntry(ply.getTargetRank() - rankDir, ply.getTargetFile(),
+                        grid.getInvalidSquare());
+            } else {
+                Preconditions.checkState(grid
+                                .getEntry(targetSquare) != grid
+                                .getInvalidSquare());
+            }
+            
 
             enPassantSquare = -1;
-            grid.setEntry(ply.getTargetRank() - rankDir, ply.getTargetFile(),
-                    grid.getInvalidSquare());
+            
             sourceRank = ply.getTargetRank() - rankDir;
             sourceFile = ply.getSourceFile();
         }
