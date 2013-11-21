@@ -162,10 +162,51 @@ public class TestPgn {
        // assertEquals(boards[0], g.getMoves().get(0).getBlackMove().getBoardBeforeMove());
        // assertEquals(boards[1], g.getMoves().get(0).getBlackMove().getBoardAfterMove());
         
+        LaunchUCI uci = new LaunchUCI();
+        uci.go();
+        
+        for (int moveIdx = 0; moveIdx < g.getMoves().size(); ++moveIdx) {
+            
+            //Move move = g.getMoves().get(moveIdx);
+            
+            Board before = g.getPly(moveIdx, true).getBoardBeforeMove();
+            Board after = g.getPly(moveIdx, true).getBoardAfterMove();
+            
+            PositionEval s1 = uci.evalPosition(before.toFenString(), 200);
+            
+            PositionEval s2 = uci.evalPosition(after.toFenString(), 200);
+            
+            log.debug("before {} after {}", before.toString(), after.toString());
+            log.debug("Move {} Difference {} {} = {}", moveIdx+1, s1, s2, s2.scoreCp-s1.scoreCp);
+        }
+    }
+    
+    @Test
+    public void testPositions2() throws Exception
+    {
+        Input input = new Input("1. d4 e6 *");
         
         
-        for (int i = 0; i < boards.length; ++i) {
-            log.debug(boards[i].toString());
+        PgnParser p = new PgnParser(input);
+        
+        Game g = p.parseGame();
+        
+       
+        LaunchUCI uci = new LaunchUCI();
+        uci.go();
+        
+        for (int moveIdx = 0; moveIdx < g.getMoves().size(); ++moveIdx) {
+            
+                        
+            Board before = g.getPly(moveIdx, true).getBoardBeforeMove();
+            Board after = g.getPly(moveIdx, true).getBoardAfterMove();
+            
+            PositionEval s1 = uci.evalPosition(before.toFenString(), 200);
+            
+            PositionEval s2 = uci.evalPosition(after.toFenString(), 200);
+            
+            log.debug("before {} after {}", before.toString(), after.toString());
+            log.debug("Move {} Difference {} {} = {}", moveIdx+1, s1, s2, -s2.scoreCp-s1.scoreCp);
         }
     }
 }

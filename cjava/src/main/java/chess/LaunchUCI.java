@@ -18,6 +18,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,7 +68,7 @@ public class LaunchUCI {
     boolean ready = false;
 
 
-    Map<String, Integer> cache;
+    Map<String, PositionEval> cache;
 
     // ........
     // ........
@@ -91,8 +92,7 @@ public class LaunchUCI {
 
 
 
-    int score;
-    String bestMove;
+    PositionEval posEval = new PositionEval();
 
     OutputStreamWriter osw;
     Process p = null;
@@ -109,7 +109,7 @@ public class LaunchUCI {
             int timeUsed = ois.readInt();
 
             if (timeUsed == LaunchUCI.waitTime) {
-               cache = (Map<String, Integer>) ois.readObject();
+               //cache = (Map<String, PositionEval>) ois.readObject();
             }
 
             ois.close();
@@ -144,9 +144,11 @@ public class LaunchUCI {
         log.debug("Done init");
     }
     
-    int evalPosition(String position) throws IOException, InterruptedException
+    PositionEval evalPosition(String position, int timeToCalcMs) throws IOException, InterruptedException
     {
-        Integer cacheScore = cache.get(position);
+        this.posEval = new PositionEval();
+        
+        PositionEval cacheScore = cache.get(position);
         
         if (cacheScore != null) {
             return cacheScore;
@@ -159,16 +161,17 @@ public class LaunchUCI {
         
         ready = false;
         lock.lock();
-        sendCommand("go movetime " + waitTime);
+        sendCommand("go movetime " + timeToCalcMs);
         
         while(!ready) {
             log.debug("Waiting for ready {}", ready);
             bestMoveCond.await();
         }
         
-        cache.put(position, score);
+        cache.put(position, posEval);
         
-        return score;
+        
+        return posEval;
         
     }
     
@@ -193,7 +196,7 @@ public class LaunchUCI {
     }
 
     void sendCommand(String cmd) throws IOException {
-        System.out.println("Sending " + cmd);
+        log.debug("Sending {}", cmd);
         osw.write(cmd);
         osw.write("\n");
         osw.flush();
@@ -260,9 +263,9 @@ public class LaunchUCI {
     public void evalStartEndPos() {
         int startScore;
         try {
-            startScore = evalPosition(startPos);
+            startScore = evalPosition(startPos, waitTime).scoreCp;
         
-        int endScore = evalPosition(endPos);            
+        int endScore = evalPosition(endPos, waitTime).scoreCp;            
         endScore = -endScore;
         
         printResults(startScore, endScore);
@@ -353,7 +356,7 @@ class StreamGobbler extends Thread {
             String line = null;
             while ((line = br.readLine()) != null) {
                 if (LaunchUCI.isPrintAllOutput)
-                    System.out.println(line);
+                    LaunchUCI.log.debug(line);
 
                 // Quand le moteur est prêt, lancer le calcul
                 if ("readyok".equals(line)) {
@@ -379,6 +382,7 @@ class StreamGobbler extends Thread {
                     else if (launchUCI.isPos2)
                         launchUCI.printResults();
                         */
+                    launchUCI.posEval.bestMove = bestMove.group(1);
                     launchUCI.lock.lock();
                     
                     launchUCI.ready = true;
@@ -406,14 +410,13 @@ class StreamGobbler extends Thread {
                             Parser.seldepth);
                     int time = Parser.getInteger(line, Parser.time);
 
-                    System.out.println("depth " + depth + " seldepth "
-                            + seldepth + " time " + time);
+                    LaunchUCI.log.debug("depth {} seldepth {} time {} ", depth, seldepth, time);
 
                     if (score != null) {
                         if (LaunchUCI.isDebug)
-                            System.out.println("Latest score is " + score);
+                            LaunchUCI.log.debug("Latest score is {}", score);
                         
-                        launchUCI.score = score;
+                        launchUCI.posEval.scoreCp = score;
                         
                     }
                 }

@@ -29,6 +29,17 @@
       
     </encoder>
   </appender>
+  
+  <appender name="chesslog" class="ch.qos.logback.core.FileAppender">
+    <file>C:/codejam/CodeJam/cjava/uci.log</file>
+    <append>false</append>
+    <encoder>
+    <pattern>%m%n</pattern>
+    <!-- <pattern>%d{HH:mm:ss:SSS} %r - %m%n</pattern> -->
+      
+    </encoder>
+  </appender>
+  
   <!--
   <pattern>%date [%file:%line] %msg%n</pattern> 
   <logger name="com.eric.codejam.multithread" level="OFF"/>
@@ -49,7 +60,9 @@
    <logger name="hcodejam.y2010aa" level="DEBUG"/>
    <logger name="codejam.y2011aa" level="DEBUG"/>
    
-   <logger name="LaunchUCI" level="DEBUG"/>
+   <logger name="chess.LaunchUCI" level="DEBUG" additivity="false">
+        <appender-ref ref="chesslog"/>
+   </logger>
                  
    <logger name="codejam.utils.multithread" level="DEBUG"/>
    <logger name="codejam.utils" level="DEBUG"/>
