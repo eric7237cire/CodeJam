@@ -1,5 +1,35 @@
 console.log("hello body");
 
+function bindQTip() {
+	console.log("bindqtip");
+	$('li.jstree-leaf').each(function() {
+		
+		$(this).qtip({ 
+	
+    content: {
+      text: $(this).attr('board')
+    },
+     position: {
+        my: 'top left',  // Position my top left...
+        at: 'center', // at the bottom right of...
+        target: 'event' // my target
+    },
+    style: {
+        width: '800px'
+    },
+    hide: {
+            // event: 'click',
+             //inactive: 1200,
+             fixed: true
+         }
+    /*position: {
+        viewport: $(window)
+    }*/
+		});  
+});
+	
+}
+
 $( document ).ready(function() {
 
 
@@ -10,6 +40,8 @@ console.log( jQuery("#tree").length );
   jQuery("#tree")
 	.bind('loaded.jstree', function(e, data)
 	{
+		
+		bindQTip();
 		return;
 		 jQuery("#tree").jstree('open_all');
 		 

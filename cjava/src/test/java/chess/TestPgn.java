@@ -99,28 +99,7 @@ public class TestPgn {
         
     }
     
-    @Test
-    public void parseTest1() throws IOException
-    {
-        
-        Input input = new Input(TestPgn.class.getResourceAsStream(
-                "test1.pgn"));
-        PgnParser p = new PgnParser(input);
-        
-        Game g = p.parseGame();
-        
-        assertEquals(71, g.getMoves().size());
-        JsonNode node = JsonNode.buildFromGame(g);
-        
-        Gson gson = new Gson();
-        String s = gson.toJson(node);
-        
-        File f = new File("C:\\codejam\\CodeJam\\cjava\\tree\\data.js");
-        FileUtils.write(f, "allData=",false);
-        FileUtils.write(f, s, true);
-        FileUtils.write(f, ";", true);
-        log.info(s);
-    }
+    
     
     @Test
     public void testPositions() throws Exception

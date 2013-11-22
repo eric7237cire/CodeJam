@@ -35,6 +35,9 @@
 
 		text-align: left;
 		word-wrap: break-word;
+		/*added*/
+		white-space:pre;
+		font-family:"Courier"
 	}
 
 	.qtip-titlebar{

@@ -166,8 +166,8 @@ public class Board {
     private void moveKing(Ply ply) {
         char kingChar = ply.isWhiteMove() ? 'K' : 'k';
         
-        //final int targetRank = ply.getTargetRank();
-        //final int targetFile = ply.getTargetFile();
+        
+        int rank = ply.isWhiteMove() ? 0 : 7;
         
         int[] kingPos = getMovedPieceIndex(kingChar, ply, new Predicate<Integer>() {
 
@@ -182,7 +182,7 @@ public class Board {
         
         
         if (ply.getSanTxt().equals("O-O")) {
-            int rank = ply.isWhiteMove() ? 0 : 7;
+            
                 
             Preconditions.checkState(grid.getEntry(rank,4) ==  (ply.isWhiteMove() ? 'K' : 'k'));
             Preconditions.checkState(grid.getEntry(rank,5) ==  grid.getInvalidSquare());
@@ -195,25 +195,25 @@ public class Board {
             
             move(kingPos[0], kingPos[1], rank, 6);
                 
-            Preconditions.checkState(grid.getEntry(0,4) ==  grid.getInvalidSquare());
-            Preconditions.checkState(grid.getEntry(0,5) ==  (ply.isWhiteMove() ? 'R' : 'r'));
-            Preconditions.checkState(grid.getEntry(0,6) ==  (ply.isWhiteMove() ? 'K' : 'k'));
-            Preconditions.checkState(grid.getEntry(0,7) ==  grid.getInvalidSquare());
+            Preconditions.checkState(grid.getEntry(rank,4) ==  grid.getInvalidSquare());
+            Preconditions.checkState(grid.getEntry(rank,5) ==  (ply.isWhiteMove() ? 'R' : 'r'));
+            Preconditions.checkState(grid.getEntry(rank,6) ==  (ply.isWhiteMove() ? 'K' : 'k'));
+            Preconditions.checkState(grid.getEntry(rank,7) ==  grid.getInvalidSquare());
         } else if (ply.getSanTxt().equals("O-O-O")) {
                 
-                Preconditions.checkState(grid.getEntry(0,4) ==  (ply.isWhiteMove() ? 'K' : 'k'));
-                Preconditions.checkState(grid.getEntry(0,3) ==  grid.getInvalidSquare());
-                Preconditions.checkState(grid.getEntry(0,2) ==  grid.getInvalidSquare());
-                Preconditions.checkState(grid.getEntry(0,1) ==  grid.getInvalidSquare());
-                Preconditions.checkState(grid.getEntry(0,0) ==  (ply.isWhiteMove() ? 'R' : 'r'));
-                
-                move(7, 7, 7, 5);
-                
-                Preconditions.checkState(grid.getEntry(0,4) ==  grid.getInvalidSquare());
-                Preconditions.checkState(grid.getEntry(0,3) ==  (ply.isWhiteMove() ? 'R' : 'r'));
-                Preconditions.checkState(grid.getEntry(0,2) ==  (ply.isWhiteMove() ? 'K' : 'k'));
-                Preconditions.checkState(grid.getEntry(0,1) ==  grid.getInvalidSquare());
-                Preconditions.checkState(grid.getEntry(0,0) ==  grid.getInvalidSquare());
+            Preconditions.checkState(grid.getEntry(rank,4) ==  (ply.isWhiteMove() ? 'K' : 'k'));
+            Preconditions.checkState(grid.getEntry(rank,3) ==  grid.getInvalidSquare());
+            Preconditions.checkState(grid.getEntry(rank,2) ==  grid.getInvalidSquare());
+            Preconditions.checkState(grid.getEntry(rank,1) ==  grid.getInvalidSquare());
+            Preconditions.checkState(grid.getEntry(rank,0) ==  (ply.isWhiteMove() ? 'R' : 'r'));
+            
+            move(7, 7, 7, 5);
+            
+            Preconditions.checkState(grid.getEntry(rank,4) ==  grid.getInvalidSquare());
+            Preconditions.checkState(grid.getEntry(rank,3) ==  (ply.isWhiteMove() ? 'R' : 'r'));
+            Preconditions.checkState(grid.getEntry(rank,2) ==  (ply.isWhiteMove() ? 'K' : 'k'));
+            Preconditions.checkState(grid.getEntry(rank,1) ==  grid.getInvalidSquare());
+            Preconditions.checkState(grid.getEntry(rank,0) ==  grid.getInvalidSquare());
             
         } else {
             move(kingPos[0], kingPos[1], ply.getTargetRank(), ply.getTargetFile());

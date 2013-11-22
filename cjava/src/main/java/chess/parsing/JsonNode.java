@@ -7,8 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 
+/**
+ * Node in the js tree
+ * @author Groning-E
+ *
+ */
 public class JsonNode {
     
     private static final Logger log = LoggerFactory.getLogger(JsonNode.class);
@@ -27,6 +33,7 @@ public class JsonNode {
         data = new JsonData();
         data.title = title; 
         children = Lists.newArrayList();
+        attr = Maps.newHashMap();
     }
     
     void setTitle(String newTitle) {
@@ -76,7 +83,11 @@ public class JsonNode {
         String txt = ply.toString();
         JsonNode plyNode = new JsonNode(txt);
         
-        
+        if (ply == null || ply.boardAfterMove == null) {
+            log.error("board is null");
+        } else {
+            plyNode.attr.put("board", ply.boardAfterMove.toString());
+        }
         
         parent.children.add(plyNode);
         
