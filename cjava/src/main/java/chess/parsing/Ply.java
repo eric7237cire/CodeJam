@@ -9,8 +9,6 @@ public class Ply {
     boolean isWhiteMove;
 
     ColoredPiece movedPiece;
-
-    //Piece capturedPiece;
     
     int targetFile;
     int targetRank;

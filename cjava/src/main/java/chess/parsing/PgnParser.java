@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import chess.Board;
 import chess.ColoredPiece;
+import chess.Piece;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -140,10 +141,10 @@ public class PgnParser {
             Move move = moves.get(moveNum); 
             log.debug("fillBoardPositions {} {}", moveNum, move);
             move.getWhiteMove().setBoardBeforeMove(b1);
-            log.debug("Start board {}", b1.toString());
+            //log.debug("Start board \n{}", b1.toString());
             
             Board b2 = b1.makeMove(move.getWhiteMove());
-            log.debug("After white {}", b2.toString());
+            log.debug("After white : {} \n{}", move.getWhiteMove().getSanTxt(), b2.toString());
             
             move.getWhiteMove().setBoardAfterMove(b2);
             
@@ -153,7 +154,7 @@ public class PgnParser {
             move.getBlackMove().setBoardBeforeMove(b2);
             
             b1 = b2.makeMove(move.getBlackMove());
-            log.debug("After black {}", b1.toString());
+            log.debug("After black : {} \n{}", move.getBlackMove().getSanTxt(), b1.toString());
             
             move.getBlackMove().setBoardAfterMove(b1);
         }
@@ -416,7 +417,7 @@ public class PgnParser {
             
             String piece = m.group(gNum++);
             if (piece.length() > 0) {
-                ply.movedPiece = ColoredPiece.ToPiece(piece);
+                ply.movedPiece = ColoredPiece.ToPiece( ply.isWhiteMove ? piece.toUpperCase() : piece.toLowerCase());
                 Preconditions.checkNotNull(ply.movedPiece, piece);
             } else {
                 ply.movedPiece = ply.isWhiteMove ? ColoredPiece.WPawn : ColoredPiece.BPawn;
@@ -443,6 +444,7 @@ public class PgnParser {
         if (m.lookingAt()) {
             input.setCurMarker( input.getCurMarker() + m.end() );
             ply.sanTxt = m.group(1);
+            ply.movedPiece =  ply.isWhiteMove ? ColoredPiece.WKing : ColoredPiece.BKing;
             return true;
             
             

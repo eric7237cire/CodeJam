@@ -167,7 +167,7 @@ public class TestPgn {
         
         for (int moveIdx = 0; moveIdx < g.getMoves().size(); ++moveIdx) {
             
-            //Move move = g.getMoves().get(moveIdx);
+            Move move = g.getMoves().get(moveIdx);
             
             Board before = g.getPly(moveIdx, true).getBoardBeforeMove();
             Board after = g.getPly(moveIdx, true).getBoardAfterMove();
@@ -176,7 +176,8 @@ public class TestPgn {
             
             PositionEval s2 = uci.evalPosition(after.toFenString(), 200);
             
-            log.debug("before {} after {}", before.toString(), after.toString());
+            log.debug("before {}\n{} after {}\n{}", move.getWhiteMove().getSanTxt(),
+                    before.toString(), move.getWhiteMove().getSanTxt(),after.toString());
             log.debug("Move {} Difference {} {} = {}", moveIdx+1, s1, s2, s2.scoreCp-s1.scoreCp);
         }
     }

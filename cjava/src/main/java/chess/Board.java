@@ -5,16 +5,25 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import sun.rmi.runtime.Log;
+
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.base.Splitter;
 
 import chess.parsing.Fen;
+import chess.parsing.PgnParser;
 import chess.parsing.Ply;
 import codejam.utils.utils.GridChar;
+import codejam.y2008.KingTest;
 
 public class Board {
+    private static final Logger log = LoggerFactory.getLogger(Board.class);
+    
     public GridChar grid;
 
     boolean whiteToMove;
@@ -110,6 +119,8 @@ public class Board {
     public Board makeMove(Ply ply) {
         Board b = new Board(this);
 
+        int[] pieceCounts = b.tallyPiecePointCount();
+        
         switch (ply.getMovedPiece().getPiece()) {
         case Pawn:
             b.movePawn(ply);
@@ -121,11 +132,142 @@ public class Board {
         case Knight:
             b.moveKnight(ply);
             break;
+        case Bishop:
+            b.moveBishop(ply);
+            break;
+        case King:
+            b.moveKing(ply);
+            break;
+        case Rook:
+            b.moveRook(ply);
+            break;
         default:
             Preconditions.checkState(false, ply);
         }
+        
+        b.whiteToMove = !b.whiteToMove;
+
+        if (b.whiteToMove) {
+            b.moveNumber++;
+        }
+        
+        int[] newPieceCounts = b.tallyPiecePointCount();
+        
+        if (ply.isCapture()) {
+            
+        } else {
+            Preconditions.checkState( pieceCounts[0] == newPieceCounts[0]);
+            Preconditions.checkState( pieceCounts[1] == newPieceCounts[1]);
+        }
 
         return b;
+    }
+    
+    private void moveKing(Ply ply) {
+        char kingChar = ply.isWhiteMove() ? 'K' : 'k';
+        
+        //final int targetRank = ply.getTargetRank();
+        //final int targetFile = ply.getTargetFile();
+        
+        int[] kingPos = getMovedPieceIndex(kingChar, ply, new Predicate<Integer>() {
+
+            @Override
+            public boolean apply(Integer piecePosGridIndex) {
+                
+                    return true;
+            }
+            
+        });
+        
+        
+        
+        if (ply.getSanTxt().equals("O-O")) {
+            int rank = ply.isWhiteMove() ? 0 : 7;
+                
+            Preconditions.checkState(grid.getEntry(rank,4) ==  (ply.isWhiteMove() ? 'K' : 'k'));
+            Preconditions.checkState(grid.getEntry(rank,5) ==  grid.getInvalidSquare());
+            Preconditions.checkState(grid.getEntry(rank,6) ==  grid.getInvalidSquare());
+            Preconditions.checkState(grid.getEntry(rank,7) ==  (ply.isWhiteMove() ? 'R' : 'r'));
+                
+                
+                
+            move(rank, 7, rank, 5);
+            
+            move(kingPos[0], kingPos[1], rank, 6);
+                
+            Preconditions.checkState(grid.getEntry(0,4) ==  grid.getInvalidSquare());
+            Preconditions.checkState(grid.getEntry(0,5) ==  (ply.isWhiteMove() ? 'R' : 'r'));
+            Preconditions.checkState(grid.getEntry(0,6) ==  (ply.isWhiteMove() ? 'K' : 'k'));
+            Preconditions.checkState(grid.getEntry(0,7) ==  grid.getInvalidSquare());
+        } else if (ply.getSanTxt().equals("O-O-O")) {
+                
+                Preconditions.checkState(grid.getEntry(0,4) ==  (ply.isWhiteMove() ? 'K' : 'k'));
+                Preconditions.checkState(grid.getEntry(0,3) ==  grid.getInvalidSquare());
+                Preconditions.checkState(grid.getEntry(0,2) ==  grid.getInvalidSquare());
+                Preconditions.checkState(grid.getEntry(0,1) ==  grid.getInvalidSquare());
+                Preconditions.checkState(grid.getEntry(0,0) ==  (ply.isWhiteMove() ? 'R' : 'r'));
+                
+                move(7, 7, 7, 5);
+                
+                Preconditions.checkState(grid.getEntry(0,4) ==  grid.getInvalidSquare());
+                Preconditions.checkState(grid.getEntry(0,3) ==  (ply.isWhiteMove() ? 'R' : 'r'));
+                Preconditions.checkState(grid.getEntry(0,2) ==  (ply.isWhiteMove() ? 'K' : 'k'));
+                Preconditions.checkState(grid.getEntry(0,1) ==  grid.getInvalidSquare());
+                Preconditions.checkState(grid.getEntry(0,0) ==  grid.getInvalidSquare());
+            
+        } else {
+            move(kingPos[0], kingPos[1], ply.getTargetRank(), ply.getTargetFile());
+        }
+        
+        
+    }
+    
+    private void moveBishop(Ply ply) {
+        char pieceChar = ply.isWhiteMove() ? 'B' : 'b';
+        
+        final int targetRank = ply.getTargetRank();
+        final int targetFile = ply.getTargetFile();
+        
+        int[] piecePos = getMovedPieceIndex(pieceChar, ply, new Predicate<Integer>() {
+
+            @Override
+            public boolean apply(Integer piecePosGridIndex) {
+                int[] rankFile = grid.getRowCol(piecePosGridIndex);
+                
+                if (emptyBetween(rankFile[0], rankFile[1], targetRank, targetFile, false, true)) 
+                    return true;
+                
+                return false;
+            }
+            
+        });
+        
+        move(piecePos[0], piecePos[1], ply.getTargetRank(), ply.getTargetFile());
+        
+    }
+    
+    private void moveRook(Ply ply) {
+        char pieceChar = ply.isWhiteMove() ? 'R' : 'r';
+        
+        final int targetRank = ply.getTargetRank();
+        final int targetFile = ply.getTargetFile();
+        
+        int[] piecePos = getMovedPieceIndex(pieceChar, ply, new Predicate<Integer>() {
+
+            @Override
+            public boolean apply(Integer piecePosGridIndex) {
+                int[] rankFile = grid.getRowCol(piecePosGridIndex);
+                
+                if (emptyBetween(rankFile[0], rankFile[1], targetRank, targetFile, true, false)) 
+                    return true;
+                
+                return false;
+            }
+            
+        });
+        
+        move(piecePos[0], piecePos[1], ply.getTargetRank(), ply.getTargetFile());
+        
     }
 
     private void moveQueen(Ply ply) {
@@ -140,7 +282,7 @@ public class Board {
             public boolean apply(Integer piecePosGridIndex) {
                 int[] rankFile = grid.getRowCol(piecePosGridIndex);
                 
-                if (Math.abs(targetFile - rankFile[1]) + Math.abs(targetRank - rankFile[0]) == 3)
+                if (emptyBetween(rankFile[0], rankFile[1], targetRank, targetFile, true, true)) 
                     return true;
                 
                 return false;
@@ -152,7 +294,7 @@ public class Board {
         
     }
     
-    private boolean emptyBetween(int sourceRank, int sourceFile, int targetRank, int targetFile)
+    private boolean emptyBetween(int sourceRank, int sourceFile, int targetRank, int targetFile, boolean horVer, boolean diag)
     {
         /*
         if (sourceRank == targetRank)
@@ -175,15 +317,41 @@ public class Board {
         int slopeRank = targetRank - sourceRank;
         int slopeFile = targetFile - sourceFile;
         
-        Preconditions.checkState(slopeRank * slopeFile == 0 || Math.abs(slopeRank) == Math.abs(slopeFile));
+        log.debug("slopeRank {} slopeFile {}", slopeRank, slopeFile);
+        
+        if (slopeRank * slopeFile == 0 && horVer) {
+            //hor or vertical
+        } else if (Math.abs(slopeRank) == Math.abs(slopeFile) && diag) {
+            //diag
+        } else {
+            return false;
+        }
             
-        int div = Math.max( Math.abs(slopeFile), Math.abs(slopeFile));
+        int div = Math.max( Math.abs(slopeFile), Math.abs(slopeRank));
         
         slopeFile /= div;
         slopeRank /= div;
         
         Preconditions.checkState(slopeRank >= -1 && slopeRank <= 1);
         Preconditions.checkState(slopeFile >= -1 && slopeFile <= 1);
+        
+        int rank = sourceRank + slopeRank;
+        int file = sourceFile + slopeFile;
+        
+        int loopCheck = 0;
+        
+        while(rank != targetRank || file != targetFile)
+        {
+            ++loopCheck;
+            Preconditions.checkState(loopCheck  < 10);
+            
+            if (grid.getEntry(rank, file) != grid.getInvalidSquare()) {
+                return false;
+            }
+            
+            rank += slopeRank;
+            file += slopeFile;
+        }
         
         return true;
     }
@@ -200,7 +368,9 @@ public class Board {
             public boolean apply(Integer piecePosGridIndex) {
                 int[] rankFile = grid.getRowCol(piecePosGridIndex);
                 
-                if (Math.abs(targetFile - rankFile[1]) + Math.abs(targetRank - rankFile[0]) == 3)
+                int dFile = Math.abs(targetFile - rankFile[1]);
+                int dRank = Math.abs(targetRank - rankFile[0]);
+                if ( dFile + dRank == 3 && (dFile == 1 || dRank == 1) )
                     return true;
                 
                 return false;
@@ -223,6 +393,7 @@ public class Board {
             return grid.getRowCol(piecePos.iterator().next());
         }
         
+        int[] retVal = null;
         
         for(Integer piecePosGridIndex : piecePos)
         {
@@ -237,11 +408,13 @@ public class Board {
             if (!sourcePieceCheck.apply(piecePosGridIndex))
                 continue;
             
-            return rankFile;
+            Preconditions.checkState(retVal == null);
+            retVal = rankFile;
         }
         
-        Preconditions.checkState(false);
-        return null;
+        Preconditions.checkState(retVal != null);
+        return retVal;
+        
     }
     
     private void movePawn(Ply ply) {
@@ -308,11 +481,7 @@ public class Board {
                 .getMovedPiece().getCh(), "Ply %s", ply.toString());
         move(sourceRank, sourceFile, ply.getTargetRank(), ply.getTargetFile());
 
-        this.whiteToMove = !this.whiteToMove;
-
-        if (this.whiteToMove) {
-            this.moveNumber++;
-        }
+        
     }
 
     private void move(int srcRank, int srcFile, int tarRank, int tarFile) {
@@ -520,5 +689,23 @@ public class Board {
      */
     public void setEnPassantSquare(int enPassantSquare) {
         this.enPassantSquare = enPassantSquare;
+    }
+    
+    public int[] tallyPiecePointCount()
+    {
+        int[] ret = new int[2];
+        
+        for(int i = 0; i < 64; ++i) {
+            char c = grid.getEntry(i);
+            
+            if (c == grid.getInvalidSquare())
+                continue;
+            
+            ColoredPiece p = ColoredPiece.ToPiece(Character.toString(c));
+            
+            ret[p.isWhite ? 0 : 1]+= p.value;
+        }
+        
+        return ret;
     }
 }

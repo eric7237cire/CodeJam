@@ -1,23 +1,26 @@
 package chess;
 
 public enum ColoredPiece {
-    BPawn('p', Piece.Pawn),
-    BKnight('n', Piece.Knight),
-    BBishop('b', Piece.Bishop),    
-    BRook('r', Piece.Rook),
-    BQueen('q', Piece.Queen),
-    BKing('k', Piece.King),    
-    WPawn('P', Piece.Pawn),
-    WKnight('N', Piece.Knight),
-    WBishop('B', Piece.Bishop),    
-    WRook('R', Piece.Rook),
-    WQueen('Q', Piece.Queen),
-    WKing('K', Piece.King);
+    BPawn('p', Piece.Pawn, 1, false),
+    BKnight('n', Piece.Knight, 3, false),
+    BBishop('b', Piece.Bishop, 3, false),    
+    BRook('r', Piece.Rook, 5, false),
+    BQueen('q', Piece.Queen, 9, false),
+    BKing('k', Piece.King, 0, false),    
+    WPawn('P', Piece.Pawn, 1, true),
+    WKnight('N', Piece.Knight, 3, true),
+    WBishop('B', Piece.Bishop, 3, true),    
+    WRook('R', Piece.Rook, 5, true),
+    WQueen('Q', Piece.Queen, 9, true),
+    WKing('K', Piece.King, 0, true);
     
     private char ch;
     private Piece piece;
     
-    ColoredPiece(char pieceCh, Piece piece) {
+    boolean isWhite;
+    int value;
+    
+    ColoredPiece(char pieceCh, Piece piece, int value, boolean isWhite) {
         this.ch = pieceCh;
         this.piece = piece;
     }
