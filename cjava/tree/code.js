@@ -7,23 +7,22 @@ function bindQTip() {
 		$(this).qtip({ 
 	
     content: {
-      text: $(this).attr('board')
-    },
+      text: 'a' // $(this).attr('board')
+    }
+		
+		/*,
      position: {
         my: 'top left',  // Position my top left...
-        at: 'center', // at the bottom right of...
-        target: 'event' // my target
+        at: 'top left', // at the bottom right of...
+        target: [10,10]
+       // target: 'mouse' // my target
     },
     style: {
-        width: '800px'
+        width: '30px'
     },
-    hide: {
-            // event: 'click',
-             //inactive: 1200,
-             fixed: true
-         }
-    /*position: {
-        viewport: $(window)
+    target: $(this),
+    position: {
+        //viewport: true
     }*/
 		});  
 });
@@ -79,27 +78,5 @@ console.log( jQuery("#tree").length );
 
 	console.log("tooltip elems " + $('.tooltip').length);
 console.log(jQuery.fn.jquery);
-
-$('div').qtip('a');
-
-$('.tooltip').qtip({ // Grab some elements to apply the tooltip to
-    content: true,
-     position: {
-        my: 'top left',  // Position my top left...
-        at: 'center', // at the bottom right of...
-        target: 'event' // my target
-    },
-    style: {
-        width: '800px'
-    },
-    hide: {
-            // event: 'click',
-             //inactive: 1200,
-             fixed: true
-         }
-    /*position: {
-        viewport: $(window)
-    }*/
-});    	
 
 });
