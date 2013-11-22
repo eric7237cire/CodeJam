@@ -2,28 +2,38 @@ console.log("hello body");
 
 function bindQTip() {
 	console.log("bindqtip");
+	
+	$('.tooltip').qtip({ 
+		position: {
+	    viewport: $(window),
+	    
+        my: 'top left',  // Position my top left...
+        at: 'top left', // at the bottom right of...
+        target: $(this)
+    
+	}
+	
+    });
+	
 	$('li.jstree-leaf').each(function() {
 		
 		$(this).qtip({ 
 	
     content: {
-      text: 'a' // $(this).attr('board')
-    }
-		
-		/*,
-     position: {
+      text: $(this).attr('board')
+    },
+    position: {
+	    	    
         my: 'top left',  // Position my top left...
         at: 'top left', // at the bottom right of...
-        target: [10,10]
-       // target: 'mouse' // my target
+        target: $(this),
+    adjust: {
+        screen: true
     },
-    style: {
-        width: '30px'
-    },
-    target: $(this),
-    position: {
-        //viewport: true
-    }*/
+    viewport: $(window)
+	}
+		
+		
 		});  
 });
 	
