@@ -2,6 +2,7 @@ package codejam.y2013.round_1A.goodluck;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -39,6 +40,53 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
         setLogDebug();
         
         
+    }
+    
+    public static void main(String[] args) {
+    	
+    }
+    CombinationsWithRepetition
+    public static void main2(String[] args) {
+    	
+    	final int N = 7;
+    	final int M = 10;
+    	
+    	Integer[] nums = new Integer[M-1];
+    	for(int i = 2; i <= M; ++i ) {
+    		nums[i-2] = i;
+    	}
+    	Integer[] out = new Integer[N];
+    	
+    	PermutationWithRepetition<Integer> pr = PermutationWithRepetition.create(nums, out);
+    	
+    	//Integer[] t1 = new Integer[] {3,3,3};
+    	Integer[] t1 = new Integer[] {2,2,2,2,2,3,3};
+    	Integer[] t2 = new Integer[] {2,2,2,3,4,4, 5};
+    	
+    	log.debug("t1 est {}", IntMath.factorial(N) / ( IntMath.factorial(5) * IntMath.factorial(2)));
+    	log.debug("t1 est {}", IntMath.factorial(N) / ( IntMath.factorial(3) * IntMath.factorial(2)));
+    	
+    	int count1 = 0;
+    	int count2 = 0;
+    	int total = 0;
+    	
+    	while(pr.hasNext()) {
+    		Integer[] iter = pr.next();
+    		
+    		Arrays.sort(iter);
+    		//log.debug("{}", (Object)iter);
+    		if (Arrays.equals(iter, t1)) {
+    			++count1;
+    		}
+    		
+    		if (Arrays.equals(iter, t2)) {
+				++count2;
+    		}
+    		
+    		++total;
+    	}
+    	
+    	log.info("Count 1: [{}] count 2: [{}] total {}", count1, count2, total);
     }
     
     public double getProb(int needed, int total)
