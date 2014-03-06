@@ -45,7 +45,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     public static void main(String[] args) {
     	
     }
-    CombinationsWithRepetition
+    //CombinationsWithRepetition
     public static void main2(String[] args) {
     	
     	final int N = 7;
