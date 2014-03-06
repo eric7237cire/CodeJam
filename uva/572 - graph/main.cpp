@@ -116,13 +116,22 @@ void reverseList(const Node* list)
 	{
 		return;
 	}
-	Node* prev  = list;
-	Node* cur = list->next;
+	Node* cur = list;
 	Node* next = cur->next;
 	
-	while(cur)
-	{
+	Node* newHead = NULL;
 	
+	while(next)
+	{
+		if (newHead) {
+			cur->next = newHead;
+		} else {
+			cur->next = NULL;
+		}
+		
+		newHead = cur;
+		cur = next;
+		next = cur->next;
 	}
 	
 
@@ -142,6 +151,10 @@ int main()
 	cur = cur->next = new Node(5);
 	
 	printList(head);
+	
+	reverseList(head);
+	
+	printList(cur);
 }
 
 int main2()
