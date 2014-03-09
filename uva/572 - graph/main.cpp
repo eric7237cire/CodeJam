@@ -158,6 +158,21 @@ void reverseList(Node* list)
 
 }
 
+void reverseStr(char* str)
+{
+	int len = strlen(str);
+	//printf("len %i", len);
+	for(int i = 0; i < len / 2; ++i)
+	{
+		int e = len - i - 1;
+		char t = str[i];
+		str[i] = str[e];
+		str[e] = t;
+
+
+	}
+}
+
 int main2()
 {
 	Node* head = new Node(1);
@@ -181,7 +196,14 @@ int main2()
 }
 
 int main()
-{  
+{
+	char* str = "ab"; // "a string to reverse.";
+	cout << str << endl;
+	reverseStr(str);
+	cout << str << endl;
+
+	return 0;
+
 	cout << reverseInt(40240) << endl;
 	cout << reverseInt(123402407) << endl;
 	
