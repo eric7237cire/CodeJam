@@ -41,6 +41,17 @@ class Base
 	Base(const Base& rhs) {
 		cout << "Base copy constructor" << endl;
 	}
+
+	int foo() {
+		cout << "Base::foo" << endl;
+		return 45;
+	}
+
+	virtual int bar() {
+		cout << "Base::bar" << endl;
+		return 33;
+	}
+
 	private:
 	
 	
@@ -62,6 +73,16 @@ public:
 	
 	Derived(const Derived& rhs) {
 		cout << "Derived copy constructor" << endl;
+	}
+
+	int foo() {
+		cout << "Derived::foo" << endl;
+		return 45;
+	}
+
+	virtual int bar() {
+		cout << "Derived::bar" << endl;
+		return 33;
 	}
 };
 
@@ -110,7 +131,7 @@ void printList(const Node* list)
 	}
 }
 
-void reverseList(const Node* list)
+void reverseList(Node* list)
 {
 	if (list == NULL || list->next == NULL) 
 	{
@@ -121,7 +142,7 @@ void reverseList(const Node* list)
 	
 	Node* newHead = NULL;
 	
-	while(next)
+	while(cur)
 	{
 		if (newHead) {
 			cur->next = newHead;
@@ -131,13 +152,13 @@ void reverseList(const Node* list)
 		
 		newHead = cur;
 		cur = next;
-		next = cur->next;
+		if (cur) next = cur->next;
 	}
 	
 
 }
 
-int main()
+int main2()
 {
 	Node* head = new Node(1);
 	Node* cur = head;
@@ -155,21 +176,36 @@ int main()
 	reverseList(head);
 	
 	printList(cur);
+
+	return 0;
 }
 
-int main2()
+int main()
 {  
 	cout << reverseInt(40240) << endl;
 	cout << reverseInt(123402407) << endl;
 	
-	Base b;
+	Base* b = new Base();
 	cout << "b done" << endl;
 	
-	Derived d;
+	Derived* d = new Derived();
 	cout << "d done" << endl;
 	
-	chop(d);
+	Base* bp = d;
+
+	chop(*d);
 	
 	cout << "chop done" << endl;
+
+	b->foo();
+	d->foo();
+	bp->foo();
+
+	b->bar();
+	d->bar();
+	bp->bar();
+
+	d->Base::bar();
+	
  return 0;
 }

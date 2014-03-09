@@ -32,11 +32,12 @@ public class LaunchUCI {
     static Logger log = LoggerFactory.getLogger(LaunchUCI.class);
 
     static final IConfiguration config
-     = new StockfishConfig();
+     //= new StockfishConfig();
        // = new HoudiniConfig();
+    = new Houdini4Config();
 
     
-    static final int waitTime = 2 * 1000;
+    static final int waitTime = 1 * 1000;
 //5r1k/5Bp1/1p3b2/3p4/P7/2q3P1/5P1P/1Q2R1K1 w - - 0 36
 
      String startPos = 
@@ -123,8 +124,8 @@ public class LaunchUCI {
             FileOutputStream fs = new FileOutputStream(config.getCacheFilename(), false);
             ObjectOutputStream os = new ObjectOutputStream(fs);
 
-            os.writeInt(waitTime);
-            os.writeObject(cache);
+           // os.writeInt(waitTime);
+           // os.writeObject(cache);
 
         } catch (Exception ex) {
             log.error("ex", ex);

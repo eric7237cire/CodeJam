@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 
 /**
  * Node in the js tree
@@ -151,9 +151,9 @@ public class JsonNode {
         roots.add(g1);
         roots.add(g2);
         
-        Gson gson = new Gson();
-        String json = gson.toJson(roots);
+        //Gson gson = new Gson();
+        //String json = gson.toJson(roots);
         
-        log.info(json);
+        //log.info(json);
     }
 }

@@ -15,7 +15,7 @@ import chess.parsing.Input;
 import chess.parsing.JsonNode;
 import chess.parsing.PgnParser;
 
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 
 public class TestGenerateDataJs {
     
@@ -35,13 +35,13 @@ public class TestGenerateDataJs {
         //assertEquals(71, g.getMoves().size());
         JsonNode node = JsonNode.buildFromGame(g);
         
-        Gson gson = new Gson();
-        String s = gson.toJson(node);
+       // Gson gson = new Gson();
+      //  String s = gson.toJson(node);
         
         File f = new File("C:\\codejam\\CodeJam\\cjava\\tree\\data.js");
         FileUtils.write(f, "allData=",false);
-        FileUtils.write(f, s, true);
+       // FileUtils.write(f, s, true);
         FileUtils.write(f, ";", true);
-        log.info(s);
+      //  log.info(s);
     }
 }

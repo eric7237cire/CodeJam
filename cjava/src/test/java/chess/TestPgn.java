@@ -18,7 +18,7 @@ import chess.parsing.Move;
 import chess.parsing.PgnParser;
 import chess.parsing.TagName;
 
-import com.google.gson.Gson;
+//import com.google.gson.Gson;
 
 public class TestPgn {
     
