@@ -137,7 +137,7 @@
 -->
     <scenarios>
         
-        <scenario name="scenario" iterCount="40000">
+        <scenario name="scenario" iterCount="3000">
         <!-- Jh 5d 2s -->
         <flop></flop>
        <player count="1">

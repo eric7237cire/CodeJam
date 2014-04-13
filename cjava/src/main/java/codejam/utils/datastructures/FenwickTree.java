@@ -107,12 +107,14 @@ public class FenwickTree
         return sum;
     }
 
+    /* Range sum query */
     public static int ft_rsq(int[] ft, int a, int b, int mod)
     { // returns RSQ(a, b)
         Preconditions.checkState(a <= b);
         if (a==1)
             return ft_rsq_mod(ft, b, mod);
         
+        //range beginning to b - range to a - 1
         return (mod + ft_rsq_mod(ft, b, mod) - 
                  ft_rsq_mod(ft, a - 1, mod)) % mod;
     }

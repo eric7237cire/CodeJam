@@ -45,6 +45,7 @@
     <Compile Include="Boxing1.cs" />
     <Compile Include="Boxing2.cs" />
     <Compile Include="CodeJamUtil.cs" />
+    <Compile Include="Diamonds.cs" />
     <Compile Include="Osmos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TryDisposable.cs" />

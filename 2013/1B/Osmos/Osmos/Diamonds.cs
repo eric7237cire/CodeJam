@@ -1,4 +1,5 @@
 ﻿using CodeJamUtils;
+using Osmos;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,9 +10,9 @@ using System.Threading.Tasks;
 //Dynamic programming, could improve by doing a linear solution.
 //Uses checked addition
 
-namespace Osmos
+namespace Diamonds
 {
-    
+
     public class Input
     {
         private Scanner scanner;
@@ -20,7 +21,7 @@ namespace Osmos
         public int numberMotes { get; internal set; }
         public int[] otherMotes { get; protected internal set; }
 
-        
+
         public Input(Scanner scanner)
         {
             this.scanner = scanner;
@@ -36,42 +37,55 @@ namespace Osmos
 
         }
     }
-   
 
-    
 
-    public class Osmos : InputFileConsumer<Input, int>, InputFileProducer<Input>
+
+
+    public class Osmos
     {
-        static void Main(string[] args)
+        static void Main2(string[] args)
         {
 
-            Osmos osmos = new Osmos();
 
-            string baseDir = @"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\";
-            Runner<Input, int> runner = new Runner<Input, int>(baseDir, osmos, osmos);
-
-            List<string> list = new List<string>();
-            list.Add("sample.txt");
-            list.Add("A-small-practice.in");
-            list.Add("A-large-practice.in");
             Scanner scanner = null;
 
-            runner.run(list);
+            string inputFileName = @"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\sample.txt";
+            //inputFileName = @"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\A-small-practice.in";
+            inputFileName = @"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\A-large-practice.in";
+
+            using (scanner = new Scanner(File.OpenText(inputFileName)))
+            using (StreamWriter writer = new StreamWriter(@"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\ans.txt", false))
+            {
+                int testCases = scanner.nextInt();
+
+                for (int tc = 1; tc <= testCases; ++tc)
+                {
+                    Input input = new Input(scanner);
+                    Logger.Log("Input initial {0} n {1} array {2}", input.InitialMoteSize, input.numberMotes, string.Join(", ", input.otherMotes));
+
+                    int ans = Solve(input);
+
+                    writer.WriteLine(String.Format("Case #{0}: {1}", tc, ans));
+                }
+
+            }
+
+            scanner = new Scanner(File.OpenText(@"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\sample.txt"));
 
         }
 
         private class Solver
         {
-             private int[] sortedMotes;
-             private byte[,] memoize;
+            private int[] sortedMotes;
+            private byte[,] memoize;
 
             const int maxMoteSize = 1000001;
 
             public Solver(int[] sortedMotes)
-             {
-                 this.sortedMotes = sortedMotes;
-                 this.memoize = new byte[sortedMotes.Length+1, maxMoteSize+1];
-             }
+            {
+                this.sortedMotes = sortedMotes;
+                this.memoize = new byte[sortedMotes.Length + 1, maxMoteSize + 1];
+            }
 
             private static byte safeAdd(byte n1, byte n2)
             {
@@ -106,7 +120,7 @@ namespace Osmos
 
                 if (sortedMotes[progress] < currentMoteSize)
                 {
-                    return minSteps( safeAdd(progress, 1), currentMoteSize + sortedMotes[progress]);
+                    return minSteps(safeAdd(progress, 1), currentMoteSize + sortedMotes[progress]);
                 }
 
                 byte skipMote = safeAdd(minSteps(safeAdd(progress, 1), currentMoteSize), 1);
@@ -114,7 +128,7 @@ namespace Osmos
                 //No choice, can't grow
                 if (currentMoteSize <= 1)
                 {
-                    memoize[progress, currentMoteSize] = safeAdd(skipMote,1);
+                    memoize[progress, currentMoteSize] = safeAdd(skipMote, 1);
                     //return(safeAdd( , -1));
                     return safeAdd(memoize[progress, currentMoteSize], -1);
                 }
@@ -125,15 +139,15 @@ namespace Osmos
                     return safeAdd(memoize[progress, currentMoteSize], -1);
                 }
 
-                
 
 
-                
-                
+
+
+
             }
         }
-        
-        public int processInput(Input input)
+
+        public static int Solve(Input input)
         {
             int[] motes = input.otherMotes;
             Array.Sort(motes);
@@ -145,11 +159,8 @@ namespace Osmos
             return solver.minSteps(0, input.InitialMoteSize);
         }
 
-        public Input createInput(Scanner scanner)
-        {
-            return new Input(scanner);
-        }
+
     }
 
-    
+
 }

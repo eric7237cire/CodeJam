@@ -1,0 +1,3 @@
+En tant qu'Ingénieur d'études vous êtes autonome sur le périmètre fonctionnel et technique de vos applications. 
+Vous prenez en charge les exigences fonctionnelles et techniques de votre périmètre pour assurer la mise à disposition de livrables adaptés et valides. Vous maitrisez les méthodes de production logicielle, ainsi que les contraintes connexes (ergonomie, exploitabilité). Vous devez fournir une estimation fiable du temps nécessaire à la réalisations de vos activités.
+A partir des spécifications fonctionnelles et de l'architecture générale vous menez toute les opérations du cycle de réalisation : conception, développement, intégration, qualification. 

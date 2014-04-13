@@ -1,0 +1,197 @@
+                15-750  Graduate Algorithms       3/13/01
+
+- min cost max flow
+- min cost circulation
+- Klein's cycle canceling
+- Goldberg-Tarjan 
+[This material is not in the book, but  Michel Goemans has a nice set
+of notes -- see http://www-math.mit.edu/~goemans/.  Part of the
+discussion below is based on them.]
+========================================================================
+
+MIN-COST MAX FLOW
+
+Edges have costs w(e) *and* capacities c(e).  Cost of a flow f is
+			SUM_e w(e)*f(e).
+
+Goal is, out of all max flows, to find the one of least cost.
+
+E.g., can use to solve min-cost perfect matching.  (Say we have stores
+and factories, each factory can supply k stores, and there are costs
+for assigning a given store to a given factory based on the distance
+between them).
+
+Will assume all costs (and capacities) are integers.
+
+RESIDUAL GRAPHS: notion of residual graph will be useful as before.
+If we push f units of flow on an edge (u,v) of cost w, we will put in
+the residual graph an edge (v,u) of capacity f and cost -w.  Meaning
+of this is that if we undo this flow, we get our money back.
+
+
+How to solve?  One question is: are there any negative cost cycles?
+(Even if all edges are positive at the start, residual graphs will
+generally have negative cost edges, but we will never introduce
+negative cost cycles.)  If there are no negative-cost cycles, the
+problem is slightly easier.  But we'll look at the general problem
+(allowing negative-cost cycles) here since it's not that much worse.
+Note that this means the optimum solution may have little disjoint
+cycles of flow spinning around.
+
+One nice thing to do representationally is to turn this into the "min
+cost circulation" problem.
+
+MIN-COST CIRCULATION
+
+In this problem, there is no source or sink.  Our goal is just to find
+a circulation (every node has inflow = outflow) of least cost.  So, if
+there are no negative-cost cycles, then best is just not to circulate
+anything.  But, in general we will saturate all the negative-cost
+cycles we find.
+
+Converting min-cost max-flow into min-cost circulation:  just put an
+edge from t to s of infinite capacity and large negative cost.  Then
+the min-cost circulation will automatically route as much flow as
+possible from s to t in the original graph.  
+
+
+The analog to the Ford-Fulkerson algorithm for this problem is Klein's
+Cycle-Canceling algorithm:  
+
+While the current residual graph has a negative-cost cycle C,
+  Push as much flow as possible around C (until edge of minimum
+  residual capacity is saturated).
+
+(We'll worry about how to *find* such a cycle in a minute)
+
+[Run on flow problem you get from mincost bipartite matching with
+A,B,C on the LHS and A',B',C' on the RHS.  edge (A,A') has weight 1,
+edge (A,B') has weight 2, edge (B,A') has weight 1, edge (B,C') has
+weight 2, edge (C,B') has weight 2, edge (C,C') has weight 1.]
+
+Proof of correctness: Analog of Ford-Fulkerson argument is that a
+circulation is optimal iff there are no negative-cost cycles in the
+residual graph.  Obvious direction is that if there *is* a
+negative-cost cycle then you're not optimal.  Other direction: if f is
+not optimal, then there's a better f^*.  Now, the key point is that if
+you look at f^* - f, this will be a legal circulation in the current
+residual graph, and it has negative cost (because everything is
+linear).  So it must have in it a negative cost cycle.
+
+
+How to find a negative-cost cycle?  Several algorithms.  Here's one.
+
+BELLMAN-FORD: Bellman-Ford is a dynamic-programming algorithm that,
+given some goal vertex, will find the shortest path from everywhere in
+the graph to that goal vertex.  The algorithm works as follows: for
+each node in the graph, we will compute the length of the shortest path
+to the goal that uses i or fewer edges (let's say this length is
+infinity if no such path exists).  Start with i=0: dist(goal,0)=0,
+dist(v,0)=infinity for all v != goal.  Then update for i=1, 2, ... by
+using dist(v,i) = min_{edges (v,x)} [w(v,x) + dist(x,i-1)].  This
+takes O(m) time per iteration.  Also, store pointer next(v) to which x
+produces the minimum.  After n-1 iterations, we have the shortest path of
+length n-1 or less, which is the true shortest path so long as there
+are no negative-cost cycles.
+
+For our purposes, we want to use this to actually *find* negative-cost
+cycles.  To do this, we start by picking some goal vertex that is
+reachable from everywhere.  One easy way to do this is to introduce a
+new vertex "g", and create directed edges of cost 0 (the cost doesn't really
+matter) from each vertex v to g.  Now, we saw from the argument above
+that if there are no negative-cost cycles, then
+distances will stop changing after i=n-1 and the next(v) pointers will form
+a tree.  It turns out that if there *is* a negative-cost cycle, the
+distances will never stop changing (so we can test if there exists a
+negative-cost cycle by seeing if anything changes at step i=n).  Here
+is the proof of this fact: if we have a step in which no distances
+change, that means that along any cycle (v1,v2,...,vk),
+	dist(v1) <= dist(v2) + w(v1,v2), 
+	dist(v2) <= dist(v3) + w(v2,v3), ...
+summing both sides we get that the cost of the cycle is non-negative.
+In fact, this implies that at step i=n, the graph of next() pointers
+has a cycle [take the node whose shortest path of length n was
+detected to be strictly less than its shortest path of length n-1, and
+follow its path].   Total time is O(mn).
+
+
+SPEEDING UP:
+
+The algorithm so far has the same problem as Ford-Fulkerson.  To speed
+up, the natural approach is to find the "best" augmenting cycle.
+E.g., the cycle of least total cost.  Unfortunately, that's NP-hard
+(can encode Hamiltonian cycle).  So, instead, we will find something a
+little different.
+
+GOLDBERG-TARJAN: 
+
+Define mean cost of a cycle to be the cost of the cycle divided by the
+number of edges in it (i.e., the average cost per edge).  What we *can*
+find is the cycle of minimum mean cost.  Idea: add some value k to
+weights of all edges and then rerun BF to see if there is still a
+negative-cost cycle.  The minimum mean cost cycle is the one that
+stays negative for the highest value of k.  So, can do binary search.
+Or, can just use BF directly: minimum mean-cost cycle is the one that
+gives most bang per edge, so can detect.
+
+DEF: MM(G_f) is the cost per edge of the minimum mean-cost cycle in G_f.
+
+Goldberg-Tarjan algorithm:  Always pick cycle of minimum mean cost in
+current residual graph to saturate.
+
+Claim: number of iterations is O(nm*ln(-n*MM(G))).
+
+
+Before proving, here's a neat idea: vertex potentials.  Suppse we give
+each vertex v a potential p(v) [think of as a height].  
+	Then, define w_p(u,v) = w(u,v) - p(u) + p(v).
+[i.e. we pay (u,v), plus we pay or get back based on whether we are
+going uphill or downhill].
+
+What do these do to the cost of cycles?  Answer: nothing.  
+
+Question: does there exist p such that all edges have w_p(u,v) >= MM(G_f)?
+
+(Note: we can't hope to make a higher lower-bound, because that would
+violate the defn of MM(G_f)).
+
+Answer: yes.  Let's add k = -MM(G_f) to the weight of each edge, so
+now there are no negative-cost cycles.  Create some new goal-node g,
+with edges of weight 0 for every node to g [the weight doesn't have to
+be 0, so long as they are all the same].  Then let p(v) be the length
+of the shortest path to g from v [which is now well-defined].
+	So, for any edge (u,v), p(u) <= [w(u,v)+k] + p(v).
+I.e.,
+	-k <= w(u,v) - p(u) + p(v) = w_p(u,v).
+
+We will use this idea to prove the claim.
+
+PROOF (of bound for GT): Say we currently have residual graph G_f.
+Define potentials p as above: w_p(u,v) >= MM(G_f). Now, let's watch
+what happens to the edge costs in the residual graph under this
+potential.  The first cycle found will have all negative-cost edges.
+At least one of these gets removed from the residual graph (i.e.,
+saturated), and reverse-edges may be put in, but they all have
+positive cost (everything here is under potential p).  Pretty soon it
+must be the case that the next cycle found by our algorithm would have
+at least one edge of positive cost (at worst this happens at the mth
+iteration, since each prior iteration removes some negative-cost edge
+from the graph and adds only positive-cost edges).  At this point, say
+we have flow f'.  This means that MM(G_f') >= ((n-1)*MM(G_f) + 0)/n =
+(1 - 1/n)*MM(G_f).  I.e., it's gotten closer to 0.
+
+So, every m steps, we've gotten a bit closer to 0. After nm steps
+we're closer by a factor of 1/e.  After nm*ln(n*MM(G)) steps, MM(G_f')
+> -1/n.  This means it's actually 0 (since everything is integral),
+and we are done!
+
+
+SPEEDUP:  The running time here is not so great.  We can do it faster
+by explicitly computing potentials p, throwing out all edges of
+non-negative cost, and then just working with this graph until there
+are no longer any cycles in which all edges have negative cost.  Can
+get rid of one factor of m this way.  Can reduce further with sneaky
+data structures.
+
+
+

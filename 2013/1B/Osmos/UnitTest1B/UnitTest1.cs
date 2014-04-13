@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Osmos;
 using System.IO;
+using CodeJamUtils;
 
 namespace UnitTest1B
 {
@@ -49,7 +50,8 @@ namespace UnitTest1B
             StringReader sr = new StringReader(data);
             Input input = new Input(new Scanner(sr));
 
-            int result = Osmos.Osmos.Solve(input);
+            Osmos.Osmos osmos = new Osmos.Osmos();
+            int result = osmos.processInput(input);
 
             Assert.AreEqual<int>(expectedResult, result);
         }

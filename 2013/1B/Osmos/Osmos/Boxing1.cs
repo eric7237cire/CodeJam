@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using System;
 internal struct Point : IComparable
 {
     private readonly Int32 m_x, m_y;

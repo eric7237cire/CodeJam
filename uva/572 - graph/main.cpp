@@ -165,6 +165,8 @@ void reverseStr(char* str)
 	for(int i = 0; i < len / 2; ++i)
 	{
 		int e = len - i - 1;
+		//cout << "i " << i << " e " << e << endl;
+		//cout << "i " << str[i] << " e " << str[e] << endl;
 		char t = str[i];
 		str[i] = str[e];
 		str[e] = t;
@@ -197,8 +199,14 @@ int main2()
 
 int main()
 {
-	char* str = "ab"; // "a string to reverse.";
+	//char* str = "ab"; // "a string to reverse.";
+	char str[] = "ab cd ef g. r";
+	swap(str[0], str[1]);
+
 	cout << str << endl;
+	int a;
+	//cin >> a;
+
 	reverseStr(str);
 	cout << str << endl;
 

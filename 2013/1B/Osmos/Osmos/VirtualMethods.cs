@@ -47,12 +47,12 @@ namespace CompanyB
             EstablishConnection();
             base.Dial();
         }
-        protected virtual void EstablishConnection()
+        protected virtual new void EstablishConnection()
         {
             Console.WriteLine("BetterPhone.EstablishConnection");
             // Do work to establish the connection. 
         }
-        public void TestConnection()
+        public new void TestConnection()
         {
             Console.WriteLine("BetterPhone.TestConnection");
         }
@@ -60,7 +60,7 @@ namespace CompanyB
 
     public sealed class Program
     {
-        public static void Main()
+        public static void Main2()
         {
             CompanyB.BetterPhone phone = new CompanyB.BetterPhone();
             phone.Dial();

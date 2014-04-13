@@ -3,12 +3,70 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Osmos
+namespace CodeJamUtils
 {
-    class CodeJamUtil
+
+    public interface InputFileProducer<InputClass>
     {
+        InputClass createInput(Scanner scanner);
+    }
+
+    public interface InputFileConsumer<InputClass, AnswerClass>
+    {
+        AnswerClass processInput(InputClass input);
+    }
+
+    public class Runner<InputClass, AnswerClass>
+    {
+
+        private string fileDir;
+        private InputFileProducer<InputClass> inputFileProducer;
+        private InputFileConsumer<InputClass, AnswerClass> inputFileConsumer;
+
+        public Runner(string fileDir, InputFileConsumer<InputClass, AnswerClass> inputFileConsumer, InputFileProducer<InputClass> inputFileProducer)
+        {
+            this.fileDir = fileDir;
+            this.inputFileConsumer = inputFileConsumer;
+            this.inputFileProducer = inputFileProducer;
+        }
+
+        public void run(List<string> fileNames)
+        {
+
+            Scanner scanner = null;
+
+
+            foreach(string fn in fileNames)
+            {
+                string inputFileName = fileDir + fn;
+                string checkFileName = Regex.Replace(inputFileName, @"\..*$", ".check");
+
+                string outputFileName = Regex.Replace(inputFileName, @"\..*$", ".out");
+
+                using (scanner = new Scanner(File.OpenText(inputFileName)))
+                using (StreamWriter writer = new StreamWriter(outputFileName, false))
+                {
+                    int testCases = scanner.nextInt();
+
+                    for (int tc = 1; tc <= testCases; ++tc)
+                    {
+                        InputClass input = inputFileProducer.createInput(scanner);
+                        
+                        AnswerClass ans = inputFileConsumer.processInput(input);
+
+                        writer.WriteLine(String.Format("Case #{0}: {1}", tc, ans));
+                    }
+                }
+
+            }
+            
+            
+            
+
+        }
     }
 
     class Logger
