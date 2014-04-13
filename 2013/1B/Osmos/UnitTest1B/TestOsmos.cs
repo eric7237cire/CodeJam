@@ -8,7 +8,7 @@ using CodeJamUtils;
 namespace UnitTest1B
 {
     [TestClass]
-    public class UnitTest1
+    public class TestOsmos
     {
         [TestMethod]
         public void TestMethod1()

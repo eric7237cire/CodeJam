@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,9 @@ namespace CodeJamUtils
     public class Runner<InputClass, AnswerClass>
     {
 
+        public delegate InputClass InputFileProducerDelegate(Scanner scanner);
         private string fileDir;
+        private InputFileProducerDelegate inputFileProducerDelegate;
         private InputFileProducer<InputClass> inputFileProducer;
         private InputFileConsumer<InputClass, AnswerClass> inputFileConsumer;
 
@@ -33,13 +36,20 @@ namespace CodeJamUtils
             this.inputFileProducer = inputFileProducer;
         }
 
+        public Runner(string fileDir, InputFileConsumer<InputClass, AnswerClass> inputFileConsumer, InputFileProducerDelegate inputFileProducerDelegate)
+        {
+            this.fileDir = fileDir;
+            this.inputFileConsumer = inputFileConsumer;
+            this.inputFileProducerDelegate = inputFileProducerDelegate;
+        }
+
         public void run(List<string> fileNames)
         {
 
             Scanner scanner = null;
 
 
-            foreach(string fn in fileNames)
+            foreach (string fn in fileNames)
             {
                 string inputFileName = fileDir + fn;
                 string checkFileName = Regex.Replace(inputFileName, @"\..*$", ".check");
@@ -53,8 +63,17 @@ namespace CodeJamUtils
 
                     for (int tc = 1; tc <= testCases; ++tc)
                     {
-                        InputClass input = inputFileProducer.createInput(scanner);
-                        
+                        InputClass input;
+
+                        if (inputFileProducer != null)
+                        {
+                            input = inputFileProducer.createInput(scanner);
+                        }
+                        else
+                        {
+                            input = inputFileProducerDelegate.Invoke(scanner);
+                        }
+
                         AnswerClass ans = inputFileConsumer.processInput(input);
 
                         writer.WriteLine(String.Format("Case #{0}: {1}", tc, ans));
@@ -62,9 +81,9 @@ namespace CodeJamUtils
                 }
 
             }
-            
-            
-            
+
+
+
 
         }
     }
@@ -220,6 +239,48 @@ namespace CodeJamUtils
             // Calling Dispose(false) is optimal in terms of
             // readability and maintainability.
             Dispose(false);
+        }
+    }
+
+    public static class Utils
+    {
+        public static int binarySearch<T>(int loIdx, int hiIdx, List<T> list, T target)
+        {
+            Comparer<T> comp = Comparer<T>.Default;
+
+            if (comp.Compare(list[hiIdx], target) <= 0)
+            {
+                //Everything in the range is lower than target
+                return hiIdx;
+            }
+            if (comp.Compare(list[loIdx], target) > 0)
+            {
+                //Everything is greater
+                return loIdx;
+            }
+            //  invariant list[loIdx] <= target ; list[hiIdx] > target
+            while (true)
+            {
+                int midIdx = loIdx + (hiIdx - loIdx) / 2;
+
+                T value = list[midIdx];
+
+                if (comp.Compare(value, target) <= 0)
+                {
+                    loIdx = midIdx;
+                }
+                else
+                {
+                    hiIdx = midIdx;
+                }
+
+                Debug.Assert(loIdx <= hiIdx);
+
+                if (hiIdx - loIdx <= 1)
+                    break;
+            }
+
+            return loIdx;
         }
     }
 }

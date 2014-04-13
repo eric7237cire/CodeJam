@@ -42,7 +42,7 @@ namespace Osmos
 
     public class Osmos : InputFileConsumer<Input, int>, InputFileProducer<Input>
     {
-        static void Main(string[] args)
+        static void Main2(string[] args)
         {
 
             Osmos osmos = new Osmos();
@@ -54,10 +54,8 @@ namespace Osmos
             list.Add("sample.txt");
             list.Add("A-small-practice.in");
             list.Add("A-large-practice.in");
-            Scanner scanner = null;
-
+            
             runner.run(list);
-
         }
 
         private class Solver
