@@ -16,14 +16,14 @@ namespace Diamonds
     public class Input
     {
         public int NumberFallingDiamonds { get; private set; }
-        public Tuple<int,int> Coords  { get; internal set; }
-        
+        public Tuple<int, int> Coords { get; internal set; }
+
 
         public static Input createInput(Scanner scanner)
         {
             Input input = new Input();
             input.NumberFallingDiamonds = scanner.nextInt();
-            input.Coords = new Tuple<int,int>(scanner.nextInt(), scanner.nextInt());
+            input.Coords = new Tuple<int, int>(scanner.nextInt(), scanner.nextInt());
 
             return input;
         }
@@ -32,13 +32,13 @@ namespace Diamonds
     public class DiamondInfo
     {
         //Total diamonds 
-        public int N  {get; set;}
+        public int N { get; set; }
 
         //At certain points The probability becomes 100%, basically a pyramid of base size 1, 3, 5 etc        
-        public int baseDiamondSize  {get; set;}
+        public int baseDiamondSize { get; set; }
 
         //not counting top
-        public int sideLength {get; set;}
+        public int sideLength { get; set; }
 
         private static List<int> pyramidSizes = new List<int>();
 
@@ -58,15 +58,59 @@ namespace Diamonds
                 pyramidSizes.Add(pyramidSizes[index] + toAdd);
             }
 
-            int idx = CodeJamUtils.Utils.binarySearch<int>(0, pyramidSizes.Count-1, pyramidSizes, nDiamonds);
+            int idx = CodeJamUtils.Utils.binarySearch<int>(0, pyramidSizes.Count - 1, pyramidSizes, nDiamonds);
 
 
 
             DiamondInfo di = new DiamondInfo();
             di.baseDiamondSize = pyramidSizes[idx];
-            di.sideLength = 2 * idx  ;
+            di.sideLength = 2 * idx;
             di.N = nDiamonds;
             return di;
+        }
+    }
+
+    public class Node : IEquatable<Node>
+    {
+        private readonly int sideLength;
+        private int left;
+        private int right;
+        private double prob;
+
+        public Node(int sideLength)
+        {
+            this.sideLength = sideLength;
+            prob = 1;
+            left = right = 0;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as Node);
+
+        }
+        public override int GetHashCode()
+        {
+            return Tuple.Create<int, int>(left, right).GetHashCode();
+        }
+
+
+        public bool Equals(Node other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            return (this.left.Equals(other.left))
+                && (this.right.Equals(other.right));
+        }
+
+        public static bool operator ==(Node leftOperand, Node rightOperand)
+        {
+            if (ReferenceEquals(null, leftOperand)) return ReferenceEquals(null, rightOperand);
+            return leftOperand.Equals(rightOperand);
+        }
+
+        public static bool operator !=(Node leftOperand, Node rightOperand)
+        {
+            return !(leftOperand == rightOperand);
         }
     }
 
@@ -93,7 +137,7 @@ namespace Diamonds
             return input.NumberFallingDiamonds.ToString();
         }
 
-        
+
     }
 
 
