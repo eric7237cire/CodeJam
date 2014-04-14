@@ -88,17 +88,41 @@ namespace CodeJamUtils
         }
     }
 
-    public static class Logger
+    public sealed class Logger
     {
+        private static readonly Lazy<Logger> lazy =
+        new Lazy<Logger>(() => new Logger());
+
+        public static Logger Instance { get { return lazy.Value; } }
+
+        private Logger()
+        {
+            writer = new StreamWriter(@"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\log.txt", false);
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
+
+        }
+
+        static void CurrentDomain_ProcessExit(object sender, EventArgs e)
+        {
+            Console.WriteLine("exit");
+            Logger.Instance.writer.Close();
+        }
+
         public static void Log(String msg, params object[] args)
         {
-            Console.WriteLine(String.Format(msg, args));
+            Log(String.Format(msg, args));
         }
+
+        private StreamWriter writer;
+
 
         public static void Log(String msg)
         {
             Console.WriteLine(msg);
+            Logger.Instance.writer.WriteLine(msg);
+            //Logger.Instance.writer.Flush();
         }
+
     }
     public class Scanner : IDisposable
     {

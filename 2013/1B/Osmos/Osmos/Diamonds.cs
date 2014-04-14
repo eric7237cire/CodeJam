@@ -37,7 +37,7 @@ namespace Diamonds
         //Total diamonds 
         public int N { get; set; }
 
-        //At certain points The probability becomes 100%, basically a pyramid of base size 1, 3, 5 etc        
+        //At certain points The probability becomes 100%, basically a pyramid of base size 1, 6, 15 etc        
         public int baseDiamondSize { get; set; }
 
         //not counting top
@@ -217,6 +217,18 @@ namespace Diamonds
             Thread.CurrentThread.CurrentCulture = new CultureInfo(culture);
             // Sets the UI culture to French (France)
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
+
+
+            DiamondInfo di = DiamondInfo.getDiamondInfo(21);
+            IDictionary<Node,double> nodeProb;
+            processProb(di, out nodeProb);
+            foreach(var kv in nodeProb)
+            {
+                Logger.Log("Left: {0} Right: {1} Prob : {2}", kv.Key.Left, kv.Key.Right, kv.Value);
+            }
+
+            Logger.Log("Done");
+            return;
 
             Diamond diamond = new Diamond();
 
