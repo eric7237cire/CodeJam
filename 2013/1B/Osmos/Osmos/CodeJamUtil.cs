@@ -88,7 +88,7 @@ namespace CodeJamUtils
         }
     }
 
-    class Logger
+    public static class Logger
     {
         public static void Log(String msg, params object[] args)
         {
