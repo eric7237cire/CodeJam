@@ -53,6 +53,7 @@
     <Compile Include="TestDiamond.cs" />
     <Compile Include="TestOsmos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestPascals.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Osmos\Osmos.csproj">

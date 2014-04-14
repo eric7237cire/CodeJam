@@ -45,8 +45,10 @@
     <Compile Include="Boxing1.cs" />
     <Compile Include="Boxing2.cs" />
     <Compile Include="CodeJamUtil.cs" />
+    <Compile Include="CombPerm.cs" />
     <Compile Include="Diamonds.cs" />
     <Compile Include="Osmos.cs" />
+    <Compile Include="PascalTriangle.cs" />
     <Compile Include="Point.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

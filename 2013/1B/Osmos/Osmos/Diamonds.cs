@@ -1,5 +1,6 @@
 ﻿using CodeJamUtils;
 using Osmos;
+using PascalsTriangle;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -149,7 +150,40 @@ namespace Diamonds
             a = b;
             b = temp;
         }
-        public static void processProb(DiamondInfo di, out IDictionary<Node, double> nodes)
+
+        private PascalsTriangle<double> triangle;
+
+        public void processProb(DiamondInfo di, out IDictionary<Node, double> nodes)
+        {
+            nodes = new Dictionary<Node, double>();
+
+            int loopCount = di.N - di.baseDiamondSize;
+            
+            for (int i = 0; i <= loopCount; ++i)
+            {
+                int left = i;
+                int right = loopCount - i;
+
+                if (left > di.sideLength)
+                {
+                    right += (left - di.sideLength);
+                    left = di.sideLength;
+                }
+                if (right > di.sideLength)
+                {
+                    left += (right - di.sideLength);
+                    right = di.sideLength;
+                }
+
+                double prob = triangle[loopCount, i];
+
+                addProb(nodes, new Node(left, right), prob);
+
+            }
+
+        }
+
+        public static void processProbSlow(DiamondInfo di, out IDictionary<Node, double> nodes)
         {
             nodes = new Dictionary<Node, double>();
 
@@ -218,7 +252,7 @@ namespace Diamonds
             // Sets the UI culture to French (France)
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
 
-
+            /*
             DiamondInfo di = DiamondInfo.getDiamondInfo(21);
             IDictionary<Node,double> nodeProb;
             processProb(di, out nodeProb);
@@ -229,7 +263,7 @@ namespace Diamonds
 
             Logger.Log("Done");
             return;
-
+            */
             Diamond diamond = new Diamond();
 
             string baseDir = @"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\";
@@ -241,6 +275,14 @@ namespace Diamonds
             list.Add("B-large-practice.in");
 
             runner.run(list);
+        }
+
+
+        
+
+        public Diamond()
+        {
+            triangle = PascalTriangleCreator.createProb(2500);
         }
 
         public double processInput(Input input)

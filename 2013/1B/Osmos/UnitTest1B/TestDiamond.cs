@@ -64,16 +64,27 @@ namespace UnitTest1B
             Assert.AreEqual(18, df.N);
             Assert.AreEqual(6, df.sideLength);
             Assert.AreEqual(6, df.outerLayerDistance);
+
+            df = DiamondInfo.getDiamondInfo(1000000);
+            Assert.AreEqual(1000000, df.N);
+        }
+
+        private IDictionary<Node, double> getNodeProb(int n)
+        {
+            DiamondInfo di = DiamondInfo.getDiamondInfo(n);
+            IDictionary<Node, double> nodeProb;
+
+            Diamond d = new Diamond();
+            d.processProb(di, out nodeProb);
+
+            return nodeProb;
         }
 
         [TestMethod]
         public void TestDiamondProb2()
         {
-            DiamondInfo di = DiamondInfo.getDiamondInfo(2);
-            IDictionary<Node, double> nodeProb;
 
-            Diamond.processProb(di, out nodeProb);
-
+            IDictionary<Node, double> nodeProb = getNodeProb(2);
             Assert.AreEqual(2, nodeProb.Count);
 
             testNode(1, 0, .5, nodeProb);
@@ -84,10 +95,7 @@ namespace UnitTest1B
         [TestMethod]
         public void TestDiamondProb3()
         {
-            DiamondInfo di = DiamondInfo.getDiamondInfo(3);
-            IDictionary<Node, double> nodeProb;
-
-            Diamond.processProb(di, out nodeProb);
+            IDictionary<Node, double> nodeProb = getNodeProb(3);
 
             Assert.AreEqual(3, nodeProb.Count);
 
@@ -100,11 +108,8 @@ namespace UnitTest1B
         [TestMethod]
         public void TestDiamondProb4()
         {
-            DiamondInfo di = DiamondInfo.getDiamondInfo(4);
-            IDictionary<Node, double> nodeProb;
-
-            Diamond.processProb(di, out nodeProb);
-
+            IDictionary<Node, double> nodeProb = getNodeProb(4);
+            
             Assert.AreEqual(2, nodeProb.Count);
 
             testNode(2, 1, .5, nodeProb);
@@ -116,10 +121,7 @@ namespace UnitTest1B
         [TestMethod]
         public void TestDiamondProb5()
         {
-            DiamondInfo di = DiamondInfo.getDiamondInfo(5);
-            IDictionary<Node, double> nodeProb;
-
-            Diamond.processProb(di, out nodeProb);
+            IDictionary<Node, double> nodeProb = getNodeProb(5);
 
             Assert.AreEqual(1, nodeProb.Count);
 
