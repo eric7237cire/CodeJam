@@ -67,6 +67,14 @@ namespace PascalsTriangle
             return PascalTriangleCreator.create<int>(0, 1, add, rows);
         }
 
+        /// <summary>
+        /// Same as a normal pascal's triangle, but divided by 2^(row total).  Useful for probabilities.
+        /// 
+        /// ie, 4rd entry on 6th row is probability of getting exactly 3 heads in 5 coin flips
+        /// </summary>
+        /// <param name="rows"></param>
+        /// <returns></returns>
+        
         public static PascalsTriangle<double> createProb(int rows)
         {
             return PascalTriangleCreator.create<double>(0d, 1d, combine, rows);
