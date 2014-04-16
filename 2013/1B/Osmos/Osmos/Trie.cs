@@ -19,6 +19,8 @@ namespace Trie
     }
     sealed internal class TrieNode
     {
+        public const int minDistance = 5;
+
         internal TrieNode[] children;
         internal List<Tuple<int, TrieNode>> childrenList;
         private const int aInt = (int)'a';
@@ -90,8 +92,7 @@ namespace Trie
         {
             public TrieNode node;
             public List<int> changedIndexes;
-            const int minDistance = 5;
-
+            
             public TrieNodePtr()
             {
                 changedIndexes = new List<int>();
@@ -152,7 +153,7 @@ namespace Trie
 
             }
         }
-        public void parseText(string text, Action<WordMatch> matchHandler, out List<WordMatch> matches)
+        public void parseText(string text, Action<WordMatch> matchHandler, out List<WordMatch> matches, int startIdx = 0)
         {
             matches = new List<WordMatch>();
 
@@ -161,7 +162,7 @@ namespace Trie
             root.node = this;
             listPtrs.Add(root);
 
-            for (int cIdx = 0; cIdx < text.Length; ++cIdx)
+            for (int cIdx = startIdx; cIdx < text.Length; ++cIdx)
             {
                 char c = text[cIdx];
                 int cInt = (int)c - aInt;

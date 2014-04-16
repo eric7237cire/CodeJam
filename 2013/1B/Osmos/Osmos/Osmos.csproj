@@ -47,6 +47,7 @@
     <Compile Include="CodeJamUtil.cs" />
     <Compile Include="CombPerm.cs" />
     <Compile Include="Diamonds.cs" />
+    <Compile Include="GarbledEmail.cs" />
     <Compile Include="Osmos.cs" />
     <Compile Include="PascalTriangle.cs" />
     <Compile Include="Point.cs" />

@@ -243,7 +243,7 @@ namespace Diamonds
             return dist % 2 == 0;
         }
 
-        static void Main(string[] args)
+        static void Main2(string[] args)
         {
             // Put the following code before InitializeComponent()
             String culture = "en-US";

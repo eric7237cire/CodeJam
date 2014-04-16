@@ -198,6 +198,18 @@ namespace CodeJamUtils
             }
         }
 
+        public string nextWord()
+        {
+            try
+            {
+                return currentWord;
+            }
+            finally
+            {
+                readNextWord();
+            }
+        }
+
         public bool hasNext()
         {
             return currentWord != null;

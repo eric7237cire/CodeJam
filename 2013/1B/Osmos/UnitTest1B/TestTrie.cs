@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,27 @@ namespace UnitTest1B
     [TestClass]
     public class TestTrie
     {
+        [TestMethod]
+        public void createDict()
+        {
+            Dictionary dict = new Dictionary();
+
+            using (StreamReader file =
+   new System.IO.StreamReader(@"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\garbled_email_dictionary.txt"))
+            {
+                string line;
+                while (( line = file.ReadLine()) != null)
+                {
+                    Console.WriteLine(line);
+                    dict.words.Add(line);
+                }
+            }
+
+            TrieNode root = TrieNode.createRootNode(dict);
+
+            //TODO Codejam progress 3, match a has a change at location 3 which is not valid
+
+        }
         [TestMethod]
         public void testMatches()
         {
@@ -26,7 +48,7 @@ namespace UnitTest1B
             Assert.AreEqual(3, matches.Count);
             Assert.AreEqual(dict.words[2], matches[0].Word);
             Assert.AreEqual(1, matches[0][0]);
-            Assert.AreEqual(1, matches[0][0,Trie.TrieNode.WordMatch.LeftOrRight.right]);
+            Assert.AreEqual(1, matches[0][0, Trie.TrieNode.WordMatch.LeftOrRight.right]);
 
             Assert.AreEqual(dict.words[0], matches[1].Word);
             Assert.AreEqual(0, matches[1].changeCount());
@@ -51,12 +73,12 @@ namespace UnitTest1B
             TrieNode root = TrieNode.createRootNode(dict);
 
             List<TrieNode.WordMatch> matches;
-            root.parseText("abccd",null, out matches);
+            root.parseText("abccd", null, out matches);
 
             Assert.AreEqual(2, matches.Count);
             Assert.AreEqual(dict.words[0], matches[0].Word);
             Assert.AreEqual(dict.words[2], matches[1].Word);
-            
+
 
         }
         [TestMethod]
@@ -66,7 +88,7 @@ namespace UnitTest1B
             dict.words.Add("abc");
             dict.words.Add("acc");
             TrieNode root = TrieNode.createRootNode(dict);
-            
+
             Assert.AreEqual(1, root.childrenList.Count);
             TrieNode nodeA = root.children[0];
             Assert.AreSame(root.childrenList[0].Item2, nodeA);
