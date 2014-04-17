@@ -49,6 +49,22 @@ namespace Trie
             get { return lr == LeftOrRight.left ? changes[i] : Word.Length - 1 - changes[i]; }
         }
 
+        public int ChangeCount
+        {
+            get
+            {
+                return changes.Length;
+            }
+        }
+
+        public string Changes
+        {
+            get
+            {
+                return changes.ToString();
+            }
+        }
+
         public int changeCount()
         {
             return changes.Length;

@@ -12,8 +12,14 @@ using Trie;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo
                           ("UnitTest1B")]
+
+
+
+
 namespace GarbledEmail
 {
+    using Logger = CodeJamUtils.LoggerEmpty;
+
     public class Input
     {
         public string word { get; internal set; }
@@ -33,16 +39,52 @@ namespace GarbledEmail
         internal int minCount(int lastChangeDistance, int progress, string S)
         {
             int[][] memoize = new int[TrieNode.minDistance+1][];
+            WordMatch[][] bestMatches = new WordMatch[TrieNode.minDistance + 1][];
 
             for (int i = 0; i <= TrieNode.minDistance; ++i )
             {
                 memoize[i] = new int[S.Length];
+                bestMatches[i] = new WordMatch[S.Length];
             }
 
-            return minCount(lastChangeDistance, progress, S, memoize);
+            int ret = minCount(lastChangeDistance, progress, S, memoize, bestMatches);
+
+            int rebuildSolutionProg = 0;
+            int lastChange = 0;
+
+            while(rebuildSolutionProg < S.Length)
+            {
+                WordMatch match = bestMatches[lastChange][rebuildSolutionProg];
+
+                if (match == null)
+                {
+                    Logger.Log("No match at {0} {1}", lastChange, rebuildSolutionProg);
+                }
+                Debug.Assert(match != null);
+
+                Logger.Log("Best match at index {0} is word {1} with {2} changes at indices {3}", rebuildSolutionProg, match.Word, match.ChangeCount, match.Changes);
+                rebuildSolutionProg += match.Word.Length;
+
+                if (match.ChangeCount > 0)
+                {
+                    lastChange = match[match.ChangeCount - 1, WordMatch.LeftOrRight.right] + 1;
+
+                }
+                else if (lastChange > 0)
+                {
+                    lastChange += match.Word.Length;
+                }
+
+                if (lastChange > TrieNode.minDistance)
+                {
+                    lastChange = 0;
+                }
+            }
+
+            return ret;
         }
 
-        internal int minCount(int lastChangeDistance, int progress, string S, int[][] memoize)
+        internal int minCount(int lastChangeDistance, int progress, string S, int[][] memoize, WordMatch[][] bestMatches)
         {
             if (progress >= S.Length)
             {
@@ -66,11 +108,12 @@ namespace GarbledEmail
             
 
             int currentMin = Int32.MaxValue / 2;
+            WordMatch bestMatch = null;
 
             foreach(WordMatch match in matches)
             {
                 //check last change distance
-                if (lastChangeDistance > 0 && match.changeCount() > 0 && lastChangeDistance + match[0, WordMatch.LeftOrRight.left] < TrieNode.minDistance)
+                if (lastChangeDistance > 0 && match.ChangeCount > 0 && lastChangeDistance + match[0, WordMatch.LeftOrRight.left] < TrieNode.minDistance)
                 {
                     continue;
                 }
@@ -78,20 +121,31 @@ namespace GarbledEmail
                 string matchWord = match.Word;
 
                 int newLastChangeDistance = 0;
-                if (match.changeCount() > 0) {
-                    newLastChangeDistance = 1 + match[match.changeCount() - 1, WordMatch.LeftOrRight.right];
-
-                    if (newLastChangeDistance > 5)
-                    {
-                        newLastChangeDistance = 0;
-                    }
+                if (match.ChangeCount > 0) {
+                    newLastChangeDistance = 1 + match[match.ChangeCount - 1, WordMatch.LeftOrRight.right];
                 }
-                int matchCost = match.changeCount() + minCount(newLastChangeDistance, progress + matchWord.Length, S, memoize);
+                else if (lastChangeDistance > 0)
+                {
+                    newLastChangeDistance = lastChangeDistance + match.Word.Length;
+                }
 
-                currentMin = Math.Min(matchCost, currentMin);
+                if (newLastChangeDistance > 5)
+                {
+                    newLastChangeDistance = 0;
+                }
+
+                int matchCost = match.ChangeCount + minCount(newLastChangeDistance, progress + matchWord.Length, S, memoize, bestMatches);
+
+                if (matchCost < currentMin)
+                {
+                    currentMin = Math.Min(matchCost, currentMin);
+                    bestMatch = match;
+                }
+                
             }
 
             memoize[lastChangeDistance][progress] = currentMin + 1;
+            bestMatches[lastChangeDistance][progress] = bestMatch;
 
             return currentMin;
         }
@@ -123,9 +177,9 @@ namespace GarbledEmail
             Runner<Input, int> runner = new Runner<Input, int>(baseDir, diamond, Input.createInput);
 
             List<string> list = new List<string>();
-            list.Add("sample.txt");
-            //list.Add("B-small-practice.in");
-            //list.Add("B-large-practice.in");
+           // list.Add("sample.txt");
+           // list.Add("C-small-practice.in");
+            list.Add("C-large-practice.in");
 
             runner.run(list);
         }
@@ -164,7 +218,7 @@ namespace GarbledEmail
         {
             
 
-                return minCount(0, 0, input.word, memoize);
+                return minCount(0, 0, input.word);
         }
 
 

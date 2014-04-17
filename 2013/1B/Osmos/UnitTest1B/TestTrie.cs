@@ -40,6 +40,15 @@ namespace UnitTest1B
             Assert.AreEqual(2, minChange);
 
         }
+        [TestMethod]
+        public void testFromCSmall()
+        {
+            
+            GarbledEmail.GarbledEmail ge = new GarbledEmail.GarbledEmail();
+
+            int minChange = ge.minCount(0, 0, "pppvyppbcpjpywpwbyayppyojpjwabwywbbwywmbwywnpwy");
+            Assert.AreEqual(8, minChange);
+        }
 
         [TestMethod]
         public void testSamples()

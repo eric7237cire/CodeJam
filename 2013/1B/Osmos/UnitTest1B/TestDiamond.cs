@@ -137,7 +137,7 @@ namespace UnitTest1B
             double prob = nodeProb[n1];
             
 
-            Logger.Log("p {0} {1} {2}", expectedProb, prob, tolerance);
+            LoggerReal.Log("p {0} {1} {2}", expectedProb, prob, tolerance);
             Assert.AreEqual(expectedProb, prob, tolerance, "Tolerance: " + tolerance);
             
         }
