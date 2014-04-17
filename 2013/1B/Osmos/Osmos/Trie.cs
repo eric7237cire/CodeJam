@@ -10,10 +10,17 @@ namespace Trie
 {
     static class Utils
     {
+	//Extension method to be able to do "{0}".Format directly
         public static string Format(this string str, params object[] args)
         {
             return String.Format(str, args);
         }
+
+	//Add extension to list to get last value
+	public static T GetLastValue<T>(this List<T> list)
+	{
+		return list[0];
+	}
     }
     class Dictionary
     {
@@ -86,11 +93,13 @@ namespace Trie
 
     internal class TrieNodePtr
     {
+	//TODO private?
         public TrieNode node;
 
         //Indexes local to the word
         private List<int> changedIndexes;
 
+	//TODO make TrieNode obligatory
         public TrieNodePtr()
         {
             changedIndexes = new List<int>();
@@ -99,7 +108,7 @@ namespace Trie
         public TrieNodePtr(TrieNodePtr parent, TrieNode childNode)
             : this()
         {
-
+	    //TODO Filter?  not copy entire list
             changedIndexes = new List<int>(parent.changedIndexes);
             node = childNode;
         }
@@ -156,9 +165,11 @@ namespace Trie
 
     sealed internal class TrieNode
     {
+	//Move to TrieNodePtr
         public const int minDistance = 5;
 
         internal TrieNode[] children;
+	//to avoid having to loop through the 26 children
         internal List<Tuple<int, TrieNode>> childrenList;
         private const int aInt = (int)'a';
         private Dictionary dict;
