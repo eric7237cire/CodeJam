@@ -47,8 +47,7 @@ namespace Osmos
 
             Osmos osmos = new Osmos();
 
-            string baseDir = @"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\";
-            Runner<Input, int> runner = new Runner<Input, int>(baseDir, osmos, osmos);
+            Runner<Input, int> runner = new Runner<Input, int>(osmos, osmos);
 
             List<string> list = new List<string>();
             list.Add("sample.txt");

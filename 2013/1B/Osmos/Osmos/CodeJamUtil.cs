@@ -1,11 +1,15 @@
-﻿using System;
+﻿using Osmos.Properties;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Resources;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Osmos;
 
 namespace CodeJamUtils
 {
@@ -24,21 +28,18 @@ namespace CodeJamUtils
     {
 
         public delegate InputClass InputFileProducerDelegate(Scanner scanner);
-        private string fileDir;
         private InputFileProducerDelegate inputFileProducerDelegate;
         private InputFileProducer<InputClass> inputFileProducer;
         private InputFileConsumer<InputClass, AnswerClass> inputFileConsumer;
 
-        public Runner(string fileDir, InputFileConsumer<InputClass, AnswerClass> inputFileConsumer, InputFileProducer<InputClass> inputFileProducer)
+        public Runner(InputFileConsumer<InputClass, AnswerClass> inputFileConsumer, InputFileProducer<InputClass> inputFileProducer)
         {
-            this.fileDir = fileDir;
             this.inputFileConsumer = inputFileConsumer;
             this.inputFileProducer = inputFileProducer;
         }
 
         public Runner(string fileDir, InputFileConsumer<InputClass, AnswerClass> inputFileConsumer, InputFileProducerDelegate inputFileProducerDelegate)
         {
-            this.fileDir = fileDir;
             this.inputFileConsumer = inputFileConsumer;
             this.inputFileProducerDelegate = inputFileProducerDelegate;
         }
@@ -48,15 +49,27 @@ namespace CodeJamUtils
 
             Scanner scanner = null;
 
+            ResourceManager resourceManager = Osmos.Properties.Resources.ResourceManager;
+            
 
             foreach (string fn in fileNames)
             {
-                string inputFileName = fileDir + fn;
-                string checkFileName = Regex.Replace(inputFileName, @"\..*$", ".check");
+                string inputFileName = fn;
+                string checkFileName = Regex.Replace(inputFileName, @"(\..*)?$", ".check");
+                string outputFileName = Regex.Replace(inputFileName, @"(\..*)?$", ".out");
 
-                string outputFileName = Regex.Replace(inputFileName, @"\..*$", ".out");
+                TextReader inputReader = null;
+                byte[] obj = (byte[])resourceManager.GetObject(fn);
+                if (obj != null)
+                {
+                    inputReader = new StreamReader(new MemoryStream(obj));
+                }
+                else
+                {
+                    inputReader = File.OpenText(fn);
+                }
 
-                using (scanner = new Scanner(File.OpenText(inputFileName)))
+                using (scanner = new Scanner(inputReader))
                 using (StreamWriter writer = new StreamWriter(outputFileName, false))
                 {
                     int testCases = scanner.nextInt();

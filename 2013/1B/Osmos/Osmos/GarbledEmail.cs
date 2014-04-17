@@ -21,6 +21,9 @@ using Trie;
 namespace GarbledEmail
 {
 #if (PERF)
+    using System.Collections;
+    using System.Reflection;
+    using System.Resources;
     using Logger = CodeJamUtils.LoggerEmpty;
 #else
     using Logger = CodeJamUtils.LoggerReal;
@@ -193,8 +196,17 @@ namespace GarbledEmail
 
             List<string> list = new List<string>();
             // list.Add("sample.txt");
-            // list.Add("C-small-practice.in");
-            list.Add("C-large-practice.in");
+
+            string[] strs = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+
+            ResourceSet resourceSet = new ResourceSet(Assembly.GetExecutingAssembly().GetManifestResourceStream(strs[0]));
+            foreach (DictionaryEntry resource in resourceSet)
+            {
+                Console.WriteLine("\n[{0}] \t{1}", resource.Key, resource.Value);
+            }
+            
+             list.Add("C_small_practice");
+            //list.Add("C-large-practice.in");
 
 
             runner.run(list);
