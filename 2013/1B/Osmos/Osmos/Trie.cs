@@ -96,6 +96,7 @@ namespace Trie
         public TrieNode node;
 
         //Indexes local to the word
+        //TODO change to bitset and total changes
         private List<int> changedIndexes;
 
         //TODO make TrieNode obligatory
@@ -108,7 +109,17 @@ namespace Trie
             : this()
         {
             //TODO Filter?  not copy entire list
-            changedIndexes = new List<int>(parent.changedIndexes);
+            changedIndexes = new List<int>();
+
+            foreach (int value in parent.changedIndexes)
+            {
+                if (childNode.CurrentLength - value > TrieNode.minDistance +3)
+                {
+                    continue;
+                }
+                changedIndexes.Add(value);
+            }
+            //changedIndexes = new List<int>(parent.changedIndexes);
             node = childNode;
         }
 
@@ -164,6 +175,9 @@ namespace Trie
         }
     }
 
+    /// <summary>
+    /// Edges are letters, word formed by characters traversed
+    /// </summary>
     sealed internal class TrieNode
     {
         //Move to TrieNodePtr
