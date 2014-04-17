@@ -107,7 +107,7 @@ namespace UnitTest1B
             Assert.AreEqual(1, matches[0][0, Trie.WordMatch.LeftOrRight.right]);
 
             Assert.AreEqual(dict.words[0], matches[1].Word);
-            Assert.AreEqual(0, matches[1].changeCount());
+            Assert.AreEqual(0, matches[1].ChangeCount);
 
             Assert.AreEqual(dict.words[1], matches[2].Word);
             Assert.AreEqual(0, matches[2][0]);

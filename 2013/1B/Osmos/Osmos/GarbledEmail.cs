@@ -1,4 +1,6 @@
-﻿using CodeJamUtils;
+﻿#define PERF
+
+using CodeJamUtils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,7 +20,11 @@ using Trie;
 
 namespace GarbledEmail
 {
+#if (PERF)
     using Logger = CodeJamUtils.LoggerEmpty;
+#else
+    using Logger = CodeJamUtils.LoggerReal;
+#endif
 
     public class Input
     {
@@ -29,7 +35,7 @@ namespace GarbledEmail
         {
             Input input = new Input();
             input.word = scanner.nextWord();
-            
+
             return input;
         }
     }
@@ -38,17 +44,23 @@ namespace GarbledEmail
     {
         internal int minCount(int lastChangeDistance, int progress, string S)
         {
-            int[][] memoize = new int[TrieNode.minDistance+1][];
-            WordMatch[][] bestMatches = new WordMatch[TrieNode.minDistance + 1][];
+            int[][] memoize = new int[TrieNode.minDistance + 1][];
+            WordMatch[][] bestMatches = null;
 
-            for (int i = 0; i <= TrieNode.minDistance; ++i )
+#if (!PERF)
+            new WordMatch[TrieNode.minDistance + 1][];
+#endif
+            for (int i = 0; i <= TrieNode.minDistance; ++i)
             {
                 memoize[i] = new int[S.Length];
+#if (!PERF)
                 bestMatches[i] = new WordMatch[S.Length];
+#endif
             }
 
             int ret = minCount(lastChangeDistance, progress, S, memoize, bestMatches);
 
+#if (!PERF)
             int rebuildSolutionProg = 0;
             int lastChange = 0;
 
@@ -80,6 +92,7 @@ namespace GarbledEmail
                     lastChange = 0;
                 }
             }
+#endif
 
             return ret;
         }
@@ -105,12 +118,12 @@ namespace GarbledEmail
             {
                 Debug.Assert(lastChangeDistance >= 0 && lastChangeDistance <= 5);
             }
-            
+
 
             int currentMin = Int32.MaxValue / 2;
             WordMatch bestMatch = null;
 
-            foreach(WordMatch match in matches)
+            foreach (WordMatch match in matches)
             {
                 //check last change distance
                 if (lastChangeDistance > 0 && match.ChangeCount > 0 && lastChangeDistance + match[0, WordMatch.LeftOrRight.left] < TrieNode.minDistance)
@@ -121,7 +134,8 @@ namespace GarbledEmail
                 string matchWord = match.Word;
 
                 int newLastChangeDistance = 0;
-                if (match.ChangeCount > 0) {
+                if (match.ChangeCount > 0)
+                {
                     newLastChangeDistance = 1 + match[match.ChangeCount - 1, WordMatch.LeftOrRight.right];
                 }
                 else if (lastChangeDistance > 0)
@@ -141,12 +155,13 @@ namespace GarbledEmail
                     currentMin = Math.Min(matchCost, currentMin);
                     bestMatch = match;
                 }
-                
+
             }
 
             memoize[lastChangeDistance][progress] = currentMin + 1;
+#if (!PERF)
             bestMatches[lastChangeDistance][progress] = bestMatch;
-
+#endif
             return currentMin;
         }
 
@@ -177,11 +192,13 @@ namespace GarbledEmail
             Runner<Input, int> runner = new Runner<Input, int>(baseDir, diamond, Input.createInput);
 
             List<string> list = new List<string>();
-           // list.Add("sample.txt");
-           // list.Add("C-small-practice.in");
+            // list.Add("sample.txt");
+            // list.Add("C-small-practice.in");
             list.Add("C-large-practice.in");
 
+
             runner.run(list);
+
         }
 
 
@@ -204,7 +221,7 @@ namespace GarbledEmail
    new System.IO.StreamReader(@"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\garbled_email_dictionary.txt"))
             {
                 string line;
-                while (( line = file.ReadLine()) != null)
+                while ((line = file.ReadLine()) != null)
                 {
                     //Console.WriteLine(line);
                     dict.words.Add(line);
@@ -216,9 +233,9 @@ namespace GarbledEmail
 
         public int processInput(Input input)
         {
-            
 
-                return minCount(0, 0, input.word);
+
+            return minCount(0, 0, input.word);
         }
 
 

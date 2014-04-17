@@ -65,13 +65,6 @@ namespace Trie
             }
         }
 
-        public int changeCount()
-        {
-            return changes.Length;
-        }
-
-
-
         public static WordMatch create(string word, int dictIdx, params int[] changes)
         {
             WordMatch m = new WordMatch();
