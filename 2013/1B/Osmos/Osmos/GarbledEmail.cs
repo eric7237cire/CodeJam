@@ -115,7 +115,7 @@ namespace GarbledEmail
             Logger.Log("minCount last change: {0} progress: {1}".Format(lastChangeDistance, progress));
 
             List<WordMatch> matches;
-            root.parseText(S, null, out matches, progress);
+            root.parseText(S, out matches, progress);
 
             if (lastChangeDistance < 0 || lastChangeDistance > 5)
             {
@@ -177,39 +177,30 @@ namespace GarbledEmail
             // Sets the UI culture to French (France)
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
 
-            /*
-            DiamondInfo di = DiamondInfo.getDiamondInfo(21);
-            IDictionary<Node,double> nodeProb;
-            processProb(di, out nodeProb);
-            foreach(var kv in nodeProb)
-            {
-                Logger.Log("Left: {0} Right: {1} Prob : {2}", kv.Key.Left, kv.Key.Right, kv.Value);
-            }
-
-            Logger.Log("Done");
-            return;
-            */
+            
             GarbledEmail diamond = new GarbledEmail();
 
-            string baseDir = @"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\";
-            Runner<Input, int> runner = new Runner<Input, int>(baseDir, diamond, Input.createInput);
+            //string baseDir = @"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\";
+            Runner<Input, int> runner = new Runner<Input, int>(diamond, Input.createInput);
 
             List<string> list = new List<string>();
             // list.Add("sample.txt");
 
-            string[] strs = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            //string[] strs = Assembly.GetExecutingAssembly().GetManifestResourceNames();
 
-            ResourceSet resourceSet = new ResourceSet(Assembly.GetExecutingAssembly().GetManifestResourceStream(strs[0]));
-            foreach (DictionaryEntry resource in resourceSet)
-            {
-                Console.WriteLine("\n[{0}] \t{1}", resource.Key, resource.Value);
-            }
-            
-             list.Add("C_small_practice");
-            //list.Add("C-large-practice.in");
+            // ResourceSet resourceSet = new ResourceSet(Assembly.GetExecutingAssembly().GetManifestResourceStream(strs[0]));
 
 
+            list.Add("C_small_practice");
+            list.Add("C_large_practice");
+
+            Stopwatch timer = Stopwatch.StartNew();
             runner.run(list);
+
+            timer.Stop();
+            TimeSpan timespan = timer.Elapsed;
+
+            Console.WriteLine(String.Format("Total {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
 
         }
 

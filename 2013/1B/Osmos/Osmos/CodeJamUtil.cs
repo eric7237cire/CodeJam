@@ -38,7 +38,7 @@ namespace CodeJamUtils
             this.inputFileProducer = inputFileProducer;
         }
 
-        public Runner(string fileDir, InputFileConsumer<InputClass, AnswerClass> inputFileConsumer, InputFileProducerDelegate inputFileProducerDelegate)
+        public Runner(InputFileConsumer<InputClass, AnswerClass> inputFileConsumer, InputFileProducerDelegate inputFileProducerDelegate)
         {
             this.inputFileConsumer = inputFileConsumer;
             this.inputFileProducerDelegate = inputFileProducerDelegate;
@@ -69,6 +69,9 @@ namespace CodeJamUtils
                     inputReader = File.OpenText(fn);
                 }
 
+                Stopwatch timer = Stopwatch.StartNew();
+
+                
                 using (scanner = new Scanner(inputReader))
                 using (StreamWriter writer = new StreamWriter(outputFileName, false))
                 {
@@ -91,7 +94,16 @@ namespace CodeJamUtils
 
                         writer.WriteLine(String.Format("Case #{0}: {1}", tc, ans));
                     }
+
+                    timer.Stop();
+                    TimeSpan timespan = timer.Elapsed;
+
+                    Console.WriteLine(String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+
+
                 }
+
+
 
             }
 

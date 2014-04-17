@@ -99,7 +99,7 @@ namespace UnitTest1B
             TrieNode root = TrieNode.createRootNode(dict);
 
             List<WordMatch> matches;
-            root.parseText("abcdefghi", null, out matches);
+            root.parseText("abcdefghi", out matches);
 
             Assert.AreEqual(3, matches.Count);
             Assert.AreEqual(dict.words[2], matches[0].Word);
@@ -129,7 +129,7 @@ namespace UnitTest1B
             TrieNode root = TrieNode.createRootNode(dict);
 
             List<WordMatch> matches;
-            root.parseText("abccd", null, out matches);
+            root.parseText("abccd", out matches);
 
             Assert.AreEqual(2, matches.Count);
             Assert.AreEqual(dict.words[0], matches[0].Word);

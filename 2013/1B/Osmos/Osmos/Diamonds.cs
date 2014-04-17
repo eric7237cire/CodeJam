@@ -266,8 +266,7 @@ namespace Diamonds
             */
             Diamond diamond = new Diamond();
 
-            string baseDir = @"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\";
-            Runner<Input, double> runner = new Runner<Input, double>(baseDir, diamond, Input.createInput);
+            Runner<Input, double> runner = new Runner<Input, double>(diamond, Input.createInput);
 
             List<string> list = new List<string>();
             //list.Add("sample.txt");

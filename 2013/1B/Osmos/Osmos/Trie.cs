@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,7 +36,6 @@ namespace Trie
     public class WordMatch
     {
         public string Word { get; private set; }
-        internal int dictIdx;
         private int[] changes;
 
         public enum LeftOrRight
@@ -72,11 +72,10 @@ namespace Trie
             }
         }
 
-        public static WordMatch create(string word, int dictIdx, params int[] changes)
+        public static WordMatch create(string word, params int[] changes)
         {
             WordMatch m = new WordMatch();
             m.Word = word;
-            m.dictIdx = dictIdx;
             m.changes = changes;
 
             foreach (int changeIdx in changes)
@@ -115,12 +114,14 @@ namespace Trie
 
         private void addMatches(List<WordMatch> matches)
         {
-            foreach (WordMatch match in node.matches)
-            {
-                //TODO clone? copy constructor?
-                WordMatch newMatch = WordMatch.create(match.Word, match.dictIdx, changedIndexes.ToArray());
-                matches.Add(newMatch);
-            }
+            if (node.WordMatch == null)
+                return;
+
+
+            //TODO clone? copy constructor?
+            WordMatch newMatch = WordMatch.create(node.WordMatch, changedIndexes.ToArray());
+            matches.Add(newMatch);
+
         }
 
         public static void doMatch(int cIdx, char c, int cInt, ref List<TrieNodePtr> list, List<WordMatch> matches)
@@ -172,28 +173,26 @@ namespace Trie
         //to avoid having to loop through the 26 children
         internal List<Tuple<int, TrieNode>> childrenList;
         private const int aInt = (int)'a';
-        private Dictionary dict;
-
 
         public int CurrentLength { get; private set; }
-        internal List<WordMatch> matches;
+        public string WordMatch { get; private set; }
 
-        private TrieNode(Dictionary dict)
+        private TrieNode()
         {
-            this.dict = dict;
+            //this.dict = dict;
             children = new TrieNode[26];
             childrenList = new List<Tuple<int, TrieNode>>();
-            matches = new List<WordMatch>();
+
         }
 
         public static TrieNode createRootNode(Dictionary dict)
         {
-            TrieNode root = new TrieNode(dict);
+            TrieNode root = new TrieNode();
             root.CurrentLength = 0;
 
             for (int dIdx = 0; dIdx < dict.words.Count; ++dIdx)
             {
-                root.addWord(dict.words[dIdx], dIdx);
+                root.addWord(dict.words[dIdx]);
             }
             return root;
         }
@@ -201,7 +200,7 @@ namespace Trie
 
 
 
-        public void parseText(string text, Action<WordMatch> matchHandler, out List<WordMatch> matches, int startIdx = 0)
+        public void parseText(string text, out List<WordMatch> matches, int startIdx = 0)
         {
             matches = new List<WordMatch>();
 
@@ -219,7 +218,7 @@ namespace Trie
             }
         }
 
-        private void addWord(string word, int dictIdx)
+        private void addWord(string word)
         {
             TrieNode node = this;
 
@@ -229,7 +228,7 @@ namespace Trie
                 int cInt = (int)c - aInt;
                 if (node.children[cInt] == null)
                 {
-                    TrieNode newNode = new TrieNode(node.dict);
+                    TrieNode newNode = new TrieNode();
                     newNode.CurrentLength = cIdx + 1;
                     node.children[cInt] = newNode;
                     node.childrenList.Add(new Tuple<int, TrieNode>(cInt, newNode));
@@ -237,11 +236,11 @@ namespace Trie
 
                 node = node.children[cInt];
 
-                if (cIdx == word.Length - 1)
-                {
-                    node.matches.Add(WordMatch.create(word, dictIdx));
-                }
             }
+
+            Debug.Assert(node.WordMatch == null);
+            node.WordMatch = word;
+
         }
     }
 }
