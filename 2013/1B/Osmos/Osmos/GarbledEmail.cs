@@ -129,7 +129,7 @@ namespace GarbledEmail
             foreach (WordMatch match in matches)
             {
                 //check last change distance
-                if (lastChangeDistance > 0 && match.ChangeCount > 0 && lastChangeDistance + match[0, WordMatch.LeftOrRight.left] < TrieNode.minDistance)
+                if (lastChangeDistance > 0 && match.NumChanges > 0 && lastChangeDistance + match.LeftmostChange < TrieNode.minDistance)
                 {
                     continue;
                 }
@@ -137,9 +137,9 @@ namespace GarbledEmail
                 string matchWord = match.Word;
 
                 int newLastChangeDistance = 0;
-                if (match.ChangeCount > 0)
+                if (match.NumChanges > 0)
                 {
-                    newLastChangeDistance = 1 + match[match.ChangeCount - 1, WordMatch.LeftOrRight.right];
+                    newLastChangeDistance = 1 + match.RightmostChange;
                 }
                 else if (lastChangeDistance > 0)
                 {
@@ -151,7 +151,7 @@ namespace GarbledEmail
                     newLastChangeDistance = 0;
                 }
 
-                int matchCost = match.ChangeCount + minCount(newLastChangeDistance, progress + matchWord.Length, S, memoize, bestMatches);
+                int matchCost = match.NumChanges + minCount(newLastChangeDistance, progress + matchWord.Length, S, memoize, bestMatches);
 
                 if (matchCost < currentMin)
                 {

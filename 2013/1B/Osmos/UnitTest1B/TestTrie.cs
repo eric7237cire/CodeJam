@@ -102,19 +102,17 @@ namespace UnitTest1B
             root.parseText("abcdefghi", out matches);
 
             Assert.AreEqual(3, matches.Count);
-            Assert.AreEqual(dict.words[2], matches[0].Word);
-            Assert.AreEqual(1, matches[0][0]);
-            Assert.AreEqual(1, matches[0][0, Trie.WordMatch.LeftOrRight.right]);
+            Assert.AreEqual(dict.words[2], matches[0].Word); //acc
+            Assert.AreEqual(1, matches[0].LeftmostChange);
+            Assert.AreEqual(1, matches[0].RightmostChange);
 
-            Assert.AreEqual(dict.words[0], matches[1].Word);
-            Assert.AreEqual(0, matches[1].ChangeCount);
+            Assert.AreEqual(dict.words[0], matches[1].Word); 
+            Assert.AreEqual(0, matches[1].NumChanges);
 
-            Assert.AreEqual(dict.words[1], matches[2].Word);
-            Assert.AreEqual(0, matches[2][0]);
-            Assert.AreEqual(6, matches[2][0, Trie.WordMatch.LeftOrRight.right]);
+            Assert.AreEqual(dict.words[1], matches[2].Word);  //bbcdezg
+            Assert.AreEqual(0, matches[2].LeftmostChange);
+            Assert.AreEqual(1, matches[2].RightmostChange);
 
-            Assert.AreEqual(5, matches[2][1]);
-            Assert.AreEqual(1, matches[2][1, Trie.WordMatch.LeftOrRight.right]);
         }
 
 

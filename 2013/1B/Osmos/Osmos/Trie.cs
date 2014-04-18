@@ -36,55 +36,29 @@ namespace Trie
     public class WordMatch
     {
         public string Word { get; private set; }
-        private int[] changes;
+        public int NumChanges { get; private set; }
 
-        public enum LeftOrRight
-        {
-            left,
-            right
-        }
+        //Distance from right side 43210  (-1 for invalid)
+        public int RightmostChange { get; private set; }
+
+        //Distance from left side 012345
+        public int LeftmostChange { get; private set; }
 
         /// <summary>
-        /// left means indexed 0 1 2 3 ...
-        /// right means indexed 3 2 1 0 
+        /// Indicies are left based
         /// </summary>
-        /// <param name="i"></param>
-        /// <param name="lr"></param>
+        /// <param name="word"></param>
+        /// <param name="numChanges"></param>
+        /// <param name="rmc"></param>
+        /// <param name="lmc"></param>
         /// <returns></returns>
-        public int this[int i, LeftOrRight lr = LeftOrRight.left]
-        {
-            get { return lr == LeftOrRight.left ? changes[i] : Word.Length - 1 - changes[i]; }
-        }
-
-        public int ChangeCount
-        {
-            get
-            {
-                return changes.Length;
-            }
-        }
-
-        public string Changes
-        {
-            get
-            {
-                return changes.ToString();
-            }
-        }
-
-        public static WordMatch create(string word, params int[] changes)
+        public static WordMatch create(string word, int numChanges, int lmc, int rmc)
         {
             WordMatch m = new WordMatch();
             m.Word = word;
-            m.changes = changes;
-
-            foreach (int changeIdx in changes)
-            {
-                if (changeIdx < 0 || changeIdx >= word.Length)
-                {
-                    throw new ArgumentException("Index {0} not valid {1}".Format(changeIdx, word));
-                }
-            }
+            m.NumChanges = numChanges;
+            m.RightmostChange = m.Word.Length - 1 - rmc;
+            m.LeftmostChange = lmc;
 
             return m;
         }
@@ -92,35 +66,36 @@ namespace Trie
 
     internal class TrieNodePtr
     {
-        //TODO private?
-        public TrieNode node;
+        private TrieNode node;
 
         //Indexes local to the word
-        //TODO change to bitset and total changes
-        private List<int> changedIndexes;
+        
+        private readonly int leftChangeIndex;
+        private readonly int rightChangeIndex;
+        private readonly int numChanges;
 
-        //TODO make TrieNode obligatory
-        public TrieNodePtr()
+        public TrieNodePtr(TrieNode childNode)
         {
-            changedIndexes = new List<int>();
+            node = childNode;
+            leftChangeIndex = -1;
+            rightChangeIndex = -1;
+            numChanges = 0;
+        }
+
+        public TrieNodePtr(TrieNodePtr parent, TrieNode childNode, int newIndex)
+            : this(childNode)
+        {
+            leftChangeIndex = parent.numChanges == 0 ? newIndex : parent.leftChangeIndex;
+            rightChangeIndex = newIndex;
+            numChanges = parent.numChanges + 1;
         }
 
         public TrieNodePtr(TrieNodePtr parent, TrieNode childNode)
-            : this()
+            : this(childNode)
         {
-            //TODO Filter?  not copy entire list
-            changedIndexes = new List<int>();
-
-            foreach (int value in parent.changedIndexes)
-            {
-                if (childNode.CurrentLength - value > TrieNode.minDistance +3)
-                {
-                    continue;
-                }
-                changedIndexes.Add(value);
-            }
-            //changedIndexes = new List<int>(parent.changedIndexes);
-            node = childNode;
+            leftChangeIndex = parent.leftChangeIndex;
+            rightChangeIndex = parent.rightChangeIndex;
+            numChanges = parent.numChanges;
         }
 
         private void addMatches(List<WordMatch> matches)
@@ -128,14 +103,13 @@ namespace Trie
             if (node.WordMatch == null)
                 return;
 
-
-            //TODO clone? copy constructor?
-            WordMatch newMatch = WordMatch.create(node.WordMatch, changedIndexes.ToArray());
+            WordMatch newMatch = WordMatch.create(node.WordMatch, numChanges, leftChangeIndex, rightChangeIndex);
+            
             matches.Add(newMatch);
 
         }
 
-        public static void doMatch(int cIdx, char c, int cInt, ref List<TrieNodePtr> list, List<WordMatch> matches)
+        public static void doMatch(int cIdx, int cInt, ref List<TrieNodePtr> list, List<WordMatch> matches)
         {
             List<TrieNodePtr> newList = new List<TrieNodePtr>();
 
@@ -149,7 +123,7 @@ namespace Trie
                 }
 
                 //If last change > 5, then add the rest
-                if (nodePtr.changedIndexes.Count == 0 || cIdx - nodePtr.changedIndexes[nodePtr.changedIndexes.Count - 1] >= TrieNode.minDistance)
+                if (nodePtr.numChanges == 0 || cIdx - nodePtr.rightChangeIndex >= TrieNode.minDistance)
                 {
                     foreach (var x in nodePtr.node.childrenList)
                     {
@@ -159,9 +133,7 @@ namespace Trie
                         if (charInt == cInt)
                             continue;
 
-                        TrieNodePtr newNp = new TrieNodePtr(nodePtr, childNode);
-                        newNp.changedIndexes.Add(cIdx);
-
+                        TrieNodePtr newNp = new TrieNodePtr(nodePtr, childNode, cIdx);
                         newList.Add(newNp);
                         newNp.addMatches(matches);
                     }
@@ -193,10 +165,8 @@ namespace Trie
 
         private TrieNode()
         {
-            //this.dict = dict;
             children = new TrieNode[26];
             childrenList = new List<Tuple<int, TrieNode>>();
-
         }
 
         public static TrieNode createRootNode(Dictionary dict)
@@ -211,16 +181,13 @@ namespace Trie
             return root;
         }
 
-
-
-
         public void parseText(string text, out List<WordMatch> matches, int startIdx = 0)
         {
             matches = new List<WordMatch>();
 
             List<TrieNodePtr> listPtrs = new List<TrieNodePtr>();
-            TrieNodePtr root = new TrieNodePtr();
-            root.node = this;
+            TrieNodePtr root = new TrieNodePtr(this);
+            
             listPtrs.Add(root);
 
             for (int cIdx = startIdx; cIdx < text.Length; ++cIdx)
@@ -228,7 +195,7 @@ namespace Trie
                 char c = text[cIdx];
                 int cInt = (int)c - aInt;
 
-                TrieNodePtr.doMatch(cIdx - startIdx, c, cInt, ref listPtrs, matches);
+                TrieNodePtr.doMatch(cIdx - startIdx, cInt, ref listPtrs, matches);
             }
         }
 
@@ -249,12 +216,10 @@ namespace Trie
                 }
 
                 node = node.children[cInt];
-
             }
 
             Debug.Assert(node.WordMatch == null);
             node.WordMatch = word;
-
         }
     }
 }
