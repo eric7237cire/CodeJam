@@ -74,6 +74,9 @@ namespace Trie
         private readonly int rightChangeIndex;
         private readonly int numChanges;
 
+        //Move to TrieNodePtr
+        public const int minDistance = 5;
+
         public TrieNodePtr(TrieNode childNode)
         {
             node = childNode;
@@ -123,7 +126,7 @@ namespace Trie
                 }
 
                 //If last change > 5, then add the rest
-                if (nodePtr.numChanges == 0 || cIdx - nodePtr.rightChangeIndex >= TrieNode.minDistance)
+                if (nodePtr.numChanges == 0 || cIdx - nodePtr.rightChangeIndex >= minDistance)
                 {
                     foreach (var x in nodePtr.node.childrenList)
                     {
@@ -152,8 +155,7 @@ namespace Trie
     /// </summary>
     sealed internal class TrieNode
     {
-        //Move to TrieNodePtr
-        public const int minDistance = 5;
+        
 
         internal TrieNode[] children;
         //to avoid having to loop through the 26 children

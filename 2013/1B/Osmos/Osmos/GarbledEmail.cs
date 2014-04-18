@@ -47,13 +47,13 @@ namespace GarbledEmail
     {
         internal int minCount(int lastChangeDistance, int progress, string S)
         {
-            int[][] memoize = new int[TrieNode.minDistance + 1][];
+            int[][] memoize = new int[TrieNodePtr.minDistance + 1][];
             WordMatch[][] bestMatches = null;
 
 #if (!PERF)
             new WordMatch[TrieNode.minDistance + 1][];
 #endif
-            for (int i = 0; i <= TrieNode.minDistance; ++i)
+            for (int i = 0; i <= TrieNodePtr.minDistance; ++i)
             {
                 memoize[i] = new int[S.Length];
 #if (!PERF)
@@ -112,16 +112,10 @@ namespace GarbledEmail
                 return memoize[lastChangeDistance][progress] - 1;
             }
 
-            Logger.Log("minCount last change: {0} progress: {1}".Format(lastChangeDistance, progress));
+            Logger.Log("minCount last change: {0} progress: {1}", lastChangeDistance, progress);
 
             List<WordMatch> matches;
             root.parseText(S, out matches, progress);
-
-            if (lastChangeDistance < 0 || lastChangeDistance > 5)
-            {
-                Debug.Assert(lastChangeDistance >= 0 && lastChangeDistance <= 5);
-            }
-
 
             int currentMin = Int32.MaxValue / 2;
             WordMatch bestMatch = null;
@@ -129,7 +123,7 @@ namespace GarbledEmail
             foreach (WordMatch match in matches)
             {
                 //check last change distance
-                if (lastChangeDistance > 0 && match.NumChanges > 0 && lastChangeDistance + match.LeftmostChange < TrieNode.minDistance)
+                if (lastChangeDistance > 0 && match.NumChanges > 0 && lastChangeDistance + match.LeftmostChange < TrieNodePtr.minDistance)
                 {
                     continue;
                 }
@@ -146,7 +140,7 @@ namespace GarbledEmail
                     newLastChangeDistance = lastChangeDistance + match.Word.Length;
                 }
 
-                if (newLastChangeDistance > 5)
+                if (newLastChangeDistance > TrieNodePtr.minDistance)
                 {
                     newLastChangeDistance = 0;
                 }
