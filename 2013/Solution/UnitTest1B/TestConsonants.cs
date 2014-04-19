@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils;
 
-namespace UnitTest1B
+namespace UnitTest
 {
     [TestClass]
     public class TestConsonants

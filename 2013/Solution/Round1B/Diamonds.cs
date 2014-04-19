@@ -11,8 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-//Dynamic programming, could improve by doing a linear solution.
-//Uses checked addition
+//Pascal's triangle, probablity getting exactly N heads in X coin flips
 
 namespace Diamonds
 {
@@ -65,7 +64,7 @@ namespace Diamonds
                 pyramidSizes.Add(pyramidSizes[index] + toAdd);
             }
 
-            int idx = CodeJamUtils.Utils.binarySearch<int>(0, pyramidSizes.Count - 1, pyramidSizes, nDiamonds);
+            int idx = CodeJamUtils.CjUtils.binarySearch<int>(0, pyramidSizes.Count - 1, pyramidSizes, nDiamonds);
 
 
 
@@ -144,12 +143,7 @@ namespace Diamonds
 
     public class Diamond : InputFileConsumer<Input, double>
     {
-        private static void swap<T>( ref T a, ref T b)
-        {
-            T temp = a;
-            a = b;
-            b = temp;
-        }
+        
 
         private PascalsTriangle<double> triangle;
 
@@ -217,7 +211,7 @@ namespace Diamonds
                     addProb(newNodes, new Node(node.Left, node.Right+1), nodeProb.Value / 2);
                 }
 
-                swap(ref nodesToProcess, ref newNodes);
+                CjUtils.swap(ref nodesToProcess, ref newNodes);
             }
 
             nodes = nodesToProcess;

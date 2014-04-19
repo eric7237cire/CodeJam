@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Utils;
 namespace CodeJamUtils
 {
     public class Point<T> : IEquatable<Point<T>>
@@ -18,6 +18,10 @@ namespace CodeJamUtils
             {
                 return x;
             }
+            set
+            {
+                x = value;
+            }
         }
 
         public T Y
@@ -25,6 +29,10 @@ namespace CodeJamUtils
             get
             {
                 return y;
+            }
+            set
+            {
+                y = value;
             }
         }
 
@@ -34,6 +42,9 @@ namespace CodeJamUtils
             this.y = right;
         }
 
+        private const int prime1 = 17;
+        private const int prime2 = 23;
+
         public override bool Equals(object obj)
         {
             return this.Equals(obj as Point<T>);
@@ -41,7 +52,10 @@ namespace CodeJamUtils
         }
         public override int GetHashCode()
         {
-            return Tuple.Create<T,T>(x, y).GetHashCode();
+            int hash = 17;
+            hash = hash * 23 + x.GetHashCode();
+            hash = hash * 23 + y.GetHashCode();
+            return hash;            
         }
 
 
@@ -61,6 +75,11 @@ namespace CodeJamUtils
         public static bool operator !=(Point<T> leftOperand, Point<T> rightOperand)
         {
             return !(leftOperand == rightOperand);
+        }
+
+        public override string ToString()
+        {
+            return "({0}, {1})".FormatThis(x.ToString(),y.ToString());
         }
     }
 }

@@ -124,6 +124,12 @@
   <data name="A_small_practice" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\A-small-practice.in;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="B_large_practice" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\B-large-practice.in;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="B_small_practice" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\B-small-practice.in;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="sample" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\sample.in;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>

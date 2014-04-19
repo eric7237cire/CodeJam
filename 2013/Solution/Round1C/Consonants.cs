@@ -7,7 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils;
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo
-                          ("UnitTest1B")]
+          
+                ("UnitTest")]
+
+//Merging boundaries, counting substrings
 namespace Round1C
 {
 #if (PERF)
@@ -217,7 +220,7 @@ namespace Round1C
             return ans;
         }
 
-        static void Main(string[] args)
+        static void Main2(string[] args)
         {
 
 

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo
-                          ("UnitTest1B")]
+                          ("UnitTest")]
 namespace Trie
 {
 #if (PERF)

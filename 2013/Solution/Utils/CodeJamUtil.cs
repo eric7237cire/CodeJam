@@ -443,8 +443,15 @@ namespace CodeJamUtils
         }
     }
 
-    public static class Utils
+    public static class CjUtils
     {
+        public static void swap<T>(ref T a, ref T b)
+        {
+            T temp = a;
+            a = b;
+            b = temp;
+        }
+
         public static int binarySearch<T>(int loIdx, int hiIdx, List<T> list, T target)
         {
             Comparer<T> comp = Comparer<T>.Default;

@@ -16,10 +16,10 @@ using System.Resources;
 using Trie;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo
-                          ("UnitTest1B")]
+                          ("UnitTest")]
 
 
-
+//Using trie with variables min change distance
 
 namespace GarbledEmail
 {

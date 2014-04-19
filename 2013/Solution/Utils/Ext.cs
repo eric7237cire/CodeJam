@@ -21,5 +21,38 @@ namespace Utils
             return list[list.Count - 1];
         }
 
+        public static Tuple<T, T> binarySearch<T>(this List<T> list, T target) where T : IComparable<T>
+        {
+            int lowIdx, hiIdx;
+            return binarySearch(list, target, out lowIdx, out hiIdx);
+        }
+        //binary search sorted list
+        public static Tuple<T, T> binarySearch<T>(this List<T> list, T target, out int lowIdx, out int hiIdx) where T : IComparable<T>
+        {
+            //n * (n+1) / 2 == sum  
+            //n^2 + n - 2* sum = 0
+            //-b +/- sqrt(b^2 - 4ac) / 2a
+
+            //using binary search ; invariant lo <= sum < hi
+            lowIdx = 0;
+            hiIdx = list.Count - 1;
+
+            while (hiIdx - lowIdx > 1)
+            {
+                int midIdx = lowIdx + (hiIdx - lowIdx) / 2;
+
+                if (list[midIdx].CompareTo(target) > 0)
+                {
+                    hiIdx = midIdx;
+                }
+                else
+                {
+                    lowIdx = midIdx;
+                }
+            }
+
+            return new Tuple<T, T>(list[lowIdx], list[hiIdx]);
+        }
+
     }
 }

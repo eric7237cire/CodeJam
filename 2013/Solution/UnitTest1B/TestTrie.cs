@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Trie;
 using GarbledEmail;
 using CodeJamUtils;
-namespace UnitTest1B
+namespace UnitTest
 {
     [TestClass]
     public class TestTrie
