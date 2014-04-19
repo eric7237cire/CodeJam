@@ -15,6 +15,7 @@ output.txt
 Debug
 Release
 x64
+obj
 ipch
 *.sdf
 *.suo

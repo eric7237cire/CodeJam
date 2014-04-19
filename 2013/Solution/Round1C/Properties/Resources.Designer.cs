@@ -61,15 +61,32 @@ namespace Round1C.Properties {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à 4
-        ///quartz 3
-        ///straight 3
-        ///gcj 2
-        ///tsetse 2.
+        ///   Recherche une ressource localisée de type System.Byte[].
         /// </summary>
-        internal static string sample {
+        internal static byte[] A_large_practice {
             get {
-                return ResourceManager.GetString("sample", resourceCulture);
+                object obj = ResourceManager.GetObject("A_large_practice", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Byte[].
+        /// </summary>
+        internal static byte[] A_small_practice {
+            get {
+                object obj = ResourceManager.GetObject("A_small_practice", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Byte[].
+        /// </summary>
+        internal static byte[] sample {
+            get {
+                object obj = ResourceManager.GetObject("sample", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }

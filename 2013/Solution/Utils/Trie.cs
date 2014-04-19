@@ -16,20 +16,7 @@ namespace Trie
     using Logger = CodeJamUtils.LoggerReal;
 #endif
 
-    static class Utils
-    {
-        //Extension method to be able to do "{0}".Format directly
-        public static string Format(this string str, params object[] args)
-        {
-            return String.Format(str, args);
-        }
-
-        //Add extension to list to get last value
-        public static T GetLastValue<T>(this List<T> list)
-        {
-            return list[list.Count - 1];
-        }
-    }
+    
     public class Dictionary
     {
         public List<string> words;
