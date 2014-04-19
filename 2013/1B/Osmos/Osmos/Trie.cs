@@ -9,6 +9,13 @@ using System.Threading.Tasks;
                           ("UnitTest1B")]
 namespace Trie
 {
+#if (PERF)
+   
+    using Logger = CodeJamUtils.LoggerEmpty;
+#else
+    using Logger = CodeJamUtils.LoggerReal;
+#endif
+
     static class Utils
     {
         //Extension method to be able to do "{0}".Format directly
@@ -115,6 +122,7 @@ namespace Trie
         public static void doMatch(int cIdx, int cInt, ref List<TrieNodePtr> list, List<WordMatch> matches)
         {
             List<TrieNodePtr> newList = new List<TrieNodePtr>();
+            //Logger.Log("doMatch cIdx: {0} char: {1} list size {2} matches size {3}", cIdx, (char)(cInt + (int)'a'), list.Count, matches.Count);
 
             foreach (TrieNodePtr nodePtr in list)
             {
@@ -185,7 +193,7 @@ namespace Trie
 
         public void parseText(string text, out List<WordMatch> matches, int startIdx = 0)
         {
-            matches = new List<WordMatch>();
+            matches = new List<WordMatch>(10);
 
             List<TrieNodePtr> listPtrs = new List<TrieNodePtr>();
             TrieNodePtr root = new TrieNodePtr(this);
@@ -198,6 +206,11 @@ namespace Trie
                 int cInt = (int)c - aInt;
 
                 TrieNodePtr.doMatch(cIdx - startIdx, cInt, ref listPtrs, matches);
+
+                if (listPtrs.Count == 0)
+                {
+                    return;
+                }
             }
         }
 

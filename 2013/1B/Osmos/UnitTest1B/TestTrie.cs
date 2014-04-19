@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Trie;
 using GarbledEmail;
+using CodeJamUtils;
 namespace UnitTest1B
 {
     [TestClass]
@@ -48,6 +49,8 @@ namespace UnitTest1B
 
             int minChange = ge.minCount(0, 0, "pppvyppbcpjpywpwbyayppyojpjwabwywbbwywmbwywnpwy");
             Assert.AreEqual(8, minChange);
+
+            LoggerReal.CurrentDomain_ProcessExit(null,null);
         }
 
         [TestMethod]

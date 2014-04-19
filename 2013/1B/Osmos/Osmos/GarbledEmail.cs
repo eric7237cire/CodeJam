@@ -10,6 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections;
+using System.Reflection;
+using System.Resources;
 using Trie;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo
@@ -21,9 +24,7 @@ using Trie;
 namespace GarbledEmail
 {
 #if (PERF)
-    using System.Collections;
-    using System.Reflection;
-    using System.Resources;
+   
     using Logger = CodeJamUtils.LoggerEmpty;
 #else
     using Logger = CodeJamUtils.LoggerReal;
@@ -47,6 +48,8 @@ namespace GarbledEmail
     {
         internal int minCount(int lastChangeDistance, int progress, string S)
         {
+            
+
             int[][] memoize = new int[TrieNodePtr.minDistance + 1][];
             WordMatch[][] bestMatches = null;
 
@@ -61,6 +64,7 @@ namespace GarbledEmail
 #endif
             }
 
+           
             int ret = minCount(lastChangeDistance, progress, S, memoize, bestMatches);
 
 #if (!PERF)
@@ -189,7 +193,8 @@ namespace GarbledEmail
             list.Add("C_large_practice");
 
             Stopwatch timer = Stopwatch.StartNew();
-            runner.run(list);
+            //runner.run(list);
+            runner.runMultiThread(list);
 
             timer.Stop();
             TimeSpan timespan = timer.Elapsed;

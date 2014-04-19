@@ -10,9 +10,16 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Osmos;
+using System.Collections.Concurrent;
 
 namespace CodeJamUtils
 {
+#if (PERF)
+   
+    using Logger = CodeJamUtils.LoggerEmpty;
+#else
+    using Logger = CodeJamUtils.LoggerReal;
+#endif
 
     public interface InputFileProducer<InputClass>
     {
@@ -44,13 +51,137 @@ namespace CodeJamUtils
             this.inputFileProducerDelegate = inputFileProducerDelegate;
         }
 
+        public void runMultiThread(List<string> fileNames)
+        {
+            Logger.Log("runMultithead enter");
+            Task t = Task.Run(() => producerRun(fileNames, 3));
+            t.Wait();
+        }
+
+        private void producerConsume(BlockingCollection<Tuple<InputClass, int>> queue, AnswerClass[] answers)
+        {
+            Logger.Log("Entering producerConsume");
+
+            while (!queue.IsCompleted)
+            {
+                Tuple<InputClass, int> nextItem = default(Tuple<InputClass, int>);
+
+                if (!queue.TryTake(out nextItem))
+                {
+                    //Console.WriteLine(" Take Blocked");
+                    continue;
+                }
+
+                Stopwatch timer = Stopwatch.StartNew();
+                Console.WriteLine("Take:{0}", nextItem.Item2);
+                AnswerClass ans = inputFileConsumer.processInput(nextItem.Item1);
+                Console.WriteLine("Done:{0}", nextItem.Item2);
+                timer.Stop();
+                TimeSpan timespan = timer.Elapsed;
+
+                Console.WriteLine(String.Format("Input done : {4}  in {0:00}:{1:00}:{2:00} ({3:00} ticks)", timespan.Minutes, timespan.Seconds, timespan.Milliseconds, timespan.Ticks, nextItem.Item2));
+                answers[nextItem.Item2 - 1] = ans;
+
+            }
+
+            Logger.Log("Exiting producerConsume");
+        }
+
+        private void producerRun(List<string> fileNames, int nConsumerThreads)
+        {
+            Scanner scanner = null;
+
+            ResourceManager resourceManager = Osmos.Properties.Resources.ResourceManager;
+
+            Logger.Log("producerRun enter");
+            foreach (string fn in fileNames)
+            {
+                Logger.Log("File {0}", fn);
+                BlockingCollection<Tuple<InputClass, int>> queue = new BlockingCollection<Tuple<InputClass, int>>();
+                string inputFileName = fn;
+
+                TextReader inputReader = null;
+                byte[] obj = (byte[])resourceManager.GetObject(fn);
+                if (obj != null)
+                {
+                    inputReader = new StreamReader(new MemoryStream(obj));
+                }
+                else
+                {
+                    inputReader = File.OpenText(fn);
+                }
+
+                Stopwatch timer = Stopwatch.StartNew();
+
+                Task[] consumeTasks = null;
+                AnswerClass[] answers;
+
+                using (scanner = new Scanner(inputReader))
+                {
+                    int testCases = scanner.nextInt();
+
+                    answers = new AnswerClass[testCases];
+                    consumeTasks = new Task[nConsumerThreads];
+                    
+
+                    for (int tc = 1; tc <= testCases; ++tc)
+                    {
+                        InputClass input;
+
+                        if (inputFileProducer != null)
+                        {
+                            input = inputFileProducer.createInput(scanner);
+                        }
+                        else
+                        {
+                            input = inputFileProducerDelegate.Invoke(scanner);
+                        }
+                        Logger.Log("Read input for tc {0} : {1}", tc, input.ToString());
+                        queue.Add(new Tuple<InputClass, int>(input, tc));
+                    }
+                    queue.CompleteAdding();
+
+                    for (int i = 0; i < nConsumerThreads; ++i)
+                    {
+                        Console.WriteLine("Building thread " + i);
+                        consumeTasks[i] = Task.Run(() => producerConsume(queue, answers));
+                    }
+
+                    //This thread can also now help conuming
+                    producerConsume(queue, answers);
+
+                    
+                    timer.Stop();
+                    TimeSpan timespan = timer.Elapsed;
+
+                    Console.WriteLine(String.Format("Input done {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+
+
+                }
+
+                Task.WaitAll(consumeTasks);
+
+                string outputFileName = Regex.Replace(inputFileName, @"(\..*)?$", ".out");
+                using (StreamWriter writer = new StreamWriter(outputFileName, false))
+                {
+                    for (int tc = 1; tc <= answers.Length; ++tc)
+                    {
+                        AnswerClass ans = answers[tc - 1];
+                        string line = String.Format("Case #{0}: {1}", tc, ans);
+                        Logger.Log("Writing to {0}, {1}", outputFileName, line);
+                        writer.WriteLine(line);
+                    }
+                }
+            }
+        }
+
         public void run(List<string> fileNames)
         {
 
             Scanner scanner = null;
 
             ResourceManager resourceManager = Osmos.Properties.Resources.ResourceManager;
-            
+
 
             foreach (string fn in fileNames)
             {
@@ -71,7 +202,7 @@ namespace CodeJamUtils
 
                 Stopwatch timer = Stopwatch.StartNew();
 
-                
+
                 using (scanner = new Scanner(inputReader))
                 using (StreamWriter writer = new StreamWriter(outputFileName, false))
                 {
@@ -115,16 +246,16 @@ namespace CodeJamUtils
 
     public sealed class LoggerEmpty
     {
-        
+
         public static void Log(String msg, params object[] args)
         {
-        
+
         }
 
-        
+
         public static void Log(String msg)
         {
-        
+
         }
 
     }
@@ -138,12 +269,12 @@ namespace CodeJamUtils
 
         private LoggerReal()
         {
-            writer = new StreamWriter(@"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\log.txt", false);
+            writer = new StreamWriter(@"log.txt", false);
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
 
         }
 
-        static void CurrentDomain_ProcessExit(object sender, EventArgs e)
+        public static void CurrentDomain_ProcessExit(object sender, EventArgs e)
         {
             Console.WriteLine("exit");
             LoggerReal.Instance.writer.Close();
