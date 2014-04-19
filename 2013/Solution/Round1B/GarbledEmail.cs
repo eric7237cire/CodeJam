@@ -220,7 +220,7 @@ namespace GarbledEmail
             dict = new Dictionary();
 
             using (StreamReader file =
-   new System.IO.StreamReader(@"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\garbled_email_dictionary.txt"))
+   new System.IO.StreamReader(@"C:\codejam\CodeJam\2013\Solution\Round1B\garbled_email_dictionary.txt"))
             {
                 string line;
                 while ((line = file.ReadLine()) != null)

@@ -77,7 +77,7 @@
     <Compile Include="TestTrie.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Osmos\Round1B.csproj">
+    <ProjectReference Include="..\Round1B\Round1B.csproj">
       <Project>{24a3f355-4327-4ccd-b3eb-acfaa848442e}</Project>
       <Name>Round1B</Name>
     </ProjectReference>
