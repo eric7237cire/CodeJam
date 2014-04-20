@@ -51,7 +51,7 @@ namespace Round1C.Pogo
             summations = new List<int>();
             int curSum = 0;
             int n = 0;
-            while(curSum < 2000000)
+            while (curSum < 2000000)
             {
                 n++;
                 curSum += n;
@@ -61,24 +61,39 @@ namespace Round1C.Pogo
 
         public static Point<int> simulate(string dir)
         {
-            Point<int> p = new Point<int>(0,0);
-            for(int idx = 0; idx < dir.Length; ++idx)
+            Point<int> p = new Point<int>(0, 0);
+            List<int>[] al = new List<int>[4];
+            for (int i = 0; i < 4; ++i)
             {
-                switch(dir[idx])
+                al[i] = new List<int>();
+            }
+            for (int idx = 0; idx < dir.Length; ++idx)
+            {
+                switch (dir[idx])
                 {
                     case 'N':
                         p.Y = p.Y + idx + 1;
+                        al[0].Add(idx + 1);
                         break;
                     case 'S':
-                        p.Y -=  idx + 1;
+                        p.Y -= idx + 1;
+                        al[1].Add(idx + 1);
                         break;
                     case 'E':
                         p.X += idx + 1;
+                        al[2].Add(idx + 1);
                         break;
                     case 'W':
                         p.X -= idx + 1;
+                        al[3].Add(idx + 1);
                         break;
                 }
+            }
+
+            for (int i = 0; i < 4; ++i)
+            {
+                Logger.Log(string.Join(", ", al[i]) + " sum: " + al[i].Sum());
+
             }
 
             return p;
@@ -87,7 +102,7 @@ namespace Round1C.Pogo
 
         public string processInput(Input input)
         {
-            
+
             int xAbs = Math.Abs(input.X);
             int yAbs = Math.Abs(input.Y);
 
@@ -102,10 +117,13 @@ namespace Round1C.Pogo
             Tuple<int, int> bestMatch = summations.binarySearch(sum, out lowIdx, out hiIdx);
 
             int best, bestIdx;
-            if  ( (sum - bestMatch.Item1 ) < 2 + bestMatch.Item2 - sum) {
+            if ((sum - bestMatch.Item1) < 2 + bestMatch.Item2 - sum)
+            {
                 best = bestMatch.Item1;
                 bestIdx = lowIdx;
-            } else {
+            }
+            else
+            {
                 best = bestMatch.Item2;
                 bestIdx = hiIdx;
             }
@@ -119,7 +137,7 @@ namespace Round1C.Pogo
             if (yAbs > xAbs)
             {
                 //Advance towards the absolute value
-                greaterPlus = input.Y > 0 ? 'N' : 'S'; 
+                greaterPlus = input.Y > 0 ? 'N' : 'S';
                 greaterMinus = input.Y > 0 ? 'S' : 'N';
                 lesserPlus = input.X > 0 ? 'E' : 'W';
                 lesserMinus = input.X > 0 ? 'W' : 'E';
@@ -134,7 +152,7 @@ namespace Round1C.Pogo
 
             int greaterTotal = 0;
 
-            for (int idx = bestIdx; idx >= 0; --idx )
+            for (int idx = bestIdx; idx >= 0; --idx)
             {
                 int hopSize = idx + 1;
                 if (hopSize <= lowerCoordAbs)
@@ -151,8 +169,8 @@ namespace Round1C.Pogo
 
             //lower coord should be exact, greater
             int greaterCoord = xAbs > yAbs ? input.X : input.Y;
-            
-            for(int i = 0; i < Math.Abs(greaterCoordAbs - greaterTotal); ++i)
+
+            for (int i = 0; i < Math.Abs(greaterCoordAbs - greaterTotal); ++i)
             {
                 if (greaterCoordAbs < greaterTotal)
                 {
@@ -167,8 +185,17 @@ namespace Round1C.Pogo
             }
 
             //char[] array = dirStr.ToString().ToCharArray();
-           // Array.Reverse(array);
-            return dirStr.ToString();
+            // Array.Reverse(array);
+            string ans = dirStr.ToString();
+
+            Point<int> check = simulate(ans);
+
+            if (check.X != input.X || check.Y != input.Y)
+            {
+                throw new Exception("gah");
+            }
+
+            return ans;
         }
 
         static void Main(string[] args)
@@ -183,9 +210,10 @@ namespace Round1C.Pogo
 
             List<string> list = new List<string>();
 
-           // list.Add("sample");
-            list.Add("B_small_practice");
-            //list.Add("A-large-practice.in");
+            list.Add("sample");
+            //list.Add("B_small_practice");
+           // list.Add("B_large_practice");
+
 
             Stopwatch timer = Stopwatch.StartNew();
             runner.run(list, Round1C.Properties.Resources.ResourceManager);
