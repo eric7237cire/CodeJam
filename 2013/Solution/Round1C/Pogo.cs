@@ -51,6 +51,7 @@ namespace Round1C.Pogo
             summations = new List<int>();
             int curSum = 0;
             int n = 0;
+            summations.Add(0);
             while (curSum < 2000000)
             {
                 n++;
@@ -101,6 +102,67 @@ namespace Round1C.Pogo
         }
 
         public string processInput(Input input)
+        {
+            //Determine minimum N such that 1 + ... + N >= |X| + |Y|
+
+            int sumAbs = Math.Abs(input.X) + Math.Abs(input.Y);
+
+            int lowIdx, hiIdx;
+            Tuple<int, int> bestMatch = summations.binarySearch(sumAbs, out lowIdx, out hiIdx);
+
+            int N = bestMatch.Item1 == sumAbs ? lowIdx : hiIdx;
+
+            //Now check parity
+            int sumAbsParity = sumAbs % 2;
+            int oneToNParity = summations[N] % 2;
+
+            if (sumAbsParity != oneToNParity)
+            {
+                N +=  N%2 == 0 ? 1 : 2; //if N is even, then N+1 will change parity, if odd, then we need N+1 and N+2
+            }
+
+            Point<int> curPoint = new Point<int>(input.X, input.Y);
+            StringBuilder ans = new StringBuilder();
+
+            
+            for ( ; N >= 1; --N )
+            {
+                //Check induction properties
+                Debug.Assert(Math.Abs(curPoint.X) + Math.Abs(curPoint.Y) <= summations[N]);
+                Debug.Assert( (Math.Abs(curPoint.X) + Math.Abs(curPoint.Y)) % 2 == summations[N] % 2);
+
+                if (Math.Abs(curPoint.X) >= Math.Abs(curPoint.Y))
+                {
+                    if (curPoint.X > 0)
+                    {
+                        ans.Insert(0, 'E');
+                        curPoint.X -= N;
+                    }
+                    else
+                    {
+                        ans.Insert(0, 'W');
+                        curPoint.X += N;
+                    }
+                }
+                else
+                {
+                    if (curPoint.Y > 0)
+                    {
+                        ans.Insert(0, 'N');
+                        curPoint.Y -= N;
+                    }
+                    else
+                    {
+                        ans.Insert(0, 'S');
+                        curPoint.Y += N;
+                    }
+                }
+            }
+
+            return ans.ToString();
+        }
+
+        public string processInputSmall(Input input)
         {
 
             int xAbs = Math.Abs(input.X);
@@ -211,8 +273,8 @@ namespace Round1C.Pogo
             List<string> list = new List<string>();
 
             list.Add("sample");
-            //list.Add("B_small_practice");
-           // list.Add("B_large_practice");
+            list.Add("B_small_practice");
+            list.Add("B_large_practice");
 
 
             Stopwatch timer = Stopwatch.StartNew();
