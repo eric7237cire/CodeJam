@@ -29,8 +29,10 @@ namespace CodeJamUtils
         AnswerClass processInput(InputClass input);
     }
 
+
     public class Runner<InputClass, AnswerClass>
     {
+
 
         public delegate InputClass InputFileProducerDelegate(Scanner scanner);
         private InputFileProducerDelegate inputFileProducerDelegate;
@@ -445,6 +447,24 @@ namespace CodeJamUtils
 
     public static class CjUtils
     {
+        public static void RunMain<InputClass, AnswerClass>(List<string> list, 
+            InputFileConsumer<InputClass, AnswerClass> main, 
+            Runner<InputClass, AnswerClass>.InputFileProducerDelegate inputDelegate,
+            ResourceManager rm
+            )
+        {
+            var runner = new Runner<InputClass, AnswerClass>(main, inputDelegate);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            runner.run(list, rm);
+
+            timer.Stop();
+            TimeSpan timespan = timer.Elapsed;
+
+            Console.WriteLine(String.Format("Total {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+
+        }
+
         public static void swap<T>(ref T a, ref T b)
         {
             T temp = a;

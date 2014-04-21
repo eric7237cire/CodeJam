@@ -103,6 +103,26 @@ namespace Round1C.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Byte[].
         /// </summary>
+        internal static byte[] C_large_practice {
+            get {
+                object obj = ResourceManager.GetObject("C_large_practice", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Byte[].
+        /// </summary>
+        internal static byte[] C_small_practice {
+            get {
+                object obj = ResourceManager.GetObject("C_small_practice", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Byte[].
+        /// </summary>
         internal static byte[] sample {
             get {
                 object obj = ResourceManager.GetObject("sample", resourceCulture);

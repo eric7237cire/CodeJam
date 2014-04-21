@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Round1C</RootNamespace>
     <AssemblyName>Round1C</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -63,6 +64,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BinaryTree.cs" />
+    <Compile Include="GreatWall.cs" />
+    <Compile Include="IntervalTree.cs" />
+    <Compile Include="IntervalTree3.cs" />
+    <Compile Include="IntervalTree3Test.cs" />
+    <Compile Include="IntervalTreeOther.cs" />
     <Compile Include="Pogo.cs" />
     <Compile Include="Consonants.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,6 +78,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Wall.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="A-large-practice.in" />
@@ -78,6 +86,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\C5\C5\C5.csproj">
+      <Project>{0d9bb39d-0201-40cb-bda8-ec75c95a14d6}</Project>
+      <Name>C5</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{ca53bd61-475a-4c6a-a040-3e3ad18a6656}</Project>
       <Name>Utils</Name>
@@ -92,6 +104,8 @@
   <ItemGroup>
     <None Include="B-large-practice.in" />
     <None Include="B-small-practice.in" />
+    <None Include="C-large-practice.in" />
+    <None Include="C-small-practice.in" />
     <None Include="sample.in" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

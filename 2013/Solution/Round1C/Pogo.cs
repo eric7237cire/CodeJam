@@ -17,27 +17,7 @@ namespace Round1C.Pogo
     using Logger = CodeJamUtils.LoggerReal;
 #endif
 
-    class Node
-    {
-        internal Point<int> curLoc;
-        internal char lastMove;
-        internal int numHops;
-        internal Node parent;
-
-        internal static Node create(Point<int> curLoc,
-        char lastMove,
-        int numHops,
-        Node parent)
-        {
-            Node node = new Node();
-            node.curLoc = curLoc;
-            node.lastMove = lastMove;
-            node.numHops = numHops;
-            node.parent = parent;
-            return node;
-        }
-    }
-
+   
     internal class Pogo : InputFileConsumer<Input, string>
     {
         static private List<int> summations;
@@ -118,18 +98,18 @@ namespace Round1C.Pogo
 
             if (sumAbsParity != oneToNParity)
             {
-                N +=  N%2 == 0 ? 1 : 2; //if N is even, then N+1 will change parity, if odd, then we need N+1 and N+2
+                N += N % 2 == 0 ? 1 : 2; //if N is even, then N+1 will change parity, if odd, then we need N+1 and N+2
             }
 
             Point<int> curPoint = new Point<int>(input.X, input.Y);
             StringBuilder ans = new StringBuilder();
 
-            
-            for ( ; N >= 1; --N )
+
+            for (; N >= 1; --N)
             {
                 //Check induction properties
                 Debug.Assert(Math.Abs(curPoint.X) + Math.Abs(curPoint.Y) <= summations[N]);
-                Debug.Assert( (Math.Abs(curPoint.X) + Math.Abs(curPoint.Y)) % 2 == summations[N] % 2);
+                Debug.Assert((Math.Abs(curPoint.X) + Math.Abs(curPoint.Y)) % 2 == summations[N] % 2);
 
                 if (Math.Abs(curPoint.X) >= Math.Abs(curPoint.Y))
                 {
@@ -162,6 +142,9 @@ namespace Round1C.Pogo
             return ans.ToString();
         }
 
+        /**
+         * Finds closest sum then adds +1 via N / N+1 to adjust
+         */
         public string processInputSmall(Input input)
         {
 
@@ -260,15 +243,9 @@ namespace Round1C.Pogo
             return ans;
         }
 
-        static void Main(string[] args)
+        static void Main2(string[] args)
         {
-
-
-
             Pogo main = new Pogo();
-
-
-            var runner = new Runner<Input, string>(main, Input.createInput);
 
             List<string> list = new List<string>();
 
@@ -276,15 +253,7 @@ namespace Round1C.Pogo
             list.Add("B_small_practice");
             list.Add("B_large_practice");
 
-
-            Stopwatch timer = Stopwatch.StartNew();
-            runner.run(list, Round1C.Properties.Resources.ResourceManager);
-            // runner.runMultiThread(list);
-
-            timer.Stop();
-            TimeSpan timespan = timer.Elapsed;
-
-            Console.WriteLine(String.Format("Total {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+            CjUtils.RunMain(list, main, Input.createInput, Round1C.Properties.Resources.ResourceManager);
 
         }
     }
