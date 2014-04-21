@@ -28,6 +28,50 @@ namespace UnitTest
         }
 
         [TestMethod]
+        public void setPercolateUp()
+        {
+            BinaryTree<int> bt = BinaryTree<int>.create(7);
+            bt.ApplyParentDataFunc = TestBinaryTree.setMinimum;
+            bt.ApplyLeftRightDataFunc = (int lhs, int rhs, ref int cur) => {
+                cur = Math.Max(cur, Math.Max(lhs, rhs));
+            };
+
+            int minToSet = 0;
+            BinaryTree<int>.ProcessDelegate setMinimum = (int startEndpointIndex, int stopEndPointIndex, ref int data) =>
+            {
+                Logger.Log("SetMinimum {0} to {1} data {2}.  minToSet {3}", startEndpointIndex, stopEndPointIndex, data, minToSet);
+                data = Math.Max(minToSet, data);
+            };
+
+
+
+            Boolean anyLower = false;
+            int toFind = 3;
+            BinaryTree<int>.ProcessDelegate isAnyLower = (int startEndpointIndex, int stopEndPointIndex, ref int data) =>
+            {
+                Logger.Log("Find Lower {0} to {1} data {2}.  query {3}", startEndpointIndex, stopEndPointIndex, data, toFind);
+                if (data < toFind)
+                {
+                    anyLower = true;
+                }
+
+            };
+
+            anyLower = false; toFind = 0;
+
+            
+            minToSet = 3;
+            bt.traverse(0, 3, setMinimum);
+            bt.traverse(3, 7, setMinimum);
+
+            anyLower = false; toFind = 3;
+            bt.traverse(0, 7, isAnyLower);
+            Assert.AreEqual(false, anyLower);
+
+            //Logger.CurrentDomain_ProcessExit(null, null);
+        }
+
+        [TestMethod]
         public void setMinimums()
         {
             BinaryTree<int> bt = BinaryTree<int>.create(7);
@@ -101,7 +145,6 @@ namespace UnitTest
             BinaryTree<int> bt = BinaryTree<int>.create(7);
 
             bt.traverse(0, 3, process);
-            Logger.CurrentDomain_ProcessExit(null, null);
         }
 
         

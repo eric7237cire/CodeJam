@@ -85,8 +85,10 @@ namespace Round1C
         }
 
         public delegate void ApplyParentDataDelegate(DataType parentData, ref DataType data);
+        public delegate void ApplyLeftRightDataDelegate(DataType leftData, DataType rightData, ref DataType data);
 
         public ApplyParentDataDelegate ApplyParentDataFunc { get; set; }
+        public ApplyLeftRightDataDelegate ApplyLeftRightDataFunc { get; set; }
 
         public delegate void ProcessDelegate(int startEndpointIndex, int stopEndpointIndex, ref DataType data);
 
@@ -139,6 +141,12 @@ namespace Round1C
 
                 if (ApplyParentDataFunc != null) ApplyParentDataFunc(data[td.nodeIndex], ref data[rightTd.nodeIndex]);
                 traverseHelper(targetStartEndpointIndex, targetStopEndPointIndex, process, rightTd, ref found);
+            }
+
+            //Now combine results
+            if (ApplyLeftRightDataFunc != null)
+            {
+                ApplyLeftRightDataFunc(data[td.nodeIndex * 2 + 1], data[td.nodeIndex * 2 + 2], ref data[td.nodeIndex]);
             }
         }
 

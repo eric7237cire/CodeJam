@@ -25,11 +25,11 @@ namespace Round1C.GreatWall
 
         public int processInput(Input input)
         {
-            solveSmall(input.tribes);
+           // solveSmall(input.tribes);
             return solveLarge(input.tribes);
         }
 
-        static int solveLarge(List<TribeData> tribes)
+        static int solveBackup(List<TribeData> tribes)
         {
             Random r = new Random();
             Logger.Log("\nsolveLarge " + r.NextDouble());
@@ -71,21 +71,62 @@ namespace Round1C.GreatWall
 
             Wall wall = new Wall(-200, 200);
 
+            BinaryTree<int> bt = BinaryTree<int>.create(intervalEndPoints.Count);
+            bt.ApplyParentDataFunc = (int parentData, ref int childData) =>
+            {
+                childData = Math.Max(childData, parentData);
+            };
+            bt.ApplyLeftRightDataFunc = (int lhs, int rhs, ref int cur) =>
+            {
+                cur = Math.Max(cur, Math.Min(lhs, rhs));
+            };
+
+            int minToSet = 0;
+            BinaryTree<int>.ProcessDelegate setMinimum = (int startEndpointIndex, int stopEndPointIndex, ref int data) =>
+            {
+                Logger.Log("SetMinimum {0} to {1} data {2}.  minToSet {3}", startEndpointIndex, stopEndPointIndex, data, minToSet);
+                data = Math.Max(minToSet, data);
+            };
+
+            Boolean anyLower = false;
+            int toFind = 3;
+            BinaryTree<int>.ProcessDelegate isAnyLower = (int startEndpointIndex, int stopEndPointIndex, ref int data) =>
+            {
+                Logger.Log("Find Lower {0} to {1} data {2}.  query {3}", startEndpointIndex, stopEndPointIndex, data, toFind);
+                if (data < toFind)
+                {
+                    anyLower = true;
+                }
+
+            };
+
+            
+            
             int nextUpdateStartIdx = 0;
             int successfulAttackCount = 0;
 
             for (int attackIdx = 0; attackIdx < attacks.Count; ++attackIdx)
             {
                 Attack attack = attacks[attackIdx];
-                Logger.Log("Attack on day {0} between {1} and {2} with strength {3}", attack.time, attack.start, attack.stop, attack.height);
+                Logger.Log("Attack {6} on day {0} between {1}:{2} idx {3}:{4} with strength {5}", 
+                    attack.time,
+                    attack.start, attack.stop,
+                    endPointToIntervalIndex[attack.start], endPointToIntervalIndex[attack.stop],
+                    attack.height, attackIdx);
+
+                anyLower = false; toFind = attack.height;
+                bt.traverse(endPointToIntervalIndex[attack.start], endPointToIntervalIndex[attack.stop], isAnyLower);
+
                 if (wall.attackPasses(attack.start, attack.stop, attack.height))
                 {
                     successfulAttackCount++;
                     Logger.Log("Wall was NOT high enough");
+                    Debug.Assert(anyLower == true);
                 }
                 else
                 {
                     Logger.Log("Wall was high enough");
+                    Debug.Assert(anyLower == false);
                 }
                 
 
@@ -95,7 +136,139 @@ namespace Round1C.GreatWall
                     //apply all attacks
                     for (int upIdx = nextUpdateStartIdx; upIdx <= attackIdx; ++upIdx)
                     {
+                        int updateStart = attacks[upIdx].start;
+                        int updateStartIdx = endPointToIntervalIndex[updateStart];
+                        int updateStop = attacks[upIdx].stop;
+                        int updateStopIdx = endPointToIntervalIndex[updateStop];
+                        Logger.Log("Update wall attack {0}.  range: {1}:{2} rangeIdx: {3}:{4} height {5}",
+                            upIdx, updateStart, updateStop, updateStartIdx, updateStopIdx, attacks[upIdx].height);
                         wall.setToAtLeast(attacks[upIdx].start, attacks[upIdx].stop, attacks[upIdx].height);
+
+                        minToSet = attacks[upIdx].height;
+                        bt.traverse(endPointToIntervalIndex[attacks[upIdx].start], endPointToIntervalIndex[attacks[upIdx].stop], setMinimum);                        
+
+                    }
+
+                    nextUpdateStartIdx = attackIdx + 1;
+                }
+            }
+
+            return successfulAttackCount;
+        }
+
+        static int solveLarge(List<TribeData> tribes)
+        {
+            Random r = new Random();
+            Logger.Log("\nsolveLarge " + r.NextDouble());
+            List<Attack> attacks = new List<Attack>();
+            List<int> intervalEndPoints = new List<int>();
+            IDictionary<int, int> endPointToIntervalIndex = new Dictionary<int, int>();
+
+            foreach (TribeData tribe in tribes)
+            {
+                for (int n = 0; n < tribe.totalAttacks; ++n)
+                {
+                    int startX = tribe.w0 + tribe.deltaX * n;
+                    int stopX = tribe.e0 + tribe.deltaX * n;
+
+                    //Eliminate doubles
+                    if (!endPointToIntervalIndex.ContainsKey(startX))
+                    {
+                        intervalEndPoints.Add(startX);
+                        endPointToIntervalIndex[startX] = intervalEndPoints.Count;
+                    }
+                    if (!endPointToIntervalIndex.ContainsKey(stopX))
+                    {
+                        intervalEndPoints.Add(stopX);
+                        endPointToIntervalIndex[stopX] = intervalEndPoints.Count;
+                    }
+                    int strength = tribe.s0 + tribe.deltaS * n;
+                    int ptime = tribe.t0 + tribe.deltaT * n;
+                    attacks.Add(new Attack { time = ptime, start = startX, stop = stopX, height = strength });
+                }
+            }
+
+            attacks.Sort((x, y) => x.time.CompareTo(y.time));
+            intervalEndPoints.Sort();
+
+            for (int i = 0; i < intervalEndPoints.Count; ++i)
+            {
+                endPointToIntervalIndex[intervalEndPoints[i]] = i;
+            }
+            
+            BinaryTree<int> bt = BinaryTree<int>.create(intervalEndPoints.Count);
+            bt.ApplyParentDataFunc = (int parentData, ref int childData) =>
+            {
+                childData = Math.Max(childData, parentData);
+            };
+            bt.ApplyLeftRightDataFunc = (int lhs, int rhs, ref int cur) =>
+            {
+                cur = Math.Max(cur, Math.Min(lhs, rhs));
+            };
+
+            int minToSet = 0;
+            BinaryTree<int>.ProcessDelegate setMinimum = (int startEndpointIndex, int stopEndPointIndex, ref int data) =>
+            {
+                Logger.Log("SetMinimum {0} to {1} data {2}.  minToSet {3}", startEndpointIndex, stopEndPointIndex, data, minToSet);
+                data = Math.Max(minToSet, data);
+            };
+
+            Boolean anyLower = false;
+            int toFind = 3;
+            BinaryTree<int>.ProcessDelegate isAnyLower = (int startEndpointIndex, int stopEndPointIndex, ref int data) =>
+            {
+                Logger.Log("Find Lower {0} to {1} data {2}.  query {3}", startEndpointIndex, stopEndPointIndex, data, toFind);
+                if (data < toFind)
+                {
+                    anyLower = true;
+                }
+
+            };
+
+
+
+            int nextUpdateStartIdx = 0;
+            int successfulAttackCount = 0;
+
+            for (int attackIdx = 0; attackIdx < attacks.Count; ++attackIdx)
+            {
+                Attack attack = attacks[attackIdx];
+                Logger.Log("Attack {6} on day {0} between {1}:{2} idx {3}:{4} with strength {5}",
+                    attack.time,
+                    attack.start, attack.stop,
+                    endPointToIntervalIndex[attack.start], endPointToIntervalIndex[attack.stop],
+                    attack.height, attackIdx);
+
+                anyLower = false; toFind = attack.height;
+                bt.traverse(endPointToIntervalIndex[attack.start], endPointToIntervalIndex[attack.stop], isAnyLower);
+
+                if (anyLower)
+                {
+                    successfulAttackCount++;
+                    Logger.Log("Wall was NOT high enough");
+                }
+                else
+                {
+                    Logger.Log("Wall was high enough");
+                }
+
+
+                if (attackIdx == attacks.Count - 1 || attacks[attackIdx + 1].time > attack.time)
+                {
+                    Logger.Log("Apply attacks");
+                    //apply all attacks
+                    for (int upIdx = nextUpdateStartIdx; upIdx <= attackIdx; ++upIdx)
+                    {
+                        int updateStart = attacks[upIdx].start;
+                        int updateStartIdx = endPointToIntervalIndex[updateStart];
+                        int updateStop = attacks[upIdx].stop;
+                        int updateStopIdx = endPointToIntervalIndex[updateStop];
+                        Logger.Log("Update wall attack {0}.  range: {1}:{2} rangeIdx: {3}:{4} height {5}",
+                            upIdx, updateStart, updateStop, updateStartIdx, updateStopIdx, attacks[upIdx].height);
+                        
+                        minToSet = attacks[upIdx].height;
+                        bt.traverse(endPointToIntervalIndex[attacks[upIdx].start], endPointToIntervalIndex[attacks[upIdx].stop], setMinimum);
+
                     }
 
                     nextUpdateStartIdx = attackIdx + 1;
@@ -163,7 +336,7 @@ namespace Round1C.GreatWall
 
             List<string> list = new List<string>();
 
-            //list.Add("sample");
+           // list.Add("sample");
             list.Add("C_small_practice");
             //list.Add("B_large_practice");
 
