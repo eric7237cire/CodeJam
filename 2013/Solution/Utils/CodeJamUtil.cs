@@ -206,7 +206,7 @@ namespace CodeJamUtils
                     for (int tc = 1; tc <= testCases; ++tc)
                     {
                         InputClass input;
-
+                        Console.WriteLine("Testcase# " + tc);
                         if (inputFileProducer != null)
                         {
                             input = inputFileProducer.createInput(scanner);
@@ -217,8 +217,9 @@ namespace CodeJamUtils
                         }
 
                         AnswerClass ans = inputFileConsumer.processInput(input);
-
-                        writer.WriteLine(String.Format("Case #{0}: {1}", tc, ans));
+                        string ansStr = String.Format("Case #{0}: {1}", tc, ans);
+                        writer.WriteLine(ansStr);
+                        Console.WriteLine(ansStr);
                     }
 
                     timer.Stop();

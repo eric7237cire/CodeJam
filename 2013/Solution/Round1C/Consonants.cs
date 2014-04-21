@@ -220,29 +220,18 @@ namespace Round1C
             return ans;
         }
 
-        static void Main2(string[] args)
+        public static void Main2(string[] args)
         {
-
-
 
             Consonants main = new Consonants();
 
-            Runner<Input, long> runner = new Runner<Input, long>(main, Input.createInput);
-
             List<string> list = new List<string>();
 
-            //list.Add("sample");
             list.Add("A_small_practice");
             list.Add("A-large-practice.in");
 
-            Stopwatch timer = Stopwatch.StartNew();
-            runner.run(list, Round1C.Properties.Resources.ResourceManager);
-            // runner.runMultiThread(list);
-
-            timer.Stop();
-            TimeSpan timespan = timer.Elapsed;
-
-            Console.WriteLine(String.Format("Total {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+            CjUtils.RunMain(list, main, Input.createInput, Round1C.Properties.Resources.ResourceManager);
+            
 
         }
     }

@@ -243,7 +243,7 @@ namespace Round1C.Pogo
             return ans;
         }
 
-        static void Main2(string[] args)
+        public static void Main2(string[] args)
         {
             Pogo main = new Pogo();
 

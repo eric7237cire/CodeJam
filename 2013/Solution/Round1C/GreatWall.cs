@@ -1,5 +1,5 @@
 ﻿
-
+#define PERF
 using CodeJamUtils;
 using System;
 using System.Collections.Generic;
@@ -332,13 +332,17 @@ namespace Round1C.GreatWall
 
         static void Main(string[] args)
         {
+
+            //Consonants.Main2(args);
+            Round1C.Pogo.Pogo.Main2(args);
+            if (args != null) return;
             GreatWall main = new GreatWall();
 
             List<string> list = new List<string>();
 
            // list.Add("sample");
             list.Add("C_small_practice");
-            //list.Add("B_large_practice");
+            list.Add("C_large_practice");
 
             CjUtils.RunMain(list, main, Input.createInput, Round1C.Properties.Resources.ResourceManager);
 
