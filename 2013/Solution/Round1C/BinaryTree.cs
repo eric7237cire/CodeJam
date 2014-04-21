@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define PERF
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,13 @@ using System.Threading.Tasks;
 
 namespace Round1C
 {
+#if (PERF)
+   
+    using Logger = CodeJamUtils.LoggerEmpty;
+#else
+    using Logger = CodeJamUtils.LoggerReal;
+#endif
+
     /**
      * Stores endpoints, leaf nodes at bottom level are the smallest intervals
      */
@@ -48,7 +56,7 @@ namespace Round1C
             return ret;
         }
 
-        class TraverseData
+        struct TraverseData
         {
             //Position in the data array, children given by 2*ni + 1 and 2*ni + 2
             internal int nodeIndex;
@@ -64,8 +72,7 @@ namespace Round1C
             internal int stopEndpointIndex;
         }
 
-        public void traverse(int targetStartEndpointIndex, int targetStopEndPointIndex, 
-            ProcessDelegate process)
+        public void traverse(int targetStartEndpointIndex, int targetStopEndPointIndex, ProcessDelegate procFu)
         {
             if (targetStartEndpointIndex >= targetStopEndPointIndex)
             {
@@ -80,31 +87,37 @@ namespace Round1C
             td.nodeIndex = 0;
             td.step = 1 << Height - 3;
 
-            bool found = false;
-            traverseHelper(targetStartEndpointIndex, targetStopEndPointIndex, process, td, ref found);
+            Stack<DataType> parents = new Stack<DataType>();
+
+            this.ProcessFunc = procFu;
+
+            traverseHelper(targetStartEndpointIndex, targetStopEndPointIndex, ref td, parents);
         }
 
         public delegate void ApplyParentDataDelegate(DataType parentData, ref DataType data);
-        public delegate void ApplyLeftRightDataDelegate(DataType leftData, DataType rightData, ref DataType data);
+        public delegate void ApplyLeftRightDataDelegate(DataType leftData, DataType rightData, ref DataType curNodeData);
 
         public ApplyParentDataDelegate ApplyParentDataFunc { get; set; }
         public ApplyLeftRightDataDelegate ApplyLeftRightDataFunc { get; set; }
 
-        public delegate void ProcessDelegate(int startEndpointIndex, int stopEndpointIndex, ref DataType data);
+        //if !isParent, then interval associated with data is fully containted in the target interval,
+        //otherwise, the target interval is the one that is fully contained
+        public delegate void ProcessDelegate(ref DataType data, Stack<DataType> parents);
 
-        void traverseHelper(int targetStartEndpointIndex, int targetStopEndPointIndex, 
-            ProcessDelegate process, TraverseData td, ref bool found)
+        public ProcessDelegate ProcessFunc {get; set;}
+
+        void traverseHelper(int targetStartEndpointIndex, int targetStopEndPointIndex,
+             ref TraverseData td, Stack<DataType> parents)
         {
-            if (found)
-            {
-                return;
-            }
+            
             
             //Check if current node is completely encompassed 
             if (td.startEndpointIndex >= targetStartEndpointIndex && td.stopEndpointIndex <= targetStopEndPointIndex)
             {
-                if (process != null)
-                    process(td.startEndpointIndex, td.stopEndpointIndex, ref data[td.nodeIndex]);
+                Logger.Log("Found interval fully contained in target interval.  idx {0}:{1} target idx {2}:{3}",
+                    td.startEndpointIndex, td.stopEndpointIndex, targetStartEndpointIndex, targetStopEndPointIndex);
+                if (ProcessFunc != null)
+                    ProcessFunc(ref data[td.nodeIndex], parents);
 
                 
                 return;
@@ -114,6 +127,13 @@ namespace Round1C
             {
                 return;
             }
+
+            Logger.Log("traversing parent node idx {0}:{1} target idx {2}:{3}",
+                    td.startEndpointIndex, td.stopEndpointIndex, targetStartEndpointIndex, targetStopEndPointIndex);
+
+            parents.Push(data[td.nodeIndex]);
+            //process(ref data[td.nodeIndex], true);
+
             if (targetStartEndpointIndex < td.endpointIndex)
             {
                 TraverseData leftTd = new TraverseData();
@@ -125,7 +145,7 @@ namespace Round1C
                 leftTd.step = td.step >> 1;
 
                 if (ApplyParentDataFunc != null) ApplyParentDataFunc(data[td.nodeIndex], ref data[leftTd.nodeIndex]);
-                traverseHelper(targetStartEndpointIndex, targetStopEndPointIndex, process, leftTd, ref found);
+                traverseHelper(targetStartEndpointIndex, targetStopEndPointIndex, ref leftTd,parents);
             }
 
 
@@ -140,8 +160,10 @@ namespace Round1C
                 rightTd.step = td.step >> 1;
 
                 if (ApplyParentDataFunc != null) ApplyParentDataFunc(data[td.nodeIndex], ref data[rightTd.nodeIndex]);
-                traverseHelper(targetStartEndpointIndex, targetStopEndPointIndex, process, rightTd, ref found);
+                traverseHelper(targetStartEndpointIndex, targetStopEndPointIndex, ref rightTd, parents);
             }
+
+            parents.Pop();
 
             //Now combine results
             if (ApplyLeftRightDataFunc != null)
