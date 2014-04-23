@@ -3,6 +3,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Round1C;
 using System.Collections.Generic;
 
+using BTi = Round1C.BinaryTree<int>;
+
 namespace UnitTest
 {
 #if (PERF)
@@ -23,8 +25,84 @@ namespace UnitTest
         }
 
         
+        
 
-       
+        [TestMethod]
+       public void testBinaryTree()
+        {
+            BinaryTree<int> t1 = BinaryTree<int>.create(6);
+
+            int valToSet = 0;
+            BTi.ProcessDelegate setValFunc = (ref int data, int nodeIndex) => {
+                data = valToSet;
+            };
+
+            valToSet = 3;
+            t1.traverse(2, 4, setValFunc);
+
+            for(int i = 0; i < 15; ++i)
+            {
+                int val = t1.getDataAtNodeIndex(i);
+
+                switch (i)
+                {
+                    case 4: case 11:
+                        Assert.AreEqual(3, val, "I is " + i);
+                        break;
+                    default:
+                        Assert.AreEqual(0, val);
+                        break;
+                }
+            }
+
+            valToSet = 4;
+            t1.traverse(3, 4, setValFunc);
+
+            for (int i = 0; i < 15; ++i)
+            {
+                int val = t1.getDataAtNodeIndex(i);
+
+                switch (i)
+                {
+                    case 10:
+                    case 11:
+                        Assert.AreEqual(4, val, "I is " + i);
+                        break;
+                    case 4:
+                        Assert.AreEqual(3, val);
+                        break;
+                    default:
+                        Assert.AreEqual(0, val);
+                        break;
+                }
+            }
+
+            valToSet = 5;
+            t1.traverse(0, 7, setValFunc);
+
+            for (int i = 0; i < 15; ++i)
+            {
+                int val = t1.getDataAtNodeIndex(i);
+
+                switch (i)
+                {
+                    case 0:
+                        Assert.AreEqual(5, val, "I is " + i);
+                        break;
+                    case 10:
+                    case 11:
+                        Assert.AreEqual(4, val, "I is " + i);
+                        break;
+                    case 4:
+                        Assert.AreEqual(3, val);
+                        break;
+                    default:
+                        Assert.AreEqual(0, val);
+                        break;
+                }
+            }
+            
+        }
 
         
 
@@ -33,31 +111,19 @@ namespace UnitTest
         [TestMethod]
         public void TestHeight()
         {
-            testHeight(0+1, 0);
-            testHeight(1 + 1, 1);
-            testHeight(2 + 1, 2);
-            testHeight(2 + 1, 3);
-            testHeight(3 + 1, 4);
-            testHeight(3 + 1, 5);
-            testHeight(3 + 1, 6);
-            testHeight(3 + 1, 7);
-            testHeight(4 + 1, 8);
+            testHeight(0, 0);
+            testHeight(1 , 1);
+            testHeight(2 , 2);
+            testHeight(2 , 3);
+            testHeight(3 , 4);
+            testHeight(3 , 5);
+            testHeight(3 , 6);
+            testHeight(3, 7);
+            testHeight(4 , 8);
 
         }
 
-        [TestMethod]
-        public void TestNodeIndexes()
-        {
-            BinaryTree<int> bt = BinaryTree<int>.create(7);
-
-            Assert.AreEqual(0, bt.getNodeIndexForEndPointIndex(3));
-            Assert.AreEqual(1, bt.getNodeIndexForEndPointIndex(1));
-            Assert.AreEqual(2, bt.getNodeIndexForEndPointIndex(5));
-            Assert.AreEqual(3, bt.getNodeIndexForEndPointIndex(0));
-            Assert.AreEqual(4, bt.getNodeIndexForEndPointIndex(2));
-            Assert.AreEqual(5, bt.getNodeIndexForEndPointIndex(4));
-            Assert.AreEqual(6, bt.getNodeIndexForEndPointIndex(6));
-        }
+       
 
         private void testHeight(int expectedHeight, int listSize)
         {

@@ -286,8 +286,10 @@ namespace CodeJamUtils
 
         public static void Log(String msg)
         {
-            Console.WriteLine(msg);
+            //Console.WriteLine(msg);
             LoggerReal.Instance.writer.WriteLine(msg);
+
+
             //Logger.Instance.writer.Flush();
         }
 

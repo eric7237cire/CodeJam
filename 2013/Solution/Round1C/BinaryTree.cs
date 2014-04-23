@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest")]
+
 namespace Round1C
 {
 #if (PERF)
@@ -15,7 +17,12 @@ namespace Round1C
 #endif
 
     /**
-     * Stores endpoints, leaf nodes at bottom level are the smallest intervals
+     * Tree of height 3, 15 nodes, 8 data points
+     * NodeIndex 0 ( 0 <= x <= 7 )
+     * Nodeindex 1 ( 0 <= x <= 3 ) NodeIndex 2 ( 4 <= x <= 7)
+     * NodeIndex 3 ( 0 <= x <= 1) ... NodeIndex 6 ( 6 <= x <= 7 )
+     * NodeIndex 7 ( x == 0 )  ... NodeIndex 14 ( x == 7)
+     * 
      */
     public class BinaryTree<DataType>
     {
@@ -24,33 +31,21 @@ namespace Round1C
 
         private DataType[] data;
 
-        //range of nodes
-        private int[] start;
-        private int[] stop;
-
-        public static  BinaryTree<DataType> create2(int numElements) 
+        internal DataType getDataAtNodeIndex(int nodeIndex)
         {
-            BinaryTree<DataType> ret = new BinaryTree<DataType>();
-
-            ret.Height = getHeight(numElements);
-
-            ret.data = new DataType[ (1 << ret.Height) - 1];
-            ret.start = new int[ret.data.Length];
-            ret.stop = new int[ret.data.Length];
-
-            int rootNode = ret.data.Length >> 1;
-            return ret;        
+            return data[nodeIndex];
         }
 
-        public static BinaryTree<DataType> create(int numEndpoints)
+        
+
+        public static BinaryTree<DataType> create(int numPoints)
         {
             BinaryTree<DataType> ret = new BinaryTree<DataType>();
 
-            ret.Height = 1 + getHeight(numEndpoints);
+            ret.Height = getHeight(numPoints);
 
-            ret.data = new DataType[(1 << ret.Height) - 1];
-            ret.start = new int[ret.data.Length];
-            ret.stop = new int[ret.data.Length];
+            ret.data = new DataType[(1 << ret.Height+1) - 1];
+           
 
             
             return ret;
@@ -72,9 +67,14 @@ namespace Round1C
             internal int stopEndpointIndex;
         }
 
+        public static int getParentNodeIndex(int nodeIndex)
+        {
+            return (nodeIndex - 1) / 2;
+        }
+
         public void traverse(int targetStartEndpointIndex, int targetStopEndPointIndex, ProcessDelegate procFu)
         {
-            if (targetStartEndpointIndex >= targetStopEndPointIndex)
+            if (targetStartEndpointIndex > targetStopEndPointIndex)
             {
                 return;
             }
@@ -87,11 +87,10 @@ namespace Round1C
             td.nodeIndex = 0;
             td.step = 1 << Height - 3;
 
-            Stack<DataType> parents = new Stack<DataType>();
-
+            stopTraverse = false;
             this.ProcessFunc = procFu;
 
-            traverseHelper(targetStartEndpointIndex, targetStopEndPointIndex, ref td, parents);
+            traverseHelper(targetStartEndpointIndex, targetStopEndPointIndex, 0, 0);
         }
 
         public delegate void ApplyParentDataDelegate(DataType parentData, ref DataType data);
@@ -102,101 +101,79 @@ namespace Round1C
 
         //if !isParent, then interval associated with data is fully containted in the target interval,
         //otherwise, the target interval is the one that is fully contained
-        public delegate void ProcessDelegate(ref DataType data, Stack<DataType> parents);
+        public delegate void ProcessDelegate(ref DataType data, int nodeIndex);
+
+        public delegate void ProcessParentDelegate(DataType data, int nodeIndex, ref bool stop);
+        private bool stopTraverse;
 
         public ProcessDelegate ProcessFunc {get; set;}
+        public ProcessParentDelegate ParentProcessFunc { get; set; }
 
-        void traverseHelper(int targetStartEndpointIndex, int targetStopEndPointIndex,
-             ref TraverseData td, Stack<DataType> parents)
+        void traverseHelper(int targetStart, int targetStop, int nodeIndex, int height)
         {
-            
+            int intervalLength = (1 << Height - height);
+            int firstNodeIndexOnLevel = (1 << height) - 1; 
+            int nodePosition = nodeIndex - firstNodeIndexOnLevel;
+            int intervalStart = nodePosition * intervalLength;
+            int intervalStop = intervalStart + intervalLength - 1;
             
             //Check if current node is completely encompassed 
-            if (td.startEndpointIndex >= targetStartEndpointIndex && td.stopEndpointIndex <= targetStopEndPointIndex)
+            if (intervalStart >= targetStart && intervalStop <= targetStop)
             {
                 Logger.Log("Found interval fully contained in target interval.  idx {0}:{1} target idx {2}:{3}",
-                    td.startEndpointIndex, td.stopEndpointIndex, targetStartEndpointIndex, targetStopEndPointIndex);
+                    intervalStart, intervalStop, targetStart, targetStop);
                 if (ProcessFunc != null)
-                    ProcessFunc(ref data[td.nodeIndex], parents);
+                    ProcessFunc(ref data[nodeIndex], nodeIndex);
 
                 
                 return;
             }
             //leaf node
-            if (td.endpointIndex == -1)
+            if (height == Height)
             {
                 return;
             }
 
             Logger.Log("traversing parent node idx {0}:{1} target idx {2}:{3}",
-                    td.startEndpointIndex, td.stopEndpointIndex, targetStartEndpointIndex, targetStopEndPointIndex);
-
-            parents.Push(data[td.nodeIndex]);
+                    intervalStart, intervalStop, targetStart, targetStop);
+            
+            if (ParentProcessFunc != null)
+                ParentProcessFunc(data[nodeIndex], nodeIndex, ref stopTraverse);
             //process(ref data[td.nodeIndex], true);
 
-            if (targetStartEndpointIndex < td.endpointIndex)
+            if (stopTraverse)
             {
-                TraverseData leftTd = new TraverseData();
-                leftTd.startEndpointIndex = td.startEndpointIndex;
-                leftTd.stopEndpointIndex = td.endpointIndex;
+                return;
+            }
 
-                leftTd.endpointIndex = td.step == 0 ? -1 : td.endpointIndex - td.step;
-                leftTd.nodeIndex = td.nodeIndex * 2 + 1;
-                leftTd.step = td.step >> 1;
-
-                if (ApplyParentDataFunc != null) ApplyParentDataFunc(data[td.nodeIndex], ref data[leftTd.nodeIndex]);
-                traverseHelper(targetStartEndpointIndex, targetStopEndPointIndex, ref leftTd,parents);
+            //Is target start in left child node ?
+            int targetStartHalf =  (targetStart -intervalStart) / (intervalLength >> 1);
+            int targetStopHalf = (targetStop -intervalStart) / (intervalLength >> 1);
+            if ( targetStartHalf <= 0 || targetStopHalf <= 0)
+            {
+                int leftNodeIndex = nodeIndex * 2 + 1;
+                if (ApplyParentDataFunc != null) ApplyParentDataFunc(data[nodeIndex], ref data[leftNodeIndex]);
+                traverseHelper(targetStart, targetStop, leftNodeIndex, height+1);
             }
 
 
-            if (targetStopEndPointIndex > td.endpointIndex)
+            if (targetStartHalf >= 1 || targetStopHalf >= 1)
             {
-                TraverseData rightTd = new TraverseData();
-                rightTd.startEndpointIndex = td.endpointIndex;
-                rightTd.stopEndpointIndex = td.stopEndpointIndex;
+                int rightNodeIndex = nodeIndex * 2 + 2;
 
-                rightTd.endpointIndex = td.step == 0 ? -1 : td.endpointIndex + td.step;
-                rightTd.nodeIndex = td.nodeIndex * 2 + 2;
-                rightTd.step = td.step >> 1;
 
-                if (ApplyParentDataFunc != null) ApplyParentDataFunc(data[td.nodeIndex], ref data[rightTd.nodeIndex]);
-                traverseHelper(targetStartEndpointIndex, targetStopEndPointIndex, ref rightTd, parents);
+                if (ApplyParentDataFunc != null) ApplyParentDataFunc(data[nodeIndex], ref data[rightNodeIndex]);
+                traverseHelper(targetStart, targetStop, rightNodeIndex, height+1);
             }
-
-            parents.Pop();
-
+            
             //Now combine results
             if (ApplyLeftRightDataFunc != null)
             {
-                ApplyLeftRightDataFunc(data[td.nodeIndex * 2 + 1], data[td.nodeIndex * 2 + 2], ref data[td.nodeIndex]);
+                ApplyLeftRightDataFunc(data[nodeIndex * 2 + 1], data[nodeIndex * 2 + 2], ref data[nodeIndex]);
             }
         }
 
-        public int getNodeIndexForEndPointIndex(int targetEndPointIndex)
-        {
-            int endpointIndex = data.Length >> 2;
-            int nodeIndex = 0;
-            int curHeight = Height;
-            int curStep = 1 << (curHeight - 3);
-
-            while(endpointIndex != targetEndPointIndex)
-            {
-                if (targetEndPointIndex > endpointIndex)
-                {
-                    endpointIndex += curStep;
-                    nodeIndex = 2 * nodeIndex + 2;
-                }
-                else
-                {
-                    endpointIndex -= curStep;
-                    nodeIndex = 2 * nodeIndex + 1;
-                }
-
-                curStep >>= 1;
-            }
-
-            return nodeIndex;
-        }
+        
 
         private static int getHeight(int size)
         {
