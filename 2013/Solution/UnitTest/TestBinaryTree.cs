@@ -24,13 +24,15 @@ namespace UnitTest
             Logger.CurrentDomain_ProcessExit(null, null);
         }
 
-        
-        
+
+        public delegate void TestDel<in UserParamType>(ref string data, int nodeIndex, UserParamType obj);
 
         [TestMethod]
        public void testBinaryTree()
         {
             BinaryTree<int> t1 = BinaryTree<int>.create(6);
+
+            TestDel<int> t = (ref string data, int n, int obj) => { };
 
             int valToSet = 0;
             BTi.ProcessDelegate setValFunc = (ref int data, int nodeIndex) => {

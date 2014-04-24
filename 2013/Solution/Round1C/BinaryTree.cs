@@ -51,21 +51,7 @@ namespace Round1C
             return ret;
         }
 
-        struct TraverseData
-        {
-            //Position in the data array, children given by 2*ni + 1 and 2*ni + 2
-            internal int nodeIndex;
-
-            //how much to adjust endPointIndex when traversing right or left child nodes
-            internal int step;
-
-            //Which endpointIndex the node represents
-            internal int endpointIndex;
-
-            //The range encompassed by the node
-            internal int startEndpointIndex;
-            internal int stopEndpointIndex;
-        }
+        
 
         public static int getParentNodeIndex(int nodeIndex)
         {
@@ -78,14 +64,6 @@ namespace Round1C
             {
                 return;
             }
-
-            TraverseData td = new TraverseData();
-            td.startEndpointIndex = 0;
-            td.stopEndpointIndex = (1 << Height - 1) - 1;
-
-            td.endpointIndex = data.Length >> 2;
-            td.nodeIndex = 0;
-            td.step = 1 << Height - 3;
 
             stopTraverse = false;
             this.ProcessFunc = procFu;
@@ -160,7 +138,6 @@ namespace Round1C
             if (targetStartHalf >= 1 || targetStopHalf >= 1)
             {
                 int rightNodeIndex = nodeIndex * 2 + 2;
-
 
                 if (ApplyParentDataFunc != null) ApplyParentDataFunc(data[nodeIndex], ref data[rightNodeIndex]);
                 traverseHelper(targetStart, targetStop, rightNodeIndex, height+1);

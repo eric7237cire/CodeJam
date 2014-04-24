@@ -45,6 +45,14 @@ namespace Round1C.GreatWall
 }
         }
 
+        private static void setMinimum(ref HighLow data, int nodeIndex, int minToSet)
+        {
+            Logger.Log("SetMinimum data {0}.  minToSet {1}", data, minToSet);
+            data.explicitHeight = Math.Max(minToSet, data.explicitHeight);
+            data.minimumLocalHeight = Math.Max(data.minimumLocalHeight, minToSet);
+            Logger.Log("SetMinimum data is now {0}.  ", data);
+        }
+
         static int solveUsingHighLow(List<TribeData> tribes)
         {
             Random r = new Random();
@@ -92,15 +100,7 @@ namespace Round1C.GreatWall
                 cur.minimumLocalHeight = Math.Max(lowestLocalMinimumOfChildren, cur.explicitHeight);
             };
 
-            int minToSet = 0;
-            BinaryTree<HighLow>.ProcessDelegate setMinimum = (ref HighLow data, int nodeIndex) =>
-            {
-                Logger.Log("SetMinimum data {0}.  minToSet {1}", data, minToSet);
-                data.explicitHeight = Math.Max(minToSet, data.explicitHeight);
-                data.minimumLocalHeight = Math.Max(data.minimumLocalHeight, minToSet);
-                Logger.Log("SetMinimum data is now {0}.  ", data);
-            };
-
+            
             int lowestHeight = Int32.MaxValue;
             BinaryTree<HighLow>.ProcessDelegate isAnyLower = (ref HighLow data, int nodeIndex) =>
             {
@@ -173,8 +173,9 @@ namespace Round1C.GreatWall
                         Logger.Log("Update wall attack {0}.  range: {1}:{2} rangeIdx: {3}:{4} height {5}",
                             upIdx, updateStart, updateStop, updateStartIdx, updateStopIdx, attacks[upIdx].height);
 
-                        minToSet = attacks[upIdx].height;
-                        bt.traverse(endPointToIntervalIndex[attacks[upIdx].start]+1, endPointToIntervalIndex[attacks[upIdx].stop], setMinimum);
+                        bt.traverse(endPointToIntervalIndex[attacks[upIdx].start]+1, endPointToIntervalIndex[attacks[upIdx].stop],
+                            (ref HighLow data, int nodeIndex) => { GreatWall.setMinimum(ref data, nodeIndex, attacks[upIdx].height); });
+                            
 
                     }
 
