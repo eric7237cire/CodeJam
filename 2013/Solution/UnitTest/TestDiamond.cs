@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Logger = Utils.LoggerFile;
+
 namespace UnitTest1B
 {
     [TestClass]
@@ -137,7 +139,7 @@ namespace UnitTest1B
             double prob = nodeProb[n1];
             
 
-            LoggerReal.Log("p {0} {1} {2}", expectedProb, prob, tolerance);
+            Logger.Log("p {0} {1} {2}", expectedProb, prob, tolerance);
             Assert.AreEqual(expectedProb, prob, tolerance, "Tolerance: " + tolerance);
             
         }

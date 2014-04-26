@@ -2,19 +2,17 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Round1C;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 
 using BTi = Round1C.BinaryTree<int>;
+using Logger = Utils.LoggerFile;
 
 namespace UnitTest
 {
-#if (PERF)
-   
-    using Logger = CodeJamUtils.LoggerEmpty;
-#else
-    using Logger = CodeJamUtils.LoggerReal;
-    using System.IO;
-    using System.Reflection;
-#endif
+
+    
+
     [TestClass]
     public class TestBinaryTree
     {

@@ -13,7 +13,7 @@ namespace Trie
    
     using Logger = CodeJamUtils.LoggerEmpty;
 #else
-    using Logger = CodeJamUtils.LoggerReal;
+    using Logger = Utils.LoggerFile;
 #endif
 
     

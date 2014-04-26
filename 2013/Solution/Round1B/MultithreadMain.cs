@@ -3,18 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CodeJamUtils;
+using System.Diagnostics;
+using System.Globalization;
+
+
+using Logger = Utils.LoggerFile;
 
 namespace Multithread
 {
-#if (PERF)
-   
-    using Logger = CodeJamUtils.LoggerEmpty;
-#else
-    using CodeJamUtils;
-    using System.Diagnostics;
-    using System.Globalization;
-    using Logger = CodeJamUtils.LoggerReal;
-#endif
 
 
     class MultithreadMain : InputFileConsumer<Input, int>

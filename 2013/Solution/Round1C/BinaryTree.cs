@@ -4,17 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Logger = Utils.LoggerFile;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest")]
 
 namespace Round1C
 {
-#if (PERF)
-   
-    using Logger = CodeJamUtils.LoggerEmpty;
-#else
-    using Logger = CodeJamUtils.LoggerReal;
-#endif
 
     /**
      * Tree of height 3, 15 nodes, 8 data points

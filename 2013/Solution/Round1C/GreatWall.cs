@@ -1,6 +1,4 @@
-﻿
-#define PERF
-using CodeJamUtils;
+﻿using CodeJamUtils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,16 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
+using Logger = Utils.LoggerFile;
+
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo
                           ("UnitTest")]
 namespace Round1C.GreatWall
 {
-#if (PERF)
-   
-    using Logger = CodeJamUtils.LoggerEmpty;
-#else
-    using Logger = CodeJamUtils.LoggerReal;
-#endif
 
 
     internal class GreatWall : InputFileConsumer<Input, int>

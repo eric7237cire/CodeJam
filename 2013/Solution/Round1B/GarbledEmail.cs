@@ -15,6 +15,8 @@ using System.Reflection;
 using System.Resources;
 using Trie;
 
+using Logger = Utils.LoggerFile;
+
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo
                           ("UnitTest")]
 
@@ -23,12 +25,6 @@ using Trie;
 
 namespace GarbledEmail
 {
-#if (PERF)
-   
-    using Logger = CodeJamUtils.LoggerEmpty;
-#else
-    using Logger = CodeJamUtils.LoggerReal;
-#endif
 
     public class Input
     {

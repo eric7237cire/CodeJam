@@ -6,16 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
+
+using Logger = Utils.LoggerFile;
+
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo
                           ("UnitTest")]
 namespace Round1C.Pogo
 {
-#if (PERF)
-   
-    using Logger = CodeJamUtils.LoggerEmpty;
-#else
-    using Logger = CodeJamUtils.LoggerReal;
-#endif
 
    
     internal class Pogo : InputFileConsumer<Input, string>

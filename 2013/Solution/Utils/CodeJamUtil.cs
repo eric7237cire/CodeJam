@@ -1,4 +1,6 @@
-﻿using System;
+﻿//#define LOGGING
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -10,14 +12,10 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 
+using Logger = Utils.LoggerFile;
+
 namespace CodeJamUtils
 {
-#if (PERF)
-   
-    using Logger = CodeJamUtils.LoggerEmpty;
-#else
-    using Logger = CodeJamUtils.LoggerReal;
-#endif
 
     public interface InputFileProducer<InputClass>
     {
@@ -177,15 +175,16 @@ namespace CodeJamUtils
         {
 
             Scanner scanner = null;
-            
+            Regex regex = new Regex(@"(\..*)?$");
             foreach (string fn in fileNames)
             {
                 string inputFileName = fn;
-                string checkFileName = Regex.Replace(inputFileName, @"(\..*)?$", ".check");
-                string outputFileName = Regex.Replace(inputFileName, @"(\..*)?$", ".out");
+
+                string checkFileName = regex.Replace(inputFileName, ".check", 1);
+                string outputFileName = regex.Replace(inputFileName, ".out", 1);
 
                 TextReader inputReader = null;
-                byte[] obj = (byte[])resourceManager.GetObject(fn);
+                byte[] obj = resourceManager == null ? null : (byte[])resourceManager.GetObject(fn);
                 if (obj != null)
                 {
                     inputReader = new StreamReader(new MemoryStream(obj));
@@ -240,60 +239,7 @@ namespace CodeJamUtils
         }
     }
 
-    public sealed class LoggerEmpty
-    {
-
-        public static void Log(String msg, params object[] args)
-        {
-
-        }
-
-
-        public static void Log(String msg)
-        {
-
-        }
-
-    }
-
-    public sealed class LoggerReal
-    {
-        private static readonly Lazy<LoggerReal> lazy =
-        new Lazy<LoggerReal>(() => new LoggerReal());
-
-        public static LoggerReal Instance { get { return lazy.Value; } }
-
-        private LoggerReal()
-        {
-            writer = new StreamWriter(@"log.txt", false);
-            AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
-
-        }
-
-        public static void CurrentDomain_ProcessExit(object sender, EventArgs e)
-        {
-            Console.WriteLine("exit");
-            LoggerReal.Instance.writer.Close();
-        }
-
-        public static void Log(String msg, params object[] args)
-        {
-            Log(String.Format(msg, args));
-        }
-
-        private StreamWriter writer;
-
-
-        public static void Log(String msg)
-        {
-            //Console.WriteLine(msg);
-            LoggerReal.Instance.writer.WriteLine(msg);
-
-
-            //Logger.Instance.writer.Flush();
-        }
-
-    }
+    
     public class Scanner : IDisposable
     {
         private TextReader reader;

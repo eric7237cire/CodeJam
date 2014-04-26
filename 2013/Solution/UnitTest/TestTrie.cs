@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using Trie;
 using GarbledEmail;
 using CodeJamUtils;
+
+using Logger = Utils.LoggerFile;
+
 namespace UnitTest
 {
     [TestClass]
@@ -50,7 +53,7 @@ namespace UnitTest
             int minChange = ge.minCount(0, 0, "pppvyppbcpjpywpwbyayppyojpjwabwywbbwywmbwywnpwy");
             Assert.AreEqual(8, minChange);
 
-            LoggerReal.CurrentDomain_ProcessExit(null,null);
+            Logger.CurrentDomain_ProcessExit(null,null);
         }
 
         [TestMethod]

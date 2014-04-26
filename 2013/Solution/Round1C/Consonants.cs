@@ -6,19 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo
-          
-                ("UnitTest")]
+
+using Logger = Utils.LoggerFile;
+
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest")]
 
 //Merging boundaries, counting substrings
 namespace Round1C
 {
-#if (PERF)
-   
-    using Logger = CodeJamUtils.LoggerEmpty;
-#else
-    using Logger = CodeJamUtils.LoggerReal;
-#endif
 
     static class Utils
     {
