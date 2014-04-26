@@ -1,5 +1,6 @@
 ﻿#define LOGGING
 #define TRACE
+#define DEBUG
 
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,20 @@ namespace Round2.TicketSwapping
             });
         }
 
+        private static void addPair(TreeSet<Pair> points, Pair newp)
+        {
+            Pair existPair = newp.searchCopy();
+            bool found = points.Find(ref existPair);
+
+            if (!found)
+            {
+                points.Add(newp);
+            }
+            else
+            {
+                existPair.nPassengers += newp.nPassengers;
+            }
+        }
 
         public int processInput(Input input)
         {
@@ -62,8 +77,7 @@ namespace Round2.TicketSwapping
             {
                 
                 Pair newp = new Pair { start = p.start, stop = p.stop, nPassengers = p.nPassengers};
-                bool added = points.Add(newp);
-                Preconditions.checkState(added);
+                addPair(points, newp);
             }
 
             
@@ -72,7 +86,9 @@ namespace Round2.TicketSwapping
             while(true)
             {
                 ++loopCheck;
-                if (loopCheck > 1200)
+                Logger.Log("Loopcheck {0}", loopCheck);
+
+                if (loopCheck > 2200)
                 {
                     return -1;
                 }
@@ -112,8 +128,8 @@ namespace Round2.TicketSwapping
                     
                     int maxToSwitch = Math.Min(greater.nPassengers, p.nPassengers);
 
-                    points.Add( new Pair { start = p.start, stop = greater.stop, nPassengers = maxToSwitch});
-                    points.Add( new Pair { start = greater.start, stop = p.stop, nPassengers = maxToSwitch});
+                    addPair(points, new Pair { start = p.start, stop = greater.stop, nPassengers = maxToSwitch});
+                    addPair(points, new Pair { start = greater.start, stop = p.stop, nPassengers = maxToSwitch});
 
                     if (maxToSwitch == greater.nPassengers) {
                         //points.RemoveAt(greaterIndex);
@@ -158,6 +174,11 @@ namespace Round2.TicketSwapping
         internal int stop { get;  set; }
         internal int nPassengers { get;  set; }
 
+        public Pair searchCopy()
+        {
+            return new Pair { start = this.start, stop = this.stop, nPassengers = 0};
+        }
+
         public static Pair createWithStart(int start)
         {
             Pair p = new Pair();
@@ -167,7 +188,7 @@ namespace Round2.TicketSwapping
 
         public int CompareTo(Pair other)
         {
-            Trace.WriteLine("Compare");
+           // Trace.WriteLine("Compare");
            int cmp = start.CompareTo(other.start);
 
            if (cmp != 0)

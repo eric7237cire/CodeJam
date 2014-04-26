@@ -1,4 +1,7 @@
-﻿using System;
+﻿#define DEBUG
+#define TRACE
+#define LOGGING
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -30,6 +33,7 @@ namespace Utils
             LoggerFile.Instance.writer.Close();
         }
 
+        [Conditional("LOGGING")]
         public static void Log(String msg, params object[] args)
         {
             Log(String.Format(msg, args));
@@ -40,6 +44,7 @@ namespace Utils
         [Conditional("LOGGING")]
         public static void Log(String msg)
         {
+            Debug.WriteLine(msg);
             Console.WriteLine(msg);
             LoggerFile.Instance.writer.WriteLine(msg);
 
