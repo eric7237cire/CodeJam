@@ -39,6 +39,12 @@ namespace Utils
             Log(String.Format(msg, args));
         }
 
+        [Conditional("LOGGING_TRACE")]
+        public static void LogTrace(String msg, params object[] args)
+        {
+            Log(String.Format(msg, args));
+        }
+
         private StreamWriter writer;
 
         [Conditional("LOGGING")]
