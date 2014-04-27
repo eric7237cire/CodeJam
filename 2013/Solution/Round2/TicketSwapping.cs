@@ -18,26 +18,11 @@ namespace Round2.TicketSwapping
 
 
 
-    class MainC : InputFileConsumer<Input, int>
+    class TicketSwap : InputFileConsumer<Input, int>
     {
 
 
-        static void Main(string[] args)
-        {
-            MainC main = new MainC();
-
-            List<string> list = new List<string>();
-
-            list.Add("sample.in");
-            list.Add("A-small-practice.in");
-            list.Add("A-large-practice.in");
-
-            string dir = @"C:\codejam\CodeJam\2013\Solution\Round2\";
-
-            list = list.ConvertAll( s => dir + s);
-
-            CjUtils.RunMain(list, main, Input.createInput, null); //Round1C.Properties.Resources.ResourceManager
-        }
+        
 
 
 

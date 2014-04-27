@@ -294,6 +294,18 @@ namespace CodeJamUtils
             }
         }
 
+        public long nextLong()
+        {
+            try
+            {
+                return long.Parse(currentWord);
+            }
+            finally
+            {
+                readNextWord();
+            }
+        }
+
         public bool hasNextDouble()
         {
             if (currentWord == null)

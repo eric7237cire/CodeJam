@@ -80,6 +80,7 @@
     <Compile Include="TestTrie.cs" />
     <Compile Include="TestUtils.cs" />
     <Compile Include="TestBinaryTree.cs" />
+    <Compile Include="TestManyPrizes.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Round1B\Round1B.csproj">
@@ -89,6 +90,10 @@
     <ProjectReference Include="..\Round1C\Round1C.csproj">
       <Project>{49459ec3-6a04-4d29-a5e4-c9b8bca05fa6}</Project>
       <Name>Round1C</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Round2\Round2.csproj">
+      <Project>{7a2d2f80-968d-4808-808c-2f43a2af3b1d}</Project>
+      <Name>Round2</Name>
     </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{ca53bd61-475a-4c6a-a040-3e3ad18a6656}</Project>

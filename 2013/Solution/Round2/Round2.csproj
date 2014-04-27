@@ -63,11 +63,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="ManyPrizes.cs" />
     <Compile Include="TicketSwapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="sample.in" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\C5\C5\C5.csproj">
