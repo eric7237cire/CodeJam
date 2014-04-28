@@ -29,5 +29,23 @@ namespace CombPerm
             return num / den;
             }
         }
+
+        public static IEnumerable<long> iterateCombin(int n, int k)
+        {
+            long next = (1L << k) - 1;
+
+            while ((next & (1L << n)) == 0)
+            {
+                // Gosper's hack, described by Knuth, referenced in
+                // http://en.wikipedia.org/wiki/Combinatorial_number_system#Applications
+                long result = next;
+                long x = next;
+                long u = x & -x;
+                long v = u + x;
+                x = v + (((v ^ x) / u) >> 2);
+                next = x;
+                yield return result;
+            }
+        }
     }
 }

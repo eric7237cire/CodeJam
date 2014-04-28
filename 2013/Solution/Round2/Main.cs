@@ -14,15 +14,16 @@ namespace Round2
         {
             //TicketSwap main = new TicketSwap();
 
-            ManyPrizes main = new ManyPrizes();
+            //ManyPrizes main = new ManyPrizes();
+            Erdos main = new Erdos();
             List<string> list = new List<string>();
 
             list.Add("sample.in");
             //list.Add("A-small-practice.in");
             //list.Add("A-large-practice.in");
 
-          list.Add("B-small-practice.in");
-            list.Add("B-large-practice.in");
+          //list.Add("B-small-practice.in");
+         //   list.Add("B-large-practice.in");
 
             string dir = @"C:\codejam\CodeJam\2013\Solution\Round2\";
 

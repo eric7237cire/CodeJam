@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Erdos.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="ManyPrizes.cs" />
     <Compile Include="TicketSwapping.cs" />

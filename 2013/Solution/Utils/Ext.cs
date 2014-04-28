@@ -9,6 +9,11 @@ namespace Utils
     public static class Ext
     {
 
+        public static string ToCommaString<T>(this IList<T> list)
+        {
+            return string.Join(", ", list);
+        }
+
         //Extension method to be able to do "{0}".Format directly
         public static string FormatThis(this string str, params object[] args)
         {
@@ -26,6 +31,41 @@ namespace Utils
             int lowIdx, hiIdx;
             return binarySearch(list, target, out lowIdx, out hiIdx);
         }
+
+        public static int lowerBound<T>(this List<T> list, T target) where T : IComparable<T>
+        {
+            return lowerBound(list, 0, list.Count, target);
+        }
+        public static int lowerBound<T>(this List<T> list, int lowIdx, int hiIdx, T target) where T : IComparable<T>
+        {
+
+            //using binary search ; invariant lo < sum <= hi
+            //lowIdx = 0;
+            //hiIdx = list.Count - 1;
+            Preconditions.checkState(lowIdx <= hiIdx);
+
+            if (list[lowIdx].CompareTo(target) >= 0)
+            {
+                return lowIdx;
+            }
+            
+            while (hiIdx - lowIdx > 1)
+            {
+                int midIdx = lowIdx + (hiIdx - lowIdx) / 2;
+
+                if (list[midIdx].CompareTo(target) >= 0)
+                {
+                    hiIdx = midIdx;
+                }
+                else
+                {
+                    lowIdx = midIdx;
+                }
+            }
+
+            return lowIdx + 1;
+        }
+
         //binary search sorted list
         public static Tuple<T, T> binarySearch<T>(this List<T> list, T target, out int lowIdx, out int hiIdx) where T : IComparable<T>
         {

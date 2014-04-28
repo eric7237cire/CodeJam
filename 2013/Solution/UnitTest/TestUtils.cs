@@ -11,6 +11,7 @@ using Utils;
 
 
 using Logger = Utils.LoggerFile;
+using Round2;
 
 namespace UnitTest
 {
@@ -23,6 +24,106 @@ namespace UnitTest
         public static void cleanup()
         {
             Logger.CurrentDomain_ProcessExit(null, null);
+        }
+
+        [TestMethod]
+        public void testDIS()
+        {
+
+            CollectionAssert.AreEqual(
+                new int[] { 9, 6, 3 },
+                Erdos.getLDS(new int[] { 
+                7, 8, 9, //0 - 2
+                4, 5, 6, // 3 - 5
+                1, 2, 3 })); // 6 - 8
+
+            CollectionAssert.AreEqual(
+                new int[] { 9, 8, 7 },
+                Erdos.getLDS(new int[] { 
+                3, 2, 1, //0 - 2
+                6, 5, 4, // 3 - 5
+                9, 8, 7 })); // 6 - 8
+
+            CollectionAssert.AreEqual(
+                new int[] { 7, 4 },
+                Erdos.getLDS(new int[] { 
+                4, 5, 6, //0 - 2
+                1, 7, 2, // 3 - 5
+                3, 7, 4 })); // 6 - 8
+
+            CollectionAssert.AreEqual(
+                new int[] { 7, 4 },
+                Erdos.getLDS(new int[] { 
+                4, 5, 6, //0 - 2
+                1, 7, 1, 2, // 3 - 5
+                3, 7, 4, 4, 8  })); // 6 - 8
+
+            //Non decreasing sequence
+            CollectionAssert.AreEqual(
+               new int[] { 1, 1, 2, 3, 4, 4, 8 },
+               Erdos.getLongestSequence(new int[] { 
+                4, 5, 6, //0 - 2
+                1, 7, 1, 2, // 3 - 5
+                3, 7, 4, 4, 8  }, (lhs, rhs) => { if (lhs <= rhs) return -1; return 1; })); // 6 - 8
+        }
+
+        [TestMethod]
+        public void testLIS()
+        {
+            
+            CollectionAssert.AreEqual(
+                new int[]{1, 2, 3},
+                Erdos.getLIS(new int[] { 
+                7, 8, 9, //0 - 2
+                4, 5, 6, // 3 - 5
+                1, 2, 3 })); // 6 - 8
+
+            CollectionAssert.AreEqual(
+                new int[] { 1, 4, 7 },
+                Erdos.getLIS(new List<int>(new int[] { 
+                3, 2, 1, //0 - 2
+                6, 5, 4, // 3 - 5
+                9, 8, 7 }))); // 6 - 8
+
+            CollectionAssert.AreEqual(
+                new int[] { 1, 2, 3, 4 },
+                Erdos.getLIS(new List<int>(new int[] { 
+                4, 5, 6, //0 - 2
+                1, 7, 2, // 3 - 5
+                3, 7, 4 }))); // 6 - 8
+
+            CollectionAssert.AreEqual(
+                new int[] { 1, 2, 3, 4, 8 },
+                Erdos.getLIS(new List<int>(new int[] { 
+                4, 5, 6, //0 - 2
+                1, 7, 1, 2, // 3 - 5
+                3, 7, 4, 4, 8  }))); // 6 - 8
+        }
+
+        [TestMethod]
+        public void testLowerBound()
+        {
+            List<int> list = new List<int>(new int[] { 
+                4, 7, 8, //0 - 2
+                18, 19, 19, // 3 - 5
+                19, 23, 44 }); // 6 - 8
+
+            Assert.AreEqual(0, list.lowerBound(0, list.Count, 3));
+            Assert.AreEqual(1, list.lowerBound(1, list.Count, 3));
+
+            Assert.AreEqual(3, list.lowerBound(0, list.Count, 9));
+            Assert.AreEqual(3, list.lowerBound(0, list.Count, 18));
+            Assert.AreEqual(4, list.lowerBound(0, list.Count, 19));
+            Assert.AreEqual(7, list.lowerBound(0, list.Count, 20));
+            Assert.AreEqual(7, list.lowerBound(0, list.Count, 23));
+            Assert.AreEqual(8, list.lowerBound(0, list.Count, 24));
+            Assert.AreEqual(8, list.lowerBound(0, list.Count, 44));
+            Assert.AreEqual(9, list.lowerBound(0, list.Count, 45));
+
+            list = new List<int>(new int[] { 
+                3, 5});
+
+            Assert.AreEqual(2, list.lowerBound(7));
         }
 
         [TestMethod]

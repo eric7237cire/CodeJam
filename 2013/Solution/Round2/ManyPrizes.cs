@@ -23,23 +23,7 @@ namespace Round2
     {
 
 
-        public static IEnumerable<long> combin(int n, int k)
-        {
-            long next = (1L << k) - 1;
-
-            while ((next & (1L << n)) == 0)
-            {
-                // Gosper's hack, described by Knuth, referenced in
-                // http://en.wikipedia.org/wiki/Combinatorial_number_system#Applications
-                long result = next;
-                long x = next;
-                long u = x & -x;
-                long v = u + x;
-                x = v + (((v ^ x) / u) >> 2);
-                next = x;
-                yield return result;
-            }
-        }
+        
 
         public static long LowRankCanWin(int N, long P)
         {
@@ -70,6 +54,8 @@ namespace Round2
              *  that fits in the rest.
              */
             long canGetIntoLosingHalf = LowRankCanWin(input.nRounds, (1L << input.nRounds) - input.nPrizes);
+
+            //Adding 1 means can no longer get into the losing half
             long mustGetIntoWinningHalf = canGetIntoLosingHalf + 1;
             long largestGaraunteed = (1L << input.nRounds) - 1 - mustGetIntoWinningHalf;
             

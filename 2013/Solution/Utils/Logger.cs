@@ -33,7 +33,7 @@ namespace Utils
             LoggerFile.Instance.writer.Close();
         }
 
-        [Conditional("LOGGING")]
+        [Conditional("LOGGING"), Conditional("LOGGING_TRACE")]
         public static void Log(String msg, params object[] args)
         {
             Log(String.Format(msg, args));
@@ -47,7 +47,7 @@ namespace Utils
 
         private StreamWriter writer;
 
-        [Conditional("LOGGING")]
+        [Conditional("LOGGING"), Conditional("LOGGING_TRACE")]
         public static void Log(String msg)
         {
             Debug.WriteLine(msg);
