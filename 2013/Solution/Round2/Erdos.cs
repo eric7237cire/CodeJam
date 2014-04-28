@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
+using CombPerm;
 
 using Logger = Utils.LoggerFile;
 
@@ -14,12 +15,31 @@ namespace Round2
 {
     public class Erdos : InputFileConsumer<Input, string>
     {
+        private void calcAandB(IList<int> list)
+        {
+            for(int i = 0; i < list.Count; ++i)
+            {
+                int val = list[i];
+                //For LIS, everything to right of i is gone, and all numbers > val
+                IEnumerable<int> subList = list.Where((value, index) => index <= i && value <= val);
+                List<int> forLIS = new List<int>(subList);
 
+                int[] lis = getLIS(forLIS);
+
+                //LDS, everything to left of i is gone, and all numbers > val
+                List<int> forLDS = new List<int> ( list.Where( (value, index) => index >= i && value <= val));
+
+                int[] lds = getLDS(forLDS);
+
+                Logger.Log("i: {0} x: {1} A[i] = {2} B[i] = {3}", i, val, lis.Count(), lds.Count());
+            }
+        }
         public string processInput(Input input)
         {
-            List<int> seq = new List<int>(new int[] { 4, 5, 3, 7, 6, 2, 8, 1 });
+            calcAandB(new int[] { 4, 5, 3, 7, 6, 2, 8, 1 });
+            //List<int> seq = new List<int>(new int[] { 4, 5, 3, 7, 6, 2, 8, 1 });
 
-            int[] lis = getLIS(seq);
+           // int[] lis = getLIS(seq);
 
             for (int listSize = 1; listSize <= 3; ++listSize)
             {
@@ -27,13 +47,29 @@ namespace Round2
                 for (int i = 0; i < listSize; ++i)
                     permBase[i] = i + 1;
 
-                foreach (IList<int> list in nextPermutation(permBase))
+                Logger.Log("\n\nList size {0}", listSize);
+
+                foreach (int[] list in Combinations.nextPermutation<int, int[]>(permBase))
                 {
-                    Logger.Log(string.Join(", ", list));
-                    for (int greatlistSize = 1; listSize <= 3; ++listSize)
+                    Logger.Log("\nPermutation {0}", list.ToCommaString());
+
+                    for (int maxElement = listSize; maxElement >= 1; --maxElement)
+                    {
+                        IEnumerable<int> sub = list.Where(i => i <= maxElement);
+
+                        Logger.Log("Sub list {0}", sub.ToCommaString());
+
+                        List<int> subList = new List<int>(sub);
+
+                        int[] lis = getLIS(subList);
+                        int[] lds = getLDS(subList);
+
+                        Logger.Log("Longest increasing subsequence size {0} : {1}", lis.Count(), lis.ToCommaString());
+                        Logger.Log("Longest decreasing subsequence size B[ {0} : {1}", lds.Count(), lds.ToCommaString());
+                    }
                 }
             }
-            return string.Join(" ", lis);
+            return " ";
         }
 
         static public int[] getLIS(IList<int> X )
@@ -97,7 +133,7 @@ namespace Round2
 
                 //Either we have found a new longer prefix or the first element i in M such that X[M[i]] is <= X[i]
                 Preconditions.checkState(newL > L || cmp(X[M[lo]], X[i]) >= 0);
-                Logger.LogTrace("i: [{0}] X[i]: [{1}] lo {2} hi {3} M {4}", i, X[i], lo, hi, M.ToCommaString());
+                //Logger.LogTrace("i: [{0}] X[i]: [{1}] lo {2} hi {3} M {4}", i, X[i], lo, hi, M.ToCommaString());
             
                 // The predecessor of X[i] is the last index of 
                 // the subsequence of length newL-1
@@ -125,54 +161,11 @@ namespace Round2
                 S[i] = X[k];
                 k = P[k];
             }
-            Logger.Log("LIS of {0} is {1}", string.Join(", ", X), string.Join(", ", S));
+            //Logger.Log("LIS of {0} is {1}", string.Join(", ", X), string.Join(", ", S));
             return S;
         }
 
-        IEnumerable<IList<T>> nextPermutation<T>(IList<T> array) where T : IComparable<T>
-        {
-            while (true)
-            {
-                yield return array;
-
-                // Find longest non-increasing suffix
-                int i = array.Count - 1;
-                while (i > 0 && array[i - 1].CompareTo(array[i]) >= 0)
-                    i--;
-                // Now i is the head index of the suffix
-
-                // Are we at the last permutation already?
-                if (i == 0)
-                    yield break;
-
-                // Let array[i - 1] be the pivot
-                // Find rightmost element that exceeds the pivot
-                int j = array.Count - 1;
-                while (array[j].CompareTo(array[i - 1]) <= 0)
-                    j--;
-                // Now the value array[j] will become the new pivot
-                // Assertion: j >= i
-
-                // Swap the pivot with j
-                T temp = array[i - 1];
-                array[i - 1] = array[j];
-                array[j] = temp;
-
-                // Reverse the suffix
-                j = array.Count - 1;
-                while (i < j)
-                {
-                    temp = array[i];
-                    array[i] = array[j];
-                    array[j] = temp;
-                    i++;
-                    j--;
-                }
-
-                // Successfully computed the next permutation
-                //yield return array;
-            }
-        }
+        
 
         static public List<int> getLIS2(List<int> seq)
         {

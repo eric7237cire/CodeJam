@@ -9,7 +9,7 @@ namespace Utils
     public static class Ext
     {
 
-        public static string ToCommaString<T>(this IList<T> list)
+        public static string ToCommaString<T>(this IEnumerable<T> list)
         {
             return string.Join(", ", list);
         }
