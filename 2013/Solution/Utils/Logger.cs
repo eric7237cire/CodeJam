@@ -45,17 +45,30 @@ namespace Utils
             Log(String.Format(msg, args));
         }
 
+        [Conditional("LOGGING_INFO")]
+        public static void LogInfo(String msg, params object[] args)
+        {
+            Log(String.Format(msg, args));
+        }
+
+        [Conditional("LOGGING_DEBUG")]
+        public static void LogDebug(String msg, params object[] args)
+        {
+            Log(String.Format(msg, args));
+        }
+
         private StreamWriter writer;
 
         [Conditional("LOGGING"), Conditional("LOGGING_TRACE")]
         public static void Log(String msg)
         {
+            msg = "Thread id {0} -- ".FormatThis(System.Threading.Thread.CurrentThread.ManagedThreadId) + msg;
             Debug.WriteLine(msg);
             Console.WriteLine(msg);
             LoggerFile.Instance.writer.WriteLine(msg);
 
 
-            //Logger.Instance.writer.Flush();
+            //LoggerFile.Instance.writer.Flush();
         }
 
     }

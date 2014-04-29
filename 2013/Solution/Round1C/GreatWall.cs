@@ -365,11 +365,15 @@ namespace Round1C.GreatWall
 
             List<string> list = new List<string>();
 
-            list.Add("sample");
-            list.Add("C_small_practice");
-            list.Add("C_large_practice");
+            //list.Add("sample");
+            list.Add("C-small-practice.in");
+            list.Add("C-large-practice.in");
 
-            CjUtils.RunMain(list, main, Input.createInput, Round1C.Properties.Resources.ResourceManager);
+            string dir = @"C:\codejam\CodeJam\2013\Solution\Round1C\";
+
+            list = list.ConvertAll(s => dir + s);
+
+            CjUtils.RunMainMulti(list, main, Input.createInput, Round1C.Properties.Resources.ResourceManager);
 
         }
     }

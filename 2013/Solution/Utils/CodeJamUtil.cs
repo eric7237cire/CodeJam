@@ -1,4 +1,5 @@
-﻿//#define LOGGING
+﻿#define LOGGING
+#define LOGGING_INFO
 
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 
 using Logger = Utils.LoggerFile;
+using Utils;
 
 namespace CodeJamUtils
 {
@@ -51,11 +53,11 @@ namespace CodeJamUtils
 
         public void runMultiThread(List<string> fileNames, ResourceManager resourceManager)
         {
-            Logger.Log("runMultithead enter");
-            Task t = Task.Run(() => producerRun(fileNames, 3, resourceManager));
-            t.Wait();
+            Logger.LogTrace("runMultithead enter");
+            producerRun(fileNames, resourceManager);
         }
 
+        [Obsolete]
         private void producerConsume(BlockingCollection<Tuple<InputClass, int>> queue, AnswerClass[] answers)
         {
             Logger.Log("Entering producerConsume");
@@ -71,13 +73,13 @@ namespace CodeJamUtils
                 }
 
                 Stopwatch timer = Stopwatch.StartNew();
-                Console.WriteLine("Take:{0}", nextItem.Item2);
+                Logger.Log("Take:{0}", nextItem.Item2);
                 AnswerClass ans = inputFileConsumer.processInput(nextItem.Item1);
-                Console.WriteLine("Done:{0}", nextItem.Item2);
+                Logger.Log("Done:{0}", nextItem.Item2);
                 timer.Stop();
                 TimeSpan timespan = timer.Elapsed;
 
-                Console.WriteLine(String.Format("Input done : {4}  in {0:00}:{1:00}:{2:00} ({3:00} ticks)", timespan.Minutes, timespan.Seconds, timespan.Milliseconds, timespan.Ticks, nextItem.Item2));
+                Logger.Log(String.Format("Input done : {4}  in {0:00}:{1:00}:{2:00} ({3:00} ticks)", timespan.Minutes, timespan.Seconds, timespan.Milliseconds, timespan.Ticks, nextItem.Item2));
                 answers[nextItem.Item2 - 1] = ans;
 
             }
@@ -85,10 +87,30 @@ namespace CodeJamUtils
             Logger.Log("Exiting producerConsume");
         }
 
-        private void producerRun(List<string> fileNames, int nConsumerThreads, ResourceManager resourceManager)
+        private void consumeSingle(InputClass input, int testCase, AnswerClass[] answers)
+        {
+            
+            Stopwatch timer = Stopwatch.StartNew();
+            Logger.LogTrace("Entering consume single Take:{0}", testCase);
+                
+            AnswerClass ans = inputFileConsumer.processInput(input);
+                
+            
+            timer.Stop();
+            TimeSpan timespan = timer.Elapsed;
+            
+            Logger.LogInfo(String.Format("Test case done : {4}  in {0:00}:{1:00}:{2:00} ({3:00} ticks)", 
+                timespan.Minutes, timespan.Seconds, timespan.Milliseconds, timespan.Ticks, testCase));
+            answers[testCase - 1] = ans;
+
+            Logger.LogTrace("Exiting consume single");
+        }
+
+        [Obsolete]
+        private void producerRun2(List<string> fileNames, int nConsumerThreads, ResourceManager resourceManager)
         {
             Scanner scanner = null;
-            
+
             Logger.Log("producerRun enter");
             foreach (string fn in fileNames)
             {
@@ -118,7 +140,7 @@ namespace CodeJamUtils
 
                     answers = new AnswerClass[testCases];
                     consumeTasks = new Task[nConsumerThreads];
-                    
+
 
                     for (int tc = 1; tc <= testCases; ++tc)
                     {
@@ -134,30 +156,36 @@ namespace CodeJamUtils
                         }
                         Logger.Log("Read input for tc {0} : {1}", tc, input.ToString());
                         queue.Add(new Tuple<InputClass, int>(input, tc));
+                        Preconditions.checkState(tc <= 20);
+                        int tcLocal = tc;
+                        
                     }
                     queue.CompleteAdding();
 
+                   
                     for (int i = 0; i < nConsumerThreads; ++i)
                     {
-                        Console.WriteLine("Building thread " + i);
+                        Logger.Log("Building thread " + i);
                         consumeTasks[i] = Task.Run(() => producerConsume(queue, answers));
                     }
 
                     //This thread can also now help conuming
                     producerConsume(queue, answers);
 
-                    
+
                     timer.Stop();
                     TimeSpan timespan = timer.Elapsed;
 
-                    Console.WriteLine(String.Format("Input done {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+                    Logger.Log(String.Format("Input done {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
 
 
                 }
 
                 Task.WaitAll(consumeTasks);
 
-                string outputFileName = Regex.Replace(inputFileName, @"(\..*)?$", ".out");
+                Regex regex = new Regex(@"(\..*)?$");
+                string outputFileName = regex.Replace(inputFileName, ".out", 1);
+
                 using (StreamWriter writer = new StreamWriter(outputFileName, false))
                 {
                     for (int tc = 1; tc <= answers.Length; ++tc)
@@ -165,6 +193,87 @@ namespace CodeJamUtils
                         AnswerClass ans = answers[tc - 1];
                         string line = String.Format("Case #{0}: {1}", tc, ans);
                         Logger.Log("Writing to {0}, {1}", outputFileName, line);
+                        writer.WriteLine(line);
+                    }
+                }
+            }
+        }
+
+        private void producerRun(List<string> fileNames, ResourceManager resourceManager)
+        {
+            Scanner scanner = null;
+            
+            Logger.LogTrace("producerRun enter");
+            foreach (string fn in fileNames)
+            {
+                Logger.LogInfo("File {0}", fn);
+                
+                string inputFileName = fn;
+
+                TextReader inputReader = null;
+                byte[] obj = (byte[])resourceManager.GetObject(fn);
+                if (obj != null)
+                {
+                    inputReader = new StreamReader(new MemoryStream(obj));
+                }
+                else
+                {
+                    inputReader = File.OpenText(fn);
+                }
+
+                Stopwatch timer = Stopwatch.StartNew();
+
+                Task[] consumeTasks = null;
+                AnswerClass[] answers;
+
+                using (scanner = new Scanner(inputReader))
+                {
+                    int testCases = scanner.nextInt();
+
+                    answers = new AnswerClass[testCases];
+                    consumeTasks = new Task[testCases];
+                    
+
+                    for (int tc = 1; tc <= testCases; ++tc)
+                    {
+                        InputClass input;
+
+                        if (inputFileProducer != null)
+                        {
+                            input = inputFileProducer.createInput(scanner);
+                        }
+                        else
+                        {
+                            input = inputFileProducerDelegate.Invoke(scanner);
+                        }
+                        Logger.LogTrace("Read input for tc {0} : {1}", tc, input.ToString());
+                       
+                        Preconditions.checkState(tc <= 20);
+                        //Avoid binding to tc which gets incremented beyond the limit
+                        int tcLocal = tc;
+                        consumeTasks[tc-1] = Task.Run(() => consumeSingle(input, tcLocal, answers));
+                    }
+                                        
+                    timer.Stop();
+                    TimeSpan timespan = timer.Elapsed;
+
+                    Logger.LogInfo(String.Format("Input done {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+
+
+                }
+
+                Task.WaitAll(consumeTasks);
+
+                Regex regex = new Regex(@"(\..*)?$");
+                string outputFileName = regex.Replace(inputFileName, ".out", 1);
+
+                using (StreamWriter writer = new StreamWriter(outputFileName, false))
+                {
+                    for (int tc = 1; tc <= answers.Length; ++tc)
+                    {
+                        AnswerClass ans = answers[tc - 1];
+                        string line = String.Format("Case #{0}: {1}", tc, ans);
+                        Logger.LogTrace("Writing to {0}, {1}", outputFileName, line);
                         writer.WriteLine(line);
                     }
                 }
@@ -205,7 +314,7 @@ namespace CodeJamUtils
                     for (int tc = 1; tc <= testCases; ++tc)
                     {
                         InputClass input;
-                        Console.WriteLine("Testcase# " + tc);
+                        Logger.Log("Testcase# " + tc);
                         if (inputFileProducer != null)
                         {
                             input = inputFileProducer.createInput(scanner);
@@ -218,13 +327,13 @@ namespace CodeJamUtils
                         AnswerClass ans = inputFileConsumer.processInput(input);
                         string ansStr = String.Format("Case #{0}: {1}", tc, ans);
                         writer.WriteLine(ansStr);
-                        Console.WriteLine(ansStr);
+                        Logger.Log(ansStr);
                     }
 
                     timer.Stop();
                     TimeSpan timespan = timer.Elapsed;
 
-                    Console.WriteLine(String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+                    Logger.Log(String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
 
 
                 }
@@ -365,7 +474,7 @@ namespace CodeJamUtils
         // other objects. Only unmanaged resources can be disposed.
         protected virtual void Dispose(bool disposing)
         {
-            Console.WriteLine(String.Format("Dispose {0}", disposing));
+            Logger.Log(String.Format("Dispose {0}", disposing));
             // Check to see if Dispose has already been called.
             if (!this.disposed)
             {
@@ -398,7 +507,7 @@ namespace CodeJamUtils
         // Do not provide destructors in types derived from this class.
         ~Scanner()
         {
-            Console.WriteLine("~Scanner");
+            Logger.Log("~Scanner");
             // Do not re-create Dispose clean-up code here.
             // Calling Dispose(false) is optimal in terms of
             // readability and maintainability.
@@ -422,10 +531,27 @@ namespace CodeJamUtils
             timer.Stop();
             TimeSpan timespan = timer.Elapsed;
 
-            Console.WriteLine(String.Format("Total {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+            Logger.Log(String.Format("Total {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
 
         }
 
+        public static void RunMainMulti<InputClass, AnswerClass>(List<string> list,
+           InputFileConsumer<InputClass, AnswerClass> main,
+           Runner<InputClass, AnswerClass>.InputFileProducerDelegate inputDelegate,
+           ResourceManager rm
+           )
+        {
+            var runner = new Runner<InputClass, AnswerClass>(main, inputDelegate);
+
+            Stopwatch timer = Stopwatch.StartNew();
+            runner.runMultiThread(list, rm);
+
+            timer.Stop();
+            TimeSpan timespan = timer.Elapsed;
+
+            Logger.Log(String.Format("Total {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+
+        }
         public static void swap<T>(ref T a, ref T b)
         {
             T temp = a;

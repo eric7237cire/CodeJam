@@ -1,4 +1,5 @@
 ﻿using CodeJamUtils;
+using Round2.ErdosNS;
 using Round2.TicketSwapping;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,7 @@ namespace Round2
 
             list = list.ConvertAll(s => dir + s);
 
-            CjUtils.RunMain(list, main, Input.createInput, null); //Round1C.Properties.Resources.ResourceManager
+            CjUtils.RunMain(list, main, Round2.ErdosNS.Input.createInput, null); //Round1C.Properties.Resources.ResourceManager
         }
     }
 }

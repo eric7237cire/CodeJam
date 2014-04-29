@@ -1,4 +1,5 @@
 ﻿#define LOGGING_TRACE
+#define LOGGING_DEBUG
 #define LOGGING
 using CodeJamUtils;
 using System;
@@ -11,8 +12,105 @@ using CombPerm;
 
 using Logger = Utils.LoggerFile;
 
-namespace Round2
+namespace Round2.ErdosNS
 {
+    public class Input
+    {
+
+        internal int length { get; private set; }
+        internal int[] A { get; private set; }
+        internal int[] B { get; private set; }
+
+        public static Input createInput(Scanner scanner)
+        {
+            Input input = new Input();
+            input.length = scanner.nextInt();
+
+            input.A = new int[input.length];
+            input.B = new int[input.length];
+
+            for (int i = 0; i < input.length; ++i )
+            {
+                input.A[i] = scanner.nextInt();
+            }
+            for (int i = 0; i < input.length; ++i)
+            {
+                input.B[i] = scanner.nextInt();
+            }
+
+
+            return input;
+        }
+
+
+    }
+
+    class Graph
+    {
+        List<int>[] adjList;
+
+        enum DFS_STATE
+        {
+            NON_INIT = 0,
+            VISITING = 1,
+            VISITED = 2
+        }
+        DFS_STATE[] dfs_num;
+
+        internal int[] topoSort;
+        internal int topoSortSize;
+
+        internal Graph(int maxNodes)
+        {
+            adjList = new List<int>[maxNodes];
+            for (int i = 0; i < maxNodes; ++i)
+                adjList[i] = new List<int>();
+
+            dfs_num = new DFS_STATE[maxNodes];
+            topoSort = new int[maxNodes];
+        }
+
+        internal void addConnection(int u, int v)
+        {
+            Logger.LogDebug("Add connection {0} to {1}", u, v);
+            adjList[u].Add(v);
+        }
+
+        //False if topo sort impossible
+        internal bool dfs(int u)
+        {    
+            dfs_num[u] = DFS_STATE.VISITING;
+            Logger.LogDebug("dfs u: {0}", u);
+
+            for (int j = 0; j < adjList[u].Count; j++)
+            {
+                int v = adjList[u][j];
+                Logger.LogDebug("dfs u: {0} connected to v: {1}", u, v);
+
+                if (dfs_num[v] == DFS_STATE.VISITING)
+                {
+                    Logger.LogDebug("Visting, no toposort");
+                    return false;
+                }
+
+                if (dfs_num[v] == DFS_STATE.NON_INIT)
+                {
+                    Logger.LogDebug("Non init {0}", v);
+                    bool ok = dfs(v);
+                    if (!ok) return false;
+                }
+
+                //Ok to be connected to a visited Vertex, since we know there are no back edges
+            }
+
+            Logger.LogDebug("Toposort {0} = {1}", topoSortSize, u);
+            topoSort[topoSortSize++] = u;
+
+            //Once all children have been explored, visited
+            dfs_num[u] = DFS_STATE.VISITED;
+            return true;
+        }
+    }
     public class Erdos : InputFileConsumer<Input, string>
     {
         private void calcAandB(IList<int> list)
@@ -21,27 +119,97 @@ namespace Round2
             {
                 int val = list[i];
                 //For LIS, everything to right of i is gone, and all numbers > val
-                IEnumerable<int> subList = list.Where((value, index) => index <= i && value <= val);
-                List<int> forLIS = new List<int>(subList);
-
-                int[] lis = getLIS(forLIS);
+                int[] lis = getLIS(new List<int>(list.Where((value, index) => index <= i && value <= val)));
 
                 //LDS, everything to left of i is gone, and all numbers > val
-                List<int> forLDS = new List<int> ( list.Where( (value, index) => index >= i && value <= val));
-
-                int[] lds = getLDS(forLDS);
+                int[] lds = getLDS(new List<int> ( list.Where( (value, index) => index >= i && value <= val)));
 
                 Logger.Log("i: {0} x: {1} A[i] = {2} B[i] = {3}", i, val, lis.Count(), lds.Count());
             }
         }
+
+
         public string processInput(Input input)
+        {
+            Graph g = new Graph(input.length);
+
+            int[] lastValueIndex = new int[input.length+1];
+            for (int u = 0; u < input.length; ++u)
+            {
+                lastValueIndex[u] = -1;
+            }
+
+            for (int u = 0; u < input.length; ++u )
+            {
+                int val = input.A[u];
+                Logger.LogDebug("Element {0} A[i] {1}", u, val);
+                if (lastValueIndex[val] != -1)
+                {
+                    g.addConnection(u, lastValueIndex[val]); // u < lvi[val]
+                }
+                if (lastValueIndex[val-1] != -1)
+                {
+                    g.addConnection(lastValueIndex[val-1], u); 
+                }
+
+                lastValueIndex[val] = u;
+            }
+
+            for (int u = 0; u < input.length; ++u)
+            {
+                lastValueIndex[u] = -1;
+            }
+
+            for(int u = input.length - 1; u >= 0; --u)
+            {
+                int val = input.B[u];
+                Logger.LogDebug("Element {0} B[i]= {1}", u, val);
+
+                if (lastValueIndex[val] != -1)
+                {
+                    g.addConnection(u, lastValueIndex[val]); // u < lvi[val]
+                }
+                if (lastValueIndex[val-1] != -1)
+                {
+                    g.addConnection(lastValueIndex[val-1], u); 
+                }
+
+                lastValueIndex[val] = u;
+            }
+
+            int root = -1;
+            for (int u = 0; u < input.length; ++u )
+            {
+                if (input.A[u] == 1 && input.B[u] == 1) {
+                    root = u;
+                    break;
+                }
+            }
+
+            g.dfs(root);
+
+            Array.Reverse(g.topoSort);
+
+            int[] ans = new int[input.length];
+            for (int u = 0; u < input.length; ++u)
+            {
+                ans[g.topoSort[u]] = u + 1;
+            }
+            //return g.topoSort.Select((elem, idx) => { return 1 + elem; }).ToCommaString(); 
+            calcAandB(ans);
+
+            return ans.ToCommaString();
+            //return g.topoSort.ToCommaString();
+        }
+
+        public string processInput2(Input input)
         {
             calcAandB(new int[] { 4, 5, 3, 7, 6, 2, 8, 1 });
             //List<int> seq = new List<int>(new int[] { 4, 5, 3, 7, 6, 2, 8, 1 });
 
            // int[] lis = getLIS(seq);
 
-            for (int listSize = 1; listSize <= 3; ++listSize)
+            for (int listSize = 1; listSize <= 6; ++listSize)
             {
                 int[] permBase = new int[listSize];
                 for (int i = 0; i < listSize; ++i)
@@ -53,6 +221,8 @@ namespace Round2
                 {
                     Logger.Log("\nPermutation {0}", list.ToCommaString());
 
+                    calcAandB(list);
+                    /*
                     for (int maxElement = listSize; maxElement >= 1; --maxElement)
                     {
                         IEnumerable<int> sub = list.Where(i => i <= maxElement);
@@ -66,7 +236,7 @@ namespace Round2
 
                         Logger.Log("Longest increasing subsequence size {0} : {1}", lis.Count(), lis.ToCommaString());
                         Logger.Log("Longest decreasing subsequence size B[ {0} : {1}", lds.Count(), lds.ToCommaString());
-                    }
+                    }*/
                 }
             }
             return " ";
