@@ -253,7 +253,7 @@ namespace Round2.ErdosNS
                 ans[topoSort[u]] = u + 1;
             }
             //return g.topoSort.Select((elem, idx) => { return 1 + elem; }).ToCommaString(); 
-            calcAandB(ans);
+           // calcAandB(ans);
 
             return string.Join(" ", ans);
             //return g.topoSort.ToCommaString();
