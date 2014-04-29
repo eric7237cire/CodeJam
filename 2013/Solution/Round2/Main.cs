@@ -26,6 +26,8 @@ namespace Round2
           //list.Add("B-small-practice.in");
          //   list.Add("B-large-practice.in");
 
+            list.Add("C-small-practice.in");
+
             string dir = @"C:\codejam\CodeJam\2013\Solution\Round2\";
 
             list = list.ConvertAll(s => dir + s);

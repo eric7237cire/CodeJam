@@ -1,5 +1,5 @@
 ﻿#define LOGGING_TRACE
-#define LOGGING_DEBUG
+//#define LOGGING_DEBUG
 #define LOGGING
 using CodeJamUtils;
 using System;
@@ -47,7 +47,8 @@ namespace Round2.ErdosNS
 
     class Graph
     {
-        List<int>[] adjList;
+        List<int>[] outgoingEdges;
+        List<int>[] incomingEdges;
 
         enum DFS_STATE
         {
@@ -57,34 +58,89 @@ namespace Round2.ErdosNS
         }
         DFS_STATE[] dfs_num;
 
-        internal int[] topoSort;
+        private int[] topoSort;
         internal int topoSortSize;
 
         internal Graph(int maxNodes)
         {
-            adjList = new List<int>[maxNodes];
+            outgoingEdges = new List<int>[maxNodes];
+            incomingEdges = new List<int>[maxNodes];
             for (int i = 0; i < maxNodes; ++i)
-                adjList[i] = new List<int>();
-
-            dfs_num = new DFS_STATE[maxNodes];
-            topoSort = new int[maxNodes];
+            {
+                outgoingEdges[i] = new List<int>();
+                incomingEdges[i] = new List<int>();
+            }
+            
         }
 
+        internal int[] getTopoSortUsingDFS(int root)
+        {
+            dfs_num = new DFS_STATE[incomingEdges.Count()];
+            topoSort = new int[incomingEdges.Count()];
+            dfs(root);
+            Array.Reverse(topoSort);
+            return topoSort;
+        }
+
+        internal int[] getTopoSortUsingKahn()
+        {
+            //Find roots
+            SortedSet<int> noIncEdges = new SortedSet<int>();
+
+            for (int i = 0; i < incomingEdges.Count(); ++i)
+            {
+                if (incomingEdges[i].Count == 0)
+                    noIncEdges.Add(i);
+            }
+
+            topoSortSize = 0;
+            topoSort = new int[incomingEdges.Count()];
+            while(noIncEdges.Count > 0)
+            {
+                int n = noIncEdges.Min;
+                topoSort[topoSortSize++] = n;
+                Logger.LogDebug("Adding {0} to topo sort", n);
+                bool ok = noIncEdges.Remove(n);
+                Preconditions.checkState(ok);
+
+                for(int j = outgoingEdges[n].Count - 1; j >= 0 ; --j)
+                {
+                    int m = outgoingEdges[n][j];
+                    Logger.LogDebug("Looking at edge {0}->{1}", n, m);
+                    removeConnection(n, m);
+
+                    if (incomingEdges[m].Count == 0)
+                    {
+                        Logger.LogDebug("{0} has no incoming edges", m);
+                        noIncEdges.Add(m);
+                    }
+                }
+            }
+
+            return topoSort;
+        }
+
+        internal void removeConnection(int u, int v)
+        {
+            outgoingEdges[u].Remove(v);
+            incomingEdges[v].Remove(u);
+        }
         internal void addConnection(int u, int v)
         {
             Logger.LogDebug("Add connection {0} to {1}", u, v);
-            adjList[u].Add(v);
+            outgoingEdges[u].Add(v);
+            incomingEdges[v].Add(u);
         }
 
         //False if topo sort impossible
-        internal bool dfs(int u)
+        private bool dfs(int u)
         {    
             dfs_num[u] = DFS_STATE.VISITING;
             Logger.LogDebug("dfs u: {0}", u);
 
-            for (int j = 0; j < adjList[u].Count; j++)
+            for (int j = 0; j < outgoingEdges[u].Count; j++)
             {
-                int v = adjList[u][j];
+                int v = outgoingEdges[u][j];
                 Logger.LogDebug("dfs u: {0} connected to v: {1}", u, v);
 
                 if (dfs_num[v] == DFS_STATE.VISITING)
@@ -186,19 +242,20 @@ namespace Round2.ErdosNS
                 }
             }
 
-            g.dfs(root);
+            //int[] topoSort = g.getTopoSortUsingDFS(root);
+            int[] topoSort = g.getTopoSortUsingKahn();
 
-            Array.Reverse(g.topoSort);
+           // ;
 
             int[] ans = new int[input.length];
             for (int u = 0; u < input.length; ++u)
             {
-                ans[g.topoSort[u]] = u + 1;
+                ans[topoSort[u]] = u + 1;
             }
             //return g.topoSort.Select((elem, idx) => { return 1 + elem; }).ToCommaString(); 
             calcAandB(ans);
 
-            return ans.ToCommaString();
+            return string.Join(" ", ans);
             //return g.topoSort.ToCommaString();
         }
 
