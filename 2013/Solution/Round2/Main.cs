@@ -37,7 +37,7 @@ namespace Round2
 
             list = list.ConvertAll(s => dir + s);
 
-            CjUtils.RunMain(list, main, main.createInput, null); //Round1C.Properties.Resources.ResourceManager
+            CjUtils.RunMainMulti(list, main, main.createInput, null); //Round1C.Properties.Resources.ResourceManager
         }
     }
 }

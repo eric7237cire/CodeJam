@@ -1,5 +1,6 @@
 ﻿#define LOGGING
-
+//#define LOGGING_TRACE
+#define FRAC
 using CodeJamUtils;
 using System;
 using System.Collections.Generic;
@@ -14,10 +15,15 @@ using Logger = Utils.LoggerFile;
 
 namespace Round2.Pong
 {
+#if FRAC
+    using Line = LineNumeric<BigFraction>;
+    using Point = Point<BigFraction>;
+    using NumType = BigFraction;
+#else
     using Line = LineNumeric<DoubleNumeric>;
     using Point = Point<DoubleNumeric>;
     using NumType = DoubleNumeric;
-
+#endif
     class PongMain : InputFileConsumer<PongInput, string>, InputFileProducer<PongInput>
     {
         public string processInput(PongInput input)
@@ -49,10 +55,13 @@ namespace Round2.Pong
             Logger.Log("P1 {0} P2 {1}", p1, p2);
 
             NumType yDif = p2.Y.Subtract( p1.Y );
-
-            double t0 = (input.widthField - input.X) / (double)input.VX;
-            double t1 = input.widthField / (double)input.VX;
-
+#if FRAC
+            BigFraction t0 = new BigFraction( input.widthField - input.X, input.VX );
+            BigFraction t1 = new BigFraction(input.widthField, input.VX);
+#else
+            NumType t0 = (input.widthField - input.X) / (double) input.VX;
+            NumType t1 = input.widthField / (double) input.VX;
+#endif
             List<Tuple<NumType, NumType>>[] teamPlayerPos = new List<Tuple<NumType,NumType>>[2]; //time, loc pair
             teamPlayerPos[0] = new List<Tuple<NumType, NumType>>(); //left 
             teamPlayerPos[1] = new List<Tuple<NumType, NumType>>(); //right
@@ -65,12 +74,13 @@ namespace Round2.Pong
 
             //HashSet<int>[] playerZeroPos = new HashSet<int>[] { new HashSet<int>(), new HashSet<int>() };
 
-            for (int pNum = 0; pNum < 400000; ++pNum )
+            const int maxPnum = 400000;
+            for (int pNum = 0; pNum < maxPnum; ++pNum )
             {
                 int team = pNum % 2 == 0 ? 1 : 0;
 
                 NumType y = p1.Y.Add ( yDif.Multiply(pNum) );
-                double x = pNum % 2 == 0 ? 0 : input.widthField;
+                double x = pNum % 2 != 0 ? 0 : input.widthField;
 
                 long rem = (long) (y.Divide( input.heightField) );
                 //while (y > input.heightField) {
@@ -87,7 +97,7 @@ namespace Round2.Pong
                     y = ( (NumType)input.heightField).Subtract(y);
                 }
 
-                double time = t0 + t1 * pNum;
+                NumType time = t0 .Add( t1.Multiply(pNum) );
                 Logger.LogTrace("Point {0} is {1}, {2}.  Time {3}.  Current player {4}", pNum, x, y, time, curPlayer[team]);
 
                 if (teamPlayerPos[team].Count < teamSize[team])
@@ -98,11 +108,11 @@ namespace Round2.Pong
                 {
                     //Check last position
                     var lastTimePos = teamPlayerPos[team][curPlayer[team]];
-                    double deltaT = time - lastTimePos.Item1;
-                    double deltaDis = Math.Abs(lastTimePos.Item2 - y);
+                    NumType deltaT = time.Subtract( lastTimePos.Item1 );
+                    NumType deltaDis = lastTimePos.Item2.Subtract(y).Abs();
 
-                    double disPossible = deltaT * teamSpeed[team];
-                    if (disPossible < deltaDis)
+                    NumType disPossible = deltaT.Multiply( teamSpeed[team] );
+                    if (disPossible.CompareTo(deltaDis) < 0)
                     {
                         int num = (pNum + team) / 2;
                         string teamName = ((!switchTeams && team == 0) || (switchTeams && team == 1)) ? "RIGHT" : "LEFT";

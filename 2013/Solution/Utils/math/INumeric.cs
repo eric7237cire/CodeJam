@@ -14,10 +14,12 @@ namespace Utils.math
         T Multiply(T rhs);
         T Divide(T rhs);
 
+        T Abs();
+
         bool IsZero();
     }
 
-    public struct DoubleNumeric : INumeric<DoubleNumeric>
+    public struct DoubleNumeric : INumeric<DoubleNumeric>, IComparable<DoubleNumeric>
     {
         double value;
         public DoubleNumeric Add(DoubleNumeric rhs)
@@ -66,6 +68,17 @@ namespace Utils.math
         {
             return d.value;
         }
+
+
+        public DoubleNumeric Abs()
+        {
+            return new DoubleNumeric { value = Math.Abs(value) };
+        }
+
+        public int CompareTo(DoubleNumeric other)
+        {
+            return value.CompareTo(other.value);
+        }
     }
 
     public struct BigIntegerNumeric : INumeric<BigIntegerNumeric>
@@ -96,6 +109,12 @@ namespace Utils.math
 
 
         public bool IsZero()
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public BigIntegerNumeric Abs()
         {
             throw new NotImplementedException();
         }

@@ -211,7 +211,9 @@ namespace CodeJamUtils
                 string inputFileName = fn;
 
                 TextReader inputReader = null;
-                byte[] obj = (byte[])resourceManager.GetObject(fn);
+                byte[] obj = null;
+                if (resourceManager != null) 
+                    obj = (byte[])resourceManager.GetObject(fn);
                 if (obj != null)
                 {
                     inputReader = new StreamReader(new MemoryStream(obj));
@@ -248,7 +250,7 @@ namespace CodeJamUtils
                         }
                         Logger.LogTrace("Read input for tc {0} : {1}", tc, input.ToString());
                        
-                        Preconditions.checkState(tc <= 20);
+                        
                         //Avoid binding to tc which gets incremented beyond the limit
                         int tcLocal = tc;
                         consumeTasks[tc-1] = Task.Run(() => consumeSingle(input, tcLocal, answers));

@@ -65,6 +65,7 @@
     <Compile Include="Ext.cs" />
     <Compile Include="geom\Line.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="math\BigFraction.cs" />
     <Compile Include="math\INumeric.cs" />
     <Compile Include="ModdedLong.cs" />
     <Compile Include="PascalTriangle.cs" />
