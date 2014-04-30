@@ -52,6 +52,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -64,6 +65,7 @@
     <Compile Include="Ext.cs" />
     <Compile Include="geom\Line.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="math\INumeric.cs" />
     <Compile Include="ModdedLong.cs" />
     <Compile Include="PascalTriangle.cs" />
     <Compile Include="geom\Point.cs" />

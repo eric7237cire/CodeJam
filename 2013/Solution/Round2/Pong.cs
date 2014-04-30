@@ -7,12 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils.geom;
+using Utils.math;
 using Utils;
 
 using Logger = Utils.LoggerFile;
 
 namespace Round2.Pong
 {
+    using Line = LineNumeric<DoubleNumeric>;
+    using Point = Point<DoubleNumeric>;
+    using NumType = DoubleNumeric;
+
     class PongMain : InputFileConsumer<PongInput, string>, InputFileProducer<PongInput>
     {
         public string processInput(PongInput input)
@@ -37,49 +42,57 @@ namespace Round2.Pong
 
             
             
-            Line rebound = Line.createFromPoints(p1, p1.Add(new Point<double>(-input.VX, input.VY)));
+            Line rebound = Line.createFromPoints(p1, p1.Add(new Point(-input.VX, input.VY)));
 
             var p2 = rebound.intersection(teamLeft);
             Logger.Log("Initial point {0}, {1} direction {2}, {3}", input.X, input.Y, input.VX, input.VY);
             Logger.Log("P1 {0} P2 {1}", p1, p2);
 
-            double yDif = p2.Y - p1.Y;
+            NumType yDif = p2.Y.Subtract( p1.Y );
 
             double t0 = (input.widthField - input.X) / (double)input.VX;
             double t1 = input.widthField / (double)input.VX;
 
-            List<Tuple<double, double>>[] teamPlayerPos = new List<Tuple<double,double>>[2]; //time, loc pair
-            teamPlayerPos[0] = new List<Tuple<double, double>>(); //left 
-            teamPlayerPos[1] = new List<Tuple<double, double>>(); //right
+            List<Tuple<NumType, NumType>>[] teamPlayerPos = new List<Tuple<NumType,NumType>>[2]; //time, loc pair
+            teamPlayerPos[0] = new List<Tuple<NumType, NumType>>(); //left 
+            teamPlayerPos[1] = new List<Tuple<NumType, NumType>>(); //right
             int[] teamSize = new int[] { input.numLeftTeam, input.numRightTeam};
             int[] curPlayer = new int[2] {0,0};
-            int[] teamSpeed = new int[2] {input.speedLeftTeam, input.speedRightTeam};
+            long[] teamSpeed = new long[2] {input.speedLeftTeam, input.speedRightTeam};
 
             Logger.Log("Left team {0} players at {1} speed", teamSize[0], teamSpeed[0]);
             Logger.Log("Right team {0} players at {1} speed", teamSize[1], teamSpeed[1]);
 
-            for (int pNum = 0; pNum < 25; ++pNum )
+            //HashSet<int>[] playerZeroPos = new HashSet<int>[] { new HashSet<int>(), new HashSet<int>() };
+
+            for (int pNum = 0; pNum < 400000; ++pNum )
             {
                 int team = pNum % 2 == 0 ? 1 : 0;
 
-                double y = p1.Y + pNum * yDif;
+                NumType y = p1.Y.Add ( yDif.Multiply(pNum) );
                 double x = pNum % 2 == 0 ? 0 : input.widthField;
 
-                int rem = (int) (y / input.heightField);
-                while (y > input.heightField) {
-                    y -= input.heightField;
+                long rem = (long) (y.Divide( input.heightField) );
+                //while (y > input.heightField) {
+                try
+                {
+                    y = y.Subtract(rem * input.heightField);
+                } catch (OverflowException ex)
+                {
+                    return "Overflow";
                 }
+                //}
                 if (rem % 2 == 1)
                 {
-                    y = input.heightField - y;
+                    y = ( (NumType)input.heightField).Subtract(y);
                 }
 
                 double time = t0 + t1 * pNum;
-                Logger.Log("Point {0} is {1}, {2}.  Time {3}.  Current player {4}", pNum, x, y, time, curPlayer[team]);
+                Logger.LogTrace("Point {0} is {1}, {2}.  Time {3}.  Current player {4}", pNum, x, y, time, curPlayer[team]);
 
                 if (teamPlayerPos[team].Count < teamSize[team])
                 {
-                    teamPlayerPos[team].Add(new Tuple<double, double>(time, y));
+                    teamPlayerPos[team].Add(new Tuple<NumType, NumType>(time, y));
                 }
                 else
                 {
@@ -98,7 +111,15 @@ namespace Round2.Pong
                         return teamName + " " + num;
                     }
 
-                    teamPlayerPos[team][curPlayer[team]] = new Tuple<double, double>(time, y);
+                    teamPlayerPos[team][curPlayer[team]] = new Tuple<NumType, NumType>(time, y);
+                }
+
+                if (curPlayer[team] == 0)
+                {
+                    //if (playerZeroPos[team].Contains(y))
+                    {
+                        //return "DRAW";
+                    }
                 }
 
                 curPlayer[team] ++;
@@ -117,14 +138,14 @@ namespace Round2.Pong
             input.numLeftTeam = scanner.nextInt();
             input.numRightTeam = scanner.nextInt();
 
-            input.speedLeftTeam = scanner.nextInt();
-            input.speedRightTeam = scanner.nextInt();
+            input.speedLeftTeam = scanner.nextLong();
+            input.speedRightTeam = scanner.nextLong();
 
             input.Y = scanner.nextInt();
             input.X = scanner.nextInt();
 
-            input.VY = scanner.nextInt();
-            input.VX = scanner.nextInt();
+            input.VY = scanner.nextLong();
+            input.VX = scanner.nextLong();
 
             return input;
         }
@@ -138,13 +159,13 @@ namespace Round2.Pong
         internal int numLeftTeam; //{ get; set; }
         internal int numRightTeam; //{ get; set; }
 
-        internal int speedLeftTeam; //{ get; set; }
-        internal int speedRightTeam; // { get; set; }
+        internal long speedLeftTeam; //{ get; set; }
+        internal long speedRightTeam; // { get; set; }
 
         internal int Y { get; set; }
         internal int X { get; set; }
-        internal int VY { get; set; }
-        internal int VX { get; set; }
+        internal long VY { get; set; }
+        internal long VX { get; set; }
                  
         
 

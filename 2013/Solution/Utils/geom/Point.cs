@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
+using Utils.math;
+
 namespace Utils.geom
 {
     public static class PointExt
@@ -11,6 +13,11 @@ namespace Utils.geom
         public static Point<double> Add(this Point<double> lhs, Point<double> rhs)
         {
             return new Point<double>(lhs.X + rhs.X, lhs.Y + rhs.Y);
+        }
+
+        public static Point<T> Add<T>(this Point<T> lhs, Point<T> rhs) where T : INumeric<T>
+        {
+            return new Point<T>(lhs.X.Add( rhs.X ), lhs.Y.Add ( rhs.Y) );
         }
     }
     public class Point<T> : IEquatable<Point<T>>
