@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Utils.geom;
 
 //Pascal's triangle, probablity getting exactly N heads in X coin flips
 

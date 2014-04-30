@@ -81,6 +81,7 @@
     <Compile Include="TestUtils.cs" />
     <Compile Include="TestBinaryTree.cs" />
     <Compile Include="TestManyPrizes.cs" />
+    <Compile Include="TestGeom.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Round1B\Round1B.csproj">

@@ -1,5 +1,6 @@
 ﻿using CodeJamUtils;
 using Round2.ErdosNS;
+using Round2.Pong;
 using Round2.TicketSwapping;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,8 @@ namespace Round2
             //TicketSwap main = new TicketSwap();
 
             //ManyPrizes main = new ManyPrizes();
-            Erdos main = new Erdos();
+           // Erdos main = new Erdos();
+            PongMain main = new PongMain();
             List<string> list = new List<string>();
 
             list.Add("sample.in");
@@ -26,14 +28,14 @@ namespace Round2
           //list.Add("B-small-practice.in");
          //   list.Add("B-large-practice.in");
 
-            list.Add("C-small-practice.in");
-            list.Add("C-large-practice.in");
+            //list.Add("C-small-practice.in");
+            //list.Add("C-large-practice.in");
 
             string dir = @"C:\codejam\CodeJam\2013\Solution\Round2\";
 
             list = list.ConvertAll(s => dir + s);
 
-            CjUtils.RunMain(list, main, Round2.ErdosNS.Input.createInput, null); //Round1C.Properties.Resources.ResourceManager
+            CjUtils.RunMain(list, main, main.createInput, null); //Round1C.Properties.Resources.ResourceManager
         }
     }
 }

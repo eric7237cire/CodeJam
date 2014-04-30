@@ -4,8 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
-namespace CodeJamUtils
+namespace Utils.geom
 {
+    public static class PointExt
+    {
+        public static Point<double> Add(this Point<double> lhs, Point<double> rhs)
+        {
+            return new Point<double>(lhs.X + rhs.X, lhs.Y + rhs.Y);
+        }
+    }
     public class Point<T> : IEquatable<Point<T>>
     {
         //private readonly int sideLength;

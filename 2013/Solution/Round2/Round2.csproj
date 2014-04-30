@@ -66,6 +66,7 @@
     <Compile Include="Erdos.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="ManyPrizes.cs" />
+    <Compile Include="Pong.cs" />
     <Compile Include="TicketSwapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

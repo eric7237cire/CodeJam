@@ -259,45 +259,7 @@ namespace Round2.ErdosNS
             //return g.topoSort.ToCommaString();
         }
 
-        public string processInput2(Input input)
-        {
-            calcAandB(new int[] { 4, 5, 3, 7, 6, 2, 8, 1 });
-            //List<int> seq = new List<int>(new int[] { 4, 5, 3, 7, 6, 2, 8, 1 });
-
-           // int[] lis = getLIS(seq);
-
-            for (int listSize = 1; listSize <= 6; ++listSize)
-            {
-                int[] permBase = new int[listSize];
-                for (int i = 0; i < listSize; ++i)
-                    permBase[i] = i + 1;
-
-                Logger.Log("\n\nList size {0}", listSize);
-
-                foreach (int[] list in Combinations.nextPermutation<int, int[]>(permBase))
-                {
-                    Logger.Log("\nPermutation {0}", list.ToCommaString());
-
-                    calcAandB(list);
-                    /*
-                    for (int maxElement = listSize; maxElement >= 1; --maxElement)
-                    {
-                        IEnumerable<int> sub = list.Where(i => i <= maxElement);
-
-                        Logger.Log("Sub list {0}", sub.ToCommaString());
-
-                        List<int> subList = new List<int>(sub);
-
-                        int[] lis = getLIS(subList);
-                        int[] lds = getLDS(subList);
-
-                        Logger.Log("Longest increasing subsequence size {0} : {1}", lis.Count(), lis.ToCommaString());
-                        Logger.Log("Longest decreasing subsequence size B[ {0} : {1}", lds.Count(), lds.ToCommaString());
-                    }*/
-                }
-            }
-            return " ";
-        }
+        
 
         static public int[] getLIS(IList<int> X )
         {
@@ -394,45 +356,6 @@ namespace Round2.ErdosNS
 
         
 
-        static public List<int> getLIS2(List<int> seq)
-        {
-            int[] maxLISLength = new int[seq.Count]; //vi dp(seq.size(), 0);
-            int[] pred = new int[seq.Count];
-
-            //This is not the actual subsequence in seq, but a record of the lowest endpoint of a longest increasing subsequence 
-            //lis[i] = the lowest endpoint of a lis of length i + 1
-            List<int> lis = new List<int>();
-	    
-	        lis.Add(seq[0]);
-	
-	        int globalMax = 0;
-
-	        for(int dpIdx = 1; dpIdx < seq.Count; ++dpIdx)
-	        {
-		        //Eveything before it is strictly less than seq[dpIdx]
-		        int it = lis.lowerBound(seq[dpIdx]);
-		
-		        //This will be at most the length of the sequence - 1
-		        int curMax = it;
-
-		        maxLISLength[dpIdx] = curMax;
-		
-		        if (it == lis.Count)
-		        {
-                    //can make a new longest sequence
-			        lis.Add(seq[dpIdx]);
-		        } else {
-			        //Found an element 
-			        lis[it] = seq[dpIdx];
-		        }
-
-		        globalMax = Math.Max(globalMax, curMax);
-	        }
-
-            return lis;
-	
-
-	
-        }
+       
     }
 }

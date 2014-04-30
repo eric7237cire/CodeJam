@@ -1341,6 +1341,8 @@ public class Main
         //2012 qual
         //A,B,C  in c++
         //TODO a bit slow
+        
+        //Angle reflection
         //  codejam.y2012.round_qual.hall_of_mirrors.Main m = new codejam.y2012.round_qual.hall_of_mirrors.Main();
 
     }

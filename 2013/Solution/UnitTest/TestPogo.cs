@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utils.geom;
 using Pogo = Round1C.Pogo.Pogo;
 
 namespace UnitTest
@@ -40,7 +41,7 @@ namespace UnitTest
             Point<int> pt = new Point<int>(x, y);
             string s = p.processInput(Input.createInput(pt.X, pt.Y));
 
-            CodeJamUtils.Point<int> point = Pogo.simulate(s);
+            Point<int> point = Pogo.simulate(s);
 
             Assert.AreEqual<Point<int>>(pt, point);
         }
