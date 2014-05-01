@@ -71,6 +71,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="TestConsonants.cs" />
     <Compile Include="TestDiamond.cs" />
     <Compile Include="TestOsmos.cs" />
@@ -82,6 +87,7 @@
     <Compile Include="TestBinaryTree.cs" />
     <Compile Include="TestManyPrizes.cs" />
     <Compile Include="TestGeom.cs" />
+    <Compile Include="TestPong.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Round1B\Round1B.csproj">
@@ -100,6 +106,12 @@
       <Project>{ca53bd61-475a-4c6a-a040-3e3ad18a6656}</Project>
       <Name>Utils</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

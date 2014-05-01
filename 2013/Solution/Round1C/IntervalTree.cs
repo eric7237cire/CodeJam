@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using C5;
+//using C5;
 namespace Round1C
 {
     public class Interval<CoordType, DataType>
@@ -22,13 +22,13 @@ namespace Round1C
         Node<CoordType> rightNode;
         Node<CoordType> leftNode;
 
-        TreeDictionary<CoordType, Node<CoordType>> nodesSortedByStart;
-        TreeDictionary<CoordType, Node<CoordType>> nodesSortedByStop ;
+       // TreeDictionary<CoordType, Node<CoordType>> nodesSortedByStart;
+       // TreeDictionary<CoordType, Node<CoordType>> nodesSortedByStop ;
 
         Node()
         {
-            nodesSortedByStart = new TreeDictionary<CoordType, Node<CoordType>>();
-            nodesSortedByStop = new TreeDictionary<CoordType, Node<CoordType>>();
+           // nodesSortedByStart = new TreeDictionary<CoordType, Node<CoordType>>();
+           // nodesSortedByStop = new TreeDictionary<CoordType, Node<CoordType>>();
         }
     }
 

@@ -85,10 +85,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\C5\C5\C5.csproj">
-      <Project>{0d9bb39d-0201-40cb-bda8-ec75c95a14d6}</Project>
-      <Name>C5</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{ca53bd61-475a-4c6a-a040-3e3ad18a6656}</Project>
       <Name>Utils</Name>

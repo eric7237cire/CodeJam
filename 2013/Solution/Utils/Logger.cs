@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Utils
@@ -39,9 +40,25 @@ namespace Utils
             Log(String.Format(msg, args));
         }
 
+        private static string replacePlaceholders(string msg, params object[] args)
+        {
+            Regex rgx = new Regex(@"\{\}");
+
+            if (rgx.IsMatch(msg))
+            {
+                for (int i = 0; i < args.Count(); ++i)
+                {
+                    msg = rgx.Replace(msg, args[i].ToString(), 1);
+                }
+            }
+
+            return msg;
+        }
+
         [Conditional("LOGGING_TRACE")]
         public static void LogTrace(String msg, params object[] args)
         {
+            msg = replacePlaceholders(msg, args);
             string msgf = String.Format(msg, args);
 
             LoggerFile.Instance.writer.WriteLine(msgf);
@@ -51,12 +68,18 @@ namespace Utils
         [Conditional("LOGGING_INFO")]
         public static void LogInfo(String msg, params object[] args)
         {
+            msg = replacePlaceholders(msg, args);
+
+            Debug.WriteLine(msg);
+            Console.WriteLine(msg);
+            
             Log(String.Format(msg, args));
         }
 
         [Conditional("LOGGING_DEBUG")]
         public static void LogDebug(String msg, params object[] args)
         {
+            msg = replacePlaceholders(msg, args);
             Log(String.Format(msg, args));
         }
 
@@ -66,9 +89,7 @@ namespace Utils
         public static void Log(String msg)
         {
             msg = "Thread id {0} -- ".FormatThis(System.Threading.Thread.CurrentThread.ManagedThreadId) + msg;
-            Debug.WriteLine(msg);
-            Console.WriteLine(msg);
-            LoggerFile.Instance.writer.WriteLine(msg);
+           LoggerFile.Instance.writer.WriteLine(msg);
 
 
             LoggerFile.Instance.writer.Flush();
