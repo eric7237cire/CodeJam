@@ -1,5 +1,5 @@
 ﻿#define LOGGING
-//#define LOGGING_TRACE
+#define LOGGING_TRACE
 #define FRAC
 using CodeJamUtils;
 using System;
@@ -62,6 +62,7 @@ namespace Round2.Pong
             NumType t0 = (input.widthField - input.X) / (double) input.VX;
             NumType t1 = input.widthField / (double) input.VX;
 #endif
+            
             List<Tuple<NumType, NumType>>[] teamPlayerPos = new List<Tuple<NumType,NumType>>[2]; //time, loc pair
             teamPlayerPos[0] = new List<Tuple<NumType, NumType>>(); //left 
             teamPlayerPos[1] = new List<Tuple<NumType, NumType>>(); //right
@@ -69,9 +70,10 @@ namespace Round2.Pong
             int[] curPlayer = new int[2] {0,0};
             long[] teamSpeed = new long[2] {input.speedLeftTeam, input.speedRightTeam};
 
+            Logger.Log("Width {0} Height {1}", input.widthField, input.heightField);
             Logger.Log("Left team {0} players at {1} speed", teamSize[0], teamSpeed[0]);
             Logger.Log("Right team {0} players at {1} speed", teamSize[1], teamSpeed[1]);
-
+            Logger.Log("Time = {0} + {1} * n.  Position = {2} + {3} * n", t0, t1, p1.Y, yDif);
             //HashSet<int>[] playerZeroPos = new HashSet<int>[] { new HashSet<int>(), new HashSet<int>() };
 
             const int maxPnum = 400000;
@@ -98,7 +100,7 @@ namespace Round2.Pong
                 }
 
                 NumType time = t0 .Add( t1.Multiply(pNum) );
-                Logger.LogTrace("Point {0} is {1}, {2}.  Time {3}.  Current player {4}", pNum, x, y, time, curPlayer[team]);
+                Logger.LogTrace("Side {5} Point {0} is {1}, {2}.  Time {3}.  Current player {4}", pNum, x, y, time, curPlayer[team], team);
 
                 if (teamPlayerPos[team].Count < teamSize[team])
                 {

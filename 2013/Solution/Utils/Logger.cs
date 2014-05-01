@@ -42,7 +42,10 @@ namespace Utils
         [Conditional("LOGGING_TRACE")]
         public static void LogTrace(String msg, params object[] args)
         {
-            Log(String.Format(msg, args));
+            string msgf = String.Format(msg, args);
+
+            LoggerFile.Instance.writer.WriteLine(msgf);
+            LoggerFile.Instance.writer.Flush();
         }
 
         [Conditional("LOGGING_INFO")]

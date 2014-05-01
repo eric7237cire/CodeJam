@@ -148,6 +148,9 @@ namespace Utils.math
         #region Object overrides
         public override string ToString()
         {
+            if (denominator.Equals(BigInteger.One))
+                return numerator.ToString();
+
             return "{0} / {1}".FormatThis(numerator.ToString(), denominator.ToString());
         }
         #endregion
