@@ -22,9 +22,21 @@ namespace UnitTest
         [TestMethod]
         public void TestAdd2()
         {
+            for (int target = 1; target <= 5; ++target )
+                test(49, 99, 100, target);
+
+
            // test(16, 85, 100, 150);
             test(99, 99, 100, target:98);
-            
+
+            test(47, 99, 100, 30);
+
+            Random r = new Random(3);
+
+            for(int i = 0; i < 5; ++i)
+            {
+                test(r.Next(0,301), r.Next(1, 1000), 100, r.Next(1, 100)); 
+            }
 
            // test(0, 135, 100, 50);
           //  test(0, 65, 100, 50);
@@ -36,16 +48,19 @@ namespace UnitTest
             //test(0, 135, 100, 10);
         }
 
+        //Manually step through the points, making sure that the result of calcToTarget is the first point
+        //with a difference > target.
         private void test(int offset, int toAdd, int height, long target)
         {
             PongMain.calcStats(offset, toAdd, height);
-            long nPoints = PongMain.calcToTarget(offset, toAdd, height, target);
+            long targetPoint = PongMain.calcToTarget(offset, toAdd, height, target);
+            Logger.LogDebug("nPoints {}", targetPoint);
             List<int> posList = new List<int>();
             posList.Add(offset);
 
             bool found = false;
 
-            for(int i = 0; i < nPoints; ++i)
+            for(int i = 1; i <= targetPoint; ++i)
             {
                 int ans = (int)PongMain.calcAdd(offset, toAdd, i, height);
 
@@ -53,10 +68,10 @@ namespace UnitTest
                     offset,
                     i, toAdd, offset + i * toAdd, ans, (ans - posList.GetLastValue()), height);
 
-                int diff = ans - posList.GetLastValue();
+                int diff = Math.Abs(ans - posList.GetLastValue());
                 if (diff > target)
                 {
-                    Assert.AreEqual(nPoints - 1, i);
+                    Assert.AreEqual(targetPoint, i);
                     found = true;
                 }
                 posList.Add(ans);

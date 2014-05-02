@@ -21,6 +21,7 @@ namespace Round2.Pong
     using Line = LineNumeric<BigFraction>;
     using Point = Point<BigFraction>;
     using NumType = BigFraction;
+    using System.Numerics;
 #else
     using Line = LineNumeric<DoubleNumeric>;
     using Point = Point<DoubleNumeric>;
@@ -43,7 +44,7 @@ namespace Round2.Pong
             {
                 pos = height - pos;
             }
-
+            Logger.LogDebug("CalcAdd {} + {} * {} = {} w.r.t height {}", p0, n, deltaP, pos, height);
             return pos;            
         }
 
@@ -76,17 +77,20 @@ namespace Round2.Pong
 
         public static long calcToTarget(NumType p0, NumType deltaP, NumType height, NumType targetDiff, bool recurs = false)
         {
+            Logger.LogDebug("calcToTarget p0 {} + \u0394p {} * N  height: {}  target: {}  rec {}", 
+                p0, deltaP, height, targetDiff, recurs);
             long rem = (long)(deltaP / (2 * height));
             deltaP -= (rem * 2 * height);
 
-            if (deltaP > height)
+            NumType maxDiff = deltaP;
+            if (maxDiff > height)
             {
-                deltaP = 2 * height - deltaP ;
+                maxDiff = 2 * height - maxDiff ;
             }
 
             Logger.LogDebug("Adjusted \u0394P {}", deltaP);
 
-            if (targetDiff >= deltaP)
+            if (targetDiff >= maxDiff)
                 return -1;
 
             //Calculate p1 and p2
@@ -96,6 +100,8 @@ namespace Round2.Pong
             NumType d1 = (p1 - p0).Abs();
             NumType d2 = (p2 - p1).Abs();
 
+            Logger.LogDebug("P0 {} P1 {} P2 {}.  D1 {} D2 {}", p0, p1, p2, d1, d2);
+                
             if (d1 > targetDiff)
                 return 1;
 
@@ -109,40 +115,49 @@ namespace Round2.Pong
             {
                 Preconditions.checkState(!recurs);
 
-                long pointsToZero = (long) (d2 / deltaD);
+                long pointsToZero = (long) (d2 / deltaD).ceil();
 
                 NumType pa = calcAdd(p0, deltaP, 1+pointsToZero, height);
                 NumType pb = calcAdd(p0, deltaP, 2+pointsToZero, height);
                 NumType pc = calcAdd(p0, deltaP, 3 + pointsToZero, height);
                 NumType pd = calcAdd(p0, deltaP, 4 + pointsToZero, height);
-                Logger.LogDebug("P0 {} P1 {} P2 {}.  D1 {} D2 {}", p0, p1, p2, d1, d2);
                 Logger.LogDebug("Points to zero {}.  pa,pb,pc {} {} {} {}", pointsToZero, pa, pb, pc,pd);
 
                 NumType db = (pb - pa).Abs();
                 NumType dc = (pc - pb).Abs();
                 NumType dd = (pd - pc).Abs();
 
+                Logger.LogDebug("Diffs {} {} {}", db, dc, dd);
+
                 Preconditions.checkState(db - deltaD <= 0); 
-                Preconditions.checkState(dc - deltaD <= 0);
+                Preconditions.checkState((dc-db).Equals(deltaD));
                 Preconditions.checkState((dd-dc).Equals(deltaD)); //now going positive
 
-                long pointsLeft = calcToTarget(pc, deltaP, height, targetDiff, true);
-                return pointsLeft + 3 + pointsToZero;
+                long pointsLeft = calcToTarget(pb, deltaP, height, targetDiff, true);
+                return pointsLeft + 2 + pointsToZero;
             }
 
-            long pointsToGo =  2l + (long) ((targetDiff - d2) / deltaD);
+            NumType div = (targetDiff - d2) / deltaD;
+            div = div.reduce();
+            BigInteger pointsToGo =  (div).ceil();
 
-            NumType pw = calcAdd(p0, deltaP, 1 + pointsToGo, height);
-            NumType px = calcAdd(p0, deltaP, 2 + pointsToGo, height);
-            NumType py = calcAdd(p0, deltaP, 3 + pointsToGo, height);
-            NumType pz = calcAdd(p0, deltaP, 4 + pointsToGo, height);
+            if (div.Denominator.Equals(BigInteger.One))
+            {
+                pointsToGo += 1;
+            }
+
+            NumType pw = calcAdd(p0, deltaP, 1 + (long)pointsToGo, height);
+            NumType px = calcAdd(p0, deltaP, 2 + (long)pointsToGo, height);
+            NumType py = calcAdd(p0, deltaP, 3 + (long)pointsToGo, height);
+            NumType pz = calcAdd(p0, deltaP, 4 + (long)pointsToGo, height);
 
             NumType dx = (px - pw).Abs();
             NumType dy = (py - px).Abs();
             NumType dz = (pz - py).Abs();
 
             Logger.LogDebug("PointsToGo {} Pw {} {} {} {}.  diffs {} {} {}", pointsToGo, pw, px, py, pz, dx, dy, dz);
-            return pointsToGo  + 2;
+            Logger.LogDebug("Return {}", pointsToGo + 2);
+            return (long)pointsToGo + 2;
         }
 
         public string processInput(PongInput input)

@@ -13,6 +13,9 @@ namespace Utils.math
         private readonly BigInteger numerator;
         private readonly BigInteger denominator;
 
+        public BigInteger Numerator { get { return numerator; } }
+        public BigInteger Denominator { get { return denominator; } }
+
         #region constructor
         public BigFraction(long num, long den)
             : this(new BigInteger(num), new BigInteger(den))
@@ -67,6 +70,25 @@ namespace Utils.math
         public BigFraction reduce()
         {
             return new BigFraction(numerator, denominator, true);
+        }
+
+        /// <summary>
+        /// First integer >= to the fraction
+        /// </summary>
+        /// <returns></returns>
+        public BigInteger ceil()
+        {
+            BigInteger remainder;
+            BigInteger ans = BigInteger.DivRem(numerator, denominator, out remainder);
+
+            if (remainder.IsZero)
+            {
+                return ans;
+            }
+            else
+            {
+                return ans + 1;
+            }
         }
 
         #endregion
