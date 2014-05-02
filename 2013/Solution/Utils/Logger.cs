@@ -88,7 +88,8 @@ namespace Utils
         [Conditional("LOGGING"), Conditional("LOGGING_TRACE")]
         public static void Log(String msg)
         {
-            msg = "Thread id {0} -- ".FormatThis(System.Threading.Thread.CurrentThread.ManagedThreadId) + msg;
+            //msg = "Thread id {0} -- ".FormatThis(System.Threading.Thread.CurrentThread.ManagedThreadId) + msg;
+            
            LoggerFile.Instance.writer.WriteLine(msg);
 
 

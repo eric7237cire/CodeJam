@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -7,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Utils.math
 {
-    public struct BigFraction : INumeric<BigFraction>, IComparable<BigFraction>
+    public struct BigFraction : INumeric<BigFraction>, IComparable<BigFraction>, IEquatable<BigFraction>
     {
-        private BigInteger numerator;
-        private BigInteger denominator;
+        private readonly BigInteger numerator;
+        private readonly BigInteger denominator;
 
         #region constructor
         public BigFraction(long num, long den)
@@ -18,11 +19,9 @@ namespace Utils.math
         {
 
         }
-        public BigFraction(BigInteger num, BigInteger den)
+        public BigFraction(BigInteger num, BigInteger den, bool reduce = true )
         {
-            Preconditions.checkState(num != null);
-            Preconditions.checkState(den != null);
-
+            
             if (den.IsZero)
             {
                 throw new ArgumentException("zero");
@@ -34,13 +33,17 @@ namespace Utils.math
             }
             else
             {
-
-                // reduce numerator and denominator by greatest common denominator
-                BigInteger gcd = BigInteger.GreatestCommonDivisor(num, den);
-                if (BigInteger.One.CompareTo(gcd) < 0)
+                if (reduce)
                 {
-                    num = BigInteger.Divide(num, gcd);
-                    den = BigInteger.Divide(den, gcd);
+                    // reduce numerator and denominator by greatest common denominator
+                    BigInteger gcd = BigInteger.GreatestCommonDivisor(num, den);
+                    if (BigInteger.One.CompareTo(gcd) < 0)
+                    {
+                        num = BigInteger.Divide(num, gcd);
+                        den = BigInteger.Divide(den, gcd);
+                    }
+
+                    
                 }
 
                 // move sign to numerator
@@ -54,8 +57,18 @@ namespace Utils.math
                 numerator = num;
                 denominator = den;
 
+                
             }
         }
+        #endregion
+
+        #region methods
+
+        public BigFraction reduce()
+        {
+            return new BigFraction(numerator, denominator, true);
+        }
+
         #endregion
 
         #region operators to BigFraction
@@ -73,6 +86,49 @@ namespace Utils.math
         public static explicit operator double(BigFraction f)
         {
             return (double)f.numerator / (double)f.denominator;
+        }
+        #endregion
+
+        #region operators
+        public static BigFraction operator +(int i, BigFraction x)
+        {
+            return x.Add(i);
+        }
+        public static BigFraction operator +(BigFraction lhs, BigFraction rhs)
+        {
+            return lhs.Add(rhs);
+        }
+        public static BigFraction operator /(BigFraction lhs, BigFraction rhs)
+        {
+            return lhs.Divide(rhs);
+        }
+        public static BigFraction operator -(BigFraction lhs, BigFraction rhs)
+        {
+            return lhs.Subtract(rhs);
+        }
+        public static BigFraction operator *(long i, BigFraction x)
+        {
+            return x.Multiply(i);
+        }
+        public static BigFraction operator *(BigFraction x, long num)
+        {
+            return x.Multiply(num);
+        }
+        public static bool operator< (BigFraction lhs, BigFraction rhs)
+        {
+            return lhs.CompareTo(rhs) < 0;
+        }
+        public static bool operator >(BigFraction lhs, BigFraction rhs)
+        {
+            return lhs.CompareTo(rhs) > 0;
+        }
+        public static bool operator <=(BigFraction lhs, BigFraction rhs)
+        {
+            return lhs.CompareTo(rhs) < 0;
+        }
+        public static bool operator >=(BigFraction lhs, BigFraction rhs)
+        {
+            return lhs.CompareTo(rhs) > 0;
         }
         #endregion
 
@@ -151,7 +207,14 @@ namespace Utils.math
             if (denominator.Equals(BigInteger.One))
                 return numerator.ToString();
 
-            return "{0} / {1}".FormatThis(numerator.ToString(), denominator.ToString());
+            return "{0} / {1}".FormatThis(numerator.ToString("0,0", new CultureInfo("en-US")), denominator.ToString("0,0", new CultureInfo("en-US")));
+        }
+        #endregion
+
+        #region interface IEquatable
+        public bool Equals(BigFraction other)
+        {
+            return CompareTo(other) == 0;
         }
         #endregion
     }
