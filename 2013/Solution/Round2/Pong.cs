@@ -130,8 +130,10 @@ namespace Round2.Pong
             Logger.LogTrace("max diff {} \u0394P {}", maxDiff, deltaP);
 
             if (targetDiff >= maxDiff)
+            {
+                Logger.LogTrace("targetDiff {} >= maxDiff {}", targetDiff, maxDiff);
                 return -1;
-
+            }
 
             //Calculate p1 and p2
             
@@ -165,7 +167,23 @@ namespace Round2.Pong
                 return 2;
 
             NumType deltaD = (diffs[2] - diffs[1]).Abs();
-            long offset = 0;    
+            long offset = 0;
+
+            if (!deltaD.Equals(estimatedDeltaD))   //diffs[1].Equals(diffs[2]))
+            {
+                //in a rebound
+
+                offset = 1;
+
+                calcPointsAndDiff(p0, deltaP, height, 1, 3,
+                    out points, out diffs);
+
+                deltaD = (diffs[2] - diffs[1]).Abs();
+
+
+                Logger.LogDebug("After offset + 1: points {}.  Diffs {}", points.ToCommaString(), diffs.ToCommaString());
+
+            }
 
             //If descending, go to rebound
             if (diffs[2] < diffs[1])
@@ -192,28 +210,14 @@ namespace Round2.Pong
                 Preconditions.checkState((dd-dc).Equals(deltaD)); //now going positive
 
                 //long pointsLeft = calcToTarget(pb, deltaP, height, targetDiff, true);
-                offset = pointsToZero+2;
+                offset += pointsToZero+2;
 
                 calcPointsAndDiff(p0, deltaP, height, 2+pointsToZero, 3, 
                     out points, out diffs);
     
                 //DeltaD is already à jour
             }
-            else if ( !deltaD.Equals(estimatedDeltaD) )   //diffs[1].Equals(diffs[2]))
-            {
-                //in a rebound
-                
-                offset = 1;
-
-                calcPointsAndDiff(p0, deltaP, height, 1, 3,
-                    out points, out diffs);
-
-                deltaD = (diffs[2] - diffs[1]).Abs();
-
-
-                Logger.LogDebug("After offset + 1: points {}.  Diffs {}", points.ToCommaString(), diffs.ToCommaString());
-                
-            }
+            
 
             Preconditions.checkState(estimatedDeltaD.Equals(deltaD));
 
@@ -271,6 +275,12 @@ namespace Round2.Pong
             Logger.LogInfo("First intersection {} 2nd {}", p1, p2);
 
             NumType yDif = p2.Y.Subtract( p1.Y );
+
+            if (yDif < 0)
+            {
+                yDif += input.heightField;
+            }
+
 #if FRAC
             BigFraction t0 = new BigFraction( input.widthField - input.X, input.VX );
             BigFraction t1 = new BigFraction(input.widthField, input.VX);

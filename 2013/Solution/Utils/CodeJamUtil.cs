@@ -99,8 +99,8 @@ namespace CodeJamUtils
             timer.Stop();
             TimeSpan timespan = timer.Elapsed;
             
-            Logger.LogInfo(String.Format("Test case done : {4}  in {0:00}:{1:00}:{2:00} ({3:00} ticks)", 
-                timespan.Minutes, timespan.Seconds, timespan.Milliseconds, timespan.Ticks, testCase));
+            Logger.LogInfo(String.Format("\n\nTest case done : {4} ans: {5}  in {0:00}:{1:00}:{2:00} ({3:00} ticks\n\n)", 
+                timespan.Minutes, timespan.Seconds, timespan.Milliseconds, timespan.Ticks, testCase, ans));
             answers[testCase - 1] = ans;
 
             Logger.LogTrace("Exiting consume single");
@@ -206,7 +206,7 @@ namespace CodeJamUtils
             Logger.LogTrace("producerRun enter");
             foreach (string fn in fileNames)
             {
-                Logger.LogInfo("File {0}", fn);
+                Logger.LogInfo("File {}", fn);
                 
                 string inputFileName = fn;
 

@@ -85,6 +85,18 @@ namespace UnitTest.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à 999999 2
+        ///1 1
+        ///999989 999989
+        ///499999 1 -999998 4.
+        /// </summary>
+        internal static string TestPong89Small {
+            get {
+                return ResourceManager.GetString("TestPong89Small", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à 6 4
         ///1 2
         ///3 1

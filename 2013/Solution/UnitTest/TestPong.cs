@@ -71,27 +71,27 @@ namespace UnitTest
 
         //Manually step through the points, making sure that the result of calcToTarget is the first point
         //with a difference > target.
-        private void test(int offset, int toAdd, int height, long target)
+        private void test(int p0, int toAdd, int height, long target)
         {
-            PongMain.calcStats(offset, toAdd, height);
-            long targetPoint = PongMain.calcToTarget(offset, toAdd, height, target);
-            Logger.LogDebug("nPoints {}", targetPoint);
+            PongMain.calcStats(p0, toAdd, height);
+            long targetPoint = PongMain.calcToTarget(p0, toAdd, height, target);
+            Logger.LogDebug("Testing.  Should get > {} in nPoints {}", target, targetPoint);
 
             if (targetPoint < 0)
                 return;
 
             List<int> posList = new List<int>();
-            posList.Add(offset);
+            posList.Add( (int) PongMain.calcAdd(p0, toAdd, 0, height));
 
             bool found = false;
 
             for(int i = 1; i <= targetPoint; ++i)
             {
-                int ans = (int)PongMain.calcAdd(offset, toAdd, i, height);
+                int ans = (int)PongMain.calcAdd(p0, toAdd, i, height);
 
                 Logger.LogInfo("{} + n {} * {} = {} : {} [diff {}] with respect to height {}",
-                    offset,
-                    i, toAdd, offset + i * toAdd, ans, (ans - posList.GetLastValue()), height);
+                    p0,
+                    i, toAdd, p0 + i * toAdd, ans, (ans - posList.GetLastValue()), height);
 
                 int diff = Math.Abs(ans - posList.GetLastValue());
                 if (diff > target)
@@ -177,9 +177,24 @@ namespace UnitTest
         }
 
         [TestMethod]
+        public void TestTarget2()
+        {
+            long test = PongMain.calcToTarget(78721099883, 122325778320, 654327, 654320);
+           // long exp = PongMain.calcToTargetManual(78721099883, 122325778320, 654327, 654320);
+
+            Assert.AreEqual(109056, test);
+        }
+
+        [TestMethod]
         public void TestSmall4()
         {
             testInput(Properties.Resources.TestPong4small, "RIGHT 165026");
+        }
+
+        [TestMethod]
+        public void TestSmall89()
+        {
+            testInput(Properties.Resources.TestPong89Small, "RIGHT 249996");
         }
         
         [TestMethod]

@@ -130,6 +130,12 @@
 1 588891
 572631 1 72704 1</value>
   </data>
+  <data name="TestPong89Small" xml:space="preserve">
+    <value>999999 2
+1 1
+999989 999989
+499999 1 -999998 4</value>
+  </data>
   <data name="TestPongSample1" xml:space="preserve">
     <value>6 4
 1 2
