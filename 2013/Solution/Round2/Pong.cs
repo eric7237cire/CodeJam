@@ -44,7 +44,7 @@ namespace Round2.Pong
             {
                 pos = height - pos;
             }
-            Logger.LogDebug("CalcAdd {} + {} * {} = {} w.r.t height {}", p0, n, deltaP, pos, height);
+            //Logger.LogDebug("CalcAdd {} + {} * {} = {} w.r.t height {}", p0, n, deltaP, pos, height);
             return pos;            
         }
 
@@ -68,17 +68,37 @@ namespace Round2.Pong
 
             Logger.LogDebug("Max difference {}", maxDiff);
 
-            long fullLengths = (long) (height / deltaP);
-
-            NumType excess = (1+fullLengths) * deltaP - height;
-
-            Logger.LogDebug("Excess {}.  Pattern is +{} or -{}", excess, 2*excess, 2*excess);
         }
 
-        public static long calcToTarget(NumType p0, NumType deltaP, NumType height, NumType targetDiff, bool recurs = false)
+        
+        public static long calcToTargetManual(NumType p0, NumType deltaP, BigInteger height, NumType targetDiff )
         {
-            Logger.LogDebug("calcToTarget p0 {} + \u0394p {} * N  height: {}  target: {}  rec {}", 
-                p0, deltaP, height, targetDiff, recurs);
+            return calcToTargetManual(p0, deltaP, height, targetDiff, (long) (3 * height));
+        }
+        public static long calcToTargetManual(NumType p0, NumType deltaP, BigInteger height, NumType targetDiff, long limit )
+        {
+            NumType lastPoint = p0;
+            
+            for(int i = 1; i <= limit; ++i)
+            {
+                NumType p = calcAdd(p0, deltaP, i, height);
+                NumType diff = (p - lastPoint).Abs();
+
+                if (diff > targetDiff)
+                {
+                    return i;
+                }
+
+                lastPoint = p;
+            }
+
+            return -1;
+        }
+
+        public static long calcToTarget(NumType p0, NumType deltaP, BigInteger height, NumType targetDiff)
+        {
+            Logger.LogDebug("calcToTarget p0 {} + \u0394p {} * N  height: {}  target: {} ", 
+                p0, deltaP, height, targetDiff);
             long rem = (long)(deltaP / (2 * height));
             deltaP -= (rem * 2 * height);
 
@@ -88,10 +108,11 @@ namespace Round2.Pong
                 maxDiff = 2 * height - maxDiff ;
             }
 
-            Logger.LogDebug("Adjusted \u0394P {}", deltaP);
+            Logger.LogDebug("max diff {} \u0394P {}", maxDiff, deltaP);
 
             if (targetDiff >= maxDiff)
                 return -1;
+
 
             //Calculate p1 and p2
             NumType p1 = calcAdd(p0, deltaP, 1, height);
@@ -99,6 +120,20 @@ namespace Round2.Pong
 
             NumType d1 = (p1 - p0).Abs();
             NumType d2 = (p2 - p1).Abs();
+
+            NumType estimatedDeltaD = 2 * (height - maxDiff);
+
+            if (estimatedDeltaD.Equals(0))
+            {
+                return calcToTargetManual(p0, deltaP)
+            }
+
+            if ((height / estimatedDeltaD) < 10)
+            {
+                long ans = calcToTargetManual(p0, deltaP, height, targetDiff);
+                Preconditions.checkState(ans > 0);
+                return ans;
+            }
 
             Logger.LogDebug("P0 {} P1 {} P2 {}.  D1 {} D2 {}", p0, p1, p2, d1, d2);
                 
@@ -109,11 +144,12 @@ namespace Round2.Pong
                 return 2;
 
             NumType deltaD = (d2 - d1).Abs();
-                
+            long offset = 0;    
+
             //If descending, go to rebound
             if (d2 < d1)
             {
-                Preconditions.checkState(!recurs);
+                Preconditions.checkState(estimatedDeltaD.Equals(deltaD));
 
                 long pointsToZero = (long) (d2 / deltaD).ceil();
 
@@ -133,9 +169,33 @@ namespace Round2.Pong
                 Preconditions.checkState((dc-db).Equals(deltaD));
                 Preconditions.checkState((dd-dc).Equals(deltaD)); //now going positive
 
-                long pointsLeft = calcToTarget(pb, deltaP, height, targetDiff, true);
-                return pointsLeft + 2 + pointsToZero;
+                //long pointsLeft = calcToTarget(pb, deltaP, height, targetDiff, true);
+                offset = pointsToZero+2;
+                p0 = pb;
+                p1 = pc;
+                p2 = pd;
+                d2 = (p2 - p1).Abs();
+                //DeltaD is already à jour
+            } else if (d1.Equals(d2))
+            {
+                //in a rebound
+                
+                offset = 1;
+                p0 = p1;
+                p1 = p2;
+                p2 = calcAdd(p0, deltaP, 3, height);
+
+                d1 = (p1 - p0).Abs();
+                d2 = (p2 - p1).Abs();
+
+                deltaD = (d2 - d1).Abs();
+
+
+                Logger.LogDebug("After offset + 1: P0 {} P1 {} P2 {}.  D1 {} D2 {}", p0, p1, p2, d1, d2);
+                
             }
+
+            Preconditions.checkState(estimatedDeltaD.Equals(deltaD));
 
             NumType div = (targetDiff - d2) / deltaD;
             div = div.reduce();
@@ -155,9 +215,9 @@ namespace Round2.Pong
             NumType dy = (py - px).Abs();
             NumType dz = (pz - py).Abs();
 
-            Logger.LogDebug("PointsToGo {} Pw {} {} {} {}.  diffs {} {} {}", pointsToGo, pw, px, py, pz, dx, dy, dz);
-            Logger.LogDebug("Return {}", pointsToGo + 2);
-            return (long)pointsToGo + 2;
+            Logger.LogDebug("PointsToGo {} offset {} Pw {} {} {} {}.  diffs {} {} {}", pointsToGo, offset, pw, px, py, pz, dx, dy, dz);
+            Logger.LogDebug("Return {}", pointsToGo + 2 + offset);
+            return offset + (long)pointsToGo + 2;
         }
 
         public string processInput(PongInput input)

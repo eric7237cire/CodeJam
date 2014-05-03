@@ -12,13 +12,34 @@ using Utils;
 
 using Logger = Utils.LoggerFile;
 using System.Collections.Generic;
+using Utils.math;
+
+/*
+ *  2 questions, does the cycle hit the max diff without fail
+ *  
+ * 2: for extremely short cycles
+ * 
+ * delta-diff = 2 * (height - maxdiff) ?
+ * 
+ * 99, h: 100 -- delta diff = 2
+ * 
+ */
 
 namespace UnitTest
 {
     [TestClass]
     public class TestPong
     {
+        [TestMethod]
+        public void testFrac()
+        {
+            BigFraction deltaP = 0;
+            BigFraction height = 100;
 
+            long rem = (long)(deltaP / (2 * height));
+
+            Assert.IsTrue(new BigFraction(19, 1) >= new BigFraction(19, 1));
+        }
         [TestMethod]
         public void TestAdd2()
         {
@@ -33,7 +54,7 @@ namespace UnitTest
 
             Random r = new Random(3);
 
-            for(int i = 0; i < 5; ++i)
+            for(int i = 0; i < 500; ++i)
             {
                 test(r.Next(0,301), r.Next(1, 1000), 100, r.Next(1, 100)); 
             }
@@ -55,6 +76,10 @@ namespace UnitTest
             PongMain.calcStats(offset, toAdd, height);
             long targetPoint = PongMain.calcToTarget(offset, toAdd, height, target);
             Logger.LogDebug("nPoints {}", targetPoint);
+
+            if (targetPoint < 0)
+                return;
+
             List<int> posList = new List<int>();
             posList.Add(offset);
 
@@ -85,10 +110,10 @@ namespace UnitTest
         {
             int height = 100;
 
-            int toAddStart = 25;
-            int toAddEnd = toAddStart + 15;
+            int toAddStart = 690;
+            int toAddEnd = toAddStart + 0;
 
-            int offset = 0;
+            int offset = 19;
 
             for(int toAdd = toAddStart; toAdd <= toAddEnd; ++toAdd)
             {
@@ -98,10 +123,10 @@ namespace UnitTest
 
                 for(int pNum = 0; pNum <= 30; ++pNum)
                 {
-                    int ans = (int) PongMain.calcAdd(0, toAdd, pNum, height);
+                    int ans = (int) PongMain.calcAdd(offset, toAdd, pNum, height);
                     
-                    Logger.LogInfo("n {} * {} = {} : {} [diff {}] with respect to height {}", 
-                        pNum, toAdd, pNum*toAdd, ans, (ans - posList.GetLastValue()), height);
+                    Logger.LogInfo("{} + n {} * {} = {} : {} [diff {}] with respect to height {}", 
+                        offset, pNum, toAdd, offset+pNum*toAdd, ans, (ans - posList.GetLastValue()), height);
 
                     posList.Add(ans);
                 }

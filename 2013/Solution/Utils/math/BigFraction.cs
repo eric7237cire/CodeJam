@@ -1,10 +1,19 @@
-﻿using System;
+﻿#define LOGGING
+#define LOGGING_DEBUG
+#define LOGGING_INFO
+//#define LOGGING_TRACE
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+
+using Utils;
+
+using Logger = Utils.LoggerFile;
 
 namespace Utils.math
 {
@@ -24,7 +33,7 @@ namespace Utils.math
         }
         public BigFraction(BigInteger num, BigInteger den, bool reduce = true )
         {
-            
+            Logger.LogTrace("BigFraction cons {} / {}", num, den);
             if (den.IsZero)
             {
                 throw new ArgumentException("zero");
@@ -102,6 +111,10 @@ namespace Utils.math
         {
             return new BigFraction(new BigInteger(i), BigInteger.One);
         }
+        public static implicit operator BigFraction(BigInteger i)
+        {
+            return new BigFraction(i, BigInteger.One);
+        }
         #endregion
 
         #region operators from BigFraction
@@ -146,11 +159,11 @@ namespace Utils.math
         }
         public static bool operator <=(BigFraction lhs, BigFraction rhs)
         {
-            return lhs.CompareTo(rhs) < 0;
+            return lhs.CompareTo(rhs) <= 0;
         }
         public static bool operator >=(BigFraction lhs, BigFraction rhs)
         {
-            return lhs.CompareTo(rhs) > 0;
+            return lhs.CompareTo(rhs) >= 0;
         }
         #endregion
 
