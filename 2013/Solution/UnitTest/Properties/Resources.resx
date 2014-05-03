@@ -124,4 +124,22 @@
 138485 2 40763 1</value>
     <comment>5th test from D-small</comment>
   </data>
+  <data name="TestPong4small" xml:space="preserve">
+    <value>654329 4
+81790 755459
+1 588891
+572631 1 72704 1</value>
+  </data>
+  <data name="TestPongSample1" xml:space="preserve">
+    <value>6 4
+1 2
+3 1
+5 1 4 8</value>
+  </data>
+  <data name="TestPongSample4" xml:space="preserve">
+    <value>12 2
+1 2
+10 2
+3 1 13 4</value>
+  </data>
 </root>

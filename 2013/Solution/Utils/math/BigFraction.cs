@@ -100,6 +100,19 @@ namespace Utils.math
             }
         }
 
+        /// <summary>
+        /// First integer <= to the fraction
+        /// </summary>
+        /// <returns></returns>
+        public BigInteger floor()
+        {
+            BigInteger remainder;
+            BigInteger ans = BigInteger.DivRem(numerator, denominator, out remainder);
+
+            return ans;
+        }
+
+
         #endregion
 
         #region operators to BigFraction
@@ -148,6 +161,10 @@ namespace Utils.math
         public static BigFraction operator *(BigFraction x, long num)
         {
             return x.Multiply(num);
+        }
+        public static BigFraction operator *(BigFraction lhs, BigFraction rhs)
+        {
+            return lhs.Multiply(rhs);
         }
         public static bool operator< (BigFraction lhs, BigFraction rhs)
         {

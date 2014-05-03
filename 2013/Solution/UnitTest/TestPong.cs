@@ -132,6 +132,55 @@ namespace UnitTest
                 }
             }
         }
+
+        private void testInput(string inputTxt, string expectedAns)
+        {
+            Scanner scanner = new Scanner(new StringReader(inputTxt));
+
+            PongMain pong = new PongMain();
+
+            PongInput input = pong.createInput(scanner);
+
+            string ans = pong.processInput(input);
+
+            Assert.AreEqual(expectedAns, ans);
+
+        }
+
+        
+        [TestMethod]
+        public void TestSample()
+        {
+            testInput(Properties.Resources.TestPongSample1, "LEFT 2");
+
+            testInput(Properties.Resources.TestPongSample4, "RIGHT 11");
+        }
+
+        [TestMethod]
+        public void TestCalc()
+        {
+            //calcToTarget p0 40901485 + Δp 92205906 * N  height: 142513  target: 142506 
+            long man = PongMain.calcToTargetManual(40901485, 92205906, 142513, 142506);
+
+            long man2 = PongMain.calcToTarget(40901485, 92205906, 142513, 142506);
+
+            Assert.AreEqual(man, man2);
+        }
+
+        [TestMethod]
+        public void TestTarget()
+        {
+            //24627962071 + Δp 47571681280 * N  height: 654329  target: 654320
+            long test = PongMain.calcToTarget(24627962071, 47571681280, 654329, 654320);
+
+            Assert.AreEqual(46739, test);
+        }
+
+        [TestMethod]
+        public void TestSmall4()
+        {
+            testInput(Properties.Resources.TestPong4small, "RIGHT 165026");
+        }
         
         [TestMethod]
         public void TestSmall()
