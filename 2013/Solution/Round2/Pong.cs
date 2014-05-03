@@ -125,7 +125,7 @@ namespace Round2.Pong
 
             if (estimatedDeltaD.Equals(0))
             {
-                return calcToTargetManual(p0, deltaP)
+                return calcToTargetManual(p0, deltaP, height, targetDiff, 3);
             }
 
             if ((height / estimatedDeltaD) < 10)
