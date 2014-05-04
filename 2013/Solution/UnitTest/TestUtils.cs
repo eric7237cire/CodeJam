@@ -13,6 +13,7 @@ using Utils;
 using Logger = Utils.LoggerFile;
 using Round2;
 using Round2.ErdosNS;
+using Utils.math;
 
 namespace UnitTest
 {
@@ -26,6 +27,13 @@ namespace UnitTest
         {
             Logger.CurrentDomain_ProcessExit(null, null);
         }
+
+        [TestMethod]
+        public void testToStringFrac()
+        {
+            Assert.AreEqual("0", ((BigFraction)0).ToString());
+        }
+
 
         [TestMethod]
         public void testDIS()

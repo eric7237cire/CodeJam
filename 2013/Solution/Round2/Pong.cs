@@ -1,7 +1,7 @@
 ﻿#define LOGGING
 #define LOGGING_DEBUG
 #define LOGGING_INFO
-//#define LOGGING_TRACE
+#define LOGGING_TRACE
 #define FRAC
 using CodeJamUtils;
 using System;
@@ -118,9 +118,12 @@ namespace Round2.Pong
         {
             Logger.LogTrace("calcToTarget p0 {} + \u0394p {} * N  height: {}  target: {} ", 
                 p0, deltaP, height, targetDiff);
+
+            //Change in position of 2h is a no-op, so reduce ΔP by that amount 
             BigInteger rem = (deltaP / (2 * height)).floor();
             deltaP -= (rem * 2 * height);
 
+            //Anything above H bounces off, so H+1 ==> H-1  H+n ==> H-n
             NumType maxDiff = deltaP;
             if (maxDiff > height)
             {
@@ -135,22 +138,20 @@ namespace Round2.Pong
                 return -1;
             }
 
-            //Calculate p1 and p2
-            
             NumType[] points;
             NumType[] diffs;
 
             calcPointsAndDiff(p0, deltaP, height, 0, 3, out points, out diffs);
 
-            NumType estimatedDeltaD = 2 * (height - maxDiff);
+            NumType calculatedDeltaD = 2 * (height - maxDiff);
 
-            if (estimatedDeltaD.Equals(0))
+            if (calculatedDeltaD.Equals(0))
             {
                 Logger.LogDebug("deltaD % height = 0, using manual");
                 return calcToTargetManual(p0, deltaP, height, targetDiff, 3);
             }
 
-            if ((height / estimatedDeltaD) < 10)
+            if ((height / calculatedDeltaD) < 10)
             {
                 Logger.LogDebug("using calc to target manual");
                 long ans = calcToTargetManual(p0, deltaP, height, targetDiff);
@@ -158,7 +159,9 @@ namespace Round2.Pong
                 return ans;
             }
 
-            Logger.LogTrace("Points {} Diffs {}", points.ToCommaString(), diffs.ToCommaString());
+            Logger.LogTrace("DeltaD calculated = {}.  Initial Points {} Diffs {}", 
+                calculatedDeltaD,
+                points.ToCommaString(), diffs.Skip(1).ToCommaString());
                 
             if (diffs[1] > targetDiff)
                 return 1;
@@ -169,9 +172,9 @@ namespace Round2.Pong
             NumType deltaD = (diffs[2] - diffs[1]).Abs();
             long offset = 0;
 
-            if (!deltaD.Equals(estimatedDeltaD))   //diffs[1].Equals(diffs[2]))
+            if (!deltaD.Equals(calculatedDeltaD))   //diffs[1].Equals(diffs[2]))
             {
-                //in a rebound
+                //The 2 diffs during the rebound should = estimatedDelta
 
                 offset = 1;
 
@@ -188,26 +191,23 @@ namespace Round2.Pong
             //If descending, go to rebound
             if (diffs[2] < diffs[1])
             {
-                Preconditions.checkState(estimatedDeltaD.Equals(deltaD));
+                Preconditions.checkState(calculatedDeltaD.Equals(deltaD));
 
                 long pointsToZero = (long)(diffs[2] / deltaD).ceil();
 
-                NumType pa = calcAdd(p0, deltaP, 1+pointsToZero, height);
-                NumType pb = calcAdd(p0, deltaP, 2+pointsToZero, height);
-                NumType pc = calcAdd(p0, deltaP, 3 + pointsToZero, height);
-                NumType pd = calcAdd(p0, deltaP, 4 + pointsToZero, height);
-                Logger.LogTrace("Points to zero ceil( {} / {} ) = {}.  Point values: {} {} {} {}", 
-                    diffs[2], deltaD, pointsToZero, pa, pb, pc,pd);
+                NumType[] pointsAtZero;
+                NumType[] diffsAtZero;
 
-                NumType db = (pb - pa).Abs();
-                NumType dc = (pc - pb).Abs();
-                NumType dd = (pd - pc).Abs();
+                calcPointsAndDiff(p0, deltaP, height, 1 + pointsToZero, 4, out pointsAtZero, out diffsAtZero);
 
-                Logger.LogTrace("Diffs {} {} {}", db, dc, dd);
+                
+                Logger.LogTrace("Points to zero ceil( {} / {} ) = {}.  Point values: {} Diffs {}", 
+                    diffs[2], deltaD, pointsToZero, pointsAtZero.ToCommaString(), diffsAtZero.Skip(1).ToCommaString());
 
-                Preconditions.checkState(db - deltaD <= 0); 
-                Preconditions.checkState((dc-db).Equals(deltaD));
-                Preconditions.checkState((dd-dc).Equals(deltaD)); //now going positive
+                
+                Preconditions.checkState(diffsAtZero[1] - deltaD <= 0);
+                Preconditions.checkState((diffsAtZero[2] - diffsAtZero[1]).Equals(deltaD));
+                Preconditions.checkState((diffsAtZero[3] - diffsAtZero[2]).Equals(deltaD)); //now going positive
 
                 //long pointsLeft = calcToTarget(pb, deltaP, height, targetDiff, true);
                 offset += pointsToZero+2;
@@ -219,7 +219,7 @@ namespace Round2.Pong
             }
             
 
-            Preconditions.checkState(estimatedDeltaD.Equals(deltaD));
+            Preconditions.checkState(calculatedDeltaD.Equals(deltaD));
 
             NumType div = (targetDiff - diffs[2]) / deltaD;
             div = div.reduce();
@@ -230,16 +230,12 @@ namespace Round2.Pong
                 pointsToGo += 1;
             }
 
-            NumType pw = calcAdd(p0, deltaP, 1 + (long)pointsToGo, height);
-            NumType px = calcAdd(p0, deltaP, 2 + (long)pointsToGo, height);
-            NumType py = calcAdd(p0, deltaP, 3 + (long)pointsToGo, height);
-            NumType pz = calcAdd(p0, deltaP, 4 + (long)pointsToGo, height);
+            NumType[] finalPoints;
+            NumType[] finalDiffs;
 
-            NumType dx = (px - pw).Abs();
-            NumType dy = (py - px).Abs();
-            NumType dz = (pz - py).Abs();
-
-            Logger.LogTrace("PointsToGo {} offset {} Pw {} {} {} {}.  diffs {} {} {}", pointsToGo, offset, pw, px, py, pz, dx, dy, dz);
+            calcPointsAndDiff(p0, deltaP, height, offset + pointsToGo, 5, out finalPoints, out finalDiffs);
+            
+            Logger.LogTrace("PointsToGo {} offset {} Final Points {}.  Final diffs {}", pointsToGo, offset, finalPoints.ToCommaString(), finalDiffs.Skip(1).ToCommaString() );
             Logger.LogTrace("Return {}", pointsToGo + 2 + offset);
             return offset + (long)pointsToGo + 2;
         }
@@ -317,22 +313,30 @@ namespace Round2.Pong
 
                     int firstPoint = 2 * playerNum + 1 - team;
                     NumType firstPointLoc = p1.Y + yDif * firstPoint;
-                    
+
+                    Logger.LogTrace("\n\nCalculate player {} team {}:  firstPoint index {} location {}", playerNum, team, firstPoint, firstPointLoc);
                     long pointFail = calcToTarget(firstPointLoc, diff, input.heightField, disPossible);
 
                     //long pointFailCheck = calcToTargetManual(firstPointLoc, diff, input.heightField, disPossible);
 
                     Logger.LogTrace("\nPlayer {} team {} first point {} pointFail {}", playerNum, team, firstPoint, pointFail);
 
-                    Logger.LogTrace("fails points {} {} {}", firstPoint + 1 * 2 * teamSize[team],
-                        firstPoint + 2 * 2 * teamSize[team], firstPoint + 3 * 2 * teamSize[team]);
+                    Logger.LogTrace("fails points {}", new int[]{1,2,3}.Select( (i) => firstPoint + i * 2 * teamSize[team]).ToCommaString());
                     if (pointFail != -1)
                     {
                         pointFail = firstPoint + pointFail * 2 * teamSize[team];
                         firstPointFail = Math.Min(firstPointFail, pointFail);
 
-                        Logger.LogTrace("Point fail real {}  first point fail {}", pointFail, firstPointFail);
                         
+                        NumType[] failValues;
+                        NumType[] failDiffs;
+
+                        calcPointsAndDiff(p1.Y, yDif, input.heightField, pointFail - 5, 10, out failValues, out failDiffs);
+                        //calcPointsAndDiff(p1.Y, yDif, input.heightField, pointFail - 5, 10, out failValues, out failDiffs);
+
+                        Logger.LogTrace("Point fail real {}  minimum overall point fail {}.  \nValues {}.  \nDiffs {}", pointFail.ToString("0,0"), firstPointFail.ToString("0,0"),
+                            failValues.ToCommaString(), failDiffs.Skip(1).ToCommaString());
+
                     }
 
                     

@@ -105,12 +105,13 @@ namespace UnitTest
             Assert.AreEqual(true, found);
         }
 
+        //Just to see output
         [TestMethod]
-        public void TestAdd()
+        public void ShowOutput()
         {
             int height = 100;
 
-            int toAddStart = 690;
+            int toAddStart = 97;
             int toAddEnd = toAddStart + 0;
 
             int offset = 19;
@@ -133,6 +134,36 @@ namespace UnitTest
             }
         }
 
+        [TestMethod]
+        public void ShowChangeOffset()
+        {
+            int height = 100;
+
+            int toAdd = 96;
+
+            int offsetStart = 0;
+            int offsetEnd = 299;
+
+            List<int> posList = new List<int>();
+            posList.Add(0);
+            for(int i = 0; i < 110; ++i)
+            {
+                int ans = (int)PongMain.calcAdd(0, toAdd, i, height);
+                    Logger.LogInfo("{} + n {} * {} = {} : {} [diff {}] with respect to height {}",
+                        0, i, toAdd, i * toAdd, ans, (ans - posList.GetLastValue()), height);
+
+                    posList.Add(ans);
+            }
+
+            for (int offset = offsetStart; offset <= offsetEnd; ++offset)
+            {
+                Logger.LogInfo("\n\nOffset {}", offset);
+                int pointsToDiff = (int) PongMain.calcToTarget(offset, toAdd, height, toAdd-1);
+                    
+                Logger.LogInfo("Offset {}.  Points to target diff {}\n", offset, pointsToDiff);
+
+            }
+        }
         private void testInput(string inputTxt, string expectedAns)
         {
             Scanner scanner = new Scanner(new StringReader(inputTxt));
@@ -157,7 +188,7 @@ namespace UnitTest
         }
 
         [TestMethod]
-        public void TestCalc()
+        public void TestCalcToTarget()
         {
             //calcToTarget p0 40901485 + Δp 92205906 * N  height: 142513  target: 142506 
             long man = PongMain.calcToTargetManual(40901485, 92205906, 142513, 142506);
@@ -168,7 +199,7 @@ namespace UnitTest
         }
 
         [TestMethod]
-        public void TestTarget()
+        public void TestCalcToTarget2()
         {
             //24627962071 + Δp 47571681280 * N  height: 654329  target: 654320
             long test = PongMain.calcToTarget(24627962071, 47571681280, 654329, 654320);
@@ -177,12 +208,24 @@ namespace UnitTest
         }
 
         [TestMethod]
-        public void TestTarget2()
+        public void TestCalcToTarget3()
         {
             long test = PongMain.calcToTarget(78721099883, 122325778320, 654327, 654320);
            // long exp = PongMain.calcToTargetManual(78721099883, 122325778320, 654327, 654320);
 
             Assert.AreEqual(109056, test);
+        }
+
+        [TestMethod]
+        public void TestCalcToTarget4()
+        {
+            Assert.AreEqual(6, PongMain.calcToTargetManual(153, 97, 100, 22));
+
+            Assert.AreEqual(7, PongMain.calcToTarget(56, 97, 100, 22));
+            
+            Assert.AreEqual(6, PongMain.calcToTarget(153, 97, 100, 22));
+            Assert.AreEqual(5, PongMain.calcToTarget(50, 97, 100, 22));
+            Assert.AreEqual(4, PongMain.calcToTarget(147, 97, 100, 22));
         }
 
         [TestMethod]
