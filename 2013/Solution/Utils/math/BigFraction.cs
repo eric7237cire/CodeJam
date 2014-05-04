@@ -135,6 +135,10 @@ namespace Utils.math
         {
             return (double)f.numerator / (double)f.denominator;
         }
+        public static explicit operator BigInteger(BigFraction f)
+        {
+            return BigInteger.Divide(f.numerator,f.denominator);
+        }
         #endregion
 
         #region operators

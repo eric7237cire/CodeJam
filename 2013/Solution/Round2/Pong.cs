@@ -114,6 +114,44 @@ namespace Round2.Pong
             return -1;
         }
 
+        public static long calcToTargetUsingOffset(NumType p0, NumType deltaP, BigInteger height, NumType targetDiff)
+        {
+            Logger.LogTrace("calcToTarget p0 {} + \u0394p {} * N  height: {}  target: {} ",
+                p0, deltaP, height, targetDiff);
+
+            //Change in position of 2h is a no-op, so reduce ΔP by that amount 
+            BigInteger rem = (deltaP / (2 * height)).floor();
+            deltaP -= (rem * 2 * height);
+
+            //Anything above H bounces off, so H+1 ==> H-1  H+n ==> H-n
+            NumType maxDiff = deltaP;
+            if (maxDiff > height)
+            {
+                maxDiff = 2 * height - maxDiff;
+            }
+
+            Logger.LogTrace("max diff {} \u0394P {}", maxDiff, deltaP);
+
+            if (targetDiff >= maxDiff)
+            {
+                Logger.LogTrace("targetDiff {} >= maxDiff {}", targetDiff, maxDiff);
+                return -1;
+            }
+
+
+            NumType offSetGroupSize = maxDiff - targetDiff;
+
+            //Initial group of target = 1
+            /*
+             * offset [1..] [1+ogs...] [1+2*ogs...]
+             */
+            BigInteger offsetGroupIndex = ((BigInteger) p0 ) % (BigInteger) offSetGroupSize;
+            
+
+            return 3;
+
+        }
+
         public static long calcToTarget(NumType p0, NumType deltaP, BigInteger height, NumType targetDiff)
         {
             Logger.LogTrace("calcToTarget p0 {} + \u0394p {} * N  height: {}  target: {} ", 

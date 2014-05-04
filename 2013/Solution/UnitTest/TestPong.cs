@@ -137,12 +137,26 @@ namespace UnitTest
         [TestMethod]
         public void ShowChangeOffset()
         {
+            
             int height = 100;
 
             int toAdd = 96;
 
             int offsetStart = 0;
             int offsetEnd = 299;
+            int target = toAdd - 1;
+            
+
+           // 301537 + Δp 92205906 * N  height: 142513  target: 142506 
+
+            /*
+            int height = 142513;
+
+            int toAdd = 142508;
+
+            int offsetStart = height - 20;
+            int offsetEnd = height + 20;
+            int target = 142506;*/
 
             List<int> posList = new List<int>();
             posList.Add(0);
@@ -158,7 +172,7 @@ namespace UnitTest
             for (int offset = offsetStart; offset <= offsetEnd; ++offset)
             {
                 Logger.LogInfo("\n\nOffset {}", offset);
-                int pointsToDiff = (int) PongMain.calcToTarget(offset, toAdd, height, toAdd-1);
+                int pointsToDiff = (int) PongMain.calcToTarget(offset, toAdd, height, target);
                     
                 Logger.LogInfo("Offset {}.  Points to target diff {}\n", offset, pointsToDiff);
 
