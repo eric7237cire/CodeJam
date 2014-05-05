@@ -41,22 +41,22 @@ namespace UnitTest
             Assert.IsTrue(new BigFraction(19, 1) >= new BigFraction(19, 1));
         }
         [TestMethod]
-        public void TestAdd2()
+        public void TestCalcToTargetUsingRand()
         {
             for (int target = 1; target <= 5; ++target )
-                test(49, 99, 100, target);
+                testCalcToTarget(49, 99, 100, target);
 
 
            // test(16, 85, 100, 150);
-            test(99, 99, 100, target:98);
+            testCalcToTarget(99, 99, 100, target:98);
 
-            test(47, 99, 100, 30);
+            testCalcToTarget(47, 99, 100, 30);
 
             Random r = new Random(3);
 
             for(int i = 0; i < 500; ++i)
             {
-                test(r.Next(0,301), r.Next(1, 1000), 100, r.Next(1, 100)); 
+                testCalcToTarget(r.Next(0,301), r.Next(1, 1000), 100, r.Next(1, 100)); 
             }
 
            // test(0, 135, 100, 50);
@@ -69,9 +69,26 @@ namespace UnitTest
             //test(0, 135, 100, 10);
         }
 
+        [TestMethod]
+        public void TestCalcToTargetUsingOffset()
+        {
+            int[] toAddToTest = new int[] {97};
+            Random r = new Random(3);
+
+            for(int offset = 0; offset <= 400; ++offset)
+            {
+                foreach(int toAdd in toAddToTest)
+                {
+                    testCalcToTargetUsingOffset(offset, toAdd, 100, r.Next(0, toAdd + 1));
+                }
+            }
+            
+        }
+        
+
         //Manually step through the points, making sure that the result of calcToTarget is the first point
         //with a difference > target.
-        private void test(int p0, int toAdd, int height, long target)
+        private void testCalcToTarget(int p0, int toAdd, int height, long target)
         {
             PongMain.calcStats(p0, toAdd, height);
             long targetPoint = PongMain.calcToTarget(p0, toAdd, height, target);
@@ -86,6 +103,39 @@ namespace UnitTest
             bool found = false;
 
             for(int i = 1; i <= targetPoint; ++i)
+            {
+                int ans = (int)PongMain.calcAdd(p0, toAdd, i, height);
+
+                Logger.LogInfo("{} + n {} * {} = {} : {} [diff {}] with respect to height {}",
+                    p0,
+                    i, toAdd, p0 + i * toAdd, ans, (ans - posList.GetLastValue()), height);
+
+                int diff = Math.Abs(ans - posList.GetLastValue());
+                if (diff > target)
+                {
+                    Assert.AreEqual(targetPoint, i);
+                    found = true;
+                }
+                posList.Add(ans);
+            }
+
+            Assert.AreEqual(true, found);
+        }
+
+        private void testCalcToTargetUsingOffset(int p0, int toAdd, int height, long target)
+        {
+            long targetPoint = (long) PongMain.calcToTargetUsingOffset(p0, toAdd, height, target);
+            Logger.LogDebug("Testing.  Should get > {} in nPoints {}", target, targetPoint);
+
+            if (targetPoint < 0)
+                return;
+
+            List<int> posList = new List<int>();
+            posList.Add((int)PongMain.calcAdd(p0, toAdd, 0, height));
+
+            bool found = false;
+
+            for (int i = 1; i <= targetPoint; ++i)
             {
                 int ans = (int)PongMain.calcAdd(p0, toAdd, i, height);
 
@@ -140,7 +190,7 @@ namespace UnitTest
             
             int height = 100;
 
-            int toAdd = 96;
+            int toAdd = 97;
 
             int offsetStart = 0;
             int offsetEnd = 299;
@@ -160,7 +210,7 @@ namespace UnitTest
 
             List<int> posList = new List<int>();
             posList.Add(0);
-            for(int i = 0; i < 110; ++i)
+            for(int i = 0; i < 210; ++i)
             {
                 int ans = (int)PongMain.calcAdd(0, toAdd, i, height);
                     Logger.LogInfo("{} + n {} * {} = {} : {} [diff {}] with respect to height {}",

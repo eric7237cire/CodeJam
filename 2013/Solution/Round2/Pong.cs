@@ -114,11 +114,11 @@ namespace Round2.Pong
             return -1;
         }
 
-        public static long calcToTargetUsingOffset(NumType p0, NumType deltaP, BigInteger height, NumType targetDiff)
+        public static BigInteger calcToTargetUsingOffset(NumType p0, NumType deltaP, BigInteger height, NumType targetDiff)
         {
-            Logger.LogTrace("calcToTarget p0 {} + \u0394p {} * N  height: {}  target: {} ",
-                p0, deltaP, height, targetDiff);
-
+            Logger.LogTrace("\ncalcToTargetUsingOffset \u0394p {} * N  height: {}  target: {} ",
+                deltaP, height, targetDiff);
+            p0 = 3;
             //Change in position of 2h is a no-op, so reduce ΔP by that amount 
             BigInteger rem = (deltaP / (2 * height)).floor();
             deltaP -= (rem * 2 * height);
@@ -139,16 +139,26 @@ namespace Round2.Pong
             }
 
 
-            NumType offSetGroupSize = maxDiff - targetDiff;
+            NumType offSetGroupSize = height - maxDiff;
 
             //Initial group of target = 1
             /*
              * offset [1..] [1+ogs...] [1+2*ogs...]
              */
-            BigInteger offsetGroupIndex = ((BigInteger) p0 ) % (BigInteger) offSetGroupSize;
+            BigInteger offsetGroupIndex = BigInteger.Divide((BigInteger)p0 - 1, (BigInteger)offSetGroupSize);
             
+            //Adjust
+            BigInteger adjusted = offsetGroupIndex - (maxDiff - targetDiff).floor();
 
-            return 3;
+            Logger.LogTrace("Offset group size {}.  Index = ({} - 1) / {} = {}.  Adjusting for max diff {}, target diff {} = {}\n ",
+                offSetGroupSize, p0, offSetGroupSize, offsetGroupIndex, 
+                maxDiff, targetDiff,
+                adjusted);
+
+            if (adjusted < BigInteger.One)
+                adjusted = BigInteger.One;
+
+            return adjusted;
 
         }
 

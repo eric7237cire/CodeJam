@@ -34,7 +34,7 @@ namespace Round2
            // list.Add("D-small-practice.in");
 
             string dir = @"C:\codejam\CodeJam\2013\Solution\Round2\";
-            dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round2\";
+           // dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round2\";
 
             list = list.ConvertAll(s => dir + s);
 

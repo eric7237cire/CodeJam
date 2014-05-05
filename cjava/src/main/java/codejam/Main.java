@@ -1343,7 +1343,7 @@ public class Main
         //TODO a bit slow
         
         //Angle reflection
-        //  codejam.y2012.round_qual.hall_of_mirrors.Main m = new codejam.y2012.round_qual.hall_of_mirrors.Main();
+        codejam.y2012.round_qual.hall_of_mirrors.Main m = new codejam.y2012.round_qual.hall_of_mirrors.Main();
 
     }
 

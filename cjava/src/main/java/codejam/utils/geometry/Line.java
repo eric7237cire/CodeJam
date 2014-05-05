@@ -243,12 +243,16 @@ public class Line {
         if (this.type != Line.Type.NORMAL || line2.type != Line.Type.NORMAL) {
             Point p3 = line2.p1;
             Point p4 = line2.p2;
+            
+            //(p1 x p2) * x ( 
+            
             double numX = (p1.x()*p2.y() - p1.y()*p2.x()) * (p3.x()-p4.x()) - 
                     (p1.x() - p2.x()) * (p3.x()*p4.y() - p3.y()*p4.x());
             
             double numY =(p1.x()*p2.y() - p1.y()*p2.x()) * (p3.y()-p4.y()) - 
                     (p1.y() - p2.y()) * (p3.x()*p4.y() - p3.y()*p4.x());
             
+            //p1
             double denom = (p1.x()-p2.x())*(p3.y()-p4.y()) - (p1.y()-p2.y())*(p3.x()-p4.x());
             
             if (denom == 0) {

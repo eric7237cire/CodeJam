@@ -61,8 +61,7 @@ namespace Utils
             msg = replacePlaceholders(msg, args);
             string msgf = String.Format(msg, args);
 
-            LoggerFile.Instance.writer.WriteLine(msgf);
-            LoggerFile.Instance.writer.Flush();
+            Log(msgf);
         }
 
         [Conditional("LOGGING_INFO")]
