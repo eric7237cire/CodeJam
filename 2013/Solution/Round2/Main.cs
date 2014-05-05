@@ -35,10 +35,11 @@ namespace Round2
 
             string dir = @"C:\codejam\CodeJam\2013\Solution\Round2\";
            // dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round2\";
+		dir = @"/home/ent/mono/CodeJam/2013/Solution/Round2/";
 
             list = list.ConvertAll(s => dir + s);
 
-            CjUtils.RunMainMulti(list, main, main.createInput, null); //Round1C.Properties.Resources.ResourceManager
+            CjUtils.RunMain(list, main, main.createInput, null); //Round1C.Properties.Resources.ResourceManager
         }
     }
 }

@@ -162,6 +162,10 @@ namespace Utils.math
         {
             return x.Multiply(i);
         }
+	public static BigFraction operator %(BigFraction lhs, long i)
+        {
+            return lhs - lhs.Divide(i).floor() * i;
+        }
         public static BigFraction operator *(BigFraction x, long num)
         {
             return x.Multiply(num);
@@ -263,7 +267,11 @@ namespace Utils.math
             if (denominator.Equals(BigInteger.One))
                 return numerator.ToString();
 
+#if mono
+return "{0} / {1}".FormatThis(numerator.ToString(), denominator.ToString() );
+#else
             return "{0} / {1}".FormatThis(numerator.ToString("0,0", new CultureInfo("en-US")), denominator.ToString("0,0", new CultureInfo("en-US")));
+#endif
         }
         #endregion
 

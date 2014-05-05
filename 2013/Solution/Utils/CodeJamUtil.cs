@@ -166,7 +166,7 @@ namespace CodeJamUtils
                     for (int i = 0; i < nConsumerThreads; ++i)
                     {
                         Logger.Log("Building thread " + i);
-                        consumeTasks[i] = Task.Run(() => producerConsume(queue, answers));
+                       // consumeTasks[i] = Task.Run(() => producerConsume(queue, answers));
                     }
 
                     //This thread can also now help conuming
@@ -253,7 +253,7 @@ namespace CodeJamUtils
                         
                         //Avoid binding to tc which gets incremented beyond the limit
                         int tcLocal = tc;
-                        consumeTasks[tc-1] = Task.Run(() => consumeSingle(input, tcLocal, answers));
+                        //consumeTasks[tc-1] = Task.Run(() => consumeSingle(input, tcLocal, answers));
                     }
                                         
                     timer.Stop();
