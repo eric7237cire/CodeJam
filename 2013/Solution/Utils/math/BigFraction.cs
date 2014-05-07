@@ -158,6 +158,10 @@ namespace Utils.math
         {
             return lhs.Subtract(rhs);
         }
+        public static BigFraction operator -(BigFraction lhs)
+        {
+            return new BigFraction(-lhs.numerator, lhs.denominator);
+        }
         public static BigFraction operator *(long i, BigFraction x)
         {
             return x.Multiply(i);

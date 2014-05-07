@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Resources;
 using System.Text;
@@ -398,6 +399,18 @@ namespace CodeJamUtils
             try
             {
                 return int.Parse(currentWord);
+            }
+            finally
+            {
+                readNextWord();
+            }
+        }
+        
+        public BigInteger nextBigInteger()
+        {
+            try
+            {
+                return BigInteger.Parse(currentWord);
             }
             finally
             {

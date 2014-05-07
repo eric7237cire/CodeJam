@@ -450,11 +450,287 @@ public void ShowOutput()
 			return firstPlayerFailForwards;
         }
         
+        public static int findCycle(NumType p0, NumType deltaP, BigInteger mod, out NumType diff)
+        {
+        	Func<int,NumType> funcCalcP = (i) => {return (p0 + deltaP * i) % mod;};
+        	
+        	for(int cycleLength = 1; cycleLength <= 20; ++cycleLength)
+        	{
+        		diff = funcCalcP(cycleLength) - funcCalcP(0);
+        		bool cycleOK = true;
+        		
+        		for(int i = 0; i < cycleLength && cycleOK; ++i)
+        		{
+        			NumType pLast = funcCalcP(i);
+        			
+        			for(int n = 1; n <= 3; ++n)
+        			{
+        				NumType p = funcCalcP(i+n*cycleLength);
+        				NumType diffCheck = p - pLast;
+        				
+        				if (diff != diffCheck)
+        				{
+        					cycleOK = false;
+        					
+        					Logger.LogTrace("cycle len {}.  pts {} {}  diff {} {}",
+        						cycleLength, i+(n-1)*cycleLength, i+n*cycleLength,
+        						diff, diffCheck);
+        					break;
+        				}        					
+        				
+        				pLast = p;
+        			}
+        			
+        		}
+        		
+        		if (cycleOK)
+        		{
+        			return cycleLength;	
+        		}
+        		
+        	}
+        	
+        	return -1;
+        	
+        }
         
+        public static BigInteger accel(NumType p0, NumType deltaP, 
+        	BigInteger mod, int cycleLength, 
+        	NumType cycleDiff, NumType lower, NumType upper)
+        {
+        	Logger.LogTrace("Cycle length {} diff {}", cycleLength, cycleDiff);
+        	Func<int,NumType> funcCalcP = (i) => {return (p0 + deltaP * i) % mod;};
+        	
+        	BigInteger minJump = 0;
+        	if (cycleDiff < 0)
+        	{
+        		for(int i = 0; i < cycleLength; ++i)
+        		{
+        			NumType p = funcCalcP(i);
+        			BigInteger jump = ( (p - lower) / -cycleDiff).floor();
+        			if (i==0 || jump < minJump)
+        				minJump = jump;
+        		}
+        	} else if (cycleDiff > 0)
+        	{
+        		for(int i = 0; i < cycleLength; ++i)
+        		{
+        			NumType p = funcCalcP(i) % (mod/2);
+        			Logger.LogTrace("Point {} value {} upper {}", i, p, upper);
+        			BigInteger jump = ( (upper - p) / cycleDiff).floor();
+        			if (i==0 || jump < minJump)
+        			{
+        				minJump = jump;
+        				Logger.LogTrace("Minimum jump from point {}, index {}",
+        					p, i);
+        			}
+        		}
+        	}	
+        	
+			return minJump * cycleLength;
+        		
+        }
 
         public string processInput(PongInput input)
         {
-        	ShowOutput();
+        	//ShowOutput();
+        	//return "hoetnuh";
+           // processInputManual(input);
+
+            bool switchTeams = false;
+
+            if (input.VX < 0)
+            {
+                input.VX = -input.VX;
+                CjUtils.swap(ref input.numRightTeam, ref input.numLeftTeam);
+                CjUtils.swap(ref input.speedLeftTeam, ref input.speedRightTeam);
+                switchTeams = true;
+                input.X = input.widthField - input.X;
+            }
+
+            Line teamLeft = Line.createFromCoords(0, 0, 0, 1);
+            Line teamRight = Line.createFromCoords(input.widthField, 0, input.widthField, 1);
+
+            Line initialVector = Line.createFromCoords(input.X, input.Y, input.X + input.VX, input.Y + input.VY);
+
+            var p1  = initialVector.intersection(teamRight);
+
+            Line rebound = Line.createFromPoints(p1, p1.Add(new Point(-input.VX, input.VY)));
+
+            var p2 = rebound.intersection(teamLeft);
+            Logger.LogInfo("Initial point {}, {} direction {}, {}", input.X, input.Y, input.VX, input.VY);
+            Logger.LogInfo("First intersection {} 2nd {}", p1, p2);
+
+            NumType yDif = p2.Y.Subtract( p1.Y );
+
+            if (yDif < 0)
+            {
+                yDif += input.heightField;
+            }
+
+#if FRAC
+            BigFraction t0 = new BigFraction( input.widthField - input.X, input.VX );
+            BigFraction t1 = new BigFraction(input.widthField, input.VX);
+#else
+            NumType t0 = (input.widthField - input.X) / (double) input.VX;
+            NumType t1 = input.widthField / (double) input.VX;
+#endif
+            
+          //  List<Tuple<NumType, NumType>>[] teamPlayerPos = new List<Tuple<NumType,NumType>>[2]; //time, loc pair
+            //teamPlayerPos[0] = new List<Tuple<NumType, NumType>>(); //left 
+           // teamPlayerPos[1] = new List<Tuple<NumType, NumType>>(); //right
+            BigInteger[] teamSize = new BigInteger[] { input.numLeftTeam, input.numRightTeam};
+            int[] curPlayer = new int[2] {0,0};
+            BigInteger[] teamSpeed = new BigInteger[2] {input.speedLeftTeam, input.speedRightTeam};
+
+            Logger.LogInfo("Width {} Height {}", input.widthField, input.heightField);
+            Logger.LogInfo("Left team {} players at {} speed", teamSize[0], teamSpeed[0]);
+            Logger.LogInfo("Right team {} players at {} speed", teamSize[1], teamSpeed[1]);
+            Logger.LogInfo("Time = {} + {} * n.  Position = {} + {} * n", t0, t1, p1.Y, yDif);
+
+            BigInteger firstPointFail = long.MaxValue;
+            
+           // long firstPointFail0 = long.MaxValue;
+            
+            for(int team = 0; team <= 1; ++team)
+            {
+            	
+            	Logger.LogDebug("\n\nTeam {} ", team);
+                NumType deltaT = 2 * teamSize[team] * t1;
+                NumType disPossible = deltaT * teamSpeed[team];
+
+                NumType diff = yDif.Multiply(2 * teamSize[team]);
+                
+                BigFraction lower, upper;
+				bool found = PongMain.calculateForbiddenInterval(disPossible,
+					diff,  input.heightField, out lower, out upper);
+				
+				Logger.LogTrace("testForbiddenInterval deltaP {} target {} lower {} upper {} found {}", 
+					diff, disPossible, lower, upper, found);
+				
+				if (!found)
+					continue;
+				
+				NumType cycleDiff;
+				int cycle = findCycle(p1.Y + yDif * (1-team), yDif*2, 2 * input.heightField, out cycleDiff);
+                
+				Logger.LogTrace("Cycle every {}", cycle);
+				
+				BigInteger startingPoint = p1.Y + yDif * (1-team); 
+				BigInteger jump = 0; 
+				
+				accel(startingPoint, 
+					yDif*2, 2 * input.heightField, cycle,cycleDiff, lower, upper);
+				
+				Logger.LogTrace("Can jump {}", jump);
+				
+				/*
+				for(int pIdx = 0; pIdx <= 50; ++pIdx)
+				{
+					BigInteger realIndex = 1-team + 2 * (pIdx);
+					NumType pi = (p1.Y + yDif * realIndex) % (2*input.heightField);
+					
+					Logger.LogTrace("calculate team point {} idx {} pi [{}] ",
+						pIdx, realIndex, pi);
+				}*/
+				bool foundFirstPointFail = false;
+				
+				for(int pIdx = 0; pIdx <= 50; ++pIdx)
+				{
+					BigInteger realIndex = 1-team + 2 * (pIdx+jump);
+					NumType pi = (p1.Y + yDif * realIndex) % (2*input.heightField);
+					
+					Logger.LogTrace("calculate team point {} idx {} pi [{}] {}",
+						pIdx, realIndex, pi, calcAdd(p1.Y, yDif, realIndex, input.heightField));
+					
+					NumType pi_mh = pi % input.heightField;
+					
+					if (pi_mh < lower || pi_mh > upper) 
+					{
+						NumType pj = PongMain.calcAdd(p1.Y, yDif, realIndex+2*teamSize[team], input.heightField);
+						NumType diffBet = (pi-pj).Abs();
+					
+						Logger.LogInfo("testForbiddenIntervalHelper pi [{}] pj [{}] diff [{}] target {} lower {} upper {}",
+						pi, pj, diffBet, disPossible, lower, upper);
+						
+						Logger.LogInfo("Found point {} {}", realIndex, realIndex + 2 * teamSize[team]);
+						firstPointFail = BigInteger.Min( firstPointFail,  realIndex + 2 * teamSize[team]);
+						break;
+					}
+					
+    			}
+            }
+            
+/*
+            for(int team = 0; team < 2; ++team)
+            {
+                NumType deltaT = 2 * teamSize[team] * t1;
+                NumType disPossible = deltaT * teamSpeed[team];
+
+                NumType diff = yDif.Multiply(2 * teamSize[team]);
+
+                for(int playerNum = 0; playerNum < teamSize[team]; ++playerNum)
+                {
+                    //if (playerNum != 166 || team != 0)
+                       // continue;
+
+                    int firstPoint = 2 * playerNum + 1 - team;
+                    NumType firstPointLoc = p1.Y + yDif * firstPoint;
+
+                    Logger.LogTrace("\n\nCalculate player {} team {}:  firstPoint index {} value {}", playerNum, team, firstPoint, firstPointLoc);
+                    long pointFailPlayer = calcToTarget(firstPointLoc, diff, input.heightField, disPossible);
+
+                    //long pointFailCheck = calcToTargetManual(firstPointLoc, diff, input.heightField, disPossible);
+
+                    Logger.LogTrace("\nPlayer {} team {} first point index of player: [{}] \n player point index where target diff exceeded: [{}]", playerNum, team, firstPoint, pointFailPlayer);
+
+                    //Logger.LogTrace("fails points {}", new int[]{1,2,3}.Select( (i) => firstPoint + i * 2 * teamSize[team]).ToCommaString());
+
+                    if (pointFailPlayer != -1)
+                    {
+			//Change coordinates from player [every 2 * teamsize points]
+                        long pointFail = firstPoint + pointFailPlayer * 2 * teamSize[team];
+                        firstPointFail = Math.Min(firstPointFail, pointFail);
+
+                        
+                        NumType[] failValues;
+                        NumType[] failDiffs;
+
+                        //calcPointsAndDiff(p1.Y, yDif, input.heightField, pointFail - 5, 10, out failValues, out failDiffs);
+                        calcPointsAndDiff(firstPointLoc, diff, input.heightField, pointFailPlayer - 15, 25, out failValues, out failDiffs);
+
+                        Logger.LogTrace("Point fail real {} + {}= {}  minimum overall point fail {}.  \nValues {}.  \nDiffs {}",
+                        	firstPoint, pointFailPlayer * 2 * teamSize[team],
+                        	pointFail.ToString("0,0"), firstPointFail.ToString("0,0"),
+                            failValues.ToCommaString(), failDiffs.Skip(1).ToCommaString());
+
+                    }
+
+                    
+                }
+            }
+            
+            
+            
+            Logger.LogInfo("\n\nChecking {} == {}\n\n", firstPointFail0, firstPointFail);
+           // Preconditions.checkState(firstPointFail0 == firstPointFail);
+*/
+            if (firstPointFail != long.MaxValue)
+            {
+                int team = firstPointFail % 2 == 0 ? 1 : 0;
+                BigInteger num = (firstPointFail + team) / 2;
+                string teamName = ((!switchTeams && team == 0) || (switchTeams && team == 1)) ? "RIGHT" : "LEFT";
+                Logger.LogInfo(teamName + " " + num);
+                return teamName + " " + num;
+            }
+             
+
+            return "DRAW";
+        }
+        
+        public string processInputOld(PongInput input)
+        {
+        	//ShowOutput();
         	//return "hoetnuh";
            // processInputManual(input);
 
@@ -502,9 +778,9 @@ public void ShowOutput()
             List<Tuple<NumType, NumType>>[] teamPlayerPos = new List<Tuple<NumType,NumType>>[2]; //time, loc pair
             teamPlayerPos[0] = new List<Tuple<NumType, NumType>>(); //left 
             teamPlayerPos[1] = new List<Tuple<NumType, NumType>>(); //right
-            int[] teamSize = new int[] { input.numLeftTeam, input.numRightTeam};
+            int[] teamSize = new int[] { (int)input.numLeftTeam, (int)input.numRightTeam};
             int[] curPlayer = new int[2] {0,0};
-            long[] teamSpeed = new long[2] {input.speedLeftTeam, input.speedRightTeam};
+            long[] teamSpeed = new long[2] {(long)input.speedLeftTeam, (long)input.speedRightTeam};
 
             Logger.LogInfo("Width {} Height {1}", input.widthField, input.heightField);
             Logger.LogInfo("Left team {} players at {} speed", teamSize[0], teamSpeed[0]);
@@ -517,7 +793,7 @@ public void ShowOutput()
             
             for(int team = 0; team < 1; ++team)
             {
-            	for(int playerNum = 0; playerNum < 100 ; ++playerNum) //teamSize[team]
+            	for(int playerNum = 0; playerNum < 1 ; ++playerNum) //teamSize[team]
                 {
             	Logger.LogTrace("\n\nTeam {} player {}", team, playerNum);
                 NumType deltaT = 2 * teamSize[team] * t1;
@@ -525,11 +801,19 @@ public void ShowOutput()
 
                 NumType diff = yDif.Multiply(2 * teamSize[team]);
                 
+                BigFraction lower, upper;
+				bool found = PongMain.calculateForbiddenInterval(disPossible,
+					diff,  input.heightField, out lower, out upper);
+				
+				Logger.LogTrace("testForbiddenInterval deltaP {} target {} lower {} upper {} found {}", 
+					diff, disPossible, lower, upper, found);
+                
                 int startingPoint = 2 * playerNum + 1 - team;
                 NumType startingPointLocation = p1.Y + yDif * startingPoint;
 
                 BigInteger firstPlayerToMiss =
-                calculateFirstPlayerToMiss(startingPoint, startingPointLocation, yDif, disPossible, diff, input.heightField);
+                calculateFirstPlayerToMiss(startingPoint, startingPointLocation, yDif,
+                	disPossible, diff, input.heightField);
                 
                 //Count complete cyles
                 BigInteger cycles = firstPlayerToMiss / teamSize[team];
@@ -548,7 +832,7 @@ public void ShowOutput()
                 firstPointFail0 = Math.Min(firstPointFail0, (long) pointFailPlayer0);
                 }
             }
-            return "";
+            //return "";
 
             for(int team = 0; team < 2; ++team)
             {
@@ -656,9 +940,11 @@ public void ShowOutput()
             List<Tuple<NumType, NumType>>[] teamPlayerPos = new List<Tuple<NumType, NumType>>[2]; //time, loc pair
             teamPlayerPos[0] = new List<Tuple<NumType, NumType>>(); //left 
             teamPlayerPos[1] = new List<Tuple<NumType, NumType>>(); //right
-            int[] teamSize = new int[] { input.numLeftTeam, input.numRightTeam };
-            int[] curPlayer = new int[2] { 0, 0 };
-            long[] teamSpeed = new long[2] { input.speedLeftTeam, input.speedRightTeam };
+            
+            int[] teamSize = new int[] { (int)input.numLeftTeam, (int)input.numRightTeam};
+            int[] curPlayer = new int[2] {0,0};
+            long[] teamSpeed = new long[2] {(long)input.speedLeftTeam, (long)input.speedRightTeam};
+
 
             Logger.LogInfo("Width {} Height {1}", input.widthField, input.heightField);
             Logger.LogInfo("Left team {0} players at {1} speed", teamSize[0], teamSpeed[0]);
@@ -669,7 +955,7 @@ public void ShowOutput()
             Func<int, NumType> getYPosFromPointNum = (pNum) =>
             {
                 NumType y = p1.Y.Add(yDif.Multiply(pNum));
-                double x = pNum % 2 != 0 ? 0 : input.widthField;
+                double x = pNum % 2 != 0 ? 0 : (long)input.widthField;
 
                 long rem = (long)(y.Divide(input.heightField));
 
@@ -746,20 +1032,20 @@ public void ShowOutput()
         public PongInput createInput(Scanner scanner)
         {
             PongInput input = new PongInput();
-            input.heightField = scanner.nextInt();
-            input.widthField = scanner.nextInt();
+            input.heightField = scanner.nextBigInteger();
+            input.widthField = scanner.nextBigInteger();
 
-            input.numLeftTeam = scanner.nextInt();
-            input.numRightTeam = scanner.nextInt();
+            input.numLeftTeam = scanner.nextBigInteger();
+            input.numRightTeam = scanner.nextBigInteger();
 
-            input.speedLeftTeam = scanner.nextLong();
-            input.speedRightTeam = scanner.nextLong();
+            input.speedLeftTeam = scanner.nextBigInteger();
+            input.speedRightTeam = scanner.nextBigInteger();
 
-            input.Y = scanner.nextInt();
-            input.X = scanner.nextInt();
+            input.Y = scanner.nextBigInteger();
+            input.X = scanner.nextBigInteger();
 
-            input.VY = scanner.nextLong();
-            input.VX = scanner.nextLong();
+            input.VY = scanner.nextBigInteger();
+            input.VX = scanner.nextBigInteger();
 
             return input;
         }
@@ -767,19 +1053,19 @@ public void ShowOutput()
 
     public class PongInput
     {
-        internal int heightField { get; set; }
-        internal int widthField { get; set; }
+        internal BigInteger heightField { get; set; }
+        internal BigInteger widthField { get; set; }
 
-        internal int numLeftTeam; //{ get; set; }
-        internal int numRightTeam; //{ get; set; }
+        internal BigInteger numLeftTeam; //{ get; set; }
+        internal BigInteger numRightTeam; //{ get; set; }
 
-        internal long speedLeftTeam; //{ get; set; }
-        internal long speedRightTeam; // { get; set; }
+        internal BigInteger speedLeftTeam; //{ get; set; }
+        internal BigInteger speedRightTeam; // { get; set; }
 
-        internal int Y { get; set; }
-        internal int X { get; set; }
-        internal long VY { get; set; }
-        internal long VX { get; set; }
+        internal BigInteger Y { get; set; }
+        internal BigInteger X { get; set; }
+        internal BigInteger VY { get; set; }
+        internal BigInteger VX { get; set; }
                  
         
 
