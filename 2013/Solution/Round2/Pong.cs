@@ -36,7 +36,7 @@ namespace Round2.Pong
             
             NumType pos = p0 + n * deltaP;
                 
-            long rem = (long)(pos / height);
+            BigInteger rem = (BigInteger)(pos / height);
 
             pos -= (rem * height);
 
@@ -48,26 +48,28 @@ namespace Round2.Pong
             return pos;            
         }
 
-        public static void calcStats(NumType p0, NumType deltaP, NumType height)
+        private static void calcPoints2hAndDiff(NumType p0, 
+            NumType deltaP, BigInteger height, BigInteger start, int count,
+		out NumType[] points,
+            out NumType[] points2h, out NumType[] diffs
+            )
         {
-            long rem = (long)(deltaP / (2 * height));
-            deltaP -= (rem * 2 * height);
+		if (start < 0)
+			start = 0;
 
-            if (deltaP > height)
+            points = new NumType[count];
+            points2h = new NumType[count];
+	
+            diffs = new NumType[count];
+
+            for(int i = 0; i < count; ++i)
             {
-                //deltaP -= height ;
+                points[i] = calcAdd(p0, deltaP, start+i, height);
+                points2h[i] = (p0 + (start+i) * deltaP) % (2 * height);
+
+                if (i > 0)
+                    diffs[i] = (points[i] - points[i - 1]).Abs();
             }
-            Logger.LogDebug("Adjusted \u0394P {}", deltaP);
-
-            NumType maxDiff = deltaP;
-
-            if (maxDiff > height)
-            {
-                maxDiff = 2 * height - maxDiff;
-            }
-
-            Logger.LogDebug("Max difference {}", maxDiff);
-
         }
 
         private static void calcPointsAndDiff(NumType p0, 
@@ -116,7 +118,7 @@ namespace Round2.Pong
 
             return -1;
         }
-
+/*
         public static BigInteger calcToTargetUsingOffset(NumType p0, NumType deltaP, BigInteger height, NumType targetDiff)
         {
             Logger.LogTrace("\ncalcToTargetUsingOffset \u0394p {} * N  height: {}  target: {} ",
@@ -145,9 +147,9 @@ namespace Round2.Pong
             NumType offSetGroupSize = height - maxDiff;
 
             //Initial group of target = 1
-            /*
-             * offset [1..] [1+ogs...] [1+2*ogs...]
-             */
+            
+             //offset [1..] [1+ogs...] [1+2*ogs...]
+             
             BigInteger offsetGroupIndex = BigInteger.Divide((BigInteger)p0 - 1, (BigInteger)offSetGroupSize);
             
             //Adjust
@@ -163,7 +165,7 @@ namespace Round2.Pong
 
             return adjusted;
 
-        }
+        }*/
 
 	public static long calcToTarget(NumType p0, NumType deltaP, BigInteger height, NumType targetDiff)
 	{
@@ -299,36 +301,161 @@ namespace Round2.Pong
 
 public void ShowOutput()
         {
-            int height = 100;
+        	//calcToTarget p0 9224407 + Δp 47571681280 * N  height: 654329  target: 654320 
+            int height = 40;
 
-            int toAddStart = 104;
-            int toAddEnd = toAddStart + 0;
+            long toAddStart = 30;
+            long toAddEnd = toAddStart + 0;
 
-            int offset = 56;
+            NumType offsetStart = new BigFraction(51,4);
+            offsetStart = 0;
+            NumType offsetStop = 10;
+            NumType offsetStep = 1;
 
-            for(int toAdd = toAddStart; toAdd <= toAddEnd; ++toAdd)
+            int points = 10;
+            
+            for(long toAdd = toAddStart; toAdd <= toAddEnd; ++toAdd)
             {
-                PongMain.calcStats(offset, toAdd, height);
-                List<int> posList = new List<int>();
-                posList.Add(offset);
-
-                for(int pNum = 0; pNum <= 150; ++pNum)
-                {
-                    int ans = (int) PongMain.calcAdd(offset, toAdd, pNum, height);
-                    
-                    Logger.LogInfo("{} + n {} * {} = {} : {} [diff {}] with respect to height {}", 
-                        offset, pNum, toAdd, offset+pNum*toAdd, ans, (ans - posList.GetLastValue()), height);
-
-                    posList.Add(ans);
-                }
+            	for(NumType offset = offsetStart; offset <= offsetStop; offset += offsetStep)
+            	{
+					List<NumType> posList = new List<NumType>();
+					posList.Add(offset);
+	
+					for(int pNum = 0; pNum <= points; ++pNum)
+					{
+						NumType ans = PongMain.calcAdd(offset, toAdd, pNum, height);
+						
+						Logger.LogInfo("{} + n {} * {} = {} = {} : {} [diff {}] with respect to height {}", 
+							offset, pNum, toAdd, offset+pNum*toAdd, 
+							(offset+pNum*toAdd) % (2 * height),
+							ans, (ans - posList.GetLastValue()), height);
+	
+						posList.Add(ans);
+					}
+				}
             }
         }
+        
+        public static bool calculateForbiddenInterval(
+        	NumType target, NumType deltaP, BigInteger height, out NumType lower, out NumType upper)
+        {
+        	Logger.LogTrace("calculateForbiddenInterval deltaP {} target {} height {}", deltaP,target, height); 
+            
+        	deltaP %= 2 * height;
+        	
+        	
+        	NumType maxDiff = deltaP;
+            if (maxDiff > height)
+            {
+                maxDiff = 2 * height - maxDiff ;
+            }
+        	
+            Logger.LogTrace("calculateForbiddenInterval deltaP {} maxDiff {} ", deltaP, maxDiff); 
+            if (maxDiff <= target)
+        	{
+        		return false;
+        	}
+        	
+        	NumType cutOff = height - (deltaP + target) / 2;
+        	
+        	lower = cutOff;
+        	
+        	NumType upperCutoff = (deltaP - target) / 2; 
+        	
+        	upper = height - upperCutoff; // - (height - maxDiff);
+        	
+        	return true;
+        }
 
+        public BigInteger calculateFirstPlayerToMiss(
+        	int startingPoint, NumType startingPointLocation, NumType yDif
+        	,NumType disPossible, NumType diff, BigInteger height
+        	)
+        {
+        	
+			NumType calculatedDeltaD;
+			long pointFailPlayer0 = 
+				calcToTarget(startingPointLocation, diff, height, disPossible, out calculatedDeltaD);
+				
+			Logger.LogTrace("deltaD -- {}", calculatedDeltaD);
+			
+			if (calculatedDeltaD == 0)
+				return -1;
+			
+			//NumType backwardsDiff = 2 * height - diff % (2*height);
+	
+			//long pointFailPlayer0_backwards = calcToTarget(startingPointLocation, backwardsDiff, height, disPossible);
+	
+			/*NumType failPoint0 = (startingPointLocation + diff * (pointFailPlayer0-1)) % (2* height);
+			NumType failPointBack = (startingPointLocation + backwardsDiff * (pointFailPlayer0_backwards+1)) % (2* height);
+	
+			Logger.LogTrace("fail point location {} backwards {}", failPoint0, failPointBack);
+	
+			NumType diffLoc = (failPoint0 - startingPointLocation);
+			NumType backDiffLoc = (failPointBack - startingPointLocation );
+	
+			Logger.LogTrace("diffLoc {} backwards {}", diffLoc, backDiffLoc);
+	
+			if (diffLoc < 0)
+				diffLoc += 2 * height;
+	
+			if (backDiffLoc < 0)
+				backDiffLoc += 2 * height;*/
+	
+			//Logger.LogTrace("Adjusted diffLoc {} backwards {}", diffLoc, backDiffLoc);
+			Preconditions.checkState(calculatedDeltaD != 0);
+	
+			//NumType playersToGo = diffLoc / calculatedDeltaD;
+			//NumType backPlayersToGo = backDiffLoc / calculatedDeltaD; //err going to far left
+	
+			NumType[] points;
+			NumType[] points2h;
+			NumType[] diffs;
+			int count = 10;
+			calcPoints2hAndDiff(startingPointLocation, diff, height, pointFailPlayer0-1, count, out points,
+				out points2h, out diffs);
+			
+			
+			
+			long firstPlayerFailForwards = long.MaxValue;
+			
+			startingPointLocation = startingPointLocation % (2 * height);
+			
+			//Because the first point passes, we want the diff following
+			for(int i = 0; i < count-1; ++i)
+			{
+				if (diffs[i+1] <= disPossible)
+				{
+					Logger.LogTrace("Break loop {}", i);
+					break;
+				}
+				NumType diffLoc = points2h[i] - startingPointLocation;
+				
+				if (diffLoc < 0)
+					diffLoc += 2 * height;
+				
+				NumType playersToGo =  pointFailPlayer0 + i - 1; //diffLoc / calculatedDeltaD;
+				
+				Logger.LogTrace("At {} diffLoc = {} - {} = {} PlayersToGo {}", i,
+					points2h[i], startingPointLocation, diffLoc,
+					playersToGo);
+				
+				firstPlayerFailForwards = Math.Min(firstPlayerFailForwards, (long) playersToGo);
+			}
+			
+			Logger.LogTrace("Forward points {}\npoints 2h {}\ndiffs {}", points.ToCommaString(), points2h.ToCommaString(), diffs.Skip(1).ToCommaString());
+			
+			//Logger.LogTrace("failPoint0 = {} % {} = {}   players to go = {} / {}",(startingPointLocation + diff * pointFailPlayer0),  (2* height), failPoint0, diffLoc, calculatedDeltaD);
+			//Logger.LogTrace("\n!!!\nfirst fail location {}.  players to go {}.  back {}", failPoint0, playersToGo, backPlayersToGo);
+			return firstPlayerFailForwards;
+        }
+        
+        
 
         public string processInput(PongInput input)
         {
-		ShowOutput();
-		//return "hoetnuh";
+        	ShowOutput();
+        	//return "hoetnuh";
            // processInputManual(input);
 
             bool switchTeams = false;
@@ -385,6 +512,43 @@ public void ShowOutput()
             Logger.LogInfo("Time = {} + {} * n.  Position = {} + {} * n", t0, t1, p1.Y, yDif);
 
             long firstPointFail = long.MaxValue;
+            
+            long firstPointFail0 = long.MaxValue;
+            
+            for(int team = 0; team < 1; ++team)
+            {
+            	for(int playerNum = 0; playerNum < 100 ; ++playerNum) //teamSize[team]
+                {
+            	Logger.LogTrace("\n\nTeam {} player {}", team, playerNum);
+                NumType deltaT = 2 * teamSize[team] * t1;
+                NumType disPossible = deltaT * teamSpeed[team];
+
+                NumType diff = yDif.Multiply(2 * teamSize[team]);
+                
+                int startingPoint = 2 * playerNum + 1 - team;
+                NumType startingPointLocation = p1.Y + yDif * startingPoint;
+
+                BigInteger firstPlayerToMiss =
+                calculateFirstPlayerToMiss(startingPoint, startingPointLocation, yDif, disPossible, diff, input.heightField);
+                
+                //Count complete cyles
+                BigInteger cycles = firstPlayerToMiss / teamSize[team];
+                
+                BigInteger realFirstPlayerToMiss = firstPlayerToMiss % teamSize[team];
+                
+                //Always second point
+                BigInteger pointFailPlayer0 = (2 * realFirstPlayerToMiss + 1 - team) + 
+                2 * teamSize[team] * (1+cycles);
+                Logger.LogTrace("\nFirst player to miss {} real {}.  point {} cycles {}\n\n", 
+                	firstPlayerToMiss, realFirstPlayerToMiss, pointFailPlayer0, cycles);
+                
+                if (firstPlayerToMiss == -1)
+                	continue;
+                
+                firstPointFail0 = Math.Min(firstPointFail0, (long) pointFailPlayer0);
+                }
+            }
+            return "";
 
             for(int team = 0; team < 2; ++team)
             {
@@ -392,41 +556,6 @@ public void ShowOutput()
                 NumType disPossible = deltaT * teamSpeed[team];
 
                 NumType diff = yDif.Multiply(2 * teamSize[team]);
-
-		int startingPoint = 1 - team;
-		NumType startingPointLocation = p1.Y + yDif * startingPoint;
-
-		NumType calculatedDeltaD;
-		long pointFailPlayer0 = calcToTarget(startingPointLocation, diff, input.heightField, disPossible, out calculatedDeltaD);
-		NumType backwardsDiff = 2*input.heightField - diff % (2*input.heightField);
-
-		long pointFailPlayer0_backwards = calcToTarget(startingPointLocation, backwardsDiff, input.heightField, disPossible);
-
-		NumType failPoint0 = (startingPointLocation + diff * (pointFailPlayer0-1)) % (2* input.heightField);
-		NumType failPointBack = (startingPointLocation + backwardsDiff * (pointFailPlayer0_backwards+1)) % (2* input.heightField);
-
-		Logger.LogTrace("fail point location {} backwards {}", failPoint0, failPointBack);
-
-		NumType diffLoc = (failPoint0 - startingPointLocation);
-		NumType backDiffLoc = (failPointBack - startingPointLocation );
-
-		Logger.LogTrace("diffLoc {} backwards {}", diffLoc, backDiffLoc);
-
-		if (diffLoc < 0)
-			diffLoc += 2 * input.heightField;
-
-		if (backDiffLoc < 0)
-			backDiffLoc += 2 * input.heightField;
-
-		Logger.LogTrace("Adjusted diffLoc {} backwards {}", diffLoc, backDiffLoc);
-
-
-		NumType playersToGo = diffLoc / calculatedDeltaD;
-		NumType backPlayersToGo = backDiffLoc / calculatedDeltaD; //err going to far left
-
-		Logger.LogTrace("failPoint0 = {} % {} = {}   players to go = {} / {}",(startingPointLocation + diff * pointFailPlayer0),  (2* input.heightField), failPoint0, diffLoc, calculatedDeltaD);
-		Logger.LogTrace("\n!!!\nfirst fail location {}.  players to go {}.  back {}", failPoint0, playersToGo, backPlayersToGo);
-		
 
                 for(int playerNum = 0; playerNum < teamSize[team]; ++playerNum)
                 {
@@ -441,9 +570,9 @@ public void ShowOutput()
 
                     //long pointFailCheck = calcToTargetManual(firstPointLoc, diff, input.heightField, disPossible);
 
-                    Logger.LogTrace("\nPlayer {} team {} first point index of player: [{}] player point index where target diff exceeded: [{}]", playerNum, team, firstPoint, pointFailPlayer);
+                    Logger.LogTrace("\nPlayer {} team {} first point index of player: [{}] \n player point index where target diff exceeded: [{}]", playerNum, team, firstPoint, pointFailPlayer);
 
-                    Logger.LogTrace("fails points {}", new int[]{1,2,3}.Select( (i) => firstPoint + i * 2 * teamSize[team]).ToCommaString());
+                    //Logger.LogTrace("fails points {}", new int[]{1,2,3}.Select( (i) => firstPoint + i * 2 * teamSize[team]).ToCommaString());
 
                     if (pointFailPlayer != -1)
                     {
@@ -458,7 +587,9 @@ public void ShowOutput()
                         //calcPointsAndDiff(p1.Y, yDif, input.heightField, pointFail - 5, 10, out failValues, out failDiffs);
                         calcPointsAndDiff(firstPointLoc, diff, input.heightField, pointFailPlayer - 15, 25, out failValues, out failDiffs);
 
-                        Logger.LogTrace("Point fail real {}  minimum overall point fail {}.  \nValues {}.  \nDiffs {}", pointFail.ToString("0,0"), firstPointFail.ToString("0,0"),
+                        Logger.LogTrace("Point fail real {} + {}= {}  minimum overall point fail {}.  \nValues {}.  \nDiffs {}",
+                        	firstPoint, pointFailPlayer * 2 * teamSize[team],
+                        	pointFail.ToString("0,0"), firstPointFail.ToString("0,0"),
                             failValues.ToCommaString(), failDiffs.Skip(1).ToCommaString());
 
                     }
@@ -466,6 +597,11 @@ public void ShowOutput()
                     
                 }
             }
+            
+            
+            
+            Logger.LogInfo("\n\nChecking {} == {}\n\n", firstPointFail0, firstPointFail);
+           // Preconditions.checkState(firstPointFail0 == firstPointFail);
 
             if (firstPointFail != long.MaxValue)
             {

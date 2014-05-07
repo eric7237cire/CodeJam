@@ -162,7 +162,11 @@ namespace Utils.math
         {
             return x.Multiply(i);
         }
-	public static BigFraction operator %(BigFraction lhs, long i)
+        public static BigFraction operator %(BigFraction lhs, long i)
+        {
+            return lhs - lhs.Divide(i).floor() * i;
+        }
+        public static BigFraction operator %(BigFraction lhs, BigInteger i)
         {
             return lhs - lhs.Divide(i).floor() * i;
         }
@@ -189,6 +193,14 @@ namespace Utils.math
         public static bool operator >=(BigFraction lhs, BigFraction rhs)
         {
             return lhs.CompareTo(rhs) >= 0;
+        }
+        public static bool operator !=(BigFraction lhs, BigFraction rhs)
+        {
+            return lhs.CompareTo(rhs) != 0;
+        }
+        public static bool operator ==(BigFraction lhs, BigFraction rhs)
+        {
+            return lhs.CompareTo(rhs) == 0;
         }
         #endregion
 

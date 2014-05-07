@@ -4,7 +4,7 @@
 #define LOGGING_TRACE
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using CodeJamUtils;
 using System.IO;
 using Round2.Pong;
@@ -27,10 +27,72 @@ using Utils.math;
 
 namespace UnitTest
 {
-    [TestClass]
+    [TestFixture]
     public class TestPong
     {
-        [TestMethod]
+    	[Test]
+    	[Category("current")]
+    	public void testForbiddenInterval()
+    	{
+    		int height = 12;
+    		
+    		int diffStop = 3 * height;
+    		
+    		for(int diff = 1; diff <= diffStop; ++diff)
+    		{
+    			for(int targetDiff = 1; targetDiff <= height; ++targetDiff)
+    			{
+    				BigFraction lower, upper;
+    				bool found = PongMain.calculateForbiddenInterval(targetDiff,
+    					diff, height, out lower, out upper);
+    				
+    				Logger.LogTrace("testForbiddenInterval deltaP {} target {} lower {} upper {} found {}", 
+    					diff, targetDiff, lower, upper, found);
+    		
+    				testForbiddenIntervalHelper(height, diff, targetDiff,  lower,
+    					 upper, found);
+    			}
+    		}
+    		
+    	}
+    	
+    	/*
+    	Tests manually that should their be a prohibited interval, that
+    	the difference between 2 values in the sequence is > a target difference.
+    	*/
+    	private void testForbiddenIntervalHelper(int height, int deltaP, 
+    		int target, BigFraction lower, BigFraction upper, bool found)
+    	{
+    		for(int p0 = 0; p0 <= 3 * height; ++p0)
+    		{
+    			int p0_adj = (int) PongMain.calcAdd(p0, deltaP, 0, height);
+    			int p1 = (int) PongMain.calcAdd(p0, deltaP, 1, height);
+    			
+    			int diff = Math.Abs(p0_adj-p1);
+    			
+    			Logger.LogTrace("testForbiddenIntervalHelper p0 [{}] p1 [{}] diff [{}] target {} lower {} upper {}",
+    				p0, p1, diff, target, lower, upper);
+    			
+    			int p0_mh = p0 % height;
+    			
+    			if (!found)
+    			{
+    				Assert.IsTrue(diff <= target);
+    				
+    			} else if (p0_mh < lower) 
+    			{
+    				Assert.IsTrue(diff > target);	
+    			} else if (p0_mh > upper) {
+    				Assert.IsTrue(diff > target);	
+    			} else {
+    				Assert.IsTrue(diff <= target);	
+    			}
+    			
+    		}
+    		
+    	}
+    	
+        [Test]
         public void testFrac()
         {
             BigFraction deltaP = 0;
@@ -40,7 +102,7 @@ namespace UnitTest
 
             Assert.IsTrue(new BigFraction(19, 1) >= new BigFraction(19, 1));
         }
-        [TestMethod]
+        [Test]
         public void TestCalcToTargetUsingRand()
         {
             for (int target = 1; target <= 5; ++target )
@@ -69,7 +131,8 @@ namespace UnitTest
             //test(0, 135, 100, 10);
         }
 
-        [TestMethod]
+        /*
+        [Test]
         public void TestCalcToTargetUsingOffset()
         {
             int[] toAddToTest = new int[] {97};
@@ -83,14 +146,14 @@ namespace UnitTest
                 }
             }
             
-        }
+        }*/
         
 
         //Manually step through the points, making sure that the result of calcToTarget is the first point
         //with a difference > target.
         private void testCalcToTarget(int p0, int toAdd, int height, long target)
         {
-            PongMain.calcStats(p0, toAdd, height);
+            
             long targetPoint = PongMain.calcToTarget(p0, toAdd, height, target);
             Logger.LogDebug("Testing.  Should get > {} in nPoints {}", target, targetPoint);
 
@@ -121,7 +184,7 @@ namespace UnitTest
 
             Assert.AreEqual(true, found);
         }
-
+/*
         private void testCalcToTargetUsingOffset(int p0, int toAdd, int height, long target)
         {
             long targetPoint = (long) PongMain.calcToTargetUsingOffset(p0, toAdd, height, target);
@@ -153,10 +216,10 @@ namespace UnitTest
             }
 
             Assert.AreEqual(true, found);
-        }
+        }*/
 
         //Just to see output
-        [TestMethod]
+       // [Test]
         public void ShowOutput()
         {
             int height = 100;
@@ -168,7 +231,7 @@ namespace UnitTest
 
             for(int toAdd = toAddStart; toAdd <= toAddEnd; ++toAdd)
             {
-                PongMain.calcStats(offset, toAdd, height);
+                
                 List<int> posList = new List<int>();
                 posList.Add(offset);
 
@@ -184,7 +247,7 @@ namespace UnitTest
             }
         }
 
-        [TestMethod]
+        //[Test]
         public void ShowChangeOffset()
         {
             
@@ -243,15 +306,17 @@ namespace UnitTest
         }
 
         
-        [TestMethod]
+        [Test]
         public void TestSample()
         {
+        	#if !mono
             testInput(Properties.Resources.TestPongSample1, "LEFT 2");
 
             testInput(Properties.Resources.TestPongSample4, "RIGHT 11");
+            #endif
         }
 
-        [TestMethod]
+        [Test]
         public void TestCalcToTarget()
         {
             //calcToTarget p0 40901485 + Δp 92205906 * N  height: 142513  target: 142506 
@@ -262,7 +327,7 @@ namespace UnitTest
             Assert.AreEqual(man, man2);
         }
 
-        [TestMethod]
+        [Test]
         public void TestCalcToTarget2()
         {
             //24627962071 + Δp 47571681280 * N  height: 654329  target: 654320
@@ -271,7 +336,7 @@ namespace UnitTest
             Assert.AreEqual(46739, test);
         }
 
-        [TestMethod]
+        [Test]
         public void TestCalcToTarget3()
         {
             long test = PongMain.calcToTarget(78721099883, 122325778320, 654327, 654320);
@@ -280,7 +345,7 @@ namespace UnitTest
             Assert.AreEqual(109056, test);
         }
 
-        [TestMethod]
+        [Test]
         public void TestCalcToTarget4()
         {
             Assert.AreEqual(6, PongMain.calcToTargetManual(153, 97, 100, 22));
@@ -292,19 +357,21 @@ namespace UnitTest
             Assert.AreEqual(4, PongMain.calcToTarget(147, 97, 100, 22));
         }
 
-        [TestMethod]
+        #if !mono
+        [Test]
         public void TestSmall4()
         {
             testInput(Properties.Resources.TestPong4small, "RIGHT 165026");
         }
 
-        [TestMethod]
+        [Test]
         public void TestSmall89()
         {
             testInput(Properties.Resources.TestPong89Small, "RIGHT 249996");
         }
         
-        [TestMethod]
+        
+        [Test]
         public void TestSmall()
         {
             string inputTxt = UnitTest.Properties.Resources.TestPong1;
@@ -320,5 +387,6 @@ namespace UnitTest
             Assert.AreEqual("RIGHT 19393", ans);
 
         }
+        #endif
     }
 }
