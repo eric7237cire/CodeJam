@@ -194,6 +194,7 @@ namespace Round2.Pong
             if (targetDiff >= maxDiff)
             {
                 Logger.LogTrace("targetDiff {} >= maxDiff {}", targetDiff, maxDiff);
+                calculatedDeltaD = 0;
                 return -1;
             }
 
@@ -353,6 +354,7 @@ public void ShowOutput()
             Logger.LogTrace("calculateForbiddenInterval deltaP {} maxDiff {} ", deltaP, maxDiff); 
             if (maxDiff <= target)
         	{
+                lower = -1; upper = -1;
         		return false;
         	}
         	
@@ -453,7 +455,8 @@ public void ShowOutput()
         public static int findCycle(NumType p0, NumType deltaP, BigInteger mod, out NumType diff)
         {
         	Func<int,NumType> funcCalcP = (i) => {return (p0 + deltaP * i) % mod;};
-        	
+            diff = 0;
+
         	for(int cycleLength = 1; cycleLength <= 20; ++cycleLength)
         	{
         		diff = funcCalcP(cycleLength) - funcCalcP(0);
@@ -495,13 +498,23 @@ public void ShowOutput()
         }
         
         public static BigInteger accel(NumType p0, NumType deltaP, 
-        	BigInteger mod, int cycleLength, 
+        	BigInteger twiceHeight, int cycleLength, 
         	NumType cycleDiff, NumType lower, NumType upper)
         {
         	Logger.LogTrace("Cycle length {} diff {}", cycleLength, cycleDiff);
-        	Func<int,NumType> funcCalcP = (i) => {return (p0 + deltaP * i) % mod;};
+        	Func<int,NumType> funcCalcP = (i) => {return (p0 + deltaP * i) % twiceHeight;};
         	
         	BigInteger minJump = 0;
+
+            for (int i = 0; i < cycleLength; ++i)
+            {
+                NumType p = funcCalcP(i) % (twiceHeight / 2);
+                if (p < lower || p > upper)
+                {
+                    Logger.LogTrace("Already in forbidden interval");
+                    return 0;
+                }
+            }
         	if (cycleDiff < 0)
         	{
         		for(int i = 0; i < cycleLength; ++i)
@@ -515,7 +528,7 @@ public void ShowOutput()
         	{
         		for(int i = 0; i < cycleLength; ++i)
         		{
-        			NumType p = funcCalcP(i) % (mod/2);
+        			NumType p = funcCalcP(i) % (twiceHeight/2);
         			Logger.LogTrace("Point {} value {} upper {}", i, p, upper);
         			BigInteger jump = ( (upper - p) / cycleDiff).floor();
         			if (i==0 || jump < minJump)
@@ -612,53 +625,70 @@ public void ShowOutput()
 					continue;
 				
 				NumType cycleDiff;
-				int cycle = findCycle(p1.Y + yDif * (1-team), yDif*2, 2 * input.heightField, out cycleDiff);
+				int cycleLength = findCycle(p1.Y + yDif * (1-team), yDif*2, 2 * input.heightField, out cycleDiff);
                 
-				Logger.LogTrace("Cycle every {}", cycle);
+				Logger.LogTrace("Cycle every {}", cycleLength);
 				
-				BigInteger startingPoint = p1.Y + yDif * (1-team); 
-				BigInteger jump = 0; 
-				
-				accel(startingPoint, 
-					yDif*2, 2 * input.heightField, cycle,cycleDiff, lower, upper);
-				
-				Logger.LogTrace("Can jump {}", jump);
-				
-				/*
-				for(int pIdx = 0; pIdx <= 50; ++pIdx)
-				{
-					BigInteger realIndex = 1-team + 2 * (pIdx);
-					NumType pi = (p1.Y + yDif * realIndex) % (2*input.heightField);
+				NumType startingPoint = p1.Y + yDif * (1-team); 
+				BigInteger jump = 0;
+
+                bool foundFirstPointFail = false;
+
+                
+                for(int pIdx = 0; pIdx <= 50; ++pIdx)
+                {
+                    BigInteger realIndex = 1-team + 2 * (pIdx);
+                    NumType pi = (p1.Y + yDif * realIndex) % (2*input.heightField);
 					
-					Logger.LogTrace("calculate team point {} idx {} pi [{}] ",
-						pIdx, realIndex, pi);
-				}*/
-				bool foundFirstPointFail = false;
-				
-				for(int pIdx = 0; pIdx <= 50; ++pIdx)
-				{
-					BigInteger realIndex = 1-team + 2 * (pIdx+jump);
-					NumType pi = (p1.Y + yDif * realIndex) % (2*input.heightField);
-					
-					Logger.LogTrace("calculate team point {} idx {} pi [{}] {}",
-						pIdx, realIndex, pi, calcAdd(p1.Y, yDif, realIndex, input.heightField));
-					
-					NumType pi_mh = pi % input.heightField;
-					
-					if (pi_mh < lower || pi_mh > upper) 
-					{
-						NumType pj = PongMain.calcAdd(p1.Y, yDif, realIndex+2*teamSize[team], input.heightField);
-						NumType diffBet = (pi-pj).Abs();
-					
-						Logger.LogInfo("testForbiddenIntervalHelper pi [{}] pj [{}] diff [{}] target {} lower {} upper {}",
-						pi, pj, diffBet, disPossible, lower, upper);
-						
-						Logger.LogInfo("Found point {} {}", realIndex, realIndex + 2 * teamSize[team]);
-						firstPointFail = BigInteger.Min( firstPointFail,  realIndex + 2 * teamSize[team]);
-						break;
-					}
-					
-    			}
+                    
+                    Logger.LogTrace("debug calculate team point {} idx {} pi%2h: [{}] pi%h: {} pi: {} upper: {} upper - pi%h: {}",
+                            pIdx, realIndex, pi, pi % input.heightField, calcAdd(p1.Y, yDif, realIndex, input.heightField), upper, upper - pi % input.heightField);
+                }
+
+                for (int j = 0; j < 10 && !foundFirstPointFail; ++j)
+                {
+                    startingPoint = p1.Y + yDif * (1 - team + 2 * jump);
+
+                    BigInteger nextJump = accel(startingPoint,
+                        yDif * 2, 2 * input.heightField, cycleLength, cycleDiff, lower, upper);
+
+                    jump += nextJump;
+                    Logger.LogTrace("jump {} nextJump {}", jump, nextJump);
+
+                    
+
+
+                    for (int pIdx = 0; pIdx <= 2 * cycleLength && !foundFirstPointFail; ++pIdx)
+                    {
+                        BigInteger realIndex = 1 - team + 2 * (pIdx + jump);
+                        NumType pi = (p1.Y + yDif * realIndex) % (2 * input.heightField);
+
+                        NumType pi_mh = pi % input.heightField;
+
+                        Logger.LogTrace("calculate team point {} idx {} pi%2h [{}] pi%h {}, pi {} upper: {} upper - pi%h: {}",
+                            pIdx, realIndex, pi, pi_mh, calcAdd(p1.Y, yDif, realIndex, input.heightField), upper, upper - pi_mh);
+
+                        
+
+                        if (pi_mh < lower || pi_mh > upper)
+                        {
+                            NumType pj = PongMain.calcAdd(p1.Y, yDif, realIndex + 2 * teamSize[team], input.heightField);
+                            NumType diffBet = (pi - pj).Abs();
+
+                            Logger.LogInfo("testForbiddenIntervalHelper pi [{}] pj [{}] diff [{}] target {} lower {} upper {}",
+                            pi, pj, diffBet, disPossible, lower, upper);
+
+                            Logger.LogInfo("Found point realIndex: {} next after realIndex (actual failure point) {}", realIndex, realIndex + 2 * teamSize[team]);
+                            firstPointFail = BigInteger.Min(firstPointFail, realIndex + 2 * teamSize[team]);
+                            foundFirstPointFail = true;
+                            break;
+                        }
+
+                    }
+
+                    jump += cycleLength;
+
+                }
             }
             
 /*
