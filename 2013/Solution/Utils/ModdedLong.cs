@@ -21,7 +21,7 @@ namespace Utils
                 return value;
             }
         }
-        public static  int mod = 1000002013;
+        public static int mod = 1000002013;
 
         /*
         public static implicit operator long(ModdedLong m)
@@ -47,7 +47,7 @@ namespace Utils
         public static ModdedLong operator +(ModdedLong c1, ModdedLong c2)
         {
             Logger.LogTrace("Adding {0} and {1}", c1, c2);
-            return new ModdedLong(c1.value + c2.value );
+            return new ModdedLong(c1.value + c2.value);
         }
         public static ModdedLong operator -(ModdedLong c1, ModdedLong c2)
         {
@@ -63,18 +63,18 @@ namespace Utils
         {
 
             int div = modInverse(rhs, mod);
-            
+
             Logger.LogTrace("Divide int {0} and {1}.  mult. inv: {2}", c1, rhs, div);
             return new ModdedLong(c1.value * div);
         }
-        
+
 
         public override string ToString()
         {
             return "{0} mod long".FormatThis(value);
         }
 
-        
+
         public static int pow(int a, int b)
         {
             return pow(a, b, ModdedLong.mod);
@@ -147,8 +147,26 @@ namespace Utils
         public static int modInverse(int a, int m)
         {
             int[] gcdXY = extendedEuclid(a, m);
-            return ( gcdXY[1] + m) % m;
+            return (gcdXY[1] + m) % m;
         }
+
+        int gcd_recursive(int a, int b)
+        {
+            if (b != 0)
+                return gcd_recursive(b, a % b);
+            else
+                return a;
+        }
+
+        int mod_inverse_recursive(int a, int m)
+        {
+            a %= m;
+            Preconditions.checkState( a != 0 );
+            if (a == 1)
+                return 1;
+            else
+                return (1 - m * mod_inverse_recursive(m, a)); // a) % m
       
+        }
     }
 }

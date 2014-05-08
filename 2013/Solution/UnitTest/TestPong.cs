@@ -27,7 +27,7 @@ using Utils.math;
 
 namespace UnitTest
 {
-    [TestFixture]
+    [TestFixture] 
     public class TestPong
     {
     	[Test]
