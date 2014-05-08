@@ -72,6 +72,11 @@ namespace Utils
         public static void ChangeIndent(int val)
         {
             indent += val;
+
+            if (indent > 200)
+            {
+                throw new ArgumentOutOfRangeException("ex");
+            }
         }
 
         [Conditional("LOGGING_INFO")]

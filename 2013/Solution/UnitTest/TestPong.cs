@@ -89,25 +89,100 @@ namespace UnitTest
 
             firstHit = PongMain.ericFirstHit(deltaP, modulus, a, b);
             testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit);
+
+            /*first hit deltaP 10 modulus 374  a 239 b 244
+                Δp = 10
+                bestIndex 24 best 240
+                Returning 24*/
+            modulus = 374;
+            a = 239;
+            b = 244;
+            deltaP = 10;
+            firstHit = PongMain.ericFirstHit(deltaP, modulus, a, b);
+            testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit);
+
+            //deltaP 374 modulus 758  a 504 b 509
+            modulus = 758;
+            a = 504;
+            b = 509;
+            deltaP = 374;
+            firstHit = PongMain.ericFirstHit(deltaP, modulus, a, b);
+            testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit);
+
+            //384 modulus 758  a 249 b 254
+
+            modulus = 758;
+            a = 249;
+            b = 254;
+            deltaP = 384;
+            firstHit = PongMain.ericFirstHit(deltaP, modulus, a, b);
+            testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit, true);
+            
+
+            //first hit deltaP 758 modulus 1890  a 1007 b 1012
+            modulus = 1890;
+            a = 1007;
+            b = 1012;
+            deltaP = 758;
+            firstHit = PongMain.ericFirstHit(deltaP, modulus, a, b);
+            testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit, true);
+
+            
+            modulus = 2 * 142513;
+            deltaP = 244578;
+            a = 142513 - 16511;
+            b = 142513 + 5 - 16511;
+
+            firstHit = PongMain.ericFirstHit(deltaP, modulus, a, b);
+            testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit+100000);
+
         }
 
-        private void testFirstHitHelper(int modulus, int deltaP,
-             int lower, int upper, int firstHitExpected)
+        private void testFirstHitHelper(int modulus, long deltaP,
+             int lower, int upper, int firstHitExpected, bool logEverything = false)
         {
-            for (int pIdx = 0; pIdx < firstHitExpected; ++pIdx)
+            for (long pIdx = 0; pIdx < firstHitExpected; ++pIdx)
             {
-                int p = (deltaP * pIdx) % modulus;
-                
-                Logger.LogTrace("testFirstHitHelper pIdx: [{}] p: [{}] deltaP: [{}] lower: {} upper: {}",
-                    pIdx, p, deltaP, lower, upper);
+                long p = (deltaP * pIdx) % modulus;
 
+                if (logEverything)
+                {
+                    Logger.LogTrace("testFirstHitHelper pIdx: [{}] p: [{}] deltaP: [{}] lower: {} upper: {}",
+                        pIdx, p, deltaP, lower, upper);
+                }
+                if (!(p < lower || p > upper))
+                {
+                    Logger.LogTrace("testFirstHitHelper failure! pIdx: [{}] p: [{}] deltaP: [{}] lower: {} upper: {}",
+                        pIdx, p, deltaP, lower, upper);
+                }
                 Assert.IsTrue(p < lower || p > upper);                
 
             }
 
-            int finalP = (deltaP * firstHitExpected) % modulus;
+            long finalP = (deltaP * firstHitExpected) % modulus;
             Logger.LogTrace("Final point is {} = {}", firstHitExpected, finalP);
 
+            if (!(finalP >= lower && finalP <= upper))
+            {
+                for (long pIdx = firstHitExpected; pIdx < firstHitExpected+10000; ++pIdx)
+                {
+                    long p = (deltaP * pIdx) % modulus;
+
+                    if (logEverything)
+                    {
+                        Logger.LogTrace("testFirstHitHelper pIdx: [{}] p: [{}] deltaP: [{}] lower: {} upper: {}",
+                            pIdx, p, deltaP, lower, upper);
+                    }
+
+                    if (!(p < lower || p > upper))
+                    {
+                        Logger.LogTrace("testFirstHitHelper found real pIdx: [{}] p: [{}] deltaP: [{}] lower: {} upper: {}",
+                            pIdx, p, deltaP, lower, upper);
+                        break;
+                    }                    
+
+                }
+            }
             Assert.IsTrue(finalP >= lower && finalP <= upper);
         }
 

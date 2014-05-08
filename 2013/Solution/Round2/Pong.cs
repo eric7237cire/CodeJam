@@ -90,16 +90,26 @@ namespace Round2.Pong
             }
         }
 
-        public static long ericFirstHit(long deltaP, long modulus, long a, long b)
+        public static long ericFirstHit(long deltaP, long modulus, long a, long b, int rCheck = 0)
         {
-            Logger.LogTrace("first hit deltaP {} modulus {}  a {} b {}", deltaP, modulus, a, b);
+            Preconditions.checkState(rCheck <= 25);
+            Preconditions.checkState(modulus > 0);
+            Logger.LogTrace("");
+            Logger.LogTrace("First hit deltaP {} modulus {}  a {} b {}", deltaP, modulus, a, b);
             Preconditions.checkState(a <= b);
 
+            deltaP %= modulus;
+            Logger.LogTrace("\u0394p = {}", deltaP);
+
+            if (deltaP == 0)
+            {
+                return 0;
+            }
             //We want to be able to have at least 2 points within the modulus
             if (2 * deltaP > modulus)
             {
                 //Flipping the problem
-                return ericFirstHit(modulus - deltaP, modulus, modulus - b, modulus - a);
+                return ericFirstHit(modulus - deltaP, modulus, modulus - b, modulus - a, 1+rCheck);
             }
 
             long bestIndex = (a+deltaP-1) / deltaP;
@@ -112,7 +122,7 @@ namespace Round2.Pong
             }
 
             //Calculate first wrap around paint
-            long firstWrapAroundIndex = (modulus + 1) / deltaP;
+            long firstWrapAroundIndex = 1 + modulus / deltaP;
             long firstWrapAroundPoint = (firstWrapAroundIndex * deltaP) % modulus;
 
             Logger.LogTrace("wrap around index {} point {}", firstWrapAroundIndex, firstWrapAroundPoint);
@@ -124,11 +134,15 @@ namespace Round2.Pong
             long newA = a % deltaP;
             long newB = b % deltaP;
             Logger.ChangeIndent(4);
-            long pointsToGoodStartingPoint = ericFirstHit(firstWrapAroundPoint, deltaP, newA, newB);
+            long pointsToGoodStartingPoint = ericFirstHit(firstWrapAroundPoint, deltaP, newA, newB, 1 + rCheck);
             Logger.ChangeIndent(-4);
 
-            long ret = firstWrapAroundIndex*pointsToGoodStartingPoint + a / deltaP;
-            Logger.LogTrace("Returning {} + {} = {}", pointsToGoodStartingPoint, a / deltaP, pointsToGoodStartingPoint + a / deltaP);
+            if (pointsToGoodStartingPoint == 0)
+                return 0;
+
+            long ret = (firstWrapAroundIndex-1)*pointsToGoodStartingPoint + a / deltaP + 1;
+            Logger.LogTrace("Returning {}*{} + {} = {}", 
+                firstWrapAroundIndex-1, pointsToGoodStartingPoint, a / deltaP, ret);
             return ret;
         }
 
@@ -669,7 +683,8 @@ namespace Round2.Pong
 
                 Logger.LogInfo("First point {}.  Starting point {}", fp, startingPoint % (2 * input.heightField));
 
-                for (int pIdx = 0; pIdx <= 50; ++pIdx)
+                int showStart = 9690 - 5;
+                for (int pIdx = showStart; pIdx <= showStart+50; ++pIdx)
                 {
                     NumType pi = ( yDif * 2 * pIdx) % (2 * input.heightField);
 
@@ -679,7 +694,7 @@ namespace Round2.Pong
                 }
 
 
-                for (int pIdx = 0; pIdx <= 50; ++pIdx)
+                for (int pIdx = showStart; pIdx <= showStart+50; ++pIdx)
                 {
                     BigInteger realIndex = 1 - team + 2 * (pIdx);
                     NumType pi = (p1.Y + yDif * realIndex) % (2 * input.heightField);
@@ -689,7 +704,7 @@ namespace Round2.Pong
                             pIdx, realIndex, pi, pi % input.heightField, calcAdd(p1.Y, yDif, realIndex, input.heightField), upper, upper - pi % input.heightField);
                 }
 
-                for (int j = 0; j < 10 && !foundFirstPointFail; ++j)
+                for (int j = 0; j < 1000 && !foundFirstPointFail; ++j)
                 {
                     startingPoint = p1.Y + yDif * (1 - team + 2 * jump);
 
@@ -697,7 +712,7 @@ namespace Round2.Pong
                         yDif * 2, 2 * input.heightField, cycleLength, cycleDiff, lower, upper);
 
                     jump += nextJump;
-                    Logger.LogTrace("jump {} nextJump {}", jump, nextJump);
+                    Logger.LogTrace("jump {} nextJump {} yDif*2 {}", jump, nextJump, yDif*2);
 
 
 
