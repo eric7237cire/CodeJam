@@ -163,7 +163,7 @@ namespace Utils
             //return (gcdXY[1] + modulus) % modulus;
         }
 
-        public static int gcd_recursive(int a, int b)
+        public static long gcd_recursive(long a, long b)
         {
             if (b != 0)
                 return gcd_recursive(b, a % b);
@@ -182,7 +182,7 @@ namespace Utils
          * q = (1 - ax) / m
          * which equals mir(m, a) !
          */
-        public static int mod_inverse_recursive(int a, int m)
+        public static long mod_inverse_recursive(long a, long m)
         {
             Logger.LogTrace("mod inverse a {} m {}", a, m);
             a %= m;
@@ -195,7 +195,7 @@ namespace Utils
             else
             {
                 Logger.ChangeIndent(4);
-                int mir = mod_inverse_recursive(m, a);
+                long mir = mod_inverse_recursive(m, a);
                 Logger.ChangeIndent(-4);
                 Logger.LogTrace("return [ (1 - {} * {}) / {} ] % {} = {}",
                     m, mir, a, m, ((1 - m * mir) / a) % m);

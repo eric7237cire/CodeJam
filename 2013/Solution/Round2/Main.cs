@@ -14,13 +14,14 @@ namespace Round2
     {
         static void Main(string[] args)
         {
-            bool tests = false;
+            bool tests = true;
 
             if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
    {
-       
-       @"/run=UnitTest.TestModMath",
-       @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\UnitTest\bin\Debug\UnitTest.dll"
+       @"/include=current",
+       @"C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll"
+     //  @"/run=UnitTest.TestModMath",
+     //  @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\UnitTest\bin\Debug\UnitTest.dll"
      // System.Reflection.Assembly.GetExecutingAssembly().Location
    });
             if (tests)
@@ -45,7 +46,7 @@ namespace Round2
             //list.Add("D-small-practice.in");
 
             string dir = @"C:\codejam\CodeJam\2013\Solution\Round2\";
-             dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round2\";
+            // dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round2\";
             //dir = @"/home/ent/mono/CodeJam/2013/Solution/Round2/";
 
             list = list.ConvertAll(s => dir + s);

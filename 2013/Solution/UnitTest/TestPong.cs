@@ -33,10 +33,7 @@ namespace UnitTest
         [Test]
         public void TestGCD()
         {
-            Logger.LogTrace("buh");
-            Console.WriteLine("hud");
-          //  ModdedLong.extendedEuclid(144, 42);
-
+            
             int a = 240;
             int b = 46;
             int[] ans = ModdedLong.extendedEuclid(a, b);
@@ -56,24 +53,66 @@ namespace UnitTest
                     continue;
 
                 int modInv = ModdedLong.modInverse(a, mod);
-                int modInv2 = ModdedLong.mod_inverse_recursive(a, mod);
+                long modInv2 = ModdedLong.mod_inverse_recursive(a, mod);
                 Logger.LogTrace("a: {} modInv: {}  recursively {}", a, modInv, modInv2);
                 Assert.AreEqual(1, (a * modInv) % mod);
             }
 
         }
 
-        static void Main(string[] args)
-        {
-            
-           
-        }
+       
     }
     [TestFixture] 
     public class TestPong
     {
+        [Test]
+        [Category("current")]
+        public void testFirstHit()
+        { 
+             
+             
+            int modulus = 20;
+            int deltaP = 17;
+            int a = 6;
+            int b = 10;
+            long firstHit = PongMain.ericFirstHit(deltaP,modulus,a,b);
+             
+            testFirstHitHelper(modulus,deltaP, a,b,(int)firstHit);
+
+            //exact hit on first cycle
+            a = 5; b = 5;
+
+            firstHit = PongMain.ericFirstHit(deltaP, modulus, a, b);
+            testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit);
+
+            a = 15; b = 16;
+
+            firstHit = PongMain.ericFirstHit(deltaP, modulus, a, b);
+            testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit);
+        }
+
+        private void testFirstHitHelper(int modulus, int deltaP,
+             int lower, int upper, int firstHitExpected)
+        {
+            for (int pIdx = 0; pIdx < firstHitExpected; ++pIdx)
+            {
+                int p = (deltaP * pIdx) % modulus;
+                
+                Logger.LogTrace("testFirstHitHelper pIdx: [{}] p: [{}] deltaP: [{}] lower: {} upper: {}",
+                    pIdx, p, deltaP, lower, upper);
+
+                Assert.IsTrue(p < lower || p > upper);                
+
+            }
+
+            int finalP = (deltaP * firstHitExpected) % modulus;
+            Logger.LogTrace("Final point is {} = {}", firstHitExpected, finalP);
+
+            Assert.IsTrue(finalP >= lower && finalP <= upper);
+        }
+
     	[Test]
-    	[Category("current")]
+    	
     	public void testForbiddenInterval()
     	{
     		int height = 12;

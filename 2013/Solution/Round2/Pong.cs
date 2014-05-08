@@ -31,7 +31,7 @@ namespace Round2.Pong
 
     public class PongMain : InputFileConsumer<PongInput, string>, InputFileProducer<PongInput>
     {
-        public static int solve_min(int b, int m, int s, int t)
+        public static long solve_min(long b, long m, long s, long t)
         {
             //assert 0 <= s and s <= t and t < m
             b %= m;
@@ -47,10 +47,10 @@ namespace Round2.Pong
 
             //Can't necessarily set y = ceil(floor(a*s/m) * m/a), because it might
             // be less than s. So treat y = s as a special case
-            int best = (b * s) % m;
+            long best = (b * s) % m;
 
-            int zs = b * s / m + 1;
-            int zt = b * t / m;
+            long zs = b * s / m + 1;
+            long zt = b * t / m;
             if (zs <= zt)
                 best = Math.Min(best, solve_min(-m, b, zs, zt));
             return best;
@@ -63,7 +63,7 @@ namespace Round2.Pong
 # - 0 <= a
 # - 0 <= s <= t < m.
 #*/
-        public static int first_hit(int a, int m, int s, int t)
+        public static long first_hit(long a, long m, long s, long t)
         {
             Logger.LogTrace("first_hit a {} m {} s {} t {}", a, m, s, t);
             Preconditions.checkState(0 <= s);
@@ -72,7 +72,7 @@ namespace Round2.Pong
             //assert 0 <= s and s <= t and t < m
             //   # Remove any common factors
             a %= m;
-            int g = ModdedLong.gcd_recursive(a, m);
+            long g = ModdedLong.gcd_recursive(a, m);
             a = a / g;
             m = m / g;
             s = (s + g - 1) / g;
@@ -84,11 +84,55 @@ namespace Round2.Pong
                 return -1;
             else
             {
-                int b = ModdedLong.mod_inverse_recursive(a, m);
+                long b = ModdedLong.mod_inverse_recursive(a, m);
                 //# ax mod m = y <=> x mod m = by
                 return solve_min(b, m, s, t);
             }
         }
+
+        public static long ericFirstHit(long deltaP, long modulus, long a, long b)
+        {
+            Logger.LogTrace("first hit deltaP {} modulus {}  a {} b {}", deltaP, modulus, a, b);
+            Preconditions.checkState(a <= b);
+
+            //We want to be able to have at least 2 points within the modulus
+            if (2 * deltaP > modulus)
+            {
+                //Flipping the problem
+                return ericFirstHit(modulus - deltaP, modulus, modulus - b, modulus - a);
+            }
+
+            long bestIndex = (a+deltaP-1) / deltaP;
+            long best = deltaP * bestIndex;
+            Logger.LogTrace("bestIndex {} best {}", bestIndex, best);
+            if (a <= best && best <= b)
+            {
+                Logger.LogTrace("Returning {}", bestIndex);
+                return bestIndex;
+            }
+
+            //Calculate first wrap around paint
+            long firstWrapAroundIndex = (modulus + 1) / deltaP;
+            long firstWrapAroundPoint = (firstWrapAroundIndex * deltaP) % modulus;
+
+            Logger.LogTrace("wrap around index {} point {}", firstWrapAroundIndex, firstWrapAroundPoint);
+
+            //This wrap around point (P in the explanation) is a step value, we want to create
+            //a sub problem
+
+            //First, we need to know what starting points would have meant a hit in the interval
+            long newA = a % deltaP;
+            long newB = b % deltaP;
+            Logger.ChangeIndent(4);
+            long pointsToGoodStartingPoint = ericFirstHit(firstWrapAroundPoint, deltaP, newA, newB);
+            Logger.ChangeIndent(-4);
+
+            long ret = firstWrapAroundIndex*pointsToGoodStartingPoint + a / deltaP;
+            Logger.LogTrace("Returning {} + {} = {}", pointsToGoodStartingPoint, a / deltaP, pointsToGoodStartingPoint + a / deltaP);
+            return ret;
+        }
+
+
         public static NumType calcAdd(NumType p0, NumType deltaP, BigInteger n, NumType height)
         {
 
@@ -427,88 +471,7 @@ namespace Round2.Pong
             return true;
         }
 
-        public BigInteger calculateFirstPlayerToMiss(
-            int startingPoint, NumType startingPointLocation, NumType yDif
-            , NumType disPossible, NumType diff, BigInteger height
-            )
-        {
-
-            NumType calculatedDeltaD;
-            long pointFailPlayer0 =
-                calcToTarget(startingPointLocation, diff, height, disPossible, out calculatedDeltaD);
-
-            Logger.LogTrace("deltaD -- {}", calculatedDeltaD);
-
-            if (calculatedDeltaD == 0)
-                return -1;
-
-            //NumType backwardsDiff = 2 * height - diff % (2*height);
-
-            //long pointFailPlayer0_backwards = calcToTarget(startingPointLocation, backwardsDiff, height, disPossible);
-
-            /*NumType failPoint0 = (startingPointLocation + diff * (pointFailPlayer0-1)) % (2* height);
-            NumType failPointBack = (startingPointLocation + backwardsDiff * (pointFailPlayer0_backwards+1)) % (2* height);
-	
-            Logger.LogTrace("fail point location {} backwards {}", failPoint0, failPointBack);
-	
-            NumType diffLoc = (failPoint0 - startingPointLocation);
-            NumType backDiffLoc = (failPointBack - startingPointLocation );
-	
-            Logger.LogTrace("diffLoc {} backwards {}", diffLoc, backDiffLoc);
-	
-            if (diffLoc < 0)
-                diffLoc += 2 * height;
-	
-            if (backDiffLoc < 0)
-                backDiffLoc += 2 * height;*/
-
-            //Logger.LogTrace("Adjusted diffLoc {} backwards {}", diffLoc, backDiffLoc);
-            Preconditions.checkState(calculatedDeltaD != 0);
-
-            //NumType playersToGo = diffLoc / calculatedDeltaD;
-            //NumType backPlayersToGo = backDiffLoc / calculatedDeltaD; //err going to far left
-
-            NumType[] points;
-            NumType[] points2h;
-            NumType[] diffs;
-            int count = 10;
-            calcPoints2hAndDiff(startingPointLocation, diff, height, pointFailPlayer0 - 1, count, out points,
-                out points2h, out diffs);
-
-
-
-            long firstPlayerFailForwards = long.MaxValue;
-
-            startingPointLocation = startingPointLocation % (2 * height);
-
-            //Because the first point passes, we want the diff following
-            for (int i = 0; i < count - 1; ++i)
-            {
-                if (diffs[i + 1] <= disPossible)
-                {
-                    Logger.LogTrace("Break loop {}", i);
-                    break;
-                }
-                NumType diffLoc = points2h[i] - startingPointLocation;
-
-                if (diffLoc < 0)
-                    diffLoc += 2 * height;
-
-                NumType playersToGo = pointFailPlayer0 + i - 1; //diffLoc / calculatedDeltaD;
-
-                Logger.LogTrace("At {} diffLoc = {} - {} = {} PlayersToGo {}", i,
-                    points2h[i], startingPointLocation, diffLoc,
-                    playersToGo);
-
-                firstPlayerFailForwards = Math.Min(firstPlayerFailForwards, (long)playersToGo);
-            }
-
-            Logger.LogTrace("Forward points {}\npoints 2h {}\ndiffs {}", points.ToCommaString(), points2h.ToCommaString(), diffs.Skip(1).ToCommaString());
-
-            //Logger.LogTrace("failPoint0 = {} % {} = {}   players to go = {} / {}",(startingPointLocation + diff * pointFailPlayer0),  (2* height), failPoint0, diffLoc, calculatedDeltaD);
-            //Logger.LogTrace("\n!!!\nfirst fail location {}.  players to go {}.  back {}", failPoint0, playersToGo, backPlayersToGo);
-            return firstPlayerFailForwards;
-        }
+       
 
         public static int findCycle(NumType p0, NumType deltaP, BigInteger mod, out NumType diff)
         {
@@ -697,7 +660,7 @@ namespace Round2.Pong
                 s %= (2 * input.heightField);
                 NumType t = s + 100 - 1;
 
-                int fp = first_hit( a:(int) (yDif * 2), 
+                long fp = first_hit( a:(int) (yDif * 2), 
                     m: (int) (2 * input.heightField), 
                     s: (int) (s),
                     t: (int) ( t));
@@ -899,51 +862,7 @@ namespace Round2.Pong
             Logger.LogInfo("Time = {} + {} * n.  Position = {} + {} * n", t0, t1, p1.Y, yDif);
 
             long firstPointFail = long.MaxValue;
-
-            long firstPointFail0 = long.MaxValue;
-
-            for (int team = 0; team < 1; ++team)
-            {
-                for (int playerNum = 0; playerNum < 1; ++playerNum) //teamSize[team]
-                {
-                    Logger.LogTrace("\n\nTeam {} player {}", team, playerNum);
-                    NumType deltaT = 2 * teamSize[team] * t1;
-                    NumType disPossible = deltaT * teamSpeed[team];
-
-                    NumType diff = yDif.Multiply(2 * teamSize[team]);
-
-                    BigFraction lower, upper;
-                    bool found = PongMain.calculateForbiddenInterval(disPossible,
-                        diff, input.heightField, out lower, out upper);
-
-                    Logger.LogTrace("testForbiddenInterval deltaP {} target {} lower {} upper {} found {}",
-                        diff, disPossible, lower, upper, found);
-
-                    int startingPoint = 2 * playerNum + 1 - team;
-                    NumType startingPointLocation = p1.Y + yDif * startingPoint;
-
-                    BigInteger firstPlayerToMiss =
-                    calculateFirstPlayerToMiss(startingPoint, startingPointLocation, yDif,
-                        disPossible, diff, input.heightField);
-
-                    //Count complete cyles
-                    BigInteger cycles = firstPlayerToMiss / teamSize[team];
-
-                    BigInteger realFirstPlayerToMiss = firstPlayerToMiss % teamSize[team];
-
-                    //Always second point
-                    BigInteger pointFailPlayer0 = (2 * realFirstPlayerToMiss + 1 - team) +
-                    2 * teamSize[team] * (1 + cycles);
-                    Logger.LogTrace("\nFirst player to miss {} real {}.  point {} cycles {}\n\n",
-                        firstPlayerToMiss, realFirstPlayerToMiss, pointFailPlayer0, cycles);
-
-                    if (firstPlayerToMiss == -1)
-                        continue;
-
-                    firstPointFail0 = Math.Min(firstPointFail0, (long)pointFailPlayer0);
-                }
-            }
-            //return "";
+                       
 
             for (int team = 0; team < 2; ++team)
             {
@@ -993,10 +912,6 @@ namespace Round2.Pong
                 }
             }
 
-
-
-            Logger.LogInfo("\n\nChecking {} == {}\n\n", firstPointFail0, firstPointFail);
-            // Preconditions.checkState(firstPointFail0 == firstPointFail);
 
             if (firstPointFail != long.MaxValue)
             {
