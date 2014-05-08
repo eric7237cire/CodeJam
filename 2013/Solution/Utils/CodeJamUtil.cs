@@ -489,7 +489,7 @@ namespace CodeJamUtils
         // other objects. Only unmanaged resources can be disposed.
         protected virtual void Dispose(bool disposing)
         {
-            Logger.Log(String.Format("Dispose {0}", disposing));
+            //Logger.Log(String.Format("Dispose {0}", disposing));
             // Check to see if Dispose has already been called.
             if (!this.disposed)
             {
@@ -522,7 +522,7 @@ namespace CodeJamUtils
         // Do not provide destructors in types derived from this class.
         ~Scanner()
         {
-            Logger.Log("~Scanner");
+            //Logger.Log("~Scanner");
             // Do not re-create Dispose clean-up code here.
             // Calling Dispose(false) is optimal in terms of
             // readability and maintainability.

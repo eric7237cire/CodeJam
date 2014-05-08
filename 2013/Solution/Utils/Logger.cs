@@ -26,6 +26,7 @@ namespace Utils
             writer = new StreamWriter(@"log.txt", false);
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
 
+            Console.WriteLine("Current directory " + Directory.GetCurrentDirectory());
         }
 
         public static void CurrentDomain_ProcessExit(object sender, EventArgs e)
@@ -55,13 +56,22 @@ namespace Utils
             return msg;
         }
 
+        private static int indent = 0;
+
         [Conditional("LOGGING_TRACE")]
         public static void LogTrace(String msg, params object[] args)
         {
             msg = replacePlaceholders(msg, args);
-            string msgf = String.Format(msg, args);
+            //string msgf = String.Format(msg, args);
 
-            Log(msgf);
+
+            Log(new String(' ', indent) + msg);
+        }
+
+        [Conditional("LOGGING_TRACE")]
+        public static void ChangeIndent(int val)
+        {
+            indent += val;
         }
 
         [Conditional("LOGGING_INFO")]

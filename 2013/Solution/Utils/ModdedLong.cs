@@ -1,4 +1,4 @@
-﻿//#define LOGGING_TRACE
+﻿#define LOGGING_TRACE
 #define LOGGING
 
 using System;
@@ -122,35 +122,48 @@ namespace Utils
     the pair x and y of equation ax + by = gcd(a,b)*/
         public static int[] extendedEuclid(int a, int b)
         {
-            int x = 1, y = 0;
-            int xLast = 0, yLast = 1;
-            int q, r, m, n;
-            while (a != 0)
+            Logger.LogTrace("Start {} {}", a, b);
+            int s_last2 = 1, t_last2 = 0;
+            int s_last = 0, t_last = 1;
+            int q, r, s=0, t=0;
+            while (b != 0)
             {
-                q = b / a;
-                r = b % a;
-                m = xLast - q * x;
-                n = yLast - q * y;
-                xLast = x;
-                yLast = y;
-                x = m;
-                y = n;
-                b = a;
-                a = r;
+                q = a / b;
+                r = a % b;
+                s = s_last2 - q * s_last;
+                t = t_last2 - q * t_last;
+                Logger.LogTrace("q {} r {} s {} t {}", q, r, s, t);
+
+                s_last2 = s_last;
+                t_last2 = t_last;
+
+                s_last = s;
+                t_last = t;
+                
+                a = b;
+                b = r;
+                Logger.LogTrace("x {} y {} a {} b {}", s_last2, t_last2, a, b);
             }
-            return new int[] { b, xLast, yLast };
+            return new int[] { a, s_last2, t_last2 };
         }
+
+       
 
         /**
          *  returns x such that ax = 1 mod m
          */
-        public static int modInverse(int a, int m)
+        public static int modInverse(int a, int modulus)
         {
-            int[] gcdXY = extendedEuclid(a, m);
-            return (gcdXY[1] + m) % m;
+            int[] gcdXY = extendedEuclid(a, modulus);
+            //a and m must be coprime
+            Preconditions.checkState(gcdXY[0] == 1);
+            //the +m %m is to prevent it from being negative
+
+            return gcdXY[1] < 0 ? gcdXY[1] + modulus : gcdXY[1];
+            //return (gcdXY[1] + modulus) % modulus;
         }
 
-        int gcd_recursive(int a, int b)
+        public static int gcd_recursive(int a, int b)
         {
             if (b != 0)
                 return gcd_recursive(b, a % b);
@@ -158,15 +171,36 @@ namespace Utils
                 return a;
         }
 
-        int mod_inverse_recursive(int a, int m)
+        /*
+         *  mir(a, m) = x
+         *  ax === 1  (mod m)
+         *  ax + qm = 1
+         *  (q is just an integer, negative if a is positive)
+         *  
+         * x = (1 - qm) / a
+         * and 
+         * q = (1 - ax) / m
+         * which equals mir(m, a) !
+         */
+        public static int mod_inverse_recursive(int a, int m)
         {
+            Logger.LogTrace("mod inverse a {} m {}", a, m);
             a %= m;
             Preconditions.checkState( a != 0 );
             if (a == 1)
+            {
+                Logger.LogTrace("return 1");
                 return 1;
+            }
             else
-                return (1 - m * mod_inverse_recursive(m, a)); // a) % m
-      
+            {
+                Logger.ChangeIndent(4);
+                int mir = mod_inverse_recursive(m, a);
+                Logger.ChangeIndent(-4);
+                Logger.LogTrace("return [ (1 - {} * {}) / {} ] % {} = {}",
+                    m, mir, a, m, ((1 - m * mir) / a) % m);
+                return ((1 - m * mir) / a) % m;
+            }
         }
     }
 }

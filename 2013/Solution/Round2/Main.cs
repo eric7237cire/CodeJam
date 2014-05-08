@@ -14,10 +14,21 @@ namespace Round2
     {
         static void Main(string[] args)
         {
+            bool tests = false;
+
+            if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
+   {
+       
+       @"/run=UnitTest.TestModMath",
+       @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\UnitTest\bin\Debug\UnitTest.dll"
+     // System.Reflection.Assembly.GetExecutingAssembly().Location
+   });
+            if (tests)
+                return;
             //TicketSwap main = new TicketSwap();
 
             //ManyPrizes main = new ManyPrizes();
-           // Erdos main = new Erdos();
+            // Erdos main = new Erdos();
             PongMain main = new PongMain();
             List<string> list = new List<string>();
 
@@ -25,8 +36,8 @@ namespace Round2
             //list.Add("A-small-practice.in");
             //list.Add("A-large-practice.in");
 
-          //list.Add("B-small-practice.in");
-         //   list.Add("B-large-practice.in");
+            //list.Add("B-small-practice.in");
+            //   list.Add("B-large-practice.in");
 
             //list.Add("C-small-practice.in");
             //list.Add("C-large-practice.in");
@@ -34,8 +45,8 @@ namespace Round2
             //list.Add("D-small-practice.in");
 
             string dir = @"C:\codejam\CodeJam\2013\Solution\Round2\";
-           // dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round2\";
-		//dir = @"/home/ent/mono/CodeJam/2013/Solution/Round2/";
+             dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round2\";
+            //dir = @"/home/ent/mono/CodeJam/2013/Solution/Round2/";
 
             list = list.ConvertAll(s => dir + s);
 

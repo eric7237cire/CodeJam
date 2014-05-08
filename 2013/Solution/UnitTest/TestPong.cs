@@ -27,6 +27,48 @@ using Utils.math;
 
 namespace UnitTest
 {
+    [TestFixture]
+    public class TestModMath
+    {
+        [Test]
+        public void TestGCD()
+        {
+            Logger.LogTrace("buh");
+            Console.WriteLine("hud");
+          //  ModdedLong.extendedEuclid(144, 42);
+
+            int a = 240;
+            int b = 46;
+            int[] ans = ModdedLong.extendedEuclid(a, b);
+
+            Assert.AreEqual(ans[1] * a + ans[2] * b, ans[0]);
+
+        }
+
+        [Test]
+        public void TestModInverse()
+        {
+            int mod = 17;
+
+            for(int a = 1; a < 1000; ++a)
+            {
+                if (ModdedLong.gcd_recursive(a, mod) != 1)
+                    continue;
+
+                int modInv = ModdedLong.modInverse(a, mod);
+                int modInv2 = ModdedLong.mod_inverse_recursive(a, mod);
+                Logger.LogTrace("a: {} modInv: {}  recursively {}", a, modInv, modInv2);
+                Assert.AreEqual(1, (a * modInv) % mod);
+            }
+
+        }
+
+        static void Main(string[] args)
+        {
+            
+           
+        }
+    }
     [TestFixture] 
     public class TestPong
     {

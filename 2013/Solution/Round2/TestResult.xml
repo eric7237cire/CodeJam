@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\UnitTest\bin\Debug\UnitTest.dll" total="2" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2014-05-08" time="10:33:21">
+  <environment nunit-version="2.6.3.13283" clr-version="4.0.30319.18444" os-version="Microsoft Windows NT 6.1.7601 Service Pack 1" platform="Win32NT" cwd="C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round2" machine-name="EPEG-PC" user="epeg" user-domain="epeg-PC" />
+  <culture-info current-culture="fr-FR" current-uiculture="en-US" />
+  <test-suite type="Assembly" name="C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\UnitTest\bin\Debug\UnitTest.dll" executed="True" result="Success" success="True" time="0.477" asserts="0">
+    <results>
+      <test-suite type="Namespace" name="UnitTest" executed="True" result="Success" success="True" time="0.469" asserts="0">
+        <results>
+          <test-suite type="TestFixture" name="TestModMath" executed="True" result="Success" success="True" time="0.468" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestModMath.TestGCD" executed="True" result="Success" success="True" time="0.142" asserts="1" />
+              <test-case name="UnitTest.TestModMath.TestModInverse" executed="True" result="Success" success="True" time="0.318" asserts="941" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
