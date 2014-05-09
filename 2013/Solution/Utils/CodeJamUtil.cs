@@ -158,7 +158,7 @@ namespace CodeJamUtils
                         Logger.Log("Read input for tc {0} : {1}", tc, input.ToString());
                         queue.Add(new Tuple<InputClass, int>(input, tc));
                         Preconditions.checkState(tc <= 20);
-                        int tcLocal = tc;
+                        
                         
                     }
                     queue.CompleteAdding();
@@ -253,8 +253,10 @@ namespace CodeJamUtils
                        
                         
                         //Avoid binding to tc which gets incremented beyond the limit
+                        #if !mono
                         int tcLocal = tc;
-                        //consumeTasks[tc-1] = Task.Run(() => consumeSingle(input, tcLocal, answers));
+                        consumeTasks[tc-1] = Task.Run(() => consumeSingle(input, tcLocal, answers));
+                        #endif
                     }
                                         
                     timer.Stop();
@@ -292,7 +294,7 @@ namespace CodeJamUtils
             {
                 string inputFileName = fn;
 
-                string checkFileName = regex.Replace(inputFileName, ".check", 1);
+               // string checkFileName = regex.Replace(inputFileName, ".check", 1);
                 string outputFileName = regex.Replace(inputFileName, ".out", 1);
 
                 TextReader inputReader = null;

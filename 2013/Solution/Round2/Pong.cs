@@ -1,7 +1,7 @@
-﻿#define LOGGING
-#define LOGGING_DEBUG
-#define LOGGING_INFO
-#define LOGGING_TRACE
+﻿//#define LOGGING
+//#define LOGGING_DEBUG
+//#define LOGGING_INFO
+//#define LOGGING_TRACE
 #define FRAC
 using CodeJamUtils;
 using System;
@@ -31,64 +31,6 @@ namespace Round2.Pong
 
     public class PongMain : InputFileConsumer<PongInput, string>, InputFileProducer<PongInput>
     {
-        public static long solve_min(long b, long m, long s, long t)
-        {
-            //assert 0 <= s and s <= t and t < m
-            b %= m;
-            if (b == 0 || s == 0)
-            {
-                return 0;
-            }
-            else if (b * 2 > m)
-            {
-                return solve_min(m - b, m, m - t, m - s);
-            }
-
-
-            //Can't necessarily set y = ceil(floor(a*s/m) * m/a), because it might
-            // be less than s. So treat y = s as a special case
-            long best = (b * s) % m;
-
-            long zs = b * s / m + 1;
-            long zt = b * t / m;
-            if (zs <= zt)
-                best = Math.Min(best, solve_min(-m, b, zs, zt));
-            return best;
-        }
-
-        /*
-# Finds smallest non-negative x such that mod(a * x, m) lies in the range [s, t],
-# or -1 if there are no solutions.
-# Preconditions:
-# - 0 <= a
-# - 0 <= s <= t < m.
-#*/
-        public static long first_hit(long a, long m, long s, long t)
-        {
-            Logger.LogTrace("first_hit a {} m {} s {} t {}", a, m, s, t);
-            Preconditions.checkState(0 <= s);
-            Preconditions.checkState(s <= t);
-            Preconditions.checkState(t < m);
-            //assert 0 <= s and s <= t and t < m
-            //   # Remove any common factors
-            a %= m;
-            long g = ModdedLong.gcd_recursive(a, m);
-            a = a / g;
-            m = m / g;
-            s = (s + g - 1) / g;
-            t = t / g;
-
-            if (s == 0)
-                return 0;
-            else if (a == 0 || s > t)
-                return -1;
-            else
-            {
-                long b = ModdedLong.mod_inverse_recursive(a, m);
-                //# ax mod m = y <=> x mod m = by
-                return solve_min(b, m, s, t);
-            }
-        }
         
         public static BigInteger callFirstHit(NumType p0_f, NumType deltaP_f,
         	NumType lower_f, NumType upper_f, BigInteger height)
@@ -132,10 +74,22 @@ namespace Round2.Pong
 			
 			BigInteger upperDiff = height - upper;
 			
+			Preconditions.checkState(upperDiff >= 0);
+			Preconditions.checkState(upperDiff <= height);
+			
 			ranges.Add( new BigInteger[2] { -upperDiff + 1 - p0, lower - 1 - p0 } );
 			ranges.Add( new BigInteger[2] { upper + 1 - p0, height+lower - 1 - p0 } );
 			
 			BigInteger first = -1;
+			
+			Action<BigInteger> funcUpdateFirst = (newFirstHitVal) => 
+			{
+				if (newFirstHitVal == -1)
+					return;
+				
+				if (first == -1 || newFirstHitVal < first)
+						first = newFirstHitVal;	
+			};
 			
 			foreach( BigInteger[] range in ranges)
 			{
@@ -143,10 +97,11 @@ namespace Round2.Pong
 				
 				for(int i = 0; i < 2; ++i)
 				{
-					if (range[i] < 0)
+					while (range[i] < 0)
 						range[i] += height2;
 					
-					Preconditions.checkState(range[i] >= 0 && range[i] < height2);
+					Preconditions.checkState(range[i] >= 0, "6");
+					Preconditions.checkState(range[i] < height2, "7");
 				}
 				
 				Logger.LogTrace("Range {} to {}", range[0], range[1]);
@@ -154,31 +109,35 @@ namespace Round2.Pong
 				
 				if (range[0] > range[1])
 				{
-					firstHit = ericFirstHit( (long) deltaP, (long) height2,
-					(long) range[0], (long) height2 );
-					if (first == -1 || firstHit < first)
-						first = firstHit;
+					firstHit = ericFirstHit(  deltaP,  height2,
+					 range[0],  height2 );
+					
+					funcUpdateFirst(firstHit);
 				
-					firstHit = ericFirstHit( (long) deltaP, (long) height2,
-					(long) 0, (long) range[1] );
-					if (first == -1 || firstHit < first)
-						first = firstHit;
+					firstHit = ericFirstHit(  deltaP,  height2,
+					 0,  range[1] );
+					
+					funcUpdateFirst(firstHit);
 				} else {
-				
-				Preconditions.checkState(range[0] <= range[1]);
-				
-				firstHit = ericFirstHit( (long) deltaP, (long) height2,
-					(long) range[0], (long) range[1] );
-				if (first == -1 || firstHit < first)
-					first = firstHit;
-				
+					
+					Preconditions.checkState(range[0] <= range[1]);
+					
+					firstHit = ericFirstHit(  deltaP,  height2,
+						 range[0],  range[1] );
+					
+					funcUpdateFirst(firstHit);
 				}
+				
 			}
 			
 			return first;
         }
 
-        public static long ericFirstHit(long deltaP, long modulus, long a, long b, int rCheck = 0)
+        /*
+        Find the first point x in
+        Ax % modulus that falls in [a,b]
+        */
+        public static BigInteger ericFirstHit(BigInteger deltaP, BigInteger modulus, BigInteger a, BigInteger b, int rCheck = 0)
         {
             Preconditions.checkState(rCheck <= 25);
             Preconditions.checkState(modulus > 0);
@@ -191,7 +150,7 @@ namespace Round2.Pong
 
             if (deltaP == 0)
             {
-                return 0;
+                return -1;
             }
             //We want to be able to have at least 2 points within the modulus
             if (2 * deltaP > modulus)
@@ -200,8 +159,9 @@ namespace Round2.Pong
                 return ericFirstHit(modulus - deltaP, modulus, modulus - b, modulus - a, 1+rCheck);
             }
 
-            long bestIndex = (a+deltaP-1) / deltaP;
-            long best = deltaP * bestIndex;
+            //The first point that goes past a, the beginning of the interval
+            BigInteger bestIndex = (a+deltaP-1) / deltaP;
+            BigInteger best = deltaP * bestIndex;
             Logger.LogTrace("bestIndex {} best {}", bestIndex, best);
             if (a <= best && best <= b)
             {
@@ -210,8 +170,8 @@ namespace Round2.Pong
             }
 
             //Calculate first wrap around paint
-            long firstWrapAroundIndex = 1 + modulus / deltaP;
-            long firstWrapAroundPoint = (firstWrapAroundIndex * deltaP) % modulus;
+            BigInteger firstWrapAroundIndex = 1 + modulus / deltaP;
+            BigInteger firstWrapAroundPoint = (firstWrapAroundIndex * deltaP) % modulus;
 
             Logger.LogTrace("wrap around index {} point {}", firstWrapAroundIndex, firstWrapAroundPoint);
 
@@ -219,19 +179,19 @@ namespace Round2.Pong
             //a sub problem
 
             //First, we need to know what starting points would have meant a hit in the interval
-            long newA = a % deltaP;
-            long newB = b % deltaP;
+            BigInteger newA = a % deltaP;
+            BigInteger newB = b % deltaP;
             Logger.ChangeIndent(4);
-            long cyclesNeeded = ericFirstHit(firstWrapAroundPoint, deltaP, newA, newB, 1 + rCheck);
+            BigInteger cyclesNeeded = ericFirstHit(firstWrapAroundPoint, deltaP, newA, newB, 1 + rCheck);
             Logger.ChangeIndent(-4);
 
-            if (cyclesNeeded == 0)
-                return 0;
+            if (cyclesNeeded == -1)
+                return -1;
 
             //If we cycle C times, then we must travel modulus * C 
-            long pointsInCycles = (modulus * cyclesNeeded) / deltaP;
+            BigInteger pointsInCycles = (modulus * cyclesNeeded) / deltaP;
             //(firstWrapAroundIndex-1)
-            long ret =  pointsInCycles + a / deltaP + 1;
+            BigInteger ret =  pointsInCycles + a / deltaP + 1;
             Logger.LogTrace("Returning {}+{} + {} = {}", 
                 firstWrapAroundIndex-1, pointsInCycles, a / deltaP, ret);
             return ret;
@@ -660,19 +620,11 @@ namespace Round2.Pong
                 yDif += input.heightField;
             }
 
-#if FRAC
             BigFraction t0 = new BigFraction(input.widthField - input.X, input.VX);
             BigFraction t1 = new BigFraction(input.widthField, input.VX);
-#else
-            NumType t0 = (input.widthField - input.X) / (double) input.VX;
-            NumType t1 = input.widthField / (double) input.VX;
-#endif
 
-            //  List<Tuple<NumType, NumType>>[] teamPlayerPos = new List<Tuple<NumType,NumType>>[2]; //time, loc pair
-            //teamPlayerPos[0] = new List<Tuple<NumType, NumType>>(); //left 
-            // teamPlayerPos[1] = new List<Tuple<NumType, NumType>>(); //right
             BigInteger[] teamSize = new BigInteger[] { input.numLeftTeam, input.numRightTeam };
-            int[] curPlayer = new int[2] { 0, 0 };
+            
             BigInteger[] teamSpeed = new BigInteger[2] { input.speedLeftTeam, input.speedRightTeam };
 
             Logger.LogInfo("Width {} Height {}", input.widthField, input.heightField);
@@ -706,13 +658,14 @@ namespace Round2.Pong
                 
                 NumType startingPoint = p1.Y + yDif * (1 - team);
                                 
-				BigInteger firstPointFail0 = callFirstHit(startingPoint, yDif * 2, lower, upper, input.heightField);
+				BigInteger firstPointFail0 = teamSize[team] + callFirstHit(startingPoint, yDif * 2, lower, upper, input.heightField);
 				
 				Logger.LogTrace("failTeam {} firstPointFail {} firstPointFail0 {}", failTeam, firstPointFail, firstPointFail0);
 				
-				if (failTeam == -1 || firstPointFail0 < firstPointFail)
+				//In the case of a tie, the LEFT team (teamNum 0) wins
+				if (failTeam == -1 || firstPointFail0 <= firstPointFail )
 				{
-					firstPointFail = firstPointFail0 + teamSize[team];	
+					firstPointFail = firstPointFail0 ;	
 					failTeam = team;
 				}
                 Logger.LogInfo("firstPointFail {}.",  firstPointFail);
@@ -796,11 +749,8 @@ namespace Round2.Pong
             NumType t1 = input.widthField / (double) input.VX;
 #endif
 
-            //  List<Tuple<NumType, NumType>>[] teamPlayerPos = new List<Tuple<NumType,NumType>>[2]; //time, loc pair
-            //teamPlayerPos[0] = new List<Tuple<NumType, NumType>>(); //left 
-            // teamPlayerPos[1] = new List<Tuple<NumType, NumType>>(); //right
             BigInteger[] teamSize = new BigInteger[] { input.numLeftTeam, input.numRightTeam };
-            int[] curPlayer = new int[2] { 0, 0 };
+            
             BigInteger[] teamSpeed = new BigInteger[2] { input.speedLeftTeam, input.speedRightTeam };
 
             Logger.LogInfo("Width {} Height {}", input.widthField, input.heightField);
@@ -908,13 +858,9 @@ namespace Round2.Pong
 
         //Works for small, cycles through each player, finding when the player
         //will reach a target difference
-        public string processInputOld(PongInput input)
+        public string processInputSmall(PongInput input)
         {
-            //ShowOutput();
-            //return "hoetnuh";
-            // processInputManual(input);
-
-            bool switchTeams = false;
+        	bool switchTeams = false;
 
             if (input.VX < 0)
             {
@@ -959,7 +905,7 @@ namespace Round2.Pong
             teamPlayerPos[0] = new List<Tuple<NumType, NumType>>(); //left 
             teamPlayerPos[1] = new List<Tuple<NumType, NumType>>(); //right
             int[] teamSize = new int[] { (int)input.numLeftTeam, (int)input.numRightTeam };
-            int[] curPlayer = new int[2] { 0, 0 };
+            
             long[] teamSpeed = new long[2] { (long)input.speedLeftTeam, (long)input.speedRightTeam };
 
             Logger.LogInfo("Width {} Height {1}", input.widthField, input.heightField);
@@ -1032,134 +978,7 @@ namespace Round2.Pong
             return "DRAW";
         }
 
-        public string processInputManual(PongInput input)
-        {
-            bool switchTeams = false;
-
-            if (input.VX < 0)
-            {
-                input.VX = -input.VX;
-                CjUtils.swap(ref input.numRightTeam, ref input.numLeftTeam);
-                CjUtils.swap(ref input.speedLeftTeam, ref input.speedRightTeam);
-                switchTeams = true;
-                input.X = input.widthField - input.X;
-            }
-
-            Line teamLeft = Line.createFromCoords(0, 0, 0, 1);
-            Line teamRight = Line.createFromCoords(input.widthField, 0, input.widthField, 1);
-
-            Line initialVector = Line.createFromCoords(input.X, input.Y, input.X + input.VX, input.Y + input.VY);
-
-            var p1 = initialVector.intersection(teamRight);
-
-
-
-            Line rebound = Line.createFromPoints(p1, p1.Add(new Point(-input.VX, input.VY)));
-
-            var p2 = rebound.intersection(teamLeft);
-            Logger.Log("Initial point {0}, {1} direction {2}, {3}", input.X, input.Y, input.VX, input.VY);
-            Logger.Log("P1 {0} P2 {1}", p1, p2);
-
-            NumType yDif = p2.Y.Subtract(p1.Y);
-#if FRAC
-            BigFraction t0 = new BigFraction(input.widthField - input.X, input.VX);
-            BigFraction t1 = new BigFraction(input.widthField, input.VX);
-#else
-            NumType t0 = (input.widthField - input.X) / (double) input.VX;
-            NumType t1 = input.widthField / (double) input.VX;
-#endif
-
-            List<Tuple<NumType, NumType>>[] teamPlayerPos = new List<Tuple<NumType, NumType>>[2]; //time, loc pair
-            teamPlayerPos[0] = new List<Tuple<NumType, NumType>>(); //left 
-            teamPlayerPos[1] = new List<Tuple<NumType, NumType>>(); //right
-
-            int[] teamSize = new int[] { (int)input.numLeftTeam, (int)input.numRightTeam };
-            int[] curPlayer = new int[2] { 0, 0 };
-            long[] teamSpeed = new long[2] { (long)input.speedLeftTeam, (long)input.speedRightTeam };
-
-
-            Logger.LogInfo("Width {} Height {1}", input.widthField, input.heightField);
-            Logger.LogInfo("Left team {0} players at {1} speed", teamSize[0], teamSpeed[0]);
-            Logger.LogInfo("Right team {0} players at {1} speed", teamSize[1], teamSpeed[1]);
-            Logger.LogInfo("Time = {} + {} * n.  Position = {2} + {3} * n", t0, t1, p1.Y, yDif);
-            //HashSet<int>[] playerZeroPos = new HashSet<int>[] { new HashSet<int>(), new HashSet<int>() };
-
-            Func<int, NumType> getYPosFromPointNum = (pNum) =>
-            {
-                NumType y = p1.Y.Add(yDif.Multiply(pNum));
-                double x = pNum % 2 != 0 ? 0 : (long)input.widthField;
-
-                long rem = (long)(y.Divide(input.heightField));
-
-                y = y.Subtract(rem * input.heightField);
-
-                if (rem % 2 == 1)
-                {
-                    y = ((NumType)input.heightField).Subtract(y);
-                }
-
-                return y;
-            };
-
-
-            const int maxPnum = 400000;
-            for (int pNum = 0; pNum < maxPnum; ++pNum)
-            {
-                int team = pNum % 2 == 0 ? 1 : 0;
-
-                NumType y = getYPosFromPointNum(pNum);
-
-                NumType time = t0.Add(t1.Multiply(pNum));
-
-                if (curPlayer[team] == 166)
-                    Logger.LogTrace("Side {} Point {} is {}.  Time {}.  Current player {}", team, pNum, y, time, curPlayer[team]);
-
-                if (teamPlayerPos[team].Count < teamSize[team])
-                {
-                    teamPlayerPos[team].Add(new Tuple<NumType, NumType>(time, y));
-                }
-                else
-                {
-                    //Check last position
-                    var lastTimePos = teamPlayerPos[team][curPlayer[team]];
-                    NumType deltaT = time.Subtract(lastTimePos.Item1);
-                    NumType deltaDis = lastTimePos.Item2.Subtract(y).Abs();
-
-                    NumType disPossible = deltaT.Multiply(teamSpeed[team]);
-                    if (disPossible.CompareTo(deltaDis) < 0)
-                    {
-                        int num = (pNum + team) / 2;
-                        string teamName = ((!switchTeams && team == 0) || (switchTeams && team == 1)) ? "RIGHT" : "LEFT";
-                        Logger.LogDebug("Loser lastTime: {}   pos: {}.  Delta dis {}, could move {}.  player {} team {}",
-                            lastTimePos.Item1, lastTimePos.Item2,
-                            deltaDis, disPossible, curPlayer[team], team);
-                        return teamName + " " + num;
-                    }
-                    else
-                    {
-                        /* if (curPlayer[team] < 10)
-                             Logger.LogDebug("lastTime {0} sec  pos:{1}.  Delta dis {2}, could move {3} team {4} curPlayer {5} ", lastTimePos.Item1, lastTimePos.Item2,
-                                 deltaDis, disPossible, team, curPlayer[team]);*/
-                    }
-
-                    teamPlayerPos[team][curPlayer[team]] = new Tuple<NumType, NumType>(time, y);
-                }
-
-                if (curPlayer[team] == 0)
-                {
-                    //if (playerZeroPos[team].Contains(y))
-                    {
-                        //return "DRAW";
-                    }
-                }
-
-                curPlayer[team]++;
-                curPlayer[team] %= teamSize[team];
-            }
-
-            return "DRAW";
-        }
-
+        
 
         public PongInput createInput(Scanner scanner)
         {

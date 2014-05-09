@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="go.exe" total="2" failures="0" not-run="0" date="2014-05-09" time="14:20:50">
+<test-results name="go.exe" total="1" failures="0" not-run="0" date="2014-05-09" time="14:53:26">
   <environment nunit-version="2.4.8.0" clr-version="4.0.30319.1" os-version="Unix 3.13.10.200" platform="Unix" cwd="/home/ent/mono/CodeJam/2013/Solution" machine-name="b016763" user="ent" user-domain="b016763" />
   <culture-info current-culture="fr-FR" current-uiculture="fr-FR" />
-  <test-suite name="go.exe" success="True" time="0.071" asserts="0">
+  <test-suite name="go.exe" success="True" time="0.124" asserts="0">
     <results>
-      <test-suite name="UnitTest" success="True" time="0.067" asserts="0">
+      <test-suite name="UnitTest" success="True" time="0.120" asserts="0">
         <results>
-          <test-suite name="TestPong" success="True" time="0.050" asserts="0">
+          <test-suite name="TestPong" success="True" time="0.099" asserts="0">
             <results>
-              <test-case name="UnitTest.TestPong.testForbiddenIntervalSmall2" executed="True" success="True" time="0.032" asserts="182">
-                <categories>
-                  <category name="current" />
-                </categories>
-              </test-case>
-              <test-case name="UnitTest.TestPong.TestSmall2" executed="True" success="True" time="0.012" asserts="1">
+              <test-case name="UnitTest.TestPong.TestLarge17" executed="True" success="True" time="0.097" asserts="1">
                 <categories>
                   <category name="current" />
                 </categories>

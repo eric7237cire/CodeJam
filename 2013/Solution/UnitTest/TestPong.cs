@@ -4,6 +4,7 @@
 #define LOGGING_TRACE
 
 using System;
+using System.Numerics;
 using NUnit.Framework;
 using CodeJamUtils;
 using System.IO;
@@ -68,12 +69,32 @@ namespace UnitTest
     public class TestPong
     {
     	[Test]
-    	[Category("current")]
+    	//[Category("current")]
         public void TestSmall2()
         {
         	string testSmall2 = 
         	"12 3 1 3 3 1 1 1 2 4";
             testInput(testSmall2, "LEFT 3");
+        }
+        
+        [Test]
+    	//[Category("current")]
+        public void TestSmall63()
+        {
+        	string test= "12069 2 377 846695 8 810293 1792 1 9660 1";
+        	testInput(test, "RIGHT 1163");
+        }
+        
+         [Test]
+    	[Category("current")]
+        public void TestLarge17()
+        {
+        	string test = "3244416195845595641843798158834358800431125796453839309136919376256492524313960264296322925872417358 3" +
+" 4 1" +
+" 1626706262671903848811258729250534115833211303687780805880727901414119440792082950052752755745008610 5667579653723775738685342350962640308485958257022882527754970237499457052099791070424311718052713668" +
+" 1659859560762406728536500413274951858715001241923798560604143739934917410556948439515597903506410003 1 5673912739374444770737750416035794205580639295872147832085609398721499674523222437232430222152156297 -7624183898385442534879835957107869300809857323677254159647387386418400385347627542958114064993566506";
+			testInput(test, "LEFT 1");
+
         }
         
         [Test]
@@ -86,7 +107,7 @@ namespace UnitTest
             int deltaP = 17;
             int a = 6;
             int b = 10;
-            long firstHit = PongMain.ericFirstHit(deltaP,modulus,a,b);
+            BigInteger firstHit = PongMain.ericFirstHit(deltaP,modulus,a,b);
              
             testFirstHitHelper(modulus,deltaP, a,b,(int)firstHit);
 
@@ -231,7 +252,7 @@ namespace UnitTest
     	}
     	
     	[Test]
-    	[Category("current")]
+    	//[Category("current")]
     	public void testForbiddenIntervalSmall2()
     	{
     		int height = 12;
@@ -303,11 +324,6 @@ namespace UnitTest
         [Test]
         public void testFrac()
         {
-            BigFraction deltaP = 0;
-            BigFraction height = 100;
-
-            long rem = (long)(deltaP / (2 * height));
-
             Assert.IsTrue(new BigFraction(19, 1) >= new BigFraction(19, 1));
         }
         [Test]

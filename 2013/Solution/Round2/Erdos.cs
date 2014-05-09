@@ -233,11 +233,11 @@ namespace Round2.ErdosNS
                 lastValueIndex[val] = u;
             }
 
-            int root = -1;
+            //int root = -1;
             for (int u = 0; u < input.length; ++u )
             {
                 if (input.A[u] == 1 && input.B[u] == 1) {
-                    root = u;
+                    //root = u;
                     break;
                 }
             }

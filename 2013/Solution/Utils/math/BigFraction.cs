@@ -1,6 +1,6 @@
-﻿#define LOGGING
-#define LOGGING_DEBUG
-#define LOGGING_INFO
+﻿//#define LOGGING
+//#define LOGGING_DEBUG
+//#define LOGGING_INFO
 //#define LOGGING_TRACE
 
 using System;
@@ -284,7 +284,7 @@ namespace Utils.math
 
         public int CompareTo(BigFraction other)
         {
-            BigInteger nOd = BigInteger.Multiply(numerator, other.denominator);
+        	BigInteger nOd = BigInteger.Multiply(numerator, other.denominator);
             BigInteger dOn = BigInteger.Multiply(denominator, other.numerator);
             return nOd.CompareTo(dOn);
         }
@@ -303,11 +303,28 @@ return "{0} / {1}".FormatThis(numerator.ToString(), denominator.ToString() );
             return "{0} / {1}".FormatThis(numerator.ToString("0,0", new CultureInfo("en-US")), denominator.ToString("0,0", new CultureInfo("en-US")));
 #endif
         }
+        
+        public override bool Equals(object obj)
+        {
+        	if (! (obj is BigFraction) )
+        		return false;
+            return this.Equals( (BigFraction)obj );
+        }
+        
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            hash = hash * 23 + numerator.GetHashCode();
+            hash = hash * 23 + denominator.GetHashCode();
+            return hash;            
+        }
+        
         #endregion
 
         #region interface IEquatable
         public bool Equals(BigFraction other)
         {
+        	//TODO inconsistent with reduced == unreduced fraction
             return CompareTo(other) == 0;
         }
         #endregion
