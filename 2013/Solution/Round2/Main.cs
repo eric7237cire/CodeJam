@@ -14,6 +14,7 @@ namespace Round2
     {
         static void Main(string[] args)
         {
+        	#if !mono
             bool tests = true;
 
             if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
@@ -26,6 +27,7 @@ namespace Round2
    });
             if (tests)
                 return;
+            #endif
             //TicketSwap main = new TicketSwap();
 
             //ManyPrizes main = new ManyPrizes();
@@ -43,11 +45,11 @@ namespace Round2
             //list.Add("C-small-practice.in");
             //list.Add("C-large-practice.in");
 
-            //list.Add("D-small-practice.in");
+            list.Add("D-small-practice.in");
 
             string dir = @"C:\codejam\CodeJam\2013\Solution\Round2\";
-            // dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round2\";
-            //dir = @"/home/ent/mono/CodeJam/2013/Solution/Round2/";
+            //dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round2\";
+            dir = @"/home/ent/mono/CodeJam/2013/Solution/Round2/";
 
             list = list.ConvertAll(s => dir + s);
 

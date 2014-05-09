@@ -1,60 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll" total="11" errors="0" failures="3" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2014-05-07" time="20:14:38">
-  <environment nunit-version="2.6.3.13283" clr-version="2.0.50727.5477" os-version="Microsoft Windows NT 6.1.7601 Service Pack 1" platform="Win32NT" cwd="C:\codejam\CodeJam\2013\Solution" machine-name="THRESH-PC" user="thresh" user-domain="thresh-PC" />
+<test-results name="go.exe" total="1" failures="0" not-run="0" date="2014-05-09" time="09:11:57">
+  <environment nunit-version="2.4.8.0" clr-version="4.0.30319.1" os-version="Unix 3.13.10.200" platform="Unix" cwd="/home/ent/mono/CodeJam/2013/Solution" machine-name="b016763" user="ent" user-domain="b016763" />
   <culture-info current-culture="fr-FR" current-uiculture="fr-FR" />
-  <test-suite type="Assembly" name="C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll" executed="True" result="Failure" success="False" time="1.362" asserts="0">
+  <test-suite name="go.exe" success="True" time="0.045" asserts="0">
     <results>
-      <test-suite type="Namespace" name="UnitTest" executed="True" result="Failure" success="False" time="1.347" asserts="0">
+      <test-suite name="UnitTest" success="True" time="0.041" asserts="0">
         <results>
-          <test-suite type="TestFixture" name="TestPong" executed="True" result="Failure" success="False" time="1.344" asserts="0">
+          <test-suite name="TestPong" success="True" time="0.021" asserts="0">
             <results>
-              <test-case name="UnitTest.TestPong.TestCalcToTarget" executed="True" result="Success" success="True" time="0.254" asserts="1" />
-              <test-case name="UnitTest.TestPong.TestCalcToTarget2" executed="True" result="Success" success="True" time="0.001" asserts="1" />
-              <test-case name="UnitTest.TestPong.TestCalcToTarget3" executed="True" result="Success" success="True" time="0.001" asserts="1" />
-              <test-case name="UnitTest.TestPong.TestCalcToTarget4" executed="True" result="Success" success="True" time="0.002" asserts="5" />
-              <test-case name="UnitTest.TestPong.TestCalcToTargetUsingRand" executed="True" result="Success" success="True" time="0.129" asserts="534" />
-              <test-case name="UnitTest.TestPong.testForbiddenInterval" executed="True" result="Success" success="True" time="0.624" asserts="15984">
+              <test-case name="UnitTest.TestPong.testFirstHit" executed="True" success="True" time="0.019" asserts="21990">
                 <categories>
                   <category name="current" />
                 </categories>
-              </test-case>
-              <test-case name="UnitTest.TestPong.testFrac" executed="True" result="Success" success="True" time="0.001" asserts="1" />
-              <test-case name="UnitTest.TestPong.TestSample" executed="True" result="Success" success="True" time="0.046" asserts="2" />
-              <test-case name="UnitTest.TestPong.TestSmall" executed="True" result="Failure" success="False" time="0.025" asserts="1">
-                <failure>
-                  <message><![CDATA[  Expected string length 11 but was 4. Strings differ at index 0.
-  Expected: "RIGHT 19393"
-  But was:  "DRAW"
-  -----------^
-]]></message>
-                  <stack-trace><![CDATA[à UnitTest.TestPong.TestSmall() dans c:\codejam\CodeJam\2013\Solution\UnitTest\TestPong.cs:ligne 387
-]]></stack-trace>
-                </failure>
-              </test-case>
-              <test-case name="UnitTest.TestPong.TestSmall4" executed="True" result="Failure" success="False" time="0.005" asserts="1">
-                <failure>
-                  <message><![CDATA[  Expected string length 12 but was 4. Strings differ at index 0.
-  Expected: "RIGHT 165026"
-  But was:  "DRAW"
-  -----------^
-]]></message>
-                  <stack-trace><![CDATA[à UnitTest.TestPong.testInput(String inputTxt, String expectedAns) dans c:\codejam\CodeJam\2013\Solution\UnitTest\TestPong.cs:ligne 304
-à UnitTest.TestPong.TestSmall4() dans c:\codejam\CodeJam\2013\Solution\UnitTest\TestPong.cs:ligne 364
-]]></stack-trace>
-                </failure>
-              </test-case>
-              <test-case name="UnitTest.TestPong.TestSmall89" executed="True" result="Failure" success="False" time="0.008" asserts="1">
-                <failure>
-                  <message><![CDATA[  Expected string length 12 but was 4. Strings differ at index 0.
-  Expected: "RIGHT 249996"
-  But was:  "DRAW"
-  -----------^
-]]></message>
-                  <stack-trace><![CDATA[à UnitTest.TestPong.testInput(String inputTxt, String expectedAns) dans c:\codejam\CodeJam\2013\Solution\UnitTest\TestPong.cs:ligne 304
-à UnitTest.TestPong.TestSmall89() dans c:\codejam\CodeJam\2013\Solution\UnitTest\TestPong.cs:ligne 370
-]]></stack-trace>
-                </failure>
               </test-case>
             </results>
           </test-suite>
