@@ -1,20 +1,17 @@
 ﻿using CodeJamUtils;
-using Round2.ErdosNS;
-using Round2.Pong;
-using Round2.TicketSwapping;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Round2
+namespace Round3
 {
-    class MainAAA
+    class MainNS
     {
         static void Main(string[] args)
         {
-        	#if !mono
+#if !mono
             bool tests = false;
 
             if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
@@ -27,17 +24,14 @@ namespace Round2
    });
             if (tests)
                 return;
-            #endif
-            //TicketSwap main = new TicketSwap();
+#endif
+            Cheaters main = new Cheaters();
 
-            //ManyPrizes main = new ManyPrizes();
-            // Erdos main = new Erdos();
-            PongMain main = new PongMain();
             List<string> list = new List<string>();
 
             list.Add("sample.in");
-            //list.Add("A-small-practice.in");
-            //list.Add("A-large-practice.in");
+            list.Add("A-small-practice.in");
+           // list.Add("A-large-practice.in");
 
             //list.Add("B-small-practice.in");
             //   list.Add("B-large-practice.in");
@@ -45,16 +39,16 @@ namespace Round2
             //list.Add("C-small-practice.in");
             //list.Add("C-large-practice.in");
 
-            list.Add("D-small-practice.in");
-            list.Add("D-large-practice.in");
+           // list.Add("D-small-practice.in");
+          //  list.Add("D-large-practice.in");
 
-            string dir = @"C:\codejam\CodeJam\2013\Solution\Round2\";
+            string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
             //dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round2\";
             //dir = @"/home/ent/mono/CodeJam/2013/Solution/Round2/";
 
             list = list.ConvertAll(s => dir + s);
 
-            CjUtils.RunMain(list, main, main.createInput, null); //Round1C.Properties.Resources.ResourceManager
+            CjUtils.RunMain(list, main, main.createInput, null); 
         }
     }
 }
