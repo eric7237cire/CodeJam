@@ -31,6 +31,20 @@ namespace Utils.math
         {
 
         }
+        
+        public static BigInteger LeastCommonDenominator(params BigFraction[] fracList)
+        {
+			BigInteger lcd = fracList[0].Denominator;
+			
+			for( int i = 1; i < fracList.Count(); ++i)
+			{
+				BigInteger gcd = BigInteger.GreatestCommonDivisor(lcd, fracList[i].Denominator);
+				lcd *= fracList[i].Denominator / gcd;
+			}
+				
+			return lcd;
+        }
+        
         public BigFraction(BigInteger num, BigInteger den, bool reduce = true )
         {
             Logger.LogTrace("BigFraction cons {} / {}", num, den);

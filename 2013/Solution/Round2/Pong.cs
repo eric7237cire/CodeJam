@@ -96,20 +96,44 @@ namespace Round2.Pong
         	Logger.LogTrace( "callFirstHit p0 {} {} {} {} {}", p0_f, deltaP_f,
         		lower_f, upper_f, height);
         	
+        	BigInteger lcd = BigFraction.LeastCommonDenominator(p0_f, deltaP_f, lower_f, upper_f);
+        	
+        	height *= lcd;;
         	BigInteger height2 = 2 * height;
-			BigInteger p0 = p0_f.Numerator % height2 ;
-			BigInteger deltaP = deltaP_f.Numerator;
-			BigInteger lower = lower_f.Numerator;
-			BigInteger upper = upper_f.Numerator;
+			BigInteger p0 = (BigInteger) (p0_f * lcd) % height2 ;
+			BigInteger deltaP = (BigInteger) (lcd*deltaP_f) % height2 ;
+			BigInteger lower = (BigInteger) (lcd*lower_f);
+			BigInteger upper = (BigInteger) (lcd*upper_f);
 			
 			
-			Logger.LogTrace( "callFirstHit p0 {} {} {} {} {} {}", p0, deltaP,
+			Logger.LogTrace( "callFirstHit scaled by {} p0: [{}] \u0394p: [{}] l: {} up: {} h: {} h*2: {}", 
+				lcd,
+				p0, deltaP,
         		lower, upper, height, height2);
+        	
+        	Preconditions.checkState( 0 <= lower && lower <= height, "1");
+        	Preconditions.checkState( 0 <= upper && upper <= height, "2");
+        	Preconditions.checkState( lower <= upper, "3");
+        	Preconditions.checkState( 0 <= deltaP && deltaP < height2, "4" );
+        	Preconditions.checkState( 0 <= p0 && p0  < height2 , "5");
+        	
+        	/*
+        	int showStart = 0;
+			int numPoints = 8;
+			for (int pIdx = showStart; pIdx <= showStart+numPoints; ++pIdx)
+			{
+				NumType pi = ( deltaP * pIdx) % (height2);
+
+				Logger.LogTrace("Scaled point idx {} pi%2h: [{}] pi%h: {} ",
+						pIdx, pi, pi % height);
+			}*/
 			
 			List<BigInteger[]> ranges = new List<BigInteger[]>();
 			
-			ranges.Add( new BigInteger[2] { -lower + 1 - p0, lower - 1 - p0 } );
-			ranges.Add( new BigInteger[2] { upper + 1 - p0, height2-upper - 1 - p0 } );
+			BigInteger upperDiff = height - upper;
+			
+			ranges.Add( new BigInteger[2] { -upperDiff + 1 - p0, lower - 1 - p0 } );
+			ranges.Add( new BigInteger[2] { upper + 1 - p0, height+lower - 1 - p0 } );
 			
 			BigInteger first = -1;
 			
@@ -126,12 +150,29 @@ namespace Round2.Pong
 				}
 				
 				Logger.LogTrace("Range {} to {}", range[0], range[1]);
+				BigInteger firstHit;
+				
+				if (range[0] > range[1])
+				{
+					firstHit = ericFirstHit( (long) deltaP, (long) height2,
+					(long) range[0], (long) height2 );
+					if (first == -1 || firstHit < first)
+						first = firstHit;
+				
+					firstHit = ericFirstHit( (long) deltaP, (long) height2,
+					(long) 0, (long) range[1] );
+					if (first == -1 || firstHit < first)
+						first = firstHit;
+				} else {
+				
 				Preconditions.checkState(range[0] <= range[1]);
 				
-				BigInteger firstHit = ericFirstHit( (long) deltaP, (long) height2,
+				firstHit = ericFirstHit( (long) deltaP, (long) height2,
 					(long) range[0], (long) range[1] );
 				if (first == -1 || firstHit < first)
 					first = firstHit;
+				
+				}
 			}
 			
 			return first;
@@ -667,26 +708,21 @@ namespace Round2.Pong
                                 
 				BigInteger firstPointFail0 = callFirstHit(startingPoint, yDif * 2, lower, upper, input.heightField);
 				
-				if (team == 0 || firstPointFail0 < firstPointFail)
+				Logger.LogTrace("failTeam {} firstPointFail {} firstPointFail0 {}", failTeam, firstPointFail, firstPointFail0);
+				
+				if (failTeam == -1 || firstPointFail0 < firstPointFail)
 				{
-					firstPointFail = firstPointFail0;	
+					firstPointFail = firstPointFail0 + teamSize[team];	
 					failTeam = team;
 				}
-                Logger.LogInfo("First point {}.  Starting point {}", firstPointFail0, startingPoint % (2 * input.heightField));
+                Logger.LogInfo("firstPointFail {}.",  firstPointFail);
 
-                /*
-                int showStart = 9690 - 5;
-                for (int pIdx = showStart; pIdx <= showStart+50; ++pIdx)
-                {
-                    NumType pi = ( yDif * 2 * pIdx) % (2 * input.heightField);
+                
+                int showStart = 0;
+                int numPoints = 8;
+                
 
-
-                    Logger.LogTrace("offsetted calculate idx {} pi%2h: [{}] pi%h: {} pi: {} upper: {} upper - pi%h: {}",
-                            pIdx, pi, pi % input.heightField, calcAdd(0, yDif*2, pIdx, input.heightField), upper, upper - pi % input.heightField);
-                }
-
-
-                for (int pIdx = showStart; pIdx <= showStart+50; ++pIdx)
+                for (int pIdx = showStart; pIdx <= showStart+numPoints; ++pIdx)
                 {
                     BigInteger realIndex = 1 - team + 2 * (pIdx);
                     NumType pi = (p1.Y + yDif * realIndex) % (2 * input.heightField);
@@ -694,14 +730,15 @@ namespace Round2.Pong
 
                     Logger.LogTrace("debug calculate team point {} idx {} pi%2h: [{}] pi%h: {} pi: {} upper: {} upper - pi%h: {}",
                             pIdx, realIndex, pi, pi % input.heightField, calcAdd(p1.Y, yDif, realIndex, input.heightField), upper, upper - pi % input.heightField);
-                }*/
+                }
 
                
             }
 
             
-            if (firstPointFail != 0)
+            if (failTeam != -1)
             {
+            	//firstPointFail = BigInteger.Max(firstPointFail, teamSize[failTeam]);
                 int team = failTeam; //firstPointFail % 2 == 0 ? 1 : 0;
                // BigInteger num = (firstPointFail + team) / 2;
                 string teamName = ((!switchTeams && team == 0) || (switchTeams && team == 1)) ? "RIGHT" : "LEFT";

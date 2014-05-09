@@ -59,14 +59,25 @@ namespace UnitTest
             }
 
         }
+        
+        
 
        
     }
     [TestFixture] 
     public class TestPong
     {
+    	[Test]
+    	[Category("current")]
+        public void TestSmall2()
+        {
+        	string testSmall2 = 
+        	"12 3 1 3 3 1 1 1 2 4";
+            testInput(testSmall2, "LEFT 3");
+        }
+        
         [Test]
-        [Category("current")]
+        
         public void testFirstHit()
         { 
              
@@ -216,6 +227,40 @@ namespace UnitTest
     					 upper, found);
     			}
     		}
+    		
+    	}
+    	
+    	[Test]
+    	[Category("current")]
+    	public void testForbiddenIntervalSmall2()
+    	{
+    		int height = 12;
+    		int diff = 9;
+    		int targetDiff = 4;
+    		
+			BigFraction lower, upper;
+			bool found = PongMain.calculateForbiddenInterval(targetDiff,
+				diff, height, out lower, out upper);
+			
+			Logger.LogTrace("testForbiddenInterval deltaP {} target {} lower {} upper {} found {}", 
+				diff, targetDiff, lower, upper, found);
+	
+			testForbiddenIntervalHelper(height, diff, targetDiff,  lower,
+				 upper, found);
+	
+    		
+			diff = 36;
+			targetDiff = 18;
+			height = 48;
+			
+			found = PongMain.calculateForbiddenInterval(targetDiff,
+				diff, height, out lower, out upper);
+			
+			Logger.LogTrace("testForbiddenInterval deltaP {} target {} lower {} upper {} found {}", 
+				diff, targetDiff, lower, upper, found);
+	
+			testForbiddenIntervalHelper(height, diff, targetDiff,  lower,
+				 upper, found);
     		
     	}
     	
