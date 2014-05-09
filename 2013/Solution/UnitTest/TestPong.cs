@@ -116,7 +116,7 @@ namespace UnitTest
             b = 254;
             deltaP = 384;
             firstHit = PongMain.ericFirstHit(deltaP, modulus, a, b);
-            testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit, true);
+            testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit, false);
             
 
             //first hit deltaP 758 modulus 1890  a 1007 b 1012
@@ -125,16 +125,23 @@ namespace UnitTest
             b = 1012;
             deltaP = 758;
             firstHit = PongMain.ericFirstHit(deltaP, modulus, a, b);
-            testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit, true);
+            testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit, false);
 
-            
+            //First hit deltaP 1890 modulus 40448  a 2768 b 2773
+            modulus = 40448;
+            a = 2768;
+            b = 2773;
+            deltaP = 1890;
+            firstHit = PongMain.ericFirstHit(deltaP, modulus, a, b);
+            testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit, false);
+
             modulus = 2 * 142513;
             deltaP = 244578;
             a = 142513 - 16511;
             b = 142513 + 5 - 16511;
 
             firstHit = PongMain.ericFirstHit(deltaP, modulus, a, b);
-            testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit+100000);
+            testFirstHitHelper(modulus, deltaP, a, b, (int)firstHit);
 
         }
 

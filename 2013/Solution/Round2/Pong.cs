@@ -134,15 +134,18 @@ namespace Round2.Pong
             long newA = a % deltaP;
             long newB = b % deltaP;
             Logger.ChangeIndent(4);
-            long pointsToGoodStartingPoint = ericFirstHit(firstWrapAroundPoint, deltaP, newA, newB, 1 + rCheck);
+            long cyclesNeeded = ericFirstHit(firstWrapAroundPoint, deltaP, newA, newB, 1 + rCheck);
             Logger.ChangeIndent(-4);
 
-            if (pointsToGoodStartingPoint == 0)
+            if (cyclesNeeded == 0)
                 return 0;
 
-            long ret = (firstWrapAroundIndex-1)*pointsToGoodStartingPoint + a / deltaP + 1;
-            Logger.LogTrace("Returning {}*{} + {} = {}", 
-                firstWrapAroundIndex-1, pointsToGoodStartingPoint, a / deltaP, ret);
+            //If we cycle C times, then we must travel modulus * C 
+            long pointsInCycles = (modulus * cyclesNeeded) / deltaP;
+            //(firstWrapAroundIndex-1)
+            long ret =  pointsInCycles + a / deltaP + 1;
+            Logger.LogTrace("Returning {}+{} + {} = {}", 
+                firstWrapAroundIndex-1, pointsInCycles, a / deltaP, ret);
             return ret;
         }
 
