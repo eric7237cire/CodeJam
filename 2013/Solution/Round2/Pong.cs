@@ -673,9 +673,9 @@ namespace Round2.Pong
 
                 bool foundFirstPointFail = false;
 
-                NumType s = 139700 + 2*input.heightField  - startingPoint % (2*input.heightField);
+                NumType s = 2*input.heightField  - startingPoint % (2*input.heightField);
                 s %= (2 * input.heightField);
-                NumType t = s + 100 - 1;
+                NumType t = s + lower - 1;
 
                 long fp = first_hit( a:(int) (yDif * 2), 
                     m: (int) (2 * input.heightField), 
