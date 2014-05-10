@@ -21,9 +21,9 @@ namespace Round3
             if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
    {
        @"/include=current",
-     //  @"C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll"
+       @"C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll"
      //  @"/run=UnitTest.TestModMath",
-       @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\UnitTest\bin\Debug\UnitTest.dll"
+    //   @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\UnitTest\bin\Debug\UnitTest.dll"
      // System.Reflection.Assembly.GetExecutingAssembly().Location
    });
             //if (tests)
@@ -47,7 +47,7 @@ namespace Round3
           //  list.Add("D-large-practice.in");
 
             string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
-            dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round3\";
+          //  dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round3\";
             //dir = @"/home/ent/mono/CodeJam/2013/Solution/Round2/";
 
             list = list.ConvertAll(s => dir + s);
