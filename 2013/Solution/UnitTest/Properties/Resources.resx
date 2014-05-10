@@ -121,6 +121,10 @@
     <value>34 4
 1 1 10 10</value>
   </data>
+  <data name="TestCheaterSmall4" xml:space="preserve">
+    <value>36 37
+389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 1000 999</value>
+  </data>
   <data name="TestCheaterSmall8" xml:space="preserve">
     <value>35 4
 1000 1000 1 1</value>

@@ -23,7 +23,7 @@ namespace Round3
        @"/include=current",
        @"C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll"
      //  @"/run=UnitTest.TestModMath",
-    //   @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\UnitTest\bin\Debug\UnitTest.dll"
+     //  @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\UnitTest\bin\Debug\UnitTest.dll"
      // System.Reflection.Assembly.GetExecutingAssembly().Location
    });
             //if (tests)
@@ -34,8 +34,10 @@ namespace Round3
             List<string> list = new List<string>();
 
             list.Add("sample.in");
+
             //list.Add("A-small-practice.in");
            // list.Add("A-large-practice.in");
+
 
             //list.Add("B-small-practice.in");
             //   list.Add("B-large-practice.in");
@@ -47,7 +49,7 @@ namespace Round3
           //  list.Add("D-large-practice.in");
 
             string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
-          //  dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round3\";
+           // dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round3\";
             //dir = @"/home/ent/mono/CodeJam/2013/Solution/Round2/";
 
             list = list.ConvertAll(s => dir + s);
