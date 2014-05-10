@@ -12,6 +12,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Logger = Utils.LoggerFile;
+using Utils;
 
 namespace Round3
 {
@@ -19,8 +20,8 @@ namespace Round3
     {
         public string processInput(CheatersInput input)
         {
-            
 
+            Logger.LogTrace("\nSTART\n");
             int numPossible;
 
             List<long> bets = new List<long>(input.bets);
@@ -31,6 +32,8 @@ namespace Round3
             }
 
             bets.Sort();
+
+            Logger.LogDebug("Budget {} other bets {}", input.budget, bets.ToCommaString());
 
             int position = 0;
             long budget = input.budget;
@@ -61,7 +64,7 @@ namespace Round3
                 }
                 Logger.LogTrace("position {} curBet {} betAmount {} count {} budget {} expected gain {}", position,
                     curBetAmount, betAmount, count, budget, expectedGain);
-
+                
                 //Now to go to the next step, we have to fill in all the current positions up to the next
                 budget -= count * (nextBetAmount - betAmount);
 
@@ -70,23 +73,30 @@ namespace Round3
 
                 long countAtNextBetAmount = bets.Count((bet) => bet == nextBetAmount);
 
-                long adjCountAtNextBetAmount = Math.Max(0, countAtNextBetAmount - budget);
-                expectedGain = 0;
+                long maxNumToBetOnNextAmt = Math.Min(countAtNextBetAmount, budget);
 
-                for (int i = 0; i < nextPosition; ++i)
+                for (long numToBetOnNextAmt = 0; numToBetOnNextAmt <= maxNumToBetOnNextAmt; ++numToBetOnNextAmt)
                 {
-                    expectedGain += 1d / (count + adjCountAtNextBetAmount) * (nextBetAmount - bets[i]) * 36;
-                    Logger.LogTrace(" 1 / {} * {} * 36", count + adjCountAtNextBetAmount, (nextBetAmount - bets[i]));
-                }
-                expectedGain -= (input.budget - budget) - (countAtNextBetAmount - adjCountAtNextBetAmount);
+                    expectedGain = 0;
 
+                    for (int i = 0; i < nextPosition; ++i)
+                    {
+                        expectedGain += 1d / (count + countAtNextBetAmount - numToBetOnNextAmt) * (nextBetAmount - bets[i]) * 36;
+                        //Logger.LogTrace(" 1 / {} * {} * 36", count + adjCountAtNextBetAmount, (nextBetAmount - bets[i]));
+                    }
+                    Logger.LogTrace("Next pos {}  count @ next {} elim  {} expected gain before cost {} budget {}", nextPosition, countAtNextBetAmount, numToBetOnNextAmt, expectedGain, budget);
+                    expectedGain -= (input.budget - budget);
+                    expectedGain -= numToBetOnNextAmt;
+                    best = Math.Max(expectedGain, best);
+                }
                 Logger.LogTrace("Filling up count at next {} expected gain {}  {}", countAtNextBetAmount, expectedGain, (input.budget - budget));
 
-                best = Math.Max(expectedGain, best);
+                
 
                 position = nextPosition;
             }
-            
+
+            Logger.LogDebug("Best {}", best);
             return "" + best.ToString("0.#######", new CultureInfo("en-US"));
         }
 

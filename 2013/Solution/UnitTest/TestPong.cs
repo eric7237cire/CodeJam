@@ -86,7 +86,7 @@ namespace UnitTest
         }
         
          [Test]
-    	[Category("current")]
+    	//[Category("current")]
         public void TestLarge17()
         {
         	string test = "3244416195845595641843798158834358800431125796453839309136919376256492524313960264296322925872417358 3" +

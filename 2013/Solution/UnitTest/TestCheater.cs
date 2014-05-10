@@ -23,6 +23,18 @@ namespace UnitTest
         {
             testInput(Properties.Resources.TestCheaterSmall3, .94285714);
         }
+        [Test]
+        [Category("current")]
+        public void testSmall8()
+        {
+            testInput(Properties.Resources.TestCheaterSmall8, 1);
+        }
+        [Test]
+        [Category("current")]
+        public void testSmall9()
+        {
+            testInput(Properties.Resources.TestCheaterSmall9, 335);
+        }
         private void testInput(string inputTxt, double expectedAns)
         {
             Scanner scanner = new Scanner(new StringReader(inputTxt));
@@ -33,7 +45,7 @@ namespace UnitTest
 
             double ans = Double.Parse(cheater.processInput(input), new CultureInfo("en-us"));
 
-            Assert.AreEqual(expectedAns, ans, "0.0001");
+            Assert.AreEqual(expectedAns, ans, 0.0001);
 
         }
     }

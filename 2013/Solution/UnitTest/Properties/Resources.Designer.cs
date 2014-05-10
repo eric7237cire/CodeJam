@@ -71,6 +71,26 @@ namespace UnitTest.Properties {
         }
         
         /// <summary>
+        ///   Recherche une chaîne localisée semblable à 35 4
+        ///1000 1000 1 1.
+        /// </summary>
+        internal static string TestCheaterSmall8 {
+            get {
+                return ResourceManager.GetString("TestCheaterSmall8", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 27 35
+        ///100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 8 9.
+        /// </summary>
+        internal static string TestCheaterSmall9 {
+            get {
+                return ResourceManager.GetString("TestCheaterSmall9", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Recherche une chaîne localisée semblable à 142513 3
         ///377 723167
         ///63 525077
