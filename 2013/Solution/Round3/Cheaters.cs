@@ -15,7 +15,7 @@ using Logger = Utils.LoggerFile;
 
 namespace Round3
 {
-    class Cheaters : InputFileConsumer<CheatersInput, string>, InputFileProducer<CheatersInput>
+    public class Cheaters : InputFileConsumer<CheatersInput, string>, InputFileProducer<CheatersInput>
     {
         public string processInput(CheatersInput input)
         {
@@ -54,7 +54,7 @@ namespace Round3
                 {
                     for (int i = 0; i < nextPosition; ++i)
                     {
-                        expectedGain = 1d / count * (betAmount - bets[i]) * 36 ;
+                        expectedGain += 1d / count * (betAmount - bets[i]) * 36 ;
                     }
                     expectedGain -= (input.budget - budget);
                     best = Math.Max(expectedGain, best);
@@ -68,17 +68,19 @@ namespace Round3
                 if (budget < 0)
                     break;
 
-                int countAtNextBetAmount = bets.Count((bet) => bet == nextBetAmount);
+                long countAtNextBetAmount = bets.Count((bet) => bet == nextBetAmount);
 
+                long adjCountAtNextBetAmount = Math.Max(0, countAtNextBetAmount - budget);
                 expectedGain = 0;
 
                 for (int i = 0; i < nextPosition; ++i)
                 {
-                    expectedGain = 1d / count * (nextBetAmount - bets[i]) * 36;
+                    expectedGain += 1d / (count + adjCountAtNextBetAmount) * (nextBetAmount - bets[i]) * 36;
+                    Logger.LogTrace(" 1 / {} * {} * 36", count + adjCountAtNextBetAmount, (nextBetAmount - bets[i]));
                 }
-                expectedGain -= (input.budget - budget);
+                expectedGain -= (input.budget - budget) - (countAtNextBetAmount - adjCountAtNextBetAmount);
 
-                Logger.LogTrace("Filling up count at next {} expected gain {}", countAtNextBetAmount, expectedGain);
+                Logger.LogTrace("Filling up count at next {} expected gain {}  {}", countAtNextBetAmount, expectedGain, (input.budget - budget));
 
                 best = Math.Max(expectedGain, best);
 

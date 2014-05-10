@@ -1,4 +1,8 @@
-﻿using CodeJamUtils;
+﻿#define LOGGING
+#define LOGGING_DEBUG
+#define LOGGING_INFO
+#define LOGGING_TRACE
+using CodeJamUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +16,7 @@ namespace Round3
         static void Main(string[] args)
         {
 #if !mono
-            bool tests = false;
+            bool tests = true;
 
             if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
    {
