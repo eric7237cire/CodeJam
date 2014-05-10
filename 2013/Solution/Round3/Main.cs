@@ -34,7 +34,7 @@ namespace Round3
             List<string> list = new List<string>();
 
             list.Add("sample.in");
-            list.Add("A-small-practice.in");
+            //list.Add("A-small-practice.in");
            // list.Add("A-large-practice.in");
 
             //list.Add("B-small-practice.in");
