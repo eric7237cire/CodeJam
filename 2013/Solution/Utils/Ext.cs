@@ -21,7 +21,7 @@ namespace Utils
         }
 
         //Add extension to list to get last value
-        public static T GetLastValue<T>(this List<T> list)
+        public static T GetLastValue<T>(this IList<T> list)
         {
             return list[list.Count - 1];
         }

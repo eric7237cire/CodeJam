@@ -18,25 +18,21 @@ namespace UnitTest
     public class TestCheater
     {
         [Test]
-        [Category("current")]
         public void testSmall3()
         {
             testInput(Properties.Resources.TestCheaterSmall3, .94285714);
         }
         [Test]
-        [Category("current")]
         public void testSmall4()
         {
             testInput(Properties.Resources.TestCheaterSmall4, 1);
         }
         [Test]
-        [Category("current")]
         public void testSmall8()
         {
             testInput(Properties.Resources.TestCheaterSmall8, 1);
         }
         [Test]
-        [Category("current")]
         public void testSmall9()
         {
             testInput(Properties.Resources.TestCheaterSmall9, 335);

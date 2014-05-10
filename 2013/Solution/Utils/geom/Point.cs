@@ -19,7 +19,134 @@ namespace Utils.geom
         {
             return new Point<T>(lhs.X.Add( rhs.X ), lhs.Y.Add ( rhs.Y) );
         }
+
+        //IN counter clockwise order
+        private static int polarOrder(Point<double> pt, Point<double> q1, Point<double> q2)
+        {
+            double dx1 = q1.X - pt.X;
+            double dy1 = q1.Y - pt.Y;
+            double dx2 = q2.X - pt.X;
+            double dy2 = q2.Y - pt.Y;
+
+            if      (dy1 >= 0 && dy2 < 0) return -1;    // q1 above; q2 below
+            else if (dy2 >= 0 && dy1 < 0) return +1;    // q1 below; q2 above
+            else if (dy1 == 0 && dy2 == 0) {            // 3-collinear and horizontal
+                if      (dx1 >= 0 && dx2 < 0) return -1;
+                else if (dx2 >= 0 && dx1 < 0) return +1;
+                else                          return  0;
+            }
+            else return -ccw(pt, q1, q2);     // both above or below
+
+        }
+
+        // is a->b a->c a counter-clockwise turn?
+        // -1 if clockwise, +1 if counter-clockwise, 0 if collinear
+        public static int ccw(Point<double> a, Point<double> b, Point<double> c)
+        {
+            //The cross product, gives direction of vector.  Positive means
+            //counter clockwise see  wikipedia page
+            double area2 = (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y) * (c.X - a.X);
+            if (area2 < 0) return -1;
+            else if (area2 > 0) return +1;
+            else return 0;
+        }
+
+        //GrahamScan, returns them in counter clockwise order
+        public static Stack<Point<double>> ConvexHull(this IList<Point<double>> pts) 
+        {
+            // defensive copy
+            int N = pts.Count;
+            Point<double>[] points = new Point<double>[N];
+            for (int i = 0; i < N; i++)
+                points[i] = pts[i];
+
+            // preprocess so that points[0] has lowest y-coordinate; break ties by x-coordinate
+            // points[0] is an extreme point of the convex hull
+            // (alternatively, could do easily in linear time)
+            Array.Sort(points, (lhs, rhs) => {
+                if (lhs.Y != rhs.Y) return lhs.Y.CompareTo(rhs.Y);
+
+                return lhs.X.CompareTo(rhs.X);
+            });
+
+        // sort by polar angle with respect to base point points[0],
+        // breaking ties by distance to points[0]
+            Array.Sort(points, 1, N - 1, Comparer<Point<double>>.Create((lhs, rhs) => { return polarOrder(points[0], lhs, rhs); }));
+
+        Stack<Point<double>> hull = new Stack<Point<double>>();
+        hull.Push(points[0]);       // p[0] is first extreme point
+
+        // find index k1 of first point not equal to points[0]
+        int k1;
+        for (k1 = 1; k1 < N; k1++)
+            if (!points[0].Equals(points[k1])) break;
+        if (k1 == N) return hull;        // all points equal
+
+        // find index k2 of first point not collinear with points[0] and points[k1]
+        int k2;
+        for (k2 = k1 + 1; k2 < N; k2++)
+            if (PointExt.ccw(points[0], points[k1], points[k2]) != 0) break;
+        hull.Push(points[k2-1]);    // points[k2-1] is second extreme point
+
+        // Graham scan; note that points[N-1] is extreme point different from points[0]
+        for (int i = k2; i < N; i++) {
+            Point<double> top = hull.Pop();
+            while (PointExt.ccw(hull.Peek(), top, points[i]) <= 0) {
+                top = hull.Pop();
+            }
+            hull.Push(top);
+            hull.Push(points[i]);
+        }
+
+        return hull;
     }
+        
+        public static double PolygonArea(this IList<Point<double>> points) 
+        {
+            double sum = 0;
+            for (int i = 0; i < points.Count - 1; ++i)
+            {
+
+                sum += points[i].X *  points[i + 1].Y ;
+            }
+
+            sum += points.GetLastValue().X * points[0].Y ;
+
+            for (int i = 0; i < points.Count - 1; ++i)
+            {
+                sum -= points[i + 1].X * points[i].Y;
+            }
+
+            sum -= points[0].X * points.GetLastValue().Y;
+
+            return Math.Abs(sum) / 2;
+        }
+        /*
+        public static T PolygonArea<T>(this IList<Point<T>> points) where T : INumeric<T>, new()
+        {
+            T sum = new T();
+            for (int i = 0; i < points.Count - 1; ++i)
+            {
+
+                sum = sum.Add(points[i].X.Multiply( points[i + 1].Y) );
+            }
+
+            sum = sum.Add(points.GetLastValue().X.Multiply ( points[0].Y ) );
+
+            for (int i = 0; i < points.Count - 1; ++i)
+            {
+
+                sum = sum.Subtract (points[i + 1].X.Multiply ( points[i].Y ) );
+            }
+
+            sum = sum.Subtract (points[0].X.Multiply( points.GetLastValue().Y ));
+
+            return sum.Abs().Divide(2);
+        }*/
+    }
+
+    
+
     public class Point<T> : IEquatable<Point<T>>
     {
         //private readonly int sideLength;
@@ -50,10 +177,10 @@ namespace Utils.geom
             }
         }
 
-        public Point(T left, T right)
+        public Point(T x, T y)
         {
-            this.x = left;
-            this.y = right;
+            this.x = x;
+            this.y = y;
         }
 
         private const int prime1 = 17;

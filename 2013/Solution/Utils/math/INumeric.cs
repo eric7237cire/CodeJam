@@ -19,6 +19,8 @@ namespace Utils.math
         bool IsZero();
     }
 
+    
+
     public struct DoubleNumeric : INumeric<DoubleNumeric>, IComparable<DoubleNumeric>
     {
         double value;
