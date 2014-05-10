@@ -58,30 +58,17 @@ namespace Round3
 
             Logger.LogDebug("Budget {} other bets {}\n{}", input.budget, bets.ToCommaString(), betInfo.ToCommaString());
 
-            int position = 0;
             long budget = input.budget;
 
             double best = 0;
 
-            long runningSum = 0;
-            long runningCount = 0;
-
+            
             //These are the bet values that are chosen to be the lowest
             for (int lowestBetInfoIdx = 0; lowestBetInfoIdx < betInfo.Count; ++lowestBetInfoIdx )
             {
-                runningSum += betInfo[lowestBetInfoIdx].betAmt;
-                runningCount += betInfo[lowestBetInfoIdx].count;
-
-                long possibleBet = (budget + runningSum) / runningCount;
-
                 Logger.LogTrace("\n\nMake indexes 0 to {} the least total money bets ", lowestBetInfoIdx);
 
-                if (possibleBet < betInfo[lowestBetInfoIdx].betAmt)
-                {
-                    Logger.LogTrace("Stopping at index {}", lowestBetInfoIdx);
-                    break;
-                }
-
+                
                 long baseCost = betInfo.TakeWhile((bi, idx) => { return idx < lowestBetInfoIdx; })
                     .Aggregate((long)0, (curCost, bi) => { return curCost + bi.count * (betInfo[lowestBetInfoIdx].betAmt - bi.betAmt); });
 
@@ -90,51 +77,82 @@ namespace Round3
                     Logger.LogTrace("Stopping at index {}.  baseCost {} budget {}", lowestBetInfoIdx, baseCost, budget);
                     break;
                 }
-                
-                
+
+                Logger.LogTrace("Base cost to make all previous spots at least as much as the current {}.  Bet must be at least {}", baseCost, betInfo[lowestBetInfoIdx].betAmt);
+   
                 //Increase surrounding bets to allow us to allow a higher minimum
                 for(int maxBetDeterminedByIdx = lowestBetInfoIdx + 1; maxBetDeterminedByIdx <= betInfo.Count; ++maxBetDeterminedByIdx)
                 {
-                    long maximumBet = (maxBetDeterminedByIdx == betInfo.Count ) ? input.budget : betInfo[maxBetDeterminedByIdx].betAmt - 1;
+                    long betUpperLimit = (maxBetDeterminedByIdx == betInfo.Count ) ? input.budget : betInfo[maxBetDeterminedByIdx].betAmt - 1;
 
                     //Cost to increase eveything between the set of possible winning numbers (lowest sum of money bet) and the lowest maximum
                     long baseCostToIncreaseMaximum = 0;
-                    long countToIncreaseMaximum = 0; // betInfo[maxBetDeterminedByIdx].count;
+                    long grp2Count = 0; // betInfo[maxBetDeterminedByIdx].count;
 
-                    for (int idx = lowestBetInfoIdx + 1; idx < maxBetDeterminedByIdx; ++idx )
+                    Logger.LogTrace("\nMaximum det by index {} = {}.  ", maxBetDeterminedByIdx, betUpperLimit);
+
+                    long minGrp1 = betInfo[maxBetDeterminedByIdx-1].betAmt;
+                    long grp1Count = 0;
+                    for (int idx = 0; idx <= lowestBetInfoIdx; ++idx)
                     {
-                        baseCostToIncreaseMaximum += (betInfo[maxBetDeterminedByIdx-1].betAmt - betInfo[idx].betAmt) * betInfo[idx].count;
-                        countToIncreaseMaximum += betInfo[idx].count;
+                        Preconditions.checkState(betInfo[idx].betAmt <= minGrp1);
+                        baseCostToIncreaseMaximum += (minGrp1 - betInfo[idx].betAmt) * betInfo[idx].count;
+                        grp1Count += betInfo[idx].count;
+
                     }
 
-                    Logger.LogTrace("\nMaximum det by index {} = {}.  base cost {} count {}", maxBetDeterminedByIdx, maximumBet, baseCostToIncreaseMaximum, countToIncreaseMaximum);
+                    long minGrp2 = betInfo[maxBetDeterminedByIdx - 1].betAmt + 1;
+                    for (int idx = lowestBetInfoIdx + 1; idx < maxBetDeterminedByIdx; ++idx )
+                    {
+                        baseCostToIncreaseMaximum += ( minGrp2 - betInfo[idx].betAmt) * betInfo[idx].count;
+                        grp2Count += betInfo[idx].count;
+                        Logger.LogTrace("Looping idx {} {} {}", idx, betInfo[maxBetDeterminedByIdx - 1].betAmt, betInfo[idx]);
+                    }
 
-                    if (baseCost + baseCostToIncreaseMaximum > budget)
+                    /*
+                     * 3 groupes, 1 - 2 - 3
+                     *  ..[.]mm[m][M]MM
+                     *  [.] = lowestBetInfoIdx
+                     *  [m] = maxDetByIdx - 1
+                     *  [M] = maxDetByIdx
+                     *  
+                     * m may not exist 
+                     *  
+                     * baseCost assures that all . are at least [.]
+                     * 
+                     * To increase ..[.] must be equal to [m]
+                     * mm[m] must be equal to [m+1]
+                     */
+
+                    Logger.LogTrace("base cost {} to make bet at least {} count {}", baseCostToIncreaseMaximum, betInfo[maxBetDeterminedByIdx - 1].betAmt, grp2Count);
+
+                    if (baseCostToIncreaseMaximum > budget)
                     {
                         Logger.LogTrace("Stopping at maxDetBy {}  baseToIncMax {}", maxBetDeterminedByIdx, baseCostToIncreaseMaximum);
                         break;
                     }
 
-                    long budgetLeftForInc = budget - baseCost - baseCostToIncreaseMaximum;
+                    long budgetLeftForInc = budget - baseCostToIncreaseMaximum;
 
                     //cost increasing up to idx to a bet + 1
 
-                    long maxBetWithIncMax = (budgetLeftForInc - countToIncreaseMaximum) / (countToIncreaseMaximum + runningCount);
+                    long maxBetWithIncMax = minGrp1 + (budgetLeftForInc) / (grp2Count + grp1Count);
 
-                    Logger.LogTrace("max det by idx {} max bet {}", maxBetDeterminedByIdx, maxBetWithIncMax);
+                    Logger.LogTrace("max bet {}", maxBetWithIncMax);
 
-                    long realBetAmt = Math.Min(maximumBet, maxBetWithIncMax);
+                    long realBetAmt = Math.Min(betUpperLimit, maxBetWithIncMax);
 
-                    double expectedGain = betInfo.TakeWhile((bi, idx) => { return idx < maxBetDeterminedByIdx; })
-                    .Aggregate(0d, (curCost, bi) => { return curCost + 1d / runningCount * 36 * bi.count * (realBetAmt - bi.betAmt); });
+                    double expectedGain = betInfo.TakeWhile((bi, idx) => { return idx <= lowestBetInfoIdx; })
+                    .Aggregate(0d, (curCost, bi) => { return curCost + 1d / grp1Count * 36 * bi.count * (realBetAmt - bi.betAmt); });
 
-                    long actualCost = baseCost + baseCostToIncreaseMaximum + (realBetAmt - betInfo[maxBetDeterminedByIdx - 1].betAmt) * (countToIncreaseMaximum + runningCount);
+                    long actualCost = baseCostToIncreaseMaximum + (realBetAmt - minGrp1) * (grp2Count + grp1Count);
 
                     Logger.LogTrace("Expected gain {} actual cost {} real bet amount {}", expectedGain, actualCost, realBetAmt);
 
                     expectedGain -= actualCost;
 
                     best = Math.Max(best, expectedGain);
+                    Logger.LogTrace("Best is now {}", best);
                 }
             }
             #region old
