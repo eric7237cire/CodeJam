@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utils.geom;
 
 namespace Round3
 {
@@ -11,19 +12,38 @@ namespace Round3
     {
         public string processInput(RuralInput input)
         {
+            List<Point<int>> points = new List<Point<int>>();
+
+            Drawing d = new Drawing();
+
+            Random r = new Random(15);
+            for (int i = 0; i < 95; ++i)
+            {
+                Point<int> p = new Point<int>(r.Next(1, 50), r.Next(1, 50));
+                d.AddPoint(p);
+                points.Add(p);
+
+                //LineSegment<double> per = line.getPerpendicularLineSegWithIntersection(p);
+                //d.AddAsSeg(per);
+            }
+
+            Stack<Point<int>> ch = points.ConvexHull();
+
+            d.AddPolygon(ch);
+
+            GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
             return "3";
         }
 
         public RuralInput createInput(Scanner scanner)
         {
             RuralInput input = new RuralInput();
-            input.budget = scanner.nextLong();
-            input.nBets = scanner.nextInt();
+            input.nPoints = scanner.nextInt();
+            input.points = new Point<double>[input.nPoints];
 
-            input.bets = new long[input.nBets];
-            for (int i = 0; i < input.nBets; ++i)
+            for (int i = 0; i < input.nPoints; ++i)
             {
-                input.bets[i] = scanner.nextLong();
+                input.points[i] = new Point<double>(scanner.nextInt(), scanner.nextInt());
             }
 
             return input;
@@ -32,10 +52,10 @@ namespace Round3
 
     public class RuralInput
     {
-        internal long budget { get; set; }
-        internal int nBets { get; set; }
+        
+        internal int nPoints { get; set; }
 
-        internal long[] bets;
+        internal Point<double>[] points;
 
     }
 }

@@ -30,7 +30,8 @@ namespace Utils.geom
     {
         FreePoint,
         Polygon,
-        LineTwoPoints
+        LineTwoPoints,
+        Segment
     }
 
     class Figure
@@ -56,6 +57,11 @@ namespace Utils.geom
         const string FIGURE_NAME_PREFIX = "FigureName";
         public const int roundingFactor = 1000;
 
+
+        internal const string POINT_STYLE_NAME = "ps";
+        internal const string POLYGON_STYLE_NAME = "poly";
+        internal const string LINE_STYLE_NAME = "lineS";
+
         public Drawing() {
             Polygons = new List<List<Point<double>>>();
             pointNames = new Dictionary<Point<int>, string>();
@@ -67,11 +73,51 @@ namespace Utils.geom
             MinimalVisibleY = -5;
         }
 
+        public void AddPolygon(IEnumerable<Point<int>> polygon)
+        {
+            AddPolygon(polygon, getName);
+        }
+
+        public void AddPolygon<T>(IEnumerable<Point<T>> polygon, Func<Point<T>, string> getName)
+        {
+            Figure f = new Figure();
+            f.Name = FIGURE_NAME_PREFIX + figures.Count;
+            f.Style = POLYGON_STYLE_NAME;
+            f.Type = FigureType.Polygon;
+
+            foreach(Point<T> p in polygon)
+                f.deps.Add(getName(p));
+            
+            figures.Add(f);
+        }
+
         public void AddAsLine(LineSegment<int> line)
         {
             Figure f = new Figure();
             f.Name = FIGURE_NAME_PREFIX + figures.Count;
             f.Type = FigureType.LineTwoPoints;
+
+            f.deps.Add(getName(line.p1));
+            f.deps.Add(getName(line.p2));
+
+            figures.Add(f);
+        }
+
+        public void AddAsSeg(LineSegment<int> line)
+        {
+            AddAsSegMain(line, getName);
+        }
+        public void AddAsSeg(LineSegment<double> line)
+        {
+            AddAsSegMain(line, getName);
+        }
+
+        public void AddAsSegMain<T>(LineSegment<T> line, Func<Point<T>, string> getName)
+        {
+            Figure f = new Figure();
+            f.Name = FIGURE_NAME_PREFIX + figures.Count;
+            f.Type = FigureType.Segment;
+            f.Style = LINE_STYLE_NAME;
 
             f.deps.Add(getName(line.p1));
             f.deps.Add(getName(line.p2));
@@ -211,8 +257,6 @@ namespace Utils.geom
             writer.WriteEndElement();
         }
 
-        private const string POINT_STYLE_NAME = "ps";
-        private const string POLYGON_STYLE_NAME = "poly";
 
         public virtual void WriteStyles(Drawing drawing, XmlWriter writer)
         {
@@ -225,7 +269,7 @@ namespace Utils.geom
             writer.WriteAttributeString("IsFilled", "True");
             writer.WriteAttributeString("Color", "#FF000000");
             writer.WriteAttributeString("StrokeWidth", "5");
-            writer.WriteAttributeString("Name", POINT_STYLE_NAME);
+            writer.WriteAttributeString("Name", Drawing.POINT_STYLE_NAME);
             writer.WriteEndElement();
 
 
@@ -237,7 +281,14 @@ namespace Utils.geom
             writer.WriteAttributeString("IsFilled", "True");
             writer.WriteAttributeString("Color", "#FF000000");
             writer.WriteAttributeString("StrokeWidth", "1");
-            writer.WriteAttributeString("Name", POLYGON_STYLE_NAME);
+            writer.WriteAttributeString("Name", Drawing.POLYGON_STYLE_NAME);
+            writer.WriteEndElement();
+
+            //<LineStyle Color="#FF000000" StrokeWidth="1" Name="4" />
+            writer.WriteStartElement("LineStyle");
+            writer.WriteAttributeString("StrokeWidth", "1");
+            writer.WriteAttributeString("Color", "#FFFF0000");            
+            writer.WriteAttributeString("Name", Drawing.LINE_STYLE_NAME);
             writer.WriteEndElement();
 
 
@@ -256,7 +307,7 @@ namespace Utils.geom
             {
                 writer.WriteStartElement("FreePoint");
                 writer.WriteAttributeString("Name", pn.Value);
-                writer.WriteAttributeString("Style", POINT_STYLE_NAME);
+                writer.WriteAttributeString("Style", Drawing.POINT_STYLE_NAME);
                 writer.WriteAttributeDouble("X", ( (double)pn.Key.X ) / Drawing.roundingFactor);
                 writer.WriteAttributeDouble("Y", ((double)pn.Key.Y) / Drawing.roundingFactor);
                 writer.WriteEndElement();

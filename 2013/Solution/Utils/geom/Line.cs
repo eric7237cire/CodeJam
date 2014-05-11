@@ -93,6 +93,60 @@ namespace Utils.geom
             return new Point<T>((rhs.B.Multiply(lhs.C).Subtract(lhs.B.Multiply(rhs.C))).Divide(det),
                 (lhs.A.Multiply(rhs.C).Subtract(rhs.A.Multiply(lhs.C))).Divide(det));
         }
+
+        //Returns a line perpendicular to line XY going through pointP
+        public static LineSegment<int> getPerpendicularLineSeg(this LineSegment<int> lineXY, Point<int> pointP)
+        {
+            int A = -lineXY.line.B;
+            int B = lineXY.line.A;
+            int C = A * pointP.X + B * pointP.Y;
+
+            LineSegment<int> line = new LineSegment<int>();
+
+            line.line = Line<int>.createStandard(A, B, C);
+
+            //-A / B is slope
+            Point<int> p2 = new Point<int>(pointP.X + B, pointP.Y - A);
+            line.p1 = pointP;
+            line.p2 = p2;
+
+            return line;
+
+        }
+
+        public static Line<double> ToDouble(this Line<int> line)
+        {
+            return Line<double>.createStandard(line.A, line.B, line.C);
+        }
+        public static Point<double> ToDouble(this Point<int> point)
+        {
+            return new Point<double>(point.X, point.Y);
+        }
+        /// <summary>
+        /// Returns the line segment p1 p2 where p2 is also on lineXY
+        /// where line seg p1 p2 is perpendicular to line x y
+        /// </summary>
+        /// <param name="lineXY"></param>
+        /// <param name="pointP"></param>
+        /// <returns></returns>
+        public static LineSegment<double> getPerpendicularLineSegWithIntersection(this LineSegment<int> lineXY, Point<int> pointP)
+        {
+            int A = -lineXY.line.B;
+            int B = lineXY.line.A;
+            int C = A * pointP.X + B * pointP.Y;
+
+            LineSegment<double> lineSeg = new LineSegment<double>();
+
+            lineSeg.line = Line<double>.createStandard(A, B, C);
+
+            //-A / B is slope
+            Point<double> p2 = intersection(lineXY.line.ToDouble(), lineSeg.line);
+
+            lineSeg.p1 = pointP.ToDouble();
+            lineSeg.p2 = p2;
+            return lineSeg;
+
+        }
     }
 
     public class LineSegment<T>
