@@ -51,12 +51,19 @@ namespace Utils.geom
 
 
         internal List<Figure> figures;
+
+        //Style name to color
+        internal Dictionary<string,string> shapeColors;
+        internal Dictionary<string, string> lineColors;
+
         internal Dictionary<Point<int>, string> pointNames;
 
         const string POINT_NAME_PREFIX = "PointName";
         const string FIGURE_NAME_PREFIX = "FigureName";
         public const int roundingFactor = 1000;
 
+        const string DEFAULT_SHAPE_COLOR = "F5A79E";
+        const string DEFAULT_LINE_COLOR = "000000";
 
         internal const string POINT_STYLE_NAME = "ps";
         internal const string POLYGON_STYLE_NAME = "poly";
@@ -66,6 +73,8 @@ namespace Utils.geom
             Polygons = new List<List<Point<double>>>();
             pointNames = new Dictionary<Point<int>, string>();
             figures = new List<Figure>();
+            shapeColors = new Dictionary<string, string>();
+            lineColors = new Dictionary<string, string>();
 
             MaximalVisibleX = 55;
             MinimalVisibleX = -5;
@@ -73,16 +82,20 @@ namespace Utils.geom
             MinimalVisibleY = -5;
         }
 
-        public void AddPolygon(IEnumerable<Point<int>> polygon)
+        public void AddPolygon(IEnumerable<Point<int>> polygon, string color = null)
         {
-            AddPolygon(polygon, getName);
+            color = color ?? DEFAULT_SHAPE_COLOR;
+
+            shapeColors[POLYGON_STYLE_NAME + shapeColors.Count] = color;
+
+            AddPolygon(polygon, POLYGON_STYLE_NAME + (shapeColors.Count - 1), getName);
         }
 
-        public void AddPolygon<T>(IEnumerable<Point<T>> polygon, Func<Point<T>, string> getName)
+        public void AddPolygon<T>(IEnumerable<Point<T>> polygon, string styleName, Func<Point<T>, string> getName) where T : IComparable<T>
         {
             Figure f = new Figure();
             f.Name = FIGURE_NAME_PREFIX + figures.Count;
-            f.Style = POLYGON_STYLE_NAME;
+            f.Style = styleName;
             f.Type = FigureType.Polygon;
 
             foreach(Point<T> p in polygon)
@@ -105,22 +118,33 @@ namespace Utils.geom
 
         public void AddAsSeg(LineSegment<int> line)
         {
-            AddAsSegMain(line, getName);
+            AddAsSegMain(line.p1, line.p2, getName);
         }
         public void AddAsSeg(LineSegment<double> line)
         {
-            AddAsSegMain(line, getName);
+            AddAsSegMain(line.p1, line.p2, getName);
+        }
+        public void AddAsSeg(Point<int> p1, Point<int> p2, string color = null)
+        {
+            AddAsSegMain(p1, p2, getName, color);
         }
 
-        public void AddAsSegMain<T>(LineSegment<T> line, Func<Point<T>, string> getName)
+        public void AddAsSegMain<T>(Point<T> p1, Point<T> p2, Func<Point<T>, string> getName, string color = null) where T : IComparable<T>
         {
+            color = color ?? DEFAULT_SHAPE_COLOR;
+
+            if (!lineColors.ContainsKey(color))
+                lineColors[color] = LINE_STYLE_NAME + lineColors.Count;
+            
+            
+
             Figure f = new Figure();
             f.Name = FIGURE_NAME_PREFIX + figures.Count;
             f.Type = FigureType.Segment;
-            f.Style = LINE_STYLE_NAME;
+            f.Style = lineColors[color];
 
-            f.deps.Add(getName(line.p1));
-            f.deps.Add(getName(line.p2));
+            f.deps.Add(getName(p1));
+            f.deps.Add(getName(p2));
 
             figures.Add(f);
         }
@@ -272,25 +296,35 @@ namespace Utils.geom
             writer.WriteAttributeString("Name", Drawing.POINT_STYLE_NAME);
             writer.WriteEndElement();
 
-
+            foreach(var style in drawing.shapeColors)
+            {
+                writer.WriteStartElement("ShapeStyle");
+                writer.WriteAttributeString("Size", "10");
+                writer.WriteAttributeString("Fill", "#FF" + style.Value);
+                writer.WriteAttributeString("IsFilled", "True");
+                writer.WriteAttributeString("Color", "#FF000000");
+                writer.WriteAttributeString("StrokeWidth", "1");
+                writer.WriteAttributeString("Name", style.Key);
+                writer.WriteEndElement();
+            }
             //<ShapeStyle Fill="" IsFilled="true" Color="" StrokeWidth="1" Name="5" />
             //Color is opagque r g b
-            writer.WriteStartElement("ShapeStyle");
-            writer.WriteAttributeString("Size", "10");
-            writer.WriteAttributeString("Fill", "#FFF5A79E");
-            writer.WriteAttributeString("IsFilled", "True");
-            writer.WriteAttributeString("Color", "#FF000000");
-            writer.WriteAttributeString("StrokeWidth", "1");
-            writer.WriteAttributeString("Name", Drawing.POLYGON_STYLE_NAME);
-            writer.WriteEndElement();
+            
+
+           foreach(var style in drawing.lineColors)
+           {
+               writer.WriteStartElement("LineStyle");
+               writer.WriteAttributeString("StrokeWidth", "1");
+               writer.WriteAttributeString("Color", "#FF" + style.Key);
+               writer.WriteAttributeString("Name", style.Value);
+               writer.WriteEndElement();
+
+           }
+
+            
 
             //<LineStyle Color="#FF000000" StrokeWidth="1" Name="4" />
-            writer.WriteStartElement("LineStyle");
-            writer.WriteAttributeString("StrokeWidth", "1");
-            writer.WriteAttributeString("Color", "#FFFF0000");            
-            writer.WriteAttributeString("Name", Drawing.LINE_STYLE_NAME);
-            writer.WriteEndElement();
-
+            
 
             writer.WriteEndElement();
         }

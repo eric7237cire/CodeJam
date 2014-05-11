@@ -20,11 +20,12 @@ namespace Round3
            
 
 #if !mono
-            bool tests = false;
+            bool tests = true;
 
             if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
    {
-       @"/include=current",
+       //@"/include=current",
+       @"/run=UnitTest.TestGeom",
        @"C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll"
      //  @"/run=UnitTest.TestModMath",
      //  @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\UnitTest\bin\Debug\UnitTest.dll"
@@ -36,7 +37,7 @@ namespace Round3
             //Cheaters main = new Cheaters();
             Rural main = new Rural();
 
-            main.processInput(null);
+           // main.processInput(null);
             return;
 
             List<string> list = new List<string>();

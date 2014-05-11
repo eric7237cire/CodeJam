@@ -164,4 +164,15 @@
 10 2
 3 1 13 4</value>
   </data>
+  <data name="TestRuralSmall8" xml:space="preserve">
+    <value>8
+100 -75
+0 87
+0 100
+99 -75
+0 -100
+0 -75
+0 98
+0 -94</value>
+  </data>
 </root>

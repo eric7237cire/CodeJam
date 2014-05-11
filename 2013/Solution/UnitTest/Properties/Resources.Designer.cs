@@ -159,5 +159,22 @@ namespace UnitTest.Properties {
                 return ResourceManager.GetString("TestPongSample4", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Recherche une chaîne localisée semblable à 8
+        ///100 -75
+        ///0 87
+        ///0 100
+        ///99 -75
+        ///0 -100
+        ///0 -75
+        ///0 98
+        ///0 -94.
+        /// </summary>
+        internal static string TestRuralSmall8 {
+            get {
+                return ResourceManager.GetString("TestRuralSmall8", resourceCulture);
+            }
+        }
     }
 }

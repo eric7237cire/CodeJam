@@ -15,7 +15,7 @@ namespace Utils.geom
             return new Point<double>(lhs.X + rhs.X, lhs.Y + rhs.Y);
         }
 
-        public static Point<T> Add<T>(this Point<T> lhs, Point<T> rhs) where T : INumeric<T>
+        public static Point<T> Add<T>(this Point<T> lhs, Point<T> rhs) where T : INumeric<T>, IComparable<T>
         {
             return new Point<T>(lhs.X.Add(rhs.X), lhs.Y.Add(rhs.Y));
         }
@@ -40,7 +40,7 @@ namespace Utils.geom
 
         }
 
-        private static int polarOrder(Point<int> pt, Point<int> q1, Point<int> q2)
+        public static int polarOrder(Point<int> pt, Point<int> q1, Point<int> q2)
         {
             int dx1 = q1.X - pt.X;
             int dy1 = q1.Y - pt.Y;
@@ -90,7 +90,7 @@ namespace Utils.geom
             return ConvexHull(pts, polarOrder, ccw);
         }
 
-        //GrahamScan, returns them in counter clockwise order
+        //GrahamScan, returns them in clockwise order, or counter-clockwise if poped off 1 by 1 off the stack
         public static Stack<Point<T>> ConvexHull<T>(this IList<Point<T>> pts, 
             Func<Point<T>, Point<T>, Point<T>, int> polarOrderComp,
             Func<Point<T>, Point<T>, Point<T>, int> ccwFunc
@@ -113,9 +113,10 @@ namespace Utils.geom
             });
 
             // sort by polar angle with respect to base point points[0],
-            // breaking ties by distance to points[0]
+            // breaking ties by distance to points[0].
+            //Counter clockwise
             Array.Sort(points, 1, N - 1, Comparer<Point<T>>.Create((lhs, rhs) =>
-                { return polarOrderComp(pts[0], lhs, rhs); }
+                { return polarOrderComp(points[0], lhs, rhs); }
                 ));
             
             
@@ -139,7 +140,8 @@ namespace Utils.geom
             for (int i = k2; i < N; i++)
             {
                 Point<T> top = hull.Pop();
-                while (ccwFunc(hull.Peek(), top, points[i]) <= 0)
+                //IMPORTANT: TO INCLUDE COLINEAR POINTS IN HULL, USE < OTHERWISE <=
+                while (ccwFunc(hull.Peek(), top, points[i]) < 0)
                 {
                     top = hull.Pop();
                 }
@@ -148,6 +150,27 @@ namespace Utils.geom
             }
 
             return hull;
+        }
+
+        public static double PolygonArea(this IList<Point<int>> points)
+        {
+            double sum = 0;
+            for (int i = 0; i < points.Count - 1; ++i)
+            {
+
+                sum += points[i].X * points[i + 1].Y;
+            }
+
+            sum += points.GetLastValue().X * points[0].Y;
+
+            for (int i = 0; i < points.Count - 1; ++i)
+            {
+                sum -= points[i + 1].X * points[i].Y;
+            }
+
+            sum -= points[0].X * points.GetLastValue().Y;
+
+            return Math.Abs(sum) / 2;
         }
 
         public static double PolygonArea(this IList<Point<double>> points)
@@ -196,7 +219,7 @@ namespace Utils.geom
 
 
 
-    public class Point<T> : IEquatable<Point<T>>
+    public class Point<T> : IEquatable<Point<T>>, IComparable<Point<T>> where T:IComparable<T>
     {
         //private readonly int sideLength;
         private T x;
@@ -270,6 +293,15 @@ namespace Utils.geom
         public override string ToString()
         {
             return "({0}, {1})".FormatThis(x.ToString(), y.ToString());
+        }
+
+        public int CompareTo(Point<T> other)
+        {
+            int yCmp = Y.CompareTo(other.Y);
+            if (yCmp != 0)
+                return yCmp;
+
+            return X.CompareTo(other.X);
         }
     }
 }
