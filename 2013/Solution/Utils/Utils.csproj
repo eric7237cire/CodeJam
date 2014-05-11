@@ -63,7 +63,9 @@
     <Compile Include="CodeJamUtil.cs" />
     <Compile Include="CombPerm.cs" />
     <Compile Include="Ext.cs" />
+    <Compile Include="geom\GeomXmlWriter.cs" />
     <Compile Include="geom\Line.cs" />
+    <Compile Include="geom\ShowProjections.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="math\BigFraction.cs" />
     <Compile Include="math\INumeric.cs" />

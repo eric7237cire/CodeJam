@@ -18,7 +18,7 @@ using Logger = Utils.LoggerFile;
 namespace Round2.Pong
 {
 #if FRAC
-    using Line = LineNumeric<BigFraction>;
+    using Line = Line<BigFraction>;
     using Point = Point<BigFraction>;
     using NumType = BigFraction;
     using System.Numerics;
@@ -488,8 +488,8 @@ namespace Round2.Pong
             return true;
         }
 
-       
 
+        [Obsolete("From my attempt, finds how long it takes to cycle (each elem in cycle has constant diff with corr. element in next cycle")]
         public static int findCycle(NumType p0, NumType deltaP, BigInteger mod, out NumType diff)
         {
             Func<int, NumType> funcCalcP = (i) => { return (p0 + deltaP * i) % mod; };
@@ -535,6 +535,7 @@ namespace Round2.Pong
 
         }
 
+        [Obsolete("Using cycle info, find when a point will wrap around")        ]
         public static BigInteger accel(NumType p0, NumType deltaP,
             BigInteger twiceHeight, int cycleLength,
             NumType cycleDiff, NumType lower, NumType upper)
@@ -600,14 +601,14 @@ namespace Round2.Pong
                 input.X = input.widthField - input.X;
             }
 
-            Line teamLeft = Line.createFromCoords(0, 0, 0, 1);
-            Line teamRight = Line.createFromCoords(input.widthField, 0, input.widthField, 1);
+            Line teamLeft = LineExt.createFromCoords<BigFraction>(0, 0, 0, 1);
+            Line teamRight = LineExt.createFromCoords<BigFraction>(input.widthField, 0, input.widthField, 1);
 
-            Line initialVector = Line.createFromCoords(input.X, input.Y, input.X + input.VX, input.Y + input.VY);
+            Line initialVector = LineExt.createFromCoords<BigFraction>(input.X, input.Y, input.X + input.VX, input.Y + input.VY);
 
             var p1 = initialVector.intersection(teamRight);
 
-            Line rebound = Line.createFromPoints(p1, p1.Add(new Point(-input.VX, input.VY)));
+            Line rebound = LineExt.createFromPoints(p1, p1.Add(new Point(-input.VX, input.VY)));
 
             var p2 = rebound.intersection(teamLeft);
             Logger.LogInfo("Initial point {}, {} direction {}, {}", input.X, input.Y, input.VX, input.VY);
@@ -721,14 +722,14 @@ namespace Round2.Pong
                 input.X = input.widthField - input.X;
             }
 
-            Line teamLeft = Line.createFromCoords(0, 0, 0, 1);
-            Line teamRight = Line.createFromCoords(input.widthField, 0, input.widthField, 1);
+            Line teamLeft = LineExt.createFromCoords<BigFraction>(0, 0, 0, 1);
+            Line teamRight = LineExt.createFromCoords<BigFraction>(input.widthField, 0, input.widthField, 1);
 
-            Line initialVector = Line.createFromCoords(input.X, input.Y, input.X + input.VX, input.Y + input.VY);
+            Line initialVector = LineExt.createFromCoords<BigFraction>(input.X, input.Y, input.X + input.VX, input.Y + input.VY);
 
             var p1 = initialVector.intersection(teamRight);
 
-            Line rebound = Line.createFromPoints(p1, p1.Add(new Point(-input.VX, input.VY)));
+            Line rebound = LineExt.createFromPoints(p1, p1.Add(new Point(-input.VX, input.VY)));
 
             var p2 = rebound.intersection(teamLeft);
             Logger.LogInfo("Initial point {}, {} direction {}, {}", input.X, input.Y, input.VX, input.VY);
@@ -871,16 +872,16 @@ namespace Round2.Pong
                 input.X = input.widthField - input.X;
             }
 
-            Line teamLeft = Line.createFromCoords(0, 0, 0, 1);
-            Line teamRight = Line.createFromCoords(input.widthField, 0, input.widthField, 1);
+            Line teamLeft = LineExt.createFromCoords<BigFraction>(0, 0, 0, 1);
+            Line teamRight = LineExt.createFromCoords<BigFraction>(input.widthField, 0, input.widthField, 1);
 
-            Line initialVector = Line.createFromCoords(input.X, input.Y, input.X + input.VX, input.Y + input.VY);
+            Line initialVector = LineExt.createFromCoords<BigFraction>(input.X, input.Y, input.X + input.VX, input.Y + input.VY);
 
             var p1 = initialVector.intersection(teamRight);
 
 
 
-            Line rebound = Line.createFromPoints(p1, p1.Add(new Point(-input.VX, input.VY)));
+            Line rebound = LineExt.createFromPoints(p1, p1.Add(new Point(-input.VX, input.VY)));
 
             var p2 = rebound.intersection(teamLeft);
             Logger.LogInfo("Initial point {}, {} direction {}, {}", input.X, input.Y, input.VX, input.VY);

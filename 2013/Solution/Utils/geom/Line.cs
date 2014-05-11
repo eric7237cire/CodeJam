@@ -8,99 +8,114 @@ namespace Utils.geom
 {
 
     using Utils.math;
-    using NumType = System.Double;
-    using Point = Point<System.Double>;
+    //using NumType = System.Double;
+    //using Point = Point<System.Double>;
 
-    //Ax + By = C
-    public class Line
+    public static class LineExt
     {
-        private NumType A;
-        private NumType B;
-        private NumType C;
 
-        private Line(NumType A, NumType B, NumType C)
+        public static Line<double> createFromPoints(Point<double> p1, Point<double> p2)
         {
-            this.A = A; this.B = B; this.C = C;
+            double A = p2.Y - p1.Y;
+            double B = p1.X - p2.X;
+            double C = A * p1.X + B * p1.Y;
+            return Line<double>.createStandard(A, B, C);
         }
 
-        public static Line createStandard(NumType A, NumType B, NumType C) 
+        public static Line<T> createFromPoints<T>(Point<T> p1, Point<T> p2) where T: INumeric<T>
         {
-            return new Line(A, B, C);
+            T A = p2.Y.Subtract(p1.Y);
+            T B = p1.X.Subtract(p2.X);
+            T C = A.Multiply(p1.X).Add(B.Multiply(p1.Y));
+            return Line<T>.createStandard(A, B, C);
         }
 
-        public static Line createFromPoints(Point p1, Point p2)
+        public static Line<double> createFromCoords(double x1, double y1, double x2, double y2)
         {
-            NumType A = p2.Y - p1.Y;
-            NumType B =  p1.X - p2.X;
-            NumType C = A*p1.X + B * p1.Y;
-            return new Line(A, B, C);
+            double A = y2 - y1;
+            double B = x1 - x2;
+            double C = A * x1 + B * y1;
+            return Line<double>.createStandard(A, B, C);
         }
 
-        public static Line createFromCoords(NumType x1, NumType y1, NumType x2, NumType y2)
+        public static Line<int> createFromCoords(int x1, int y1, int x2, int y2)
         {
-            NumType A = y2 - y1;
-            NumType B = x1 - x2;
-            NumType C = A * x1 + B * y1;
-            return new Line(A, B, C);
+            int A = y2 - y1;
+            int B = x1 - x2;
+            int C = A * x1 + B * y1;
+            return Line<int>.createStandard(A, B, C);
         }
 
-        public Point intersection(Line rhs)
+        public static LineSegment<int> createSegmentFromCoords(int x1, int y1, int x2, int y2)
         {
-            NumType det = A * rhs.B - rhs.A * B;
+            int A = y2 - y1;
+            int B = x1 - x2;
+            int C = A * x1 + B * y1;
+            LineSegment<int> ls = new LineSegment<int>();
+            ls.line = Line<int>.createStandard(A, B, C);
+            ls.p1 = new Point<int>(x1, y1);
+            ls.p2 = new Point<int>(x2, y2);
+            return ls;
+        }
+
+        public static Line<T> createFromCoords<T>(T x1, T y1, T x2, T y2) where T : INumeric<T>
+        {
+            T A = y2.Subtract(y1);
+            T B = x1.Subtract(x2);
+            T C = A.Multiply(x1).Add(B.Multiply(y1));
+            return Line<T>.createStandard(A, B, C);
+        }
+
+        public static Point<double> intersection(this Line<double> lhs, Line<double> rhs)
+        {
+            //Using idea to solve the 2 equations Ax + By = C and A'x + B'y = C' for x and y
+
+            double det = lhs.A * rhs.B - rhs.A * lhs.B;
             if (det == 0)
             {
                 //parrallel
                 return null;
             }
 
-            return new Point((rhs.B * C - B * rhs.C) / det,
-                (A * rhs.C - rhs.A * C) / det);
-        }
-    }
-
-    public class LineNumeric<T> where T : INumeric<T>
-    {
-        private T A;
-        private T B;
-        private T C;
-
-        private LineNumeric(T A, T B, T C)
-        {
-            this.A = A; this.B = B; this.C = C;
+            return new Point<double>((rhs.B * lhs.C - lhs.B * rhs.C) / det,
+                (lhs.A * rhs.C - rhs.A * lhs.C) / det);
         }
 
-        public static LineNumeric<T> createStandard(T A, T B, T C)
+        public static Point<T> intersection<T>(this Line<T> lhs, Line<T> rhs) where T : INumeric<T>
         {
-            return new LineNumeric<T>(A, B, C);
-        }
-
-        public static LineNumeric<T> createFromPoints(Point<T> p1, Point<T> p2)
-        {
-            T A = p2.Y.Subtract(p1.Y);
-            T B = p1.X.Subtract(p2.X);
-            T C = A.Multiply(p1.X).Add ( B.Multiply(p1.Y) );
-            return new LineNumeric<T>(A, B, C);
-        }
-
-        public static LineNumeric<T> createFromCoords(T x1, T y1, T x2, T y2)
-        {
-            T A = y2.Subtract(y1);
-            T B = x1.Subtract(x2);
-            T C = A.Multiply(x1).Add(B.Multiply(y1));
-            return new LineNumeric<T>(A, B, C);
-        }
-
-        public Point<T> intersection(LineNumeric<T> rhs)
-        {
-            T det = A.Multiply(rhs.B).Subtract( rhs.A.Multiply(B) );
+            T det = lhs.A.Multiply(rhs.B).Subtract(rhs.A.Multiply(lhs.B));
             if (det.IsZero())
             {
                 //parrallel
                 return null;
             }
 
-            return new Point<T>((rhs.B.Multiply(C).Subtract( B.Multiply(rhs.C) ) ).Divide(det),
-                (A.Multiply(rhs.C).Subtract( rhs.A.Multiply(C) )).Divide(det));
+            return new Point<T>((rhs.B.Multiply(lhs.C).Subtract(lhs.B.Multiply(rhs.C))).Divide(det),
+                (lhs.A.Multiply(rhs.C).Subtract(rhs.A.Multiply(lhs.C))).Divide(det));
         }
     }
+
+    public class LineSegment<T>
+    {
+        public Point<T> p1 { get; internal set; }
+        public Point<T> p2 { get; internal set; }
+
+        //The line going through p1 and p2
+        public Line<T> line { get; internal set; } 
+    }
+    public class Line<T>
+    {
+        //Ax + By = C
+        public T A;
+        public T B;
+        public T C;
+
+        public static Line<T> createStandard(T A, T B, T C) 
+        {
+            return new Line<T>{A = A, B = B, C = C};
+        }
+
+    }
+
+    
 }
