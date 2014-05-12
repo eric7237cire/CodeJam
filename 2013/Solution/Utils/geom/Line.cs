@@ -178,6 +178,16 @@ namespace Utils.geom
             else
                 return false;
         }
+        
+        public static bool sameSide(Point<int> x, Point<int> y, Point<int> a, Point<int> b)
+        {
+            int cp = b.translate(a).crossProduct( x.translate(a)) ;
+            int cp2 = b.translate(a).crossProduct( y.translate(a));
+            if (cp * cp2 >= 0)
+                return true;
+            else
+                return false;
+        }
 
         // Given three colinear points p, q, r, the function checks if
         // point q lies on line segment 'pr'

@@ -42,7 +42,7 @@ namespace Round3
             foreach (Point<int> p in points)
                 d.AddPoint(p);
 
-            Stack<Point<int>> ch = points.ConvexHull();
+            List<Point<int>> ch = points.ConvexHull();
 
             List<Point<int>> hull = new List<Point<int>>(ch);
 

@@ -1,4 +1,10 @@
-﻿using System;
+﻿#define LOGGING
+#define LOGGING_DEBUG
+#define LOGGING_INFO
+#define LOGGING_TRACE
+
+using System;
+
 
 using Utils.geom;
 using System.Collections.Generic;
@@ -7,6 +13,8 @@ using Utils;
 using CodeJamUtils;
 using Round3;
 using System.IO;
+
+using Logger = Utils.LoggerFile;
 
 namespace UnitTest
 {
@@ -61,6 +69,7 @@ namespace UnitTest
             
         }
 
+        #if !mono
         [Test]
         public void TestSmall8()
         {
@@ -80,8 +89,10 @@ namespace UnitTest
             Assert.AreEqual(expectedAns, ans);
 
         }
+        #endif
 
         [Test]
+        [Category("current")]
         public void TestConvexHull3()
         {
             List<Point<int>> list = new List<Point<int>>();
@@ -94,16 +105,20 @@ namespace UnitTest
             list.Add(new Point<int>(2, 2));
             list.Add(new Point<int>(1, 3));
             list.Add(new Point<int>(2, 3));
-            Stack<Point<int>> a = list.ConvexHull();
-
-            Assert.AreEqual(8, a.Count);
+            List<Point<int>> a;
+            
+            a = list.ConvexHull(true);
+            testConvexHull(true, list, a);
+           // Assert.AreEqual(8, a.Count);
 
             a = list.ConvexHull(false);
 
-            Assert.AreEqual(4, a.Count);
+            //Assert.AreEqual(4, a.Count);
+            testConvexHull(false, list, a);
         }
 
-        //[Test]
+        [Test]
+        [Category("current")]
         public void TestConvexHull2()
         {
             List<Point<int>> list = new List<Point<int>>();
@@ -112,12 +127,15 @@ namespace UnitTest
             list.Add(new Point<int>(6, 4));
             list.Add(new Point<int>(3, 3));
             list.Add(new Point<int>(2, 4));
-            Stack<Point<int>> a = list.ConvexHull();
+            List<Point<int>> a = list.ConvexHull();
 
-            Assert.AreEqual(4, a.Count);
+            
+            testConvexHull(true, list, a);
+            //Assert.AreEqual(4, a.Count);
         }
 
-        //[Test]
+        [Test]
+        [Category("current")]
         public void TestConvexHull()
         {
             List<Point<int>> list = new List<Point<int>>();
@@ -125,13 +143,64 @@ namespace UnitTest
             list.Add(new Point<int>(2, 0));
             list.Add(new Point<int>(0, 0));
             list.Add(new Point<int>(1, 1));
-            Stack<Point<int>> a = list.ConvexHull();
+            List<Point<int>> a = list.ConvexHull();
 
             Assert.AreEqual(3, a.Count);
+            
+            testConvexHull(true, list, a);
         }
+        
+        private void testConvexHull(bool shouldIncludeLinearPoints, IList<Point<int>> pointsOrig,
+        	IList<Point<int>> hull)
+        {
+        	Logger.LogTrace("\nTesting hull. Hull:\n{}\nPoints:\n{}",
+        		hull.ToCommaString(), pointsOrig.ToCommaString());
+        	
+        	//First check convexness, hull should be in counter-clockwise order
+        	for(int i = 0; i < hull.Count; ++i)
+        	{
+        		int j = (i + 1) % hull.Count;
+        		int k = (i + 2) % hull.Count;
+        		
+        		if (shouldIncludeLinearPoints) 
+        			Assert.IsTrue( PointExt.ccw( hull[i], hull[j], hull[k] ) >= 0 );
+        		if (!shouldIncludeLinearPoints)
+        			Assert.IsTrue( PointExt.ccw( hull[i], hull[j], hull[k] ) > 0 );
+        	}
+        	
+        	IList<Point<int>> interiorPoints = new List<Point<int>>();
+        	foreach (var p in pointsOrig)
+        	{
+        		if (!hull.Contains(p))
+        			interiorPoints.Add(p);
+        	}
+        	
+        	//Go through each side of the hull, checking that all interior points are on the same side
+        	for(int i = 0; i < hull.Count; ++i)
+        	{
+        		int j = (i + 1) % hull.Count;
+        		
+        		//All interior points should make a counter - clockwise turn if side ij
+        		for(int k = 0; k < interiorPoints.Count; ++k)
+        		{
+        			//OK to be co-linear since 'interior points' can be on hull
+        			if (!shouldIncludeLinearPoints)
+        				Assert.IsTrue( PointExt.ccw( hull[i], hull[j], interiorPoints[k]) <= 1,
+        				"{0} {1} {2} not counter clockwise".FormatThis( hull[i], hull[j], interiorPoints[k] )
+        				);
+        				
+					if (shouldIncludeLinearPoints)
+						Assert.IsTrue( PointExt.ccw( hull[i], hull[j], interiorPoints[k]) == 1,
+        				"{0} {1} {2} not counter clockwise".FormatThis( hull[i], hull[j], interiorPoints[k] )
+        				);
+        		}
+        		
+        	}
+        	
+        }
+        
 
-        [Test]
-        [Category("current")]
+        [Test]        
         public void TestPolygon()
         {
             List<Point<double>> points = new List<Point<double>>();
@@ -173,7 +242,7 @@ namespace UnitTest
 
             Assert.AreEqual(334, area, 0.000001d);
 
-            Stack<Point<double>> hull = points.ConvexHull();
+            List<Point<double>> hull = points.ConvexHull();
 
             Assert.AreEqual(8, hull.Count, hull.ToCommaString());
         }
