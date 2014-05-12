@@ -35,7 +35,7 @@ namespace Round3
                 //return;
 #endif
             //Cheaters main = new Cheaters();
-            Rural main = new Rural();
+           // Rural main = new Rural();
 
            // main.processInput(null);
            // return;

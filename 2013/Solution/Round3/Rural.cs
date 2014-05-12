@@ -1,7 +1,7 @@
-﻿#define LOGGING
+﻿//#define LOGGING
 #define LOGGING_DEBUG
 #define LOGGING_INFO
-#define LOGGING_TRACE
+//#define LOGGING_TRACE
 using CodeJamUtils;
 using System;
 using System.Collections.Generic;
@@ -23,21 +23,24 @@ namespace Round3
         {
             Drawing d = new Drawing();
 
-            /*
-            List<Point<int>> points = new List<Point<int>>();
+            List<Point<int>> points;
 
-            
-
-            Random r = new Random(15);
-            for (int i = 0; i < 95; ++i)
+            if (input != null)
             {
-                Point<int> p = new Point<int>(r.Next(1, 50), r.Next(1, 50));
-                
-                points.Add(p);
+                points = new List<Point<int>>(input.points);
+            }
+            else
+            {
+                points = new List<Point<int>>();
+                Random r = new Random(15);
+                for (int i = 0; i < 15; ++i)
+                {
+                    Point<int> p = new Point<int>(r.Next(-50, 100), r.Next(-51, 50));
 
-            }*/
+                    points.Add(p);
 
-            List<Point<int>> points = new List<Point<int>>(input.points);
+                }
+            }
 
             foreach (Point<int> p in points)
                 d.AddPoint(p);
@@ -133,7 +136,7 @@ namespace Round3
             d.MaximalVisibleY = 5 + points.Max((p) => p.Y); ;
             d.MinimalVisibleY = -5 + points.Min((p) => p.Y); ;
                
-            //GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
+            //
 
             double totalArea = hull.PolygonArea();
             double area = lowerPoly.PolygonArea();
@@ -144,11 +147,13 @@ namespace Round3
 
             List<Point<int>> biggerPolygon;
             
-                Preconditions.checkState(lowerPoly.checkIsPolygon());
-                Preconditions.checkState(upperPoly.checkIsPolygon());
-                biggerPolygon = area > area2 ? lowerPoly : upperPoly;
-            
+            Preconditions.checkState(lowerPoly.checkIsPolygon());
+            Preconditions.checkState(upperPoly.checkIsPolygon());
+            biggerPolygon = area > area2 ? lowerPoly : upperPoly;
 
+            
+                d.AddPolygon(biggerPolygon, "00FF00");
+                GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
             
             IEnumerable<int> l2 = biggerPolygon.Select((p) => points.IndexOf(p));
 
