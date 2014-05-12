@@ -210,12 +210,26 @@ namespace Round3
 
             Preconditions.checkState(lowerPoly.Count == points.Count);
             Preconditions.checkState(upperPoly.Count == points.Count);
+
+            List<Point<int>> biggerPolygon;
+            if (upperHull.Count == 3)
+            {
+                Preconditions.checkState(lowerPoly.checkIsPolygon());
+                biggerPolygon = lowerPoly;
+
+                //upper polygon may not be an actual polygon.  with only 3 points in the hull,
+                //once the end points are removed, only 1 point, not garuanteed to not touch the other points
+            }
+            else
+            {
+                Preconditions.checkState(lowerPoly.checkIsPolygon());
+                Preconditions.checkState(upperPoly.checkIsPolygon());
+                biggerPolygon = area > area2 ? lowerPoly : upperPoly;
+            }
+
+            
             //Preconditions.checkState(Math.Abs(totalArea - area - area2) <= 0.01);
-            Preconditions.checkState(lowerPoly.checkIsPolygon());
-            Preconditions.checkState(upperPoly.checkIsPolygon());
-
-            List<Point<int>> biggerPolygon = area > area2 ? lowerPoly : upperPoly;
-
+            
             IEnumerable<int> l2 = biggerPolygon.Select((p) => points.IndexOf(p));
 
             return string.Join(" ", l2);

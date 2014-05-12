@@ -64,7 +64,7 @@ namespace UnitTest
         [Test]
         public void TestSmall8()
         {
-            testInput(Properties.Resources.TestRuralSmall8, "1 2 3");
+            testInput(Properties.Resources.TestRuralSmall8, "0 4 7 5 1 6 2 3");
         }
 
         private void testInput(string inputTxt, string expectedAns)
@@ -82,6 +82,28 @@ namespace UnitTest
         }
 
         [Test]
+        public void TestConvexHull3()
+        {
+            List<Point<int>> list = new List<Point<int>>();
+            list.Add(new Point<int>(3, 3));
+            list.Add(new Point<int>(1, 1));
+            list.Add(new Point<int>(3, 1));
+            list.Add(new Point<int>(3, 2));
+            list.Add(new Point<int>(2, 1));
+            list.Add(new Point<int>(1, 2));
+            list.Add(new Point<int>(2, 2));
+            list.Add(new Point<int>(1, 3));
+            list.Add(new Point<int>(2, 3));
+            Stack<Point<int>> a = list.ConvexHull();
+
+            Assert.AreEqual(8, a.Count);
+
+            a = list.ConvexHull(false);
+
+            Assert.AreEqual(4, a.Count);
+        }
+
+        //[Test]
         public void TestConvexHull2()
         {
             List<Point<int>> list = new List<Point<int>>();
@@ -95,7 +117,7 @@ namespace UnitTest
             Assert.AreEqual(4, a.Count);
         }
 
-        [Test]
+        //[Test]
         public void TestConvexHull()
         {
             List<Point<int>> list = new List<Point<int>>();

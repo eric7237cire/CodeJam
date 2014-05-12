@@ -85,15 +85,17 @@ namespace Utils.geom
         {
             return ConvexHull(pts, polarOrder, ccw);
         }
-        public static Stack<Point<int>> ConvexHull(this IList<Point<int>> pts)
+        public static Stack<Point<int>> ConvexHull(this IList<Point<int>> pts, bool includeColinear = true)
         {
-            return ConvexHull(pts, polarOrder, ccw);
+            return ConvexHull(pts, polarOrder, ccw, includeColinear);
         }
 
         //GrahamScan, returns them in clockwise order, or counter-clockwise if poped off 1 by 1 off the stack
+        //Includes co-linear points in hull
         public static Stack<Point<T>> ConvexHull<T>(this IList<Point<T>> pts, 
             Func<Point<T>, Point<T>, Point<T>, int> polarOrderComp,
-            Func<Point<T>, Point<T>, Point<T>, int> ccwFunc
+            Func<Point<T>, Point<T>, Point<T>, int> ccwFunc,
+            bool includeColinear = true
             ) where T : IComparable<T>, IEquatable<T>
         {
             // defensive copy
@@ -132,18 +134,35 @@ namespace Utils.geom
 
             // find index k2 of first point not collinear with points[0] and points[k1]
             int k2;
-            for (k2 = k1 + 1; k2 < N; k2++)
-                if (ccwFunc(points[0], points[k1], points[k2]) != 0) break;
+            if (includeColinear)
+            {
+                k2 = k1 + 1;
+            }
+            else
+            {
+                for (k2 = k1 + 1; k2 < N; k2++)
+                    if (ccwFunc(points[0], points[k1], points[k2]) != 0) break;
+            }
             hull.Push(points[k2 - 1]);    // points[k2-1] is second extreme point
 
             // Graham scan; note that points[N-1] is extreme point different from points[0]
             for (int i = k2; i < N; i++)
             {
                 Point<T> top = hull.Pop();
-                //IMPORTANT: TO INCLUDE COLINEAR POINTS IN HULL, USE < OTHERWISE <=
-                while (ccwFunc(hull.Peek(), top, points[i]) < 0)
+                
+                if (includeColinear)
                 {
-                    top = hull.Pop();
+                    while (ccwFunc(hull.Peek(), top, points[i]) < 0)
+                    {
+                        top = hull.Pop();
+                    }
+                }
+                else
+                {
+                    while (ccwFunc(hull.Peek(), top, points[i]) <= 0)
+                    {
+                        top = hull.Pop();
+                    }
                 }
                 hull.Push(top);
                 hull.Push(points[i]);
