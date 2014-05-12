@@ -20,7 +20,7 @@ namespace Round3
            
 
 #if !mono
-            bool tests = true;
+            bool tests = false;
 
             if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
    {
@@ -35,21 +35,22 @@ namespace Round3
                 //return;
 #endif
             //Cheaters main = new Cheaters();
-           // Rural main = new Rural();
+          //  Rural main = new Rural();
+            Lost main = new Lost();
 
            // main.processInput(null);
            // return;
 
             List<string> list = new List<string>();
 
-            //list.Add("sample.in");
+            list.Add("sample.in");
 
             //list.Add("A-small-practice.in");
            // list.Add("A-large-practice.in");
 
 
-            list.Add("B-small-practice.in");
-            list.Add("B-large-practice.in");
+           // list.Add("B-small-practice.in");
+           // list.Add("B-large-practice.in");
 
             //list.Add("C-small-practice.in");
             //list.Add("C-large-practice.in");
