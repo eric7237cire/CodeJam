@@ -134,9 +134,9 @@ namespace Utils.geom
         /// <returns></returns>
         public static LineSegment<double> getPerpendicularLineSegWithIntersection(this LineSegment<int> lineXY, Point<int> pointP)
         {
-            int A = -lineXY.line.B;
-            int B = lineXY.line.A;
-            int C = A * pointP.X + B * pointP.Y;
+            long A = -lineXY.line.B;
+            long B = lineXY.line.A;
+            long C = A * pointP.X + B * pointP.Y;
 
             LineSegment<double> lineSeg = new LineSegment<double>();
 
@@ -200,22 +200,7 @@ namespace Utils.geom
             return false;
         }
 
-        // To find orientation of ordered triplet (p, q, r).
-        // The function returns following values
-        // 0 --> p, q and r are colinear
-        // 1 --> Clockwise
-        // 2 --> Counterclockwise
-        static int orientation(Point<int> p, Point<int> q, Point<int> r)
-        {
-            // See 10th slides from following link for derivation of the formula
-            // http://www.dcs.gla.ac.uk/~pat/52233/slides/Geometry1x1.pdf
-            int val = (q.Y - p.Y) * (r.X - q.X) -
-                      (q.X - p.X) * (r.Y - q.Y);
-
-            if (val == 0) return 0;  // colinear
-
-            return (val > 0) ? 1 : 2; // clock or counterclock wise
-        }
+        
 
         // The main function that returns true if line segment 'p1q1'
         // and 'p2q2' intersect.
@@ -223,10 +208,10 @@ namespace Utils.geom
         {
             // Find the four orientations needed for general and
             // special cases
-            int o1 = orientation(p1, q1, p2);
-            int o2 = orientation(p1, q1, q2);
-            int o3 = orientation(p2, q2, p1);
-            int o4 = orientation(p2, q2, q1);
+            int o1 = PointExt.ccw(p1, q1, p2);
+            int o2 = PointExt.ccw(p1, q1, q2);
+            int o3 = PointExt.ccw(p2, q2, p1);
+            int o4 = PointExt.ccw(p2, q2, q1);
 
             // General case
             if (o1 != o2 && o3 != o4)

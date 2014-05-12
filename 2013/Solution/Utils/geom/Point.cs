@@ -23,10 +23,10 @@ namespace Utils.geom
         {
             return new Point<T>(lhs.X.Add(rhs.X), lhs.Y.Add(rhs.Y));
         }
-        
-        public static int dist2( this Point<int> lhs, Point<int> rhs)
+
+        public static int dist2(this Point<int> lhs, Point<int> rhs)
         {
-        	return (lhs.X-rhs.X)*(lhs.X-rhs.X) + (lhs.Y-rhs.Y)*(lhs.Y-rhs.Y); 	
+            return (lhs.X - rhs.X) * (lhs.X - rhs.X) + (lhs.Y - rhs.Y) * (lhs.Y - rhs.Y);
         }
 
         //IN counter clockwise order
@@ -62,19 +62,19 @@ namespace Utils.geom
             {            // 3-collinear and horizontal
                 if (dx1 >= 0 && dx2 < 0) return -1;
                 else if (dx2 >= 0 && dx1 < 0) return +1;
-                else 
+                else
                 {
-                	return pt.dist2(q1).CompareTo(pt.dist2(q2));
+                    return pt.dist2(q1).CompareTo(pt.dist2(q2));
                 }
             }
-            else 
+            else
             {
-            	int ret = -ccw(pt, q1, q2);     // both above or below
-            	if (ret != 0)
-            		return ret;
-            	
-            	//break ties with distance
-            	return pt.dist2(q1).CompareTo(pt.dist2(q2));
+                int ret = -ccw(pt, q1, q2);     // both above or below
+                if (ret != 0)
+                    return ret;
+
+                //break ties with distance
+                return pt.dist2(q1).CompareTo(pt.dist2(q2));
             }
 
         }
@@ -95,22 +95,25 @@ namespace Utils.geom
         {
             //The cross product, gives direction of vector.  Positive means
             //counter clockwise see  wikipedia page
-            int area2 = (b.X - a.X) * (c.Y - a.Y) - (b.Y - a.Y) * (c.X - a.X);
+            long area2 = (long)(b.X - a.X) * (c.Y - a.Y) - (long)(b.Y - a.Y) * (c.X - a.X);
             if (area2 < 0) return -1;
             else if (area2 > 0) return +1;
             else return 0;
         }
 
-        public static List<Point<double>> ConvexHull(this IList<Point<double>> pts) 
+        public static List<Point<double>> ConvexHull(this IList<Point<double>> pts)
         {
-            return ConvexHull(pts, polarOrder, ccw);
+            int mpIdx;
+            return ConvexHullChains(pts, ccw, out mpIdx);
         }
         public static List<Point<int>> ConvexHull(this IList<Point<int>> pts, bool includeColinear = true)
         {
-            return ConvexHull(pts, polarOrder, ccw, includeColinear);
+           // return ConvexHull(pts, polarOrder, ccw, includeColinear);
+            int mpIdx;
+            return ConvexHullChains(pts, ccw, out mpIdx, includeColinear);
         }
-        
-        #if mono
+
+#if mono
         public class Comparer<T> : IComparer<T>
 		{
 			private Comparison<T> cmpFunc;
@@ -142,11 +145,11 @@ namespace Utils.geom
 				return ReferenceEquals(comparer, null) ? default(Func<T, T, int>) : comparer.Compare;
 			}
 		}
-		#endif
+#endif
 
         //GrahamScan, returns them in clockwise order, or counter-clockwise if poped off 1 by 1 off the stack
         //Includes co-linear points in hull
-        public static List<Point<T>> ConvexHull<T>(this IList<Point<T>> pts, 
+        public static List<Point<T>> ConvexHull<T>(this IList<Point<T>> pts,
             Func<Point<T>, Point<T>, Point<T>, int> polarOrderComp,
             Func<Point<T>, Point<T>, Point<T>, int> ccwFunc,
             bool includeColinear = true
@@ -171,16 +174,16 @@ namespace Utils.geom
             // sort by polar angle with respect to base point points[0],
             // breaking ties by distance to points[0].
             //Counter clockwise
-            #if mono
+#if mono
             	Array.Sort(points, 1, N - 1, new Comparer<Point<T>>((lhs, rhs) =>
                 { return polarOrderComp(points[0], lhs, rhs); }
                 ));
-            #else
+#else
             Array.Sort(points, 1, N - 1, Comparer<Point<T>>.Create((lhs, rhs) =>
                 { return polarOrderComp(points[0], lhs, rhs); }
                 ));
-            #endif
-            
+#endif
+
             Logger.LogTrace("\nCreating hull from points {}", points.ToCommaString());
 
             Stack<Point<T>> hull = new Stack<Point<T>>();
@@ -206,13 +209,13 @@ namespace Utils.geom
             hull.Push(points[k2 - 1]);    // points[k2-1] is second extreme point
 
             Logger.LogTrace("Starting scan with hull (top->bottom stack) {}", hull.ToCommaString());
-            
+
             // Graham scan; note that points[N-1] is extreme point different from points[0]
             for (int i = k2; i < N; i++)
             {
                 Point<T> top = hull.Pop();
                 Logger.LogTrace("Top {} Cur point {}", top, points[i]);
-                
+
                 if (includeColinear)
                 {
                     while (ccwFunc(hull.Peek(), top, points[i]) < 0)
@@ -224,22 +227,22 @@ namespace Utils.geom
                 {
                     while (ccwFunc(hull.Peek(), top, points[i]) <= 0)
                     {
-                    	Logger.LogTrace("Vector {} {} to {} {} is not a counter clockwise turn, popping {}",
-                    		hull.Peek(), top, hull.Peek(), points[i], hull.Peek());
+                        Logger.LogTrace("Vector {} {} to {} {} is not a counter clockwise turn, popping {}",
+                            hull.Peek(), top, hull.Peek(), points[i], hull.Peek());
                         top = hull.Pop();
                     }
                 }
                 hull.Push(top);
                 hull.Push(points[i]);
-                
+
                 Logger.LogTrace("Hull is now (top->bottom) {}", hull.ToCommaString());
             }
 
-            List<Point<T>> ret = new List<Point<T>> ( hull );
+            List<Point<T>> ret = new List<Point<T>>(hull);
             ret.Reverse();
             return ret;
         }
-        
+
         /*
         Input: a list P of points in the plane.
 
@@ -253,52 +256,79 @@ for i = n, n-1, ..., 1:
 Remove the last point of each list (it's the same as the first point of the other list).
 Concatenate L and U to obtain the convex hull of P.
 Points in the result will be listed in counter-clockwise order.*/
-	public static List<Point<T>> ConvexHullChains<T>(this IList<Point<T>> ptsOrig, 
-            Func<Point<T>, Point<T>, Point<T>, int> ccwFunc, //+1 ccw, -1 cw, 0 colinear
-            bool includeColinear = true
-            ) where T : IComparable<T>, IEquatable<T>
+        public static List<Point<T>> ConvexHullChains<T>(this IList<Point<T>> ptsOrig,
+                Func<Point<T>, Point<T>, Point<T>, int> ccwFunc, //+1 ccw, -1 cw, 0 colinear
+            out int midPointIdx,
+                bool includeColinear = true
+                ) where T : IComparable<T>, IEquatable<T>
         {
-        	List<Point<T>> points = new List<Point<T>>(ptsOrig);
-        	
-        	//Sort the points of P by x-coordinate (in case of a tie, sort by y-coordinate).
-        	points.Sort( (lhs, rhs) =>
+            List<Point<T>> points = new List<Point<T>>(ptsOrig);
+
+            //Sort the points of P by x-coordinate (in case of a tie, sort by y-coordinate).
+            points.Sort((lhs, rhs) =>
             {
-                int xCmp = lhs.X.CompareTo(rhs.X); 
+                int xCmp = lhs.X.CompareTo(rhs.X);
                 if (xCmp != 0)
-                	return xCmp;
-                return lhs.Y.CompareTo(rhs.Y); 
+                    return xCmp;
+                return lhs.Y.CompareTo(rhs.Y);
             });
+
             
-            //Initialize U and L as empty lists.
-			//The lists will hold the vertices of upper and lower hulls respectively.
-			List<Point<T>> upperHull = new List<Point<T>>();
-			List<Point<T>> lowerHull = new List<Point<T>>();
-			
-			/*
-			for i = 1, 2, ..., n:
+            List<Point<T>> hull = new List<Point<T>>();
+
+            /*
+            for i = 1, 2, ..., n:
     while L contains at least two points and the sequence of last two points
             of L and the point P[i] does not make a counter-clockwise turn:
         remove the last point from L
     append P[i] to L
-    		*/
-    		// Build lower hull
-    		int k = lowerHullIdx;
-			for (int i = 0; i < n; ++i) 
-			{
-				while (k >= 2 && ccwFunc(H[k-2], H[k-1], P[i]) <= 0) k--;
-				H[k++] = P[i];
-			}
- 
-	// Build upper hull
-	for (int i = n-2, t = k+1; i >= 0; i--) {
-		while (k >= t && cross(H[k-2], H[k-1], P[i]) <= 0) k--;
-		H[k++] = P[i];
-	}
- 
-	H.resize(k);
-	return H;
-    
+            */
+            // Build lower hull
+
+            for (int i = 0; i < points.Count; ++i)
+            {
+                if (includeColinear)
+                {
+                    //Discard only clockwise
+                    while (hull.Count >= 2 && ccwFunc(hull[hull.Count - 2], hull[hull.Count - 1], points[i]) < 0)
+                        hull.RemoveAt(hull.Count - 1);
+                }
+                else
+                {
+                    while (hull.Count >= 2 && ccwFunc(hull[hull.Count - 2], hull[hull.Count - 1], points[i]) <= 0)
+                        hull.RemoveAt(hull.Count - 1);
+                }
+                
+                hull.Add(points[i]);
+            }
+
+            midPointIdx = hull.Count - 1;
+
+            //Remove last element to avoid repetition
+            hull.RemoveAt(hull.Count - 1);
+            
+            int upperHullMinSize = hull.Count + 2;
+            // Build upper hull
+            for (int i = points.Count - 1; i >= 0; i--)
+            {
+                if (includeColinear)
+                {
+                    while (hull.Count >= upperHullMinSize && ccwFunc(hull[hull.Count - 2], hull[hull.Count - 1], points[i]) < 0)
+                        hull.RemoveAt(hull.Count - 1);
+                } else
+                {
+                    while (hull.Count >= upperHullMinSize && ccwFunc(hull[hull.Count - 2], hull[hull.Count - 1], points[i]) <= 0)
+                        hull.RemoveAt(hull.Count - 1);
+                }
+                
+                hull.Add(points[i]);
+            }
+
+            hull.RemoveAt(hull.Count - 1);
+
+            return hull;
         }
+
 
         public static double PolygonArea(this IList<Point<int>> points)
         {
@@ -306,17 +336,17 @@ Points in the result will be listed in counter-clockwise order.*/
             for (int i = 0; i < points.Count - 1; ++i)
             {
 
-                sum += points[i].X * points[i + 1].Y;
+                sum += (long)points[i].X * points[i + 1].Y;
             }
 
-            sum += points.GetLastValue().X * points[0].Y;
+            sum += (long)points.GetLastValue().X * points[0].Y;
 
             for (int i = 0; i < points.Count - 1; ++i)
             {
-                sum -= points[i + 1].X * points[i].Y;
+                sum -= (long)points[i + 1].X * points[i].Y;
             }
 
-            sum -= points[0].X * points.GetLastValue().Y;
+            sum -= (long)points[0].X * points.GetLastValue().Y;
 
             return Math.Abs(sum) / 2;
         }
@@ -367,7 +397,7 @@ Points in the result will be listed in counter-clockwise order.*/
 
 
 
-    public class Point<T> : IEquatable<Point<T>>, IComparable<Point<T>> where T:IComparable<T>
+    public class Point<T> : IEquatable<Point<T>>, IComparable<Point<T>> where T : IComparable<T>
     {
         //private readonly int sideLength;
         private T x;
