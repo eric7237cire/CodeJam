@@ -1,5 +1,7 @@
 ﻿#define LOGGING
+#define LOGGING_DEBUG
 #define LOGGING_INFO
+//#define LOGGING_TRACE
 
 using System;
 using System.Collections.Generic;
@@ -370,6 +372,10 @@ namespace CodeJamUtils
             System.Text.StringBuilder sb = new StringBuilder();
             char nextChar;
             int next;
+            
+            while ((reader.Peek() >= 0) && (char.IsWhiteSpace((char)reader.Peek())))
+                reader.Read();
+            
             do
             {
                 next = reader.Read();
@@ -400,6 +406,7 @@ namespace CodeJamUtils
         {
             try
             {
+            	Logger.LogTrace("Parsing [{}]", currentWord);
                 return int.Parse(currentWord);
             }
             finally

@@ -60,8 +60,9 @@ namespace Round3
 
             string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
            // dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round3\";
-            //dir = @"/home/ent/mono/CodeJam/2013/Solution/Round2/";
-
+           #if mono
+            dir = @"/home/ent/mono/CodeJam/2013/Solution/Round3/";
+#endif
             list = list.ConvertAll(s => dir + s);
 
             CjUtils.RunMain(list, main, main.createInput, null); 

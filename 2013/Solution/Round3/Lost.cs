@@ -67,6 +67,22 @@ namespace Round3
             //path.Add(1);
             
             sc.findAllShortestPaths(path, new bool[input.nCities+1], 0, 0);
+            
+            for(int i = 0; i < sc.sp.Count; ++i)
+            {
+            	List<int> path1 = sc.sp[i];
+            	
+            	for(int j = i+1; j < sc.sp.Count; ++j)
+            	{
+					List<int> path2 = sc.sp[j];
+					
+					//Common 
+					IEnumerable<int> common = path1.Where( (edgeIdx) => path2.Contains(edgeIdx) );
+					
+					IEnumerable<int> path1_f = path1.Where( (edgeIdx) => !common.Contains(edgeIdx) );
+					IEnumerable<int> path2_f = path2.Where( (edgeIdx) => !common.Contains(edgeIdx) );
+            	}
+            }
 
             Logger.LogTrace("Suggested path {}", input.sugPath.ToCommaString());
             return "3";

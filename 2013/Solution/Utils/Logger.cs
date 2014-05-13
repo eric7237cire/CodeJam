@@ -49,7 +49,7 @@ namespace Utils
             {
                 for (int i = 0; i < args.Count(); ++i)
                 {
-                    msg = rgx.Replace(msg, args[i].ToString(), 1);
+                    msg = rgx.Replace(msg, (args[i] ?? "") .ToString(), 1);
                 }
             }
 
