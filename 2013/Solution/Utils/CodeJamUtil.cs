@@ -321,7 +321,7 @@ namespace CodeJamUtils
                     for (int tc = 1; tc <= testCases; ++tc)
                     {
                         InputClass input;
-                        Logger.Log("Testcase# " + tc);
+                        Logger.LogInfo("Testcase# " + tc);
                         if (inputFileProducer != null)
                         {
                             input = inputFileProducer.createInput(scanner);
@@ -340,7 +340,7 @@ namespace CodeJamUtils
                     timer.Stop();
                     TimeSpan timespan = timer.Elapsed;
 
-                    Logger.Log(String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+                    Logger.LogInfo(String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
 
 
                 }

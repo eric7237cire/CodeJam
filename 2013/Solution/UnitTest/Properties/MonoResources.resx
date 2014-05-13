@@ -1,41 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root xml:space="preserve">
-
-<tests className = "Round3.Cheaters" answerType="double">
-
-
-  <test name="TestCheaterSmall3">
-
-    <data>34 4
-1 1 10 10    </data>
-
-<answer>.94285714</answer>
-  </test>
-  <test name="TestCheaterSmall4">
-
-    <data>36 37
-389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 1000 999    </data>
-<answer>1</answer>
-  </test>
-  <test name="TestCheaterSmall8">
-
-    <data>35 4
-1000 1000 1 1    </data>
-<answer>1</answer>
-  </test>
-  <test name="TestCheaterSmall9">
-
-    <data>27 35
-100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 8 9    </data>
-
-<answer>335</answer>
-  </test>
-  
+  <tests answerType="double"
+  		 ignore="true"
+         className ="Round3.Cheaters">
+    <test name="TestCheaterSmall3">
+      <data>
+34 4
+1 1 10 10
+      </data>
+      <answer>.94285714</answer>
+    </test>
+    <test name="TestCheaterSmall4">
+      <data>
+36 37
+389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 389 1000 999
+      </data>
+      <answer>1</answer>
+    </test>
+    <test name="TestCheaterSmall8">
+      <data>
+35 4
+1000 1000 1 1
+      </data>
+      <answer>1</answer>
+    </test>
+    <test name="TestCheaterSmall9">
+      <data>
+27 35
+100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 8 9
+      </data>
+      <answer>335</answer>
+    </test>
   </tests>
-  <!--  
-  <answer></answer>
-    -->
-  <tests className="Round2.Pong.PongMain">
+  
+  <tests className="Round2.Pong.PongMain"
+  ignore="true">
     <test name="TestPong1">
       <data>
 142513 3
@@ -82,23 +81,9 @@
       <answer>RIGHT 11</answer>
     </test>
   </tests>
-  <data name="TestRuralSmall8">
-
-    <value>8
-100 -75
-0 87
-0 100
-99 -75
-0 -100
-0 -75
-0 98
-0 -94    </value>
-
-  </data>
-  <data name="TestLostSample2">
-  </data>
+  
   <tests className="Round3.Lost"
-         ignore   ="true">
+         ignore   ="f">
     <test name="TestLostSample1">
       <data>
 4 5 3
@@ -126,7 +111,6 @@
     </test>
     <test name="TestLostSample2">
       <data>
-2 4 5
 3 3 2
 1 3 1 1
 3 2 1 1

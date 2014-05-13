@@ -1,7 +1,10 @@
-﻿#define LOGGING
+﻿#define bob2
+#if bob
+#define LOGGING
 #define LOGGING_DEBUG
 #define LOGGING_INFO
 #define LOGGING_TRACE
+#endif
 
 using CodeJamUtils;
 using System;
@@ -15,6 +18,8 @@ using Logger = Utils.LoggerFile;
 
 namespace Round3
 {
+	using II = Tuple<int,int>;
+	
     public class Lost : InputFileConsumer<LostInput, string>, InputFileProducer<LostInput>
     {
         public class SearchCon
@@ -81,12 +86,169 @@ namespace Round3
 					
 					IEnumerable<int> path1_f = path1.Where( (edgeIdx) => !common.Contains(edgeIdx) );
 					IEnumerable<int> path2_f = path2.Where( (edgeIdx) => !common.Contains(edgeIdx) );
+					
+					
+					
+					Func<Tuple<int, int>, int, Tuple<int, int>> funcSumCost = ( Tuple<int, int> seed, int conIdx ) => 
+					{ 
+						return new Tuple<int,int>( seed.Item1 + input.lowCost[conIdx], seed.Item2 + input.highCost[conIdx]);
+					};
+					
+					II minMaxCost1 = path1_f.Aggregate( new II(0,0), funcSumCost);
+					II minMaxCost2 = path2_f.Aggregate( new II(0,0), funcSumCost);
+					
+					Logger.LogTrace("Path {} cost {}.  Path {} cost {}",
+						path1_f.ToCommaString(),
+						minMaxCost1,
+						path2_f.ToCommaString(),
+						minMaxCost2);
+					
+					if (minMaxCost2.Item1 > minMaxCost1.Item2)
+					{
+						Logger.LogTrace("Removing 2nd path");
+						sc.sp.RemoveAt(j);
+						--j;
+						continue;
+					}
+					if (minMaxCost1.Item1 > minMaxCost2.Item2)
+					{
+						Logger.LogTrace("Removing 1st path");
+						sc.sp.RemoveAt(i);
+						--i;
+						break;
+					}
             	}
             }
 
             Logger.LogTrace("Suggested path {}", input.sugPath.ToCommaString());
-            return "3";
+            
+            for(int spIdx = 0; spIdx < input.sugPath.Length; ++spIdx)
+            {
+            	bool found = false;
+            	
+            	IEnumerable<int> sugPathPrefix = input.sugPath.Take(spIdx+1).Select( (idx1) => idx1-1 );
+            	Logger.LogInfo( "sugPathPrefix {}", sugPathPrefix.ToCommaString());
+            	for(int i = 0; i < sc.sp.Count; ++i)
+            	{
+					List<int> path1 = sc.sp[i];
+					Logger.LogInfo( "path1 {}", path1.ToCommaString());
+					
+					 Logger.LogInfo("Look at {} ", 
+                        path1.Select( (cIdx) => "Shuttle #{0}. From {1} To {2}. ".FormatThis(cIdx+1, input.from[cIdx], input.to[cIdx], input.lowCost[cIdx], input.highCost[cIdx]) )
+                            .ToCommaString()  
+                        );
+                     
+					if (path1.Take(spIdx+1).SequenceEqual( sugPathPrefix ))
+					{
+						found = true;
+						break;
+					}
+            	}
+            	
+            	if (!found)
+            	{
+            		return "" + input.sugPath[spIdx];	
+            	}
+            }
+            
+            
+            return "Looks Good To Me";
         }
+        
+        internal class DijkstraNode 
+        {
+        	internal int nodeId;
+        
+			/**
+			 * distance from start to nodeId
+			 */
+			internal int distance;
+        
+        
+			internal int previous;
+			
+			public DijkstraNode(int nodeId, int distance) {
+				this.nodeId = nodeId;
+				this.distance = distance;
+				this.previous = -1;
+			}
+		}
+		
+		/**
+		 * Indexes in graph go from 0 to nodeCount - 1
+		 */
+		 #if false
+		public DijkstraNode[] doDijkstra(WeightedGraphInt graph, int sourceNodeId, int nodeCount, InputData in) {
+			
+			
+			DijkstraNode[] dijNodes = new DijkstraNode[nodeCount];
+			
+			for(int n = 0; n < dijNodes.length; ++n) {
+				dijNodes[n] = new DijkstraNode(n, Integer.MAX_VALUE);
+			}
+			
+			
+			PriorityQueue<DijkstraNode> toProcess = new PriorityQueue<>(1, new Comparator<DijkstraNode>() {
+	
+				@Override
+				public int compare(DijkstraNode o1, DijkstraNode o2) {
+					return Integer.compare(o1.distance, o2.distance);
+				}
+			});
+			
+			dijNodes[sourceNodeId].distance = 0;
+			toProcess.add(dijNodes[sourceNodeId]);
+			
+			while(!toProcess.isEmpty()) 
+			{
+				DijkstraNode nodeU = toProcess.poll();
+				
+				if (nodeU.distance == Integer.MAX_VALUE) {
+				 // all remaining vertices are inaccessible from source
+					break;
+				}
+				
+				Set<WeightedGraphInt.Edge> neighbors = graph.getEdges(nodeU.nodeId);
+				
+				if (neighbors == null)
+					continue;
+				
+				for(WeightedGraphInt.Edge neighbor : neighbors) 
+				{
+					int alt = neighbor.weight + nodeU.distance;
+					
+					/**
+					 * Is path via u shorter than current distance
+					 * of start to v ?
+					 */
+					DijkstraNode nodeV = dijNodes[neighbor.to];
+					
+					Road r = buildRoad(nodeU.nodeId,nodeV.nodeId,neighbor.weight);
+					//To handle multiedges
+					int roadCount = in.count.get(r);
+					
+					//Found a new best path
+					if (alt < nodeV.distance) {
+						toProcess.remove(nodeV);
+						nodeV.distance = alt;
+						//Clear non shorest paths
+						nodeV.previous.clear();
+						nodeV.previous.setCount(nodeU.nodeId, roadCount);
+						toProcess.add(nodeV);                    
+					}
+					/**
+					 * If it is the same, it is an alternative
+					 */
+					if (alt == nodeV.distance) {
+						nodeV.previous.setCount(nodeU.nodeId, roadCount);
+					}
+				}
+			}
+			
+			return dijNodes;
+								 
+		}
+		#endif
 
         public LostInput createInput(Scanner scanner)
         {

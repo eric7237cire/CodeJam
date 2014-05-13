@@ -125,7 +125,7 @@ namespace UnitTest
 					Logger.LogInfo("Testing {}", el.Attributes("name").FirstOrDefault());
 					string data =  getChildElemValue(el, "data");
 					string ansExpected = getChildElemValue(el, "answer");
-					Logger.LogDebug("Data [{}] Ans {}",data, ansExpected);
+					Logger.LogDebug("Data [{}]\nAns [{}]",data, ansExpected);
 					
 					if (data == null)
 					{
@@ -134,8 +134,14 @@ namespace UnitTest
 					}
 					Scanner scanner = new Scanner(new StringReader(data));
 					
+					Preconditions.checkState(main != null);
+					Preconditions.checkState(scanner != null);
+					Preconditions.checkState(mainType != null);
+					
 					//var input = ( (InputFileProducer<LostInput>) main).createInput(scanner);
 			var input = mainType.GetMethod("createInput").Invoke(main, new object[] {scanner});
+			
+			
 			//string ans = ( (InputFileConsumer<LostInput,string>) main).processInput(input);
 			var ans = mainType.GetMethod("processInput").Invoke(main, new object[] {input});
 			

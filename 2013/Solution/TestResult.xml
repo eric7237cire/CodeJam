@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="go.exe" total="1" failures="0" not-run="0" date="2014-05-13" time="14:06:28">
+<test-results name="go.exe" total="9" failures="0" not-run="0" date="2014-05-13" time="16:47:04">
   <environment nunit-version="2.4.8.0" clr-version="4.0.30319.1" os-version="Unix 3.13.10.200" platform="Unix" cwd="/home/ent/mono/CodeJam/2013/Solution" machine-name="b016763" user="ent" user-domain="b016763" />
   <culture-info current-culture="fr-FR" current-uiculture="fr-FR" />
-  <test-suite name="go.exe" success="True" time="0.090" asserts="0">
+  <test-suite name="go.exe" success="True" time="0.040" asserts="0">
     <results>
-      <test-suite name="UnitTest" success="True" time="0.085" asserts="0">
+      <test-suite name="Priority_Queue_Tests" success="True" time="0.036" asserts="0">
         <results>
-          <test-suite name="TestLost" success="True" time="0.065" asserts="0">
+          <test-suite name="HeapPriorityQueueTests" success="True" time="0.018" asserts="0">
             <results>
-              <test-case name="UnitTest.TestLost.FetchTestCases" executed="True" success="True" time="0.063" asserts="9" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestAddingDifferentNodesLater" executed="True" success="True" time="0.006" asserts="30" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestAddingSameNodesLater" executed="True" success="True" time="0.001" asserts="30" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestBackwardOrder" executed="True" success="True" time="0.000" asserts="15" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestClear" executed="True" success="True" time="0.000" asserts="11" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestForwardOrder" executed="True" success="True" time="0.000" asserts="15" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestMoreComplicatedQueue" executed="True" success="True" time="0.001" asserts="75" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestOrderedQueue" executed="True" success="True" time="0.000" asserts="15" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestSanity" executed="True" success="True" time="0.001" asserts="3" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestSimpleQueue" executed="True" success="True" time="0.000" asserts="15" />
             </results>
           </test-suite>
         </results>
