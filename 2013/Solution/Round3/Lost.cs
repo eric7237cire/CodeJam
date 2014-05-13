@@ -14,6 +14,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
+using Priority_Queue;
 using Logger = Utils.LoggerFile;
 
 namespace Round3
@@ -155,7 +156,7 @@ namespace Round3
             return "Looks Good To Me";
         }
         
-        internal class DijkstraNode 
+        internal class DijkstraNode : IComparable<DijkstraNode>
         {
         	internal int nodeId;
         
@@ -172,83 +173,72 @@ namespace Round3
 				this.distance = distance;
 				this.previous = -1;
 			}
-		}
+		
+            //Highest distance first
+            public int CompareTo(DijkstraNode rhs)
+            {
+ 	            return rhs.distance.CompareTo(distance);
+            }
+        }
 		
 		/**
 		 * Indexes in graph go from 0 to nodeCount - 1
 		 */
-		 #if false
-		public DijkstraNode[] doDijkstra(WeightedGraphInt graph, int sourceNodeId, int nodeCount, InputData in) {
+		 
+		internal DijkstraNode[] doDijkstra(int sourceNodeId, int nodeCount, LostInput input) {
 			
 			
-			DijkstraNode[] dijNodes = new DijkstraNode[nodeCount];
+			DijkstraNode[] dijNodes = new DijkstraNode[nodeCount + 1];
 			
-			for(int n = 0; n < dijNodes.length; ++n) {
-				dijNodes[n] = new DijkstraNode(n, Integer.MAX_VALUE);
+			for(int n = 0; n < dijNodes.Length; ++n) {
+				dijNodes[n] = new DijkstraNode(n, int.MaxValue);
 			}
 			
-			
-			PriorityQueue<DijkstraNode> toProcess = new PriorityQueue<>(1, new Comparator<DijkstraNode>() {
-	
-				@Override
-				public int compare(DijkstraNode o1, DijkstraNode o2) {
-					return Integer.compare(o1.distance, o2.distance);
-				}
-			});
+			HeapPriorityQueue<DijkstraNode, int> toProcess = new HeapPriorityQueue<DijkstraNode, int>(nodeCount);
 			
 			dijNodes[sourceNodeId].distance = 0;
-			toProcess.add(dijNodes[sourceNodeId]);
+			toProcess.Enqueue( dijNodes[sourceNodeId], dijNodes[sourceNodeId].distance );
 			
-			while(!toProcess.isEmpty()) 
+			while(toProcess.Count > 0) 
 			{
-				DijkstraNode nodeU = toProcess.poll();
-				
-				if (nodeU.distance == Integer.MAX_VALUE) {
-				 // all remaining vertices are inaccessible from source
-					break;
-				}
-				
-				Set<WeightedGraphInt.Edge> neighbors = graph.getEdges(nodeU.nodeId);
-				
-				if (neighbors == null)
-					continue;
-				
-				for(WeightedGraphInt.Edge neighbor : neighbors) 
-				{
-					int alt = neighbor.weight + nodeU.distance;
+				DijkstraNode nodeU = toProcess.Dequeue();
+
+                Preconditions.checkState(nodeU.distance < int.MaxValue);
+				 
+				//Find all neighbors
+				for(int conIdx = 0; conIdx < input.nConnections; ++conIdx)
+                {
+                    //Not connected to nodeU
+                    if (input.from[conIdx] != nodeU.nodeId)
+                        continue;
+
+                    int to = input.to[conIdx];
+
+                    int alt = input.lowCost[conIdx] + nodeU.distance;
 					
 					/**
 					 * Is path via u shorter than current distance
 					 * of start to v ?
 					 */
-					DijkstraNode nodeV = dijNodes[neighbor.to];
-					
-					Road r = buildRoad(nodeU.nodeId,nodeV.nodeId,neighbor.weight);
-					//To handle multiedges
-					int roadCount = in.count.get(r);
+					DijkstraNode nodeV = dijNodes[to];
 					
 					//Found a new best path
 					if (alt < nodeV.distance) {
-						toProcess.remove(nodeV);
+						
+                        nodeV.previous = nodeU.nodeId;
 						nodeV.distance = alt;
 						//Clear non shorest paths
-						nodeV.previous.clear();
-						nodeV.previous.setCount(nodeU.nodeId, roadCount);
-						toProcess.add(nodeV);                    
+						
+						toProcess.Enqueue(nodeV, nodeV.distance);
 					}
-					/**
-					 * If it is the same, it is an alternative
-					 */
-					if (alt == nodeV.distance) {
-						nodeV.previous.setCount(nodeU.nodeId, roadCount);
-					}
+					
 				}
 			}
 			
 			return dijNodes;
 								 
 		}
-		#endif
+		
 
         public LostInput createInput(Scanner scanner)
         {

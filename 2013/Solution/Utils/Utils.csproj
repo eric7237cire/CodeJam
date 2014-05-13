@@ -66,6 +66,7 @@
     <Compile Include="geom\GeomXmlWriter.cs" />
     <Compile Include="geom\Line.cs" />
     <Compile Include="geom\ShowProjections.cs" />
+    <Compile Include="HeapPriorityQueue.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="math\BigFraction.cs" />
     <Compile Include="math\INumeric.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="PascalTriangle.cs" />
     <Compile Include="geom\Point.cs" />
     <Compile Include="Preconditions.cs" />
+    <Compile Include="PriorityQueueNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Trie.cs" />
   </ItemGroup>

@@ -82,7 +82,7 @@
     </test>
   </tests>
   
-  <tests className="Round3.Lost"
+  <tests className="Round3.Lost, Round3"
          ignore   ="f">
     <test name="TestLostSample1">
       <data>

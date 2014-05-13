@@ -20,12 +20,12 @@ namespace Round3
            
 
 #if !mono
-            bool tests = false;
+            bool tests = true;
 
             if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
    {
        //@"/include=current",
-       @"/run=UnitTest.TestGeom",
+       @"/run=UnitTest.TestLost",
        @"C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll"
      //  @"/run=UnitTest.TestModMath",
      //  @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\UnitTest\bin\Debug\UnitTest.dll"
@@ -53,7 +53,7 @@ namespace Round3
            // list.Add("B-large-practice.in");
 
             list.Add("C-small-practice.in");
-            list.Add("C-large-practice.in");
+          //  list.Add("C-large-practice.in");
 
            // list.Add("D-small-practice.in");
           //  list.Add("D-large-practice.in");
