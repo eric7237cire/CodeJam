@@ -9,6 +9,7 @@ using NUnit.Framework;
 using CodeJamUtils;
 using Round3;
 using Utils;
+using System.Globalization;
 
 using Logger = Utils.LoggerFile;
 using System.Collections.Generic;
@@ -57,6 +58,26 @@ namespace UnitTest
     		
     		
 		}
+		
+		private static string getChildElemValue(XElement el, string elemName)
+		{
+			XElement child = el.Elements(elemName).FirstOrDefault();
+			if (child == null)
+				return null;
+			
+			return child.Value;
+		}
+		
+		private static string getAttributeValue(XElement el, string attName)
+		{
+			var att = el.Attributes(attName).FirstOrDefault();
+			if (att == null)
+				return null;
+			
+			return att.Value;
+		}
+		
+		
     	
     	  	
 		[Test]
@@ -72,9 +93,10 @@ namespace UnitTest
             
             foreach(XElement tests in testGroupes)
             {
-            	string mainClassName = tests.Attributes("className").First().Value;
+            	string mainClassName = getAttributeValue(tests, "className");
+            	string answerType = getAttributeValue(tests, "answerType");
             	
-            	if (tests.Attributes("ignore").Count() > 0 &&  "true".Equals(tests.Attributes("ignore").First().Value))
+            	if ("true".Equals(getAttributeValue(tests, "ignore")))
             	{
             		continue;
             	}
@@ -101,10 +123,15 @@ namespace UnitTest
 					Console.WriteLine("Name: " + el.Name);
 					
 					Logger.LogInfo("Testing {}", el.Attributes("name").FirstOrDefault());
-					string data =  el.Elements("data").FirstOrDefault().Value;
-					string ansExpected = el.Elements("answer").FirstOrDefault().Value;
-					Logger.LogInfo("Data [{}] Ans {}",data, ansExpected);
+					string data =  getChildElemValue(el, "data");
+					string ansExpected = getChildElemValue(el, "answer");
+					Logger.LogDebug("Data [{}] Ans {}",data, ansExpected);
 					
+					if (data == null)
+					{
+						Logger.LogInfo("Data null");
+						continue;
+					}
 					Scanner scanner = new Scanner(new StringReader(data));
 					
 					//var input = ( (InputFileProducer<LostInput>) main).createInput(scanner);
@@ -112,7 +139,20 @@ namespace UnitTest
 			//string ans = ( (InputFileConsumer<LostInput,string>) main).processInput(input);
 			var ans = mainType.GetMethod("processInput").Invoke(main, new object[] {input});
 			
-			Assert.AreEqual(ansExpected, ans);
+					if ("double".Equals(answerType))
+					{
+						Logger.LogInfo("String [{}]", (string)ans);
+						try {
+						double ans_d = double.Parse( (string)ans, new CultureInfo("en-US"));
+						double expected_d = double.Parse(ansExpected, new CultureInfo("en-US"));
+						Assert.AreEqual(expected_d, ans_d, 0.00001);
+						} catch (System.FormatException ex) {
+						Logger.LogInfo("ERROR [{}] [{}]", (string)ans, ansExpected);	
+						Assert.IsTrue(false);
+						}
+					} else {
+						Assert.AreEqual(ansExpected, ans);
+					}
 					//yield return new object[] {mainType, main, scanner, ansExpected };
 					/*yield return new TestCaseData( mainType, main, scanner, ansExpected )
 						//.Throws(typeof(DivideByZeroException))

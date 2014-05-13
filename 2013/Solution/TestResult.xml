@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="go.exe" total="1" failures="0" not-run="0" date="2014-05-13" time="12:12:45">
+<test-results name="go.exe" total="1" failures="0" not-run="0" date="2014-05-13" time="14:06:28">
   <environment nunit-version="2.4.8.0" clr-version="4.0.30319.1" os-version="Unix 3.13.10.200" platform="Unix" cwd="/home/ent/mono/CodeJam/2013/Solution" machine-name="b016763" user="ent" user-domain="b016763" />
   <culture-info current-culture="fr-FR" current-uiculture="fr-FR" />
-  <test-suite name="go.exe" success="True" time="0.042" asserts="0">
+  <test-suite name="go.exe" success="True" time="0.090" asserts="0">
     <results>
-      <test-suite name="UnitTest" success="True" time="0.038" asserts="0">
+      <test-suite name="UnitTest" success="True" time="0.085" asserts="0">
         <results>
-          <test-suite name="TestLost" success="True" time="0.017" asserts="0">
+          <test-suite name="TestLost" success="True" time="0.065" asserts="0">
             <results>
-              <test-case name="UnitTest.TestLost.FetchTestCases" executed="True" success="True" time="0.015" asserts="0" />
+              <test-case name="UnitTest.TestLost.FetchTestCases" executed="True" success="True" time="0.063" asserts="9" />
             </results>
           </test-suite>
         </results>

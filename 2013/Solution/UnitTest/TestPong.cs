@@ -529,16 +529,6 @@ namespace UnitTest
 
         }
 
-        
-        [Test]
-        public void TestSample()
-        {
-        	#if !mono
-            testInput(Properties.Resources.TestPongSample1, "LEFT 2");
-
-            testInput(Properties.Resources.TestPongSample4, "RIGHT 11");
-            #endif
-        }
 
         [Test]
         public void TestCalcToTarget()
@@ -581,36 +571,5 @@ namespace UnitTest
             Assert.AreEqual(4, PongMain.calcToTarget(147, 97, 100, 22));
         }
 
-        #if !mono
-        [Test]
-        public void TestSmall4()
-        {
-            testInput(Properties.Resources.TestPong4small, "RIGHT 165026");
-        }
-
-        [Test]
-        public void TestSmall89()
-        {
-            testInput(Properties.Resources.TestPong89Small, "RIGHT 249996");
-        }
-        
-        
-        [Test]
-        public void TestSmall()
-        {
-            string inputTxt = UnitTest.Properties.Resources.TestPong1;
-
-            Scanner scanner = new Scanner(new StringReader(inputTxt));
-
-            PongMain  pong = new PongMain();
-
-            PongInput input = pong.createInput(scanner);
-
-            string ans = pong.processInput(input);
-
-            Assert.AreEqual("RIGHT 19393", ans);
-
-        }
-        #endif
     }
 }
