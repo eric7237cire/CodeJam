@@ -26,9 +26,10 @@ namespace Round3
                 if ( curPath.Count > 0 && input.to[curPath.GetLastValue()] == 2)
                 {
                     Logger.LogInfo("Path found {} min cost {} max cost {}", 
-                        curPath.Select( (cIdx) => "Shuttle #{0}. From {1} To {2}".FormatThis(cIdx+1, input.from[cIdx], input.to[cIdx]) )
+                        curPath.Select( (cIdx) => "Shuttle #{0}. From {1} To {2}.  Cost [{3}-{4}]".FormatThis(cIdx+1, input.from[cIdx], input.to[cIdx], input.lowCost[cIdx], input.highCost[cIdx]) )
                             .ToCommaString(), 
                         curMinCost, curMaxCost);
+                    sp.Add(new List<int>(curPath));
                 }
                 for(int conIdx = 0; conIdx < input.nConnections; ++conIdx)
                 {
