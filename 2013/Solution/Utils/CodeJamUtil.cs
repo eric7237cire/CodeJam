@@ -573,7 +573,7 @@ namespace CodeJamUtils
             timer.Stop();
             TimeSpan timespan = timer.Elapsed;
 
-            Logger.Log(String.Format("Total {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+            Logger.LogInfo(String.Format("Total {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
 
         }
         public static void swap<T>(ref T a, ref T b)

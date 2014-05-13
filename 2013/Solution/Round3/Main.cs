@@ -53,7 +53,7 @@ namespace Round3
            // list.Add("B-large-practice.in");
 
             list.Add("C-small-practice.in");
-          //  list.Add("C-large-practice.in");
+            list.Add("C-large-practice.in");
 
            // list.Add("D-small-practice.in");
           //  list.Add("D-large-practice.in");
@@ -65,7 +65,8 @@ namespace Round3
 #endif
             list = list.ConvertAll(s => dir + s);
 
-            CjUtils.RunMain(list, main, main.createInput, null); 
+           // CjUtils.RunMain(list, main, main.createInput, null); 
+            CjUtils.RunMainMulti(list, main, main.createInput, null); 
         }
     }
 }

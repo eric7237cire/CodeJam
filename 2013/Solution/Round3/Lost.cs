@@ -59,7 +59,7 @@ namespace Round3
             }
         }
         
-        public string processInput(LostInput input)
+        public string processInputBruteForce(LostInput input)
         {
             for(int i = 0; i < input.nConnections; ++i)
             {
@@ -155,6 +155,29 @@ namespace Round3
             
             return "Looks Good To Me";
         }
+
+        public string processInput(LostInput input)
+        {
+            for (int i = 0; i < input.nConnections; ++i)
+            {
+                Logger.LogTrace("Shuttle #{} from {} to {}  cost [ {} ] - [ {} ]", i + 1, input.from[i], input.to[i],
+                    input.lowCost[i], input.highCost[i]);
+            }
+            
+            for(int i = 0; i < input.suggPathLen; ++i)
+            {
+                List<int> pathPrefix = new List<int>(input.sugPath.Take(i + 1).Select( (idx) => idx - 1));
+
+                bool ok = doDijkstra(pathPrefix, input.nCities, input);
+
+                if (!ok)
+                {
+                    return "" + input.sugPath[i];
+                }
+            }
+
+            return "Looks Good To Me";
+        }
         
         internal class DijkstraNode : IComparable<DijkstraNode>
         {
@@ -163,12 +186,12 @@ namespace Round3
 			/**
 			 * distance from start to nodeId
 			 */
-			internal int distance;
+			internal double distance;
         
         
 			internal int previous;
 			
-			public DijkstraNode(int nodeId, int distance) {
+			public DijkstraNode(int nodeId, double distance) {
 				this.nodeId = nodeId;
 				this.distance = distance;
 				this.previous = -1;
@@ -185,26 +208,54 @@ namespace Round3
 		 * Indexes in graph go from 0 to nodeCount - 1
 		 */
 		 
-		internal DijkstraNode[] doDijkstra(int sourceNodeId, int nodeCount, LostInput input) {
+		internal bool doDijkstra(List<int> pathPrefix, int nodeCount, LostInput input) {
+
+            int sourceNodeId = 1;
+            int targetNodeId = 2;
+
+            int[] actualEdgeCosts = new int[input.lowCost.Length];
+
+            //First some processing unique to the problem
+
+            double tokyoCost = 0;
+            //All edges
+            foreach(int connIdx in pathPrefix)
+            {
+                actualEdgeCosts[connIdx] = input.lowCost[connIdx];
+                tokyoCost += input.lowCost[connIdx];
+            }
+            tokyoCost -= .5;
+
+            int tokyoIndex = input.to[pathPrefix.GetLastValue()];
 			
-			
+
+            //Node ids are the city ids (1 index based)
 			DijkstraNode[] dijNodes = new DijkstraNode[nodeCount + 1];
 			
 			for(int n = 0; n < dijNodes.Length; ++n) {
 				dijNodes[n] = new DijkstraNode(n, int.MaxValue);
 			}
 			
-			HeapPriorityQueue<DijkstraNode, int> toProcess = new HeapPriorityQueue<DijkstraNode, int>(nodeCount);
+			HeapPriorityQueue<DijkstraNode, double> toProcess = new HeapPriorityQueue<DijkstraNode, double>(nodeCount);
 			
 			dijNodes[sourceNodeId].distance = 0;
+            dijNodes[tokyoIndex].distance = tokyoCost;
+
 			toProcess.Enqueue( dijNodes[sourceNodeId], dijNodes[sourceNodeId].distance );
+            toProcess.Enqueue(dijNodes[tokyoIndex], dijNodes[tokyoIndex].distance); 
 			
 			while(toProcess.Count > 0) 
 			{
 				DijkstraNode nodeU = toProcess.Dequeue();
 
                 Preconditions.checkState(nodeU.distance < int.MaxValue);
-				 
+                bool isGoodRobot = ((int)((nodeU.distance + 0.001) * 2)) % 2 == 1 ? true : false;
+
+                if (nodeU.nodeId == 2)
+                {
+                    return isGoodRobot;
+                }
+
 				//Find all neighbors
 				for(int conIdx = 0; conIdx < input.nConnections; ++conIdx)
                 {
@@ -214,7 +265,17 @@ namespace Round3
 
                     int to = input.to[conIdx];
 
-                    int alt = input.lowCost[conIdx] + nodeU.distance;
+                    if (isGoodRobot)
+                    {
+                        Preconditions.checkState(actualEdgeCosts[conIdx] == 0);
+                        actualEdgeCosts[conIdx] = input.lowCost[conIdx];
+                    }
+                    else
+                    {
+                        if (actualEdgeCosts[conIdx] == 0)
+                            actualEdgeCosts[conIdx] = input.highCost[conIdx];
+                    }
+                    double alt = actualEdgeCosts[conIdx] + nodeU.distance;
 					
 					/**
 					 * Is path via u shorter than current distance
@@ -235,7 +296,8 @@ namespace Round3
 				}
 			}
 			
-			return dijNodes;
+            //Error!
+			return false;
 								 
 		}
 		
