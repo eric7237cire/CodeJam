@@ -1,79 +1,97 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root xml:space="preserve">
 
-<testFileRunner
-  	basedir = "/home/ent/mono/CodeJam/2013/Solution/Round1B/"
-  	ignore = "f"
-  	>
-  	
-  	<run className="Round1B.Osmos, Round1B" 
-  	createInputMethod = "createInput"
-  	processInputMethod = "processInput"
-  	inputFile="A-small-practice.in"
-  	checkFile="A-small-practice.check"/>
-  	
-  	<run className="Round1B.Osmos, Round1B" 
-  	createInputMethod = "createInput"
-  	processInputMethod = "processInput"
-  	inputFile="A-large-practice.in"
-  	checkFile="A-large-practice.check"/>
-  	
-  	<run className="Round1B_P2.Diamond, Round1B" 
-  	createInputMethod = "createInput"
-  	processInputMethod = "processInput"
-  	inputFile="B-small-practice.in"
-  	checkFile="B-small-practice.check"/>
-  	
-  			<run className="Round1B_P2.Diamond, Round1B" 
-  	createInputMethod = "createInput"
-  	processInputMethod = "processInput"
-  	inputFile="B-large-practice.in"
-  	checkFile="B-large-practice.check"/>
-  	
-  		<run className="Round1B_P2.Diamond, Round1B" 
-  	createInputMethod = "createInput"
-  	processInputMethod = "processInputSlow"
-  	inputFile="B-small-practice.in"
-  	checkFile="B-small-practice.check"/>
-  	
-  		<run className="Round1B_P2.Diamond, Round1B" 
-  	createInputMethod = "createInput"
-  	processInputMethod = "processInputSlow"
-  	inputFile="B-large-practice.in"
-  	checkFile="B-large-practice.check"/>
-  	
-  	
 
-</testFileRunner>	
-
-  <testFileRunner
-  	basedir = "/home/ent/mono/CodeJam/2013/Solution/Round3/"
-  	ignore = "true"
-  	>
-  	
-  	<run className="Round3.Lost" 
-  	createInputMethod = "createInput"
-  	processInputMethod = "processInput"
-  	inputFile="C-small-practice.in"
-  	checkFile="C-small-practice.correct"/>
-  	
-  	<run className="Round3.Lost" 
-  	createInputMethod = "createInput"
-  	processInputMethod = "processInputBruteForce"
-  	inputFile="C-small-practice.in"
-  	checkFile="C-small-practice.correct"/>
-  	
-<run className="Round3.Lost" 
-  	createInputMethod = "createInput"
-  	processInputMethod = "processInput"
-  	inputFile="C-large-practice.in"
-  	checkFile="C-large-practice.correct"/>	
-  	
+         
+         
+  <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round1B/"
+                  ignore ="false">
+    <run checkFile         ="A-small-practice.check"
+         className         ="Round1B.Osmos, Round1B"
+         createInputMethod ="createInput"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInput"/>
+    <run checkFile         ="A-large-practice.check"
+         className         ="Round1B.Osmos, Round1B"
+         createInputMethod ="createInput"
+         inputFile         ="A-large-practice.in"
+         processInputMethod="processInput"/>
+    <run checkFile         ="B-small-practice.check"
+         className         ="Round1B_P2.Diamond, Round1B"
+         createInputMethod ="createInput"
+         inputFile         ="B-small-practice.in"
+         processInputMethod="processInput"/>
+    <run checkFile         ="B-large-practice.check"
+         className         ="Round1B_P2.Diamond, Round1B"
+         createInputMethod ="createInput"
+         inputFile         ="B-large-practice.in"
+         processInputMethod="processInput"/>
+    <run checkFile         ="B-small-practice.check"
+         className         ="Round1B_P2.Diamond, Round1B"
+         createInputMethod ="createInput"
+         inputFile         ="B-small-practice.in"
+         processInputMethod="processInputSlow"/>
+    <run checkFile         ="B-large-practice.check"
+         className         ="Round1B_P2.Diamond, Round1B"
+         createInputMethod ="createInput"
+         inputFile         ="B-large-practice.in"
+         processInputMethod="processInputSlow"/>
+    <run checkFile         ="C-small-practice.check"
+         className         ="Round1B_P3.GarbledEmail, Round1B"
+         createInputMethod ="createInput"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInput"/>
+  <run checkFile         ="C-large-practice.check"
+         className         ="Round1B_P3.GarbledEmail, Round1B"
+         createInputMethod ="createInput"
+         inputFile         ="C-large-practice.in"
+         processInputMethod="processInput"/>
   </testFileRunner>
-
+  
+  <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round1C/"
+                  ignore ="false">
+                  
+                  <run checkFile         ="A_small_practice.check"
+         className         ="Round1C.Consonants, Round1C"
+         createInputMethod ="createInput"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInput"/>
+         
+          <run checkFile         ="A_small_practice.check"
+         className         ="Round1C.Consonants, Round1C"
+         createInputMethod ="createInput"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInputBruteForce"/>
+         
+         <run checkFile         ="A-large-practice.check"
+         className         ="Round1C.Consonants, Round1C"
+         createInputMethod ="createInput"
+         inputFile         ="A-large-practice.in"
+         processInputMethod="processInput"/>
+         
+                  
+                  </testFileRunner>
+  <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round3/"
+                  >
+    <run checkFile         ="C-small-practice.correct"
+         className         ="Round3.Lost, Round3"
+         createInputMethod ="createInput"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInput"/>
+    <run checkFile         ="C-small-practice.correct"
+         className         ="Round3.Lost,  Round3"
+         createInputMethod ="createInput"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInputBruteForce"/>
+    <run checkFile         ="C-large-practice.correct"
+         className         ="Round3.Lost, Round3"
+         createInputMethod ="createInput"
+         inputFile         ="C-large-practice.in"
+         processInputMethod="processInput"/>
+  </testFileRunner>
   <tests answerType="double"
-  		 ignore="true"
-         className ="Round3.Cheaters, Round3">
+         className ="Round3.Cheaters, Round3"
+         ignore    ="true">
     <test name="TestCheaterSmall3">
       <data>
 34 4
@@ -103,9 +121,8 @@
       <answer>335</answer>
     </test>
   </tests>
-  
   <tests className="Round2.Pong.PongMain"
-  ignore="true">
+         ignore   ="true">
     <test name="TestPong1">
       <data>
 142513 3
@@ -152,7 +169,6 @@
       <answer>RIGHT 11</answer>
     </test>
   </tests>
-  
   <tests className="Round3.Lost, Round3"
          ignore   ="true">
     <test name="TestLostSample1">

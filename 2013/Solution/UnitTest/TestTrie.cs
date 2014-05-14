@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Trie;
-using GarbledEmail;
+using Round1B_P3;
 using CodeJamUtils;
 
 using Logger = Utils.LoggerFile;
@@ -16,84 +16,10 @@ namespace UnitTest
     [TestFixture]
     public class TestTrie
     {
-        [Test]
-        public void testMatch()
-        {
-            Dictionary dict = new Dictionary();
-            dict.words.Add("a");
-            dict.words.Add("codejam");
+       
+      
 
-            GarbledEmail.GarbledEmail ge = new GarbledEmail.GarbledEmail(dict);
-
-            int minChange = ge.minCount(0, 0, "codejam");
-
-            Assert.AreEqual(0, minChange);
-            
-        }
-
-        [Test]
-        public void testMatch2Changes()
-        {
-            Dictionary dict = new Dictionary();
-            dict.words.Add("codejam");
-
-            GarbledEmail.GarbledEmail ge = new GarbledEmail.GarbledEmail(dict);
-
-            int minChange = ge.minCount(0, 0, "cxdejax");
-
-            Assert.AreEqual(2, minChange);
-
-        }
-        [Test]
-        public void testFromCSmall()
-        {
-            
-            GarbledEmail.GarbledEmail ge = new GarbledEmail.GarbledEmail();
-
-            int minChange = ge.minCount(0, 0, "pppvyppbcpjpywpwbyayppyojpjwabwywbbwywmbwywnpwy");
-            Assert.AreEqual(8, minChange);
-
-            Logger.CurrentDomain_ProcessExit(null,null);
-        }
-
-        [Test]
-        public void testSamples()
-        {
-            GarbledEmail.GarbledEmail ge = new GarbledEmail.GarbledEmail();
-
-            int minChange = ge.minCount(0, 0, "codejam");
-            Assert.AreEqual(0, minChange);
-
-            minChange = ge.minCount(0, 0, "cxdejax");
-            Assert.AreEqual(2, minChange);
-
-            minChange = ge.minCount(0, 0, "cooperationaabea");
-            Assert.AreEqual(1, minChange);
-
-            minChange = ge.minCount(0, 0, "codejam");
-            Assert.AreEqual(0, minChange);
-        }
-
-        public void createDict()
-        {
-            Dictionary dict = new Dictionary();
-
-            using (StreamReader file =
-   new System.IO.StreamReader(@"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\garbled_email_dictionary.txt"))
-            {
-                string line;
-                while (( line = file.ReadLine()) != null)
-                {
-                    Console.WriteLine(line);
-                    dict.words.Add(line);
-                }
-            }
-
-            TrieNode root = TrieNode.createRootNode(dict);
-
-            //TODO Codejam progress 3, match a has a change at location 3 which is not valid
-
-        }
+        
         [Test]
         public void testMatches()
         {
@@ -112,7 +38,7 @@ namespace UnitTest
             Assert.AreEqual(1, matches[0].LeftmostChange);
             Assert.AreEqual(1, matches[0].RightmostChange);
 
-            Assert.AreEqual(dict.words[0], matches[1].Word); 
+            Assert.AreEqual(dict.words[0], matches[1].Word);  //abcdef
             Assert.AreEqual(0, matches[1].NumChanges);
 
             Assert.AreEqual(dict.words[1], matches[2].Word);  //bbcdezg

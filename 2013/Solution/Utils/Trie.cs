@@ -4,17 +4,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Logger = Utils.LoggerFile;
+using Utils;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo
                           ("UnitTest")]
 namespace Trie
 {
-#if (PERF)
-   
-    using Logger = CodeJamUtils.LoggerEmpty;
-#else
-    using Logger = Utils.LoggerFile;
-#endif
 
     
     public class Dictionary
@@ -109,10 +105,12 @@ namespace Trie
         public static void doMatch(int cIdx, int cInt, ref List<TrieNodePtr> list, List<WordMatch> matches)
         {
             List<TrieNodePtr> newList = new List<TrieNodePtr>();
-            //Logger.Log("doMatch cIdx: {0} char: {1} list size {2} matches size {3}", cIdx, (char)(cInt + (int)'a'), list.Count, matches.Count);
+            Logger.LogTrace("doMatch cIdx: {} char: {} list size {} matches size {}", 
+            	cIdx, (char)(cInt + (int)'a'), list.Count, matches.Count);
 
             foreach (TrieNodePtr nodePtr in list)
             {
+            	//Found a direct match
                 if (nodePtr.node.children[cInt] != null)
                 {
                     TrieNodePtr newNp = new TrieNodePtr(nodePtr, nodePtr.node.children[cInt]);
@@ -120,7 +118,7 @@ namespace Trie
                     newNp.addMatches(matches);
                 }
 
-                //If last change > 5, then add the rest
+                //If last change > 5, then add the rest of the children
                 if (nodePtr.numChanges == 0 || cIdx - nodePtr.rightChangeIndex >= minDistance)
                 {
                     foreach (var x in nodePtr.node.childrenList)
@@ -128,6 +126,7 @@ namespace Trie
                         int charInt = x.Item1;
                         TrieNode childNode = x.Item2;
 
+                        //Ignore direct match, was taken care of above
                         if (charInt == cInt)
                             continue;
 
@@ -178,6 +177,7 @@ namespace Trie
             return root;
         }
 
+        //Given text, find out what words match starting from startIdx
         public void parseText(string text, out List<WordMatch> matches, int startIdx = 0)
         {
             matches = new List<WordMatch>(10);
@@ -187,6 +187,8 @@ namespace Trie
             
             listPtrs.Add(root);
 
+            //Start from the root node and walk down text, we maintain a list
+            //because we can change 1 character every TrieNode.minDistance 
             for (int cIdx = startIdx; cIdx < text.Length; ++cIdx)
             {
                 char c = text[cIdx];
@@ -204,6 +206,9 @@ namespace Trie
         private void addWord(string word)
         {
             TrieNode node = this;
+            //Start at root
+            Preconditions.checkState(node.CurrentLength == 0);
+            
 
             for (int cIdx = 0; cIdx < word.Length; ++cIdx)
             {
@@ -220,7 +225,7 @@ namespace Trie
                 node = node.children[cInt];
             }
 
-            Debug.Assert(node.WordMatch == null);
+            Preconditions.checkState(node.WordMatch == null);
             node.WordMatch = word;
         }
     }

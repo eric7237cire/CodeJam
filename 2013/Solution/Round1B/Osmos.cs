@@ -115,8 +115,6 @@ namespace Round1B
             int[] motes = input.otherMotes;
             Array.Sort(motes);
 
-            int currentMote = input.InitialMoteSize;
-
             Solver solver = new Solver(motes);
 
             return solver.minSteps(0, input.InitialMoteSize);

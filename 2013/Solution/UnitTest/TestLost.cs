@@ -172,6 +172,7 @@ namespace UnitTest
         [Test]
         public void runAllFetchTestCases()
         {
+        	
         	//string testSmall2 = 
         	//"12 3 1 3 3 1 1 1 2 4";
             //testInput(testSmall2, "LEFT 3");
@@ -261,12 +262,15 @@ namespace UnitTest
         	//string testSmall2 = 
         	//"12 3 1 3 3 1 1 1 2 4";
             //testInput(testSmall2, "LEFT 3");
+            string mustMatch = "Round1C";
 
             XElement po = XElement.Load(@"/home/ent/mono/CodeJam/2013/Solution/UnitTest/Properties/MonoResources.resx");
             
             foreach( XElement testFileRunner in po.Elements("testFileRunner"))
             {
 				string baseDir = getAttributeValue(testFileRunner, "basedir");
+				
+				Directory.SetCurrentDirectory(baseDir);
 				
 				if ("true".Equals(getAttributeValue(testFileRunner, "ignore")))
             	{
@@ -276,6 +280,10 @@ namespace UnitTest
 				foreach(XElement run in testFileRunner.Elements("run"))
 				{
 					string mainClassName = getAttributeValue(run, "className");
+					
+					if (mustMatch != null && mainClassName.IndexOf(mustMatch, StringComparison.OrdinalIgnoreCase) < 0)
+						continue;
+					
 					string inputFileName = getAttributeValue(run, "inputFile" );
 					string checkFileName = getAttributeValue(run, "checkFile" );
 					string inputMethodName = getAttributeValue(run, "createInputMethod" );
@@ -285,9 +293,9 @@ namespace UnitTest
 					object main = Activator.CreateInstance(mainType);
 					
 					
-					TextReader checkReader = File.OpenText( baseDir + checkFileName);
+					TextReader checkReader = File.OpenText(  checkFileName);
 	
-					using (TextReader inputReader = File.OpenText( baseDir + inputFileName))
+					using (TextReader inputReader = File.OpenText(  inputFileName))
 					using (Scanner scanner = new Scanner(inputReader))
 					{
 						int testCases = scanner.nextInt();

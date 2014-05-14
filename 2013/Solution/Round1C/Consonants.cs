@@ -11,7 +11,7 @@ using Logger = Utils.LoggerFile;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest")]
 
-//Merging boundaries, counting substrings
+//Merging boundaries, counting substrings.  Similar in idea to inclusion-exclusion principal http://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle
 namespace Round1C
 {
 
@@ -36,6 +36,7 @@ namespace Round1C
         {
             int[] cons = new int[word.Length];
             
+            //blocks counts of vowels / consonants / vowels etc...
             List<int> blocks = new List<int>();
 
             int curLen = 0;
@@ -75,32 +76,21 @@ namespace Round1C
             //take off last vowel added
             blocks[blocks.Count - 1] -= 1;
 
-            
-
-            //first and last block are vowels
-            //if (blocks.Count % 2 == 0)
-            {
-              //  blocks.Add(0);
-            }
 
             //ONly vowels
             if (blocks.Count == 1)
             {
                 return 0;
             }
+            
+            //Start with assuming everything counts
             long total = summation(word.Length-1);
 
-            //first block
-            
-            if (true) // || blocks[0] > 0 || blocks[1] > n-1)
-            {
-                total -= summation(blocks[0] + Math.Min(n - 1, blocks[1]));
-            }
-            //last block
-            if (true) // || blocks[blocks.Count - 1] > 0 || blocks[blocks.Count - 2] > n-1)
-            {
-                total -= summation(blocks[blocks.Count - 1] + Math.Min(blocks[blocks.Count - 2], n - 1));
-            }
+            //All substrings in 1st block (vowels) + up to n - 1 cononants from 1st block don count
+			total -= summation(blocks[0] + Math.Min(n - 1, blocks[1]));
+		
+			total -= summation(blocks[blocks.Count - 1] + Math.Min(blocks[blocks.Count - 2], n - 1));
+		
 
             for (int consBlockStart = 1; consBlockStart < blocks.Count - 2; consBlockStart += 2)
             {
@@ -171,6 +161,7 @@ namespace Round1C
             return total;
         }
                 
+        //Find all substrings and count their consecutive consants, counts if >= n
         public static int bruteForce(string word, int n)
         {
             int count = 0;
@@ -206,41 +197,22 @@ namespace Round1C
 
             return count;
         }
-
-        public long processInput(Input input)
+        
+        public long processInputBruteForce(Input input)
         {
-            //int ans =  bruteForce(input.name, input.n);
-            long ans = calculate(input.name, input.n);
+            int ans =  bruteForce(input.name, input.n);
             Logger.Log("ans is {0}", ans);
             return ans;
         }
 
-        public static void Main2(string[] args)
+        public long processInput(Input input)
         {
-
-            Consonants main = new Consonants();
-
-            List<string> list = new List<string>();
-
-            list.Add("A_small_practice");
-            list.Add("A-large-practice.in");
-
-            CjUtils.RunMain(list, main, Input.createInput, null);
-            
-
+            long ans = calculate(input.name, input.n);
+            Logger.Log("ans is {0}", ans);
+            return ans;
         }
-    }
-
-
-
-
-    public class Input
-    {
-        public string name { get; private set; }
-        public int n { get; private set; }
-
-
-        public static Input createInput(Scanner scanner)
+        
+         public static Input createInput(Scanner scanner)
         {
             Input input = new Input();
             input.name = scanner.nextWord();
@@ -250,6 +222,18 @@ namespace Round1C
         }
 
 
+    }
+
+
+
+
+    public class Input
+    {
+        public string name { get; internal set; }
+        public int n { get; internal set; }
+
+
+       
     }
 
 }

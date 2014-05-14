@@ -35,9 +35,9 @@ namespace Osmos
             {
                 string text = reader.ReadLine();
                 string[] bits = text.Split(' ');
-                int x = int.Parse(bits[0]);
-                double y = double.Parse(bits[1]);
-                string z = bits[2];
+               // int x = int.Parse(bits[0]);
+                //double y = double.Parse(bits[1]);
+                //string z = bits[2];
             }
         }
 

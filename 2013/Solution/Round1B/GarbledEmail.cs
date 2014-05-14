@@ -21,9 +21,11 @@ using Logger = Utils.LoggerFile;
                           ("UnitTest")]
 
 
-//Using trie with variables min change distance
+//Using trie with variables min change distance.  
+//Also dynamic programming
 
-namespace GarbledEmail
+//!PERF will build the the solution used
+namespace Round1B_P3
 {
 
     public class Input
@@ -31,13 +33,7 @@ namespace GarbledEmail
         public string word { get; internal set; }
 
 
-        public static Input createInput(Scanner scanner)
-        {
-            Input input = new Input();
-            input.word = scanner.nextWord();
-
-            return input;
-        }
+        
     }
 
     internal sealed class GarbledEmail : InputFileConsumer<Input, int>
@@ -112,7 +108,7 @@ namespace GarbledEmail
                 return memoize[lastChangeDistance][progress] - 1;
             }
 
-            Logger.Log("minCount last change: {0} progress: {1}", lastChangeDistance, progress);
+            Logger.LogDebug("minCount last change: {0} progress: {1}", lastChangeDistance, progress);
 
             List<WordMatch> matches;
             root.parseText(S, out matches, progress);
@@ -162,44 +158,7 @@ namespace GarbledEmail
             return currentMin;
         }
 
-        static void Main(string[] args)
-        {
-            // Put the following code before InitializeComponent()
-            String culture = "en-US";
-            // Sets the culture to French (France)
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(culture);
-            // Sets the UI culture to French (France)
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
-
-            
-            GarbledEmail diamond = new GarbledEmail();
-
-            //string baseDir = @"C:\codejam\CodeJam\2013\1B\Osmos\Osmos\";
-            Runner<Input, int> runner = new Runner<Input, int>(diamond, Input.createInput);
-
-            List<string> list = new List<string>();
-            // list.Add("sample.txt");
-
-            //string[] strs = Assembly.GetExecutingAssembly().GetManifestResourceNames();
-
-            // ResourceSet resourceSet = new ResourceSet(Assembly.GetExecutingAssembly().GetManifestResourceStream(strs[0]));
-
-
-            list.Add("C_small_practice");
-            list.Add("C_large_practice");
-
-            Stopwatch timer = Stopwatch.StartNew();
-            //runner.run(list);
-            runner.runMultiThread(list);
-
-            timer.Stop();
-            TimeSpan timespan = timer.Elapsed;
-
-            Console.WriteLine(String.Format("Total {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
-
-        }
-
-
+       
 
         private Dictionary dict;
         private TrieNode root;
@@ -216,7 +175,7 @@ namespace GarbledEmail
             dict = new Dictionary();
 
             using (StreamReader file =
-   new System.IO.StreamReader(@"C:\codejam\CodeJam\2013\Solution\Round1B\garbled_email_dictionary.txt"))
+   new System.IO.StreamReader("garbled_email_dictionary.txt"))
             {
                 string line;
                 while ((line = file.ReadLine()) != null)
@@ -236,6 +195,13 @@ namespace GarbledEmail
             return minCount(0, 0, input.word);
         }
 
+        public static Input createInput(Scanner scanner)
+        {
+            Input input = new Input();
+            input.word = scanner.nextWord();
+
+            return input;
+        }
 
     }
 }
