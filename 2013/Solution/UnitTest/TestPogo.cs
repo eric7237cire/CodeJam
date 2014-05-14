@@ -1,13 +1,12 @@
 ﻿using CodeJamUtils;
 using NUnit.Framework;
-using Round1C.Pogo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils.geom;
-using Pogo = Round1C.Pogo.Pogo;
+using Pogo = Round1C_P2.Pogo;
 
 namespace UnitTest
 {
@@ -36,10 +35,10 @@ namespace UnitTest
 
         private static void testPoint(int x, int y)
         {
-            Round1C.Pogo.Pogo p = new Pogo();
+            Pogo p = new Pogo();
 
             Point<int> pt = new Point<int>(x, y);
-            string s = p.processInput(Input.createInput(pt.X, pt.Y));
+            string s = p.processInput(Round1C_P2.Input.createInput(pt.X, pt.Y));
 
             Point<int> point = Pogo.simulate(s);
 

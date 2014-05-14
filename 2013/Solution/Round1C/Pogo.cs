@@ -11,15 +11,15 @@ using Logger = Utils.LoggerFile;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo
                           ("UnitTest")]
-namespace Round1C.Pogo
+namespace Round1C_P2
 {
 
    
-    internal class Pogo : InputFileConsumer<Input, string>
+    public class Pogo : InputFileConsumer<Input, string>
     {
         static private List<int> summations;
 
-        internal Pogo()
+        public Pogo()
         {
 
         }
@@ -240,18 +240,15 @@ namespace Round1C.Pogo
             return ans;
         }
 
-        public static void Main2(string[] args)
+        
+        
+        public static Input createInput(Scanner scanner)
         {
-            Pogo main = new Pogo();
+            Input input = new Input();
+            input.X = scanner.nextInt();
+            input.Y = scanner.nextInt();
 
-            List<string> list = new List<string>();
-
-            list.Add("sample");
-            list.Add("B_small_practice");
-            list.Add("B_large_practice");
-
-            CjUtils.RunMain(list, main, Input.createInput, null);
-
+            return input;
         }
     }
 
@@ -260,8 +257,8 @@ namespace Round1C.Pogo
 
     public class Input
     {
-        public int X { get; private set; }
-        public int Y { get; private set; }
+        public int X { get; set; }
+        public int Y { get; set; }
 
         public static Input createInput(int x, int y)
         {
@@ -272,14 +269,7 @@ namespace Round1C.Pogo
             return input;
         }
 
-        public static Input createInput(Scanner scanner)
-        {
-            Input input = new Input();
-            input.X = scanner.nextInt();
-            input.Y = scanner.nextInt();
-
-            return input;
-        }
+        
 
 
     }
