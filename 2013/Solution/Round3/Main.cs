@@ -26,6 +26,7 @@ namespace Round3
    {
        //@"/include=current",
        @"/run=UnitTest.TestLost",
+       //"/nothread",
        @"C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll"
      //  @"/run=UnitTest.TestModMath",
      //  @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\UnitTest\bin\Debug\UnitTest.dll"

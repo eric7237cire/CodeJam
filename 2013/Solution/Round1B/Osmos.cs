@@ -36,20 +36,7 @@ namespace Round1B
 
     public class Osmos : InputFileConsumer<Input, int>, InputFileProducer<Input>
     {
-        static void Main2(string[] args)
-        {
-
-            Osmos osmos = new Osmos();
-
-            Runner<Input, int> runner = new Runner<Input, int>(osmos, osmos);
-
-            List<string> list = new List<string>();
-            list.Add("sample.txt");
-            list.Add("A-small-practice.in");
-            list.Add("A-large-practice.in");
-
-            runner.run(list);
-        }
+        
 
         private class Solver
         {

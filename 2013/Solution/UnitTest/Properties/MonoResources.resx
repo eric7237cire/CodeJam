@@ -6,22 +6,31 @@
          
   <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round1B/"
                   ignore ="false">
+				  
+				 
     <run checkFile         ="A-small-practice.check"
          className         ="Round1B.Osmos, Round1B"
          createInputMethod ="createInput"
          inputFile         ="A-small-practice.in"
          processInputMethod="processInput"/>
+		 
+		 
     <run checkFile         ="A-large-practice.check"
          className         ="Round1B.Osmos, Round1B"
          createInputMethod ="createInput"
          inputFile         ="A-large-practice.in"
          processInputMethod="processInput"/>
+		 
+		 
     <run checkFile         ="B-small-practice.check"
          className         ="Round1B_P2.Diamond, Round1B"
          createInputMethod ="createInput"
          inputFile         ="B-small-practice.in"
          processInputMethod="processInput"/>
-    <run checkFile         ="B-large-practice.check"
+    
+	
+	
+	<run checkFile         ="B-large-practice.check"
          className         ="Round1B_P2.Diamond, Round1B"
          createInputMethod ="createInput"
          inputFile         ="B-large-practice.in"
@@ -31,21 +40,30 @@
          createInputMethod ="createInput"
          inputFile         ="B-small-practice.in"
          processInputMethod="processInputSlow"/>
+		 
+		
+		 
     <run checkFile         ="B-large-practice.check"
          className         ="Round1B_P2.Diamond, Round1B"
          createInputMethod ="createInput"
          inputFile         ="B-large-practice.in"
          processInputMethod="processInputSlow"/>
-    <run checkFile         ="C-small-practice.check"
+		 
+		
+      <run checkFile         ="C-small-practice.check"
          className         ="Round1B_P3.GarbledEmail, Round1B"
          createInputMethod ="createInput"
          inputFile         ="C-small-practice.in"
          processInputMethod="processInput"/>
+   
+ 
   <run checkFile         ="C-large-practice.check"
          className         ="Round1B_P3.GarbledEmail, Round1B"
          createInputMethod ="createInput"
          inputFile         ="C-large-practice.in"
          processInputMethod="processInput"/>
+		 
+		 
   </testFileRunner>
   
   <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round1C/"
@@ -184,7 +202,7 @@
     </test>
   </tests>
   <tests className="Round3.Lost, Round3"
-         ignore   ="true">
+         ignore   ="false">
     <test name="TestLostSample1">
       <data>
 4 5 3

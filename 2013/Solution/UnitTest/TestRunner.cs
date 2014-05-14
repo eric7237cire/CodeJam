@@ -1,7 +1,7 @@
 ﻿#define LOGGING
 #define LOGGING_DEBUG
 #define LOGGING_INFO
-#define LOGGING_TRACE
+//#define LOGGING_TRACE
 
 
 using System.Numerics;
@@ -256,8 +256,15 @@ namespace UnitTest
 #endif        
        
         [Test, TestCaseSource("FetchTestFileCases")]
-        public void runTestFile(Type mainType, object main, string inputMethodName, string processInputMethodName, Scanner scanner, List<string> checkStrList, int testCases)
+        public void runTestFile(string baseDir, string mainClassName, string inputMethodName, string processInputMethodName, Scanner scanner, List<string> checkStrList, int testCases)
         {
+            Directory.SetCurrentDirectory(baseDir);
+
+            Stopwatch timer = Stopwatch.StartNew();
+
+            Type mainType = Type.GetType(mainClassName, true);
+            object main = Activator.CreateInstance(mainType);
+
             for (int tc = 1; tc <= testCases; ++tc)
             {
                 string checkStr = checkStrList[tc - 1];
@@ -270,6 +277,15 @@ namespace UnitTest
                 Logger.LogDebug("Checking {} = {}", checkStr, ansStr);
                 Assert.AreEqual(checkStr, ansStr);
             }
+
+            timer.Stop();
+            TimeSpan timespan = timer.Elapsed;
+
+            string timeSpanStr = String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10);
+
+            Logger.LogInfo("\n\nClass {}\nTC {} \nProcess method {}\nTime {}\n\n",
+                            mainType.FullName, testCases, processInputMethodName, timeSpanStr);
+
         }
 
         public IEnumerable<TestCaseData> FetchTestFileCases()
@@ -277,7 +293,7 @@ namespace UnitTest
             //string testSmall2 = 
             //"12 3 1 3 3 1 1 1 2 4";
             //testInput(testSmall2, "LEFT 3");
-            string mustMatch = "Round1C";
+            string mustMatch = "Round1B"; // null; // "Osmos"; // null; // "Round1C";
 
             List<TestCaseData> testList = new List<TestCaseData>();
 
@@ -308,32 +324,23 @@ namespace UnitTest
                     string inputMethodName = getAttributeValue(run, "createInputMethod");
                     string processInputMethodName = getAttributeValue(run, "processInputMethod");
 
-                    Type mainType = Type.GetType(mainClassName, true);
-                    object main = Activator.CreateInstance(mainType);
-
-
-                    TextReader checkReader = File.OpenText(checkFileName);
                     TextReader inputReader = File.OpenText(inputFileName);
                     Scanner scanner = new Scanner(inputReader);
-                    
+                    using(TextReader checkReader = File.OpenText(checkFileName))
                     {
                         int testCases = scanner.nextInt();
 
-                        Logger.LogInfo("Begin testing class {} method {} testcases {}",
-                            mainClassName, processInputMethodName, testCases);
+                        //Logger.LogInfo("Begin testing class {} method {} testcases {}",
+                          //  mainClassName, processInputMethodName, testCases);
 
-                        MethodInfo m = mainType.GetMethod(inputMethodName);
-                        Logger.LogInfo("{} method {} ", main, m);
-
-                        Stopwatch timer = Stopwatch.StartNew();
-
+                    
                         List<string> checkStrs = new List<string>();
                         for (int tc = 1; tc <= testCases; ++tc)
                         {
                             checkStrs.Add( checkReader.ReadLine() );
                         }
 
-                        testList.Add(new TestCaseData(mainType, main, inputMethodName, processInputMethodName, scanner, checkStrs, testCases)
+                        testList.Add(new TestCaseData(baseDir, mainClassName, inputMethodName, processInputMethodName, scanner, checkStrs, testCases)
                             //.Throws(typeof(DivideByZeroException))
                         .SetName(string.Format("{0} : {1} : {2}",
                             mainClassName, processInputMethodName, inputFileName))
@@ -341,6 +348,7 @@ namespace UnitTest
                             mainClassName, processInputMethodName, inputFileName)));
 
                     }
+
                 }
             }
 
