@@ -83,8 +83,7 @@
     </Compile>
     <Compile Include="TestConsonants.cs" />
     <Compile Include="TestDiamond.cs" />
-    <Compile Include="TestLost.cs" />
-    <Compile Include="TestOsmos.cs" />
+    <Compile Include="TestRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestPascals.cs" />
     <Compile Include="TestPogo.cs" />

@@ -66,6 +66,7 @@
     <Compile Include="Boxing2.cs" />
     <Compile Include="Diamonds.cs" />
     <Compile Include="GarbledEmail.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="MultithreadMain.cs" />
     <Compile Include="Osmos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

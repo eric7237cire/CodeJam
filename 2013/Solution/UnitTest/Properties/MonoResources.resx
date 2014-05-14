@@ -69,13 +69,20 @@
          inputFile         ="A-large-practice.in"
          processInputMethod="processInput"/>
          
-             
+             <!--
                   <run checkFile         ="B_small_practice.check"
          className         ="Round1C_P2.Pogo, Round1C"
          createInputMethod ="createInput"
          inputFile         ="B-small-practice.in"
          processInputMethod="processInput"/>
-         
+         -->
+		 
+		 <run checkFile         ="B-large-practice.correct"
+         className         ="Round1C_P2.Pogo, Round1C"
+         createInputMethod ="createInput"
+         inputFile         ="B-large-practice.in"
+         processInputMethod="processInput"/>
+		 
                   
                   </testFileRunner>
   <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round3/"
