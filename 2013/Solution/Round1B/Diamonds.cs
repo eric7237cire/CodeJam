@@ -11,26 +11,17 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Utils.geom;
+using Utils;
 
 //Pascal's triangle, probablity getting exactly N heads in X coin flips
 
-namespace Diamonds
+namespace Round1B_P2
 {
 
     public class Input
     {
-        public int NumberFallingDiamonds { get; private set; }
+        public int NumberFallingDiamonds { get; internal set; }
         public Tuple<int, int> Coords { get; internal set; }
-
-
-        public static Input createInput(Scanner scanner)
-        {
-            Input input = new Input();
-            input.NumberFallingDiamonds = scanner.nextInt();
-            input.Coords = new Tuple<int, int>(scanner.nextInt(), scanner.nextInt());
-
-            return input;
-        }
     }
 
     public class DiamondInfo
@@ -54,13 +45,18 @@ namespace Diamonds
             pyramidSizes.Add(1);
         }
 
+        //Get the pyramid that will definitely be 100% filled given nDiamonds
         public static DiamondInfo getDiamondInfo(int nDiamonds)
         {
-            //See if pyramid sizes is big enough
+            //See if pyramid sizes is big enough to contain nDiamonds
             while (pyramidSizes[pyramidSizes.Count - 1] < nDiamonds)
             {
+            	//last index
                 int index = pyramidSizes.Count - 1;
+                //3, 5, 7, etc
                 int nextOdd = 2 * (index + 1) + 1;
+                
+                //How much to create a pyramid of the next size
                 int toAdd = 2 * nextOdd - 1;
                 pyramidSizes.Add(pyramidSizes[index] + toAdd);
             }
@@ -74,75 +70,38 @@ namespace Diamonds
             di.sideLength = 2 * idx + 2;
             di.outerLayerDistance = di.sideLength;
             di.N = nDiamonds;
+            Preconditions.checkState(di.N >= di.baseDiamondSize);
+            
             return di;
         }
     }
 
-    public class Node : IEquatable<Node>
+    public class Node : Point<int>
     {
-        //private readonly int sideLength;
-        private int left;
-        private int right;
-
         public int Left
         {
-            get
-            {
-                return left;
-            }            
+            get {return X;}      
         }
 
         public int Right
         {
-            get
-            {
-                return right;
-            }
+            get {return Y;}
         }
 
-        public Node(int sideLength)
+        public Node(int sideLength) : base(0,0)
         {
-            //this.sideLength = sideLength;
-            left = right = 0;
+            
         }
 
-        public Node(int left, int right)
+        public Node(int left, int right) : base(left, right)
         {
-            this.left = left;
-            this.right = right;
+            
         }
 
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as Node);
-
-        }
-        public override int GetHashCode()
-        {
-            return Tuple.Create<int, int>(left, right).GetHashCode();
-        }
-
-
-        public bool Equals(Node other)
-        {
-            if (ReferenceEquals(null, other)) return false;
-            return (this.left.Equals(other.left))
-                && (this.right.Equals(other.right));
-        }
-
-        public static bool operator ==(Node leftOperand, Node rightOperand)
-        {
-            if (ReferenceEquals(null, leftOperand)) return ReferenceEquals(null, rightOperand);
-            return leftOperand.Equals(rightOperand);
-        }
-
-        public static bool operator !=(Node leftOperand, Node rightOperand)
-        {
-            return !(leftOperand == rightOperand);
-        }
+        
     }
 
-    public class Diamond : InputFileConsumer<Input, double>
+    public class Diamond : InputFileConsumer<Input, string>
     {
         
 
@@ -178,13 +137,15 @@ namespace Diamonds
 
         }
 
+        //Still fast enough for large
         public static void processProbSlow(DiamondInfo di, out IDictionary<Node, double> nodes)
         {
             nodes = new Dictionary<Node, double>();
-
+            
             IDictionary<Node, double> nodesToProcess = new Dictionary<Node,double>();
             IDictionary<Node, double> newNodes = new Dictionary<Node, double>();
 
+            //Start with a 100% probability of having 0 diamonds to left, 0 on right side
             nodesToProcess.Add(new Node(0, 0), 1);
 
             int loopCount = di.N - di.baseDiamondSize;
@@ -196,7 +157,7 @@ namespace Diamonds
                 foreach(KeyValuePair<Node, double> nodeProb in nodesToProcess)
                 {
                     Node node = nodeProb.Key;
-                    //left side full
+                    //left side full, so all of parent probability is used on 1 possibility
                     if (node.Left == di.sideLength)
                     {
                         addProb(newNodes, new Node(node.Left, node.Right+1), nodeProb.Value);
@@ -208,6 +169,7 @@ namespace Diamonds
                         continue;
                     }
 
+                    //50% of parent probability on each side
                     addProb(newNodes, new Node(node.Left+1, node.Right), nodeProb.Value / 2);
                     addProb(newNodes, new Node(node.Left, node.Right+1), nodeProb.Value / 2);
                 }
@@ -238,72 +200,54 @@ namespace Diamonds
             return dist % 2 == 0;
         }
 
-        static void Main2(string[] args)
-        {
-            // Put the following code before InitializeComponent()
-            String culture = "en-US";
-            // Sets the culture to French (France)
-            Thread.CurrentThread.CurrentCulture = new CultureInfo(culture);
-            // Sets the UI culture to French (France)
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(culture);
-
-            /*
-            DiamondInfo di = DiamondInfo.getDiamondInfo(21);
-            IDictionary<Node,double> nodeProb;
-            processProb(di, out nodeProb);
-            foreach(var kv in nodeProb)
-            {
-                Logger.Log("Left: {0} Right: {1} Prob : {2}", kv.Key.Left, kv.Key.Right, kv.Value);
-            }
-
-            Logger.Log("Done");
-            return;
-            */
-            Diamond diamond = new Diamond();
-
-            Runner<Input, double> runner = new Runner<Input, double>(diamond, Input.createInput);
-
-            List<string> list = new List<string>();
-            //list.Add("sample.txt");
-            list.Add("B-small-practice.in");
-            list.Add("B-large-practice.in");
-
-            runner.run(list);
-        }
-
-
-        
-
         public Diamond()
         {
             triangle = PascalTriangleCreator.createProb(2500);
         }
+        
+        //processProbSlow(DiamondInfo di, out IDictionary<Node, double> nodes)
 
-        public double processInput(Input input)
+        public string processInputSlow(Input input)
+        {
+        	return processInputGeneral(input, processProbSlow);
+        }
+        
+        public string processInput(Input input)
+        {
+        	return processInputGeneral(input, processProb);
+        }
+        
+        public delegate void ProcessProbFuncDelegate(DiamondInfo di, out IDictionary<Node, double> dict);
+        
+        public string processInputGeneral(Input input, ProcessProbFuncDelegate processProbFunc)
         {
             DiamondInfo di = DiamondInfo.getDiamondInfo(input.NumberFallingDiamonds);
 
             Point<int> p = new Point<int>(input.Coords.Item1, input.Coords.Item2);
 
+            //Find manhattan distance to see if a diamond could be centered there
             int dist = Math.Abs(p.X) + Math.Abs(p.Y);
 
             if (dist % 2 != 0)
             {
-                return 0;
+                return "0";
             }
 
+            //Use final diamond form to see if point could be in 
             if (dist > di.outerLayerDistance)
             {
-                return 0;
+                return "0";
             }
 
+            //Since only the last layer wont be filled in, if dist is strictly less, 
+            //there will always be a diamond there 
             if (di.outerLayerDistance > dist)
             {
-                return 1;
+                return "1";
             }
 
             IDictionary<Node, double> nodeProb;
-            processProb(di, out nodeProb);
+            processProbFunc(di, out nodeProb);
 
             Debug.Assert(di.outerLayerDistance == dist, String.Format("Dist is {0}, outer layer is {1}", dist, di.outerLayerDistance));
 
@@ -317,9 +261,17 @@ namespace Diamonds
                 }
             }
 
-            return probTotal;
+            return probTotal.ToString( "0.######", new CultureInfo("en-US") );
         }
 
+        public static Input createInput(Scanner scanner)
+        {
+            Input input = new Input();
+            input.NumberFallingDiamonds = scanner.nextInt();
+            input.Coords = new Tuple<int, int>(scanner.nextInt(), scanner.nextInt());
+
+            return input;
+        }
 
     }
 

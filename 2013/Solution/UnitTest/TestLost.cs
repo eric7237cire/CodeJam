@@ -12,7 +12,6 @@ using Utils;
 using System.Globalization;
 
 using Logger = Utils.LoggerFile;
-using System.Collections.Generic;
 using Utils.math;
 
 using System;
@@ -198,8 +197,8 @@ namespace UnitTest
             	Type mainType = Type.GetType(mainClassName, true);
             	object main = Activator.CreateInstance(mainType);
             	
-            	Type inputType = null;
-            	Type returnType = null;
+            	//Type inputType = null;
+            	//Type returnType = null;
             	
             	foreach(Type intType in mainType.GetInterfaces()) 
             	{
@@ -316,7 +315,9 @@ namespace UnitTest
 						timer.Stop();
 						TimeSpan timespan = timer.Elapsed;
 	
-						Logger.LogInfo(String.Format("Total time class {3} method {4} {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10, mainClassName, processInputMethodName));
+						string timeSpanStr = String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10);
+						Logger.LogInfo("\n\nClass {}\nMethod {} \ninput file {}\nTime {}\n\n",
+							mainClassName, processInputMethodName, inputFileName, timeSpanStr);
 	
 					}
 				}

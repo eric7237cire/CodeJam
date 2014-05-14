@@ -7,15 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 
 //Dynamic programming, could improve by doing a linear solution.
-//Uses checked addition
-
 namespace Round1B
 {
     
     public class Input
     {
-        private Scanner scanner;
-
         public int InitialMoteSize { get; private set; }
         public int numberMotes { get; internal set; }
         public int[] otherMotes { get; protected internal set; }
@@ -23,8 +19,6 @@ namespace Round1B
         
         public Input(Scanner scanner)
         {
-            this.scanner = scanner;
-
             InitialMoteSize = scanner.nextInt();
             numberMotes = scanner.nextInt();
 
@@ -70,19 +64,9 @@ namespace Round1B
                  this.memoize = new byte[sortedMotes.Length+1, maxMoteSize+1];
              }
 
-            private static byte safeAdd(byte n1, byte n2)
-            {
-                return safeAdd(n1, (int)n2);
-            }
-            private static byte safeAdd(byte n1, int n2)
-            {
-                checked
-                {
-                    int ans = n1 + n2;
-                    return (byte)ans;
-                }
-            }
-            public byte minSteps(byte progress, int currentMoteSize)
+             const byte ONE = 1;
+            
+            public byte minSteps(int progress, int currentMoteSize)
             {
                 //base case, quand nous sommes finis
                 if (progress >= sortedMotes.Length)
@@ -95,37 +79,33 @@ namespace Round1B
                     currentMoteSize = maxMoteSize;
                 }
 
+                //0 value is used to mean non initialized
                 if (memoize[progress, currentMoteSize] > 0)
                 {
-                    return safeAdd(memoize[progress, currentMoteSize], -1);
+                    return (byte) ( memoize[progress, currentMoteSize] - 1 );
                 }
 
-
+                //Current mote can be absorbed for free
                 if (sortedMotes[progress] < currentMoteSize)
                 {
-                    return minSteps( safeAdd(progress, 1), currentMoteSize + sortedMotes[progress]);
+                    return minSteps( progress + 1, currentMoteSize + sortedMotes[progress]);
                 }
 
-                byte skipMote = safeAdd(minSteps(safeAdd(progress, 1), currentMoteSize), 1);
+                //The cost of not absorbding the next mote
+                byte skipMote = (byte) (minSteps(progress + 1, currentMoteSize) + 1);
 
                 //No choice, can't grow
                 if (currentMoteSize <= 1)
-                {
-                    memoize[progress, currentMoteSize] = safeAdd(skipMote,1);
-                    //return(safeAdd( , -1));
-                    return safeAdd(memoize[progress, currentMoteSize], -1);
+                {                    
+                    return (byte) ((memoize[progress, currentMoteSize] = (byte) (skipMote + 1)) - 1);
                 }
                 else
                 {
-                    byte addMoteSteps = safeAdd(minSteps(progress, currentMoteSize + currentMoteSize - 1), 1);
-                    memoize[progress, currentMoteSize] = safeAdd(Math.Min(addMoteSteps, skipMote), 1);
-                    return safeAdd(memoize[progress, currentMoteSize], -1);
+                    int addMoteSteps = minSteps(progress, currentMoteSize + currentMoteSize - 1) + 1;
+                    memoize[progress, currentMoteSize] = (byte) (Math.Min(addMoteSteps, skipMote) + 1);
+                    return (byte) (memoize[progress, currentMoteSize]  - 1);
                 }
 
-                
-
-
-                
                 
             }
         }
