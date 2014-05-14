@@ -184,6 +184,12 @@ namespace UnitTest
             foreach(XElement tests in testGroupes)
             {
             	string mainClassName = getAttributeValue(tests, "className");
+            	
+            	int comma = mainClassName.IndexOf(',');
+            	if (comma != -1)
+            		mainClassName = mainClassName.Substring(0, comma);
+            		
+            	
             	string answerType = getAttributeValue(tests, "answerType");
             	
             	if ("true".Equals(getAttributeValue(tests, "ignore")))
@@ -229,11 +235,11 @@ namespace UnitTest
 					Preconditions.checkState(mainType != null);
 					
 					//var input = ( (InputFileProducer<LostInput>) main).createInput(scanner);
-			var input = mainType.GetMethod("createInput").Invoke(main, new object[] {scanner});
+					var input = mainType.GetMethod("createInput").Invoke(main, new object[] {scanner});
 			
 			
 			//string ans = ( (InputFileConsumer<LostInput,string>) main).processInput(input);
-			var ans = mainType.GetMethod("processInput").Invoke(main, new object[] {input});
+					var ans = mainType.GetMethod("processInput").Invoke(main, new object[] {input});
 			
 					if ("double".Equals(answerType))
 					{
@@ -249,36 +255,74 @@ namespace UnitTest
 					} else {
 						Assert.AreEqual(ansExpected, ans);
 					}
-					//yield return new object[] {mainType, main, scanner, ansExpected };
-					/*yield return new TestCaseData( mainType, main, scanner, ansExpected )
-						//.Throws(typeof(DivideByZeroException))
-						.SetName(el.Name.Value)
-						.SetDescription("An exception is expected");*/
+					
 				}
             }
         }
 #endif        
-       // [Test]
-        public void TestNothing()
-        {
-        	Assert.IsTrue(false);	
-        }
        
-        
-        
-        private void testInput(string inputTxt, string expectedAns)
+
+		[Test]
+        public void runTestFiles()
         {
-            Scanner scanner = new Scanner(new StringReader(inputTxt));
+        	//string testSmall2 = 
+        	//"12 3 1 3 3 1 1 1 2 4";
+            //testInput(testSmall2, "LEFT 3");
 
-            Lost pong = new Lost();
+            XElement po = XElement.Load(@"/home/ent/mono/CodeJam/2013/Solution/UnitTest/Properties/MonoResources.resx");
+            
+            XElement testFileRunner = po.Elements("testFileRunner").First();
+            string baseDir = getAttributeValue(testFileRunner, "basedir");
+            
+            foreach(XElement run in testFileRunner.Elements("run"))
+            {
+            	string mainClassName = getAttributeValue(run, "className");
+            	string inputFileName = getAttributeValue(run, "inputFile" );
+            	string checkFileName = getAttributeValue(run, "checkFile" );
+            	string inputMethodName = getAttributeValue(run, "createInputMethod" );
+            	string processInputMethodName = getAttributeValue(run, "processInputMethod" );
+            	
+            	#if mono
+            	int comma = mainClassName.IndexOf(',');
+            	if (comma != -1)
+            		mainClassName = mainClassName.Substring(0, comma);
+            	#endif
+            	
+            	Type mainType = Type.GetType(mainClassName, true);
+            	object main = Activator.CreateInstance(mainType);
+            	
+            	
+            	TextReader checkReader = File.OpenText( baseDir + checkFileName);
 
-            LostInput input = pong.createInput(scanner);
+            	using (TextReader inputReader = File.OpenText( baseDir + inputFileName))
+            	using (Scanner scanner = new Scanner(inputReader))
+            	{
+            		int testCases = scanner.nextInt();
+            		
+            		Logger.LogInfo("Begin testing class {} method {} testcases {}",
+            			mainClassName, processInputMethodName, testCases);
+            		
+            		Stopwatch timer = Stopwatch.StartNew();
 
-            string ans = pong.processInput(input);
+                    for (int tc = 1; tc <= testCases; ++tc)
+                    {
+                    	var input = mainType.GetMethod(inputMethodName).Invoke(main, new object[] {scanner});			
+                    	var ans = mainType.GetMethod(processInputMethodName).Invoke(main, new object[] {input});
+                    	
+                    	string ansStr = String.Format("Case #{0}: {1}", tc, ans);
+                    	string checkStr = checkReader.ReadLine();
+                    	
+                    	Logger.LogInfo("Checking {} = {}", checkStr, ansStr);
+                    	Assert.AreEqual(checkStr, ansStr);
+                    }
+                    
+                    timer.Stop();
+                    TimeSpan timespan = timer.Elapsed;
 
-            Assert.AreEqual(expectedAns, ans);
+                    Logger.LogInfo(String.Format("Total time class {3} method {4} {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10, mainClassName, processInputMethodName));
 
+            	}
+            }
         }
-
     }
 }
