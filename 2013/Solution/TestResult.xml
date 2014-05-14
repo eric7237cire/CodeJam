@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll" total="4" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2014-05-14" time="19:39:55">
+  <environment nunit-version="2.6.3.13283" clr-version="2.0.50727.5477" os-version="Microsoft Windows NT 6.1.7601 Service Pack 1" platform="Win32NT" cwd="C:\codejam\CodeJam\2013\Solution" machine-name="THRESH-PC" user="thresh" user-domain="thresh-PC" />
+  <culture-info current-culture="fr-FR" current-uiculture="fr-FR" />
+  <test-suite type="Assembly" name="C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll" executed="True" result="Success" success="True" time="3.239" asserts="0">
+    <results>
+      <test-suite type="Namespace" name="UnitTest" executed="True" result="Success" success="True" time="3.222" asserts="0">
+        <results>
+          <test-suite type="TestFixture" name="TestRunner" executed="True" result="Success" success="True" time="3.219" asserts="0">
+            <results>
+              <test-suite type="ParameterizedTest" name="runMain" executed="True" result="Inconclusive" success="False" time="0.003" asserts="0" />
+              <test-suite type="ParameterizedTest" name="runTestFile" executed="True" result="Success" success="True" time="3.203" asserts="0">
+                <results>
+                  <test-case name="UnitTest.TestRunner.Round1C.Consonants, Round1C : processInput : A-small-practice.in" description="Class Round1C.Consonants, Round1C&#xA;Method processInput &#xA;input file A-small-practice.in" executed="True" result="Success" success="True" time="0.036" asserts="100" />
+                  <test-case name="UnitTest.TestRunner.Round1C.Consonants, Round1C : processInputBruteForce : A-small-practice.in" description="Class Round1C.Consonants, Round1C&#xA;Method processInputBruteForce &#xA;input file A-small-practice.in" executed="True" result="Success" success="True" time="0.087" asserts="100" />
+                  <test-case name="UnitTest.TestRunner.Round1C.Consonants, Round1C : processInput : A-large-practice.in" description="Class Round1C.Consonants, Round1C&#xA;Method processInput &#xA;input file A-large-practice.in" executed="True" result="Success" success="True" time="3.020" asserts="100" />
+                  <test-case name="UnitTest.TestRunner.Round1C_P2.Pogo, Round1C : processInput : B-large-practice.in" description="Class Round1C_P2.Pogo, Round1C&#xA;Method processInput &#xA;input file B-large-practice.in" executed="True" result="Success" success="True" time="0.050" asserts="100" />
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
