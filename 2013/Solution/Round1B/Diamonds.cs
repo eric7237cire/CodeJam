@@ -268,7 +268,7 @@ namespace Diamonds
             list.Add("B-small-practice.in");
             list.Add("B-large-practice.in");
 
-            runner.run(list, Round1B.Properties.Resources.ResourceManager);
+            runner.run(list);
         }
 
 

@@ -373,7 +373,7 @@ namespace Round1C.GreatWall
 
             list = list.ConvertAll(s => dir + s);
 
-            CjUtils.RunMainMulti(list, main, Input.createInput, Round1C.Properties.Resources.ResourceManager);
+            CjUtils.RunMainMulti(list, main, Input.createInput, null);
 
         }
     }

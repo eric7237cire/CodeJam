@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,10 +13,10 @@ using Logger = Utils.LoggerFile;
 
 namespace UnitTest
 {
-    [TestClass]
+    [TestFixture]
     public class TestTrie
     {
-        [TestMethod]
+        [Test]
         public void testMatch()
         {
             Dictionary dict = new Dictionary();
@@ -31,7 +31,7 @@ namespace UnitTest
             
         }
 
-        [TestMethod]
+        [Test]
         public void testMatch2Changes()
         {
             Dictionary dict = new Dictionary();
@@ -44,7 +44,7 @@ namespace UnitTest
             Assert.AreEqual(2, minChange);
 
         }
-        [TestMethod]
+        [Test]
         public void testFromCSmall()
         {
             
@@ -56,7 +56,7 @@ namespace UnitTest
             Logger.CurrentDomain_ProcessExit(null,null);
         }
 
-        [TestMethod]
+        [Test]
         public void testSamples()
         {
             GarbledEmail.GarbledEmail ge = new GarbledEmail.GarbledEmail();
@@ -94,7 +94,7 @@ namespace UnitTest
             //TODO Codejam progress 3, match a has a change at location 3 which is not valid
 
         }
-        [TestMethod]
+        [Test]
         public void testMatches()
         {
             Dictionary dict = new Dictionary();
@@ -122,7 +122,7 @@ namespace UnitTest
         }
 
 
-        [TestMethod]
+        [Test]
         public void testBasicMatches()
         {
             Dictionary dict = new Dictionary();
@@ -141,7 +141,7 @@ namespace UnitTest
 
 
         }
-        [TestMethod]
+        [Test]
         public void testAddWord()
         {
             Dictionary dict = new Dictionary();

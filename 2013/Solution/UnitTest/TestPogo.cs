@@ -1,5 +1,5 @@
 ﻿using CodeJamUtils;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Round1C.Pogo;
 using System;
 using System.Collections.Generic;
@@ -11,15 +11,15 @@ using Pogo = Round1C.Pogo.Pogo;
 
 namespace UnitTest
 {
-    [TestClass]
+    [TestFixture]
     public class TestPogo
     {
-        [TestMethod]
+        [Test]
         public void test1()
         {
             testPoint(-8, 0);
         }
-        [TestMethod]
+        [Test]
         public void testBasic()
         {
             int lowerLimit = -10;
@@ -43,7 +43,7 @@ namespace UnitTest
 
             Point<int> point = Pogo.simulate(s);
 
-            Assert.AreEqual<Point<int>>(pt, point);
+            Assert.AreEqual(pt, point);
         }
     }
 }

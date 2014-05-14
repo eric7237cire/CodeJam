@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 //Dynamic programming, could improve by doing a linear solution.
 //Uses checked addition
 
-namespace Osmos
+namespace Round1B
 {
     
     public class Input
@@ -54,7 +54,7 @@ namespace Osmos
             list.Add("A-small-practice.in");
             list.Add("A-large-practice.in");
 
-            runner.run(list, Round1B.Properties.Resources.ResourceManager);
+            runner.run(list);
         }
 
         private class Solver

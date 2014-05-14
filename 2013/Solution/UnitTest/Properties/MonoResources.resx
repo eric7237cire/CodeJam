@@ -1,8 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root xml:space="preserve">
 
+<testFileRunner
+  	basedir = "/home/ent/mono/CodeJam/2013/Solution/Round1B/"
+  	ignore = "f"
+  	>
+  	
+  	<run className="Round1B.Osmos, Round1B" 
+  	createInputMethod = "createInput"
+  	processInputMethod = "processInput"
+  	inputFile="A-small-practice.in"
+  	checkFile="A-small-practice.check"/>
+
+</testFileRunner>	
+
   <testFileRunner
-  	basedir = "/home/ent/mono/CodeJam/2013/Solution/Round3/">
+  	basedir = "/home/ent/mono/CodeJam/2013/Solution/Round3/"
+  	ignore = "true"
+  	>
   	
   	<run className="Round3.Lost" 
   	createInputMethod = "createInput"
@@ -15,13 +30,18 @@
   	processInputMethod = "processInputBruteForce"
   	inputFile="C-small-practice.in"
   	checkFile="C-small-practice.correct"/>
-  		
+  	
+<run className="Round3.Lost" 
+  	createInputMethod = "createInput"
+  	processInputMethod = "processInput"
+  	inputFile="C-large-practice.in"
+  	checkFile="C-large-practice.correct"/>	
   	
   </testFileRunner>
 
   <tests answerType="double"
   		 ignore="false"
-         className ="Round3.Cheaters">
+         className ="Round3.Cheaters, Round3">
     <test name="TestCheaterSmall3">
       <data>
 34 4

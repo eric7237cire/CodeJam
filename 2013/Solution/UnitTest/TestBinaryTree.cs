@@ -1,5 +1,5 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Round1C;
 using System.Collections.Generic;
 using System.IO;
@@ -13,10 +13,10 @@ namespace UnitTest
 
     
 
-    [TestClass]
+    [TestFixture]
     public class TestBinaryTree
     {
-        [ClassCleanup]
+       // [ClassCleanup]
         public static void cleanup()
         {
             Logger.CurrentDomain_ProcessExit(null, null);
@@ -25,7 +25,7 @@ namespace UnitTest
 
         public delegate void TestDel<in UserParamType>(ref string data, int nodeIndex, UserParamType obj);
 
-        [TestMethod]
+        [Test]
        public void testBinaryTree()
         {
             BinaryTree<int> t1 = BinaryTree<int>.create(6);
@@ -108,7 +108,7 @@ namespace UnitTest
 
        
 
-        [TestMethod]
+        [Test]
         public void TestHeight()
         {
             testHeight(0, 0);

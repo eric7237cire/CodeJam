@@ -190,7 +190,7 @@ namespace GarbledEmail
 
             Stopwatch timer = Stopwatch.StartNew();
             //runner.run(list);
-            runner.runMultiThread(list, Round1B.Properties.Resources.ResourceManager);
+            runner.runMultiThread(list);
 
             timer.Stop();
             TimeSpan timespan = timer.Elapsed;

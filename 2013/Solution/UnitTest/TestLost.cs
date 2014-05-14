@@ -141,7 +141,7 @@ namespace UnitTest
 
                 foreach (XElement el in tests.Elements("test"))
                 {
-                    Console.WriteLine("Name: " + el.Name);
+                    //Console.WriteLine("Name: " + el.Name);
 
                     Logger.LogInfo("Testing {}", el.Attributes("name").FirstOrDefault());
                     string data = getChildElemValue(el, "data");
@@ -185,10 +185,6 @@ namespace UnitTest
             {
             	string mainClassName = getAttributeValue(tests, "className");
             	
-            	int comma = mainClassName.IndexOf(',');
-            	if (comma != -1)
-            		mainClassName = mainClassName.Substring(0, comma);
-            		
             	
             	string answerType = getAttributeValue(tests, "answerType");
             	
@@ -216,8 +212,6 @@ namespace UnitTest
             	
 				foreach (XElement el in tests.Elements("test"))
 				{
-					Console.WriteLine("Name: " + el.Name);
-					
 					Logger.LogInfo("Testing {}", el.Attributes("name").FirstOrDefault());
 					string data =  getChildElemValue(el, "data");
 					string ansExpected = getChildElemValue(el, "answer");
@@ -243,7 +237,7 @@ namespace UnitTest
 			
 					if ("double".Equals(answerType))
 					{
-						Logger.LogInfo("String [{}]", (string)ans);
+						//Logger.LogInfo("String [{}]", (string)ans);
 						try {
 						double ans_d = double.Parse( (string)ans, new CultureInfo("en-US"));
 						double expected_d = double.Parse(ansExpected, new CultureInfo("en-US"));
@@ -271,58 +265,62 @@ namespace UnitTest
 
             XElement po = XElement.Load(@"/home/ent/mono/CodeJam/2013/Solution/UnitTest/Properties/MonoResources.resx");
             
-            XElement testFileRunner = po.Elements("testFileRunner").First();
-            string baseDir = getAttributeValue(testFileRunner, "basedir");
-            
-            foreach(XElement run in testFileRunner.Elements("run"))
+            foreach( XElement testFileRunner in po.Elements("testFileRunner"))
             {
-            	string mainClassName = getAttributeValue(run, "className");
-            	string inputFileName = getAttributeValue(run, "inputFile" );
-            	string checkFileName = getAttributeValue(run, "checkFile" );
-            	string inputMethodName = getAttributeValue(run, "createInputMethod" );
-            	string processInputMethodName = getAttributeValue(run, "processInputMethod" );
-            	
-            	#if mono
-            	int comma = mainClassName.IndexOf(',');
-            	if (comma != -1)
-            		mainClassName = mainClassName.Substring(0, comma);
-            	#endif
-            	
-            	Type mainType = Type.GetType(mainClassName, true);
-            	object main = Activator.CreateInstance(mainType);
-            	
-            	
-            	TextReader checkReader = File.OpenText( baseDir + checkFileName);
-
-            	using (TextReader inputReader = File.OpenText( baseDir + inputFileName))
-            	using (Scanner scanner = new Scanner(inputReader))
+				string baseDir = getAttributeValue(testFileRunner, "basedir");
+				
+				if ("true".Equals(getAttributeValue(testFileRunner, "ignore")))
             	{
-            		int testCases = scanner.nextInt();
-            		
-            		Logger.LogInfo("Begin testing class {} method {} testcases {}",
-            			mainClassName, processInputMethodName, testCases);
-            		
-            		Stopwatch timer = Stopwatch.StartNew();
-
-                    for (int tc = 1; tc <= testCases; ++tc)
-                    {
-                    	var input = mainType.GetMethod(inputMethodName).Invoke(main, new object[] {scanner});			
-                    	var ans = mainType.GetMethod(processInputMethodName).Invoke(main, new object[] {input});
-                    	
-                    	string ansStr = String.Format("Case #{0}: {1}", tc, ans);
-                    	string checkStr = checkReader.ReadLine();
-                    	
-                    	Logger.LogInfo("Checking {} = {}", checkStr, ansStr);
-                    	Assert.AreEqual(checkStr, ansStr);
-                    }
-                    
-                    timer.Stop();
-                    TimeSpan timespan = timer.Elapsed;
-
-                    Logger.LogInfo(String.Format("Total time class {3} method {4} {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10, mainClassName, processInputMethodName));
-
+            		continue;
             	}
-            }
+				
+				foreach(XElement run in testFileRunner.Elements("run"))
+				{
+					string mainClassName = getAttributeValue(run, "className");
+					string inputFileName = getAttributeValue(run, "inputFile" );
+					string checkFileName = getAttributeValue(run, "checkFile" );
+					string inputMethodName = getAttributeValue(run, "createInputMethod" );
+					string processInputMethodName = getAttributeValue(run, "processInputMethod" );
+					
+					Type mainType = Type.GetType(mainClassName, true);
+					object main = Activator.CreateInstance(mainType);
+					
+					
+					TextReader checkReader = File.OpenText( baseDir + checkFileName);
+	
+					using (TextReader inputReader = File.OpenText( baseDir + inputFileName))
+					using (Scanner scanner = new Scanner(inputReader))
+					{
+						int testCases = scanner.nextInt();
+						
+						Logger.LogInfo("Begin testing class {} method {} testcases {}",
+							mainClassName, processInputMethodName, testCases);
+						
+						MethodInfo m = mainType.GetMethod(inputMethodName);
+						Logger.LogInfo( "{} method {} ", main, m);
+						
+						Stopwatch timer = Stopwatch.StartNew();
+	
+						for (int tc = 1; tc <= testCases; ++tc)
+						{
+							var input = mainType.GetMethod(inputMethodName).Invoke(main, new object[] {scanner});			
+							var ans = mainType.GetMethod(processInputMethodName).Invoke(main, new object[] {input});
+							
+							string ansStr = String.Format("Case #{0}: {1}", tc, ans);
+							string checkStr = checkReader.ReadLine();
+							
+							Logger.LogDebug("Checking {} = {}", checkStr, ansStr);
+							Assert.AreEqual(checkStr, ansStr);
+						}
+						
+						timer.Stop();
+						TimeSpan timespan = timer.Elapsed;
+	
+						Logger.LogInfo(String.Format("Total time class {3} method {4} {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10, mainClassName, processInputMethodName));
+	
+					}
+				}
+			}
         }
     }
 }

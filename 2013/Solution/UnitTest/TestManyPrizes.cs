@@ -1,14 +1,14 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Collections.Generic;
 using Round2;
 
 namespace UnitTest
 {
-    [TestClass]
+    [TestFixture]
     public class TestManyPrizes
     {
-        [TestMethod]
+        [Test]
         public void TestMethod1()
         {
             List<int> pos = new List<int>(new int[] { 2, 4, 5, 3, 6, 7, 1, 0 });

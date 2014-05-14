@@ -54,10 +54,10 @@ namespace CodeJamUtils
             this.inputFileProducerDelegate = inputFileProducerDelegate;
         }
 
-        public void runMultiThread(List<string> fileNames, ResourceManager resourceManager)
+        public void runMultiThread(List<string> fileNames)
         {
             Logger.LogTrace("runMultithead enter");
-            producerRun(fileNames, resourceManager);
+            producerRun(fileNames);
         }
 
         [Obsolete]
@@ -202,7 +202,7 @@ namespace CodeJamUtils
             }
         }
 
-        private void producerRun(List<string> fileNames, ResourceManager resourceManager)
+        private void producerRun(List<string> fileNames)
         {
             Scanner scanner = null;
             
@@ -213,18 +213,7 @@ namespace CodeJamUtils
                 
                 string inputFileName = fn;
 
-                TextReader inputReader = null;
-                byte[] obj = null;
-                if (resourceManager != null) 
-                    obj = (byte[])resourceManager.GetObject(fn);
-                if (obj != null)
-                {
-                    inputReader = new StreamReader(new MemoryStream(obj));
-                }
-                else
-                {
-                    inputReader = File.OpenText(fn);
-                }
+                TextReader inputReader = File.OpenText(fn);
 
                 Stopwatch timer = Stopwatch.StartNew();
 
@@ -287,7 +276,7 @@ namespace CodeJamUtils
             }
         }
 
-        public void run(List<string> fileNames, ResourceManager resourceManager)
+        public void run(List<string> fileNames, ResourceManager resourceManager = null)
         {
 
             Scanner scanner = null;
@@ -562,13 +551,13 @@ namespace CodeJamUtils
         public static void RunMainMulti<InputClass, AnswerClass>(List<string> list,
            InputFileConsumer<InputClass, AnswerClass> main,
            Runner<InputClass, AnswerClass>.InputFileProducerDelegate inputDelegate,
-           ResourceManager rm
+           ResourceManager rm = null
            )
         {
             var runner = new Runner<InputClass, AnswerClass>(main, inputDelegate);
 
             Stopwatch timer = Stopwatch.StartNew();
-            runner.runMultiThread(list, rm);
+            runner.runMultiThread(list);
 
             timer.Stop();
             TimeSpan timespan = timer.Elapsed;

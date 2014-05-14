@@ -250,7 +250,7 @@ namespace Round1C.Pogo
             list.Add("B_small_practice");
             list.Add("B_large_practice");
 
-            CjUtils.RunMain(list, main, Input.createInput, Round1C.Properties.Resources.ResourceManager);
+            CjUtils.RunMain(list, main, Input.createInput, null);
 
         }
     }

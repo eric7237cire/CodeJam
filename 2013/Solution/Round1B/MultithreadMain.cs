@@ -46,9 +46,8 @@ namespace Multithread
             list.Add("iters.txt");
 
             Stopwatch timer = Stopwatch.StartNew();
-            runner.run(list, Round1B.Properties.Resources.ResourceManager);
-            // runner.runMultiThread(list);
-
+            runner.run(list);
+            
             timer.Stop();
             TimeSpan timespan = timer.Elapsed;
 

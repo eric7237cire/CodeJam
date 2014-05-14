@@ -225,7 +225,7 @@ namespace Round1C
             list.Add("A_small_practice");
             list.Add("A-large-practice.in");
 
-            CjUtils.RunMain(list, main, Input.createInput, Round1C.Properties.Resources.ResourceManager);
+            CjUtils.RunMain(list, main, Input.createInput, null);
             
 
         }

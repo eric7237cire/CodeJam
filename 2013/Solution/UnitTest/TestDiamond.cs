@@ -1,6 +1,6 @@
 ﻿using CodeJamUtils;
 using Diamonds;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,36 +12,11 @@ using Logger = Utils.LoggerFile;
 
 namespace UnitTest1B
 {
-    [TestClass]
+    [TestFixture]
     public class TestDiamond
     {
-        const double tolerance = 1e-7;
-
-        private void runTest(String data, double expectedResult)
-        {
-            StringReader sr = new StringReader(data);
-            Input input = Input.createInput(new Scanner(sr));
-
-            Diamond d = new Diamond();
-            double result = d.processInput(input);
-
-            Assert.AreEqual(expectedResult, result, tolerance);
-        }
-
-        [TestMethod]
-        public void TestSample1()
-        {
-            //runTest("1 0 0", 1);
-           // runTest("1 0 2", 0);
-           // runTest("3 0 0", 1);
-
-            runTest("3 2 0", .75);
-            runTest("3 1 1", .25);
-            runTest("4 1 1", .5);
-            runTest("4 0 2", 0);
-            
-        }
-        [TestMethod]
+        
+        [Test]
         public void TestDiamondInfo()
         {
             DiamondInfo df = DiamondInfo.getDiamondInfo(1);
@@ -82,7 +57,7 @@ namespace UnitTest1B
             return nodeProb;
         }
 
-        [TestMethod]
+        [Test]
         public void TestDiamondProb2()
         {
 
@@ -94,7 +69,7 @@ namespace UnitTest1B
 
         }
 
-        [TestMethod]
+        [Test]
         public void TestDiamondProb3()
         {
             IDictionary<Node, double> nodeProb = getNodeProb(3);
@@ -107,7 +82,7 @@ namespace UnitTest1B
 
         }
 
-        [TestMethod]
+        [Test]
         public void TestDiamondProb4()
         {
             IDictionary<Node, double> nodeProb = getNodeProb(4);
@@ -120,7 +95,7 @@ namespace UnitTest1B
         }
 
 
-        [TestMethod]
+        [Test]
         public void TestDiamondProb5()
         {
             IDictionary<Node, double> nodeProb = getNodeProb(5);
@@ -139,8 +114,8 @@ namespace UnitTest1B
             double prob = nodeProb[n1];
             
 
-            Logger.Log("p {0} {1} {2}", expectedProb, prob, tolerance);
-            Assert.AreEqual(expectedProb, prob, tolerance, "Tolerance: " + tolerance);
+            Logger.Log("p {0} {1}", expectedProb, prob);
+            Assert.AreEqual(expectedProb, prob, 0.00001);
             
         }
     }

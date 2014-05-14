@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Round1C;
 using System;
 using System.Collections.Generic;
@@ -9,65 +9,64 @@ using Utils;
 
 namespace UnitTest
 {
-    [TestClass]
+    [TestFixture]
     public class TestConsonants
     {
-        [TestMethod]
+        [Test]
         public void Test1()
         {
             TestString("aaba", 1);
         }
 
-        [TestMethod]
+        [Test]
         public void Test2()
         {
             TestString("ba", 2);
         }
 
-        [TestMethod]
+        [Test]
         public void Test3()
         {
             TestString("ab", 2);
         }
 
-        [TestMethod]
+        [Test]
         public void Test4()
         {
             TestString("bab", 1);
         }
 
-        [TestMethod]
+        [Test]
         public void Test5()
         {
             TestString("bbb", 2);
         }
 
-        [TestMethod]
+        [Test]
         public void Test6()
         {
             TestString("bbb", 3);
         }
 
-        [TestMethod]
+        [Test]
         public void Test7()
         {
             TestString("aab", 3);
         }
 
-        [TestMethod]
+        [Test]
         public void Test8()
         {
             TestString("bbbb", 3);
         }
 
-        [TestMethod]
+        [Test]
         public void Test9()
         {
             TestString("bbbbb", 4);
         }
 
-        [TestMethod]
-        [TestCategory("Cons")]
+        [Test]
         public void TestMethod()
         {
             for (int len = 1; len <= 8; ++len )

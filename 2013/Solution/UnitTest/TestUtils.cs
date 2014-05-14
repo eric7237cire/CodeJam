@@ -1,6 +1,6 @@
 ﻿#define LOGGING_TRACE
 #define LOGGING
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,23 +19,23 @@ namespace UnitTest
 {
    
 
-    [TestClass]
+    [TestFixture]
     public class TestUtils
     {
-        [ClassCleanup]
+     //   [ClassCleanup]
         public static void cleanup()
         {
             Logger.CurrentDomain_ProcessExit(null, null);
         }
 
-        [TestMethod]
+        [Test]
         public void testToStringFrac()
         {
             Assert.AreEqual("0", ((BigFraction)0).ToString());
         }
 
 
-        [TestMethod]
+        [Test]
         public void testDIS()
         {
 
@@ -76,7 +76,7 @@ namespace UnitTest
                 3, 7, 4, 4, 8  }, (lhs, rhs) => { if (lhs <= rhs) return -1; return 1; })); // 6 - 8
         }
 
-        [TestMethod]
+        [Test]
         public void testLIS()
         {
             
@@ -109,7 +109,7 @@ namespace UnitTest
                 3, 7, 4, 4, 8  }))); // 6 - 8
         }
 
-        [TestMethod]
+        [Test]
         public void testLowerBound()
         {
             List<int> list = new List<int>(new int[] { 
@@ -135,7 +135,7 @@ namespace UnitTest
             Assert.AreEqual(2, list.lowerBound(7));
         }
 
-        [TestMethod]
+        [Test]
         public void testBinarySearch()
         {
             List<int> list = new List<int>(new int[] { 4, 7, 8, 18, 19, 23, 44 });
@@ -158,7 +158,7 @@ namespace UnitTest
             Assert.AreEqual(44, a1.Item2);
         }
 
-        [TestMethod]
+        [Test]
         public void testModdedLong()
         {
             ModdedLong.mod = 7;
@@ -179,7 +179,7 @@ namespace UnitTest
         }
 
 
-        [TestMethod]
+        [Test]
         public void testModdedLong2()
         {
             
@@ -234,7 +234,7 @@ namespace UnitTest
             return tmp;
         }
 
-        [TestMethod]
+        [Test]
         public void testPow()
         {
             ModdedLong.mod = 1000002013;
@@ -249,7 +249,7 @@ namespace UnitTest
             }
         }
 
-        [TestMethod]
+        [Test]
         public void testPow2()
         {
             ModdedLong.mod = 17;

@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +8,10 @@ using PascalsTriangle;
 
 namespace UnitTest1B
 {
-    [TestClass]
+    [TestFixture]
     public class TestPascals
     {
-        [TestMethod]
+        [Test]
         public void testBasic()
         {
             PascalsTriangle<int> basic = PascalTriangleCreator.createNormal(10);
@@ -40,7 +40,7 @@ namespace UnitTest1B
         const double tolerance = 1e-7;
 
 
-        [TestMethod]
+        [Test]
         public void testProb()
         {
             PascalsTriangle<double> prob = PascalTriangleCreator.createProb(10);
