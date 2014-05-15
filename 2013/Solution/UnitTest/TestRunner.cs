@@ -364,7 +364,7 @@ namespace UnitTest
         	//string testSmall2 = 
         	//"12 3 1 3 3 1 1 1 2 4";
             //testInput(testSmall2, "LEFT 3");
-            string mustMatch = "Round1C";
+            string mustMatch = "lost"; //null; //"Round1C";
 
             XElement po = XElement.Load(@"/home/ent/mono/CodeJam/2013/Solution/TestData.xml");
             

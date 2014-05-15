@@ -107,7 +107,7 @@ namespace Round1C
         static int solveUsingHighLow(List<TribeData> tribes)
         {
             Random r = new Random();
-            Logger.LogInfo("\nsolveHighLow " + r.NextDouble());
+            Logger.LogDebug("\nsolveHighLow " + r.NextDouble());
             List<Attack> attacks = new List<Attack>();
             
             //Used to normalize the points in order

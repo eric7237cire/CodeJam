@@ -39,7 +39,7 @@ find . -name '*.cs' | grep -v Properties | grep 'Round2' > files2.txt
 eval "$COMPILE_BASE -r:Utils.dll \$(cat files2.txt) -out:Round2.dll || { echo 'my_command failed' ; exit 1; }"
 fi
 
-if [ "" ]
+if [ "a" ]
 then
 find . -name '*.cs' | grep -v Properties | grep 'Round3' > files3.txt
 
@@ -51,8 +51,8 @@ find . -name '*.cs' | grep -v Properties | grep 'UnitTest' > filesUnitTest.txt
 eval "$COMPILE_BASE -r:Utils.dll -r:Round3.dll -r:Round2.dll -r:Round1B.dll -r:Round1C.dll \$(cat filesUnitTest.txt) -out:UnitTest.dll $OR_EXIT"
 
 export MONO_GC_PARAMS=max-heap-size=1520m
-#/usr/bin/mono --debug $MONO_OPTIONS /usr/lib/mono/4.0/nunit-console.exe -run=UnitTest.TestRunner UnitTest.dll
-/usr/bin/mono --debug $MONO_OPTIONS /usr/lib/mono/4.0/nunit-console.exe -run=UnitTest.TestBinaryTree.testIntervalTree UnitTest.dll
+/usr/bin/mono --debug $MONO_OPTIONS /usr/lib/mono/4.0/nunit-console.exe -run=UnitTest.TestRunner UnitTest.dll
+#/usr/bin/mono --debug $MONO_OPTIONS /usr/lib/mono/4.0/nunit-console.exe -run=UnitTest.TestBinaryTree.testIntervalTree UnitTest.dll
 
 #/usr/bin/mono /usr/lib/mono/4.0/nunit-console.exe -run=UnitTest.TestLost UnitTest.dll
 

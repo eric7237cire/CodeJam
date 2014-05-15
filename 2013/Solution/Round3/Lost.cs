@@ -31,7 +31,7 @@ namespace Round3
             {
                 if ( curPath.Count > 0 && input.to[curPath.GetLastValue()] == 2)
                 {
-                    Logger.LogInfo("Path found {} min cost {} max cost {}", 
+                    Logger.LogDebug("Path found {} min cost {} max cost {}", 
                         curPath.Select( (cIdx) => "Shuttle #{0}. From {1} To {2}.  Cost [{3}-{4}]".FormatThis(cIdx+1, input.from[cIdx], input.to[cIdx], input.lowCost[cIdx], input.highCost[cIdx]) )
                             .ToCommaString(), 
                         curMinCost, curMaxCost);
@@ -128,13 +128,13 @@ namespace Round3
             	bool found = false;
             	
             	IEnumerable<int> sugPathPrefix = input.sugPath.Take(spIdx+1).Select( (idx1) => idx1-1 );
-            	Logger.LogInfo( "sugPathPrefix {}", sugPathPrefix.ToCommaString());
+            	Logger.LogDebug( "sugPathPrefix {}", sugPathPrefix.ToCommaString());
             	for(int i = 0; i < sc.sp.Count; ++i)
             	{
 					List<int> path1 = sc.sp[i];
-					Logger.LogInfo( "path1 {}", path1.ToCommaString());
+					Logger.LogDebug( "path1 {}", path1.ToCommaString());
 					
-					 Logger.LogInfo("Look at {} ", 
+					 Logger.LogDebug("Look at {} ", 
                         path1.Select( (cIdx) => "Shuttle #{0}. From {1} To {2}. ".FormatThis(cIdx+1, input.from[cIdx], input.to[cIdx], input.lowCost[cIdx], input.highCost[cIdx]) )
                             .ToCommaString()  
                         );
@@ -248,7 +248,7 @@ namespace Round3
 			{
 				DijkstraNode nodeU = toProcess.Dequeue();
 
-                Preconditions.checkState(nodeU.distance < int.MaxValue);
+                Preconditions.checkState(nodeU.distance < int.MaxValue, "NodeU distance is inf");
                 bool isGoodRobot = ((int)((nodeU.distance + 0.001) * 2)) % 2 == 1 ? true : false;
 
                 if (nodeU.nodeId == 2)
@@ -267,8 +267,8 @@ namespace Round3
 
                     if (isGoodRobot)
                     {
-                        Preconditions.checkState(actualEdgeCosts[conIdx] == 0);
-                        actualEdgeCosts[conIdx] = input.lowCost[conIdx];
+                        if (actualEdgeCosts[conIdx] == 0)
+                        	actualEdgeCosts[conIdx] = input.lowCost[conIdx];
                     }
                     else
                     {
@@ -304,7 +304,7 @@ namespace Round3
 
         public LostInput createInput(Scanner scanner)
         {
-            Logger.LogInfo("create Input");
+            Logger.LogTrace("create Input");
             LostInput input = new LostInput();
 
             input.nCities = scanner.nextInt();
