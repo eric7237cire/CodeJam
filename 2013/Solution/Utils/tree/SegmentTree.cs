@@ -8,11 +8,29 @@ using Logger = Utils.LoggerFile;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest")]
 
-namespace Round1C
+namespace DataStructures
 {
-
+	public interface BinaryTreeUpdater<DataType>
+	{
+		//Once update is done
+		void ApplyLeftRightData(DataType leftData, DataType rightData, ref DataType curNodeData);
+		
+		//Called for each matching interval
+		void Update(ref DataType data, int nodeIndex);
+		
+	}
+	
+	public interface BinaryTreeQuery<DataType>
+	{
+		void Query(DataType data, int nodeIndex);
+		
+		void PassingParent(DataType data, int nodeIndex, ref bool stop);
+		
+	}
     /**
-     * Tree of height 3, 15 nodes, 8 data points
+     * 
+     * Implements a segment tree
+     * Example Tree of height 3, 15 nodes, 8 data points
      * NodeIndex 0 ( 0 <= x <= 7 )
      * Nodeindex 1 ( 0 <= x <= 3 ) NodeIndex 2 ( 4 <= x <= 7)
      * NodeIndex 3 ( 0 <= x <= 1) ... NodeIndex 6 ( 6 <= x <= 7 )
@@ -26,7 +44,7 @@ namespace Round1C
 
         private DataType[] data;
 
-        internal DataType getDataAtNodeIndex(int nodeIndex)
+        public DataType getDataAtNodeIndex(int nodeIndex)
         {
             return data[nodeIndex];
         }
@@ -41,8 +59,6 @@ namespace Round1C
 
             ret.data = new DataType[(1 << ret.Height+1) - 1];
            
-
-            
             return ret;
         }
 
@@ -53,39 +69,42 @@ namespace Round1C
             return (nodeIndex - 1) / 2;
         }
 
-        public void traverse(int targetStartEndpointIndex, int targetStopEndPointIndex, ProcessDelegate procFu)
+        public void traverse(int targetStartEndpointIndex, int targetStopEndPointIndex, 
+        	BinaryTreeUpdater<DataType> updater 
+        	)
         {
             if (targetStartEndpointIndex > targetStopEndPointIndex)
             {
                 return;
             }
 
-            stopTraverse = false;
-            this.ProcessFunc = procFu;
+            
 
-            traverseHelper(targetStartEndpointIndex, targetStopEndPointIndex, 0, 0);
+            traverseHelper(targetStartEndpointIndex, targetStopEndPointIndex, 0, 0, null, updater);
+        }
+        
+        public void traverse(int targetStartEndpointIndex, int targetStopEndPointIndex, 
+        	BinaryTreeQuery<DataType> query = null,
+        	BinaryTreeUpdater<DataType> updater = null
+        	)
+        {
+            if (targetStartEndpointIndex > targetStopEndPointIndex)
+            {
+                return;
+            }
+
+            
+
+            traverseHelper(targetStartEndpointIndex, targetStopEndPointIndex, 0, 0, query, updater);
         }
 
-        public delegate void ApplyParentDataDelegate(DataType parentData, ref DataType data);
-        public delegate void ApplyLeftRightDataDelegate(DataType leftData, DataType rightData, ref DataType curNodeData);
-
-        public ApplyParentDataDelegate ApplyParentDataFunc { get; set; }
-        public ApplyLeftRightDataDelegate ApplyLeftRightDataFunc { get; set; }
-
-        //if !isParent, then interval associated with data is fully containted in the target interval,
-        //otherwise, the target interval is the one that is fully contained
-        public delegate void ProcessDelegate(ref DataType data, int nodeIndex);
-
-        public delegate void ProcessParentDelegate(DataType data, int nodeIndex, ref bool stop);
-        private bool stopTraverse;
-
-        public ProcessDelegate ProcessFunc {get; set;}
-        public ProcessParentDelegate ParentProcessFunc { get; set; }
-
-        void traverseHelper(int targetStart, int targetStop, int nodeIndex, int height)
+       
+        void traverseHelper(int targetStart, int targetStop, int nodeIndex, int curHeight,
+        	BinaryTreeQuery<DataType> query,
+        	BinaryTreeUpdater<DataType> updater)
         {
-            int intervalLength = (1 << Height - height);
-            int firstNodeIndexOnLevel = (1 << height) - 1; 
+            int intervalLength = 1 << Height - curHeight;
+            int firstNodeIndexOnLevel = (1 << curHeight) - 1; 
             int nodePosition = nodeIndex - firstNodeIndexOnLevel;
             int intervalStart = nodePosition * intervalLength;
             int intervalStop = intervalStart + intervalLength - 1;
@@ -93,27 +112,30 @@ namespace Round1C
             //Check if current node is completely encompassed 
             if (intervalStart >= targetStart && intervalStop <= targetStop)
             {
-                Logger.Log("Found interval fully contained in target interval.  idx {0}:{1} target idx {2}:{3}",
+                Logger.LogTrace("Found interval fully contained in target interval.  idx {0}:{1} target idx {2}:{3}",
                     intervalStart, intervalStop, targetStart, targetStop);
-                if (ProcessFunc != null)
-                    ProcessFunc(ref data[nodeIndex], nodeIndex);
+                if (query != null)
+                    query.Query(data[nodeIndex], nodeIndex);
 
+                if (updater != null)
+                	updater.Update(ref data[nodeIndex], nodeIndex);
                 
                 return;
             }
             //leaf node
-            if (height == Height)
+            if (curHeight == Height)
             {
                 return;
             }
 
-            Logger.Log("traversing parent node idx {0}:{1} target idx {2}:{3}",
+            Logger.LogTrace("traversing parent node idx {0}:{1} target idx {2}:{3}",
                     intervalStart, intervalStop, targetStart, targetStop);
             
-            if (ParentProcessFunc != null)
-                ParentProcessFunc(data[nodeIndex], nodeIndex, ref stopTraverse);
-            //process(ref data[td.nodeIndex], true);
-
+            bool stopTraverse = false;
+            
+            if (query != null)
+                    query.PassingParent(data[nodeIndex], nodeIndex, ref stopTraverse);
+            
             if (stopTraverse)
             {
                 return;
@@ -125,8 +147,8 @@ namespace Round1C
             if ( targetStartHalf <= 0 || targetStopHalf <= 0)
             {
                 int leftNodeIndex = nodeIndex * 2 + 1;
-                if (ApplyParentDataFunc != null) ApplyParentDataFunc(data[nodeIndex], ref data[leftNodeIndex]);
-                traverseHelper(targetStart, targetStop, leftNodeIndex, height+1);
+                //if (ApplyParentDataFunc != null) ApplyParentDataFunc(data[nodeIndex], ref data[leftNodeIndex]);
+                traverseHelper(targetStart, targetStop, leftNodeIndex, curHeight+1, query, updater);
             }
 
 
@@ -134,14 +156,14 @@ namespace Round1C
             {
                 int rightNodeIndex = nodeIndex * 2 + 2;
 
-                if (ApplyParentDataFunc != null) ApplyParentDataFunc(data[nodeIndex], ref data[rightNodeIndex]);
-                traverseHelper(targetStart, targetStop, rightNodeIndex, height+1);
+                //if (ApplyParentDataFunc != null) ApplyParentDataFunc(data[nodeIndex], ref data[rightNodeIndex]);
+                traverseHelper(targetStart, targetStop, rightNodeIndex, curHeight+1, query, updater);
             }
             
             //Now combine results
-            if (ApplyLeftRightDataFunc != null)
+            if (updater != null)
             {
-                ApplyLeftRightDataFunc(data[nodeIndex * 2 + 1], data[nodeIndex * 2 + 2], ref data[nodeIndex]);
+                updater.ApplyLeftRightData(data[nodeIndex * 2 + 1], data[nodeIndex * 2 + 2], ref data[nodeIndex]);
             }
         }
 

@@ -1,27 +1,45 @@
 ﻿using System;
 using NUnit.Framework;
-using Round1C;
+//using Round1C;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using DataStructures;
 
-using BTi = Round1C.BinaryTree<int>;
+using BTi = DataStructures.BinaryTree<int>;
 using Logger = Utils.LoggerFile;
 
 namespace UnitTest
 {
 
-    
+    public class Updater : BinaryTreeUpdater<int>
+	{
+		int valueToUpdate;
+		
+		public Updater(int val)
+		{
+			valueToUpdate = val;
+		}
+		
+		//Once update is done
+		public void ApplyLeftRightData(int leftData, int rightData, ref int curNodeData)
+		{
+			
+		}
+		
+		//Called for each matching interval
+		public void Update(ref int data, int nodeIndex)
+		{
+			data = valueToUpdate;	
+		}
+		
+	}
+	
 
     [TestFixture]
     public class TestBinaryTree
     {
-       // [ClassCleanup]
-        public static void cleanup()
-        {
-            Logger.CurrentDomain_ProcessExit(null, null);
-        }
-
+       
 
         public delegate void TestDel<in UserParamType>(ref string data, int nodeIndex, UserParamType obj);
 
@@ -30,15 +48,9 @@ namespace UnitTest
         {
             BinaryTree<int> t1 = BinaryTree<int>.create(6);
 
-            TestDel<int> t = (ref string data, int n, int obj) => { };
+            //TestDel<int> t = (ref string data, int n, int obj) => { };
 
-            int valToSet = 0;
-            BTi.ProcessDelegate setValFunc = (ref int data, int nodeIndex) => {
-                data = valToSet;
-            };
-
-            valToSet = 3;
-            t1.traverse(2, 4, setValFunc);
+            t1.traverse(2, 4, new Updater(3));
 
             for(int i = 0; i < 15; ++i)
             {
@@ -55,8 +67,7 @@ namespace UnitTest
                 }
             }
 
-            valToSet = 4;
-            t1.traverse(3, 4, setValFunc);
+            t1.traverse(3, 4, new Updater(4));
 
             for (int i = 0; i < 15; ++i)
             {
@@ -77,8 +88,7 @@ namespace UnitTest
                 }
             }
 
-            valToSet = 5;
-            t1.traverse(0, 7, setValFunc);
+            t1.traverse(0, 7, new Updater(5));
 
             for (int i = 0; i < 15; ++i)
             {

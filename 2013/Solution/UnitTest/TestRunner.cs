@@ -177,7 +177,7 @@ namespace UnitTest
         	//"12 3 1 3 3 1 1 1 2 4";
             //testInput(testSmall2, "LEFT 3");
 
-            XElement po = XElement.Load(@"/home/ent/mono/CodeJam/2013/Solution/UnitTest/Properties/MonoResources.resx");
+            XElement po = XElement.Load(@"/home/ent/mono/CodeJam/2013/Solution/TestData.xml");
             
             IEnumerable<XElement> testGroupes = po.Elements("tests");
             
@@ -255,6 +255,7 @@ namespace UnitTest
         }
 #endif        
        
+#if !mono
         [Test, TestCaseSource("FetchTestFileCases")]
         public void runTestFile(string baseDir, string mainClassName, string inputMethodName, string processInputMethodName, Scanner scanner, List<string> checkStrList, int testCases)
         {
@@ -293,7 +294,7 @@ namespace UnitTest
             //string testSmall2 = 
             //"12 3 1 3 3 1 1 1 2 4";
             //testInput(testSmall2, "LEFT 3");
-            string mustMatch =  null; // "Osmos"; // null; // "Round1C";
+            string mustMatch =  "Greatwall"; // "Osmos"; // null; // "Round1C";
 
             List<TestCaseData> testList = new List<TestCaseData>();
 
@@ -354,6 +355,8 @@ namespace UnitTest
 
             return testList;
         }
+        
+        #endif
 #if mono
 		[Test]
         public void runTestFiles()
@@ -363,7 +366,7 @@ namespace UnitTest
             //testInput(testSmall2, "LEFT 3");
             string mustMatch = "Round1C";
 
-            XElement po = XElement.Load(@"/home/ent/mono/CodeJam/2013/Solution/UnitTest/Properties/MonoResources.resx");
+            XElement po = XElement.Load(@"/home/ent/mono/CodeJam/2013/Solution/TestData.xml");
             
             foreach( XElement testFileRunner in po.Elements("testFileRunner"))
             {
@@ -429,6 +432,7 @@ namespace UnitTest
 					}
 				}
             }
+        }
         #endif
         
     }

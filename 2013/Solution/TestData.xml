@@ -97,6 +97,8 @@
          createInputMethod ="createInput"
          inputFile         ="B-large-practice.in"
          processInputMethod="processInput"/>
+         
+         <!--wall-->
 		 
 		   <run checkFile         ="C-small-practice.check"
          className         ="Round1C.GreatWall, Round1C"
@@ -110,11 +112,7 @@
          inputFile         ="C-small-practice.in"
          processInputMethod="processInputSmall"/>
 		 
-		 <run checkFile         ="C-small-practice.check"
-         className         ="Round1C.GreatWall, Round1C"
-         createInputMethod ="createInput"
-         inputFile         ="C-small-practice.in"
-         processInputMethod="processInputMySolution"/>
+		 
 		 
 		 <run checkFile         ="C-large-practice.check"
          className         ="Round1C.GreatWall, Round1C"
@@ -122,11 +120,6 @@
          inputFile         ="C-large-practice.in"
          processInputMethod="processInput"/>
 		 
-		 <run checkFile         ="C-large-practice.check"
-         className         ="Round1C.GreatWall, Round1C"
-         createInputMethod ="createInput"
-         inputFile         ="C-large-practice.in"
-         processInputMethod="processInputMySolution"/>
                   
                   </testFileRunner>
   <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round3/"

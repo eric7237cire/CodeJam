@@ -1,142 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Release\UnitTest.dll" total="24" errors="0" failures="2" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2014-05-15" time="08:48:19">
-  <environment nunit-version="2.6.3.13283" clr-version="2.0.50727.5477" os-version="Microsoft Windows NT 6.1.7601 Service Pack 1" platform="Win32NT" cwd="C:\codejam\CodeJam\2013\Solution" machine-name="THRESH-PC" user="thresh" user-domain="thresh-PC" />
+<test-results name="UnitTest.dll" total="2" failures="0" not-run="0" date="2014-05-15" time="11:41:59">
+  <environment nunit-version="2.4.8.0" clr-version="4.0.30319.1" os-version="Unix 3.13.10.200" platform="Unix" cwd="/home/ent/mono/CodeJam/2013/Solution" machine-name="b016763" user="ent" user-domain="b016763" />
   <culture-info current-culture="fr-FR" current-uiculture="fr-FR" />
-  <test-suite type="Assembly" name="C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Release\UnitTest.dll" executed="True" result="Failure" success="False" time="26.995" asserts="0">
+  <test-suite name="UnitTest.dll" success="True" time="0.031" asserts="0">
     <results>
-      <test-suite type="Namespace" name="UnitTest" executed="True" result="Failure" success="False" time="26.979" asserts="0">
+      <test-suite name="UnitTest" success="True" time="0.027" asserts="0">
         <results>
-          <test-suite type="TestFixture" name="TestRunner" executed="True" result="Failure" success="False" time="26.977" asserts="0">
+          <test-suite name="TestBinaryTree" success="True" time="0.011" asserts="0">
             <results>
-              <test-suite type="ParameterizedTest" name="runMain" executed="True" result="Success" success="True" time="0.058" asserts="0">
-                <results>
-                  <test-case name="UnitTest.TestRunner.TestLostSample1" description="A description" executed="True" result="Success" success="True" time="0.045" asserts="1" />
-                  <test-case name="UnitTest.TestRunner.TestLostSample3" description="A description" executed="True" result="Success" success="True" time="0.000" asserts="1" />
-                  <test-case name="UnitTest.TestRunner.TestLostSample2" description="A description" executed="True" result="Success" success="True" time="0.000" asserts="1" />
-                </results>
-              </test-suite>
-              <test-suite type="ParameterizedTest" name="runTestFile" executed="True" result="Failure" success="False" time="26.908" asserts="0">
-                <results>
-                  <test-case name="UnitTest.TestRunner.Round1B.Osmos, Round1B : processInput : A-small-practice.in" description="Class Round1B.Osmos, Round1B&#xA;Method processInput &#xA;input file A-small-practice.in" executed="True" result="Success" success="True" time="0.048" asserts="100">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1B.Osmos, Round1B : processInput : A-large-practice.in" description="Class Round1B.Osmos, Round1B&#xA;Method processInput &#xA;input file A-large-practice.in" executed="True" result="Success" success="True" time="0.121" asserts="100">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1B_P2.Diamond, Round1B : processInput : B-small-practice.in" description="Class Round1B_P2.Diamond, Round1B&#xA;Method processInput &#xA;input file B-small-practice.in" executed="True" result="Success" success="True" time="0.055" asserts="100">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1B_P2.Diamond, Round1B : processInput : B-large-practice.in" description="Class Round1B_P2.Diamond, Round1B&#xA;Method processInput &#xA;input file B-large-practice.in" executed="True" result="Success" success="True" time="0.045" asserts="100">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1B_P2.Diamond, Round1B : processInputSlow : B-small-practice.in" description="Class Round1B_P2.Diamond, Round1B&#xA;Method processInputSlow &#xA;input file B-small-practice.in" executed="True" result="Success" success="True" time="0.043" asserts="100">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1B_P2.Diamond, Round1B : processInputSlow : B-large-practice.in" description="Class Round1B_P2.Diamond, Round1B&#xA;Method processInputSlow &#xA;input file B-large-practice.in" executed="True" result="Success" success="True" time="1.605" asserts="100">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1B_P3.GarbledEmail, Round1B : processInput : C-small-practice.in" description="Class Round1B_P3.GarbledEmail, Round1B&#xA;Method processInput &#xA;input file C-small-practice.in" executed="True" result="Success" success="True" time="1.243" asserts="20">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1B_P3.GarbledEmail, Round1B : processInput : C-large-practice.in" description="Class Round1B_P3.GarbledEmail, Round1B&#xA;Method processInput &#xA;input file C-large-practice.in" executed="True" result="Success" success="True" time="2.966" asserts="4">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1C.Consonants, Round1C : processInput : A-small-practice.in" description="Class Round1C.Consonants, Round1C&#xA;Method processInput &#xA;input file A-small-practice.in" executed="True" result="Success" success="True" time="0.132" asserts="100">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1C.Consonants, Round1C : processInputBruteForce : A-small-practice.in" description="Class Round1C.Consonants, Round1C&#xA;Method processInputBruteForce &#xA;input file A-small-practice.in" executed="True" result="Success" success="True" time="0.050" asserts="100">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1C.Consonants, Round1C : processInput : A-large-practice.in" description="Class Round1C.Consonants, Round1C&#xA;Method processInput &#xA;input file A-large-practice.in" executed="True" result="Success" success="True" time="0.157" asserts="100">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1C_P2.Pogo, Round1C : processInput : B-small-practice.in" description="Class Round1C_P2.Pogo, Round1C&#xA;Method processInput &#xA;input file B-small-practice.in" executed="True" result="Success" success="True" time="0.006" asserts="50">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1C_P2.Pogo, Round1C : processInput : B-large-practice.in" description="Class Round1C_P2.Pogo, Round1C&#xA;Method processInput &#xA;input file B-large-practice.in" executed="True" result="Success" success="True" time="0.033" asserts="100">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1C.GreatWall, Round1C : processInput : C-small-practice.in" description="Class Round1C.GreatWall, Round1C&#xA;Method processInput &#xA;input file C-small-practice.in" executed="True" result="Success" success="True" time="0.013" asserts="20">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1C.GreatWall, Round1C : processInputSmall : C-small-practice.in" description="Class Round1C.GreatWall, Round1C&#xA;Method processInputSmall &#xA;input file C-small-practice.in" executed="True" result="Success" success="True" time="1.670" asserts="20">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1C.GreatWall, Round1C : processInputMySolution : C-small-practice.in" description="Class Round1C.GreatWall, Round1C&#xA;Method processInputMySolution &#xA;input file C-small-practice.in" executed="True" result="Failure" success="False" time="0.024" asserts="1">
-                    <failure>
-                      <message><![CDATA[  String lengths are both 10. Strings differ at index 9.
-  Expected: "Case #1: 5"
-  But was:  "Case #1: 4"
-  --------------------^
-]]></message>
-                      <stack-trace><![CDATA[à UnitTest.TestRunner.runTestFile(String baseDir, String mainClassName, String inputMethodName, String processInputMethodName, Scanner scanner, List`1 checkStrList, Int32 testCases) dans c:\codejam\CodeJam\2013\Solution\UnitTest\TestRunner.cs:ligne 268
-]]></stack-trace>
-                    </failure>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1C.GreatWall, Round1C : processInput : C-large-practice.in" description="Class Round1C.GreatWall, Round1C&#xA;Method processInput &#xA;input file C-large-practice.in" executed="True" result="Success" success="True" time="17.012" asserts="20">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round1C.GreatWall, Round1C : processInputMySolution : C-large-practice.in" description="Class Round1C.GreatWall, Round1C&#xA;Method processInputMySolution &#xA;input file C-large-practice.in" executed="True" result="Failure" success="False" time="0.001" asserts="1">
-                    <failure>
-                      <message><![CDATA[  String lengths are both 10. Strings differ at index 9.
-  Expected: "Case #1: 5"
-  But was:  "Case #1: 4"
-  --------------------^
-]]></message>
-                      <stack-trace><![CDATA[à UnitTest.TestRunner.runTestFile(String baseDir, String mainClassName, String inputMethodName, String processInputMethodName, Scanner scanner, List`1 checkStrList, Int32 testCases) dans c:\codejam\CodeJam\2013\Solution\UnitTest\TestRunner.cs:ligne 268
-]]></stack-trace>
-                    </failure>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round3.Lost, Round3 : processInput : C-small-practice.in" description="Class Round3.Lost, Round3&#xA;Method processInput &#xA;input file C-small-practice.in" executed="True" result="Success" success="True" time="0.001" asserts="10">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round3.Lost,  Round3 : processInputBruteForce : C-small-practice.in" description="Class Round3.Lost,  Round3&#xA;Method processInputBruteForce &#xA;input file C-small-practice.in" executed="True" result="Success" success="True" time="0.015" asserts="10">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                  <test-case name="UnitTest.TestRunner.Round3.Lost, Round3 : processInput : C-large-practice.in" description="Class Round3.Lost, Round3&#xA;Method processInput &#xA;input file C-large-practice.in" executed="True" result="Success" success="True" time="1.618" asserts="10">
-                    <reason>
-                      <message><![CDATA[Warning: Test changed the CurrentDirectory]]></message>
-                    </reason>
-                  </test-case>
-                </results>
-              </test-suite>
+              <test-case name="UnitTest.TestBinaryTree.testBinaryTree" executed="True" success="True" time="0.004" asserts="45" />
+              <test-case name="UnitTest.TestBinaryTree.TestHeight" executed="True" success="True" time="0.000" asserts="9" />
             </results>
           </test-suite>
         </results>

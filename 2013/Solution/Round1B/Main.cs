@@ -12,17 +12,7 @@ namespace Round1B
     {
         public static void Main(string[] args)
         {
-            NUnit.ConsoleRunner.Runner.Main(new string[]
-   {
-       //@"/include=current",
-       @"/run=UnitTest.TestRunner",
-       @"C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Release\UnitTest.dll"
-     //  @"/run=UnitTest.TestModMath",
-     //  @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\UnitTest\bin\Debug\UnitTest.dll"
-     // System.Reflection.Assembly.GetExecutingAssembly().Location
-   });
-
-            return;
+            
 
             Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1B");
             Osmos osmos = new Osmos();
