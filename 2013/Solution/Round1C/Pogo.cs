@@ -9,8 +9,9 @@ using Utils;
 using Utils.geom;
 using Logger = Utils.LoggerFile;
 
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo
-                          ("UnitTest")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest")]
+
+//Where proof by induction simplifies greatly the problem
 namespace Round1C_P2
 {
 
@@ -105,8 +106,8 @@ namespace Round1C_P2
             for (; N >= 1; --N)
             {
                 //Check induction properties
-                Debug.Assert(Math.Abs(curPoint.X) + Math.Abs(curPoint.Y) <= summations[N]);
-                Debug.Assert((Math.Abs(curPoint.X) + Math.Abs(curPoint.Y)) % 2 == summations[N] % 2);
+                Preconditions.checkState(Math.Abs(curPoint.X) + Math.Abs(curPoint.Y) <= summations[N]);
+                Preconditions.checkState((Math.Abs(curPoint.X) + Math.Abs(curPoint.Y)) % 2 == summations[N] % 2);
 
                 if (Math.Abs(curPoint.X) >= Math.Abs(curPoint.Y))
                 {
@@ -242,7 +243,7 @@ namespace Round1C_P2
 
         
         
-        public static Input createInput(Scanner scanner)
+        public Input createInput(Scanner scanner)
         {
             Input input = new Input();
             input.X = scanner.nextInt();

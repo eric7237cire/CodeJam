@@ -7,7 +7,7 @@
   <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round1B/"
                   ignore ="false">
 				  
-				 
+				 <!--Osmos-->
     <run checkFile         ="A-small-practice.check"
          className         ="Round1B.Osmos, Round1B"
          createInputMethod ="createInput"
@@ -28,21 +28,18 @@
          inputFile         ="B-small-practice.in"
          processInputMethod="processInput"/>
     
-	
-	
 	<run checkFile         ="B-large-practice.check"
          className         ="Round1B_P2.Diamond, Round1B"
          createInputMethod ="createInput"
          inputFile         ="B-large-practice.in"
          processInputMethod="processInput"/>
+		 
     <run checkFile         ="B-small-practice.check"
          className         ="Round1B_P2.Diamond, Round1B"
          createInputMethod ="createInput"
          inputFile         ="B-small-practice.in"
          processInputMethod="processInputSlow"/>
-		 
-		
-		 
+		 		 
     <run checkFile         ="B-large-practice.check"
          className         ="Round1B_P2.Diamond, Round1B"
          createInputMethod ="createInput"
@@ -87,13 +84,13 @@
          inputFile         ="A-large-practice.in"
          processInputMethod="processInput"/>
          
-             <!--
-                  <run checkFile         ="B_small_practice.check"
+            
+                  <run checkFile         ="B-small-practice.check"
          className         ="Round1C_P2.Pogo, Round1C"
          createInputMethod ="createInput"
          inputFile         ="B-small-practice.in"
          processInputMethod="processInput"/>
-         -->
+         -
 		 
 		 <run checkFile         ="B-large-practice.correct"
          className         ="Round1C_P2.Pogo, Round1C"
@@ -101,6 +98,35 @@
          inputFile         ="B-large-practice.in"
          processInputMethod="processInput"/>
 		 
+		   <run checkFile         ="C-small-practice.check"
+         className         ="Round1C.GreatWall, Round1C"
+         createInputMethod ="createInput"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInput"/>
+		 
+		 <run checkFile         ="C-small-practice.check"
+         className         ="Round1C.GreatWall, Round1C"
+         createInputMethod ="createInput"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInputSmall"/>
+		 
+		 <run checkFile         ="C-small-practice.check"
+         className         ="Round1C.GreatWall, Round1C"
+         createInputMethod ="createInput"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInputMySolution"/>
+		 
+		 <run checkFile         ="C-large-practice.check"
+         className         ="Round1C.GreatWall, Round1C"
+         createInputMethod ="createInput"
+         inputFile         ="C-large-practice.in"
+         processInputMethod="processInput"/>
+		 
+		 <run checkFile         ="C-large-practice.check"
+         className         ="Round1C.GreatWall, Round1C"
+         createInputMethod ="createInput"
+         inputFile         ="C-large-practice.in"
+         processInputMethod="processInputMySolution"/>
                   
                   </testFileRunner>
   <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round3/"

@@ -71,7 +71,7 @@ namespace UnitTest
                     double expected_d = double.Parse(ansExpected, new CultureInfo("en-US"));
                     Assert.AreEqual(expected_d, ans_d, 0.00001);
                 }
-                catch (System.FormatException ex)
+                catch (System.FormatException )
                 {
                     Logger.LogInfo("ERROR [{}] [{}]", (string)ans, ansExpected);
                     Assert.IsTrue(false);
@@ -109,7 +109,7 @@ namespace UnitTest
             //string testSmall2 = 
             //"12 3 1 3 3 1 1 1 2 4";
             //testInput(testSmall2, "LEFT 3");
-            XElement po = XElement.Load(@"C:\codejam\CodeJam\2013\Solution\UnitTest\Properties\MonoResources.resx");
+            XElement po = XElement.Load(@"C:\codejam\CodeJam\2013\Solution\TestData.xml");
 
 
             IEnumerable<XElement> testGroupes = po.Elements("tests");
@@ -293,11 +293,11 @@ namespace UnitTest
             //string testSmall2 = 
             //"12 3 1 3 3 1 1 1 2 4";
             //testInput(testSmall2, "LEFT 3");
-            string mustMatch = "Round1B"; // null; // "Osmos"; // null; // "Round1C";
+            string mustMatch =  null; // "Osmos"; // null; // "Round1C";
 
             List<TestCaseData> testList = new List<TestCaseData>();
 
-            XElement po = XElement.Load(@"C:\codejam\CodeJam\2013\Solution\UnitTest\Properties\MonoResources.resx");
+            XElement po = XElement.Load(@"C:\codejam\CodeJam\2013\Solution\TestData.xml");
 
             foreach (XElement testFileRunner in po.Elements("testFileRunner"))
             {

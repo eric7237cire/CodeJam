@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{24A3F355-4327-4CCD-B3EB-ACFAA848442E}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{7E3944B0-2743-431F-ADDB-162D20606509}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Round1B</RootNamespace>
-    <AssemblyName>Round1B</AssemblyName>
+    <RootNamespace>Main</RootNamespace>
+    <AssemblyName>Main</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -22,7 +22,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -41,6 +40,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -51,9 +51,6 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit-console-runner">
@@ -68,53 +65,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Boxing1.cs" />
-    <Compile Include="Boxing2.cs" />
-    <Compile Include="Diamonds.cs" />
-    <Compile Include="GarbledEmail.cs" />
-    <Compile Include="Main.cs" />
-    <Compile Include="MultithreadMain.cs" />
-    <Compile Include="Osmos.cs" />
+    <Compile Include="Launcher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-    <Compile Include="Settings.cs" />
-    <Compile Include="TryDisposable.cs" />
-    <Compile Include="VirtualMethods.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="A-large-practice.in" />
-    <None Include="A-small-practice.in" />
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="B-large-practice.in" />
-    <None Include="B-small-practice.in" />
-    <None Include="C-large-practice.in" />
-    <None Include="C-small-practice.in" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="sample.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
+    <ProjectReference Include="..\Round1B\Round1B.csproj">
+      <Project>{24a3f355-4327-4ccd-b3eb-acfaa848442e}</Project>
+      <Name>Round1B</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Round1C\Round1C.csproj">
+      <Project>{49459ec3-6a04-4d29-a5e4-c9b8bca05fa6}</Project>
+      <Name>Round1C</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Round2\Round2.csproj">
+      <Project>{7a2d2f80-968d-4808-808c-2f43a2af3b1d}</Project>
+      <Name>Round2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Round3\Round3.csproj">
+      <Project>{7e20df42-26b7-42f7-a35e-1c443b401bf0}</Project>
+      <Name>Round3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UnitTest\UnitTest.csproj">
+      <Project>{542c16ab-5a9d-4117-a1a7-0b105464fe15}</Project>
+      <Name>UnitTest</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{ca53bd61-475a-4c6a-a040-3e3ad18a6656}</Project>
       <Name>Utils</Name>

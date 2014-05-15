@@ -10,20 +10,26 @@ using Logger = Utils.LoggerFile;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo
                           ("UnitTest")]
-namespace Round1C.GreatWall
+namespace Round1C
 {
 
 
-    internal class GreatWall : InputFileConsumer<Input, int>
+    public class GreatWall : InputFileConsumer<GreatWallInput, int>
     {
 
-        public int processInput(Input input)
+        public int processInput(GreatWallInput input)
         {
-           // solveSmall(input.tribes);
-           // return solveLarge(input.tribes);
             return solveUsingHighLow(input.tribes);
         }
 
+        public int processInputMySolution(GreatWallInput input)
+        {
+            return solveLarge(input.tribes);
+        }
+        public int processInputSmall(GreatWallInput input)
+        {
+            return solveSmall(input.tribes);
+        }
         
         struct HighLow
         {
@@ -179,6 +185,9 @@ namespace Round1C.GreatWall
 
             return successfulAttackCount;
         }
+
+        
+
         static int solveLarge(List<TribeData> tribes)
         {
             Random r = new Random();
@@ -353,29 +362,34 @@ namespace Round1C.GreatWall
             return attacks;
         }
 
-
-
-        static void Main(string[] args)
+        public static GreatWallInput createInput(Scanner scanner)
         {
+            GreatWallInput input = new GreatWallInput();
+            input.nTribes = scanner.nextInt();
+            input.tribes = new List<TribeData>();
 
-            //Consonants.Main2(args);
-            //Round1C.Pogo.Pogo.Main2(args);
-            //if (args != null) return;
-            GreatWall main = new GreatWall();
+            for (int i = 0; i < input.nTribes; ++i)
+            {
+                TribeData td = new TribeData
+                {
+                    t0 = scanner.nextInt(),
+                    totalAttacks = scanner.nextInt(),
+                    w0 = scanner.nextInt(),
+                    e0 = scanner.nextInt(),
+                    s0 = scanner.nextInt(),
+                    deltaT = scanner.nextInt(),
+                    deltaX = scanner.nextInt(),
+                    deltaS = scanner.nextInt()
+                };
 
-            List<string> list = new List<string>();
+                input.tribes.Add(td);
 
-            //list.Add("sample");
-            list.Add("C-small-practice.in");
-            list.Add("C-large-practice.in");
+            }
 
-            string dir = @"C:\codejam\CodeJam\2013\Solution\Round1C\";
-
-            list = list.ConvertAll(s => dir + s);
-
-            CjUtils.RunMainMulti(list, main, Input.createInput, null);
-
+            return input;
         }
+
+      
     }
 
     class Wall
@@ -475,38 +489,13 @@ namespace Round1C.GreatWall
     /// delta_pi – the distance this tribe travels to the east between subsequent attacks (if this is negative, the tribe travels to the west)
     /// delta_si – the change in strength between subsequent attacks*/
     /// </summary>
-    public class Input
+    public class GreatWallInput
     {
 
-        internal int nTribes { get; private set; }
-        internal List<TribeData> tribes { get; private set; }
+        internal int nTribes { get; set; }
+        internal List<TribeData> tribes { get; set; }
 
-        public static Input createInput(Scanner scanner)
-        {
-            Input input = new Input();
-            input.nTribes = scanner.nextInt();
-            input.tribes = new List<TribeData>();
-
-            for (int i = 0; i < input.nTribes; ++i)
-            {
-                TribeData td = new TribeData
-                {
-                    t0 = scanner.nextInt(),
-                    totalAttacks = scanner.nextInt(),
-                    w0 = scanner.nextInt(),
-                    e0 = scanner.nextInt(),
-                    s0 = scanner.nextInt(),
-                    deltaT = scanner.nextInt(),
-                    deltaX = scanner.nextInt(),
-                    deltaS = scanner.nextInt()
-                };
-
-                input.tribes.Add(td);
-
-            }
-
-            return input;
-        }
+        
 
 
     }
