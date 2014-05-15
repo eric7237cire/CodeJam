@@ -1,16 +1,18 @@
 ﻿#define LOGGING
 #define LOGGING_DEBUG
 #define LOGGING_INFO
-#define LOGGING_TRACE
+//#define LOGGING_TRACE
 
 using CodeJamUtils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
+using Utils.math;
 using Logger = Utils.LoggerFile;
 
 namespace Round3
@@ -28,7 +30,7 @@ namespace Round3
             return string.Join("", state.ToBinaryString(nTotal).Replace('1', 'X').Replace('0', '.').Reverse());
         }
         readonly int endPosition;
-        int[] expectedValue;
+        BigInteger[] expectedValue;
         int nTotal;
 
         public DynamicProgramming(int nTotal)
@@ -37,7 +39,7 @@ namespace Round3
             this.nTotal = nTotal;
             //nTotal bits == 1
             endPosition = (1 << nTotal) - 1;
-            expectedValue = new int[1 << 20];
+            expectedValue = new BigInteger[1 << 20];
 
             Logger.LogTrace("total {} end {} = {}.", nTotal, endPosition.ToBinaryString(8), FormatGondolas(endPosition));
             for(int i = 0; i < expectedValue.Length; ++i)
@@ -46,7 +48,7 @@ namespace Round3
             }
         }
 
-        public int calc( int curState, int pMult)
+        public BigInteger calc(int curState, BigInteger pMult)
         {
             Logger.LogTrace("calc {} pMult {}", string.Join("", curState.ToBinaryString(nTotal).Replace('1', 'X').Replace('0', '.').Reverse()), pMult);
             if (curState == endPosition)
@@ -59,7 +61,7 @@ namespace Round3
                 return expectedValue[curState];
             }
 
-            int totalReturn = 0;
+            BigInteger totalReturn = 0;
 
             //Choose each possibility
             for(int i = 0; i < nTotal; ++i)
@@ -108,18 +110,18 @@ namespace Round3
 
             }
 
-            int denom = 1;
+            BigInteger denom = 1;
 
             for (int i = 0; i < holeCount; ++i)
                 denom *= nTotal;
 
             DynamicProgramming dp = new DynamicProgramming(nTotal);
 
-            int num = dp.calc(initialState, denom / nTotal);
+            BigInteger num = dp.calc(initialState, denom / nTotal);
 
             Logger.LogDebug(" {} / {} ", num, denom);
 
-            return ((double)num / denom).ToUsString(9);
+            return ((double) new BigFraction(num, denom)).ToUsString(9);
         }
 
         
