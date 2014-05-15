@@ -143,5 +143,68 @@ namespace UnitTest
             Assert.AreEqual(expectedHeight, t1.Height);
 
         }
+        
+        [Test]
+        public void testIntervalTree()
+        {
+        	int nToCreate = 10000;
+        	int lowBound = 10;
+        	int upperBound = 550;
+        	int nQueries = 100;
+        	
+        	Random r = new Random();
+        	
+        	List<Interval<int,double>> ivals = new List<Interval<int,double>>();
+        	
+        	for(int i = 0; i < nToCreate; ++i)
+        	{
+        		int lb = r.Next(lowBound, upperBound);
+        		int up = r.Next(lb, upperBound);
+        		double data = r.NextDouble();
+        		ivals.Add( new Interval<int,double> ( lb, up, data ) );
+        		Logger.LogTrace("Adding interval {} - {} data {}", lb, up, data);
+        	}
+        	
+        	IntervalTree <int,double> tree = IntervalTree <int,double>.CreateIntervalTree(ivals, lowBound, upperBound);
+        	
+        	//Do a bunch of queries
+        	for(int q = 0; q < nQueries; ++q)
+        	{
+        		int lb = r.Next(lowBound, upperBound);
+        		int up = r.Next(lb, upperBound);
+        		
+        		List<Interval<int,double>> contained = new List<Interval<int,double>>();
+        		List<Interval<int,double>> overlapped = new List<Interval<int,double>>();
+        		
+        		tree.findOverlapping( lb, up, overlapped );
+        		
+        		tree.findContained( lb, up, contained );
+        		
+        		HashSet<Interval<int,double>> containedSet = new HashSet<Interval<int,double>>( contained );
+        		HashSet<Interval<int,double>> overlappedSet = new HashSet<Interval<int,double>>( overlapped );
+        		
+        		foreach( Interval<int,double> inter in ivals )
+        		{
+        			bool isContained = (inter.start >= lb && inter.stop <= up );
+        			bool isOverlap = ( inter.stop >= lb && inter.start <= up );
+        			
+        			Logger.LogTrace("Testing interval [{} - {}] with query [{} - {}], contained {} overlap {}",
+        				inter.start, inter.stop, lb, up, isContained, isOverlap);
+        			
+        			Assert.IsTrue( !isContained || containedSet.Contains(inter) );
+        			Assert.IsTrue( isContained || !containedSet.Contains(inter) );
+        			
+        			Assert.IsTrue( !isOverlap || overlappedSet.Contains(inter) );
+        			Assert.IsTrue( isOverlap || !overlappedSet.Contains(inter) );
+        			
+        			containedSet.Remove(inter);
+        			overlappedSet.Remove(inter);
+        			
+        		}
+        		
+        		
+        	}
+        	
+        }
     }
 }

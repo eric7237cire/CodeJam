@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="UnitTest.dll" total="2" failures="0" not-run="0" date="2014-05-15" time="11:41:59">
+<test-results name="UnitTest.dll" total="1" failures="0" not-run="0" date="2014-05-15" time="16:00:26">
   <environment nunit-version="2.4.8.0" clr-version="4.0.30319.1" os-version="Unix 3.13.10.200" platform="Unix" cwd="/home/ent/mono/CodeJam/2013/Solution" machine-name="b016763" user="ent" user-domain="b016763" />
   <culture-info current-culture="fr-FR" current-uiculture="fr-FR" />
-  <test-suite name="UnitTest.dll" success="True" time="0.031" asserts="0">
+  <test-suite name="UnitTest.dll" success="True" time="0.868" asserts="0">
     <results>
-      <test-suite name="UnitTest" success="True" time="0.027" asserts="0">
+      <test-suite name="UnitTest" success="True" time="0.865" asserts="0">
         <results>
-          <test-suite name="TestBinaryTree" success="True" time="0.011" asserts="0">
+          <test-suite name="TestBinaryTree" success="True" time="0.846" asserts="0">
             <results>
-              <test-case name="UnitTest.TestBinaryTree.testBinaryTree" executed="True" success="True" time="0.004" asserts="45" />
-              <test-case name="UnitTest.TestBinaryTree.TestHeight" executed="True" success="True" time="0.000" asserts="9" />
+              <test-case name="UnitTest.TestBinaryTree.testIntervalTree" executed="True" success="True" time="0.843" asserts="4000000" />
             </results>
           </test-suite>
         </results>
