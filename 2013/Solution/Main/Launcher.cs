@@ -4,6 +4,7 @@
 #define LOGGING_TRACE
 using CodeJamUtils;
 using Round1C_P2;
+using Round3;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,38 +40,41 @@ namespace MainNS
 #endif
             //Cheaters main = new Cheaters();
             //  Rural main = new Rural();
-            Pogo main = new Pogo();
+            //Pogo main = new Pogo();
+            Wheel main = new Wheel();
 
             // main.processInput(null);
             // return;
 
             List<string> list = new List<string>();
 
-            // list.Add("sample.in");
+             list.Add("sample.in");
 
             //list.Add("A-small-practice.in");
             // list.Add("A-large-practice.in");
 
 
-            list.Add("B-small-practice.in");
+            //list.Add("B-small-practice.in");
             // list.Add("B-large-practice.in");
 
             //list.Add("C-small-practice.in");
             //list.Add("C-large-practice.in");
 
-            // list.Add("D-small-practice.in");
+             list.Add("D-small-practice.in");
             //  list.Add("D-large-practice.in");
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
-            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1C\");
+            //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1C\");
+            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round3\");
+
             // dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round3\";
 #if mono
             dir = @"/home/ent/mono/CodeJam/2013/Solution/Round3/";
 #endif
             // list = list.ConvertAll(s => dir + s);
 
-            // CjUtils.RunMain(list, main, main.createInput, null); 
-            CjUtils.RunMainMulti(list, main, main.createInput, null);
+             CjUtils.RunMain(list, main, main.createInput, null); 
+            //CjUtils.RunMainMulti(list, main, main.createInput, null);
         }
     }
 }

@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BitSet.cs" />
     <Compile Include="CodeJamUtil.cs" />
     <Compile Include="CombPerm.cs" />
     <Compile Include="Ext.cs" />
@@ -76,6 +77,8 @@
     <Compile Include="geom\Point.cs" />
     <Compile Include="Preconditions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="tree\IntervalTree.cs" />
+    <Compile Include="tree\SegmentTree.cs" />
     <Compile Include="Trie.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

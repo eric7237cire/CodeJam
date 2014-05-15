@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,6 +9,17 @@ namespace Utils
 {
     public static class Ext
     {
+
+        public static string ToUsString(this double d, int places)
+        {
+            return d.ToString("0." + new String('#', places), new CultureInfo("en-US"));
+        }
+
+        public static string ToBinaryString(this int i, int len)
+        {
+            return Convert.ToString(i, 2).PadLeft(len,'0').Substring(0, len);
+        }
+        
 
         public static string ToCommaString<T>(this IEnumerable<T> list)
         {

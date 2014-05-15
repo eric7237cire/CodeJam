@@ -67,7 +67,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BinaryTree.cs" />
     <Compile Include="GreatWall.cs" />
     <Compile Include="IntervalTree.cs" />
     <Compile Include="IntervalTree3.cs" />
