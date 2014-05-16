@@ -62,12 +62,9 @@ namespace Round1C
 		
 		public int searchForLowerThan;
 		
-		BinaryTree<HighLow> bt;
-		
-		public ExistLowerThan(int sflt, BinaryTree<HighLow> b)
+		public ExistLowerThan(int sflt)
 		{
 			searchForLowerThan = sflt;
-			bt = b;
 			lowestHeightFound = int.MaxValue;
 		}
 		
@@ -165,7 +162,7 @@ namespace Round1C
                     endPointToIntervalIndex[attack.start], endPointToIntervalIndex[attack.stop],
                     attack.height, attackIdx);
 
-                ExistLowerThan query = new ExistLowerThan(attack.height, bt); 
+                ExistLowerThan query = new ExistLowerThan(attack.height); 
                 bt.traverse(endPointToIntervalIndex[attack.start]+1, endPointToIntervalIndex[attack.stop], query);
 
                 if (query.lowestHeightFound < attack.height)

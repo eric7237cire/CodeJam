@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="UnitTest.dll" total="2" failures="0" not-run="0" date="2014-05-15" time="16:58:14">
+<test-results name="UnitTest.dll" total="2" failures="0" not-run="0" date="2014-05-16" time="15:17:07">
   <environment nunit-version="2.4.8.0" clr-version="4.0.30319.1" os-version="Unix 3.13.10.200" platform="Unix" cwd="/home/ent/mono/CodeJam/2013/Solution" machine-name="b016763" user="ent" user-domain="b016763" />
   <culture-info current-culture="fr-FR" current-uiculture="fr-FR" />
-  <test-suite name="UnitTest.dll" success="True" time="3.033" asserts="0">
+  <test-suite name="UnitTest.dll" success="True" time="8.323" asserts="0">
     <results>
-      <test-suite name="UnitTest" success="True" time="3.030" asserts="0">
+      <test-suite name="UnitTest" success="True" time="8.319" asserts="0">
         <results>
-          <test-suite name="TestRunner" success="True" time="3.013" asserts="0">
+          <test-suite name="TestRunner" success="True" time="8.302" asserts="0">
             <results>
-              <test-case name="UnitTest.TestRunner.runAllFetchTestCases" executed="True" success="True" time="0.041" asserts="3" />
-              <test-case name="UnitTest.TestRunner.runTestFiles" executed="True" success="True" time="2.963" asserts="30" />
+              <test-case name="UnitTest.TestRunner.runAllFetchTestCases" executed="True" success="True" time="0.043" asserts="3" />
+              <test-case name="UnitTest.TestRunner.runTestFiles" executed="True" success="True" time="8.251" asserts="300" />
             </results>
           </test-suite>
         </results>

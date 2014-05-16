@@ -13,7 +13,7 @@ using Utils;
 
 using Logger = Utils.LoggerFile;
 
-namespace Round2.TicketSwapping
+namespace Round2_P1
 {
 
 
@@ -22,7 +22,29 @@ namespace Round2.TicketSwapping
     {
 
 
-        
+        public static Input createInput(Scanner scanner)
+        {
+            Input input = new Input();
+            input.nStops = scanner.nextInt();
+            input.pointPairs = scanner.nextInt();
+
+            input.points = new List<Pair>();
+
+            for (int i = 0; i < input.pointPairs; ++i)
+            {
+                Pair td = new Pair
+                {
+                    start = scanner.nextInt(),
+                    stop = scanner.nextInt(),
+                    nPassengers = scanner.nextInt()
+                };
+
+                input.points.Add(td);
+
+            }
+
+            return input;
+        }
 
 
 
@@ -107,108 +129,109 @@ namespace Round2.TicketSwapping
             Preconditions.checkState(ansRet >= 0);
             return ansRet;
         }
-        
-        //public int processInputSmall(Input input)
-        //{
-        //    TreeSet<Pair> points = new TreeSet<Pair>();
+        #if !mono
+        public int processInputSmall(Input input)
+        {
+            TreeSet<Pair> points = new TreeSet<Pair>();
 
-        //    long beforeCost = calculateCost(input.points, input.nStops);
+            long beforeCost = calculateCost(input.points, input.nStops);
 
-        //    foreach (Pair p in input.points)
-        //    {
+            foreach (Pair p in input.points)
+            {
 
-        //        Pair newp = new Pair { start = p.start, stop = p.stop, nPassengers = p.nPassengers };
-        //        addPair(points, newp);
-        //    }
-
-
-
-        //    int loopCheck = 0;
-        //    while (true)
-        //    {
-        //        ++loopCheck;
-        //        if (loopCheck % 500 == 0)
-        //            Logger.Log("Loopcheck {0}", loopCheck);
-
-        //        if (loopCheck > 7200)
-        //        {
-        //            return -1;
-        //        }
-
-        //        bool found = false;
-
-        //        //Logger.Log("\n\nSTART\n\n");
-        //        for (int i = 0; i < points.Count; ++i)
-        //        {
-        //            //Logger.Log("Points {0}", i);
-        //            Pair p = points[i];
-
-        //            //Another point starting earlier that intersects p
-        //            //Pair lesser = points.Find((pt) =>
-        //            //{
-        //            //    return pt.start < p.start && isBetween(p.start, p.stop, pt.stop);
-        //            //});
-
-        //            IDirectedCollectionValue<Pair> dirCol = points.RangeFromTo(Pair.createWithStart(p.start + 1), Pair.createWithStart(p.stop + 1));
-
-        //            Pair greater = null;
-        //            foreach (Pair findPoint in dirCol)
-        //            {
-        //                if (findPoint.stop > p.stop &&
-        //                    isBetween(p.start, p.stop, findPoint.start) &&
-        //                    findPoint.start > p.start)
-        //                {
-        //                    greater = findPoint;
-        //                    break;
-        //                }
-        //            }
-        //            //Another point ending later that intersects p
-
-        //            if (greater == null)
-        //                continue;
+                Pair newp = new Pair { start = p.start, stop = p.stop, nPassengers = p.nPassengers };
+                addPair(points, newp);
+            }
 
 
-        //            int maxToSwitch = Math.Min(greater.nPassengers, p.nPassengers);
 
-        //            addPair(points, new Pair { start = p.start, stop = greater.stop, nPassengers = maxToSwitch });
-        //            addPair(points, new Pair { start = greater.start, stop = p.stop, nPassengers = maxToSwitch });
+            int loopCheck = 0;
+            while (true)
+            {
+                ++loopCheck;
+                if (loopCheck % 500 == 0)
+                    Logger.Log("Loopcheck {0}", loopCheck);
 
-        //            if (maxToSwitch == greater.nPassengers)
-        //            {
-        //                //points.RemoveAt(greaterIndex);
-        //                points.Remove(greater);
-        //            }
-        //            else
-        //            {
-        //                greater.nPassengers -= maxToSwitch;
-        //            }
+                if (loopCheck > 7200)
+                {
+                    return -1;
+                }
 
-        //            if (maxToSwitch == p.nPassengers)
-        //            {
-        //                //points.RemoveAt(i);
-        //                points.Remove(p);
-        //            }
-        //            else
-        //            {
-        //                p.nPassengers -= maxToSwitch;
-        //            }
+                bool found = false;
 
-        //            found = true;
-        //            break;
+                Logger.Log("\n\nSTART\n\n");
+                for (int i = 0; i < points.Count; ++i)
+                {
+                    Logger.Log("Points {0}", i);
+                    Pair p = points[i];
 
-        //        }
+                    //Another point starting earlier that intersects p
+                    Pair lesser = points.Find((pt) =>
+                    {
+                        return pt.start < p.start && isBetween(p.start, p.stop, pt.stop);
+                    });
 
-        //        if (!found)
-        //        {
-        //            break;
-        //        }
-        //    }
+                    IDirectedCollectionValue<Pair> dirCol = points.RangeFromTo(Pair.createWithStart(p.start + 1), Pair.createWithStart(p.stop + 1));
 
-        //    long afterCost = calculateCost(points, input.nStops);
+                    Pair greater = null;
+                    foreach (Pair findPoint in dirCol)
+                    {
+                        if (findPoint.stop > p.stop &&
+                            isBetween(p.start, p.stop, findPoint.start) &&
+                            findPoint.start > p.start)
+                        {
+                            greater = findPoint;
+                            break;
+                        }
+                    }
+                    //Another point ending later that intersects p
+
+                    if (greater == null)
+                        continue;
 
 
-        //    return (int)new ModdedLong(beforeCost - afterCost + ModdedLong.mod).Value;
-        //}
+                    int maxToSwitch = Math.Min(greater.nPassengers, p.nPassengers);
+
+                    addPair(points, new Pair { start = p.start, stop = greater.stop, nPassengers = maxToSwitch });
+                    addPair(points, new Pair { start = greater.start, stop = p.stop, nPassengers = maxToSwitch });
+
+                    if (maxToSwitch == greater.nPassengers)
+                    {
+                        points.RemoveAt(greaterIndex);
+                        points.Remove(greater);
+                    }
+                    else
+                    {
+                        greater.nPassengers -= maxToSwitch;
+                    }
+
+                    if (maxToSwitch == p.nPassengers)
+                    {
+                        points.RemoveAt(i);
+                        points.Remove(p);
+                    }
+                    else
+                    {
+                        p.nPassengers -= maxToSwitch;
+                    }
+
+                    found = true;
+                    break;
+
+                }
+
+                if (!found)
+                {
+                    break;
+                }
+            }
+
+            long afterCost = calculateCost(points, input.nStops);
+
+
+            return (int)new ModdedLong(beforeCost - afterCost + ModdedLong.mod).Value;
+        }
+        #endif
         private static bool isBetween(int x, int y, int a)
         {
             return x <= a && a <= y;
@@ -275,34 +298,12 @@ namespace Round2.TicketSwapping
     public class Input
     {
 
-        internal int nStops { get; private set; }
-        internal int pointPairs { get; private set; }
+        internal int nStops { get; set; }
+        internal int pointPairs { get; set; }
 
-        internal List<Pair> points { get; private set; }
+        internal List<Pair> points { get; set; }
 
-        public static Input createInput(Scanner scanner)
-        {
-            Input input = new Input();
-            input.nStops = scanner.nextInt();
-            input.pointPairs = scanner.nextInt();
-
-            input.points = new List<Pair>();
-
-            for (int i = 0; i < input.pointPairs; ++i)
-            {
-                Pair td = new Pair
-                {
-                    start = scanner.nextInt(),
-                    stop = scanner.nextInt(),
-                    nPassengers = scanner.nextInt()
-                };
-
-                input.points.Add(td);
-
-            }
-
-            return input;
-        }
+        
 
 
     }

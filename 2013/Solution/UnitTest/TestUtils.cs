@@ -12,7 +12,7 @@ using Utils;
 
 using Logger = Utils.LoggerFile;
 using Round2;
-using Round2.ErdosNS;
+using Round2_P3;
 using Utils.math;
 
 namespace UnitTest

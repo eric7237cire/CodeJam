@@ -69,7 +69,7 @@ namespace MainNS
 
             // dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round3\";
 #if mono
-            dir = @"/home/ent/mono/CodeJam/2013/Solution/Round3/";
+            Directory.SetCurrentDirectory( @"/home/ent/mono/CodeJam/2013/Solution/Round3/" );
 #endif
             // list = list.ConvertAll(s => dir + s);
 

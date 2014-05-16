@@ -12,35 +12,16 @@ using CombPerm;
 
 using Logger = Utils.LoggerFile;
 
-namespace Round2.ErdosNS
+namespace Round2_P3
 {
     public class Input
     {
 
-        internal int length { get; private set; }
-        internal int[] A { get; private set; }
-        internal int[] B { get; private set; }
+        internal int length { get;  set; }
+        internal int[] A { get;  set; }
+        internal int[] B { get;  set; }
 
-        public static Input createInput(Scanner scanner)
-        {
-            Input input = new Input();
-            input.length = scanner.nextInt();
-
-            input.A = new int[input.length];
-            input.B = new int[input.length];
-
-            for (int i = 0; i < input.length; ++i )
-            {
-                input.A[i] = scanner.nextInt();
-            }
-            for (int i = 0; i < input.length; ++i)
-            {
-                input.B[i] = scanner.nextInt();
-            }
-
-
-            return input;
-        }
+       
 
 
     }
@@ -184,6 +165,26 @@ namespace Round2.ErdosNS
             }
         }
 
+         public static Input createInput(Scanner scanner)
+        {
+            Input input = new Input();
+            input.length = scanner.nextInt();
+
+            input.A = new int[input.length];
+            input.B = new int[input.length];
+
+            for (int i = 0; i < input.length; ++i )
+            {
+                input.A[i] = scanner.nextInt();
+            }
+            for (int i = 0; i < input.length; ++i)
+            {
+                input.B[i] = scanner.nextInt();
+            }
+
+
+            return input;
+        }
 
         public string processInput(Input input)
         {

@@ -120,8 +120,51 @@
          inputFile         ="C-large-practice.in"
          processInputMethod="processInput"/>
 		 
+         </testFileRunner>
+         
+         <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round2/"
+                  ignore ="false">
                   
-                  </testFileRunner>
+                   <run checkFile         ="A-small-practice.check"
+         className         ="Round2_P1.TicketSwap, Round2"
+         createInputMethod ="createInput"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInput"/>
+         
+          <run checkFile         ="A-large-practice.check"
+         className         ="Round2_P1.TicketSwap, Round2"
+         createInputMethod ="createInput"
+         inputFile         ="A-large-practice.in"
+         processInputMethod="processInput"/>
+         
+                <run checkFile         ="B-small-practice.check"
+         className         ="Round2.ManyPrizes, Round2"
+         createInputMethod ="createInput"
+         inputFile         ="B-small-practice.in"
+         processInputMethod="processInput"/>
+         
+          <run checkFile         ="B-large-practice.check"
+         className         ="Round2.ManyPrizes, Round2"
+         createInputMethod ="createInput"
+         inputFile         ="B-large-practice.in"
+         processInputMethod="processInput"/>
+         
+              <run checkFile         ="C-small-practice.check"
+         className         ="Round2_P3.Erdos, Round2"
+         createInputMethod ="createInput"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInput"/>
+         
+           <run checkFile         ="C-large-practice.check"
+         className         ="Round2_P3.Erdos, Round2"
+         createInputMethod ="createInput"
+         inputFile         ="C-large-practice.in"
+         processInputMethod="processInput"/>
+                  
+         </testFileRunner>
+         
+                  
+                  
   <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round3/"
                   >
     <run checkFile         ="C-small-practice.correct"
