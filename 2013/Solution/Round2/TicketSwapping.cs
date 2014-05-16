@@ -22,7 +22,7 @@ namespace Round2.TicketSwapping
     {
 
 
-        
+        const int mod = 1000002013;
 
 
 
@@ -39,8 +39,8 @@ namespace Round2.TicketSwapping
                 return r;
             });
 
-            Preconditions.checkState(sum % ModdedLong.mod >= 0);
-            return sum % ModdedLong.mod;
+            Preconditions.checkState(sum % mod >= 0);
+            return sum % mod;
         }
 
         static long cost(int i_start, int i_stop, int nPass, int N)
@@ -91,7 +91,7 @@ namespace Round2.TicketSwapping
                     //Add cost
                     long costItem = cost(recentlyBoarded.location, ev.location, nPassLeaving, input.nStops);
                     afterCost += costItem;
-                    afterCost %= ModdedLong.mod;
+                    afterCost %= mod;
 
                     recentlyBoarded.nPassengers -= nPassLeaving;
                     ev.nPassengers += nPassLeaving;
@@ -103,7 +103,7 @@ namespace Round2.TicketSwapping
             }
 
 
-            int ansRet = (int)new ModdedLong(beforeCost - afterCost + ModdedLong.mod).Value;
+            int ansRet = (int)new ModdedLong(beforeCost - afterCost + mod).Value;
             Preconditions.checkState(ansRet >= 0);
             return ansRet;
         }
@@ -207,7 +207,7 @@ namespace Round2.TicketSwapping
         //    long afterCost = calculateCost(points, input.nStops);
 
 
-        //    return (int)new ModdedLong(beforeCost - afterCost + ModdedLong.mod).Value;
+        //    return (int)new ModdedLong(beforeCost - afterCost + mod).Value;
         //}
         private static bool isBetween(int x, int y, int a)
         {

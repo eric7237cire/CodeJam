@@ -98,6 +98,7 @@
     <Compile Include="TestManyPrizes.cs" />
     <Compile Include="TestGeom.cs" />
     <Compile Include="TestPong.cs" />
+    <Compile Include="TestWheel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Round1B\Round1B.csproj">

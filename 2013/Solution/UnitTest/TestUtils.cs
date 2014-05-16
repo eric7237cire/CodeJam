@@ -161,7 +161,7 @@ namespace UnitTest
         [Test]
         public void testModdedLong()
         {
-            ModdedLong.mod = 7;
+            int mod = 7;
             for(int i = 2; i <= 800; ++i)
             {
                 for(int j = 2; j < 3; ++j)
@@ -173,7 +173,7 @@ namespace UnitTest
 
                     ModdedLong ml = new ModdedLong(i);
                     ml /= j;
-                    Assert.AreEqual(real % ModdedLong.mod, ml.Value, "{0} / {1} % {2}".FormatThis(i,j,ModdedLong.mod));
+                    Assert.AreEqual(real % mod, ml.Value, "{0} / {1} % {2}".FormatThis(i,j,mod));
                 }
             }
         }
@@ -183,9 +183,9 @@ namespace UnitTest
         public void testModdedLong2()
         {
             
-            ModdedLong.mod = 1000002013;
+            int mod = 1000002013;
 
-            int an = ModdedLong.modInverse(2, (int)ModdedLong.mod);
+            int an = ModdedLong.modInverse(2, mod);
 
             long start = 35184372088832;
             long end = start + 1000;
@@ -200,7 +200,7 @@ namespace UnitTest
 
                     ModdedLong ml = new ModdedLong(v);
                     ml /= (int)j;
-                    Assert.AreEqual(real % ModdedLong.mod, ml.Value, "{0} / {1} % {2}".FormatThis(v, j, ModdedLong.mod));
+                    Assert.AreEqual(real % mod, ml.Value, "{0} / {1} % {2}".FormatThis(v, j, mod));
                 }
             }
         }
@@ -237,13 +237,13 @@ namespace UnitTest
         [Test]
         public void testPow()
         {
-            ModdedLong.mod = 1000002013;
+            int mod = 1000002013;
             for(int i = 1; i <= 10; ++i)
             {
                 for(short j = 1; j <= 10; ++j)
                 {
-                    long expected = IntPower(i, j) % ModdedLong.mod;
-                    long actual = ModdedLong.pow(i, j);
+                    long expected = IntPower(i, j) % mod;
+                    long actual = ModdedLong.pow(i, j, mod);
                     Assert.AreEqual(expected, actual);
                 }
             }
@@ -252,13 +252,13 @@ namespace UnitTest
         [Test]
         public void testPow2()
         {
-            ModdedLong.mod = 17;
+            int mod = 17;
             for (int i = 1; i <= 10; ++i)
             {
                 for (short j = 1; j <= 10; ++j)
                 {
-                    long expected = IntPower(i, j) % ModdedLong.mod;
-                    long actual = ModdedLong.pow(i, j);
+                    long expected = IntPower(i, j) % mod;
+                    long actual = ModdedLong.pow(i, j, mod);
                     Assert.AreEqual(expected, actual);
                 }
             }

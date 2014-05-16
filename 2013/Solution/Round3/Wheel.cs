@@ -4,6 +4,7 @@
 //#define LOGGING_TRACE
 
 using CodeJamUtils;
+using CombPerm;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -143,6 +144,48 @@ namespace Round3
             return ((double) new BigFraction(num, denom)).ToUsString(9);
         }
 
+
+        //
+        /// <summary>
+        /// The probability that gondola j stays empty while we fill interval [i, j) and that gondola at position (i+k) is filled last is P(i, j, k) and can be computed as:
+        /// </summary>
+        /// <param name="gondalas">True if filled, false if empty</param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        /// <param name="k"></param>
+        /// <returns></returns>
+        public static BigFraction P(bool[] gondalas, int i, int j, int k)
+        {
+            Preconditions.checkState(gondalas[i] == false);
+            Preconditions.checkState(gondalas[j] == false);
+            Preconditions.checkState(gondalas[i+k] == false);
+            Preconditions.checkState(ModdedLong.isStrictlyBetween(i, j, i + k));
+
+            //Create a list of all the holes
+            List<int> holePositions = new List<int>();
+
+            
+            for (int pos = 0; pos < gondalas.Length; ++pos )
+            {
+                if (!gondalas[pos])
+                {
+                    holePositions.Add(pos);
+                }
+            }
+
+            //Now cycle through all permutations
+            int numerator = 0;
+            int denominator = 0;
+
+            foreach( List<int> perm in Combinations.nextPermutation<int, List<int>>(holePositions) )
+            {
+                if ((perm[perm.Count - 1] == i + k) && perm[perm.Count - 2] == j - 1)
+                    ++numerator;
+               // ++denominator;
+            }
+
+                return 0;
+        }
         
 
         public WheelInput createInput(Scanner scanner)

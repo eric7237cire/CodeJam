@@ -14,6 +14,8 @@ namespace Utils
     public struct ModdedLong
     {
         private readonly long value;
+        public readonly int mod;
+
         public long Value
         {
             get
@@ -21,8 +23,7 @@ namespace Utils
                 return value;
             }
         }
-        public static int mod = 1000002013;
-
+        
         /*
         public static implicit operator long(ModdedLong m)
         {
@@ -36,9 +37,9 @@ namespace Utils
             return new ModdedLong(val);
         }
 
-        public ModdedLong(long v)
+        public ModdedLong(long v, int mod = 17) //1000002013)
         {
-
+            this.mod = mod;
             value = v % mod;
             Logger.LogTrace("Construct {0} = {1} ", v, value);
             Preconditions.checkState(value >= 0);
@@ -46,26 +47,29 @@ namespace Utils
 
         public static ModdedLong operator +(ModdedLong c1, ModdedLong c2)
         {
+            Preconditions.checkState(c1.mod == c2.mod);
             Logger.LogTrace("Adding {0} and {1}", c1, c2);
-            return new ModdedLong(c1.value + c2.value);
+            return new ModdedLong(c1.value + c2.value, c1.mod);
         }
         public static ModdedLong operator -(ModdedLong c1, ModdedLong c2)
         {
+            Preconditions.checkState(c1.mod == c2.mod);
             Logger.LogTrace("Subtract {0} and {1}", c1, c2);
-            return new ModdedLong(c1.value - c2.value + mod);
+            return new ModdedLong(c1.value - c2.value + c1.mod, c1.mod);
         }
         public static ModdedLong operator *(ModdedLong c1, ModdedLong c2)
         {
+            Preconditions.checkState(c1.mod == c2.mod);
             Logger.LogTrace("Multiply {0} and {1}", c1, c2);
-            return new ModdedLong(c1.value * c2.value);
+            return new ModdedLong(c1.value * c2.value, c1.mod);
         }
         public static ModdedLong operator /(ModdedLong c1, int rhs)
         {
 
-            int div = modInverse(rhs, mod);
+            int div = modInverse(rhs, c1.mod);
 
             Logger.LogTrace("Divide int {0} and {1}.  mult. inv: {2}", c1, rhs, div);
-            return new ModdedLong(c1.value * div);
+            return new ModdedLong(c1.value * div, c1.mod);
         }
 
 
@@ -75,10 +79,6 @@ namespace Utils
         }
 
 
-        public static int pow(int a, int b)
-        {
-            return pow(a, b, ModdedLong.mod);
-        }
         /*
          * a ^ b % MOD
          */
@@ -110,7 +110,7 @@ namespace Utils
     
             a^(-1) = a^(m-2) (mod m) */
 
-        private static long InverseEulerIfModIsPrime(int n)
+        private static long InverseEulerIfModIsPrime(int n, int mod)
         {
 
             long ret = pow(n, (int)(mod - 2), (int)mod);
@@ -201,6 +201,43 @@ namespace Utils
                     m, mir, a, m, ((1 - m * mir) / a) % m);
                 return ((1 - m * mir) / a) % m;
             }
+        }
+
+        /// <summary>
+        ///  Returns c, such that (a + c) % m == b 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        public static long diff(long a, long b, long m)
+        {
+            Preconditions.checkState(0 <= a && a < m);
+            Preconditions.checkState(0 <= b && b < m);
+            if (b >= a)
+            {
+                return b - a;
+            }
+
+            return (b + m - a);
+        }
+
+        /// <summary>
+        /// is p between left and right
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <param name="c"></param>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        public static bool isStrictlyBetween(long left, long right, long p)
+        {
+            if (left < right)
+            {
+                return p > left && p < right;
+            }
+
+            return p > left || p < right;
         }
     }
 }

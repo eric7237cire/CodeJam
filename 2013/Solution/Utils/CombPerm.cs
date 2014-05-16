@@ -48,6 +48,13 @@ namespace CombPerm
             }
         }
 
+        /// <summary>
+        /// Cycles through all permutations of an array
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="L"></typeparam>
+        /// <param name="array"></param>
+        /// <returns></returns>
         public static IEnumerable<L> nextPermutation<T, L>(L array)
             where T : IComparable<T>
             where L : IList<T>
