@@ -20,10 +20,6 @@ namespace Round2_P3
         internal int length { get;  set; }
         internal int[] A { get;  set; }
         internal int[] B { get;  set; }
-
-       
-
-
     }
 
     class Graph
