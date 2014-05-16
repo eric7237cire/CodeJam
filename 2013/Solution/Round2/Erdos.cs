@@ -196,16 +196,27 @@ namespace Round2_P3
                 lastValueIndex[u] = -1;
             }
 
+            /*
+            A is the array The length of the longest increasing subsequence of X that includes X[i] as its largest number.
+            this means that the subsequence ends at i.
+            */
             for (int u = 0; u < input.length; ++u )
             {
                 int val = input.A[u];
                 Logger.LogDebug("Element {0} A[i] {1}", u, val);
                 if (lastValueIndex[val] != -1)
                 {
+                	//If we have i, j as indexes in A where j > i
+                	//and A[i] == A[j] then X[j] <= X[i], but since
+                	// there are no duplicate values, we know X[j] < X[i]
+                	
+                	//The graph tracks positions
                     g.addConnection(u, lastValueIndex[val]); // u < lvi[val]
                 }
                 if (lastValueIndex[val-1] != -1)
                 {
+                	//Here, A[i] + 1 == A[j], because this is the immediate precedent,
+                	//we know X[i] < X[j]                	
                     g.addConnection(lastValueIndex[val-1], u); 
                 }
 
@@ -216,7 +227,8 @@ namespace Round2_P3
             {
                 lastValueIndex[u] = -1;
             }
-
+            
+            //Similar logic
             for(int u = input.length - 1; u >= 0; --u)
             {
                 int val = input.B[u];
@@ -243,21 +255,16 @@ namespace Round2_P3
                 }
             }
 
-            //int[] topoSort = g.getTopoSortUsingDFS(root);
+            //Now given all the constrains, find a topological sort
             int[] topoSort = g.getTopoSortUsingKahn();
-
-           // ;
 
             int[] ans = new int[input.length];
             for (int u = 0; u < input.length; ++u)
             {
                 ans[topoSort[u]] = u + 1;
             }
-            //return g.topoSort.Select((elem, idx) => { return 1 + elem; }).ToCommaString(); 
-           // calcAandB(ans);
-
+            
             return string.Join(" ", ans);
-            //return g.topoSort.ToCommaString();
         }
 
         
