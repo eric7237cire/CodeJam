@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using CombPerm;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace UnitTest
     [TestFixture]
     public class TestBitSet
     {
+
         [Test]
         public void TestToString()
         {
@@ -57,6 +59,16 @@ namespace UnitTest
                 Assert.AreEqual(i==31 || i == 3 || i == 0, b[i]);
             }
 
+        }
+
+        public void TestCombinationIterator()
+        {
+            List<long> l = new List<long>(Combinations.iterateCombin(4, 1));
+            Assert.AreEqual(4, l.Count);
+            Assert.AreEqual(1, l[0]);
+            Assert.AreEqual(2, l[1]);
+            Assert.AreEqual(4, l[2]);
+            Assert.AreEqual(8, l[3]);
         }
     }
 }

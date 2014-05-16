@@ -15,11 +15,14 @@ namespace Utils
             return d.ToString("0." + new String('#', places), new CultureInfo("en-US"));
         }
 
-        public static string ToBinaryString(this int i, int len)
+        public static string ToBinaryString(this int i, int len = 16)
         {
             return Convert.ToString(i, 2).PadLeft(len,'0').Substring(0, len);
         }
-        
+        public static string ToBinaryString(this long i, int len = 16)
+        {
+            return Convert.ToString(i, 2).PadLeft(len, '0').Substring(0, len);
+        }
 
         public static string ToCommaString<T>(this IEnumerable<T> list)
         {

@@ -50,7 +50,6 @@ namespace Round3
 
         public BigInteger calc(int curState, BigInteger pMult)
         {
-            Logger.LogTrace("calc {} pMult {}", string.Join("", curState.ToBinaryString(nTotal).Replace('1', 'X').Replace('0', '.').Reverse()), pMult);
             if (curState == endPosition)
             {
                 return 0;
@@ -61,6 +60,8 @@ namespace Round3
                 return expectedValue[curState];
             }
 
+            Logger.LogTrace("calc {} pMult {}", string.Join("", curState.ToBinaryString(nTotal).Replace('1', 'X').Replace('0', '.').Reverse()), pMult);
+            
             BigInteger totalReturn = 0;
 
             //Choose each possibility
@@ -74,9 +75,10 @@ namespace Round3
                 {
                     if (!csBitSet[pos])
                     {
-                        Logger.LogTrace("Hit gondola {} 1st free Pos {} Price {}", i, pos, price);
                         Logger.ChangeIndent(4);
-                        totalReturn += price * pMult + calc(curState | 1 << pos, pMult / nTotal);
+                        BigInteger toAdd = calc(curState | 1 << pos, pMult / nTotal);
+                        totalReturn += price * pMult + toAdd;
+                        Logger.LogTrace("Calculating spot {} next free {} Add [ price {} * mult {} + rest {} = {} ].  Total {}", i, pos, price, pMult, toAdd, price * pMult + toAdd, totalReturn);
                         Logger.ChangeIndent(-4);
                         break;
                     }
@@ -88,6 +90,23 @@ namespace Round3
                     Preconditions.checkState(price >= 1);
                 }
             }
+
+            //Here rotate the binary nTotal times as X..XX is the same as ..XXX or .XXX.
+            int equivalentState = curState;
+            //Logger.LogInfo("1 eq state {}", equivalentState.ToBinaryString(nTotal));
+            for (int i = 0; i < nTotal; ++i)
+            {
+                bool firstBit = equivalentState.GetBit(0);
+                equivalentState >>= 1;
+
+                if (firstBit)
+                    equivalentState = equivalentState.SetBit(nTotal - 1);
+                else
+                    equivalentState = equivalentState.ClearBit(nTotal - 1);
+               // Logger.LogInfo("eq state {}", equivalentState.ToBinaryString(nTotal));
+                expectedValue[equivalentState] = totalReturn;
+            }
+            Preconditions.checkState(equivalentState == curState);
 
             return expectedValue[curState] = totalReturn;
         }

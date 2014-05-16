@@ -28,7 +28,7 @@ namespace MainNS
             if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
    {
        //@"/include=current",
-       @"/run=UnitTest.TestLost",
+       @"/run=UnitTest.TestRunner",
        //"/nothread",
        @"C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll"
      //  @"/run=UnitTest.TestModMath",
