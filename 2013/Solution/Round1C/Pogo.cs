@@ -159,15 +159,15 @@ namespace Round1C_P2
             int lowIdx, hiIdx;
             Tuple<int, int> bestMatch = summations.binarySearch(sum, out lowIdx, out hiIdx);
 
-            int best, bestIdx;
+            int bestIdx;
             if ((sum - bestMatch.Item1) < 2 + bestMatch.Item2 - sum)
             {
-                best = bestMatch.Item1;
+              //  best = bestMatch.Item1;
                 bestIdx = lowIdx;
             }
             else
             {
-                best = bestMatch.Item2;
+               // best = bestMatch.Item2;
                 bestIdx = hiIdx;
             }
 
@@ -176,19 +176,19 @@ namespace Round1C_P2
             int greaterCoordAbs = Math.Max(xAbs, yAbs);
             int lowerCoordAbs = Math.Min(xAbs, yAbs);
 
-            char greaterPlus, greaterMinus, lesserPlus, lesserMinus;
+            char greaterPlus, greaterMinus, lesserPlus; //, lesserMinus;
             if (yAbs > xAbs)
             {
                 //Advance towards the absolute value
                 greaterPlus = input.Y > 0 ? 'N' : 'S';
                 greaterMinus = input.Y > 0 ? 'S' : 'N';
                 lesserPlus = input.X > 0 ? 'E' : 'W';
-                lesserMinus = input.X > 0 ? 'W' : 'E';
+               // lesserMinus = input.X > 0 ? 'W' : 'E';
             }
             else
             {
                 lesserPlus = input.Y > 0 ? 'N' : 'S';
-                lesserMinus = input.Y > 0 ? 'S' : 'N';
+               // lesserMinus = input.Y > 0 ? 'S' : 'N';
                 greaterPlus = input.X > 0 ? 'E' : 'W';
                 greaterMinus = input.X > 0 ? 'W' : 'E';
             }
@@ -211,7 +211,7 @@ namespace Round1C_P2
             }
 
             //lower coord should be exact, greater
-            int greaterCoord = xAbs > yAbs ? input.X : input.Y;
+          //  int greaterCoord = xAbs > yAbs ? input.X : input.Y;
 
             for (int i = 0; i < Math.Abs(greaterCoordAbs - greaterTotal); ++i)
             {

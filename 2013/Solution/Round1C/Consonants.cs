@@ -34,7 +34,7 @@ namespace Round1C
         }
         public static long calculate(string word, int n)
         {
-            int[] cons = new int[word.Length];
+            //int[] cons = new int[word.Length];
             
             //blocks counts of vowels / consonants / vowels etc...
             List<int> blocks = new List<int>();

@@ -21,7 +21,7 @@
          inputFile         ="A-large-practice.in"
          processInputMethod="processInput"/>
 		 
-		 
+		 <!-- Probability pennies -->
     <run checkFile         ="B-small-practice.check"
          className         ="Round1B_P2.Diamond, Round1B"
          createInputMethod ="createInput"
@@ -46,6 +46,7 @@
          inputFile         ="B-large-practice.in"
          processInputMethod="processInputSlow"/>
 		 
+         <!-- Trie -->
 		
       <run checkFile         ="C-small-practice.check"
          className         ="Round1B_P3.GarbledEmail, Round1B"
@@ -72,6 +73,7 @@
          inputFile         ="A-small-practice.in"
          processInputMethod="processInput"/>
          
+         <!-- include / exclude principal -->
           <run checkFile         ="A_small_practice.check"
          className         ="Round1C.Consonants, Round1C"
          createInputMethod ="createInput"
@@ -84,7 +86,7 @@
          inputFile         ="A-large-practice.in"
          processInputMethod="processInput"/>
          
-            
+            <!-- Proof via induction -->
                   <run checkFile         ="B-small-practice.check"
          className         ="Round1C_P2.Pogo, Round1C"
          createInputMethod ="createInput"
@@ -98,7 +100,7 @@
          inputFile         ="B-large-practice.in"
          processInputMethod="processInput"/>
          
-         <!--wall-->
+         <!--Segment Tree-->
 		 
 		   <run checkFile         ="C-small-practice.check"
          className         ="Round1C.GreatWall, Round1C"
@@ -120,8 +122,55 @@
          inputFile         ="C-large-practice.in"
          processInputMethod="processInput"/>
 		 
+         </testFileRunner>
+         
+         <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round2/"
+                  ignore ="false">
                   
-                  </testFileRunner>
+                  <!-- Stack -->
+                  
+                   <run checkFile         ="A-small-practice.check"
+         className         ="Round2_P1.TicketSwap, Round2"
+         createInputMethod ="createInput"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInput"/>
+         
+          <run checkFile         ="A-large-practice.check"
+         className         ="Round2_P1.TicketSwap, Round2"
+         createInputMethod ="createInput"
+         inputFile         ="A-large-practice.in"
+         processInputMethod="processInput"/>
+         
+         <!-- binary ; understanding problem, simple solution -->
+                <run checkFile         ="B-small-practice.check"
+         className         ="Round2.ManyPrizes, Round2"
+         createInputMethod ="createInput"
+         inputFile         ="B-small-practice.in"
+         processInputMethod="processInput"/>
+         
+          <run checkFile         ="B-large-practice.check"
+         className         ="Round2.ManyPrizes, Round2"
+         createInputMethod ="createInput"
+         inputFile         ="B-large-practice.in"
+         processInputMethod="processInput"/>
+         
+         <!-- Longest increasing / decreasing subsequence -->
+              <run checkFile         ="C-small-practice.check"
+         className         ="Round2_P3.Erdos, Round2"
+         createInputMethod ="createInput"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInput"/>
+         
+           <run checkFile         ="C-large-practice.check"
+         className         ="Round2_P3.Erdos, Round2"
+         createInputMethod ="createInput"
+         inputFile         ="C-large-practice.in"
+         processInputMethod="processInput"/>
+                  
+         </testFileRunner>
+         
+                  
+                  
   <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round3/"
                   >
     <run checkFile         ="C-small-practice.correct"

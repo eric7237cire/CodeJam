@@ -90,7 +90,6 @@ namespace UnitTest
                         }
                     }
 
-                    Console.WriteLine(sb.ToString());
                     for (int n = 1; n <= len; ++n )
                     {
                         TestString(sb.ToString(), n);

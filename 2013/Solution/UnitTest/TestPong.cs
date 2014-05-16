@@ -393,7 +393,7 @@ namespace UnitTest
             {
                 int ans = (int)PongMain.calcAdd(p0, toAdd, i, height);
 
-                Logger.LogInfo("{} + n {} * {} = {} : {} [diff {}] with respect to height {}",
+                Logger.LogTrace("{} + n {} * {} = {} : {} [diff {}] with respect to height {}",
                     p0,
                     i, toAdd, p0 + i * toAdd, ans, (ans - posList.GetLastValue()), height);
 
@@ -426,7 +426,7 @@ namespace UnitTest
             {
                 int ans = (int)PongMain.calcAdd(p0, toAdd, i, height);
 
-                Logger.LogInfo("{} + n {} * {} = {} : {} [diff {}] with respect to height {}",
+                Logger.LogTrace("{} + n {} * {} = {} : {} [diff {}] with respect to height {}",
                     p0,
                     i, toAdd, p0 + i * toAdd, ans, (ans - posList.GetLastValue()), height);
 
@@ -463,7 +463,7 @@ namespace UnitTest
                 {
                     int ans = (int) PongMain.calcAdd(offset, toAdd, pNum, height);
                     
-                    Logger.LogInfo("{} + n {} * {} = {} : {} [diff {}] with respect to height {}", 
+                    Logger.LogTrace("{} + n {} * {} = {} : {} [diff {}] with respect to height {}", 
                         offset, pNum, toAdd, offset+pNum*toAdd, ans, (ans - posList.GetLastValue()), height);
 
                     posList.Add(ans);
@@ -500,7 +500,7 @@ namespace UnitTest
             for(int i = 0; i < 210; ++i)
             {
                 int ans = (int)PongMain.calcAdd(0, toAdd, i, height);
-                    Logger.LogInfo("{} + n {} * {} = {} : {} [diff {}] with respect to height {}",
+                    Logger.LogTrace("{} + n {} * {} = {} : {} [diff {}] with respect to height {}",
                         0, i, toAdd, i * toAdd, ans, (ans - posList.GetLastValue()), height);
 
                     posList.Add(ans);
@@ -508,10 +508,10 @@ namespace UnitTest
 
             for (int offset = offsetStart; offset <= offsetEnd; ++offset)
             {
-                Logger.LogInfo("\n\nOffset {}", offset);
+                Logger.LogTrace("\n\nOffset {}", offset);
                 int pointsToDiff = (int) PongMain.calcToTarget(offset, toAdd, height, target);
                     
-                Logger.LogInfo("Offset {}.  Points to target diff {}\n", offset, pointsToDiff);
+                Logger.LogTrace("Offset {}.  Points to target diff {}\n", offset, pointsToDiff);
 
             }
         }

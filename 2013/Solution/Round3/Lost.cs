@@ -210,8 +210,8 @@ namespace Round3
 		 
 		internal bool doDijkstra(List<int> pathPrefix, int nodeCount, LostInput input) {
 
-            int sourceNodeId = 1;
-            int targetNodeId = 2;
+            const int sourceNodeId = 1;
+            const int targetNodeId = 2;
 
             int[] actualEdgeCosts = new int[input.lowCost.Length];
 
@@ -251,7 +251,7 @@ namespace Round3
                 Preconditions.checkState(nodeU.distance < int.MaxValue, "NodeU distance is inf");
                 bool isGoodRobot = ((int)((nodeU.distance + 0.001) * 2)) % 2 == 1 ? true : false;
 
-                if (nodeU.nodeId == 2)
+                if (nodeU.nodeId == targetNodeId)
                 {
                     return isGoodRobot;
                 }
@@ -332,6 +332,7 @@ namespace Round3
             }
 
             return input;
+            /*
             //typeof(LostInput).getm
             // get the member information and use it to
             // retrieve the custom attributes
@@ -378,7 +379,7 @@ namespace Round3
             }
 
                 Logger.LogInfo("nCities {} {} {}", input.nCities, input.nConnections, input.suggPathLen);
-            return input;
+            return input;*/
         }
 
         

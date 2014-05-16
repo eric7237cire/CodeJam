@@ -68,7 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GreatWall.cs" />
-    <Compile Include="IntervalTree.cs" />
     <Compile Include="IntervalTree3.cs" />
     <Compile Include="IntervalTree3Test.cs" />
     <Compile Include="IntervalTreeOther.cs" />

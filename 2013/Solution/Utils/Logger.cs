@@ -106,7 +106,6 @@ namespace Utils
             
            LoggerFile.Instance.writer.WriteLine(msg);
 
-
             LoggerFile.Instance.writer.Flush();
         }
 

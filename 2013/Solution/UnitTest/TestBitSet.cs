@@ -61,14 +61,6 @@ namespace UnitTest
 
         }
 
-        public void TestCombinationIterator()
-        {
-            List<long> l = new List<long>(Combinations.iterateCombin(4, 1));
-            Assert.AreEqual(4, l.Count);
-            Assert.AreEqual(1, l[0]);
-            Assert.AreEqual(2, l[1]);
-            Assert.AreEqual(4, l[2]);
-            Assert.AreEqual(8, l[3]);
-        }
+        
     }
 }

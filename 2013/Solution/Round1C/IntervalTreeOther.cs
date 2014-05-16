@@ -976,7 +976,7 @@ namespace IntervalTree
                         ////the max value is stored in the node, if the node doesn't overlap then neither are the nodes in its range 
                         if (this.Range != null && this.Range.Count > 0)
                         {
-                            int rangeCount = this.Range.Count;
+                            //int rangeCount = this.Range.Count;
                             foreach (var kvp in this.GetRange())
                             {
                                 if (kvp.Key.OverlapsWith(toFind))

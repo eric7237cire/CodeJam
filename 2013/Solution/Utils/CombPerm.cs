@@ -48,6 +48,42 @@ namespace CombPerm
             }
         }
 
+        public static IEnumerable<List<int>> nextPermutationWithRepetition(int numToChoose, int totalNum)
+        {
+            List<int> list = new List<int>();
+            for (int i = 0; i < numToChoose; ++i)
+            {
+                list.Add(0);
+            }
+
+            while (true)
+            {
+                bool fullLoop = true;
+
+                yield return list;
+
+                //Try all permutations.  This loop finds the first position that can be incremented
+                for (int pos = 0; pos < list.Count; ++pos)
+                {
+                    list[pos]++;
+
+                    //Incremented, we are done
+                    if (list[pos] < totalNum)
+                    {
+                        fullLoop = false;
+                        break;
+                    }
+
+                    //This position is now zero, look to increment combin
+                    list[pos] = 0;
+                }
+
+                if (fullLoop)
+                    break;
+
+            }
+        }
+
         /// <summary>
         /// Cycles through all permutations of an array
         /// </summary>

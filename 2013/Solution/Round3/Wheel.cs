@@ -1,7 +1,7 @@
 ﻿#define LOGGING
 #define LOGGING_DEBUG
 #define LOGGING_INFO
-//#define LOGGING_TRACE
+#define LOGGING_TRACE
 
 using CodeJamUtils;
 using CombPerm;
@@ -18,7 +18,7 @@ using Logger = Utils.LoggerFile;
 
 namespace Round3
 {
-    
+
     public class WheelInput
     {
         public string wheel;
@@ -43,7 +43,7 @@ namespace Round3
             expectedValue = new BigInteger[1 << 20];
 
             Logger.LogTrace("total {} end {} = {}.", nTotal, endPosition.ToBinaryString(8), FormatGondolas(endPosition));
-            for(int i = 0; i < expectedValue.Length; ++i)
+            for (int i = 0; i < expectedValue.Length; ++i)
             {
                 expectedValue[i] = -1;
             }
@@ -62,17 +62,17 @@ namespace Round3
             }
 
             Logger.LogTrace("calc {} pMult {}", string.Join("", curState.ToBinaryString(nTotal).Replace('1', 'X').Replace('0', '.').Reverse()), pMult);
-            
+
             BigInteger totalReturn = 0;
 
             //Choose each possibility
-            for(int i = 0; i < nTotal; ++i)
+            for (int i = 0; i < nTotal; ++i)
             {
                 int pos = i;
                 int price = nTotal;
 
                 BitSet csBitSet = new BitSet(curState);
-                while(true)
+                while (true)
                 {
                     if (!csBitSet[pos])
                     {
@@ -104,26 +104,26 @@ namespace Round3
                     equivalentState = equivalentState.SetBit(nTotal - 1);
                 else
                     equivalentState = equivalentState.ClearBit(nTotal - 1);
-               // Logger.LogInfo("eq state {}", equivalentState.ToBinaryString(nTotal));
+                // Logger.LogInfo("eq state {}", equivalentState.ToBinaryString(nTotal));
                 expectedValue[equivalentState] = totalReturn;
             }
             Preconditions.checkState(equivalentState == curState);
 
             return expectedValue[curState] = totalReturn;
         }
-        
+
     }
 
     public class Wheel : InputFileConsumer<WheelInput, string>, InputFileProducer<WheelInput>
     {
-          
+
         public string processInput(WheelInput input)
         {
             int nTotal = input.wheel.Length;
 
             int initialState = 0;
             int holeCount = 0;
-            for( int i = 0; i < nTotal; ++i)
+            for (int i = 0; i < nTotal; ++i)
             {
                 if (input.wheel[i] == 'X') initialState = initialState.SetBit(i);
                 if (input.wheel[i] == '.') holeCount++;
@@ -141,9 +141,53 @@ namespace Round3
 
             Logger.LogDebug(" {} / {} ", num, denom);
 
-            return ((double) new BigFraction(num, denom)).ToUsString(9);
+            return ((double)new BigFraction(num, denom)).ToUsString(9);
         }
 
+        /// <summary>
+        ///  so first let’s look at P(i, j), the probability that j-th gondola will stay empty while we fill up 
+        ///  all gondolas from the interval [i, j) assuming each coming person approaches some gondola in inteval [i, j] (note that j is included here)
+        /// </summary>
+        /// <param name="gondalas"></param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        /// <returns></returns>
+        public static BigFraction P(bool[] gondalas, int i, int j)
+        {
+            Preconditions.checkState(gondalas[i] == false);
+            Preconditions.checkState(gondalas[j] == false);
+            Preconditions.checkState(gondalas.Length <= 7);
+
+            //Create a list of all the holes
+            List<int> holePositions = new List<int>();
+
+            ModdedLong pos = new ModdedLong(i, gondalas.Length);
+            ModdedLong stop = new ModdedLong(j, gondalas.Length);
+            
+            while (!pos.Equals(stop))
+            {
+                if (!gondalas[pos])
+                {
+                    holePositions.Add(pos);
+                }
+
+                pos += 1;
+            }
+
+            //Now cycle through all permutations
+            int numerator = 0;
+            int denominator = 0;
+
+            int counter = 0;
+            foreach (List<int> list in Combinations.nextPermutationWithRepetition(holePositions.Count, gondalas.Length))
+            {
+                
+
+                ++counter;
+            }
+
+            return new BigFraction(numerator, denominator);
+        }
 
         //
         /// <summary>
@@ -158,35 +202,46 @@ namespace Round3
         {
             Preconditions.checkState(gondalas[i] == false);
             Preconditions.checkState(gondalas[j] == false);
-            Preconditions.checkState(gondalas[i+k] == false);
-            Preconditions.checkState(ModdedLong.isStrictlyBetween(i, j, i + k));
+            Preconditions.checkState(gondalas[i + k] == false);
+            Preconditions.checkState(ModdedLong.isStrictlyBetween(i, j - 1, i + k));
 
             //Create a list of all the holes
             List<int> holePositions = new List<int>();
 
-            
-            for (int pos = 0; pos < gondalas.Length; ++pos )
+            ModdedLong pos = new ModdedLong(i, gondalas.Length);
+            ModdedLong stop = new ModdedLong(j, gondalas.Length);
+            ModdedLong mid = new ModdedLong(i + k, gondalas.Length);
+            //stop -= 1;
+
+            int check = 0;
+            while (!pos.Equals(stop))
             {
                 if (!gondalas[pos])
                 {
                     holePositions.Add(pos);
                 }
+
+                pos += 1;
+
+                ++check;
+                Preconditions.checkState(check < gondalas.Length);
             }
 
             //Now cycle through all permutations
             int numerator = 0;
             int denominator = 0;
-
-            foreach( List<int> perm in Combinations.nextPermutation<int, List<int>>(holePositions) )
+           
+            foreach (List<int> perm in Combinations.nextPermutation<int, List<int>>(holePositions))
             {
-                if ((perm[perm.Count - 1] == i + k) && perm[perm.Count - 2] == j - 1)
+                Logger.LogTrace("Perm {} stop {} mid - 1 {}", perm.ToCommaString(), stop-1, mid);
+                if ((perm[perm.Count - 1] == mid) && perm[perm.Count - 2] == stop-1)
                     ++numerator;
-               // ++denominator;
+                ++denominator;
             }
 
-                return 0;
+            return new BigFraction(numerator, denominator);
         }
-        
+
 
         public WheelInput createInput(Scanner scanner)
         {

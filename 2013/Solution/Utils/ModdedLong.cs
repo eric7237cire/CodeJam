@@ -1,4 +1,4 @@
-﻿#define LOGGING_TRACE
+﻿//#define LOGGING_TRACE
 #define LOGGING
 
 using System;
@@ -11,12 +11,12 @@ using Logger = Utils.LoggerFile;
 
 namespace Utils
 {
-    public struct ModdedLong
+    public struct ModdedLong : IEquatable<ModdedLong>
     {
-        private readonly long value;
+        private readonly int value;
         public readonly int mod;
 
-        public long Value
+        public int Value
         {
             get
             {
@@ -31,16 +31,17 @@ namespace Utils
             return m.value;
         }*/
 
-        public static implicit operator ModdedLong(int val)
+        /*public static implicit operator ModdedLong(int val)
         {
             Logger.LogTrace("Implicit cast int to moddedlong {0}", val);
             return new ModdedLong(val);
-        }
+        }*/
 
-        public ModdedLong(long v, int mod = 17) //1000002013)
+        public ModdedLong(long v, int mod ) //1000002013)
         {
             this.mod = mod;
-            value = v % mod;
+            long test = v % mod;
+            value = (int) (v % mod);
             Logger.LogTrace("Construct {0} = {1} ", v, value);
             Preconditions.checkState(value >= 0);
         }
@@ -57,11 +58,30 @@ namespace Utils
             Logger.LogTrace("Subtract {0} and {1}", c1, c2);
             return new ModdedLong(c1.value - c2.value + c1.mod, c1.mod);
         }
+        public static ModdedLong operator -(ModdedLong c1, int c2)
+        {
+            Logger.LogTrace("Subtract {0} and {1}", c1, c2);
+            return new ModdedLong(c1.value - c2 + c1.mod, c1.mod);
+        }
+        public static ModdedLong operator +(ModdedLong c1, int c2)
+        {
+            Logger.LogTrace("Subtract {0} and {1}", c1, c2);
+            return new ModdedLong(c1.value + c2, c1.mod);
+        }
         public static ModdedLong operator *(ModdedLong c1, ModdedLong c2)
         {
             Preconditions.checkState(c1.mod == c2.mod);
             Logger.LogTrace("Multiply {0} and {1}", c1, c2);
-            return new ModdedLong(c1.value * c2.value, c1.mod);
+            return new ModdedLong((long)c1.value * c2.value, c1.mod);
+        }
+        public static ModdedLong operator *(ModdedLong c1, int c2)
+        {
+            Logger.LogTrace("Multiply {0} and {1}", c1, c2);
+            return new ModdedLong((long)c1.value * c2, c1.mod);
+        }
+        public static ModdedLong operator *(int c2, ModdedLong c1)
+        {
+            return c1 * c2;
         }
         public static ModdedLong operator /(ModdedLong c1, int rhs)
         {
@@ -69,7 +89,12 @@ namespace Utils
             int div = modInverse(rhs, c1.mod);
 
             Logger.LogTrace("Divide int {0} and {1}.  mult. inv: {2}", c1, rhs, div);
-            return new ModdedLong(c1.value * div, c1.mod);
+            return new ModdedLong( (long)c1.value * div, c1.mod);
+        }
+
+        public static implicit operator int(ModdedLong f)
+        {
+            return f.value;
         }
 
 
@@ -238,6 +263,12 @@ namespace Utils
             }
 
             return p > left || p < right;
+        }
+
+        public bool Equals(ModdedLong other)
+        {
+            Preconditions.checkState(mod == other.mod);
+            return value == other.value;
         }
     }
 }

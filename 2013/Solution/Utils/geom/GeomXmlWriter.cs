@@ -5,10 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
-using System.Text;
 using System.Xml;
 using System.Globalization;
-//using System.Windows.Media;
 
 namespace Utils.geom
 {

@@ -19,6 +19,7 @@ namespace Round2
         public int winlossRank { get; internal set; }
     }
 
+    //Main issue was understanding the problem.  Binary tree ish
     public class ManyPrizes : InputFileConsumer<Input, string>
     {
 
@@ -43,6 +44,15 @@ namespace Round2
         }
   
 
+        public static Input createInput(Scanner scanner)
+        {
+            Input input = new Input();
+            input.nRounds = scanner.nextInt();
+            input.nPrizes = scanner.nextLong();
+
+            
+            return input;
+        }
     
         
         public string processInput(Input input)
@@ -65,7 +75,7 @@ namespace Round2
             return "{0} {1}".FormatThis(largestGaraunteed, largestCouldWin);
         }
 
-        
+        //Based on initial ordering, get who won
         public static List<Team> getRanks(List<int> posList)
         {
             int rounds = 0;
@@ -125,19 +135,11 @@ namespace Round2
     public class Input
     {
 
-        internal int nRounds { get; private set; }
-        internal long nPrizes { get; private set; }
+        internal int nRounds { get; set; }
+        internal long nPrizes { get; set; }
 
         
-        public static Input createInput(Scanner scanner)
-        {
-            Input input = new Input();
-            input.nRounds = scanner.nextInt();
-            input.nPrizes = scanner.nextLong();
-
-            
-            return input;
-        }
+        
 
 
     }

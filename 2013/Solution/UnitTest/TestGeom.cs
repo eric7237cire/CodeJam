@@ -69,27 +69,7 @@ namespace UnitTest
             
         }
 
-        #if !mono
-        [Test]
-        public void TestSmall8()
-        {
-            testInput(Properties.Resources.TestRuralSmall8, "0 4 7 5 1 6 2 3");
-        }
-
-        private void testInput(string inputTxt, string expectedAns)
-        {
-            Scanner scanner = new Scanner(new StringReader(inputTxt));
-
-            Rural pong = new Rural();
-
-            RuralInput input = pong.createInput(scanner);
-
-            string ans = pong.processInput(input);
-
-            Assert.AreEqual(expectedAns, ans);
-
-        }
-        #endif
+        
 
         [Test]
         [Category("current")]

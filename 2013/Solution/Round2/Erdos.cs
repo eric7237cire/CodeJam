@@ -12,37 +12,14 @@ using CombPerm;
 
 using Logger = Utils.LoggerFile;
 
-namespace Round2.ErdosNS
+namespace Round2_P3
 {
     public class Input
     {
 
-        internal int length { get; private set; }
-        internal int[] A { get; private set; }
-        internal int[] B { get; private set; }
-
-        public static Input createInput(Scanner scanner)
-        {
-            Input input = new Input();
-            input.length = scanner.nextInt();
-
-            input.A = new int[input.length];
-            input.B = new int[input.length];
-
-            for (int i = 0; i < input.length; ++i )
-            {
-                input.A[i] = scanner.nextInt();
-            }
-            for (int i = 0; i < input.length; ++i)
-            {
-                input.B[i] = scanner.nextInt();
-            }
-
-
-            return input;
-        }
-
-
+        internal int length { get;  set; }
+        internal int[] A { get;  set; }
+        internal int[] B { get;  set; }
     }
 
     class Graph
@@ -184,6 +161,26 @@ namespace Round2.ErdosNS
             }
         }
 
+         public static Input createInput(Scanner scanner)
+        {
+            Input input = new Input();
+            input.length = scanner.nextInt();
+
+            input.A = new int[input.length];
+            input.B = new int[input.length];
+
+            for (int i = 0; i < input.length; ++i )
+            {
+                input.A[i] = scanner.nextInt();
+            }
+            for (int i = 0; i < input.length; ++i)
+            {
+                input.B[i] = scanner.nextInt();
+            }
+
+
+            return input;
+        }
 
         public string processInput(Input input)
         {
@@ -195,16 +192,27 @@ namespace Round2.ErdosNS
                 lastValueIndex[u] = -1;
             }
 
+            /*
+            A is the array The length of the longest increasing subsequence of X that includes X[i] as its largest number.
+            this means that the subsequence ends at i.
+            */
             for (int u = 0; u < input.length; ++u )
             {
                 int val = input.A[u];
                 Logger.LogDebug("Element {0} A[i] {1}", u, val);
                 if (lastValueIndex[val] != -1)
                 {
+                	//If we have i, j as indexes in A where j > i
+                	//and A[i] == A[j] then X[j] <= X[i], but since
+                	// there are no duplicate values, we know X[j] < X[i]
+                	
+                	//The graph tracks positions
                     g.addConnection(u, lastValueIndex[val]); // u < lvi[val]
                 }
                 if (lastValueIndex[val-1] != -1)
                 {
+                	//Here, A[i] + 1 == A[j], because this is the immediate precedent,
+                	//we know X[i] < X[j]                	
                     g.addConnection(lastValueIndex[val-1], u); 
                 }
 
@@ -215,7 +223,8 @@ namespace Round2.ErdosNS
             {
                 lastValueIndex[u] = -1;
             }
-
+            
+            //Similar logic
             for(int u = input.length - 1; u >= 0; --u)
             {
                 int val = input.B[u];
@@ -242,21 +251,16 @@ namespace Round2.ErdosNS
                 }
             }
 
-            //int[] topoSort = g.getTopoSortUsingDFS(root);
+            //Now given all the constrains, find a topological sort
             int[] topoSort = g.getTopoSortUsingKahn();
-
-           // ;
 
             int[] ans = new int[input.length];
             for (int u = 0; u < input.length; ++u)
             {
                 ans[topoSort[u]] = u + 1;
             }
-            //return g.topoSort.Select((elem, idx) => { return 1 + elem; }).ToCommaString(); 
-           // calcAandB(ans);
-
+            
             return string.Join(" ", ans);
-            //return g.topoSort.ToCommaString();
         }
 
         

@@ -294,7 +294,7 @@ namespace UnitTest
             //string testSmall2 = 
             //"12 3 1 3 3 1 1 1 2 4";
             //testInput(testSmall2, "LEFT 3");
-            string mustMatch = null; // "Wheel"; // "Round1C";
+            string mustMatch = "Ticket"; // "Wheel"; // "Round1C";
 
             List<TestCaseData> testList = new List<TestCaseData>();
 
@@ -364,7 +364,7 @@ namespace UnitTest
         	//string testSmall2 = 
         	//"12 3 1 3 3 1 1 1 2 4";
             //testInput(testSmall2, "LEFT 3");
-            string mustMatch = "lost"; //null; //"Round1C";
+            string mustMatch = "Round2";
 
             XElement po = XElement.Load(@"/home/ent/mono/CodeJam/2013/Solution/TestData.xml");
             
@@ -412,6 +412,7 @@ namespace UnitTest
 	
 						for (int tc = 1; tc <= testCases; ++tc)
 						{
+							Preconditions.checkState( mainType.GetMethod(inputMethodName) != null, "Input method does not exist");
 							var input = mainType.GetMethod(inputMethodName).Invoke(main, new object[] {scanner});			
 							var ans = mainType.GetMethod(processInputMethodName).Invoke(main, new object[] {input});
 							

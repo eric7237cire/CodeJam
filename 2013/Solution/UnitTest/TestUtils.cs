@@ -12,7 +12,7 @@ using Utils;
 
 using Logger = Utils.LoggerFile;
 using Round2;
-using Round2.ErdosNS;
+using Round2_P3;
 using Utils.math;
 
 namespace UnitTest
@@ -159,6 +159,17 @@ namespace UnitTest
         }
 
         [Test]
+        public void testEquality()
+        {
+            
+            Assert.IsTrue(3 == new ModdedLong(3, 13));
+            Assert.IsTrue(new ModdedLong(3, 13) == 3);
+
+            Assert.IsTrue(3 == new ModdedLong(16, 13));
+            Assert.IsTrue(new ModdedLong(16, 13) == 3);
+        }
+
+        [Test]
         public void testModdedLong()
         {
             int mod = 7;
@@ -171,7 +182,7 @@ namespace UnitTest
 
                     int real = i / j;
 
-                    ModdedLong ml = new ModdedLong(i);
+                    ModdedLong ml = new ModdedLong(i, mod);
                     ml /= j;
                     Assert.AreEqual(real % mod, ml.Value, "{0} / {1} % {2}".FormatThis(i,j,mod));
                 }
@@ -198,7 +209,7 @@ namespace UnitTest
 
                     long real = v / j;
 
-                    ModdedLong ml = new ModdedLong(v);
+                    ModdedLong ml = new ModdedLong(v, mod);
                     ml /= (int)j;
                     Assert.AreEqual(real % mod, ml.Value, "{0} / {1} % {2}".FormatThis(v, j, mod));
                 }
