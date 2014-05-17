@@ -1,6 +1,4 @@
-﻿#define DEBUG
-#define TRACE
-#define LOGGING
+﻿
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,7 +33,7 @@ namespace Utils
             LoggerFile.Instance.writer.Close();
         }
 
-        [Conditional("LOGGING"), Conditional("LOGGING_TRACE")]
+        [Conditional("LOGGING_INFO"), Conditional("LOGGING_DEBUG"), Conditional("LOGGING_TRACE")]
         public static void Log(String msg, params object[] args)
         {
             Log(String.Format(msg, args));
@@ -99,8 +97,7 @@ namespace Utils
 
         private StreamWriter writer;
 
-        [Conditional("LOGGING"), Conditional("LOGGING_TRACE")]
-        public static void Log(String msg)
+        private static void Log(String msg)
         {
             //msg = "Thread id {0} -- ".FormatThis(System.Threading.Thread.CurrentThread.ManagedThreadId) + msg;
             

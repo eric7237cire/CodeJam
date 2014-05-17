@@ -1,4 +1,9 @@
-﻿using CombPerm;
+﻿#define LOGGING
+#define LOGGING_DEBUG
+#define LOGGING_INFO
+#define LOGGING_TRACE
+
+using CombPerm;
 using NUnit.Framework;
 using Round3;
 using System;
@@ -8,6 +13,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils;
 using Utils.math;
+
+using Logger = Utils.LoggerFile;
 
 namespace UnitTest
 {
@@ -25,42 +32,119 @@ namespace UnitTest
         }
 
         [Test]
-        public void TestPijk()
+        public void TestInc()
         {
-            bool[] gond = new bool[20];
-
-            BigFraction ans = Wheel.P(gond, 1, 4, 1);
-            Assert.AreEqual(new BigFraction(1, 6), ans);
+            ModdedLong l = new ModdedLong(1, 3);
+            Assert.AreEqual(1, l);
+            Assert.AreEqual(2, ++l);
+            Assert.AreEqual(2, l);
+            Assert.AreEqual(2, l++);
+            Assert.AreEqual(0, l);
         }
 
         [Test]
-        public void TestCombinationIterator()
+        public void TestCopyArray()
         {
-            List<long> l = new List<long>(Combinations.iterateCombin(4, 1));
-            Assert.AreEqual(4, l.Count);
-            Assert.AreEqual(1, l[0]);
-            Assert.AreEqual(2, l[1]);
-            Assert.AreEqual(4, l[2]);
-            Assert.AreEqual(8, l[3]);
+            int[] array = new int[] { 3, 8, 1, -3, 45, 19, -5 };
+
+            int[] copy1 = Wheel.copyArray(array, 6, 0);
+            CollectionAssert.AreEqual(new int[] { -5, 3 }, copy1, copy1.ToCommaString());
+
+            int[] copy2 = Wheel.copyArray(array, 1, 3);
+            CollectionAssert.AreEqual(new int[] { 8, 1, -3 }, copy2);
         }
 
         [Test]
-        public void TestPermutationWithRep()
+        public void TestSimulatePermutation()
         {
-            int i = 0;
-            foreach(List<int> list in Combinations.nextPermutationWithRepetition(3, 4))
+            bool[] gondolas = new bool[] {false, false, true, false};
+
+            Assert.AreEqual(0, Wheel.simulatePermutation(gondolas, new int[] {0, 2, 0}));
+            Assert.AreNotEqual(0, Wheel.simulatePermutation(gondolas, new int[] {1, 0, 0}));
+
+            Assert.AreNotEqual(0, Wheel.simulatePermutation(gondolas, new int[]{1,0,3}, 0));
+            //Perm 1, 0, 3 for ij False, False, True, False. 
+        }
+
+        [Test]
+        public void TestP()
+        {
+            bool[] gondolas = new bool[] { false, false, true, false, true };
+
+            Assert.AreEqual(new BigFraction(12, 64), Wheel.P(gondolas, 0, 3));
+
+            gondolas = new bool[] { false, true, false, true, false };
+            Assert.AreEqual(new BigFraction(12, 64), Wheel.P(gondolas, 4, 2));
+        }
+
+        [Test]
+        public void TestCompare()
+        {
+            int trials = 100;
+            Random r = new Random(3);
+
+            for(int t = 0; t < trials; ++t)
             {
-                if (i==0) CollectionAssert.AreEqual(new int[] { 0, 0, 0 }, list, list.ToCommaString());
-                if (i == 1) CollectionAssert.AreEqual(new int[] { 1, 0, 0 }, list, list.ToCommaString());
-                if (i == 2) CollectionAssert.AreEqual(new int[] { 2, 0, 0 }, list, list.ToCommaString());
-                if (i == 3) CollectionAssert.AreEqual(new int[] { 3, 0, 0 }, list, list.ToCommaString());
-                if (i == 4) CollectionAssert.AreEqual(new int[] { 0, 1, 0 }, list, list.ToCommaString());
+                bool[] gondolas = new bool[7];
+ 
+                for(int i = 0; i < gondolas.Length; ++i)
+                {
+                    gondolas[i] = r.Next(2) == 1 ? true : false;
+                }
+                int start = r.Next(0, gondolas.Length);
+                int stop = r.Next(0, gondolas.Length);
 
-                ++i;
+                gondolas[start] = false;
+                gondolas[stop] = false;
+                Logger.LogTrace("Gondolas {} start {} stop {}", gondolas.ToCommaString(), start, stop);
+                Assert.AreEqual(Wheel.P_bruteForce(gondolas, start, stop), Wheel.P(gondolas, start, stop), gondolas.ToCommaString());
             }
+        }
+
+        [Test]
+        public void TestPij_bruteforce()
+        {
+            bool[] gondolas = new bool[] { false, false, true, false, true };
+            
+            Assert.AreEqual(new BigFraction(12, 64), Wheel.P_bruteForce(gondolas, 0, 3));
+
+            Assert.AreEqual(new BigFraction(12, 64), Wheel.P_bruteForce(gondolas, 0, 3));
+
+            //Same thing but shifted +4
+            gondolas = new bool[] { false, true, false, true, false };
+            Assert.AreEqual(new BigFraction(12, 64), Wheel.P_bruteForce(gondolas, 4, 2));
+
+            //Test base case
+            Assert.AreEqual(new BigFraction(1, 1), Wheel.P_bruteForce(new bool[] { true, true, false, true },
+                3, 2));
+        }
+
+        [Test]
+        public void TestPijk_bruteForce()
+        {
+            bool[] gondolas = new bool[] { false, false, true, false, true };
             
 
-            Assert.AreEqual(64, i);
+            BigFraction sum = 0;
+            //Test that Pijk sums up to Pij
+            for(int k = 0; k < 3; ++k)
+            {
+                sum += Wheel.P_bruteForce(gondolas, 0,3,k);
+            }
+
+            Assert.AreEqual(new BigFraction(12, 64), sum);
+
         }
+
+        [Test]
+        public void TestPijk_bruteForce2()
+        {
+            bool[] gondolas = new bool[] { false, true, false, false, true, false, false };
+            //False, True, False, False, True, False, False [6 to 2] k=0
+
+            Assert.AreEqual(new BigFraction(4, 4*4*4), Wheel.P_bruteForce(gondolas, 6, 2, 0));
+        }
+
+        
     }
 }

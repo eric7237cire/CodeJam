@@ -92,6 +92,10 @@ namespace Utils
             return new ModdedLong( (long)c1.value * div, c1.mod);
         }
 
+        public static ModdedLong operator ++(ModdedLong c1)
+        {
+            return new ModdedLong(c1.Value + 1, c1.mod);
+        }
         public static implicit operator int(ModdedLong f)
         {
             return f.value;
@@ -236,6 +240,18 @@ namespace Utils
         /// <param name="m"></param>
         /// <returns></returns>
         public static long diff(long a, long b, long m)
+        {
+            Preconditions.checkState(0 <= a && a < m);
+            Preconditions.checkState(0 <= b && b < m);
+            if (b >= a)
+            {
+                return b - a;
+            }
+
+            return (b + m - a);
+        }
+
+        public static int diff(int a, int b, int m)
         {
             Preconditions.checkState(0 <= a && a < m);
             Preconditions.checkState(0 <= b && b < m);

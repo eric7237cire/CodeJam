@@ -47,8 +47,12 @@ namespace MainNS
             TestUtils tu = new TestUtils();
             tu.testEquality();
             TestWheel tw = new TestWheel();
-            tw.TestPermutationWithRep();
-            tw.TestPijk();
+            //tw.TestPermutationWithRep();
+            //tw.TestPij_bruteforce();
+            //tw.TestPijk_bruteForce();
+            tw.TestPijk_bruteForce2();
+            //tw.TestP();
+            tw.TestCompare();
             return;
 
             //Cheaters main = new Cheaters();

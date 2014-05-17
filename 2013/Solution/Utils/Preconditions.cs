@@ -9,7 +9,7 @@ namespace Utils
 {
     public static class Preconditions
     {
-        [Conditional("LOGGING")]
+        [Conditional("DEBUG")]
         public static void checkState(bool condition, String msg = "empty")
         {
             if (!condition)

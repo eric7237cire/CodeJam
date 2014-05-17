@@ -48,10 +48,16 @@ namespace CombPerm
             }
         }
 
-        public static IEnumerable<List<int>> nextPermutationWithRepetition(int numToChoose, int totalNum)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="permLength">Length of permutation</param>
+        /// <param name="numElementValues">Values in returned list vary from [0, numElementValues)</param>
+        /// <returns></returns>
+        public static IEnumerable<List<int>> nextPermutationWithRepetition(int permLength, int numElementValues)
         {
             List<int> list = new List<int>();
-            for (int i = 0; i < numToChoose; ++i)
+            for (int i = 0; i < permLength; ++i)
             {
                 list.Add(0);
             }
@@ -68,7 +74,7 @@ namespace CombPerm
                     list[pos]++;
 
                     //Incremented, we are done
-                    if (list[pos] < totalNum)
+                    if (list[pos] < numElementValues)
                     {
                         fullLoop = false;
                         break;

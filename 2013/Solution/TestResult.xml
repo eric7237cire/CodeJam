@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <!--This file represents the results of running a test suite-->
-<test-results name="C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll" total="4" errors="0" failures="1" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2014-05-16" time="22:41:14">
+<test-results name="C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll" total="12" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2014-05-17" time="14:59:14">
   <environment nunit-version="2.6.3.13283" clr-version="2.0.50727.5477" os-version="Microsoft Windows NT 6.1.7601 Service Pack 1" platform="Win32NT" cwd="C:\codejam\CodeJam\2013\Solution" machine-name="THRESH-PC" user="thresh" user-domain="thresh-PC" />
   <culture-info current-culture="fr-FR" current-uiculture="fr-FR" />
-  <test-suite type="Assembly" name="C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll" executed="True" result="Failure" success="False" time="0.108" asserts="0">
+  <test-suite type="Assembly" name="C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll" executed="True" result="Success" success="True" time="1.337" asserts="0">
     <results>
-      <test-suite type="Namespace" name="UnitTest" executed="True" result="Failure" success="False" time="0.092" asserts="0">
+      <test-suite type="Namespace" name="UnitTest" executed="True" result="Success" success="True" time="1.321" asserts="0">
         <results>
-          <test-suite type="TestFixture" name="TestWheel" executed="True" result="Failure" success="False" time="0.090" asserts="0">
+          <test-suite type="TestFixture" name="TestCombinationClasses" executed="True" result="Success" success="True" time="0.058" asserts="0">
             <results>
-              <test-case name="UnitTest.TestWheel.TestCombinationIterator" executed="True" result="Success" success="True" time="0.033" asserts="5" />
-              <test-case name="UnitTest.TestWheel.TestDiffs" executed="True" result="Success" success="True" time="0.001" asserts="3" />
-              <test-case name="UnitTest.TestWheel.TestPermutationWithRep" executed="True" result="Failure" success="False" time="0.025" asserts="2">
-                <failure>
-                  <message><![CDATA[  0, 0, 0
-  Expected is <System.Int32[3]>, actual is <System.Collections.Generic.List`1[System.Int32]> with 3 elements
-  Values differ at index [2]
-  Expected: 1
-  But was:  0
-]]></message>
-                  <stack-trace><![CDATA[à NUnit.Framework.CollectionAssert.AreEqual(IEnumerable expected, IEnumerable actual, String message)
-à UnitTest.TestWheel.TestPermutationWithRep() dans c:\codejam\CodeJam\2013\Solution\UnitTest\TestWheel.cs:ligne 52
-]]></stack-trace>
-                </failure>
-              </test-case>
-              <test-case name="UnitTest.TestWheel.TestPijk" executed="True" result="Success" success="True" time="0.011" asserts="1" />
+              <test-case name="UnitTest.TestCombinationClasses.TestCombin" executed="True" result="Success" success="True" time="0.031" asserts="2" />
+              <test-case name="UnitTest.TestCombinationClasses.TestCombinationIterator" executed="True" result="Success" success="True" time="0.003" asserts="5" />
+              <test-case name="UnitTest.TestCombinationClasses.TestPermutationWithRep" executed="True" result="Success" success="True" time="0.007" asserts="6" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestWheel" executed="True" result="Success" success="True" time="1.257" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestWheel.TestCompare" executed="True" result="Success" success="True" time="1.240" asserts="100" />
+              <test-case name="UnitTest.TestWheel.TestCopyArray" executed="True" result="Success" success="True" time="0.002" asserts="2" />
+              <test-case name="UnitTest.TestWheel.TestDiffs" executed="True" result="Success" success="True" time="0.000" asserts="3" />
+              <test-case name="UnitTest.TestWheel.TestInc" executed="True" result="Success" success="True" time="0.000" asserts="5" />
+              <test-case name="UnitTest.TestWheel.TestP" executed="True" result="Success" success="True" time="0.001" asserts="2" />
+              <test-case name="UnitTest.TestWheel.TestPij_bruteforce" executed="True" result="Success" success="True" time="0.001" asserts="4" />
+              <test-case name="UnitTest.TestWheel.TestPijk_bruteForce" executed="True" result="Success" success="True" time="0.001" asserts="1" />
+              <test-case name="UnitTest.TestWheel.TestPijk_bruteForce2" executed="True" result="Success" success="True" time="0.000" asserts="1" />
+              <test-case name="UnitTest.TestWheel.TestSimulatePermutation" executed="True" result="Success" success="True" time="0.007" asserts="3" />
             </results>
           </test-suite>
         </results>

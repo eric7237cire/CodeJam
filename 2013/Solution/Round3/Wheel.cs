@@ -1,7 +1,7 @@
 ﻿#define LOGGING
 #define LOGGING_DEBUG
 #define LOGGING_INFO
-#define LOGGING_TRACE
+//#define LOGGING_TRACE
 
 using CodeJamUtils;
 using CombPerm;
@@ -145,6 +145,78 @@ namespace Round3
         }
 
         /// <summary>
+        /// Start can be > stop, then wraps around.  Copies [start, stop] to source
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="start"></param>
+        /// <param name="stop"></param>
+        /// <returns></returns>
+        public static T[] copyArray<T>(T[] source, int start, int stop)
+        {
+            int len = 1+ ModdedLong.diff(start, stop, source.Length);
+
+            T[] ret = new T[len];
+            for(int i = 0; i < len; ++i)
+            {
+                ret[i] = source[(start + i) % source.Length];
+            }
+
+            return ret;
+        }
+
+        //Returns true if the last index is filled in last
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gondolas"></param>
+        /// <param name="permOrder"></param>
+        /// <param name="secondToLastToFill"></param>
+        /// <returns>Value given permutation. 0 if conditions that gondolas[last] must be filled last and optionally secondToLast </returns>
+        public static int simulatePermutation(bool[] gondolas, IList<int> permOrder, int secondToLastToFill = -1, int N = 300)
+        {
+            //Defensive copy
+            bool[] sim = new bool[gondolas.Length];
+            Array.Copy(gondolas, sim, gondolas.Length);
+
+            //end must be empty
+            Preconditions.checkState(!sim.GetLastValue());
+            //Filling in false values
+            Preconditions.checkState(sim.Count((b) => !b) == permOrder.Count);
+
+            int valueTotal = 0;
+
+            //Go through each one but the last
+            for (int idx = 0; idx < permOrder.Count - 1; ++idx)
+            {
+                int chosenPos = permOrder[idx];
+
+                while (chosenPos < sim.Length - 1 && sim[chosenPos])
+                    ++chosenPos;
+
+                if (chosenPos == sim.Length - 1)
+                {
+                    return 0;
+                }
+
+                sim[chosenPos] = true;
+
+                valueTotal += N - (chosenPos - permOrder[idx]);
+
+                //Enforce 2nd to last
+                if (secondToLastToFill != -1 && idx == permOrder.Count - 2 && chosenPos != secondToLastToFill)
+                {
+                    return 0;
+                }
+            }
+
+            valueTotal += N - (sim.Length - 1 - permOrder.GetLastValue());
+
+            Preconditions.checkState(valueTotal != 0);
+            return valueTotal;
+        }
+
+        /// <summary>
         ///  so first let’s look at P(i, j), the probability that j-th gondola will stay empty while we fill up 
         ///  all gondolas from the interval [i, j) assuming each coming person approaches some gondola in inteval [i, j] (note that j is included here)
         /// </summary>
@@ -152,38 +224,34 @@ namespace Round3
         /// <param name="i"></param>
         /// <param name="j"></param>
         /// <returns></returns>
-        public static BigFraction P(bool[] gondalas, int i, int j)
+        public static BigFraction P_bruteForce(bool[] gondalas, int i, int j)
         {
-            Preconditions.checkState(gondalas[i] == false);
             Preconditions.checkState(gondalas[j] == false);
-            Preconditions.checkState(gondalas.Length <= 7);
-
-            //Create a list of all the holes
-            List<int> holePositions = new List<int>();
-
+                        
             ModdedLong pos = new ModdedLong(i, gondalas.Length);
             ModdedLong stop = new ModdedLong(j, gondalas.Length);
+
+            bool[] ij = Wheel.copyArray(gondalas, i, j);
+            //Otherwise too slow
+            Preconditions.checkState(ij.Length <= 7);
             
-            while (!pos.Equals(stop))
-            {
-                if (!gondalas[pos])
-                {
-                    holePositions.Add(pos);
-                }
-
-                pos += 1;
-            }
-
+            int holeCount = ij.Count((b) => !b );
+            
             //Now cycle through all permutations
             int numerator = 0;
             int denominator = 0;
-
-            int counter = 0;
-            foreach (List<int> list in Combinations.nextPermutationWithRepetition(holePositions.Count, gondalas.Length))
+                        
+            foreach (List<int> list in Combinations.nextPermutationWithRepetition(holeCount, ij.Length))
             {
+                Logger.LogTrace("Perm {} for ij {}", list.ToCommaString(), ij.ToCommaString());
+                //Simulate 
+                if (0 != simulatePermutation(ij, list))
+                {
+                    Logger.LogTrace("last element filled last");
+                    ++numerator;
+                }
                 
-
-                ++counter;
+                ++denominator;
             }
 
             return new BigFraction(numerator, denominator);
@@ -191,58 +259,226 @@ namespace Round3
 
         //
         /// <summary>
-        /// The probability that gondola j stays empty while we fill interval [i, j) and that gondola at position (i+k) is filled last is P(i, j, k) and can be computed as:
+        /// The probability that gondola j stays empty while we fill interval [i, j) and that 
+        /// gondola at position (i+k) is filled last is P(i, j, k) and can be computed as:
         /// </summary>
         /// <param name="gondalas">True if filled, false if empty</param>
         /// <param name="i"></param>
         /// <param name="j"></param>
         /// <param name="k"></param>
         /// <returns></returns>
-        public static BigFraction P(bool[] gondalas, int i, int j, int k)
+        public static BigFraction P_bruteForce(bool[] gondalas, int i, int j, int k)
         {
-            Preconditions.checkState(gondalas[i] == false);
             Preconditions.checkState(gondalas[j] == false);
-            Preconditions.checkState(gondalas[i + k] == false);
-            Preconditions.checkState(ModdedLong.isStrictlyBetween(i, j - 1, i + k));
 
-            //Create a list of all the holes
-            List<int> holePositions = new List<int>();
+            Logger.LogDebug("P_bruteForce {} [{} to {}] k={}", gondalas.ToCommaString(), i, j, k);
+
+            bool[] ij = Wheel.copyArray(gondalas, i, j);
+            //Otherwise too slow
+            Preconditions.checkState(ij.Length <= 7);
+
+            int holeCount = ij.Count((b) => !b);
 
             ModdedLong pos = new ModdedLong(i, gondalas.Length);
             ModdedLong stop = new ModdedLong(j, gondalas.Length);
             ModdedLong mid = new ModdedLong(i + k, gondalas.Length);
-            //stop -= 1;
 
-            int check = 0;
-            while (!pos.Equals(stop))
-            {
-                if (!gondalas[pos])
-                {
-                    holePositions.Add(pos);
-                }
+            Preconditions.checkState(ModdedLong.isStrictlyBetween(pos-1, stop, mid));
 
-                pos += 1;
-
-                ++check;
-                Preconditions.checkState(check < gondalas.Length);
-            }
+            if (gondalas[mid])
+                return 0;
 
             //Now cycle through all permutations
             int numerator = 0;
             int denominator = 0;
            
-            foreach (List<int> perm in Combinations.nextPermutation<int, List<int>>(holePositions))
+            foreach (List<int> perm in Combinations.nextPermutationWithRepetition(holeCount, ij.Length))            
             {
-                Logger.LogTrace("Perm {} stop {} mid - 1 {}", perm.ToCommaString(), stop-1, mid);
-                if ((perm[perm.Count - 1] == mid) && perm[perm.Count - 2] == stop-1)
+                Logger.LogTrace("Perm {} for ij {}.  ", perm.ToCommaString(), ij.ToCommaString());
+                    
+                if (0 != simulatePermutation(ij, perm, k))
+                {
+                    Logger.LogTrace("Perm {} for ij {}.  mid filled 2nd to last {}", perm.ToCommaString(), ij.ToCommaString(), mid.Value);
                     ++numerator;
+                }
                 ++denominator;
             }
 
             return new BigFraction(numerator, denominator);
         }
 
+        public static BigFraction P(bool[] gondalas, int i, int j, int k)
+        {
+            Preconditions.checkState(gondalas[j] == false);
+            
+            
+            
+            ModdedLong start = new ModdedLong(i, gondalas.Length);
+            ModdedLong stop = new ModdedLong(j, gondalas.Length);
+            ModdedLong mid = new ModdedLong(i + k, gondalas.Length);
 
+            Preconditions.checkState(ModdedLong.isStrictlyBetween(start - 1, stop, mid));
+
+            if (gondalas[mid])
+                return 0;
+
+            bool[] ij = Wheel.copyArray(gondalas, i, j);
+            // [i, i+k]
+            bool[] firstHalf = Wheel.copyArray(gondalas, start, mid);
+            // [i+k+1, j]
+            bool[] secondHalf = Wheel.copyArray(gondalas, mid + 1, stop);
+
+            Preconditions.checkState(!firstHalf[k]);
+            Preconditions.checkState(firstHalf.Length == k + 1);
+
+            Preconditions.checkState(!secondHalf.GetLastValue());
+            Preconditions.checkState(secondHalf.Length == ij.Length - k - 1);
+
+            int holeCount = ij.Count((b) => !b);
+            Preconditions.checkState(holeCount >= 2, "gondolas[j] must be empty and at least 1 other, otherwise this method would not have been called");
+
+
+
+            //Gondolas free in [i, k)
+            int freeBeforeK = firstHalf.Count((b) => !b) - 1;
+            //Gondolas free is [k+1, j)
+            int freeAfterK = secondHalf.Count((b) => !b) - 1;
+
+            //Choose people to go to first half -or- we can choose which ones go to second half.  k and j are predetermined
+            //int choose = Combinations.combin(freeBeforeK + freeAfterK, freeBeforeK);
+            int choose = Combinations.combin( freeBeforeK + freeAfterK, freeAfterK);
+
+            //Probability that a + 1 people have a gondola on the left side
+            BigFraction f = 1;
+            for (int t = 0; t <= freeBeforeK; ++t)
+                f *= new BigFraction(firstHalf.Length, ij.Length);
+
+            for (int t = 0; t < freeAfterK; ++t )
+                f *= new BigFraction(secondHalf.Length, ij.Length);
+
+            BigFraction probLeft = P(firstHalf, 0, k);
+            BigFraction probRight = P(secondHalf, 0, secondHalf.Length - 1);
+
+            BigFraction ans = choose * f * probLeft * probRight;
+
+            BigFraction check = P_bruteForce(gondalas, i, j, k);
+            Preconditions.checkState(ans.Equals(check));
+            return ans;
+        }
+
+        public static BigFraction P(bool[] gondalas, int i, int j)
+        {
+            Preconditions.checkState(gondalas[j] == false);
+            if (i == j)
+                return 1;
+
+            bool[] ij = Wheel.copyArray(gondalas, i, j);
+            int holeCount = ij.Count((b) => !b);
+
+            //Base case
+            if (holeCount == 1)
+                return 1;
+
+            BigFraction sum = 0;
+            for (int k = 0; k < ij.Length-1; ++k )
+            {
+                sum += P(gondalas, i, j, k);
+            }
+
+            return sum;
+        }
+
+        public static BigFraction E(bool[] gondalas, int i, int j, int k, int N)
+        {
+            ModdedLong start = new ModdedLong(i, gondalas.Length);
+            ModdedLong stop = new ModdedLong(j, gondalas.Length);
+            ModdedLong mid = new ModdedLong(i + k, gondalas.Length);
+
+            bool[] ij = Wheel.copyArray(gondalas, i, j);
+            // [i, i+k]
+            bool[] firstHalf = Wheel.copyArray(gondalas, start, mid);
+            // [i+k+1, j]
+            bool[] secondHalf = Wheel.copyArray(gondalas, mid + 1, stop);
+
+            if (gondalas[mid])
+            {
+                return 0;
+            }
+
+            return E(gondalas, start, mid, N) + E(gondalas, 0, secondHalf.Length - 1, N) + N - new BigFraction(k, 2);
+        }
+
+        public static BigFraction E(bool[] gondalas, int i, int j, int N)
+        {
+            Preconditions.checkState(gondalas[j] == false);
+            if (i == j)
+                return 1;
+
+            bool[] ij = Wheel.copyArray(gondalas, i, j);
+            int holeCount = ij.Count((b) => !b);
+
+            //Base case
+            if (holeCount == 1)
+                return 1;
+
+            BigFraction sum = 0;
+            for (int k = 0; k < ij.Length - 1; ++k)
+            {
+                sum += P(gondalas, i, j, k) * E(gondalas, i,j,k) / P(gondalas, i,j);
+            }
+
+            return sum;
+        }
+
+        /// <summary>
+        /// The expected money we get while filling out the interval [i, j) 
+        /// so that the last filled gondola is at position (i+k) is:
+        /// </summary>
+        /// <param name="gondalas"></param>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        /// <param name="k"></param>
+        /// <param name="N"></param>
+        /// <returns></returns>
+        public static BigFraction E_bruteForce(bool[] gondalas, int i, int j, int k, int N)
+        {
+            Preconditions.checkState(gondalas[j] == false);
+
+            Logger.LogDebug("P_bruteForce {} [{} to {}] k={}", gondalas.ToCommaString(), i, j, k);
+
+            bool[] ij = Wheel.copyArray(gondalas, i, j);
+            //Otherwise too slow
+            Preconditions.checkState(ij.Length <= 7);
+
+            int holeCount = ij.Count((b) => !b);
+
+            ModdedLong pos = new ModdedLong(i, gondalas.Length);
+            ModdedLong stop = new ModdedLong(j, gondalas.Length);
+            ModdedLong mid = new ModdedLong(i + k, gondalas.Length);
+
+            Preconditions.checkState(ModdedLong.isStrictlyBetween(pos - 1, stop, mid));
+
+            if (gondalas[mid])
+                return 0;
+
+            //Now cycle through all permutations
+            int numerator = 0;
+            int denominator = 0;
+
+            foreach (List<int> perm in Combinations.nextPermutationWithRepetition(holeCount, ij.Length))
+            {
+                Logger.LogTrace("Perm {} for ij {}.  ", perm.ToCommaString(), ij.ToCommaString());
+
+                if (0 != simulatePermutation(ij, perm, k))
+                {
+                    Logger.LogTrace("Perm {} for ij {}.  mid filled 2nd to last {}", perm.ToCommaString(), ij.ToCommaString(), mid.Value);
+                    ++numerator;
+                }
+                ++denominator;
+            }
+
+            return new BigFraction(numerator, denominator);
+        }
         public WheelInput createInput(Scanner scanner)
         {
             WheelInput input = new WheelInput();
