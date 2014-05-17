@@ -25,7 +25,8 @@ namespace Round3
             if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
    {
        //@"/include=current",
-       @"/run=UnitTest.TestLost",
+       //@"/run=UnitTest.TestLost",
+       @"/run=UnitTest.TestWheel",
        //"/nothread",
        @"C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll"
      //  @"/run=UnitTest.TestModMath",

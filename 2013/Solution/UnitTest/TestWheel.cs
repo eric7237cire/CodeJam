@@ -71,10 +71,11 @@ namespace UnitTest
         {
             bool[] gondolas = new bool[] { false, false, true, false, true };
 
-            Assert.AreEqual(new BigFraction(12, 64), Wheel.P(gondolas, 0, 3));
+            DynamicProgrammingLarge dp = new DynamicProgrammingLarge(gondolas);
+            Assert.AreEqual(new BigFraction(12, 64), dp.P( 0, 3));
 
             gondolas = new bool[] { false, true, false, true, false };
-            Assert.AreEqual(new BigFraction(12, 64), Wheel.P(gondolas, 4, 2));
+            Assert.AreEqual(new BigFraction(12, 64), dp.P( 4, 2));
         }
 
         [Test]
@@ -96,8 +97,10 @@ namespace UnitTest
 
                 gondolas[start] = false;
                 gondolas[stop] = false;
+
+                DynamicProgrammingLarge dp = new DynamicProgrammingLarge(gondolas);
                 Logger.LogTrace("Gondolas {} start {} stop {}", gondolas.ToCommaString(), start, stop);
-                Assert.AreEqual(Wheel.P_bruteForce(gondolas, start, stop), Wheel.P(gondolas, start, stop), gondolas.ToCommaString());
+                Assert.AreEqual(Wheel.P_bruteForce(gondolas, start, stop), dp.P(start, stop), gondolas.ToCommaString());
             }
         }
 
