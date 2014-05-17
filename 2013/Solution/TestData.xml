@@ -193,8 +193,15 @@
          className         ="Round3.Wheel, Round3"
          createInputMethod ="createInput"
          inputFile         ="D-small-practice.in"
-         processInputMethod="processInput"/>
+         processInputMethod="processInputSmall"/>
 		 
+		 <!--
+		 <run checkFile         ="D-small-practice.correct"
+         className         ="Round3.Wheel, Round3"
+         createInputMethod ="createInput"
+         inputFile         ="D-small-practice.in"
+         processInputMethod="processInput"/>
+		 -->
   </testFileRunner>
   <tests answerType="double"
          className ="Round3.Cheaters, Round3"

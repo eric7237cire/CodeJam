@@ -145,6 +145,15 @@ namespace UnitTest
             Assert.AreEqual(new BigFraction(4, 4*4*4), Wheel.P_bruteForce(gondolas, 6, 2, 0));
         }
 
+        [Test]
+        public void TestEI_bruteForce()
+        {
+            bool[] gondolas = new bool[] { false, true, false, false, true, false, false };
+            //False, True, False, False, True, False, False [6 to 2] k=0
+
+            Assert.AreEqual(new BigFraction(18+19+20+21, 4 * 4 * 4), Wheel.E_bruteForce(gondolas, 6, 2, 0,gondolas.Length));
+        }
+
         
     }
 }

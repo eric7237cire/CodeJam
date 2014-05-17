@@ -251,16 +251,23 @@ namespace Utils
             return (b + m - a);
         }
 
-        public static int diff(int a, int b, int m)
+        /// <summary>
+        /// Returns right - left
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        public static int diff(int left, int right, int m)
         {
-            Preconditions.checkState(0 <= a && a < m);
-            Preconditions.checkState(0 <= b && b < m);
-            if (b >= a)
+            Preconditions.checkState(0 <= left && left < m);
+            Preconditions.checkState(0 <= right && right < m);
+            if (right >= left)
             {
-                return b - a;
+                return right - left;
             }
 
-            return (b + m - a);
+            return (right + m - left);
         }
 
         /// <summary>

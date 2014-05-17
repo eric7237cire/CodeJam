@@ -27,11 +27,13 @@ namespace MainNS
 #if !mono
             bool tests = false;
 
+            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round3\");
+
             if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
    {
        //@"/include=current",
-       //@"/run=UnitTest.TestRunner",
-       @"/run=UnitTest.TestUtils",
+       @"/run=UnitTest.TestRunner",
+      // @"/run=UnitTest.TestUtils",
        //"/nothread",
        @"C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll"
      //  @"/run=UnitTest.TestModMath",
@@ -42,18 +44,19 @@ namespace MainNS
             //return;
 #endif
 
-            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round3\");
+            
 
             TestUtils tu = new TestUtils();
-            tu.testEquality();
-            TestWheel tw = new TestWheel();
+            //tu.testEquality();
+            //TestWheel tw = new TestWheel();
+           // tw.TestEI_bruteForce();
             //tw.TestPermutationWithRep();
             //tw.TestPij_bruteforce();
             //tw.TestPijk_bruteForce();
-            tw.TestPijk_bruteForce2();
+            //tw.TestPijk_bruteForce2();
             //tw.TestP();
-            tw.TestCompare();
-            return;
+            //tw.TestCompare();
+            //return;
 
             //Cheaters main = new Cheaters();
             //  Rural main = new Rural();
@@ -72,7 +75,7 @@ namespace MainNS
             // list.Add("sample.in");
 
             //list.Add("A-small-practice.in");
-             list.Add("A-large-practice.in");
+            // list.Add("A-large-practice.in");
 
 
             //list.Add("B-small-practice.in");
@@ -81,7 +84,7 @@ namespace MainNS
             //list.Add("C-small-practice.in");
             //list.Add("C-large-practice.in");
 
-            // list.Add("D-small-practice.in");
+             list.Add("D-small-practice.in");
             //  list.Add("D-large-practice.in");
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";

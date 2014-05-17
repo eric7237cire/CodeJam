@@ -121,6 +121,24 @@ namespace Round3
         {
             int nTotal = input.wheel.Length;
 
+            bool[] initialState = new bool[nTotal];
+            
+            for (int i = 0; i < nTotal; ++i)
+            {
+                if (input.wheel[i] == 'X') initialState[i] = true;
+                if (input.wheel[i] == '.') initialState[i] = false;
+
+            }
+
+            BigFraction ans = computeAnswer(initialState);
+
+            return ((double) ans).ToUsString(9);
+        }
+
+        public string processInputSmall(WheelInput input)
+        {
+            int nTotal = input.wheel.Length;
+
             int initialState = 0;
             int holeCount = 0;
             for (int i = 0; i < nTotal; ++i)
@@ -307,124 +325,24 @@ namespace Round3
             return new BigFraction(numerator, denominator);
         }
 
-        public static BigFraction P(bool[] gondalas, int i, int j, int k)
+        
+        
+
+        
+
+        public static BigFraction computeAnswer(bool[] gondalas)
         {
-            Preconditions.checkState(gondalas[j] == false);
-            
-            
-            
-            ModdedLong start = new ModdedLong(i, gondalas.Length);
-            ModdedLong stop = new ModdedLong(j, gondalas.Length);
-            ModdedLong mid = new ModdedLong(i + k, gondalas.Length);
-
-            Preconditions.checkState(ModdedLong.isStrictlyBetween(start - 1, stop, mid));
-
-            if (gondalas[mid])
-                return 0;
-
-            bool[] ij = Wheel.copyArray(gondalas, i, j);
-            // [i, i+k]
-            bool[] firstHalf = Wheel.copyArray(gondalas, start, mid);
-            // [i+k+1, j]
-            bool[] secondHalf = Wheel.copyArray(gondalas, mid + 1, stop);
-
-            Preconditions.checkState(!firstHalf[k]);
-            Preconditions.checkState(firstHalf.Length == k + 1);
-
-            Preconditions.checkState(!secondHalf.GetLastValue());
-            Preconditions.checkState(secondHalf.Length == ij.Length - k - 1);
-
-            int holeCount = ij.Count((b) => !b);
-            Preconditions.checkState(holeCount >= 2, "gondolas[j] must be empty and at least 1 other, otherwise this method would not have been called");
-
-
-
-            //Gondolas free in [i, k)
-            int freeBeforeK = firstHalf.Count((b) => !b) - 1;
-            //Gondolas free is [k+1, j)
-            int freeAfterK = secondHalf.Count((b) => !b) - 1;
-
-            //Choose people to go to first half -or- we can choose which ones go to second half.  k and j are predetermined
-            //int choose = Combinations.combin(freeBeforeK + freeAfterK, freeBeforeK);
-            int choose = Combinations.combin( freeBeforeK + freeAfterK, freeAfterK);
-
-            //Probability that a + 1 people have a gondola on the left side
-            BigFraction f = 1;
-            for (int t = 0; t <= freeBeforeK; ++t)
-                f *= new BigFraction(firstHalf.Length, ij.Length);
-
-            for (int t = 0; t < freeAfterK; ++t )
-                f *= new BigFraction(secondHalf.Length, ij.Length);
-
-            BigFraction probLeft = P(firstHalf, 0, k);
-            BigFraction probRight = P(secondHalf, 0, secondHalf.Length - 1);
-
-            BigFraction ans = choose * f * probLeft * probRight;
-
-            BigFraction check = P_bruteForce(gondalas, i, j, k);
-            Preconditions.checkState(ans.Equals(check));
-            return ans;
-        }
-
-        public static BigFraction P(bool[] gondalas, int i, int j)
-        {
-            Preconditions.checkState(gondalas[j] == false);
-            if (i == j)
-                return 1;
-
-            bool[] ij = Wheel.copyArray(gondalas, i, j);
-            int holeCount = ij.Count((b) => !b);
-
-            //Base case
-            if (holeCount == 1)
-                return 1;
-
             BigFraction sum = 0;
-            for (int k = 0; k < ij.Length-1; ++k )
+            for(int i = 0; i < gondalas.Length; ++i)
             {
-                sum += P(gondalas, i, j, k);
-            }
+                if (gondalas[i])
+                    continue;
 
-            return sum;
-        }
-
-        public static BigFraction E(bool[] gondalas, int i, int j, int k, int N)
-        {
-            ModdedLong start = new ModdedLong(i, gondalas.Length);
-            ModdedLong stop = new ModdedLong(j, gondalas.Length);
-            ModdedLong mid = new ModdedLong(i + k, gondalas.Length);
-
-            bool[] ij = Wheel.copyArray(gondalas, i, j);
-            // [i, i+k]
-            bool[] firstHalf = Wheel.copyArray(gondalas, start, mid);
-            // [i+k+1, j]
-            bool[] secondHalf = Wheel.copyArray(gondalas, mid + 1, stop);
-
-            if (gondalas[mid])
-            {
-                return 0;
-            }
-
-            return E(gondalas, start, mid, N) + E(gondalas, 0, secondHalf.Length - 1, N) + N - new BigFraction(k, 2);
-        }
-
-        public static BigFraction E(bool[] gondalas, int i, int j, int N)
-        {
-            Preconditions.checkState(gondalas[j] == false);
-            if (i == j)
-                return 1;
-
-            bool[] ij = Wheel.copyArray(gondalas, i, j);
-            int holeCount = ij.Count((b) => !b);
-
-            //Base case
-            if (holeCount == 1)
-                return 1;
-
-            BigFraction sum = 0;
-            for (int k = 0; k < ij.Length - 1; ++k)
-            {
-                sum += P(gondalas, i, j, k) * E(gondalas, i,j,k) / P(gondalas, i,j);
+                int nextI = (i + 1) % gondalas.Length;
+                BigFraction probIFilledLast = P(gondalas, nextI, i);
+                BigFraction expValue = E(gondalas, nextI, i, gondalas.Length);
+                expValue += new BigFraction(gondalas.Length + 1, gondalas.Length);
+                sum += probIFilledLast * expValue;
             }
 
             return sum;
@@ -467,13 +385,11 @@ namespace Round3
 
             foreach (List<int> perm in Combinations.nextPermutationWithRepetition(holeCount, ij.Length))
             {
-                Logger.LogTrace("Perm {} for ij {}.  ", perm.ToCommaString(), ij.ToCommaString());
+                
+                int value =  simulatePermutation(ij, perm, k, N);
+                Logger.LogTrace("Perm {} for ij {} Value {}", perm.ToCommaString(), ij.ToCommaString(), value);
 
-                if (0 != simulatePermutation(ij, perm, k))
-                {
-                    Logger.LogTrace("Perm {} for ij {}.  mid filled 2nd to last {}", perm.ToCommaString(), ij.ToCommaString(), mid.Value);
-                    ++numerator;
-                }
+                numerator += value;
                 ++denominator;
             }
 
@@ -484,6 +400,209 @@ namespace Round3
             WheelInput input = new WheelInput();
             input.wheel = scanner.nextWord();
             return input;
+        }
+
+        public class DynamicProgrammingLarge
+        {
+            bool[] gondalas;
+            int N;
+            BigFraction[][][] Pijk_memoize;
+            BigFraction[][] Pij_memoize;
+            BigFraction[][][] Eijk_memoize;
+            BigFraction[][] Eij_memoize;
+
+            public DynamicProgrammingLarge(bool[] gond)
+            {
+                gondalas = gond;
+                N = gondalas.Length;
+
+                int d = gond.Length;
+                Pijk_memoize = new BigFraction[d][][];
+                Eijk_memoize = new BigFraction[d][][];
+                Pij_memoize = new BigFraction[d][];
+                Eij_memoize = new BigFraction[d][];
+
+                for(int i = 0; i < d; ++i)
+                {
+                    Pijk_memoize[i] = new BigFraction[d][];
+                    Eijk_memoize[i] = new BigFraction[d][];
+
+                    Pij_memoize[i] = new BigFraction[d];
+                    Eij_memoize[i] = new BigFraction[d];
+
+                    for(int j = 0; j < d; ++j)
+                    {
+                        Pijk_memoize[i][j] = new BigFraction[d];
+                        Eijk_memoize[i][j] = new BigFraction[d];
+
+                        Eij_memoize[i][j] = -1;
+                        Pij_memoize[i][j] = -1;
+
+                        for(int k = 0; k < d; ++k)
+                        {
+                            Eijk_memoize[i][j][k] = -1;
+                            Pijk_memoize[i][j][k] = -1;
+                        }
+                    }
+                }
+            }
+
+            /// <summary>
+            /// The probability that gondola j stays empty while we fill interval [i, j) 
+            /// and that gondola at position (i+k) is filled last is P(i, j, k) and can be computed as
+            /// </summary>
+            /// <param name="i"></param>
+            /// <param name="j"></param>
+            /// <param name="k"></param>
+            /// <returns></returns>
+            public BigFraction P(int i, int j, int k)
+            {
+                Preconditions.checkState(gondalas[j] == false);
+
+
+
+                ModdedLong start = new ModdedLong(i, gondalas.Length);
+                ModdedLong stop = new ModdedLong(j, gondalas.Length);
+                ModdedLong mid = new ModdedLong(i + k, gondalas.Length);
+
+                Preconditions.checkState(ModdedLong.isStrictlyBetween(start - 1, stop, mid));
+
+                if (gondalas[mid])
+                    return 0;
+
+                int totalLen = ModdedLong.diff(i, j, gondalas.Length) + 1;
+                // [i, i+k]
+                //bool[] firstHalf = Wheel.copyArray(gondalas, start, mid);
+                // [i+k+1, j]
+                //bool[] secondHalf = Wheel.copyArray(gondalas, mid + 1, stop);
+
+                Preconditions.checkState(!gondalas[mid]);
+                
+                Preconditions.checkState(!gondalas[stop]);
+                                
+                //Gondolas free in [i, k)
+                int freeBeforeK = 0;
+                //Gondolas free is [k+1, j)
+                int freeAfterK = 0;
+
+                //Does not count endpoints (mid for 1st half, stop for 2nd)
+                for (ModdedLong idx = start; idx != mid; ++idx)
+                    if (!gondalas[idx])
+                        ++freeBeforeK;
+
+                for (ModdedLong idx = mid + 1; idx != stop; ++idx)
+                    if (!gondalas[idx])
+                        ++freeAfterK;
+
+                int firstHalfLen = ModdedLong.diff(start, mid, N);
+                int secondHalfLen = ModdedLong.diff(mid+1, stop, N);
+
+                Preconditions.checkState(firstHalfLen + secondHalfLen + 2 == totalLen);
+
+                //Choose people to go to first half -or- we can choose which ones go to second half.  k and j are predetermined
+                //int choose = Combinations.combin(freeBeforeK + freeAfterK, freeBeforeK);
+                int choose = Combinations.combin(freeBeforeK + freeAfterK, freeAfterK);
+
+                //Probability that a + 1 people have a gondola on the left side
+                BigFraction f = 1;
+                for (int t = 0; t <= freeBeforeK; ++t)
+                    f *= new BigFraction(firstHalfLen, totalLen);
+
+                for (int t = 0; t < freeAfterK; ++t)
+                    f *= new BigFraction(secondHalfLen, totalLen);
+
+                BigFraction probLeft = P( start, mid);
+                BigFraction probRight = P( mid+1, stop );
+
+                BigFraction ans = choose * f * probLeft * probRight;
+
+                //BigFraction check = P_bruteForce(gondalas, i, j, k);
+                //Preconditions.checkState(ans.Equals(check));
+                return ans;
+            }
+
+            public BigFraction P(int i, int j)
+            {
+                Preconditions.checkState(gondalas[j] == false);
+                if (i == j)
+                    return 1;
+
+                ModdedLong start = new ModdedLong(i, gondalas.Length);
+                ModdedLong stop = new ModdedLong(j, gondalas.Length);
+
+                int ijLength;
+                int holeCount = GetHoleCount(i, j, out ijLength);
+                
+                //Base case
+                if (holeCount == 0)
+                    return 1;
+
+                BigFraction sum = 0;
+                for (int k = 0; k < ijLength - 1; ++k)
+                {
+                    sum += P(i, j, k);
+                }
+
+                return sum;
+            }
+
+            public static BigFraction E(bool[] gondalas, int i, int j, int k, int N)
+            {
+                Logger.LogTrace("E {} {} {} {} N {}", gondalas.ToCommaString(), i, j, k, N);
+                ModdedLong start = new ModdedLong(i, gondalas.Length);
+                ModdedLong stop = new ModdedLong(j, gondalas.Length);
+                ModdedLong mid = new ModdedLong(i + k, gondalas.Length);
+
+                bool[] ij = Wheel.copyArray(gondalas, i, j);
+                // [i, i+k]
+                bool[] firstHalf = Wheel.copyArray(gondalas, start, mid);
+                // [i+k+1, j]
+                bool[] secondHalf = Wheel.copyArray(gondalas, mid + 1, stop);
+
+                Preconditions.checkState(!gondalas[stop]);
+
+                if (gondalas[mid])
+                {
+                    return 0;
+                }
+
+                return E(firstHalf, 0, k, N) + E(secondHalf, 0, secondHalf.Length - 1, N) + N - new BigFraction(k, 2);
+            }
+
+            public BigFraction E(int i, int j)
+            {
+                Preconditions.checkState(gondalas[j] == false);
+                if (i == j)
+                    return 1;
+
+                int ijLength;
+                int holeCount = GetHoleCount(i, j, out ijLength);
+
+                //Base case
+                if (holeCount == 1)
+                    return 1;
+
+                BigFraction sum = 0;
+                for (int k = 0; k < ijLength - 1; ++k)
+                {
+                    sum += P(i, j, k) * E(gondalas, i, j, k, N);
+                }
+
+                return sum / P(i, j);
+            }
+
+            private int GetHoleCount(int i, int j, out int ijLength)
+            {
+                int holeCount = 0;
+                ModdedLong stop = new ModdedLong(j, N);
+                for (ModdedLong idx = new ModdedLong(i, N); idx != stop; ++idx)
+                    if (!gondalas[idx])
+                        holeCount++;
+
+                ijLength = ModdedLong.diff(i, j, gondalas.Length) + 1;
+
+                return holeCount;
+            }
         }
     }
 }
