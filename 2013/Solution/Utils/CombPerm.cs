@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,11 +9,11 @@ namespace CombPerm
 {
     public static class Combinations
     {
-        public static int factorial(int n)
+        public static long factorial(int n)
         {
             checked
             {
-                int r = 1;
+                long r = 1;
                 for (int i = 2; i <= n; ++i)
                 {
                     r *= i;
@@ -20,14 +21,40 @@ namespace CombPerm
                 return r;
             }
         }
-        public static int combin(int n, int k)
+        public static long combin(int n, int k)
         {
             checked { 
-            int num = factorial(n);
-            int den = factorial(k) * factorial(n - k);
+            long num = factorial(n);
+            long den = factorial(k) * factorial(n - k);
 
             return num / den;
             }
+        }
+
+        /// <summary>
+        /// Generates array C[n][k]  n choose k
+        /// </summary>
+        /// <param name="max"></param>
+        /// <returns></returns>
+        public static BigInteger[][] generateCombin(int max) 
+        {
+
+            BigInteger[][] combinations = new BigInteger[max + 1][];
+            for(int n = 0; n <= max; ++n)
+            {
+                combinations[n] = new BigInteger[max + 1];
+                for(int k = 0; k <= max; ++k)
+                {
+                    if (n<k)
+                        combinations[n][k] =0;
+                    else if (n==k || k==0 )
+                        combinations[n][k] = 1;
+                    else
+                        combinations[n][k] = (combinations[n-1][k] + combinations[n-1][k-1]);
+                }
+            }
+        
+            return combinations;
         }
 
         public static IEnumerable<long> iterateCombin(int n, int k)

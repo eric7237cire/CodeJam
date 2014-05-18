@@ -41,3 +41,4 @@ handOutput.txt
 input/
 output/
 2013/Solution/TestResult.xml
+*.vsp

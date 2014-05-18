@@ -1,7 +1,7 @@
 ﻿#define LOGGING
 #define LOGGING_DEBUG
 #define LOGGING_INFO
-#define LOGGING_TRACE
+//#define LOGGING_TRACE
 using CodeJamUtils;
 using Round1C_P2;
 using Round2_P1;
@@ -48,13 +48,13 @@ namespace MainNS
 
             TestUtils tu = new TestUtils();
             //tu.testEquality();
-            //TestWheel tw = new TestWheel();
+            TestWheel tw = new TestWheel();
            // tw.TestEI_bruteForce();
             //tw.TestPermutationWithRep();
             //tw.TestPij_bruteforce();
             //tw.TestPijk_bruteForce();
             //tw.TestPijk_bruteForce2();
-            //tw.TestP();
+           // tw.TestP();
             //tw.TestCompare();
             //return;
 
@@ -72,7 +72,7 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-            // list.Add("sample.in");
+           // list.Add("sample.in");
 
             //list.Add("A-small-practice.in");
             // list.Add("A-large-practice.in");
@@ -85,7 +85,7 @@ namespace MainNS
             //list.Add("C-large-practice.in");
 
              list.Add("D-small-practice.in");
-            //  list.Add("D-large-practice.in");
+             list.Add("D-large-practice.in");
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1C\");
@@ -98,7 +98,7 @@ namespace MainNS
             // list = list.ConvertAll(s => dir + s);
 
              CjUtils.RunMain(list, main, main.createInput, null); 
-            //CjUtils.RunMainMulti(list, main, main.createInput, null);
+           // CjUtils.RunMainMulti(list, main, main.createInput, null);
         }
     }
 }

@@ -298,14 +298,14 @@ namespace UnitTest
 
             List<TestCaseData> testList = new List<TestCaseData>();
 
-            //XElement po = XElement.Load(@"C:\codejam\CodeJam\2013\Solution\TestData.xml");
-            XElement po = XElement.Load(@"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\TestData.xml");
+            XElement po = XElement.Load(@"C:\codejam\CodeJam\2013\Solution\TestData.xml");
+            //XElement po = XElement.Load(@"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\TestData.xml");
 
             foreach (XElement testFileRunner in po.Elements("testFileRunner"))
             {
                 string baseDir = getAttributeValue(testFileRunner, "basedir");
 
-                baseDir = baseDir.Replace("/home/ent/mono/CodeJam/", @"C:\Users\epeg\Documents\GitHub\CodeJam\").Replace('/', '\\');
+                baseDir = baseDir.Replace("/home/ent/mono/CodeJam/", @"C:\codejam\CodeJam\").Replace('/', '\\');
 
                 Directory.SetCurrentDirectory(baseDir);
 

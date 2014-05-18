@@ -71,6 +71,7 @@
     <Compile Include="heapPQ\PriorityQueueNode.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="math\BigFraction.cs" />
+    <Compile Include="math\Fraction.cs" />
     <Compile Include="math\INumeric.cs" />
     <Compile Include="ModdedLong.cs" />
     <Compile Include="PascalTriangle.cs" />

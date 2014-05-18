@@ -45,6 +45,11 @@ namespace Utils.math
 			return lcd;
         }
         
+        private BigFraction(bool a, BigInteger num, BigInteger den )
+        {
+            numerator = num;
+            denominator = den;
+        }
         public BigFraction(BigInteger num, BigInteger den, bool reduce = true )
         {
             Logger.LogTrace("BigFraction cons {} / {}", num, den);
@@ -73,7 +78,7 @@ namespace Utils.math
                 }
 
                 // move sign to numerator
-                if (BigInteger.Zero.CompareTo(den) > 0)
+                if (den.Sign < 0)
                 {
                     num = BigInteger.Negate(num);
                     den = BigInteger.Negate(den);
@@ -132,7 +137,7 @@ namespace Utils.math
         #region operators to BigFraction
         public static implicit operator BigFraction(int i)
         {
-            return new BigFraction(new BigInteger(i), BigInteger.One);
+            return new BigFraction(false, new BigInteger(i), BigInteger.One);
         }
         public static implicit operator BigFraction(long i)
         {
@@ -141,6 +146,10 @@ namespace Utils.math
         public static implicit operator BigFraction(BigInteger i)
         {
             return new BigFraction(i, BigInteger.One);
+        }
+        public static explicit operator BigFraction(Fraction f)
+        {
+            return new BigFraction(f.Numerator, f.Denominator);
         }
         #endregion
 
@@ -327,6 +336,7 @@ return "{0} / {1}".FormatThis(numerator.ToString(), denominator.ToString() );
         	//TODO inconsistent with reduced == unreduced fraction
             return CompareTo(other) == 0;
         }
+        
         #endregion
     }
 

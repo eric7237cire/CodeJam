@@ -1,7 +1,9 @@
-﻿#define LOGGING
+﻿//#define LOGGING
 #define LOGGING_DEBUG
-#define LOGGING_INFO
-#define LOGGING_TRACE
+//#define LOGGING_INFO
+//#define LOGGING_TRACE
+
+#define USE_DOUBLE
 
 using CodeJamUtils;
 using CombPerm;
@@ -15,6 +17,16 @@ using System.Threading.Tasks;
 using Utils;
 using Utils.math;
 using Logger = Utils.LoggerFile;
+
+using BruteForceFracClass = Utils.math.BigFraction;
+
+#if USE_DOUBLE
+using FracClass = System.Double; 
+
+#else
+using FracClass = Utils.math.BigFraction;
+#endif
+
 
 namespace Round3
 {
@@ -130,7 +142,7 @@ namespace Round3
 
             }
 
-            BigFraction ans = computeAnswer(initialState);
+            FracClass ans = computeAnswer(initialState);
 
             return ((double) ans).ToUsString(9);
         }
@@ -159,7 +171,7 @@ namespace Round3
 
             Logger.LogDebug(" {} / {} ", num, denom);
 
-            return ((double)new BigFraction(num, denom)).ToUsString(9);
+            return ((double)num / (double) denom).ToUsString(9);
         }
 
         /// <summary>
@@ -234,6 +246,58 @@ namespace Round3
             return valueTotal;
         }
 
+        //Returns true if the last index is filled in last
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="gondolas"></param>
+        /// <param name="permOrder"></param>
+        /// <param name="secondToLastToFill"></param>
+        /// <returns>Value given permutation. 0 if conditions that gondolas[last] must be filled last and optionally secondToLast </returns>
+        public static int simulatePermutationExpectedValue(bool[] gondolas, IList<int> permOrder,
+            int secondToLastToFill, int N)
+        {
+            //Defensive copy
+            bool[] sim = new bool[gondolas.Length];
+            Array.Copy(gondolas, sim, gondolas.Length);
+
+            //end must be empty
+            Preconditions.checkState(!sim.GetLastValue());
+            //Filling in false values
+            //Preconditions.checkState(sim.Count((b) => !b) == permOrder.Count);
+
+            int valueTotal = 0;
+
+            //Go through each one but the last
+            for (int idx = 0; idx < permOrder.Count ; ++idx)
+            {
+                int chosenPos = permOrder[idx];
+
+                while (chosenPos < sim.Length - 1 && sim[chosenPos])
+                    ++chosenPos;
+
+                if (chosenPos == sim.Length - 1)
+                {
+                    return -1;
+                }
+
+                sim[chosenPos] = true;
+
+                valueTotal += N - (chosenPos - permOrder[idx]);
+
+                //Enforce 2nd to last
+                if ( idx == permOrder.Count - 1 && chosenPos != secondToLastToFill)
+                {
+                    return -1;
+                }
+            }
+
+            
+
+            Preconditions.checkState(valueTotal != 0);
+            return valueTotal;
+        }
+
         /// <summary>
         ///  so first let’s look at P(i, j), the probability that j-th gondola will stay empty while we fill up 
         ///  all gondolas from the interval [i, j) assuming each coming person approaches some gondola in inteval [i, j] (note that j is included here)
@@ -242,7 +306,7 @@ namespace Round3
         /// <param name="i"></param>
         /// <param name="j"></param>
         /// <returns></returns>
-        public static BigFraction P_bruteForce(bool[] gondalas, int i, int j)
+        public static BruteForceFracClass P_bruteForce(bool[] gondalas, int i, int j)
         {
             Preconditions.checkState(gondalas[j] == false);
                         
@@ -272,7 +336,7 @@ namespace Round3
                 ++denominator;
             }
 
-            return new BigFraction(numerator, denominator);
+            return new BruteForceFracClass(numerator, denominator);
         }
 
         //
@@ -285,7 +349,7 @@ namespace Round3
         /// <param name="j"></param>
         /// <param name="k"></param>
         /// <returns></returns>
-        public static BigFraction P_bruteForce(bool[] gondalas, int i, int j, int k)
+        public static BruteForceFracClass P_bruteForce(bool[] gondalas, int i, int j, int k)
         {
             Preconditions.checkState(gondalas[j] == false);
 
@@ -322,7 +386,7 @@ namespace Round3
                 ++denominator;
             }
 
-            return new BigFraction(numerator, denominator);
+            return new BruteForceFracClass(numerator, denominator);
         }
 
         
@@ -330,9 +394,9 @@ namespace Round3
 
         
 
-        public static BigFraction computeAnswer(bool[] gondalas)
+        public static FracClass computeAnswer(bool[] gondalas)
         {
-            BigFraction sum = 0;
+            FracClass sum = 0;
             DynamicProgrammingLarge dp = new DynamicProgrammingLarge(gondalas);
 
             for(int i = 0; i < gondalas.Length; ++i)
@@ -341,10 +405,16 @@ namespace Round3
                     continue;
 
                 int nextI = (i + 1) % gondalas.Length;
-                BigFraction probIFilledLast = dp.P(nextI, i);
-                BigFraction expValue = dp.E(nextI, i);
-                expValue += new BigFraction(gondalas.Length + 1, gondalas.Length);
+                FracClass probIFilledLast = dp.P(nextI, i);
+                FracClass expValue = dp.E(nextI, i);
+#if USE_DOUBLE
+                expValue += (double) (gondalas.Length + 1) / 2d;
+#else
+                expValue += new FracClass(gondalas.Length + 1, 2);
+#endif
                 sum += probIFilledLast * expValue;
+
+                Preconditions.checkState(sum >= 0);
             }
 
             return sum;
@@ -360,11 +430,11 @@ namespace Round3
         /// <param name="k"></param>
         /// <param name="N"></param>
         /// <returns></returns>
-        public static BigFraction E_bruteForce(bool[] gondalas, int i, int j, int k, int N)
+        public static BruteForceFracClass E_bruteForce(bool[] gondalas, int i, int j, int k, int N)
         {
             Preconditions.checkState(gondalas[j] == false);
 
-            Logger.LogDebug("P_bruteForce {} [{} to {}] k={}", gondalas.ToCommaString(), i, j, k);
+            Logger.LogDebug("E_bruteForce {} [{} to {}] k={}", gondalas.ToCommaString(), i, j, k);
 
             bool[] ij = Wheel.copyArray(gondalas, i, j);
             //Otherwise too slow
@@ -385,17 +455,21 @@ namespace Round3
             int numerator = 0;
             int denominator = 0;
 
-            foreach (List<int> perm in Combinations.nextPermutationWithRepetition(holeCount, ij.Length))
+            foreach (List<int> perm in Combinations.nextPermutationWithRepetition(holeCount-1, ij.Length-1))
             {
                 
-                int value =  simulatePermutation(ij, perm, k, N);
+                int value =  simulatePermutationExpectedValue(ij, perm, k, N);
                 Logger.LogTrace("Perm {} for ij {} Value {}", perm.ToCommaString(), ij.ToCommaString(), value);
+
+                if (value == -1)
+                    continue;
 
                 numerator += value;
                 ++denominator;
             }
 
-            return new BigFraction(numerator, denominator);
+            Logger.LogTrace(" Return {} / {}", numerator, denominator);
+            return new BruteForceFracClass(numerator, denominator);
         }
         public WheelInput createInput(Scanner scanner)
         {
@@ -411,10 +485,12 @@ namespace Round3
     {
         bool[] gondalas;
         int N;
-        BigFraction[][][] Pijk_memoize;
-        BigFraction[][] Pij_memoize;
-        BigFraction[][][] Eijk_memoize;
-        BigFraction[][] Eij_memoize;
+        FracClass[][][] Pijk_memoize;
+        FracClass[][] Pij_memoize;
+        FracClass[][][] Eijk_memoize;
+        FracClass[][] Eij_memoize;
+
+        FracClass init;
 
         public DynamicProgrammingLarge(bool[] gond)
         {
@@ -422,31 +498,38 @@ namespace Round3
             N = gondalas.Length;
 
             int d = gond.Length;
-            Pijk_memoize = new BigFraction[d][][];
-            Eijk_memoize = new BigFraction[d][][];
-            Pij_memoize = new BigFraction[d][];
-            Eij_memoize = new BigFraction[d][];
+
+#if USE_DOUBLE
+            init = -1;
+#else
+            init = new FracClass(-1, 1);
+#endif
+
+            Pijk_memoize = new FracClass[d][][];
+            Eijk_memoize = new FracClass[d][][];
+            Pij_memoize = new FracClass[d][];
+            Eij_memoize = new FracClass[d][];
 
             for (int i = 0; i < d; ++i)
             {
-                Pijk_memoize[i] = new BigFraction[d][];
-                Eijk_memoize[i] = new BigFraction[d][];
+                Pijk_memoize[i] = new FracClass[d][];
+                Eijk_memoize[i] = new FracClass[d][];
 
-                Pij_memoize[i] = new BigFraction[d];
-                Eij_memoize[i] = new BigFraction[d];
+                Pij_memoize[i] = new FracClass[d];
+                Eij_memoize[i] = new FracClass[d];
 
                 for (int j = 0; j < d; ++j)
                 {
-                    Pijk_memoize[i][j] = new BigFraction[d];
-                    Eijk_memoize[i][j] = new BigFraction[d];
+                    Pijk_memoize[i][j] = new FracClass[d];
+                    Eijk_memoize[i][j] = new FracClass[d];
 
-                    Eij_memoize[i][j] = -1;
-                    Pij_memoize[i][j] = -1;
+                    Eij_memoize[i][j] = init;
+                    Pij_memoize[i][j] = init;
 
                     for (int k = 0; k < d; ++k)
                     {
-                        Eijk_memoize[i][j][k] = -1;
-                        Pijk_memoize[i][j][k] = -1;
+                        Eijk_memoize[i][j][k] = init;
+                        Pijk_memoize[i][j][k] = init;
                     }
                 }
             }
@@ -460,12 +543,15 @@ namespace Round3
         /// <param name="j"></param>
         /// <param name="k"></param>
         /// <returns></returns>
-        public BigFraction P(int i, int j, int k)
+        public FracClass P(int i, int j, int k)
         {
             Preconditions.checkState(gondalas[j] == false);
 
-
-
+            if (init != Pijk_memoize[i][j][k])
+            {
+                Logger.LogDebug("Memoize P {} {} {}", i, j, k);
+                return Pijk_memoize[i][j][k];
+            }
             ModdedLong start = new ModdedLong(i, N);
             ModdedLong stop = new ModdedLong(j, N);
             ModdedLong mid = new ModdedLong(i + k, N);
@@ -473,7 +559,7 @@ namespace Round3
             Preconditions.checkState(ModdedLong.isStrictlyBetween(start - 1, stop, mid));
 
             if (gondalas[mid])
-                return 0;
+                return Pijk_memoize[i][j][k] = 0;
 
             int totalLen = ModdedLong.diff(i, j, N) + 1;
             // [i, i+k]
@@ -499,38 +585,53 @@ namespace Round3
                 if (!gondalas[idx])
                     ++freeAfterK;
 
-            int firstHalfLen = ModdedLong.diff(start, mid, N);
-            int secondHalfLen = ModdedLong.diff(mid + 1, stop, N);
+            int firstHalfLen = 1+ ModdedLong.diff(start, mid, N);
+            int secondHalfLen = 1 + ModdedLong.diff(mid + 1, stop, N);
 
-            Preconditions.checkState(firstHalfLen + secondHalfLen + 2 == totalLen);
+            Preconditions.checkState(firstHalfLen + secondHalfLen  == totalLen);
 
             //Choose people to go to first half -or- we can choose which ones go to second half.  k and j are predetermined
             //int choose = Combinations.combin(freeBeforeK + freeAfterK, freeBeforeK);
-            int choose = Combinations.combin(freeBeforeK + freeAfterK, freeAfterK);
+            //long choose = Combinations.combin(freeBeforeK + freeAfterK, freeAfterK);
+            BigInteger choose = CombinArray.Instance.combinArray[freeBeforeK + freeAfterK][freeAfterK];
 
             //Probability that a + 1 people have a gondola on the left side
-            BigFraction f = 1;
+            FracClass f = 1;
+            #if USE_DOUBLE
             for (int t = 0; t <= freeBeforeK; ++t)
-                f *= new BigFraction(firstHalfLen, totalLen);
+                f *= (double)firstHalfLen / totalLen;
 
             for (int t = 0; t < freeAfterK; ++t)
-                f *= new BigFraction(secondHalfLen, totalLen);
+                f *= (double) secondHalfLen / totalLen;
+#else
+            for (int t = 0; t <= freeBeforeK; ++t)
+                f *= new FracClass(firstHalfLen, totalLen);
 
-            BigFraction probLeft = P(start, mid);
-            BigFraction probRight = P(mid + 1, stop);
+            for (int t = 0; t < freeAfterK; ++t)
+                f *= new FracClass(secondHalfLen, totalLen);
+#endif
 
-            BigFraction ans = choose * f * probLeft * probRight;
+            FracClass probLeft = P(start, mid);
+            FracClass probRight = P(mid + 1, stop);
 
-            //BigFraction check = P_bruteForce(gondalas, i, j, k);
+            FracClass ans = (double)choose * f * probLeft * probRight;
+            Preconditions.checkState(ans >= 0);
+
+            //FracClass check = P_bruteForce(gondalas, i, j, k);
             //Preconditions.checkState(ans.Equals(check));
-            return ans;
+            return Pijk_memoize[i][j][k] = ans;
         }
 
-        public BigFraction P(int i, int j)
+        public FracClass P(int i, int j)
         {
+            if (init != Pij_memoize[i][j])
+                return Pij_memoize[i][j];
+
+            Logger.LogInfo("P({}, {})", i, j);
+
             Preconditions.checkState(gondalas[j] == false);
             if (i == j)
-                return 1;
+                return Pij_memoize[i][j]=1;
 
             ModdedLong start = new ModdedLong(i, N);
             ModdedLong stop = new ModdedLong(j, N);
@@ -542,17 +643,33 @@ namespace Round3
             if (holeCount == 0)
                 return 1;
 
-            BigFraction sum = 0;
+            FracClass sum = 0;
             for (int k = 0; k < ijLength - 1; ++k)
             {
                 sum += P(i, j, k);
             }
 
-            return sum;
+            return Pij_memoize[i][j]=sum;
         }
 
-        public BigFraction E(int i, int j, int k)
+        /// <summary>
+        /// The expected money we get while filling out the interval [i, j) 
+        /// so that the last filled gondola is at position (i+k).
+        /// 
+        /// This means that the value for filling j is not counted
+        /// </summary>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        /// <param name="k"></param>
+        /// <returns></returns>
+        public FracClass E(int i, int j, int k)
         {
+            if (init != Eijk_memoize[i][j][k])
+            {
+                Logger.LogDebug("Memoize E {} {} {}", i, j, k);
+                return Eijk_memoize[i][j][k];
+            }
+
             Logger.LogTrace("E {} {} {} {} N {}", gondalas.ToCommaString(), i, j, k, N);
             ModdedLong start = new ModdedLong(i, gondalas.Length);
             ModdedLong stop = new ModdedLong(j, gondalas.Length);
@@ -562,32 +679,55 @@ namespace Round3
 
             if (gondalas[mid])
             {
-                return 0;
+                return Eijk_memoize[i][j][k] = 0;
             }
 
-            return E(i, mid) + E(mid + 1, stop) + N - new BigFraction(k, 2);
+            FracClass expectedLeft = E(i, mid);
+            FracClass expectedRight = E(mid + 1, stop);
+
+#if USE_DOUBLE
+            FracClass ans = expectedLeft + expectedRight + N - (double) k /2;
+#else
+            FracClass ans = expectedLeft + expectedRight + N - new FracClass(k, 2);
+#endif
+            Logger.LogTrace(" E({},{}) = {} + E({},{}) = {} + {} = {}",
+                i,
+                mid,
+                expectedLeft,
+                mid + 1,
+                stop,
+                expectedRight, N, ans);
+            //FracClass check = Wheel.E_bruteForce(gondalas, i, j, k, N);
+           // Preconditions.checkState(check.Equals(ans));
+
+            return Eijk_memoize[i][j][k] = ans;
         }
 
-        public BigFraction E(int i, int j)
+        public FracClass E(int i, int j)
         {
+            if (init != Eij_memoize[i][j] )
+                return Eij_memoize[i][j];
+
             Preconditions.checkState(gondalas[j] == false);
             if (i == j)
-                return 1;
+                return Eij_memoize[i][j] = 0;
+
+            Logger.LogInfo("E({}, {})", i, j);
 
             int ijLength;
             int holeCount = GetHoleCount(i, j, out ijLength);
 
             //Base case
-            if (holeCount == 1)
-                return 1;
+            //if (holeCount == 0)
+               // return 1;
 
-            BigFraction sum = 0;
+            FracClass sum = 0;
             for (int k = 0; k < ijLength - 1; ++k)
             {
                 sum += P(i, j, k) * E(i, j, k);
             }
-
-            return sum / P(i, j);
+            Preconditions.checkState(sum >= 0);
+            return Eij_memoize[i][j] = sum / P(i, j);
         }
 
         private int GetHoleCount(int i, int j, out int ijLength)
@@ -602,5 +742,21 @@ namespace Round3
 
             return holeCount;
         }
+    }
+
+    public sealed class CombinArray
+    {
+        private static readonly Lazy<CombinArray> lazy =
+            new Lazy<CombinArray>(() => new CombinArray());
+
+        public static CombinArray Instance { get { return lazy.Value; } }
+
+        private CombinArray()
+        {
+            Logger.LogTrace("Init combin array");
+            combinArray = Combinations.generateCombin(200);
+        }
+
+        public BigInteger[][] combinArray;
     }
 }

@@ -72,10 +72,12 @@ namespace UnitTest
             bool[] gondolas = new bool[] { false, false, true, false, true };
 
             DynamicProgrammingLarge dp = new DynamicProgrammingLarge(gondolas);
-            Assert.AreEqual(new BigFraction(12, 64), dp.P( 0, 3));
+            Assert.AreEqual(new BigFraction(12, 64), (BigFraction)dp.P(0, 3));
 
             gondolas = new bool[] { false, true, false, true, false };
-            Assert.AreEqual(new BigFraction(12, 64), dp.P( 4, 2));
+            dp = new DynamicProgrammingLarge(gondolas);
+
+            Assert.AreEqual(new BigFraction(12, 64), (BigFraction)dp.P(4, 2));
         }
 
         [Test]
@@ -108,17 +110,17 @@ namespace UnitTest
         public void TestPij_bruteforce()
         {
             bool[] gondolas = new bool[] { false, false, true, false, true };
-            
-            Assert.AreEqual(new BigFraction(12, 64), Wheel.P_bruteForce(gondolas, 0, 3));
 
-            Assert.AreEqual(new BigFraction(12, 64), Wheel.P_bruteForce(gondolas, 0, 3));
+            Assert.AreEqual(new BigFraction(12, 64), (BigFraction)Wheel.P_bruteForce(gondolas, 0, 3));
+
+            Assert.AreEqual(new BigFraction(12, 64), (BigFraction)Wheel.P_bruteForce(gondolas, 0, 3));
 
             //Same thing but shifted +4
             gondolas = new bool[] { false, true, false, true, false };
-            Assert.AreEqual(new BigFraction(12, 64), Wheel.P_bruteForce(gondolas, 4, 2));
+            Assert.AreEqual(new BigFraction(12, 64), (BigFraction)Wheel.P_bruteForce(gondolas, 4, 2));
 
             //Test base case
-            Assert.AreEqual(new BigFraction(1, 1), Wheel.P_bruteForce(new bool[] { true, true, false, true },
+            Assert.AreEqual(new BigFraction(1, 1), (BigFraction) Wheel.P_bruteForce(new bool[] { true, true, false, true },
                 3, 2));
         }
 
@@ -132,10 +134,10 @@ namespace UnitTest
             //Test that Pijk sums up to Pij
             for(int k = 0; k < 3; ++k)
             {
-                sum += Wheel.P_bruteForce(gondolas, 0,3,k);
+                sum += (BigFraction) Wheel.P_bruteForce(gondolas, 0,3,k);
             }
 
-            Assert.AreEqual(new BigFraction(12, 64), sum);
+            Assert.AreEqual(new BigFraction(12, 64), (BigFraction)sum);
 
         }
 
@@ -145,18 +147,21 @@ namespace UnitTest
             bool[] gondolas = new bool[] { false, true, false, false, true, false, false };
             //False, True, False, False, True, False, False [6 to 2] k=0
 
-            Assert.AreEqual(new BigFraction(4, 4*4*4), Wheel.P_bruteForce(gondolas, 6, 2, 0));
+            Assert.AreEqual(new BigFraction(4, 4*4*4), (BigFraction) Wheel.P_bruteForce(gondolas, 6, 2, 0));
         }
+
 
         [Test]
-        public void TestEI_bruteForce()
+        public void TestRef()
         {
-            bool[] gondolas = new bool[] { false, true, false, false, true, false, false };
-            //False, True, False, False, True, False, False [6 to 2] k=0
+            BigFraction[] testArray = new BigFraction[3];
+            BigFraction init = new BigFraction(-1, 1);
 
-            Assert.AreEqual(new BigFraction(18+19+20+21, 4 * 4 * 4), Wheel.E_bruteForce(gondolas, 6, 2, 0,gondolas.Length));
+            testArray[0] = init;
+            testArray[1] = init;
+
+            Assert.IsTrue(ReferenceEquals(testArray[0], testArray[1]));
         }
-
         
     }
 }

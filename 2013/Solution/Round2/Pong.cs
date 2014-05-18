@@ -324,7 +324,7 @@ namespace Round2.Pong
 
             calculatedDeltaD = 2 * (height - maxDiff);
 
-            if (calculatedDeltaD.Equals(0))
+            if (calculatedDeltaD.Equals( (NumType)0))
             {
                 Logger.LogDebug("deltaD % height = 0, using manual");
                 return calcToTargetManual(p0, deltaP, height, targetDiff, 3);
