@@ -156,7 +156,15 @@ namespace Utils.math
         #region operators from BigFraction
         public static explicit operator double(BigFraction f)
         {
-            return (double)f.numerator / (double)f.denominator;
+            BigInteger remainder;
+            BigInteger ans = BigInteger.DivRem(f.numerator, f.denominator, out remainder);
+
+            int nDigitsToExtract = 20;
+            BigInteger mult = BigInteger.Pow(10, nDigitsToExtract);
+
+            BigInteger decimals = BigInteger.Divide(remainder * mult, f.denominator);
+
+            return (double)ans + (double) decimals / 1e20;
         }
         public static explicit operator BigInteger(BigFraction f)
         {

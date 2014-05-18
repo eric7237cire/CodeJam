@@ -60,6 +60,16 @@ void solve (void) {
       c[i][j] = c[i - 1][j] + c[i - 1][j - 1];
   }
   int l;
+  
+  /*
+  S (k >= i + 1 ? v[i][k - 1] : 1) *    //Probability left side
+  (k <= j - 1 ? v[k + 1][j] : 1) *      //Probability right side
+  (k - i + 1) * 
+  c
+	[(k >= i + 1 ? u[i][k-1] : 0) + (k <= j - 1 ? u[k + 1][j] : 0)]
+	[(k >= i + 1 ? u[i][k - 1] : 0)]
+  */
+  
   //Length 2 to n 
   for (l = 2; l <= n; l++) {
     for (i = 0; i < 2 * n && i + l <= 2 * n; i++) {

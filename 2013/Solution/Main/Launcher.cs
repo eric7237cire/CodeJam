@@ -49,6 +49,8 @@ namespace MainNS
             TestUtils tu = new TestUtils();
             //tu.testEquality();
             TestWheel tw = new TestWheel();
+            tw.TestRBruteForce();
+            tw.TestLargeFractionToDouble();
            // tw.TestEI_bruteForce();
             //tw.TestPermutationWithRep();
             //tw.TestPij_bruteforce();
@@ -56,7 +58,7 @@ namespace MainNS
             //tw.TestPijk_bruteForce2();
            // tw.TestP();
             //tw.TestCompare();
-            //return;
+           // return;
 
             //Cheaters main = new Cheaters();
             //  Rural main = new Rural();
@@ -84,7 +86,7 @@ namespace MainNS
             //list.Add("C-small-practice.in");
             //list.Add("C-large-practice.in");
 
-             list.Add("D-small-practice.in");
+            // list.Add("D-small-practice.in");
              list.Add("D-large-practice.in");
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
