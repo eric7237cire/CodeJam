@@ -143,11 +143,30 @@ namespace RoundFinal
             out List<Point<int>> intersections, Car car)
         {
             intersections = new List<Point<int>>();
-            //int carStopTime = 
+            long N = car.input.nIntersections;
+
             //Check time
-            //if (queryTime < input.timeEntered)
+            if (queryTime < car.enterTime || queryTime > car.exitTime)
+                return;
+
             //Get position of car at queryTime
-            //int carPosition = input.start[carIndex] + 
+            long carPosition = (car.startPosition + (queryTime - car.enterTime)) % N;
+
+            //Since car is advancing [car .... me] it is the left
+            long curDifPosition = ModdedLong.diff(carPosition, queryPosition, N);
+
+            //Time takes to close the distance is the diff / 2
+
+            long backwardsCurDifPosition = ModdedLong.diff(queryPosition, carPosition, N);
+
+            Preconditions.checkState(curDifPosition + backwardsCurDifPosition == N);
+
+            //Just before intersection
+            long timeForwardIntersection = queryTime + (curDifPosition - 1) / 2;
+
+            long timeBackwardIntersection = queryTime - (backwardsCurDifPosition - 1) / 2;
+
+
         }
     }
 
@@ -158,7 +177,7 @@ namespace RoundFinal
             get;
             internal set;
         }
-        GraduationInput input;
+        internal GraduationInput input;
         int carIndex;
 
         public long startPosition
