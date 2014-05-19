@@ -130,6 +130,10 @@
       <Project>{7e20df42-26b7-42f7-a35e-1c443b401bf0}</Project>
       <Name>Round3</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RoundFinal\RoundFinal.csproj">
+      <Project>{5dbd3796-4d84-4d73-8634-3c4fc25dafec}</Project>
+      <Name>RoundFinal</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{ca53bd61-475a-4c6a-a040-3e3ad18a6656}</Project>
       <Name>Utils</Name>

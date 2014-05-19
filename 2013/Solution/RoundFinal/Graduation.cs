@@ -137,19 +137,58 @@ namespace RoundFinal
                 return maxTimeTraveled;
         }
 
-        
+
+
+        public void getLongestSegment(int queryPosition, int queryTime, 
+            out List<Point<int>> intersections, Car car)
+        {
+            intersections = new List<Point<int>>();
+            //int carStopTime = 
+            //Check time
+            //if (queryTime < input.timeEntered)
+            //Get position of car at queryTime
+            //int carPosition = input.start[carIndex] + 
+        }
     }
 
-    internal class Car
+    public class Car
     {
-        internal ModdedLong startPosition;
-        internal long enterTime;
-        internal long exitTime;
+        public long exitTime
+        {
+            get;
+            internal set;
+        }
+        GraduationInput input;
+        int carIndex;
+
+        public long startPosition
+        {
+            get
+            {
+                return input.start[carIndex];
+            }
+        }
+
+        public long stopPosition
+        {
+            get
+            {
+                return input.stop[carIndex];
+            }
+        }
+
+        public long enterTime
+        {
+            get
+            {
+                return input.timeEntered[carIndex];
+            }
+        }
 
         internal Car(GraduationInput input, int index)
         {
-            startPosition = new ModdedLong(input.start[index] , (int)input.nIntersections);
-            enterTime = input.timeEntered[index];
+            this.input = input;
+            this.carIndex = index;
             exitTime = enterTime + ModdedLong.diff(input.start[index], input.stop[index], input.nIntersections) ;
         }
 
@@ -161,7 +200,7 @@ namespace RoundFinal
                 return false;
             }
 
-            long curPos = startPosition + time - enterTime;
+            long curPos = (startPosition + time - enterTime) % input.nIntersections;
 
             Logger.LogTrace("query pos {} time {}.  curPos {}", pos, time, curPos);
 

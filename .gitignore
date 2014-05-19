@@ -43,3 +43,12 @@ output/
 2013/Solution/TestResult.xml
 *.vsp
 2013/Solution/Main.psess
+*.nupkg
+2013/Solution/packages/NUnitTestAdapter.WithFramework.1.0/lib/nunit.framework.xml
+2013/Solution/packages/NUnitTestAdapter.WithFramework.1.0/tools/install.ps1
+2013/Solution/packages/xunit.1.9.2/lib/net20/xunit.xml
+2013/Solution/packages/xunit.1.9.2/xunit.1.9.2.nuspec
+2013/Solution/packages/xunit.1.9.2/lib/net20/xunit.dll.tdnet
+2013/Solution/packages/NUnitTestAdapter.WithFramework.1.0/NUnitTestAdapter.WithFramework.1.0.nuspec
+2013/Solution/packages/repositories.config
+2013/Solution/UnitTest/packages.config

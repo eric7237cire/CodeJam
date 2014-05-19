@@ -94,11 +94,11 @@ namespace UnitTest
 			return child.Value;
 		}
 		
-		private static string getAttributeValue(XElement el, string attName)
+		private static string getAttributeValue(XElement el, string attName, string defIfNull = null)
 		{
 			var att = el.Attributes(attName).FirstOrDefault();
 			if (att == null)
-				return null;
+				return defIfNull;
 			
 			return att.Value;
 		}
@@ -255,11 +255,44 @@ namespace UnitTest
         }
 #endif        
        
-#if !mono
-        [Test, TestCaseSource("FetchTestFileCases")]
-        public void runTestFile(string baseDir, string mainClassName, string inputMethodName, string processInputMethodName, Scanner scanner, List<string> checkStrList, int testCases)
+        private string setBaseDir(string baseDir, bool set = true)
         {
-            Directory.SetCurrentDirectory(baseDir);
+            baseDir = @"C:\codejam\CodeJam\" + baseDir.Replace('/', '\\');
+            if (set) Directory.SetCurrentDirectory(baseDir);
+
+            return baseDir;
+        }
+
+        
+
+#if !mono
+
+        class MainTestData
+        {
+            internal string baseDir;
+            internal string mainClassName;
+            internal string inputMethodName;
+            internal string processInputMethodName;
+            internal Scanner scanner;
+            internal List<string> checkStrList;
+            internal int testCases;
+
+            internal string testName;
+            internal string testDescription;
+        }
+
+        
+        private void runTestFile(MainTestData testData)
+        {
+            string baseDir = testData.baseDir;                
+            string mainClassName = testData.mainClassName;
+            string inputMethodName = testData.inputMethodName;
+            string processInputMethodName = testData.processInputMethodName;
+            Scanner scanner = testData.scanner;
+            List<string> checkStrList = testData.checkStrList;
+            int testCases = testData.testCases;
+
+            setBaseDir(baseDir);
 
             Stopwatch timer = Stopwatch.StartNew();
 
@@ -289,25 +322,39 @@ namespace UnitTest
 
         }
 
-        public IEnumerable<TestCaseData> FetchTestFileCases()
+        [Test]
+        public void TestFinal2013ProblemGraduation()
         {
-            //string testSmall2 = 
-            //"12 3 1 3 3 1 1 1 2 4";
-            //testInput(testSmall2, "LEFT 3");
-            string mustMatch = "Wheel"; // "Wheel"; // "Round1C";
+            testName("2013.RoundFinal.Problem1.Small-0");
+        }
 
-            List<TestCaseData> testList = new List<TestCaseData>();
+        private void testName(string name)
+        {
+            var test = testList.Where((td) => td != null && name.Equals( td.testName));
 
-            XElement po = XElement.Load(@"C:\codejam\CodeJam\2013\Solution\TestData.xml");
-            //XElement po = XElement.Load(@"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\TestData.xml");
+            var actual = test.FirstOrDefault();
 
+            Assert.IsNotNull(actual);
+
+            runTestFile(actual);
+        }
+
+        
+
+        List<MainTestData> testList = new List<MainTestData>();
+
+        [TestFixtureSetUp]
+        public void ReadTestFileCases()
+        {
+            testList = new List<MainTestData>();
+
+            XElement po = XElement.Load( setBaseDir(@"2013\Solution\TestData.xml", false) );
+            
             foreach (XElement testFileRunner in po.Elements("testFileRunner"))
             {
                 string baseDir = getAttributeValue(testFileRunner, "basedir");
 
-                baseDir = baseDir.Replace("/home/ent/mono/CodeJam/", @"C:\codejam\CodeJam\").Replace('/', '\\');
-
-                Directory.SetCurrentDirectory(baseDir);
+                setBaseDir(baseDir);
 
                 if ("true".Equals(getAttributeValue(testFileRunner, "ignore")))
                 {
@@ -317,9 +364,6 @@ namespace UnitTest
                 foreach (XElement run in testFileRunner.Elements("run"))
                 {
                     string mainClassName = getAttributeValue(run, "className");
-
-                    if (mustMatch != null && mainClassName.IndexOf(mustMatch, StringComparison.OrdinalIgnoreCase) < 0)
-                        continue;
 
                     string inputFileName = getAttributeValue(run, "inputFile");
                     string checkFileName = getAttributeValue(run, "checkFile");
@@ -342,19 +386,26 @@ namespace UnitTest
                             checkStrs.Add( checkReader.ReadLine() );
                         }
 
-                        testList.Add(new TestCaseData(baseDir, mainClassName, inputMethodName, processInputMethodName, scanner, checkStrs, testCases)
-                            //.Throws(typeof(DivideByZeroException))
-                        .SetName(string.Format("{0} : {1} : {2}",
-                            mainClassName, processInputMethodName, inputFileName))
-                        .SetDescription(string.Format("Class {0}\nMethod {1} \ninput file {2}",
-                            mainClassName, processInputMethodName, inputFileName)));
+                        testList.Add(new MainTestData{
+                            baseDir=baseDir,
+                            mainClassName = mainClassName, 
+                            inputMethodName =inputMethodName,
+                            processInputMethodName = processInputMethodName,
+                            scanner = scanner,
+                            checkStrList = checkStrs,
+                            testCases = testCases,
+                            testName = getAttributeValue(run, "testName"),
+                            testDescription = string.Format("Class {0}\nMethod {1} \ninput file {2}",
+                            mainClassName, processInputMethodName, inputFileName)});
+                        
+                            
 
                     }
 
                 }
             }
 
-            return testList;
+            
         }
         
         #endif

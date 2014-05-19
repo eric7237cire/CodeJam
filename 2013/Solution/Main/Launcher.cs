@@ -29,7 +29,7 @@ namespace MainNS
             bool tests = false;
 
            // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round3\");
-            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\RoundFinal\");
+            
 
             if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
    {
@@ -68,6 +68,7 @@ namespace MainNS
             //Pogo main = new Pogo();
             
            // Wheel main = new Wheel();
+            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\RoundFinal\");
             Graduation main = new Graduation();
 
            // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");

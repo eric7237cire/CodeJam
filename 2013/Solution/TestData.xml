@@ -4,7 +4,7 @@
 
          
          
-  <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round1B/"
+  <testFileRunner basedir="2013/Solution/Round1B/"
                   ignore ="false">
 				  
 				 <!--Osmos-->
@@ -64,7 +64,7 @@
 		 
   </testFileRunner>
   
-  <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round1C/"
+  <testFileRunner basedir="2013/Solution/Round1C/"
                   ignore ="false">
                   
                   <run checkFile         ="A_small_practice.check"
@@ -124,7 +124,7 @@
 		 
          </testFileRunner>
          
-         <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round2/"
+         <testFileRunner basedir="2013/Solution/Round2/"
                   ignore ="false">
                   
                   <!-- Stack -->
@@ -171,7 +171,7 @@
          
                   
                   
-  <testFileRunner basedir="/home/ent/mono/CodeJam/2013/Solution/Round3/"
+  <testFileRunner basedir="2013/Solution/Round3/"
                   >
     <run checkFile         ="C-small-practice.correct"
          className         ="Round3.Lost, Round3"
@@ -218,6 +218,20 @@
          processInputMethod="processInput"/>-->
 		 
   </testFileRunner>
+  
+  
+  <testFileRunner basedir="2013/Solution/RoundFinal"
+                  >
+				  
+				  <run checkFile         ="A-small-practice.correct"
+         className         ="RoundFinal.Graduation, RoundFinal"
+         createInputMethod ="createInput"
+		 testName          = "2013.RoundFinal.Problem1.Small-0"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInputSmall"/>
+		 
+		 </testFileRunner>
+  
   <tests answerType="double"
          className ="Round3.Cheaters, Round3"
          ignore    ="true">
