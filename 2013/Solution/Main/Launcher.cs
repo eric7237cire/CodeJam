@@ -6,6 +6,7 @@ using CodeJamUtils;
 using Round1C_P2;
 using Round2_P1;
 using Round3;
+using RoundFinal;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,7 +28,8 @@ namespace MainNS
 #if !mono
             bool tests = false;
 
-            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round3\");
+           // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round3\");
+            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\RoundFinal\");
 
             if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
    {
@@ -44,13 +46,14 @@ namespace MainNS
             //return;
 #endif
 
-            
+            TestMath tm = new TestMath();
+            tm.TestModdedLongArithmetic();
 
-            TestUtils tu = new TestUtils();
+          //  TestUtils tu = new TestUtils();
             //tu.testEquality();
-            TestWheel tw = new TestWheel();
-            tw.TestRBruteForce();
-            tw.TestLargeFractionToDouble();
+          //  TestWheel tw = new TestWheel();
+           // tw.TestRBruteForce();
+          //  tw.TestLargeFractionToDouble();
            // tw.TestEI_bruteForce();
             //tw.TestPermutationWithRep();
             //tw.TestPij_bruteforce();
@@ -64,7 +67,8 @@ namespace MainNS
             //  Rural main = new Rural();
             //Pogo main = new Pogo();
             
-            Wheel main = new Wheel();
+           // Wheel main = new Wheel();
+            Graduation main = new Graduation();
 
            // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
             //TicketSwap main = new TicketSwap();
@@ -74,9 +78,11 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-           // list.Add("sample.in");
+            list.Add("sample.in");
 
-            //list.Add("A-small-practice.in");
+#if !DEBUG
+            list.Add("A-small-practice.in");
+#endif
             // list.Add("A-large-practice.in");
 
 
@@ -87,7 +93,7 @@ namespace MainNS
             //list.Add("C-large-practice.in");
 
             // list.Add("D-small-practice.in");
-             list.Add("D-large-practice.in");
+            // list.Add("D-large-practice.in");
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1C\");

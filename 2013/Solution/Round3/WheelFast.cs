@@ -15,7 +15,10 @@ using Utils;
 using Utils.math;
 using Logger = Utils.LoggerFile;
 
-
+/*
+ *  Unfortunately needs double long to be efficient,
+ *  NW(i,j) goes above 1e308...
+ */
 #if USING_BIGINT
 using NumWaysType = System.Numerics.BigInteger;
 #else

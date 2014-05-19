@@ -1,5 +1,4 @@
 ﻿//#define LOGGING_TRACE
-#define LOGGING
 
 using System;
 using System.Collections.Generic;
@@ -37,35 +36,44 @@ namespace Utils
             return new ModdedLong(val);
         }*/
 
-        public ModdedLong(long v, int mod ) //1000002013)
+        public ModdedLong(long v, int mod )
         {
-            this.mod = mod;
-            long test = v % mod;
+            this.mod = mod;            
             value = (int) (v % mod);
-            Logger.LogTrace("Construct {0} = {1} ", v, value);
+            Logger.LogTrace("Construct {} = {} ", v, value);
             Preconditions.checkState(value >= 0);
         }
 
         public static ModdedLong operator +(ModdedLong c1, ModdedLong c2)
         {
             Preconditions.checkState(c1.mod == c2.mod);
-            Logger.LogTrace("Adding {0} and {1}", c1, c2);
+            Logger.LogTrace("Adding {} and {}", c1, c2);
             return new ModdedLong(c1.value + c2.value, c1.mod);
         }
         public static ModdedLong operator -(ModdedLong c1, ModdedLong c2)
         {
             Preconditions.checkState(c1.mod == c2.mod);
-            Logger.LogTrace("Subtract {0} and {1}", c1, c2);
+            Logger.LogTrace("Subtract {} and {}", c1, c2);
             return new ModdedLong(c1.value - c2.value + c1.mod, c1.mod);
         }
         public static ModdedLong operator -(ModdedLong c1, int c2)
         {
-            Logger.LogTrace("Subtract {0} and {1}", c1, c2);
+            Logger.LogTrace("Subtract {} and {}", c1, c2);
             return new ModdedLong(c1.value - c2 + c1.mod, c1.mod);
+        }
+        public static ModdedLong operator -(ModdedLong c1, long c2)
+        {
+            Logger.LogTrace("Subtract {} and {}", c1, c2);
+            return new ModdedLong(c1.value - c2 % c1.mod + c1.mod, c1.mod);
         }
         public static ModdedLong operator +(ModdedLong c1, int c2)
         {
-            Logger.LogTrace("Subtract {0} and {1}", c1, c2);
+            Logger.LogTrace("Add {} and {}", c1, c2);
+            return new ModdedLong(c1.value + c2, c1.mod);
+        }
+        public static ModdedLong operator +(ModdedLong c1, long c2)
+        {
+            Logger.LogTrace("Add {} and {}", c1, c2);
             return new ModdedLong(c1.value + c2, c1.mod);
         }
         public static ModdedLong operator *(ModdedLong c1, ModdedLong c2)
@@ -95,6 +103,10 @@ namespace Utils
         public static ModdedLong operator ++(ModdedLong c1)
         {
             return new ModdedLong(c1.Value + 1, c1.mod);
+        }
+        public static ModdedLong operator --(ModdedLong c1)
+        {
+            return new ModdedLong(c1.mod + c1.Value - 1, c1.mod);
         }
         public static implicit operator int(ModdedLong f)
         {

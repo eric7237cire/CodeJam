@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7E3944B0-2743-431F-ADDB-162D20606509}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <ProjectGuid>{5DBD3796-4D84-4D73-8634-3C4FC25DAFEC}</ProjectGuid>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Main</RootNamespace>
-    <AssemblyName>Main</AssemblyName>
+    <RootNamespace>RoundFinal</RootNamespace>
+    <AssemblyName>RoundFinal</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -24,7 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -39,9 +37,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -50,13 +46,9 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>ManagedMinimumRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>true</Prefer32Bit>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit-console-runner">
-      <HintPath>..\..\..\..\..\Program Files (x86)\NUnit 2.6.3\bin\lib\nunit-console-runner.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -66,37 +58,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Launcher.cs" />
+    <Compile Include="Graduation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Round1B\Round1B.csproj">
-      <Project>{24a3f355-4327-4ccd-b3eb-acfaa848442e}</Project>
-      <Name>Round1B</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Round1C\Round1C.csproj">
-      <Project>{49459ec3-6a04-4d29-a5e4-c9b8bca05fa6}</Project>
-      <Name>Round1C</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Round2\Round2.csproj">
-      <Project>{7a2d2f80-968d-4808-808c-2f43a2af3b1d}</Project>
-      <Name>Round2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Round3\Round3.csproj">
-      <Project>{7e20df42-26b7-42f7-a35e-1c443b401bf0}</Project>
-      <Name>Round3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RoundFinal\RoundFinal.csproj">
-      <Project>{5dbd3796-4d84-4d73-8634-3c4fc25dafec}</Project>
-      <Name>RoundFinal</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UnitTest\UnitTest.csproj">
-      <Project>{542c16ab-5a9d-4117-a1a7-0b105464fe15}</Project>
-      <Name>UnitTest</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Utils\Utils.csproj">
       <Project>{ca53bd61-475a-4c6a-a040-3e3ad18a6656}</Project>
       <Name>Utils</Name>
