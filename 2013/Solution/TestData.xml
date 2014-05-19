@@ -223,6 +223,20 @@
   <testFileRunner basedir="2013/Solution/RoundFinal"
                   >
 				  
+				   <run checkFile         ="A-small-practice.correct"
+         className         ="RoundFinal.Graduation, RoundFinal"
+         createInputMethod ="createInput"
+		 testName          = "2013.RoundFinal.Problem1.Sample"
+         inputFile         ="sample.in"
+         processInputMethod="processInput"/>
+		 
+		 <run checkFile         ="A-small-practice.correct"
+         className         ="RoundFinal.Graduation, RoundFinal"
+         createInputMethod ="createInput"
+		 testName          = "2013.RoundFinal.Problem1.Small"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInput"/>
+		 
 				  <run checkFile         ="A-small-practice.correct"
          className         ="RoundFinal.Graduation, RoundFinal"
          createInputMethod ="createInput"

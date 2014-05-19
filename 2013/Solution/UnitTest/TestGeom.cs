@@ -71,8 +71,7 @@ namespace UnitTest
 
         
 
-        [Test]
-        [Category("current")]
+        [Test]        
         public void TestConvexHull3()
         {
             List<Point<int>> list = new List<Point<int>>();
@@ -97,8 +96,7 @@ namespace UnitTest
             testConvexHull(false, list, a);
         }
 
-        [Test]
-        [Category("current")]
+        [Test]        
         public void TestConvexHull2()
         {
             List<Point<int>> list = new List<Point<int>>();
@@ -115,7 +113,6 @@ namespace UnitTest
         }
 
         [Test]
-        [Category("current")]
         public void TestConvexHull()
         {
             List<Point<int>> list = new List<Point<int>>();

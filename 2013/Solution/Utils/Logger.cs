@@ -24,7 +24,8 @@ namespace Utils
             writer = new StreamWriter(@"log.txt", false);
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
 
-            Console.WriteLine("Current directory " + Directory.GetCurrentDirectory());
+            string curDir = Directory.GetCurrentDirectory();
+            Console.WriteLine("Current directory " + curDir);
         }
 
         public static void CurrentDomain_ProcessExit(object sender, EventArgs e)

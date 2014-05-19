@@ -11,24 +11,34 @@ namespace UnitTest
     [TestFixture]
     public class TestGraduation
     {
-        
         [Test]
-        public void TestMethod1()
+        public void TestNegMod()
+        {
+            Assert.AreEqual(-3, -103 % 20);
+        }
+
+
+
+        [Test]
+        public void TestCarBestSegment()
         {
             GraduationInput input = new GraduationInput();
             input.start = new long[] { 3 };
             input.stop = new long[] { 2 };
+            input.timeEntered = new long[] { 0 };
             input.nIntersections = 5;
+            input.totalTime = 100000;
 
             Graduation grad = new Graduation();
 
-            List<Point<int>> intersections;
-           // grad.getLongestSegment(2, 1, out intersections, input);
+            List<Point<long>> best;
+            Car car = new Car(input, 0);
+            grad.getLongestSegment(2, 1, out best, car);
 
-            //Assert.AreEqual(2, intersections.Count);
+            Assert.AreEqual(2, best.Count);
 
-            //Assert.AreEqual(new Point<int>(2, 1), intersections[0]);
-           // Assert.AreEqual(new Point<int>(1, 2), intersections[1]);
+            Assert.AreEqual(new Point<long>(2, 1), best[0]);
+            Assert.AreEqual(new Point<long>(1, 2), best[1]);
         }
     }
 }

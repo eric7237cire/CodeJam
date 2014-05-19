@@ -16,7 +16,7 @@ using Logger = Utils.LoggerFile;
 
 namespace RoundFinal
 {
-    public class Graduation : InputFileProducer<GraduationInput>, InputFileConsumer<GraduationInput,int>
+    public class Graduation : InputFileProducer<GraduationInput>, InputFileConsumer<GraduationInput,long>
     {
 
         public GraduationInput createInput(Scanner scanner)
@@ -41,17 +41,73 @@ namespace RoundFinal
             return input;
         }
 
-        public int processInput(GraduationInput input)
+        public long processInput(GraduationInput input)
         {
             //y axis is time, x axis is position
-            List<LineSegment<long>> segs = new List<LineSegment<long>>();
+            long bestLength = 0;
+
+            if (input.nCars == 0)
+            {
+                return input.totalTime;
+            }
+
+            List<Car> cars = new List<Car>();
             for (int i = 0; i < input.nCars; ++i )
             {
-                long distance = ModdedLong.diff(input.start[i], input.stop[i], input.nIntersections);
-                segs.Add(LineExt.createSegmentFromCoords(input.start[i], input.timeEntered[i], 
-                    input.start[i]+distance, distance));
+                cars.Add(new Car(input, i));
             }
-            return 3;
+
+            List<Point<long>> pointsToTest = new List<Point<long>>();
+            for (int i = 0; i < input.nCars; ++i )
+            {
+                for(int dx = -1; dx <= 1; ++dx)
+                {
+                    for(int dy = -1; dy <= 1; ++dy)
+                    {
+                        if (dx == dy)
+                            continue;
+
+                        pointsToTest.Add(new Point<long>(
+                            (input.nIntersections + cars[i].startPosition + dx) % input.nIntersections, cars[i].enterTime + dy));
+                        pointsToTest.Add(new Point<long>(
+                           (input.nIntersections + cars[i].stopPosition + dx) % input.nIntersections, cars[i].exitTime + dy));
+                    }
+                }
+            }
+
+            foreach(Point<long> point in pointsToTest)
+            {
+                if (point.Y < 0 || point.Y >= input.totalTime)
+                    continue;
+
+                //long localMax = 0;
+                Point<long> bestStart = null;
+                Point<long> bestStop = null;
+
+                foreach(Car car in cars)
+                {
+                    List<Point<long>> bestPoints;
+                    getLongestSegment(point.X, point.Y, out bestPoints, car);
+
+                    if (bestPoints.Count == 0)
+                        continue;
+
+                    if (bestStart == null || bestStart.Y > bestPoints[0].Y)
+                        bestStart = bestPoints[0];
+
+                    if (bestStop == null || bestStop.Y < bestPoints[1].Y)
+                        bestStop = bestPoints[1];
+                }
+
+                long length = bestStop.Y - bestStart.Y;
+
+                if (length > bestLength)
+                {
+                    Logger.LogTrace("For point {} best between {} and {}", point, bestStart, bestStop);
+                    bestLength = length;
+                }
+            }
+            return bestLength;
         }
 
         public int processInputSmall(GraduationInput input)
@@ -139,10 +195,10 @@ namespace RoundFinal
 
 
 
-        public void getLongestSegment(int queryPosition, int queryTime, 
-            out List<Point<int>> intersections, Car car)
+        public void getLongestSegment(long queryPosition, long queryTime, 
+            out List<Point<long>> furthestWithoutIntersecting, Car car)
         {
-            intersections = new List<Point<int>>();
+            furthestWithoutIntersecting = new List<Point<long>>();
             long N = car.input.nIntersections;
 
             //Check time
@@ -155,6 +211,12 @@ namespace RoundFinal
             //Since car is advancing [car .... me] it is the left
             long curDifPosition = ModdedLong.diff(carPosition, queryPosition, N);
 
+            //Enemy car is already there
+            if (curDifPosition == 0)
+            {
+                return;
+            }
+
             //Time takes to close the distance is the diff / 2
 
             long backwardsCurDifPosition = ModdedLong.diff(queryPosition, carPosition, N);
@@ -164,8 +226,21 @@ namespace RoundFinal
             //Just before intersection
             long timeForwardIntersection = queryTime + (curDifPosition - 1) / 2;
 
+            if (timeForwardIntersection > car.input.totalTime)
+                timeForwardIntersection = car.input.totalTime;
+
             long timeBackwardIntersection = queryTime - (backwardsCurDifPosition - 1) / 2;
 
+            if (timeBackwardIntersection < 0)
+                timeBackwardIntersection = 0;
+
+            long backPos =  ((queryTime - timeBackwardIntersection) + queryPosition) % N;
+            long forwardPos = (queryPosition - (timeForwardIntersection - queryTime)) % N;
+            if (forwardPos < 0)
+                forwardPos += N;
+
+            furthestWithoutIntersecting.Add(new Point<long>(backPos, timeBackwardIntersection));
+            furthestWithoutIntersecting.Add(new Point<long>(forwardPos, timeForwardIntersection));
 
         }
     }
@@ -204,7 +279,7 @@ namespace RoundFinal
             }
         }
 
-        internal Car(GraduationInput input, int index)
+        public Car(GraduationInput input, int index)
         {
             this.input = input;
             this.carIndex = index;

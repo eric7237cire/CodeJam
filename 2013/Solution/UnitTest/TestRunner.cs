@@ -328,6 +328,13 @@ namespace UnitTest
             testName("2013.RoundFinal.Problem1.Small-0");
         }
 
+        [Test]
+        [Category ("current")]
+        public void TestSample()
+        {
+            testName("2013.RoundFinal.Problem1.Sample");
+        }
+
         private void testName(string name)
         {
             var test = testList.Where((td) => td != null && name.Equals( td.testName));
