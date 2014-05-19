@@ -40,10 +40,11 @@ namespace UnitTest
         {
             bool[] gondolas = new bool[] {false, false, true, false};
 
-            Assert.AreEqual(0, WheelBruteForce.simulateForWheelFast(gondolas, new int[] { 0, 2, 0 }));
+            //Affects something beyond index 3
+            Assert.AreEqual(-1, WheelBruteForce.simulateForWheelFast(gondolas, new int[] { 0, 2, 2 }));
             Assert.AreNotEqual(0, WheelBruteForce.simulateForWheelFast(gondolas, new int[] { 1, 0, 0 }));
 
-            Assert.AreNotEqual(0, WheelBruteForce.simulateForWheelFast(gondolas, new int[] { 1, 0, 3 }, 0));
+            Assert.AreNotEqual(0, WheelBruteForce.simulateForWheelFast(gondolas, new int[] { 1, 0, 3 }, 10));
             //Perm 1, 0, 3 for ij False, False, True, False. 
         }
 

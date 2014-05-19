@@ -270,7 +270,7 @@ namespace Round3
             {
                 Logger.LogTrace("Perm {} for ij {}", list.ToCommaString(), ij.ToCommaString());
                 //Simulate 
-                if (0 != simulateForWheelFast(ij, list))
+                if (0 != simulatePermutation(ij, list))
                 {
                     Logger.LogTrace("last element filled last");
                     ++numerator;
@@ -321,7 +321,7 @@ namespace Round3
             {
                 Logger.LogTrace("Perm {} for ij {}.  ", perm.ToCommaString(), ij.ToCommaString());
 
-                if (0 != simulateForWheelFast(ij, perm, k))
+                if (0 != simulatePermutation(ij, perm, k))
                 {
                     Logger.LogTrace("Perm {} for ij {}.  mid filled 2nd to last {}", perm.ToCommaString(), ij.ToCommaString(), mid.Value);
                     ++numerator;

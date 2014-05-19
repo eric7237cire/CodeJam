@@ -125,7 +125,7 @@ namespace Round3
                 qq += (1 - (hasGondola[i] ? 1 : 0));
             }
 
-            Preconditions.checkState(qq > 0);
+            Preconditions.checkState(qq >= 0);
 
             for (i = 0; i <= 2 * n; i++)
             {

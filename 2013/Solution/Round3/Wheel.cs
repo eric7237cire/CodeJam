@@ -46,19 +46,19 @@ namespace Round3
             }
 
 
-            WheelFast wf = new WheelFast(input.wheel.Length);
-            double ans2 = wf.solve(input.wheel);
-            Logger.LogInfo(" wheel fast {}", ans2);
-            return ((double)ans2).ToUsString(9);
+          //  WheelFast wf = new WheelFast(input.wheel.Length);
+          //  double ans2 = wf.solve(input.wheel);
+           // Logger.LogInfo(" wheel fast {}", ans2);
+           // return ((double)ans2).ToUsString(9);
 
-            //Logger.LogInfo("Wheel: {}", input.wheel);
-           // var ans = WheelLargeSlow.computeAnswer(initialState);
+            Logger.LogInfo("Wheel: {}", input.wheel);
+            var ans = WheelLargeSlow.computeAnswer(initialState);
 
 
-            ///return ((double) ans).ToUsString(9);
+            return ((double) ans).ToUsString(9);
         }
 
-        public string processInputFast(WheelInput input)
+        public string processInputOtherSolution(WheelInput input)
         {
             WheelFast wf = new WheelFast(input.wheel.Length);
             double ans2 = wf.solve(input.wheel);

@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
-
+using Utils.geom;
 using Logger = Utils.LoggerFile;
 
 namespace RoundFinal
@@ -42,6 +42,19 @@ namespace RoundFinal
         }
 
         public int processInput(GraduationInput input)
+        {
+            //y axis is time, x axis is position
+            List<LineSegment<long>> segs = new List<LineSegment<long>>();
+            for (int i = 0; i < input.nCars; ++i )
+            {
+                long distance = ModdedLong.diff(input.start[i], input.stop[i], input.nIntersections);
+                segs.Add(LineExt.createSegmentFromCoords(input.start[i], input.timeEntered[i], 
+                    input.start[i]+distance, distance));
+            }
+            return 3;
+        }
+
+        public int processInputSmall(GraduationInput input)
         {
             List<Car> cars = new List<Car>();
             for (int i = 0; i < input.nCars; ++i )

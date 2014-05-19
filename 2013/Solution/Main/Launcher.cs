@@ -25,7 +25,7 @@ namespace MainNS
             //
 
 
-#if !mono
+#if false
             bool tests = false;
 
            // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round3\");

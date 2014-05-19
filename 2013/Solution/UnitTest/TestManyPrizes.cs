@@ -9,7 +9,7 @@ namespace UnitTest
     public class TestManyPrizes
     {
         [Test]
-        public void TestMethod1()
+        public void TestManyPrizes1()
         {
             List<int> pos = new List<int>(new int[] { 2, 4, 5, 3, 6, 7, 1, 0 });
 

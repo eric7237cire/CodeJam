@@ -203,11 +203,19 @@
          inputFile         ="D-small-practice.in"
          processInputMethod="processInput"/>
 		 
+		 <run checkFile         ="D-small-practice.correct"
+         className         ="Round3.Wheel, Round3"
+         createInputMethod ="createInput"
+         inputFile         ="D-small-practice.in"
+         processInputMethod="processInputOtherSolution"/>
+		 
+		 
+		 <!--A bit too slow
 		 <run checkFile         ="D-large-practice.correct"
          className         ="Round3.Wheel, Round3"
          createInputMethod ="createInput"
          inputFile         ="D-large-practice.in"
-         processInputMethod="processInput"/>
+         processInputMethod="processInput"/>-->
 		 
   </testFileRunner>
   <tests answerType="double"
