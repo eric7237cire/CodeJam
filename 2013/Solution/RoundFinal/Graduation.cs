@@ -92,10 +92,10 @@ namespace RoundFinal
                     if (bestPoints.Count == 0)
                         continue;
 
-                    if (bestStart == null || bestStart.Y > bestPoints[0].Y)
+                    if (bestStart == null || bestStart.Y < bestPoints[0].Y)
                         bestStart = bestPoints[0];
 
-                    if (bestStop == null || bestStop.Y < bestPoints[1].Y)
+                    if (bestStop == null || bestStop.Y > bestPoints[1].Y)
                         bestStop = bestPoints[1];
                 }
 
@@ -200,20 +200,22 @@ namespace RoundFinal
         {
             furthestWithoutIntersecting = new List<Point<long>>();
             long N = car.input.nIntersections;
-
-            //Check time
-            if (queryTime < car.enterTime || queryTime > car.exitTime)
-                return;
-
-            //Get position of car at queryTime
-            long carPosition = (car.startPosition + (queryTime - car.enterTime)) % N;
+            
+            //Get position of car at queryTime, because the car may not have entered yet, take car of 
+            //negative positions
+            long carPosition = (N + ((car.startPosition + (queryTime - car.enterTime)) % N)) % N;
 
             //Since car is advancing [car .... me] it is the left
             long curDifPosition = ModdedLong.diff(carPosition, queryPosition, N);
 
             //Enemy car is already there
-            if (curDifPosition == 0)
+            if (curDifPosition == 0 && queryTime >= car.enterTime && queryTime <= car.exitTime)
             {
+                furthestWithoutIntersecting.Add(new Point<long>(queryPosition, queryTime));
+                furthestWithoutIntersecting.Add(new Point<long>(queryPosition, queryTime));
+
+                Logger.LogTrace("With car ! {} best line {} for query point/time ({}, {})", car, furthestWithoutIntersecting.ToCommaString(), queryPosition, queryTime);
+
                 return;
             }
 
@@ -221,16 +223,47 @@ namespace RoundFinal
 
             long backwardsCurDifPosition = ModdedLong.diff(queryPosition, carPosition, N);
 
+            //This occurs if the car intersects exactly but outside the bounds of enterTime and exitTime
+            if (curDifPosition == 0)
+            {
+                if (queryTime > car.exitTime)
+                {
+                    curDifPosition = N;
+                } else if (queryTime < car.enterTime)
+                {
+                    backwardsCurDifPosition = N;
+                }
+                else
+                {
+                    //queryTime is withing [enter, exit] and should have been caught earlier
+                    Preconditions.checkState(false);
+                }
+            }
+
             Preconditions.checkState(curDifPosition + backwardsCurDifPosition == N);
 
-            //Just before intersection
-            long timeForwardIntersection = queryTime + (curDifPosition - 1) / 2;
+            //Just before intersection.  So if difference is 2, 4, 6, 8 then
+            //just before the intersection is 0, 1, 2
+            //If diff is 1,3, 5, 7 then
+            //time is 0, 1, 2, etc
+            long timeForwardIntersection = queryTime + (curDifPosition + 1) / 2 - 1;
 
+            //Bounds checking
             if (timeForwardIntersection > car.input.totalTime)
                 timeForwardIntersection = car.input.totalTime;
 
-            long timeBackwardIntersection = queryTime - (backwardsCurDifPosition - 1) / 2;
+            //Would have intersected but the car exited before.  >= because timeForwardIntersection is the time *right before* intersecting, so
+            //car would need 1 more unit time
+            if (timeForwardIntersection >= car.exitTime)
+                timeForwardIntersection = car.input.totalTime;
 
+            long timeBackwardIntersection = queryTime - ( (backwardsCurDifPosition + 1) / 2 - 1 );
+
+            //Similar logic
+            if (timeBackwardIntersection <= car.enterTime)
+                timeBackwardIntersection = 0;
+
+            //Bounds checking
             if (timeBackwardIntersection < 0)
                 timeBackwardIntersection = 0;
 
@@ -241,6 +274,8 @@ namespace RoundFinal
 
             furthestWithoutIntersecting.Add(new Point<long>(backPos, timeBackwardIntersection));
             furthestWithoutIntersecting.Add(new Point<long>(forwardPos, timeForwardIntersection));
+
+            Logger.LogTrace("With car {} best line {} for query point/time ({}, {})", car, furthestWithoutIntersecting.ToCommaString(), queryPosition, queryTime);
 
         }
     }
@@ -299,6 +334,11 @@ namespace RoundFinal
             Logger.LogTrace("query pos {} time {}.  curPos {}", pos, time, curPos);
 
             return pos == curPos;
+        }
+
+        public override string ToString()
+        {
+ 	         return "Car start ({0}, {1}) stop ({2}, {3}) ".FormatThis(startPosition, enterTime, stopPosition, exitTime);
         }
     }
 

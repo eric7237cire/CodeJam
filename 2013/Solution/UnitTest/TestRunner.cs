@@ -53,7 +53,7 @@ namespace UnitTest
     {
     	//
 #if !mono
-        [ TestCaseSource("FetchTestCases")]
+       
     	public void runMain(Type mainType, object main, Scanner scanner, string ansExpected, object answerType)
     	{
             var input = mainType.GetMethod("createInput").Invoke(main, new object[] { scanner });
@@ -302,12 +302,15 @@ namespace UnitTest
             for (int tc = 1; tc <= testCases; ++tc)
             {
                 string checkStr = checkStrList[tc - 1];
+                scanner.enablePlayBack();
+
                 var input = mainType.GetMethod(inputMethodName).Invoke(main, new object[] { scanner });
                 var ans = mainType.GetMethod(processInputMethodName).Invoke(main, new object[] { input });
 
                 string ansStr = String.Format("Case #{0}: {1}", tc, ans);
 
-
+                string inputCase = scanner.finishPlayBack();
+                Logger.LogDebug("Test\n{}", inputCase);
                 Logger.LogDebug("Checking {} = {}", checkStr, ansStr);
                 Assert.AreEqual(checkStr, ansStr);
             }
@@ -330,9 +333,9 @@ namespace UnitTest
 
         [Test]
         [Category ("current")]
-        public void TestSample()
+        public void TestFinal2013ProblemGraduationSmall()
         {
-            testName("2013.RoundFinal.Problem1.Sample");
+            testName("2013.RoundFinal.Problem1.Small");
         }
 
         private void testName(string name)

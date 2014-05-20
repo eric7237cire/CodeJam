@@ -350,10 +350,27 @@ namespace CodeJamUtils
         private TextReader reader;
         string currentWord;
 
+        private StringBuilder playBack;
+
         public Scanner(TextReader reader)
         {
             this.reader = reader;
             readNextWord();
+        }
+
+        public void enablePlayBack()
+        {
+            playBack = new StringBuilder();
+            playBack.Append(currentWord);
+            playBack.Append(" ");
+            
+        }
+
+        public string finishPlayBack()
+        {
+            string ret = playBack.ToString();
+            playBack = null;
+            return ret;
         }
 
         private void readNextWord()
@@ -361,9 +378,13 @@ namespace CodeJamUtils
             System.Text.StringBuilder sb = new StringBuilder();
             char nextChar;
             int next;
-            
+
             while ((reader.Peek() >= 0) && (char.IsWhiteSpace((char)reader.Peek())))
-                reader.Read();
+            {
+                next = reader.Read();
+                if (playBack != null)
+                    playBack.Append((char)next);
+            }
             
             do
             {
@@ -371,12 +392,20 @@ namespace CodeJamUtils
                 if (next < 0)
                     break;
                 nextChar = (char)next;
+                
+                if (playBack != null)
+                    playBack.Append(nextChar);
+
                 if (char.IsWhiteSpace(nextChar))
                     break;
                 sb.Append(nextChar);
             } while (true);
             while ((reader.Peek() >= 0) && (char.IsWhiteSpace((char)reader.Peek())))
-                reader.Read();
+            {
+                next = reader.Read();
+                if (playBack != null)
+                    playBack.Append((char)next);
+            }
             if (sb.Length > 0)
                 currentWord = sb.ToString();
             else
