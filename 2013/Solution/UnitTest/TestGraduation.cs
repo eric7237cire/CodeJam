@@ -24,11 +24,42 @@ namespace UnitTest
         }
         
         /*
-        Tests when car intersects the starting point
-        but it has not entered yet
+       Where !!3rd back intersection is genuinte
+       1st back is directly on line
+       2nd car is not there
+       but 3rd works
         */
         [Test]
         [Category ("current")]
+        public void Test3rdBackIntersection()
+        {
+        	GraduationInput input = new GraduationInput();
+            input.start = new long[] { 2 };
+            input.stop = new long[] { 0 };
+            input.timeEntered = new long[] { 1 };
+            input.nIntersections = 3;
+            input.totalTime = 5;	
+            
+            Graduation grad = new Graduation();
+
+            List<Point<long>> best;
+            Car car = new Car(input, 0);
+            
+            grad.getLongestSegment(2, 4, out best, car);
+            
+            Assert.AreEqual(2, best.Count);
+            Assert.AreEqual(new Point<long>(1, 5), best[0]);
+            Assert.AreEqual(new Point<long>(1, 2), best[1]);
+        	
+        }
+        
+        /*
+        
+         Tests when car intersects the starting point
+        but it has not entered yet
+        */
+        [Test]
+        [Category ("current2")]
         public void TestStartSamePoint()
         {
         	GraduationInput input = new GraduationInput();

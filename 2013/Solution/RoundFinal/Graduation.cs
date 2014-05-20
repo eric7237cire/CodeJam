@@ -373,10 +373,13 @@ namespace RoundFinal
             	Point<Fraction> newForwards;
             	Point<Fraction> newBackwards;
             	
-            	Logger.LogTrace("Fetch 2nd backward intersection at ({}, {})", newTestPosition, newTestTime);
             	getIntersection(newTestPosition, newTestTime, out newForwards, out newBackwards, car);
             	
-            	if (car.enterTime <= newForwards.Y && newForwards.Y <= car.exitTime)
+            	Logger.LogTrace("Fetch 2nd backward intersection at ({}, {}) intersects at {}, {}",
+            		newTestPosition, newTestTime, newForwards, newBackwards);
+            	
+            	
+            	if (car.enterTime <= newBackwards.Y && newBackwards.Y <= car.exitTime)
             	{
             		Logger.LogTrace("Using 2nd backward intersection {}, backward was {}", newForwards, newBackwards);
             		backwards = newBackwards;
@@ -385,7 +388,7 @@ namespace RoundFinal
             	}
             }
             
-           // Logger.LogTrace("0 Back {}", backwards);
+            Logger.LogTrace("0 Back {}", backwards);
             
             forwards.Y -= new Fraction(1, 2);
             
@@ -393,11 +396,11 @@ namespace RoundFinal
             
             backwards.Y += new Fraction(1, 2);
             
-           // Logger.LogTrace("1 Back {}", backwards);
+            Logger.LogTrace("1 Back {}", backwards);
             
             backwards.Y = backwards.Y.ceil();
             
-           // Logger.LogTrace("2 Back {}", backwards); 
+            Logger.LogTrace("2 Back {}", backwards); 
             
             if (backwards.Y < 0)
             	backwards.Y = 0;

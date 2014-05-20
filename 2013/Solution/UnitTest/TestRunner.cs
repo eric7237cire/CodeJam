@@ -329,7 +329,7 @@ namespace UnitTest
         }
 
         [Test]
-        [Category ("current")]
+        [Category ("current2")]
         public void TestFinal2013ProblemGraduationSmall()
         {
             testName("2013.RoundFinal.Problem1.Small");
