@@ -52,7 +52,11 @@ namespace MainNS
             //Pogo main = new Pogo();
             
            // Wheel main = new Wheel();
+           #if mono
+           Directory.SetCurrentDirectory(@"/home/ent/mono/CodeJam/2013/Solution/RoundFinal/");
+           #else
             Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\RoundFinal\");
+            #endif
             Graduation main = new Graduation();
 
            // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
@@ -65,7 +69,7 @@ namespace MainNS
 
             list.Add("sample.in");
 
-#if !DEBUG
+#if !DEBUG && !mono
             list.Add("A-small-practice.in");
 #endif
             // list.Add("A-large-practice.in");
@@ -85,9 +89,7 @@ namespace MainNS
             
 
             // dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round3\";
-#if mono
-            Directory.SetCurrentDirectory( @"/home/ent/mono/CodeJam/2013/Solution/Round3/" );
-#endif
+
             // list = list.ConvertAll(s => dir + s);
 
              CjUtils.RunMain(list, main, main.createInput, null); 

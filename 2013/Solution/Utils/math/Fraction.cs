@@ -105,10 +105,15 @@ namespace Utils.math
         /// <returns></returns>
         public long ceil()
         {
+        	long div = numerator / denominator;
+        	
             if (numerator % denominator == 0)
-                return numerator / denominator;
+                return div;
 
-            return numerator / denominator + 1;
+            if (numerator < 0)
+            	return div;
+            
+            return div + 1;
             
         }
 
