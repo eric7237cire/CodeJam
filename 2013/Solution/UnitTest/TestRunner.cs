@@ -25,22 +25,10 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.XPath;
-//using System.Xml.Xsl;
 using System.IO;
 using System.Threading;
 using System.Reflection;
-//using System.IO.Packaging;
 
-/*
- *  2 questions, does the cycle hit the max diff without fail
- *  
- * 2: for extremely short cycles
- * 
- * delta-diff = 2 * (height - maxdiff) ?
- * 
- * 99, h: 100 -- delta diff = 2
- * 
- */
 
 namespace UnitTest
 {
@@ -242,7 +230,7 @@ namespace UnitTest
 						double ans_d = double.Parse( (string)ans, new CultureInfo("en-US"));
 						double expected_d = double.Parse(ansExpected, new CultureInfo("en-US"));
 						Assert.AreEqual(expected_d, ans_d, 0.00001);
-						} catch (System.FormatException ex) {
+						} catch (System.FormatException ) {
 						Logger.LogInfo("ERROR [{}] [{}]", (string)ans, ansExpected);	
 						Assert.IsTrue(false);
 						}
@@ -255,6 +243,15 @@ namespace UnitTest
         }
 #endif        
        
+#if mono
+	private string setBaseDir(string baseDir, bool set = true)
+        {
+            baseDir = @"/home/ent/mono/CodeJam/" + baseDir.Replace('\\', '/');
+            if (set) Directory.SetCurrentDirectory(baseDir);
+
+            return baseDir;
+        }
+#else
         private string setBaseDir(string baseDir, bool set = true)
         {
             baseDir = @"C:\codejam\CodeJam\" + baseDir.Replace('/', '\\');
@@ -262,10 +259,10 @@ namespace UnitTest
 
             return baseDir;
         }
-
+#endif
         
 
-#if !mono
+
 
         class MainTestData
         {
@@ -417,86 +414,18 @@ namespace UnitTest
 
             
         }
-        
-        #endif
-#if mono
-		[Test]
-        public void runTestFiles()
-        {
-        	//string testSmall2 = 
-        	//"12 3 1 3 3 1 1 1 2 4";
-            //testInput(testSmall2, "LEFT 3");
-            string mustMatch = "Round2";
 
-            XElement po = XElement.Load(@"/home/ent/mono/CodeJam/2013/Solution/TestData.xml");
+		[Test]
+        public void runAllTestFiles()
+        {
+
+        	foreach(MainTestData mtd in testList)
+        	{
+        		runTestFile(mtd);	
+        	}
             
-            foreach( XElement testFileRunner in po.Elements("testFileRunner"))
-            {
-				string baseDir = getAttributeValue(testFileRunner, "basedir");
-				
-				Directory.SetCurrentDirectory(baseDir);
-				
-				if ("true".Equals(getAttributeValue(testFileRunner, "ignore")))
-            	{
-            		continue;
-            	}
-				
-				foreach(XElement run in testFileRunner.Elements("run"))
-				{
-					string mainClassName = getAttributeValue(run, "className");
-					
-					if (mustMatch != null && mainClassName.IndexOf(mustMatch, StringComparison.OrdinalIgnoreCase) < 0)
-						continue;
-					
-					string inputFileName = getAttributeValue(run, "inputFile" );
-					string checkFileName = getAttributeValue(run, "checkFile" );
-					string inputMethodName = getAttributeValue(run, "createInputMethod" );
-					string processInputMethodName = getAttributeValue(run, "processInputMethod" );
-					
-					Type mainType = Type.GetType(mainClassName, true);
-					object main = Activator.CreateInstance(mainType);
-					
-					
-					TextReader checkReader = File.OpenText(  checkFileName);
-	
-					using (TextReader inputReader = File.OpenText(  inputFileName))
-					using (Scanner scanner = new Scanner(inputReader))
-					{
-						int testCases = scanner.nextInt();
-						
-						Logger.LogInfo("Begin testing class {} method {} testcases {}",
-							mainClassName, processInputMethodName, testCases);
-						
-						MethodInfo m = mainType.GetMethod(inputMethodName);
-						Logger.LogInfo( "{} method {} ", main, m);
-						
-						Stopwatch timer = Stopwatch.StartNew();
-	
-						for (int tc = 1; tc <= testCases; ++tc)
-						{
-							Preconditions.checkState( mainType.GetMethod(inputMethodName) != null, "Input method does not exist");
-							var input = mainType.GetMethod(inputMethodName).Invoke(main, new object[] {scanner});			
-							var ans = mainType.GetMethod(processInputMethodName).Invoke(main, new object[] {input});
-							
-							string ansStr = String.Format("Case #{0}: {1}", tc, ans);
-							string checkStr = checkReader.ReadLine();
-							
-							Logger.LogDebug("Checking {} = {}", checkStr, ansStr);
-							Assert.AreEqual(checkStr, ansStr);
-						}
-						
-						timer.Stop();
-						TimeSpan timespan = timer.Elapsed;
-	
-						string timeSpanStr = String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10);
-						Logger.LogInfo("\n\nClass {}\nMethod {} \ninput file {}\nTime {}\n\n",
-							mainClassName, processInputMethodName, inputFileName, timeSpanStr);
-	
-					}
-				}
-            }
         }
-        #endif
+        
         
     }
 }

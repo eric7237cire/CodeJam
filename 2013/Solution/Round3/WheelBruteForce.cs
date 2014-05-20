@@ -253,8 +253,8 @@ namespace Round3
         {
             Preconditions.checkState(gondalas[j] == false);
 
-            ModdedLong pos = new ModdedLong(i, gondalas.Length);
-            ModdedLong stop = new ModdedLong(j, gondalas.Length);
+           // ModdedLong pos = new ModdedLong(i, gondalas.Length);
+           // ModdedLong stop = new ModdedLong(j, gondalas.Length);
 
             bool[] ij = Wheel.copyArray(gondalas, i, j);
             //Otherwise too slow

@@ -43,17 +43,12 @@ namespace Round1B_P3
             
 
             int[][] memoize = new int[TrieNodePtr.minDistance + 1][];
-            WordMatch[][] bestMatches = null;
+            WordMatch[][] bestMatches = new WordMatch[TrieNodePtr.minDistance + 1][];
 
-#if (!PERF)
-            new WordMatch[TrieNode.minDistance + 1][];
-#endif
             for (int i = 0; i <= TrieNodePtr.minDistance; ++i)
             {
                 memoize[i] = new int[S.Length];
-#if (!PERF)
                 bestMatches[i] = new WordMatch[S.Length];
-#endif
             }
 
            
@@ -152,9 +147,9 @@ namespace Round1B_P3
             }
 
             memoize[lastChangeDistance][progress] = currentMin + 1;
-#if (!PERF)
+
             bestMatches[lastChangeDistance][progress] = bestMatch;
-#endif
+
             return currentMin;
         }
 

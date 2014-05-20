@@ -226,8 +226,8 @@ namespace Round3
                 return Pij_memoize[i][j] = 1;
             }
 
-            ModdedLong start = new ModdedLong(i, N);
-            ModdedLong stop = new ModdedLong(j, N);
+            //ModdedLong start = new ModdedLong(i, N);
+            //ModdedLong stop = new ModdedLong(j, N);
 
             int ijLength;
             int holeCount = GetHoleCount(i, j, out ijLength);
@@ -268,7 +268,7 @@ namespace Round3
             }
 
             //Logger.LogTrace("E {} {} {} {} N {}", gondalas.ToCommaString(), i, j, k, N);
-            ModdedLong start = new ModdedLong(i, gondalas.Length);
+           // ModdedLong start = new ModdedLong(i, gondalas.Length);
             ModdedLong stop = new ModdedLong(j, gondalas.Length);
             ModdedLong mid = new ModdedLong(i + k, N);
 
@@ -287,7 +287,7 @@ namespace Round3
 #else
             FracClass ans = expectedLeft + expectedRight + N - new FracClass(k, 2);
 #endif
-            if (false) Logger.LogTrace(" E({},{}) = {} + E({},{}) = {} + {} = {}",
+            Logger.LogTrace(" E({},{}) = {} + E({},{}) = {} + {} = {}",
                 i,
                 mid,
                 expectedLeft,
@@ -312,9 +312,9 @@ namespace Round3
            // Logger.LogInfo("E({}, {})", i, j);
 
             int ijLength;
-            int holeCount = GetHoleCount(i, j, out ijLength);
+            GetHoleCount(i, j, out ijLength);
 
-           //P(i,j, k) / P(i,j) is like the weighted average, where P(i,j) == 100%
+           //P(i,j, k) / P(i,j) is like the weighted average, where P(i,j) acts like 100%
 
             FracClass sum = 0;
             for (int k = 0; k < ijLength - 1; ++k)

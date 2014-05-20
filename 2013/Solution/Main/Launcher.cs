@@ -13,7 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnitTest;
 using Utils.geom;
 
 namespace MainNS
@@ -46,22 +45,7 @@ namespace MainNS
             //return;
 #endif
 
-            TestMath tm = new TestMath();
-            tm.TestModdedLongArithmetic();
-
-          //  TestUtils tu = new TestUtils();
-            //tu.testEquality();
-          //  TestWheel tw = new TestWheel();
-           // tw.TestRBruteForce();
-          //  tw.TestLargeFractionToDouble();
-           // tw.TestEI_bruteForce();
-            //tw.TestPermutationWithRep();
-            //tw.TestPij_bruteforce();
-            //tw.TestPijk_bruteForce();
-            //tw.TestPijk_bruteForce2();
-           // tw.TestP();
-            //tw.TestCompare();
-           // return;
+          
 
             //Cheaters main = new Cheaters();
             //  Rural main = new Rural();
