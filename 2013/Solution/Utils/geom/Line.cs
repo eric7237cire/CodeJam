@@ -70,6 +70,18 @@ namespace Utils.geom
             ls.p2 = new Point<long>(x2, y2);
             return ls;
         }
+        
+        public static LineSegment<double> createSegmentFromCoords(double x1, double y1, double x2, double y2)
+        {
+            double A = y2 - y1;
+            double B = x1 - x2;
+            double C = A * x1 + B * y1;
+            LineSegment<double> ls = new LineSegment<double>();
+            ls.line = Line<double>.createStandard(A, B, C);
+            ls.p1 = new Point<double>(x1, y1);
+            ls.p2 = new Point<double>(x2, y2);
+            return ls;
+        }
 
         public static Line<T> createFromCoords<T>(T x1, T y1, T x2, T y2) where T : INumeric<T>
         {
