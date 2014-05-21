@@ -94,8 +94,12 @@ namespace Round3
             }
 
             
-
-            middlePoints.Sort();
+			#if mono
+				middlePoints.Sort( (lhs, rhs) => lhs.Item1.CompareTo(rhs.Item1) );
+			#else
+				middlePoints.Sort();
+			#endif
+            
             
 
             //Create upper
@@ -109,9 +113,15 @@ namespace Round3
                     {
                         LineSegment<double> intSeg = horLine.getPerpendicularLineSegWithIntersection(p);
 
+                        //Add intersection with slightly inclined horizontal line in order to get proper order
                         addIn.Add(new TP(intSeg.p2.X, p));
                     }
-                    addIn.Sort();
+                    
+                    #if mono
+                    	addIn.Sort( (lhs, rhs) => lhs.Item1.CompareTo(rhs.Item1) );
+                    #else
+                    	addIn.Sort();
+                    #endif
                 };
 
             addFunc(addInUpper, upperHull);

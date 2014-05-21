@@ -1,7 +1,8 @@
-﻿#define LOGGING
+﻿#if DEBUG
 #define LOGGING_DEBUG
 #define LOGGING_INFO
 #define LOGGING_TRACE
+#endif 
 
 using CombPerm;
 using NUnit.Framework;
@@ -86,7 +87,7 @@ namespace UnitTest
                 WheelLargeSlow dp = new WheelLargeSlow(gondolas);
                 Logger.LogTrace("Gondolas {} start {} stop {}", gondolas.ToCommaString(), start, stop);
                 Assert.AreEqual((double)WheelBruteForce.P_bruteForce(gondolas, start, stop), 
-                	dp.P(start, stop), 1e-9, gondolas.ToCommaString());
+                	(double)dp.P(start, stop), 1e-9, gondolas.ToCommaString());
             }
         }
 

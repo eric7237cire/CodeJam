@@ -6,7 +6,7 @@
          
   <testFileRunner basedir="2013/Solution/Round1B/">
 				  
-				 <!--Osmos-->
+				 <!--Osmos.  Dynamic programming-->
     <run checkFile         ="A-small-practice.check"
          className         ="Round1B.Osmos, Round1B"
          createInputMethod ="createInput"
@@ -20,7 +20,7 @@
          inputFile         ="A-large-practice.in"
          processInputMethod="processInput"/>
 		 
-		 <!-- Probability pennies -->
+		 <!-- Probability pennies.  3 heads in 5 flips.  Pascals Triangle -->
     <run checkFile         ="B-small-practice.check"
          className         ="Round1B_P2.Diamond, Round1B"
          createInputMethod ="createInput"
@@ -165,6 +165,19 @@
          createInputMethod ="createInput"
          inputFile         ="C-large-practice.in"
          processInputMethod="processInput"/>
+         
+         <!-- Sequence Ax % N -->
+            <run checkFile         ="D-small-practice.correct"
+         className         ="Round2_P4.PongMain, Round2"
+         createInputMethod ="createInput"
+         inputFile         ="D-small-practice.in"
+         processInputMethod="processInput"/>
+         
+           <run checkFile         ="D-large-practice.correct"
+         className         ="Round2_P4.PongMain, Round2"
+         createInputMethod ="createInput"
+         inputFile         ="D-large-practice.in"
+         processInputMethod="processInput"/>
                   
          </testFileRunner>
          
@@ -172,6 +185,34 @@
                   
   <testFileRunner basedir="2013/Solution/Round3/">
   
+  <!-- Covering all cases -->
+  <run checkFile         ="A-small-practice.check"
+         className         ="Round3.Cheaters, Round3"
+         createInputMethod ="createInput"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInput"/>
+         
+          <run checkFile         ="A-large-practice.check"
+         className         ="Round3.Cheaters, Round3"
+         createInputMethod ="createInput"
+         inputFile         ="A-large-practice.in"
+         processInputMethod="processInput"/>
+        
+         <!-- convex hull -->
+         
+         <run checkFile         ="B-small-practice.correct"
+         className         ="Round3.Rural, Round3"
+         createInputMethod ="createInput"
+         inputFile         ="B-small-practice.in"
+         processInputMethod="processInput"/>
+         
+          <run checkFile         ="B-large-practice.correct"
+         className         ="Round3.Rural, Round3"
+         createInputMethod ="createInput"
+         inputFile         ="B-large-practice.in"
+         processInputMethod="processInput"/>
+  
+         <!--Dijkstras-->
     <run checkFile         ="C-small-practice.correct"
          className         ="Round3.Lost, Round3"
          createInputMethod ="createInput"
@@ -182,12 +223,15 @@
          createInputMethod ="createInput"
          inputFile         ="C-small-practice.in"
          processInputMethod="processInputBruteForce"/>
+         
+         
     <run checkFile         ="C-large-practice.correct"
          className         ="Round3.Lost, Round3"
          createInputMethod ="createInput"
          inputFile         ="C-large-practice.in"
          processInputMethod="processInput"/>
 		 
+         <!--2d segment mod intersection-->
 		 
 		 <run checkFile         ="D-small-practice.correct"
          className         ="Round3.Wheel, Round3"

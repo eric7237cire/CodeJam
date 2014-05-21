@@ -201,14 +201,14 @@ namespace Round1C
         public long processInputBruteForce(Input input)
         {
             int ans =  bruteForce(input.name, input.n);
-            Logger.Log("ans is {0}", ans);
+            Logger.LogDebug("ans is {0}", ans);
             return ans;
         }
 
         public long processInput(Input input)
         {
             long ans = calculate(input.name, input.n);
-            Logger.Log("ans is {0}", ans);
+            Logger.LogDebug("ans is {0}", ans);
             return ans;
         }
         

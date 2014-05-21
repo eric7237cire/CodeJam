@@ -114,7 +114,7 @@ namespace UnitTest1B
             double prob = nodeProb[n1];
             
 
-            Logger.Log("p {0} {1}", expectedProb, prob);
+            Logger.LogDebug("p {0} {1}", expectedProb, prob);
             Assert.AreEqual(expectedProb, prob, 0.00001);
             
         }

@@ -1,7 +1,9 @@
-﻿#define LOGGING
+﻿
+#if DEBUG
 #define LOGGING_DEBUG
 #define LOGGING_INFO
 //#define LOGGING_TRACE
+#endif
 
 using CodeJamUtils;
 using System;

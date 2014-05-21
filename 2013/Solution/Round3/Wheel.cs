@@ -1,8 +1,8 @@
-﻿//#define LOGGING
+﻿#if DEBUG
 #define LOGGING_DEBUG
 #define LOGGING_INFO
 //#define LOGGING_TRACE
-
+#endif
 
 using CodeJamUtils;
 using CombPerm;
@@ -51,7 +51,7 @@ namespace Round3
            // Logger.LogInfo(" wheel fast {}", ans2);
            // return ((double)ans2).ToUsString(9);
 
-            Logger.LogInfo("Wheel: {}", input.wheel);
+            Logger.LogDebug("Wheel: {}", input.wheel);
             var ans = WheelLargeSlow.computeAnswer(initialState);
 
 
