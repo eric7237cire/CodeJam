@@ -52,8 +52,19 @@ namespace Utils.geom
             int A = y2 - y1;
             int B = x1 - x2;
             int C = A * x1 + B * y1;
+
+            /*long AB = ModdedLong.gcd_recursive(Math.Abs(A), Math.Abs(B));
+            long ABC = ModdedLong.gcd_recursive(AB, Math.Abs(C));
+
+            Preconditions.checkState(A % ABC == 0);
+            Preconditions.checkState(B % ABC == 0);
+            Preconditions.checkState(C % ABC == 0);
+
+            A /= ABC;
+            B /= ABC;
+            C /= ABC;*/
             LineSegment<int> ls = new LineSegment<int>();
-            ls.line = Line<int>.createStandard(A, B, C);
+            ls.line = Line<int>.createStandard((int)A, (int)B, (int)C);
             ls.p1 = new Point<int>(x1, y1);
             ls.p2 = new Point<int>(x2, y2);
             return ls;
@@ -106,6 +117,21 @@ namespace Utils.geom
                 (lhs.A * rhs.C - rhs.A * lhs.C) / det);
         }
 
+        public static Point<double> intersection(this Line<int> lhs, Line<int> rhs)
+        {
+            //Using idea to solve the 2 equations Ax + By = C and A'x + B'y = C' for x and y
+
+            double det = lhs.A * rhs.B - rhs.A * lhs.B;
+            if (det == 0)
+            {
+                //parrallel
+                return null;
+            }
+
+            return new Point<double>((rhs.B * lhs.C - lhs.B * rhs.C) / det,
+                (lhs.A * rhs.C - rhs.A * lhs.C) / det);
+        }
+
         public static Point<T> intersection<T>(this Line<T> lhs, Line<T> rhs) where T : INumeric<T>, IComparable<T>
         {
             T det = lhs.A.Multiply(rhs.B).Subtract(rhs.A.Multiply(lhs.B));
@@ -140,6 +166,10 @@ namespace Utils.geom
         }
 
         public static Line<double> ToDouble(this Line<int> line)
+        {
+            return Line<double>.createStandard(line.A, line.B, line.C);
+        }
+        public static Line<double> ToDouble(this Line<long> line)
         {
             return Line<double>.createStandard(line.A, line.B, line.C);
         }

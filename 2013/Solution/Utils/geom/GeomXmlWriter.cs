@@ -52,11 +52,11 @@ namespace Utils.geom
         internal Dictionary<string,string> shapeColors;
         internal Dictionary<string, string> lineColors;
 
-        internal Dictionary<Point<int>, string> pointNames;
+        internal Dictionary<Point<long>, string> pointNames;
 
         const string POINT_NAME_PREFIX = "PointName";
         const string FIGURE_NAME_PREFIX = "FigureName";
-        public const int roundingFactor = 1000;
+        public const long roundingFactor = 1000;
 
         const string DEFAULT_SHAPE_COLOR = "F5A79E";
         const string DEFAULT_LINE_COLOR = "000000";
@@ -67,7 +67,7 @@ namespace Utils.geom
 
         public Drawing() {
             Polygons = new List<List<Point<double>>>();
-            pointNames = new Dictionary<Point<int>, string>();
+            pointNames = new Dictionary<Point<long>, string>();
             figures = new List<Figure>();
             shapeColors = new Dictionary<string, string>();
             lineColors = new Dictionary<string, string>();
@@ -150,7 +150,7 @@ namespace Utils.geom
             getName(p);
         }
 
-        private string getNameBase(Point<int> point)
+        private string getNameBase(Point<long> point)
         {
             if (pointNames.ContainsKey(point))
             {
@@ -164,11 +164,11 @@ namespace Utils.geom
         
         private string getName(Point<double> point)
         {
-            return getNameBase(new Point<int>( (int) (point.X * roundingFactor), (int) (point.Y * roundingFactor)));
+            return getNameBase(new Point<long>( (long) (point.X * roundingFactor), (long)(point.Y * roundingFactor)));
         }
         private string getName(Point<int> point)
         {
-            return getNameBase(new Point<int>((int)(point.X * roundingFactor), (int)(point.Y * roundingFactor)));
+            return getNameBase(new Point<long>(point.X * roundingFactor, point.Y * roundingFactor));
         }
 
         public List<List<Point<double>>> Polygons { get; set; }

@@ -246,16 +246,10 @@ namespace Utils.geom
         /*
         Input: a list P of points in the plane.
 
-
-for i = n, n-1, ..., 1:
-    while U contains at least two points and the sequence of last two points
-            of U and the point P[i] does not make a counter-clockwise turn:
-        remove the last point from U
-    append P[i] to U
-
-Remove the last point of each list (it's the same as the first point of the other list).
-Concatenate L and U to obtain the convex hull of P.
-Points in the result will be listed in counter-clockwise order.*/
+    Points in the result will be listed in counter-clockwise order starting with
+         * extreme left point, then lower hull increasing X, then upper hull going decreasing X.
+         * midpoint and 0 are shared between upper and lower hull
+         */
         public static List<Point<T>> ConvexHullChains<T>(this IList<Point<T>> ptsOrig,
                 Func<Point<T>, Point<T>, Point<T>, int> ccwFunc, //+1 ccw, -1 cw, 0 colinear
             out int midPointIdx,
@@ -302,6 +296,8 @@ Points in the result will be listed in counter-clockwise order.*/
                 hull.Add(points[i]);
             }
 
+            //TODO see python code below, can combine loops by changing sign of upper hull <= to >=
+
             midPointIdx = hull.Count - 1;
 
             //Remove last element to avoid repetition
@@ -329,6 +325,55 @@ Points in the result will be listed in counter-clockwise order.*/
             return hull;
         }
 
+        /*
+         * # convex hull (Graham scan by x-coordinate) and diameter of a set of points
+# David Eppstein, UC Irvine, 7 Mar 2002
+
+from __future__ import generators
+
+def orientation(p,q,r):
+    '''Return positive if p-q-r are clockwise, neg if ccw, zero if colinear.'''
+    return (q[1]-p[1])*(r[0]-p[0]) - (q[0]-p[0])*(r[1]-p[1])
+
+def hulls(Points):
+    '''Graham scan to find upper and lower convex hulls of a set of 2d points.'''
+    U = []
+    L = []
+    Points.sort()
+    for p in Points:
+        while len(U) > 1 and orientation(U[-2],U[-1],p) <= 0: U.pop()
+        while len(L) > 1 and orientation(L[-2],L[-1],p) >= 0: L.pop()
+        U.append(p)
+        L.append(p)
+    return U,L
+
+def rotatingCalipers(Points):
+    '''Given a list of 2d points, finds all ways of sandwiching the points
+between two parallel lines that touch one point each, and yields the sequence
+of pairs of points touched by each pair of lines.'''
+    U,L = hulls(Points)
+    i = 0
+    j = len(L) - 1
+    while i < len(U) - 1 or j > 0:
+        yield U[i],L[j]
+        
+        # if all the way through one side of hull, advance the other side
+        if i == len(U) - 1: j -= 1
+        elif j == 0: i += 1
+        
+        # still points left on both lists, compare slopes of next hull edges
+        # being careful to avoid divide-by-zero in slope calculation
+        elif (U[i+1][1]-U[i][1])*(L[j][0]-L[j-1][0]) > \
+                (L[j][1]-L[j-1][1])*(U[i+1][0]-U[i][0]):
+            i += 1
+        else: j -= 1
+
+def diameter(Points):
+    '''Given a list of 2d points, returns the pair that's farthest apart.'''
+    diam,pair = max([((p[0]-q[0])**2 + (p[1]-q[1])**2, (p,q))
+                     for p,q in rotatingCalipers(Points)])
+    return pair
+         * */
 
         public static double PolygonArea(this IList<Point<int>> points)
         {
@@ -443,10 +488,13 @@ Points in the result will be listed in counter-clockwise order.*/
         }
         public override int GetHashCode()
         {
-            int hash = 17;
-            hash = hash * 23 + x.GetHashCode();
-            hash = hash * 23 + y.GetHashCode();
-            return hash;
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 23 + x.GetHashCode();
+                hash = hash * 23 + y.GetHashCode();
+                return hash;
+            }
         }
 
 

@@ -163,7 +163,7 @@ namespace Round3
 
             
                 d.AddPolygon(biggerPolygon, "00FF00");
-                GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
+             //   GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
             
             IEnumerable<int> l2 = biggerPolygon.Select((p) => points.IndexOf(p));
 
