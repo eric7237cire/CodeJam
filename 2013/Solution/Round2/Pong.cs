@@ -445,7 +445,7 @@ namespace Round2.Pong
                     {
                         NumType ans = PongMain.calcAdd(offset, toAdd, pNum, height);
 
-                        Logger.LogInfo("{} + n {} * {} = {} = {} : {} [diff {}] with respect to height {}",
+                        Logger.LogDebug("{} + n {} * {} = {} = {} : {} [diff {}] with respect to height {}",
                             offset, pNum, toAdd, offset + pNum * toAdd,
                             (offset + pNum * toAdd) % (2 * height),
                             ans, (ans - posList.GetLastValue()), height);
@@ -611,8 +611,8 @@ namespace Round2.Pong
             Line rebound = LineExt.createFromPoints(p1, p1.Add(new Point(-input.VX, input.VY)));
 
             var p2 = rebound.intersection(teamLeft);
-            Logger.LogInfo("Initial point {}, {} direction {}, {}", input.X, input.Y, input.VX, input.VY);
-            Logger.LogInfo("First intersection {} 2nd {}", p1, p2);
+            Logger.LogDebug("Initial point {}, {} direction {}, {}", input.X, input.Y, input.VX, input.VY);
+            Logger.LogDebug("First intersection {} 2nd {}", p1, p2);
 
             NumType yDif = p2.Y.Subtract(p1.Y);
 
@@ -628,10 +628,10 @@ namespace Round2.Pong
             
             BigInteger[] teamSpeed = new BigInteger[2] { input.speedLeftTeam, input.speedRightTeam };
 
-            Logger.LogInfo("Width {} Height {}", input.widthField, input.heightField);
-            Logger.LogInfo("Left team {} players at {} speed", teamSize[0], teamSpeed[0]);
-            Logger.LogInfo("Right team {} players at {} speed", teamSize[1], teamSpeed[1]);
-            Logger.LogInfo("Time = {} + {} * n.  Position = {} + {} * n", t0, t1, p1.Y, yDif);
+            Logger.LogDebug("Width {} Height {}", input.widthField, input.heightField);
+            Logger.LogDebug("Left team {} players at {} speed", teamSize[0], teamSpeed[0]);
+            Logger.LogDebug("Right team {} players at {} speed", teamSize[1], teamSpeed[1]);
+            Logger.LogDebug("Time = {} + {} * n.  Position = {} + {} * n", t0, t1, p1.Y, yDif);
 
             BigInteger firstPointFail = 0;
             int failTeam = -1;
@@ -669,7 +669,7 @@ namespace Round2.Pong
 					firstPointFail = firstPointFail0 ;	
 					failTeam = team;
 				}
-                Logger.LogInfo("firstPointFail {}.",  firstPointFail);
+                Logger.LogDebug("firstPointFail {}.",  firstPointFail);
 
                 
                 int showStart = 0;
@@ -696,7 +696,7 @@ namespace Round2.Pong
                 int team = failTeam; //firstPointFail % 2 == 0 ? 1 : 0;
                // BigInteger num = (firstPointFail + team) / 2;
                 string teamName = ((!switchTeams && team == 0) || (switchTeams && team == 1)) ? "RIGHT" : "LEFT";
-                Logger.LogInfo(teamName + " " + firstPointFail);
+                Logger.LogDebug(teamName + " " + firstPointFail);
                 return teamName + " " + firstPointFail;
             }
 
@@ -732,8 +732,8 @@ namespace Round2.Pong
             Line rebound = LineExt.createFromPoints(p1, p1.Add(new Point(-input.VX, input.VY)));
 
             var p2 = rebound.intersection(teamLeft);
-            Logger.LogInfo("Initial point {}, {} direction {}, {}", input.X, input.Y, input.VX, input.VY);
-            Logger.LogInfo("First intersection {} 2nd {}", p1, p2);
+            Logger.LogDebug("Initial point {}, {} direction {}, {}", input.X, input.Y, input.VX, input.VY);
+            Logger.LogDebug("First intersection {} 2nd {}", p1, p2);
 
             NumType yDif = p2.Y.Subtract(p1.Y);
 
@@ -754,10 +754,10 @@ namespace Round2.Pong
             
             BigInteger[] teamSpeed = new BigInteger[2] { input.speedLeftTeam, input.speedRightTeam };
 
-            Logger.LogInfo("Width {} Height {}", input.widthField, input.heightField);
-            Logger.LogInfo("Left team {} players at {} speed", teamSize[0], teamSpeed[0]);
-            Logger.LogInfo("Right team {} players at {} speed", teamSize[1], teamSpeed[1]);
-            Logger.LogInfo("Time = {} + {} * n.  Position = {} + {} * n", t0, t1, p1.Y, yDif);
+            Logger.LogDebug("Width {} Height {}", input.widthField, input.heightField);
+            Logger.LogDebug("Left team {} players at {} speed", teamSize[0], teamSpeed[0]);
+            Logger.LogDebug("Right team {} players at {} speed", teamSize[1], teamSpeed[1]);
+            Logger.LogDebug("Time = {} + {} * n.  Position = {} + {} * n", t0, t1, p1.Y, yDif);
 
             BigInteger firstPointFail = long.MaxValue;
 
@@ -795,7 +795,7 @@ namespace Round2.Pong
                 
 				firstPointFail0 = callFirstHit(startingPoint, yDif * 2, lower, upper, input.heightField);
 				
-                Logger.LogInfo("First point {}.  Starting point {}", firstPointFail0, startingPoint % (2 * input.heightField));
+                Logger.LogDebug("First point {}.  Starting point {}", firstPointFail0, startingPoint % (2 * input.heightField));
 
                 for (int j = 0; j < 1000 && !foundFirstPointFail; ++j)
                 {
@@ -827,10 +827,10 @@ namespace Round2.Pong
                             NumType pj = PongMain.calcAdd(p1.Y, yDif, realIndex + 2 * teamSize[team], input.heightField);
                             NumType diffBet = (pi - pj).Abs();
 
-                            Logger.LogInfo("testForbiddenIntervalHelper pi [{}] pj [{}] diff [{}] target {} lower {} upper {}",
+                            Logger.LogDebug("testForbiddenIntervalHelper pi [{}] pj [{}] diff [{}] target {} lower {} upper {}",
                             pi, pj, diffBet, disPossible, lower, upper);
 
-                            Logger.LogInfo("Found point realIndex: {} next after realIndex (actual failure point) {}", realIndex, realIndex + 2 * teamSize[team]);
+                            Logger.LogDebug("Found point realIndex: {} next after realIndex (actual failure point) {}", realIndex, realIndex + 2 * teamSize[team]);
                             firstPointFail = BigInteger.Min(firstPointFail, realIndex + 2 * teamSize[team]);
                             foundFirstPointFail = true;
                             break;
@@ -849,7 +849,7 @@ namespace Round2.Pong
                 int team = firstPointFail % 2 == 0 ? 1 : 0;
                 BigInteger num = (firstPointFail + team) / 2;
                 string teamName = ((!switchTeams && team == 0) || (switchTeams && team == 1)) ? "RIGHT" : "LEFT";
-                Logger.LogInfo(teamName + " " + num);
+                Logger.LogDebug(teamName + " " + num);
                 return teamName + " " + num;
             }
 
@@ -884,8 +884,8 @@ namespace Round2.Pong
             Line rebound = LineExt.createFromPoints(p1, p1.Add(new Point(-input.VX, input.VY)));
 
             var p2 = rebound.intersection(teamLeft);
-            Logger.LogInfo("Initial point {}, {} direction {}, {}", input.X, input.Y, input.VX, input.VY);
-            Logger.LogInfo("First intersection {} 2nd {}", p1, p2);
+            Logger.LogDebug("Initial point {}, {} direction {}, {}", input.X, input.Y, input.VX, input.VY);
+            Logger.LogDebug("First intersection {} 2nd {}", p1, p2);
 
             NumType yDif = p2.Y.Subtract(p1.Y);
 
@@ -909,10 +909,10 @@ namespace Round2.Pong
             
             long[] teamSpeed = new long[2] { (long)input.speedLeftTeam, (long)input.speedRightTeam };
 
-            Logger.LogInfo("Width {} Height {1}", input.widthField, input.heightField);
-            Logger.LogInfo("Left team {} players at {} speed", teamSize[0], teamSpeed[0]);
-            Logger.LogInfo("Right team {} players at {} speed", teamSize[1], teamSpeed[1]);
-            Logger.LogInfo("Time = {} + {} * n.  Position = {} + {} * n", t0, t1, p1.Y, yDif);
+            Logger.LogDebug("Width {} Height {1}", input.widthField, input.heightField);
+            Logger.LogDebug("Left team {} players at {} speed", teamSize[0], teamSpeed[0]);
+            Logger.LogDebug("Right team {} players at {} speed", teamSize[1], teamSpeed[1]);
+            Logger.LogDebug("Time = {} + {} * n.  Position = {} + {} * n", t0, t1, p1.Y, yDif);
 
             long firstPointFail = long.MaxValue;
                        

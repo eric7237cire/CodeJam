@@ -71,7 +71,7 @@ namespace Round1C_P2
 
             for (int i = 0; i < 4; ++i)
             {
-                Logger.Log(string.Join(", ", al[i]) + " sum: " + al[i].Sum());
+                Logger.LogTrace(string.Join(", ", al[i]) + " sum: " + al[i].Sum());
 
             }
 

@@ -10,7 +10,7 @@ using Utils;
 namespace UnitTest
 {
     [TestFixture]
-    class TestCombinationClasses
+    public class TestCombinationClasses
     {
         [Test]
         public void TestCombinationIterator()

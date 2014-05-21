@@ -4,8 +4,7 @@
 
          
          
-  <testFileRunner basedir="2013/Solution/Round1B/"
-                  ignore ="false">
+  <testFileRunner basedir="2013/Solution/Round1B/">
 				  
 				 <!--Osmos-->
     <run checkFile         ="A-small-practice.check"
@@ -64,16 +63,16 @@
 		 
   </testFileRunner>
   
-  <testFileRunner basedir="2013/Solution/Round1C/"
-                  ignore ="false">
-                  
+  <testFileRunner basedir="2013/Solution/Round1C/">
+        
+   <!-- include / exclude principal -->
                   <run checkFile         ="A_small_practice.check"
          className         ="Round1C.Consonants, Round1C"
          createInputMethod ="createInput"
          inputFile         ="A-small-practice.in"
          processInputMethod="processInput"/>
          
-         <!-- include / exclude principal -->
+        
           <run checkFile         ="A_small_practice.check"
          className         ="Round1C.Consonants, Round1C"
          createInputMethod ="createInput"
@@ -115,17 +114,17 @@
          processInputMethod="processInputSmall"/>
 		 
 		 
-		 
+		 <!--Uses too much memory TODO-->
+		 <!--
 		 <run checkFile         ="C-large-practice.check"
          className         ="Round1C.GreatWall, Round1C"
          createInputMethod ="createInput"
          inputFile         ="C-large-practice.in"
-         processInputMethod="processInput"/>
+         processInputMethod="processInput"/>-->
 		 
          </testFileRunner>
          
-         <testFileRunner basedir="2013/Solution/Round2/"
-                  ignore ="false">
+         <testFileRunner basedir="2013/Solution/Round2/">
                   
                   <!-- Stack -->
                   
@@ -171,8 +170,8 @@
          
                   
                   
-  <testFileRunner basedir="2013/Solution/Round3/"
-                  >
+  <testFileRunner basedir="2013/Solution/Round3/">
+  
     <run checkFile         ="C-small-practice.correct"
          className         ="Round3.Lost, Round3"
          createInputMethod ="createInput"
@@ -189,13 +188,13 @@
          inputFile         ="C-large-practice.in"
          processInputMethod="processInput"/>
 		 
-		 <!--
+		 
 		 <run checkFile         ="D-small-practice.correct"
          className         ="Round3.Wheel, Round3"
          createInputMethod ="createInput"
          inputFile         ="D-small-practice.in"
          processInputMethod="processInputSmall"/>
-		 -->
+		 
 		 
 		 <run checkFile         ="D-small-practice.correct"
          className         ="Round3.Wheel, Round3"
@@ -210,25 +209,20 @@
          processInputMethod="processInputOtherSolution"/>
 		 
 		 
-		 <!--A bit too slow
+		 <!--A bit too slow-->
 		 <run checkFile         ="D-large-practice.correct"
          className         ="Round3.Wheel, Round3"
          createInputMethod ="createInput"
+         category = "slow"
          inputFile         ="D-large-practice.in"
-         processInputMethod="processInput"/>-->
+         processInputMethod="processInput"/>
 		 
   </testFileRunner>
   
   
-  <testFileRunner basedir="2013/Solution/RoundFinal"
-                  >
+  <testFileRunner basedir="2013/Solution/RoundFinal">
 				  
-				   <run checkFile         ="A-small-practice.correct"
-         className         ="RoundFinal.Graduation, RoundFinal"
-         createInputMethod ="createInput"
-		 testName          = "2013.RoundFinal.Problem1.Sample"
-         inputFile         ="sample.in"
-         processInputMethod="processInput"/>
+				 
 		 
 		 <run checkFile         ="A-small-practice.correct"
          className         ="RoundFinal.Graduation, RoundFinal"
@@ -243,6 +237,15 @@
 		 testName          = "2013.RoundFinal.Problem1.Small-0"
          inputFile         ="A-small-practice.in"
          processInputMethod="processInputSmall"/>
+         
+         
+          <run checkFile         ="A-large-practice.correct"
+         className         ="RoundFinal.Graduation, RoundFinal"
+         createInputMethod ="createInput"
+         category = "slow"
+		 testName          = "2013.RoundFinal.Problem1.Large"
+         inputFile         ="A-large-practice.in"
+         processInputMethod="processInput"/>
 		 
 		 </testFileRunner>
   

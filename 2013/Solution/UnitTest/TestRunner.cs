@@ -1,7 +1,8 @@
-﻿#define LOGGING
+﻿#if DEBUG
 #define LOGGING_DEBUG
+#endif 
+
 #define LOGGING_INFO
-//#define LOGGING_TRACE
 
 
 using System.Numerics;
@@ -312,6 +313,7 @@ namespace UnitTest
                 Assert.AreEqual(checkStr, ansStr);
             }
 
+            scanner.Dispose();
             timer.Stop();
             TimeSpan timespan = timer.Elapsed;
 
@@ -322,14 +324,13 @@ namespace UnitTest
 
         }
 
-        [Test]
+        //[Test]
         public void TestFinal2013ProblemGraduation()
         {
             testName("2013.RoundFinal.Problem1.Small-0");
         }
 
-        [Test]
-        [Category ("current2")]
+        //[Test]        
         public void TestFinal2013ProblemGraduationSmall()
         {
             testName("2013.RoundFinal.Problem1.Small");
@@ -363,10 +364,7 @@ namespace UnitTest
 
                 setBaseDir(baseDir);
 
-                if ("true".Equals(getAttributeValue(testFileRunner, "ignore")))
-                {
-                    continue;
-                }
+                
 
                 foreach (XElement run in testFileRunner.Elements("run"))
                 {
@@ -377,6 +375,10 @@ namespace UnitTest
                     string inputMethodName = getAttributeValue(run, "createInputMethod");
                     string processInputMethodName = getAttributeValue(run, "processInputMethod");
 
+                    if ("slow".Equals(getAttributeValue(run, "category")))
+                    {
+                    	continue;
+                    }
                     TextReader inputReader = File.OpenText(inputFileName);
                     Scanner scanner = new Scanner(inputReader);
                     using(TextReader checkReader = File.OpenText(checkFileName))

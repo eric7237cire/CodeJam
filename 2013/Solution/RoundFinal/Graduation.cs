@@ -98,6 +98,12 @@ namespace RoundFinal
 
                     if (bestStop == null || bestStop.Y > bestPoints[1].Y)
                         bestStop = bestPoints[1];
+                    
+                    //Short circuit
+                	if (bestStop.Y - bestStart.Y <= bestLength)
+                	{
+                		break;
+                	}
                 }
 
                 long length = bestStop.Y - bestStart.Y;
@@ -229,13 +235,6 @@ namespace RoundFinal
             
             Fraction timeBackwardIntersection = queryTime - backwardsCurDifPosition / 2; 
             
-            /*
-            if (timeForwardIntersection > car.input.totalTime)
-                timeForwardIntersection = car.input.totalTime;
-            
-            if (timeBackwardIntersection < 0)
-                timeBackwardIntersection = 0;*/
-            
             //positive slope so add
             Fraction backPos =  getPositionForTime(queryPosition, queryTime, timeBackwardIntersection, N, -1);
             //negative slope so subtract
@@ -249,63 +248,7 @@ namespace RoundFinal
 
         }
 
-        private void getBeforeIntersection(long queryPosition, long queryTime,
-        	out Point<long> forwards, out Point<long> backwards, Car car)
-        {
-        	long N = car.input.nIntersections;
-        	
-        	//Get position of car at queryTime, because the car may not have entered yet, take car of 
-            //negative positions
-            long carPosition = (N + ((car.startPosition + (queryTime - car.enterTime)) % N)) % N;
-            
-            //Since car is advancing [car .... me] it is the left
-            long curDifPosition = ModdedLong.diff(carPosition, queryPosition, N);
-            
-            //Enemy car is already there
-            if (curDifPosition == 0 )
-            {
-                forwards = new Point<long>(queryPosition, queryTime);
-                backwards = new Point<long>(queryPosition, queryTime);
-
-                Logger.LogTrace("With car ! {} for query point/time ({}, {})", car, 
-                	queryPosition, queryTime);
-
-                return;
-            }
-            
-            long backwardsCurDifPosition = ModdedLong.diff(queryPosition, carPosition, N);
-            
-            Logger.LogTrace( "Original Diff forward {} diff backward {}  car: ({}, {})",
-            	curDifPosition, backwardsCurDifPosition, queryTime, carPosition);
-            
-             //Just before intersection.  So if difference is 2, 4, 6, 8 then
-            //just before the intersection is 0, 1, 2
-            //If diff is 1,3, 5, 7 then
-            //time is 0, 1, 2, etc
-            long timeForwardIntersection = queryTime + (curDifPosition + 1) / 2 - 1;
-            
-            Preconditions.checkState(timeForwardIntersection >= queryTime, "time forward too small");
-            
-            long timeBackwardIntersection = queryTime - ( (backwardsCurDifPosition + 1) / 2 - 1 );
-            
-            if (timeForwardIntersection > car.input.totalTime)
-                timeForwardIntersection = car.input.totalTime;
-            
-            if (timeBackwardIntersection < 0)
-                timeBackwardIntersection = 0;
-            
-            //positive slope so add
-            long backPos =  ((queryTime - timeBackwardIntersection) + queryPosition) % N;
-            //negative slope so subtract
-            long forwardPos = getPositionForTime(queryPosition, queryTime, timeForwardIntersection, N, -1);
-                        
-            Logger.LogTrace( "Diff forward {} time {} diff backward {} time {}",
-            	curDifPosition, timeForwardIntersection, backwardsCurDifPosition, timeBackwardIntersection);
-            
-            forwards = new Point<long>(forwardPos, timeForwardIntersection);
-            backwards = new Point<long>(backPos, timeBackwardIntersection);
-
-        }
+       
         
         private static long getPositionForTime(long curPos, long curTime, long time, long N, int slopePosPerTime)
         {
@@ -328,6 +271,7 @@ namespace RoundFinal
         }
 
         private readonly Fraction HALF = new Fraction(1, 2);
+        private readonly Fraction QUARTER = new Fraction(1, 4);
 
         public void getLongestSegment(long queryPosition, long queryTime, 
             out List<Point<long>> furthestWithoutIntersecting, Car car)
@@ -340,42 +284,44 @@ namespace RoundFinal
             Point<Fraction> forwards;
             Point<Fraction> backwards;
 
-            Fraction posAtCarEnterTime = getPositionForTime(queryPosition, queryTime, car.enterTime+HALF, N, -1);
+            Fraction posAtCarEnterTime = getPositionForTime(queryPosition, queryTime, car.enterTime+QUARTER, N, -1);
             long posAtCarExitTime = getPositionForTime(queryPosition, queryTime, car.exitTime, N, -1);
 
-            Point<Fraction> forwards1;
-
-            //Useless
-            Point<Fraction> backwards1;
-            getIntersection(posAtCarEnterTime, car.enterTime, out forwards1, out backwards1, car);
-            Logger.LogTrace("1st forward intersection {}, backward {}", forwards1, backwards1);
-            Preconditions.checkState(forwards1.Y >= car.enterTime);
-
-            //useless, car has exited
-            Point<Fraction> forwards2;
-            Point<Fraction> backwards2;
-            getIntersection(posAtCarExitTime, car.exitTime, out forwards2, out backwards2, car);
+            Point<Fraction>[] intPoints = new Point<Fraction>[4];
             
-            Logger.LogTrace("2nd forward intersection {}, backward {}", forwards2, backwards2);
-            Preconditions.checkState(backwards2.Y <= car.exitTime);
+            getIntersection(posAtCarEnterTime, car.enterTime+QUARTER, out intPoints[1], out intPoints[0], car);
+            Logger.LogTrace("At enter time intersection {}, backward {}", intPoints[1], intPoints[0]);
+            //Preconditions.checkState(forwards1.Y >= car.enterTime);
+            
+            getIntersection(posAtCarExitTime, car.exitTime, out  intPoints[3], out intPoints[2], car);
+            
+            Logger.LogTrace("At exit time intersection {}, backward {}", intPoints[3], intPoints[2]);
+            //Preconditions.checkState(backwards2.Y <= car.exitTime);
+            
+            Func<Fraction, Boolean> isValidFunc = (pTime) => pTime >= car.enterTime && pTime <= car.exitTime;
 
-            if (forwards1.Y <= car.exitTime && forwards1.Y >= queryTime)
+            forwards = new Point<Fraction>(0, car.input.totalTime + 2);	
+            
+            for(int i = 0; i < 4; ++i)
             {
-                forwards = forwards1;
+            	if (isValidFunc(intPoints[i].Y) && intPoints[i].Y >= queryTime)
+            	{            
+            		forwards = intPoints[i];
+            		break;
+            	}
             }
-            else
+            
+            backwards = new Point<Fraction>(0, -2);
+            
+            for(int i = 3; i >=0; --i)
             {
-                forwards = new Point<Fraction>(0, car.input.totalTime + 2);	
+            	if (isValidFunc(intPoints[i].Y) && intPoints[i].Y <= queryTime)
+            	{
+            		backwards = intPoints[i];
+            		break;
+            	}
             }
-
-            if (backwards2.Y >= car.enterTime && backwards2.Y <= queryTime)
-            {
-                backwards = backwards2;
-            }
-            else
-            {
-                backwards = new Point<Fraction>(0, -2);	
-            }
+            	
 
             Logger.LogTrace("Chosen forward intersection {}, backward {}", forwards, backwards);
 
@@ -406,6 +352,7 @@ namespace RoundFinal
 
             furthestWithoutIntersecting.Add(new Point<long>((long)backwards.X, (long)backwards.Y));
             furthestWithoutIntersecting.Add(new Point<long>((long)forwards.X, (long)forwards.Y));
+                        
             
             Logger.LogTrace("With car {} best line {} for query point/time ({}, {})", car, furthestWithoutIntersecting.ToCommaString(), queryPosition, queryTime);
 

@@ -54,12 +54,12 @@ namespace UnitTest
             bool[] gondolas = new bool[] { false, false, true, false, true };
 
             WheelLargeSlow dp = new WheelLargeSlow(gondolas);
-            Assert.AreEqual(new BigFraction(12, 64), (BigFraction)dp.P(0, 3));
+            Assert.AreEqual((double)new BigFraction(12, 64), (double)dp.P(0, 3));
 
             gondolas = new bool[] { false, true, false, true, false };
             dp = new WheelLargeSlow(gondolas);
 
-            Assert.AreEqual(new BigFraction(12, 64), (BigFraction)dp.P(4, 2));
+            Assert.AreEqual((double)new BigFraction(12, 64), (double)dp.P(4, 2));
         }
 
         //Comares P(i,j) of slow large solution and brute force
@@ -85,7 +85,8 @@ namespace UnitTest
 
                 WheelLargeSlow dp = new WheelLargeSlow(gondolas);
                 Logger.LogTrace("Gondolas {} start {} stop {}", gondolas.ToCommaString(), start, stop);
-                Assert.AreEqual(WheelBruteForce.P_bruteForce(gondolas, start, stop), dp.P(start, stop), gondolas.ToCommaString());
+                Assert.AreEqual((double)WheelBruteForce.P_bruteForce(gondolas, start, stop), 
+                	dp.P(start, stop), 1e-9, gondolas.ToCommaString());
             }
         }
 

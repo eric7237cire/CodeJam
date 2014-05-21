@@ -12,6 +12,8 @@ using RoundFinal;
 using Utils.geom;
 using System.Collections.Generic;
 
+using Logger = Utils.LoggerFile;
+
 namespace UnitTest
 {
     [TestFixture]
@@ -46,10 +48,10 @@ namespace UnitTest
             Car car = new Car(input, 0);
             
             grad.getLongestSegment(2, 4, out best, car);
-            
+            //Logger.LogDebug("TESTTEST");
             Assert.AreEqual(2, best.Count);
-            Assert.AreEqual(new Point<long>(1, 5), best[0]);
-            Assert.AreEqual(new Point<long>(1, 2), best[1]);
+            Assert.AreEqual(new Point<long>(1, 2), best[0]);
+            Assert.AreEqual(new Point<long>(1, 5), best[1]);
         	
         }
         
@@ -162,7 +164,6 @@ namespace UnitTest
         */
         
         [Test]
-        [Category ("current")]
         public void TestBackward()
         {
         	GraduationInput input = new GraduationInput();
@@ -217,12 +218,13 @@ namespace UnitTest
 
             List<Point<long>> best;
             Car car = new Car(input, 0);
+            
             grad.getLongestSegment(2, 1, out best, car);
 
             Assert.AreEqual(2, best.Count);
 
-            Assert.AreEqual(new Point<long>(1, 2), best[0]);
-            Assert.AreEqual(new Point<long>(2, 1), best[1]);
+            Assert.AreEqual(new Point<long>(2, 1), best[0]);
+            Assert.AreEqual(new Point<long>(1, 2), best[1]);
         }
     }
 }

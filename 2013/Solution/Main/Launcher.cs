@@ -69,10 +69,10 @@ namespace MainNS
 
             list.Add("sample.in");
 
-#if !DEBUG && !mono
+
             list.Add("A-small-practice.in");
-#endif
-            // list.Add("A-large-practice.in");
+
+            list.Add("A-large-practice.in");
 
 
             //list.Add("B-small-practice.in");
