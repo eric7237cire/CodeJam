@@ -59,7 +59,7 @@ namespace UnitTest
         but it has not entered yet
         */
         [Test]
-        [Category ("current2")]
+        [Category ("current")]
         public void TestStartSamePoint()
         {
         	GraduationInput input = new GraduationInput();
@@ -86,7 +86,7 @@ namespace UnitTest
         Test where car exits before forward intersection
         */
         [Test]
-        [Category ("current2")]
+        [Category ("current")]
         public void TestForwardExitBefore()
         {
         	GraduationInput input = new GraduationInput();
@@ -114,7 +114,7 @@ namespace UnitTest
         other cars
         */
         [Test]
-        [Category ("current2")]
+        [Category ("current")]
         public void TestForward()
         {
         	GraduationInput input = new GraduationInput();
@@ -162,7 +162,7 @@ namespace UnitTest
         */
         
         [Test]
-        [Category ("current2")]
+        [Category ("current")]
         public void TestBackward()
         {
         	GraduationInput input = new GraduationInput();
@@ -199,7 +199,12 @@ namespace UnitTest
         }
 
         [Test]
-        public void TestCarBestSegment()
+        [Category("current")]
+        /*we intersect with a car going both forward and backward from
+         * the query point
+         */
+            
+        public void TestBeforeAndAfterIntersection()
         {
             GraduationInput input = new GraduationInput();
             input.start = new long[] { 3 };
@@ -216,8 +221,8 @@ namespace UnitTest
 
             Assert.AreEqual(2, best.Count);
 
-            Assert.AreEqual(new Point<long>(2, 1), best[0]);
-            Assert.AreEqual(new Point<long>(1, 2), best[1]);
+            Assert.AreEqual(new Point<long>(1, 2), best[0]);
+            Assert.AreEqual(new Point<long>(2, 1), best[1]);
         }
     }
 }

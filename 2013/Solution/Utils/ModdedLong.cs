@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Utils.math;
 using Logger = Utils.LoggerFile;
 
 namespace Utils
@@ -247,20 +247,39 @@ namespace Utils
         /// <summary>
         ///  Returns c, such that (a + c) % m == b 
         /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
         /// <param name="m"></param>
         /// <returns></returns>
-        public static long diff(long a, long b, long m)
+        public static long diff(long left, long right, long m)
         {
-            Preconditions.checkState(0 <= a && a < m);
-            Preconditions.checkState(0 <= b && b < m);
-            if (b >= a)
+            Preconditions.checkState(0 <= left && left < m);
+            Preconditions.checkState(0 <= right && right < m);
+            if (right >= left)
             {
-                return b - a;
+                return right - left;
             }
 
-            return (b + m - a);
+            return (right + m - left);
+        }
+
+        /// <summary>
+        ///  Returns c, such that (a + c) % m == b 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <param name="m"></param>
+        /// <returns></returns>
+        public static Fraction diff(Fraction left, Fraction right, long m)
+        {
+            Preconditions.checkState(0 <= left && left < m);
+            Preconditions.checkState(0 <= right && right < m);
+            if (right >= left)
+            {
+                return right - left;
+            }
+
+            return (right + m - left);
         }
 
         /// <summary>
