@@ -224,6 +224,16 @@ namespace Utils.geom
             return false;
         }
 
+        public static bool onLine(this Line<double> line, double x, double y)
+        {
+            double C = line.A * x + line.B * y;
+            return isEqual(C, line.C);
+        }
+
+        private static bool isEqual(double v1, double v2, double tolerance = 1e-6)
+        {
+            return Math.Abs(v1 - v2) <= tolerance;
+        }
         
 
         // The main function that returns true if line segment 'p1q1'

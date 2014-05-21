@@ -99,6 +99,7 @@
     <Compile Include="TestCombin.cs" />
     <Compile Include="TestConsonants.cs" />
     <Compile Include="TestDiamond.cs" />
+    <Compile Include="TestDrummer.cs" />
     <Compile Include="TestMath.cs" />
     <Compile Include="TestRunner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
