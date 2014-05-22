@@ -100,6 +100,19 @@ namespace Utils.geom
             else if (area2 > 0) return +1;
             else return 0;
         }
+        
+        public static T CrossProduct<T>( this Point<T> v1, Point<T> v2) where T : IComparable<T>
+        {
+        	//return (dynamic)v1.X *(dynamic)v2.Y;
+        	return CrossProduct2( v1.X, v1.Y, v2.X, v2.Y );
+        	//return ((dynamic)v1.X*(dynamic)v2.Y) - ((dynamic)v1.Y*(dynamic)v2.X);
+        }
+        
+        public static T CrossProduct2<T>( T x0, T y0, T x1, T y1)
+        {
+        	return (dynamic)x0 *(dynamic)y1;
+        	//return ((dynamic)v1.X*(dynamic)v2.Y) - ((dynamic)v1.Y*(dynamic)v2.X);
+        }
 
         public static List<Point<double>> ConvexHull(this IList<Point<double>> pts)
         {

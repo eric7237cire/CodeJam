@@ -51,6 +51,7 @@ namespace Utils.geom
         //Style name to color
         internal Dictionary<string,string> shapeColors;
         internal Dictionary<string, string> lineColors;
+        internal Dictionary<string, string> pointColors;
 
         internal Dictionary<Point<long>, string> pointNames;
 
@@ -145,20 +146,33 @@ namespace Utils.geom
             figures.Add(f);
         }
 
-        public void AddPoint(Point<int> p)
+        public void AddPoint(Point<int> p, string color = null)
         {
-            getName(p);
+        	 getName(p, color);            
         }
 
-        private string getNameBase(Point<long> point)
+        private string getNameBase(Point<long> point, string color = null)
         {
             if (pointNames.ContainsKey(point))
             {
                 return pointNames[point];
             }
 
-            pointNames[point] = "PointName" + pointNames.Count;
-            return pointNames[point];
+            string name = "PointName" + pointNames.Count;
+            pointNames[point] = name;
+            
+            color = color ?? DEFAULT_POINT_COLOR;
+        	
+        	shapeColors[POINT_STYLE_NAME + shapeColors.Count] = color;
+        	
+        	Figure f = new Figure();
+            f.Name = name;
+            f.Style = styleName;
+            f.Type = FigureType.FreePoint;
+        	
+            figures.Add(f);
+            
+            return name;
         }
 
         
