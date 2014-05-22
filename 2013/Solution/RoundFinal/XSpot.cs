@@ -51,12 +51,12 @@ namespace RoundFinal
         	 
         	 for(int dupIdx = 1; dupIdx < duplicates.Count; dupIdx += 2)
         	 {
-        	 	points[dupIdx] = null;
+        	 	points[duplicates[dupIdx]] = null;
         	 }
         	 
-        	 for(int coLinIdx = 2; coLinIdx < coLinIdx.Count; coLinIdx += 3)
+        	 for(int coLinIdx = 2; coLinIdx < listIdxColinear.Count; coLinIdx += 3)
         	 {
-        	 	points[coLinIdx] = null;
+        	 	points[listIdxColinear[coLinIdx]] = null;
         	 }
         	 
         	 points.RemoveAll(p => p == null);
