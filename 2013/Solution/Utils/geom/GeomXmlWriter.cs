@@ -7,6 +7,7 @@ using System.IO;
 using System.Reflection;
 using System.Xml;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Utils.geom
 {
@@ -22,6 +23,153 @@ namespace Utils.geom
         }
     }
 
+    class Color
+    {
+        public string colorStr { get; private set; }
+
+        public static Color create(int r, int g, int b)
+        {
+            string str = "#FF" + r.ToString("X2") + g.ToString("X2") + b.ToString("X2")  ;
+            return new Color(str);
+        }
+
+        public static Color create(string color)
+        {
+            Preconditions.checkState(color.Length == 9, color);
+            Preconditions.checkState(Regex.IsMatch(color, @"\#[0-9A-F]{8}"));
+            return new Color(color);
+        }
+
+        private Color(string colorStr)
+        {
+            this.colorStr = colorStr;
+        }
+
+        public override int GetHashCode()
+        {
+            return colorStr.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            Color rhs = obj as Color;
+            if (rhs == null)
+                return false;
+            return colorStr.Equals(rhs.colorStr);
+        }
+
+        public override string ToString()
+        {
+            return colorStr;
+        }
+    }
+
+    abstract class Style<T> where T : Style<T>, new()
+    {
+        private static Dictionary<Color, T> allStyles;
+        protected internal Color color { get; protected set; }
+        protected internal string styleName { get; protected set; }
+
+        protected abstract string getStyleBaseName();
+
+        static Style()
+        {
+            allStyles = new Dictionary<Color, T>();
+        }
+        public static T getStyle(string colorStr, Dictionary<Color, T> styleMap ) 
+        {
+            Color color = Color.create(colorStr);
+
+            if (styleMap.ContainsKey(color))
+            {
+                return styleMap[color];
+            }
+
+            T style = new T();
+            style.styleName = style.getStyleBaseName() + styleMap.Count;
+            style.color = color;
+
+            styleMap[color] = style;
+
+            return style;
+        }
+
+        public static T getStyle(string colorStr)
+        {
+            return getStyle(colorStr, allStyles);
+        }
+
+        public static IEnumerable<T> getAllStyles()
+        {
+            foreach (var kv in allStyles)
+            {
+                yield return kv.Value;
+            }
+        }
+    }
+
+    //<PointStyle Size="7" Fill="#FFF8EABA" IsFilled="True" Color="#FF000000" StrokeWidth="5" Name="ps" />
+    class PointStyle : Style<PointStyle> 
+    {
+        
+        protected override string getStyleBaseName()
+        {
+            return "PointStyle";
+        }        
+
+        public void Serialize(XmlWriter writer)
+        {
+            writer.WriteStartElement("PointStyle");
+            writer.WriteAttributeString("Size", "7");
+            writer.WriteAttributeString("Fill", "#FFF8EABA");
+            writer.WriteAttributeString("IsFilled", "True");
+            writer.WriteAttributeString("Color", color.ToString());
+            writer.WriteAttributeString("StrokeWidth", "5");
+            writer.WriteAttributeString("Name", styleName);
+            writer.WriteEndElement();
+        }
+    }
+
+    //<ShapeStyle Size="10" Fill="#FF00FF00" IsFilled="True" Color="#FF000000" StrokeWidth="1" Name="poly0" />
+    class ShapeStyle : Style<ShapeStyle>
+    {
+
+        protected override string getStyleBaseName()
+        {
+            return "ShapeStyle";
+        }
+
+        public void Serialize(XmlWriter writer)
+        {
+            writer.WriteStartElement("ShapeStyle");
+            writer.WriteAttributeString("Size", "10");
+            writer.WriteAttributeString("Fill",  color.ToString());
+            writer.WriteAttributeString("IsFilled", "True");
+            writer.WriteAttributeString("Color", "#FF000000");
+            writer.WriteAttributeString("StrokeWidth", "1");
+            writer.WriteAttributeString("Name", styleName);
+            writer.WriteEndElement();
+        }
+    }
+
+    class LineStyle : Style<LineStyle>
+    {
+        protected override string getStyleBaseName()
+        {
+            return "LineStyle";
+        }
+        //<LineStyle Color="#FF000000" StrokeWidth="1" Name="4" />
+
+        public void Serialize(XmlWriter writer)
+        {
+            //<LineStyle Color="#FF000000" StrokeWidth="1" Name="4" />
+            writer.WriteStartElement("LineStyle");           
+            writer.WriteAttributeString("Color", color.ToString());
+            writer.WriteAttributeString("StrokeWidth", "2");
+            writer.WriteAttributeString("Name", styleName);
+            writer.WriteEndElement();
+        }
+    }
     enum FigureType
     {
         FreePoint,
@@ -37,7 +185,39 @@ namespace Utils.geom
         public List<string> deps = new List<string>();
         public string Style;
 
+        public virtual void Serialize (XmlWriter writer)
+        {
+            writer.WriteStartElement(Type.ToString());
+            writer.WriteAttributeString("Name", Name);
+            if (Style != null)
+                writer.WriteAttributeString("Style", Style);
+
+            foreach (string dep in deps)
+            {
+                writer.WriteStartElement("Dependency");
+                writer.WriteAttributeString("Name", dep);
+                writer.WriteEndElement();
+            }
+            writer.WriteEndElement();
+        }
     }
+
+    class PointFigure : Figure
+    {
+        internal Point<double> pn;
+
+        public override void Serialize(XmlWriter writer)
+        {
+            writer.WriteStartElement("FreePoint");
+            writer.WriteAttributeString("Name", Name);
+            writer.WriteAttributeString("Style", Style);
+            writer.WriteAttributeDouble("X", pn.X);
+            writer.WriteAttributeDouble("Y", pn.Y);
+            writer.WriteEndElement();
+        }
+    }
+
+
     public class Drawing
     {
         public double MinimalVisibleX { get; set; }
@@ -48,30 +228,24 @@ namespace Utils.geom
 
         internal List<Figure> figures;
 
-        //Style name to color
-        internal Dictionary<string,string> shapeColors;
-        internal Dictionary<string, string> lineColors;
-        internal Dictionary<string, string> pointColors;
-
-        internal Dictionary<Point<long>, string> pointNames;
+        
+        internal Dictionary<Point<double>, string> pointNames;
 
         const string POINT_NAME_PREFIX = "PointName";
         const string FIGURE_NAME_PREFIX = "FigureName";
         public const long roundingFactor = 1000;
 
-        const string DEFAULT_SHAPE_COLOR = "F5A79E";
-        const string DEFAULT_LINE_COLOR = "000000";
+        const string DEFAULT_SHAPE_COLOR = "#FFF5A79E";
+        const string DEFAULT_LINE_COLOR = "#FF000000";
+        const string DEFAULT_POINT_COLOR = "#FF000000";
+        
 
-        internal const string POINT_STYLE_NAME = "ps";
-        internal const string POLYGON_STYLE_NAME = "poly";
-        internal const string LINE_STYLE_NAME = "lineS";
-
-        public Drawing() {
+        public Drawing()
+        {
             Polygons = new List<List<Point<double>>>();
-            pointNames = new Dictionary<Point<long>, string>();
+            pointNames = new Dictionary<Point<double>, string>();
             figures = new List<Figure>();
-            shapeColors = new Dictionary<string, string>();
-            lineColors = new Dictionary<string, string>();
+            
 
             MaximalVisibleX = 55;
             MinimalVisibleX = -5;
@@ -83,29 +257,52 @@ namespace Utils.geom
         {
             color = color ?? DEFAULT_SHAPE_COLOR;
 
-            shapeColors[POLYGON_STYLE_NAME + shapeColors.Count] = color;
-
-            AddPolygon(polygon, POLYGON_STYLE_NAME + (shapeColors.Count - 1), getName);
+            AddPolygon(polygon, ShapeStyle.getStyle(color).styleName, getName);
         }
 
-        public void AddPolygon<T>(IEnumerable<Point<T>> polygon, string styleName, Func<Point<T>, string> getName) where T : IComparable<T>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="polygon"></param>
+        /// <param name="styleName"></param>
+        /// <param name="getName">Used to work with any Point of T</param>
+        public void AddPolygon<T>(IEnumerable<Point<T>> polygon, string styleName, Func<Point<T>, string, string> getName) where T : IComparable<T>
         {
             Figure f = new Figure();
             f.Name = FIGURE_NAME_PREFIX + figures.Count;
             f.Style = styleName;
             f.Type = FigureType.Polygon;
 
-            foreach(Point<T> p in polygon)
-                f.deps.Add(getName(p));
-            
+            foreach (Point<T> p in polygon)
+                f.deps.Add(getName(p, null));
+
             figures.Add(f);
         }
 
-        public void AddAsLine(LineSegment<int> line)
+        public void AddAsLine(LineSegment<int> line, string color = null)
         {
+            color = color ?? DEFAULT_SHAPE_COLOR;
+
             Figure f = new Figure();
             f.Name = FIGURE_NAME_PREFIX + figures.Count;
             f.Type = FigureType.LineTwoPoints;
+            f.Style = LineStyle.getStyle(color).styleName;
+
+            f.deps.Add(getName(line.p1));
+            f.deps.Add(getName(line.p2));
+
+            figures.Add(f);
+        }
+
+        public void AddAsLine(LineSegment<double> line, string color = null)
+        {
+            color = color ?? DEFAULT_SHAPE_COLOR;
+
+            Figure f = new Figure();
+            f.Name = FIGURE_NAME_PREFIX + figures.Count;
+            f.Type = FigureType.LineTwoPoints;
+            f.Style = LineStyle.getStyle(color).styleName;
 
             f.deps.Add(getName(line.p1));
             f.deps.Add(getName(line.p2));
@@ -126,32 +323,28 @@ namespace Utils.geom
             AddAsSegMain(p1, p2, getName, color);
         }
 
-        public void AddAsSegMain<T>(Point<T> p1, Point<T> p2, Func<Point<T>, string> getName, string color = null) where T : IComparable<T>
+        public void AddAsSegMain<T>(Point<T> p1, Point<T> p2, Func<Point<T>, string, string> getName, string color = null) where T : IComparable<T>
         {
             color = color ?? DEFAULT_SHAPE_COLOR;
 
-            if (!lineColors.ContainsKey(color))
-                lineColors[color] = LINE_STYLE_NAME + lineColors.Count;
             
-            
-
             Figure f = new Figure();
             f.Name = FIGURE_NAME_PREFIX + figures.Count;
             f.Type = FigureType.Segment;
-            f.Style = lineColors[color];
+            f.Style = LineStyle.getStyle(color).styleName;
 
-            f.deps.Add(getName(p1));
-            f.deps.Add(getName(p2));
+            f.deps.Add(getName(p1, null));
+            f.deps.Add(getName(p2, null));
 
             figures.Add(f);
         }
 
         public void AddPoint(Point<int> p, string color = null)
         {
-        	 getName(p, color);            
+            getName(p, color);
         }
 
-        private string getNameBase(Point<long> point, string color = null)
+        private string getNameBase(Point<double> point, string color = null)
         {
             if (pointNames.ContainsKey(point))
             {
@@ -160,29 +353,28 @@ namespace Utils.geom
 
             string name = "PointName" + pointNames.Count;
             pointNames[point] = name;
-            
+
             color = color ?? DEFAULT_POINT_COLOR;
-        	
-        	shapeColors[POINT_STYLE_NAME + shapeColors.Count] = color;
-        	
-        	Figure f = new Figure();
+                        
+            PointFigure f = new PointFigure();
             f.Name = name;
-            f.Style = styleName;
+            f.Style = PointStyle.getStyle(color).styleName;
             f.Type = FigureType.FreePoint;
-        	
+            f.pn = point;
+
             figures.Add(f);
-            
+
             return name;
         }
 
-        
-        private string getName(Point<double> point)
+
+        private string getName(Point<double> point, string color = null)
         {
-            return getNameBase(new Point<long>( (long) (point.X * roundingFactor), (long)(point.Y * roundingFactor)));
+            return getNameBase(point, color);
         }
-        private string getName(Point<int> point)
+        private string getName(Point<int> point, string color = null)
         {
-            return getNameBase(new Point<long>(point.X * roundingFactor, point.Y * roundingFactor));
+            return getNameBase(new Point<double>(point.X , point.Y ), color);
         }
 
         public List<List<Point<double>>> Polygons { get; set; }
@@ -190,7 +382,7 @@ namespace Utils.geom
     }
     public class GeomXmlWriter
     {
-    
+
 
         public static void Save(Drawing drawing, string fileName)
         {
@@ -222,7 +414,7 @@ namespace Utils.geom
             }
         }
 
-       
+
 
         static XmlWriterSettings XmlSettings
         {
@@ -250,11 +442,11 @@ namespace Utils.geom
 
         void Write(Drawing drawing, XmlWriter writer)
         {
-           
+
             writer.WriteStartDocument();
             writer.WriteStartElement("Drawing");
-           // writer.WriteAttributeDouble("Version", drawing.Version);
-          //  writer.WriteAttributeString("Creator", System.Windows.Application.Current.ToString());
+            // writer.WriteAttributeDouble("Version", drawing.Version);
+            //  writer.WriteAttributeString("Creator", System.Windows.Application.Current.ToString());
             WriteCoordinateSystem(drawing, writer);
             WriteStyles(drawing, writer);
             WriteFigureList(drawing, writer);
@@ -297,80 +489,43 @@ namespace Utils.geom
             //<PointStyle Size="10" Fill="" ="true" Color="#" ="1" Name="1" />
             writer.WriteStartElement("Styles");
 
-            writer.WriteStartElement("PointStyle");
-            writer.WriteAttributeString("Size", "7");
-            writer.WriteAttributeString("Fill", "#FFF8EABA");
-            writer.WriteAttributeString("IsFilled", "True");
-            writer.WriteAttributeString("Color", "#FF000000");
-            writer.WriteAttributeString("StrokeWidth", "5");
-            writer.WriteAttributeString("Name", Drawing.POINT_STYLE_NAME);
-            writer.WriteEndElement();
-
-            foreach(var style in drawing.shapeColors)
+            foreach(var pointStyle in PointStyle.getAllStyles())
             {
-                writer.WriteStartElement("ShapeStyle");
-                writer.WriteAttributeString("Size", "10");
-                writer.WriteAttributeString("Fill", "#FF" + style.Value);
-                writer.WriteAttributeString("IsFilled", "True");
-                writer.WriteAttributeString("Color", "#FF000000");
-                writer.WriteAttributeString("StrokeWidth", "1");
-                writer.WriteAttributeString("Name", style.Key);
-                writer.WriteEndElement();
+                pointStyle.Serialize(writer);
+            }
+
+            foreach (var style in ShapeStyle.getAllStyles())
+            {
+                style.Serialize(writer);
             }
             //<ShapeStyle Fill="" IsFilled="true" Color="" StrokeWidth="1" Name="5" />
             //Color is opagque r g b
-            
 
-           foreach(var style in drawing.lineColors)
-           {
-               writer.WriteStartElement("LineStyle");
-               writer.WriteAttributeString("StrokeWidth", "1");
-               writer.WriteAttributeString("Color", "#FF" + style.Key);
-               writer.WriteAttributeString("Name", style.Value);
-               writer.WriteEndElement();
-
-           }
-
-            
-
-            //<LineStyle Color="#FF000000" StrokeWidth="1" Name="4" />
-            
+            foreach (var style in LineStyle.getAllStyles())
+            {
+                style.Serialize(writer);
+            }
 
             writer.WriteEndElement();
         }
 
-        
 
-       
+
+
 
         public void WriteFigureList(Drawing drawing, XmlWriter writer)
         {
             writer.WriteStartElement("Figures");
 
-            foreach(var pn in drawing.pointNames)
+            /*
+            foreach (var pn in drawing.pointNames)
             {
-                writer.WriteStartElement("FreePoint");
-                writer.WriteAttributeString("Name", pn.Value);
-                writer.WriteAttributeString("Style", Drawing.POINT_STYLE_NAME);
-                writer.WriteAttributeDouble("X", ( (double)pn.Key.X ) / Drawing.roundingFactor);
-                writer.WriteAttributeDouble("Y", ((double)pn.Key.Y) / Drawing.roundingFactor);
-                writer.WriteEndElement();
-            }
+               
+            }*/
 
-            foreach(var fig in drawing.figures)
+            foreach (var fig in drawing.figures)
             {
-                writer.WriteStartElement(fig.Type.ToString());
-                writer.WriteAttributeString("Name", fig.Name);
-                if (fig.Style != null)
-                writer.WriteAttributeString("Style", fig.Style);
-
-                foreach (string dep in fig.deps)
-                {
-                    writer.WriteStartElement("Dependency");
-                    writer.WriteAttributeString("Name", dep);
-                    writer.WriteEndElement();
-                }
-                writer.WriteEndElement();
+                fig.Serialize(writer);
             }
 
             /*int pointName = 0;
@@ -405,12 +560,12 @@ namespace Utils.geom
 
                     
             }*/
-            
+
             writer.WriteEndElement();
         }
 
 
-       
+
     }
 }
 
