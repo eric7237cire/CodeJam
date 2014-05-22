@@ -1,7 +1,8 @@
-﻿//#define LOGGING
-//#define LOGGING_DEBUG
-//#define LOGGING_INFO
-//#define LOGGING_TRACE
+﻿#if DEBUG && false
+#define LOGGING_DEBUG
+#define LOGGING_INFO
+#define LOGGING_TRACE
+#endif
 
 using System;
 using System.Collections.Generic;
@@ -54,9 +55,11 @@ namespace Utils.math
             Logger.LogTrace("Fraction cons {} / {}", num, den);
             if (den == 0)
             {
-                throw new ArgumentException("zero");
+            	throw new ArgumentException("Zero");
+                //numerator = 1;
+                //denominator = 0;
             }
-            if (num == 0)
+            else if (num == 0)
             {
                 numerator = 0;
                 denominator = 1;
@@ -319,7 +322,6 @@ return "{0} / {1}".FormatThis(numerator.ToString(), denominator.ToString() );
         #region interface IEquatable
         public bool Equals(Fraction other)
         {
-            //TODO inconsistent with reduced == unreduced fraction
             return CompareTo(other) == 0;
         }
         #endregion

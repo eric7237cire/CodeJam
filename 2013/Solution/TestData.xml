@@ -266,7 +266,7 @@
   
   <testFileRunner basedir="2013/Solution/RoundFinal">
 				  
-				 
+				 <!--Modeling as segments, intersections-->
 		 
 		 <run checkFile         ="A-small-practice.correct"
          className         ="RoundFinal.Graduation, RoundFinal"
@@ -289,6 +289,23 @@
          category = "slow"
 		 testName          = "2013.RoundFinal.Problem1.Large"
          inputFile         ="A-large-practice.in"
+         processInputMethod="processInput"/>
+         
+         <!--Convex hull / rotating calipurs-->
+         	  <run checkFile         ="B-small-practice.correct"
+         className         ="RoundFinal.Drummers, RoundFinal"
+         createInputMethod ="createInput"
+		 testName          = "2013.RoundFinal.Problem2.Small"
+         inputFile         ="B-small-practice.in"
+         processInputMethod="processInput"/>
+         
+         
+          <run checkFile         ="B-large-practice.correct"
+         className         ="RoundFinal.Graduation, RoundFinal"
+         createInputMethod ="createInput"
+         category = "slow"
+		 testName          = "2013.RoundFinal.Problem2.Large"
+         inputFile         ="B-large-practice.in"
          processInputMethod="processInput"/>
 		 
 		 </testFileRunner>

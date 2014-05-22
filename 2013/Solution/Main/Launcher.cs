@@ -34,13 +34,12 @@ namespace MainNS
             Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\RoundFinal\");
 #endif
 
-            //Modeling as segments, intersections
+            
             // Graduation main = new Graduation();
 
-            //Convex hull
             //Rural main = new Rural();
 
-            //Convex hull / rotating calipurs
+            
             //Drummer main = new Drummer();
             XSpot main = new XSpot();
 
