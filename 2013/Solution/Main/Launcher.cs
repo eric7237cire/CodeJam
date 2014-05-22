@@ -21,48 +21,30 @@ namespace MainNS
     {
         static void Main(string[] args)
         {
-            //
-
-
-#if false
-            bool tests = false;
-
-           // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round3\");
-            
-
-            if (tests) NUnit.ConsoleRunner.Runner.Main(new string[]
-   {
-       //@"/include=current",
-       @"/run=UnitTest.TestRunner",
-      // @"/run=UnitTest.TestUtils",
-       //"/nothread",
-       @"C:\codejam\CodeJam\2013\Solution\UnitTest\bin\x64\Debug\UnitTest.dll"
-     //  @"/run=UnitTest.TestModMath",
-     //  @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\UnitTest\bin\Debug\UnitTest.dll"
-     // System.Reflection.Assembly.GetExecutingAssembly().Location
-   });
-            //if (tests)
-            //return;
-#endif
-
-          
 
             //Cheaters main = new Cheaters();
             //  Rural main = new Rural();
             //Pogo main = new Pogo();
-            
-           // Wheel main = new Wheel();
-           #if mono
+
+            // Wheel main = new Wheel();
+#if mono
            Directory.SetCurrentDirectory(@"/home/ent/mono/CodeJam/2013/Solution/RoundFinal/");
            //Directory.SetCurrentDirectory(@"/home/ent/mono/CodeJam/2013/Solution/Round3/");
-           #else
+#else
             Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\RoundFinal\");
-            #endif
-           // Graduation main = new Graduation();
-           //Rural main = new Rural();
-           Drummer main = new Drummer();
+#endif
 
-           // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
+            //Modeling as segments, intersections
+            // Graduation main = new Graduation();
+
+            //Convex hull
+            //Rural main = new Rural();
+
+            //Convex hull / rotating calipurs
+            //Drummer main = new Drummer();
+            XSpot main = new XSpot();
+
+            // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
             //TicketSwap main = new TicketSwap();
 
             // main.processInput(null);
@@ -89,14 +71,14 @@ namespace MainNS
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1C\");
-            
+
 
             // dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round3\";
 
             // list = list.ConvertAll(s => dir + s);
 
-             CjUtils.RunMain(list, main, main.createInput, null); 
-           // CjUtils.RunMainMulti(list, main, main.createInput, null);
+            CjUtils.RunMain(list, main, main.createInput, null);
+            // CjUtils.RunMainMulti(list, main, main.createInput, null);
         }
     }
 }
