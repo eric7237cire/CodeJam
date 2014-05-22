@@ -1,7 +1,7 @@
 ﻿#if DEBUG
 #define LOGGING_DEBUG
 #define LOGGING_INFO
-#define LOGGING_TRACE
+//#define LOGGING_TRACE
 #endif
 
 using CodeJamUtils;
@@ -43,6 +43,29 @@ namespace RoundFinal
         	 {
         	 	points.Add(new Point(r.Next(min, max+1), r.Next(min, max+1)) );
         	 }
+        	 
+        	 List<int> listIdxColinear;
+        	 List<int> duplicates;
+        	 
+        	 FindColinear(points, out listIdxColinear, out duplicates);
+        	 
+        	 for(int dupIdx = 1; dupIdx < duplicates.Count; dupIdx += 2)
+        	 {
+        	 	points[dupIdx] = null;
+        	 }
+        	 
+        	 for(int coLinIdx = 2; coLinIdx < coLinIdx.Count; coLinIdx += 3)
+        	 {
+        	 	points[coLinIdx] = null;
+        	 }
+        	 
+        	 points.RemoveAll(p => p == null);
+        	 
+        	 #if DEBUG
+        	 FindColinear(points, out listIdxColinear, out duplicates);
+        	 Preconditions.checkState(listIdxColinear.Count == 0);
+        	 Preconditions.checkState(duplicates.Count == 0);
+        	 #endif
         	 
         	 return points;
         }
