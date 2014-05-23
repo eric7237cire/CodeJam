@@ -293,7 +293,7 @@
          
          <!--Convex hull / rotating calipurs-->
          	  <run checkFile         ="B-small-practice.correct"
-         className         ="RoundFinal.Drummers, RoundFinal"
+         className         ="RoundFinal.Drummer, RoundFinal"
          createInputMethod ="createInput"
 		 testName          = "2013.RoundFinal.Problem2.Small"
          inputFile         ="B-small-practice.in"
@@ -301,11 +301,27 @@
          
          
           <run checkFile         ="B-large-practice.correct"
-         className         ="RoundFinal.Graduation, RoundFinal"
+         className         ="RoundFinal.Drummer, RoundFinal"
          createInputMethod ="createInput"
          category = "slow"
 		 testName          = "2013.RoundFinal.Problem2.Large"
          inputFile         ="B-large-practice.in"
+         processInputMethod="processInput"/>
+		 
+		 <!-- Cross product, splitting points, checking colinear points-->
+		 	  <run checkFile         ="C-small-practice.correct"
+         className         ="RoundFinal.XSpot, RoundFinal"
+         createInputMethod ="createInput"
+		 testName          = "2013.RoundFinal.Problem3.Small"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInput"/>
+         
+         
+          <run checkFile         ="C-large-practice.correct"
+         className         ="RoundFinal.XSpot, RoundFinal"
+         createInputMethod ="createInput"
+         testName          = "2013.RoundFinal.Problem3.Large"
+         inputFile         ="C-large-practice.in"
          processInputMethod="processInput"/>
 		 
 		 </testFileRunner>

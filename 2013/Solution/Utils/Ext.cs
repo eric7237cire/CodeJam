@@ -12,15 +12,17 @@ namespace Utils
 
         public static string ToUsString(this double d, int places)
         {
-           // return d.ToString("0." + new String('#', places), new CultureInfo("en-US"));
+            return d.ToString("0." + new String('#', places), new CultureInfo("en-US"));
+
+
             //To avoid rounding, so .49999999999999 shows up as .49999 and not .50
-            string str = d.ToString("G17", new CultureInfo("en-US"));
+            /*string str = d.ToString("G17", new CultureInfo("en-US"));
             int pIdx = str.IndexOf('.');
 
             if (pIdx == -1)
                 return str;
 
-            return str.Substring(0, Math.Min(str.Length, pIdx + places+1));
+            return str.Substring(0, Math.Min(str.Length, pIdx + places+1));*/
 
         }
 

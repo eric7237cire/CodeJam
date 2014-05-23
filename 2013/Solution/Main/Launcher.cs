@@ -63,7 +63,7 @@ namespace MainNS
             // list.Add("B-large-practice.in");
 
             list.Add("C-small-practice.in");
-            //list.Add("C-large-practice.in");
+            list.Add("C-large-practice.in");
 
             // list.Add("D-small-practice.in");
             // list.Add("D-large-practice.in");

@@ -1,6 +1,6 @@
 ﻿#if DEBUG
 #define LOGGING_DEBUG
-#endif 
+#endif
 
 #define LOGGING_INFO
 
@@ -29,22 +29,23 @@ using System.Xml.XPath;
 using System.IO;
 using System.Threading;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 
 namespace UnitTest
 {
-   
 
-       
-    
-    [TestFixture] 
+
+
+
+    [TestFixture]
     public class TestRunner
     {
-    	//
+        //
 #if !mono
-       
-    	public void runMain(Type mainType, object main, Scanner scanner, string ansExpected, object answerType)
-    	{
+
+        public void runMain(Type mainType, object main, Scanner scanner, string ansExpected, object answerType)
+        {
             var input = mainType.GetMethod("createInput").Invoke(main, new object[] { scanner });
 
 
@@ -60,7 +61,7 @@ namespace UnitTest
                     double expected_d = double.Parse(ansExpected, new CultureInfo("en-US"));
                     Assert.AreEqual(expected_d, ans_d, 0.00001);
                 }
-                catch (System.FormatException )
+                catch (System.FormatException)
                 {
                     Logger.LogInfo("ERROR [{}] [{}]", (string)ans, ansExpected);
                     Assert.IsTrue(false);
@@ -70,27 +71,27 @@ namespace UnitTest
             {
                 Assert.AreEqual(ansExpected, ans);
             }
-    		
-		}
+
+        }
 #endif
-		
-		private static string getChildElemValue(XElement el, string elemName)
-		{
-			XElement child = el.Elements(elemName).FirstOrDefault();
-			if (child == null)
-				return null;
-			
-			return child.Value;
-		}
-		
-		private static string getAttributeValue(XElement el, string attName, string defIfNull = null)
-		{
-			var att = el.Attributes(attName).FirstOrDefault();
-			if (att == null)
-				return defIfNull;
-			
-			return att.Value;
-		}
+
+        private static string getChildElemValue(XElement el, string elemName)
+        {
+            XElement child = el.Elements(elemName).FirstOrDefault();
+            if (child == null)
+                return null;
+
+            return child.Value;
+        }
+
+        private static string getAttributeValue(XElement el, string attName, string defIfNull = null)
+        {
+            var att = el.Attributes(attName).FirstOrDefault();
+            if (att == null)
+                return defIfNull;
+
+            return att.Value;
+        }
 
 #if !mono
         public IEnumerable<TestCaseData> FetchTestCases()
@@ -117,7 +118,7 @@ namespace UnitTest
 
                 Type mainType = Type.GetType(mainClassName, true);
                 object main = Activator.CreateInstance(mainType);
-                
+
                 foreach (Type intType in mainType.GetInterfaces())
                 {
                     Logger.LogDebug("intType {}", intType);
@@ -147,7 +148,7 @@ namespace UnitTest
                     Preconditions.checkState(scanner != null);
                     Preconditions.checkState(mainType != null);
 
-                    yield return new TestCaseData( mainType, main, scanner, ansExpected, answerType )
+                    yield return new TestCaseData(mainType, main, scanner, ansExpected, answerType)
                         //.Throws(typeof(DivideByZeroException))
                         .SetName(getAttributeValue(el, "name"))
                         .SetDescription("A description");
@@ -242,8 +243,8 @@ namespace UnitTest
 				}
             }
         }
-#endif        
-       
+#endif
+
 #if mono
 	private string setBaseDir(string baseDir, bool set = true)
         {
@@ -261,7 +262,7 @@ namespace UnitTest
             return baseDir;
         }
 #endif
-        
+
 
 
 
@@ -270,6 +271,7 @@ namespace UnitTest
             internal string baseDir;
             internal string mainClassName;
             internal string inputMethodName;
+            internal string inputFileName;
             internal string processInputMethodName;
             internal Scanner scanner;
             internal List<string> checkStrList;
@@ -279,10 +281,10 @@ namespace UnitTest
             internal string testDescription;
         }
 
-        
+
         private void runTestFile(MainTestData testData)
         {
-            string baseDir = testData.baseDir;                
+            string baseDir = testData.baseDir;
             string mainClassName = testData.mainClassName;
             string inputMethodName = testData.inputMethodName;
             string processInputMethodName = testData.processInputMethodName;
@@ -297,21 +299,43 @@ namespace UnitTest
             Type mainType = Type.GetType(mainClassName, true);
             object main = Activator.CreateInstance(mainType);
 
+            Regex regex = new Regex(@"(\..*)?$");
+            string outputFileName = regex.Replace(testData.inputFileName, ".out", 1);
+            List<String> answers = new List<string>();
+
+            using (StreamWriter writer = new StreamWriter(outputFileName, false))
+            {
+                for (int tc = 1; tc <= testCases; ++tc)
+                {
+
+                    // scanner.enablePlayBack();
+
+                    var input = mainType.GetMethod(inputMethodName).Invoke(main, new object[] { scanner });
+                    var ans = mainType.GetMethod(processInputMethodName).Invoke(main, new object[] { input });
+
+                    string ansStr = String.Format("Case #{0}: {1}", tc, ans);
+                    writer.WriteLine(ansStr);
+                    answers.Add(ansStr);
+
+                    // string inputCase = scanner.finishPlayBack();
+                    //Logger.LogDebug("Test\n{}", inputCase);
+
+                }
+            }
+
+
+
+
             for (int tc = 1; tc <= testCases; ++tc)
             {
+
                 string checkStr = checkStrList[tc - 1];
-                scanner.enablePlayBack();
-
-                var input = mainType.GetMethod(inputMethodName).Invoke(main, new object[] { scanner });
-                var ans = mainType.GetMethod(processInputMethodName).Invoke(main, new object[] { input });
-
-                string ansStr = String.Format("Case #{0}: {1}", tc, ans);
-
-                string inputCase = scanner.finishPlayBack();
-                Logger.LogDebug("Test\n{}", inputCase);
+                string ansStr = answers[tc - 1];
                 Logger.LogDebug("Checking {} = {}", checkStr, ansStr);
                 Assert.AreEqual(checkStr, ansStr);
+
             }
+
 
             scanner.Dispose();
             timer.Stop();
@@ -338,7 +362,7 @@ namespace UnitTest
 
         private void testName(string name)
         {
-            var test = testList.Where((td) => td != null && name.Equals( td.testName));
+            var test = testList.Where((td) => td != null && name.Equals(td.testName));
 
             var actual = test.FirstOrDefault();
 
@@ -347,7 +371,7 @@ namespace UnitTest
             runTestFile(actual);
         }
 
-        
+
 
         List<MainTestData> testList = new List<MainTestData>();
 
@@ -356,15 +380,15 @@ namespace UnitTest
         {
             testList = new List<MainTestData>();
 
-            XElement po = XElement.Load( setBaseDir(@"2013\Solution\TestData.xml", false) );
-            
+            XElement po = XElement.Load(setBaseDir(@"2013\Solution\TestData.xml", false));
+
             foreach (XElement testFileRunner in po.Elements("testFileRunner"))
             {
                 string baseDir = getAttributeValue(testFileRunner, "basedir");
 
                 setBaseDir(baseDir);
 
-                
+
 
                 foreach (XElement run in testFileRunner.Elements("run"))
                 {
@@ -377,57 +401,60 @@ namespace UnitTest
 
                     if ("slow".Equals(getAttributeValue(run, "category")))
                     {
-                    	continue;
+                        //continue;
                     }
                     TextReader inputReader = File.OpenText(inputFileName);
                     Scanner scanner = new Scanner(inputReader);
-                    using(TextReader checkReader = File.OpenText(checkFileName))
+                    using (TextReader checkReader = File.OpenText(checkFileName))
                     {
                         int testCases = scanner.nextInt();
 
                         //Logger.LogInfo("Begin testing class {} method {} testcases {}",
-                          //  mainClassName, processInputMethodName, testCases);
+                        //  mainClassName, processInputMethodName, testCases);
 
-                    
+
                         List<string> checkStrs = new List<string>();
                         for (int tc = 1; tc <= testCases; ++tc)
                         {
-                            checkStrs.Add( checkReader.ReadLine() );
+                            checkStrs.Add(checkReader.ReadLine());
                         }
 
-                        testList.Add(new MainTestData{
-                            baseDir=baseDir,
-                            mainClassName = mainClassName, 
-                            inputMethodName =inputMethodName,
+                        testList.Add(new MainTestData
+                        {
+                            baseDir = baseDir,
+                            mainClassName = mainClassName,
+                            inputMethodName = inputMethodName,
+                            inputFileName = inputFileName,
                             processInputMethodName = processInputMethodName,
                             scanner = scanner,
                             checkStrList = checkStrs,
                             testCases = testCases,
                             testName = getAttributeValue(run, "testName"),
                             testDescription = string.Format("Class {0}\nMethod {1} \ninput file {2}",
-                            mainClassName, processInputMethodName, inputFileName)});
-                        
-                            
+                            mainClassName, processInputMethodName, inputFileName)
+                        });
+
+
 
                     }
 
                 }
             }
 
-            
+
         }
 
-		[Test]
+        [Test]
         public void runAllTestFiles()
         {
 
-        	foreach(MainTestData mtd in testList)
-        	{
-        		runTestFile(mtd);	
-        	}
-            
+            foreach (MainTestData mtd in testList)
+            {
+                runTestFile(mtd);
+            }
+
         }
-        
-        
+
+
     }
 }

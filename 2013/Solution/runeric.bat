@@ -1,0 +1,1 @@
+powershell -noexit "& "C:\codejam\CodeJam\2013\Solution\RoundFinal\eric.ps1"

@@ -18,7 +18,7 @@ namespace UnitTest1B
         
         [Test]
         public void TestDiamondInfo()
-        {
+        {            
             DiamondInfo df = DiamondInfo.getDiamondInfo(1);
             Assert.AreEqual(1, df.baseDiamondSize);
             Assert.AreEqual(1, df.N);
