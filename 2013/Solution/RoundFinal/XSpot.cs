@@ -19,6 +19,8 @@ using Logger = Utils.LoggerFile;
 namespace RoundFinal
 {
     using Point = Utils.geom.Point<int>;
+    using PointD = Utils.geom.Point<double>;
+    using IP_Pair = Tuple<double, int>;
 
     public class XSpot : InputFileProducer<XSpotInput>, InputFileConsumer<XSpotInput, string>
     {
@@ -30,6 +32,48 @@ namespace RoundFinal
         public string processInput(XSpotInput input)
         {
             throw new NotImplementedException();
+        }
+
+        PointD getDirectionVector(double angle, double distance = 1)
+        {
+            return new PointD(distance * Math.Cos(angle), distance * Math.Sin(angle));
+        }
+
+        public static void splitPoints(PointD directionUnitVector, List<Point> points, out bool[] inFirstHalf)
+        {
+            List<IP_Pair> withCP = new List<IP_Pair>();
+
+            /*
+             *  A Cross product is the area of a parrallelogram with sides
+             *  v1 and v2.  Because v1 is constant, the area is affected by 
+             *  the distance to this line v1, as the area is BxH, B is v1 and H
+             *  is the distance to the line!
+             */
+            for(int ptIdx = 0; ptIdx < points.Count; ++ptIdx)
+            {
+                Point pt = points[ptIdx];
+                double cp = PointExt.CrossProduct2(directionUnitVector.X, directionUnitVector.Y, pt.X, pt.Y);
+
+                //object cp = PointExt.CrossProduct(pt, testLine);
+
+                //int cp = PointExt.CrossProduct2(pt.X, pt.Y, testLine.X, testLine.Y);
+
+                //Logger.LogTrace("Pt {}.  cp {} type {}", pt, cp, cp.GetType());
+                withCP.Add(new IP_Pair(cp, ptIdx));
+            }
+
+            withCP.Sort((lhs, rhs) => lhs.Item1.CompareTo(rhs.Item1));
+
+            //Logger.LogTrace("Sorted {}",  withCP.ToCommaString());
+
+            int sideStart = points.Count / 2;
+            
+            inFirstHalf = new bool[points.Count];
+
+            for(int i = 0; i < sideStart; ++i)
+            {
+                inFirstHalf[withCP[i].Item2] = true;
+            }
         }
 
         //Where no 3 lines are colinear, attempts N then removes colinear

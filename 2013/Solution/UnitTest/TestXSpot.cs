@@ -43,8 +43,8 @@ namespace UnitTest
     	[Test]
     	public void TestGenTestSet()
     	{
-            int min = -10;
-            int max = 50;
+            int min = 15;
+            int max = 150;
 
             int numPoints = 4 * 80;
 
@@ -54,33 +54,16 @@ namespace UnitTest
     		//Logger.LogTrace("Test set:\n{}", points.ToCommaString());
     		
     		Point testLine = new Point(2, 9);
-    		
-    		List<IP_Pair> withCP = new List<IP_Pair>();
-    		
-            /*
-             *  A Cross product is the area of a parrallelogram with sides
-             *  v1 and v2.  Because v1 is constant, the area is affected by 
-             *  the distance to this line v1, as the area is BxH, B is v1 and H
-             *  is the distance to the line!
-             */
-    		foreach(Point pt in points)
-    		{
-    			int cp = pt.CrossProduct(testLine);
-    			
-    			//object cp = PointExt.CrossProduct(pt, testLine);
-    			
-    			//int cp = PointExt.CrossProduct2(pt.X, pt.Y, testLine.X, testLine.Y);
-    			
-    			//Logger.LogTrace("Pt {}.  cp {} type {}", pt, cp, cp.GetType());
-    			withCP.Add( new IP_Pair( cp, pt ) );	
-    		}
-    		
-    		withCP.Sort( (lhs, rhs) => lhs.Item1.CompareTo(rhs.Item1));
-    		
-    		//Logger.LogTrace("Sorted {}",  withCP.ToCommaString());
 
-            int side2Idx = points.Count / 2;
-            int side1Idx = side2Idx - 1;
+            bool[] inFirstHalf;
+            bool[] inFirstHalf2;
+
+            XSpot.splitPoints(testLine.ToDouble(), points, out inFirstHalf);
+            XSpot.splitPoints(new Point<double>(9, -2), points, out inFirstHalf2);
+
+            Drawing d = new Drawing();
+
+            /*
 
             double distDir = Math.Sqrt(testLine.dist2(new Point(0,0)));
             Point p1 = withCP[side1Idx].Item2;
@@ -92,7 +75,7 @@ namespace UnitTest
             Logger.LogTrace("Points cp {} {} and {} {}.  h {} {}", withCP[side1Idx].Item1, withCP[side1Idx].Item2, withCP[side2Idx].Item1, withCP[side2Idx].Item2, h1, h2);
             
 
-            Drawing d = new Drawing();
+            
 
             double ang = Math.PI / 2 -  Math.Atan2(testLine.Y, testLine.X);
             h1 = h1 * Math.Cos(ang);
@@ -109,19 +92,22 @@ namespace UnitTest
           //  d.AddAsLine(line2, "#FF12CBC9"); //teal
             d.AddAsLine(line3, "#FFC5CB12"); //yellow
             d.AddAsLine(line4, "#FFE31212"); //red
-            
+            */
             d.MaximalVisibleY = max + 1;
             d.MaximalVisibleX = max + 1;
             d.MinimalVisibleX = min - 1;
             d.MinimalVisibleY = min - 1;
 
-            for(int i = 0; i < withCP.Count; ++i)
+            string[] colors = new string[] { "#FF7D2BA2", "#FF12CBC9", "#FFC5CB12", "#FFE31212" };
+
+            for(int i = 0; i < points.Count; ++i)
             {
-                d.AddPoint(withCP[i].Item2, i <= side1Idx ? "#FFFF0000" : "#FF00FF00");
+                int colorIndex = (inFirstHalf[i] ? 1 : 0) + (inFirstHalf2[i] ? 2 : 0);
+                d.AddPoint(points[i], colors[colorIndex]);
             }
 
             d.AddAsLine(LineExt.createSegmentFromCoords(0, 0, testLine.X, testLine.Y));
-
+            
             GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
     		/*
     		points = XSpot.generateTestSet(50, 10, 10);
