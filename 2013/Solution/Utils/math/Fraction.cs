@@ -50,6 +50,31 @@ namespace Utils.math
             numerator = num;
             denominator = den;
         }
+        
+        public static Fraction createFromDouble(double num, int useDecimals = 9)
+        {
+        	bool isNeg = num < 0;
+        	if (isNeg)
+        		num *= -1;
+        	
+        	long intPart = (long) Math.Floor(num);
+        	num -= intPart;
+        	
+        	long mult = 1;
+        	for(int i = 0; i < useDecimals; ++i)
+        		mult *= 10;
+        	
+        	Preconditions.checkState(num < 1 && num >= 0);
+        	
+        	num *= mult;
+        	
+        	long decPart = (long) Math.Floor(num);
+        	
+        	Preconditions.checkState(decPart < mult);
+        	
+        	return new Fraction( intPart * mult + decPart, mult);
+        	
+        }
         public Fraction(long num, long den, bool reduce = true)
         {
             Logger.LogTrace("Fraction cons {} / {}", num, den);

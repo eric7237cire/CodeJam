@@ -10,6 +10,7 @@ using NUnit.Framework;
 
 using RoundFinal;
 using Utils.geom;
+using Utils.math;
 using System.Collections.Generic;
 using Utils;
 
@@ -20,10 +21,118 @@ namespace UnitTest
 	using Point = Utils.geom.Point<int>;
 	using IP_Pair = Tuple<int, Utils.geom.Point<int>>;
 	
+	using Frac = Utils.math.Fraction;
+	
     [TestFixture]
     public class TestXSpot
     {
+    	[Test]
+    	public void TestSmallAngle()
+    	{
+    		
+    		BigFraction bf = BigFraction.createFromDouble(-0.499999999999875, 9);
+    		Assert.IsTrue( bf < 0, bf.ToString());
+    		
+    		List<Point> points = new List<Point>();
+    		points.Add(new Point(1, 1000000));
+    		points.Add(new Point(1, 1000000-1));
+    		points.Add(new Point(0, -1000000));
+    		points.Add(new Point(0, -999999));
+    		
+    		LineSegment<double> splitLine1;
+    		LineSegment<double> splitLine2;
+    		
+    		double angle = Math.Atan2( 2000000-1, 1 );
+    		
+    		int checkX = XSpot.FindX(points, angle, out splitLine1, out splitLine2);
+    		
+    		Assert.AreEqual(1, checkX);
+    		
+    		Logger.LogTrace("Lines {} {}", splitLine1.line, splitLine2.line);
+    		Logger.LogTrace("Line slopes {} {}", -splitLine1.line.A / splitLine1.line.B, 
+    			-splitLine2.line.A / splitLine2.line.B);
+    		
+    		Point<double> inter = splitLine1.line.intersection(splitLine2.line);    
+    		Logger.LogTrace("intersection {}", inter);
+    		Assert.IsTrue(XSpot.checkAnswer(points, inter, splitLine2.p2));
+    	}
+    	
+    	//TODO delete
+    	public void runCalc()
+    	{
+    		int min = 15;
+            int max = 150;
+
+            int numPoints = 60;
+            
+           
+            
+            List<Point> points = XSpot.generateTestSet(numPoints, min, max);
+            
+            int rem = points.Count % 4;            
+            points.RemoveRange(0, rem);
+            
+            int N = points.Count / 4;
+
+            LineSegment<double> splitLine1;
+        	LineSegment<double> splitLine2;
+        	
+    		XSpot.calcAns(points, out splitLine1, out splitLine2);
+    		
+    		Func<double, Frac> convertFunc = (dbl) => Fraction.createFromDouble(dbl, 6);
+    		
+    		LineSegment<Frac> preciceLine1 = splitLine1.Convert(convertFunc);
+    		LineSegment<Frac> preciceLine2 = splitLine2.Convert(convertFunc);
+    		
+    		int[] quadCounts = new int[] {0,0,0,0};
+    		
+    		Point<Frac> vec1 = preciceLine1.p2 - preciceLine1.p1;
+			Point<Frac> vec2 = preciceLine2.p2 - preciceLine2.p1;
+			
+			Logger.LogTrace("Vec1 {} Vec2 {}", vec1, vec2);
+			
+			Drawing d = new Drawing();
+			string[] colors = new string[] { "#FF7D2BA2", "#FF12CBC9", "#FFC5CB12", "#FFE31212" };
+			
+			d.AddAsLine(splitLine1);
+            d.AddAsLine(splitLine2);
+			
+    		for(int ptIdx = 0; ptIdx < points.Count; ++ptIdx)
+    		{
+    			
+    			
+    			Frac cp1 = PointExt.CrossProduct2( vec1.X, vec1.Y, points[ptIdx].X - preciceLine1.p1.X,
+    				points[ptIdx].Y - preciceLine1.p1.Y );
+    			Frac cp2 = PointExt.CrossProduct2( vec2.X, vec2.Y, points[ptIdx].X - preciceLine2.p1.X,
+    				points[ptIdx].Y - preciceLine2.p1.Y );
+    			
+    			if (cp1 == 0)
+    			{
+    				Logger.LogTrace("Point {} on line {}", points[ptIdx], preciceLine1);    				
+    			}
+    			if (cp2 == 0)
+    			{
+    				Logger.LogTrace("Point {} on line {}", points[ptIdx], preciceLine2);    				
+    			}
+    			
+    			//Assert.IsTrue(cp1 != 0 && cp2 != 0);
+    			
+    			int quad = (cp1 < 0 ? 0 : 1) + (cp2 < 0 ? 0 : 2);
+    			quadCounts[quad] ++;
+    			
+    			d.AddPoint(points[ptIdx], colors[quad]);
+
+    		}
+    		
+    		//GeomXmlWriter.Save(d, @"/home/ent/e.lgf");
+    		
+    		for(int i = 0; i < 4; ++i)
+    		{
+    			Assert.AreEqual(N, quadCounts[i]);	
+    		}
+    	}
         
+    	//TODO delete
         public List<Point> getPts()
         {
             
@@ -40,6 +149,8 @@ namespace UnitTest
             }
             return points;
         }
+        
+        //TODO delete
     	[Test]
     	public void TestGenTestSet()
     	{
@@ -113,7 +224,7 @@ namespace UnitTest
             d.AddAsLine(splitLine1);
             d.AddAsLine(splitLine2);
             
-            GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
+            //GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
     		/*
     		points = XSpot.generateTestSet(50, 10, 10);
     		
@@ -124,6 +235,7 @@ namespace UnitTest
     		Logger.LogTrace("Test set:\n{}", points.ToCommaString());
     		*/
     	}
+    	
     	
         [Test]
         public void TestColinear()

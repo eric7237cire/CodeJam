@@ -70,6 +70,31 @@ namespace Utils.geom
             return ls;
         }
 
+        public static LineSegment<T> createDynSegmentFromCoords<T>(dynamic x1, dynamic y1, dynamic x2, dynamic y2)
+        where T : IComparable<T> 
+        {
+            T A = y2 - y1;
+            T B = x1 - x2;
+            T C = A * x1 + B * y1;
+            LineSegment<T> ls = new LineSegment<T>();
+            ls.line = Line<T>.createStandard(A, B, C);
+            ls.p1 = new Point<T>(x1, y1);
+            ls.p2 = new Point<T>(x2, y2);
+            return ls;
+        }
+        
+          public static LineSegment<BigFraction> createSegmentFromCoordsB(BigFraction x1, BigFraction y1, BigFraction x2, BigFraction y2)
+        {
+            BigFraction A = y2 - y1;
+            BigFraction B = x1 - x2;
+            BigFraction C = A * x1 + B * y1;
+            LineSegment<BigFraction> ls = new LineSegment<BigFraction>();
+            ls.line = Line<BigFraction>.createStandard(A, B, C);
+            ls.p1 = new Point<BigFraction>(x1, y1);
+            ls.p2 = new Point<BigFraction>(x2, y2);
+            return ls;
+        }
+        
         public static LineSegment<long> createSegmentFromCoords(long x1, long y1, long x2, long y2)
         {
             long A = y2 - y1;
@@ -94,7 +119,7 @@ namespace Utils.geom
             return ls;
         }
 
-        public static Line<T> createFromCoords<T>(T x1, T y1, T x2, T y2) where T : INumeric<T>
+        public static Line<T> createFromCoords<T>(T x1, T y1, T x2, T y2) where T : INumeric<T>, IComparable<T>
         {
             T A = y2.Subtract(y1);
             T B = x1.Subtract(x2);
@@ -205,10 +230,7 @@ namespace Utils.geom
 
         }
 
-        public static int crossProduct(this Point<int> v1, Point<int> v2)
-        {
-            return (v1.X * v2.Y) - (v1.Y * v2.X);
-        }
+        
 
         public static Point<int> translate(this Point<int> a, Point<int> newOrigin)
         {
@@ -254,10 +276,10 @@ namespace Utils.geom
             return false;
         }
 
-        public static bool onLine(this Line<double> line, double x, double y)
+        public static bool onLine(this Line<double> line, double x, double y, double tolerance = 1e-6)
         {
             double C = line.A * x + line.B * y;
-            return isEqual(C, line.C);
+            return isEqual(C, line.C, tolerance);
         }
 
         private static bool isEqual(double v1, double v2, double tolerance = 1e-6)
@@ -341,8 +363,27 @@ namespace Utils.geom
 
         //The line going through p1 and p2
         public Line<T> line { get; internal set; } 
+        
+        public override string ToString()
+        {
+        	return "{0}, {1} line: {2}".FormatThis(p1, p2, line);	
+        }
+        
+        public LineSegment<K> Convert<K>( Func<T, K> typeConvFunc ) where K : IComparable<K>
+        {
+        	LineSegment<K> ret = new LineSegment<K>();
+        	
+        	ret.p1 = new Point<K>( typeConvFunc(p1.X), typeConvFunc(p1.Y) );
+        	ret.p2 = new Point<K>( typeConvFunc(p2.X), typeConvFunc(p2.Y) );
+        	
+        	ret.line = Line<K>.createStandard( typeConvFunc(line.A),
+        		typeConvFunc(line.B),
+        		typeConvFunc(line.C));
+        	
+        	return ret;
+        }
     }
-    public class Line<T>
+    public class Line<T> where T : IComparable<T>
     {
         //Ax + By = C
         public T A;
@@ -353,7 +394,18 @@ namespace Utils.geom
         {
             return new Line<T>{A = A, B = B, C = C};
         }
+        
+        public Line<T> getPerpendicular(Point<T> point) 
+        {
+        	T C = (dynamic) A * point.Y - (dynamic)B * point.X;
+        	
+            return new Line<T>{A = - (dynamic)B, B = A, C = C};
+        }
 
+        public override string ToString()
+        {
+        	return "{0}x + {1}y = {2}".FormatThis(A, B, C);	
+        }
     }
 
     

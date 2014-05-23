@@ -1,7 +1,9 @@
-﻿//#define LOGGING
+﻿
 //#define LOGGING_DEBUG
 //#define LOGGING_INFO
+#if DEBUG
 //#define LOGGING_TRACE
+#endif
 
 using System;
 using System.Collections.Generic;
@@ -43,6 +45,37 @@ namespace Utils.math
 			}
 				
 			return lcd;
+        }
+        
+        public static BigFraction createFromDouble(double num, int useDecimals = 9)
+        {
+        	bool isNeg = num < 0;
+        	if (isNeg)
+        		num *= -1;
+        	
+        	Logger.LogTrace("Num {}. is neg {}", num, isNeg);
+        	
+        	BigInteger intPart = (BigInteger) Math.Floor(num);
+        	num -= Math.Floor(num);
+        	
+        	long mult = 1;
+        	for(int i = 0; i < useDecimals; ++i)
+        		mult *= 10;
+        	
+        	Preconditions.checkState(num < 1 && num >= 0);
+        	
+        	num *= mult;
+        	
+        	Logger.LogTrace("Num {}. mult {} is neg {}", num, mult, isNeg);
+        	
+        	BigInteger decPart = (BigInteger) Math.Floor(num);
+        	
+        	Preconditions.checkState(decPart < mult);
+        	
+        	Logger.LogTrace(" intPart {} mult {} + dec part {}", intPart, mult, decPart);
+        	
+        	return new BigFraction( (isNeg ? -1 : 1) * (intPart * mult + decPart), mult);
+        	
         }
         
         private BigFraction(bool a, BigInteger num, BigInteger den )

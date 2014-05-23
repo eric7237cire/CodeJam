@@ -1,6 +1,6 @@
 #!/bin/sh
 
-COMPILE_BASE="dmcs -define:mono -define:LOGGING -define:LOGGING_INFO -define:DEBUG -debug+ -r:System.Numerics -r:System.Xml.Linq.dll -target:library -r:nunit.framework.dll"
+COMPILE_BASE="dmcs -define:mono -define:LOGGING -define:LOGGING_INFO -define:DEBUG -debug+ -checked+ -r:System.Numerics -r:System.Xml.Linq.dll -target:library -r:nunit.framework.dll"
 #COMPILE_BASE="dmcs -define:mono -define:LOGGING_INFO -optimize+ -r:System.Numerics -r:System.Xml.Linq.dll -target:library -r:nunit.framework.dll"
 
 #All loging
@@ -62,12 +62,11 @@ eval "dmcs -define:mono -define:LOGGING -define:LOGGING_INFO -debug+ -r:System.N
 
 export MONO_GC_PARAMS=max-heap-size=1020m
 
-#mono --debug go.exe
+mono --debug go.exe
 
 #/usr/bin/mono --debug $MONO_OPTIONS /usr/lib/mono/4.0/nunit-console.exe -run=UnitTest.TestRunner.runAllTestFiles UnitTest.dll
 
-#/usr/bin/mono --debug $MONO_OPTIONS /usr/lib/mono/4.0/nunit-console.exe -run=UnitTest.TestGraduation UnitTest.dll
-/usr/bin/mono --debug $MONO_OPTIONS /usr/lib/mono/4.0/nunit-console.exe -run=UnitTest.TestXSpot UnitTest.dll
+#/usr/bin/mono --debug $MONO_OPTIONS /usr/lib/mono/4.0/nunit-console.exe -run=UnitTest.TestXSpot.TestSmallAngle UnitTest.dll
 
 #/usr/bin/mono --debug $MONO_OPTIONS /usr/lib/mono/4.0/nunit-console.exe -include=current UnitTest.dll
 

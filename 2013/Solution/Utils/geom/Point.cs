@@ -112,6 +112,11 @@ namespace Utils.geom
         {
         	return (dynamic)x0 *(dynamic)y1 - ((dynamic)y0*(dynamic)x1);
         }
+        
+        public static int crossProduct(this Point<int> v1, Point<int> v2)
+        {
+            return (v1.X * v2.Y) - (v1.Y * v2.X);
+        }
 
         public static List<Point<double>> ConvexHull(this IList<Point<double>> pts)
         {
@@ -540,6 +545,13 @@ def diameter(Points):
                 return yCmp;
 
             return X.CompareTo(other.X);
+        }
+        
+        public Point<K> Convert<K>( Func<T, K> typeConvFunc ) where K : IComparable<K>
+        {
+        	Point<K> ret = new Point<K>( typeConvFunc(X), typeConvFunc(Y) );
+        	
+        	return ret;
         }
         
         public static Point<T> operator -(Point<T> lhs, Point<T> rhs)
