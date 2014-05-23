@@ -55,6 +55,10 @@ namespace UnitTest
     		Point<double> inter = splitLine1.line.intersection(splitLine2.line);    
     		Logger.LogTrace("intersection {}", inter);
     		Assert.IsTrue(XSpot.checkAnswer(points, inter, splitLine2.p2));
+
+            //0.5 0 -0.5 0.0000005
+            Assert.IsTrue(XSpot.checkAnswer(points, new Point<double>(Double.Parse("0,5"), Double.Parse("0")),
+                new Point<double>(Double.Parse("-0,5"), Double.Parse("0,0000005"))));
     	}
     	
     	//TODO delete
@@ -92,7 +96,7 @@ namespace UnitTest
 			Logger.LogTrace("Vec1 {} Vec2 {}", vec1, vec2);
 			
 			Drawing d = new Drawing();
-			string[] colors = new string[] { "#FF7D2BA2", "#FF12CBC9", "#FFC5CB12", "#FFE31212" };
+            string[] colors = new string[] { "#FF7D2BA2", "#FF12CBC9", "#FFC5CB12", "#FFE31212" };
 			
 			d.AddAsLine(splitLine1);
             d.AddAsLine(splitLine2);
@@ -224,7 +228,7 @@ namespace UnitTest
             d.AddAsLine(splitLine1);
             d.AddAsLine(splitLine2);
             
-            //GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
+           
     		/*
     		points = XSpot.generateTestSet(50, 10, 10);
     		

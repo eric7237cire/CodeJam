@@ -22,6 +22,7 @@ namespace RoundFinal
     using PointD = Utils.geom.Point<double>;
     using IP_Pair = Tuple<double, int>;
     using Frac = Utils.math.BigFraction;
+    using System.Globalization;
 
     public class XSpot : InputFileProducer<XSpotInput>, InputFileConsumer<XSpotInput, string>
     {
@@ -48,10 +49,36 @@ namespace RoundFinal
     		
     		PointD inter = splitLine1.line.intersection(splitLine2.line);
     		
-    		Preconditions.checkState(checkAnswer(input.points, inter, splitLine2.p2));
-    		
-    		return "{0} {1} {2} {3}".FormatThis(inter.X.ToUsString(9), inter.Y.ToUsString(9),
-    			splitLine2.p2.X.ToUsString(9), splitLine2.p2.Y.ToUsString(9));
+    		//Since the limit is 10^9, we can get more precision if we intersect the line with 10^9 - 1 let's say
+
+            Line<double> right = LineExt.createFromCoords(1e9 - 1, 0, 1e9 - 1, 1);
+            Line<double> top = LineExt.createFromCoords(0, 1e9 - 1, 1, 1e9 - 1);
+
+            PointD pointOnX = right.intersection(splitLine1.line);
+
+            if (pointOnX.Y < -1e9 + 1 || pointOnX.Y > 1e9 - 1)
+            {
+                pointOnX = top.intersection(splitLine1.line);
+            }
+
+            Preconditions.checkState(pointOnX.Y >= -1e9 + 1 && pointOnX.Y <= 1e9 + 1);
+            Preconditions.checkState(pointOnX.X >= -1e9 + 1 && pointOnX.X <= 1e9 + 1);
+
+            string ixStr = inter.X.ToUsString(9);
+            double ix = Double.Parse(ixStr, new CultureInfo("en-US"));
+
+            string iyStr = inter.Y.ToUsString(9);
+            double iy = Double.Parse(iyStr, new CultureInfo("en-US"));
+
+            string pxStr = pointOnX.X.ToUsString(9);
+            double px = Double.Parse(pxStr, new CultureInfo("en-US"));
+
+            string pyStr = pointOnX.Y.ToUsString(9);
+            double py = Double.Parse(pyStr, new CultureInfo("en-US"));
+
+            Preconditions.checkState(checkAnswer(input.points, new PointD(ix,iy), new PointD(px, py)));
+
+    		return "{0} {1} {2} {3}".FormatThis(ixStr, iyStr, pxStr, pyStr);
         }
 
         static PointD getDirectionVector(double angle, double distance = 1)
@@ -225,7 +252,7 @@ namespace RoundFinal
         public static bool checkAnswer(List<Point> points, PointD ptIntersection, PointD ptOnX)
         {
         	
-        	Func<double, Frac> convertFunc = (dbl) => BigFraction.createFromDouble(dbl, 8);
+        	Func<double, Frac> convertFunc = (dbl) => BigFraction.createFromDouble(dbl, 9);
         	
         	Func<Frac, double> convertFuncToDouble = (f) => (double) f;
         	
@@ -335,7 +362,8 @@ namespace RoundFinal
     				return false;
     			}
     		}
-    		
+
+            GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
     		return true;
         }
 
