@@ -39,7 +39,7 @@ namespace RoundFinal
             return new PointD(distance * Math.Cos(angle), distance * Math.Sin(angle));
         }
 
-        public static void splitPoints(PointD directionUnitVector, List<Point> points, out bool[] inFirstHalf)
+        public static void splitPoints(PointD directionUnitVector, List<Point> points, out bool[] inFirstHalf, out LineSegment<double> splitingLine)
         {
             List<IP_Pair> withCP = new List<IP_Pair>();
 
@@ -66,11 +66,13 @@ namespace RoundFinal
 
             //Logger.LogTrace("Sorted {}",  withCP.ToCommaString());
 
-            int sideStart = points.Count / 2;
-            
+            int secondHalfStart = points.Count / 2;
+
+            PointD avg = (points[withCP[secondHalfStart - 1].Item2] + points[withCP[secondHalfStart - 1].Item2]) / 2d;
+            splitingLine = LineExt.createSegmentFromCoords(avg.X, avg.Y, avg.X + directionUnitVector.X, avg.Y + directionUnitVector.Y);
             inFirstHalf = new bool[points.Count];
 
-            for(int i = 0; i < sideStart; ++i)
+            for(int i = 0; i < secondHalfStart; ++i)
             {
                 inFirstHalf[withCP[i].Item2] = true;
             }

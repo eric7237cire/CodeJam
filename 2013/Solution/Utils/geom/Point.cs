@@ -546,9 +546,19 @@ def diameter(Points):
         {
             return new Point<T>( (dynamic)lhs.X - (dynamic)rhs.X, (dynamic)lhs.Y - (dynamic)rhs.Y );
         }
+        public static Point<T> operator +(Point<T> lhs, Point<T> rhs)
+        {
+            return new Point<T>((dynamic)lhs.X + (dynamic)rhs.X, (dynamic)lhs.Y + (dynamic)rhs.Y);
+        }
         public static Point<T> operator /(Point<T> lhs, long rhs)
         {
             return new Point<T>( (T) ((dynamic)lhs.X / rhs), (T) ( (dynamic)lhs.Y / rhs) );
+        }
+        public static Point<double> operator /(Point<T> lhs, double rhs)
+        {
+            return new Point<double>( 
+                (double)((dynamic)lhs.X / rhs),
+                (double)((dynamic)lhs.Y / rhs));
         }
     }
 }

@@ -53,13 +53,16 @@ namespace UnitTest
     		
     		//Logger.LogTrace("Test set:\n{}", points.ToCommaString());
     		
-    		Point testLine = new Point(2, 9);
+    		Point testLine = new Point(2, 2);
 
             bool[] inFirstHalf;
             bool[] inFirstHalf2;
 
-            XSpot.splitPoints(testLine.ToDouble(), points, out inFirstHalf);
-            XSpot.splitPoints(new Point<double>(9, -2), points, out inFirstHalf2);
+            LineSegment<double> splitLine1;
+            LineSegment<double> splitLine2;
+
+            XSpot.splitPoints(testLine.ToDouble(), points, out inFirstHalf, out splitLine1);
+            XSpot.splitPoints(new Point<double>(2, -2), points, out inFirstHalf2, out splitLine2);
 
             Drawing d = new Drawing();
 
@@ -106,7 +109,9 @@ namespace UnitTest
                 d.AddPoint(points[i], colors[colorIndex]);
             }
 
-            d.AddAsLine(LineExt.createSegmentFromCoords(0, 0, testLine.X, testLine.Y));
+            //d.AddAsLine(LineExt.createSegmentFromCoords(0, 0, testLine.X, testLine.Y));
+            d.AddAsLine(splitLine1);
+            d.AddAsLine(splitLine2);
             
             GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
     		/*
