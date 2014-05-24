@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\codejam\CodeJam\csharp\Solution\build\UnitTest.dll" total="99" errors="1" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2014-05-24" time="15:39:09">
+  <environment nunit-version="2.6.3.13283" clr-version="2.0.50727.5477" os-version="Microsoft Windows NT 6.1.7601 Service Pack 1" platform="Win32NT" cwd="C:\codejam\CodeJam\csharp\Solution" machine-name="THRESH-PC" user="thresh" user-domain="thresh-PC" />
+  <culture-info current-culture="fr-FR" current-uiculture="fr-FR" />
+  <test-suite type="Assembly" name="C:\codejam\CodeJam\csharp\Solution\build\UnitTest.dll" executed="True" result="Failure" success="False" time="2.101" asserts="0">
+    <results>
+      <test-suite type="Namespace" name="Priority_Queue_Tests" executed="True" result="Success" success="True" time="0.083" asserts="0">
+        <results>
+          <test-suite type="TestFixture" name="HeapPriorityQueueTests" executed="True" result="Success" success="True" time="0.081" asserts="0">
+            <results>
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestAddingDifferentNodesLater" executed="True" result="Success" success="True" time="0.044" asserts="30" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestAddingSameNodesLater" executed="True" result="Success" success="True" time="0.002" asserts="30" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestBackwardOrder" executed="True" result="Success" success="True" time="0.001" asserts="15" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestClear" executed="True" result="Success" success="True" time="0.001" asserts="11" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestForwardOrder" executed="True" result="Success" success="True" time="0.001" asserts="15" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestMoreComplicatedQueue" executed="True" result="Success" success="True" time="0.002" asserts="75" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestOrderedQueue" executed="True" result="Success" success="True" time="0.001" asserts="15" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestSanity" executed="True" result="Success" success="True" time="0.007" asserts="3" />
+              <test-case name="Priority_Queue_Tests.HeapPriorityQueueTests.TestSimpleQueue" executed="True" result="Success" success="True" time="0.001" asserts="15" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="Namespace" name="UnitTest" executed="True" result="Failure" success="False" time="1.815" asserts="0">
+        <results>
+          <test-suite type="TestFixture" name="TestBinaryTree" executed="True" result="Success" success="True" time="0.402" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestBinaryTree.testBinaryTree" executed="True" result="Success" success="True" time="0.007" asserts="45" />
+              <test-case name="UnitTest.TestBinaryTree.TestHeight" executed="True" result="Success" success="True" time="0.002" asserts="9" />
+              <test-case name="UnitTest.TestBinaryTree.testIntervalTree" executed="True" result="Success" success="True" time="0.391" asserts="4000000" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestBitSet" executed="True" result="Success" success="True" time="0.006" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestBitSet.TestBasic" executed="True" result="Success" success="True" time="0.003" asserts="157" />
+              <test-case name="UnitTest.TestBitSet.TestToString" executed="True" result="Success" success="True" time="0.002" asserts="4" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestCantStop" executed="True" result="Success" success="True" time="0.014" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestCantStop.TestBestInterval" executed="True" result="Success" success="True" time="0.014" asserts="4" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestCombinationClasses" executed="True" result="Success" success="True" time="0.015" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestCombinationClasses.TestCombin" executed="True" result="Success" success="True" time="0.002" asserts="2" />
+              <test-case name="UnitTest.TestCombinationClasses.TestCombinationIterator" executed="True" result="Success" success="True" time="0.002" asserts="5" />
+              <test-case name="UnitTest.TestCombinationClasses.TestPermutationWithRep" executed="True" result="Success" success="True" time="0.008" asserts="6" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestConsonants" executed="True" result="Success" success="True" time="0.020" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestConsonants.Test1" executed="True" result="Success" success="True" time="0.005" asserts="1" />
+              <test-case name="UnitTest.TestConsonants.Test2" executed="True" result="Success" success="True" time="0.000" asserts="1" />
+              <test-case name="UnitTest.TestConsonants.Test3" executed="True" result="Success" success="True" time="0.000" asserts="1" />
+              <test-case name="UnitTest.TestConsonants.Test4" executed="True" result="Success" success="True" time="0.000" asserts="1" />
+              <test-case name="UnitTest.TestConsonants.Test5" executed="True" result="Success" success="True" time="0.000" asserts="1" />
+              <test-case name="UnitTest.TestConsonants.Test6" executed="True" result="Success" success="True" time="0.000" asserts="1" />
+              <test-case name="UnitTest.TestConsonants.Test7" executed="True" result="Success" success="True" time="0.000" asserts="1" />
+              <test-case name="UnitTest.TestConsonants.Test8" executed="True" result="Success" success="True" time="0.000" asserts="1" />
+              <test-case name="UnitTest.TestConsonants.Test9" executed="True" result="Success" success="True" time="0.000" asserts="1" />
+              <test-case name="UnitTest.TestConsonants.TestMethod" executed="True" result="Success" success="True" time="0.008" asserts="3586" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestDrummer" executed="True" result="Success" success="True" time="0.005" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestDrummer.Test" executed="True" result="Success" success="True" time="0.005" asserts="1" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestGeom" executed="True" result="Success" success="True" time="0.029" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestGeom.TestConvexHull" executed="True" result="Success" success="True" time="0.010" asserts="7" />
+              <test-case name="UnitTest.TestGeom.TestConvexHull2" executed="True" result="Success" success="True" time="0.001" asserts="8" />
+              <test-case name="UnitTest.TestGeom.TestConvexHull3" executed="True" result="Success" success="True" time="0.001" asserts="40" />
+              <test-case name="UnitTest.TestGeom.TestIntersection" executed="True" result="Success" success="True" time="0.002" asserts="2" />
+              <test-case name="UnitTest.TestGeom.TestPolarOrder" executed="True" result="Success" success="True" time="0.002" asserts="8" />
+              <test-case name="UnitTest.TestGeom.TestPolygon" executed="True" result="Success" success="True" time="0.008" asserts="2" />
+              <test-case name="UnitTest.TestGeom.TestSameSide" executed="True" result="Success" success="True" time="0.002" asserts="2" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestGraduation" executed="True" result="Success" success="True" time="0.030" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestGraduation.Test3rdBackIntersection" executed="True" result="Success" success="True" time="0.019" asserts="3">
+                <categories>
+                  <category name="current" />
+                </categories>
+              </test-case>
+              <test-case name="UnitTest.TestGraduation.TestBackward" executed="True" result="Success" success="True" time="0.002" asserts="9" />
+              <test-case name="UnitTest.TestGraduation.TestBeforeAndAfterIntersection" executed="True" result="Success" success="True" time="0.001" asserts="3">
+                <categories>
+                  <category name="current" />
+                </categories>
+              </test-case>
+              <test-case name="UnitTest.TestGraduation.TestForward" executed="True" result="Success" success="True" time="0.001" asserts="9">
+                <categories>
+                  <category name="current" />
+                </categories>
+              </test-case>
+              <test-case name="UnitTest.TestGraduation.TestForwardExitBefore" executed="True" result="Success" success="True" time="0.001" asserts="3">
+                <categories>
+                  <category name="current" />
+                </categories>
+              </test-case>
+              <test-case name="UnitTest.TestGraduation.TestNegMod" executed="True" result="Success" success="True" time="0.000" asserts="1" />
+              <test-case name="UnitTest.TestGraduation.TestStartSamePoint" executed="True" result="Success" success="True" time="0.001" asserts="3">
+                <categories>
+                  <category name="current" />
+                </categories>
+              </test-case>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestManyPrizes" executed="True" result="Success" success="True" time="0.007" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestManyPrizes.TestManyPrizes1" executed="True" result="Success" success="True" time="0.006" asserts="20" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestMath" executed="True" result="Success" success="True" time="0.012" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestMath.TestDiffs" executed="True" result="Success" success="True" time="0.001" asserts="3" />
+              <test-case name="UnitTest.TestMath.TestInc" executed="True" result="Success" success="True" time="0.001" asserts="5" />
+              <test-case name="UnitTest.TestMath.TestLargeFractionToDouble" executed="True" result="Success" success="True" time="0.005" asserts="5" />
+              <test-case name="UnitTest.TestMath.TestModdedLongArithmetic" executed="True" result="Success" success="True" time="0.001" asserts="2" />
+              <test-case name="UnitTest.TestMath.TestRef" executed="True" result="Success" success="True" time="0.001" asserts="1" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestModMath" executed="True" result="Success" success="True" time="0.004" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestModMath.TestGCD" executed="True" result="Success" success="True" time="0.001" asserts="1" />
+              <test-case name="UnitTest.TestModMath.TestModInverse" executed="True" result="Success" success="True" time="0.002" asserts="941" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestPogo" executed="True" result="Success" success="True" time="0.011" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestPogo.test1" executed="True" result="Success" success="True" time="0.006" asserts="1" />
+              <test-case name="UnitTest.TestPogo.testBasic" executed="True" result="Success" success="True" time="0.003" asserts="441" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestPong" executed="True" result="Success" success="True" time="0.149" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestPong.TestCalcToTarget" executed="True" result="Success" success="True" time="0.020" asserts="1" />
+              <test-case name="UnitTest.TestPong.TestCalcToTarget2" executed="True" result="Success" success="True" time="0.001" asserts="1" />
+              <test-case name="UnitTest.TestPong.TestCalcToTarget3" executed="True" result="Success" success="True" time="0.001" asserts="1" />
+              <test-case name="UnitTest.TestPong.TestCalcToTarget4" executed="True" result="Success" success="True" time="0.002" asserts="5" />
+              <test-case name="UnitTest.TestPong.TestCalcToTargetUsingRand" executed="True" result="Success" success="True" time="0.011" asserts="534" />
+              <test-case name="UnitTest.TestPong.testFirstHit" executed="True" result="Success" success="True" time="0.008" asserts="21990" />
+              <test-case name="UnitTest.TestPong.testForbiddenInterval" executed="True" result="Success" success="True" time="0.064" asserts="15984" />
+              <test-case name="UnitTest.TestPong.testForbiddenIntervalSmall2" executed="True" result="Success" success="True" time="0.002" asserts="182" />
+              <test-case name="UnitTest.TestPong.testFrac" executed="True" result="Success" success="True" time="0.001" asserts="1" />
+              <test-case name="UnitTest.TestPong.TestLarge17" executed="True" result="Success" success="True" time="0.028" asserts="1" />
+              <test-case name="UnitTest.TestPong.TestSmall2" executed="True" result="Success" success="True" time="0.000" asserts="1" />
+              <test-case name="UnitTest.TestPong.TestSmall63" executed="True" result="Success" success="True" time="0.000" asserts="1" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestRunner" executed="True" result="Failure" success="False" time="0.087" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestRunner.runAllTestFiles" executed="True" result="Error" success="False" time="0.011" asserts="0">
+                <failure>
+                  <message><![CDATA[System.IO.FileNotFoundException : Impossible de charger le fichier ou l'assembly 'Round1B' ou une de ses dépendances. Le fichier spécifié est introuvable.]]></message>
+                  <stack-trace><![CDATA[à System.RuntimeTypeHandle.GetTypeByName(String name, Boolean throwOnError, Boolean ignoreCase, Boolean reflectionOnly, StackCrawlMarkHandle stackMark, IntPtr pPrivHostBinder, Boolean loadTypeFromPartialName, ObjectHandleOnStack type)
+à System.RuntimeTypeHandle.GetTypeByName(String name, Boolean throwOnError, Boolean ignoreCase, Boolean reflectionOnly, StackCrawlMark& stackMark, IntPtr pPrivHostBinder, Boolean loadTypeFromPartialName)
+à System.Type.GetType(String typeName, Boolean throwOnError)
+à UnitTest.TestRunner.runTestFile(MainTestData testData)
+à UnitTest.TestRunner.runAllTestFiles()
+]]></stack-trace>
+                </failure>
+              </test-case>
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestStory" executed="True" result="Success" success="True" time="0.013" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestStory.TestCountDP" executed="True" result="Success" success="True" time="0.006" asserts="110" />
+              <test-case name="UnitTest.TestStory.TestCountSubSeqBruteForce" executed="True" result="Success" success="True" time="0.001" asserts="4" />
+              <test-case name="UnitTest.TestStory.TestOrder" executed="True" result="Success" success="True" time="0.004" asserts="6" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestTrie" executed="True" result="Success" success="True" time="0.012" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestTrie.testAddWord" executed="True" result="Success" success="True" time="0.004" asserts="5" />
+              <test-case name="UnitTest.TestTrie.testBasicMatches" executed="True" result="Success" success="True" time="0.005" asserts="3" />
+              <test-case name="UnitTest.TestTrie.testMatches" executed="True" result="Success" success="True" time="0.002" asserts="9" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestUtils" executed="True" result="Success" success="True" time="0.022" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestUtils.testBinarySearch" executed="True" result="Success" success="True" time="0.001" asserts="8" />
+              <test-case name="UnitTest.TestUtils.testDIS" executed="True" result="Success" success="True" time="0.003" asserts="5" />
+              <test-case name="UnitTest.TestUtils.testEquality" executed="True" result="Success" success="True" time="0.001" asserts="4" />
+              <test-case name="UnitTest.TestUtils.testLIS" executed="True" result="Success" success="True" time="0.001" asserts="4" />
+              <test-case name="UnitTest.TestUtils.testLowerBound" executed="True" result="Success" success="True" time="0.003" asserts="11" />
+              <test-case name="UnitTest.TestUtils.testModdedLong" executed="True" result="Success" success="True" time="0.002" asserts="400" />
+              <test-case name="UnitTest.TestUtils.testModdedLong2" executed="True" result="Success" success="True" time="0.001" asserts="501" />
+              <test-case name="UnitTest.TestUtils.testPow" executed="True" result="Success" success="True" time="0.001" asserts="100" />
+              <test-case name="UnitTest.TestUtils.testPow2" executed="True" result="Success" success="True" time="0.001" asserts="100" />
+              <test-case name="UnitTest.TestUtils.testToStringFrac" executed="True" result="Success" success="True" time="0.001" asserts="1" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestWheel" executed="True" result="Success" success="True" time="0.093" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestWheel.TestCompare" executed="True" result="Success" success="True" time="0.077" asserts="100" />
+              <test-case name="UnitTest.TestWheel.TestCopyArray" executed="True" result="Success" success="True" time="0.001" asserts="2" />
+              <test-case name="UnitTest.TestWheel.TestP" executed="True" result="Success" success="True" time="0.001" asserts="2" />
+              <test-case name="UnitTest.TestWheel.TestPij_bruteforce" executed="True" result="Success" success="True" time="0.001" asserts="4" />
+              <test-case name="UnitTest.TestWheel.TestPijk_bruteForce" executed="True" result="Success" success="True" time="0.003" asserts="1" />
+              <test-case name="UnitTest.TestWheel.TestPijk_bruteForce2" executed="True" result="Success" success="True" time="0.000" asserts="1" />
+              <test-case name="UnitTest.TestWheel.TestRBruteForce" executed="True" result="Success" success="True" time="0.003" asserts="2" />
+              <test-case name="UnitTest.TestWheel.TestSimulatePermutation" executed="True" result="Success" success="True" time="0.002" asserts="3" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestXSpot" executed="True" result="Success" success="True" time="0.860" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestXSpot.TestColinear" executed="True" result="Success" success="True" time="0.822" asserts="12" />
+              <test-case name="UnitTest.TestXSpot.TestSmallAngle" executed="True" result="Success" success="True" time="0.036" asserts="2" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="Namespace" name="UnitTest1B" executed="True" result="Success" success="True" time="0.175" asserts="0">
+        <results>
+          <test-suite type="TestFixture" name="TestDiamond" executed="True" result="Success" success="True" time="0.166" asserts="0">
+            <results>
+              <test-case name="UnitTest1B.TestDiamond.TestDiamondInfo" executed="True" result="Success" success="True" time="0.004" asserts="16" />
+              <test-case name="UnitTest1B.TestDiamond.TestDiamondProb2" executed="True" result="Success" success="True" time="0.050" asserts="5" />
+              <test-case name="UnitTest1B.TestDiamond.TestDiamondProb3" executed="True" result="Success" success="True" time="0.043" asserts="7" />
+              <test-case name="UnitTest1B.TestDiamond.TestDiamondProb4" executed="True" result="Success" success="True" time="0.031" asserts="5" />
+              <test-case name="UnitTest1B.TestDiamond.TestDiamondProb5" executed="True" result="Success" success="True" time="0.034" asserts="3" />
+            </results>
+          </test-suite>
+          <test-suite type="TestFixture" name="TestPascals" executed="True" result="Success" success="True" time="0.007" asserts="0">
+            <results>
+              <test-case name="UnitTest1B.TestPascals.testBasic" executed="True" result="Success" success="True" time="0.003" asserts="15" />
+              <test-case name="UnitTest1B.TestPascals.testProb" executed="True" result="Success" success="True" time="0.002" asserts="15" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>

@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root xml:space="preserve">
+
+
+         
+         
+  <testFileRunner basedir="2013/Round1B/">
+				  
+				 <!--Osmos.  Dynamic programming-->
+    <run checkFile         ="A-small-practice.check"
+         className         ="Round1B.Osmos, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInput"/>
+		 
+		 
+    <run checkFile         ="A-large-practice.check"
+         className         ="Round1B.Osmos, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="A-large-practice.in"
+         processInputMethod="processInput"/>
+		 
+		 <!-- Probability pennies.  3 heads in 5 flips.  Pascals Triangle -->
+    <run checkFile         ="B-small-practice.check"
+         className         ="Round1B_P2.Diamond, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="B-small-practice.in"
+         processInputMethod="processInput"/>
+    
+	<run checkFile         ="B-large-practice.check"
+         className         ="Round1B_P2.Diamond, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="B-large-practice.in"
+         processInputMethod="processInput"/>
+		 
+    <run checkFile         ="B-small-practice.check"
+         className         ="Round1B_P2.Diamond, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="B-small-practice.in"
+         processInputMethod="processInputSlow"/>
+		 		 
+    <run checkFile         ="B-large-practice.check"
+         className         ="Round1B_P2.Diamond, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="B-large-practice.in"
+         processInputMethod="processInputSlow"/>
+		 
+         <!-- Trie -->
+		
+      <run checkFile         ="C-small-practice.check"
+         className         ="Round1B_P3.GarbledEmail, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInput"/>
+   
+ 
+  <run checkFile         ="C-large-practice.check"
+         className         ="Round1B_P3.GarbledEmail, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="C-large-practice.in"
+         processInputMethod="processInput"/>
+		 
+		 
+  </testFileRunner>
+  
+  <testFileRunner basedir="2013/Round1C/">
+        
+   <!-- include / exclude principal -->
+                  <run checkFile         ="A_small_practice.check"
+         className         ="Round1C.Consonants, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInput"/>
+         
+        
+          <run checkFile         ="A_small_practice.check"
+         className         ="Round1C.Consonants, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInputBruteForce"/>
+         
+         <run checkFile         ="A-large-practice.check"
+         className         ="Round1C.Consonants, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="A-large-practice.in"
+         processInputMethod="processInput"/>
+         
+            <!-- Proof via induction -->
+                  <run checkFile         ="B-small-practice.check"
+         className         ="Round1C_P2.Pogo, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="B-small-practice.in"
+         processInputMethod="processInput"/>
+         -
+		 
+		 <run checkFile         ="B-large-practice.correct"
+         className         ="Round1C_P2.Pogo, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="B-large-practice.in"
+         processInputMethod="processInput"/>
+         
+         <!--Segment Tree-->
+		 
+		   <run checkFile         ="C-small-practice.check"
+         className         ="Round1C.GreatWall, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInput"/>
+		 
+		 <run checkFile         ="C-small-practice.check"
+         className         ="Round1C.GreatWall, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInputSmall"/>
+		 
+		 
+		 <!--Uses too much memory TODO-->
+		 
+		 <run checkFile         ="C-large-practice.check"
+         className         ="Round1C.GreatWall, 2013"
+         createInputMethod ="createInput"
+		 category = "slow"
+         inputFile         ="C-large-practice.in"
+         processInputMethod="processInput"/>
+		 
+         </testFileRunner>
+         
+         <testFileRunner basedir="2013/Round2/">
+                  
+                  <!-- Stack -->
+                  
+                   <run checkFile         ="A-small-practice.check"
+         className         ="Round2_P1.TicketSwap, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInput"/>
+         
+          <run checkFile         ="A-large-practice.check"
+         className         ="Round2_P1.TicketSwap, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="A-large-practice.in"
+         processInputMethod="processInput"/>
+         
+         <!-- binary ; understanding problem, simple solution -->
+                <run checkFile         ="B-small-practice.check"
+         className         ="Round2.ManyPrizes, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="B-small-practice.in"
+         processInputMethod="processInput"/>
+         
+          <run checkFile         ="B-large-practice.check"
+         className         ="Round2.ManyPrizes, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="B-large-practice.in"
+         processInputMethod="processInput"/>
+         
+         <!-- Longest increasing / decreasing subsequence -->
+              <run checkFile         ="C-small-practice.check"
+         className         ="Round2_P3.Erdos, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInput"/>
+         
+           <run checkFile         ="C-large-practice.check"
+         className         ="Round2_P3.Erdos, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="C-large-practice.in"
+         processInputMethod="processInput"/>
+         
+         <!-- Sequence Ax % N -->
+            <run checkFile         ="D-small-practice.correct"
+         className         ="Round2_P4.PongMain, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="D-small-practice.in"
+         processInputMethod="processInput"/>
+         
+           <run checkFile         ="D-large-practice.correct"
+         className         ="Round2_P4.PongMain, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="D-large-practice.in"
+         processInputMethod="processInput"/>
+                  
+         </testFileRunner>
+         
+                  
+                  
+  <testFileRunner basedir="2013/Round3/">
+  
+  <!-- Covering all cases -->
+  <run checkFile         ="A-small-practice.check"
+         className         ="Round3.Cheaters, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInput"/>
+         
+          <run checkFile         ="A-large-practice.check"
+         className         ="Round3.Cheaters, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="A-large-practice.in"
+         processInputMethod="processInput"/>
+        
+         <!-- convex hull -->
+         
+         <run checkFile         ="B-small-practice.correct"
+         className         ="Round3.Rural, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="B-small-practice.in"
+         processInputMethod="processInput"/>
+         
+          <run checkFile         ="B-large-practice.correct"
+         className         ="Round3.Rural, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="B-large-practice.in"
+         processInputMethod="processInput"/>
+  
+         <!--Dijkstras-->
+    <run checkFile         ="C-small-practice.correct"
+         className         ="Round3.Lost, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInput"/>
+    <run checkFile         ="C-small-practice.correct"
+         className         ="Round3.Lost, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInputBruteForce"/>
+         
+         
+    <run checkFile         ="C-large-practice.correct"
+         className         ="Round3.Lost, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="C-large-practice.in"
+         processInputMethod="processInput"/>
+		 
+         <!--A good probability / expected value problem with large number issues, slow because BigInteger-->
+		 
+		 <run checkFile         ="D-small-practice.correct"
+         className         ="Round3.Wheel, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="D-small-practice.in"
+         processInputMethod="processInputSmall"/>
+		 
+		 
+		 <run checkFile         ="D-small-practice.correct"
+         className         ="Round3.Wheel, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="D-small-practice.in"
+         processInputMethod="processInput"/>
+		 
+		 <run checkFile         ="D-small-practice.correct"
+         className         ="Round3.Wheel, 2013"
+         createInputMethod ="createInput"
+         inputFile         ="D-small-practice.in"
+         processInputMethod="processInputOtherSolution"/>
+		 
+		 
+		 <!--A bit too slow-->
+		 <run checkFile         ="D-large-practice.correct"
+         className         ="Round3.Wheel, 2013"
+         createInputMethod ="createInput"
+         category = "slow"
+         inputFile         ="D-large-practice.in"
+         processInputMethod="processInput"/>
+		 
+  </testFileRunner>
+  
+  
+  <testFileRunner basedir="2013/RoundFinal">
+				  
+				 <!--Modeling as segments, intersections-->
+		 
+		 <run checkFile         ="A-small-practice.correct"
+         className         ="RoundFinal.Graduation, 2013"
+         createInputMethod ="createInput"
+		 testName          = "2013.RoundFinal.Problem1.Small"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInput"/>
+		 
+				  <run checkFile         ="A-small-practice.correct"
+         className         ="RoundFinal.Graduation, 2013"
+         createInputMethod ="createInput"
+		 testName          = "2013.RoundFinal.Problem1.Small-0"
+         inputFile         ="A-small-practice.in"
+         processInputMethod="processInputSmall"/>
+         
+         
+          <run checkFile         ="A-large-practice.correct"
+         className         ="RoundFinal.Graduation, 2013"
+         createInputMethod ="createInput"
+         category = "slow"
+		 testName          = "2013.RoundFinal.Problem1.Large"
+         inputFile         ="A-large-practice.in"
+         processInputMethod="processInput"/>
+         
+         <!--Convex hull / rotating calipurs-->
+         	  <run checkFile         ="B-small-practice.correct"
+         className         ="RoundFinal.Drummer, 2013"
+         createInputMethod ="createInput"
+		 testName          = "2013.RoundFinal.Problem2.Small"
+         inputFile         ="B-small-practice.in"
+         processInputMethod="processInput"/>
+         
+         
+          <run checkFile         ="B-large-practice.correct"
+         className         ="RoundFinal.Drummer, 2013"
+         createInputMethod ="createInput"         
+		 testName          = "2013.RoundFinal.Problem2.Large"
+         inputFile         ="B-large-practice.in"
+         processInputMethod="processInput"/>
+		 
+		 <!-- Cross product, splitting points, checking colinear points-->
+		 	  <run checkFile         ="C-small-practice.correct"
+         className         ="RoundFinal.XSpot, 2013"
+         createInputMethod ="createInput"
+		 testName          = "2013.RoundFinal.Problem3.Small"
+         inputFile         ="C-small-practice.in"
+         processInputMethod="processInput"/>
+         
+         
+          <run checkFile         ="C-large-practice.correct"
+         className         ="RoundFinal.XSpot, 2013"
+         createInputMethod ="createInput"
+         testName          = "2013.RoundFinal.Problem3.Large"
+         inputFile         ="C-large-practice.in"
+         processInputMethod="processInput"/>
+		 
+		 </testFileRunner>
+  
+ 
+</root>
+
