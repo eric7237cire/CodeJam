@@ -52,3 +52,4 @@ output/
 2013/Solution/packages/NUnitTestAdapter.WithFramework.1.0/NUnitTestAdapter.WithFramework.1.0.nuspec
 2013/Solution/packages/repositories.config
 2013/Solution/UnitTest/packages.config
+*.pdb

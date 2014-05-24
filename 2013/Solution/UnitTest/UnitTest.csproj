@@ -89,6 +89,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="2013\RoundFinal\TestCantStop.cs" />
     <Compile Include="HeapPriorityQueueTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -113,7 +114,7 @@
     <Compile Include="TestPong.cs" />
     <Compile Include="TestWheel.cs" />
     <Compile Include="TestGraduation.cs" />
-    <Compile Include="TestXSpot.cs" />
+    <Compile Include="2013\RoundFinal\TestXSpot.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Round1B\Round1B.csproj">

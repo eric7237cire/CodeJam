@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Utils
 {
-    
+
 
     public sealed class LoggerFile
     {
@@ -48,7 +48,7 @@ namespace Utils
             {
                 for (int i = 0; i < args.Count(); ++i)
                 {
-                    msg = rgx.Replace(msg, (args[i] ?? "") .ToString(), 1);
+                    msg = rgx.Replace(msg, (args[i] ?? "").ToString(), 1);
                 }
             }
 
@@ -85,7 +85,7 @@ namespace Utils
 
             Debug.WriteLine(msg);
             Console.WriteLine(msg);
-            
+
             Log(String.Format(msg, args));
         }
 
@@ -101,10 +101,12 @@ namespace Utils
         private static void Log(String msg)
         {
             //msg = "Thread id {0} -- ".FormatThis(System.Threading.Thread.CurrentThread.ManagedThreadId) + msg;
-            
-           LoggerFile.Instance.writer.WriteLine(msg);
 
-           LoggerFile.Instance.writer.Flush();
+            //Console.WriteLine(msg);
+
+            LoggerFile.Instance.writer.WriteLine(msg);
+
+            LoggerFile.Instance.writer.Flush();
         }
 
     }

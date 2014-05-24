@@ -41,7 +41,8 @@ namespace MainNS
 
             
             //Drummer main = new Drummer();
-            XSpot main = new XSpot();
+            //XSpot main = new XSpot();
+            CantStop main = new CantStop();
 
             // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
             //TicketSwap main = new TicketSwap();
@@ -51,7 +52,7 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-            //list.Add("sample.in");
+            list.Add("sample.in");
 
 
            // list.Add("B-small-practice.in");
@@ -62,11 +63,11 @@ namespace MainNS
             //list.Add("B-small-practice.in");
             // list.Add("B-large-practice.in");
 
-            list.Add("C-small-practice.in");
-            list.Add("C-large-practice.in");
+          //  list.Add("C-small-practice.in");
+          //  list.Add("C-large-practice.in");
 
-            // list.Add("D-small-practice.in");
-            // list.Add("D-large-practice.in");
+             list.Add("D-small-practice.in");
+             list.Add("D-large-practice.in");
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1C\");

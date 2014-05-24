@@ -360,6 +360,12 @@ namespace UnitTest
             testName("2013.RoundFinal.Problem1.Small");
         }
 
+        [Test]
+        public void TestFinal2013ProblemDrummerLarge()
+        {
+            testName("2013.RoundFinal.Problem2.Large");
+        }
+
         private void testName(string name)
         {
             var test = testList.Where((td) => td != null && name.Equals(td.testName));
@@ -401,7 +407,9 @@ namespace UnitTest
 
                     if ("slow".Equals(getAttributeValue(run, "category")))
                     {
-                        //continue;
+#if !INCLUDE_SLOW
+                        continue;
+#endif
                     }
                     TextReader inputReader = File.OpenText(inputFileName);
                     Scanner scanner = new Scanner(inputReader);

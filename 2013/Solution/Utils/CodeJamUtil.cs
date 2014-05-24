@@ -355,7 +355,6 @@ namespace CodeJamUtils
         public Scanner(TextReader reader)
         {
             this.reader = reader;
-            readNextWord();
         }
 
         public void enablePlayBack()
@@ -412,81 +411,46 @@ namespace CodeJamUtils
                 currentWord = null;
         }
 
-        public bool hasNextInt()
-        {
-            if (currentWord == null)
-                return false;
-            int dummy;
-            return int.TryParse(currentWord, out dummy);
-        }
+        
 
         public int nextInt()
         {
-            try
-            {
-            	Logger.LogTrace("Parsing [{}]", currentWord);
-                return int.Parse(currentWord);
-            }
-            finally
-            {
-                readNextWord();
-            }
+            readNextWord();
+            
+            Logger.LogTrace("Parsing [{}]", currentWord);
+            return int.Parse(currentWord);
+            
         }
         
         public BigInteger nextBigInteger()
         {
-            try
-            {
-                return BigInteger.Parse(currentWord);
-            }
-            finally
-            {
-                readNextWord();
-            }
+            readNextWord();
+            
+            return BigInteger.Parse(currentWord);
+            
         }
 
         public long nextLong()
         {
-            try
-            {
-                return long.Parse(currentWord);
-            }
-            finally
-            {
-                readNextWord();
-            }
-        }
-
-        public bool hasNextDouble()
-        {
-            if (currentWord == null)
-                return false;
-            double dummy;
-            return double.TryParse(currentWord, out dummy);
+            readNextWord();
+            
+            return long.Parse(currentWord);
+            
         }
 
         public double nextDouble()
         {
-            try
-            {
-                return double.Parse(currentWord);
-            }
-            finally
-            {
-                readNextWord();
-            }
+            readNextWord(); 
+
+            return double.Parse(currentWord);
+            
         }
 
         public string nextWord()
         {
-            try
-            {
-                return currentWord;
-            }
-            finally
-            {
-                readNextWord();
-            }
+            readNextWord(); 
+
+            return currentWord;
         }
 
         public bool hasNext()

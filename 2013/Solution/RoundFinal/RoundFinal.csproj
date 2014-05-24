@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CantStop.cs" />
     <Compile Include="Drummer.cs" />
     <Compile Include="Graduation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\codejam\CodeJam\2013\Solution\build\UnitTest.dll" total="1" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2014-05-24" time="08:06:30">
+  <environment nunit-version="2.6.3.13283" clr-version="2.0.50727.5477" os-version="Microsoft Windows NT 6.1.7601 Service Pack 1" platform="Win32NT" cwd="C:\codejam\CodeJam\2013\Solution\build" machine-name="THRESH-PC" user="thresh" user-domain="thresh-PC" />
+  <culture-info current-culture="fr-FR" current-uiculture="fr-FR" />
+  <test-suite type="Assembly" name="C:\codejam\CodeJam\2013\Solution\build\UnitTest.dll" executed="True" result="Success" success="True" time="1.015" asserts="0">
+    <results>
+      <test-suite type="Namespace" name="UnitTest" executed="True" result="Success" success="True" time="1.000" asserts="0">
+        <results>
+          <test-suite type="TestFixture" name="TestRunner" executed="True" result="Success" success="True" time="0.997" asserts="0">
+            <results>
+              <test-case name="UnitTest.TestRunner.TestFinal2013ProblemDrummerLarge" executed="True" result="Success" success="True" time="0.908" asserts="101" />
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+    </results>
+  </test-suite>
+</test-results>
