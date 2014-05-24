@@ -32,9 +32,64 @@ namespace RoundFinal
             return input;
         }
 
+        const int mod = 10007;
+
         public int processInput(StoryInput input)
         {
-            return 37;
+            int[][] dp;
+            int[] values;
+            transformInput(input, out values);
+
+            Story.dynProg(values, out dp);
+
+            int[] modFact = ModdedLong.generateModFactorial(values.Length + 1, mod);
+
+            int N = values.Length;
+
+            int[] totalNonDecSubSeqOfLength = new int[values.Length+1];
+            for(int len = 1; len <= N; ++len)
+            {
+                totalNonDecSubSeqOfLength[len] = dp[len].Sum();
+                totalNonDecSubSeqOfLength[len] %= mod;
+            }
+
+            int ans = 0;
+
+            if (totalNonDecSubSeqOfLength[N] == 1)
+            {
+                return 1;
+            }
+
+            Preconditions.checkState(totalNonDecSubSeqOfLength[N] == 0);
+
+            for (int K = 1; K <= N; ++K )
+            {
+                Logger.LogTrace("K is {}", K);
+                int numNonDecLenK = totalNonDecSubSeqOfLength[K];
+                int totalWaysPickSubSeqLenK = modFact[N - K];
+                int total = numNonDecLenK * totalWaysPickSubSeqLenK;
+                Logger.LogTrace("Total {} * {} = {}", numNonDecLenK, totalWaysPickSubSeqLenK, total);
+                total %= mod;
+
+                if (K < N)
+                {
+                    //But we must discount how many ways we could have made a non decreasing subsequence of length K + 1
+                    int numNonDecLenKp1 = totalNonDecSubSeqOfLength[K + 1];
+                    int totalWaysPickSubSeqLenKp1 = modFact[N - (K+1)];
+
+                    total -= (numNonDecLenKp1 * totalWaysPickSubSeqLenKp1 * (K + 1)) % mod;
+
+                    Logger.LogTrace("Total -= {} * {} * {} = {}", numNonDecLenKp1, totalWaysPickSubSeqLenKp1, (K + 1), total);
+
+                    if (total < 0)
+                        total += mod;
+                }
+
+                ans += total;
+                ans %= mod;
+            }
+
+            return ans;
         }
 
         public int countNonIncSubsequences()
@@ -109,10 +164,12 @@ namespace RoundFinal
                     for(int prevElem = value+1; prevElem < values.Length; ++prevElem)
                     {
                         sum += dp[len - 1][prevElem];
+                        sum %= mod;
+                        /*
                         if (dp[len - 1][prevElem] > 0)
                         {
                             Logger.LogTrace("Adding {} to sum now {}", dp[len - 1][prevElem], sum);
-                        }
+                        }*/
                     }
 
                     Logger.LogTrace("Len {} Elem {} = {}", len, value, sum);
