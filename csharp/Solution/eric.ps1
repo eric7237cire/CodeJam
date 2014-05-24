@@ -24,6 +24,11 @@ $files = GetFiles '.\2013'
 $command = "$csc -out:.\build\2013.dll -r:$sysNum -r:Utils.dll /target:library $files  "
 iex $command
 
+$files = GetFiles '.\2014'
+$command = "$csc -out:.\build\2014.dll -r:$sysNum -r:Utils.dll /target:library $files  "
+iex $command
+
+
 $files = GetFiles '.\UnitTest'
 $nunitlib = 'C:\Program Files (x86)\NUnit 2.6.3\bin\framework\nunit.framework.dll'
 write-host $command
@@ -32,7 +37,7 @@ iex $command
 
 $files = GetFiles '.\Main'
 write-host $command
-$command = "$csc -out:.\build\Main.exe -r:$sysNum -r:2013.dll -r:Utils.dll /target:exe $files  "
+$command = "$csc -out:.\build\Main.exe -r:$sysNum -r:2013.dll -r:2014.dll -r:Utils.dll /target:exe $files  "
 
 #write-host $files
 
@@ -41,4 +46,4 @@ iex $command
 #& $nunit @("--help")
 #& $nunit @("/framework:net-4.5", ".\build\UnitTest.dll")
 
-& $nunit @("/framework:net-4.5", ".\build\UnitTest.dll") #, "/run:UnitTest.TestStory.TestCountDP")
+#& $nunit @("/framework:net-4.5", ".\build\UnitTest.dll") #, "/run:UnitTest.TestStory.TestCountDP")

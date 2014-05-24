@@ -97,22 +97,11 @@ namespace RoundFinal
             return 3;
         }
 
-        public static void createArray<T>(out T[][] array, int d1, int d2, T defValue)
-        {
-            array = new T[d1][];
-            for (int i = 0; i < d1; ++i)
-            {
-                array[i] = new T[d2];
-                for (int j = 0; j < d2; ++j)
-                {
-                    array[i][j] = defValue;
-                }
-            }
-        }
+        
 
         public static int countNonIncSubsequencesBruteForce(IList<int> values, out int[][] dp)
         {
-            createArray(out dp, values.Count + 1, values.Count, 0);
+            Ext.createArray(out dp, values.Count + 1, values.Count, 0);
 
             int sum = 0;
             for (int combin = (1 << values.Count) - 1; combin > 0; --combin)
@@ -148,7 +137,7 @@ namespace RoundFinal
         //what is the number of non-increasing subsequences of length P that end with number Q? 
         public static void dynProg(int[] values, out int[][] dp)
         {
-            createArray(out dp, values.Length + 1, values.Length, 0);
+            Ext.createArray(out dp, values.Length + 1, values.Length, 0);
 
             FenwickTree[] ftrees = new FenwickTree[values.Length + 1];
             for (int i = 0; i < ftrees.Length; ++i)

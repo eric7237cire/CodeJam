@@ -14,11 +14,6 @@ using Utils;
 using Utils.tree;
 using Logger = Utils.LoggerFile;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CodeJam.Utils.graph;
 
 namespace CodeJam.Round1A_2014
@@ -28,7 +23,7 @@ namespace CodeJam.Round1A_2014
         public int N;
         public Graph graph;
     }
-    class FullTree : InputFileProducer<FullTreeInput>, InputFileConsumer<FullTreeInput, int>
+    public class FullTree : InputFileProducer<FullTreeInput>, InputFileConsumer<FullTreeInput, int>
     {
         public FullTreeInput createInput(Scanner scanner)
         {
@@ -50,11 +45,13 @@ namespace CodeJam.Round1A_2014
         public int processInput(FullTreeInput input)
         {
             int minCost = Int32.MaxValue;
+            int[][] dp;
+            Ext.createArray(out dp, input.N, input.N, -1);
 
             for (int root = 0; root < input.N; ++root)
             {
                 Logger.LogTrace("\nTrying root {}", root);
-                int c = cost(root, root, input);
+                int c = cost(root, root, input, dp);
                 if (c < minCost)
                 {
                     Logger.LogTrace("Found better root at {}.  Cost {}", root, c);
@@ -65,9 +62,11 @@ namespace CodeJam.Round1A_2014
             return minCost;
         }
 
-        int cost(int parentNode, int node, FullTreeInput input)
+        int cost(int parentNode, int node, FullTreeInput input, int[][] dp)
         {
-            
+
+            if (dp[parentNode][node] >= 0)
+                return dp[parentNode][node];
 
             //Loop through all children
             List<int> conNodes = input.graph.getOutboundConnected(node);
@@ -81,24 +80,8 @@ namespace CodeJam.Round1A_2014
             //Base case, leaf node
             if (conNodes.Count == 1 && !isRoot)
             {
-                return 0;
+                return dp[parentNode][node] = 0;
             }
-
-            //Single connection, must delete it
-
-            /*
-            if (conNodes.Count == 2)
-            {
-                if (conNodes[0] == parentNode)
-                {
-                    return input.graph.floodFill(conNodes[1], parentNode);
-                }
-                else
-                {
-                    Preconditions.checkState(conNodes[1] == parentNode);
-                    return input.graph.floodFill(conNodes[0], parentNode);
-                }
-            }*/
 
             int minCost = int.MaxValue;
 
@@ -132,11 +115,11 @@ namespace CodeJam.Round1A_2014
                     int totalCost = 0;
 
                     Logger.ChangeIndent(2);
-                    totalCost += cost(node, conNodes[i], input);
+                    totalCost += cost(node, conNodes[i], input, dp);
                     Logger.ChangeIndent(-2);
                     Logger.LogTrace("Cost rhs");
                     Logger.ChangeIndent(2);
-                    totalCost += cost(node, conNodes[j], input);
+                    totalCost += cost(node, conNodes[j], input, dp);
                     Logger.ChangeIndent(-2);
 
                     //Add the costs to delete the rest except the 2 chosen branches
@@ -152,7 +135,7 @@ namespace CodeJam.Round1A_2014
             }
 
             Logger.LogTrace("Returning {} for parent node {} node {}", minCost, parentNode, node);
-            return minCost;
+            return dp[parentNode][node] = minCost;
         }
 
         

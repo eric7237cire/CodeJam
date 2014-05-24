@@ -56,7 +56,7 @@ namespace UnitTest
         {
             int[][] dp;
             int[] values = new int[] { 6, 2, 9, 5, 1, 0, 8, 7, 3, 4 };
-            Story.createArray(out dp, values.Length + 1, values.Length, -1);
+            Ext.createArray(out dp, values.Length + 1, values.Length, -1);
 
             int[][] dpCheck;
 

@@ -9,6 +9,18 @@ namespace Utils
 {
     public static class Ext
     {
+        public static void createArray<T>(out T[][] array, int d1, int d2, T defValue)
+        {
+            array = new T[d1][];
+            for (int i = 0; i < d1; ++i)
+            {
+                array[i] = new T[d2];
+                for (int j = 0; j < d2; ++j)
+                {
+                    array[i][j] = defValue;
+                }
+            }
+        }
 
         public static string ToUsString(this double d, int places)
         {
