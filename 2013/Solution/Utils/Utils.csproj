@@ -78,6 +78,7 @@
     <Compile Include="geom\Point.cs" />
     <Compile Include="Preconditions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="tree\FenwickTree.cs" />
     <Compile Include="tree\IntervalTree.cs" />
     <Compile Include="tree\SegmentTree.cs" />
     <Compile Include="Trie.cs" />

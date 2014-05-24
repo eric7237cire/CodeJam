@@ -119,6 +119,19 @@ namespace Utils
             return "{0} mod long".FormatThis(value);
         }
 
+        public static int[] generateModFactorial(int n, int MOD)
+        {
+            int[] f = new int[n + 1];
+            f[0] = 1;
+            f[1] = 1;
+
+            for (int i = 2; i <= n; ++i)
+            {
+                f[i] = (int) ( (f[i - 1] * i) % MOD) ;
+            }
+
+            return f;
+        }
 
         /*
          * a ^ b % MOD

@@ -90,6 +90,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="2013\RoundFinal\TestCantStop.cs" />
+    <Compile Include="2013\RoundFinal\TestStory.cs" />
     <Compile Include="HeapPriorityQueueTests.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

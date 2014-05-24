@@ -34,6 +34,6 @@ iex $command
 
 
 #& $nunit @("--help")
-& $nunit @("/framework:net-4.5", ".\build\UnitTest.dll", "/run:UnitTest.TestCantStop")
+& $nunit @("/framework:net-4.5", ".\build\UnitTest.dll", "/run:UnitTest.TestStory.TestCountDP")
 
 #& "cat" @(".\build\log.txt")
