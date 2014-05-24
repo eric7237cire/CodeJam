@@ -74,18 +74,21 @@ namespace Round2_P3
             topoSort = new int[incomingEdges.Count()];
             while(noIncEdges.Count > 0)
             {
+                //Here we can determine the ordering of the topo sort
                 int n = noIncEdges.Min;
                 topoSort[topoSortSize++] = n;
                 Logger.LogDebug("Adding {0} to topo sort", n);
                 bool ok = noIncEdges.Remove(n);
                 Preconditions.checkState(ok);
-
+                
+                //Remove edges 1 by 1
                 for(int j = outgoingEdges[n].Count - 1; j >= 0 ; --j)
                 {
                     int m = outgoingEdges[n][j];
                     Logger.LogDebug("Looking at edge {0}->{1}", n, m);
                     removeConnection(n, m);
 
+                    //If connected node no longer has incoming connections, add it
                     if (incomingEdges[m].Count == 0)
                     {
                         Logger.LogDebug("{0} has no incoming edges", m);

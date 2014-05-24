@@ -47,7 +47,8 @@ namespace MainNS
             //CantStop main = new CantStop();
             //Story main = new Story();
 
-            Chaos main = new Chaos();
+            //Chaos main = new Chaos();
+            FullTree main = new FullTree();
 
             // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
             //TicketSwap main = new TicketSwap();
@@ -61,12 +62,12 @@ namespace MainNS
            // list.Add("E-small-practice.in");
           //  list.Add("E-large-practice.in");
 
-            list.Add("A-small-practice.in");
+          //  list.Add("A-small-practice.in");
 
-           list.Add("A-large-practice.in");
+         //  list.Add("A-large-practice.in");
 
 
-            //list.Add("B-small-practice.in");
+            list.Add("B-small-practice.in");
             // list.Add("B-large-practice.in");
 
           //  list.Add("C-small-practice.in");

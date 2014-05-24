@@ -482,6 +482,7 @@
     <Compile Include="2013\RoundFinal\Story.cs" />
     <Compile Include="2013\RoundFinal\XSpot.cs" />
     <Compile Include="2014\Round1A\Chaos.cs" />
+    <Compile Include="2014\Round1A\FullTree.cs" />
     <Compile Include="Main\Launcher.cs" />
     <Compile Include="Main\obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="Main\obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
@@ -537,6 +538,7 @@
     <Compile Include="Utils\geom\Line.cs" />
     <Compile Include="Utils\geom\Point.cs" />
     <Compile Include="Utils\geom\ShowProjections.cs" />
+    <Compile Include="Utils\graph\Graph.cs" />
     <Compile Include="Utils\heapPQ\HeapPriorityQueue.cs" />
     <Compile Include="Utils\heapPQ\PriorityQueueNode.cs" />
     <Compile Include="Utils\Logger.cs" />
