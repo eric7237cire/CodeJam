@@ -1,7 +1,7 @@
 ﻿#if DEBUG
 #define LOGGING_DEBUG
 #define LOGGING_INFO
-#define LOGGING_TRACE
+//#define LOGGING_TRACE
 #endif
 
 using CodeJamUtils;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
-
+using Utils.tree;
 using Logger = Utils.LoggerFile;
 
 namespace RoundFinal
@@ -22,7 +22,7 @@ namespace RoundFinal
         {
             StoryInput input = new StoryInput();
             input.N = scanner.nextInt();
-            
+
             input.salaries = new List<int>();
             for (int i = 0; i < input.N; ++i)
             {
@@ -46,8 +46,8 @@ namespace RoundFinal
 
             int N = values.Length;
 
-            int[] totalNonDecSubSeqOfLength = new int[values.Length+1];
-            for(int len = 1; len <= N; ++len)
+            int[] totalNonDecSubSeqOfLength = new int[values.Length + 1];
+            for (int len = 1; len <= N; ++len)
             {
                 totalNonDecSubSeqOfLength[len] = dp[len].Sum();
                 totalNonDecSubSeqOfLength[len] %= mod;
@@ -62,7 +62,7 @@ namespace RoundFinal
 
             Preconditions.checkState(totalNonDecSubSeqOfLength[N] == 0);
 
-            for (int K = 1; K <= N; ++K )
+            for (int K = 1; K <= N; ++K)
             {
                 Logger.LogTrace("K is {}", K);
                 int numNonDecLenK = totalNonDecSubSeqOfLength[K];
@@ -75,9 +75,9 @@ namespace RoundFinal
                 {
                     //But we must discount how many ways we could have made a non decreasing subsequence of length K + 1
                     int numNonDecLenKp1 = totalNonDecSubSeqOfLength[K + 1];
-                    int totalWaysPickSubSeqLenKp1 = modFact[N - (K+1)];
+                    int totalWaysPickSubSeqLenKp1 = modFact[N - (K + 1)];
 
-                    total -= (numNonDecLenKp1 * totalWaysPickSubSeqLenKp1 * (K + 1)) % mod;
+                    total -= (int) ( ( (long)numNonDecLenKp1 * totalWaysPickSubSeqLenKp1 * (K + 1)) % mod );
 
                     Logger.LogTrace("Total -= {} * {} * {} = {}", numNonDecLenKp1, totalWaysPickSubSeqLenKp1, (K + 1), total);
 
@@ -97,13 +97,13 @@ namespace RoundFinal
             return 3;
         }
 
-        public static void createArray<T>( out T[][] array, int d1, int d2, T defValue)
+        public static void createArray<T>(out T[][] array, int d1, int d2, T defValue)
         {
             array = new T[d1][];
-            for(int i = 0; i < d1; ++i)
+            for (int i = 0; i < d1; ++i)
             {
                 array[i] = new T[d2];
-                for(int j = 0; j < d2; ++j)
+                for (int j = 0; j < d2; ++j)
                 {
                     array[i][j] = defValue;
                 }
@@ -115,17 +115,17 @@ namespace RoundFinal
             createArray(out dp, values.Count + 1, values.Count, 0);
 
             int sum = 0;
-            for(int combin = (1 << values.Count) - 1; combin > 0; --combin)
+            for (int combin = (1 << values.Count) - 1; combin > 0; --combin)
             {
                 List<int> subSeq = new List<int>();
 
                 bool ok = true;
-                for(int i = 0; i < values.Count; ++i)
+                for (int i = 0; i < values.Count; ++i)
                 {
                     if (combin.GetBit(i))
                     {
                         subSeq.Add(values[i]);
-                        if (subSeq.Count > 1 && subSeq[subSeq.Count-2] < subSeq[subSeq.Count-1])
+                        if (subSeq.Count > 1 && subSeq[subSeq.Count - 2] < subSeq[subSeq.Count - 1])
                         {
                             ok = false;
                             break;
@@ -150,30 +150,39 @@ namespace RoundFinal
         {
             createArray(out dp, values.Length + 1, values.Length, 0);
 
-            for (int idx = 0; idx < values.Length; ++idx )
+            FenwickTree[] ftrees = new FenwickTree[values.Length + 1];
+            for (int i = 0; i < ftrees.Length; ++i)
+            {
+                ftrees[i] = new FenwickTree(values.Length);
+            }
+
+
+            for (int idx = 0; idx < values.Length; ++idx)
             {
                 int value = values[idx];
 
                 dp[1][value] = 1;
+                ftrees[1].AdjustIndexBy(value+1, 1, mod);
+
                 Logger.LogTrace("Summing idx {} value {}", idx, value);
 
-                for(int len = 2; len <= idx+1; ++len)
+                for (int len = 2; len <= idx + 1; ++len)
                 {
                     //take sum of all previous lengths for all other elements
                     int sum = 0;
-                    for(int prevElem = value+1; prevElem < values.Length; ++prevElem)
+
+                    /*
+                    for (int prevElem = value + 1; prevElem < values.Length; ++prevElem)
                     {
                         sum += dp[len - 1][prevElem];
                         sum %= mod;
-                        /*
-                        if (dp[len - 1][prevElem] > 0)
-                        {
-                            Logger.LogTrace("Adding {} to sum now {}", dp[len - 1][prevElem], sum);
-                        }*/
-                    }
+                    }*/
+                    if (value + 2 <= values.Length)
+                        sum = ftrees[len - 1].SumFromTo(value + 2, values.Length, mod);
 
                     Logger.LogTrace("Len {} Elem {} = {}", len, value, sum);
                     dp[len][value] = sum;
+                    ftrees[len].AdjustIndexBy(value+1, sum, mod);
                 }
             }
 
@@ -188,12 +197,13 @@ namespace RoundFinal
         public static void transformInput(StoryInput input, out int[] normalizedValues)
         {
             List<int> order = new List<int>();
-            for(int i = 0; i < input.N; ++i)
+            for (int i = 0; i < input.N; ++i)
             {
                 order.Add(i);
             }
 
-            order.Sort((lhs, rhs) => {
+            order.Sort((lhs, rhs) =>
+            {
                 //Logger.LogTrace("Compare {} and {}", lhs, rhs);
                 int cmp = input.salaries[lhs].CompareTo(input.salaries[rhs]);
 
@@ -209,7 +219,7 @@ namespace RoundFinal
 
             normalizedValues = new int[order.Count];
 
-            for(int i = 0; i < order.Count; ++i)
+            for (int i = 0; i < order.Count; ++i)
             {
                 normalizedValues[order[i]] = i;
             }
@@ -218,7 +228,7 @@ namespace RoundFinal
 
     public class StoryInput
     {
-        public int N;       
+        public int N;
         public List<int> salaries;
     }
 }

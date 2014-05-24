@@ -10,7 +10,8 @@ return gci $subDirName -rec -filter *.cs | ?{ $_.fullname -notmatch "\\obj\\?" }
 
 write-host $files
 
-$csc = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /platform:x64 /lib:.\build /define:INCLUDE_SLOW /optimize+ ' 
+#$csc = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /platform:x64 /lib:.\build /define:INCLUDE_SLOW /optimize+  ' 
+$csc = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe /platform:x64 /lib:.\build /define:INCLUDE_SLOW /define:DEBUG /checked ' 
 $nunit = "C:\Program Files (x86)\NUnit 2.6.3\bin\nunit-console.exe"
 
 $sysNum  = 'C:\Windows\Microsoft.NET\Framework\v4.0.30319\System.Numerics.dll'
