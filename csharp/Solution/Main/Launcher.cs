@@ -48,7 +48,10 @@ namespace MainNS
             //Story main = new Story();
 
             //Chaos main = new Chaos();
-            FullTree main = new FullTree();
+            //FullTree main = new FullTree();
+            Shuffle main = new Shuffle();
+            main.processInput(null);
+            return;
 
             // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
             //TicketSwap main = new TicketSwap();
