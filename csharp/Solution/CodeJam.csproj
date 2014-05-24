@@ -22,6 +22,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>pdbonly</DebugType>
@@ -174,7 +175,6 @@
     <None Include="2013\RoundFinal\D-small-practice.correct" />
     <None Include="2013\RoundFinal\D-small-practice.in" />
     <None Include="2013\RoundFinal\D-small-practice.out" />
-    <None Include="2013\RoundFinal\d.out" />
     <None Include="2013\RoundFinal\E-large-practice.correct" />
     <None Include="2013\RoundFinal\E-large-practice.in" />
     <None Include="2013\RoundFinal\E-small-practice.correct" />
@@ -481,6 +481,7 @@
     <Compile Include="2013\RoundFinal\Graduation.cs" />
     <Compile Include="2013\RoundFinal\Story.cs" />
     <Compile Include="2013\RoundFinal\XSpot.cs" />
+    <Compile Include="2014\Round1A\Chaos.cs" />
     <Compile Include="Main\Launcher.cs" />
     <Compile Include="Main\obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="Main\obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
