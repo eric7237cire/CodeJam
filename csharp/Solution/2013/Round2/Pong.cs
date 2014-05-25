@@ -595,8 +595,8 @@ namespace Round2_P4
             if (input.VX < 0)
             {
                 input.VX = -input.VX;
-                CjUtils.swap(ref input.numRightTeam, ref input.numLeftTeam);
-                CjUtils.swap(ref input.speedLeftTeam, ref input.speedRightTeam);
+                Ext.swap(ref input.numRightTeam, ref input.numLeftTeam);
+                Ext.swap(ref input.speedLeftTeam, ref input.speedRightTeam);
                 switchTeams = true;
                 input.X = input.widthField - input.X;
             }
@@ -716,8 +716,8 @@ namespace Round2_P4
             if (input.VX < 0)
             {
                 input.VX = -input.VX;
-                CjUtils.swap(ref input.numRightTeam, ref input.numLeftTeam);
-                CjUtils.swap(ref input.speedLeftTeam, ref input.speedRightTeam);
+                Ext.swap(ref input.numRightTeam, ref input.numLeftTeam);
+                Ext.swap(ref input.speedLeftTeam, ref input.speedRightTeam);
                 switchTeams = true;
                 input.X = input.widthField - input.X;
             }
@@ -866,8 +866,8 @@ namespace Round2_P4
             if (input.VX < 0)
             {
                 input.VX = -input.VX;
-                CjUtils.swap(ref input.numRightTeam, ref input.numLeftTeam);
-                CjUtils.swap(ref input.speedLeftTeam, ref input.speedRightTeam);
+                Ext.swap(ref input.numRightTeam, ref input.numLeftTeam);
+                Ext.swap(ref input.speedLeftTeam, ref input.speedRightTeam);
                 switchTeams = true;
                 input.X = input.widthField - input.X;
             }

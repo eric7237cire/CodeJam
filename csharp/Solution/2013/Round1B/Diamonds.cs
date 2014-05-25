@@ -174,7 +174,7 @@ namespace Round1B_P2
                     addProb(newNodes, new Node(node.Left, node.Right+1), nodeProb.Value / 2);
                 }
 
-                CjUtils.swap(ref nodesToProcess, ref newNodes);
+                Ext.swap(ref nodesToProcess, ref newNodes);
             }
 
             nodes = nodesToProcess;

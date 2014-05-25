@@ -50,9 +50,7 @@ namespace MainNS
             //Chaos main = new Chaos();
             //FullTree main = new FullTree();
             Shuffle main = new Shuffle();
-            main.processInput(null);
-            return;
-
+           
             // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
             //TicketSwap main = new TicketSwap();
 
@@ -61,7 +59,7 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-            list.Add("sample.in");
+           // list.Add("sample.in");
            // list.Add("E-small-practice.in");
           //  list.Add("E-large-practice.in");
 
@@ -70,10 +68,10 @@ namespace MainNS
          //  list.Add("A-large-practice.in");
 
 
-            list.Add("B-small-practice.in");
-            list.Add("B-large-practice.in");
+         //   list.Add("B-small-practice.in");
+           // list.Add("B-large-practice.in");
 
-          //  list.Add("C-small-practice.in");
+            list.Add("C-small-practice.in");
           //  list.Add("C-large-practice.in");
 
              //list.Add("D-small-practice.in");
