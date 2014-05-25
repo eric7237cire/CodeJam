@@ -94,34 +94,16 @@ namespace CodeJam.Round1B_2014
 
             for (int grp = 0; grp < tallies[0].Count; ++grp )
             {
-                int total = tallies.Sum((tl) => tl[grp]);
-                Fraction avg = new Fraction(total, input.N);
+                //It is actually the median that works, not the average.  THink of the trees
 
-                int target = (int) avg.round();
-                Preconditions.checkState(target >= 1);
+                //Need to select same element in each of the strings tally list, then sort to find median.
+                int median = tallies.Select((t1) => t1[grp]).OrderBy((e) => e).ElementAt(input.N / 2);
 
                 int totalDiff = tallies.Aggregate(0, 
-                    (runningTotal, grpTallyList) => runningTotal + Math.Abs(target - grpTallyList[grp]));
+                    (runningTotal, grpTallyList) => runningTotal + Math.Abs(median - grpTallyList[grp]));
                 
-                int totalDiffNextLower = tallies.Aggregate(0,
-                    (runningTotal, grpTallyList) => runningTotal + Math.Abs((target-1) - grpTallyList[grp]));
-
-                int delta = -2;
-                while (totalDiffNextLower < totalDiff)
-                {
-                    totalDiff = totalDiffNextLower;
-                    totalDiffNextLower = tallies.Aggregate(0,
-                   (runningTotal, grpTallyList) => runningTotal + Math.Abs((target + delta) - grpTallyList[grp]));
-
-                    --delta;
-                }
-
-                Preconditions.checkState(totalDiff <= totalDiff1);
-                Preconditions.checkState(totalDiff <= totalDiffNextLower);
-                //Preconditions.checkState(totalDiff <= totalDiff2);
-
                 overallSumDiffs += totalDiff;
-                Logger.LogTrace("Group {} total {} average {} total diff {}", grp, total, target, totalDiff);
+                Logger.LogTrace("Group {} total diff {}", grp,  totalDiff);
             }
 
                 
