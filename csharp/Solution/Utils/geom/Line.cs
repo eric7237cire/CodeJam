@@ -402,6 +402,11 @@ namespace Utils.geom
             return new Line<T>{A = - (dynamic)B, B = A, C = C};
         }
 
+        public T getSlope()
+        {
+            return (dynamic) A * -1 / B;
+        }
+
         public override string ToString()
         {
         	return "{0}x + {1}y = {2}".FormatThis(A, B, C);	

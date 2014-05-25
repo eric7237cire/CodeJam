@@ -481,6 +481,10 @@
     <Compile Include="2013\RoundFinal\Graduation.cs" />
     <Compile Include="2013\RoundFinal\Story.cs" />
     <Compile Include="2013\RoundFinal\XSpot.cs" />
+    <Compile Include="2014\Qual\Cookie.cs" />
+    <Compile Include="2014\Qual\Magic.cs" />
+    <Compile Include="2014\Qual\MineSweeper.cs" />
+    <Compile Include="2014\Qual\War.cs" />
     <Compile Include="2014\Round1A\Chaos.cs" />
     <Compile Include="2014\Round1A\FullTree.cs" />
     <Compile Include="2014\Round1A\Shuffle.cs" />

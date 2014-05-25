@@ -18,6 +18,7 @@ using System.Collections.Concurrent;
 
 using Logger = Utils.LoggerFile;
 using Utils;
+using System.Globalization;
 
 namespace CodeJamUtils
 {
@@ -442,7 +443,7 @@ namespace CodeJamUtils
         {
             readNextWord(); 
 
-            return double.Parse(currentWord);
+            return double.Parse(currentWord, new CultureInfo("en-US"));
             
         }
 
