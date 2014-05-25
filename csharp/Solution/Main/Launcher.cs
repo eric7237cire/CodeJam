@@ -2,6 +2,7 @@
 #define LOGGING_DEBUG
 #define LOGGING_INFO
 using CodeJam.Round1A_2014;
+using CodeJam.Round1B_2014;
 using CodeJam.RoundQual_2014;
 //#define LOGGING_TRACE
 using CodeJamUtils;
@@ -35,7 +36,8 @@ namespace MainNS
 #else
             // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\RoundFinal\");
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round1A\");
-            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Qual\");
+            //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Qual\");
+            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round1B\");
 #endif
 
 
@@ -56,7 +58,9 @@ namespace MainNS
             // Magic main = new Magic();
             //Cookie main = new Cookie();
             //MineSweeper main = new MineSweeper();
-            War main = new War();
+            //War main = new War();
+
+            Repeater main = new Repeater();
 
             // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
             //TicketSwap main = new TicketSwap();
@@ -66,13 +70,13 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-           // list.Add("sample.in");
+            list.Add("sample.in");
             // list.Add("E-small-practice.in");
             //  list.Add("E-large-practice.in");
 
-            //  list.Add("A-small-practice.in");
+              list.Add("A-small-practice.in");
 
-            //  list.Add("A-large-practice.in");
+              list.Add("A-large-practice.in");
 
 
             //list.Add("B-small-practice.in");
@@ -81,8 +85,8 @@ namespace MainNS
            // list.Add("C-small-practice.in");
             //list.Add("C-large-practice.in");
 
-            list.Add("D-small-practice.in");
-            list.Add("D-large-practice.in");
+           // list.Add("D-small-practice.in");
+           // list.Add("D-large-practice.in");
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1C\");

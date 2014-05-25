@@ -145,6 +145,19 @@ namespace Utils.math
             
         }
 
+        public long round()
+        {
+            long div = numerator / denominator;
+            long rem = numerator % denominator;
+
+            if (rem * 2 >= denominator)
+            {
+                return 1 + div;
+            }
+
+            return div;
+        }
+
         /// <summary>
         /// First integer <= to the fraction
         /// </summary>

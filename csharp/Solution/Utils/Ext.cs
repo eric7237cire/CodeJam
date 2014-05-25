@@ -9,7 +9,7 @@ namespace Utils
 {
     public static class Ext
     {
-        public static void createArray<T>(out T[][] array, int d1, int d2, T defValue) 
+        public static void createArray<T>(out T[][] array, int d1, int d2, T defValue)
         {
             array = new T[d1][];
             for (int i = 0; i < d1; ++i)
@@ -20,6 +20,16 @@ namespace Utils
                 {
                     array[i][j] = defValue;
                 }
+            }
+        }
+
+        public static void createArray<T>(out T[] array, int d1) where T : new()
+        {
+            array = new T[d1];
+            for (int i = 0; i < d1; ++i)
+            {
+                array[i] = new T();
+
             }
         }
 
@@ -48,7 +58,7 @@ namespace Utils
 
         public static string ToBinaryString(this int i, int len = 16)
         {
-            return Convert.ToString(i, 2).PadLeft(len,'0').Substring(0, len);
+            return Convert.ToString(i, 2).PadLeft(len, '0').Substring(0, len);
         }
         public static string ToBinaryString(this long i, int len = 16)
         {
@@ -94,7 +104,7 @@ namespace Utils
             {
                 return lowIdx;
             }
-            
+
             while (hiIdx - lowIdx > 1)
             {
                 int midIdx = lowIdx + (hiIdx - lowIdx) / 2;
@@ -115,7 +125,7 @@ namespace Utils
         //binary search sorted list
         public static Tuple<T, T> binarySearch<T>(this List<T> list, T target, out int lowIdx, out int hiIdx) where T : IComparable<T>
         {
-           
+
             //using binary search ; invariant lo <= sum < hi
             lowIdx = 0;
             hiIdx = list.Count - 1;
@@ -141,7 +151,7 @@ namespace Utils
         public static bool binarySearchGT<T>(this List<T> list, T target, out int lowIdx, out int hiIdx) where T : IComparable<T>
         {
 
-            
+
             //using binary search ; invariant lo < sum <= hi
             lowIdx = 0;
             hiIdx = list.Count - 1;
