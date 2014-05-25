@@ -2,6 +2,8 @@
 #define LOGGING_DEBUG
 #define LOGGING_INFO
 #define LOGGING_TRACE
+#else
+//#define LOGGING_DEBUG
 #endif
 
 using System;
@@ -43,8 +45,24 @@ namespace CodeJam.RoundQual_2014
         {
             bool[][] mines;
             Ext.createArray(out mines, input.R, input.C, false);
+            bool ok = false;
 
-            bool ok = backtrack(mines, input.R, input.C, 0, input.M, input.C);
+            if (input.R > 3)
+            {
+                int canFill = Math.Min(input.M / input.C, input.R - 3);
+                for (int r = 0; r < canFill; ++r)
+                {
+                    for (int c = 0; c < input.C; ++c)
+                    {
+                        mines[r][c] = true;
+                    }
+                }
+                ok = backtrack(mines, input.R, input.C, canFill, input.M - input.C * canFill, input.C);
+            }
+            else
+            {
+                ok = backtrack(mines, input.R, input.C, 0, input.M, input.C);
+            }
 
             if (!ok)
             {
@@ -103,6 +121,12 @@ namespace CodeJam.RoundQual_2014
             Logger.LogTrace("backTrack\n{}rows {} cols {} curRow {} mines Left {} mines above {}",
             mineToString(mines), rows, cols, curRow, minesLeftToPlace, minesAbove);
 
+            if (curRow <= rows / 2)
+            {
+              //  Logger.LogDebug("backTrack\n{}rows {} cols {} curRow {} mines Left {} mines above {}",
+           // mineToString(mines), rows, cols, curRow, minesLeftToPlace, minesAbove);
+            }
+
             //Base case
             if (minesLeftToPlace == 0)
             {
@@ -114,13 +138,22 @@ namespace CodeJam.RoundQual_2014
                 return false;
             }
 
-            
+            if ((rows - curRow) * minesAbove < minesLeftToPlace)
+            {
+                return false;
+            }
 
             Preconditions.checkState(minesLeftToPlace > 0);
 
             for (int m = 0; m < minesAbove && m < minesLeftToPlace; ++m )
             {
                 mines[curRow][m] = true;
+
+                //bool check = ok(mines, rows, cols);
+
+              //  if (!check)
+                   // continue;
+
                 int minesPlacedAtCurrentRow = m+1;
                 if (backtrack(mines, rows,cols, curRow+1, minesLeftToPlace-minesPlacedAtCurrentRow, minesPlacedAtCurrentRow))
                 {
