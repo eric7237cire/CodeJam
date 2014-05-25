@@ -55,7 +55,8 @@ namespace MainNS
 
             // Magic main = new Magic();
             //Cookie main = new Cookie();
-            MineSweeper main = new MineSweeper();
+            //MineSweeper main = new MineSweeper();
+            War main = new War();
 
             // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
             //TicketSwap main = new TicketSwap();
@@ -65,7 +66,7 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-            //list.Add("sample.in");
+           // list.Add("sample.in");
             // list.Add("E-small-practice.in");
             //  list.Add("E-large-practice.in");
 
@@ -77,11 +78,11 @@ namespace MainNS
             //list.Add("B-small-practice.in");
             //list.Add("B-large-practice.in");
 
-            list.Add("C-small-practice.in");
-            list.Add("C-large-practice.in");
+           // list.Add("C-small-practice.in");
+            //list.Add("C-large-practice.in");
 
-            //list.Add("D-small-practice.in");
-            //  list.Add("D-large-practice.in");
+            list.Add("D-small-practice.in");
+            list.Add("D-large-practice.in");
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1C\");
