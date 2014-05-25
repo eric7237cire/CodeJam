@@ -33,17 +33,17 @@ namespace MainNS
            Directory.SetCurrentDirectory(@"/home/ent/mono/CodeJam/2013/Solution/RoundFinal/");
            //Directory.SetCurrentDirectory(@"/home/ent/mono/CodeJam/2013/Solution/Round3/");
 #else
-           // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\RoundFinal\");
+            // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\RoundFinal\");
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round1A\");
             Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Qual\");
 #endif
 
-            
+
             // Graduation main = new Graduation();
 
             //Rural main = new Rural();
 
-            
+
             //Drummer main = new Drummer();
             //XSpot main = new XSpot();
             //CantStop main = new CantStop();
@@ -53,9 +53,10 @@ namespace MainNS
             //FullTree main = new FullTree();
             //Shuffle main = new Shuffle();
 
-           // Magic main = new Magic();
-            Cookie main = new Cookie();
-           
+            // Magic main = new Magic();
+            //Cookie main = new Cookie();
+            MineSweeper main = new MineSweeper();
+
             // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
             //TicketSwap main = new TicketSwap();
 
@@ -64,23 +65,23 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-            list.Add("sample.in");
-           // list.Add("E-small-practice.in");
-          //  list.Add("E-large-practice.in");
+            //list.Add("sample.in");
+            // list.Add("E-small-practice.in");
+            //  list.Add("E-large-practice.in");
 
-          //  list.Add("A-small-practice.in");
+            //  list.Add("A-small-practice.in");
 
-         //  list.Add("A-large-practice.in");
+            //  list.Add("A-large-practice.in");
 
 
-            list.Add("B-small-practice.in");
-            list.Add("B-large-practice.in");
+            //list.Add("B-small-practice.in");
+            //list.Add("B-large-practice.in");
 
-            //list.Add("C-small-practice.in");
-          //  list.Add("C-large-practice.in");
+           // list.Add("C-small-practice.in");
+              list.Add("C-large-practice.in");
 
-             //list.Add("D-small-practice.in");
-           //  list.Add("D-large-practice.in");
+            //list.Add("D-small-practice.in");
+            //  list.Add("D-large-practice.in");
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1C\");
