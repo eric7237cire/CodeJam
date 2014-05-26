@@ -25,6 +25,11 @@ namespace CodeJam.Utils.graph
             return outgoingEdges[node];
         }
 
+        public Boolean isConnected(int u, int v)
+        {
+            return outgoingEdges[u].Contains(v);
+        }
+
         public Graph(int maxNodes)
         {
             outgoingEdges = new List<int>[maxNodes];
@@ -57,6 +62,13 @@ namespace CodeJam.Utils.graph
             Logger.LogDebug("Add connection {0} to {1}", u, v);
             outgoingEdges[u].Add(v);
             incomingEdges[v].Add(u);
+        }
+
+        public void addUndirectedConnection(int u, int v)
+        {
+            Logger.LogDebug("Add undirected connection {0} to {1}", u, v);
+            addConnection(u, v);
+            addConnection(v, u);
         }
 
         /// <summary>

@@ -22,6 +22,21 @@ namespace Utils
         {
             return bits & ~(1 << pos);
         }
+
+        public static long GetBit(this long bits, int pos)
+        {
+            return bits >> pos & 1L;
+        }
+
+        public static long SetBit(this long bits, int pos)
+        {
+            return bits | 1L << pos;
+        }
+
+        public static long ClearBit(this long bits, int pos)
+        {
+            return bits & ~(1L << pos);
+        }
     }
     public struct BitSet
     {

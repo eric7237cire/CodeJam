@@ -83,6 +83,20 @@ namespace Utils
             return Convert.ToString(i, 2).PadLeft(len, '0').Substring(0, len);
         }
 
+        public static long FromBinaryString(this string str)
+        {
+            long ans = 0;
+            for (int i = 0; i < str.Length; ++i)
+            {
+                int bitPos = str.Length - 1 - i;
+                if (str[i] == '1')
+                {
+                    ans += 1L << bitPos;
+                }
+            }
+            return ans;
+        }
+
         public static string ToCommaString<T>(this IEnumerable<T> list)
         {
             return string.Join(", ", list);

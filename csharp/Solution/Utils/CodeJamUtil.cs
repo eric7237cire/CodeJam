@@ -361,8 +361,7 @@ namespace CodeJamUtils
         public void enablePlayBack()
         {
             playBack = new StringBuilder();
-            playBack.Append(currentWord);
-            playBack.Append(" ");
+            //playBack.Append(" ");
             
         }
 
