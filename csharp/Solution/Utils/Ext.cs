@@ -23,6 +23,24 @@ namespace Utils
             }
         }
 
+        public static void createArray<T>(out T[][][] array, int d1, int d2, int d3, T defValue)
+        {
+            array = new T[d1][][];
+            for (int i = 0; i < d1; ++i)
+            {
+                createArray(out array[i], d2, d3, defValue);
+            }
+        }
+
+        public static void createArray<T>(out T[][][][] array, int d1, int d2, int d3, int d4, T defValue)
+        {
+            array = new T[d1][][][];
+            for (int i = 0; i < d1; ++i)
+            {
+                createArray(out array[i], d2, d3, d4, defValue);
+            }
+        }
+
         public static void createArray<T>(out T[] array, int d1) where T : new()
         {
             array = new T[d1];
