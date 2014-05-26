@@ -100,7 +100,18 @@ namespace CodeJam.Round1B_2014
 
             nodes.Sort((n1, n2) => input.zipCodes[n1].CompareTo(input.zipCodes[n2]));
 
-            long allVisited = (1 << input.nodes) - 1;
+            string test = "103484446018001308523241538557587202375846203401614935915377197775231458456670966435727663404744063473473503738324375522898918869471378631187580588522508913499391872716707156294518975968655491508";
+            for (int i = 0; i < test.Length; i+=5 )
+            {
+                string zip = test.Substring(i, 5);
+                int node = input.zipCodes.ToList().FindIndex(z => int.Parse(zip) == z);
+                Logger.LogTrace("Order {}", node + 1);
+            }
+
+                Logger.LogTrace("Nodes in order {}", nodes.Select(n => "\nNode: {0}.  Connections: {1}".FormatThis(n + 1,
+                    input.graph.getOutboundConnected(n).Select(n2 => n2 + 1).ToCommaString())
+                    ).ToCommaString());
+            long allVisited = (1L << input.nodes) - 1;
 
             /*
              * Store node-> visitable (not being able to traverse anything in answer)
@@ -124,8 +135,8 @@ namespace CodeJam.Round1B_2014
                 }
 
                 Logger.LogTrace("Finding another node for ans. inAnswer {} Ans is {}",
-                    inAnswer.ToBinaryString(8),
-                    ans.Select( (a) => "{0}: visited {1}".FormatThis(a.Item1+1, a.Item2.ToBinaryString(8))).ToCommaString()
+                    inAnswer.ToBinaryString(50),
+                    ans.Select( (a) => "{0}: visited {1}".FormatThis(a.Item1+1, a.Item2.ToBinaryString(50))).ToCommaString()
                     );
                 bool found = false;
 
@@ -133,18 +144,21 @@ namespace CodeJam.Round1B_2014
                 {
 
                     int node = nodes[nodeIdx];
-                    Logger.LogTrace("Trying {}.  Used Return {}", node+1, usedReturn.ToBinaryString(8));
+                    Logger.LogTrace("Trying {}.  Used Return {}", node+1, usedReturn.ToBinaryString(50));
                     for (int jumpIdx = ans.Count - 1; jumpIdx >= 0; --jumpIdx)
                     {
                         int fromNode = ans[jumpIdx].Item1;
+                        Logger.LogTrace("From node {} Trying {}.  ", fromNode+1, node+1);
 
                         if (!input.graph.isConnected(node, fromNode))
                         {
+                            Logger.LogTrace("Node {} not connected to {}", node, fromNode);
                             continue;
                         }
 
-                        if (lastFromNode != fromNode && usedReturn.GetBit(fromNode) != 0)
+                        if (/*lastFromNode != fromNode &&*/ usedReturn.GetBit(fromNode) != 0)
                         {
+                            Logger.LogTrace("From Node {} already been used in return flight", fromNode);
                             continue;
                         }
 
@@ -157,6 +171,7 @@ namespace CodeJam.Round1B_2014
 
                         if (visitTally != allVisited)
                         {
+                            Logger.LogTrace("Visit tally {} != allVisited {}", visitTally.ToBinaryString(50), allVisited.ToBinaryString(50));
                             continue;
                         }
 
@@ -184,8 +199,8 @@ namespace CodeJam.Round1B_2014
                             ans[a] = new IL(ans[a].Item1,
                                 getVisitable(inAnswer, ans[a].Item1, input));
                             Logger.LogTrace("Recalculate ans using inAns {} idx {} node {} visitable {}", 
-                                inAnswer.ToBinaryString(8),
-                                a, ans[a].Item1+1, ans[a].Item2.ToBinaryString(8));
+                                inAnswer.ToBinaryString(50),
+                                a, ans[a].Item1+1, ans[a].Item2.ToBinaryString(50));
                         }
 
                         nodes.RemoveAt(nodeIdx);
