@@ -101,6 +101,24 @@ namespace CodeJam.Round1B_2014
             nodes.Sort((n1, n2) => input.zipCodes[n1].CompareTo(input.zipCodes[n2]));
 
             string test = "103484446018001308523241538557587202375846203401614935915377197775231458456670966435727663404744063473473503738324375522898918869471378631187580588522508913499391872716707156294518975968655491508";
+
+            Drawing d = new Drawing();
+            for (int n = 0; n < input.nodes; ++n)
+            {
+                d.AddPoint(new Point<int>(n, 1));
+            }
+            for (int n = 0; n < input.nodes; ++n )
+            {
+                foreach(int con in input.graph.getOutboundConnected(n))
+                {
+                    if (n > con)
+                        continue;
+
+                    d.AddAsSeg(LineExt.createSegmentFromCoords(n, 1, con, 1));
+                }
+            }
+                //GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
+
             for (int i = 0; i < test.Length; i+=5 )
             {
                 string zip = test.Substring(i, 5);
@@ -166,6 +184,10 @@ namespace CodeJam.Round1B_2014
                         long visitTally = 0;
                         for(int tIdx = 0; tIdx <= jumpIdx; ++tIdx)
                         {
+                            if (usedReturn.GetBit(ans[tIdx].Item1) != 0)
+                            {
+                                continue;
+                            }
                             visitTally |= ans[tIdx].Item2;
                         }
 
