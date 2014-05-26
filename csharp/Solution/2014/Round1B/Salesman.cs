@@ -100,8 +100,7 @@ namespace CodeJam.Round1B_2014
 
             nodes.Sort((n1, n2) => input.zipCodes[n1].CompareTo(input.zipCodes[n2]));
 
-            string test = "103484446018001308523241538557587202375846203401614935915377197775231458456670966435727663404744063473473503738324375522898918869471378631187580588522508913499391872716707156294518975968655491508";
-
+#if make_graph
             Drawing d = new Drawing();
             for (int n = 0; n < input.nodes; ++n)
             {
@@ -117,14 +116,10 @@ namespace CodeJam.Round1B_2014
                     d.AddAsSeg(LineExt.createSegmentFromCoords(n, 1, con, 1));
                 }
             }
+#endif
                 //GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
 
-            for (int i = 0; i < test.Length; i+=5 )
-            {
-                string zip = test.Substring(i, 5);
-                int node = input.zipCodes.ToList().FindIndex(z => int.Parse(zip) == z);
-                Logger.LogTrace("Order {}", node + 1);
-            }
+           
 
                 Logger.LogTrace("Nodes in order {}", nodes.Select(n => "\nNode: {0}.  Connections: {1}".FormatThis(n + 1,
                     input.graph.getOutboundConnected(n).Select(n2 => n2 + 1).ToCommaString())
@@ -135,6 +130,9 @@ namespace CodeJam.Round1B_2014
              * Store node-> visitable (not being able to traverse anything in answer)
              */
             List<IL> ans = new List<IL>();
+            /*
+             * We know the first node is the lowest one
+             */
             ans.Add(new IL(nodes[0], allVisited));
             nodes.RemoveAt(0);
             long inAnswer = 0;
@@ -144,6 +142,9 @@ namespace CodeJam.Round1B_2014
             int lastFromNode = -1;
 
             int loopCh = 0;
+            /*
+             * Fill in the answer node by node
+             */
             while (ans.Count < input.nodes)
             {
                 ++loopCh;
@@ -158,11 +159,20 @@ namespace CodeJam.Round1B_2014
                     );
                 bool found = false;
 
+                /**
+                 * Go through the remaining nodes in increasing order, taking the first
+                 * one that can work
+                 */
                 for (int nodeIdx = 0; nodeIdx < nodes.Count && !found; ++nodeIdx)
                 {
 
                     int node = nodes[nodeIdx];
                     Logger.LogTrace("Trying {}.  Used Return {}", node+1, usedReturn.ToBinaryString(50));
+
+                    /**
+                     * it is better to backtrack the least, preserving flexibility, so we see
+                     * which existing node can be used.
+                     */
                     for (int jumpIdx = ans.Count - 1; jumpIdx >= 0; --jumpIdx)
                     {
                         int fromNode = ans[jumpIdx].Item1;
@@ -174,13 +184,21 @@ namespace CodeJam.Round1B_2014
                             continue;
                         }
 
-                        if (/*lastFromNode != fromNode &&*/ usedReturn.GetBit(fromNode) != 0)
+                        /**
+                         * Either the return flight has been used or it is reserved to unwind
+                         * until the staring node
+                         */
+                        if (usedReturn.GetBit(fromNode) != 0)
                         {
                             Logger.LogTrace("From Node {} already been used in return flight", fromNode);
                             continue;
                         }
 
-                        //Check if 0 to jumpIdx visit's all nodes
+                        /*
+                         * Check feasibility, go through each node
+                         * in the answer where we haven't used the return flight.
+                         * Check if 0 to jumpIdx visit's all nodes
+                         */
                         long visitTally = 0;
                         for(int tIdx = 0; tIdx <= jumpIdx; ++tIdx)
                         {
@@ -197,15 +215,14 @@ namespace CodeJam.Round1B_2014
                             continue;
                         }
 
-                        //long canVisit = getVisitable(inAnswer, ans[jumpIdx], input);
-
-                        //if ( (canVisit | inAnswer) == (1 << input.nodes) - 1 )
-
                         Logger.LogTrace("Found next best ans: {} based off of {}.  ", node+1, fromNode+1);
 
+                        /**
+                         * Everything between (fromNode, node) the return flight is now
+                         * reserved or used.
+                         */
                         int fromNodeIndexInAns = ans.FindIndex((il) => (il.Item1 == fromNode));
-                        for (int idx = fromNodeIndexInAns + 1; idx < ans.Count; ++idx )
-                        //if (fromNode != lastFromNode && lastFromNode != -1)
+                        for (int idx = fromNodeIndexInAns + 1; idx < ans.Count; ++idx )                        
                         {
                             Logger.LogTrace("Setting {} as return used", ans[idx].Item1+1);
                             usedReturn = usedReturn.SetBit(ans[idx].Item1);
