@@ -366,6 +366,14 @@
 		<!-- Deceitful war, figuring out optimal game, not too hard -->
 		 
 		 </testFileRunner>
+		 
+		 <testFileRunner basedir="2014/Round1A" autotest="true" 
+		 assemblyName="2014" namespacePrefix="Round1A_2014">
+		 <!-- chaos  bit manipulation, pop. count -->
+		 <!-- full binary tree.  dynamic programming, orig. solution, cost making a tree into a binary tree-->
+		 <!-- Shuffle Naive Bayes Classifier.  REVIEW TODO -->
+		 
+		 </testFileRunner>
  
 </root>
 

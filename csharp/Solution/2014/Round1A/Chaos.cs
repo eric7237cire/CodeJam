@@ -14,7 +14,7 @@ using Utils;
 using Utils.tree;
 using Logger = Utils.LoggerFile;
 
-namespace CodeJam.Round1A_2014
+namespace Round1A_2014.Problem1
 {
     public class ChaosInput
     {

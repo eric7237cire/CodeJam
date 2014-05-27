@@ -16,7 +16,7 @@ using Logger = Utils.LoggerFile;
 
 using CodeJam.Utils.graph;
 
-namespace CodeJam.Round1A_2014
+namespace Round1A_2014.Problem2
 {
     public class FullTreeInput
     {

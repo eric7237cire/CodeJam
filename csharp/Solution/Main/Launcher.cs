@@ -1,10 +1,9 @@
 ﻿#define LOGGING
 #define LOGGING_DEBUG
 #define LOGGING_INFO
-using CodeJam.Round1A_2014;
-using CodeJam.Round1B_2014;
+
 using CodeJam.Round1C_2014;
-using CodeJam.RoundQual_2014;
+//using CodeJam.RoundQual_2014;
 //#define LOGGING_TRACE
 using CodeJamUtils;
 using Round1C_P2;

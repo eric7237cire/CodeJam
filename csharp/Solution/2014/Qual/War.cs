@@ -18,7 +18,7 @@ using Logger = Utils.LoggerFile;
 using CodeJam.Utils.graph;
 using TDB = System.Tuple<double, bool>;
 
-namespace CodeJam.RoundQual_2014
+namespace RoundQual_2014.Problem4
 {
     public class WarInput
     {
