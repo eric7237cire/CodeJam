@@ -1,7 +1,7 @@
 #!/bin/sh
 
-COMPILE_BASE="dmcs -define:mono -define:LOGGING -define:LOGGING_INFO -define:DEBUG -debug+ -checked+ -r:System.Numerics -r:System.Xml.Linq.dll -target:library -r:nunit.framework.dll"
-#COMPILE_BASE="dmcs -define:mono -define:LOGGING_INFO -optimize+ -r:System.Numerics -r:System.Xml.Linq.dll -target:library -r:nunit.framework.dll"
+#COMPILE_BASE="dmcs -define:mono -define:LOGGING -define:LOGGING_INFO -define:DEBUG -debug+ -checked+ -r:System.Numerics -r:System.Xml.Linq.dll -target:library -r:nunit.framework.dll"
+COMPILE_BASE="dmcs -define:mono -define:LOGGING_INFO -optimize+ -r:System.Numerics -r:System.Xml.Linq.dll -target:library -r:nunit.framework.dll"
 
 #All loging
 #COMPILE_BASE="dmcs -define:mono -define:LOGGING -define:LOGGING_INFO -define:LOGGING_DEBUG -define:LOGGING_TRACE -debug+ -r:System.Numerics -r:System.Xml.Linq.dll -target:library -r:nunit.framework.dll"

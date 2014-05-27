@@ -35,7 +35,34 @@ using System.Text.RegularExpressions;
 namespace UnitTest
 {
 
-
+	public class PeekingStreamReader
+	{
+		TextReader reader;
+		private Queue<string> _peeks;
+	
+		public PeekingStreamReader(TextReader stream) 
+		{
+			_peeks = new Queue<string>();   
+			reader = stream;
+		}
+	
+		public string ReadLine()
+		{
+			if (_peeks.Count > 0)
+			{
+				var nextLine = _peeks.Dequeue();
+				return nextLine;
+			}
+			return reader.ReadLine();
+		}
+	
+		public string PeekReadLine()
+		{
+			var nextLine = ReadLine();
+			_peeks.Enqueue(nextLine);
+			return nextLine;
+		}
+	}
 
 
     [TestFixture]
@@ -142,7 +169,7 @@ namespace UnitTest
             List<string> checkStrList = testData.checkStrList;
             int testCases = testData.testCases;
 
-            setBaseDir(baseDir);
+            Directory.SetCurrentDirectory(baseDir);
 
             Stopwatch timer = Stopwatch.StartNew();
 
@@ -230,6 +257,8 @@ namespace UnitTest
         [TestFixtureSetUp]
         public void ReadTestFileCases()
         {
+        	Logger.LogInfo("ReadTestFileCases");
+        	
             testList = new List<MainTestData>();
 
             XElement po = XElement.Load(setBaseDir(@"TestData.xml", false));
@@ -237,9 +266,109 @@ namespace UnitTest
             foreach (XElement testFileRunner in po.Elements("testFileRunner"))
             {
                 string baseDir = getAttributeValue(testFileRunner, "basedir");
+                
+                string autotest = getAttributeValue(testFileRunner, "autotest");
 
-                setBaseDir(baseDir);
+                baseDir =  setBaseDir(baseDir);
+                
+                Logger.LogInfo("base dir {}", baseDir);
 
+                if ("true".Equals(autotest))
+                {
+                	string nsPrefix = getAttributeValue(testFileRunner, "namespacePrefix");
+                	string assemblyName = getAttributeValue(testFileRunner, "assemblyName");
+                	
+                	Assembly assembly = Assembly.Load(assemblyName);
+                	
+                	Type[] types = assembly.GetTypes().Where
+                	(t => t.Namespace.StartsWith(nsPrefix)).ToArray();
+                	
+                	foreach(Type type in types)
+                	{
+                		MethodInfo m = type.GetMethod("createInput");
+                		
+                		if (m == null)
+                			continue;
+                		
+                		string mainClassName = type.AssemblyQualifiedName;
+
+                		Logger.LogInfo("Type {} method {} mainClass {}", type, m, mainClassName);	
+                		
+                		Regex regex = new Regex(@".*Problem(\d).*");
+                		string letter = "" + (char) ('A' + int.Parse(regex.Match(type.Namespace).Groups[1].Value) - 1);
+                		
+                		foreach(string inputFileName in
+                			new DirectoryInfo(baseDir).GetFiles(letter + "*.in").Select(fi => fi.Name))
+                		
+                		{
+							//string inputFileName = letter + "-small-practice.in";
+							string checkFileName = new Regex(@"\.in$").Replace(inputFileName, ".correct");
+							string inputMethodName = "createInput";
+							string processInputMethodName = "processInput";
+		
+							
+							TextReader inputReader = File.OpenText(inputFileName);
+							Scanner scanner = new Scanner(inputReader);
+							using (TextReader checkReader = File.OpenText(checkFileName))
+							{
+								int testCases = scanner.nextInt();
+		
+								//Logger.LogInfo("Begin testing class {} method {} testcases {}",
+								//  mainClassName, processInputMethodName, testCases);
+		
+		
+								List<string> checkStrs = new List<string>();
+								
+								PeekingStreamReader peekSR = new PeekingStreamReader(checkReader);
+								
+								for (int tc = 1; tc <= testCases; ++tc)
+								{
+									StringBuilder sb = new StringBuilder();
+									string line;
+									//while (true // 
+										//&& (string line = peekSR.ReadLine()) != null )
+									while( (line = peekSR.ReadLine()) != null)
+									{
+										sb.Append(line);
+										sb.Append("\n");
+										if (new Regex(@"Case #" + (tc+1)).Match(peekSR.PeekReadLine() ?? "").Success)
+										{
+											break;
+										}
+										
+									}
+									
+									sb.Length --;
+									
+									//sb.RemoveAt(sb.Count() - 1);
+									checkStrs.Add(sb.ToString());
+								}
+		
+								testList.Add(new MainTestData
+								{
+									baseDir = baseDir,
+									mainClassName = mainClassName,
+									inputMethodName = inputMethodName,
+									inputFileName = inputFileName,
+									processInputMethodName = processInputMethodName,
+									scanner = scanner,
+									checkStrList = checkStrs,
+									testCases = testCases,
+									testDescription = string.Format("Class {0}\nMethod {1} \ninput file {2}",
+									mainClassName, processInputMethodName, inputFileName)
+								});
+		
+		
+		
+							}
+						
+						}
+                	}
+                	
+                } else {
+                	continue;
+                }
+                	
 
 
                 foreach (XElement run in testFileRunner.Elements("run"))

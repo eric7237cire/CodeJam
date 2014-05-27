@@ -17,7 +17,7 @@ using Logger = Utils.LoggerFile;
 
 using CodeJam.Utils.graph;
 
-namespace CodeJam.RoundQual_2014
+namespace RoundQual_2014.Problem1
 {
     public class MagicInput
     {

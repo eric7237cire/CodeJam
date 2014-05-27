@@ -14,7 +14,7 @@ using Utils;
 using Utils.tree;
 using Logger = Utils.LoggerFile;
 
-namespace RoundFinal
+namespace RoundFinal_2013.Problem5
 {
     public class Story : InputFileProducer<StoryInput>, InputFileConsumer<StoryInput, int>
     {

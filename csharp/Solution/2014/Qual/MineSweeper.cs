@@ -21,7 +21,7 @@ using CodeJam.Utils.graph;
 using Utils.geom;
 using NUnit.Framework;
 
-namespace CodeJam.RoundQual_2014
+namespace RoundQual_2014.Problem3
 {
     public class MineSweeperInput
     {

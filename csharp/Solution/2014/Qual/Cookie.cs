@@ -18,7 +18,7 @@ using Logger = Utils.LoggerFile;
 using CodeJam.Utils.graph;
 using Utils.geom;
 
-namespace CodeJam.RoundQual_2014
+namespace RoundQual_2014.Problem2
 {
     public class CookieInput
     {
