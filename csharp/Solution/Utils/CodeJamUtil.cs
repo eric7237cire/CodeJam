@@ -453,6 +453,16 @@ namespace CodeJamUtils
             return currentWord;
         }
 
+        public void buildStringArray( out string[] array, int size) 
+        {
+            array = new string[size];
+            for(int i = 0; i < size; ++i)
+            {
+                array[i] = nextWord();
+            }
+            
+        }
+
         public bool hasNext()
         {
             return currentWord != null;

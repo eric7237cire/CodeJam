@@ -6,6 +6,7 @@ using CodeJam.Round1C_2014;
 //using CodeJam.RoundQual_2014;
 //#define LOGGING_TRACE
 using CodeJamUtils;
+using Round1C_2014.Problem2;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -61,7 +62,8 @@ namespace MainNS
            // Lottery main = new Lottery();
          //   Salesman main = new Salesman();
 
-            Elf main = new Elf();
+           // Elf main = new Elf();
+            Train main = new Train();
 
             // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
             //TicketSwap main = new TicketSwap();
@@ -75,12 +77,12 @@ namespace MainNS
             // list.Add("E-small-practice.in");
             //  list.Add("E-large-practice.in");
 
-              list.Add("A-small-practice.in");
+           //   list.Add("A-small-practice.in");
 
-              list.Add("A-large-practice.in");
+         //     list.Add("A-large-practice.in");
 
 
-           // list.Add("B-small-practice.in");
+            list.Add("B-small-practice.in");
             //list.Add("B-large-practice.in");
 
            // list.Add("C-small-practice.in");

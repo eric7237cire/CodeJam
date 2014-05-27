@@ -492,6 +492,7 @@
     <Compile Include="2014\Round1B\Repeater.cs" />
     <Compile Include="2014\Round1B\Salesman.cs" />
     <Compile Include="2014\Round1C\Elf.cs" />
+    <Compile Include="2014\Round1C\TrainCars.cs" />
     <Compile Include="2014\Template.cs" />
     <Compile Include="Main\Launcher.cs" />
     <Compile Include="Main\obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
@@ -528,7 +529,6 @@
     <Compile Include="UnitTest\TestCombin.cs" />
     <Compile Include="UnitTest\TestConsonants.cs" />
     <Compile Include="UnitTest\TestDiamond.cs" />
-    <Compile Include="UnitTest\TestDrummer.cs" />
     <Compile Include="UnitTest\TestGeom.cs" />
     <Compile Include="UnitTest\TestGraduation.cs" />
     <Compile Include="UnitTest\TestManyPrizes.cs" />

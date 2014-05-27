@@ -20,7 +20,7 @@ using CodeJam.Utils.graph;
 using Utils.geom;
 using NUnit.Framework;
 
-namespace CodeJam.Round1C_2014
+namespace Round1C_2014.Problem2
 {
     public class ElfInput
     {
@@ -34,9 +34,7 @@ namespace CodeJam.Round1C_2014
         public ElfInput createInput(Scanner scanner)
         {
             ElfInput input = new ElfInput();
-            input.A = scanner.nextInt();
-            input.B = scanner.nextInt();
-            input.K = scanner.nextInt();
+            
 
             return input;
         }
@@ -53,8 +51,7 @@ namespace CodeJam.Round1C_2014
         public void Test()
         {
             ElfInput i = new ElfInput();
-            i.P = 1;
-            i.Q = 4;
+           
 
             Elf e = new Elf();
             Assert.AreEqual("2", e.processInput(i));
