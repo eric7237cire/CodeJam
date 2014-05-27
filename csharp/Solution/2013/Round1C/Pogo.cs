@@ -12,7 +12,7 @@ using Logger = Utils.LoggerFile;
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest")]
 
 //Where proof by induction simplifies greatly the problem
-namespace Round1C_P2
+namespace Round1C_2013.Problem2
 {
 
    

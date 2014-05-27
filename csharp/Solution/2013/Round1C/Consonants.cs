@@ -12,7 +12,7 @@ using Logger = Utils.LoggerFile;
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnitTest")]
 
 //Merging boundaries, counting substrings.  Similar in idea to inclusion-exclusion principal http://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle
-namespace Round1C
+namespace Round1C_2013.Problem1
 {
 
     static class Utils

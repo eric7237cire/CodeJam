@@ -11,7 +11,7 @@ using Logger = Utils.LoggerFile;
 
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo
                           ("UnitTest")]
-namespace Round1C
+namespace Round1C_2013.Problem3
 {
 	
 	public struct HighLow

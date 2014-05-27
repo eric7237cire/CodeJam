@@ -64,61 +64,33 @@
 		 
   </testFileRunner>
   
-  <testFileRunner basedir="2013/Round1C/">
+  <testFileRunner basedir="2013/Round1C/" autotest="true" 
+		 assemblyName="2013" namespacePrefix="Round1C_2013">
         
-   <!-- include / exclude principal -->
-                  <run checkFile         ="A_small_practice.check"
-         className         ="Round1C.Consonants, 2013"
-         createInputMethod ="createInput"
-         inputFile         ="A-small-practice.in"
-         processInputMethod="processInput"/>
+   <!--Problem 1 include / exclude principal -->
+               
          
         
-          <run checkFile         ="A_small_practice.check"
-         className         ="Round1C.Consonants, 2013"
+          <run checkFile         ="A-small-practice.correct"
+         className         ="Round1C_2013.Problem1.Consonants, 2013"
          createInputMethod ="createInput"
          inputFile         ="A-small-practice.in"
          processInputMethod="processInputBruteForce"/>
          
-         <run checkFile         ="A-large-practice.check"
-         className         ="Round1C.Consonants, 2013"
-         createInputMethod ="createInput"
-         inputFile         ="A-large-practice.in"
-         processInputMethod="processInput"/>
+     
          
-            <!-- Proof via induction -->
-                  <run checkFile         ="B-small-practice.check"
-         className         ="Round1C_P2.Pogo, 2013"
-         createInputMethod ="createInput"
-         inputFile         ="B-small-practice.in"
-         processInputMethod="processInput"/>
-         -
-		 
-		 <run checkFile         ="B-large-practice.correct"
-         className         ="Round1C_P2.Pogo, 2013"
-         createInputMethod ="createInput"
-         inputFile         ="B-large-practice.in"
-         processInputMethod="processInput"/>
+            <!-- Pogo.  Problem 2 Proof via induction -->
+               
          
-         <!--Segment Tree-->
+         <!--Great Wall.  Problem 3 Segment Tree-->
 		 
-		   <run checkFile         ="C-small-practice.check"
-         className         ="Round1C.GreatWall, 2013"
-         createInputMethod ="createInput"
-         inputFile         ="C-small-practice.in"
-         processInputMethod="processInput"/>
-		 
-		 <run checkFile         ="C-small-practice.check"
-         className         ="Round1C.GreatWall, 2013"
-         createInputMethod ="createInput"
-         inputFile         ="C-small-practice.in"
-         processInputMethod="processInputSmall"/>
+		
 		 
 		 
 		 <!--Uses too much memory TODO-->
 		 
-		 <run checkFile         ="C-large-practice.check"
-         className         ="Round1C.GreatWall, 2013"
+		 <run checkFile         ="C-large-practice.correct"
+         className         ="Round1C_2013.Problem3.GreatWall, 2013"
          createInputMethod ="createInput"
 		 category = "slow"
          inputFile         ="C-large-practice.in"
