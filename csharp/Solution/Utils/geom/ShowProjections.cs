@@ -27,7 +27,7 @@ namespace Utils.geom
             
             d.AddAsLine(line);
 
-            GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
+           // GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
         }
 
         public static void showPolygon()
@@ -57,7 +57,7 @@ namespace Utils.geom
 
             d.Polygons.Add(points);
 
-            GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
+           // GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
         }
     }
 }

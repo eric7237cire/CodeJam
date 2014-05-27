@@ -150,6 +150,7 @@ namespace UnitTest
             internal string inputMethodName;
             internal string inputFileName;
             internal string processInputMethodName;
+            internal string category;
             internal Scanner scanner;
             internal List<string> checkStrList;
             internal int testCases;
@@ -165,6 +166,14 @@ namespace UnitTest
             string mainClassName = testData.mainClassName;
             string inputMethodName = testData.inputMethodName;
             string processInputMethodName = testData.processInputMethodName;
+            
+            if ("slow".Equals(testData.category))
+                    {
+#if !INCLUDE_SLOW
+                        return;
+#endif
+                    }
+                    
             Scanner scanner = testData.scanner;
             List<string> checkStrList = testData.checkStrList;
             int testCases = testData.testCases;
@@ -179,6 +188,11 @@ namespace UnitTest
             Regex regex = new Regex(@"(\..*)?$");
             string outputFileName = regex.Replace(testData.inputFileName, ".out", 1);
             List<String> answers = new List<string>();
+            
+            Logger.LogInfo("\nStarting Class {}\nProcess method {}.  InputFile {}\n",
+                            mainType.FullName, processInputMethodName, 
+                            testData.inputFileName
+                            );
 
             using (StreamWriter writer = new StreamWriter(outputFileName, false))
             {
@@ -271,105 +285,10 @@ namespace UnitTest
 
                 baseDir =  setBaseDir(baseDir);
                 
-                Logger.LogInfo("base dir {}", baseDir);
+                Logger.LogDebug("base dir {}", baseDir);
 
-                if ("true".Equals(autotest))
-                {
-                	string nsPrefix = getAttributeValue(testFileRunner, "namespacePrefix");
-                	string assemblyName = getAttributeValue(testFileRunner, "assemblyName");
-                	
-                	Assembly assembly = Assembly.Load(assemblyName);
-                	
-                	Type[] types = assembly.GetTypes().Where
-                	(t => t.Namespace.StartsWith(nsPrefix)).ToArray();
-                	
-                	foreach(Type type in types)
-                	{
-                		MethodInfo m = type.GetMethod("createInput");
-                		
-                		if (m == null)
-                			continue;
-                		
-                		string mainClassName = type.AssemblyQualifiedName;
-
-                		Logger.LogInfo("Type {} method {} mainClass {}", type, m, mainClassName);	
-                		
-                		Regex regex = new Regex(@".*Problem(\d).*");
-                		string letter = "" + (char) ('A' + int.Parse(regex.Match(type.Namespace).Groups[1].Value) - 1);
-                		
-                		foreach(string inputFileName in
-                			new DirectoryInfo(baseDir).GetFiles(letter + "*.in").Select(fi => fi.Name))
-                		
-                		{
-							//string inputFileName = letter + "-small-practice.in";
-							string checkFileName = new Regex(@"\.in$").Replace(inputFileName, ".correct");
-							string inputMethodName = "createInput";
-							string processInputMethodName = "processInput";
-		
-							
-							TextReader inputReader = File.OpenText(inputFileName);
-							Scanner scanner = new Scanner(inputReader);
-							using (TextReader checkReader = File.OpenText(checkFileName))
-							{
-								int testCases = scanner.nextInt();
-		
-								//Logger.LogInfo("Begin testing class {} method {} testcases {}",
-								//  mainClassName, processInputMethodName, testCases);
-		
-		
-								List<string> checkStrs = new List<string>();
-								
-								PeekingStreamReader peekSR = new PeekingStreamReader(checkReader);
-								
-								for (int tc = 1; tc <= testCases; ++tc)
-								{
-									StringBuilder sb = new StringBuilder();
-									string line;
-									//while (true // 
-										//&& (string line = peekSR.ReadLine()) != null )
-									while( (line = peekSR.ReadLine()) != null)
-									{
-										sb.Append(line);
-										sb.Append("\n");
-										if (new Regex(@"Case #" + (tc+1)).Match(peekSR.PeekReadLine() ?? "").Success)
-										{
-											break;
-										}
-										
-									}
-									
-									sb.Length --;
-									
-									//sb.RemoveAt(sb.Count() - 1);
-									checkStrs.Add(sb.ToString());
-								}
-		
-								testList.Add(new MainTestData
-								{
-									baseDir = baseDir,
-									mainClassName = mainClassName,
-									inputMethodName = inputMethodName,
-									inputFileName = inputFileName,
-									processInputMethodName = processInputMethodName,
-									scanner = scanner,
-									checkStrList = checkStrs,
-									testCases = testCases,
-									testDescription = string.Format("Class {0}\nMethod {1} \ninput file {2}",
-									mainClassName, processInputMethodName, inputFileName)
-								});
-		
-		
-		
-							}
-						
-						}
-                	}
-                	
-                } else {
-                	continue;
-                }
-                	
-
+                                 	
+				List<MainTestData> explicitCases = new List<MainTestData>();
 
                 foreach (XElement run in testFileRunner.Elements("run"))
                 {
@@ -380,12 +299,7 @@ namespace UnitTest
                     string inputMethodName = getAttributeValue(run, "createInputMethod");
                     string processInputMethodName = getAttributeValue(run, "processInputMethod");
 
-                    if ("slow".Equals(getAttributeValue(run, "category")))
-                    {
-#if !INCLUDE_SLOW
-                        continue;
-#endif
-                    }
+                    
                     TextReader inputReader = File.OpenText(inputFileName);
                     Scanner scanner = new Scanner(inputReader);
                     using (TextReader checkReader = File.OpenText(checkFileName))
@@ -412,19 +326,147 @@ namespace UnitTest
                             scanner = scanner,
                             checkStrList = checkStrs,
                             testCases = testCases,
+                            category = getAttributeValue(run, "category"),
                             testName = getAttributeValue(run, "testName"),
                             testDescription = string.Format("Class {0}\nMethod {1} \ninput file {2}",
                             mainClassName, processInputMethodName, inputFileName)
                         });
 
-
+						explicitCases.Add(testList[testList.Count-1]);
 
                     }
 
                 }
+                
+                if ("true".Equals(autotest)) {
+                	getAutoTests(baseDir, testFileRunner, explicitCases);
+                }
             }
 
 
+        }
+        
+        private void getAutoTests(string baseDir, XElement testFileRunner, List<MainTestData> explicitCases)
+        {
+        	
+	
+        	Logger.LogInfo("get auto tests {}  {}", baseDir, 
+        		explicitCases.Select(td => td.mainClassName).ToCommaString());
+			string nsPrefix = getAttributeValue(testFileRunner, "namespacePrefix");
+			string assemblyName = getAttributeValue(testFileRunner, "assemblyName");
+			
+			Assembly assembly = Assembly.Load(assemblyName);
+			
+			Preconditions.checkState(assembly != null, "Assembly null");
+			Preconditions.checkState(assembly.GetTypes() != null);
+			
+			//Logger.LogInfo("nsPrefix {} assemblyName {}", nsPrefix, assemblyName);
+			//Logger.LogInfo("Types {}", assembly.GetTypes().Count());
+			Type[] types = assembly.GetTypes().Where
+			(t => (t.Namespace ?? "").StartsWith(nsPrefix)).OrderBy(t => t.Namespace).ToArray();
+			
+			
+			
+			foreach(Type type in types)
+			{
+				MethodInfo m = type.GetMethod("createInput");
+				
+				if (m == null)
+					continue;
+				
+				string mainClassName = type.AssemblyQualifiedName;
+
+				Logger.LogTrace("Type {} method {} mainClass {}", type, m, mainClassName);	
+				
+				Regex regex = new Regex(@".*Problem(\d).*");
+				string letter = "" + (char) ('A' + int.Parse(regex.Match(type.Namespace).Groups[1].Value) - 1);
+				
+				foreach(string inputFileName in
+					new DirectoryInfo(baseDir).GetFiles(letter + "*.in").Select(fi => fi.Name))
+				
+				{
+					//string inputFileName = letter + "-small-practice.in";
+					string checkFileName = new Regex(@"\.in$").Replace(inputFileName, ".correct");
+					string inputMethodName = "createInput";
+					string processInputMethodName = "processInput";
+
+					if (explicitCases.Any( td =>
+						
+							 td.mainClassName.StartsWith(type.FullName)
+							&& td.inputFileName.Equals(inputFileName) 
+							&& td.processInputMethodName.Equals(processInputMethodName)
+							
+						))
+					{
+						Logger.LogInfo("Skipping {} {} {} {}",
+							type.FullName,
+							processInputMethodName,
+							inputFileName,
+							inputMethodName);
+						continue;
+					}
+					
+					
+					TextReader inputReader = File.OpenText(inputFileName);
+					Scanner scanner = new Scanner(inputReader);
+					using (TextReader checkReader = File.OpenText(checkFileName))
+					{
+						int testCases = scanner.nextInt();
+
+						//Logger.LogInfo("Begin testing class {} method {} testcases {}",
+						//  mainClassName, processInputMethodName, testCases);
+
+
+						List<string> checkStrs = new List<string>();
+						
+						PeekingStreamReader peekSR = new PeekingStreamReader(checkReader);
+						
+						for (int tc = 1; tc <= testCases; ++tc)
+						{
+							StringBuilder sb = new StringBuilder();
+							string line;
+							//while (true // 
+								//&& (string line = peekSR.ReadLine()) != null )
+							while( (line = peekSR.ReadLine()) != null)
+							{
+								sb.Append(line);
+								sb.Append("\n");
+								if (new Regex(@"Case #" + (tc+1)).Match(peekSR.PeekReadLine() ?? "").Success)
+								{
+									break;
+								}
+								
+							}
+							
+							sb.Length --;
+							
+							//sb.RemoveAt(sb.Count() - 1);
+							checkStrs.Add(sb.ToString());
+						}
+
+						testList.Add(new MainTestData
+						{
+							baseDir = baseDir,
+							mainClassName = mainClassName,
+							inputMethodName = inputMethodName,
+							inputFileName = inputFileName,
+							processInputMethodName = processInputMethodName,
+							scanner = scanner,
+							checkStrList = checkStrs,
+							testCases = testCases,
+							testDescription = string.Format("Class {0}\nMethod {1} \ninput file {2}",
+							mainClassName, processInputMethodName, inputFileName)
+						});
+
+
+
+					}
+				
+				}
+			}
+			
+                	
+                
         }
 
         [Test]

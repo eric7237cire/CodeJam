@@ -16,7 +16,7 @@ using Utils;
 
 using Logger = Utils.LoggerFile;
 
-namespace RoundFinal
+namespace RoundFinal_2013.Problem3
 {
     using Point = Utils.geom.Point<int>;
     using PointD = Utils.geom.Point<double>;
@@ -363,7 +363,7 @@ namespace RoundFinal
     			}
     		}
 
-            GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
+            //GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
     		return true;
         }
 

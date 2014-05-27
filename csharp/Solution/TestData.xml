@@ -266,91 +266,47 @@
   </testFileRunner>
   
   
-  <testFileRunner basedir="2013/RoundFinal">
+  <testFileRunner basedir="2013/RoundFinal" autotest="true" 
+		 assemblyName="2013" namespacePrefix="RoundFinal_2013">
 				  
-				 <!--Modeling as segments, intersections-->
-		 
-		 <run checkFile         ="A-small-practice.correct"
-         className         ="RoundFinal.Graduation, 2013"
-         createInputMethod ="createInput"
-		 testName          = "2013.RoundFinal.Problem1.Small"
-         inputFile         ="A-small-practice.in"
-         processInputMethod="processInput"/>
+				 <!--Problem 1 Graduation. Modeling as segments, intersections-->
 		 
 				  <run checkFile         ="A-small-practice.correct"
-         className         ="RoundFinal.Graduation, 2013"
+         className         ="RoundFinal_2013.Problem1.Graduation, 2013"
          createInputMethod ="createInput"
-		 testName          = "2013.RoundFinal.Problem1.Small-0"
-         inputFile         ="A-small-practice.in"
+		 inputFile         ="A-small-practice.in"
          processInputMethod="processInputSmall"/>
          
          
           <run checkFile         ="A-large-practice.correct"
-         className         ="RoundFinal.Graduation, 2013"
+         className         ="RoundFinal_2013.Problem1.Graduation, 2013"
          createInputMethod ="createInput"
          category = "slow"
-		 testName          = "2013.RoundFinal.Problem1.Large"
-         inputFile         ="A-large-practice.in"
+		 inputFile         ="A-large-practice.in"
          processInputMethod="processInput"/>
          
-         <!--Convex hull / rotating calipurs-->
-         	  <run checkFile         ="B-small-practice.correct"
-         className         ="RoundFinal_2013.Problem2.Drummer, 2013"
-         createInputMethod ="createInput"
-		 testName          = "2013.RoundFinal.Problem2.Small"
-         inputFile         ="B-small-practice.in"
-         processInputMethod="processInput"/>
+         <!--Problem 2.  Drummer Convex hull / rotating calipurs-->
          
-         
-          <run checkFile         ="B-large-practice.correct"
-         className         ="RoundFinal_2013.Problem2.Drummer, 2013"
-         createInputMethod ="createInput"         
-		 testName          = "2013.RoundFinal.Problem2.Large"
-         inputFile         ="B-large-practice.in"
-         processInputMethod="processInput"/>
 		 
-		 <!-- Cross product, splitting points, checking colinear points-->
-		 	  <run checkFile         ="C-small-practice.correct"
-         className         ="RoundFinal.XSpot, 2013"
-         createInputMethod ="createInput"
-		 testName          = "2013.RoundFinal.Problem3.Small"
-         inputFile         ="C-small-practice.in"
-         processInputMethod="processInput"/>
-         
+		 <!-- Problem 3.  X marks spot.  Cross product, splitting points, checking colinear points-->
+		 	          
          
           <run checkFile         ="C-large-practice.correct"
-         className         ="RoundFinal.XSpot, 2013"
+         className         ="RoundFinal_2013.Problem3.XSpot, 2013"
          createInputMethod ="createInput"
          category = "slow"
-         testName          = "2013.RoundFinal.Problem3.Large"
          inputFile         ="C-large-practice.in"
          processInputMethod="processInput"/>
          
-         <!--Cant stop.  Merge sort, recursion-->
-          	  <run checkFile         ="D-small-practice.correct"
-         className         ="RoundFinal_2013.Problem4.CantStop, 2013"
-         createInputMethod ="createInput"
-         inputFile         ="D-small-practice.in"
-         processInputMethod="processInput"/>
+         <!--Problem 4 Cant stop.  Merge sort, recursion-->
+          	
          
-         
-          <run checkFile         ="D-large-practice.correct"
-         className         ="RoundFinal_2013.Problem4.CantStop, 2013"
-         createInputMethod ="createInput"
-         inputFile         ="D-large-practice.in"
-         processInputMethod="processInput"/>
-         
-         <!-- Counting how many non increasing sequences of lengethP
+         <!-- Problem 5.  Story. Counting how many non increasing sequences of lengethP
          Fenwick tree, dynamic programming, mod factorial-->
-         	  <run checkFile         ="E-small-practice.correct"
-         className         ="RoundFinal_2013.Problem5.Story, 2013"
-         createInputMethod ="createInput"
-         inputFile         ="E-small-practice.in"
-         processInputMethod="processInput"/>
-         
+         	         
          
           <run checkFile         ="E-large-practice.correct"
-         className         ="RoundFinal_2013.Problem5.CantStop, 2013"
+         className         ="RoundFinal_2013.Problem5.Story, 2013"
          createInputMethod ="createInput"
          category = "slow"
          inputFile         ="E-large-practice.in"
@@ -372,6 +328,14 @@
 		 <!-- chaos  bit manipulation, pop. count -->
 		 <!-- full binary tree.  dynamic programming, orig. solution, cost making a tree into a binary tree-->
 		 <!-- Shuffle Naive Bayes Classifier.  REVIEW TODO -->
+		 
+		 </testFileRunner>
+		 
+		  <testFileRunner basedir="2014/Round1B" autotest="true" 
+		 assemblyName="2014" namespacePrefix="Round1B_2014">
+		 <!-- Repeater.  Easy string conseq. letter counting, use of median to minimize cost -->
+		 <!-- Lottery.  Counting problem using a DP technique keeping track of a binary prefix, without keeping the value -->
+		 <!-- Trav. salesman.  Interesting graph traversal / binary set / orig. solution -->
 		 
 		 </testFileRunner>
  

@@ -19,7 +19,7 @@ using CodeJam.Utils.graph;
 using Utils.geom;
 using NUnit.Framework;
 
-namespace CodeJam.Round1B_2014
+namespace Round1B_2014.Problem2
 {
     public class LotteryInput
     {

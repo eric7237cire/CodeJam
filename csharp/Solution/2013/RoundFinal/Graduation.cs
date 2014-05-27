@@ -15,7 +15,7 @@ using Utils;
 using Utils.geom;
 using Logger = Utils.LoggerFile;
 
-namespace RoundFinal
+namespace RoundFinal_2013.Problem1
 {
     public class Graduation : InputFileProducer<GraduationInput>, InputFileConsumer<GraduationInput,long>
     {
