@@ -68,7 +68,7 @@ namespace RoundFinal
             d.MaximalVisibleX = input.T.Length + 2;
 
             Logger.LogDebug("start {} midpoint {}", hull[0], hull[midPointIdx]);
-            d.AddPolygon(hull, "00FF00");
+            d.AddPolygon(hull, "#FF00FF00");
             //
 
             List<Point<int>> lowerHull = new List<Point<int>>();
@@ -249,7 +249,7 @@ namespace RoundFinal
             double deltaY_p1p3 = input.T[p3] - input.T[p1];  // + 2E or - 2E
             double deltaX_p1p3 = p3 - p1;
 
-            double lhs = deltaY_p1p2 / deltaX_p1p2 * deltaX_p1p3 - input.T[p3] + input.T[p1];
+            double lhs = deltaY_p1p2 / deltaX_p1p2 * deltaX_p1p3 - (deltaY_p1p3);
 
             E = lhs / 2;
             E *= -1;

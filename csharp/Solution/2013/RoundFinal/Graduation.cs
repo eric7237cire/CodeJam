@@ -270,7 +270,7 @@ namespace RoundFinal
             return pos;
         }
 
-        private readonly Fraction HALF = new Fraction(1, 2);
+        //private readonly Fraction HALF = new Fraction(1, 2);
         private readonly Fraction QUARTER = new Fraction(1, 4);
 
         public void getLongestSegment(long queryPosition, long queryTime, 

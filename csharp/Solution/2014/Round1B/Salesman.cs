@@ -139,8 +139,7 @@ namespace CodeJam.Round1B_2014
             inAnswer = inAnswer.SetBit(ans[0].Item1);
 
             long usedReturn = 0;
-            int lastFromNode = -1;
-
+            
             int loopCh = 0;
             /*
              * Fill in the answer node by node
@@ -228,7 +227,6 @@ namespace CodeJam.Round1B_2014
                             usedReturn = usedReturn.SetBit(ans[idx].Item1);
                         }
 
-                        lastFromNode = fromNode;
                         inAnswer = inAnswer.SetBit(node);
                         ans.Add(new IL(node, 0));
 

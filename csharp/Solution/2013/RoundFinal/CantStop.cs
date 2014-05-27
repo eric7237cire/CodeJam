@@ -134,9 +134,9 @@ namespace RoundFinal
         {
             const int indent = 2;
 
-            Preconditions.checkState(right >= left);
-            Preconditions.checkState(right < input.N);
-            Preconditions.checkState(input.k >= 2 && input.k <= 3);
+            Preconditions.checkState(right >= left, "right >= left");
+            Preconditions.checkState(right < input.N, "right < input.N");
+            Preconditions.checkState(input.k >= 2 && input.k <= 3, "k=2 or k=3");
 
             int middle = (right + left) / 2;
             int length = right - left + 1;
@@ -151,7 +151,7 @@ namespace RoundFinal
             expand(ref midBestStart, ref midBestLength, middle, middle, new List<int>(), input);
 
             
-            Preconditions.checkState(midBestLength > 0);
+            Preconditions.checkState(midBestLength > 0, "mid best > 0");
 
            // Logger.LogTrace("Best mid start {} len {}", midBestStart, midBestLength);
 

@@ -704,12 +704,11 @@ namespace Round2_P4
             return "DRAW";
         }
         
+        #if OLDCODE
         //Trying forbidden interval + jumping until a point wraps around
         public string processInputUsingJumps(PongInput input)
         {
-            //ShowOutput();
-            //return "hoetnuh";
-            // processInputManual(input);
+           
 
             bool switchTeams = false;
 
@@ -856,6 +855,8 @@ namespace Round2_P4
 
             return "DRAW";
         }
+        
+        #endif
 
         //Works for small, cycles through each player, finding when the player
         //will reach a target difference

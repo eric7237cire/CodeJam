@@ -162,7 +162,7 @@ namespace Round3
             biggerPolygon = area > area2 ? lowerPoly : upperPoly;
 
             
-                d.AddPolygon(biggerPolygon, "00FF00");
+               // d.AddPolygon(biggerPolygon, "#FF00FF00");
              //   GeomXmlWriter.Save(d, @"C:\Users\thresh\Documents\e.lgf");
             
             IEnumerable<int> l2 = biggerPolygon.Select((p) => points.IndexOf(p));

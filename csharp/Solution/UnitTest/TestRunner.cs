@@ -96,96 +96,9 @@ namespace UnitTest
 
 
 #if mono
-        [Test]
-        public void runAllFetchTestCases()
-        {
-        	
-        	//string testSmall2 = 
-        	//"12 3 1 3 3 1 1 1 2 4";
-            //testInput(testSmall2, "LEFT 3");
-
-            XElement po = XElement.Load(@"/home/ent/mono/CodeJam/2013/Solution/TestData.xml");
-            
-            IEnumerable<XElement> testGroupes = po.Elements("tests");
-            
-            foreach(XElement tests in testGroupes)
-            {
-            	string mainClassName = getAttributeValue(tests, "className");
-            	
-            	
-            	string answerType = getAttributeValue(tests, "answerType");
-            	
-            	if ("true".Equals(getAttributeValue(tests, "ignore")))
-            	{
-            		continue;
-            	}
-            	
-            	Logger.LogInfo("Testing class {}", mainClassName);
- 
-            	Type mainType = Type.GetType(mainClassName, true);
-            	object main = Activator.CreateInstance(mainType);
-            	
-            	//Type inputType = null;
-            	//Type returnType = null;
-            	
-            	foreach(Type intType in mainType.GetInterfaces()) 
-            	{
-            		Logger.LogDebug("intType {}", intType);
-            		if(intType.IsGenericType && intType.GetGenericTypeDefinition() == typeof(InputFileConsumer<,>)) 
-            		{
-            			Logger.LogDebug( "Produces {} Consumes {}", intType.GetGenericArguments()[0], intType.GetGenericArguments()[1]);
-            		}
-            	}
-            	
-				foreach (XElement el in tests.Elements("test"))
-				{
-					Logger.LogInfo("Testing {}", el.Attributes("name").FirstOrDefault());
-					string data =  getChildElemValue(el, "data");
-					string ansExpected = getChildElemValue(el, "answer");
-					Logger.LogDebug("Data [{}]\nAns [{}]",data, ansExpected);
-					
-					if (data == null)
-					{
-						Logger.LogInfo("Data null");
-						continue;
-					}
-					Scanner scanner = new Scanner(new StringReader(data));
-					
-					Preconditions.checkState(main != null);
-					Preconditions.checkState(scanner != null);
-					Preconditions.checkState(mainType != null);
-					
-					//var input = ( (InputFileProducer<LostInput>) main).createInput(scanner);
-					var input = mainType.GetMethod("createInput").Invoke(main, new object[] {scanner});
-			
-			
-			//string ans = ( (InputFileConsumer<LostInput,string>) main).processInput(input);
-					var ans = mainType.GetMethod("processInput").Invoke(main, new object[] {input});
-			
-					if ("double".Equals(answerType))
-					{
-						//Logger.LogInfo("String [{}]", (string)ans);
-						try {
-						double ans_d = double.Parse( (string)ans, new CultureInfo("en-US"));
-						double expected_d = double.Parse(ansExpected, new CultureInfo("en-US"));
-						Assert.AreEqual(expected_d, ans_d, 0.00001);
-						} catch (System.FormatException ) {
-						Logger.LogInfo("ERROR [{}] [{}]", (string)ans, ansExpected);	
-						Assert.IsTrue(false);
-						}
-					} else {
-						Assert.AreEqual(ansExpected, ans);
-					}
-					
-				}
-            }
-        }
-#endif
-
-#if mono
 	private string setBaseDir(string baseDir, bool set = true)
         {
-            baseDir = @"/home/ent/mono/CodeJam/" + baseDir.Replace('\\', '/');
+            baseDir = @"/home/ent/mono/CodeJam/csharp/Solution/" + baseDir.Replace('\\', '/');
             if (set) Directory.SetCurrentDirectory(baseDir);
 
             return baseDir;

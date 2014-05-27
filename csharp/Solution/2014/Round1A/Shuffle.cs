@@ -255,7 +255,7 @@ namespace CodeJam.Round1A_2014
                     prob *= f[perm[j]][j] * perm.Length;
                 }
 
-                bool bIsBad = prob > 0.5;
+              //  bool bIsBad = prob > 0.5;
 
                 /*
                 if (useBad == bIsBad)

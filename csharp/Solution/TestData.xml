@@ -49,7 +49,7 @@
 		
       <run checkFile         ="C-small-practice.check"
          className         ="Round1B_P3.GarbledEmail, 2013"
-         createInputMethod ="createInput"
+         createInputMethod ="createInput"         
          inputFile         ="C-small-practice.in"
          processInputMethod="processInput"/>
    
@@ -57,6 +57,7 @@
   <run checkFile         ="C-large-practice.check"
          className         ="Round1B_P3.GarbledEmail, 2013"
          createInputMethod ="createInput"
+         category = "slow"
          inputFile         ="C-large-practice.in"
          processInputMethod="processInput"/>
 		 
