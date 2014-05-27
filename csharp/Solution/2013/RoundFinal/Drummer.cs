@@ -11,12 +11,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 using Utils;
 using Utils.geom;
 using Logger = Utils.LoggerFile;
 
 
-namespace RoundFinal
+namespace CodeJam.RoundFinal_2013.Problem2
 {
     using LineSeg = LineSegment<double>;
 
@@ -107,8 +108,8 @@ namespace RoundFinal
                 {
                     UH ++;                        
                 }
-                else if ((upperHull[UH].Y - upperHull[UH+1].Y) * (lowerHull[LH+1].X - lowerHull[LH].X) >
-                    (lowerHull[LH+1].Y - lowerHull[LH].Y) * (upperHull[UH].X - upperHull[UH+1].X))
+                else if ((long)(upperHull[UH].Y - upperHull[UH+1].Y) * (lowerHull[LH+1].X - lowerHull[LH].X) >
+                    (long)(lowerHull[LH+1].Y - lowerHull[LH].Y) * (upperHull[UH].X - upperHull[UH+1].X))
                 {
                     //dy_u / dx_u > dy_l / dx_u, whichever has the most negative slope can be incremented
 
@@ -268,5 +269,26 @@ namespace RoundFinal
     {
         public int N;
         public int[] T;
+    }
+    
+    [TestFixture]
+    public class TestDrummer
+    {
+        [Test]
+        public void Test()
+        {
+            DrummerInput input = new DrummerInput();
+            //3, 5, 7
+            input.T = new int[] { 2, 6, 6 };
+
+            Drummer drummer = new Drummer();
+
+            Line<double> line;
+            double E;
+            
+            drummer.findE(input, 0, 2, 1, out E, out line);
+
+            Assert.AreEqual(1, E, 1e-6);
+        }
     }
 }

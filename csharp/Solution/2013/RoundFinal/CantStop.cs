@@ -136,7 +136,7 @@ namespace RoundFinal
 
             Preconditions.checkState(right >= left, "right >= left");
             Preconditions.checkState(right < input.N, "right < input.N");
-            Preconditions.checkState(input.k >= 2 && input.k <= 3, "k=2 or k=3");
+            Preconditions.checkState(input.k >= 1 && input.k <= 3, "k <= 3");
 
             int middle = (right + left) / 2;
             int length = right - left + 1;

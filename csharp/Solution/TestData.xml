@@ -295,7 +295,7 @@
          
          <!--Convex hull / rotating calipurs-->
          	  <run checkFile         ="B-small-practice.correct"
-         className         ="RoundFinal.Drummer, 2013"
+         className         ="RoundFinal_2013.Problem2.Drummer, 2013"
          createInputMethod ="createInput"
 		 testName          = "2013.RoundFinal.Problem2.Small"
          inputFile         ="B-small-practice.in"
@@ -303,7 +303,7 @@
          
          
           <run checkFile         ="B-large-practice.correct"
-         className         ="RoundFinal.Drummer, 2013"
+         className         ="RoundFinal_2013.Problem2.Drummer, 2013"
          createInputMethod ="createInput"         
 		 testName          = "2013.RoundFinal.Problem2.Large"
          inputFile         ="B-large-practice.in"

@@ -173,19 +173,13 @@ namespace UnitTest
                 }
             }
 
-
-
-
             for (int tc = 1; tc <= testCases; ++tc)
             {
-
                 string checkStr = checkStrList[tc - 1];
                 string ansStr = answers[tc - 1];
                 Logger.LogDebug("Checking {} = {}", checkStr, ansStr);
                 Assert.AreEqual(checkStr, ansStr);
-
             }
-
 
             scanner.Dispose();
             timer.Stop();
