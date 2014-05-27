@@ -14,7 +14,7 @@ using Utils;
 
 using Logger = Utils.LoggerFile;
 
-namespace RoundFinal
+namespace RoundFinal_2013.Problem4
 {
     public class CantStop : InputFileProducer<CantStopInput>, InputFileConsumer<CantStopInput, string>
     {

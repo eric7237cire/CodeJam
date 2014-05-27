@@ -321,8 +321,25 @@
           <run checkFile         ="C-large-practice.correct"
          className         ="RoundFinal.XSpot, 2013"
          createInputMethod ="createInput"
+         category = "slow"
          testName          = "2013.RoundFinal.Problem3.Large"
          inputFile         ="C-large-practice.in"
+         processInputMethod="processInput"/>
+         
+         <!--Cant stop.  Merge sort, recursion-->
+          	  <run checkFile         ="D-small-practice.correct"
+         className         ="RoundFinal_2013.Problem4.CantStop, 2013"
+         createInputMethod ="createInput"
+		 testName          = "2013.RoundFinal.Problem4.Small"
+         inputFile         ="D-small-practice.in"
+         processInputMethod="processInput"/>
+         
+         
+          <run checkFile         ="C-large-practice.correct"
+         className         ="RoundFinal_2013.Problem4.CantStop, 2013"
+         createInputMethod ="createInput"
+         testName          = "2013.RoundFinal.Problem4.Large"
+         inputFile         ="D-large-practice.in"
          processInputMethod="processInput"/>
 		 
 		 </testFileRunner>

@@ -187,8 +187,10 @@ namespace UnitTest
 
             string timeSpanStr = String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10);
 
-            Logger.LogInfo("\n\nClass {}\nTC {} \nProcess method {}\nTime {}\n\n",
-                            mainType.FullName, testCases, processInputMethodName, timeSpanStr);
+            Logger.LogInfo("\n\nClass {}\nTC {} \nProcess method {}.  InputFile {}\nTime {}\n\n",
+                            mainType.FullName, testCases, processInputMethodName, 
+                            testData.inputFileName,
+                            timeSpanStr);
 
         }
 

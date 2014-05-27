@@ -17,7 +17,7 @@ using Utils.geom;
 using Logger = Utils.LoggerFile;
 
 
-namespace CodeJam.RoundFinal_2013.Problem2
+namespace RoundFinal_2013.Problem2
 {
     using LineSeg = LineSegment<double>;
 
