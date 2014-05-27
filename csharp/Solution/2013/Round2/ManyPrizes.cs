@@ -11,7 +11,7 @@ using Utils;
 
 using Logger = Utils.LoggerFile;
 
-namespace Round2
+namespace Round2_2013.Problem2
 {
     public class Team
     {

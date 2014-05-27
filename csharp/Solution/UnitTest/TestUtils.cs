@@ -11,8 +11,7 @@ using Utils;
 
 
 using Logger = Utils.LoggerFile;
-using Round2;
-using Round2_P3;
+using Round2_2013.Problem3;
 using Utils.math;
 
 namespace UnitTest

@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using System.Collections.Generic;
-using Round2;
+using Round2_2013.Problem2;
 
 namespace UnitTest
 {

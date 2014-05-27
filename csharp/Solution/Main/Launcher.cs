@@ -6,8 +6,6 @@ using CodeJam.Round1C_2014;
 //using CodeJam.RoundQual_2014;
 //#define LOGGING_TRACE
 using CodeJamUtils;
-using Round1C_P2;
-using Round2_P1;
 using System;
 using System.Collections.Generic;
 using System.IO;

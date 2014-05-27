@@ -12,7 +12,7 @@ using CombPerm;
 
 using Logger = Utils.LoggerFile;
 
-namespace Round2_P3
+namespace Round2_2013.Problem3
 {
     public class Input
     {

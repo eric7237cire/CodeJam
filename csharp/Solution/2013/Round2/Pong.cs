@@ -15,7 +15,7 @@ using Utils;
 
 using Logger = Utils.LoggerFile;
 
-namespace Round2_P4
+namespace Round2_2013.Problem4
 {
 #if FRAC
     using Line = Line<BigFraction>;
