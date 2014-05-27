@@ -3,6 +3,7 @@
 #define LOGGING_INFO
 using CodeJam.Round1A_2014;
 using CodeJam.Round1B_2014;
+using CodeJam.Round1C_2014;
 using CodeJam.RoundQual_2014;
 //#define LOGGING_TRACE
 using CodeJamUtils;
@@ -37,7 +38,8 @@ namespace MainNS
             // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\RoundFinal\");
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round1A\");
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Qual\");
-            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round1B\");
+           // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round1B\");
+            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round1C\");
 #endif
 
 
@@ -62,7 +64,9 @@ namespace MainNS
 
             //Repeater main = new Repeater();
            // Lottery main = new Lottery();
-            Salesman main = new Salesman();
+         //   Salesman main = new Salesman();
+
+            Elf main = new Elf();
 
             // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
             //TicketSwap main = new TicketSwap();
@@ -76,16 +80,16 @@ namespace MainNS
             // list.Add("E-small-practice.in");
             //  list.Add("E-large-practice.in");
 
-            //  list.Add("A-small-practice.in");
+              list.Add("A-small-practice.in");
 
-            //  list.Add("A-large-practice.in");
+              list.Add("A-large-practice.in");
 
 
            // list.Add("B-small-practice.in");
             //list.Add("B-large-practice.in");
 
-            list.Add("C-small-practice.in");
-            list.Add("C-large-practice.in");
+           // list.Add("C-small-practice.in");
+           // list.Add("C-large-practice.in");
 
            // list.Add("D-small-practice.in");
            // list.Add("D-large-practice.in");
