@@ -38,7 +38,7 @@ namespace UnitTest
             Pogo p = new Pogo();
 
             Point<int> pt = new Point<int>(x, y);
-            string s = p.processInputSmall(Round1C_2013.Problem2.Input.createInput(pt.X, pt.Y));
+            string s = p.processInputSmall(Round1C_2013.Problem2.Input.buildInput(pt.X, pt.Y));
 
             Point<int> point = Pogo.simulate(s);
 

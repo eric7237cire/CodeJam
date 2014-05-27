@@ -261,7 +261,8 @@ namespace Round1C_2013.Problem2
         public int X { get; set; }
         public int Y { get; set; }
 
-        public static Input createInput(int x, int y)
+        
+        public static Input buildInput(int x, int y)
         {
             Input input = new Input();
             input.X = x;
