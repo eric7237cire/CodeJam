@@ -18,7 +18,7 @@ using Utils.math;
 using Logger = Utils.LoggerFile;
 
 using BruteForceFracClass = Utils.math.BigFraction;
-namespace Round3
+namespace Round3_2013.Problem4
 {
     public class WheelBruteForce
     {

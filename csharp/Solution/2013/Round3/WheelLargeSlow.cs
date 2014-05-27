@@ -29,7 +29,7 @@ using FracClass = System.Double;
 using FracClass = Utils.math.BigFraction;
 #endif
 
-namespace Round3
+namespace Round3_2013.Problem4
 {
     public class WheelLargeSlow
     {

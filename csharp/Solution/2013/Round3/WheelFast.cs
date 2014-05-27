@@ -25,7 +25,7 @@ using NumWaysType = System.Numerics.BigInteger;
 //OK for small
 using NumWaysType = System.Double;
 #endif
-namespace Round3
+namespace Round3_2013.Problem4
 {
 
 

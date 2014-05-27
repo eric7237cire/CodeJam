@@ -17,7 +17,7 @@ using Utils;
 using Priority_Queue;
 using Logger = Utils.LoggerFile;
 
-namespace Round3
+namespace Round3_2013.Problem3
 {
 	using II = Tuple<int,int>;
 	

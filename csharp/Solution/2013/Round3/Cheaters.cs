@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using Logger = Utils.LoggerFile;
 using Utils;
 
-namespace Round3
+namespace Round3_2013.Problem1
 {
     public class Cheaters : InputFileConsumer<CheatersInput, string>, InputFileProducer<CheatersInput>
     {

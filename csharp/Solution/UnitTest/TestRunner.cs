@@ -8,7 +8,6 @@
 using System.Numerics;
 using NUnit.Framework;
 using CodeJamUtils;
-using Round3;
 using Utils;
 using System.Globalization;
 
@@ -228,9 +227,8 @@ namespace UnitTest
 
             string timeSpanStr = String.Format("{0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10);
 
-            Logger.LogInfo("\n\nClass {}\nTC {} \nProcess method {}.  InputFile {}\nTime {}\n\n",
-                            mainType.FullName, testCases, processInputMethodName, 
-                            testData.inputFileName,
+            Logger.LogInfo("Done Class {}\nTC {} \nTime {}\n\n",
+                            mainType.FullName, testCases,
                             timeSpanStr);
 
         }

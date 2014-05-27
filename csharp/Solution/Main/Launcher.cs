@@ -8,7 +8,6 @@ using CodeJam.Round1C_2014;
 using CodeJamUtils;
 using Round1C_P2;
 using Round2_P1;
-using Round3;
 using System;
 using System.Collections.Generic;
 using System.IO;

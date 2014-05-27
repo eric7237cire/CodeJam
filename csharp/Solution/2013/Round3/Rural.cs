@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Utils;
 using Utils.geom;
 
-namespace Round3
+namespace Round3_2013.Problem2
 {
     using TP = Tuple<double, Point<int>>;
     //using Tuple<double, Point<int>> = TP;
