@@ -5,6 +5,7 @@
 //#define LOGGING_TRACE
 using CodeJamUtils;
 using Round1C_2014.Problem2;
+using Round1C_2014.Problem3;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -62,6 +63,7 @@ namespace MainNS
 
            // Elf main = new Elf();
             Train main = new Train();
+            //Enclosure main = new Enclosure();
 
             // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
             //TicketSwap main = new TicketSwap();

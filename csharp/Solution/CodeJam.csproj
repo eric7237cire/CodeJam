@@ -492,6 +492,7 @@
     <Compile Include="2014\Round1B\Repeater.cs" />
     <Compile Include="2014\Round1B\Salesman.cs" />
     <Compile Include="2014\Round1C\Elf.cs" />
+    <Compile Include="2014\Round1C\Enclosure.cs" />
     <Compile Include="2014\Round1C\TrainCars.cs" />
     <Compile Include="2014\Template.cs" />
     <Compile Include="Main\Launcher.cs" />
