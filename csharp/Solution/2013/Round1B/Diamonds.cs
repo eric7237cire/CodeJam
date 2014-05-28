@@ -15,7 +15,7 @@ using Utils;
 
 //Pascal's triangle, probablity getting exactly N heads in X coin flips
 
-namespace Round1B_P2
+namespace Round1B_2013.Problem2
 {
 
     public class Input

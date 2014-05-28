@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 //Dynamic programming, could improve by doing a linear solution.
-namespace Round1B
+namespace Round1B_2013.Problem1
 {
     
     public class Input

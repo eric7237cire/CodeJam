@@ -1,5 +1,5 @@
 ﻿using CodeJamUtils;
-using Round1B_P2;
+using Round1B_2013.Problem2;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

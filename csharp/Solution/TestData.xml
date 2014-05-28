@@ -1,234 +1,170 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <root xml:space="preserve">
-
-
-         
-         
-  <testFileRunner basedir="2013/Round1B/">
-				  
-				 <!--Osmos.  Dynamic programming-->
-    <run checkFile         ="A-small-practice.check"
-         className         ="Round1B.Osmos, 2013"
-         createInputMethod ="createInput"
-         inputFile         ="A-small-practice.in"
-         processInputMethod="processInput"/>
-		 
-		 
-    <run checkFile         ="A-large-practice.check"
-         className         ="Round1B.Osmos, 2013"
-         createInputMethod ="createInput"
-         inputFile         ="A-large-practice.in"
-         processInputMethod="processInput"/>
-		 
-		 <!-- Probability pennies.  3 heads in 5 flips.  Pascals Triangle -->
-    <run checkFile         ="B-small-practice.check"
-         className         ="Round1B_P2.Diamond, 2013"
-         createInputMethod ="createInput"
-         inputFile         ="B-small-practice.in"
-         processInputMethod="processInput"/>
+  <testFileRunner assemblyName   ="2013"
+                  autotest       ="true"
+                  basedir        ="2013/Round1B/"
+                  namespacePrefix="Round1B_2013">
+    <!--Problem 1 Osmos.  Dynamic programming -->
+   
+    <!-- Problem 2 Diamond.  Probability pennies.  3 heads in 5 flips.  Pascals Triangle  -->
     
-	<run checkFile         ="B-large-practice.check"
-         className         ="Round1B_P2.Diamond, 2013"
-         createInputMethod ="createInput"
-         inputFile         ="B-large-practice.in"
-         processInputMethod="processInput"/>
-		 
-    <run checkFile         ="B-small-practice.check"
-         className         ="Round1B_P2.Diamond, 2013"
+    <run checkFile         ="B-small-practice.correct"
+         className         ="Round1B_2013.Problem2.Diamond, 2013"
          createInputMethod ="createInput"
          inputFile         ="B-small-practice.in"
          processInputMethod="processInputSlow"/>
-		 		 
-    <run checkFile         ="B-large-practice.check"
-         className         ="Round1B_P2.Diamond, 2013"
+         
+    <run checkFile         ="B-large-practice.correct"
+         className         ="Round1B_2013.Problem2.Diamond, 2013"
          createInputMethod ="createInput"
          inputFile         ="B-large-practice.in"
          processInputMethod="processInputSlow"/>
-		 
-         <!-- Trie -->
-		
-      <run checkFile         ="C-small-practice.check"
-         className         ="Round1B_P3.GarbledEmail, 2013"
-         createInputMethod ="createInput"         
+         
+    <!--  Problem 3 garbled email Trie using a tracker/pointer for *  -->
+    <run checkFile         ="C-small-practice.correct"
+         className         ="Round1B_2013.Problem3.GarbledEmail, 2013"
+         createInputMethod ="createInput"
          inputFile         ="C-small-practice.in"
          processInputMethod="processInput"/>
-   
- 
-  <run checkFile         ="C-large-practice.check"
-         className         ="Round1B_P3.GarbledEmail, 2013"
+         
+    <run category          ="slow"
+         checkFile         ="C-large-practice.correct"
+         className         ="Round1B_2013.Problem3.GarbledEmail, 2013"
          createInputMethod ="createInput"
-         category = "slow"
          inputFile         ="C-large-practice.in"
          processInputMethod="processInput"/>
-		 
-		 
   </testFileRunner>
   
-  <testFileRunner basedir="2013/Round1C/" autotest="true" 
-		 assemblyName="2013" namespacePrefix="Round1C_2013">
-        
-   <!--Problem 1 include / exclude principal -->
-               
-         
-        
-          <run checkFile         ="A-small-practice.correct"
+  
+  <testFileRunner assemblyName   ="2013"
+                  autotest       ="true"
+                  basedir        ="2013/Round1C/"
+                  namespacePrefix="Round1C_2013">
+    <!-- Problem 1 include / exclude principal  -->
+    <run checkFile         ="A-small-practice.correct"
          className         ="Round1C_2013.Problem1.Consonants, 2013"
          createInputMethod ="createInput"
          inputFile         ="A-small-practice.in"
          processInputMethod="processInputBruteForce"/>
-         
-     
-         
-            <!-- Pogo.  Problem 2 Proof via induction -->
-               
-         
-         <!--Great Wall.  Problem 3 Segment Tree-->
-		 
-		
-		 
-		 
-		 <!--Uses too much memory TODO-->
-		 
-		 <run checkFile         ="C-large-practice.correct"
+    <!--  Pogo.  Problem 2 Proof via induction  -->
+    <!-- Great Wall.  Problem 3 Segment Tree -->
+    <!-- Uses too much memory TODO -->
+    <run category          ="slow"
+         checkFile         ="C-large-practice.correct"
          className         ="Round1C_2013.Problem3.GreatWall, 2013"
          createInputMethod ="createInput"
-		 category = "slow"
          inputFile         ="C-large-practice.in"
          processInputMethod="processInput"/>
-		 
-         </testFileRunner>
-         
-         <testFileRunner basedir="2013/Round2/" autotest="true" 
-		 assemblyName="2013" namespacePrefix="Round2_2013">
-                  
-                  <!--Problem 1 Ticket Swap Stack -->
-                  
-                  
-         
-         <!--Problem 2 many prizes. binary ; understanding problem, simple solution -->
-            
-         
-         <!-- Problem 3 Longest increasing / decreasing subsequence -->
-                    
-         <!-- Problem 4.  Pong.  GCD like recursive algorithm.  Interesting!  Sequence Ax % N -->
-        
-                  
-         </testFileRunner>
-         
-                  
-                  
-  <testFileRunner basedir="2013/Round3/" autotest="true" 
-		 assemblyName="2013" namespacePrefix="Round3_2013">
+  </testFileRunner>
   
-  <!-- Problem 1 Cheaters. Covering all cases -->
-         
-         <!-- Problem 2.  convex hull monatonic chains, joining hull, create polygon polyline -->
-         
-       
   
-         <!--Dijkstras using 2 different starting points, choosing edge weights as you go-->
-	 <run checkFile         ="C-small-practice.correct"
+  <testFileRunner assemblyName   ="2013"
+                  autotest       ="true"
+                  basedir        ="2013/Round2/"
+                  namespacePrefix="Round2_2013">
+    <!-- Problem 1 Ticket Swap Stack  -->
+    <!-- Problem 2 many prizes. binary ; understanding problem, simple solution  -->
+    <!--  Problem 3 Longest increasing / decreasing subsequence  -->
+    <!--  Problem 4.  Pong.  GCD like recursive algorithm.  Interesting!  Sequence Ax % N  -->
+  </testFileRunner>
+  
+  
+  <testFileRunner assemblyName   ="2013"
+                  autotest       ="true"
+                  basedir        ="2013/Round3/"
+                  namespacePrefix="Round3_2013">
+    <!--  Problem 1 Cheaters. Covering all cases  -->
+    <!--  Problem 2.  convex hull monatonic chains, joining hull, create polygon polyline  -->
+    <!-- Dijkstras using 2 different starting points, choosing edge weights as you go -->
+    <run checkFile         ="C-small-practice.correct"
          className         ="Round3_2013.Problem3.Lost, 2013"
          createInputMethod ="createInput"
          inputFile         ="C-small-practice.in"
          processInputMethod="processInputBruteForce"/>
-		 
-         <!--A good probability / expected value problem with large number issues, slow because BigInteger-->
-		 
-		 <run checkFile         ="D-small-practice.correct"
+    <!-- A good probability / expected value problem with large number issues, slow because BigInteger -->
+    <run checkFile         ="D-small-practice.correct"
          className         ="Round3_2013.Problem4.Wheel, 2013"
          createInputMethod ="createInput"
          inputFile         ="D-small-practice.in"
          processInputMethod="processInputSmall"/>
-		 		 
-		 <run checkFile         ="D-small-practice.correct"
+    <run checkFile         ="D-small-practice.correct"
          className         ="Round3_2013.Problem4.Wheel, 2013"
          createInputMethod ="createInput"
          inputFile         ="D-small-practice.in"
          processInputMethod="processInputOtherSolution"/>
-		 		 
-		 <run checkFile         ="D-large-practice.correct"
+    <run category          ="slow"
+         checkFile         ="D-large-practice.correct"
          className         ="Round3_2013.Problem4.Wheel, 2013"
          createInputMethod ="createInput"
-         category = "slow"
          inputFile         ="D-large-practice.in"
          processInputMethod="processInput"/>
-		 
   </testFileRunner>
   
   
-  <testFileRunner basedir="2013/RoundFinal" autotest="true" 
-		 assemblyName="2013" namespacePrefix="RoundFinal_2013">
-				  
-				 <!--Problem 1 Graduation. Modeling as segments, intersections-->
-		 
-				  <run checkFile         ="A-small-practice.correct"
+  <testFileRunner assemblyName   ="2013"
+                  autotest       ="true"
+                  basedir        ="2013/RoundFinal"
+                  namespacePrefix="RoundFinal_2013">
+    <!-- Problem 1 Graduation. Modeling as segments, intersections -->
+    <run checkFile         ="A-small-practice.correct"
          className         ="RoundFinal_2013.Problem1.Graduation, 2013"
          createInputMethod ="createInput"
-		 inputFile         ="A-small-practice.in"
+         inputFile         ="A-small-practice.in"
          processInputMethod="processInputSmall"/>
-         
-         
-          <run checkFile         ="A-large-practice.correct"
+    <run category          ="slow"
+         checkFile         ="A-large-practice.correct"
          className         ="RoundFinal_2013.Problem1.Graduation, 2013"
          createInputMethod ="createInput"
-         category = "slow"
-		 inputFile         ="A-large-practice.in"
+         inputFile         ="A-large-practice.in"
          processInputMethod="processInput"/>
-         
-         <!--Problem 2.  Drummer Convex hull / rotating calipurs-->
-         
-		 
-		 <!-- Problem 3.  X marks spot.  Cross product, splitting points, checking colinear points-->
-		 	          
-         
-          <run checkFile         ="C-large-practice.correct"
+    <!-- Problem 2.  Drummer Convex hull / rotating calipurs -->
+    <!--  Problem 3.  X marks spot.  Cross product, splitting points, checking colinear points -->
+    <run category          ="slow"
+         checkFile         ="C-large-practice.correct"
          className         ="RoundFinal_2013.Problem3.XSpot, 2013"
          createInputMethod ="createInput"
-         category = "slow"
          inputFile         ="C-large-practice.in"
          processInputMethod="processInput"/>
-         
-         <!--Problem 4 Cant stop.  Merge sort, recursion-->
-          	
-         
-         <!-- Problem 5.  Story. Counting how many non increasing sequences of lengethP
-         Fenwick tree, dynamic programming, mod factorial-->
-         	         
-         
-          <run checkFile         ="E-large-practice.correct"
+    <!-- Problem 4 Cant stop.  Merge sort, recursion -->
+    <!--  Problem 5.  Story. Counting how many non increasing sequences of lengethP
+         Fenwick tree, dynamic programming, mod factorial -->
+    <run category          ="slow"
+         checkFile         ="E-large-practice.correct"
          className         ="RoundFinal_2013.Problem5.Story, 2013"
          createInputMethod ="createInput"
-         category = "slow"
          inputFile         ="E-large-practice.in"
          processInputMethod="processInput"/>
-		 
-		 </testFileRunner>
+  </testFileRunner>
   
-		 <testFileRunner basedir="2014/Qual" autotest="true" 
-		 assemblyName="2014" namespacePrefix="RoundQual_2014">
-		 <!-- magic trick.  easy -->
-		 <!-- cookie clicker, slopes line intersection.  easy-->
-		 <!-- minesweeper master. Backtracking.  Open ended problem -->
-		<!-- Deceitful war, figuring out optimal game, not too hard -->
-		 
-		 </testFileRunner>
-		 
-		 <testFileRunner basedir="2014/Round1A" autotest="true" 
-		 assemblyName="2014" namespacePrefix="Round1A_2014">
-		 <!-- chaos  bit manipulation, pop. count -->
-		 <!-- full binary tree.  dynamic programming, orig. solution, cost making a tree into a binary tree-->
-		 <!-- Shuffle Naive Bayes Classifier.  REVIEW TODO -->
-		 
-		 </testFileRunner>
-		 
-		  <testFileRunner basedir="2014/Round1B" autotest="true" 
-		 assemblyName="2014" namespacePrefix="Round1B_2014">
-		 <!-- Repeater.  Easy string conseq. letter counting, use of median to minimize cost -->
-		 <!-- Lottery.  Counting problem using a DP technique keeping track of a binary prefix, without keeping the value -->
-		 <!-- Trav. salesman.  Interesting graph traversal / binary set / orig. solution -->
-		 
-		 </testFileRunner>
- 
+  
+  
+  <testFileRunner assemblyName   ="2014"
+                  autotest       ="true"
+                  basedir        ="2014/Qual"
+                  namespacePrefix="RoundQual_2014">
+    <!--  magic trick.  easy  -->
+    <!--  cookie clicker, slopes line intersection.  easy -->
+    <!--  minesweeper master. Backtracking.  Open ended problem  -->
+    <!--  Deceitful war, figuring out optimal game, not too hard  -->
+  </testFileRunner>
+  
+  
+  <testFileRunner assemblyName   ="2014"
+                  autotest       ="true"
+                  basedir        ="2014/Round1A"
+                  namespacePrefix="Round1A_2014">
+    <!--  chaos  bit manipulation, pop. count  -->
+    <!--  full binary tree.  dynamic programming, orig. solution, cost making a tree into a binary tree -->
+    <!--  Shuffle Naive Bayes Classifier.  REVIEW TODO  -->
+  </testFileRunner>
+  
+  
+  <testFileRunner assemblyName   ="2014"
+                  autotest       ="true"
+                  basedir        ="2014/Round1B"
+                  namespacePrefix="Round1B_2014">
+    <!--  Repeater.  Easy string conseq. letter counting, use of median to minimize cost  -->
+    <!--  Lottery.  Counting problem using a DP technique keeping track of a binary prefix, without keeping the value  -->
+    <!--  Trav. salesman.  Interesting graph traversal / binary set / orig. solution  -->
+  </testFileRunner>
 </root>
-

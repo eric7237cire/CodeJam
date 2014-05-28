@@ -25,7 +25,7 @@ using Logger = Utils.LoggerFile;
 //Also dynamic programming
 
 //!PERF will build the the solution used
-namespace Round1B_P3
+namespace Round1B_2013.Problem3
 {
 
     public class Input

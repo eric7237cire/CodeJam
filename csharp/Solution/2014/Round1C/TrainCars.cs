@@ -47,10 +47,10 @@ namespace Round1C_2014.Problem2
         {
            
             internal int hasLetterBitSet = 0;
-            internal int firstLetter = -1;
-            internal int lastLetter = -1;
+            internal int leftLetter = -1;
+            internal int rightLetter = -1;
 
-            int count = 1;
+            internal int count = 1;
 
             
         }
@@ -72,10 +72,10 @@ namespace Round1C_2014.Problem2
                     if (input.cars[i][idx] != curChar)
                     {
                         curChar = input.cars[i][idx];
-                        if (carInfos[i].firstLetter == -1)
-                            carInfos[i].firstLetter = curChar - 'a';
+                        if (carInfos[i].leftLetter == -1)
+                            carInfos[i].leftLetter = curChar - 'a';
 
-                        carInfos[i].lastLetter = curChar - 'a';
+                        carInfos[i].rightLetter = curChar - 'a';
 
                         carInfos[i].hasLetterBitSet = carInfos[i].hasLetterBitSet.SetBit(curChar - 'a');
                     }
@@ -115,23 +115,71 @@ namespace Round1C_2014.Problem2
 
                 int newCount = 1;
                 int monoCars = 0;
+                
+                CarInfo leftCar = null;
+                CarInfo rightCar = null;
+                CarInfo interiorCar = null;
 
                 foreach(CarInfo toMerge in carsToMerge)
                 {
-                    if (
+                    if (toMerge.leftLetter == toMerge.rightLetter)
+                    {
+                    	if (toMerge.hasLetterBitSet.ClearBit(toMerge.leftLetter) != 0)
+                    	{
+                    		Logger.LogTrace("Invalid train axyza");
+                    		return 0;
+                    	}
+                    	
+                    	Preconditions.checkState(toMerge.leftLetter == letter);
+                    	Preconditions.checkState(toMerge.count == 1);
+                    	++monoCars;
+                    	continue;
+                    }
+                    
+                    if (toMerge.rightLetter == letter)
+                    {
+                    	if (leftCar != null)
+                    	{
+                    		Logger.LogTrace("Cannot have two cars like ax ay");
+                    		return 0;
+                    	}
+                    	
+                    	leftCar = toMerge;
+                    	continue;
+                    }
+                    
+                    if (toMerge.leftLetter == letter)
+                    {
+                    	if (rightCar != null)
+                    	{
+                    		Logger.LogTrace("Cannot have two cars like xa and ya");
+                    		return 0;
+                    	}
+                    	
+                    	rightCar = toMerge;
+                    	continue;
+                    }
+                    
+                    //Letter must be interiour
+                    if (interiorCar != null)
+                    {
+                    	Logger.LogTrace("2 cars with form xay and waz");
+                    	return 0;
+                    }
+                    
+                    interiorCar = toMerge;
+                    
+                    if (carsToMerge.Count > 1)
+                    {
+                    	Logger.LogTrace("Can only have 1 cars with form xay");
+                    	return 0;
+                    }
+                    	
                 }
 
             }
 
-            bool[] interiorLetters = new bool[26];
-            
-            foreach(var ci in carInfos)
-            {
-                foreach (char c in ci.letterGroupes.Skip(1).Take(ci.letterGroupes.Count - 2))
-                {
-                    interiorLetters[c - 'a'] = true;
-                }
-            }
+           
 
             List<int>[] leftLetters;
             List<int>[] rightLetters;
@@ -143,13 +191,10 @@ namespace Round1C_2014.Problem2
 
             for (int i = 0; i < carInfos.Count; ++i )
             {
-                int leftLetter = carInfos[i].letterGroupes[0] - 'a';
-                int rightLetter = carInfos[i].letterGroupes.GetLastValue() - 'a';
+                int leftLetter = carInfos[i].leftLetter;
+                int rightLetter = carInfos[i].rightLetter;
 
-                if (interiorLetters[leftLetter] || interiorLetters[rightLetter])
-                {
-                    return 0;
-                }
+               
 
                 if (leftLetter == rightLetter)
                 {
