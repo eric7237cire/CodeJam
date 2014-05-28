@@ -28,7 +28,7 @@ namespace MainNS
 
             // Wheel main = new Wheel();
 #if mono
-           Directory.SetCurrentDirectory(@"/home/ent/mono/CodeJam/2013/Solution/RoundFinal/");
+           Directory.SetCurrentDirectory(@"/home/ent/mono/CodeJam/csharp/Solution/2014/Round1C/");
            //Directory.SetCurrentDirectory(@"/home/ent/mono/CodeJam/2013/Solution/Round3/");
 #else
             // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\RoundFinal\");
@@ -73,7 +73,7 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-            list.Add("sample.in");
+           // list.Add("sample.in");
             // list.Add("E-small-practice.in");
             //  list.Add("E-large-practice.in");
 

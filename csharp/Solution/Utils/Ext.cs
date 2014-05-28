@@ -101,6 +101,11 @@ namespace Utils
         {
             return string.Join(", ", list);
         }
+        
+        public static char ToChar(this int intAsChar, char startChar = 'a')
+        {
+        	return (char) ((int)startChar + intAsChar);
+        }
 
         //Extension method to be able to do "{0}".Format directly
         public static string FormatThis(this string str, params object[] args)

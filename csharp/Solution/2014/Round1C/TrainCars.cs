@@ -1,5 +1,4 @@
-﻿
-#if DEBUG
+﻿#if DEBUG
 #define LOGGING_DEBUG
 #define LOGGING_INFO
 #define LOGGING_TRACE
@@ -52,7 +51,10 @@ namespace Round1C_2014.Problem2
 
             internal int count = 1;
 
-            
+            internal int betweenSet()
+            {
+            	return hasLetterBitSet.ClearBit(leftLetter).ClearBit(rightLetter);	
+            }
         }
 
         private List<CarInfo> parseCars(TrainInput input)
@@ -65,19 +67,27 @@ namespace Round1C_2014.Problem2
 
                 int idx = 0;
 
-                char curChar = ' '; 
+                int curChar = -1; 
 
                 while (idx < input.cars[i].Length)
                 {
-                    if (input.cars[i][idx] != curChar)
+                    if ( (input.cars[i][idx] - 'a') != curChar)
                     {
-                        curChar = input.cars[i][idx];
+                    	
+                        curChar = input.cars[i][idx] - 'a';
+                        
                         if (carInfos[i].leftLetter == -1)
-                            carInfos[i].leftLetter = curChar - 'a';
+                            carInfos[i].leftLetter = curChar ;
 
-                        carInfos[i].rightLetter = curChar - 'a';
+                        carInfos[i].rightLetter = curChar ;
 
-                        carInfos[i].hasLetterBitSet = carInfos[i].hasLetterBitSet.SetBit(curChar - 'a');
+                        if (carInfos[i].hasLetterBitSet.GetBit(curChar))
+                        {
+                        	Logger.LogTrace("Can't have ..axa...");
+                        	return null;
+                        }
+                        
+                        carInfos[i].hasLetterBitSet = carInfos[i].hasLetterBitSet.SetBit(curChar );
                     }
                     ++idx;
                 }
@@ -91,12 +101,33 @@ namespace Round1C_2014.Problem2
         public long processInput(TrainInput input)
         {
             List<CarInfo> carInfos = parseCars(input);
+            
+            if (carInfos == null)
+            {
+            	return 0;
+            }
             /*
             if (carInfos[i].hasLetter[curChar - 'a'])
             {
                 //Impossible train, same car has same letter seperated by other letters
                 return 0;
             }*/
+            
+            int interiorLettersBitSet = 0;
+            foreach(CarInfo ci in carInfos)
+            {
+            	interiorLettersBitSet |= ci.betweenSet();	
+            }
+            
+            foreach(CarInfo ci in carInfos)
+            {
+            	if (interiorLettersBitSet.GetBit(ci.leftLetter) ||
+            		interiorLettersBitSet.GetBit(ci.rightLetter))
+            	{
+            		Logger.LogTrace(" xay and azw illegal");
+            		return 0;
+            	}
+            }
 
             //Combine cars that have same letter
             for(int letter = 0; letter < 26; ++letter)
@@ -107,12 +138,19 @@ namespace Round1C_2014.Problem2
                 int check = carInfos.RemoveAll(hasLetterPredicate);
 
                 Preconditions.checkState(check == carsToMerge.Count);
+                
+                Logger.LogTrace("Making component letter {}", (char) (letter + 'a'));
+                
+                if (carsToMerge.Count == 0)
+                {
+                	continue;
+                }
 
                 //New car has form xa + aa + aa + .. + ay
 
                 int newLeftLetter = letter;
                 int newRightLetter = letter;
-
+				int newHasLettersBitSet = 0;
                 int newCount = 1;
                 int monoCars = 0;
                 
@@ -122,6 +160,11 @@ namespace Round1C_2014.Problem2
 
                 foreach(CarInfo toMerge in carsToMerge)
                 {
+                	Logger.LogTrace("car left {} right {}", (char) (toMerge.leftLetter+'a'), 
+                		(char) (toMerge.rightLetter+'a'));
+                	
+                	newHasLettersBitSet |= toMerge.hasLetterBitSet;
+                	
                     if (toMerge.leftLetter == toMerge.rightLetter)
                     {
                     	if (toMerge.hasLetterBitSet.ClearBit(toMerge.leftLetter) != 0)
@@ -145,6 +188,7 @@ namespace Round1C_2014.Problem2
                     	}
                     	
                     	leftCar = toMerge;
+                    	newLeftLetter = leftCar.leftLetter;
                     	continue;
                     }
                     
@@ -157,6 +201,7 @@ namespace Round1C_2014.Problem2
                     	}
                     	
                     	rightCar = toMerge;
+                    	newRightLetter = rightCar.rightLetter;
                     	continue;
                     }
                     
@@ -169,6 +214,9 @@ namespace Round1C_2014.Problem2
                     
                     interiorCar = toMerge;
                     
+                    newLeftLetter = interiorCar.leftLetter;
+                    newRightLetter = interiorCar.rightLetter;
+                    
                     if (carsToMerge.Count > 1)
                     {
                     	Logger.LogTrace("Can only have 1 cars with form xay");
@@ -176,6 +224,18 @@ namespace Round1C_2014.Problem2
                     }
                     	
                 }
+                
+                CarInfo merged = new CarInfo();
+                merged.leftLetter = newLeftLetter;
+                merged.rightLetter = newRightLetter;
+                merged.hasLetterBitSet = newHasLettersBitSet;
+                //TODO
+                merged.count = 1;
+                Logger.LogTrace("Adding merged left letter {} right letter {} count {}",
+                	newLeftLetter.ToChar(),
+                	newRightLetter.ToChar(),
+                	newCount);
+                carInfos.Add(merged); 
 
             }
 
