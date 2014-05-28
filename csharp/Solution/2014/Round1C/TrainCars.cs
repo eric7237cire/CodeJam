@@ -45,51 +45,93 @@ namespace Round1C_2014.Problem2
 
         class CarInfo
         {
-            internal List<Char> letterGroupes = new List<char>();
-            internal bool[] hasLetter = new bool[26];
+           
+            internal int hasLetterBitSet = 0;
+            internal int firstLetter = -1;
+            internal int lastLetter = -1;
+
+            int count = 1;
+
+            
         }
 
-        public long processInput(TrainInput input)
+        private List<CarInfo> parseCars(TrainInput input)
         {
-            CarInfo[] carInfos = new CarInfo[input.N];
+            List<CarInfo> carInfos = new List<CarInfo>();
 
             for (int i = 0; i < input.cars.Length; ++i)
             {
-                carInfos[i] = new CarInfo();
+                carInfos.Add( new CarInfo() );
 
                 int idx = 0;
-                                
-                char curChar = ' '; //input.cars[i][0];
-                
+
+                char curChar = ' '; 
+
                 while (idx < input.cars[i].Length)
                 {
                     if (input.cars[i][idx] != curChar)
                     {
                         curChar = input.cars[i][idx];
-                        carInfos[i].letterGroupes.Add(curChar);
-                        
+                        if (carInfos[i].firstLetter == -1)
+                            carInfos[i].firstLetter = curChar - 'a';
 
-                        if (carInfos[i].hasLetter[curChar - 'a'])
-                        {
-                            //Impossible train, same car has same letter seperated by other letters
-                            return 0;
-                        }
+                        carInfos[i].lastLetter = curChar - 'a';
 
-                        carInfos[i].hasLetter[curChar - 'a'] = true;
+                        carInfos[i].hasLetterBitSet = carInfos[i].hasLetterBitSet.SetBit(curChar - 'a');
                     }
                     ++idx;
                 }
             }
+            return carInfos;
+        }
+
+        
+        const int mod = 1000000007;
+
+        public long processInput(TrainInput input)
+        {
+            List<CarInfo> carInfos = parseCars(input);
+            /*
+            if (carInfos[i].hasLetter[curChar - 'a'])
+            {
+                //Impossible train, same car has same letter seperated by other letters
+                return 0;
+            }*/
+
+            //Combine cars that have same letter
+            for(int letter = 0; letter < 26; ++letter)
+            {
+                Predicate<CarInfo> hasLetterPredicate = ci => ci.hasLetterBitSet.GetBit(letter);
+
+                List<CarInfo> carsToMerge = carInfos.FindAll(hasLetterPredicate);
+                int check = carInfos.RemoveAll(hasLetterPredicate);
+
+                Preconditions.checkState(check == carsToMerge.Count);
+
+                //New car has form xa + aa + aa + .. + ay
+
+                int newLeftLetter = letter;
+                int newRightLetter = letter;
+
+                int newCount = 1;
+                int monoCars = 0;
+
+                foreach(CarInfo toMerge in carsToMerge)
+                {
+                    if (
+                }
+
+            }
 
             bool[] interiorLetters = new bool[26];
-
-            Array.ForEach(carInfos, (ci) =>
+            
+            foreach(var ci in carInfos)
             {
                 foreach (char c in ci.letterGroupes.Skip(1).Take(ci.letterGroupes.Count - 2))
                 {
                     interiorLetters[c - 'a'] = true;
                 }
-            });
+            }
 
             List<int>[] leftLetters;
             List<int>[] rightLetters;
@@ -99,7 +141,7 @@ namespace Round1C_2014.Problem2
             Ext.createArray(out rightLetters, 26);
             Ext.createArray(out monoLetters, 26);
 
-            for (int i = 0; i < carInfos.Length; ++i )
+            for (int i = 0; i < carInfos.Count; ++i )
             {
                 int leftLetter = carInfos[i].letterGroupes[0] - 'a';
                 int rightLetter = carInfos[i].letterGroupes.GetLastValue() - 'a';
