@@ -167,4 +167,13 @@
     <!--  Lottery.  Counting problem using a DP technique keeping track of a binary prefix, without keeping the value  -->
     <!--  Trav. salesman.  Interesting graph traversal / binary set / orig. solution  -->
   </testFileRunner>
+  
+   <testFileRunner assemblyName   ="2014"
+                  autotest       ="true"
+                  basedir        ="2014/Round1C"
+                  namespacePrefix="Round1C_2014">
+    <!--  Elf large fractions over 1/2^N -->
+    <!-- Problem 2 Trains Counting problem, not too hard.  Grouping components -->
+    <!--  -->
+  </testFileRunner>
 </root>

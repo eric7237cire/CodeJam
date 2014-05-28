@@ -20,7 +20,7 @@ using Utils.geom;
 using NUnit.Framework;
 using Utils.math;
 
-namespace CodeJam.Round1C_2014
+namespace Round1C_2014.Problem1
 {
     public class ElfInput
     {

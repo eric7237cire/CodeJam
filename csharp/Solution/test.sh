@@ -41,7 +41,7 @@ eval "dmcs -define:mono -define:LOGGING -define:LOGGING_INFO -debug+ -r:System.N
 
 #export MONO_GC_PARAMS=max-heap-size=1020m
 
-mono --debug go.exe
+#mono --debug go.exe
 
 #/usr/bin/mono --debug $MONO_OPTIONS /usr/lib/mono/4.0/nunit-console.exe -run=UnitTest.TestRunner.runAllTestFiles UnitTest.dll
 
@@ -51,6 +51,6 @@ mono --debug go.exe
 
 #/usr/bin/mono /usr/lib/mono/4.0/nunit-console.exe -run=UnitTest.TestPogo UnitTest.dll
 
-#/usr/bin/mono --debug $MONO_OPTIONS /usr/lib/mono/4.0/nunit-console.exe UnitTest.dll
+/usr/bin/mono --debug $MONO_OPTIONS /usr/lib/mono/4.0/nunit-console.exe UnitTest.dll
 
 

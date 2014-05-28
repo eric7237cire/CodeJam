@@ -127,7 +127,7 @@ namespace Utils
 
             for (int i = 2; i <= n; ++i)
             {
-                f[i] = (int) ( (f[i - 1] * i) % MOD) ;
+                f[i] = (int) ( ( (long)f[i - 1] * i) % MOD) ;
             }
 
             return f;

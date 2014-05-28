@@ -106,13 +106,9 @@ namespace Round1C_2014.Problem2
             {
             	return 0;
             }
-            /*
-            if (carInfos[i].hasLetter[curChar - 'a'])
-            {
-                //Impossible train, same car has same letter seperated by other letters
-                return 0;
-            }*/
             
+            int[] fact = ModdedLong.generateModFactorial(101, mod);
+                        
             int interiorLettersBitSet = 0;
             foreach(CarInfo ci in carInfos)
             {
@@ -160,8 +156,8 @@ namespace Round1C_2014.Problem2
 
                 foreach(CarInfo toMerge in carsToMerge)
                 {
-                	Logger.LogTrace("car left {} right {}", (char) (toMerge.leftLetter+'a'), 
-                		(char) (toMerge.rightLetter+'a'));
+                	Logger.LogTrace("car left {} right {} count {}", toMerge.leftLetter.ToChar(), 
+                		toMerge.rightLetter.ToChar(), toMerge.count);
                 	
                 	newHasLettersBitSet |= toMerge.hasLetterBitSet;
                 	
@@ -229,82 +225,32 @@ namespace Round1C_2014.Problem2
                 merged.leftLetter = newLeftLetter;
                 merged.rightLetter = newRightLetter;
                 merged.hasLetterBitSet = newHasLettersBitSet;
-                //TODO
-                merged.count = 1;
+                
+                merged.count = (int) (1L * (leftCar != null ? leftCar.count % mod: 1) *
+                	(rightCar != null ? rightCar.count : 1) *
+                	(interiorCar != null ? interiorCar.count : 1) % mod) ;
+                merged.count = (int)  ( (long)merged.count * fact[monoCars] % mod ) ;
                 Logger.LogTrace("Adding merged left letter {} right letter {} count {}",
                 	newLeftLetter.ToChar(),
                 	newRightLetter.ToChar(),
-                	newCount);
+                	merged.count);
                 carInfos.Add(merged); 
 
             }
 
+            //Merging done
+            int ans = 1;
+            
+            int chooseOrder = fact[carInfos.Count];
+            
+            long mult = 1;
+            foreach(CarInfo ci in carInfos)
+            {
+            	mult *= ci.count;
+            	mult %= mod;
+            }
            
-
-            List<int>[] leftLetters;
-            List<int>[] rightLetters;
-            List<int>[] monoLetters; //cars with just 1 letter
-
-            Ext.createArray(out leftLetters, 26);
-            Ext.createArray(out rightLetters, 26);
-            Ext.createArray(out monoLetters, 26);
-
-            for (int i = 0; i < carInfos.Count; ++i )
-            {
-                int leftLetter = carInfos[i].leftLetter;
-                int rightLetter = carInfos[i].rightLetter;
-
-               
-
-                if (leftLetter == rightLetter)
-                {
-                    monoLetters[leftLetter].Add(i);
-                    continue;
-                }
-
-                leftLetters[leftLetter].Add(i);
-                rightLetters[rightLetter].Add(i);
-            }
-
-            int forceLeft = -1;
-            int forceRight = -1;
-
-            for (int let = 0; let < 26; ++let )
-            {
-                if (leftLetters[let].Count == rightLetters[let].Count)
-                    continue;
-
-                if (leftLetters[let].Count == 0 && rightLetters[let].Count == 1)
-                    continue;
-
-                if (leftLetters[let].Count == 1 && rightLetters[let].Count == 0)
-                    continue;
-
-                if (leftLetters[let].Count == rightLetters[let].Count + 1)
-                {
-                    if (forceLeft != -1)
-                    {
-                        return 0;
-                    }
-                    forceLeft = let;
-                    continue;
-                }
-
-                if (leftLetters[let].Count + 1 == rightLetters[let].Count )
-                {
-                    if (forceRight != -1)
-                    {
-                        return 0;
-                    }
-                    forceRight = let;
-                    continue;
-                }
-
-                return 0;
-            }
-
-                //Any a[^a]a
-                return -9999;
+            return (int) (chooseOrder * mult % mod);
         }
     }
     [TestFixture]

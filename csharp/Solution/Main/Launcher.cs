@@ -2,8 +2,6 @@
 #define LOGGING_DEBUG
 #define LOGGING_INFO
 
-using CodeJam.Round1C_2014;
-//using CodeJam.RoundQual_2014;
 //#define LOGGING_TRACE
 using CodeJamUtils;
 using Round1C_2014.Problem2;
@@ -83,7 +81,7 @@ namespace MainNS
 
 
             list.Add("B-small-practice.in");
-            //list.Add("B-large-practice.in");
+            list.Add("B-large-practice.in");
 
            // list.Add("C-small-practice.in");
            // list.Add("C-large-practice.in");
