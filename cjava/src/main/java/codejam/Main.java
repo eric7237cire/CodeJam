@@ -354,9 +354,9 @@ public class Main
     static void round3_2008(String args[])
     {
 
-        //Problem 1 pockets -- computing polygon area and pockets given a walk (F, L, R, etc) TODO
+        //Problem 1 pockets -- computing polygon area and pockets given a walk (F, L, R, etc) in c# 
 
-        //Problem 2 portal -- interesting shortest path using Dijkstars / BFS  (in C++)  TODO
+        //Problem 2 portal -- interesting shortest path using Dijkstars / BFS  (in C++)  in c#
 
         /**
          * Problem 3

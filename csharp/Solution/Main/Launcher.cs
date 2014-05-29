@@ -6,6 +6,7 @@
 using CodeJamUtils;
 using Round1C_2014.Problem2;
 using Round1C_2014.Problem3;
+using Round3_2008.Problem1;
 using Round3_2008.Problem2;
 using System;
 using System.Collections.Generic;
@@ -69,7 +70,9 @@ namespace MainNS
             //Enclosure main = new Enclosure();
             string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
 
-            Portal main = new Portal();
+            //Portal main = new Portal();
+            Pockets main = new Pockets();
+
             Match m = new Regex(@"(.*)_(.*)\.Problem\d+").Match(main.GetType().Namespace);
             Preconditions.checkState(m.Success);
 
@@ -87,13 +90,13 @@ namespace MainNS
             // list.Add("E-small-practice.in");
             //  list.Add("E-large-practice.in");
 
-           //   list.Add("A-small-practice.in");
+              list.Add("A-small-practice.in");
 
-         //     list.Add("A-large-practice.in");
+             list.Add("A-large-practice.in");
 
 
-            list.Add("B-small-practice.in");
-            list.Add("B-large-practice.in");
+           // list.Add("B-small-practice.in");
+           // list.Add("B-large-practice.in");
 
            // list.Add("C-small-practice.in");
            // list.Add("C-large-practice.in");

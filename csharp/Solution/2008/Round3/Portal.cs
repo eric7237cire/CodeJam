@@ -137,6 +137,7 @@ namespace Round3_2008.Problem2
                 if (nodeU.col < input.C - 1 && input.grid[nodeU.row ][nodeU.col+1] != '#')
                     handleNextNode(nodeU.row, nodeU.col+1, 1);
 
+                //We get to travel to the destination portal at the cost of the closest wall
                 handleNextNode(nodeU.row + distToDestPortal[nodeU.row][nodeU.col][NORTH], nodeU.col,
                     closestWall[nodeU.row][nodeU.col]);
                 handleNextNode(nodeU.row - distToDestPortal[nodeU.row][nodeU.col][SOUTH], nodeU.col,
