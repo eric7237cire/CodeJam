@@ -449,6 +449,7 @@
     <Content Include="Utils\Utils.csproj.user" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="2008\Round3\Portal.cs" />
     <Compile Include="2013\Round1B\Boxing1.cs" />
     <Compile Include="2013\Round1B\Boxing2.cs" />
     <Compile Include="2013\Round1B\Diamonds.cs" />

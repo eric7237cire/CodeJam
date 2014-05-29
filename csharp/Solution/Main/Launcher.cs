@@ -6,12 +6,15 @@
 using CodeJamUtils;
 using Round1C_2014.Problem2;
 using Round1C_2014.Problem3;
+using Round3_2008.Problem2;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Utils;
 using Utils.geom;
 
 namespace MainNS
@@ -62,10 +65,17 @@ namespace MainNS
          //   Salesman main = new Salesman();
 
            // Elf main = new Elf();
-            Train main = new Train();
+           // Train main = new Train();
             //Enclosure main = new Enclosure();
+            string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
 
-            // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round2\");
+            Portal main = new Portal();
+            Match m = new Regex(@"(.*)_(.*)\.Problem\d+").Match(main.GetType().Namespace);
+            Preconditions.checkState(m.Success);
+
+            baseDir = baseDir + m.Groups[2] + @"\" + m.Groups[1] + "\\";
+
+            Directory.SetCurrentDirectory(baseDir);
             //TicketSwap main = new TicketSwap();
 
             // main.processInput(null);
@@ -73,7 +83,7 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-           // list.Add("sample.in");
+            list.Add("sample.in");
             // list.Add("E-small-practice.in");
             //  list.Add("E-large-practice.in");
 

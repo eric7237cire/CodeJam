@@ -47,7 +47,7 @@ namespace Round1B_2014.Problem1
         {
             List<Char> letterGroupes = new List<char>();
             List<int>[] tallies;
-            Ext.createArray(out tallies, input.N);
+            Ext.createArrayWithNew(out tallies, input.N);
 
             for (int i = 0; i < input.S.Length; ++i)
             {

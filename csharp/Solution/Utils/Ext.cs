@@ -41,13 +41,20 @@ namespace Utils
             }
         }
 
-        public static void createArray<T>(out T[] array, int d1) where T : new()
+        public static void createArrayWithNew<T>(out T[] array, int d1) where T : new()
         {
             array = new T[d1];
             for (int i = 0; i < d1; ++i)
             {
                 array[i] = new T();
-
+            }
+        }
+        public static void createArrayWithNew<T>(out T[][] array, int d1, int d2) where T : new()
+        {
+            array = new T[d1][];
+            for (int i = 0; i < d1; ++i)
+            {
+                createArrayWithNew(out array[i], d2);
             }
         }
 
