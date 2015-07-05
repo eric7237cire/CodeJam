@@ -8,6 +8,8 @@ using Round1C_2014.Problem2;
 using Round1C_2014.Problem3;
 using Round3_2008.Problem1;
 using Round3_2008.Problem2;
+using Round1B_2013;
+using Round1B_2013.Problem1;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,6 +19,8 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Utils;
 using Utils.geom;
+using RoundFinal_2013.Problem5;
+using Round2_2014.Problem1;
 
 namespace MainNS
 {
@@ -34,13 +38,15 @@ namespace MainNS
            Directory.SetCurrentDirectory(@"/home/ent/mono/CodeJam/csharp/Solution/2014/Round1C/");
            //Directory.SetCurrentDirectory(@"/home/ent/mono/CodeJam/2013/Solution/Round3/");
 #else
-            // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\RoundFinal\");
+           // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2013\Round1B\");
+          //  Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2013\RoundFinal\");
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round1A\");
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Qual\");
            // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round1B\");
-            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round1C\");
+            //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round1C\");
+            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round2\");
 #endif
-
+           // Round1B_2013.Problem1.Osmos main = new Round1B_2013.Problem1.Osmos();
 
             // Graduation main = new Graduation();
 
@@ -67,11 +73,14 @@ namespace MainNS
 
            // Elf main = new Elf();
            // Train main = new Train();
-            //Enclosure main = new Enclosure();
+            //Round1C_2014.Problem3.Enclosure main = new Round1C_2014.Problem3.Enclosure();
+
+            DataPacking main = new DataPacking();
+
             string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
 
             //Portal main = new Portal();
-            Pockets main = new Pockets();
+            //Pockets main = new Pockets();
 
             Match m = new Regex(@"(.*)_(.*)\.Problem\d+").Match(main.GetType().Namespace);
             Preconditions.checkState(m.Success);
@@ -88,18 +97,18 @@ namespace MainNS
 
             list.Add("sample.in");
             // list.Add("E-small-practice.in");
-            //  list.Add("E-large-practice.in");
+             // list.Add("E-large-practice.in");
 
               list.Add("A-small-practice.in");
-
+            //
              list.Add("A-large-practice.in");
 
 
            // list.Add("B-small-practice.in");
            // list.Add("B-large-practice.in");
 
-           // list.Add("C-small-practice.in");
-           // list.Add("C-large-practice.in");
+          //  list.Add("C-small-practice.in");
+          //  list.Add("C-large-practice.in");
 
            // list.Add("D-small-practice.in");
            // list.Add("D-large-practice.in");

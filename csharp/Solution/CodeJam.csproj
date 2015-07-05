@@ -496,6 +496,7 @@
     <Compile Include="2014\Round1C\Elf.cs" />
     <Compile Include="2014\Round1C\Enclosure.cs" />
     <Compile Include="2014\Round1C\TrainCars.cs" />
+    <Compile Include="2014\Round2\DataPackaing.cs" />
     <Compile Include="2014\Template.cs" />
     <Compile Include="Main\Launcher.cs" />
     <Compile Include="Main\obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
