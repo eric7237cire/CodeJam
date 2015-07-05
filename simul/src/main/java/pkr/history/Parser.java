@@ -358,6 +358,10 @@ public class Parser {
                 log.error("Problem line {}", i,  ex);
                 curState = null;
                 continue;
+            } catch (ArrayIndexOutOfBoundsException ex) {
+                log.error("Problem line {}", i,  ex);
+                curState = null;
+                continue;
             }
             
             Preconditions.checkState(false, "Line (%s) %s", i,  line);

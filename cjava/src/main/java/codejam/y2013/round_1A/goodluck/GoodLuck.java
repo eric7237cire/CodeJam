@@ -1,14 +1,21 @@
 package codejam.y2013.round_1A.goodluck;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
+import codejam.utils.datastructures.BitSetInt;
+import codejam.utils.datastructures.BitSetLong;
 import codejam.utils.datastructures.graph.MincostMaxflow;
 import codejam.utils.datastructures.graph.MincostMaxflow2;
 import codejam.utils.datastructures.graph.MincostMaxflow2.Edge;
@@ -25,10 +32,19 @@ import codejam.utils.utils.PermutationWithRepetition;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multiset;
 import com.google.common.math.IntMath;
 import com.google.common.math.LongMath;
 import com.google.common.primitives.Ints;
+import com.sun.org.apache.xml.internal.utils.StringComparable;
+import com.google.common.collect.*;
 
+import ch.qos.logback.classic.Level;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 public class GoodLuck extends InputFilesHandler implements
 TestCaseHandler<InputData>, TestCaseInputScanner<InputData> 
@@ -36,15 +52,269 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     public GoodLuck()
     {
         super("C", 1, 1);
+        
        // setLogInfo();
         setLogDebug();
         
         
     }
     
-    public static void main(String[] args) {
+    public static class SetProb
+    {
+    	int[] counts;
+    	double initialProbability;
+    	
+    	Map<Integer, Double> productProbabilities;
+    	
     	
     }
+    
+    //This calculates Pr(p | A)
+    public static void CalculateProducts(SetProb sb, Multiset<Integer> productCounts)
+    {
+    	sb.productProbabilities = new HashMap<>();
+    	CalculateProducts_Helper(sb, productCounts, 1, 1, 1, 1 ,0);
+    }
+    
+    public static void CalculateProducts_Helper(SetProb sb, Multiset<Integer> productCounts, 
+    		int curProduct, double curProb, int curProbNumerator, int curProbDenom, int curIndex)
+    {
+    	//2 2 2
+    	//
+    	int maxN = sb.counts[curIndex];
+    	int pDenom = IntMath.pow(2,maxN);
+    	
+    	int probDenom = curProbDenom * IntMath.pow(2,maxN);
+    	
+    	//if (curIndex)
+    	for(int nOfValue = 0; nOfValue <= sb.counts[curIndex]; ++nOfValue)
+    	{
+    		double p = curProb * IntMath.binomial(maxN, nOfValue) / pDenom;
+    		
+    		log.debug("p = {} * {} / {}", curProb, IntMath.binomial(maxN, nOfValue), pDenom);
+    		
+    		int probNumerator = curProbNumerator * IntMath.binomial(maxN, nOfValue);
+    		
+    		log.debug("{} / {} == {}?", probNumerator, probDenom, p);
+    		Preconditions.checkState(1d * probNumerator / probDenom == p);
+    		
+    		int product = curProduct * IntMath.pow(curIndex+2, nOfValue);
+    		log.debug("Product {} from {} {}", product, curIndex+2, nOfValue);
+    		
+    		if (curIndex >= sb.counts.length-1)
+    		{
+    			log.debug("Putting prob {} for product {}", p, product);
+    			
+    			if (sb.productProbabilities.containsKey(product))
+    			{    				
+    				sb.productProbabilities.put(product, sb.productProbabilities.get(product)+p);
+    			} else {
+    				sb.productProbabilities.put(product, p);
+    			}
+    			
+    			productCounts.add(product, probNumerator);
+    		}
+    		else
+    		{
+    			CalculateProducts_Helper(sb, productCounts, product, p,
+    					probNumerator,
+    					probDenom,
+    					curIndex+1);
+    		}
+    	}
+    }
+    
+    /*
+     * For each possible set of choosing N numbers from range [2, M]
+     * will deterimen probability of this set
+     */
+    public static List<SetProb> GeneratePossibleHiddenSets(int N, int M)
+    {
+    	List<SetProb> setProbList = new ArrayList<SetProb>();
+    	
+    	int starsBars = N + M - 2;
+    	int bars = M- 2;
+    	CombinationIterator comIt = new CombinationIterator(starsBars, bars);
+    	
+    	while(comIt.hasNext())
+    	{
+    		long iteration = comIt.next();
+    		
+    		int curNumberCount = 0;
+    		
+    		BitSetLong bs = new BitSetLong(iteration);
+    		int remaining = N;
+    		
+    		int[] counts = new int[bars+1];
+    		int countsIndex = 0;
+    		
+    		for(int i = 0; i < starsBars; ++i)
+    		{
+    			
+    			if (bs.isSet(i))
+    			{	
+    				counts[countsIndex++] = curNumberCount;
+    				remaining -= curNumberCount;
+    				curNumberCount = 0;
+    			} else {
+    				++curNumberCount;
+    			}
+    		}
+    		
+    		counts[countsIndex] = remaining;
+    		
+    		String s = IntStream.range(0, counts.length).mapToObj(index ->
+    		"" + (index+2) + ": " + counts[index]).collect(Collectors.joining(", "));
+    		
+    		//binary string from msb to least significant bit
+    		log.debug("{}={}", bs.toString(), s);
+    		
+    		SetProb sp = new SetProb();
+    		sp.counts = counts;
+    		setProbList.add(sp);
+    		
+    	}
+    	
+    	return setProbList;
+
+    }
+    
+    //Count how many combinations of N numbers from 2-M, dups OK, order does not matter
+    public static int CountCombinations(int N, int M)
+    {
+    	//using stars / bars theorum
+    	//https://en.wikipedia.org/wiki/Stars_and_bars_(combinatorics)
+    		
+    	int k = M-1;
+    	
+    	//Choosing k-1 bars among N stars same as
+    	return IntMath.binomial(N+k-1, k-1);
+    }
+    
+    //Count how many combinations of N numbers from 2-M
+    public static int CountCombinations_Recursive(int N, int M)
+    {	
+    	if (M < 2)
+    		return 0;
+    	
+    	//A special case, 1 way to take 0 numbers from M-1 possibilities
+    	if (N==0)
+    		return 1;
+    	
+    	if (N<=0)
+    		return 0;
+    	
+    	if (N==1)
+    		return M-1;
+    	
+    	if(M==2)
+    		return 1;
+    	
+    	int sum = 0;
+    	
+    	for(int numTaken = 0; numTaken <= N; ++numTaken)
+    	{
+    		sum += CountCombinations(N-numTaken, M-1);
+    	}
+    	
+    	return sum;
+    }
+    
+    @Test
+    public void TestCountCombinations()
+    {
+    	for(int n = 1; n <= 12; ++n)
+    	{
+    		assertEquals("msg: " + n,  1, CountCombinations(n, 2));
+    	}
+    	
+    	
+    	
+    	assertEquals(1, CountCombinations(0, 2));
+    	assertEquals(1, CountCombinations(1, 2));
+    	assertEquals(1, CountCombinations(2, 2));
+    	
+    	assertEquals(3, CountCombinations(2, 3));
+    	
+    	assertEquals(18564, CountCombinations(12, 8));
+    }
+    
+    @Test
+    public void TestGenerateSets()
+    {
+    	List<SetProb> list = GeneratePossibleHiddenSets(12, 8);
+    	assertEquals(list.size(), 18564);
+    }
+    
+    @Test
+    public void TestProbProducts()
+    {
+    	(( ch.qos.logback.classic.Logger) log).setLevel(Level.DEBUG);
+    	
+    	SetProb sb = new SetProb();
+    	sb.counts = new int[] {4, 2, 2, 0};
+    	//sb.counts = new int[] {3, 0, 0, 0};
+    	
+    	List<Integer> setAsList = new ArrayList<>();
+    	for(int i = 0; i < sb.counts.length; ++i)
+    	{
+    		for(int r = 0; r < sb.counts[i]; ++r)
+    		{
+    			setAsList.add(i+2);
+    		}
+    	}
+    	int[] set = Ints.toArray(setAsList);
+    	
+    	Map<Integer, Integer> prodCounts = new HashMap<>();
+    	
+    	int maxSetNum = (1 << set.length);
+    	for(int setNum = 0; setNum < maxSetNum; ++setNum)
+    	{
+    		BitSetInt bs = new BitSetInt(setNum);
+    		int product = 1;
+    		for(int i = 0; i < set.length; ++i)
+    		{
+    			if (bs.isSet(i))
+    			{
+    				product *= set[i];
+    			}
+    		}
+    		
+    		if (prodCounts.containsKey(product) == false)
+    		{
+    			prodCounts.put(product,  1);
+    		} else {
+    			prodCounts.put(product,  prodCounts.get(product) + 1);	
+    		}
+    		log.debug("Number {} for product {}", prodCounts.get(product), product, maxSetNum);
+    	}
+    	
+    	Multiset<Integer> ms = HashMultiset.create();
+    	
+    	CalculateProducts(sb, ms);
+    	
+    	int total = 0;
+    	for(Integer product : prodCounts.keySet())
+    	{
+    		log.debug("Product: {}.  maxSetNum={}", product, maxSetNum);
+    		total += prodCounts.get(product);
+    		Assert.assertEquals((int)prodCounts.get(product), (int)ms.count(product));
+    		Assert.assertEquals((double) 1d * prodCounts.get(product) / maxSetNum, sb.productProbabilities.get(product), .00001d);
+    	}
+    	
+    	Assert.assertEquals(total,  ms.size());
+    }
+    
+    public static void main(String[] args) {
+     
+    	int N = 12;
+    	int M = 8;
+    	
+    	//
+    	
+    	
+    }
+    
     //CombinationsWithRepetition
     public static void main2(String[] args) {
     	
@@ -110,9 +380,9 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     {
 
         return new String[] {
-               "sample.in"
-                //"C-small-practice-1.in"
-               // "C-small-practice-2.in" 
+               //"sample.in"
+                "C-small-practice-1.in",
+                "C-small-practice-2.in" 
                 };
         // return new String[] { "C-small-practice.in", "C-large-practice-1.in"
         // };
