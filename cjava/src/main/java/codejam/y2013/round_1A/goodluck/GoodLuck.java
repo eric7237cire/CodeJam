@@ -789,9 +789,10 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
         		//Pr(A) * Pr(p | A)
         		long product = in.productValues[r][ps];
         	
+        		//sum of Pr(A) * Pr(p | A) over all A.
         		double probOfGettingProduct = 0;
 
-        		//get total & construct initial list
+        		//calculate probOfGettingProduct & construct initial list
         		if (ps == 0)
         		{
         			for(SetProb sb : listSets)
@@ -829,6 +830,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     				
     				Preconditions.checkState(p.getLeft().productProbabilities.containsKey(product));
         		
+    				//adjusting probability
     				p.setValue((p.getRight() * p.getLeft().productProbabilities.get(product)) / probOfGettingProduct);
         			
         			log.debug("Prob for {} set {} is {}", product, Arrays.toString(p.getLeft().counts), p.getLeft().initialProbability);
