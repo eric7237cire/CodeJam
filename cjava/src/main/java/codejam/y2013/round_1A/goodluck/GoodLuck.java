@@ -5,14 +5,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.*;
 
 import codejam.utils.datastructures.BitSetInt;
 import codejam.utils.datastructures.BitSetLong;
@@ -53,8 +58,8 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     {
         super("C", 1, 1);
         
-       // setLogInfo();
-        setLogDebug();
+        setLogInfo();
+       // setLogDebug();
         
         
     }
@@ -62,22 +67,44 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     public static class SetProb
     {
     	int[] counts;
+    	
+    	
+    	Map<Long, Double> productProbabilities;
+    	
     	double initialProbability;
     	
-    	Map<Integer, Double> productProbabilities;
-    	
-    	
+    
+    	//This calculates Pr(p | A)
+        public void CalculateProducts(Multiset<Long> productCounts)
+        {
+        	productProbabilities = new HashMap<>();
+        	CalculateProducts_Helper(this, productCounts, 1, 1, 1, 1 ,0);
+        }
+        
+        public void CalculateInitialProbability()
+        {
+        	int M = counts.length + 1;
+        	int N = 0;
+        	
+        	double p = 1;
+        	for(int i =0; i < counts.length; ++i)
+        	{
+        		N += counts[i];
+        		p /= IntMath.factorial(counts[i]);
+        	}
+        	
+        	p *= IntMath.factorial(N);
+        	
+        	p /= LongMath.pow(M-1, N);
+        	
+        	this.initialProbability = p;
+        }
     }
     
-    //This calculates Pr(p | A)
-    public static void CalculateProducts(SetProb sb, Multiset<Integer> productCounts)
-    {
-    	sb.productProbabilities = new HashMap<>();
-    	CalculateProducts_Helper(sb, productCounts, 1, 1, 1, 1 ,0);
-    }
     
-    public static void CalculateProducts_Helper(SetProb sb, Multiset<Integer> productCounts, 
-    		int curProduct, double curProb, int curProbNumerator, int curProbDenom, int curIndex)
+    
+    public static void CalculateProducts_Helper(SetProb sb, Multiset<Long> productCounts, 
+    		long curProduct, double curProb, int curProbNumerator, int curProbDenom, int curIndex)
     {
     	//2 2 2
     	//
@@ -98,7 +125,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     		log.debug("{} / {} == {}?", probNumerator, probDenom, p);
     		Preconditions.checkState(1d * probNumerator / probDenom == p);
     		
-    		int product = curProduct * IntMath.pow(curIndex+2, nOfValue);
+    		long product = curProduct * LongMath.pow(curIndex+2, nOfValue);
     		log.debug("Product {} from {} {}", product, curIndex+2, nOfValue);
     		
     		if (curIndex >= sb.counts.length-1)
@@ -242,8 +269,23 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     @Test
     public void TestGenerateSets()
     {
-    	List<SetProb> list = GeneratePossibleHiddenSets(12, 8);
-    	assertEquals(list.size(), 18564);
+    	int N = 12;
+    	int M = 8;
+    	
+    	N = 12;
+    	M = 8;
+    	List<SetProb> list = GeneratePossibleHiddenSets(N, M);
+    	assertEquals(list.size(), CountCombinations(N, M));
+    	    	    	
+    	double pCheck = 0;
+    	
+    	for(SetProb sb : list)
+    	{
+    		sb.CalculateInitialProbability();
+    		pCheck += sb.initialProbability;
+    	}
+    	
+    	Assert.assertEquals(1.0d,  pCheck, 0.00001d);
     }
     
     @Test
@@ -252,7 +294,8 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     	(( ch.qos.logback.classic.Logger) log).setLevel(Level.DEBUG);
     	
     	SetProb sb = new SetProb();
-    	sb.counts = new int[] {4, 2, 2, 0};
+    	//sb.counts = new int[] {4, 2, 2, 0};
+    	sb.counts = new int[] {0, 0, 0, 0, 0, 0, 12};
     	//sb.counts = new int[] {3, 0, 0, 0};
     	
     	List<Integer> setAsList = new ArrayList<>();
@@ -265,13 +308,13 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     	}
     	int[] set = Ints.toArray(setAsList);
     	
-    	Map<Integer, Integer> prodCounts = new HashMap<>();
+    	Map<Long, Integer> prodCounts = new HashMap<>();
     	
     	int maxSetNum = (1 << set.length);
     	for(int setNum = 0; setNum < maxSetNum; ++setNum)
     	{
     		BitSetInt bs = new BitSetInt(setNum);
-    		int product = 1;
+    		long product = 1;
     		for(int i = 0; i < set.length; ++i)
     		{
     			if (bs.isSet(i))
@@ -289,14 +332,14 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     		log.debug("Number {} for product {}", prodCounts.get(product), product, maxSetNum);
     	}
     	
-    	Multiset<Integer> ms = HashMultiset.create();
+    	Multiset<Long> ms = HashMultiset.create();
     	
-    	CalculateProducts(sb, ms);
+    	sb.CalculateProducts(ms);
     	
     	int total = 0;
-    	for(Integer product : prodCounts.keySet())
+    	for(Long product : prodCounts.keySet())
     	{
-    		log.debug("Product: {}.  maxSetNum={}", product, maxSetNum);
+    		log.debug("Product: {} counts {}.  maxSetNum={}", product, prodCounts.get(product), maxSetNum);
     		total += prodCounts.get(product);
     		Assert.assertEquals((int)prodCounts.get(product), (int)ms.count(product));
     		Assert.assertEquals((double) 1d * prodCounts.get(product) / maxSetNum, sb.productProbabilities.get(product), .00001d);
@@ -305,15 +348,7 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     	Assert.assertEquals(total,  ms.size());
     }
     
-    public static void main(String[] args) {
-     
-    	int N = 12;
-    	int M = 8;
-    	
-    	//
-    	
-    	
-    }
+    
     
     //CombinationsWithRepetition
     public static void main2(String[] args) {
@@ -380,8 +415,8 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     {
 
         return new String[] {
-               //"sample.in"
-                "C-small-practice-1.in",
+           //    "sample.in",
+               // "C-small-practice-1.in"
                 "C-small-practice-2.in" 
                 };
         // return new String[] { "C-small-practice.in", "C-large-practice-1.in"
@@ -709,9 +744,121 @@ TestCaseHandler<InputData>, TestCaseInputScanner<InputData>
     @Override
     public String handleCase(InputData in) 
     {
-        return handleCaseFaster(in);
+    	return handleCaseGivenSolution(in);
+        //return handleCaseFaster(in);
         //return handleCaseBruteForce(in);
     }
+    
+    public String handleCaseGivenSolution(InputData in)
+    {
+    	
+		StringBuffer ans = new StringBuffer();
+        
+        ans.append(String.format("Case #%d:\n", in.testCase));
+        
+        //Do precalculation
+        log.info("Generating sets");
+        List<SetProb> listSets = GeneratePossibleHiddenSets(in.numbersChosen, in.maxNumber);
+        Multiset<Long> productCounts = HashMultiset.create();
+        
+        log.info("Calculating sets of possible hidden numbers of size {} range [2-{}]", in.numbersChosen, in.maxNumber);
+        int pn = 0;
+        for(SetProb sb : listSets)
+        {        	
+        	sb.CalculateProducts(productCounts);
+        	sb.CalculateInitialProbability();
+        	pn ++;
+        	if (pn % 100 == 0)
+        	{
+        		log.info("{} sets calculated", pn);
+        	}
+        	log.debug("Initial prob for set {} is {}", Arrays.toString(sb.counts), sb.initialProbability);
+        }
+        
+        
+        
+        for(int r = 0; r < in.nProductSets; ++r)
+        {
+        	log.info("Calculating r {} of {}", r, in.nProductSets);
+        	SetProb bestAnswer = null;
+        	LinkedList<Pair<SetProb, Double>> setProbLL = new LinkedList<>();
+        	        	
+        	for(int ps = 0; ps < in.productSetSize; ++ps)
+        	{
+        		        		
+        		//Pr(A) * Pr(p | A)
+        		long product = in.productValues[r][ps];
+        	
+        		double probOfGettingProduct = 0;
+
+        		//get total & construct initial list
+        		if (ps == 0)
+        		{
+        			for(SetProb sb : listSets)
+                    {
+            			if (sb.productProbabilities.containsKey(product))
+            			{
+            				probOfGettingProduct += sb.initialProbability * sb.productProbabilities.get(product);
+            				setProbLL.add( MutablePair.of(sb, sb.initialProbability) );
+            			}
+                    }	
+        		} else {
+        			ListIterator<Pair<SetProb, Double>> li = setProbLL.listIterator();
+        			
+        			while(li.hasNext())
+        			{
+        				Pair<SetProb, Double> p = li.next();
+        				if (p.getLeft().productProbabilities.containsKey(product))
+            			{
+            				probOfGettingProduct += p.getLeft().initialProbability * p.getLeft().productProbabilities.get(product);            				
+            			} else {
+            				li.remove();
+            			}
+        			}
+        			
+        		}
+        		
+
+        		ListIterator<Pair<SetProb, Double>> li = setProbLL.listIterator();
+    			
+        		double highestProb = 0;
+        		
+    			while(li.hasNext())
+    			{
+    				Pair<SetProb, Double> p = li.next();
+    				
+    				Preconditions.checkState(p.getLeft().productProbabilities.containsKey(product));
+        		
+    				p.setValue((p.getRight() * p.getLeft().productProbabilities.get(product)) / probOfGettingProduct);
+        			
+        			log.debug("Prob for {} set {} is {}", product, Arrays.toString(p.getLeft().counts), p.getLeft().initialProbability);
+        			
+        			if (ps == in.productSetSize-1 && p.getRight() > highestProb)
+        			{
+        				bestAnswer = p.getLeft();
+        				highestProb = p.getRight();
+        			}
+                }
+        		
+        	}
+        	
+        	 
+        	
+        	for(int i = 0; i < bestAnswer.counts.length; ++i)
+        	{
+        		for(int rr = 0; rr < bestAnswer.counts[i]; ++rr)
+        		{
+        			ans.append(i+2);
+        		}
+        	}
+        	
+        	
+        	ans.append("\n");
+        }
+        
+        return ans.toString();
+    }
+    
     public String handleCaseBruteForce(InputData in) 
     {
         
