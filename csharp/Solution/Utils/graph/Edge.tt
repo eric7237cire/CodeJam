@@ -1,0 +1,46 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+<#@ template language="C#" #>
+<#@ output extension=".cs" #>
+
+<# Type[] types = new[] {
+    typeof(Int16), 
+    typeof(UInt16), typeof(UInt32), typeof(UInt64),
+	typeof(int),
+	typeof(long), typeof(double)
+    };
+#>
+
+namespace CodeJam.Utils.graph
+{
+<# foreach (var type in types) { 
+    #>
+	public class Edge<#= type.Name #>
+    {
+		 public int from, to, index;
+         public <#= type.Name #> cap, flow;
+
+		public Edge<#= type.Name #>(int from, int to, <#= type.Name #> cap, <#= type.Name #> flow, int index)
+		{
+		 this.from = from; 
+		 this.to = to;
+		 this.cap = cap;
+		 this.flow = flow;
+		 this.index = index;
+		}
+       
+	} 
+
+	partial class Maxflow2<#= type.Name #>
+    {
+		 List < <#= type.Name #> > excess;
+       
+	} 
+    <#
+    } #>
+    
+}

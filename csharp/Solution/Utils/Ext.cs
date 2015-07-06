@@ -9,6 +9,16 @@ namespace Utils
 {
     public static class Ext
     {
+        public static void initList<T>(out List<T> list, int size, T defaultValue)
+        {
+            list = new List<T>();
+            for(int i = 0; i < size; ++i)
+            {
+                list.Add(defaultValue);
+            }
+        }
+
+        
         public static void createArray<T>(out T[][] array, int d1, int d2, T defValue)
         {
             array = new T[d1][];
@@ -124,6 +134,11 @@ namespace Utils
         public static T GetLastValue<T>(this IList<T> list)
         {
             return list[list.Count - 1];
+        }
+
+        public static void pop_back<T>(this List<T> list)
+        {
+            list.RemoveAt(list.Count - 1);
         }
 
         public static Tuple<T, T> binarySearch<T>(this List<T> list, T target) where T : IComparable<T>

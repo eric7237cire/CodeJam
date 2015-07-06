@@ -39,8 +39,29 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.core, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\NUnitTestAdapter.2.0.0\lib\nunit.core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit.core.interfaces, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\NUnitTestAdapter.2.0.0\lib\nunit.core.interfaces.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.util, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\NUnitTestAdapter.2.0.0\lib\nunit.util.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="NUnit.VisualStudio.TestAdapter, Version=2.0.0.0, Culture=neutral, PublicKeyToken=4cb40d35494691ac, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\NUnitTestAdapter.2.0.0\lib\NUnit.VisualStudio.TestAdapter.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -231,6 +252,10 @@
     <None Include="UnitTest\obj\x64\Release\UnitTest.csprojResolveAssemblyReference.cache" />
     <None Include="UnitTest\obj\x64\Release\UnitTest1B.csprojResolveAssemblyReference.cache" />
     <None Include="UnitTest\packages.config" />
+    <None Include="Utils\graph\Edge.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Edge.cs</LastGenOutput>
+    </None>
     <None Include="Utils\obj\Debug\DesignTimeResolveAssemblyReferencesInput.cache" />
     <None Include="Utils\obj\Releasex64\DesignTimeResolveAssemblyReferencesInput.cache" />
     <None Include="Utils\obj\Release\DesignTimeResolveAssemblyReferencesInput.cache" />
@@ -497,6 +522,7 @@
     <Compile Include="2014\Round1C\Enclosure.cs" />
     <Compile Include="2014\Round1C\TrainCars.cs" />
     <Compile Include="2014\Round2\DataPackaing.cs" />
+    <Compile Include="2014\Round2\DontBreakNile.cs" />
     <Compile Include="2014\Round2\UpAndDown.cs" />
     <Compile Include="2014\Template.cs" />
     <Compile Include="Main\Launcher.cs" />
@@ -553,7 +579,14 @@
     <Compile Include="Utils\geom\Line.cs" />
     <Compile Include="Utils\geom\Point.cs" />
     <Compile Include="Utils\geom\ShowProjections.cs" />
+    <Compile Include="Utils\graph\Edge.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Edge.tt</DependentUpon>
+    </Compile>
     <Compile Include="Utils\graph\Graph.cs" />
+    <Compile Include="Utils\graph\MaxFlow.cs" />
+    <Compile Include="Utils\graph\MaxFlow2.cs" />
     <Compile Include="Utils\heapPQ\HeapPriorityQueue.cs" />
     <Compile Include="Utils\heapPQ\PriorityQueueNode.cs" />
     <Compile Include="Utils\Logger.cs" />
@@ -625,6 +658,7 @@
     <Folder Include="Utils\obj\x64\Release\TempPE\" />
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSHARP.Targets" />

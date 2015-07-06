@@ -22,6 +22,7 @@ using Utils.geom;
 using RoundFinal_2013.Problem5;
 using Round2_2014.Problem1;
 using Round2_2014.Problem2;
+using Round2_2014.Problem3;
 
 namespace MainNS
 {
@@ -76,8 +77,10 @@ namespace MainNS
            // Train main = new Train();
             //Round1C_2014.Problem3.Enclosure main = new Round1C_2014.Problem3.Enclosure();
 
+            //2014 round 2
             //DataPacking main = new DataPacking();
-            UpAndDown main = new UpAndDown();
+            //UpAndDown main = new UpAndDown();
+            DontBreakNile main = new DontBreakNile();
 
             string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
 
@@ -106,8 +109,8 @@ namespace MainNS
            //  list.Add("A-large-practice.in");
 
 
-            list.Add("B-small-practice.in");
-            list.Add("B-large-practice.in");
+           // list.Add("B-small-practice.in");
+           // list.Add("B-large-practice.in");
 
           //  list.Add("C-small-practice.in");
           //  list.Add("C-large-practice.in");
