@@ -69,45 +69,53 @@ namespace Round2_2014.Problem3
             }
 
             //MaxFlowPreflowN3 flow = new MaxFlowPreflowN3();
-            Maxflow2Int32 flow = new Maxflow2Int32(input.H * input.W + 3);
+
+            /**
+             * Each cell has 2 nodes, one to recieve flow and one to send.  This
+             * is to make sure the total flow <= 1
+             */
+            Maxflow2Int32 flow = new Maxflow2Int32(2 * (input.H * input.W) + 3);
 
             //flow.init(input.H * input.W + 2);
-            int sourceIndex = input.H * input.W;
+            int sourceIndex = 2 * input.H * input.W;
             int sinkIndex = sourceIndex + 1;
 
-            Func<int,int,int> toIndex = (x, y) => y * input.W + x;
+            Func<int,int,int> toReceiverIndex = (x, y) => y * input.W + x;
+            Func<int, int, int> toSenderIndex = (x, y) => toReceiverIndex(x,y) + input.H*input.W;
 
             for (int x = 0; x < input.W ; ++x)
             {
                 if (isWater[x][0])
                 {
-                    flow.AddEdge(sourceIndex, toIndex(x, 0), 1);
+                    flow.AddEdge(sourceIndex, toReceiverIndex(x, 0), 1);
                 }
                 if (isWater[x][input.H - 1])
                 {
-                    flow.AddEdge(toIndex(x, input.H - 1), sinkIndex, 1);
+                    flow.AddEdge(toSenderIndex(x, input.H - 1), sinkIndex, 1);
                 }
-
             }
             for (int x = 0; x < input.W; ++x)
             {
-                
-
                 for (int y = 0; y < input.H; ++y)
                 {
+                    flow.AddEdge(toReceiverIndex(x, y), toSenderIndex(x, y), 1);
+
                     if (y < input.H - 1 && isWater[x][y] && isWater[x][y+1])
                     {
                         Logger.LogDebug("Add edge from {},{} to {},{}",
                             x, y, x, y + 1);
-                
-                        flow.addBidirectionsalEdge(toIndex(x, y), toIndex(x, y + 1), 1);
+
+                        flow.AddEdge(toSenderIndex(x, y), toReceiverIndex(x, y + 1), 1);
+                        flow.AddEdge(toSenderIndex(x, y + 1), toReceiverIndex(x, y), 1);
                     }
                     if (x < input.W - 1 && isWater[x][y] && isWater[x+1][y])
                     {
                         Logger.LogDebug("Add edge from {},{} to {},{}",
                             x, y, x+1, y);
 
-                        flow.addBidirectionsalEdge(toIndex(x, y), toIndex(x + 1, y), 1);
+                        
+                        flow.AddEdge(toSenderIndex(x, y), toReceiverIndex(x+1, y), 1);
+                        flow.AddEdge(toSenderIndex(x+1, y), toReceiverIndex(x, y), 1);
                     }
                 }
             }
