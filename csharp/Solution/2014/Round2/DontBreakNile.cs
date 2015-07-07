@@ -59,7 +59,88 @@ namespace Round2_2014.Problem3
         
         static int tc = 0;
 
+        public bool BuildingIntersect(Building RectA, Building RectB)
+        {
+            if (RectA.X0 <= RectB.X1+1 && RectA.X1 >= RectB.X0-1 &&
+                RectA.Y0 <= RectB.Y1+1 && RectA.Y1 >= RectB.Y0-1)
+            {
+                return true;
+            }
+            return false;
+        }
+
         public int processInput(DontBreakNileInput input)
+        {
+            //Max flow already hit
+            if (input.B == 0)
+            {
+                return input.W;
+            }
+
+            List<Building> buildings = new List<Building>(input.Buildings);
+
+            Building rightWall = new Building()
+            {
+                X0 = input.W,
+                Y0 = 0,
+                X1 = input.W,
+                Y1 = input.H - 1
+            };
+            
+            buildings.Add(rightWall);
+
+            Building leftWall = new Building()
+            {
+                X0 = -1,
+                Y0 = 0,
+                X1 = -1,
+                Y1 = input.H - 1
+            };
+
+            //buildings.Add(leftWall);
+
+            int flow = 0;
+
+            List<Building> inB = new List<Building>();
+            inB.Add(leftWall);
+
+            List<Building> notIn = new List<Building>(buildings);
+            
+            for (int startX = 0; startX < input.W; ++startX)
+            {
+                Logger.LogInfo("Buildings in {} out {}", inB.Count, notIn.Count);
+
+                for(int i = 0; i < inB.Count; ++i)
+                {
+                    for (int j = notIn.Count - 1; j >= 0; --j )
+                    {
+                        if (BuildingIntersect(inB[i], notIn[j]))
+                        {
+                            inB.Add(notIn[j]);
+                            notIn.RemoveAt(j);                            
+                        }
+                    }
+                        
+                }
+                
+                if (inB.Contains(rightWall))
+                {
+                    return startX;
+                }
+
+                foreach(Building b in inB)
+                {
+                    b.X0--;
+                    b.X1++;
+                    b.Y0--;
+                    b.Y1++;
+                }
+                
+            }
+
+            return flow;
+        }
+        public int processInputGraphSearch(DontBreakNileInput input)
         {
             //Max flow already hit
             if (input.B == 0)
@@ -103,7 +184,6 @@ namespace Round2_2014.Problem3
             }
 
             int flow = 0;
-            int loopcheck = 0;
             //int minX = 0;
             for (int startX = 0; startX < input.W; ++startX )
             {

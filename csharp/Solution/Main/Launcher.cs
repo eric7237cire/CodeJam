@@ -78,7 +78,10 @@ namespace MainNS
             //Round1C_2014.Problem3.Enclosure main = new Round1C_2014.Problem3.Enclosure();
 
             //2014 round 2
+            //greedy easy 
             //DataPacking main = new DataPacking();
+
+            //min swaps to get Increasing then decreasing sequence
             //UpAndDown main = new UpAndDown();
             DontBreakNile main = new DontBreakNile();
 
@@ -100,7 +103,7 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-            list.Add("sample.in");
+         //   list.Add("sample.in");
             // list.Add("E-small-practice.in");
              // list.Add("E-large-practice.in");
 
@@ -112,8 +115,8 @@ namespace MainNS
            // list.Add("B-small-practice.in");
            // list.Add("B-large-practice.in");
 
-           // list.Add("C-small-practice.in");
-          //  list.Add("C-large-practice.in");
+            list.Add("C-small-practice.in");
+            list.Add("C-large-practice.in");
 
            // list.Add("D-small-practice.in");
            // list.Add("D-large-practice.in");
