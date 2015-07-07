@@ -1,136 +1,176 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Utils;
 using Logger = Utils.LoggerFile;
 
 namespace CodeJam.Utils.graph
 {
-    public class MaxFlowPreflowN3
+    //http://codeforces.com/blog/entry/14378
+    //http://web.stanford.edu/~liszt90/acm/notebook.html#file3
+    partial class Maxflow2Int32
     {
 
-        int[][] cap;
+        int n;
+        List<List<EdgeInt32>> adj;
 
-        public void init(int nodes)
+        List<int> dist, count;
+        List<bool> active;
+        List<List<int>> B;
+        int b;
+        List<int> Q;
+
+        public Maxflow2Int32(int n)
         {
-            cap = new int[nodes][];
-            for (int i = 0; i < nodes; ++i)
-            {
-                cap[i] = new int[nodes];
-            }
-        }
-
-        public void addEdge(int s, int t, int capacity)
-        {
-            cap[s][t] = capacity;
-        }
-        public void addBidirectionsalEdge(int s, int t, int capacity)
-        {
-            addEdge(s, t, capacity);
-            addEdge(t, s, capacity);
-        }
-
-        public int maxFlow(int s, int t)
-        {
-            int n = cap.Length;
-
-            int[] h = new int[n];
-            h[s] = n - 1;
-
-            int[] maxh = new int[n];
-
-            int[][] f = new int[n][];
-            for (int initarr = 0; initarr < n; ++initarr)
-            {
-                f[initarr] = new int[n];
-            }
-
-            int[] e = new int[n];
+            this.n = n;
+            this.adj = new List<List<EdgeInt32>>();
 
             for (int i = 0; i < n; ++i)
             {
-                f[s][i] = cap[s][i];
-                f[i][s] = -f[s][i];
-                e[i] = cap[s][i];
+                adj.Add(new List<EdgeInt32>());
             }
 
-            for (int sz = 0; ; )
-            {
-                if (sz == 0)
-                {
-                    for (int i = 0; i < n; ++i)
-                        if (i != s && i != t && e[i] > 0)
-                        {
-                            if (sz != 0 && h[i] > h[maxh[0]])
-                                sz = 0;
-                            maxh[sz++] = i;
-                        }
-                }
-                if (sz == 0)
-                    break;
-                while (sz != 0)
-                {
-                    int i = maxh[sz - 1];
-                    bool pushed = false;
-                    for (int j = 0; j < n && e[i] != 0; ++j)
-                    {
-                        if (h[i] == h[j] + 1 && cap[i][j] - f[i][j] > 0)
-                        {
-                            int df = Math.Min(cap[i][j] - f[i][j], e[i]);
-                            f[i][j] += df;
-                            f[j][i] -= df;
-                            e[i] -= df;
-                            e[j] += df;
-                            if (e[i] == 0)
-                                --sz;
-                            pushed = true;
-                        }
-                    }
-                    if (!pushed)
-                    {
-                        h[i] = int.MaxValue;
-                        for (int j = 0; j < n; ++j)
-                            if (h[i] > h[j] + 1 && cap[i][j] - f[i][j] > 0)
-                                h[i] = h[j] + 1;
-                        if (h[i] > h[maxh[0]])
-                        {
-                            sz = 0;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            int flow = 0;
-            for (int i = 0; i < n; i++)
-                flow += f[s][i];
-
-            return flow;
         }
 
-        [TestFixture]
-        public class Tests
+        public void addBidirectionsalEdge(int from, int to, int cap)
         {
-            // Usage example
-            [Test]
-            public void TestUsage()
+            AddEdge(from, to, cap);
+            AddEdge(to, from, cap);
+        }
+        public void AddEdge(int from, int to, int cap)
+        {
+
+            adj[from].Add(new EdgeInt32(from, to, cap, 0, adj[to].Count));
+            if (from == to)
             {
-                int[][] capacity = new int[3][];
-                capacity[0] = new int[] { 0, 3, 2 };
-                capacity[1] = new int[] { 0, 0, 2 };
-                capacity[2] = new int[] { 0, 0, 0 };
-                int n = capacity.Length;
-                MaxFlowPreflowN3 flow = new MaxFlowPreflowN3();
-                flow.init(n);
-                for (int i = 0; i < n; i++)
-                    for (int j = 0; j < n; j++)
-                        if (capacity[i][j] != 0)
-                            flow.addEdge(i, j, capacity[i][j]);
-                Assert.AreEqual(5, flow.maxFlow(0, 2));
+                adj[from][adj.Count - 1].index++;
+            }
+            adj[to].Add(new EdgeInt32(to, from, 0, 0, adj[from].Count - 1));
+
+        }
+
+        void Enqueue(int v)
+        {
+            if (!active[v] && excess[v] > 0 && dist[v] < n)
+            {
+                active[v] = true;
+                B[dist[v]].Add(v);
+                b = Math.Max(b, dist[v]);
             }
         }
-    }
 
+        void Push(EdgeInt32 e)
+        {
+            var amt = Math.Min(excess[e.from], e.cap - e.flow);
+            if (dist[e.from] == dist[e.to] + 1 && amt > 0)
+            {
+                e.flow += amt;
+                adj[e.to][e.index].flow -= amt;
+                excess[e.to] += amt;
+                excess[e.from] -= amt;
+                Enqueue(e.to);
+            }
+        }
+
+        void Gap(int k)
+        {
+            for (int v = 0; v < n; v++) if (dist[v] >= k)
+                {
+                    count[dist[v]]--;
+                    dist[v] = Math.Max(dist[v], n);
+                    count[dist[v]]++;
+                    Enqueue(v);
+                }
+        }
+
+        void Relabel(int v)
+        {
+            count[dist[v]]--;
+            dist[v] = n;
+            foreach (var e in adj[v])
+            {
+                if (e.cap - e.flow > 0)
+                {
+                    dist[v] = Math.Min(dist[v], dist[e.to] + 1);
+                }
+            }
+            count[dist[v]]++;
+            Enqueue(v);
+        }
+
+        void Discharge(int v)
+        {
+            foreach (var e in adj[v])
+            {
+                if (excess[v] > 0)
+                {
+                    Push(e);
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (excess[v] > 0)
+            {
+                if (count[dist[v]] == 1)
+                {
+                    Gap(dist[v]);
+                }
+                else
+                {
+                    Relabel(v);
+                }
+            }
+        }
+
+
+
+        public int GetMaxFlow(int s, int t)
+        {
+            Ext.initList(out dist, n, 0);
+            Ext.initList(out excess, n, 0);
+            Ext.initList(out count, n + 1, 0);
+            Ext.initList(out active, n, false);
+
+            B = new List<List<int>>();
+            for (int i = 0; i < n; ++i)
+            {
+                //List<int> subList;
+                B.Add(new List<int>());
+            }
+            b = 0;
+
+            foreach (var e in adj[s])
+            {
+                excess[s] += e.cap;
+            }
+
+            count[0] = n;
+            Enqueue(s);
+            active[t] = true;
+
+            while (b >= 0)
+            {
+                if (B[b].Count > 0)
+                {
+                    int v = B[b].GetLastValue();
+                    B[b].pop_back();
+                    active[v] = false;
+                    Discharge(v);
+                }
+                else
+                {
+                    b--;
+                }
+            }
+            return excess[t];
+        }
+
+        //    T GetMinCut (int s, int t, vector <int> &cut);
+
+    }
 }

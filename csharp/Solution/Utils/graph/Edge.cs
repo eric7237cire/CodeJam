@@ -94,9 +94,12 @@ namespace CodeJam.Utils.graph
 	} 
     	public class EdgeInt32
     {
-		 public int from, to, index;
+            //the index of other edge in adjList[to]
+            public int index;
+		 public int from, to;
          public Int32 cap, flow;
-
+            
+            
 		public EdgeInt32(int from, int to, Int32 cap, Int32 flow, int index)
 		{
 		 this.from = from; 

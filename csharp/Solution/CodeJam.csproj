@@ -252,6 +252,10 @@
     <None Include="UnitTest\obj\x64\Release\UnitTest.csprojResolveAssemblyReference.cache" />
     <None Include="UnitTest\obj\x64\Release\UnitTest1B.csprojResolveAssemblyReference.cache" />
     <None Include="UnitTest\packages.config" />
+    <None Include="Utils\geom\PointTemplates.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PointTemplates.cs</LastGenOutput>
+    </None>
     <None Include="Utils\graph\Edge.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Edge.cs</LastGenOutput>
@@ -578,6 +582,11 @@
     <Compile Include="Utils\geom\GeomXmlWriter.cs" />
     <Compile Include="Utils\geom\Line.cs" />
     <Compile Include="Utils\geom\Point.cs" />
+    <Compile Include="Utils\geom\PointTemplates.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PointTemplates.tt</DependentUpon>
+    </Compile>
     <Compile Include="Utils\geom\ShowProjections.cs" />
     <Compile Include="Utils\graph\Edge.cs">
       <AutoGen>True</AutoGen>
@@ -586,7 +595,6 @@
     </Compile>
     <Compile Include="Utils\graph\Graph.cs" />
     <Compile Include="Utils\graph\MaxFlow.cs" />
-    <Compile Include="Utils\graph\MaxFlow2.cs" />
     <Compile Include="Utils\heapPQ\HeapPriorityQueue.cs" />
     <Compile Include="Utils\heapPQ\PriorityQueueNode.cs" />
     <Compile Include="Utils\Logger.cs" />
@@ -613,6 +621,20 @@
     <Compile Include="Utils\obj\x64\Release\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
     <Compile Include="Utils\obj\x64\Release\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
     <Compile Include="Utils\PascalTriangle.cs" />
+    <Compile Include="Utils\PowerCollections\Algorithms.cs" />
+    <Compile Include="Utils\PowerCollections\Bag.cs" />
+    <Compile Include="Utils\PowerCollections\CollectionBase.cs" />
+    <Compile Include="Utils\PowerCollections\Comparers.cs" />
+    <Compile Include="Utils\PowerCollections\Hash.cs" />
+    <Compile Include="Utils\PowerCollections\ListBase.cs" />
+    <Compile Include="Utils\PowerCollections\OrderedSet.cs" />
+    <Compile Include="Utils\PowerCollections\Pair.cs" />
+    <Compile Include="Utils\PowerCollections\ReadOnlyCollectionBase.cs" />
+    <Compile Include="Utils\PowerCollections\ReadOnlyListBase.cs" />
+    <Compile Include="Utils\PowerCollections\RedBlack.cs" />
+    <Compile Include="Utils\PowerCollections\Set.cs" />
+    <Compile Include="Utils\PowerCollections\Strings.cs" />
+    <Compile Include="Utils\PowerCollections\Util.cs" />
     <Compile Include="Utils\Preconditions.cs" />
     <Compile Include="Utils\Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\tree\FenwickTree.cs" />

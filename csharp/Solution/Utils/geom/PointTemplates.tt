@@ -1,0 +1,138 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Utils;
+
+<#@ template language="C#" #>
+<#@ output extension=".cs" #>
+
+namespace CodeJam.Utils.geom
+{
+<# Type[] types = new[] {    
+	typeof(int),
+	typeof(long), typeof(double)
+    };
+#>
+<# 
+foreach (var type in types) { 
+#>
+    public class Point<#= type.Name #> : IEquatable<Point<#= type.Name #>>, IComparable<Point<#= type.Name #>> 
+    {
+        
+		public static Point<#= type.Name #>[] NESW = new Point<#= type.Name #>[] {
+			new Point<#= type.Name #>(0, 1),
+			new Point<#= type.Name #>(1, 0),
+			new Point<#= type.Name #>(0, -1),
+			new Point<#= type.Name #>(-1, 0)
+		};
+
+        private <#= type.Name #> x;
+        private <#= type.Name #> y;
+
+        public <#= type.Name #> X
+        {
+            get
+            {
+                return x;
+            }
+            set
+            {
+                x = value;
+            }
+        }
+
+        public <#= type.Name #> Y
+        {
+            get
+            {
+                return y;
+            }
+            set
+            {
+                y = value;
+            }
+        }
+
+        public Point<#= type.Name #>(<#= type.Name #> x, <#= type.Name #> y)
+        {
+            this.x = x;
+            this.y = y;
+        }
+
+        private const int prime1 = 17;
+        private const int prime2 = 23;
+
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as Point<#= type.Name #>);
+
+        }
+        public override int GetHashCode()
+        {
+            
+            int hash = 17;
+            hash = hash * 23 + x.GetHashCode();
+            hash = hash * 23 + y.GetHashCode();
+            return hash;
+            
+        }
+
+
+        public bool Equals(Point<#= type.Name #> other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            return (this.x.Equals(other.x))
+                && (this.y.Equals(other.y));
+        }
+
+        public static bool operator ==(Point<#= type.Name #> leftOperand, Point<#= type.Name #> rightOperand)
+        {
+            if (ReferenceEquals(null, leftOperand)) return ReferenceEquals(null, rightOperand);
+            return leftOperand.Equals(rightOperand);
+        }
+
+        public static bool operator !=(Point<#= type.Name #> leftOperand, Point<#= type.Name #> rightOperand)
+        {
+            return !(leftOperand == rightOperand);
+        }
+
+        public override string ToString()
+        {
+            return "({0}, {1})".FormatThis(x.ToString(), y.ToString());
+        }
+
+        public int CompareTo(Point<#= type.Name #> other)
+        {
+            int yCmp = Y.CompareTo(other.Y);
+            if (yCmp != 0)
+                return yCmp;
+
+            return X.CompareTo(other.X);
+        }
+                        
+        public static Point<#= type.Name #> operator -(Point<#= type.Name #> lhs, Point<#= type.Name #> rhs)
+        {
+            return new Point<#= type.Name #>( lhs.X - rhs.X, lhs.Y - rhs.Y );
+        }
+        public static Point<#= type.Name #> operator +(Point<#= type.Name #> lhs, Point<#= type.Name #> rhs)
+        {
+            return new Point<#= type.Name #>(lhs.X + rhs.X, lhs.Y + rhs.Y);
+        }
+        public static Point<#= type.Name #> operator /(Point<#= type.Name #> lhs, <#= type.Name #> rhs)
+        {
+            return new Point<#= type.Name #>(  lhs.X / rhs, lhs.Y / rhs );
+        }
+		<# if ( !type.Name.Equals("Double") ) { #>
+        public static PointDouble operator /(Point<#= type.Name #> lhs, Double rhs)
+        {
+            return new PointDouble( 
+                lhs.X / rhs,
+                lhs.Y / rhs);
+        }
+<# } #>
+	}
+		<#
+    } #>
+}

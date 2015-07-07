@@ -350,6 +350,7 @@ namespace CodeJamUtils
     {
         private TextReader reader;
         string currentWord;
+        int playbackCount = 0;
 
         private StringBuilder playBack;
 
@@ -361,13 +362,13 @@ namespace CodeJamUtils
         public void enablePlayBack()
         {
             playBack = new StringBuilder();
-            //playBack.Append(" ");
+            ++playbackCount;
             
         }
 
         public string finishPlayBack()
         {
-            string ret = playBack.ToString();
+            string ret = "Playback #" + playbackCount + "\n" + playBack.ToString();
             playBack = null;
             return ret;
         }
