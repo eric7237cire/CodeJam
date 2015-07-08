@@ -1,0 +1,82 @@
+﻿using System;
+using Round2_2014.Problem3;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Utils;
+
+namespace CodeJam._2014.Round2
+{
+    <#@ template language="C#" #>
+<#@ output extension=".cs" #>
+
+<# String[] coords = new[] {
+    "X0", "X1", "Y0", "Y1"
+    };
+#>
+
+	public class BuildingIndexes
+        {
+		<# foreach (var c in coords) { 
+    #>
+            public SortedSet<Building> <#=c #>;
+			<# } #>
+            
+
+            public BuildingIndexes()
+            {
+        <# foreach (var c in coords) { 
+    #>        
+                <#=c#> = new SortedSet<Building>(Comparer<Building>.Create((b1, b2) =>
+                {
+					
+					return b1.<#=c#>.CompareTo(b2.<#=c#>);
+                    
+                }));
+            <# } #>    
+            }
+
+			<# foreach (var c in coords) { 
+    #>
+			public SortedSet<Building> GetViewUpTo<#=c#>(int upperInc)
+			{
+				Building b = new Building();
+				b.<#=c#> = upperInc;
+
+				Building bLower = new Building();
+				bLower.<#=c#> = 0;
+
+				return <#=c#>.GetViewBetween(bLower, b);
+			}
+
+			public SortedSet<Building> GetViewFrom<#=c#>(int lowerInc)
+			{
+				Building b = new Building();
+				b.<#=c#> = lowerInc;
+
+				Building bUpper = new Building();
+				bUpper.<#=c#> = int.MaxValue;
+
+				return <#=c#>.GetViewBetween(b, bUpper);
+			}
+
+			<# } #>   
+
+            public void Add(Building b)
+            {
+			<# foreach (var c in coords) { 
+    #>
+               <#=c#>.Add(b);
+				<# } #>
+            }
+            public void Remove(Building b)
+            {
+			<# foreach (var c in coords) { 
+    #>
+                Preconditions.checkState(<#=c#>.Remove(b));
+               
+				<# } #>
+            }
+        }
+}

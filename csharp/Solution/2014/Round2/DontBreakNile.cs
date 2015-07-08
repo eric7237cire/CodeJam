@@ -1,6 +1,7 @@
 ﻿
 #define LOGGING_DEBUG
 #define LOGGING_INFO
+using CodeJam._2014.Round2;
 using CodeJam.Utils.geom;
 using CodeJam.Utils.graph;
 using CodeJamUtils;
@@ -36,7 +37,7 @@ namespace Round2_2014.Problem3
     {
         public DontBreakNileInput createInput(Scanner scanner)
         {
-            scanner.enablePlayBack();
+           // scanner.enablePlayBack();
             DontBreakNileInput input = new DontBreakNileInput();
 
             input.W = scanner.nextInt();
@@ -53,7 +54,7 @@ namespace Round2_2014.Problem3
                 input.Buildings[i].Y1 = scanner.nextInt();
             }
 
-            Logger.LogInfo("Input {}", scanner.finishPlayBack());
+            //Logger.LogInfo("Input {}", scanner.finishPlayBack());
             return input;
         }
         
@@ -68,6 +69,8 @@ namespace Round2_2014.Problem3
             }
             return false;
         }
+
+        
 
         public int processInput(DontBreakNileInput input)
         {
@@ -97,10 +100,6 @@ namespace Round2_2014.Problem3
                 Y1 = input.H - 1
             };
 
-            //buildings.Add(leftWall);
-
-            int flow = 0;
-
             List<Building> inB = new List<Building>();
             inB.Add(leftWall);
 
@@ -108,19 +107,19 @@ namespace Round2_2014.Problem3
             
             for (int startX = 0; startX < input.W; ++startX)
             {
-                Logger.LogInfo("Buildings in {} out {}", inB.Count, notIn.Count);
+                //Logger.LogInfo("Buildings in {} out {}", inB.Count, notIn.Count);
 
                 for(int i = 0; i < inB.Count; ++i)
-                {
+                {                                        
                     for (int j = notIn.Count - 1; j >= 0; --j )
                     {
                         if (BuildingIntersect(inB[i], notIn[j]))
                         {
                             inB.Add(notIn[j]);
-                            notIn.RemoveAt(j);                            
+                            notIn.RemoveAt(j);   
                         }
                     }
-                        
+
                 }
                 
                 if (inB.Contains(rightWall))
@@ -128,6 +127,7 @@ namespace Round2_2014.Problem3
                     return startX;
                 }
 
+                //Each building grows by 1
                 foreach(Building b in inB)
                 {
                     b.X0--;
@@ -138,7 +138,8 @@ namespace Round2_2014.Problem3
                 
             }
 
-            return flow;
+            //an error
+            return -1;
         }
         public int processInputGraphSearch(DontBreakNileInput input)
         {

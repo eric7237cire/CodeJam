@@ -204,6 +204,10 @@
     <None Include="2013\RoundFinal\env.bat" />
     <None Include="2013\RoundFinal\sample.in" />
     <None Include="2013\RoundFinal\sample.out" />
+    <None Include="2014\Round2\BuildingIndexes.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>BuildingIndexes.cs</LastGenOutput>
+    </None>
     <None Include="app.config" />
     <None Include="build\Project1.nunit" />
     <None Include="eric.ps1" />
@@ -525,6 +529,11 @@
     <Compile Include="2014\Round1C\Elf.cs" />
     <Compile Include="2014\Round1C\Enclosure.cs" />
     <Compile Include="2014\Round1C\TrainCars.cs" />
+    <Compile Include="2014\Round2\BuildingIndexes.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BuildingIndexes.tt</DependentUpon>
+    </Compile>
     <Compile Include="2014\Round2\DataPackaing.cs" />
     <Compile Include="2014\Round2\DontBreakNile.cs" />
     <Compile Include="2014\Round2\UpAndDown.cs" />
@@ -625,8 +634,14 @@
     <Compile Include="Utils\PowerCollections\Bag.cs" />
     <Compile Include="Utils\PowerCollections\CollectionBase.cs" />
     <Compile Include="Utils\PowerCollections\Comparers.cs" />
+    <Compile Include="Utils\PowerCollections\DictionaryBase.cs" />
     <Compile Include="Utils\PowerCollections\Hash.cs" />
     <Compile Include="Utils\PowerCollections\ListBase.cs" />
+    <Compile Include="Utils\PowerCollections\MultiDictionary.cs" />
+    <Compile Include="Utils\PowerCollections\MultiDictionaryBase.cs" />
+    <Compile Include="Utils\PowerCollections\OrderedBag.cs" />
+    <Compile Include="Utils\PowerCollections\OrderedDictionary.cs" />
+    <Compile Include="Utils\PowerCollections\OrderedMultiDictionary.cs" />
     <Compile Include="Utils\PowerCollections\OrderedSet.cs" />
     <Compile Include="Utils\PowerCollections\Pair.cs" />
     <Compile Include="Utils\PowerCollections\ReadOnlyCollectionBase.cs" />
