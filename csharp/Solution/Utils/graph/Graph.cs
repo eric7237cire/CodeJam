@@ -30,6 +30,16 @@ namespace CodeJam.Utils.graph
             return outgoingEdges[u].Contains(v);
         }
 
+        public void PostOrderTraversal(int startNode, Action<int> action)
+        {
+            foreach(int outIndex in outgoingEdges[startNode])
+            {
+                PostOrderTraversal(outIndex, action);
+            }
+
+            action(startNode);
+        }
+
         public Graph(int maxNodes)
         {
             outgoingEdges = new List<int>[maxNodes];
