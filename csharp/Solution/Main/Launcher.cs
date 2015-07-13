@@ -23,6 +23,7 @@ using RoundFinal_2013.Problem5;
 using Round2_2014.Problem1;
 using Round2_2014.Problem2;
 using Round2_2014.Problem3;
+using Year2014.Round3.Problem1;
 
 namespace MainNS
 {
@@ -84,18 +85,32 @@ namespace MainNS
             //min swaps to get Increasing then decreasing sequence
             //UpAndDown main = new UpAndDown();
             //DontBreakNile main = new DontBreakNile();
-            TrieSharding main = new TrieSharding();
+
+            //Counting permutations in a Trie, post order traversal, combinatorics
+            //TrieSharding main = new TrieSharding();
+
+            //2014 round3 
+
+            MagicalMarvelousTour main = new MagicalMarvelousTour();
 
             string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
 
             //Portal main = new Portal();
             //Pockets main = new Pockets();
 
-            Match m = new Regex(@"(.*)_(.*)\.Problem\d+").Match(main.GetType().Namespace);
+            Match m = new Regex(@"Year(.*)\.(.*)\.Problem\d+").Match(main.GetType().Namespace);
             Preconditions.checkState(m.Success);
 
-            baseDir = baseDir + m.Groups[2] + @"\" + m.Groups[1] + "\\";
+            if (m.Success)
+            {
+                baseDir = baseDir + m.Groups[1] + @"\" + m.Groups[2] + "\\";
+            }
+            else { 
+                m = new Regex(@"(.*)_(.*)\.Problem\d+").Match(main.GetType().Namespace);
+                Preconditions.checkState(m.Success);
 
+                baseDir = baseDir + m.Groups[2] + @"\" + m.Groups[1] + "\\";
+            }
             Directory.SetCurrentDirectory(baseDir);
             //TicketSwap main = new TicketSwap();
 
@@ -108,7 +123,7 @@ namespace MainNS
             // list.Add("E-small-practice.in");
              // list.Add("E-large-practice.in");
 
-          //    list.Add("A-small-practice.in");
+              list.Add("A-small-practice.in");
             //
            //  list.Add("A-large-practice.in");
 
@@ -119,8 +134,8 @@ namespace MainNS
           //  list.Add("C-small-practice.in");
           //  list.Add("C-large-practice.in");
 
-            list.Add("D-small-practice.in");
-            list.Add("D-large-practice.in");
+            //list.Add("D-small-practice.in");
+            //list.Add("D-large-practice.in");
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1C\");

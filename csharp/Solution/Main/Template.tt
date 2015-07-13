@@ -1,0 +1,66 @@
+﻿#define LOGGING_DEBUG
+#define LOGGING_INFO
+using CodeJam._2014.Round2;
+using CodeJam.Utils.geom;
+using CodeJam.Utils.graph;
+using CodeJam.Utils.math;
+using CodeJamUtils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Utils;
+using Wintellect.PowerCollections;
+using Logger = Utils.LoggerFile;
+
+<#@ template language="C#" #>
+<#@ output extension=".cs" #>
+
+<#
+String year = "2014";
+String round = "3";
+String probNum = "1";
+String probName = "MagicalMarvelousTour";
+
+String nameSpace = "Year" + year + ".Round" + round + ".Problem" +  probNum;
+#>
+
+namespace <#=nameSpace#>
+{
+    
+    public class <#=probName#>Input
+    {
+        public int M;
+        public int N;
+
+        public List<String> S;
+    }
+
+	public class <#=probName#> : InputFileProducer<<#=probName#>Input>, InputFileConsumer<<#=probName#>Input, String>
+    {
+        public <#=probName#>Input createInput(Scanner scanner)
+        {
+			<#=probName#>Input input = new <#=probName#>Input();
+
+            input.M = scanner.nextInt();
+            input.N = scanner.nextInt();
+
+            input.S = new List<string>();
+			
+            for (int i = 0; i < input.M; ++i)
+            {
+                input.S.Add(scanner.nextWord());
+            }
+
+            //Logger.LogInfo("Input {}", scanner.finishPlayBack());
+            return input;
+		}
+
+		public String processInput(<#=probName#>Input input)
+        {
+			return "-1";
+		}
+	}
+
+}
