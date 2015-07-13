@@ -52,8 +52,100 @@ namespace Year2014.Round3.Problem1
         public String processInput(MagicalMarvelousTourInput input)
         {
             List<int> values = new List<int>();
+
+            //running sums is sum given index elements
+            List<long> runningSums = new List<long>();
+            runningSums.Add(0);
+
+            for (int n = 0; n < input.N; ++n)
+            {
+                values.Add((int)((1L * n * input.p + input.q) % input.r + input.s));
+
+                runningSums.Add(runningSums[n] + values[n]);
+            }
+
+
             
 
+
+            long minZ = 0;
+            long maxZ = runningSums.GetLastValue();
+
+            while(minZ < maxZ)
+            {
+                long z = minZ + (maxZ-minZ) / 2;
+
+                int i = findAtMost(runningSums, 0, input.N , z);
+
+                int j = findAtMost(runningSums, i, input.N , z + runningSums[i]);
+
+                Preconditions.checkState(runningSums[i] <= z);
+                Preconditions.checkState(i == input.N  || runningSums[i+1] > z);
+
+                Preconditions.checkState(sumInc(runningSums, i+1, j) <= z);
+                Preconditions.checkState(j == input.N  || sumInc(runningSums, i + 1, j + 1) > z);
+                
+                Preconditions.checkState(j >= i);
+
+                long rightSectionSum = sumInc(runningSums, j + 1, input.N );
+
+                if (rightSectionSum > z)
+                {
+                    minZ = z + 1;
+                }
+                else
+                {
+                    maxZ = z;
+                }
+            }
+
+            Preconditions.checkState(minZ == maxZ);
+
+            return (1d * (runningSums.GetLastValue() - minZ) / runningSums.GetLastValue()).ToString(CultureInfo.GetCultureInfo("en-US"));
+        }
+
+        public static long sumInc(List<long> runningSums, int left, int right) 
+        {
+            if (right >= runningSums.Count)
+                return 0;
+
+            if (right < 0)
+                return 0;
+
+            return runningSums[right] - (left > 0 ? runningSums[left - 1] : 0);
+        }
+
+
+        public static int findAtMost(List<long> runningSums, int minToTake, int maxToTake, long z)
+        {
+            while(minToTake < maxToTake)
+            {
+                //Check invariant
+                Preconditions.checkState(runningSums[minToTake] <= z);
+
+                //round up
+                int index = minToTake + (maxToTake-minToTake+1) / 2;
+
+                if (runningSums[index] > z)
+                {
+                    //too far, maximum must be before index
+                    maxToTake = index - 1; 
+                }
+                else
+                {
+                    minToTake = index;
+                }
+            }
+
+            Preconditions.checkState(minToTake == maxToTake);
+
+            return minToTake;
+        }
+
+        public String processInputOrig(MagicalMarvelousTourInput input)
+        {
+            List<int> values = new List<int>();
+            
             for (long n = 0; n < input.N; ++n )
             {
                 values.Add( (int) (  (n * input.p + input.q) % input.r + input.s));
@@ -139,36 +231,15 @@ namespace Year2014.Round3.Problem1
                 int stop = minStop;
                 long localLow = sums.Max();
 
-                //for(int stop = start; stop < input.N; ++stop)
+               // long oldLowestMax = lowestMax;
+
+                lowestMax = Math.Min(lowestMax, localLow);
+
+                //if (lowestMax != oldLowestMax)
                 {
-                    
-
-                    long rightSum = -1;
-
-                    if (stop < input.N - 1)
-                    {
-                        rightSum = runningSums[input.N - 1] - runningSums[stop];
-                    }
-
-                    long middleSum = runningSums[stop] - ( start > 0 ? runningSums[start - 1] : 0);
-
-                    long max = Math.Max(Math.Max(leftSum, rightSum), middleSum);
-
-                    if (max < localLow)
-                    {
-                        Logger.LogInfo("\nProblem found better range [{}-{}]  Sums {} {} {}\n", start, stop,
-                    sumInc(0, start - 1), sumInc(start, stop), sumInc(stop + 1, input.N - 1));
-                    }
-
-                    long oldLowestMax = lowestMax;
-
-                    lowestMax = Math.Min(lowestMax, max);
-
-                    if (lowestMax != oldLowestMax)
-                    {
-                        Logger.LogDebug("Choosing range [{} to {}] with sums {} {} {}", start, stop, leftSum, middleSum, rightSum);
-                    }
+                  //  Logger.LogDebug("Choosing range [{} to {}] with sums {} {} {}", start, stop, leftSum, middleSum, rightSum);
                 }
+                
             }
 
 

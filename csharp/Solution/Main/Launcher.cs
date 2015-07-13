@@ -119,7 +119,7 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-            list.Add("sample.in");
+           // list.Add("sample.in");
             // list.Add("E-small-practice.in");
              // list.Add("E-large-practice.in");
 
