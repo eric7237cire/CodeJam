@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -48,7 +49,19 @@ namespace Utils
             {
                 for (int i = 0; i < args.Count(); ++i)
                 {
-                    msg = rgx.Replace(msg, (args[i] ?? "").ToString(), 1);
+                    //
+                    String replaceMent = (args[i] ?? "").ToString();
+
+                    if (args[i] is long)
+                    {
+                        replaceMent = ((long)args[i]).ToString("n0", CultureInfo.InvariantCulture); 
+                    }
+                    if (args[i] is int)
+                    {
+                        replaceMent = ((int)args[i]).ToString("n0", CultureInfo.InvariantCulture);
+                    }
+
+                    msg = rgx.Replace(msg, replaceMent, 1);
                 }
             }
 

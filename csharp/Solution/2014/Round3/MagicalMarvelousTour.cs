@@ -1,4 +1,4 @@
-﻿#define LOGGING_DEBUG
+﻿//#define LOGGING_DEBUG
 #define LOGGING_INFO
 using CodeJam._2014.Round2;
 using CodeJam.Utils.geom;
@@ -59,7 +59,7 @@ namespace Year2014.Round3.Problem1
                 values.Add( (int) (  (n * input.p + input.q) % input.r + input.s));
             }
 
-            List<int> runningSums = new List<int>();
+            List<long> runningSums = new List<long>();
             runningSums.Add(values[0]);
 
             for (int n = 1; n < input.N; ++n)
@@ -67,31 +67,100 @@ namespace Year2014.Round3.Problem1
                 runningSums.Add(runningSums[n - 1] + values[n]);
             }
 
-            int lowestMax = int.MaxValue;
+            long lowestMax = long.MaxValue;
+
+            Func<int, int, long> sumInc = (__left, __right) =>
+                {
+                    if (__right >= runningSums.Count)
+                        return 0;
+
+                    if (__right < 0)
+                        return 0;
+
+                    return runningSums[__right] - ( __left > 0 ? runningSums[__left - 1] : 0);
+                };
 
             for (int start = 0; start < input.N; ++start )
             {
-                for(int stop = start; stop < input.N; ++stop)
+                long leftSum = -1;
+
+                if (start > 0)
                 {
-                    int leftSum = -1;
+                    leftSum = runningSums[start - 1];
+                }
 
-                    if (start > 0)
+                //Binary search for stop
+                int minStop = start;
+                int maxStop = input.N - 1;
+
+                while(maxStop > minStop)
+                {
+                    int midPoint = (maxStop + minStop) / 2;
+
+                    long middle = sumInc(start, midPoint);
+
+                    long right = sumInc(midPoint + 1, input.N - 1);
+
+                    Logger.LogDebug("Finding midpoint.  Range [{}-{}] middle {} [{}-{}] right {}  min/max {} {}", 
+                        start, midPoint, 
+                        middle,
+                        midPoint+1, input.N - 1,
+                        right, minStop, maxStop);
+
+                    long diff = right - middle;
+
+                    int nextVal = values[midPoint + 1];
+                    Logger.LogDebug("Difference {}.  Value mid+1 {}", diff, nextVal);
+
+                    if (right > middle && diff < nextVal)
                     {
-                        leftSum = runningSums[start-1];
+                        Logger.LogDebug("Right sum is larger, but if switch mid+1, the right sum will stay less, and |diff| > current difference {} < {}", diff, nextVal);
+                        minStop = maxStop = midPoint;
+                        break;
                     }
+                                      
 
-                    int rightSum = -1;
+                    if (middle >= right)
+                    {
+                        maxStop = midPoint;
+                    }
+                    else
+                    {
+                        minStop = midPoint+1;
+                    }
+                }
+
+                Preconditions.checkState(minStop == maxStop);
+
+                Logger.LogDebug("Binary search yielded range [{}-{}]  Sums {} {} {}", start, minStop,
+                    sumInc(0, start - 1), sumInc(start, minStop), sumInc(minStop + 1, input.N - 1));
+
+                long[] sums = new long[] { sumInc(0, start - 1), sumInc(start, minStop), sumInc(minStop + 1, input.N - 1) };
+                int stop = minStop;
+                long localLow = sums.Max();
+
+                //for(int stop = start; stop < input.N; ++stop)
+                {
+                    
+
+                    long rightSum = -1;
 
                     if (stop < input.N - 1)
                     {
                         rightSum = runningSums[input.N - 1] - runningSums[stop];
                     }
 
-                    int middleSum = runningSums[stop] - ( start > 0 ? runningSums[start - 1] : 0);
+                    long middleSum = runningSums[stop] - ( start > 0 ? runningSums[start - 1] : 0);
 
-                    int max = Math.Max(Math.Max(leftSum, rightSum), middleSum);
+                    long max = Math.Max(Math.Max(leftSum, rightSum), middleSum);
 
-                    int oldLowestMax = lowestMax;
+                    if (max < localLow)
+                    {
+                        Logger.LogInfo("\nProblem found better range [{}-{}]  Sums {} {} {}\n", start, stop,
+                    sumInc(0, start - 1), sumInc(start, stop), sumInc(stop + 1, input.N - 1));
+                    }
+
+                    long oldLowestMax = lowestMax;
 
                     lowestMax = Math.Min(lowestMax, max);
 

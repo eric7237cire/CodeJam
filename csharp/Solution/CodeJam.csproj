@@ -227,6 +227,10 @@
     <None Include="Main\obj\x64\Debug\Main.csprojResolveAssemblyReference.cache" />
     <None Include="Main\obj\x64\Release\DesignTimeResolveAssemblyReferencesInput.cache" />
     <None Include="Main\obj\x64\Release\Main.csprojResolveAssemblyReference.cache" />
+    <None Include="Main\Template.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Template.cs</LastGenOutput>
+    </None>
     <None Include="packages.config" />
     <None Include="packages\NUnitTestAdapter.WithFramework.1.0\NUnitTestAdapter.WithFramework.1.0.nupkg" />
     <None Include="packages\NUnitTestAdapter.WithFramework.1.0\NUnitTestAdapter.WithFramework.1.0.nuspec" />
@@ -536,7 +540,9 @@
     </Compile>
     <Compile Include="2014\Round2\DataPackaing.cs" />
     <Compile Include="2014\Round2\DontBreakNile.cs" />
+    <Compile Include="2014\Round2\TrieSharding.cs" />
     <Compile Include="2014\Round2\UpAndDown.cs" />
+    <Compile Include="2014\Round3\MagicalMarvelousTour.cs" />
     <Compile Include="2014\Template.cs" />
     <Compile Include="Main\Launcher.cs" />
     <Compile Include="Main\obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
@@ -551,6 +557,11 @@
     <Compile Include="Main\obj\x64\Release\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="Main\obj\x64\Release\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
     <Compile Include="Main\obj\x64\Release\TemporaryGeneratedFile_E7A71F73-0F8D-4B9B-B56E-8E70B10BC5D3.cs" />
+    <Compile Include="Main\Template.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Template.tt</DependentUpon>
+    </Compile>
     <Compile Include="UnitTest\2013\RoundFinal\TestCantStop.cs" />
     <Compile Include="UnitTest\2013\RoundFinal\TestStory.cs" />
     <Compile Include="UnitTest\2013\RoundFinal\TestXSpot.cs" />
@@ -610,6 +621,7 @@
     <Compile Include="Utils\math\BigFraction.cs" />
     <Compile Include="Utils\math\Fraction.cs" />
     <Compile Include="Utils\math\INumeric.cs" />
+    <Compile Include="Utils\math\LargeNumberUtils.cs" />
     <Compile Include="Utils\ModdedLong.cs" />
     <Compile Include="Utils\obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="Utils\obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
