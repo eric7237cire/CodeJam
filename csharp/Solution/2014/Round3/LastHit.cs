@@ -115,11 +115,86 @@ namespace Year2014.Round3.Problem2
             return maxGold;
         }
 
-        public int processInput(LastHitInput input)
+        public int processInputBruteForce(LastHitInput input)
         {
             int maxTurns = input.H.Sum(h => h + input.Q - 1);
 
             return search(input, 0);
+        }
+
+        public int processInput(LastHitInput input)
+        {
+            //Dynamic program, state being [next][free turns]
+            List<int> towerTurnsNeeded = new List<int>(input.H.Select( h => (h + input.Q - 1) / input.Q));
+
+            int maxTowerTurnsRemaining = 1 + towerTurnsNeeded.Sum();
+
+            //If at monster m at full health with t extra turns
+            int[][] maxGold;
+
+            Ext.createArray(out maxGold, input.N, maxTowerTurnsRemaining, 0);
+
+            maxTowerTurnsRemaining -= towerTurnsNeeded[input.N - 1];
+            
+            for(int turns = maxTowerTurnsRemaining; turns >= 0; --turns)
+            {
+                int hitPoints = input.H[input.N - 1] % input.Q;
+                if (hitPoints == 0) {
+                    hitPoints += input.Q;
+                }
+
+                if (input.P * turns >= hitPoints)
+                {
+                    maxGold[input.N - 1][turns] = input.G[input.N - 1];
+                }
+                else
+                {
+                    maxGold[input.N - 1][turns] = 0;
+                }
+
+                Logger.LogDebug("At monster {} with {} free turns. gold = {}",
+                           input.N - 1, turns, maxGold[input.N-1][turns]);
+            }
+
+            
+            
+
+            for (int monsIndex = input.N - 2; monsIndex >= 0; --monsIndex)
+            {
+                maxTowerTurnsRemaining -= towerTurnsNeeded[monsIndex];
+                
+                int hitPoints = input.H[monsIndex] % input.Q;
+                if (hitPoints == 0) {
+                    hitPoints += input.Q;
+                }
+
+                int bonusTurnsThisRound = towerTurnsNeeded[monsIndex] - 1;
+
+                for (int turns = maxTowerTurnsRemaining; turns >= 0; --turns)
+                {
+                    int turnsNeeded = (hitPoints + input.P - 1) / input.P;
+
+                    //int nextRoundBonusTurns = towerTurnsNeeded[monsIndex + 1] - 1;
+
+                    if (turns + bonusTurnsThisRound >= turnsNeeded)
+                    {
+                        int goldIfKill = input.G[monsIndex] + maxGold[monsIndex + 1][turns - turnsNeeded + bonusTurnsThisRound];
+                        Logger.LogDebug("At monster {} with {} free turns. if kill gold= {}  will have {}+{} turns in reserve",
+                            monsIndex, turns, goldIfKill, turns - turnsNeeded, bonusTurnsThisRound);
+                        maxGold[monsIndex][turns] = Math.Max(maxGold[monsIndex][turns], goldIfKill);
+                    }
+
+                    int goldIfSkip = maxGold[monsIndex + 1][turns + 1 + bonusTurnsThisRound];
+
+                    Logger.LogDebug("At monster {} with {} free turns. if not kill gold= {}  will have {}+{} turns in reserve",
+                            monsIndex, turns, goldIfSkip, turns + 1, bonusTurnsThisRound);
+
+                    maxGold[monsIndex][turns] = Math.Max(maxGold[monsIndex][turns], goldIfSkip);
+                    
+                }
+            }
+
+            return maxGold[0][1];
         }
     }
 
