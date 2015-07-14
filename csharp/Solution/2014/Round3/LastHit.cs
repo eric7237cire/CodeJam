@@ -1,4 +1,4 @@
-﻿#define LOGGING_DEBUG
+﻿//#define LOGGING_DEBUG
 #define LOGGING_INFO
 using CodeJam._2014.Round2;
 using CodeJam.Utils.geom;
