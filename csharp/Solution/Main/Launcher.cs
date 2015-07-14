@@ -94,6 +94,8 @@ namespace MainNS
 
             //Binary search, interesting log n * log n
            // MagicalMarvelousTour main = new MagicalMarvelousTour();
+
+            //Bottum up dynamic programming like  a boss
             LastHit main = new LastHit();
 
 

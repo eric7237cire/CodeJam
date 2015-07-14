@@ -128,6 +128,9 @@ namespace Year2014.Round3.Problem2
             //Dynamic program, state being [next][free turns]
             List<int> towerTurnsNeeded = new List<int>(input.H.Select( h => (h + input.Q - 1) / input.Q));
 
+            //Limit hitpoints to <= Q
+            input.H =  new List<int>(input.H.Select(h=>h % input.Q == 0 ? input.Q : h % input.Q ));
+
             int maxTowerTurnsRemaining = 1 + towerTurnsNeeded.Sum();
 
             //If at monster m at full health with t extra turns
@@ -139,45 +142,26 @@ namespace Year2014.Round3.Problem2
             
             for(int turns = maxTowerTurnsRemaining; turns >= 0; --turns)
             {
-                int hitPoints = input.H[input.N - 1] % input.Q;
-                if (hitPoints == 0) {
-                    hitPoints += input.Q;
-                }
-
                 int bonusTurnsThisRound = towerTurnsNeeded[input.N-1] - 1;
 
-                if (input.P * (turns+bonusTurnsThisRound) >= hitPoints)
+                if (input.P * (turns + bonusTurnsThisRound) >= input.H[input.N - 1])
                 {
                     maxGold[input.N - 1][turns] = input.G[input.N - 1];
-                }
-                else
-                {
-                    maxGold[input.N - 1][turns] = 0;
-                }
+                }                
 
                 Logger.LogDebug("At monster {} with {} free turns. gold = {}",
                            input.N - 1, turns, maxGold[input.N-1][turns]);
             }
-
             
-            
-
             for (int monsIndex = input.N - 2; monsIndex >= 0; --monsIndex)
             {
                 maxTowerTurnsRemaining -= towerTurnsNeeded[monsIndex];
-                
-                int hitPoints = input.H[monsIndex] % input.Q;
-                if (hitPoints == 0) {
-                    hitPoints += input.Q;
-                }
-
+                                
                 int bonusTurnsThisRound = towerTurnsNeeded[monsIndex] - 1;
 
                 for (int turns = maxTowerTurnsRemaining; turns >= 0; --turns)
                 {
-                    int turnsNeeded = (hitPoints + input.P - 1) / input.P;
-
-                    //int nextRoundBonusTurns = towerTurnsNeeded[monsIndex + 1] - 1;
+                    int turnsNeeded = (input.H[monsIndex] + input.P - 1) / input.P;
 
                     if (turns + bonusTurnsThisRound >= turnsNeeded)
                     {
