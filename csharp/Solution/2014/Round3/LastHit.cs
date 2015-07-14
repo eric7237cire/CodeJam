@@ -34,6 +34,7 @@ namespace Year2014.Round3.Problem2
         public LastHitInput createInput(Scanner scanner)
         {
             LastHitInput input = new LastHitInput();
+            scanner.enablePlayBack();
 
             input.P = scanner.nextInt();
             input.Q = scanner.nextInt();
@@ -48,7 +49,7 @@ namespace Year2014.Round3.Problem2
                 input.G.Add(scanner.nextInt());
             }
 
-            //Logger.LogInfo("Input {}", scanner.finishPlayBack());
+            Logger.LogInfo("Input {}", scanner.finishPlayBack());
             return input;
         }
 
@@ -143,7 +144,9 @@ namespace Year2014.Round3.Problem2
                     hitPoints += input.Q;
                 }
 
-                if (input.P * turns >= hitPoints)
+                int bonusTurnsThisRound = towerTurnsNeeded[input.N-1] - 1;
+
+                if (input.P * (turns+bonusTurnsThisRound) >= hitPoints)
                 {
                     maxGold[input.N - 1][turns] = input.G[input.N - 1];
                 }
