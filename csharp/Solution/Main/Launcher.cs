@@ -24,6 +24,7 @@ using Round2_2014.Problem1;
 using Round2_2014.Problem2;
 using Round2_2014.Problem3;
 using Year2014.Round3.Problem1;
+using Year2014.Round3.Problem2;
 
 namespace MainNS
 {
@@ -91,7 +92,10 @@ namespace MainNS
 
             //2014 round3 
 
-            MagicalMarvelousTour main = new MagicalMarvelousTour();
+            //Binary search, interesting log n * log n
+           // MagicalMarvelousTour main = new MagicalMarvelousTour();
+            LastHit main = new LastHit();
+
 
             string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
 
@@ -119,13 +123,13 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-           // list.Add("sample.in");
+            list.Add("sample.in");
             // list.Add("E-small-practice.in");
              // list.Add("E-large-practice.in");
 
-              list.Add("A-small-practice.in");
+           //   list.Add("A-small-practice.in");
             //
-             list.Add("A-large-practice.in");
+            // list.Add("A-large-practice.in");
 
 
            // list.Add("B-small-practice.in");

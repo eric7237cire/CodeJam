@@ -18,10 +18,10 @@ using Logger = Utils.LoggerFile;
 <#@ output extension=".cs" #>
 
 <#
-String year = "2014";
+String year = "2015";
 String round = "3";
-String probNum = "1";
-String probName = "MagicalMarvelousTour";
+String probNum = "2";
+String probName = "LastHit";
 
 String nameSpace = "Year" + year + ".Round" + round + ".Problem" +  probNum;
 #>
