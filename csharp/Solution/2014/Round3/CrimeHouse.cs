@@ -22,11 +22,13 @@ namespace Year2014.Round3.Problem3
     {
         public bool isEntering;
         public int ID;
+        public bool seen;
 
         public Event DeepClone()
         {
             // Deep clone your object
             Event e = new Event(isEntering, ID);
+            e.seen = false;
             return e;
         }
 
@@ -34,8 +36,35 @@ namespace Year2014.Round3.Problem3
         {
             isEntering = _isEntering;
             ID = _ID;
+            seen = false;
         }
     }
+
+    public class State
+    {
+        public LinkedList<Event> nextEvents;
+        public bool isInside;
+
+        public State()
+        {
+            nextEvents = new LinkedList<Event>();
+            isInside = false;
+        }
+
+        public Event nextKnownEvent()
+        {
+            while (nextEvents.First != null && nextEvents.First.Value.seen)
+            {
+                nextEvents.RemoveFirst();
+            }
+            
+
+            return nextEvents.First != null ? nextEvents.First.Value : null;
+                
+        }
+
+    }
+
     public class CrimeHouseInput
     {
         public int N;
@@ -92,73 +121,75 @@ namespace Year2014.Round3.Problem3
                 events.AddLast(new Event(false, 0));
             }
 
-            Dictionary<int, bool> isInside = new Dictionary<int, bool>();
+            Dictionary<int, State> state = new Dictionary<int, State>();
 
             int nextUnknownId = 1000000;
             
+            //Build isInside set
             foreach(var e in events)
             {
-                if (e.ID > 0)
-                    isInside[e.ID] = false;
+                if (e.ID == 0)
+                    continue;
+
+                if (state.ContainsKey(e.ID) == false)
+                {
+                    state[e.ID] = new State();
+                }
+
+                state[e.ID].nextEvents.AddLast(e);
             }
-            //events.Select(e => e.ID).Where(id => id > 0).ToDictionary(id => id, id => false);
+            
 
             while(events.Count > 0)            
             {
                 Event currentEvent = events.First.Value;
+                currentEvent.seen = true;
                 events.RemoveFirst();
 
                 if (currentEvent.isEntering == true && currentEvent.ID > 0)
                 {
-                    if (isInside[currentEvent.ID] == true)
+                    if (state[currentEvent.ID].isInside == true)
                     {
                         return false;
                     }
-                    isInside[currentEvent.ID] = true;
+                    state[currentEvent.ID].isInside = true;
                     continue;
                 }
 
                 if (currentEvent.isEntering == false && currentEvent.ID > 0)
                 {
-                    if (isInside[currentEvent.ID] == false)
+                    if (state[currentEvent.ID].isInside == false)
                     {
                         return false;
                     }
 
-                    isInside[currentEvent.ID] = false;
+                    state[currentEvent.ID].isInside = false;
                     continue;
                 }
 
                 if (currentEvent.isEntering == true && currentEvent.ID == 0)
                 {
+                   
                     //Find first L X for a known IDs who is outside
-                    Dictionary<int, bool> toIgnore = new Dictionary<int, bool>();
-
-                    var first = events.FirstOrDefault(ev => 
-                        {
-                        if (ev.ID > 0
-                        && isInside[ev.ID] == false )
-                        {
-                            if (ev.isEntering == true)
-                            {
-                                toIgnore[ev.ID] = true;
-                            } else if (toIgnore.ContainsKey(ev.ID) ==false) {
-                                return true;
-                            }
-                        }
-                        return false;
-                        });
+                    
+                    var first = events.FirstOrDefault(ev =>                         
+                        ev.ID > 0
+                        && state[ev.ID].isInside == false 
+                        && state[ev.ID].nextKnownEvent().isEntering == false
+                        );
 
                     //We choose this guy to be the one who entered
                     if (first != null)
                     {
-                        isInside[first.ID] = true;
+                        state[first.ID].isInside = true;
                         continue;
                     }
                     else
                     {
+                        State s = new State();
+                        s.isInside = true;
                         //create a new unknown id
-                        isInside[nextUnknownId++] = true;
+                        state[nextUnknownId++] = s;
                         continue;
                     }
                 }
@@ -167,21 +198,22 @@ namespace Year2014.Round3.Problem3
                 {
                     var first = events.FirstOrDefault (ev =>
                         ev.ID > 0
-                        && isInside[ev.ID] == true
-                        && ev.isEntering == true);
+                        && state[ev.ID].isInside == true
+                        && state[ev.ID].nextKnownEvent().isEntering == true);
 
                     if (first != null)
                     {
-                        isInside[first.ID] = false;
+                        state[first.ID].isInside = false;
                         continue;
                     }
 
                     //See if someone is inside the house but has no further events
-                    var case2 = isInside.FirstOrDefault(kv => kv.Key > 0 && kv.Value == true && events.Any(e => e.ID == kv.Key) == false);
+                    var case2 = state.FirstOrDefault(kv => kv.Key > 0 && kv.Value.isInside == true 
+                        && kv.Value.nextKnownEvent() == null);
 
                     if (case2.Key > 0)
                     {
-                        isInside[case2.Key] = false;
+                        state[case2.Key].isInside = false;
                         continue;
                     }
 
@@ -189,13 +221,15 @@ namespace Year2014.Round3.Problem3
 
                     //Everyone inside and next known event is they are leaving
                     var lastLeaving = events.LastOrDefault(ev =>
-                        ev.ID > 0 
-                        && ev.isEntering == false
-                        && isInside[ev.ID] == true);
+                        ev.ID > 0
+                        && state[ev.ID].isInside == true
+                        && ev == state[ev.ID].nextKnownEvent()
+                        && state[ev.ID].nextKnownEvent().isEntering == false
+                        );
 
                     if (lastLeaving != null)
                     {
-                        isInside[lastLeaving.ID] = false;
+                        state[lastLeaving.ID].isInside = false;
                         continue;
                     }
                 }

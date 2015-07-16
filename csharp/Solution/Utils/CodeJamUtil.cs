@@ -324,6 +324,7 @@ namespace CodeJamUtils
                         AnswerClass ans = inputFileConsumer.processInput(input);
                         string ansStr = String.Format("Case #{0}: {1}", tc, ans);
                         writer.WriteLine(ansStr);
+                        writer.Flush();
                         Logger.Log(ansStr);
                     }
 
