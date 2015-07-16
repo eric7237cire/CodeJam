@@ -542,6 +542,7 @@
     <Compile Include="2014\Round2\DontBreakNile.cs" />
     <Compile Include="2014\Round2\TrieSharding.cs" />
     <Compile Include="2014\Round2\UpAndDown.cs" />
+    <Compile Include="2014\Round3\CrimeHouse.cs" />
     <Compile Include="2014\Round3\LastHit.cs" />
     <Compile Include="2014\Round3\MagicalMarvelousTour.cs" />
     <Compile Include="Main\Launcher.cs" />

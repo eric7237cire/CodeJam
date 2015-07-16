@@ -18,12 +18,12 @@ using Logger = Utils.LoggerFile;
 <#@ output extension=".cs" #>
 
 <#
-String year = "2015";
+String year = "2014";
 String round = "3";
-String probNum = "2";
-String probName = "LastHit";
+String probNum = "3";
+String probName = "CrimeHouse";
 
-String nameSpace = "Year" + year + ".Round" + round + ".Problem" +  probNum;
+String nameSpace = "aYear" + year + ".Round" + round + ".Problem" +  probNum;
 #>
 
 namespace <#=nameSpace#>

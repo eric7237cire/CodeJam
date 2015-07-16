@@ -25,6 +25,7 @@ using Round2_2014.Problem2;
 using Round2_2014.Problem3;
 using Year2014.Round3.Problem1;
 using Year2014.Round3.Problem2;
+using Year2014.Round3.Problem3;
 
 namespace MainNS
 {
@@ -96,7 +97,8 @@ namespace MainNS
            // MagicalMarvelousTour main = new MagicalMarvelousTour();
 
             //Bottum up dynamic programming like  a boss
-            LastHit main = new LastHit();
+            //LastHit main = new LastHit();
+            CrimeHouse main = new CrimeHouse();
 
 
             string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
@@ -134,11 +136,11 @@ namespace MainNS
             // list.Add("A-large-practice.in");
 
 
-            list.Add("B-small-practice.in");
-            list.Add("B-large-practice.in");
+           // list.Add("B-small-practice.in");
+          //  list.Add("B-large-practice.in");
 
-          //  list.Add("C-small-practice.in");
-          //  list.Add("C-large-practice.in");
+            list.Add("C-small-practice.in");
+            list.Add("C-large-practice.in");
 
             //list.Add("D-small-practice.in");
             //list.Add("D-large-practice.in");
