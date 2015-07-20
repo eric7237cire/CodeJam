@@ -4,13 +4,13 @@
 //#define LOGGING_TRACE
 #endif
 
+using CodeJam.Utils.tree;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Utils;
-
 using Logger = Utils.LoggerFile;
 
 namespace CodeJam.Utils.graph
@@ -79,6 +79,45 @@ namespace CodeJam.Utils.graph
             Logger.LogDebug("Add undirected connection {0} to {1}", u, v);
             addConnection(u, v);
             addConnection(v, u);
+        }
+
+        public TreeInt<T> GetTree<T>(int newRoot)
+        {
+            TreeInt<T> newTree = new TreeInt<T>(newRoot);
+
+            // Set<int> visited = new HashSet<int>();
+            Queue<int> toVisit = new Queue<int>();
+
+            toVisit.Enqueue(newRoot);
+
+            while (toVisit.Count > 0)
+            {
+                int nodeId = toVisit.Dequeue();
+
+                // if (visited.contains(nodeId))
+                // continue;
+
+                // visited.add(nodeId);
+
+                Preconditions.checkState(newTree.getNodes().ContainsKey(nodeId));
+                TreeInt<T>.Node newTreeNode = newTree.getNodes()[nodeId];
+                
+                // Get all new children from old tree
+                foreach (int childNodeId in outgoingEdges[nodeId])
+                {
+                    // Add children to new tree node
+                    if (newTreeNode.getParent() == null
+                            || childNodeId != newTreeNode.getParent().id)
+                    {
+                        newTreeNode.addChild(childNodeId);
+                        toVisit.Enqueue(childNodeId);
+                    }
+                }
+
+                
+            }
+
+            return newTree;
         }
 
         /// <summary>

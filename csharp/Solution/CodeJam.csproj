@@ -545,6 +545,7 @@
     <Compile Include="2014\Round3\CrimeHouse.cs" />
     <Compile Include="2014\Round3\LastHit.cs" />
     <Compile Include="2014\Round3\MagicalMarvelousTour.cs" />
+    <Compile Include="2014\Round3\Willow.cs" />
     <Compile Include="Main\Launcher.cs" />
     <Compile Include="Main\obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="Main\obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
@@ -660,7 +661,6 @@
     <Compile Include="Utils\PowerCollections\ReadOnlyCollectionBase.cs" />
     <Compile Include="Utils\PowerCollections\ReadOnlyListBase.cs" />
     <Compile Include="Utils\PowerCollections\RedBlack.cs" />
-    <Compile Include="Utils\PowerCollections\Set.cs" />
     <Compile Include="Utils\PowerCollections\Strings.cs" />
     <Compile Include="Utils\PowerCollections\Util.cs" />
     <Compile Include="Utils\Preconditions.cs" />
@@ -668,6 +668,7 @@
     <Compile Include="Utils\tree\FenwickTree.cs" />
     <Compile Include="Utils\tree\IntervalTree.cs" />
     <Compile Include="Utils\tree\SegmentTree.cs" />
+    <Compile Include="Utils\tree\Tree.cs" />
     <Compile Include="Utils\Trie.cs" />
   </ItemGroup>
   <ItemGroup>

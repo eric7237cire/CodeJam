@@ -26,6 +26,7 @@ using Round2_2014.Problem3;
 using Year2014.Round3.Problem1;
 using Year2014.Round3.Problem2;
 using Year2014.Round3.Problem3;
+using Year2014.Round3.Problem4;
 
 namespace MainNS
 {
@@ -98,9 +99,11 @@ namespace MainNS
 
             //Bottum up dynamic programming like  a boss
             //LastHit main = new LastHit();
-            CrimeHouse main = new CrimeHouse();
+          
+            //rules based processing, reasoning.  A binary search too.
+            //CrimeHouse main = new CrimeHouse();
 
-
+            Willow main = new Willow();
             string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
 
             //Portal main = new Portal();
@@ -139,8 +142,8 @@ namespace MainNS
            // list.Add("B-small-practice.in");
           //  list.Add("B-large-practice.in");
 
-            list.Add("C-small-practice.in");
-            list.Add("C-large-practice.in");
+          //  list.Add("C-small-practice.in");
+           // list.Add("C-large-practice.in");
 
             //list.Add("D-small-practice.in");
             //list.Add("D-large-practice.in");
