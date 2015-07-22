@@ -1,4 +1,4 @@
-﻿#define LOGGING_DEBUG
+﻿//#define LOGGING_DEBUG
 #define LOGGING_INFO
 using CodeJam._2014.Round2;
 using CodeJam.Utils.geom;
@@ -54,7 +54,93 @@ namespace Year2014.Round3.Problem4
             return input;
         }
 
+        
+       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="i">last vertex picked by current player</param>
+        /// <param name="j">last vertex of other player</param>
+        /// <param name="turn">who is making the turn.0 for first player, 1 second player</param>
+        /// <returns></returns>
+        public int rec(int i, int j, int turn, bool[][][] visited, WillowInput input, 
+            GraphUndirectedLinkedList g, GraphUndirected gu) 
+        {
+            if (visited[i][j][turn])
+                return 0;
+  
+            visited[i][j][turn] = true;
+
+            int ci = input.C[i];
+            input.C[i] = 0; //  # Remove the coins at vertex i
+
+            int ret = int.MinValue;
+
+            
+            //foreach(var ni in neighbors)
+            foreach(int ni in gu.getOutboundConnected(i))
+            {
+                if (g.GetNode(i, ni) == null)
+                    continue;
+                
+                g.removeConnection(i, ni);
+
+                ret = Math.Max(ret, -rec(j, ni, 1 - turn, visited, input, g, gu));
+
+                g.addConnection(i, ni);                
+            }
+  
+            if (ret == int.MinValue) 
+            {
+                ret = -rec(j, i, 1 - turn, visited, input, g, gu); //  # See note 5
+            }
+    
+            input.C[i] = ci;  //# Restore the coins at vertex i
+
+            return ret + ci;
+      }
+
         public int processInput(WillowInput input)
+        {
+            //TreeInt<int> tree = new TreeInt<int>(0);
+            GraphUndirectedLinkedList g = new GraphUndirectedLinkedList(input.N);
+            GraphUndirected gu = new GraphUndirected(input.N);
+            foreach(var road in input.Roads)
+            {
+                g.addConnection(road.First - 1, road.Second - 1);
+                gu.addConnection(road.First - 1, road.Second - 1);
+            }
+
+            int max = int.MinValue;
+            for(int i = 0; i < input.N; ++i)
+            {
+                Logger.LogInfo("Looking at i {}", i);
+                int minResponse = int.MaxValue;
+
+                for(int j = 0; j < input.N; ++j)
+                {
+                   // Logger.LogInfo("Looking at j {}", j);
+                    bool[][][] visited;
+                    Ext.createArray(out visited, input.N, input.N, 2, false);
+                    /*
+                     TreeInt<int> tree = g.GetTree<int>(i);
+                     tree.PostOrderTraversal(tree.getRoot(), node =>
+                     {
+                         node.setData(input.C[node.getId()]);
+                     });
+                    */
+                    int bestScore = rec(i,j, 0, visited, input, g, gu);
+
+                    //Logger.LogDebug("For tree {} score is {}", tree, bestScore);
+                    minResponse = Math.Min(bestScore, minResponse);
+                }
+
+                max = Math.Max(max, minResponse);
+            }
+
+            return max;
+        }
+        public int processInputFail(WillowInput input)
         {
             //TreeInt<int> tree = new TreeInt<int>(0);
             Graph g = new Graph(input.N);
