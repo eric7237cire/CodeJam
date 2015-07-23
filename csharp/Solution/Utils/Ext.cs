@@ -42,6 +42,21 @@ namespace Utils
             }
         }
 
+        public static void resetArray<T>(T[][][] array, int d1, int d2, int d3, T defValue)
+        {            
+            for (int i = 0; i < d1; ++i)
+            {
+                for (int j = 0; j < d2; ++j)
+                {
+                    for(int z = 0; z < d3; ++z)
+                    {
+                        array[i][j][z] = defValue;
+                    }
+
+                }
+            }
+        }
+
         public static void createArray<T>(out T[][][][] array, int d1, int d2, int d3, int d4, T defValue)
         {
             array = new T[d1][][][];

@@ -112,6 +112,10 @@ namespace Year2014.Round3.Problem4
             }
 
             int max = int.MinValue;
+
+            bool[][][] visited;
+            Ext.createArray(out visited, input.N, input.N, 2, false);
+
             for(int i = 0; i < input.N; ++i)
             {
                 Logger.LogInfo("Looking at i {}", i);
@@ -119,9 +123,9 @@ namespace Year2014.Round3.Problem4
 
                 for(int j = 0; j < input.N; ++j)
                 {
+                    Ext.resetArray(visited, input.N, input.N, 2, false);
                    // Logger.LogInfo("Looking at j {}", j);
-                    bool[][][] visited;
-                    Ext.createArray(out visited, input.N, input.N, 2, false);
+                    
                     /*
                      TreeInt<int> tree = g.GetTree<int>(i);
                      tree.PostOrderTraversal(tree.getRoot(), node =>
