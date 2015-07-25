@@ -27,6 +27,7 @@ using Year2014.Round3.Problem1;
 using Year2014.Round3.Problem2;
 using Year2014.Round3.Problem3;
 using Year2014.Round3.Problem4;
+using Year2014.Round4.Problem4;
 
 namespace MainNS
 {
@@ -103,7 +104,12 @@ namespace MainNS
             //rules based processing, reasoning.  A binary search too.
             //CrimeHouse main = new CrimeHouse();
 
-            Willow main = new Willow();
+            //Tree parsing, TODO slow memoization, redo in bottom up.  Halfway done
+            //Willow main = new Willow();
+
+            //2014 final round (4)
+            CheckerboardMatrix main = new CheckerboardMatrix();
+
             string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
 
             //Portal main = new Portal();
@@ -134,9 +140,9 @@ namespace MainNS
             // list.Add("E-small-practice.in");
              // list.Add("E-large-practice.in");
 
-           //   list.Add("A-small-practice.in");
+              list.Add("A-small-practice.in");
             //
-            // list.Add("A-large-practice.in");
+             list.Add("A-large-practice.in");
 
 
            // list.Add("B-small-practice.in");
@@ -146,7 +152,7 @@ namespace MainNS
            // list.Add("C-large-practice.in");
 
          //  list.Add("D-small-practice.in");
-            list.Add("D-large-practice.in");
+         //   list.Add("D-large-practice.in");
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1C\");

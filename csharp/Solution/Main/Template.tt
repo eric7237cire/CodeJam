@@ -19,9 +19,9 @@ using Logger = Utils.LoggerFile;
 
 <#
 String year = "2014";
-String round = "3";
+String round = "4";
 String probNum = "4";
-String probName = "Willow";
+String probName = "CheckerboardMatrix";
 
 String nameSpace = "aYear" + year + ".Round" + round + ".Problem" +  probNum;
 #>
