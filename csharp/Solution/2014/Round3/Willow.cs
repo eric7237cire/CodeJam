@@ -1,4 +1,4 @@
-﻿#define LOGGING_DEBUG
+﻿//#define LOGGING_DEBUG
 #define LOGGING_INFO
 using CodeJam._2014.Round2;
 using CodeJam.Utils.geom;
@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Utils;
 using Wintellect.PowerCollections;
 using Logger = Utils.LoggerFile;
+using PriorityQueueDemo;
 
 
 
@@ -65,6 +66,11 @@ namespace Year2014.Round3.Problem4
             public int[][] best_nodes;
             public int[][] memo_branch_off;
             public int[][] memo_rec;
+
+            public int GetEdgeId(int from, int to)
+            {
+                return edge_id[to][from];
+            }
         }
         static int ccc = 0;
         // Pre-calculate the next_node_to, best_coins, best_nodes.
@@ -225,8 +231,9 @@ namespace Year2014.Round3.Problem4
         {
             //Edge from N to all other nodes
 
-            Queue<Node> nodes = new Queue<Node>();
-
+            Queue<Node> pq = new Queue<Node>();
+            int[] seenCount;
+            Ext.createArray(out seenCount, a.input.N, 0);
 
             HashSet<int>[] prevNodesEdge;
             Ext.createArrayWithNew(out prevNodesEdge, a.input.N * 3);
@@ -248,7 +255,7 @@ namespace Year2014.Round3.Problem4
                     //a.best_coins[a.edge_id[i][a.input.N]] = a.input.C[i];
                     //a.best_coins[ a.edge_id[j][i] ] = a.input.C[i] + a.input.C[j];
 
-                    nodes.Enqueue(new Node(i, a.input.N));
+                    pq.Enqueue(new Node(i, a.input.N));
                     //prevNodes[ a.edge_id[i][a.input.N] ] 
                 }
             }
@@ -260,22 +267,64 @@ namespace Year2014.Round3.Problem4
             bool[] visitedNodes;
             Ext.createArray(out visitedNodes, a.input.N, false);
 
-
-            while(nodes.Count > 0)
+            #region bottom up
+            while (pq.Count > 0)
             {
-                Node node = nodes.Dequeue();
+                Node node = pq.Dequeue();
 
-                int edgeId = a.edge_id[node.current][node.prev];
-
+                int edgeId = a.GetEdgeId(node.prev, node.current);
+                int reverseEdgeId = a.edge_id[node.prev][node.current];
+                    
                 if (visitedEdges[edgeId])
                     continue;
 
-                
+                if (node.prev < a.input.N && seenCount[node.prev] < a.con[node.prev].Count)
+                {
+                    
+                    //continue;
+                }
+                if (node.prev < a.input.N)
+                {
+                    int bestFromPrev = a.input.C[node.prev];
+                    bool ok = true;
+                    foreach (int j in a.con[node.prev])
+                    {
+                        if (j != node.current)
+                        {
+                            int nextEdgeId = a.GetEdgeId(node.prev, j);
+                            //Preconditions.checkState(a.best_coins[nextEdgeId] != -1);
+                            if (a.best_coins[nextEdgeId] == -1)
+                            {
+                                Logger.LogDebug("Skipping for now {} to {} because no data for edge id{} {} to {}.  ", 
+                                    node.prev, node.current, nextEdgeId, node.prev, j);
+                                pq.Enqueue(node);
+                                
+                                ok = false; break;
+                            }
+                            bestFromPrev = Math.Max(bestFromPrev, a.best_coins[nextEdgeId] + a.input.C[node.prev]);
+                        }
+                    }
+
+                    if (ok)
+                    {
+                        Logger.LogDebug("Setting best coins for edge {} from {} to {} = {}",
+                            reverseEdgeId, node.current, node.prev, bestFromPrev);
+                        a.best_coins[reverseEdgeId] = bestFromPrev;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
 
                 visitedNodes[node.current] = true;
+                seenCount[node.current]++;
+                Logger.LogDebug("Seen to {} is now {}", node.current, seenCount[node.current]);
 
                 visitedEdges[edgeId] = true;
-
+                if (reverseEdgeId != -1)
+                    visitedEdges[reverseEdgeId] = true;
+                
                 var p = prevNodesEdge[edgeId];
 
                 seenNodes[node.current].UnionWith(p);
@@ -292,28 +341,10 @@ namespace Year2014.Round3.Problem4
                     else
                     {
                         a.next_node_to[node.current][i] = node.prev;
-                    }
-
-                   
+                    }                   
                 }
 
-                if (node.prev < a.input.N)
-                {
-                    int bestFromPrev = a.input.C[node.prev];
-                    foreach (int j in a.con[node.prev])
-                    {
-                        if (j != node.current)
-                        {
-                            int nextEdgeId = a.edge_id[j][node.prev];
-                            Preconditions.checkState(a.best_coins[nextEdgeId] != -1);
-
-                            bestFromPrev = Math.Max(bestFromPrev, a.best_coins[nextEdgeId] + a.input.C[node.prev]);
-                        }
-                    }
-
-                    int reverseEdgeId = a.edge_id[node.prev][node.current];
-                    a.best_coins[reverseEdgeId] = bestFromPrev;
-                }
+                
                 
                 foreach(int j in a.con[node.current])
                 {
@@ -321,8 +352,8 @@ namespace Year2014.Round3.Problem4
                     if (visitedEdges[nextEdgeId])
                         continue;
 
-                    if (visitedNodes[j])
-                        continue;
+                    //if (visitedNodes[j])
+                      //  continue;
                                         
                     Node nextNode = new Node(j, node.current);
                     Logger.LogDebug("    Adding node cur={} prev={} visited={}", j, node.current, String.Join(", ", prevNodesEdge[nextEdgeId]));
@@ -330,11 +361,164 @@ namespace Year2014.Round3.Problem4
                     prevNodesEdge[nextEdgeId].Add(node.current);
                     prevNodesEdge[nextEdgeId].UnionWith(seenNodes[node.current]);
                    
-                    nodes.Enqueue(nextNode);
+                    pq.Enqueue(nextNode);
+                }
+
+            }
+            #endregion
+#region look for nodes of degree > 1 where all paths are known
+
+            Queue<Node> nodes = new Queue<Node>();
+            for (int i = 0; i < a.input.N; ++i)
+            {
+                List<int> unknowns = new List<int>();
+                
+                foreach(int j in a.con[i])
+                {
+                    int edgeId = a.GetEdgeId(i, j);
+                    Logger.LogDebug("edge {} to {}.  best? {}", i, j, a.best_coins[edgeId]);
+
+                    if (a.best_coins[edgeId] == -1)
+                        unknowns.Add(j);
+
+                }
+
+                if (unknowns.Count == 0)
+                {
+                    foreach (int j in a.con[i])
+                    {
+                        Logger.LogDebug("Adding node from {} to {}", i, j);
+                        nodes.Enqueue(new Node(j, i));
+                    }
+                }
+            }
+#endregion
+            #region Find best paths for rest of graph
+            //Looping through edges such that
+            //-every branch from prev is known
+            //current->prev is -1
+            while (nodes.Count > 0)
+            {
+                Node node = nodes.Dequeue();
+                int edgeId = a.GetEdgeId(node.prev, node.current);
+                Logger.LogDebug("Looking at edge id {} from {} to {}",
+                    edgeId, node.prev, node.current);
+
+                int bestFromPrev = 0;
+                //Assumption, every branch from prev has a know best_coins
+                foreach(int prevNeigh in a.con[node.prev])
+                {
+                    if (prevNeigh == node.current)
+                        continue;
+
+                    int prevNeighEdge = a.GetEdgeId(node.prev, prevNeigh);
+                    Preconditions.checkState(a.best_coins[prevNeighEdge] != -1);
+                    bestFromPrev = Math.Max(bestFromPrev, a.best_coins[prevNeighEdge]);
+                }
+
+                //Because every branhc from prev is known, we can fill in current=>prev
+                int reverseEdgeId = a.GetEdgeId(node.current, node.prev);
+                Preconditions.checkState(a.best_coins[reverseEdgeId] == -1);
+                a.best_coins[reverseEdgeId] = bestFromPrev + a.input.C[node.prev];
+
+                bool allPathsFromCurrentKnown = true;
+
+                foreach(int nextNeigh in a.con[node.current])
+                {
+                    if (nextNeigh == node.prev)
+                        continue;
+
+                    int nextNeighEdgeId = a.GetEdgeId(node.current, nextNeigh);
+                    if (a.best_coins[nextNeighEdgeId] == -1)
+                    {
+                        allPathsFromCurrentKnown = false;
+                        break;
+                    }
+                    //int nextNeighEdge = a.GetEdgeId(node.current, nextNeigh);
+                    //Preconditions.checkState(a.best_coins[nextNeighEdge] == -1);                        
+                }
+
+                if (allPathsFromCurrentKnown)
+                {
+                    foreach (int nextNeigh in a.con[node.current])
+                    {
+                        if (nextNeigh == node.prev)
+                            continue;
+
+                        int nextNeighEdgeId = a.GetEdgeId(node.current, nextNeigh);
+                        Preconditions.checkState(a.best_coins[nextNeighEdgeId] != -1);
+
+                        int reverseNextEdgeId = a.GetEdgeId(nextNeigh, node.current);
+
+                        if (a.best_coins[reverseNextEdgeId] == -1)
+                        {
+                            nodes.Enqueue(new Node(nextNeigh, node.current));
+                        }
+                        //int nextNeighEdge = a.GetEdgeId(node.current, nextNeigh);
+                        //Preconditions.checkState(a.best_coins[nextNeighEdge] == -1);                        
+                    }
+                }
+            }
+            #endregion
+
+            #region Fill in best coins from fake node N to rest
+            for (int i = 0; i < a.input.N; ++i)
+            {
+                PriorityQueueDemo.PriorityQueue<int, int> pq2 = new PriorityQueueDemo.PriorityQueue<int,int>();
+
+                //Assumption, every branch from prev has a know best_coins
+                foreach (int neigh in a.con[i])
+                {
+                    
+                    int neighEdge = a.GetEdgeId(i, neigh);
+                    Preconditions.checkState(a.best_coins[neighEdge] != -1);
+
+                    pq2.Enqueue(-a.best_coins[neighEdge], neigh);
+
+                    //best = Math.Max(best, a.best_coins[neighEdge]);
+                }
+
+                List<int> bestNodes = new List<int>();
+
+                var dq = pq2.Dequeue();                
+                a.best_coins[a.GetEdgeId(a.input.N, i)] = -dq.Key + a.input.C[i];
+                bestNodes.Add(dq.Value);
+
+                for (int bestIndex = 0; bestIndex < 3 && pq2.Count > 0; ++bestIndex )
+                {
+                    dq = pq2.Dequeue();
+                    bestNodes.Add(dq.Value);
+                }
+
+                Logger.LogDebug("Best nodes from node {} = {}", i, String.Join(", ", bestNodes));
+
+                foreach (int neigh in a.con[i])
+                {
+                    int neighEdge = a.GetEdgeId(neigh, i);
+                    Logger.LogDebug("best_nodes edge {} from {} to {}", neighEdge, neigh, i);
+                    
+                    for (int bestIndex = 0, bnIndex = 0; bestIndex < 3 && bnIndex < bestNodes.Count; ++bestIndex, ++bnIndex)
+                    {
+                        if (bestNodes[bnIndex] == neigh)
+                        {
+                            //++bnIndex;
+                            --bestIndex;
+                            continue;
+                        }
+
+                        a.best_nodes[neighEdge][bestIndex] = bestNodes[bnIndex];
+                    }
+                }
+
+                int nFakeEdge = a.GetEdgeId(a.input.N, i);
+                Logger.LogDebug("best_nodes fake edge {} from {} to {}", nFakeEdge, a.input.N, i);
+                for (int bestIndex = 0; bestIndex < 3 && bestIndex < bestNodes.Count; ++bestIndex)
+                {                 
+                    a.best_nodes[nFakeEdge][bestIndex] = bestNodes[bestIndex];
                 }
                     
             }
-
+            #endregion
         }
 
         public int processInput(WillowInput input)
@@ -381,6 +565,8 @@ namespace Year2014.Round3.Problem4
                 }
             }
 
+            printInput(input);
+
             var check_best_coins = a.best_coins;
             var check_best_nodes = a.best_nodes;
             var check_next_node_to = a.next_node_to;
@@ -389,13 +575,12 @@ namespace Year2014.Round3.Problem4
             Ext.createArray(out a.next_node_to, input.N, input.N, -1);
             precalc_iterative(a);
 
-            printInput(input);
 
             Logger.LogDebug("best coins? {}",  Ext.CheckEquals("best_coins", check_best_coins, a.best_coins));
             Logger.LogDebug("Best nodes {}",  Ext.CheckEquals("best_nodes", check_best_nodes, a.best_nodes));
             Logger.LogDebug("next node to {}", Ext.CheckEquals("next_node_to", check_next_node_to, a.next_node_to));
 
-            return 1;
+           // return 1;
 
             Logger.LogInfo("Starting loop");
             int max_diff = -1000000000;
