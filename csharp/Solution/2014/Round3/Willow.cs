@@ -35,7 +35,7 @@ namespace Year2014.Round3.Problem4
     {
         public WillowInput createInput(Scanner scanner)
         {
-           // scanner.enablePlayBack();
+            //scanner.enablePlayBack();
             WillowInput input = new WillowInput();
 
             input.N = scanner.nextInt();
@@ -52,7 +52,7 @@ namespace Year2014.Round3.Problem4
             {
                 input.Roads.Add(new Pair<int, int>(i, scanner.nextInt()));
             }
-           // Logger.LogInfo("Input {}", scanner.finishPlayBack());
+            //Logger.LogInfo("Input {}", scanner.finishPlayBack());
             return input;
         }
 
@@ -236,15 +236,15 @@ namespace Year2014.Round3.Problem4
             Logger.LogInfo("Build structures");
 
 
-            HashSet<int>[] prevNodesEdge;
-            Ext.createArrayWithNew(out prevNodesEdge, a.input.N * 3);
+           // HashSet<int>[] prevNodesEdge;
+           // Ext.createArrayWithNew(out prevNodesEdge, a.input.N * 3);
 
 
             List<int>[] prevNodesListEdge;
             Ext.createArrayWithNew(out prevNodesListEdge, a.input.N * 3);
 
-            HashSet<int>[] seenNodes;
-            Ext.createArrayWithNew(out seenNodes, a.input.N+1);
+         //   HashSet<int>[] seenNodes;
+           // Ext.createArrayWithNew(out seenNodes, a.input.N+1);
 
             Logger.LogInfo("Find leaf nodes");
 
@@ -278,19 +278,22 @@ namespace Year2014.Round3.Problem4
             Logger.LogInfo("Start");
 
             int count = 1;
+            int realCount = 1;
             #region bottom up
             while (pq.Count > 0)
             {
-                if (count++ % 100 == 0)
-                    Logger.LogInfo("precalc i={}", count);
+                ++count;
                 Node node = pq.Dequeue();
 
                 int edgeId = a.GetEdgeId(node.prev, node.current);
-                int reverseEdgeId = a.edge_id[node.prev][node.current];
-                    
+                   
                 if (visitedEdges[edgeId])
                     continue;
 
+                int reverseEdgeId = a.edge_id[node.prev][node.current];
+                
+                if (realCount++ % 100 == 0)
+                    Logger.LogInfo("Real count rc = {}, {}.  Count remamining: {}", realCount, count, pq.Count);
                 
                 if (node.prev < a.input.N)
                 {
@@ -304,7 +307,7 @@ namespace Year2014.Round3.Problem4
                             //Preconditions.checkState(a.best_coins[nextEdgeId] != -1);
                             if (a.best_coins[nextEdgeId] == -1)
                             {
-                                Logger.LogInfo("Skipping for now {} to {} because no data for edge id{} {} to {}.  ", 
+                                Logger.LogDebug("Skipping for now {} to {} because no data for edge id{} {} to {}.  ", 
                                     node.prev, node.current, nextEdgeId, node.prev, j);
                                 pq.Enqueue(node);
                                 
@@ -350,7 +353,7 @@ namespace Year2014.Round3.Problem4
                 
                 //var p = prevNodesEdge[edgeId];
 
-                seenNodes[node.current].UnionWith(p);
+               // seenNodes[node.current].UnionWith(p);
 
                 //Logger.LogDebug("!Processing node cur={} prev={}\nvisited={}\nvisited new={}", node.current, node.prev, 
                  //   String.Join(", ", p), String.Join(", ", p2));
@@ -380,10 +383,10 @@ namespace Year2014.Round3.Problem4
                       //  continue;
                                         
                     Node nextNode = new Node(j, node.current);
-                    Logger.LogDebug("    Adding node cur={} prev={} visited={}", j, node.current, String.Join(", ", prevNodesEdge[nextEdgeId]));
+                   // Logger.LogDebug("    Adding node cur={} prev={} visited={}", j, node.current, String.Join(", ", prevNodesEdge[nextEdgeId]));
                     
-                    prevNodesEdge[nextEdgeId].Add(node.current);
-                    prevNodesEdge[nextEdgeId].UnionWith(seenNodes[node.current]);
+                   // prevNodesEdge[nextEdgeId].Add(node.current);
+                  //  prevNodesEdge[nextEdgeId].UnionWith(seenNodes[node.current]);
                    
                     pq.Enqueue(nextNode);
                 }
@@ -577,7 +580,8 @@ namespace Year2014.Round3.Problem4
             Ext.createArray(out a.memo_rec, MAXE, MAXE,-1);
             Ext.createArray(out a.memo_branch_off, MAXE, MAXE, -1);
 
-            printInput(input);
+            //return 1;
+            //Logger.LogInfo("{}", printInput(input));
             Logger.LogInfo("Starting precalc");
             // Pre-calculation.
             /*for (int i = 0; i < input.N; i++)
@@ -589,7 +593,7 @@ namespace Year2014.Round3.Problem4
                    // precalc(a, j, i, i, j, 0);
                 }
             }
-
+            
            
 
             var check_best_coins = a.best_coins;
@@ -612,7 +616,7 @@ namespace Year2014.Round3.Problem4
             int max_diff = -1000000000;
             for (int i = 0; i < input.N; i++)
             {
-                if (i%100==0) Logger.LogInfo("Starting loop i={}", i);
+                Logger.LogInfo("Starting loop i={}", i);
                 int min_diff = 1000000000;
                 for (int j = 0; j < input.N; j++)
                 {
@@ -669,7 +673,7 @@ namespace Year2014.Round3.Problem4
             return ret + ci;
       }
 
-        public void printInput(WillowInput input)
+        public String printInput(WillowInput input)
         {
             Graph g = new Graph(input.N);
 
@@ -688,7 +692,7 @@ namespace Year2014.Round3.Problem4
 
             });
 
-            Logger.LogDebug("{}", tree);
+            return tree.ToString();
         }
 
         public int processInputSmall(WillowInput input)
