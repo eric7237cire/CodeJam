@@ -130,7 +130,7 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-         // list.Add("sample.in");
+         list.Add("sample.in");
             // list.Add("E-small-practice.in");
              // list.Add("E-large-practice.in");
 
@@ -146,7 +146,7 @@ namespace MainNS
            // list.Add("C-large-practice.in");
 
            list.Add("D-small-practice.in");
-           // list.Add("D-large-practice.in");
+            list.Add("D-large-practice.in");
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1C\");

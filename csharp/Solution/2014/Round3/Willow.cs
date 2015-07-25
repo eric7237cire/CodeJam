@@ -239,6 +239,10 @@ namespace Year2014.Round3.Problem4
             HashSet<int>[] prevNodesEdge;
             Ext.createArrayWithNew(out prevNodesEdge, a.input.N * 3);
 
+
+            List<int>[] prevNodesListEdge;
+            Ext.createArrayWithNew(out prevNodesListEdge, a.input.N * 3);
+
             HashSet<int>[] seenNodes;
             Ext.createArrayWithNew(out seenNodes, a.input.N+1);
 
@@ -327,13 +331,29 @@ namespace Year2014.Round3.Problem4
                 
                 visitedEdges[edgeId] = true;
                 if (reverseEdgeId != -1)
+                {
                     visitedEdges[reverseEdgeId] = true;
+                    prevNodesListEdge[edgeId].Add(node.prev);
+
+                    foreach (int j in a.con[node.prev])
+                    {
+                        if (j != node.current)
+                        {
+                            int nextEdgeId = a.GetEdgeId(j, node.prev);
+
+                            prevNodesListEdge[edgeId].AddRange(prevNodesListEdge[nextEdgeId]);
+                        }
+                    }
+                }
+
+                var p = prevNodesListEdge[edgeId];
                 
-                var p = prevNodesEdge[edgeId];
+                //var p = prevNodesEdge[edgeId];
 
                 seenNodes[node.current].UnionWith(p);
 
-                Logger.LogDebug("Processing node cur={} prev={} visited={}", node.current, node.prev, String.Join(", ", p));
+                //Logger.LogDebug("!Processing node cur={} prev={}\nvisited={}\nvisited new={}", node.current, node.prev, 
+                 //   String.Join(", ", p), String.Join(", ", p2));
 
                 for(int i = 0; i < a.input.N; ++i)
                 {
@@ -557,7 +577,7 @@ namespace Year2014.Round3.Problem4
             Ext.createArray(out a.memo_rec, MAXE, MAXE,-1);
             Ext.createArray(out a.memo_branch_off, MAXE, MAXE, -1);
 
-
+            printInput(input);
             Logger.LogInfo("Starting precalc");
             // Pre-calculation.
             /*for (int i = 0; i < input.N; i++)
@@ -570,7 +590,7 @@ namespace Year2014.Round3.Problem4
                 }
             }
 
-            printInput(input);
+           
 
             var check_best_coins = a.best_coins;
             var check_best_nodes = a.best_nodes;
