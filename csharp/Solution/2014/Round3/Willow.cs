@@ -245,7 +245,7 @@ namespace Year2014.Round3.Problem4
                 if (a.con[i].Count == 1)
                 {
                     int j = a.con[i][0];
-                   // a.best_coins[a.edge_id[a.input.N][i]] = a.input.C[i];
+                    //a.best_coins[a.edge_id[i][a.input.N]] = a.input.C[i];
                     //a.best_coins[ a.edge_id[j][i] ] = a.input.C[i] + a.input.C[j];
 
                     nodes.Enqueue(new Node(i, a.input.N));
@@ -279,7 +279,6 @@ namespace Year2014.Round3.Problem4
                 var p = prevNodesEdge[edgeId];
 
                 seenNodes[node.current].UnionWith(p);
-                //var p = seenNodes[node.current];
 
                 Logger.LogDebug("Processing node cur={} prev={} visited={}", node.current, node.prev, String.Join(", ", p));
 
@@ -298,15 +297,24 @@ namespace Year2014.Round3.Problem4
                    
                 }
 
-                HashSet<int> vn = new HashSet<int>();
-                vn.Add(node.current);
-                foreach (int j in a.con[node.current])
+                if (node.prev < a.input.N)
                 {
-                    int nextEdgeId = a.edge_id[j][node.current];
+                    int bestFromPrev = a.input.C[node.prev];
+                    foreach (int j in a.con[node.prev])
+                    {
+                        if (j != node.current)
+                        {
+                            int nextEdgeId = a.edge_id[j][node.prev];
+                            Preconditions.checkState(a.best_coins[nextEdgeId] != -1);
 
-                    vn.UnionWith(prevNodesEdge[nextEdgeId]);
+                            bestFromPrev = Math.Max(bestFromPrev, a.best_coins[nextEdgeId] + a.input.C[node.prev]);
+                        }
+                    }
+
+                    int reverseEdgeId = a.edge_id[node.prev][node.current];
+                    a.best_coins[reverseEdgeId] = bestFromPrev;
                 }
-
+                
                 foreach(int j in a.con[node.current])
                 {
                     int nextEdgeId = a.edge_id[j][node.current];
@@ -315,18 +323,13 @@ namespace Year2014.Round3.Problem4
 
                     if (visitedNodes[j])
                         continue;
-
-                    seenNodes[j].Add(node.current);
-                    seenNodes[j].UnionWith(seenNodes[node.current]);
-
+                                        
                     Node nextNode = new Node(j, node.current);
-                    Logger.LogDebug("    Adding node cur={} prev={} visited={}", j, node.current, String.Join(", ", vn));
-                    var n = new HashSet<int>(p);
-                    n.Add(node.current);
-                    n.UnionWith(seenNodes[node.current]);
-                   // prevNodes[node.prev].Add(node.current);
-
-                    prevNodesEdge[nextEdgeId] = n;
+                    Logger.LogDebug("    Adding node cur={} prev={} visited={}", j, node.current, String.Join(", ", prevNodesEdge[nextEdgeId]));
+                    
+                    prevNodesEdge[nextEdgeId].Add(node.current);
+                    prevNodesEdge[nextEdgeId].UnionWith(seenNodes[node.current]);
+                   
                     nodes.Enqueue(nextNode);
                 }
                     
