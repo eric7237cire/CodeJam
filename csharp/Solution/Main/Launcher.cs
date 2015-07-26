@@ -27,7 +27,10 @@ using Year2014.Round3.Problem1;
 using Year2014.Round3.Problem2;
 using Year2014.Round3.Problem3;
 using Year2014.Round3.Problem4;
-using Year2014.Round4.Problem4;
+
+using Year2014.Round4.Problem1;
+using Year2014.Round4.Problem2;
+using Year2014.Round4.Problem3;
 
 namespace MainNS
 {
@@ -108,7 +111,12 @@ namespace MainNS
             //Willow main = new Willow();
 
             //2014 final round (4)
-            CheckerboardMatrix main = new CheckerboardMatrix();
+           // CheckerboardMatrix main = new CheckerboardMatrix();
+
+            //Sorting in powers 2, generalzie rule from small case to larger case
+            //PowerSwapper main = new PowerSwapper();
+
+            SymmetricTrees main = new SymmetricTrees();
 
             string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
 
@@ -136,19 +144,19 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-       //  list.Add("sample.in");
+         list.Add("sample.in");
             // list.Add("E-small-practice.in");
              // list.Add("E-large-practice.in");
 
-              list.Add("A-small-practice.in");
+           //   list.Add("A-small-practice.in");
             //
-             list.Add("A-large-practice.in");
+            // list.Add("A-large-practice.in");
 
 
            // list.Add("B-small-practice.in");
-          //  list.Add("B-large-practice.in");
+           // list.Add("B-large-practice.in");
 
-          //  list.Add("C-small-practice.in");
+            list.Add("C-small-practice.in");
            // list.Add("C-large-practice.in");
 
          //  list.Add("D-small-practice.in");

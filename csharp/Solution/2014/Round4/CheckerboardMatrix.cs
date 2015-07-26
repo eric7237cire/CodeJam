@@ -18,7 +18,7 @@ using Logger = Utils.LoggerFile;
 
 
 
-namespace Year2014.Round4.Problem4
+namespace Year2014.Round4.Problem1
 {
 
     public class CheckerboardMatrixInput
@@ -38,7 +38,7 @@ namespace Year2014.Round4.Problem4
             
             input.N = scanner.nextInt();
 
-            Func<BitBlockSet> init = () => new BitBlockSet(input.N*2, false);
+            Func<int, BitBlockSet> init = (int i) => new BitBlockSet(input.N*2, false);
 
             Ext.createArrayWithFunc(out input.M, input.N * 2, init);
             Ext.createArrayWithFunc(out input.M_transpose, input.N * 2, init);
