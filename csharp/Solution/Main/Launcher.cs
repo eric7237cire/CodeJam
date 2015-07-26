@@ -32,6 +32,7 @@ using Year2014.Round4.Problem1;
 using Year2014.Round4.Problem2;
 using Year2014.Round4.Problem3;
 using Year2015.RoundQual.Problem1;
+using Year2015.RoundQual.Problem2;
 
 namespace MainNS
 {
@@ -121,8 +122,10 @@ namespace MainNS
            // SymmetricTrees main = new SymmetricTrees();
 
             //2015 qual
+            //greedy easy
+            //StandingOvation main = new StandingOvation();
 
-            StandingOvation main = new StandingOvation();
+            InfiniteHouseOfPancakes main = new InfiniteHouseOfPancakes();
 
             string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
 
@@ -154,12 +157,12 @@ namespace MainNS
             // list.Add("E-small-practice.in");
              // list.Add("E-large-practice.in");
 
-              list.Add("A-small-practice.in");
+             // list.Add("A-small-practice.in");
             //
-             list.Add("A-large-practice.in");
+           //  list.Add("A-large-practice.in");
 
 
-           // list.Add("B-small-practice.in");
+            list.Add("B-small-practice.in");
            // list.Add("B-large-practice.in");
 
             //list.Add("C-small-practice.in");

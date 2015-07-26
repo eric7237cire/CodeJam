@@ -20,8 +20,8 @@ using Logger = Utils.LoggerFile;
 <#
 String year = "2015";
 String round = "Qual";
-String probNum = "1";
-String probName = "StandingOvation";
+String probNum = "2";
+String probName = "InfiniteHouseOfPancakes";
 
 String nameSpace = "aYear" + year + ".Round" + round + ".Problem" +  probNum;
 #>

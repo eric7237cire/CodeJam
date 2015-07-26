@@ -16,10 +16,10 @@ using Logger = Utils.LoggerFile;
 
 
 
-namespace aYear2015.RoundQual.Problem1
+namespace aYear2015.RoundQual.Problem2
 {
     
-    public class StandingOvationInput
+    public class InfiniteHouseOfPancakesInput
     {
        
         public int N;
@@ -27,12 +27,12 @@ namespace aYear2015.RoundQual.Problem1
         public List<String> S;
     }
 
-	public class StandingOvation : InputFileProducer<StandingOvationInput>, InputFileConsumer<StandingOvationInput, String>
+	public class InfiniteHouseOfPancakes : InputFileProducer<InfiniteHouseOfPancakesInput>, InputFileConsumer<InfiniteHouseOfPancakesInput, String>
     {
-        public StandingOvationInput createInput(Scanner scanner)
+        public InfiniteHouseOfPancakesInput createInput(Scanner scanner)
         {
 			//scanner.enablePlayback();
-			StandingOvationInput input = new StandingOvationInput();
+			InfiniteHouseOfPancakesInput input = new InfiniteHouseOfPancakesInput();
 			           
             input.N = scanner.nextInt();
 
@@ -47,7 +47,7 @@ namespace aYear2015.RoundQual.Problem1
             return input;
 		}
 
-		public String processInput(StandingOvationInput input)
+		public String processInput(InfiniteHouseOfPancakesInput input)
         {
 			return "-1";
 		}
