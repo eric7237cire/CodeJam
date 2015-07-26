@@ -116,6 +116,7 @@ namespace MainNS
             //Sorting in powers 2, generalzie rule from small case to larger case
             //PowerSwapper main = new PowerSwapper();
 
+            //Another one (like Willow) where c# can't handle the recursion depth.  Understanding...
             SymmetricTrees main = new SymmetricTrees();
 
             string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
@@ -157,7 +158,7 @@ namespace MainNS
            // list.Add("B-large-practice.in");
 
             list.Add("C-small-practice.in");
-           // list.Add("C-large-practice.in");
+            list.Add("C-large-practice.in");
 
          //  list.Add("D-small-practice.in");
          //   list.Add("D-large-practice.in");
