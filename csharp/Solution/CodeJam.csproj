@@ -37,6 +37,25 @@
   <PropertyGroup>
     <RootNamespace>CodeJam</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="nunit.core, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
@@ -546,6 +565,11 @@
     <Compile Include="2014\Round3\LastHit.cs" />
     <Compile Include="2014\Round3\MagicalMarvelousTour.cs" />
     <Compile Include="2014\Round3\Willow.cs" />
+    <Compile Include="2014\Round4\CheckerboardMatrix.cs" />
+    <Compile Include="2014\Round4\PowerSwapper.cs" />
+    <Compile Include="2014\Round4\SymmetricTrees.cs" />
+    <Compile Include="2015\RoundQual\InfiniteHouseOfPancakes.cs" />
+    <Compile Include="2015\RoundQual\StandingOvation.cs" />
     <Compile Include="Main\Launcher.cs" />
     <Compile Include="Main\obj\Debug\TemporaryGeneratedFile_036C0B5B-1481-4323-8D20-8F5ADCB23D92.cs" />
     <Compile Include="Main\obj\Debug\TemporaryGeneratedFile_5937a670-0e60-4077-877b-f7221da3dda1.cs" />
@@ -597,6 +621,7 @@
     <Compile Include="UnitTest\TestTrie.cs" />
     <Compile Include="UnitTest\TestUtils.cs" />
     <Compile Include="UnitTest\TestWheel.cs" />
+    <Compile Include="Utils\BitBlockSet.cs" />
     <Compile Include="Utils\BitSet.cs" />
     <Compile Include="Utils\CodeJamUtil.cs" />
     <Compile Include="Utils\CombPerm.cs" />
@@ -616,8 +641,10 @@
       <DependentUpon>Edge.tt</DependentUpon>
     </Compile>
     <Compile Include="Utils\graph\Graph.cs" />
+    <Compile Include="Utils\graph\GraphLinkedListUndirected.cs" />
     <Compile Include="Utils\graph\MaxFlow.cs" />
     <Compile Include="Utils\heapPQ\HeapPriorityQueue.cs" />
+    <Compile Include="Utils\heapPQ\PriorityQueue.cs" />
     <Compile Include="Utils\heapPQ\PriorityQueueNode.cs" />
     <Compile Include="Utils\Logger.cs" />
     <Compile Include="Utils\math\BigFraction.cs" />
