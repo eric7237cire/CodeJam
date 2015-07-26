@@ -31,6 +31,7 @@ using Year2014.Round3.Problem4;
 using Year2014.Round4.Problem1;
 using Year2014.Round4.Problem2;
 using Year2014.Round4.Problem3;
+using Year2015.RoundQual.Problem1;
 
 namespace MainNS
 {
@@ -117,7 +118,11 @@ namespace MainNS
             //PowerSwapper main = new PowerSwapper();
 
             //Another one (like Willow) where c# can't handle the recursion depth.  Understanding...
-            SymmetricTrees main = new SymmetricTrees();
+           // SymmetricTrees main = new SymmetricTrees();
+
+            //2015 qual
+
+            StandingOvation main = new StandingOvation();
 
             string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
 
@@ -149,16 +154,16 @@ namespace MainNS
             // list.Add("E-small-practice.in");
              // list.Add("E-large-practice.in");
 
-           //   list.Add("A-small-practice.in");
+              list.Add("A-small-practice.in");
             //
-            // list.Add("A-large-practice.in");
+             list.Add("A-large-practice.in");
 
 
            // list.Add("B-small-practice.in");
            // list.Add("B-large-practice.in");
 
-            list.Add("C-small-practice.in");
-            list.Add("C-large-practice.in");
+            //list.Add("C-small-practice.in");
+          //  list.Add("C-large-practice.in");
 
          //  list.Add("D-small-practice.in");
          //   list.Add("D-large-practice.in");
