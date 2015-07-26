@@ -42,45 +42,53 @@ namespace Year2015.RoundQual.Problem2
             return input;
         }
 
-        public int cost(int[] counts)
+        public int cost(int[] p, int currentIndex, int minimum, int[][] memo)
         {
-            int highest = -1;
-            for(int m = counts.Length - 1; m >= 0; --m)
+            if (currentIndex >= p.Length)
+                return minimum;
+
+            if (memo[currentIndex][minimum] != -1)
             {
-                if (counts[m] > 0)
-                {
-                    highest = m;
-                    break;
-                }
+                return memo[currentIndex][minimum];
             }
+            
 
-            Preconditions.checkState(highest >= 0);
+            int val = p[currentIndex];
+            int costDoNothing = val;
 
-            int costDoNothing = highest;
+            if (val <= minimum)
+                return memo[currentIndex][minimum] = minimum;
 
 
             int costSwitching = int.MaxValue;
 
-            if (highest > 2)
+            if (p[currentIndex] > minimum)
             {
-                costSwitching = counts[highest];
-                counts[highest / 2] += counts[highest];
-                counts[highest - highest / 2] += counts[highest];
-                counts[highest] = 0;
-                 costSwitching += cost(counts);
+                for (int div = 2; div < 32 && div < val; ++div )
+                {
+                    int c = div-1;
+                    
+                    int min = val / div;
+                    if (val % div != 0)
+                        min ++;
+
+                    c += cost(p, currentIndex+1, Math.Max(minimum, min), memo);
+
+                    costSwitching = Math.Min(costSwitching, c);
+                }
+                    
             }
-            return Math.Min(costDoNothing, costSwitching);
+            return memo[currentIndex][minimum] = Math.Min(costDoNothing, costSwitching);
 
         }
         public int processInput(InfiniteHouseOfPancakesInput input)
         {
-            int[] counts = new int[1001];
+            int[][] memo;
+            Ext.createArray(out memo, input.P.Length, 1001, -1);
+            Array.Sort(input.P);
+            Array.Reverse(input.P);
 
-            foreach(int p in input.P)
-            {
-                counts[p]++;
-            }
-            return cost(counts);
+            return cost(input.P,0, 1, memo);
         }
     }
 
