@@ -568,6 +568,7 @@
     <Compile Include="2014\Round4\CheckerboardMatrix.cs" />
     <Compile Include="2014\Round4\PowerSwapper.cs" />
     <Compile Include="2014\Round4\SymmetricTrees.cs" />
+    <Compile Include="2015\RoundQual\Dijkstra.cs" />
     <Compile Include="2015\RoundQual\InfiniteHouseOfPancakes.cs" />
     <Compile Include="2015\RoundQual\StandingOvation.cs" />
     <Compile Include="Main\Launcher.cs" />

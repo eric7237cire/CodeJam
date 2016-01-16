@@ -5,10 +5,57 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Utils
 {
     public static class Ext
     {
+        public static String CheckEquals<T>(String name, T[] lhs, T[] rhs)
+        {
+            if (lhs.Length != rhs.Length)
+                return String.Format("Counts not equal: {0} and {1}", lhs.Length, rhs.Length);
+
+            StringBuilder sb = new StringBuilder();
+
+            for(int i = 0; i < lhs.Length; ++i)
+            {
+                if (lhs[i].Equals(rhs[i]) == false)
+                {
+                    sb.AppendFormat("{0}[{1}] : {2} != {3} ", name, i, lhs[i], rhs[i]).AppendLine();
+                    //return String.Format("element {0} not equal {1}, {2}", i, lhs[i], rhs[i]);
+                }
+            }
+
+            return sb.ToString();
+
+        }
+
+        public static String CheckEquals<T>(String name, T[][] lhs, T[][] rhs)
+        {
+            if (lhs.Length != rhs.Length)
+                return String.Format("Counts not equal: {0} and {1}", lhs.Length, rhs.Length);
+
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < lhs.Length; ++i)
+            {
+                if (lhs[i].Length != rhs[i].Length)
+                    return String.Format("Counts not equal: {0} and {1}.  sub {2}", lhs.Length, rhs.Length, i);
+
+                for(int j=0; j < lhs[i].Length; ++j)
+                {
+                    if (lhs[i][j].Equals(rhs[i][j]) == false)
+                    {
+                        sb.AppendFormat("{0}[{1}][{2}] : {3} != {4} ", name, i, j, lhs[i][j], rhs[i][j]).AppendLine();
+                    }
+                }
+                
+            }
+
+            return sb.ToString();
+
+        }
+
         public static void initList<T>(out List<T> list, int size, T defaultValue)
         {
             list = new List<T>();
@@ -18,7 +65,25 @@ namespace Utils
             }
         }
 
-        
+        public static void createArrayWithFunc<T>(out T[] array, int d1, Func<int, T> init)
+        {
+            array = new T[d1];
+            for (int i = 0; i < d1; ++i)
+            {
+                array[i] = init(i);
+            }
+        }
+
+        public static void createArray<T>(out T[] array, int d1, T defValue)
+        {
+            array = new T[d1];
+            for (int i = 0; i < d1; ++i)
+            {
+                
+                array[i] = defValue;
+                
+            }
+        }
         public static void createArray<T>(out T[][] array, int d1, int d2, T defValue)
         {
             array = new T[d1][];
@@ -149,6 +214,14 @@ namespace Utils
         public static T GetLastValue<T>(this IList<T> list)
         {
             return list[list.Count - 1];
+        }
+
+        public static void ForEach(this string str, Action<int, char> a)
+        {
+            for(int i = 0; i < str.Length; ++i)
+            {
+                a(i, str[i]);
+            }
         }
 
         public static void pop_back<T>(this List<T> list)

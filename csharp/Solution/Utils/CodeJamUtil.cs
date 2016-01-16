@@ -220,6 +220,7 @@ namespace CodeJamUtils
 
                 Task[] consumeTasks = null;
                 AnswerClass[] answers;
+                Action[] actions;
 
                 using (scanner = new Scanner(inputReader))
                 {
@@ -228,6 +229,7 @@ namespace CodeJamUtils
                     answers = new AnswerClass[testCases];
                     consumeTasks = new Task[testCases];
                     
+                    actions = new Action[testCases];
 
                     for (int tc = 1; tc <= testCases; ++tc)
                     {
@@ -245,11 +247,17 @@ namespace CodeJamUtils
                        
                         
                         //Avoid binding to tc which gets incremented beyond the limit
-                        #if !mono
+                        
                         int tcLocal = tc;
-                        consumeTasks[tc-1] = Task.Run(() => consumeSingle(input, tcLocal, answers));
-                        #endif
+                        //consumeTasks[tc-1] = Task.Run(() => );
+                        actions[tc-1]=() =>
+                        {
+                            consumeSingle(input, tcLocal, answers);
+                        };
+                        
                     }
+
+                    
                                         
                     timer.Stop();
                     TimeSpan timespan = timer.Elapsed;
@@ -259,7 +267,10 @@ namespace CodeJamUtils
 
                 }
 
-                Task.WaitAll(consumeTasks);
+                var po = new ParallelOptions();
+                po.MaxDegreeOfParallelism = 2;
+                System.Threading.Tasks.Parallel.Invoke(po, actions);
+               // Task.WaitAll(consumeTasks);
 
                 Regex regex = new Regex(@"(\..*)?$");
                 string outputFileName = regex.Replace(inputFileName, ".out", 1);
@@ -549,7 +560,7 @@ namespace CodeJamUtils
             timer.Stop();
             TimeSpan timespan = timer.Elapsed;
 
-            Logger.Log(String.Format("Total {0:00}:{1:00}:{2:00}", timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
+            Logger.Log(String.Format("Total {0:00}:{1:00}:{2:00}:{3:00}", timespan.Hours, timespan.Minutes, timespan.Seconds, timespan.Milliseconds / 10));
 
         }
 

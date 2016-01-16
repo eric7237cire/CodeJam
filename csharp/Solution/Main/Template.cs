@@ -16,10 +16,10 @@ using Logger = Utils.LoggerFile;
 
 
 
-namespace aYear2015.RoundQual.Problem2
+namespace aYear2015.RoundQual.Problem3
 {
     
-    public class InfiniteHouseOfPancakesInput
+    public class DijkstraInput
     {
        
         public int N;
@@ -27,12 +27,12 @@ namespace aYear2015.RoundQual.Problem2
         public List<String> S;
     }
 
-	public class InfiniteHouseOfPancakes : InputFileProducer<InfiniteHouseOfPancakesInput>, InputFileConsumer<InfiniteHouseOfPancakesInput, String>
+	public class Dijkstra : InputFileProducer<DijkstraInput>, InputFileConsumer<DijkstraInput, String>
     {
-        public InfiniteHouseOfPancakesInput createInput(Scanner scanner)
+        public DijkstraInput createInput(Scanner scanner)
         {
 			//scanner.enablePlayback();
-			InfiniteHouseOfPancakesInput input = new InfiniteHouseOfPancakesInput();
+			DijkstraInput input = new DijkstraInput();
 			           
             input.N = scanner.nextInt();
 
@@ -47,7 +47,7 @@ namespace aYear2015.RoundQual.Problem2
             return input;
 		}
 
-		public String processInput(InfiniteHouseOfPancakesInput input)
+		public String processInput(DijkstraInput input)
         {
 			return "-1";
 		}

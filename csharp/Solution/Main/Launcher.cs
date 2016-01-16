@@ -33,6 +33,7 @@ using Year2014.Round4.Problem2;
 using Year2014.Round4.Problem3;
 using Year2015.RoundQual.Problem1;
 using Year2015.RoundQual.Problem2;
+using Year2015.RoundQual.Problem3;
 
 namespace MainNS
 {
@@ -125,7 +126,11 @@ namespace MainNS
             //greedy easy
             //StandingOvation main = new StandingOvation();
 
-            InfiniteHouseOfPancakes main = new InfiniteHouseOfPancakes();
+            //Did different solution, could have guessed solution then verified, did
+            //memoized recrusive function instead.
+           // InfiniteHouseOfPancakes main = new InfiniteHouseOfPancakes();
+
+            Dijkstra main = new Dijkstra();
 
             string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
 
@@ -162,8 +167,8 @@ namespace MainNS
            //  list.Add("A-large-practice.in");
 
 
-            list.Add("B-small-practice.in");
-            list.Add("B-large-practice.in");
+           // list.Add("B-small-practice.in");
+          //  list.Add("B-large-practice.in");
 
             //list.Add("C-small-practice.in");
           //  list.Add("C-large-practice.in");
