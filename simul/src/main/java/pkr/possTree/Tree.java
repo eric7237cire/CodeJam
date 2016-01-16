@@ -1,5 +1,6 @@
 package pkr.possTree;
 
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -11,9 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.CompleteEvaluation;
-import pkr.possTree.PossibilityNode.HandSubCategory;
 import pkr.possTree.PossibilityNode.TextureCategory;
-import pkr.possTree.PossibilityNode.WinningLosingCategory;
+import poker_simulator.flags.HandSubCategory;
+import poker_simulator.flags.WinningLosingCategory;
 
 import com.google.common.base.Preconditions;
 
@@ -139,8 +140,9 @@ public class Tree
         // String fileName = "C:\\codejam\\CodeJam\\simul\\out.xml";
 
         try {
-            xtw = xof.createXMLStreamWriter(new FileWriter(fileName));
+            //xtw = xof.createXMLStreamWriter(new FileWriter(fileName));
 
+            xtw = xof.createXMLStreamWriter(new FileOutputStream(fileName), "UTF-8");
            // final String prefix = "http://www.w3.org/TR/REC-html40";
 
             xtw.writeStartDocument("utf-8", "1.0");

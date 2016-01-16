@@ -137,16 +137,17 @@
 -->
     <scenarios>
         
-        <scenario name="scenario" iterCount="3000">
+        <scenario name="scenario" iterCount="30000">
         <!-- Jh 5d 2s -->
         <flop></flop>
        <player count="1">
-            KT
+            J4s
             </player>
-            <player set="veryloose_limp" count="1"/>
+            <player set="veryloose_limp" count="0"/>
+			<player set="ok" count="0"/>
             <player set="loose" count="0"/>
             <player set="good" count="0"/>
-            <player set="random" count="0"/>
+            <player set="random" count="4"/>
 			<player set="pfr2000" count="0"/>
             <player count="0">
             A8+, 22+, KJ, Q9+

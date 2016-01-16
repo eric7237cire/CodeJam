@@ -1,10 +1,8 @@
 package pkr;
 
 import pkr.possTree.PossibilityNode;
-import pkr.possTree.PossibilityNode.HandCategory;
-import pkr.possTree.PossibilityNode.HandSubCategory;
 import pkr.possTree.PossibilityNode.TextureCategory;
-import pkr.possTree.PossibilityNode.WinningLosingCategory;
+import poker_simulator.flags.*;
 
 /*
  * winning at flop
@@ -56,9 +54,9 @@ public class CompleteEvaluation implements Comparable<CompleteEvaluation>{
         {
             roundScores[i] = new Score();
             possibilityNodes[i][PossibilityNode.Levels.TEXTURE.ordinal()] = new PossibilityNode(PossibilityNode.TextureCategory.values());
-            possibilityNodes[i][PossibilityNode.Levels.WIN_LOSE.ordinal()] = new PossibilityNode(PossibilityNode.WinningLosingCategory.values());
-            possibilityNodes[i][PossibilityNode.Levels.HAND_CATEGORY.ordinal()] = new PossibilityNode(PossibilityNode.HandCategory.values());
-            possibilityNodes[i][PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal()] = new PossibilityNode(PossibilityNode.HandSubCategory.values());
+            possibilityNodes[i][PossibilityNode.Levels.WIN_LOSE.ordinal()] = new PossibilityNode(WinningLosingCategory.values());
+            possibilityNodes[i][PossibilityNode.Levels.HAND_CATEGORY.ordinal()] = new PossibilityNode(HandCategory.values());
+            possibilityNodes[i][PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal()] = new PossibilityNode(HandSubCategory.values());
         }
     }
     

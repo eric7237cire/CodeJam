@@ -7,10 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.possTree.PossibilityNode;
-import pkr.possTree.PossibilityNode.HandCategory;
-import pkr.possTree.PossibilityNode.HandSubCategory;
 import pkr.possTree.PossibilityNode.TextureCategory;
-import pkr.possTree.PossibilityNode.WinningLosingCategory;
+import poker_simulator.flags.*;
 
 import com.google.common.base.Preconditions;
 
@@ -226,7 +224,7 @@ public class EvalHands {
         int straightDrawCount = allCardsTexInfo.getStraightDrawCount();
         
         if(eval.getHoleCards().isSuited())
-            {
+        {
             if (communityCards.freqSuit[eval.getHoleCards().getCards()[0].getSuit().ordinal()] == 2)
             {
                   eval.setFlag(round, HandCategory.FLUSH_DRAW);

@@ -1,7 +1,7 @@
-package pkr;
+package poker_simulator.criteria;
 
-import pkr.possTree.PossibilityNode.HandCategory;
-import pkr.possTree.PossibilityNode.WinningLosingCategory;
+import pkr.CompleteEvaluation;
+import poker_simulator.flags.*;
 
 public class WinningWithCriteria extends Criteria
 {

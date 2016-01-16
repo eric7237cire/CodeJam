@@ -1,17 +1,16 @@
-package pkr;
+package poker_simulator.criteria;
 
 import java.util.List;
 
-import pkr.possTree.PossibilityNode.HandCategory;
-import pkr.possTree.PossibilityNode.WinningLosingCategory;
-
+import pkr.CompleteEvaluation;
+import poker_simulator.flags.*;
 import com.google.common.collect.Lists;
 
-public class HeroCriteria extends Criteria
+public class HeroWiningOrLosingMatcher implements iMatcher
 {
 
     //Only for hero only
-    List<WinningLosingCategory> winLoseCat;
+    public List<WinningLosingCategory> winLoseCat;
 
     
     public HeroCriteria(int round, String desc) {

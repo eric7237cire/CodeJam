@@ -1,4 +1,4 @@
-package test;
+package poker_simulator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -18,10 +18,8 @@ import pkr.EvalHands;
 import pkr.HandLevel;
 import pkr.HoleCards;
 import pkr.TextureInfo;
-import pkr.possTree.PossibilityNode.HandCategory;
-import pkr.possTree.PossibilityNode.HandSubCategory;
 import pkr.possTree.PossibilityNode.TextureCategory;
-import pkr.possTree.PossibilityNode.WinningLosingCategory;
+import poker_simulator.flags.*;
 
 @RunWith(JUnit4.class)
 public class TestEvalNodes

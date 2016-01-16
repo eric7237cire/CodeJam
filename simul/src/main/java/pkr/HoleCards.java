@@ -5,7 +5,7 @@ import java.util.Arrays;
 import com.google.common.base.Preconditions;
 
 /**
- * 
+ * This represents 2 concrete cards 
  * 2nd card is always > in index
  *
  */

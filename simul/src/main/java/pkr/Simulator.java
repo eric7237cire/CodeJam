@@ -15,6 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.possTree.Tree;
+import poker_simulator.criteria.Criteria;
+import poker_simulator.criteria.CriteriaFactory;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -112,17 +114,6 @@ public class Simulator {
         
     }
     
-    public static interface iCriteria
-    {
-        public boolean matches(CompleteEvaluation[] evals);
-        public boolean isApplicable(CompleteEvaluation eval);
-    }
-        
-   
-    
-    
-    
-    
     public static Tree simulate(int TOTAL_SIMULATIONS, String preChosenFlop, List<String> playerHoleCards) {
         
         Tree tree = new Tree();
@@ -153,10 +144,10 @@ public class Simulator {
                 (round == 1 ? "TURN " : "RIVER");
         
                         
-            Criteria.addUnpairedBoardCriteria(round, roundStr, unPairedBoardCriteres);
-            Criteria.addPairedBoardCriteria(round, roundStr, pairedBoardCriteres);
+            CriteriaFactory.addUnpairedBoardCriteria(round, roundStr, unPairedBoardCriteres);
+            CriteriaFactory.addPairedBoardCriteria(round, roundStr, pairedBoardCriteres);
 
-            Criteria.addAnyBoardCriteria(round, roundStr, allBoardCriteres);
+            CriteriaFactory.addAnyBoardCriteria(round, roundStr, allBoardCriteres);
 
            
             
