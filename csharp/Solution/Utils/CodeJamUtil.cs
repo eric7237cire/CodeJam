@@ -19,6 +19,7 @@ using System.Collections.Concurrent;
 using Logger = Utils.LoggerFile;
 using Utils;
 using System.Globalization;
+using CodeJam.Main;
 
 namespace CodeJamUtils
 {
@@ -31,6 +32,11 @@ namespace CodeJamUtils
     public interface InputFileConsumer<InputClass, AnswerClass>
     {
         AnswerClass processInput(InputClass input);
+    }
+
+    public interface InputFileConsumer2<InputClass>
+    {
+        void processInput(InputClass input, IAnswerAcceptor answerAcceptor, int testCase);
     }
 
 
@@ -202,6 +208,9 @@ namespace CodeJamUtils
                 }
             }
         }
+
+
+       
 
         private void producerRun(List<string> fileNames)
         {
@@ -546,7 +555,8 @@ namespace CodeJamUtils
 
     public static class CjUtils
     {
-        public static void RunMain<InputClass, AnswerClass>(List<string> list, 
+        public static void RunMain<InputClass, AnswerClass>(
+            List<string> list, 
             InputFileConsumer<InputClass, AnswerClass> main, 
             Runner<InputClass, AnswerClass>.InputFileProducerDelegate inputDelegate,
             ResourceManager rm

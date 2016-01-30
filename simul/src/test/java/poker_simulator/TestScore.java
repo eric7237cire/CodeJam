@@ -1,4 +1,4 @@
-package test;
+package poker_simulator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,9 +14,9 @@ import org.slf4j.LoggerFactory;
 import pkr.Card;
 import pkr.CardRank;
 import pkr.CompleteEvaluation;
-import pkr.EvalHands;
-import pkr.HandLevel;
 import pkr.HoleCards;
+import poker_simulator.evaluation.EvalHands;
+import poker_simulator.scoring.HandLevel;
 
 
 
@@ -138,6 +138,32 @@ public class TestScore {
         assertTrue(evals[2].getScore().compareTo(evals[1].getScore()) == 0);
         //assertTrue(evals[1].getHoleCards().equals(h2));
         assertTrue(evals[0].getHoleCards().equals(h1));
+        
+    }
+    
+    @Test
+    public void test3ofaKind() {
+    	HoleCards h1 = new HoleCards(Card.parseCards("2c 2d"));
+        HoleCards h2 = new HoleCards(Card.parseCards("8s 8h"));
+                                       
+        CompleteEvaluation[] evals = EvalHands.evaluate(false, new HoleCards[] {h1, h2},
+                Card.parseCards("2s 5h 3s 8c 4d"));
+        
+        int handNum = 0;
+        assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.TRIPS);
+        assertTrue(evals[handNum].getScore().getKickers()[0] == CardRank.TWO);
+        assertTrue(evals[handNum].getScore().getKickers()[1] == CardRank.EIGHT);
+        assertTrue(evals[handNum].getScore().getKickers()[2] == CardRank.FIVE);
+        assertTrue(evals[handNum].getScore().getKickers().length == 3);        
+        ++handNum;
+        
+        assertTrue(evals[handNum].getScore().getHandLevel() == HandLevel.TRIPS);
+        assertTrue(evals[handNum].getScore().getKickers()[0] == CardRank.EIGHT);
+        assertTrue(evals[handNum].getScore().getKickers()[1] == CardRank.FIVE);
+        assertTrue(evals[handNum].getScore().getKickers()[2] == CardRank.FOUR);
+        assertTrue(evals[handNum].getScore().getKickers().length == 3);        
+        ++handNum;
+        
         
     }
     

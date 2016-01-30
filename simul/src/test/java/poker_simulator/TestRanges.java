@@ -1,4 +1,4 @@
-package test;
+package poker_simulator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

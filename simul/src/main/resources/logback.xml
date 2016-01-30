@@ -87,6 +87,7 @@
    <logger name="main" level="DEBUG"/>
    
    <logger name="pkr.Simulator" level="WARN"/>
+   <logger name="poker_simulator.criteria" level="WARN"/>
    
    <logger name="pkr.HoleCardsRange" level="DEBUG">
    </logger>

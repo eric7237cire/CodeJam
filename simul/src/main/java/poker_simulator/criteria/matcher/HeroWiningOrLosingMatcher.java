@@ -1,8 +1,10 @@
-package poker_simulator.criteria;
+package poker_simulator.criteria.matcher;
 
+import java.util.Collections;
 import java.util.List;
 
 import pkr.CompleteEvaluation;
+import poker_simulator.criteria.iMatcher;
 import poker_simulator.flags.*;
 import com.google.common.collect.Lists;
 
@@ -12,24 +14,25 @@ public class HeroWiningOrLosingMatcher implements iMatcher
     //Only for hero only
     public List<WinningLosingCategory> winLoseCat;
 
+    private List<HandCategory> matchHandCat;
     
-    public HeroCriteria(int round, String desc) {
-        super(round, desc);
+    public HeroWiningOrLosingMatcher() {
         
-
-
         winLoseCat = Lists.newArrayList();
     }
 
-    @Override
-    public boolean matches(CompleteEvaluation[] evals)
+    public void AddMatchingHandCategories(HandCategory... handCats)
     {
+    	Collections.addAll(matchHandCat,  handCats);
+    }
 
-        boolean matchesWinLose = winLoseCat.size() == 0;
+	@Override
+	public boolean matches(CompleteEvaluation[] evals) {
+		boolean matchesWinLose = winLoseCat.size() == 0;
 
         for (WinningLosingCategory cat : winLoseCat)
         {
-            if (evals[0].hasFlag(round, cat))
+            if (evals[0].hasFlag(Round.RIVER.getIndex(), cat))
             {
                 matchesWinLose = true;
                 break;
@@ -43,12 +46,12 @@ public class HeroWiningOrLosingMatcher implements iMatcher
         }
         for (HandCategory cat : matchHandCat)
         {
-            if (evals[0].hasFlag(round, cat))
+            if (evals[0].hasFlag(Round.RIVER.getIndex(), cat))
             {
                 return true;
             }
         }
 
         return false;
-    }
+	}
 }

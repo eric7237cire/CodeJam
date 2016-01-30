@@ -1,4 +1,4 @@
-package poker_simulator.criteria;
+package poker_simulator.criteria.matcher;
 
 import java.util.Collections;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import pkr.CompleteEvaluation;
+import poker_simulator.criteria.iMatcher;
 import poker_simulator.flags.HandCategory;
 import poker_simulator.flags.Round;
 
@@ -13,10 +14,12 @@ public class AllPlayerMatcher implements iMatcher {
 
 	private List<HandCategory> matchHandCat;
     private List<HandCategory> matchNegHandCat;
+    private Round round;
     
-    public AllPlayerMatcher() {
+    public AllPlayerMatcher(Round round) {
 		matchHandCat = Lists.newArrayList();
 		matchNegHandCat = Lists.newArrayList();
+		this.round = round;
 	}
     
     public void AddMatchingHandCategories(HandCategory... handCats)
@@ -30,7 +33,7 @@ public class AllPlayerMatcher implements iMatcher {
     }
     
 	@Override
-	public boolean matches(Round round, CompleteEvaluation[] evals) {
+	public boolean matches(CompleteEvaluation[] evals) {
 		for (CompleteEvaluation eval : evals)
         {
             boolean ok = false;

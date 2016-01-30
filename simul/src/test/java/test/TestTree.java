@@ -2,9 +2,9 @@ package test;
 
 import pkr.Card;
 import pkr.CompleteEvaluation;
-import pkr.EvalHands;
 import pkr.HoleCards;
 import pkr.possTree.Tree;
+import poker_simulator.evaluation.EvalHands;
 
 
 //@RunWith(JUnit4.class)

@@ -17,14 +17,10 @@ public final class Criteria
     protected static Logger log = LoggerFactory.getLogger(Simulator.class);
     protected static Logger logOutput = LoggerFactory.getLogger("mainOutput");
     
-    protected int round;
+    
     public String desc;
-    protected boolean allMustMatch;
-
-    //Any match will do
-    public List<HandCategory> matchHandCat;
-    protected List<HandCategory> matchNegHandCat;
-
+    
+    
     private iApplicable isApplicableHandler;
     private iMatcher matcher;
 
@@ -56,15 +52,11 @@ public final class Criteria
 
 	private int matches = 0;
     
-    public Criteria(int round, String desc) {
+    public Criteria(String desc) {
         super();
-        this.round = round;
+        
         this.desc = desc;
 
-        
-
-        matchHandCat = Lists.newArrayList();
-        matchNegHandCat = Lists.newArrayList();
     }
 
     public void printMsg()
@@ -77,21 +69,18 @@ public final class Criteria
         logOutput.debug("{}.  {} / {} =  %{} ", desc, matches, applicableCount, 100.0 * matches / applicableCount);
     }
 
-    /* (non-Javadoc)
-     * @see pkr.Simulator.iCriteria#matches(pkr.CompleteEvaluation[])
-     */
-    
-    public boolean matches(CompleteEvaluation[] evals)
+   
+    private boolean matches(CompleteEvaluation[] evals)
     {
     	if (matcher == null)
     		return false;
     	
-        return matcher.matches(Round.fromInt(round), evals);
+        return matcher.matches(evals);
     }
 
     public void calculate(CompleteEvaluation[] evals)
     {
-    	if (isApplicableHandler != null && !isApplicableHandler.isApplicable(Round.fromInt(round), evals))
+    	if (isApplicableHandler != null && !isApplicableHandler.isApplicable(evals))
             return;
 
         ++applicableCount;

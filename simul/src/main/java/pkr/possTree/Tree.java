@@ -8,15 +8,19 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import java.util.*;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pkr.CompleteEvaluation;
 import pkr.possTree.PossibilityNode.TextureCategory;
+import poker_simulator.flags.HandCategory;
 import poker_simulator.flags.HandSubCategory;
 import poker_simulator.flags.WinningLosingCategory;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
 public class Tree
 {
@@ -39,6 +43,8 @@ public class Tree
     public void addCompleteEvaluation(CompleteEvaluation eval) 
     {
         //rootNode.count++;
+    	
+    	
         
         TreeNode curNode = rootNode;
         curNode.count++;
@@ -47,11 +53,18 @@ public class Tree
         {
             for(int possLevel = 0; possLevel < PossibilityNode.Levels.values().length; ++possLevel) 
             {
-                /*
+                
                 if (possLevel == PossibilityNode.Levels.HAND_SUB_CATEGORY.ordinal())
                     continue;
-                */
+                if (possLevel == PossibilityNode.Levels.TEXTURE.ordinal())
+                    continue;
+                
                 PossibilityNode dispNode = eval.getPossibilityNode(round, possLevel);
+                
+                if (possLevel == PossibilityNode.Levels.HAND_CATEGORY.ordinal() && dispNode.hasFlag(HandCategory.SET_USING_BOTH))
+                {
+                	log.debug("Prob");
+                }
                 
                 //Clear all flop flags
                 if (round < 2 || (round == 2 && possLevel == 1))
@@ -84,12 +97,44 @@ public class Tree
                     dispNode.setFlag(WinningLosingCategory.LOSING);
                 }
                 
+                if (possLevel == PossibilityNode.Levels.HAND_CATEGORY.ordinal())
+                {
+                	List<HandCategory> l = Lists.newArrayList();
+                	l.add(HandCategory.HIDDEN_PAIR);
+                	l.add(HandCategory.PAIR_OVERCARDS_0);
+                	l.add(HandCategory.PAIR_OVERCARDS_1);
+                	l.add(HandCategory.PAIR_OVERCARDS_2);
+                	l.add(HandCategory.PAIR_OVERCARDS_3);
+                	
+                	for(HandCategory tc : l)
+                	{
+                		if (dispNode.hasFlag(tc)) {
+                			dispNode.clearFlag(tc);
+                			dispNode.setFlag(HandCategory.PAIR_USING_HOLE_CARDS);
+                		}
+                	}
+                    
+                	dispNode.clearFlag(HandCategory.STRAIGHT_DRAW_1);
+                	dispNode.clearFlag(HandCategory.STRAIGHT_DRAW_2);
+                	dispNode.clearFlag(HandCategory.FLUSH_DRAW);
+                }
                 
                 
                 //ne montre pas unsuited ni tirage de couleur
+                
                 if (possLevel == PossibilityNode.Levels.TEXTURE.ordinal()) {
                     dispNode.clearFlag(TextureCategory.UNSUITED);
-                    //dispNode.clearFlag(TextureCategory.SAME_SUIT_2);
+                    dispNode.clearFlag(TextureCategory.SAME_SUIT_2);
+                    dispNode.clearFlag(TextureCategory.STRAIGHT_POSSIBLE);
+                    dispNode.clearFlag(TextureCategory.SAME_SUIT_3);
+                    dispNode.clearFlag(TextureCategory.PAIRED_BOARD);
+                    
+                    for(TextureCategory tc : TextureCategory.values())
+                    {
+                    	dispNode.clearFlag(tc);
+                    }
+                    
+                    //dispNode.setFlag(TextureCategory.UNPAIRED_BOARD);
                 }
                 
                 //Fusion kicker + 2 et kicker + 1

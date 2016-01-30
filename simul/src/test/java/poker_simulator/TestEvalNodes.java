@@ -14,12 +14,12 @@ import org.junit.runners.JUnit4;
 import pkr.Card;
 import pkr.CardRank;
 import pkr.CompleteEvaluation;
-import pkr.EvalHands;
-import pkr.HandLevel;
 import pkr.HoleCards;
 import pkr.TextureInfo;
 import pkr.possTree.PossibilityNode.TextureCategory;
+import poker_simulator.evaluation.EvalHands;
 import poker_simulator.flags.*;
+import poker_simulator.scoring.HandLevel;
 
 @RunWith(JUnit4.class)
 public class TestEvalNodes

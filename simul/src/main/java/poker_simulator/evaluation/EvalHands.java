@@ -1,14 +1,21 @@
-package pkr;
+package poker_simulator.evaluation;
 
 import java.util.Arrays;
-import java.util.Comparator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pkr.Card;
+import pkr.CardRank;
+import pkr.CompleteEvaluation;
+import pkr.HoleCards;
+import pkr.TextureInfo;
 import pkr.possTree.PossibilityNode;
 import pkr.possTree.PossibilityNode.TextureCategory;
 import poker_simulator.flags.*;
+import poker_simulator.scoring.CompareByRoundScore;
+import poker_simulator.scoring.HandLevel;
+import poker_simulator.scoring.Score;
 
 import com.google.common.base.Preconditions;
 
@@ -285,7 +292,11 @@ public class EvalHands {
             
         } else if (score.handLevel == HandLevel.TRIPS) 
         {
-            if (communityCards.noPairedCards()) 
+        	if (communityCards.threeKind >= 0)
+        	{
+        		eval.setFlag(round, HandCategory.SET_USING_NONE);
+        	}
+        	else if (communityCards.noPairedCards()) 
             {
                 eval.setFlag(round, HandCategory.SET_USING_BOTH);
             } else {
@@ -330,22 +341,6 @@ public class EvalHands {
             eval.setFlag(round, HandCategory.STRAIGHT);
         } else if (score.handLevel == HandLevel.STRAIGHT_FLUSH) {
             eval.setFlag(round, HandCategory.STRAIGHT_FLUSH);
-        }
-    }
-    
-    private static class CompareByRoundScore implements Comparator<CompleteEvaluation>
-    {
-        final int round;
-        
-        private CompareByRoundScore(int round) {
-            super();
-            this.round = round;
-        }
-
-        @Override
-        public int compare(CompleteEvaluation o1, CompleteEvaluation o2)
-        {
-            return o1.getRoundScore(round).compareTo(o2.getRoundScore(round));
         }
     }
     

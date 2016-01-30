@@ -6,9 +6,9 @@ import org.junit.Test;
 
 import pkr.Card;
 import pkr.CompleteEvaluation;
-import pkr.EvalHands;
 import pkr.HoleCards;
 import pkr.possTree.PossibilityNode.TextureCategory;
+import poker_simulator.evaluation.EvalHands;
 import pkr.possTree.Tree;
 
 

@@ -1,4 +1,4 @@
-package test;
+package poker_simulator;
 
 
 import static org.junit.Assert.assertEquals;
@@ -14,11 +14,11 @@ import org.junit.runners.JUnit4;
 import pkr.Card;
 import pkr.CardRank;
 import pkr.CompleteEvaluation;
-import pkr.EvalHands;
 import pkr.HoleCards;
 import pkr.Suit;
 import pkr.TextureInfo;
 import pkr.possTree.PossibilityNode.TextureCategory;
+import poker_simulator.evaluation.EvalHands;
 
 @RunWith(JUnit4.class)
 

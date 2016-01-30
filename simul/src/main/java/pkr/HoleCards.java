@@ -39,7 +39,7 @@ public class HoleCards {
         }
     }
     
-    boolean isSuited() 
+    public boolean isSuited() 
     {
         return cards[0].getSuit() == cards[1].getSuit();
     }

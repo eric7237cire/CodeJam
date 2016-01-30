@@ -3,36 +3,13 @@
 #define LOGGING_INFO
 
 //#define LOGGING_TRACE
+using CodeJam.Main;
+using CodeJam.Main.Plumbing;
 using CodeJamUtils;
-using Round1C_2014.Problem2;
-using Round1C_2014.Problem3;
-using Round3_2008.Problem1;
-using Round3_2008.Problem2;
-using Round1B_2013;
-using Round1B_2013.Problem1;
-using System;
+using StructureMap;
+using StructureMap.Graph;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Utils;
-using Utils.geom;
-using RoundFinal_2013.Problem5;
-using Round2_2014.Problem1;
-using Round2_2014.Problem2;
-using Round2_2014.Problem3;
-using Year2014.Round3.Problem1;
-using Year2014.Round3.Problem2;
-using Year2014.Round3.Problem3;
-using Year2014.Round3.Problem4;
-
-using Year2014.Round4.Problem1;
-using Year2014.Round4.Problem2;
-using Year2014.Round4.Problem3;
-using Year2015.RoundQual.Problem1;
-using Year2015.RoundQual.Problem2;
 using Year2015.RoundQual.Problem3;
 
 namespace MainNS
@@ -130,27 +107,9 @@ namespace MainNS
             //memoized recrusive function instead.
            // InfiniteHouseOfPancakes main = new InfiniteHouseOfPancakes();
 
-            Dijkstra main = new Dijkstra();
+           // Dijkstra main = new Dijkstra();
 
-            string baseDir = @"C:\codejam\CodeJam\csharp\Solution\";
-
-            //Portal main = new Portal();
-            //Pockets main = new Pockets();
-
-            Match m = new Regex(@"Year(.*)\.(.*)\.Problem\d+").Match(main.GetType().Namespace);
-            Preconditions.checkState(m.Success);
-
-            if (m.Success)
-            {
-                baseDir = baseDir + m.Groups[1] + @"\" + m.Groups[2] + "\\";
-            }
-            else { 
-                m = new Regex(@"(.*)_(.*)\.Problem\d+").Match(main.GetType().Namespace);
-                Preconditions.checkState(m.Success);
-
-                baseDir = baseDir + m.Groups[2] + @"\" + m.Groups[1] + "\\";
-            }
-            Directory.SetCurrentDirectory(baseDir);
+            
             //TicketSwap main = new TicketSwap();
 
             // main.processInput(null);
@@ -158,7 +117,7 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-         list.Add("sample.in");
+       //  list.Add("sample.in");
             // list.Add("E-small-practice.in");
              // list.Add("E-large-practice.in");
 
@@ -170,11 +129,11 @@ namespace MainNS
            // list.Add("B-small-practice.in");
           //  list.Add("B-large-practice.in");
 
-            //list.Add("C-small-practice.in");
-          //  list.Add("C-large-practice.in");
+            list.Add("C-small-practice.in");
+            //  list.Add("C-large-practice.in");
 
-         //  list.Add("D-small-practice.in");
-         //   list.Add("D-large-practice.in");
+            //  list.Add("D-small-practice.in");
+            //   list.Add("D-large-practice.in");
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1C\");
@@ -183,8 +142,36 @@ namespace MainNS
             // dir = @"C:\Users\epeg\Documents\GitHub\CodeJam\2013\Solution\Round3\";
 
             // list = list.ConvertAll(s => dir + s);
+            var container = new Container(cfg =>
+            {
+            cfg.Scan(scanner =>
+             {
+                 scanner.TheCallingAssembly();
+                 scanner.ConnectImplementationsToTypesClosing(typeof(InputFileProducer<>));
+                 scanner.ConnectImplementationsToTypesClosing(typeof(InputFileConsumer2<>));
 
-            CjUtils.RunMain(list, main, main.createInput, null);
+
+             });
+
+                cfg.For<IFileProcessor>().Use<FileProcessor>();
+                cfg.For<IAnswerAcceptor>().Use<AnswerAcceptor>();
+               
+            });
+
+            /*
+            Dijkstra 2015   squaring, creating math type, operator overloading
+    */
+            var inputProducer = container.GetInstance<InputFileProducer<DijkstraInput>>();
+
+            var fileProcessor = container.GetInstance<IFileProcessor>();
+
+            fileProcessor.ReadInputFile(inputProducer, list[0]);
+
+            //var c = container.ForObject(o).
+
+
+
+            //CjUtils.RunMain(list, main, main.createInput, null);
              //CjUtils.RunMainMulti(list, main, main.createInput, null);
         }
     }

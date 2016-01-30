@@ -1,14 +1,16 @@
-package pkr;
+package poker_simulator.scoring;
 
 import java.util.Arrays;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ComparisonChain;
 
+import pkr.CardRank;
+
 public class Score implements Comparable<Score> {
-    HandLevel handLevel;
+    public HandLevel handLevel;
     
-    CardRank[] kickers;
+    public CardRank[] kickers;
 
     /**
      * @return the handLevel

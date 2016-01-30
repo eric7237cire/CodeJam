@@ -1,4 +1,4 @@
-package pkr;
+package poker_simulator.scoring;
 
 public enum HandLevel {
     STRAIGHT_FLUSH,

@@ -17,7 +17,7 @@ public class Card implements Comparable<Card>
     
     private CardRank rank;
     
-    final int index;
+    public final int index;
     
     public static final int NUM_RANKS = 13;
     

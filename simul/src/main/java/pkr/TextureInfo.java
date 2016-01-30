@@ -7,10 +7,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+/*
+ * 
+ * Given a set of cards, functions about cards
+ */
 public class TextureInfo {
     
-    List<Card> cards;
-    List<Card> sortedCards;
+    public List<Card> cards;
+    public List<Card> sortedCards;
     
     int rankBitmask;
     public int[] freqCard = new int[NUM_RANKS];

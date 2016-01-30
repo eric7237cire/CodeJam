@@ -3,6 +3,8 @@ package pkr;
 import pkr.possTree.PossibilityNode;
 import pkr.possTree.PossibilityNode.TextureCategory;
 import poker_simulator.flags.*;
+import poker_simulator.scoring.HandLevel;
+import poker_simulator.scoring.Score;
 
 /*
  * winning at flop
