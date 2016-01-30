@@ -145,7 +145,7 @@ namespace Year2015.RoundQual.Problem3
         public int L;
 
         //How many times it is repeated
-        public int X;
+        public long X;
 
         //The input string
         public String S;
@@ -162,7 +162,7 @@ namespace Year2015.RoundQual.Problem3
             DijkstraInput input = new DijkstraInput();
 
             input.L = scanner.nextInt();
-            input.X = scanner.nextInt();
+            input.X = scanner.nextLong();
 
             input.S = scanner.nextWord();
 
@@ -176,8 +176,72 @@ namespace Year2015.RoundQual.Problem3
 
         public void processInput(DijkstraInput input, IAnswerAcceptor answerAcceptor, int testCase)
         {
+            //
 
-            String finalString = String.Concat(Enumerable.Repeat(input.S, input.X));
+            DijChar dj = DijChar.one;
+
+            if (input.L * input.X < 3)
+            {
+                answerAcceptor.Accept("NO");
+                return;
+            }
+            foreach (char c in input.S)
+            {
+                dj *= c;
+            }
+
+            DijChar productOfS = dj;
+
+            //Now square it at most X % 4 times
+
+            //Note any one to the 4th power is always 1
+            dj = DijChar.one;
+
+            for(int i = 0; i < input.X % 4; ++i)
+            {
+                dj *= productOfS;
+            }
+
+            if (dj.Equals(-DijChar.one) == false)
+            {
+                answerAcceptor.Accept("NO");
+                return;
+            }
+
+            bool foundI = false;
+
+            //Take at most 8 copies since will repeat after 4 times
+            String finalString = String.Concat(Enumerable.Repeat(input.S, (int) Math.Min(8, input.X)));
+            dj = DijChar.one;
+            foreach (char c in finalString)
+            {
+                dj *= c;
+
+                if (foundI == false)
+                {
+                    if (dj.Equals(DijChar.i))
+                    {
+                        foundI = true;
+                        dj = DijChar.one;
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (dj.Equals(DijChar.j))
+                    {
+                        answerAcceptor.Accept("YES");
+                        return;
+                    }
+                }
+            }
+
+            answerAcceptor.Accept("NO");
+        }
+        public void processInput_slow(DijkstraInput input, IAnswerAcceptor answerAcceptor, int testCase)
+        {
+
+            String finalString = String.Concat(Enumerable.Repeat(input.S, (int)input.X));
 
             DijChar dj = DijChar.one;
 

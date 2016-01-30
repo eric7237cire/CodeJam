@@ -34,7 +34,7 @@ namespace MainNS
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Qual\");
            // Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round1B\");
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round1C\");
-            Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round2\");
+            //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\csharp\Solution\2014\Round2\");
 #endif
            // Round1B_2013.Problem1.Osmos main = new Round1B_2013.Problem1.Osmos();
 
@@ -129,8 +129,8 @@ namespace MainNS
            // list.Add("B-small-practice.in");
           //  list.Add("B-large-practice.in");
 
-            list.Add("C-small-practice.in");
-            //  list.Add("C-large-practice.in");
+          //  list.Add("C-small-practice.in");
+             list.Add("C-large-practice.in");
 
             //  list.Add("D-small-practice.in");
             //   list.Add("D-large-practice.in");
