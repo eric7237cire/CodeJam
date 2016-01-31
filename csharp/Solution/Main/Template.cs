@@ -17,10 +17,10 @@ using Logger = Utils.LoggerFile;
 
 
 
-namespace aYear2015.Round1A.Problem2
+namespace aYear2015.Round1A.Problem3
 {
     
-    public class HairCutInput
+    public class LoggingInput
     {
        
         public int N;
@@ -28,12 +28,12 @@ namespace aYear2015.Round1A.Problem2
         public List<String> S;
     }
 
-	public class HairCut : InputFileProducer<HairCutInput>, InputFileConsumer2<HairCutInput>
+	public class Logging : InputFileProducer<LoggingInput>, InputFileConsumer2<LoggingInput>
     {
-        public HairCutInput createInput(Scanner scanner)
+        public LoggingInput createInput(Scanner scanner)
         {
 			//scanner.enablePlayback();
-			HairCutInput input = new HairCutInput();
+			LoggingInput input = new LoggingInput();
 			           
             input.N = scanner.nextInt();
 
@@ -48,7 +48,7 @@ namespace aYear2015.Round1A.Problem2
             return input;
 		}
 
-		public void processInput(HairCutInput input, IAnswerAcceptor answerAcceptor, int testCase)
+		public void processInput(LoggingInput input, IAnswerAcceptor answerAcceptor, int testCase)
 		{
 			
 		}

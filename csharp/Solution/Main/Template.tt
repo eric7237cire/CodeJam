@@ -21,8 +21,8 @@ using Logger = Utils.LoggerFile;
 <#
 String year = "2015";
 String round = "1A";
-String probNum = "2";
-String probName = "HairCut";
+String probNum = "3";
+String probName = "Logging";
 
 String nameSpace = "aYear" + year + ".Round" + round + ".Problem" +  probNum;
 #>
