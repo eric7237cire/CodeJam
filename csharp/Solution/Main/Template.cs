@@ -12,14 +12,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils;
 using Wintellect.PowerCollections;
+using CodeJam.Main;
 using Logger = Utils.LoggerFile;
 
 
 
-namespace aYear2015.RoundQual.Problem3
+namespace aYear2015.Round1A.Problem2
 {
     
-    public class DijkstraInput
+    public class HairCutInput
     {
        
         public int N;
@@ -27,12 +28,12 @@ namespace aYear2015.RoundQual.Problem3
         public List<String> S;
     }
 
-	public class Dijkstra : InputFileProducer<DijkstraInput>, InputFileConsumer<DijkstraInput, String>
+	public class HairCut : InputFileProducer<HairCutInput>, InputFileConsumer2<HairCutInput>
     {
-        public DijkstraInput createInput(Scanner scanner)
+        public HairCutInput createInput(Scanner scanner)
         {
 			//scanner.enablePlayback();
-			DijkstraInput input = new DijkstraInput();
+			HairCutInput input = new HairCutInput();
 			           
             input.N = scanner.nextInt();
 
@@ -47,9 +48,9 @@ namespace aYear2015.RoundQual.Problem3
             return input;
 		}
 
-		public String processInput(DijkstraInput input)
-        {
-			return "-1";
+		public void processInput(HairCutInput input, IAnswerAcceptor answerAcceptor, int testCase)
+		{
+			
 		}
 	}
 

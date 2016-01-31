@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Utils;
 using Wintellect.PowerCollections;
+using CodeJam.Main;
 using Logger = Utils.LoggerFile;
 
 <#@ template language="C#" #>
@@ -19,9 +20,9 @@ using Logger = Utils.LoggerFile;
 
 <#
 String year = "2015";
-String round = "Qual";
-String probNum = "3";
-String probName = "Dijkstra";
+String round = "1A";
+String probNum = "2";
+String probName = "HairCut";
 
 String nameSpace = "aYear" + year + ".Round" + round + ".Problem" +  probNum;
 #>
@@ -37,7 +38,7 @@ namespace <#=nameSpace#>
         public List<String> S;
     }
 
-	public class <#=probName#> : InputFileProducer<<#=probName#>Input>, InputFileConsumer<<#=probName#>Input, String>
+	public class <#=probName#> : InputFileProducer<<#=probName#>Input>, InputFileConsumer2<<#=probName#>Input>
     {
         public <#=probName#>Input createInput(Scanner scanner)
         {
@@ -57,9 +58,9 @@ namespace <#=nameSpace#>
             return input;
 		}
 
-		public String processInput(<#=probName#>Input input)
-        {
-			return "-1";
+		public void processInput(<#=probName#>Input input, IAnswerAcceptor answerAcceptor, int testCase)
+		{
+			
 		}
 	}
 

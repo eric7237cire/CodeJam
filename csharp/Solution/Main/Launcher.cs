@@ -12,6 +12,7 @@ using StructureMap.Graph;
 using System.Collections.Generic;
 using System.IO;
 using Year2015.RoundQual.Problem3;
+using Year2015.Round1A.Problem2;
 
 namespace MainNS
 {
@@ -118,23 +119,7 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-         list.Add("sample.in");
-            // list.Add("E-small-practice.in");
-             // list.Add("E-large-practice.in");
-
-              list.Add("A-small-practice.in");
-            //
-             list.Add("A-large-practice.in");
-
-
-           // list.Add("B-small-practice.in");
-          //  list.Add("B-large-practice.in");
-
-          //  list.Add("C-small-practice.in");
-           //  list.Add("C-large-practice.in");
-
-            //  list.Add("D-small-practice.in");
-            //   list.Add("D-large-practice.in");
+        
 
             //string dir = @"C:\codejam\CodeJam\2013\Solution\Round3\";
             //Directory.SetCurrentDirectory(@"C:\codejam\CodeJam\2013\Solution\Round1C\");
@@ -151,7 +136,7 @@ namespace MainNS
                  scanner.ConnectImplementationsToTypesClosing(typeof(InputFileProducer<>));
                  scanner.ConnectImplementationsToTypesClosing(typeof(InputFileConsumer2<>));
 
-
+                 //scanner.Exclude(t => t.Namespace != null && t.Namespace.StartsWith("aYear"));
              });
 
                 cfg.For<IFileProcessor>().Use<FileProcessor>().Singleton();
@@ -164,12 +149,31 @@ namespace MainNS
     */
             // var inputProducer = container.GetInstance<InputFileProducer<DijkstraInput>>();
 
-            //Mushroom 2015 round 1
-            var inputProducer = container.GetInstance<InputFileProducer<MushRoomInput>>();
+            //Mushroom 2015 round 1 (min/max)
+            //var inputProducer = container.GetInstance<InputFileProducer<MushRoomInput>>();
+
+            //Haircut / Barber 2015 Round 2 prob 2
+            var inputProducer = container.GetInstance<InputFileProducer<HairCutInput>>();
 
             var fileProcessor = container.GetInstance<IFileProcessor>();
 
-            foreach(string fileName in list)
+            list.Add("sample.in");
+            // list.Add("E-small-practice.in");
+            // list.Add("E-large-practice.in");
+
+            //list.Add("A-small-practice.in");            
+            //list.Add("A-large-practice.in");
+            
+            list.Add("B-small-practice.in");
+            list.Add("B-large-practice.in");
+
+            //  list.Add("C-small-practice.in");
+            //  list.Add("C-large-practice.in");
+
+            //  list.Add("D-small-practice.in");
+            //   list.Add("D-large-practice.in");
+
+            foreach (string fileName in list)
             {
                 fileProcessor.ReadInputFile(inputProducer, fileName);
             }
