@@ -27,6 +27,14 @@ body {
   height: 28px;
   pointer-events: none;
 }
+
+.grid {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+.grid {
+      stroke-width: 1;
+}
 </style>
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -88,6 +96,53 @@ d3.csv("points.csv", function(error, data) {
   xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
   yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
 
+  if (false)
+  svg.selectAll("line.horizontalGrid").data(yScale.ticks(4)).enter()
+    .append("line")
+        .attr(
+        {
+            "class":"grid horizontalGrid",
+            "x1" : margin.right,
+            "x2" : width,
+            "y1" : function(d){ return yScale(d);},
+            "y2" : function(d){ return yScale(d);},
+            "fill" : "none",
+            "shape-rendering" : "crispEdges",
+            "stroke" : "black",
+            "stroke-width" : "1px"
+        });
+	
+	svg.selectAll("line.horizontalGrid").data([0]).enter()
+    .append("line")
+        .attr(
+        {
+            "class":"grid horizontalGrid",
+            "x1" : margin.right,
+            "x2" : width,
+            "y1" : function(d){ return yScale(d);},
+            "y2" : function(d){ return yScale(d);},
+            "fill" : "none",
+            "shape-rendering" : "crispEdges",
+            "stroke" : "black",
+            "stroke-width" : "1px"
+        })
+	
+	svg.selectAll("line.verticalGrid")
+	.data([0]).enter()
+    .append("line")
+        .attr(
+        {
+            "class":"grid verticalGrid",
+            "y1" : margin.top,
+            "y2" : height,
+            "x1" : function(d){ return xScale(d);},
+            "x2" : function(d){ return xScale(d);},
+            "fill" : "none",
+            "shape-rendering" : "crispEdges",
+            "stroke" : "black",
+            "stroke-width" : "1px"
+        });
+		
   // x-axis
   svg.append("g")
       .attr("class", "x axis")
