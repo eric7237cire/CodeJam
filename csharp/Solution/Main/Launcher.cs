@@ -5,6 +5,7 @@
 //#define LOGGING_TRACE
 using CodeJam.Main;
 using CodeJam.Main.Plumbing;
+using Year2015.Round1A.Problem1;
 using CodeJamUtils;
 using StructureMap;
 using StructureMap.Graph;
@@ -117,20 +118,20 @@ namespace MainNS
 
             List<string> list = new List<string>();
 
-       //  list.Add("sample.in");
+         list.Add("sample.in");
             // list.Add("E-small-practice.in");
              // list.Add("E-large-practice.in");
 
-             // list.Add("A-small-practice.in");
+              list.Add("A-small-practice.in");
             //
-           //  list.Add("A-large-practice.in");
+             list.Add("A-large-practice.in");
 
 
            // list.Add("B-small-practice.in");
           //  list.Add("B-large-practice.in");
 
           //  list.Add("C-small-practice.in");
-             list.Add("C-large-practice.in");
+           //  list.Add("C-large-practice.in");
 
             //  list.Add("D-small-practice.in");
             //   list.Add("D-large-practice.in");
@@ -153,7 +154,7 @@ namespace MainNS
 
              });
 
-                cfg.For<IFileProcessor>().Use<FileProcessor>();
+                cfg.For<IFileProcessor>().Use<FileProcessor>().Singleton();
                 cfg.For<IAnswerAcceptor>().Use<AnswerAcceptor>();
                
             });
@@ -161,11 +162,18 @@ namespace MainNS
             /*
             Dijkstra 2015   squaring, creating math type, operator overloading
     */
-            var inputProducer = container.GetInstance<InputFileProducer<DijkstraInput>>();
+            // var inputProducer = container.GetInstance<InputFileProducer<DijkstraInput>>();
+
+            //Mushroom 2015 round 1
+            var inputProducer = container.GetInstance<InputFileProducer<MushRoomInput>>();
 
             var fileProcessor = container.GetInstance<IFileProcessor>();
 
-            fileProcessor.ReadInputFile(inputProducer, list[0]);
+            foreach(string fileName in list)
+            {
+                fileProcessor.ReadInputFile(inputProducer, fileName);
+            }
+            
 
             //var c = container.ForObject(o).
 

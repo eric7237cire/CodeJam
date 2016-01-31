@@ -485,6 +485,16 @@ namespace CodeJamUtils
             
         }
 
+        public int[] nextIntArray(int size)
+        {
+            int[] array = new int[size];
+            for (int i = 0; i < size; ++i)
+            {
+                array[i] = nextInt();
+            }
+            return array;
+        }
+
         public bool hasNext()
         {
             return currentWord != null;

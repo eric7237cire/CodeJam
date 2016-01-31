@@ -222,6 +222,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>BuildingIndexes.cs</LastGenOutput>
     </None>
+    <None Include="2015\Round1A\sample.in" />
     <None Include="app.config" />
     <None Include="build\Project1.nunit" />
     <None Include="eric.ps1" />
@@ -563,6 +564,7 @@
     <Compile Include="2014\Round4\CheckerboardMatrix.cs" />
     <Compile Include="2014\Round4\PowerSwapper.cs" />
     <Compile Include="2014\Round4\SymmetricTrees.cs" />
+    <Compile Include="2015\Round1A\MushRooms.cs" />
     <Compile Include="2015\RoundQual\Dijkstra.cs" />
     <Compile Include="2015\RoundQual\InfiniteHouseOfPancakes.cs" />
     <Compile Include="2015\RoundQual\StandingOvation.cs" />
