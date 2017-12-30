@@ -56,8 +56,9 @@ def solve(n_str:str) -> int:
 
 def main():
 
+
     file_base = "small"
-#    file_base = "large"
+    file_base = "large"
     input_file_name = f"B-{file_base}-practice.in"
     output_file_name = f"B-{file_base}-practice.out"
 
@@ -73,10 +74,10 @@ def main():
             output_file.write(f"Case #{i+1}: ")
 
             tidy = solve( number )
-            tidy_bf = solve_brute_force(number)
+            #tidy_bf = solve_brute_force(number)
 
-            if tidy != tidy_bf:
-                raise Exception(f"Not ok {number}. Correct is {tidy_bf} but got {tidy}")
+            #if tidy != tidy_bf:
+             #   raise Exception(f"Not ok {number}. Correct is {tidy_bf} but got {tidy}")
 
             output_file.write(str(tidy))
 
