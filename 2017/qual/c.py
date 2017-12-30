@@ -119,7 +119,8 @@ def main():
     #return
     file_base = "small"
     ext = "-2"
-    #file_base = "large"
+    ext = ""
+    file_base = "large"
     input_file_name = f"C-{file_base}-practice{ext}.in"
     output_file_name = f"C-{file_base}-practice{ext}.out"
 
