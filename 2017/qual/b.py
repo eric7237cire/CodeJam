@@ -1,12 +1,8 @@
 """
-We can't flip in the same place twice
-
-So for the edges, if we have a - we must flip
-
-
 
 """
 
+# Brute force solver
 def solve_brute_force(n:str) -> int:
 
     num = int(n)
@@ -14,6 +10,7 @@ def solve_brute_force(n:str) -> int:
         if is_tidy(i):
             return i
 
+# Part of brute force
 def is_tidy(n):
     number = [int(n) for n in str(n)]
 
@@ -30,10 +27,23 @@ def is_tidy(n):
 
     return True
 
+
 def solve(n_str:str) -> int:
+    """
+    Basically, if we have a non decreasing number
+
+    132  we need to find the left most max and decrease it
+    and make everything else 9s
+
+    so
+    1[3]2 ==> 129
+
+    222222[5]1 ==> 1999999
+    """
     number = [int(n) for n in n_str]
 
     max_digit = 0
+    # Keep track of first instance of max digit
     max_digit_pos = -1
     for pos in range(0, len(number)):
 
@@ -46,7 +56,6 @@ def solve(n_str:str) -> int:
             max_digit = digit
             continue
 
-        # Need to find
         number[max_digit_pos] -= 1
         for j in range(max_digit_pos+1, len(number)):
             number[j] = 9
