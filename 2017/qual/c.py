@@ -25,7 +25,11 @@ def solve(n:int, k:int) -> Tuple[int,int]:
     #Place k-1 folks
     holes_left = n - (k-1)
     width_tree = 2**(tree_height-1)
+
+    # How many empty stalls?
     min_hole_size = holes_left // width_tree
+
+    # If there is a remainder, add 1
     an_extra = holes_left % width_tree > 0
 
     if an_extra:
@@ -33,11 +37,14 @@ def solve(n:int, k:int) -> Tuple[int,int]:
     else:
         hole_size = min_hole_size
 
+    # We get placed in the middle
     min_dist = (hole_size-1) // 2
 
+    # If its odd, we have an even min/max distance
     if hole_size % 2 == 1:
         return min_dist, min_dist
     else:
+        #Otherwise max is 1 more
         return  min_dist + 1, min_dist
 
 def solve_brute_force(n:int, k:int, p:bool = False) -> Tuple[int,int]:
