@@ -1,5 +1,6 @@
 
 import numpy as np
+from concurrent.futures import ProcessPoolExecutor, as_completed
 
 class Board:
 
@@ -40,49 +41,27 @@ class Board:
         self.board = self.pivot_board
 
 
-    def print_the_board(self, out_file):
-        print ("solution:")
-        self.board = np.full(shape = (self.N, self.N),
-                             fill_value = '.',
-                             dtype = np.chararray)
+    def write_solution_lines(self, out_file):
 
-        for row, col in self.bishops:
-            assert self.board[row,col] == '.'
-            self.board[row, col]='b'
+        n_rows, n_cols = self.board.shape
+        for row in range(0, n_rows):
+            for col in range(0, n_cols):
+                coord = (row,col)
+                if coord in self.bishops and \
+                        (coord in self.rooks or coord in self.existing_rooks):
+                    out_file.write(f"o {row+1} {col+1}\n")
+                elif coord in self.rooks and coord in self.existing_bishops:
+                    out_file.write(f"o {row+1} {col+1}\n")
+                elif coord in self.rooks:
+                    out_file.write(f"x {row+1} {col+1}\n")
+                elif coord in self.bishops:
+                    out_file.write(f"+ {row+1} {col+1}\n")
 
-        for row, col in self.existing_bishops:
-            assert self.board[row, col] == '.'
-            self.board[row,col]='B'
+    def solve(self):
+        self.solution(is_rooks = True)
+        self.solution(is_rooks = False)
 
-        for row, col in self.existing_rooks:
-            if self.board[row,col] != '.':
-                self.board[row,col] = 'o'
-            else:
-                self.board[row,col] = 'R'
-
-        for row, col in self.rooks:
-            assert self.board[row, col] != 'o'
-            assert self.board[row, col] != 'R'
-            assert self.board[row, col] != 'r'
-            if self.board[row, col] != '.':
-                self.board[row, col] = 'o'
-            else:
-                self.board[row, col] = 'r'
-
-        print(self.board)
-
-        if out_file:
-            n_rows, n_cols = self.board.shape
-            for row in range(0, n_rows):
-                for col in range(0, n_cols):
-
-                    sq = self.board[row,col]
-                    if sq == 'o':
-                        out_file.write(f"o {row+1} {col+1}\n")
-                    if sq == 'r':
-                        out_file.write(f"x {row+1} {col+1}\n")
-                    if sq == 'b':
-                        out_file.write(f"+ {row+1} {col+1}\n")
+        return self
 
     def solution(self, is_rooks):
 
@@ -143,10 +122,11 @@ def main():
     output_file_name = f"D-{file_base}-practice{ext}.out"
 
     with open(output_file_name, "w") as output_file, \
+            ProcessPoolExecutor(max_workers = 7) as executor, \
             open(input_file_name) as input_file:
 
         n_cases = int(input_file.readline())
-
+        results = []
         for i in range( n_cases):
 
             n_str, m_str = input_file.readline().split(" ")
@@ -164,14 +144,18 @@ def main():
                 if m_type in ['o', '+']:
                     b.existing_bishops.append((int(row_str)-1, int(col_str)-1))
 
-            b.solution(is_rooks = True)
-            b.solution(is_rooks = False)
+            results.append(executor.submit(b.solve))
+
+        for i in range(0, len(results)):
+            b = results[i].result()
+
+            print(f"Done with {i} ")
 
             score = len(b.existing_bishops) + len(b.bishops) + \
                 len(b.existing_rooks) + len(b.rooks)
             added_pieces = len(set(b.rooks + b.bishops))
             output_file.write(f"Case #{i+1}: {score} {added_pieces}\n")
 
-            b.print_the_board(out_file = output_file)
+            b.write_solution_lines(out_file = output_file)
 if __name__ == "__main__":
     main()
