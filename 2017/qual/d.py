@@ -1,25 +1,12 @@
-# + are bishops
-# x are rooks
 
-# 0 4
-# 3 1
-
-# https://math.stackexchange.com/questions/383321/rotating-x-y-points-45-degrees
-import sys
 import numpy as np
 
-# Adapted from
-# https://stackoverflow.com/questions/42318343/avoid-duplicates-in-n-queen-iterative-solutions-no-recursion-allowed
 class Board:
 
-    INVALID = "#"
-    EMPTY = "."
     def __init__(self, size):
         self.N = size
-        self.queens = [] # list of columns, where the index represents the row
         self.rooks = []
         self.bishops = []
-        self.blanks = []
 
         self.existing_bishops = []
         self.existing_rooks = []
@@ -27,31 +14,12 @@ class Board:
         self.board = np.empty(shape = (self.N, self.N))
 
     def convert_to_tilted_board_coords(self, row, col):
+        # https://math.stackexchange.com/questions/383321/rotating-x-y-points-45-degrees
         return  row+col  , col - row + self.N
 
     def convert_to_board_coords(self, row, col):
+        # Kind of guessed this one, looks the translation needs to be spread around too
         return int((row-col)/2 + self.N / 2), int((row+col) / 2 - self.N / 2)
-
-        # 0, 0 => 0,0
-        # 1, 1 => 0, 1
-        # 2, 2 => 0, 2
-        # 1, -1 => 1, 0
-        # 2, 0 => 1, 1
-        # 3, 1 => 1, 2
-
-    def unpivot_board(self):
-        self.tilted_board = self.board
-        self.board = np.empty(shape=(self.N, self.N))
-
-        for row in range(0, self.tilted_board.shape[0]):
-            for col in range(0, self.tilted_board.shape[1]):
-                if self.tilted_board[row, col] == False:
-                    continue
-                coords = self.convert_to_board_coords(row, col)
-                #print(f"{row},{col} {self.tilted_board[row][col]}==> {coords}")
-                self.board[coords[0], coords[1]] = self.tilted_board[row,col]
-
-
 
     def create_pivot_board(self):
 
@@ -67,40 +35,12 @@ class Board:
                 self.pivot_board[coords[0], coords[1]] = True
 
                 check_coords = self.convert_to_board_coords(*coords)
-                if (row,col) != check_coords:
-                    raise Exception("problem")
+                assert (row,col) == check_coords
 
         self.board = self.pivot_board
 
-    def is_queen_safe(self, row, col):
-        for r, c in enumerate(self.queens):
-            if r == row or c == col or abs(row - r) == abs(col - c):
-                return False
-        return True
 
-
-    def is_bishop_safe(self, row, col):
-        for r, c in enumerate(self.bishops):
-            if abs(row - r) == abs(col - c):
-                return False
-        return True
-
-
-    def is_rook_safe(self, row, col):
-        if self.board[row, col] == Board.INVALID:
-            return False
-
-        for r, c in enumerate(self.rooks):
-            if r == row or c == col :
-                return False
-
-        for r, c in self.existing_pieces:
-            if r == row or c == col :
-                return False
-
-        return True
-
-    def print_the_board(self):
+    def print_the_board(self, out_file):
         print ("solution:")
         self.board = np.full(shape = (self.N, self.N),
                              fill_value = '.',
@@ -130,6 +70,19 @@ class Board:
                 self.board[row, col] = 'r'
 
         print(self.board)
+
+        if out_file:
+            n_rows, n_cols = self.board.shape
+            for row in range(0, n_rows):
+                for col in range(0, n_cols):
+
+                    sq = self.board[row,col]
+                    if sq == 'o':
+                        out_file.write(f"o {row+1} {col+1}\n")
+                    if sq == 'r':
+                        out_file.write(f"x {row+1} {col+1}\n")
+                    if sq == 'b':
+                        out_file.write(f"+ {row+1} {col+1}\n")
 
     def solution(self, is_rooks):
 
@@ -180,30 +133,42 @@ class Board:
             self.board[:,min_col] = False
 
 
+def main():
 
-q = Board(5)
+    #return
+    file_base = "small"
+    ext = ""
+    #file_base = "large"
+    input_file_name = f"D-{file_base}-practice{ext}.in"
+    output_file_name = f"D-{file_base}-practice{ext}.out"
 
-#q.existing_bishops.append((2,2))
-#q.existing_bishops.append((2, 1))
+    with open(output_file_name, "w") as output_file, \
+            open(input_file_name) as input_file:
 
-q.existing_rooks.append( (4,1))
+        n_cases = int(input_file.readline())
 
-q.solution(is_rooks = True)
-q.solution(is_rooks = False)
+        for i in range( n_cases):
 
-q.print_the_board()
+            n_str, m_str = input_file.readline().split(" ")
 
-#q.create_pivot_board()
+            b = Board(size=int(n_str))
 
-#print(q.board)
+            # + are bishops
+            # x are rooks
 
-#q.unpivot_board()
+            for m in range(0, int(m_str)):
+                m_type, row_str, col_str = input_file.readline().split(" ")
 
-#print(q.board)
+                if m_type in ['o', 'x']:
+                    b.existing_rooks.append((int(row_str)-1, int(col_str)-1))
+                if m_type in ['o', '+']:
+                    b.existing_bishops.append((int(row_str)-1, int(col_str)-1))
 
-sys.exit(0)
+            b.solution(is_rooks = True)
+            b.solution(is_rooks = False)
 
-q.solution(is_rooks = True)
-q.solution(is_rooks = False)
+            output_file.write(f"Case #{i+1}:\n")
 
-q.print_the_board()
+            b.print_the_board(out_file = output_file)
+if __name__ == "__main__":
+    main()
