@@ -167,7 +167,10 @@ def main():
             b.solution(is_rooks = True)
             b.solution(is_rooks = False)
 
-            output_file.write(f"Case #{i+1}:\n")
+            score = len(b.existing_bishops) + len(b.bishops) + \
+                len(b.existing_rooks) + len(b.rooks)
+            added_pieces = len(set(b.rooks + b.bishops))
+            output_file.write(f"Case #{i+1}: {score} {added_pieces}\n")
 
             b.print_the_board(out_file = output_file)
 if __name__ == "__main__":
