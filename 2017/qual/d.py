@@ -57,12 +57,6 @@ class Board:
                 elif coord in self.bishops:
                     out_file.write(f"+ {row+1} {col+1}\n")
 
-    def solve(self):
-        self.solution(is_rooks = True)
-        self.solution(is_rooks = False)
-
-        return self
-
     def solution(self, is_rooks):
 
         if is_rooks:
@@ -111,13 +105,23 @@ class Board:
             self.board[min_row] = False
             self.board[:,min_col] = False
 
+def solve(n_str,existing_bishops, existing_rooks):
+    b = Board(size = int(n_str))
+
+    b.existing_bishops = existing_bishops
+    b.existing_rooks = existing_rooks
+
+    b.solution(is_rooks = True)
+    b.solution(is_rooks = False)
+
+    return b
 
 def main():
 
     #return
     file_base = "small"
     ext = ""
-    #file_base = "large"
+    file_base = "large"
     input_file_name = f"D-{file_base}-practice{ext}.in"
     output_file_name = f"D-{file_base}-practice{ext}.out"
 
@@ -131,20 +135,20 @@ def main():
 
             n_str, m_str = input_file.readline().split(" ")
 
-            b = Board(size=int(n_str))
-
             # + are bishops
             # x are rooks
+            existing_rooks = []
+            existing_bishops = []
 
             for m in range(0, int(m_str)):
                 m_type, row_str, col_str = input_file.readline().split(" ")
 
                 if m_type in ['o', 'x']:
-                    b.existing_rooks.append((int(row_str)-1, int(col_str)-1))
+                    existing_rooks.append((int(row_str)-1, int(col_str)-1))
                 if m_type in ['o', '+']:
-                    b.existing_bishops.append((int(row_str)-1, int(col_str)-1))
+                    existing_bishops.append((int(row_str)-1, int(col_str)-1))
 
-            results.append(executor.submit(b.solve))
+            results.append(executor.submit(solve, n_str, existing_bishops, existing_rooks))
 
         for i in range(0, len(results)):
             b = results[i].result()
