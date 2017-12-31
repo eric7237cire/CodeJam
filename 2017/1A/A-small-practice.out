@@ -10,12 +10,12 @@ Case #3:
 CA
 KE
 Case #4:
-AE
-AE
+CE
+CE
 CE
 BD
-CE
-AE
+BD
+AD
 Case #5:
 CGBD
 CHEI
@@ -32,47 +32,47 @@ ABH
 Case #8:
 FFBE
 FFCA
-FFBD
+FFCD
 Case #9:
 ACBD
 ACBD
 ECFD
 Case #10:
-FCA
-ECD
 FCD
-FBA
+ECD
+ECD
+EBA
 Case #11:
 BCE
 DCE
 FAE
-BCE
+FAE
 Case #12:
 BA
 BA
 Case #13:
-EBF
+DBF
 DBF
 CAF
-EBF
+EAF
 Case #14:
-ACDF
+ACDE
 ACDE
 BCDF
 Case #15:
 DCA
 BEA
-DFA
-DCA
+BFA
+BFA
 Case #16:
-AAA?
-BBB?
-CCC?
+AAAA
+BBBB
+CCCC
 Case #17:
 FFE
 FFA
 CCB
-FFD
+CCD
 Case #18:
 BAC
 Case #19:
@@ -86,17 +86,17 @@ Case #21:
 EBD
 GAD
 IFJ
-CHD
+CHJ
 Case #22:
 CDA
 FDA
-CBA
-CEA
+FBA
+FEA
 Case #23:
 ABG
 DHE
 CJI
-ABF
+CJF
 Case #24:
 AA
 AA
@@ -104,29 +104,29 @@ Case #25:
 CBB
 EAA
 FDD
-CBB
+FDD
 Case #26:
-DCEE
-BCEE
-ACEE
+DCCE
+BCCE
+ACCE
 Case #27:
 ADE
 BDE
 CDE
 Case #28:
-EBAD
+EBAC
 EBAC
 EBAD
 Case #29:
 BAD
 EFD
-BAD
-BCD
+EFD
+ECD
 Case #30:
 AEB
 CEB
-AED
-AEF
+CED
+CEF
 Case #31:
 ABCD
 ABCD
@@ -134,12 +134,12 @@ ABCD
 Case #32:
 ADEE
 BFEE
-ACEE
+BCEE
 Case #33:
 DDE
 AAB
-DDC
-DDE
+AAC
+AAC
 Case #34:
 AB
 Case #35:
@@ -149,54 +149,54 @@ BEAD
 Case #36:
 DBEE
 FCEE
-DAEE
+FAEE
 Case #37:
 CHDE
 GIKA
-FBJE
+FBJA
 Case #38:
 CIG
 HAD
-EFG
-BIG
+EFD
+BFD
 Case #39:
 CHDE
 BGFE
 JIAE
 Case #40:
-FHE
-FAJ
+CHE
+CAJ
 CDG
 FBI
 Case #41:
 BD
 AC
 Case #42:
-AABB
-AABB
+AAAB
+AAAB
 Case #43:
-?AAA
-?BBB
-?CCC
+AAAA
+BBBB
+CCCC
 Case #44:
-ABBCCDDEEFFF
+AABBCCDDEEFF
 Case #45:
-DAF
-CAB
+CEB
+CEB
 CEB
 DAF
 Case #46:
-BAEC
+DAEC
 DAEC
 BAEC
 Case #47:
 CBAE
 CBDE
-CBAE
+CBDE
 Case #48:
-ADEE
-BCEE
-ADEE
+ADDE
+BCCE
+BCCE
 Case #49:
 AEC
 BDF
@@ -204,20 +204,20 @@ Case #50:
 AAC
 BBC
 Case #51:
-AFB
+ACB
 ACB
 DCE
-AFB
+DFE
 Case #52:
-BAC
-BAF
+DAC
+DAF
 DAE
-BAC
+BAE
 Case #53:
 CDB
 CAB
 CFB
-EDB
+EFB
 Case #54:
 ABCC
 ABCC
@@ -225,21 +225,21 @@ ABCC
 Case #55:
 CEJA
 IKGF
-CBHD
+IBHD
 Case #56:
 EDF
 BDF
 CDF
-EDA
+CDA
 Case #57:
 ABC
 DBC
-ABE
+DBE
 Case #58:
-EBD
+EAD
 EAD
 EFC
-EBD
+EBC
 Case #59:
 AAA
 Case #60:
@@ -249,18 +249,18 @@ EECB
 Case #61:
 AA
 Case #62:
-AA??
-BB??
-CC??
+AAAA
+BBBB
+CCCC
 Case #63:
 DCBB
 DCAA
 DCEE
 Case #64:
-AEF
+DEF
 DCF
 DBF
-AEF
+ABF
 Case #65:
 CCJJ
 CCJJ
@@ -268,14 +268,14 @@ CCJJ
 Case #66:
 FAEB
 HGCB
-FDEB
+HDCB
 Case #67:
-AF
+AB
 AB
 CB
-AD
-EB
-AF
+CD
+ED
+EF
 Case #68:
 ABCD
 ABCD
@@ -289,7 +289,7 @@ AAA
 Case #71:
 AECD
 BECD
-AECD
+BECD
 Case #72:
 ABCD
 ABCD
@@ -302,61 +302,61 @@ GHAE
 LCJB
 DKIF
 Case #75:
-IFBC
+IABC
 IAED
 IFGH
 Case #76:
-CDDE
-CDDB
-CDDA
+CCDE
+CCDB
+CCDA
 Case #77:
 BCF
 ADE
-BCF
-BCF
+ADE
+ADE
 Case #78:
 CDB
 CAB
 Case #79:
-CAAE
-CAAD
-CAAB
+CCAE
+CCAD
+CCAB
 Case #80:
-BCC?
-DEE?
-ACC?
+BEEE
+DEEE
+ACCC
 Case #81:
 BBA
 BBA
 Case #82:
-FCE
+FBE
 FBE
 DBA
-FCE
+DCA
 Case #83:
-CDE
-CFB
 CDB
+CFB
+CFB
 CAE
 Case #84:
-CEDD
-CABB
-CEDD
+CEEB
+CAAB
+CAAD
 Case #85:
 A
 A
 B
-A
+B
 C
-A
+C
 D
-A
+D
 E
-A
+E
 F
-A
+F
 Case #86:
-AFB
+CFD
 CID
 EHJ
 AGB
@@ -369,7 +369,7 @@ Case #88:
 BA
 BC
 Case #89:
-EDCA
+BDCA
 BDCA
 EDCA
 Case #90:
@@ -387,10 +387,10 @@ A
 Case #93:
 ECD
 ABD
-ECD
-ECD
+ABD
+ABD
 Case #94:
-BDAE
+CDAE
 CDAE
 BDAE
 Case #95:
@@ -398,7 +398,7 @@ BGLK
 DJEF
 HCAI
 Case #96:
-DCA
+DEA
 DEA
 DBA
 DCA
@@ -415,4 +415,4 @@ A
 Case #100:
 JKAH
 CGEB
-JIDF
+CIDF

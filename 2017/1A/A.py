@@ -10,7 +10,7 @@ def solve(grid : np.array) -> None:
         nonlocal  last_value
         value = grid[r, c]
 
-        if last_value == '?' and value != '?':
+        if value != '?':
             last_value = value
             return
 
@@ -30,17 +30,17 @@ def solve(grid : np.array) -> None:
 
     # Now handle blank columns
 
-    # Copy from right
-    for c in range(0, n_cols-1):
+    # Copy to right
+    for c in range(1, n_cols):
 
         if grid[0,c] == '?':
-            grid[:,c] = grid[:, c+1]
+            grid[:,c] = grid[:, c-1]
 
-    # Copy from left
-    for c in range(n_cols-1, 0, -1):
+    # Copy to left (from right)
+    for c in range(n_cols-2, -1, -1):
 
         if grid[0, c] == '?':
-            grid[:, c] = grid[:, c - 1]
+            grid[:, c] = grid[:, c + 1]
 
     return
 
