@@ -1,10 +1,6 @@
-
 import numpy as np
-from concurrent.futures import ProcessPoolExecutor, as_completed
-
 
 def solve(grid : np.array) -> None:
-    #print(f"Solving {case_no}")
 
     def handle_col(r,c):
         nonlocal  last_value
@@ -46,20 +42,16 @@ def solve(grid : np.array) -> None:
 
 def main():
 
-    #return
     file_base = "small"
     ext = ""
-    #file_base = "large"
+    file_base = "large"
     input_file_name = f"A-{file_base}-practice{ext}.in"
     output_file_name = f"A-{file_base}-practice{ext}.out"
 
-    with open(output_file_name, "w") as output_file, \
-            ProcessPoolExecutor(max_workers = 7) as executor, \
-            open(input_file_name) as input_file:
+    with open(output_file_name, "w") as output_file,open(input_file_name) as input_file:
 
         n_cases = int(input_file.readline())
 
-        results = []
         for i in range( n_cases):
 
             R, C = map(int, input_file.readline().split(" "))
@@ -69,8 +61,6 @@ def main():
             for r in range(0,R):
                 for col,ch in enumerate(input_file.readline().strip()):
                     grid[r][col] = ch
-
-            print(grid)
 
             solve(grid)
 
