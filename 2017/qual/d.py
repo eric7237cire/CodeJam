@@ -21,7 +21,8 @@ class Board:
         self.bishops = []
         self.blanks = []
 
-        self.existing_pieces = []
+        self.existing_bishops = []
+        self.existing_rooks = []
 
         self.board = np.empty(shape = (self.N, self.N))
 
@@ -106,8 +107,27 @@ class Board:
                              dtype = np.chararray)
 
         for row, col in self.bishops:
+            assert self.board[row,col] == '.'
             self.board[row, col]='b'
 
+        for row, col in self.existing_bishops:
+            assert self.board[row, col] == '.'
+            self.board[row,col]='B'
+
+        for row, col in self.existing_rooks:
+            if self.board[row,col] != '.':
+                self.board[row,col] = 'o'
+            else:
+                self.board[row,col] = 'R'
+
+        for row, col in self.rooks:
+            assert self.board[row, col] != 'o'
+            assert self.board[row, col] != 'R'
+            assert self.board[row, col] != 'r'
+            if self.board[row, col] != '.':
+                self.board[row, col] = 'o'
+            else:
+                self.board[row, col] = 'r'
 
         print(self.board)
 
@@ -115,16 +135,26 @@ class Board:
 
         if is_rooks:
             piece_array = self.rooks
-            safe_fn = self.is_rook_safe
+
+            self.board = np.full(shape = (self.N,  self.N),
+                                       fill_value = True,
+                                       dtype = np.bool)
+
+            for row,col in self.existing_rooks:
+                self.board[row] = False
+                self.board[:, col] = False
+
         else:
             piece_array = self.bishops
-            safe_fn = self.is_rook_safe
             self.create_pivot_board()
 
+            for r, c in self.existing_bishops:
+
+                row,col = self.convert_to_tilted_board_coords(r,c)
+                self.board[row] = False
+                self.board[:, col] = False
+
         n_rows = self.board.shape[0]
-        n_cols = self.board.shape[1]
-
-
         piece_array.clear()
 
         for i in range(0, n_rows):
@@ -141,7 +171,10 @@ class Board:
             if self.board[min_row, min_col] == False:
                 break
 
-            piece_array.append(self.convert_to_board_coords(min_row, min_col))
+            if is_rooks:
+                piece_array.append((min_row, min_col))
+            else:
+                piece_array.append(self.convert_to_board_coords(min_row, min_col))
 
             self.board[min_row] = False
             self.board[:,min_col] = False
@@ -150,7 +183,12 @@ class Board:
 
 q = Board(5)
 
-#q.solution(is_rooks = True)
+#q.existing_bishops.append((2,2))
+#q.existing_bishops.append((2, 1))
+
+q.existing_rooks.append( (4,1))
+
+q.solution(is_rooks = True)
 q.solution(is_rooks = False)
 
 q.print_the_board()
