@@ -41,22 +41,24 @@ class Board:
         self.board = self.pivot_board
 
 
-    def write_solution_lines(self, out_file):
-
+    def write_solution_lines(self):
+        ret_str = ""
         n_rows, n_cols = self.board.shape
         for row in range(0, n_rows):
             for col in range(0, n_cols):
                 coord = (row,col)
                 if coord in self.bishops and \
                         (coord in self.rooks or coord in self.existing_rooks):
-                    out_file.write(f"o {row+1} {col+1}\n")
+                    ret_str += "o" + f" {row+1} {col+1}\n"
                 elif coord in self.rooks and coord in self.existing_bishops:
-                    out_file.write(f"o {row+1} {col+1}\n")
+                    ret_str += "o" + f" {row+1} {col+1}\n"
                 elif coord in self.rooks:
-                    out_file.write(f"x {row+1} {col+1}\n")
+                    ret_str += "x" + f" {row+1} {col+1}\n"
                 elif coord in self.bishops:
-                    out_file.write(f"+ {row+1} {col+1}\n")
+                    ret_str += "+" + f" {row+1} {col+1}\n"
 
+
+        return ret_str
     def solution(self, is_rooks):
 
         if is_rooks:
@@ -105,7 +107,9 @@ class Board:
             self.board[min_row] = False
             self.board[:,min_col] = False
 
-def solve(n_str,existing_bishops, existing_rooks):
+def solve(case_no, n_str,existing_bishops, existing_rooks):
+    print(f"Solving {case_no}")
+
     b = Board(size = int(n_str))
 
     b.existing_bishops = existing_bishops
@@ -114,7 +118,14 @@ def solve(n_str,existing_bishops, existing_rooks):
     b.solution(is_rooks = True)
     b.solution(is_rooks = False)
 
-    return b
+    score = len(b.existing_bishops) + len(b.bishops) + \
+            len(b.existing_rooks) + len(b.rooks)
+    added_pieces = len(set(b.rooks + b.bishops))
+    answer_str = f"Case #{case_no}: {score} {added_pieces}\n"
+
+    answer_str += b.write_solution_lines()
+
+    return answer_str
 
 def main():
 
@@ -148,18 +159,13 @@ def main():
                 if m_type in ['o', '+']:
                     existing_bishops.append((int(row_str)-1, int(col_str)-1))
 
-            results.append(executor.submit(solve, n_str, existing_bishops, existing_rooks))
+            results.append(executor.submit(solve, i+1, n_str, existing_bishops, existing_rooks))
 
-        for i in range(0, len(results)):
-            b = results[i].result()
+        for r in results:
+            ans = r.result()
 
-            print(f"Done with {i} ")
+            output_file.write(ans)
 
-            score = len(b.existing_bishops) + len(b.bishops) + \
-                len(b.existing_rooks) + len(b.rooks)
-            added_pieces = len(set(b.rooks + b.bishops))
-            output_file.write(f"Case #{i+1}: {score} {added_pieces}\n")
 
-            b.write_solution_lines(out_file = output_file)
 if __name__ == "__main__":
     main()
