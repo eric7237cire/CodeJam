@@ -10,6 +10,8 @@ def solve(N, P, R, Q) -> int:
 
         for p in range(0, P):
             package_size = Q[i][p]
+
+            # problem is floating point
             min_servings = math.ceil(package_size / (1.1 * required_amount) )
             max_servings = math.floor( package_size / (.9 * required_amount) )
 
@@ -27,8 +29,8 @@ def solve(N, P, R, Q) -> int:
             if min_servings > max_servings:
                 continue
 
-            events.append((min_servings, False, i, package_size, p))
-            events.append((max_servings, True, i, package_size, p))
+            events.append((min_servings, False, i, package_size))
+            events.append((max_servings, True, i, package_size))
 
     # Code based on https://www.go-hero.net/jam/17/name/Nore
     events.sort()
@@ -36,7 +38,7 @@ def solve(N, P, R, Q) -> int:
     counts = [[] for _ in range(N)]
     remv = [0] * N
     for (boundary, is_upper_bound,
-         ingredient_index, package_size, package_index) in events:
+         ingredient_index, package_size) in events:
         #print(f"Saw event Boundary={boundary} {is_upper_bound} ingredient={ingredient_index} package={package_size}")
         #print(counts, remv)
         if is_upper_bound:
